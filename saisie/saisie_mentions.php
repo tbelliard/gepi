@@ -72,13 +72,13 @@ if(isset($saisie_mention)) {
 	for($i=0;$i<count($suppr);$i++) {
 		if(!in_array($suppr[$i],$tab_mentions_aff)) {
 			$sql="DELETE FROM j_mentions_classes WHERE id_mention='$suppr[$i]';";
-			$nettoyage=mysql_query($sql);
+			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$nettoyage) {
 				$msg.="Erreur lors de la suppression de l'assoctiaition de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b> avec une ou des classes.<br />";
 			}
 			else {
 				$sql="DELETE FROM mentions WHERE id='$suppr[$i]';";
-				$nettoyage=mysql_query($sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$nettoyage) {
 					$msg.="Erreur lors de la suppression de la $gepi_denom_mention <b>".$tab_mentions[$suppr[$i]]."</b><br />";
 				}
@@ -94,13 +94,13 @@ if(isset($saisie_mention)) {
 
 	if($nouvelle_mention!="") {
 		$sql="SELECT 1=1 FROM mentions WHERE mention='$nouvelle_mention';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$msg.="La $gepi_denom_mention <b>$nouvelle_mention</b> existe déjà.<br />";
 		}
 		else {
 			$sql="INSERT INTO mentions SET mention='$nouvelle_mention';";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="Erreur lors de l'ajout de la $gepi_denom_mention <b>$nouvelle_mention</b><br />";
 			}
@@ -126,9 +126,9 @@ if(isset($saisie_association_mentions_classes)) {
 		//$sql="SELECT DISTINCT a.id_mention FROM avis_conseil_classe a, j_eleves_classes j WHERE j.periode=a.periode AND j.login=a.login AND j.id_classe='$id_classe[$i]';";
 		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j WHERE j.id_classe='$id_classe[$i]';";
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while ($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while ($lig=mysqli_fetch_object($res)) {
 				$tab_mentions_classe[]=$lig->id_mention;
 			}
 		}
@@ -153,7 +153,7 @@ if(isset($saisie_association_mentions_classes)) {
 			if((!in_array($key, $id_mention))&&(in_array($key, $tab_mentions_classe))&&(!in_array($key, $tab_mentions_aff))) {
 				$sql="DELETE FROM j_mentions_classes WHERE id_classe='$id_classe[$i]' AND id_mention='$key';";
 				//echo "$sql<br />";
-				$nettoyage=mysql_query($sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$nettoyage) {
 					$msg.="Erreur lors de la suppression de la $gepi_denom_mention <b>".$value."</b> pour la classe <b>".get_class_from_id($id_classe[$i])."</b>.<br />";
 				}
@@ -162,7 +162,7 @@ if(isset($saisie_association_mentions_classes)) {
 			elseif((in_array($key, $id_mention))&&(!in_array($key, $tab_mentions_classe))) {
 				$sql="INSERT INTO j_mentions_classes SET id_classe='$id_classe[$i]', id_mention='$key';";
 				//echo "$sql<br />";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$insert) {
 					$msg.="Erreur lors de l'association de la $gepi_denom_mention <b>".$value."</b> avec la classe <b>".get_class_from_id($id_classe[$i])."</b>.<br />";
 				}
@@ -185,7 +185,7 @@ if(isset($saisie_ordre_mentions)) {
 	for($i=0;$i<count($id_classe);$i++) {
 		for($j=0;$j<count($ordre_id_mention);$j++) {
 			$sql="UPDATE j_mentions_classes SET ordre='$j' WHERE id_classe='$id_classe[$i]' AND id_mention='$ordre_id_mention[$j]';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {
 				$msg.="Erreur lors de l'enregistrement de l'ordre $j pour la $gepi_denom_mention <b>".$tab_mentions[$ordre_id_mention[$j]]."</b> pour la classe <b>".get_class_from_id($id_classe[$i])."</b>.<br />";
 			}
@@ -219,13 +219,13 @@ function insere_mentions_par_defaut() {
 	$tab_mentions=array('Félicitations', 'Mention honorable', 'Encouragements');
 	for($i=0;$i<count($tab_mentions);$i++) {
 		$sql="SELECT 1=1 FROM mentions WHERE mention='$tab_mentions[$i]';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$retour.="La $gepi_denom_mention '$tab_mentions[$i]' est déjà enregistrée.<br />\n";
 		}
 		else {
 			$sql="INSERT INTO mentions SET mention='$tab_mentions[$i]';";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {$cpt_erreur++;} else {$cpt_reg++;}
 		}
 	}
@@ -242,14 +242,14 @@ function insere_mentions_par_defaut() {
 }
 
 $sql="SHOW TABLES LIKE 'mentions';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS mentions (
 	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	mention VARCHAR(255) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 	//echo "$sql<br />";
-	$resultat_creation_table=mysql_query($sql);
+	$resultat_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	echo "<p style='color:red'>".insere_mentions_par_defaut()."</p>\n";
 }
@@ -260,7 +260,7 @@ id_mention INT(11) NOT NULL ,
 id_classe INT(11) NOT NULL ,
 ordre TINYINT(4) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$resultat_creation_table=mysql_query($sql);
+$resultat_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 echo "<p class='bold'><a href='../accueil.php'>Retour</a>";
 if(!isset($associer_mentions_classes)) {
@@ -343,8 +343,8 @@ else {
 		echo "<p>Pour quelle(s) classe(s) souhaitez-vous choisir les ".$gepi_denom_mention."s&nbsp;?</p>\n";
 
 		$sql="select distinct id,classe from classes order by classe";
-		$classes_list=mysql_query($sql);
-		$nb=mysql_num_rows($classes_list);
+		$classes_list=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb=mysqli_num_rows($classes_list);
 		if($nb==0){
 			echo "<p>Aucune classe n'est encore définie...</p>\n";
 			require("../lib/footer.inc.php");
@@ -363,9 +363,9 @@ else {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$id_classe=mysql_result($classes_list, $i, 'id');
+			$id_classe=old_mysql_result($classes_list, $i, 'id');
 			//$temp = "id_classe_".$id_classe;
-			$classe=mysql_result($classes_list, $i, 'classe');
+			$classe=old_mysql_result($classes_list, $i, 'classe');
 
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";
@@ -451,9 +451,9 @@ function cocher_toutes_classes(mode) {
 		$tab_mentions_aff=get_tab_mentions_affectees();
 
 		$tab_mentions_classes=array();
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab_mentions_classes[]=$lig->id_mention;
 			}
 		}
@@ -475,10 +475,10 @@ function cocher_toutes_classes(mode) {
 			$chaine_classes="";
 			$sql="SELECT DISTINCT c.classe FROM classes c, j_mentions_classes j WHERE j.id_classe=c.id AND j.id_mention='$key' ORDER BY c.classe;";
 			//echo "$sql<br />";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				$cpt_classe=0;
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					if($cpt_classe>0) {$chaine_classes.=", ";}
 					$chaine_classes.=$lig->classe;
 					$cpt_classe++;
@@ -528,8 +528,8 @@ function cocher_toutes_classes(mode) {
 		}
 		echo ".</p>\n";
 		$sql.=") ORDER BY ordre, id_mention;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p style='color:red'>Aucune $gepi_denom_mention n'est associée à ces classes.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -540,7 +540,7 @@ function cocher_toutes_classes(mode) {
 		echo "<p>Les ".$gepi_denom_mention."s sont&nbsp;:</p>\n";
 		echo "<ul>\n";
 		$tab_mentions_classes=array();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_mentions_classes[]=$lig->id_mention;
 			echo "<li>".$tab_mentions[$lig->id_mention];
 			echo "<input type='hidden' name='id_mention[]' value='$lig->id_mention' />\n";

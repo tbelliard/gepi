@@ -75,11 +75,11 @@ if (isset($_POST['action'])) {
         }
 
         if (!$error) {
-            $res = mysql_query("INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
+            $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "'");
         }
         if (!$res) {
             $msg .= "Erreur lors de l'enregistrement de la nouvelle catégorie.</br>";
-            echo mysql_error();
+            echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
         }
     } elseif ($_POST['action'] == "edit") {
         // On met à jour une catégorie
@@ -108,7 +108,7 @@ if (isset($_POST['action'])) {
 
         if (!$error) {
             // On enregistre
-            $res = mysql_query("UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
+            $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_categories SET nom_court = '" . ($_POST['nom_court']) . "', nom_complet = '" . ($_POST['nom_complet']) . "', priority = '" . $_POST["priority"] . "' WHERE id = '".$_POST['categorie_id']."'");
         }
 
         if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
@@ -129,7 +129,7 @@ if (isset($_POST['action'])) {
 				$cat_id=preg_replace("/^priority_/", "", $key);
 				$sql="UPDATE matieres_categories SET priority = '" . $value . "' WHERE id = '".$cat_id."';";
 				//echo "$sql<br />";
-				$res = mysql_query($sql);
+				$res = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
 			}
@@ -151,17 +151,17 @@ if (isset($_POST['action'])) {
             } else {
 
                 // On teste l'utilisation de cette catégorie
-                $res = mysql_query("SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
-                $test = mysql_num_rows($res);
+                $res = mysqli_query($GLOBALS["mysqli"], "SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
+                $test = mysqli_num_rows($res);
 
                 //$res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
-                $res2 = mysql_query("SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
-                $test2 = mysql_num_rows($res2);
+                $res2 = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                $test2 = mysqli_num_rows($res2);
 
                 if ($test>0) {
                     // On a des entrées... la catégorie a déjà été associée à des matières, donc on ne la supprime pas.
 					$liste_matieres_associees="";
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						if($liste_matieres_associees!='') {$liste_matieres_associees.=", ";}
 						$liste_matieres_associees.="<a href='index.php' target='_blank'>".$lig->matiere."</a>";
 					}
@@ -169,14 +169,14 @@ if (isset($_POST['action'])) {
 				}
                 elseif ($test2>0) {
 					$liste_classes_associees="";
-					while($lig=mysql_fetch_object($res2)) {
+					while($lig=mysqli_fetch_object($res2)) {
 						if($liste_classes_associees!='') {$liste_classes_associees.=", ";}
 						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id' target='_blank'>".get_class_from_id($lig->id)."</a>";
 					}
                     $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des enseignements pour des classes (<i>$liste_classes_associees</i>).<br/>";
                 }
 				else {
-                    $res = mysql_query("DELETE FROM matieres_categories WHERE id = '" . $_POST['categorie_id']."'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_categories WHERE id = '" . $_POST['categorie_id']."'");
                     if (!$res) {
                         $msg .= "Erreur lors de la suppression de la catégorie.<br/>";
                     } else {
@@ -192,14 +192,14 @@ elseif((isset($_GET['action']))&&($_GET['action'] == "corrige_accents_html")) {
 
 	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
 	$sql="SELECT * FROM matieres_categories;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
 			if($lig->nom_complet!=$correction) {
 				$sql="UPDATE matieres_categories SET nom_complet='$correction' WHERE id='$lig->id';";
 				//echo "$sql<br />";
-				$update=mysql_query($sql);
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($update) {
 					$msg .= "Correction de l'encodage d'un nom de catégorie de matière en '$correction'<br />";
 				}
@@ -251,8 +251,8 @@ if (isset($_GET['action'])) {
         // On édite la catégorie existante
         if (!is_numeric($_GET['categorie_id'])) $_GET['categorie_id'] == 0;
 
-        $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id = '" . $_GET['categorie_id'] . "'");
-        $current_cat = mysql_fetch_array($res, MYSQL_ASSOC);
+        $res = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id = '" . $_GET['categorie_id'] . "'");
+        $current_cat = mysqli_fetch_array($res,  MYSQLI_ASSOC);
 
         if ($current_cat) {
 			if($current_cat["nom_court"]=='Aucune') {
@@ -295,9 +295,9 @@ if (isset($_GET['action'])) {
 		$tab_priorites_categories=array();
 		$temoin_pb_ordre_categories="n";
 		$sql="select * from matieres_categories;";
-		$res_cat=mysql_query($sql);
-		if(mysql_num_rows($res_cat)>0) {
-			while($lig_cat=mysql_fetch_object($res_cat)) {
+		$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cat)>0) {
+			while($lig_cat=mysqli_fetch_object($res_cat)) {
 				$current_priority=$lig_cat->priority;
 				if(in_array($current_priority, $tab_priorites_categories)) {
 					$temoin_pb_ordre_categories="y";
@@ -324,15 +324,15 @@ if (isset($_GET['action'])) {
 </tr>
     <?php
 	$max_priority_cat=0;
-	$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
-	if(mysql_num_rows($get_max_cat)>0) {
-		$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+	$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+	if(mysqli_num_rows($get_max_cat)>0) {
+		$max_priority_cat=old_mysql_result($get_max_cat, 0, "priority");
 	}
 
 	$temoin_anomalie_categ_Aucune='n';
 	$alt=1;
-    $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
-    while ($current_cat = mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $res = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, nom_complet, priority FROM matieres_categories ORDER BY $orderby");
+    while ($current_cat = mysqli_fetch_array($res,  MYSQLI_ASSOC)) {
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'>\n";
         //echo "<td><a href='matieres_categories.php?action=edit&categorie_id=".$current_cat["id"]."'>".html_entity_decode($current_cat["nom_court"])."</a></td>\n";
@@ -380,11 +380,11 @@ if (isset($_GET['action'])) {
 
 	$tab = array_flip (get_html_translation_table(HTML_ENTITIES));
 	$sql="SELECT * FROM matieres_categories;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$alerte_accents_html="<br /><p><span style='color:red; font-weight:bold;'>Attention&nbsp;:</span> Une ou des catégories ont des accents HTML dans leur nom complet (<em>accents enregistrés sous forme HTML dans la base de données</em>).<br />Cela peut perturber l'affichage des noms de catégories de matières dans les bulletins PDF (<em>et ailleurs peut-être</em>)</p>\n<ul>\n";
 		$ajout="";
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$correction=ensure_utf8(strtr($lig->nom_complet, $tab));
 			if($lig->nom_complet!=$correction) {
 				$ajout.="<li>La catégorie de matière <strong>$lig->nom_complet</strong> a un ou des accents HTML</li>\n";

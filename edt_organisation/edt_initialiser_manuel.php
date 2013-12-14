@@ -142,7 +142,7 @@ if (isset($choix_prof)) {
 	// On ajoute sa liste des aid
 		$tab_aid = renvoieAid("prof", $choix_prof);
 	for($i = 0; $i < count($tab_aid); $i++) {
-		$nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
+		$nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$tab_aid[$i]["id_aid"]."'"));
 		echo '
 				<option value="AID|'.$tab_aid[$i]["id_aid"].'">'.$nom_aid["nom"].'</option>
 		';
@@ -161,15 +161,15 @@ if (isset($choix_prof)) {
 
 	// On propose aussi le choix du jour
 
-	$req_jour = mysql_query("SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
-	$rep_jour = mysql_fetch_array($req_jour);
-	$nbre = mysql_num_rows($req_jour);
+	$req_jour = mysqli_query($GLOBALS["mysqli"], "SELECT id_horaire_etablissement, jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1");
+	$rep_jour = mysqli_fetch_array($req_jour);
+	$nbre = mysqli_num_rows($req_jour);
 
 	$tab_select_jour = array();
 
 	for($a = 0; $a < $nbre; $a++) {
-		$tab_select_jour[$a]["id"] = mysql_result($req_jour, $a, "id_horaire_etablissement");
-		$tab_select_jour[$a]["jour_sem"] = mysql_result($req_jour, $a, "jour_horaire_etablissement");
+		$tab_select_jour[$a]["id"] = old_mysql_result($req_jour, $a, "id_horaire_etablissement");
+		$tab_select_jour[$a]["jour_sem"] = old_mysql_result($req_jour, $a, "jour_horaire_etablissement");
 		if(isset($ch_jour_semaine)){
 			if($ch_jour_semaine == $tab_select_jour[$a]["jour_sem"]){
 				$selected = " selected='selected'";
@@ -192,16 +192,16 @@ if (isset($choix_prof)) {
 	echo "\n";
 	// On propose aussi le choix de l'horaire
 
-	$req_heure = mysql_query("SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
-	$rep_heure = mysql_num_rows($req_heure);
+	$req_heure = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode, nom_definie_periode, heuredebut_definie_periode, heurefin_definie_periode FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$rep_heure = mysqli_num_rows($req_heure);
 	$tab_select_heure = array();
 
 	for($b=0; $b<$rep_heure; $b++) {
 
-		$tab_select_heure[$b]["id_heure"] = mysql_result($req_heure, $b, "id_definie_periode");
-		$tab_select_heure[$b]["creneaux"] = mysql_result($req_heure, $b, "nom_definie_periode");
-		$tab_select_heure[$b]["heure_debut"] = mysql_result($req_heure, $b, "heuredebut_definie_periode");
-		$tab_select_heure[$b]["heure_fin"] = mysql_result($req_heure, $b, "heurefin_definie_periode");
+		$tab_select_heure[$b]["id_heure"] = old_mysql_result($req_heure, $b, "id_definie_periode");
+		$tab_select_heure[$b]["creneaux"] = old_mysql_result($req_heure, $b, "nom_definie_periode");
+		$tab_select_heure[$b]["heure_debut"] = old_mysql_result($req_heure, $b, "heuredebut_definie_periode");
+		$tab_select_heure[$b]["heure_fin"] = old_mysql_result($req_heure, $b, "heurefin_definie_periode");
 		if(isset($ch_heure)){
 			if($ch_heure == $tab_select_heure[$b]["id_heure"]){
 				$selected=" selected='selected'";
@@ -251,13 +251,13 @@ if (isset($choix_prof)) {
 	// on récupère les types de semaines
 				//<option value="2">Semaines paires</option>
 				//<option value="1">Semaines impaires</option>
-	$req_semaines = mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
+	$req_semaines = mysqli_query($GLOBALS["mysqli"], 'SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
 	//mysql_query("SELECT type_edt_semaine FROM edt_semaines");
 	//mysql_query('SELECT SQL_SMALL_RESULT DISTINCT type_edt_semaine FROM edt_semaines LIMIT 10');
-	$nbre_semaines = mysql_num_rows($req_semaines);
+	$nbre_semaines = mysqli_num_rows($req_semaines);
 
 	for ($s=0; $s<$nbre_semaines; $s++) {
-			$rep_semaines[$s]["type_edt_semaine"] = mysql_result($req_semaines, $s, "type_edt_semaine");
+			$rep_semaines[$s]["type_edt_semaine"] = old_mysql_result($req_semaines, $s, "type_edt_semaine");
 		echo '
 				<option value="'.$rep_semaines[$s]["type_edt_semaine"].'">Semaine '.$rep_semaines[$s]["type_edt_semaine"].'</option>
 		';
@@ -298,11 +298,11 @@ if (isset($choix_prof)) {
 				<option value="rien">Année entière</option>
 	';
 	// Choix de la période définie dans le calendrier
-	$req_calendrier = mysql_query("SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
-	$nbre_calendrier = mysql_num_rows($req_calendrier);
+	$req_calendrier = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier WHERE etabferme_calendrier = '1' AND etabvacances_calendrier = '0'");
+	$nbre_calendrier = mysqli_num_rows($req_calendrier);
 		for ($a=0; $a<$nbre_calendrier; $a++) {
-			$rep_calendrier[$a]["id_calendrier"] = mysql_result($req_calendrier, $a, "id_calendrier");
-			$rep_calendrier[$a]["nom_calendrier"] = mysql_result($req_calendrier, $a, "nom_calendrier");
+			$rep_calendrier[$a]["id_calendrier"] = old_mysql_result($req_calendrier, $a, "id_calendrier");
+			$rep_calendrier[$a]["nom_calendrier"] = old_mysql_result($req_calendrier, $a, "nom_calendrier");
 			echo '
 				<option value="'.$rep_calendrier[$a]["id_calendrier"].'">'.$rep_calendrier[$a]["nom_calendrier"].'</option>
 			'."\n";
@@ -332,18 +332,18 @@ if (isset($choix_prof)) {
 
 
 			// Vérification que la salle est libre à ce jour cette heure
-			$verif_salle = mysql_query("SELECT id_cours FROM edt_cours WHERE
+			$verif_salle = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours FROM edt_cours WHERE
 						id_salle ='".$login_salle."' AND
 						jour_semaine = '".$ch_jour_semaine."' AND
 						id_definie_periode = '".$ch_heure."' AND
 						(id_semaine = '0' OR id_semaine = '".$choix_semaine."')")
 							 or die ('Erreur dans la verif salle');
-			$rep_verif_s = mysql_fetch_array($verif_salle);
+			$rep_verif_s = mysqli_fetch_array($verif_salle);
 
-			$nbre_verif_s = mysql_num_rows($verif_salle);
+			$nbre_verif_s = mysqli_num_rows($verif_salle);
 			if ($nbre_verif_s != 0) {
-				$req_present_s = mysql_query("SELECT id_groupe id_aid, FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
-				$rep_present_s = mysql_fetch_array($req_present_s);
+				$req_present_s = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe id_aid, FROM edt_cours WHERE id_cours = '".$rep_verif_s['id_cours']."'");
+				$rep_present_s = mysqli_fetch_array($req_present_s);
 				// On vérifie si ce n'est pas une AID
 				if ($rep_present_s['id_aid'] != "") {
 					$aid = $rep_present_s['id_aid'];
@@ -356,7 +356,7 @@ if (isset($choix_prof)) {
 			}
 
 			// Vérification que ce prof n'a pas déjà cours à ce moment là
-			$verif_prof = mysql_query("SELECT * FROM edt_cours, j_groupes_professeurs WHERE
+			$verif_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours, j_groupes_professeurs WHERE
 									edt_cours.jour_semaine = '".$ch_jour_semaine."' AND
 									edt_cours.id_definie_periode = '".$ch_heure."' AND
 									(edt_cours.id_semaine = '".$choix_semaine."' OR edt_cours.id_semaine = '0') AND
@@ -365,8 +365,8 @@ if (isset($choix_prof)) {
 									edt_cours.heuredeb_dec = '".$heure_debut."' AND
 									edt_cours.login_prof = '".$choix_prof."'")
 										or die('erreur verif prof !');
-			$rep_verif_prof = mysql_fetch_array($verif_prof);
-			$nbre_verif_prof = mysql_num_rows($verif_prof);
+			$rep_verif_prof = mysqli_fetch_array($verif_prof);
+			$nbre_verif_prof = mysqli_num_rows($verif_prof);
 			if ($nbre_verif_prof != 0) {
 				// On vérifie si ce n'est pas une AID
 				if ($verif_prof['id_aid'] != "") {
@@ -380,7 +380,7 @@ if (isset($choix_prof)) {
 
 			// Si c'est bon, on enregistre le cours dans l'EdT
 			if ($nbre_verif_prof === 0 AND $nbre_verif_s === 0) {
-				$insert_edt = mysql_query("INSERT INTO edt_cours
+				$insert_edt = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_cours
 				(id_cours, id_groupe, id_salle, jour_semaine, id_definie_periode, duree, heuredeb_dec, id_semaine, modif_edt, login_prof)
 					VALUE ('', '".$enseignement."', '".$login_salle."', '".$ch_jour_semaine."', '".$ch_heure."', '".$duree."', '".$heure_debut."', '".$choix_semaine."', '0', '".$choix_prof."')") or die('Erreur dans l\'enregistrement, il faut recommencer !');
 
@@ -388,19 +388,19 @@ if (isset($choix_prof)) {
 					$contenu = "";
 				if ($id_aid != "") {
 					// c'est une AID et donc on récupère les infos de cette AID
-					$query1 = mysql_query("SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
-					$rep_aid = mysql_fetch_array($query1);
+					$query1 = mysqli_query($GLOBALS["mysqli"], "SELECT nom, indice_aid FROM aid WHERE id = '".$id_aid."'");
+					$rep_aid = mysqli_fetch_array($query1);
 					$tab_infos["classlist_string"] = $rep_aid["nom"];
 					// puis le nom de l'AID
-					$rep_nom_aid = mysql_fetch_array(mysql_query("SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
+					$rep_nom_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid_config WHERE indice_aid = '".$rep_aid["indice_aid"]."'"));
 					$tab_infos["description"] = $rep_nom_aid["nom"];
 					// $contenu est la liste des élèves
-					$query = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
-					$nbre = mysql_num_rows($query);
+					$query = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$id_aid."'");
+					$nbre = mysqli_num_rows($query);
 					for($a = 0; $a < $nbre; $a++){
-						$nom[$a] = mysql_result($query, $a, "login");
+						$nom[$a] = old_mysql_result($query, $a, "login");
 						// On récupère ses nom et prénom
-						$query_n = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
+						$query_n = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$nom[$a]."'"));
 						$contenu .= $query_n["nom"].' '.$query_n["prenom"].'<br />';
 					}
 

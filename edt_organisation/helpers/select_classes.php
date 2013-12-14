@@ -27,12 +27,12 @@ echo '
 	<select name ="'.$increment.'"'.$id_select.' onmouseover="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'yellow\'}" onmouseout="if(document.getElementById(\'texte_nomGepi'.$l.'\')) {document.getElementById(\'texte_nomGepi'.$l.'\').style.backgroundColor=\'\'}">
 		<option value="aucun">Liste des classes</option>';
 	// on recherche la liste des classes
-	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
-	$nbre = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY classe");
+	$nbre = mysqli_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
 
-		$classe[$i] = mysql_result($query, $i, "id");
-		$nom[$i] = my_strtoupper(remplace_accents(mysql_result($query, $i, "classe"), 'all_nospace'));
+		$classe[$i] = old_mysql_result($query, $i, "id");
+		$nom[$i] = my_strtoupper(remplace_accents(old_mysql_result($query, $i, "classe"), 'all_nospace'));
 
 		// On détermine le selected si c'est possible
 		if (trim($nom[$i]) == $classe_selected OR $nom[$i] == $classe_selected) {

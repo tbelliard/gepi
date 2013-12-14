@@ -51,25 +51,25 @@ if (isset($_GET['action'])) {
 	// Une action a été demandée
 	switch ($_GET['action']) {
 		case "activer":
-			$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE (login = '".$_GET['user_login']."')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'actif' WHERE (login = '".$_GET['user_login']."')");
 			break;
 		case "desactiver":
-			$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$_GET['user_login']."')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat = 'inactif' WHERE (login = '".$_GET['user_login']."')");
 			break;
 		case "observer":
-			$res = mysql_query("UPDATE utilisateurs SET observation_securite = '1' WHERE (login = '".$_GET['user_login']."')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET observation_securite = '1' WHERE (login = '".$_GET['user_login']."')");
 			break;
 		case "stop_observation":
-			$res = mysql_query("UPDATE utilisateurs SET observation_securite = '0' WHERE (login = '".$_GET['user_login']."')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET observation_securite = '0' WHERE (login = '".$_GET['user_login']."')");
 			break;
 		case "reinit_cumul":
-			$res = mysql_query("UPDATE utilisateurs SET niveau_alerte = '0' WHERE (login = '".$_GET['user_login']."')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET niveau_alerte = '0' WHERE (login = '".$_GET['user_login']."')");
 			break;
 		case "archiver":
-			$res = mysql_query("UPDATE tentatives_intrusion SET statut = '' WHERE (statut = 'new')");
+			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE tentatives_intrusion SET statut = '' WHERE (statut = 'new')");
 			break;
 	}
-	if (!$res) {echo mysql_error();}
+	if (!$res) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
 }
 
 //**************** EN-TETE *****************
@@ -83,8 +83,8 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo add_token_field();
 echo "<p class='bold'><a href='index.php#security_panel'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | ";
 $sql="SELECT 1=1 FROM tentatives_intrusion WHERE statut='';";
-$test_arch=mysql_query($sql);
-if(mysql_num_rows($test_arch)>0) {
+$test_arch=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_arch)>0) {
 	echo "<a href='security_panel_archives.php'>Historique des alertes sécurité</a>";
 }
 
@@ -98,14 +98,14 @@ if(mysql_num_rows($test_arch)>0) {
 		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY nb DESC, u.nom, u.prenom;";
 	}
 
-	$res_login_alerte=mysql_query($sql);
-	if(mysql_num_rows($res_login_alerte)>0) {
+	$res_login_alerte=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_login_alerte)>0) {
 		echo " | ";
 
 		echo "<label for='user_login' class='invisible'>Utilisateur</label>";
 		echo "<select id='user_login' name='user_login' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
-		while($lig_login_alerte=mysql_fetch_object($res_login_alerte)) {
+		while($lig_login_alerte=mysqli_fetch_object($res_login_alerte)) {
 			echo "<option value='$lig_login_alerte->login'";
 			if((isset($user_login))&&($lig_login_alerte->login==$user_login)) {echo " selected='true'";}
 			echo " title=\"$lig_login_alerte->nom $lig_login_alerte->prenom ($lig_login_alerte->nb) - Compte $lig_login_alerte->statut\">$lig_login_alerte->nom $lig_login_alerte->prenom ($lig_login_alerte->nb)</option>\n";
@@ -126,15 +126,15 @@ if(mysql_num_rows($test_arch)>0) {
 
 	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY nb DESC;";
 	$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect.%(login :%' GROUP BY description ORDER BY nb DESC;";
-	$res_erreur_mdp=mysql_query($sql);
+	$res_erreur_mdp=mysqli_query($GLOBALS["mysqli"], $sql);
 	// Récupérer les logins
-	if(mysql_num_rows($res_erreur_mdp)>0) {
+	if(mysqli_num_rows($res_erreur_mdp)>0) {
 		echo " | ";
 
 		echo "<label for='user_login2'>Erreur mot de passe&nbsp;: </label>";
 		echo "<select id='user_login2' name='user_login2' onchange=\"document.forms['form1'].submit();\">\n";
 		echo "<option value=''>---</option>\n";
-		while($lig_erreur_login=mysql_fetch_object($res_erreur_mdp)) {
+		while($lig_erreur_login=mysqli_fetch_object($res_erreur_mdp)) {
 			$tab_tmp=explode(':', $lig_erreur_login->description);
 			// On vire l'espace au début et la parenthèse à la fin
 			$current_login=mb_substr($tab_tmp[1],1,mb_strlen($tab_tmp[1])-2);
@@ -177,10 +177,10 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 	//$sql="SELECT u.login, u.nom, u.prenom, u.email, u.statut, u.etat, u.niveau_alerte, u.observation_securite, u.date_verrouillage, u.ticket_expiration FROM utilisateurs u WHERE (u.login = '".$user_login . "');";
 	$sql="SELECT u.* FROM utilisateurs u WHERE (u.login='".$user_login."');";
 	//echo "$sql<br />";
-	$user_req = mysql_query($sql);
-	if(mysql_num_rows($user_req)>0) {
+	$user_req = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($user_req)>0) {
 		//$user=mysql_fetch_object($user_req);
-		$user=mysql_fetch_array($user_req, MYSQL_ASSOC);
+		$user=mysqli_fetch_array($user_req,  MYSQLI_ASSOC);
 
 		echo "<p>Affichage des alertes concernant le compte ";
 		if($user['statut']=='eleve') {
@@ -294,11 +294,11 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 	}
 	$sql.="t.date DESC";
 
-	$req = mysql_query($sql);
-	if (!$req) {echo mysql_error();}
+	$req = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (!$req) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
 
 	$alt=1;
-	while ($row = mysql_fetch_object($req)) {
+	while ($row = mysqli_fetch_object($req)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
@@ -392,18 +392,18 @@ echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est
 
 
 $sql="SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u WHERE (u.observation_securite = '1') ORDER BY u.niveau_alerte DESC;";
-$req_observation = mysql_query($sql);
-if (!$req_observation) {echo mysql_error();}
-elseif(mysql_num_rows($req_observation)>0) {
-	echo "<p style='color:red'><a href='#utilisateurs_en_observation'>".mysql_num_rows($req_observation)." utilisateur(s)</a> en <b>observation</b>.</p>\n";
+$req_observation = mysqli_query($GLOBALS["mysqli"], $sql);
+if (!$req_observation) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+elseif(mysqli_num_rows($req_observation)>0) {
+	echo "<p style='color:red'><a href='#utilisateurs_en_observation'>".mysqli_num_rows($req_observation)." utilisateur(s)</a> en <b>observation</b>.</p>\n";
 }
 
 // Comptes désactivés
 $sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u, tentatives_intrusion t WHERE (u.etat='inactif' AND t.login=u.login AND t.statut='new');";
-$req_desactive=mysql_query($sql);
-if (!$req_desactive) {echo mysql_error();}
-elseif(mysql_num_rows($req_desactive)>0) {
-	echo "<p style='color:red'><a href='#utilisateurs_desactives'>".mysql_num_rows($req_desactive)." utilisateur(s)</a> avec alerte dans cette page ont leur <b>compte désactivé</b>.</p>\n";
+$req_desactive=mysqli_query($GLOBALS["mysqli"], $sql);
+if (!$req_desactive) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+elseif(mysqli_num_rows($req_desactive)>0) {
+	echo "<p style='color:red'><a href='#utilisateurs_desactives'>".mysqli_num_rows($req_desactive)." utilisateur(s)</a> avec alerte dans cette page ont leur <b>compte désactivé</b>.</p>\n";
 }
 
 
@@ -448,18 +448,18 @@ if(isset($_GET['order_by'])) {
 	}
 }
 $sql.="t.date DESC";
-$req = mysql_query($sql);
-if (!$req) echo mysql_error();
+$req = mysqli_query($GLOBALS["mysqli"], $sql);
+if (!$req) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 $alt=1;
-while ($row = mysql_fetch_object($req)) {
+while ($row = mysqli_fetch_object($req)) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	$user = null;
 	if ($row->login != "-") {
 		// On récupère des informations sur l'utilisateur :
-		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
-		$user = mysql_fetch_object($user_req);
+		$user_req = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
+		$user = mysqli_fetch_object($user_req);
 	}
 
 	if (!empty($user)) {
@@ -540,11 +540,11 @@ echo "</table>\n";
 
 
 echo "<a id='utilisateurs_en_observation'></a>\n";
-if(mysql_num_rows($req_observation)==0) {
+if(mysqli_num_rows($req_observation)==0) {
 	echo "<p>Aucun utilisateur n'est en observation.</p>\n";
 }
 else {
-	echo "<p>".mysql_num_rows($req_observation)." utilisateur(s) en observation&nbsp;:</p>\n";
+	echo "<p>".mysqli_num_rows($req_observation)." utilisateur(s) en observation&nbsp;:</p>\n";
 	//echo "<table class='menu'>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
@@ -563,7 +563,7 @@ else {
 	if (!$req_observation) {echo mysql_error();}
 	*/
 	$alt=1;
-	while ($row = mysql_fetch_object($req_observation)) {
+	while ($row = mysqli_fetch_object($req_observation)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";
@@ -612,11 +612,11 @@ else {
 
 
 echo "<a id='utilisateurs_desactives'></a>\n";
-if(mysql_num_rows($req_desactive)==0) {
+if(mysqli_num_rows($req_desactive)==0) {
 	echo "<p>Aucun utilisateur avec alerte dans cette page n'est désactivé.</p>\n";
 }
 else {
-	echo "<p>".mysql_num_rows($req_desactive)." utilisateur(s) avec alerte dans cette page sont désactivés&nbsp;:</p>\n";
+	echo "<p>".mysqli_num_rows($req_desactive)." utilisateur(s) avec alerte dans cette page sont désactivés&nbsp;:</p>\n";
 	//echo "<table class='menu'>\n";
 	echo "<table class='boireaus'>\n";
 	echo "<tr>\n";
@@ -635,7 +635,7 @@ else {
 	if (!$req_observation) {echo mysql_error();}
 	*/
 	$alt=1;
-	while ($row = mysql_fetch_object($req_desactive)) {
+	while ($row = mysqli_fetch_object($req_desactive)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td>\n";

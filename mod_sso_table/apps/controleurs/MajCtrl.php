@@ -35,12 +35,12 @@ class MajCtrl extends Controleur {
         (SELECT login_gepi FROM sso_table_correspondance)
         ORDER BY nom , prenom ";
     
-    $resp=mysql_query($sql);
-    if(mysql_num_rows($resp)==0) {
+    $resp=mysqli_query($GLOBALS["mysqli"], $sql);
+    if(mysqli_num_rows($resp)==0) {
         $this->var[]=Array('nom'=>'','statut'=>'','login_gepi'=>'','login_sso'=>'','ligne'=>'');
     } else {
         $lig=-1;
-        while($lig_correspond=mysql_fetch_object($resp)) {
+        while($lig_correspond=mysqli_fetch_object($resp)) {
             $nomPrenom = $lig_correspond->nom." ".$lig_correspond->prenom;
           $this->var[]=Array('nom'=>"$nomPrenom",'statut'=>"$lig_correspond->statut" , 'login_gepi'=>"$lig_correspond->login",'ligne'=>$lig);
            $lig *= -1; 

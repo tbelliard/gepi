@@ -80,18 +80,18 @@ else {
 	}
 }
 //echo "$sql<br />";
-$appel_donnees = mysql_query($sql);
-$nombre_lignes = mysql_num_rows($appel_donnees);
+$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
+$nombre_lignes = mysqli_num_rows($appel_donnees);
 
 //echo "\$nombre_lignes=$nombre_lignes<br />";
 
 $j= 0;
 while($j< $nombre_lignes) {
-	$user_login = mysql_result($appel_donnees, $j, "login");
-	$user_nom = mysql_result($appel_donnees, $j, "nom");
-	$user_prenom = mysql_result($appel_donnees, $j, "prenom");
-	$user_email = mysql_result($appel_donnees, $j, "email");
-	$user_statut = mysql_result($appel_donnees, $j, "statut");
+	$user_login = old_mysql_result($appel_donnees, $j, "login");
+	$user_nom = old_mysql_result($appel_donnees, $j, "nom");
+	$user_prenom = old_mysql_result($appel_donnees, $j, "prenom");
+	$user_email = old_mysql_result($appel_donnees, $j, "email");
+	$user_statut = old_mysql_result($appel_donnees, $j, "statut");
 	$fd.=$user_nom.";".$user_prenom.";".$user_login.";".$user_email;
 	if($export_statut=='personnels') {$fd.=";".$user_statut;}
 	elseif($export_statut=='responsable') {
@@ -105,9 +105,9 @@ while($j< $nombre_lignes) {
 
 		// Ajout d'infos:
 		$sql="SELECT pers_id, civilite FROM resp_pers WHERE login='$user_login';";
-		$res_pers_id=mysql_query($sql);
-		if(mysql_num_rows($res_pers_id)==1) {
-			$civ=mysql_result($res_pers_id, 0, 'civilite');
+		$res_pers_id=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_pers_id)==1) {
+			$civ=old_mysql_result($res_pers_id, 0, 'civilite');
 			if(($civ=='Mme')||($civ=='Mlle')) {
 				$fd.=";F";
 			}
@@ -115,7 +115,7 @@ while($j< $nombre_lignes) {
 				$fd.=";M";
 			}
 
-			$pers_id=mysql_result($res_pers_id, 0, 'pers_id');
+			$pers_id=old_mysql_result($res_pers_id, 0, 'pers_id');
 			$fd.=";R".$pers_id;
 		}
 		else {
@@ -126,12 +126,12 @@ while($j< $nombre_lignes) {
 
 		if($avec_adresse=='y') {
 			$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-			$res_adr=mysql_query($sql);
-			if(mysql_num_rows($res_adr)==0) {
+			$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_adr)==0) {
 				$fd.=";".";".";".";".";".";".";";
 			}
 			else {
-				$lig_adr=mysql_fetch_object($res_adr);
+				$lig_adr=mysqli_fetch_object($res_adr);
 				$fd.=";".strtr($lig_adr->adr1,";",",").";".strtr($lig_adr->adr2,";",",").";".strtr($lig_adr->adr3,";",",").";".strtr($lig_adr->adr4,";",",").";".strtr($lig_adr->cp,";",",").";".strtr($lig_adr->commune,";",",").";".strtr($lig_adr->pays,";",",");
 				
 			}

@@ -70,7 +70,7 @@ if (!isset($_GET['id_eleve']))
 </div>
 <?php
 //affiche s'il y a quelque chose pour l'élève
-$cpt_eleves = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."'"),0);
+$cpt_eleves = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."'"),0);
 if ($cpt_eleves!=0) {
 ?>
     <div style="width: 240px; margin: auto;">
@@ -78,8 +78,8 @@ if ($cpt_eleves!=0) {
     <thead>
 <?php
     $requete_dispense ="SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$_GET['id_eleve']."' and type_absence_eleve = '".$_GET['type']."' ORDER BY d_date_absence_eleve";
-    $execution_dispense = mysql_query($requete_dispense);
-    while ($donnee_dispense = mysql_fetch_array($execution_dispense))
+    $execution_dispense = mysqli_query($GLOBALS["mysqli"], $requete_dispense);
+    while ($donnee_dispense = mysqli_fetch_array($execution_dispense))
     { //modif couleur selon motif didier
     if ($donnee_dispense['justify_absence_eleve'] == 'O') {$style = ' style="color: green;"';}
     if ($donnee_dispense['justify_absence_eleve'] =='T') {$style = ' style="color: orange;"';}

@@ -131,9 +131,9 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	//$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND (resp_legal='1' OR resp_legal='2');";
 	$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='1';";
 	//echo "$sql<br />";
-	$res_resp_legal=mysql_query($sql);
-	if(mysql_num_rows($res_resp_legal)>0) {
-		while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+	$res_resp_legal=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_resp_legal)>0) {
+		while($lig_resp_legal=mysqli_fetch_object($res_resp_legal)) {
 			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
 				$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
 			}
@@ -146,9 +146,9 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 
 	$sql="SELECT DISTINCT pers_id FROM responsables2 WHERE ele_id='".$saisie->getEleve()->getEleId()."' AND resp_legal='2';";
 	//echo "$sql<br />";
-	$res_resp_legal=mysql_query($sql);
-	if(mysql_num_rows($res_resp_legal)>0) {
-		while($lig_resp_legal=mysql_fetch_object($res_resp_legal)) {
+	$res_resp_legal=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_resp_legal)>0) {
+		while($lig_resp_legal=mysqli_fetch_object($res_resp_legal)) {
 			if(!in_array($lig_resp_legal->pers_id, $tab_resp_legal_1_ou_2)) {
 				$tab_resp_legal_1_ou_2[]=$lig_resp_legal->pers_id;
 			}

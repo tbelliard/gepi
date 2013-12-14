@@ -101,7 +101,7 @@ function get_arbo_boites($id_cahier_notes, $id_groupe="", $periode="") {
 		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
-			$id_cahier_notes=mysql_result($res, 0, "id_cahier_notes");
+			$id_cahier_notes=old_mysql_result($res, 0, "id_cahier_notes");
 		}
 	}
 
@@ -125,8 +125,8 @@ if((isset($_POST['valider_nouveau_modele']))&&(isset($_POST['nom_court']))&&(iss
 	$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 
 	$sql="INSERT INTO cn_conteneurs_modele SET nom_court='$nom_court', description='$description';";
-	if($insert=mysql_query($sql)) {
-		$id_modele=mysql_insert_id();
+	if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
+		$id_modele=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 		$msg="Modèle n°$id_modele : '$nom_court' créé.<br />";
 	}
 	else {
@@ -142,7 +142,7 @@ if((isset($_GET['suppr_conteneur']))&&(is_numeric($_GET['suppr_conteneur']))) {
 //		<td title='Supprimer ce(tte) ".$gepi_denom_boite."'><a href='".$_SERVER['PHP_SELF']."?mode=modifier_modele&amp;suppr_conteneur=$lig->id".add_token_in_url()."'><img src='../images/delete16.png' class='icone16' /></a></td>
 
 	$sql="DELETE FROM cn_conteneurs_modele_conteneurs WHERE id='".$_GET['suppr_conteneur']."';";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		$msg="Suppression du(de la) $gepi_denom_boite n°".$_GET['suppr_conteneur']." effectuée.<br />";
 	}
@@ -162,8 +162,8 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 		//$sql="insert into cn_conteneurs_modele_conteneurs (id_racine,nom_court,parent) values ('$id_racine','nouveau','$id_racine')";
 		$sql="insert into cn_conteneurs_modele_conteneurs (nom_court, id_modele) values ('nouveau', '$id_modele')";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
-		$id_conteneur = mysql_insert_id();
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+		$id_conteneur = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 		if (!$reg) {$reg_ok = "no";}
 		$new='yes';
 	}
@@ -175,7 +175,7 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 	*/
 	$sql="UPDATE cn_conteneurs_modele_conteneurs SET mode = '2' WHERE id = '$id_conteneur'";
 	//echo "$sql<br />";
-	$reg = mysql_query($sql);
+	$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (!$reg) {$reg_ok = "no";}
 	//}
 
@@ -186,7 +186,7 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 	}
 	$sql="UPDATE cn_conteneurs_modele_conteneurs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_conteneur'";
 	//echo "$sql<br />";
-	$reg = mysql_query($sql);
+	$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (!$reg) {$reg_ok = "no";}
 
 
@@ -198,13 +198,13 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 
 	$sql="UPDATE cn_conteneurs_modele_conteneurs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_conteneur'";
 	//echo "$sql<br />";
-	$reg = mysql_query($sql);
+	$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (!$reg) {$reg_ok = "no";}
 
 	if ($_POST['description'])  {
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	}
 	/*
@@ -237,31 +237,31 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 		}
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	} else {
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET coef = '0' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	}
 
 	if ($_POST['ponderation']) {
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET ponderation = '". $_POST['ponderation']."' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	} else {
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET ponderation = '0' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	}
 
 	if (($_POST['precision']) and my_ereg("^(s1|s5|se|p1|p5|pe)$", $_POST['precision'])) {
 		$sql="UPDATE cn_conteneurs_modele_conteneurs SET arrondir = '". $_POST['precision']."' WHERE id = '$id_conteneur'";
 		//echo "$sql<br />";
-		$reg = mysql_query($sql);
+		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$reg) {$reg_ok = "no";}
 	}
 
@@ -272,7 +272,7 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 	}
 	$sql="UPDATE cn_conteneurs_modele_conteneurs SET display_parents = '$display_parents' WHERE id = '$id_conteneur'";
 	//echo "$sql<br />";
-	$reg = mysql_query($sql);
+	$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (!$reg) {$reg_ok = "no";}
 
 	if (isset($_POST['display_bulletin'])) {
@@ -282,7 +282,7 @@ if((isset($_POST['enregistrer_conteneur']))&&(isset($id_modele))&&(is_numeric($i
 	}
 	$sql="UPDATE cn_conteneurs_modele_conteneurs SET display_bulletin = '$display_bulletin' WHERE id = '$id_conteneur'";
 	//echo "$sql<br />";
-	$reg = mysql_query($sql);
+	$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 	if (!$reg) {$reg_ok = "no";}
 
 	if ($reg_ok=='yes') {
@@ -304,10 +304,10 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 	$tab_modele=array();
 	$sql="SELECT * FROM cn_conteneurs_modele_conteneurs WHERE id_modele='$id_modele' ORDER BY nom_court, nom_complet, description;";
 	if($debug_appliquer_modele) echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_modele[$cpt]['modele_id_conteneur']=$lig->id;
 			$tab_modele[$cpt]['nom_court']=$lig->nom_court;
 			$tab_modele[$cpt]['nom_complet']=$lig->nom_complet;
@@ -347,8 +347,8 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 				//$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc WHERE g.id=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND g.id NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
 				$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe[$i]."' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
 				if($debug_appliquer_modele) echo "$sql<br />";
-				$res_grp=mysql_query($sql);
-				while($lig_grp=mysql_fetch_object($res_grp)) {
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_grp=mysqli_fetch_object($res_grp)) {
 					$id_groupe[]=$lig_grp->id;
 				}
 			}
@@ -361,8 +361,8 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 				$num_periode=array();
 				$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe[$i]."' ORDER BY num_periode;";
 				if($debug_appliquer_modele) echo "$sql<br />";
-				$res_per=mysql_query($sql);
-				while($lig_per=mysql_fetch_object($res_per)) {
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_per=mysqli_fetch_object($res_per)) {
 					$num_periode[]=$lig_per->num_periode;
 				}
 			}
@@ -378,9 +378,9 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 					// Tester si le carnet de notes existe
 					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='".$id_groupe[$j]."' AND periode='".$num_periode[$k]."';";
 					if($debug_appliquer_modele) echo "$sql<br />";
-					$res_ccn=mysql_query($sql);
+					$res_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
 					// Créer le carnet de notes s'il n'existe pas.
-					if(mysql_num_rows($res_ccn)==0) {
+					if(mysqli_num_rows($res_ccn)==0) {
 						// Créer le carnet de notes
 						if($debug_appliquer_modele) echo "Le carnet de notes n'existe pas en période ".$num_periode[$k].".<br />";
 						$current_group=get_group($id_groupe[$j]);
@@ -399,20 +399,20 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 															display_bulletin = '1', 
 															parent = '0'";
 						if($debug_appliquer_modele) echo "$sql<br />";
-						$reg = mysql_query($sql);
+						$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 						if ($reg) {
-							$id_cahier_notes = mysql_insert_id();
+							$id_cahier_notes = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes', parent = '0' WHERE id='$id_cahier_notes'";
 							if($debug_appliquer_modele) echo "$sql<br />";
-							$reg = mysql_query($sql);
+							$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 							$sql="INSERT INTO cn_cahier_notes SET id_groupe = '".$id_groupe[$j]."', periode = '".$num_periode[$k]."', id_cahier_notes='$id_cahier_notes'";
 							if($debug_appliquer_modele) echo "$sql<br />";
-							$reg = mysql_query($sql);
+							$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 					else {
 						if($debug_appliquer_modele) echo "Le carnet de notes existait déjà en période ".$num_periode[$k].".<br />";
-						$id_cahier_notes=mysql_result($res_ccn, 0, "id_cahier_notes");
+						$id_cahier_notes=old_mysql_result($res_ccn, 0, "id_cahier_notes");
 					}
 					if($debug_appliquer_modele) echo "\$id_cahier_notes=$id_cahier_notes<br />";
 
@@ -425,13 +425,13 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 							if($debug_appliquer_modele) echo "<br /><p>On va tester si un conteneur correspondant à modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."' existe ou non déjà<br />";
 							$sql="SELECT * FROM cn_conteneurs WHERE id_racine='$id_cahier_notes' AND modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."';";
 							if($debug_appliquer_modele) echo "$sql<br />";
-							$res_cn=mysql_query($sql);
-							if(mysql_num_rows($res_cn)==0) {
+							$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_cn)==0) {
 								if($debug_appliquer_modele) echo "Aucun conteneur n'existe encore avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
 								$sql="INSERT INTO cn_conteneurs SET id_racine='$id_cahier_notes',
-																	nom_court='".mysql_real_escape_string($tab_modele[$m]['nom_court'])."',
-																	nom_complet='".mysql_real_escape_string($tab_modele[$m]['nom_complet'])."',
-																	description='".mysql_real_escape_string($tab_modele[$m]['description'])."',
+																	nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 																	mode='".$tab_modele[$m]['mode']."',
 																	coef='".$tab_modele[$m]['coef']."',
 																	arrondir='".$tab_modele[$m]['arrondir']."',
@@ -441,7 +441,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 																	modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."',
 																	parent='$id_cahier_notes';";
 								if($debug_appliquer_modele) echo "$sql<br />";
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
 									$nb_insert++;
 								}
@@ -451,13 +451,13 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 							}
 							else {
 								if($debug_appliquer_modele) echo "Un conteneur existe déjà avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
-								$id_conteneur=mysql_result($res_cn, 0, "id");
+								$id_conteneur=old_mysql_result($res_cn, 0, "id");
 								// Faut-il modifier parent pour remettre à la racine du carnet de notes?
 								// Faut-il réimposer le id_racine qui doit déjà être à $id_cahier_notes
 								$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes',
-																	nom_court='".mysql_real_escape_string($tab_modele[$m]['nom_court'])."',
-																	nom_complet='".mysql_real_escape_string($tab_modele[$m]['nom_complet'])."',
-																	description='".mysql_real_escape_string($tab_modele[$m]['description'])."',
+																	nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 																	mode='".$tab_modele[$m]['mode']."',
 																	coef='".$tab_modele[$m]['coef']."',
 																	arrondir='".$tab_modele[$m]['arrondir']."',
@@ -468,7 +468,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 																	parent='$id_cahier_notes'
 															WHERE id='$id_conteneur';";
 								if($debug_appliquer_modele) echo "$sql<br />";
-								$update=mysql_query($sql);
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
 									$nb_update++;
 								}
@@ -587,10 +587,10 @@ if(!isset($mode)) {
 
 	$tab_modele=array();
 	$sql="SELECT id_modele, nom_court, description FROM cn_conteneurs_modele ORDER BY nom_court;";
-	$res=mysql_query($sql);
-	$nb_modeles=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_modeles=mysqli_num_rows($res);
 	$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$tab_modele[$cpt]['id_modele']=$lig->id_modele;
 		$tab_modele[$cpt]['nom_court']=$lig->nom_court;
 		$tab_modele[$cpt]['description']=$lig->description;
@@ -688,8 +688,8 @@ elseif($mode=="supprimer_modele") {
 </div>";
 
 	$sql="SELECT * FROM cn_conteneurs_modele WHERE id_modele='$id_modele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Le modèle n°$id_modele est inconnu.</p>";
 		require("../lib/footer.inc.php");
 		die();
@@ -700,7 +700,7 @@ elseif($mode=="supprimer_modele") {
 	echo "<p>Suppression du modèle n°$id_modele et de ses ".$gepi_denom_boite."s&nbsp;:<br />
 Suppression d'éventuel(le)s ".$gepi_denom_boite."s&nbsp;: ";
 	$sql="DELETE FROM cn_conteneurs_modele_conteneurs WHERE id_modele='$id_modele';";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res) {
 		echo "<span style='color:red'>ERREUR</span><br />
 On ne supprime pas le modèle lui-même.<br />
@@ -711,7 +711,7 @@ Essayez de trouver la cause de l'erreur.</p>";
 Suppression du modèle lui-même&nbsp;: ";
 
 		$sql="DELETE FROM cn_conteneurs_modele WHERE id_modele='$id_modele';";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			echo "<span style='color:red'>ERREUR</span><br />
 Essayez de trouver la cause de l'erreur.</p>";
@@ -732,14 +732,14 @@ elseif($mode=="modifier_modele") {
 </div>";
 
 	$sql="SELECT * FROM cn_conteneurs_modele WHERE id_modele='$id_modele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Le modèle n°$id_modele est inconnu.</p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	$lig=mysql_fetch_object($res);
+	$lig=mysqli_fetch_object($res);
 	$nom_court_modele=$lig->nom_court;
 	$description_modele=$lig->description;
 
@@ -753,8 +753,8 @@ elseif($mode=="modifier_modele") {
 <p><a href='".$_SERVER['PHP_SELF']."?mode=modifier_modele&amp;mode_modif=ajouter_conteneur&amp;id_modele=$id_modele'>Ajouter un(e) ".$gepi_denom_boite." dans le modèle</a>.</p>";
 
 		$sql="SELECT * FROM cn_conteneurs_modele_conteneurs WHERE id_modele='$id_modele' ORDER BY nom_court, nom_complet, description;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			echo "
 <p>Voici la liste des ".$gepi_denom_boite."s du modèle&nbsp;:</p>
 <blockquote>
@@ -774,7 +774,7 @@ elseif($mode=="modifier_modele") {
 Si la case ci-contre est cochée, la moyenne de cette boîte apparaît sur le bulletin scolaire, en plus de la moyenne générale, à titre d'information.\">Bulletin</th>
 	</tr>";
 
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				echo "
 		<tr>
 			<td title='Modifier ce(tte) ".$gepi_denom_boite."'><a href='".$_SERVER['PHP_SELF']."?mode=modifier_modele&amp;id_modele=$id_modele&amp;mode_modif=modifier_conteneur&amp;id_conteneur=$lig->id".add_token_in_url()."'><img src='../images/edit16.png' class='icone16' /></a></td>
@@ -813,14 +813,14 @@ Si la case ci-contre est cochée, la moyenne de cette boîte apparaît sur le bu
 		if($mode_modif=="modifier_conteneur") {
 			// Récupération des valeurs du conteneur:
 			$sql="SELECT * FROM cn_conteneurs_modele_conteneurs WHERE id='$id_conteneur';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red'>Anomalie le(la) $gepi_denom_boite n°$id_conteneur n'existe pas.</p>";
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$nom_court=$lig->nom_court;
 			$nom_complet=$lig->nom_complet;
 			$description=$lig->description;
@@ -1148,14 +1148,14 @@ elseif($mode=="appliquer_modele") {
 	echo ">Index de la création de modèles</a>";
 
 	$sql="SELECT * FROM cn_conteneurs_modele WHERE id_modele='$id_modele';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Le modèle n°$id_modele est inconnu.</p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	$lig=mysql_fetch_object($res);
+	$lig=mysqli_fetch_object($res);
 	$nom_court_modele=$lig->nom_court;
 	$description_modele=$lig->description;
 
@@ -1178,9 +1178,9 @@ elseif($mode=="appliquer_modele") {
 		//$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
 		// Liste des classes avec périodes:
 		$sql="SELECT DISTINCT c.* FROM periodes p, classes c WHERE (c.id=p.id_classe) ORDER BY c.classe;";
-		$call_classes=mysql_query($sql);
+		$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		$nb_classes=mysql_num_rows($call_classes);
+		$nb_classes=mysqli_num_rows($call_classes);
 		if($nb_classes==0){
 			echo "<p>Aucune classe avec périodes définies n'a été trouvée.</p>\n";
 			require("../lib/footer.inc.php");
@@ -1203,7 +1203,7 @@ elseif($mode=="appliquer_modele") {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 
-		while($lig_clas=mysql_fetch_object($call_classes)) {
+		while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 			//affichage 2 colonnes
 			if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -1282,8 +1282,8 @@ elseif($mode=="appliquer_modele") {
 		for($i=0;$i<count($id_classe);$i++) {
 			$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[$i]."' ORDER BY num_periode;";
 			//echo "$sql<br />";
-			$call_per=mysql_query($sql);
-			$nombre_ligne=mysql_num_rows($call_per);
+			$call_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nombre_ligne=mysqli_num_rows($call_per);
 			if($nombre_ligne==0) {
 				echo "<p style='color:red;'>Aucune période  n'est définie dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 			}
@@ -1309,7 +1309,7 @@ elseif($mode=="appliquer_modele") {
 				echo "</tr>\n";
 
 				$alt=1;
-				while($lig_per=mysql_fetch_object($call_per)) {
+				while($lig_per=mysqli_fetch_object($call_per)) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt white_hover'>\n";
 					echo "<td>\n";
@@ -1471,8 +1471,8 @@ elseif($mode=="appliquer_modele") {
 			//$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id=jgc.id_groupe and jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
 			$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
 			//echo "$sql<br />";
-			$call_group = mysql_query($sql);
-			$nombre_ligne = mysql_num_rows($call_group);
+			$call_group = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nombre_ligne = mysqli_num_rows($call_group);
 			if($nombre_ligne==0) {
 				echo "<p style='color:red;'>Aucun enseignement n'est défini dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 			}
@@ -1517,7 +1517,7 @@ elseif($mode=="appliquer_modele") {
 					echo "</tr>\n";
 
 					$alt=1;
-					while($lig_grp=mysql_fetch_object($call_group)) {
+					while($lig_grp=mysqli_fetch_object($call_group)) {
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt white_hover'>\n";
 						echo "<td>\n";
@@ -1526,11 +1526,11 @@ elseif($mode=="appliquer_modele") {
 						echo "<td style='text-align:left; font-weight: bold;'><label for='id_groupe_$cpt' id='label_groupe_$cpt'>$lig_grp->name (<i>$lig_grp->description</i>)</label></td>\n";
 						echo "<td style='text-align:left;'>\n";
 						$sql="SELECT DISTINCT nom,prenom,civilite FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$lig_grp->id' ORDER BY u.nom, u.prenom;";
-						$res_prof_grp=mysql_query($sql);
-						if(mysql_num_rows($res_prof_grp)>0) {
-							$lig_prof_grp=mysql_fetch_object($res_prof_grp);
+						$res_prof_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_prof_grp)>0) {
+							$lig_prof_grp=mysqli_fetch_object($res_prof_grp);
 							echo $lig_prof_grp->civilite." ".strtoupper($lig_prof_grp->nom)." ".casse_mot($lig_prof_grp->prenom,"majf2");
-							while($lig_prof_grp=mysql_fetch_object($res_prof_grp)) {
+							while($lig_prof_grp=mysqli_fetch_object($res_prof_grp)) {
 								echo ", ";
 								echo $lig_prof_grp->civilite." ".strtoupper($lig_prof_grp->nom)." ".casse_mot($lig_prof_grp->prenom,"majf2");
 							}
@@ -1785,9 +1785,9 @@ elseif($mode=="appliquer_modele") {
 							$tab_per[$tmp_per[$loop]]="Période ".$tmp_per[$loop];
 
 							$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[$i]."' AND num_periode='".$tmp_per[$loop]."';";
-							$res_per=mysql_query($sql);
-							if(mysql_num_rows($res_per)>0) {
-								$lig_per=mysql_fetch_object($res_per);
+							$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_per)>0) {
+								$lig_per=mysqli_fetch_object($res_per);
 								$tab_per[$lig_per->num_periode]=$lig_per->nom_periode;
 							}
 						}
@@ -1796,8 +1796,8 @@ elseif($mode=="appliquer_modele") {
 			}
 			else {
 				$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[$i]."' ORDER BY num_periode;";
-				$res_per=mysql_query($sql);
-				while($lig_per=mysql_fetch_object($res_per)) {
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_per=mysqli_fetch_object($res_per)) {
 					$tab_per[$lig_per->num_periode]=$lig_per->nom_periode;
 				}
 			}

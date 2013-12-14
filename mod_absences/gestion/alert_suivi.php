@@ -206,9 +206,9 @@ if ( $action_page != 'gestion_ag' ) {
 	$i_cpt = 0;
 	$nombre_de_type_passe = 0;
 	$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'";
-      	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
+      	$resultat_alert_type = mysqli_query($GLOBALS["mysqli"], $requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	// requete par requete on passe en boucle requete 1 requete 2 ex : 5 abs, 5 ret...
-       	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
+       	while ( $donnee_alert_type = mysqli_fetch_array($resultat_alert_type))
 	{
 		// les donnees
 			$id_alert_type = $donnee_alert_type['id_alert_type'];
@@ -223,8 +223,8 @@ if ( $action_page != 'gestion_ag' ) {
 
 		// la recherche
 		$requete = "SELECT ".$identifiant_de_comptage.", COUNT(".$objet_de_comptage.") AS count FROM ".$table_de_comptage." WHERE ( ".$objet_de_comptage."='".$specifisite_alert_type."' AND ".$type_date_comptage." >= '".$date_debut_comptage."' ) GROUP BY ".$identifiant_de_comptage." ORDER BY count DESC";
-		$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-	       	while ( $donnee = mysql_fetch_array ($execution))
+		$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	       	while ( $donnee = mysqli_fetch_array($execution))
 		{
 			if ($donnee[1] < $nb_comptage_limit) { break; }
 				$eleve[$i_cpt] = $donnee[0];
@@ -234,7 +234,7 @@ if ( $action_page != 'gestion_ag' ) {
 
 
 // si on trouve on regarde dans la base des alerts_eleves s'il n'existe pas une alerte déjà enregistré pour cette élève
-	      		$test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+	      		$test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance === '0' )
 			{
 				// si on rencontre un erreur on incrément le nombre d'erreur
@@ -245,8 +245,8 @@ if ( $action_page != 'gestion_ag' ) {
 					$dernier_enregistrement = 0;
 					// si oui on lit le total des trucs
 			      		$requete_alert_eleve = "SELECT * FROM ".$prefix_base."vs_alerts_eleves WHERE ( eleve_alert_eleve = '".$donnee[0]."' AND groupe_alert_eleve = '".$id_alert_groupe."' ) ";
-			               	$resultat_alert_eleve = mysql_query($requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.mysql_error());
-					while ( $donnee_alert_eleve = mysql_fetch_array ($resultat_alert_eleve))
+			               	$resultat_alert_eleve = mysqli_query($GLOBALS["mysqli"], $requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					while ( $donnee_alert_eleve = mysqli_fetch_array($resultat_alert_eleve))
 					{
 						$total_compteur = $total_compteur + $donnee_alert_eleve['nb_trouve'];
 						$dernier_enregistrement = $donnee_alert_eleve['nb_trouve'];
@@ -267,7 +267,7 @@ if ( $action_page != 'gestion_ag' ) {
 
 			$i_cpt = $i_cpt + 1;
 		}
-		mysql_free_result($execution);
+		((mysqli_free_result($execution) || (is_object($execution) && (get_class($execution) == "mysqli_result"))) ? true : false);
 	}
 
 	$i_cpt = 0;
@@ -290,7 +290,7 @@ if ( $action_page != 'gestion_ag' ) {
 					$temps_insert = $date_t1[0].$date_t1[1].$date_t1[2].$heure_t1[0].$heure_t1[1].$heure_t1[2].$login;
 					// si il y a une alert sur tout les type alons on l'ajout
 					$requete_alert_eleve = "INSERT INTO ".$prefix_base."vs_alerts_eleves (eleve_alert_eleve, date_alert_eleve, groupe_alert_eleve, type_alert_eleve, nb_trouve, temp_insert) VALUES ('".$login."', '".$date_ce_jour_sql."', '".$id_alert_groupe."', '".$type_alert[$i_cpt]."', '".$nb_fois[$i_cpt]."', '".$temps_insert."')";
-				        $execution_requete_alert_eleve = mysql_query($requete_alert_eleve);
+				        $execution_requete_alert_eleve = mysqli_query($GLOBALS["mysqli"], $requete_alert_eleve);
 				}
 			}
 			$i_cpt = $i_cpt + 1;
@@ -321,9 +321,9 @@ if ( ( $action_sql === 'nouveau_alert_groupe' or $action_sql === 'modifier_alert
 
 	if ( $action_sql === 'nouveau_alert_groupe' ) { $requete = "INSERT INTO ".$prefix_base."vs_alerts_groupes (nom_alert_groupe, creerpar_alert_groupe) VALUES ('".$nom_alert_groupe."','".$_SESSION['login']."')"; }
 	if ( $action_sql === 'modifier_alert_groupe' ) { $requete = "UPDATE ".$prefix_base."vs_alerts_groupes SET nom_alert_groupe = '".$nom_alert_groupe."', creerpar_alert_groupe = '".$_SESSION['login']."' WHERE  id_alert_groupe = '".$id_alert_groupe."'"; }
-        $execution_requete = mysql_query($requete);
+        $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
 	// connaitre le nouvelle id
-	if ( $action_sql === 'nouveau_alert_groupe' ) { $id_alert_groupe = mysql_insert_id(); }
+	if ( $action_sql === 'nouveau_alert_groupe' ) { $id_alert_groupe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res); }
 	// vider les variables
 	unset($nom_alert_groupe);
 }
@@ -331,24 +331,24 @@ if ( ( $action_sql === 'nouveau_alert_groupe' or $action_sql === 'modifier_alert
 if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il existe une alerte
-	      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
 		if ( $test_existance != '0' )
 		{
 	              $requete = "DELETE FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	              mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		      // on vérifie s'il existe des type définie pour ce groupe si oui on les supprimes
-		      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'"),0);
+		      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' )
 			{
 				$requete = "DELETE FROM ".$prefix_base."vs_alerts_types WHERE groupe_alert_type = '".$id_alert_groupe."'";
-		              	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		              	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		      // on vérifie s'il existe des alert eleve définie pour ce groupe si oui on les supprimes
-		      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+		      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' )
 			{
 				$requete = "DELETE FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'";
-		              	mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+		              	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		} else { $message_erreur = 'Cette id n\'exite pas.'; }
 
@@ -357,12 +357,12 @@ if ( $action_sql === 'supprimer_alert_groupe' and $valide_form === 'yes' ) {
 if ( $action === 'modifier_alert_groupe' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'"),0);
 		if ( $test_existance != '0' )
 		{
 			$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes WHERE id_alert_groupe = '".$id_alert_groupe."'";
-	               	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
+	               	$resultat_alert_groupe = mysqli_query($GLOBALS["mysqli"], $requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	               	while ( $donnee_alert_groupe = mysqli_fetch_array($resultat_alert_groupe))
 			{
 				$nom_alert_groupe = $donnee_alert_groupe['nom_alert_groupe'];
 			}
@@ -373,7 +373,7 @@ if ( ( $action_sql === 'creer_alert_type' or $action_sql === 'modifier_alert_typ
 
         if ( $action_sql === 'creer_alert_type' ) { $requete = "INSERT INTO ".$prefix_base."vs_alerts_types (groupe_alert_type, type_alert_type, specifisite_alert_type, eleve_concerne, date_debut_comptage, nb_comptage_limit) VALUES ('".$id_alert_groupe."','".$type_alert_type."', '".$specifisite_alert_type."', '', '".date_sql($date_debut_comptage)."', '".$nb_comptage_limit."')"; }
 	if ( $action_sql === 'modifier_alert_type' ) { $requete = "UPDATE ".$prefix_base."vs_alerts_types SET type_alert_type = '".$type_alert_type."', specifisite_alert_type = '".$specifisite_alert_type."', eleve_concerne = '', date_debut_comptage = '".date_sql($date_debut_comptage)."', nb_comptage_limit = '".$nb_comptage_limit."' WHERE  id_alert_type = '".$id_alert_type."'"; }
-        $execution_requete = mysql_query($requete);
+        $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
 	$action_sql = '';
 	$action = 'editer_alert_groupe';
 }
@@ -381,23 +381,23 @@ if ( ( $action_sql === 'creer_alert_type' or $action_sql === 'modifier_alert_typ
 if ( $action_sql === 'supprimer_alert_type' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
 		if ( $test_existance != '0' )
 		{
 	              $requete = "DELETE FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'";
-	              mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	              mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		} else { $message_erreur = 'Cette id n\'exite pas.'; }
 }
 
 if ( $action === 'modifier_alert_type' and $valide_form === 'yes' ) {
 
 	// on vérifie s'il n'existe pas une alerte de même nom
-	      $test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
+	      $test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'"),0);
 		if ( $test_existance != '0' )
 		{
 			$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE id_alert_type = '".$id_alert_type."'";
-	               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
-	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
+	               	$resultat_alert_type = mysqli_query($GLOBALS["mysqli"], $requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	               	while ( $donnee_alert_type = mysqli_fetch_array($resultat_alert_type))
 			{
 				$type_alert_type = $donnee_alert_type['type_alert_type'];
 				$specifisite_alert_type = $donnee_alert_type['specifisite_alert_type'];
@@ -411,7 +411,7 @@ if ( $action === 'modifier_alert_type' and $valide_form === 'yes' ) {
 if ( $action_sql === 'modif_etat_ae' and $valide_form === 'yes' ) {
 	if ( $etat_alert_eleve === '0' ) { $personnelle_active = ''; } else { $personnelle_active = $_SESSION['login']; }
 	$requete = "UPDATE ".$prefix_base."vs_alerts_eleves SET etat_alert_eleve = '".$etat_alert_eleve."', etatpar_alert_eleve = '".$personnelle_active."' WHERE  id_alert_eleve = '".$id_alert_eleve."'";
-        $execution_requete = mysql_query($requete);
+        $execution_requete = mysqli_query($GLOBALS["mysqli"], $requete);
 }
 
 //**************** EN-TETE *****************
@@ -447,8 +447,8 @@ function twAfficheCache(nObjet,nEtat) {
 	               <select name="id_alert_groupe" id="id_alert_groupe" tabindex="1" style="width: 98%; border : 1px solid #000000; margin-top: 5px;">
                  		<?php
 				$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes ORDER BY nom_alert_groupe ASC";
-	                    	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	                    	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
+	                    	$resultat_alert_groupe = mysqli_query($GLOBALS["mysqli"], $requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	                    	while ( $donnee_alert_groupe = mysqli_fetch_array($resultat_alert_groupe))
 				{ ?>
 	                          <option value="<?php echo $donnee_alert_groupe['id_alert_groupe']; ?>" <?php if ( !empty($id_alert_groupe) and $id_alert_groupe === $donnee_alert_groupe['id_alert_groupe'] ) { ?>selected="selected"<?php } ?>><?php echo $donnee_alert_groupe['nom_alert_groupe']; ?></option>
         	          <?php } ?>
@@ -470,8 +470,8 @@ function twAfficheCache(nObjet,nEtat) {
 		  </tr>
 		  <?php $i_cpt = 0; $i_couleur = '1';
 	      		$requete_alert_eleve = "SELECT * FROM ".$prefix_base."vs_alerts_eleves ae, ".$prefix_base."vs_alerts_groupes ag, ".$prefix_base."eleves e WHERE ( ae.groupe_alert_eleve= '".$id_alert_groupe."' AND ae.eleve_alert_eleve = e.login AND ag.id_alert_groupe = ae.groupe_alert_eleve) GROUP BY ae.temp_insert";
-	               	$resultat_alert_eleve = mysql_query($requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.mysql_error());
-			while ( $donnee_alert_eleve = mysql_fetch_array ($resultat_alert_eleve))
+	               	$resultat_alert_eleve = mysqli_query($GLOBALS["mysqli"], $requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while ( $donnee_alert_eleve = mysqli_fetch_array($resultat_alert_eleve))
 			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 		  <tr class="<?php echo $couleur_cellule; ?>">
@@ -489,8 +489,8 @@ function twAfficheCache(nObjet,nEtat) {
 		<div style="background-color: #EFEFEF; border-left: 4px solid #BF0000; width: 98.5%; margin-left: 4px; text-align: left;">
 			<?php
 				$requete_alert_eleve = "SELECT * FROM ".$prefix_base."vs_alerts_eleves vsae, ".$prefix_base."eleves e WHERE vsae.id_alert_eleve = '".$id_alert_eleve."' AND vsae.eleve_alert_eleve = e.login ORDER BY vsae.date_alert_eleve ASC, e.nom ASC, e.prenom ASC";
-		               	$resultat_alert_eleve = mysql_query($requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.mysql_error());
-	        	       	while ( $donnee_alert_eleve = mysql_fetch_array ($resultat_alert_eleve))
+		               	$resultat_alert_eleve = mysqli_query($GLOBALS["mysqli"], $requete_alert_eleve) or die('Erreur SQL !'.$requete_alert_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        	       	while ( $donnee_alert_eleve = mysqli_fetch_array($resultat_alert_eleve))
 				{
 					$login_eleve = $donnee_alert_eleve['eleve_alert_eleve'];
 					$elenoet_eleve = $donnee_alert_eleve['elenoet'];
@@ -559,8 +559,8 @@ function twAfficheCache(nObjet,nEtat) {
 
 ?>L'alerte que vous venez de sélectionner contient le(s) filtre(s) suiviant(s) :<br /><ul><?php
 				$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_groupes vsag, ".$prefix_base."vs_alerts_types vsat WHERE vsag.id_alert_groupe = '".$id_alert_groupe."' AND vsat.groupe_alert_type = vsag.id_alert_groupe";
-		               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
-	        	       	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
+		               	$resultat_alert_type = mysqli_query($GLOBALS["mysqli"], $requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        	       	while ( $donnee_alert_type = mysqli_fetch_array($resultat_alert_type))
 				{
 ?><li>correspond à une limite de <strong><?php echo $donnee_alert_type['nb_comptage_limit']; ?></strong> de type <strong>
 <?php
@@ -656,8 +656,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 		  <?php
 			$i_couleur = '1';
 			$requete_alert_groupe = "SELECT * FROM ".$prefix_base."vs_alerts_groupes ORDER BY nom_alert_groupe ASC";
-	               	$resultat_alert_groupe = mysql_query($requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.mysql_error());
-	               	while ( $donnee_alert_groupe = mysql_fetch_array ($resultat_alert_groupe))
+	               	$resultat_alert_groupe = mysqli_query($GLOBALS["mysqli"], $requete_alert_groupe) or die('Erreur SQL !'.$requete_alert_groupe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	               	while ( $donnee_alert_groupe = mysqli_fetch_array($resultat_alert_groupe))
 			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 			  <tr class="<?php echo $couleur_cellule; ?>">
@@ -672,7 +672,7 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 	<?php if ( $id_alert_groupe != '' and ( $action === 'editer_alert_groupe' or $action === 'modifier_alert_type' ) ) { ?>
 			<?php
 			// on vérifie s'il existe des alert eleve définie si oui on ne peut plus ajouter ou modifier les type pour ce groupe
-		      	$test_existance = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
+		      	$test_existance = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."vs_alerts_eleves WHERE groupe_alert_eleve = '".$id_alert_groupe."'"),0);
 			if ( $test_existance != '0' ) { $editer_ce_groupe = 'non'; } else {  $editer_ce_groupe = 'oui'; } ?>
 		<div style="background-color: #EFEFEF; border-left: 4px solid #BF0000; width: 98.5%; margin-left: 4px; text-align: left;">
 		<a name="eg"></a>
@@ -696,8 +696,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 		<optgroup label="Type de lettre">
 		    <?php
 			$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
-		        $execution_lettre = mysql_query($requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysql_error());
-	  		while ($donner_lettre = mysql_fetch_array($execution_lettre))
+		        $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	  		while ($donner_lettre = mysqli_fetch_array($execution_lettre))
 		  	 {
 			   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($specifisite_alert_type_c) and $specifisite_alert_type_c === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
 			 }
@@ -709,8 +709,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 		<optgroup label="Type action">
 		    <?php
 			$requete_action ="SELECT * FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
-		        $execution_action = mysql_query($requete_action) or die('Erreur SQL !'.$requete_action.'<br />'.mysql_error());
-	  		while ($donner_action = mysql_fetch_array($execution_action))
+		        $execution_action = mysqli_query($GLOBALS["mysqli"], $requete_action) or die('Erreur SQL !'.$requete_action.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	  		while ($donner_action = mysqli_fetch_array($execution_action))
 		  	 {
 			   ?><option value="<?php echo $donner_action['id_absence_action']; ?>" <?php if (isset($specifisite_alert_type_f) and $specifisite_alert_type_f === $donner_action['id_absence_action']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_action['def_absence_action']); ?></option><?php echo "\n";
 			 }
@@ -745,8 +745,8 @@ L'alerte que vous venez de sélectionner correspond à une limite de <?php echo 
 		  <?php
 			$i_couleur = '1';
 			$requete_alert_type = "SELECT * FROM ".$prefix_base."vs_alerts_types WHERE ( groupe_alert_type = '".$id_alert_groupe."' ) ORDER BY date_debut_comptage ASC";
-	               	$resultat_alert_type = mysql_query($requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.mysql_error());
-	               	while ( $donnee_alert_type = mysql_fetch_array ($resultat_alert_type))
+	               	$resultat_alert_type = mysqli_query($GLOBALS["mysqli"], $requete_alert_type) or die('Erreur SQL !'.$requete_alert_type.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	               	while ( $donnee_alert_type = mysqli_fetch_array($resultat_alert_type))
 			{
 			  if ($i_couleur === '1') { $couleur_cellule = 'couleur_ligne_5'; $i_couleur = '2'; } else { $couleur_cellule = 'couleur_ligne_6'; $i_couleur = '1'; } ?>
 			  <tr class="<?php echo $couleur_cellule; ?>">

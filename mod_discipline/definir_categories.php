@@ -34,10 +34,10 @@ if ($resultat_session == 'c') {
     die();
 }
 $sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/definir_categories.php';";
-$test = mysql_query($sql);
-if (mysql_num_rows($test) == 0) {
+$test = mysqli_query($GLOBALS["mysqli"], $sql);
+if (mysqli_num_rows($test) == 0) {
     $sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '')";
-    $test = mysql_query($sql);
+    $test = mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -79,13 +79,13 @@ if (isset($suppr_categorie)) {
     for ($i = 0; $i < $cpt; $i++) {
         if (isset($suppr_categorie[$i])) {
             $sql = "DELETE FROM s_categories WHERE id='$suppr_categorie[$i]';";
-            $suppr = mysql_query($sql);
+            $suppr = mysqli_query($GLOBALS["mysqli"], $sql);
             if (!$suppr) {
                 $msg.="ERREUR lors de la suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
             } else {
                 $msg.="Suppression de la catégorie n°" . $suppr_categorie[$i] . ".<br />\n";
                 $sql = "UPDATE s_incidents SET id_categorie=0 WHERE id_categorie=" . $suppr_categorie[$i] . ";";
-                $res = mysql_query($sql);
+                $res = mysqli_query($GLOBALS["mysqli"], $sql);
                 if (!$res) {
                     $msg.="ERREUR lors de la mise à jour des ".$mod_disc_terme_incident."s de la catégorie supprimée !! <br />\n";
                 } else {
@@ -102,10 +102,10 @@ if ((isset($categorie)) && ($categorie != '')) {
     $a_enregistrer = 'y';
 
     $sql = "SELECT categorie FROM s_categories ORDER BY categorie;";
-    $res = mysql_query($sql);
-    if (mysql_num_rows($res) > 0) {
+    $res = mysqli_query($GLOBALS["mysqli"], $sql);
+    if (mysqli_num_rows($res) > 0) {
         $tab_categorie = array();
-        while ($lig = mysql_fetch_object($res)) {
+        while ($lig = mysqli_fetch_object($res)) {
             $tab_categorie[] = $lig->categorie;
         }
 
@@ -117,8 +117,8 @@ if ((isset($categorie)) && ($categorie != '')) {
     if ($a_enregistrer == 'y') {
 		$categorie=suppression_sauts_de_lignes_surnumeraires($categorie);
 
-        $sql = "INSERT INTO s_categories SET categorie='" . mysql_real_escape_string($categorie) . "', sigle='" . $sigle . "';";
-        $res = mysql_query($sql);
+        $sql = "INSERT INTO s_categories SET categorie='" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $categorie) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', sigle='" . $sigle . "';";
+        $res = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$res) {
             $msg.="ERREUR lors de l'enregistrement de " . $categorie . "<br />\n";
         } else {
@@ -145,8 +145,8 @@ echo "<blockquote>\n";
 
 $cpt = 0;
 $sql = "SELECT * FROM s_categories ORDER BY categorie;";
-$res = mysql_query($sql);
-if (mysql_num_rows($res) == 0) {
+$res = mysqli_query($GLOBALS["mysqli"], $sql);
+if (mysqli_num_rows($res) == 0) {
     echo "<p>Aucune catégorie n'est encore définie.</p>\n";
 } else {
     echo "<p>Catégories existantes&nbsp;:</p>\n";
@@ -157,7 +157,7 @@ if (mysql_num_rows($res) == 0) {
     echo "<th>Supprimer</th>\n";
     echo "</tr>\n";
     $alt = 1;
-    while ($lig = mysql_fetch_object($res)) {
+    while ($lig = mysqli_fetch_object($res)) {
         $alt = $alt * (-1);
         echo "<tr class='lig$alt'>\n";
 

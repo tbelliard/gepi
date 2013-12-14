@@ -58,16 +58,16 @@ if($_SESSION['statut']!="administrateur"){
 	function eval_checked($Settings, $yn, $statut, $nom){
 		$aff_check = '';
 		if ($statut == "professeur") {
-			$test=mysql_query("SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'");
-			if(mysql_num_rows($test)>0) {
-				$req_setting = mysql_fetch_array($test);
+			$test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM preferences WHERE login = '".$nom."' AND name = '".$Settings."'");
+			if(mysqli_num_rows($test)>0) {
+				$req_setting = mysqli_fetch_array($test);
 			}
 		}
 		elseif ($statut == "administrateur") {
 
-			$test=mysql_query("SELECT value FROM setting WHERE name = '".$Settings."'");
-			if(mysql_num_rows($test)>0) {
-				$req_setting = mysql_fetch_array($test);
+			$test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = '".$Settings."'");
+			if(mysqli_num_rows($test)>0) {
+				$req_setting = mysqli_fetch_array($test);
 			}
 		}
 
@@ -130,9 +130,9 @@ if($_SESSION['statut']!="administrateur"){
 
 		for($loop=0;$loop<count($statut_sound);$loop++) {
 			$sql="SELECT DISTINCT login FROM utilisateurs WHERE statut='$statut_sound[$loop]';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					if(!savePref($lig->login,'footer_sound',$_POST['footer_sound'])) {
 						$nb_err_sound++;
 					}
@@ -163,8 +163,8 @@ if ($modifier_le_menu == "ok") {
 	// ou pour les professeurs
 	}elseif ($_SESSION["statut"] == "professeur") {
 		// Pour le prof, on vérifie si ce réglage existe ou pas
-		$query = mysql_query("SELECT value FROM preferences WHERE name = 'utiliserMenuBarre' AND login = '".$_SESSION["login"]."'");
-		$verif = mysql_num_rows($query);
+		$query = mysqli_query($GLOBALS["mysqli"], "SELECT value FROM preferences WHERE name = 'utiliserMenuBarre' AND login = '".$_SESSION["login"]."'");
+		$verif = mysqli_num_rows($query);
 		if ($verif == 1) {
 			// S'il existe, on le modifie
 			$sql = "UPDATE preferences SET value = '".$afficherMenu."' WHERE name = 'utiliserMenuBarre' AND login = '".$_SESSION["login"]."'";
@@ -174,7 +174,7 @@ if ($modifier_le_menu == "ok") {
 		}
 	}
 		// Dans tous les cas, on envoie la requête et on renvoie le message adéquat.
-		$requete = mysql_query($sql);
+		$requete = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($requete) {
 			$messageMenu = "<p style=\"color: green\">La modification a été enregistrée</p>";
 		}else{
@@ -251,12 +251,12 @@ if(isset($enregistrer)) {
 
 				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
 				//echo $sql."<br />\n";
-				$res_suppr=mysql_query($sql);
+				$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(isset($valeur)){
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -265,7 +265,7 @@ if(isset($enregistrer)) {
 				else{
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -285,12 +285,12 @@ if(isset($enregistrer)) {
 
 				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
 				//echo $sql."<br />\n";
-				$res_suppr=mysql_query($sql);
+				$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(isset($valeur)){
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -299,7 +299,7 @@ if(isset($enregistrer)) {
 				else{
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -318,12 +318,12 @@ if(isset($enregistrer)) {
 
 				$sql="DELETE FROM preferences WHERE login='".$prof[$i]."' AND name='".$tab[$j]."'";
 				//echo $sql."<br />\n";
-				$res_suppr=mysql_query($sql);
+				$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(isset($valeur)){
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='$valeur'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -332,7 +332,7 @@ if(isset($enregistrer)) {
 				else{
 					$sql="INSERT INTO preferences SET login='".$prof[$i]."', name='".$tab[$j]."', value='n'";
 					//echo $sql."<br />\n";
-					if($res_insert=mysql_query($sql)){
+					if($res_insert=mysqli_query($GLOBALS["mysqli"], $sql)){
 					}
 					else{
 						$msg.="Erreur lors de l'enregistrement de $tab[$j] pour $prof[$i]<br />\n";
@@ -345,11 +345,11 @@ if(isset($enregistrer)) {
 			$aff_quartiles_cn=isset($_POST['aff_quartiles_cn']) ? $_POST['aff_quartiles_cn'] : "n";
 
 			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_quartiles_cn', value='$aff_quartiles_cn';";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_quartiles_cn<br />\n";
 					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, quartiles,... sur les carnets de notes.<br />\n";
 				}
@@ -357,7 +357,7 @@ if(isset($enregistrer)) {
 			else {
 				$sql="UPDATE preferences SET value='$aff_quartiles_cn' WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn';";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_quartiles_cn pour ".$_SESSION['login']."<br />\n";
 				}
 			}
@@ -366,11 +366,11 @@ if(isset($enregistrer)) {
 			$aff_photo_cn=isset($_POST['aff_photo_cn']) ? $_POST['aff_photo_cn'] : "n";
 
 			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_photo_cn', value='$aff_photo_cn';";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_photo_cn<br />\n";
 					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, photo,... sur les carnets de notes.<br />\n";
 				}
@@ -378,7 +378,7 @@ if(isset($enregistrer)) {
 			else {
 				$sql="UPDATE preferences SET value='$aff_photo_cn' WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn';";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_photo_cn pour ".$_SESSION['login']."<br />\n";
 				}
 			}
@@ -387,11 +387,11 @@ if(isset($enregistrer)) {
 			$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 
 			$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='aff_photo_saisie_app', value='$aff_photo_saisie_app'";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app<br />\n";
 					//$msg.="Erreur lors de l'enregistrement de l'affichage par défaut ou non des moyenne, médiane, quartiles,... sur les carnets de notes.<br />\n";
 				}
@@ -399,7 +399,7 @@ if(isset($enregistrer)) {
 			else {
 				$sql="UPDATE preferences SET value='$aff_photo_saisie_app' WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app';";
 				//echo $sql."<br />\n";
-				if(!mysql_query($sql)){
+				if(!mysqli_query($GLOBALS["mysqli"], $sql)){
 					$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app pour ".$_SESSION['login']."<br />\n";
 				}
 			}
@@ -520,15 +520,15 @@ else{
 
 		//$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' ORDER BY nom, prenom";
 		$sql="SELECT DISTINCT nom,prenom,login FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom, prenom";
-		$res_prof=mysql_query($sql);
-		if(mysql_num_rows($res_prof)==0){
+		$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_prof)==0){
 			echo "<p>Aucun ".$gepiSettings['denomination_professeur']." n'est encore défini.<br />Commencez par créer les comptes ".$gepiSettings['denomination_professeurs'].".</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
 		$i=0;
-		while($lig_prof=mysql_fetch_object($res_prof)){
+		while($lig_prof=mysqli_fetch_object($res_prof)){
 			$prof[$i]=array();
 			$prof[$i]['login']=$lig_prof->login;
 			$prof[$i]['nom']=$lig_prof->nom;
@@ -553,9 +553,9 @@ else{
 		$checked="";
 		$coche="";
 		$sql="SELECT * FROM preferences WHERE login='$prof_login' AND name='$item'";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
-			$lig_test=mysql_fetch_object($test);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0){
+			$lig_test=mysqli_fetch_object($test);
 			if($lig_test->value=="y"){
 				//echo " style='background-color: lightgreen;'";
 				//echo "background-color: lightgreen;";
@@ -746,12 +746,12 @@ else{
 
 		echo "<div style='margin-left:3em;'>\n";
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_quartiles_cn'";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$aff_quartiles_cn="n";
 		}
 		else {
-			$lig_test=mysql_fetch_object($test);
+			$lig_test=mysqli_fetch_object($test);
 			$aff_quartiles_cn=$lig_test->value;
 		}
 		echo "<p>\n";
@@ -762,12 +762,12 @@ else{
 		echo "</p>\n";
 
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_cn'";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$aff_photo_cn="n";
 		}
 		else {
-			$lig_test=mysql_fetch_object($test);
+			$lig_test=mysqli_fetch_object($test);
 			$aff_photo_cn=$lig_test->value;
 		}
 		echo "<p>\n";
@@ -1026,12 +1026,12 @@ else{
 
 		echo "<div style='margin-left:3em;'>\n";
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name='aff_photo_saisie_app'";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$aff_photo_saisie_app="n";
 		}
 		else {
-			$lig_test=mysql_fetch_object($test);
+			$lig_test=mysqli_fetch_object($test);
 			$aff_photo_saisie_app=$lig_test->value;
 		}
 

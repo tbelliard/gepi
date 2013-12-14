@@ -60,8 +60,8 @@ if (!isset($id_classe)) {
 	} else {
 		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_cpe e, j_eleves_classes jc WHERE (e.cpe_login = '".$_SESSION['login']."' AND jc.login = e.e_login AND c.id = jc.id_classe)  ORDER BY classe;";
 	}
-	$calldata = mysql_query($sql);
-	$nombreligne = mysql_num_rows($calldata);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nombreligne = mysqli_num_rows($calldata);
 
 	echo "<p>Total : $nombreligne classe";
 	if($nombreligne>1){echo "s";}
@@ -72,8 +72,8 @@ if (!isset($id_classe)) {
 	/*
 	$i = 0;
 	while ($i < $nombreligne){
-		$id_classe = mysql_result($calldata, $i, "id");
-		$classe_liste = mysql_result($calldata, $i, "classe");
+		$id_classe = old_mysql_result($calldata, $i, "id");
+		$classe_liste = old_mysql_result($calldata, $i, "classe");
 		echo "<br /><a href='index.php?id_classe=$id_classe'>$classe_liste</a>\n";
 		$i++;
 
@@ -86,8 +86,8 @@ if (!isset($id_classe)) {
 	$tab_txt=array();
 	$tab_lien=array();
 	while ($i < $nombreligne){
-		$tab_lien[$i] = "index.php?id_classe=".mysql_result($calldata, $i, "id");
-		$tab_txt[$i] = mysql_result($calldata, $i, "classe");
+		$tab_lien[$i] = "index.php?id_classe=".old_mysql_result($calldata, $i, "id");
+		$tab_txt[$i] = old_mysql_result($calldata, $i, "classe");
 		$i++;
 	}
 	tab_liste($tab_txt,$tab_lien,3);
@@ -105,8 +105,8 @@ if (!isset($id_classe)) {
 
 	echo "</p>\n";
 
-	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-	$classe = mysql_result($call_classe, "0", "classe");
+	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<h2>Classe de ".$classe."</h2>\n";
 	echo "<p><b>Saisie manuelle - Choisissez la période : </b></p>\n";
 	//echo "<ul>\n";

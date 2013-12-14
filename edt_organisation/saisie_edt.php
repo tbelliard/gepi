@@ -33,8 +33,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/saisie_edt.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/edt_organisation/saisie_edt.php',
 	administrateur='V',
 	professeur='V',
@@ -46,7 +46,7 @@ if(mysql_num_rows($test)==0) {
 	autre='F',
 	description='EDT : Saisie',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -65,9 +65,9 @@ function get_nom_salle($id_salle, $id_cours="") {
 	else {
 		$sql="SELECT sc.* FROM salle_cours sc, edt_cours ec WHERE sc.id_salle=ec.id_salle AND ec.id_cours='$id_cours'";
 	}
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 		if($lig->nom_salle!="") {
 			$retour=$lig->nom_salle;
 		}
@@ -81,9 +81,9 @@ function get_nom_salle($id_salle, $id_cours="") {
 function get_infos_cours($id_cours) {
 	$retour="";
 	$sql="SELECT * FROM edt_cours WHERE id_cours='$id_cours';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 
 		if($lig->id_groupe!="") {
 			$info_group=get_info_grp($lig->id_groupe,array('classes'));
@@ -184,9 +184,9 @@ if(isset($_POST['modifier_cours'])) {
 															id_calendrier = '$periode_calendrier'
 															WHERE id_cours = '".$id_cours."'";
 						//echo "$sql<br />";
-						$req_modif = mysql_query($sql);
+						$req_modif = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req_modif) {
-							echo "Erreur: ".mysql_error();
+							echo "Erreur: ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 							die();
 						}
 						else {
@@ -218,14 +218,14 @@ if(isset($_POST['modifier_cours'])) {
 														id_calendrier = '$periode_calendrier',
 														login_prof = '".$identite."'";
 						//echo "$sql<br />";
-						$nouveau_cours = mysql_query($sql);
+						$nouveau_cours = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$nouveau_cours) {
-							echo "Erreur: ".mysql_error();
+							echo "Erreur: ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 							die();
 						}
 						else {
 							// Afficher le nouveau cours
-							$id_cours=mysql_insert_id();
+							$id_cours=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							echo get_infos_cours($id_cours);
 
 							$_SESSION['edt_prof_enseignement'] = $enseignement;
@@ -320,8 +320,8 @@ echo "<form name='form1' action='".$_SERVER['PHP_SELF']."' method='post'>
 <p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='index_edt.php'>Emplois du temps</a>";
 
 $sql="SELECT login, nom, prenom, civilite, etat FROM utilisateurs WHERE statut='professeur' ORDER BY etat, nom, prenom;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>
 </form>
 <p style='color:red'>Il n'existe encore aucun professeur.</p>
@@ -332,7 +332,7 @@ if(mysql_num_rows($res)==0) {
 }
 
 $tab_prof=array();
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	$tab_prof[$lig->login]['designation']=$lig->civilite." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
 	$tab_prof[$lig->login]['style_et_title']=(($lig->etat=="actif") ? "" : " style='color:grey' title='Compte inactif'");
 }
@@ -443,9 +443,9 @@ echo "<br />
 
 $sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1";
 //echo "$sql<br />";
-$req_jours = mysql_query($sql) or die(mysql_error());
+$req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $jour_sem_tab = array();
-while($data_sem_tab = mysql_fetch_array($req_jours)) {
+while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
 	//echo "\$jour_sem_tab[] = ".$data_sem_tab['jour_horaire_etablissement'].";<br />";
 }
@@ -501,15 +501,15 @@ $tab_creneau=array();
 $sql="SELECT * FROM edt_creneaux
 				WHERE type_creneaux != 'pause'
 				ORDER BY heuredebut_definie_periode";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p style='color:red'>Aucun créneau horaire n'a été trouvé.</p>
 <p><br /></p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	$tab_creneau[$lig->id_definie_periode]['nom_definie_periode']=$lig->nom_definie_periode;
 	$tab_creneau[$lig->id_definie_periode]['heuredebut_definie_periode']=$lig->heuredebut_definie_periode;
 	$tab_creneau[$lig->id_definie_periode]['heurefin_definie_periode']=$lig->heurefin_definie_periode;
@@ -544,7 +544,7 @@ foreach($tab_creneau as $id_definie_periode => $creneau) {
 
 		//$rep_creneau = mysql_fetch_array($req_creneau);
 		//print_r($rep_creneau);
-		$nb_rows = mysql_num_rows($req_creneau);
+		$nb_rows = mysqli_num_rows($req_creneau);
 
 		/*
 		echo "SELECT id_cours, id_aid, duree, id_groupe, heuredeb_dec, id_semaine FROM edt_cours WHERE 
@@ -555,7 +555,7 @@ foreach($tab_creneau as $id_definie_periode => $creneau) {
 		*/
 
 		if($nb_rows>0) {
-			while($rep_creneau = mysql_fetch_array($req_creneau)) {
+			while($rep_creneau = mysqli_fetch_array($req_creneau)) {
 				/*
 				echo "\$nb_rows=$nb_rows<br />";
 				echo "<pre>";

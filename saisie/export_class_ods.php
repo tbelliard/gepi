@@ -112,8 +112,8 @@ if((mb_strlen(my_ereg_replace("[0-9]","",$id_groupe))!=0)||(mb_strlen(my_ereg_re
 // On teste si le professeur est bien associé au groupe
 if($_SESSION['statut']!='secours') {
 	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE login='".$_SESSION['login']."' AND id_groupe='$id_groupe'";
-	$res_test=mysql_query($sql);
-	if (mysql_num_rows($res_test)==0) {
+	$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res_test)==0) {
 		$mess=rawurlencode("Vous tentez d'accéder à des données qui ne vous appartiennent pas !");
 		header("Location: index.php?msg=$mess");
 		die();
@@ -144,8 +144,8 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-$nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 
 //**************** EN-TETE *****************
@@ -207,16 +207,16 @@ $ecriture=fwrite($fichier_tmp_xml,'<office:body><office:spreadsheet><table:table
 
 
 $sql="SELECT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num' ORDER BY login";
-$res_ele=mysql_query($sql);
-$nb_ele=mysql_num_rows($res_ele);
+$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_ele=mysqli_num_rows($res_ele);
 if($nb_ele>0){
-	while($lig_ele=mysql_fetch_object($res_ele)){
+	while($lig_ele=mysqli_fetch_object($res_ele)){
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-row table:style-name="ro2"><table:table-cell table:style-name="ce2" office:value-type="string"><text:p>'.$lig_ele->login.'</text:p></table:table-cell>');
 
 		$sql="SELECT note,statut FROM matieres_notes WHERE login='$lig_ele->login' AND periode='$periode_num' AND id_groupe='$id_groupe'";
-		$res_note=mysql_query($sql);
-		if(mysql_num_rows($res_note)){
-			$lig_note=mysql_fetch_object($res_note);
+		$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_note)){
+			$lig_note=mysqli_fetch_object($res_note);
 			if($lig_note->statut==''){
 				$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce4" office:value-type="float" office:value="'.my_ereg_replace(',','.',$lig_note->note).'"><text:p>'.my_ereg_replace('.',',',$lig_note->note).'</text:p></table:table-cell>');
 
@@ -232,9 +232,9 @@ if($nb_ele>0){
 
 
 		$sql="SELECT appreciation FROM matieres_appreciations WHERE login='$lig_ele->login' AND periode='$periode_num' AND id_groupe='$id_groupe'";
-		$res_appreciation=mysql_query($sql);
-		if(mysql_num_rows($res_appreciation)){
-			$lig_appreciation=mysql_fetch_object($res_appreciation);
+		$res_appreciation=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_appreciation)){
+			$lig_appreciation=mysqli_fetch_object($res_appreciation);
 			$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:style-name="ce7" office:value-type="string"><text:p>'.nl2br($lig_appreciation->appreciation).'</text:p></table:table-cell></table:table-row>');
 
 

@@ -75,7 +75,7 @@ if(isset($suppr_lieu)) {
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_lieu[$i])) {
 			$sql="DELETE FROM s_lieux_incidents WHERE id='$suppr_lieu[$i]';";
-			$suppr=mysql_query($sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
 				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
 				$msg.="ERREUR lors de la suppression du lieu n°".$suppr_lieu[$i].".<br />\n";
@@ -91,10 +91,10 @@ if((isset($lieu))&&($lieu!='')) {
 	$a_enregistrer='y';
 
 	$sql="SELECT lieu FROM s_lieux_incidents ORDER BY lieu;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$tab_lieu=array();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_lieu[]=$lig->lieu;
 		}
 
@@ -106,8 +106,8 @@ if((isset($lieu))&&($lieu!='')) {
 
 		$lieu=suppression_sauts_de_lignes_surnumeraires($lieu);
 
-		$sql="INSERT INTO s_lieux_incidents SET lieu='".mysql_real_escape_string($lieu)."';";
-		$res=mysql_query($sql);
+		$sql="INSERT INTO s_lieux_incidents SET lieu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lieu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$lieu."<br />\n";
 		}
@@ -137,8 +137,8 @@ echo "<blockquote>\n";
 
 $cpt=0;
 $sql="SELECT * FROM s_lieux_incidents ORDER BY lieu;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
 	echo "<p>Aucun lieu n'est encore défini.</p>\n";
 }
@@ -153,7 +153,7 @@ else {
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 

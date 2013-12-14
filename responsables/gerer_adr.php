@@ -53,11 +53,11 @@ if(isset($suppr_ad)) {
 	$temoin_suppr=0;
 	for($i=0;$i<count($suppr_ad);$i++){
 		$sql="SELECT pers_id FROM resp_pers WHERE adr_id='$suppr_ad[$i]'";
-		$test=mysql_query($sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($test)==0){
+		if(mysqli_num_rows($test)==0){
 			$sql="DELETE FROM resp_adr WHERE adr_id='$suppr_ad[$i]'";
-			$res_suppr=mysql_query($sql);
+			$res_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res_suppr){
 				$msg.="Erreur lors de la suppression de l'adresse n°$suppr_ad[$i]. ";
 				$temoin_suppr++;
@@ -66,15 +66,15 @@ if(isset($suppr_ad)) {
 		else{
 			$msg.="Suppression impossible de l'adresse n°$suppr_ad[$i] associée ";
 			$temoin_suppr++;
-			if(mysql_num_rows($test)==1){
-				$lig_resp=mysql_fetch_object($test);
+			if(mysqli_num_rows($test)==1){
+				$lig_resp=mysqli_fetch_object($test);
 				$msg.="au responsable n°<a href='modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->pers_id."</a>. ";
 			}
 			else{
 				$msg.="aux responsables n°";
-				$lig_resp=mysql_fetch_object($test);
+				$lig_resp=mysqli_fetch_object($test);
 				$msg.="<a href='modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->pers_id."</a>";
-				while($lig_resp=mysql_fetch_object($test)){
+				while($lig_resp=mysqli_fetch_object($test)){
 					$msg.=", <a href='modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->pers_id."</a>";
 				}
 			}
@@ -90,8 +90,8 @@ if(isset($_GET['suppr_adresses_non_associees'])) {
 	check_token();
 
 	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
-	$test=mysql_query($sql);
-	$nb_scories=mysql_num_rows($test);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories==0) {
 		$msg.="Toutes les adresses sont associées à des responsables.<br />\n";
 	}
@@ -99,7 +99,7 @@ if(isset($_GET['suppr_adresses_non_associees'])) {
 		$msg.="$nb_scories adresses ne sont pas associées à des responsables&nbsp;: ";
 
 		$sql="delete from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
-		$del=mysql_query($sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($del) {$msg.="<span style='color:green'>Nettoyées</span>";}
 		else {$msg.="<span style='color:red'>Echec du nettoyage</span>";}
 		$msg.="<br />\n";
@@ -115,8 +115,8 @@ require_once("../lib/header.inc.php");
 
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0){
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
@@ -124,8 +124,8 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	$sql="SHOW COLUMNS FROM eleves LIKE 'ele_id'";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0){
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0){
 		echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 		require("../lib/footer.inc.php");
@@ -133,8 +133,8 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 	else{
 		$sql="SELECT 1=1 FROM eleves WHERE ele_id=''";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0){
 			echo "<p>Une conversion des données élèves/responsables est requise.</p>\n";
 			echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
 			require("../lib/footer.inc.php");
@@ -147,8 +147,8 @@ if(!getSettingValue('conv_new_resp_table')){
 <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php">Dédoublonner les adresses</a>
 <?php
 	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
-	$test=mysql_query($sql);
-	$nb_scories=mysql_num_rows($test);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_scories=mysqli_num_rows($test);
 	if($nb_scories>0) {
 		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_adresses_non_associees=y".add_token_in_url()."'>Supprimer les adresses non associées</a>";
 	}
@@ -218,8 +218,8 @@ if(!getSettingValue('conv_new_resp_table')){
 
 
 	//if($champ_rech!='non_assoc') {
-		$res_tot=mysql_query($sql_tot);
-		$lig_tot=mysql_fetch_object($res_tot);
+		$res_tot=mysqli_query($GLOBALS["mysqli"], $sql_tot);
+		$lig_tot=mysqli_fetch_object($res_tot);
 		$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
 	//}
 
@@ -311,8 +311,8 @@ if($afficher_toutes_les_adr!="y") {
 echo "$sql<br />\n";
 */
 
-$res_adr=mysql_query($sql);
-if(mysql_num_rows($res_adr)>0){
+$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
@@ -368,7 +368,7 @@ if(mysql_num_rows($res_adr)>0){
 
 	$cpt=0;
 	$alt=1;
-	while($lig_adr=mysql_fetch_object($res_adr)){
+	while($lig_adr=mysqli_fetch_object($res_adr)){
 		//if(($lig_adr->adr1!="")||($lig_adr->adr2!="")||($lig_adr->adr3!="")||($lig_adr->adr4!="")||($lig_adr->commune!="")){
 
 			if($cpt%10==0){
@@ -445,11 +445,11 @@ if(mysql_num_rows($res_adr)>0){
 
 			echo "<td style='text-align:center;'>";
 			$sql="SELECT nom,prenom,pers_id FROM resp_pers WHERE adr_id='$lig_adr->adr_id'";
-			$res_pers=mysql_query($sql);
-			if(mysql_num_rows($res_pers)>0){
-				$ligtmp=mysql_fetch_object($res_pers);
+			$res_pers=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_pers)>0){
+				$ligtmp=mysqli_fetch_object($res_pers);
 				$chaine="<a href='modify_resp.php?pers_id=$ligtmp->pers_id'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
-				while($ligtmp=mysql_fetch_object($res_pers)){
+				while($ligtmp=mysqli_fetch_object($res_pers)){
 					$chaine.=",<br />\n<a href='modify_resp.php?pers_id=$ligtmp->pers_id'>".mb_strtoupper($ligtmp->nom)." ".ucfirst(mb_strtolower($ligtmp->prenom))."</a>";
 				}
 				echo "$chaine";

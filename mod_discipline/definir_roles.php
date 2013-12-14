@@ -77,7 +77,7 @@ if(isset($suppr_qualite)) {
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_qualite[$i])) {
 			$sql="DELETE FROM s_qualites WHERE id='$suppr_qualite[$i]';";
-			$suppr=mysql_query($sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
 				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_qualite[$i].".<br />\n";
 				$msg.="ERREUR lors de la suppression du rôle n°".$suppr_qualite[$i].".<br />\n";
@@ -93,10 +93,10 @@ if((isset($qualite))&&($qualite!='')) {
 	$a_enregistrer='y';
 
 	$sql="SELECT qualite FROM s_qualites ORDER BY qualite;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$tab_qualite=array();
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$tab_qualite[]=$lig->qualite;
 		}
 
@@ -108,8 +108,8 @@ if((isset($qualite))&&($qualite!='')) {
 
 		$qualite=suppression_sauts_de_lignes_surnumeraires($qualite);
 
-		$sql="INSERT INTO s_qualites SET qualite='".mysql_real_escape_string($qualite)."';";
-		$res=mysql_query($sql);
+		$sql="INSERT INTO s_qualites SET qualite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $qualite) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$qualite."<br />\n";
 		}
@@ -139,8 +139,8 @@ echo "<blockquote>\n";
 
 $cpt=0;
 $sql="SELECT * FROM s_qualites ORDER BY qualite;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
 	echo "<p>Aucun rôle n'est encore défini.</p>\n";
 }
@@ -155,7 +155,7 @@ else {
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 

@@ -107,12 +107,12 @@ if (isset($_POST['is_posted'])) {
 		if ($test != -1) {
 			if($k>0) {echo ", ";}
 			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
-			$res_test_tab=mysql_query($sql);
-			if(mysql_num_rows($res_test_tab)>0) {
+			$res_test_tab=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_test_tab)>0) {
 				$sql="DELETE FROM $liste_tables_del[$j];";
-				$del = @mysql_query($sql);
+				$del = @mysqli_query($GLOBALS["mysqli"], $sql);
 				echo "<b>".$liste_tables_del[$j]."</b>";
-				echo " (".mysql_num_rows($res_test_tab).")";
+				echo " (".mysqli_num_rows($res_test_tab).")";
 			}
 			else {
 				echo $liste_tables_del[$j];
@@ -160,47 +160,47 @@ if (isset($_POST['is_posted'])) {
                     $uid = $info[$k]["memberuid"][$u] ;
                     if (is_prof($uid,$id_matiere)) {
                         // On regarde si cette association correspond déjà à un groupe
-                        $test = mysql_query("SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
+                        $test = mysqli_query($GLOBALS["mysqli"], "SELECT g.id FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (" .
                         "g.id = jgc.id_groupe AND " .
                         "jgc.id_classe = '" . $id_classe . "' AND " .
                         "jgc.id_groupe = jgm.id_groupe AND " .
                         "jgm.id_matiere = '" . $id_matiere . "')");
-                        if (mysql_num_rows($test) != 0) {
+                        if (mysqli_num_rows($test) != 0) {
                              $ordre++;
                              // Si un enregistrement existe déjà, ça veut dire que le groupe a déjà été traité
                              // il ne reste alors qu'à ajouter le professeur mentionné dans cette association
-                             $group_id = mysql_result($test, 0, "id");
-                             $insert_prof = mysql_query("INSERT into j_groupes_professeurs SET id_groupe = '" . $group_id ."', login = '" . $uid . "', ordre_prof = '" . $ordre ."'");
+                             $group_id = old_mysql_result($test, 0, "id");
+                             $insert_prof = mysqli_query($GLOBALS["mysqli"], "INSERT into j_groupes_professeurs SET id_groupe = '" . $group_id ."', login = '" . $uid . "', ordre_prof = '" . $ordre ."'");
                         } else {
                             // La première étape consiste à créer le nouveau groupe, pour obtenir son ID
                             $ordre++;
                             $new_group = create_group($nom_complet, $nom_complet, $id_matiere, array($id_classe));
                             // On ajoute le professeur
-                            $insert_prof = mysql_query("INSERT into j_groupes_professeurs SET id_groupe = '" . $new_group ."', login = '" . $uid . "', ordre_prof = '" . $ordre ."'");
+                            $insert_prof = mysqli_query($GLOBALS["mysqli"], "INSERT into j_groupes_professeurs SET id_groupe = '" . $new_group ."', login = '" . $uid . "', ordre_prof = '" . $ordre ."'");
                             // On s'occupe maintenant des élèves, période par période
-                            $call_periodes = mysql_query("select num_periode FROM periodes WHERE id_classe = '" . $id_classe . "'");
-                            $nb_per = mysql_num_rows($call_periodes);
+                            $call_periodes = mysqli_query($GLOBALS["mysqli"], "select num_periode FROM periodes WHERE id_classe = '" . $id_classe . "'");
+                            $nb_per = mysqli_num_rows($call_periodes);
                             for ($m=0;$m<$nb_per;$m++) {
-                                $num_periode = mysql_result($call_periodes, $m, "num_periode");
-                                $call_eleves = mysql_query("SELECT login FROM j_eleves_classes WHERE (periode = '" . $num_periode . "' AND id_classe = '" . $id_classe ."')");
+                                $num_periode = old_mysql_result($call_periodes, $m, "num_periode");
+                                $call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE (periode = '" . $num_periode . "' AND id_classe = '" . $id_classe ."')");
                                 $eleves = array();
-                                while ($row1 = mysql_fetch_row($call_eleves)) {
+                                while ($row1 = mysqli_fetch_row($call_eleves)) {
                                     $eleves[] = $row1[0];
                                 }
                                 foreach ($eleves as $login) {
                                     if ($new_group == 0) echo "ERREUR! New_group ID = 0<br />";
                                     // Appartenance au groupe
-                                    $insert = mysql_query("INSERT into j_eleves_groupes SET login = '" . $login . "', id_groupe = '" . $new_group . "', periode = '" . $num_periode . "'");
+                                    $insert = mysqli_query($GLOBALS["mysqli"], "INSERT into j_eleves_groupes SET login = '" . $login . "', id_groupe = '" . $new_group . "', periode = '" . $num_periode . "'");
                                     // Mise à jour de la référence à la note du bulletin
-                                    $update = mysql_query("UPDATE matieres_notes SET id_groupe = '" . $new_group . "' WHERE (login = '" . $login . "' AND periode = '" . $num_periode . "' AND matiere = '" . $id_matiere . "')");
+                                    $update = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_notes SET id_groupe = '" . $new_group . "' WHERE (login = '" . $login . "' AND periode = '" . $num_periode . "' AND matiere = '" . $id_matiere . "')");
                                     // Mise à jour de la référence à l'appréciation du bulletin
-                                    $update = mysql_query("UPDATE matieres_appreciations SET id_groupe = '" . $new_group . "' WHERE (login = '" . $login . "' AND periode = '" . $num_periode . "' AND matiere = '" . $id_matiere . "')");
+                                    $update = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET id_groupe = '" . $new_group . "' WHERE (login = '" . $login . "' AND periode = '" . $num_periode . "' AND matiere = '" . $id_matiere . "')");
                                 }
                             }
                             // Et on fait les mises à jours de références pour les carnets de notes et cahiers de texte
-                            $update_cn = mysql_query("UPDATE cn_cahier_notes SET id_groupe = '" . $new_group . "' WHERE (matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
-                            $update_ct1 = mysql_query("UPDATE ct_devoir_entry SET id_groupe = '" . $new_group . "' WHERE (id_matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
-                            $update_ct2 = mysql_query("UPDATE ct_entry SET id_groupe = '" . $new_group . "' WHERE (id_matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
+                            $update_cn = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_cahier_notes SET id_groupe = '" . $new_group . "' WHERE (matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
+                            $update_ct1 = mysqli_query($GLOBALS["mysqli"], "UPDATE ct_devoir_entry SET id_groupe = '" . $new_group . "' WHERE (id_matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
+                            $update_ct2 = mysqli_query($GLOBALS["mysqli"], "UPDATE ct_entry SET id_groupe = '" . $new_group . "' WHERE (id_matiere = '" . $id_matiere . "' AND id_classe = '" . $id_classe . "')");
                             echo "<tr><td>".$nom_classe."</td><td>".$id_matiere." (".$nom_complet.")</td><td>".$uid."</td></tr>\n";
                         }
                     }
@@ -222,8 +222,8 @@ if (isset($_POST['is_posted'])) {
 		$test = sql_query1($sql);
 		if ($test != -1) {
 			$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
-			$res_test_tab=mysql_query($sql);
-			if(mysql_num_rows($res_test_tab)>0) {
+			$res_test_tab=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_test_tab)>0) {
 				$flag=1;
 				break;
 			}

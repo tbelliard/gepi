@@ -38,9 +38,9 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 			$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%' ORDER BY nom, prenom;";
 		}
 		//echo "$sql<br />";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-		$nb_ele=mysql_num_rows($res_ele);
+		$nb_ele=mysqli_num_rows($res_ele);
 	
 		if($nb_ele==0){
 			// On ne devrait pas arriver là.
@@ -58,9 +58,9 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 		else {
 			$sql="SELECT * FROM eleves WHERE prenom LIKE '%$rech_prenom%' ORDER BY nom, prenom;";
 		}
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-		$nb_ele=mysql_num_rows($res_ele);
+		$nb_ele=mysqli_num_rows($res_ele);
 	
 		if($nb_ele==0){
 			// On ne devrait pas arriver là.
@@ -94,7 +94,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 		}
 		echo "</tr>\n";
 		$alt=1;
-		while($lig_ele=mysql_fetch_object($res_ele)) {
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$ele_login=$lig_ele->login;
 			$ele_nom=$lig_ele->nom;
 			$ele_prenom=$lig_ele->prenom;
@@ -104,8 +104,8 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<tr class='lig$alt'>\n";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysql_query($sql);
-				if(mysql_num_rows($res_clas)==0) {
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_clas)==0) {
 					echo "<td>\n";
 					echo htmlspecialchars("$ele_nom $ele_prenom");
 					echo "</td>\n";
@@ -114,8 +114,8 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 					echo "aucune classe";
 					echo "</td>\n";
 				}
-				elseif(mysql_num_rows($res_clas)==1) {
-					$lig_clas=mysql_fetch_object($res_clas);
+				elseif(mysqli_num_rows($res_clas)==1) {
+					$lig_clas=mysqli_fetch_object($res_clas);
 					echo "<td>\n";
 					echo "<a href='$page?ele_login=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 					echo "</td>\n";
@@ -131,7 +131,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 
 					echo "<td>\n";
 					$cpt=0;
-					while($lig_clas=mysql_fetch_object($res_clas)) {
+					while($lig_clas=mysqli_fetch_object($res_clas)) {
 						if($cpt>0) {echo ", ";}
 						echo "<a href='$page?ele_login=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars($lig_clas->classe)."</a>";
 						$cpt++;
@@ -144,8 +144,8 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<tr class='lig$alt'>\n";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysql_query($sql);
-				if(mysql_num_rows($res_clas)==0) {
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_clas)==0) {
 					echo "<td>\n";
 					echo htmlspecialchars("$ele_nom $ele_prenom");
 					echo "</td>\n";
@@ -155,7 +155,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 					echo "</td>\n";
 				}
 				else {
-					$lig_clas=mysql_fetch_object($res_clas);
+					$lig_clas=mysqli_fetch_object($res_clas);
 					echo "<td>\n";
 					echo "<a href='$page?logineleve=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 					echo "</td>\n";
@@ -173,8 +173,8 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 				echo "<a href='$page?ele_login=$ele_login'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
 
 				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
-				$res_clas=mysql_query($sql);
-				if(mysql_num_rows($res_clas)==0) {
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_clas)==0) {
 					//echo " (<i>";
 					echo "<td>\n";
 					echo "aucune classe";
@@ -186,7 +186,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 					//echo "(<i>";
 					echo "<td>\n";
 					$cpt=0;
-					while($lig_clas=mysql_fetch_object($res_clas)) {
+					while($lig_clas=mysqli_fetch_object($res_clas)) {
 						if($cpt>0) {echo ", ";}
 						//echo $lig_clas->classe;
 						echo htmlspecialchars($lig_clas->classe);

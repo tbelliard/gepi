@@ -48,10 +48,10 @@ if ($resultat_session == 'c') {
 // INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'transférer un edt', '');
 
 $sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/transferer_edt.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/edt_organisation/transferer_edt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F','transférer un edt', '');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
@@ -82,11 +82,11 @@ if (isset($supprimer) AND isset($login)) {
     }
     else if ($supprimer== "confirme_suppression") {
         // ====================== Vérifier que $login est bien un professeur
-        $req_statut = mysql_query("SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
-        $rep_statut = mysql_fetch_array($req_statut);
+        $req_statut = mysqli_query($GLOBALS["mysqli"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
+        $rep_statut = mysqli_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
-            $req_suppression = mysql_query("DELETE FROM edt_cours WHERE login_prof = '".addslashes($login)."' ");
-            $deletedRows = mysql_affected_rows();
+            $req_suppression = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE login_prof = '".addslashes($login)."' ");
+            $deletedRows = mysqli_affected_rows($GLOBALS["mysqli"]);
             if ($deletedRows != 0) {
                 $message = "<div class=\"cadreInformation\">L'emploi du temps a été supprimé avec succès.</div>";
             }
@@ -112,21 +112,21 @@ if (isset($couper) AND isset($login)) {
 if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
     if ($login != $_SESSION["couper_edt"]) {
         // ====================== Vérifier que $login est bien un professeur
-        $req_statut = mysql_query("SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
-        $rep_statut = mysql_fetch_array($req_statut);
+        $req_statut = mysqli_query($GLOBALS["mysqli"], "SELECT statut FROM utilisateurs WHERE login = '".addslashes($login)."' ");
+        $rep_statut = mysqli_fetch_array($req_statut);
         if ($rep_statut["statut"] == "professeur") {
 
-            $req_compare_groupes = mysql_query("SELECT id_groupe FROM j_groupes_professeurs WHERE 
+            $req_compare_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT id_groupe FROM j_groupes_professeurs WHERE 
                                     login = '".$_SESSION["couper_edt"]."' AND
                                     id_groupe NOT IN (SELECT id_groupe FROM j_groupes_professeurs WHERE
                                                     login = '".$login."' ) 
                                     ");
-            if (mysql_num_rows($req_compare_groupes) == 0) {
-                $req_edt_prof = mysql_query("SELECT * FROM edt_cours WHERE 
+            if (mysqli_num_rows($req_compare_groupes) == 0) {
+                $req_edt_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE 
                                                             login_prof = '".$login."'
-                                                            ") or die(mysql_error());  
-                if (mysql_num_rows($req_edt_prof) == 0) {
-                        $remplacement = mysql_query("UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
+                                                            ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
+                if (mysqli_num_rows($req_edt_prof) == 0) {
+                        $remplacement = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
                         $message = "<div class=\"cadreInformation\">transfert réalisé. Les cours ont été déplacés avec succès</div>";
                 }
                 else {
@@ -194,14 +194,14 @@ if (!strstr($ua, "MSIE 6.0")) {
 		echo "<div class=\"titre_creneau_t_edt\">créneaux</div>";
         echo "<div style=\"clear:both;\"></div>";
 
-	$req_profs = mysql_query("SELECT login, nom , prenom FROM utilisateurs WHERE
+	$req_profs = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom , prenom FROM utilisateurs WHERE
 					statut = 'professeur' ORDER BY nom ASC");
-	while ($rep_profs = mysql_fetch_array($req_profs)) {
-		$req_cours = mysql_query("SELECT id_cours FROM edt_cours WHERE
+	while ($rep_profs = mysqli_fetch_array($req_profs)) {
+		$req_cours = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours FROM edt_cours WHERE
 					login_prof = '".$rep_profs['login']."'");
 		echo "<div class=\"texte_nom_t_edt\"><strong>".$rep_profs['nom']."</strong></div>";
 		echo "<div class=\"texte_prenom_t_edt\">".$rep_profs['prenom']."</div>";
-		echo "<div class=\"texte_creneau_t_edt\">".mysql_num_rows($req_cours)."</div>";
+		echo "<div class=\"texte_creneau_t_edt\">".mysqli_num_rows($req_cours)."</div>";
 		echo "<div class=\"bouton_supprimer_t_edt\"><a href=\"./transferer_edt.php?supprimer=ok&amp;login=".$rep_profs['login']." \" ><img src=\"../templates/".NameTemplateEDT()."/images/erase.png\" title=\"Supprimer l'emploi du temps\" alt=\"Supprimer\" /></a></div>";
 		echo "<div class=\"bouton_copier_t_edt\"><a href=\"./transferer_edt.php?couper=ok&amp;login=".$rep_profs['login']."\" title=\"Déplacer cet emploi du temps\"><img src=\"../templates/".NameTemplateEDT()."/images/copy.png\" title=\"Déplacer cet emploi du temps\" alt=\"Copier\" /></a></div>";
 		echo "<div class=\"bouton_coller_t_edt\"><a href=\"./transferer_edt.php?coller=ok&amp;login=".$rep_profs['login']."\" ><img src=\"../templates/".NameTemplateEDT()."/images/paste.png\" title=\"Enseignant destinataire\" alt=\"Coller\" /></a></div>";

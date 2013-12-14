@@ -99,12 +99,12 @@ if(isset($_GET['corriger'])) {
 
 	$sql="SELECT * FROM $table ORDER BY sortable_rank, nom;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="UPDATE $table SET sortable_rank='$cpt' WHERE id='$lig->id';";
 		//echo "$sql<br />";
-		$update=mysql_query($sql);
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$update) {
 			$msg="Erreur lors de la correction des rangs.<br />";
 			break;

@@ -87,12 +87,12 @@
             //------------------------------
             $z=0;
             while ($z < $nb_aid_b) {
-                $display_begin = @mysql_result($call_data_aid_b, $z, "display_begin");
-                $display_end = @mysql_result($call_data_aid_b, $z, "display_end");
+                $display_begin = @old_mysql_result($call_data_aid_b, $z, "display_begin");
+                $display_end = @old_mysql_result($call_data_aid_b, $z, "display_end");
                 if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
-                    $indice_aid = @mysql_result($call_data_aid_b, $z, "indice_aid");
-                    $aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
-                    $aid_id = @mysql_result($aid_query, 0, "id_aid");
+                    $indice_aid = @old_mysql_result($call_data_aid_b, $z, "indice_aid");
+                    $aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
+                    $aid_id = @old_mysql_result($aid_query, 0, "id_aid");
                     if ($aid_id != '') {
                         //affich_aid($affiche_graph, $affiche_rang, $affiche_coef,$test_coef,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
                         affich_aid1($affiche_graph, $affiche_rang, $affiche_coef,$test_coef,$affiche_nbdev,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
@@ -110,7 +110,7 @@
         $prev_cat_id = null;
             while ($j < $nombre_groupes) {
             // On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichée
-            $test_cn = mysql_query("select distinct c.nom_court, c.id, nc.note from cn_cahier_notes cn, cn_conteneurs c, cn_notes_conteneurs nc
+            $test_cn = mysqli_query($GLOBALS["mysqli"], "select distinct c.nom_court, c.id, nc.note from cn_cahier_notes cn, cn_conteneurs c, cn_notes_conteneurs nc
             where (
             cn.periode = '".$periode_num."' and
             cn.id_groupe='".$current_group[$j]["id"]."' and
@@ -121,12 +121,12 @@
             nc.login='".$current_eleve_login[$i]."' and
             c.display_bulletin = 1
             ) ");
-            $nb_ligne_cn = mysql_num_rows($test_cn);
+            $nb_ligne_cn = mysqli_num_rows($test_cn);
             $n = 0;
             while ($n < $nb_ligne_cn) {
-                $cn_id[$n] = mysql_result($test_cn, $n, 'c.id');
-                $cn_nom[$n] = mysql_result($test_cn, $n, 'c.nom_court');
-                $cn_note[$n] = @mysql_result($test_cn, $n ,'nc.note');
+                $cn_id[$n] = old_mysql_result($test_cn, $n, 'c.id');
+                $cn_nom[$n] = old_mysql_result($test_cn, $n, 'c.nom_court');
+                $cn_note[$n] = @old_mysql_result($test_cn, $n ,'nc.note');
                 $cn_note[$n] = number_format($cn_note[$n],1, ',', ' ');
                 $n++;
             }
@@ -147,15 +147,15 @@
         // Nombre de contrôles
         $sql="SELECT cnd.note, cd.note_sur FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE cnd.login='".$current_eleve_login[$i]."' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num' AND cnd.statut='';";
         //echo "\n<!--sql=$sql-->\n";
-        $result_nbct=mysql_query($sql);
-        $current_eleve_nbct=mysql_num_rows($result_nbct);
+        $result_nbct=mysqli_query($GLOBALS["mysqli"], $sql);
+        $current_eleve_nbct=mysqli_num_rows($result_nbct);
 
 	//++++++++++++++++++++++++
 	// Modif d'après F.Boisson
 	// on prend les notes dans $string_notes
 	$string_notes='';
 	if ($result_nbct ) {
-		while ($snnote =  mysql_fetch_assoc($result_nbct)) {
+		while ($snnote =  mysqli_fetch_assoc($result_nbct)) {
 			if ($string_notes != '') $string_notes .= ", ";
 			$string_notes .= $snnote['note'];
 			if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
@@ -169,8 +169,8 @@
         // Nombre total de devoirs:
         $sql="SELECT cd.id FROM cn_devoirs cd, cn_cahier_notes ccn WHERE cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe='".$current_group[$j]["id"]."' AND ccn.periode='$periode_num';";
         //echo "\n<!--sql=$sql-->\n";
-        $result_nbct_tot=mysql_query($sql);
-        $current_matiere_nbct=mysql_num_rows($result_nbct_tot);
+        $result_nbct_tot=mysqli_query($GLOBALS["mysqli"], $sql);
+        $current_matiere_nbct=mysqli_num_rows($result_nbct_tot);
         //==========================================
 
 
@@ -182,7 +182,7 @@
                         // On est dans une nouvelle catégorie
 
                         // On récupère les infos nécessaires, et on affiche une ligne
-                        $cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+                        $cat_name = html_entity_decode(old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group[$j]["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
                         // On détermine le nombre de colonnes pour le colspan
 
 
@@ -222,11 +222,11 @@
                         if ($bull_affiche_appreciations == 'y') {$nb_total_cols++; $nb_last_cols++;}
 
                         // On regarde s'il faut afficher la moyenne de l'élève pour cette catégorie
-		                $affiche_cat_moyenne_query = mysql_query("SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
-		                if (mysql_num_rows($affiche_cat_moyenne_query) == "0") {
+		                $affiche_cat_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $prev_cat_id . "')");
+		                if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
 		                	$affiche_cat_moyenne = false;
 		                } else {
-		                	$affiche_cat_moyenne = mysql_result($affiche_cat_moyenne_query, 0);
+		                	$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 		                }
 
                         // On a toutes les infos. On affiche !
@@ -472,12 +472,12 @@
             //------------------------------
             $z=0;
             while ($z < $nb_aid_e) {
-                $display_begin = @mysql_result($call_data_aid_e, $z, "display_begin");
-                $display_end = @mysql_result($call_data_aid_e, $z, "display_end");
+                $display_begin = @old_mysql_result($call_data_aid_e, $z, "display_begin");
+                $display_end = @old_mysql_result($call_data_aid_e, $z, "display_end");
                 if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
-                    $indice_aid = @mysql_result($call_data_aid_e, $z, "indice_aid");
-                    $aid_query = mysql_query("SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
-                    $aid_id = @mysql_result($aid_query, 0, "id_aid");
+                    $indice_aid = @old_mysql_result($call_data_aid_e, $z, "indice_aid");
+                    $aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
+                    $aid_id = @old_mysql_result($aid_query, 0, "id_aid");
                     if ($aid_id != '') {
 			//affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');
 			affich_aid1($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid,$aid_id,$current_eleve_login[$i],$periode_num,$id_classe, 'bulletin');

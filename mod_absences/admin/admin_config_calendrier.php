@@ -154,7 +154,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
             if( $nom_calendrier_ins != "" && $jourdebut_calendrier_ins != "" )
             {
 			$test = '1';
-                            if($action_sql == "modifier") { $test = mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."edt_calendrier WHERE id_calendrier = '$id_calendrier_ins'"),0); }
+                            if($action_sql == "modifier") { $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."edt_calendrier WHERE id_calendrier = '$id_calendrier_ins'"),0); }
                               if ($test === '1')
                               {
 					// conversion des date et heure au format timestamps
@@ -180,7 +180,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 						     WHERE id_calendrier = '".$id_calendrier_ins."'";
                                   }
                                 // Execution de cette requete dans la base cartouche
-                                  mysql_query($requete) or die('Erreur SQL !'.$sql.'<br />'.mysql_error());
+                                  mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                                   $verification[$total] = 1;
                               } else {
                                         // vérification = 2 - Ce créneaux horaires existe déjas
@@ -229,14 +229,14 @@ if ($action_sql == "supprimer")
      //Requete de supprersion MYSQL
      $requete = "DELETE FROM ".$prefix_base."edt_calendrier WHERE id_calendrier ='$id_calendrier'";
      // Execution de cette requete
-     mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+     mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
  }
 
 if ($action == "modifier")
  {
       $requete_modif_calendrier = 'SELECT * FROM '.$prefix_base.'edt_calendrier WHERE id_calendrier = "'.$id_calendrier.'"';
-      $resultat_modif_calendrier = mysql_query($requete_modif_calendrier) or die('Erreur SQL !'.$requete_modif_calendrier.'<br />'.mysql_error());
-      $data_modif_calendrier = mysql_fetch_array($resultat_modif_calendrier);
+      $resultat_modif_calendrier = mysqli_query($GLOBALS["mysqli"], $requete_modif_calendrier) or die('Erreur SQL !'.$requete_modif_calendrier.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $data_modif_calendrier = mysqli_fetch_array($resultat_modif_calendrier);
 
 	$id_calendrier['0'] = $data_modif_calendrier['id_calendrier'];
 	$classe_concerne_calendrier['0'] = $data_modif_calendrier['classe_concerne_calendrier'];
@@ -313,9 +313,9 @@ echo "</p>";
       </tr>
     <?php
     $requete_periode = 'SELECT * FROM '.$prefix_base.'edt_calendrier ORDER BY debut_calendrier_ts ASC';
-    $execution_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $i=1;
-    while ( $data_periode = mysql_fetch_array( $execution_periode ) ) {
+    while ( $data_periode = mysqli_fetch_array( $execution_periode ) ) {
        if ($i === '1') { $i = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
         <tr class="<?php echo $couleur_cellule; ?>">
           <td><?php echo $data_periode['nom_calendrier']; ?></td>
@@ -417,10 +417,10 @@ echo "</p>";
 		<?php
 			$requete_classe = ('SELECT * FROM '.$prefix_base.'classes c
 						 ORDER BY c.classe ASC');
-	                $resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
+	                $resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                 ?><option value="" <?php if ( $tab_classe['0'] === '' ) { ?>selected="selected"<?php } ?>>toute les classe</option>
-                        <?php while ( $donnee_classe = mysql_fetch_array ($resultat_classe)) { ?>
+                        <?php while ( $donnee_classe = mysqli_fetch_array($resultat_classe)) { ?>
                                <option value="<?php echo $donnee_classe['id']; ?>" <?php if ( in_array($donnee_classe['id'],$tab_classe, TRUE) ) { ?>selected="selected"<?php } ?>><?php echo ucwords($donnee_classe['classe']); ?></option>
                         <?php } ?>
                 </select>

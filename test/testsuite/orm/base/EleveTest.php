@@ -475,10 +475,10 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier une saisie à la main
 	    $tomorow = new DateTime('now');
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -486,10 +486,10 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier une version de saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -499,10 +499,10 @@ class EleveTest extends GepiEmptyTestBase
 	    $tomorow->modify("+1 day");
 	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst();
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
-        mysql_query("update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
 	    $florence_eleve->updateAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -511,44 +511,44 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier à la main une saisie
 	    sleep(1);
 	    $saisie_id = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId();
-        mysql_query("update a_saisies set updated_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now()-10 where id = ".$saisie_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set deleted_at = now() where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set deleted_at = now() where id = ".$saisie_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set deleted_at = now()-10 where id = ".$saisie_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set deleted_at = now()-10 where id = ".$saisie_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
-        mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_traitements set updated_at = now()-10 where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now()-10 where id = ".$traitement_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_traitements set deleted_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set deleted_at = now() where id = ".$traitement_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_traitements set deleted_at = now()-10 where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set deleted_at = now()-10 where id = ".$traitement_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
 	    $saisie_version_id = AbsenceEleveSaisieVersionQuery::create()->filterByAbsenceEleveSaisie($florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst())->findOne()->getId();
-        mysql_query("update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now() where id = ".$saisie_version_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now()-10 where id = ".$saisie_version_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies_version set deleted_at = now() where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set deleted_at = now() where id = ".$saisie_version_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies_version set deleted_at = now()-10 where id = ".$saisie_version_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set deleted_at = now()-10 where id = ".$saisie_version_id);
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(DIMANCHE_s41j7.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    
@@ -583,10 +583,10 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier une saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -594,10 +594,10 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier une version de saisie à la main
 	    $tomorow = new DateTime();
 	    $tomorow->modify("+1 day");
-        mysql_query("update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where eleve_id = ".$florence_eleve->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies_version set updated_at = now() where eleve_id = ".$florence_eleve->getId());
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -607,10 +607,10 @@ class EleveTest extends GepiEmptyTestBase
 	    $tomorow->modify("+1 day");
 	    $saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(SAMEDI_s40j6)->getFirst();
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
-        mysql_query("update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = '".$tomorow->format('Y-m-d H:i:s')."' where id = ".$traitement_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
-        mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59'));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertTrue($florence_eleve->checkSynchroAbsenceAgregationTable());
@@ -618,7 +618,7 @@ class EleveTest extends GepiEmptyTestBase
 	    //on va modifier à la main une saisie
 	    sleep(1);
 	    $traitement_id = AbsenceEleveTraitementQuery::create()->filterByAbsenceEleveSaisie($saisie)->findOne()->getId();
-        mysql_query("update a_traitements set updated_at = now() where id = ".$traitement_id);
+        mysqli_query($GLOBALS["mysqli"], "update a_traitements set updated_at = now() where id = ".$traitement_id);
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    $florence_eleve->thinCheckAndUpdateSynchroAbsenceAgregationTable();
@@ -639,7 +639,7 @@ class EleveTest extends GepiEmptyTestBase
 	    
 	    //on va modifier à la main une saisie
 	    sleep(1);
-        mysql_query("update a_saisies set updated_at = now() where id = ".$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
+        mysqli_query($GLOBALS["mysqli"], "update a_saisies set updated_at = now() where id = ".$saisie = $florence_eleve->getAbsenceEleveSaisiesDuJour(VENDREDI_s40j5)->getFirst()->getId());
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable(new DateTime(VENDREDI_s40j5.' 00:00:00'),new DateTime(VENDREDI_s42j5.' 23:59:59')));
 	    $this->assertFalse($florence_eleve->checkSynchroAbsenceAgregationTable());
 	    $florence_eleve->checkAndUpdateSynchroAbsenceAgregationTable(new DateTime(LUNDI_s41j1.' 00:00:00'),new DateTime(MARDI_s41j2.' 23:59:59'));

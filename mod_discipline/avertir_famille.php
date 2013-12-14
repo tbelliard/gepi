@@ -116,13 +116,13 @@ echo "</tr>\n";
 
 $sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 //echo "$sql<br />\n";
-$res_dest=mysql_query($sql);
-$nb_resp_legaux=mysql_num_rows($res_dest);
+$res_dest=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_resp_legaux=mysqli_num_rows($res_dest);
 
 $sql="SELECT rp.nom, rp.prenom, rp.civilite, rp.pers_id, rp.adr_id, r.resp_legal, ra.* FROM resp_pers rp, responsables2 r, eleves e, resp_adr ra WHERE ra.adr_id=rp.adr_id AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
-$res_dest=mysql_query($sql);
-if(mysql_num_rows($res_dest)>0) {
-	while($lig=mysql_fetch_object($res_dest)) {
+$res_dest=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_dest)>0) {
+	while($lig=mysqli_fetch_object($res_dest)) {
 		$num=$lig->resp_legal-1;
 
 		$tab_resp[$num]=array();
@@ -173,12 +173,12 @@ if(mysql_num_rows($res_dest)>0) {
 		}
 
 		$sql="SELECT rp.nom, rp.prenom, rp.civilite, rp.pers_id, rp.adr_id, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' AND r.resp_legal='$num_resp_sans_adr';";
-		$res_dest=mysql_query($sql);
-		if(mysql_num_rows($res_dest)>0) {
+		$res_dest=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_dest)>0) {
 			$nb_adr=2;
 
 			// Il y a un autre responsable légal
-			$lig=mysql_fetch_object($res_dest);
+			$lig=mysqli_fetch_object($res_dest);
 			$num=$lig->resp_legal-1;
 
 			$tab_resp[$num]=array();
@@ -195,9 +195,9 @@ if(mysql_num_rows($res_dest)>0) {
 else {
 	// Aucune adresse pour les resp_legal 1 et 2
 	$sql="SELECT rp.nom, rp.prenom, rp.civilite, rp.pers_id, rp.adr_id, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND e.login='$ele_login' ORDER BY r.resp_legal;";
-	$res_dest=mysql_query($sql);
+	$res_dest=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$nb_adr=mysql_num_rows($res_dest);
+	$nb_adr=mysqli_num_rows($res_dest);
 	if($nb_adr==0) {
 		/*
 		echo "<tr class='lig-1'>\n";
@@ -207,7 +207,7 @@ else {
 		*/
 	}
 	else {
-		while($lig=mysql_fetch_object($res_dest)) {
+		while($lig=mysqli_fetch_object($res_dest)) {
 			$num=$lig->resp_legal-1;
 
 			$tab_resp[$num]=array();
@@ -350,12 +350,12 @@ if(!isset($id_communication)) {
 	// Afficher les détails de l'incident.
 
 	$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
-	$res_incident=mysql_query($sql);
-	if(mysql_num_rows($res_incident)==0) {
+	$res_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_incident)==0) {
 		echo "??? L'incident n°$id_incident n'existe pas ???";
 	}
 	else {
-		$lig_inc=mysql_fetch_object($res_incident);
+		$lig_inc=mysqli_fetch_object($res_incident);
 		echo "Nature: $lig_inc->nature
 
 Description:

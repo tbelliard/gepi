@@ -40,8 +40,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-$nom_generique_aid = @mysql_result($call_data, 0, "nom");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$nom_generique_aid = @old_mysql_result($call_data, 0, "nom");
 
 //**************** EN-TETE *****************
 $titre_page = "Gestion des ".$nom_generique_aid." | Outil d'importation";
@@ -61,19 +61,19 @@ $long_max = 8000;
 
 if (!isset($is_posted)) {
 
-    $test = mysql_query("SELECT * FROM aid WHERE indice_aid='$indice_aid'");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
 
-    $nb_test = mysql_num_rows($test);
+    $nb_test = mysqli_num_rows($test);
 
     if ($nb_test == 0) {
 
         // Par sécurité, on efface d'éventuelles données résiduelles dans les tables j_aid_utilisateurs et j_aid_eleves
-        $del = mysql_query("DELETE FROM j_aidcateg_super_gestionnaires WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_utilisateurs_gest WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_eleves_resp WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aidcateg_super_gestionnaires WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_utilisateurs_gest WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_eleves_resp WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
 
         $is_posted='debut';
 
@@ -134,10 +134,10 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
     if (isset($confirm) and ($confirm == 'Oui')) {
         check_token(false);
 
-        $del = mysql_query("DELETE FROM aid WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
-        $del = mysql_query("DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM aid WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
+        $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM aid_appreciations WHERE indice_aid='$indice_aid'");
         echo "<p>Les données concernant les $nom_generique_aid ont été définitivement supprimées !</p>";
     }
     echo "<p>Choisissez une des deux options suivantes :</p>";
@@ -245,11 +245,11 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
                     $row++;
                     //login
                     if ($type_import == 1) {
-                        $call_login = mysql_query("SELECT login FROM eleves WHERE login='$data[0]'");
+                        $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login='$data[0]'");
                     } else {
-                        $call_login = mysql_query("SELECT login FROM utilisateurs WHERE login='$data[0]'");
+                        $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE login='$data[0]'");
                     }
-                    $test = mysql_num_rows($call_login);
+                    $test = mysqli_num_rows($call_login);
                     if ($test == 0) {
                         $erreur = 'yes';
                         echo "<p><font color='red'>Erreur dans le fichier à la ligne $row : $data[0] ne correspond à aucun identifiant GEPI.</font></p>";
@@ -265,7 +265,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
             if ($erreur == 'no') {
 
-                $del = mysql_query("delete from tempo2");
+                $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
                 //$fp = fopen($csvfile, "r");
                 $fp = fopen($csvfile['tmp_name'], "r");
@@ -296,7 +296,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                         $query = "INSERT INTO tempo2 VALUES('$data[0]', '$data[1]')";
 
-                        $register = mysql_query($query);
+                        $register = mysqli_query($GLOBALS["mysqli"], $query);
 
                         if (!$register) {
 
@@ -346,9 +346,9 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
 
 
-                    $call_data = mysql_query("SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
+                    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
 
-                    $nb_aid = mysql_num_rows($call_data);
+                    $nb_aid = mysqli_num_rows($call_data);
 
 
 
@@ -364,13 +364,13 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                     while ($i < $nb_aid) {
 
-                        $nom_aid = mysql_result($call_data, $i, "col2");
+                        $nom_aid = old_mysql_result($call_data, $i, "col2");
 
                         $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
-                        $test = mysql_query("SELECT * FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
+                        $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
 
-                        $nb_test = mysql_num_rows($test);
+                        $nb_test = mysqli_num_rows($test);
 
                         if ($nb_test == 0) {
 
@@ -396,7 +396,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
                 } else {
 
-                    $del = mysql_query("delete from tempo2");
+                    $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
                     echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
 
@@ -431,13 +431,13 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
     echo "<td><p class=\"small\">Remarque</p></td></tr>";
 
-    $call_max = mysql_query("SELECT max(id) max FROM aid WHERE indice_aid='$indice_aid'");
+    $call_max = mysqli_query($GLOBALS["mysqli"], "SELECT max(id) max FROM aid WHERE indice_aid='$indice_aid'");
 
-    $max_id = mysql_result($call_max,0,max);
+    $max_id = old_mysql_result($call_max,0,max);
 
-    $call_data = mysql_query("SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct col2 FROM tempo2 WHERE col2!='' ORDER BY col2");
 
-    $nb_aid = mysql_num_rows($call_data);
+    $nb_aid = mysqli_num_rows($call_data);
 
     // On enregistre les AID
 
@@ -447,21 +447,21 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
     while ($i < $nb_aid) {
 
-        $nom_aid = mysql_result($call_data, $i, "col2");
+        $nom_aid = old_mysql_result($call_data, $i, "col2");
 
         $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
         $num_aid = '';
 
-        $test = mysql_query("SELECT * FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
+        $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
 
-        $nb_test = mysql_num_rows($test);
+        $nb_test = mysqli_num_rows($test);
 
         if ($nb_test == 0) {
 
             $max_id++;
 
-            $reg = mysql_query("INSERT INTO aid SET id = '$max_id', nom='$temp', numero='$num_aid', indice_aid='$indice_aid'");
+            $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$max_id', nom='$temp', numero='$num_aid', indice_aid='$indice_aid'");
 
             if ($reg) {
 
@@ -521,9 +521,9 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
         $nb = 0;
 
-        $call_data = mysql_query("SELECT * FROM tempo2");
+        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo2");
 
-        $nb_lignes = mysql_num_rows($call_data);
+        $nb_lignes = mysqli_num_rows($call_data);
 
         $pb_reg = "no";
 
@@ -531,19 +531,19 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
         while ($i < $nb_lignes) {
 
-            $champ1 = mysql_result($call_data, $i, "col1");
+            $champ1 = old_mysql_result($call_data, $i, "col1");
 
             if ($type_import == 1) {
 
-                $call_login = mysql_query("SELECT login FROM eleves WHERE login='$champ1'");
+                $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login='$champ1'");
 
             } else {
 
-                $call_login = mysql_query("SELECT login FROM utilisateurs WHERE login='$champ1'");
+                $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE login='$champ1'");
 
             }
 
-            $test = mysql_num_rows($call_login);
+            $test = mysqli_num_rows($call_login);
 
             if ($test != 0) {
 
@@ -551,25 +551,25 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
                 // On peut continuer !
 
-                $nom_aid = mysql_result($call_data, $i, "col2");
+                $nom_aid = old_mysql_result($call_data, $i, "col2");
 
                 $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
-                $call_id = mysql_query("SELECT id FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
+                $call_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid WHERE (nom = '$temp' and indice_aid='$indice_aid')");
 
-                $id_aid = mysql_result($call_id, 0, "id");
+                $id_aid = old_mysql_result($call_id, 0, "id");
 
                 if ($type_import == 1) {
 
-                    $call_test = mysql_query("SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and indice_aid='$indice_aid')");
+                    $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and indice_aid='$indice_aid')");
 
                 } else {
 
-                    $call_test = mysql_query("SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and id_aid='$id_aid' and indice_aid='$indice_aid')");
+                    $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and id_aid='$id_aid' and indice_aid='$indice_aid')");
 
                 }
 
-                $test2 = mysql_num_rows($call_test);
+                $test2 = mysqli_num_rows($call_test);
 
                 // pour les élèves : un élève ne peut suivre qu'une seule AID. Si une ligne existe déjà on la met à jour (update)
 
@@ -577,7 +577,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
                 if ($test2 == 0) {
 
-                    $reg = mysql_query("INSERT INTO $aid_table SET id_aid='$id_aid', $nom_champ = '$champ1', indice_aid='$indice_aid'");
+                    $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO $aid_table SET id_aid='$id_aid', $nom_champ = '$champ1', indice_aid='$indice_aid'");
 
                     if (!$reg) {
 
@@ -593,7 +593,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
                     if ($type_import == 1) {
 
-                        $reg = mysql_query("UPDATE $aid_table SET id_aid='$id_aid' WHERE ($nom_champ = '$champ1' and indice_aid='$indice_aid')");
+                        $reg = mysqli_query($GLOBALS["mysqli"], "UPDATE $aid_table SET id_aid='$id_aid' WHERE ($nom_champ = '$champ1' and indice_aid='$indice_aid')");
 
                         if (!$reg) {
 
@@ -643,7 +643,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
 
 
-        $del = mysql_query("delete from tempo2");
+        $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
     }
 
@@ -851,15 +851,15 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     if ($type_import == 1) {
 
-                        $call_login = mysql_query("SELECT login FROM eleves WHERE login='$data[0]'");
+                        $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login='$data[0]'");
 
-                        $test = mysql_num_rows($call_login);
+                        $test = mysqli_num_rows($call_login);
 
                     } else if ($type_import == 2) {
 
-                        $call_login = mysql_query("SELECT login FROM utilisateurs WHERE login='$data[0]'");
+                        $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE login='$data[0]'");
 
-                        $test = mysql_num_rows($call_login);
+                        $test = mysqli_num_rows($call_login);
 
                     } else {
 
@@ -889,9 +889,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     }
 
-                    $call_aid = mysql_query("SELECT * FROM aid WHERE (id='$data[1]' and indice_aid='$indice_aid')");
+                    $call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='$data[1]' and indice_aid='$indice_aid')");
 
-                    $test = mysql_num_rows($call_aid);
+                    $test = mysqli_num_rows($call_aid);
 
                     if (($test == 0) and ($type_import != 3)) {
 
@@ -951,7 +951,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
             if ($erreur == 'no') {
 
-                $del = mysql_query("delete from tempo2");
+                $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
                 //$fp = fopen($csvfile, "r");
                 $fp = fopen($csvfile['tmp_name'], "r");
@@ -982,7 +982,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         $query = "INSERT INTO tempo2 VALUES('$data[0]', '$data[1]')";
 
-                        $register = mysql_query($query);
+                        $register = mysqli_query($GLOBALS["mysqli"], $query);
 
                         if (!$register) {
 
@@ -1012,9 +1012,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         echo "<input type=submit value='Enregistrer' />";
 
-                        $call_data = mysql_query("SELECT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
+                        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
 
-                        $nb_aid = mysql_num_rows($call_data);
+                        $nb_aid = mysqli_num_rows($call_data);
 
                         echo "<table border=1 cellpadding=2 cellspacing=2>";
 
@@ -1024,27 +1024,27 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         while ($i < $nb_aid) {
 
-                            $login_individu = mysql_result($call_data, $i, "col1");
+                            $login_individu = old_mysql_result($call_data, $i, "col1");
 
-                            $id_aid = mysql_result($call_data, $i, "col2");
+                            $id_aid = old_mysql_result($call_data, $i, "col2");
 
                             if ($type_import == 1) {
 
-                                $call_individus = mysql_query("SELECT nom, prenom FROM eleves WHERE login='$login_individu'");
+                                $call_individus = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login='$login_individu'");
 
                             } else {
 
-                                $call_individus = mysql_query("SELECT nom, prenom FROM utilisateurs WHERE login='$login_individu'");
+                                $call_individus = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM utilisateurs WHERE login='$login_individu'");
 
                             }
 
-                            $nom_individu = mysql_result($call_individus, 0, 'nom');
+                            $nom_individu = old_mysql_result($call_individus, 0, 'nom');
 
-                            $prenom_individu = mysql_result($call_individus, 0, 'prenom');
+                            $prenom_individu = old_mysql_result($call_individus, 0, 'prenom');
 
-                            $call_aid = mysql_query("SELECT nom FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
+                            $call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
 
-                            $nom_aid = mysql_result($call_aid, 0, 'nom');
+                            $nom_aid = old_mysql_result($call_aid, 0, 'nom');
 
 
 
@@ -1062,9 +1062,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         echo "<input type=submit value='Enregistrer les $nom_generique_aid' />";
 
-                        $call_data = mysql_query("SELECT DISTINCT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
+                        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
 
-                        $nb_aid = mysql_num_rows($call_data);
+                        $nb_aid = mysqli_num_rows($call_data);
 
                         echo "<table border=1 cellpadding=2 cellspacing=2>";
 
@@ -1074,9 +1074,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                         while ($i < $nb_aid) {
 
-                            $nom_aid = mysql_result($call_data, $i, "col1");
+                            $nom_aid = old_mysql_result($call_data, $i, "col1");
 
-                            $id_aid = mysql_result($call_data, $i, "col2");
+                            $id_aid = old_mysql_result($call_data, $i, "col2");
 
                             echo "<tr><td><p><b>$id_aid</b></p></td>";
 
@@ -1100,7 +1100,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                 } else {
 
-                    $del = mysql_query("delete from tempo2");
+                    $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
                     echo "<p>AVERTISSEMENT : Une ou plusieurs erreurs ont été détectées lors de l'enregistrement des données dans la table temporaire : l'opération d'importation ne peut continuer !</p>";
 
@@ -1131,9 +1131,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
     if ($type_import == 3) {
 
-        $call_data = mysql_query("SELECT DISTINCT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
+        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT * FROM tempo2 WHERE ((col1 !='') and (col2!='')) ORDER BY col1");
 
-        $nb_aid = mysql_num_rows($call_data);
+        $nb_aid = mysqli_num_rows($call_data);
 
         // On enregistre les AID
 
@@ -1141,19 +1141,19 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
         while ($i < $nb_aid) {
 
-            $nom_aid = mysql_result($call_data, $i, "col1");
+            $nom_aid = old_mysql_result($call_data, $i, "col1");
 
             $temp = traitement_magic_quotes(corriger_caracteres($nom_aid));
 
-            $id_aid = mysql_result($call_data, $i, "col2");
+            $id_aid = old_mysql_result($call_data, $i, "col2");
 
-            $test = mysql_query("SELECT * FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
+            $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id='$id_aid' and indice_aid='$indice_aid')");
 
-            $nb_test = mysql_num_rows($test);
+            $nb_test = mysqli_num_rows($test);
 
             if ($nb_test == 0) {
 
-                $reg = mysql_query("INSERT INTO aid SET id = '$id_aid', nom='$temp', numero='$id_aid', indice_aid='$indice_aid'");
+                $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$id_aid', nom='$temp', numero='$id_aid', indice_aid='$indice_aid'");
 
                 if ($reg) {
 
@@ -1197,9 +1197,9 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
         $nb = 0;
 
-        $call_data = mysql_query("SELECT * FROM tempo2");
+        $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo2");
 
-        $nb_lignes = mysql_num_rows($call_data);
+        $nb_lignes = mysqli_num_rows($call_data);
 
         $pb_reg = "no";
 
@@ -1207,19 +1207,19 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
         while ($i < $nb_lignes) {
 
-            $champ1 = mysql_result($call_data, $i, "col1");
+            $champ1 = old_mysql_result($call_data, $i, "col1");
 
             if ($type_import == 1) {
 
-                $call_login = mysql_query("SELECT login FROM eleves WHERE login='$champ1'");
+                $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE login='$champ1'");
 
             } else {
 
-                $call_login = mysql_query("SELECT login FROM utilisateurs WHERE login='$champ1'");
+                $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM utilisateurs WHERE login='$champ1'");
 
             }
 
-            $test = mysql_num_rows($call_login);
+            $test = mysqli_num_rows($call_login);
 
             if ($test != 0) {
 
@@ -1227,25 +1227,25 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                 // On peut continuer !
 
-                $id_aid = mysql_result($call_data, $i, "col2");
+                $id_aid = old_mysql_result($call_data, $i, "col2");
 
-                $call_aid = mysql_query("SELECT * FROM aid WHERE (id = '$id_aid' and indice_aid='$indice_aid')");
+                $call_aid = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (id = '$id_aid' and indice_aid='$indice_aid')");
 
-                $test1 = mysql_num_rows($call_aid);
+                $test1 = mysqli_num_rows($call_aid);
 
                 if ($test1 != 0) {
 
                     if ($type_import == 1) {
 
-                        $call_test = mysql_query("SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and indice_aid='$indice_aid')");
+                        $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and indice_aid='$indice_aid')");
 
                     } else {
 
-                        $call_test = mysql_query("SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and id_aid='$id_aid' and indice_aid='$indice_aid')");
+                        $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM $aid_table WHERE ($nom_champ='$champ1' and id_aid='$id_aid' and indice_aid='$indice_aid')");
 
                     }
 
-                    $test2 = mysql_num_rows($call_test);
+                    $test2 = mysqli_num_rows($call_test);
 
                     // pour les élèves : un élève ne peut suivre qu'une seule AID. Si une ligne existe déjà on la met à jour (update)
 
@@ -1253,7 +1253,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                     if ($test2 == 0) {
 
-                        $reg = mysql_query("INSERT INTO $aid_table SET id_aid='$id_aid', $nom_champ = '$champ1', indice_aid='$indice_aid'");
+                        $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO $aid_table SET id_aid='$id_aid', $nom_champ = '$champ1', indice_aid='$indice_aid'");
 
                         if (!$reg) {
 
@@ -1269,7 +1269,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
                         if ($type_import == 1) {
 
-                            $reg = mysql_query("UPDATE $aid_table SET id_aid='$id_aid' WHERE ($nom_champ = '$champ1' and indice_aid='$indice_aid')");
+                            $reg = mysqli_query($GLOBALS["mysqli"], "UPDATE $aid_table SET id_aid='$id_aid' WHERE ($nom_champ = '$champ1' and indice_aid='$indice_aid')");
 
                             if (!$reg) {
 
@@ -1321,7 +1321,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
 
     }
 
-    $del = mysql_query("delete from tempo2");
+    $del = mysqli_query($GLOBALS["mysqli"], "delete from tempo2");
 
 }
 

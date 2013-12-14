@@ -63,8 +63,8 @@ echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -75,8 +75,8 @@ if(mysql_num_rows($res)==0) {
 }
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet;";
-$res=mysql_query($sql);
-$nb_type_brevet=mysql_num_rows($res);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_type_brevet=mysqli_num_rows($res);
 //if(mysql_num_rows($res)==0) {
 if($nb_type_brevet==0) {
 	echo "</p>\n";
@@ -105,7 +105,7 @@ if($nb_type_brevet>1) {
 	$lignes_export_complete2.="<li><a href='generer_csv.php?extract_mode=tous&amp;avec_nom_prenom=y&amp;total_seul=y".add_token_in_url()."'>Générer un export avec nom, prénom, classe pour tous les élèves associés à un type de brevet.</a></li>\n";
 }
 //echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'></a>Extraire une sélection d'élèves</li>\n";
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	echo "<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet.add_token_in_url()."'>Générer le CSV Notanet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 	$lignes_export_complete.="<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet."&amp;avec_nom_prenom=y".add_token_in_url()."'>Générer un export avec nom, prénom, classe pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 	$lignes_export_complete2.="<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet."&amp;avec_nom_prenom=y&amp;total_seul=y".add_token_in_url()."'>Générer un export avec nom, prénom, classe pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";

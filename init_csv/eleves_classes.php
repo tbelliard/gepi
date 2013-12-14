@@ -100,12 +100,12 @@ if (!isset($_POST["action"])) {
 			if ($test != -1) {
 				if($k>0) {echo ", ";}
 				$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
-				$res_test_tab=mysql_query($sql);
-				if(mysql_num_rows($res_test_tab)>0) {
+				$res_test_tab=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_test_tab)>0) {
 					$sql="DELETE FROM $liste_tables_del[$j];";
-					$del = @mysql_query($sql);
+					$del = @mysqli_query($GLOBALS["mysqli"], $sql);
 					echo "<b>".$liste_tables_del[$j]."</b>";
-					echo " (".mysql_num_rows($res_test_tab).")";
+					echo " (".mysqli_num_rows($res_test_tab).")";
 				}
 				else {
 					echo $liste_tables_del[$j];
@@ -116,8 +116,8 @@ if (!isset($_POST["action"])) {
 		}
 
 		$sql="SELECT * FROM tempo2;";
-		$res_temp=mysql_query($sql);
-		if(mysql_num_rows($res_temp)==0) {
+		$res_temp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_temp)==0) {
 			echo "<p style='color:red'>ERREUR&nbsp;: Aucune association élève/classe n'a été trouvée&nbsp;???</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
@@ -132,7 +132,7 @@ if (!isset($_POST["action"])) {
 		$error = 0;
 		// Compteur d'enregistrement
 		$total = 0;
-		while ($lig=mysql_fetch_object($res_temp)) {
+		while ($lig=mysqli_fetch_object($res_temp)) {
 			$reg_id_int = $lig->col1;
 			$reg_classe = $lig->col2;
 
@@ -149,30 +149,30 @@ if (!isset($_POST["action"])) {
 				// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
 				$sql="SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'";
 				//echo "$sql<br />";
-				$test = mysql_query($sql);
-				if (mysql_num_rows($test) == 1) {
-					$login_eleve = mysql_result($test, 0, "login");
+				$test = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (mysqli_num_rows($test) == 1) {
+					$login_eleve = old_mysql_result($test, 0, "login");
 
 					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
-					$sql="SELECT id FROM classes WHERE classe = '" . mysql_real_escape_string($reg_classe) . "'";
+					$sql="SELECT id FROM classes WHERE classe = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
 					//echo "$sql<br />";
-					$test = mysql_query($sql);
+					$test = mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if (mysql_num_rows($test) == 0) {
+					if (mysqli_num_rows($test) == 0) {
 						// Test négatif : aucune classe avec ce nom court... on créé !
 
 						$sql="INSERT INTO classes SET " .
-							"classe = '" . mysql_real_escape_string($reg_classe) . "', " .
-							"nom_complet = '" . mysql_real_escape_string($reg_classe) . "', " .
+							"classe = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+							"nom_complet = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
 							"format_nom = 'np', " .
 							"display_rang = 'n', " .
 							"display_address = 'n', " .
 							"display_coef = 'y'";
 						//echo "$sql<br />";
-						$insert1 = mysql_query($sql);
+						$insert1 = mysqli_query($GLOBALS["mysqli"], $sql);
 						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
-						$classe_id = mysql_insert_id();
+						$classe_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 						for ($p=1;$p<4;$p++) {
 							if ($p == 1) {$v = "O";}
@@ -184,15 +184,15 @@ if (!isset($_POST["action"])) {
 									"id_classe = '" . $classe_id . "', ".
 									"date_verrouillage='0000-00-00 00:00:00'";
 							//echo "$sql<br />";
-							$insert2 = mysql_query($sql);
+							$insert2 = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						$num_periods = 3;
 
 					} else {
 						// La classe existe
 						// On récupère son ID
-						$classe_id = mysql_result($test, 0, "id");
-						$num_periods = mysql_result(mysql_query("SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
+						$classe_id = old_mysql_result($test, 0, "id");
+						$num_periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $classe_id . "'"), 0);
 					}
 
 					// Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association
@@ -202,12 +202,12 @@ if (!isset($_POST["action"])) {
 																	"id_classe = '" . $classe_id . "', " .
 																	"periode = '" . $p . "'";
 						//echo "$sql<br />";
-						$insert = mysql_query($sql);
+						$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 
 					if (!$insert) {
 						$error++;
-						echo "<span style='color:red'>".mysql_error()."</span><br />\n";
+						echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
 					} else {
 						$total++;
 					}
@@ -220,7 +220,7 @@ if (!isset($_POST["action"])) {
 		}
 
 		$sql="update periodes set date_verrouillage='0000-00-00 00:00:00';";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res) {
 			echo "Réinitialisation des dates de verrouillage de périodes effectuée.<br />";
 		}
@@ -305,7 +305,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				$sql="TRUNCATE TABLE tempo2;";
-				$vide_table = mysql_query($sql);
+				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$nb_error=0;
 
@@ -322,8 +322,8 @@ if (!isset($_POST["action"])) {
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>\n";
 						$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-						col2='".mysql_real_escape_string($data_tab[$i]["classe"])."';";
-						$insert=mysql_query($sql);
+						col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["classe"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>";
 							echo $data_tab[$i]["id_int"];

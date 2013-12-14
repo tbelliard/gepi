@@ -82,17 +82,17 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 	else {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe";
 	}
-	$call_classe = mysql_query($sql);
+	$call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
 
-    $nombre_classe = mysql_num_rows($call_classe);
+    $nombre_classe = mysqli_num_rows($call_classe);
 	if($nombre_classe==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else{
 
 		$sql="SELECT MAX(num_periode) nb_max_periode FROM periodes;";
-		$res_per=mysql_query($sql);
-		$tmp_per=mysql_fetch_object($res_per);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		$tmp_per=mysqli_fetch_object($res_per);
 		$nb_max_periode=$tmp_per->nb_max_periode;
 
 		echo "<table class='boireaus'>\n";
@@ -121,8 +121,8 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 		$j = "0";
 		$alt=1;
 		while ($j < $nombre_classe) {
-			$id_classe = mysql_result($call_classe, $j, "id");
-			$classe_suivi = mysql_result($call_classe, $j, "classe");
+			$id_classe = old_mysql_result($call_classe, $j, "id");
+			$classe_suivi = old_mysql_result($call_classe, $j, "classe");
 
 			/*
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis, pour toute la classe, avec rappel des avis des autres périodes.</a>";
@@ -177,16 +177,16 @@ if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours') o
 
 	}
 } else {
-    $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
-    $nombre_classe = mysql_num_rows($call_prof_classe);
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+    $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas de saisir les avis de conseil de classe.";
     } else {
         $j = "0";
         echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br />$classe_suivi --- <a href='saisie_avis1.php?id_classe=$id_classe'>Saisir les avis pour mon groupe.</a>";
             echo "<br />$classe_suivi --- <a href='saisie_avis2.php?id_classe=$id_classe'>Saisir les avis pour mon groupe, avec visualisation des résultats.</a>";
             include "../lib/periodes.inc.php";

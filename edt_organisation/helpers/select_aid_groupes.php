@@ -25,17 +25,17 @@ $test_selected = isset($nom_selected) ? $nom_selected : NULL;
 
 $id_groupe_defaut="";
 $sql="SELECT id FROM groupes WHERE name LIKE '%$valeur%' LIMIT 1;";
-$res_grp=mysql_query($sql);
-if(mysql_num_rows($res_grp)>0) {
-	$lig_grp_def=mysql_fetch_object($res_grp);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_grp)>0) {
+	$lig_grp_def=mysqli_fetch_object($res_grp);
 	$id_groupe_defaut=$lig_grp_def->id;
 }
 else {
 	$tmp_val=preg_replace("/[^A-Za-z0-9]/","%", $valeur);
 	$sql="SELECT id FROM groupes WHERE name LIKE '%$tmp_val%' LIMIT 1;";
-	$res_grp=mysql_query($sql);
-	if(mysql_num_rows($res_grp)>0) {
-		$lig_grp_def=mysql_fetch_object($res_grp);
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp)>0) {
+		$lig_grp_def=mysqli_fetch_object($res_grp);
 		$id_groupe_defaut=$lig_grp_def->id;
 	}
 }
@@ -43,11 +43,11 @@ else {
 $tab_mat_ligne=array();
 if(isset($tab_matiere[$valeur])) {
 	//$sql="SELECT DISTINCT id_groupe FROM j_groupes_matieres WHERE id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."';";
-	$sql="SELECT DISTINCT jgm.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe;";
+	$sql="SELECT DISTINCT jgm.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe;";
 	//echo "$sql<br />";
-	$res_mat=mysql_query($sql);
-	if(mysql_num_rows($res_mat)>0) {
-		while($lig_mat=mysql_fetch_object($res_mat)) {
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mat)>0) {
+		while($lig_mat=mysqli_fetch_object($res_mat)) {
 			$tab_mat_ligne[]=$lig_mat->id_groupe;
 		}
 	}
@@ -58,14 +58,14 @@ echo '
 		<option value="aucun">Liste des AID et des groupes</option>
 			<optgroup label="Les AID">';
 	// on recherche la liste des AID
-	$query = mysql_query("SELECT id, nom FROM aid");
-	$nbre = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom FROM aid");
+	$nbre = mysqli_num_rows($query);
 	for($i = 0; $i < $nbre; $i++){
-		$nom[$i] = mysql_result($query, $i, "nom");
-		$indice_aid[$i] = mysql_result($query, $i, "id");
+		$nom[$i] = old_mysql_result($query, $i, "nom");
+		$indice_aid[$i] = old_mysql_result($query, $i, "id");
 		/*/ On récupère le nom précis de cette AID
 		$query2 = mysql_query("SELECT nom FROM aid WHERE id = '".$indice_aid[$i]."' ORDER BY nom");
-		$nom_aid = mysql_result($query2, 0,"nom");
+		$nom_aid = old_mysql_result($query2, 0,"nom");
 		$query3 = mysql_query("SELECT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid[$i]."'");
 		$nbre_eleves = mysql_num_rows($query3);
 		 ('.$nom_aid.' avec '.$nbre_eleves.' élèves)*/
@@ -87,21 +87,21 @@ echo '
 		echo '
 			<optgroup label="Les groupes de la matière">';
 		//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
-		$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe, g.description";
-		$query = mysql_query($sql);
-		$nbre_groupes = mysql_num_rows($query);
+		$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe, g.description";
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nbre_groupes = mysqli_num_rows($query);
 		for($a = 0; $a < $nbre_groupes; $a++){
-			$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
-			$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
-			$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
+			$id_groupe[$a]["id"] = old_mysql_result($query, $a, "id");
+			$id_groupe[$a]["description"] = old_mysql_result($query, $a, "description");
+			$id_groupe[$a]["name"] = old_mysql_result($query, $a, "name");
 
 			// On récupère toutes les infos pour l'affichage
 			// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
 
-			$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
+			$query1 = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
 			$chaine_classe="";
 			$cpt_classe=0;
-			while($lig_classe=mysql_fetch_object($query1)) {
+			while($lig_classe=mysqli_fetch_object($query1)) {
 				if($cpt_classe>0) {$chaine_classe.=", ";}
 				$chaine_classe.=$lig_classe->classe;
 				$cpt_classe++;
@@ -144,22 +144,22 @@ echo '
 			<optgroup label="Les groupes">';
 	//$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
 	//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
-	$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY g.name, g.description, c.classe";
-	$query = mysql_query($sql);
-	$nbre_groupes = mysql_num_rows($query);
+	$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY g.name, g.description, c.classe";
+	$query = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nbre_groupes = mysqli_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
-		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
-		$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
-		$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
+		$id_groupe[$a]["id"] = old_mysql_result($query, $a, "id");
+		$id_groupe[$a]["description"] = old_mysql_result($query, $a, "description");
+		$id_groupe[$a]["name"] = old_mysql_result($query, $a, "name");
 
 		// On récupère toutes les infos pour l'affichage
 		// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
 
-		$query1 = mysql_query("SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
+		$query1 = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM j_groupes_classes jgc, classes c WHERE jgc.id_classe = c.id AND jgc.id_groupe = '".$id_groupe[$a]["id"]."'");
 		//$classe = mysql_fetch_array($query1);
 		$chaine_classe="";
 		$cpt_classe=0;
-		while($lig_classe=mysql_fetch_object($query1)) {
+		while($lig_classe=mysqli_fetch_object($query1)) {
 			if($cpt_classe>0) {$chaine_classe.=", ";}
 			$chaine_classe.=$lig_classe->classe;
 			$cpt_classe++;

@@ -74,14 +74,14 @@ if($mode=='changer_regime') {
 	}
 
 	$sql="SELECT 1=1 FROM j_eleves_regime WHERE login='$login_eleve';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
 		$sql="INSERT INTO j_eleves_regime SET regime='$regime_eleve', login='$login_eleve';";
 	}
 	else {
 		$sql="UPDATE j_eleves_regime SET regime='$regime_eleve' WHERE login='$login_eleve';";
 	}
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if($res) {
 		echo "<span style='color:green;'>$regime_eleve</span>";

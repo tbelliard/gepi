@@ -51,8 +51,8 @@ if (getSettingValue("GepiCahierTexteVersion") != '2') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_texte_2/consultation2.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/cahier_texte_2/consultation2.php',
 	administrateur='V',
 	professeur='V',
@@ -64,7 +64,7 @@ if(mysql_num_rows($test)==0) {
 	autre='V',
 	description='Cahiers de textes: Consultation',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -257,10 +257,10 @@ else {
 	$tab_profs=array();
 	$tab_profs2=array();
 	$sql="SELECT u.civilite, u.nom, u.prenom, u.login FROM utilisateurs u WHERE etat='actif' AND statut='professeur' ORDER BY u.nom, u.prenom;";
-	$res_prof=mysql_query($sql);
-	if(mysql_num_rows($res_prof)>0) {
+	$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_prof)>0) {
 		$cpt=0;
-		while($lig_prof=mysql_fetch_object($res_prof)) {
+		while($lig_prof=mysqli_fetch_object($res_prof)) {
 			$tab_profs[$cpt]['login']=$lig_prof->login;
 			$tab_profs[$cpt]['civ_nom_prenom']=$lig_prof->civilite." ".casse_mot($lig_prof->nom,'maj')." ".casse_mot($lig_prof->prenom,'majf2');
 			$tab_profs2[$lig_prof->login]=$tab_profs[$cpt]['civ_nom_prenom'];
@@ -271,10 +271,10 @@ else {
 	// Récupération de la liste des classes de l'établissement
 	$tab_classe=array();
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
-	$res_classe=mysql_query($sql);
-	if(mysql_num_rows($res_classe)>0) {
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_classe)>0) {
 		$cpt=0;
-		while($lig_class_prof=mysql_fetch_object($res_classe)) {
+		while($lig_class_prof=mysqli_fetch_object($res_classe)) {
 			$tab_classe[$cpt]['id_classe']=$lig_class_prof->id;
 			$tab_classe[$cpt]['classe']=$lig_class_prof->classe;
 			$cpt++;
@@ -286,10 +286,10 @@ else {
 		$tab_classe_du_prof=array();
 		$sql="SELECT c.classe, jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe;";
 
-		$res_classe=mysql_query($sql);
-		if(mysql_num_rows($res_classe)>0) {
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_classe)>0) {
 			$cpt=0;
-			while($lig_prof=mysql_fetch_object($res_classe)) {
+			while($lig_prof=mysqli_fetch_object($res_classe)) {
 				$tab_classe_du_prof[$cpt]['id_classe']=$lig_prof->id_classe;
 				$tab_classe_du_prof[$cpt]['classe']=$lig_prof->classe;
 				$cpt++;
@@ -304,10 +304,10 @@ else {
 		$tab_eleve_de_la_classe=array();
 		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
-		$res_ele_classe=mysql_query($sql);
-		if(mysql_num_rows($res_ele_classe)>0) {
+		$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele_classe)>0) {
 			$cpt=0;
-			while($lig_ele=mysql_fetch_object($res_ele_classe)) {
+			while($lig_ele=mysqli_fetch_object($res_ele_classe)) {
 				$tab_eleve_de_la_classe[$cpt]['login']=$lig_ele->login;
 				$tab_eleve_de_la_classe[$cpt]['nom_prenom']=casse_mot($lig_ele->nom,'maj')." ".casse_mot($lig_ele->prenom,'majf2');
 				$cpt++;
@@ -460,17 +460,17 @@ if($mode=='classe') {
 	if(!isset($id_classe)) {
 		if($_SESSION['statut']=='professeur') {
 			$sql="SELECT id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp, classes c WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' AND jgc.id_classe=c.id ORDER BY c.classe LIMIT 1;";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
-				$id_classe = mysql_result($res_classe, 0, 'id_classe');
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe)>0) {
+				$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
 
 		if(!isset($id_classe)) {
 			$sql="SELECT id AS id_classe FROM classes ORDER BY classe LIMIT 1;";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
-				$id_classe = mysql_result($res_classe, 0, 'id_classe');
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe)>0) {
+				$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 			}
 		}
 	}
@@ -533,9 +533,9 @@ elseif($mode=='eleve') {
 
 	if(!isset($id_classe)) {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC LIMIT 1;";
-		$res_classe=mysql_query($sql);
-		if(mysql_num_rows($res_classe)>0) {
-			$id_classe = mysql_result($res_classe, 0, 'id_classe');
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_classe)>0) {
+			$id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 		}
 	}
 
@@ -591,9 +591,9 @@ elseif($mode=='professeur') {
 		}
 		else {
 			$sql="SELECT u.civilite, u.nom, u.prenom, u.login FROM utilisateurs u WHERE statut='professeur' AND etat='actif' ORDER BY u.nom, u.prenom LIMIT 1;";
-			$res_prof=mysql_query($sql);
-			if(mysql_num_rows($res_prof)>0) {
-				$login_prof = mysql_result($res_prefs, 0, 'login');
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_prof)>0) {
+				$login_prof = old_mysql_result($res_prefs, 0, 'login');
 			}
 		}
 
@@ -653,9 +653,9 @@ if($_SESSION['statut']=='professeur') {
 	if($mode!='professeur') {
 		//$tab_mes_groupes=get_groups_for_prof($_SESSION['login']);
 		$sql="SELECT id_groupe FROM j_groupes_professeurs WHERE login='".$_SESSION['login']."'";
-		$res_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_tmp)>0) {
-			while($lig_tmp=mysql_fetch_object($res_tmp)) {
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_tmp)>0) {
+			while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 				$tab_mes_groupes[]=$lig_tmp->id_groupe;
 			}
 		}
@@ -674,9 +674,9 @@ $couleur_matiere=array();
 
 $sql="SELECT m.matiere, es.valeur FROM edt_setting es, matieres m WHERE es.reglage = CONCAT('M_',m.matiere);";
 //echo "$sql<br />";
-$res_couleur=mysql_query($sql);
-if(mysql_num_rows($res_couleur)>0) {
-	while($lig_couleur=mysql_fetch_object($res_couleur)) {
+$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_couleur)>0) {
+	while($lig_couleur=mysqli_fetch_object($res_couleur)) {
 		$couleur_matiere[$lig_couleur->matiere]=$lig_couleur->valeur;
 	}
 }
@@ -728,9 +728,9 @@ for($i=0;$i<14;$i++) {
 
 		$sql="SELECT * FROM ct_entry WHERE id_groupe='$id_groupe' AND date_ct>=$ts_jour_debut AND date_ct<$ts_jour_fin ORDER BY date_ct;";
 		//echo "$sql<br />";
-		$res_ct=mysql_query($sql);
+		$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
-		while($ligne_ct=mysql_fetch_object($res_ct)) {
+		while($ligne_ct=mysqli_fetch_object($res_ct)) {
 			//if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 			if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 			($ligne_ct->date_ct<=$ts_aujourdhui)) {
@@ -763,10 +763,10 @@ for($i=0;$i<14;$i++) {
 				if((($_SESSION['statut']=='professeur')&&(in_array($id_groupe,$tab_mes_groupes)))||
 					($ligne_ct->date_ct<=$ts_aujourdhui)) {
 					$sql="SELECT * FROM ct_documents where id_ct='$ligne_ct->id_ct';";
-					$res_doc=mysql_query($sql);
-					if(mysql_num_rows($res_doc)>0) {
+					$res_doc=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_doc)>0) {
 						$tab_notice[$i][$id_groupe]['ct_entry'][$cpt]['contenu'].="<br /><strong>Documents joints&nbsp;:</strong>";
-						while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
+						while($ligne_ct_doc=mysqli_fetch_object($res_doc)) {
 							// Tester si le document est visible ou non dans le cas ele/resp
 							if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 							($ligne_ct_doc->visible_eleve_parent==1))
@@ -782,9 +782,9 @@ for($i=0;$i<14;$i++) {
 
 		$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct>=$ts_jour_debut AND date_ct<$ts_jour_fin ORDER BY date_ct;";
 		//echo "$sql<br />";
-		$res_ct=mysql_query($sql);
+		$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
-		while($ligne_ct=mysql_fetch_object($res_ct)) {
+		while($ligne_ct=mysqli_fetch_object($res_ct)) {
 			if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 			($ligne_ct->date_ct<=$ts_limite_visibilite_devoirs_pour_eleves)) {
 
@@ -805,10 +805,10 @@ for($i=0;$i<14;$i++) {
 
 				// Documents joints:
 				$sql="SELECT * FROM ct_devoirs_documents where id_ct_devoir='$ligne_ct->id_ct';";
-				$res_doc=mysql_query($sql);
-				if(mysql_num_rows($res_doc)>0) {
+				$res_doc=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_doc)>0) {
 					$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$cpt]['contenu'].="<br /><strong>Documents joints&nbsp;:</strong>";
-					while($ligne_ct_doc=mysql_fetch_object($res_doc)) {
+					while($ligne_ct_doc=mysqli_fetch_object($res_doc)) {
 						if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 						($ligne_ct_doc->visible_eleve_parent==1))
 						{
@@ -822,9 +822,9 @@ for($i=0;$i<14;$i++) {
 
 		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND date_ct>=$ts_jour_debut AND date_ct<$ts_jour_fin ORDER BY date_ct;";
 		//echo "$sql<br />";
-		$res_ct=mysql_query($sql);
+		$res_ct=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
-		while($ligne_ct=mysql_fetch_object($res_ct)) {
+		while($ligne_ct=mysqli_fetch_object($res_ct)) {
 			//$tab_notice[$i][$id_groupe]['ct_private_entry'][$cpt]="";
 
 			// Lien d'édition de la notice:
@@ -1225,10 +1225,10 @@ if(count($tab_grp)>0) {
 		//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
 		$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='');";
 		//echo "$sql<br />";
-		$appel_info_cahier_texte = mysql_query($sql);
-		$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
-		$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-		$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+		$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
+		$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+		$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 		$content.=affiche_docs_joints($id_ct,"c");
 
 		if($content!="") {

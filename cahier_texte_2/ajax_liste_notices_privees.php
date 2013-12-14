@@ -118,8 +118,8 @@ else {
 		echo "\">\n";
 		foreach($groups as $current_group) {
 			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$current_group['id']."' AND domaine='cahier_texte' AND visible='n';";
-			$test_grp_visib=mysql_query($sql);
-			if(mysql_num_rows($test_grp_visib)==0) {
+			$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_grp_visib)==0) {
 				echo "<option value='".$current_group['id']."'";
 				if($current_group['id']==$id_groupe) {echo " selected='true'";}
 				echo ">".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</option>\n";

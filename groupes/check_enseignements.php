@@ -43,8 +43,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/groupes/check_enseignements.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/groupes/check_enseignements.php',
 administrateur='V',
 professeur='F',
@@ -56,7 +56,7 @@ secours='F',
 autre='F',
 description='Controle des enseignements',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -76,14 +76,14 @@ if(isset($_GET['modif_visu_cn'])) {
 	$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 	if((isset($id_groupe))&&(is_numeric($id_groupe))) {
 		$sql="SELECT visible FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_notes';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$id_groupe', domaine='cahier_notes', visible='$valeur';";
-			$insert=mysql_query($sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
 			$sql="UPDATE j_groupes_visibilite SET visible='$valeur' WHERE id_groupe='$id_groupe' AND domaine='cahier_notes';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 }
@@ -100,14 +100,14 @@ if(isset($_GET['modif_visu_bull'])) {
 	$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 	if((isset($id_groupe))&&(is_numeric($id_groupe))) {
 		$sql="SELECT visible FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$id_groupe', domaine='bulletins', visible='$valeur';";
-			$insert=mysql_query($sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
 			$sql="UPDATE j_groupes_visibilite SET visible='$valeur' WHERE id_groupe='$id_groupe' AND domaine='bulletins';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 }
@@ -124,14 +124,14 @@ if(isset($_GET['modif_visu_cdt'])) {
 	$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 	if((isset($id_groupe))&&(is_numeric($id_groupe))) {
 		$sql="SELECT visible FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='cahier_texte';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$id_groupe', domaine='cahier_texte', visible='$valeur';";
-			$insert=mysql_query($sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 		else {
 			$sql="UPDATE j_groupes_visibilite SET visible='$valeur' WHERE id_groupe='$id_groupe' AND domaine='cahier_texte';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
 }
@@ -145,8 +145,8 @@ if(isset($_GET['modif_coef'])) {
 	$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 	if((isset($id_groupe))&&(isset($id_classe))&&(is_numeric($id_groupe))&&(is_numeric($id_classe))) {
 		$sql="SELECT coef FROM j_groupes_classes WHERE id_groupe='$id_groupe' AND id_classe='$id_classe';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$msg="Anomalie&nbsp;: Le groupe n'existe pas dans j_groupes_classes???<br />";
 
 			if(isset($_GET['modif_ajax'])) {
@@ -156,7 +156,7 @@ if(isset($_GET['modif_coef'])) {
 		}
 		else {
 			$sql="UPDATE j_groupes_classes SET coef='$coef' WHERE id_groupe='$id_groupe' AND id_classe='$id_classe';";
-			$update=mysql_query($sql);
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(($update)&&(isset($_GET['modif_ajax']))) {
 				echo $coef;
@@ -181,14 +181,14 @@ if((isset($_GET['modif_ajax']))&&(isset($_GET['domaine']))&&(isset($_GET['id_gro
 		$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 		if((isset($id_groupe))&&(is_numeric($id_groupe))) {
 			$sql="SELECT visible FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='$domaine';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$id_groupe', domaine='$domaine', visible='$passer_a';";
-				$insert_ou_update=mysql_query($sql);
+				$insert_ou_update=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else {
 				$sql="UPDATE j_groupes_visibilite SET visible='$passer_a' WHERE id_groupe='$id_groupe' AND domaine='$domaine';";
-				$insert_ou_update=mysql_query($sql);
+				$insert_ou_update=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			if($insert_ou_update) {
@@ -227,7 +227,7 @@ echo "</p>\n";
 $sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)>0) {
-	$display_mat_cat=mysql_result($res,0,"display_mat_cat");
+	$display_mat_cat=old_mysql_result($res,0,"display_mat_cat");
 }
 */
 if(!isset($_GET['tri'])) {
@@ -272,8 +272,8 @@ $option_grisage="&amp;griser_cn=$griser_cn&amp;griser_bull=$griser_bull&amp;gris
 $option_masquage="&amp;masquer_cn=$masquer_cn&amp;masquer_bull=$masquer_bull&amp;masquer_cdt=$masquer_cdt$option_tri";
 
 $sql="SELECT id, classe FROM classes ORDER BY classe;";
-$res_classe=mysql_query($sql);
-if(mysql_num_rows($res_classe)==0) {
+$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_classe)==0) {
 	echo "<p style='color:red'>Aucune classe n'a été trouvée.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
@@ -354,7 +354,7 @@ function modif_visibilite(domaine, id, id_groupe) {
 }
 </script>\n";
 
-while($lig_classe=mysql_fetch_object($res_classe)) {
+while($lig_classe=mysqli_fetch_object($res_classe)) {
 	echo "<a name='classe_".$lig_classe->classe."'></a>\n";
 	echo "<p class='bold'>Classe de $lig_classe->classe</p>\n";
 	echo "<div style='margin-left:2em;'>\n";
@@ -405,9 +405,9 @@ while($lig_classe=mysql_fetch_object($res_classe)) {
 				echo "<td>".$current_group['classlist_string']."</td>\n";
 				echo "<td>";
 				$sql="SELECT mc.nom_court FROM j_groupes_classes jgc, matieres_categories mc WHERE jgc.categorie_id=mc.id AND jgc.id_groupe='".$current_group["id"]."' AND jgc.id_classe='$lig_classe->id';";
-				$res_cat=mysql_query($sql);
-				if(mysql_num_rows($res_cat)>0) {
-					$lig_cat=mysql_fetch_object($res_cat);
+				$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_cat)>0) {
+					$lig_cat=mysqli_fetch_object($res_cat);
 					echo $lig_cat->nom_court;
 				}
 				echo "</td>\n";

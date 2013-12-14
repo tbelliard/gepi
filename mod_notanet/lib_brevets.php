@@ -52,13 +52,13 @@ $indice_brevet_pro_lv=103;
 function get_classe_from_id($id){
 	//$sql="SELECT * FROM classes WHERE id='$id_classe[0]'";
 	$sql="SELECT * FROM classes WHERE id='$id'";
-	$resultat_classe=mysql_query($sql);
-	if(mysql_num_rows($resultat_classe)!=1){
+	$resultat_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($resultat_classe)!=1){
 		//echo "<p>ERREUR! La classe d'identifiant '$id_classe[0]' n'a pas pu être identifiée.</p>";
 		echo "<p>ERREUR! La classe d'identifiant '$id' n'a pas pu être identifiée.</p>";
 	}
 	else{
-		$ligne_classe=mysql_fetch_object($resultat_classe);
+		$ligne_classe=mysqli_fetch_object($resultat_classe);
 		$classe=$ligne_classe->classe;
 		return $classe;
 	}
@@ -1413,7 +1413,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 	//$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 	//echo "$sql<br />";
-	$resultat_periodes=mysql_query($sql);
+	$resultat_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	//$tab_ver_per=array();
 	echo "<table class='boireaus'>\n";
@@ -1421,7 +1421,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	echo "<th>Id</th>\n";
 	echo "<th>Matière</th>\n";
 	echo "<th>Moyenne</th>\n";
-	while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
+	while($ligne_periodes=mysqli_fetch_object($resultat_periodes)){
 		echo "<th>T $ligne_periodes->num_periode</th>\n";
 		//$tab_ver_per[$ligne_periodes->num_periode]=$ligne_periodes->verouiller;
 	}
@@ -1443,9 +1443,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	$type_brevet_ele="";
 	$sql="SELECT type_brevet FROM notanet_ele_type WHERE login='".$tab_ele['login']."';";
 	//echo "$sql<br />";
-	$res_ele_type=mysql_query($sql);
-	if(mysql_num_rows($res_ele_type)>0) {
-		$type_brevet_ele=mysql_result($res_ele_type, 0, "type_brevet");
+	$res_ele_type=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele_type)>0) {
+		$type_brevet_ele=old_mysql_result($res_ele_type, 0, "type_brevet");
 	}
 	//echo "<tr></td>\$type_brevet_ele=$type_brevet_ele</td></tr>";
 
@@ -1461,9 +1461,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 				<td><input type='text' name='liste_matiere_brevet_pro_lv[$num_eleve]' size='7' value='$liste_matiere_brevet_pro_lv' /></td>";
 			$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 			//echo "<td>$sql</td>";
-			$resultat_periodes=mysql_query($sql);
+			$resultat_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
 			echo "
-				<td colspan='".mysql_num_rows($resultat_periodes)."'>($chaine_total_brevet_pro_lv)/$temoin_brevet_pro_lv</td>";
+				<td colspan='".mysqli_num_rows($resultat_periodes)."'>($chaine_total_brevet_pro_lv)/$temoin_brevet_pro_lv</td>";
 
 			$k="0";
 			echo "
@@ -1473,9 +1473,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 			if($affiche_enregistrements_precedents=="y") {
 				echo "<td>\n";
 				$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND matiere='".$liste_matiere_brevet_pro_lv."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$indice_brevet_pro_lv';";
-				$enr=mysql_query($sql);
-				if(mysql_num_rows($enr)>0) {
-					$lig_enr=mysql_fetch_object($enr);
+				$enr=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($enr)>0) {
+					$lig_enr=mysqli_fetch_object($enr);
 
 					if($moy_NOTANET[$indice_brevet_pro_lv]!=$lig_enr->note) {
 						echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Rétablir la valeur enregistrée' /></a>";
@@ -1543,9 +1543,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					//$sql="SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='')";
 					$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
 					//echo "$sql<br />\n";
-					$resultat_moy=mysql_query($sql);
-					if(mysql_num_rows($resultat_moy)>0){
-						$ligne_moy=mysql_fetch_object($resultat_moy);
+					$resultat_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($resultat_moy)>0){
+						$ligne_moy=mysqli_fetch_object($resultat_moy);
 						//echo "$ligne_moy->moyenne<br />";
 						echo "<td style='font-weight:bold; text-align:center;'>$ligne_moy->moyenne</td>\n";
 						//$cpt++;
@@ -1568,8 +1568,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					//$sql="SELECT DISTINCT num_periode FROM periodes WHERE id_classe='$id_classe[$i]' ORDER BY num_periode";
 					$sql="SELECT DISTINCT num_periode, verouiller FROM periodes WHERE id_classe='$id_clas' ORDER BY num_periode";
 					//echo "<td>$sql</td>";
-					$resultat_periodes=mysql_query($sql);
-					while($ligne_periodes=mysql_fetch_object($resultat_periodes)){
+					$resultat_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($ligne_periodes=mysqli_fetch_object($resultat_periodes)){
 						//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='') ORDER BY periode";
 						//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND statut ='' AND periode='$ligne_periodes->num_periode')";
 
@@ -1582,10 +1582,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 						//echo "<!-- $sql -->\n";
 						//echo "$sql<br />\n";
-						$resultat_notes=mysql_query($sql);
+						$resultat_notes=mysqli_query($GLOBALS["mysqli"], $sql);
 						//echo "<!-- mysql_num_rows(\$resultat_notes)=".mysql_num_rows($resultat_notes)." -->\n";
-						if(mysql_num_rows($resultat_notes)>0){
-							if(mysql_num_rows($resultat_notes)>1){
+						if(mysqli_num_rows($resultat_notes)>0){
+							if(mysqli_num_rows($resultat_notes)>1){
 
 
 								// 20130429 : A VOIR : Dans le cas brevet professionnel, pour les langues vivantes, si on a 2, c'est bon, mais il faudrait faire la moyenne.
@@ -1635,7 +1635,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							// Il ne devrait y avoir qu'une seule valeur:
 							echo "<td$chaine_couleur style='text-align: center;'>\n";
 							//echo "<!-- ... -->\n";
-							while($ligne_notes=mysql_fetch_object($resultat_notes)){
+							while($ligne_notes=mysqli_fetch_object($resultat_notes)){
 								//echo "<td>".$infos.$ligne_notes->note."</td>\n";
 
 								//echo $infos.$ligne_notes->note." ";
@@ -1682,9 +1682,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							// S'il n'y a pas de moyenne avec statut vide, on cherche si un statut dispensé ou autre est dans la table 'matieres_notes':
 							//$sql="SELECT * FROM matieres_notes WHERE (matiere='".$id_matiere[$j][$k]."' AND login='$ligne->login' AND periode='$ligne_periodes->num_periode')";
 							$sql="SELECT mn.* FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.periode='$ligne_periodes->num_periode' AND mn.id_groupe=jgm.id_groupe)";
-							$resultat_notes=mysql_query($sql);
-							if(mysql_num_rows($resultat_notes)>0){
-								$ligne_notes=mysql_fetch_object($resultat_notes);
+							$resultat_notes=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($resultat_notes)>0){
+								$ligne_notes=mysqli_fetch_object($resultat_notes);
 								if($ligne_notes->statut!=""){
 									$chaine_couleur=" bgcolor='red'";
 								}
@@ -1780,10 +1780,10 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					else{
 
 						$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND jeg.login='".$tab_ele['login']."' AND jgm.id_groupe=jeg.id_groupe);";
-						$test_ele_matiere=mysql_query($sql);
+						$test_ele_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						//if((($statut_matiere[$j]=='imposee'))&&($k+1==count($id_matiere[$j]))&&($moy_NOTANET[$j]=="")){
-						if((($statut_matiere[$j]=='imposee'))&&(mysql_num_rows($test_ele_matiere)!=0)&&($moy_NOTANET[$j]=="")) {
+						if((($statut_matiere[$j]=='imposee'))&&(mysqli_num_rows($test_ele_matiere)!=0)&&($moy_NOTANET[$j]=="")) {
 							$bgmoy="background-color:red";
 						}
 						else{
@@ -1833,9 +1833,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if($affiche_enregistrements_precedents=="y") {
 						echo "<td>\n";
 						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND matiere='".$id_matiere[$j][$k]."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
-						$enr=mysql_query($sql);
-						if(mysql_num_rows($enr)>0) {
-							$lig_enr=mysql_fetch_object($enr);
+						$enr=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($enr)>0) {
+							$lig_enr=mysqli_fetch_object($enr);
 
 							if($moyenne_arrondie!=$lig_enr->note) {
 								echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Rétablir la valeur enregistrée' /></a>";
@@ -1884,9 +1884,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 				$note_a2="";
 
 				$sql="SELECT * FROM notanet_socles WHERE login='".$tab_ele['login']."';";
-				$res_soc=mysql_query($sql);
-				if(mysql_num_rows($res_soc)>0) {
-					$lig_soc=mysql_fetch_object($res_soc);
+				$res_soc=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_soc)>0) {
+					$lig_soc=mysqli_fetch_object($res_soc);
 					$note_b2i=$lig_soc->b2i;
 					$note_a2=$lig_soc->a2;
 				}
@@ -1918,9 +1918,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if($affiche_enregistrements_precedents=="y") {
 						echo "<td>\n";
 						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
-						$enr=mysql_query($sql);
-						if(mysql_num_rows($enr)>0) {
-							$lig_enr=mysql_fetch_object($enr);
+						$enr=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($enr)>0) {
+							$lig_enr=mysqli_fetch_object($enr);
 							echo $lig_enr->note;
 						}
 						else {
@@ -1961,9 +1961,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if($affiche_enregistrements_precedents=="y") {
 						echo "<td>\n";
 						$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
-						$enr=mysql_query($sql);
-						if(mysql_num_rows($enr)>0) {
-							$lig_enr=mysql_fetch_object($enr);
+						$enr=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($enr)>0) {
+							$lig_enr=mysqli_fetch_object($enr);
 							echo $lig_enr->note;
 						}
 						else {
@@ -1982,9 +1982,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					$note_lvr="";
 	
 					$sql="SELECT * FROM notanet_lvr_ele WHERE login='".$tab_ele['login']."';";
-					$res_lvr=mysql_query($sql);
-					if(mysql_num_rows($res_lvr)>0) {
-						$lig_lvr=mysql_fetch_object($res_lvr);
+					$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_lvr)>0) {
+						$lig_lvr=mysqli_fetch_object($res_lvr);
 						$note_lvr=$lig_lvr->note;
 
 						$alt=$alt*(-1);
@@ -2013,9 +2013,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						if($affiche_enregistrements_precedents=="y") {
 							echo "<td>\n";
 							$sql="SELECT note FROM notanet WHERE login='".$tab_ele['login']."' AND notanet_mat='".$tabmatieres[$j][0]."' AND id_mat='$j';";
-							$enr=mysql_query($sql);
-							if(mysql_num_rows($enr)>0) {
-								$lig_enr=mysql_fetch_object($enr);
+							$enr=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($enr)>0) {
+								$lig_enr=mysqli_fetch_object($enr);
 								echo $lig_enr->note;
 							}
 							else {

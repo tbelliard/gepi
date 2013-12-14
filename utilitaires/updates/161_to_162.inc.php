@@ -25,9 +25,9 @@
 $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.2 :</h3>";
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -38,9 +38,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_port' à la table 'eleves'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_port';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM eleves LIKE 'tel_port';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE eleves ADD tel_port varchar(255) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves ADD tel_port varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -51,9 +51,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_prof' à la table 'eleves'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_prof';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM eleves LIKE 'tel_prof';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE eleves ADD tel_prof varchar(255) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves ADD tel_prof varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -85,9 +85,9 @@ if ($test == -1) {
 }
 
 $result .= "<br />&nbsp;-> Ajout d'un champ 'id_nature_sanction' à la table 's_sanctions'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE s_sanctions ADD id_nature_sanction int(11) NOT NULL AFTER nature;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_sanctions ADD id_nature_sanction int(11) NOT NULL AFTER nature;");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -97,7 +97,7 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_sanctions LIKE 'id_nature_sanction';"));
 if ($test_champ>0) {
 	// On ajoute une table parce qu'on pourrait avoir une collision sur la migration avec une sanction autre de l'ancienne table s_types_sanctions que quelqu'un aurait eu l'idée de créer avec un des noms réservés (Retenue, Exclusion, Travail) parce qu'il manquait un test pour interdire cette bizarrerie.
 	$result .= "<br />";
@@ -111,11 +111,11 @@ if ($test_champ>0) {
 			$tab_nature_sanction=array("Exclusion", "Retenue", "Travail");
 			for($loop=0;$loop<count($tab_nature_sanction);$loop++) {
 				$sql="SELECT id_nature FROM s_types_sanctions2 WHERE nature='".$tab_nature_sanction[$loop]."';";
-				$res_ns=mysql_query($sql);
-				if(mysql_num_rows($res_ns)==0) {
+				$res_ns=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_ns)==0) {
 					$result_inter = traite_requete("INSERT INTO s_types_sanctions2 SET nature='".$tab_nature_sanction[$loop]."', type='".mb_strtolower($tab_nature_sanction[$loop])."';");
 					if ($result_inter == '') {
-						$id_nature_sanction_courante=mysql_insert_id();
+						$id_nature_sanction_courante=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 						// La nature était en minuscule dans s_sanctions et il faut maintenant qu'elle coïncide avec la casse de s_types_sanctions2.nature (donc avec une initiale en majuscule)
 						$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante', nature='".$tab_nature_sanction[$loop]."' WHERE nature='".$tab_nature_sanction[$loop]."';";
@@ -131,8 +131,8 @@ if ($test_champ>0) {
 					}
 				}
 				else {
-					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=mysql_result($res_ns, 0, "id_nature");
-					$id_nature_sanction_courante=mysql_result($res_ns, 0, "id_nature");
+					//$tab_id_nature_sanction[$tab_nature_sanction[$loop]]=old_mysql_result($res_ns, 0, "id_nature");
+					$id_nature_sanction_courante=old_mysql_result($res_ns, 0, "id_nature");
 
 					// La nature était en minuscule dans s_sanctions et il faut maintenant qu'elle coïncide avec la casse de s_types_sanctions2.nature (donc avec une initiale en majuscule)
 					$sql="UPDATE s_sanctions SET id_nature_sanction='$id_nature_sanction_courante', nature='".$tab_nature_sanction[$loop]."' WHERE nature='".$tab_nature_sanction[$loop]."';";
@@ -151,14 +151,14 @@ if ($test_champ>0) {
 			$res_sts=mysql_query($sql);
 			*/
 			$sql="SELECT * FROM s_types_sanctions;";
-			$res_sts=mysql_query($sql);
-			while($lig_sts=mysql_fetch_object($res_sts)) {
-				$sql="INSERT INTO s_types_sanctions2 SET nature='".mysql_real_escape_string($lig_sts->nature)."', type='autre';";
+			$res_sts=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_sts=mysqli_fetch_object($res_sts)) {
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', type='autre';";
 				$result_inter = traite_requete($sql);
 				if ($result_inter == '') {
-					$id_nature_sanction=mysql_insert_id();
+					$id_nature_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
-					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".mysql_real_escape_string($lig_sts->nature)."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
+					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
 					$result_inter = traite_requete($sql);
 					if ($result_inter == '') {
 						$result.="&nbsp;-> Mise à jour des sanctions ".$lig_sts->nature." existantes : ".msj_ok("Ok !");
@@ -224,9 +224,9 @@ if ($test == -1) {
 $result .= "<br />";
 $result .= "<strong>Module discipline :</strong><br />";
 $result .= "&nbsp;-> Ajout d'un champ 'primo_declarant' à la table 's_incidents'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'primo_declarant';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_incidents LIKE 'primo_declarant';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE s_incidents ADD primo_declarant varchar(50);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_incidents ADD primo_declarant varchar(50);");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -237,9 +237,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'materiel' à la table 's_travail_mesure'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_travail_mesure LIKE 'materiel';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_travail_mesure LIKE 'materiel';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE s_travail_mesure ADD materiel varchar(150);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_travail_mesure ADD materiel varchar(150);");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -250,9 +250,9 @@ if ($test_champ==0) {
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'materiel' à la table 's_retenues'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_retenues LIKE 'materiel';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_retenues LIKE 'materiel';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE s_retenues ADD materiel varchar(150);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_retenues ADD materiel varchar(150);");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -287,7 +287,7 @@ if ($test == -1) {
 $result .= "<br />";
 
 $result .= "&nbsp;->Modification du type du champ 'cp' de la table 'etablissements' de 'int' en 'varchar' :";
-$query = mysql_query("ALTER TABLE etablissements CHANGE cp cp VARCHAR( 10 ) NOT NULL;");
+$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE etablissements CHANGE cp cp VARCHAR( 10 ) NOT NULL;");
 if ($query) {
 	$result .= msj_ok("SUCCES !");
 } else {
@@ -390,9 +390,9 @@ $result .= "<br />";
 */
 
 $result .= "&nbsp;-> Ajout d'un champ 'acces_sp' à la table 'responsables2'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM responsables2 LIKE 'acces_sp';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM responsables2 LIKE 'acces_sp';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE responsables2 ADD acces_sp varchar(1) NOT NULL default '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE responsables2 ADD acces_sp varchar(1) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {

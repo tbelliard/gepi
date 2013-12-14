@@ -108,17 +108,17 @@ include "../lib/periodes.inc.php";
 
 // On appelle les informations de l'aid pour les afficher :
 
-$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 
-$nom_aid = @mysql_result($call_data, 0, "nom");
+$nom_aid = @old_mysql_result($call_data, 0, "nom");
 
-$note_max = @mysql_result($call_data, 0, "note_max");
+$note_max = @old_mysql_result($call_data, 0, "note_max");
 
-$type_note = @mysql_result($call_data, 0, "type_note");
+$type_note = @old_mysql_result($call_data, 0, "type_note");
 
-$display_begin = @mysql_result($call_data, 0, "display_begin");
+$display_begin = @old_mysql_result($call_data, 0, "display_begin");
 
-$display_end = @mysql_result($call_data, 0, "display_end");
+$display_end = @old_mysql_result($call_data, 0, "display_end");
 
 
 
@@ -131,8 +131,8 @@ require_once("../lib/header.inc.php");
 
 if (!isset($aid_id)) {
     ?><p class=bold><a href="../accueil.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a></p><?php
-    $call_prof_aid = mysql_query("SELECT a.nom, a.id FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.nom");
-    $nombre_aid = mysql_num_rows($call_prof_aid);
+    $call_prof_aid = mysqli_query($GLOBALS["mysqli"], "SELECT a.nom, a.id FROM j_aid_utilisateurs j, aid a WHERE (j.id_utilisateur = '" . $_SESSION['login'] . "' and a.id = j.id_aid and a.indice_aid=j.indice_aid and j.indice_aid='$indice_aid') ORDER BY a.nom");
+    $nombre_aid = mysqli_num_rows($call_prof_aid);
     if ($nombre_aid == "0") {
 
         echo "<p>Vous n'êtes pas professeur responsable. Vous n'avez donc pas accès à ce module.</p></html></body>\n";
@@ -147,9 +147,9 @@ if (!isset($aid_id)) {
 
         while ($i < $nombre_aid) {
 
-            $aid_display = mysql_result($call_prof_aid, $i, "nom");
+            $aid_display = old_mysql_result($call_prof_aid, $i, "nom");
 
-            $aid_id = mysql_result($call_prof_aid, $i, "id");
+            $aid_id = old_mysql_result($call_prof_aid, $i, "id");
 
             echo "<br /><span class='bold'>$aid_display</span> --- <a href='visu_aid.php?aid_id=$aid_id&aid=yes&indice_aid=$indice_aid'>Visualiser les appréciations pour cette rubrique</a>\n";
 
@@ -173,33 +173,33 @@ if (!isset($aid_id)) {
 
     $nom_table = "class_temp".SESSION_ID();
 
-    $call_data = mysql_query("DROP TABLE IF EXISTS $nom_table");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "DROP TABLE IF EXISTS $nom_table");
 
-    $call_data = mysql_query("CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "CREATE TEMPORARY TABLE $nom_table (id_classe integer, num integer NOT NULL)");
 
-    $call_data = mysql_query("SELECT c.* FROM classes c, j_eleves_classes cc, j_aid_eleves a WHERE (a.id_aid='$aid_id' and cc.login = a.login and cc.id_classe = c.id and a.indice_aid='$indice_aid')");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT c.* FROM classes c, j_eleves_classes cc, j_aid_eleves a WHERE (a.id_aid='$aid_id' and cc.login = a.login and cc.id_classe = c.id and a.indice_aid='$indice_aid')");
 
-    $nombre_lignes = mysql_num_rows($call_data);
+    $nombre_lignes = mysqli_num_rows($call_data);
 
     $i = 0;
 
     while ($i < $nombre_lignes){
 
-        $id_classe = mysql_result($call_data, $i, "id");
+        $id_classe = old_mysql_result($call_data, $i, "id");
 
-        $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+        $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 
-        $k = mysql_num_rows($periode_query);
+        $k = mysqli_num_rows($periode_query);
 
-        $call_reg = mysql_query("insert into $nom_table Values('$id_classe', '$k')");
+        $call_reg = mysqli_query($GLOBALS["mysqli"], "insert into $nom_table Values('$id_classe', '$k')");
 
     $i++;
 
     }
 
-    $call_data = mysql_query("SELECT max(num) as max FROM $nom_table");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT max(num) as max FROM $nom_table");
 
-    $nb_periode_max = mysql_result($call_data, 0, "max");
+    $nb_periode_max = old_mysql_result($call_data, 0, "max");
 
 
 
@@ -213,9 +213,9 @@ if (!isset($aid_id)) {
 
     echo "<form enctype=\"multipart/form-data\" action=\"visu_aid.php\" target=\"_blank\" method=\"post\" name=\"formulaire\">\n";
 
-    $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
+    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 
-    $aid_nom = mysql_result($calldata, 0, "nom");
+    $aid_nom = old_mysql_result($calldata, 0, "nom");
 
     echo "<p class='bold'>Appréciations $nom_aid : $aid_nom</p>\n";
 
@@ -275,9 +275,9 @@ if (!isset($aid_id)) {
 
 } else {
 
-    $appel_login_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid' and j.login=e.login) ORDER BY e.nom,e.prenom");
+    $appel_login_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_aid_eleves j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid' and j.login=e.login) ORDER BY e.nom,e.prenom");
 
-    $nombre_eleves = mysql_num_rows($appel_login_eleves);
+    $nombre_eleves = mysqli_num_rows($appel_login_eleves);
 
     $indice_col = 1;
 
@@ -323,9 +323,9 @@ if (!isset($aid_id)) {
 
     while($i < $nombre_eleves) {
 
-        $login_eleve[$i] = mysql_result($appel_login_eleves, $i, "login");
+        $login_eleve[$i] = old_mysql_result($appel_login_eleves, $i, "login");
 
-        $col[1][$i] = mysql_result($appel_login_eleves, $i, "prenom")." ".mysql_result($appel_login_eleves, $i, "nom");
+        $col[1][$i] = old_mysql_result($appel_login_eleves, $i, "prenom")." ".old_mysql_result($appel_login_eleves, $i, "nom");
 
         $k = $display_begin;
 
@@ -339,9 +339,9 @@ if (!isset($aid_id)) {
 
                 $j++;
 
-                $app_query = mysql_query("SELECT appreciation FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
+                $app_query = mysqli_query($GLOBALS["mysqli"], "SELECT appreciation FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 
-                $app = @mysql_result($app_query, 0, "appreciation");
+                $app = @old_mysql_result($app_query, 0, "appreciation");
 
                 if ($app != '') {
 
@@ -361,11 +361,11 @@ if (!isset($aid_id)) {
 
                 $j++;
 
-                $note_query = mysql_query("SELECT note, statut FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
+                $note_query = mysqli_query($GLOBALS["mysqli"], "SELECT note, statut FROM aid_appreciations WHERE (login='$login_eleve[$i]' AND periode='$k' AND id_aid = '$aid_id' and indice_aid='$indice_aid')");
 
-                $note = @mysql_result($note_query, 0, "note");
+                $note = @old_mysql_result($note_query, 0, "note");
 
-                $statut = @mysql_result($note_query, 0, "statut");
+                $statut = @old_mysql_result($note_query, 0, "statut");
 
                 if ($note !='') {
 
@@ -409,9 +409,9 @@ if (!isset($aid_id)) {
 
 
 
-    $calldata = mysql_query("SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
+    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id'  and indice_aid='$indice_aid')");
 
-    $aid_nom = mysql_result($calldata, 0, "nom");
+    $aid_nom = old_mysql_result($calldata, 0, "nom");
 
     echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Appréciations $nom_aid : $aid_nom</p>";
 

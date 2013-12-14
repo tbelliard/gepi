@@ -65,10 +65,10 @@ if ($annee=='') {
 else {
     $nom_projet = sql_query1("select nom from  archivage_types_aid where id='".$indice_aid."' and annee='".$annee."'");
 }
-$call_productions = mysql_query("select * from aid_productions");
-$nb_productions = mysql_num_rows($call_productions);
-$call_public = mysql_query("select * from aid_public order by ordre_affichage");
-$nb_public = mysql_num_rows($call_public );
+$call_productions = mysqli_query($GLOBALS["mysqli"], "select * from aid_productions");
+$nb_productions = mysqli_num_rows($call_productions);
+$call_public = mysqli_query($GLOBALS["mysqli"], "select * from aid_public order by ordre_affichage");
+$nb_public = mysqli_num_rows($call_public );
 
 // Si l'utilisateur n'est pas autorisé à modifier la fiche, on force $action = "visu"
 if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee)) $action = "visu";
@@ -307,39 +307,39 @@ if (isset($_POST["is_posted"])) {
 }
 // Appel de toutes les infos sur le projet
 if ($annee=='') {
-  $call_data_projet = mysql_query("select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+  $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 }
 else {
-  $call_data_projet = mysql_query("select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
+  $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 }
 
-$aid_nom = mysql_result($call_data_projet, 0, "nom");
-$reg_resume = @mysql_result($call_data_projet,0,"resume");
-$reg_contacts = @mysql_result($call_data_projet,0,"contacts");
-$reg_divers = @mysql_result($call_data_projet,0,"divers");
-$reg_famille = @mysql_result($call_data_projet,0,"famille");
-$reg_discipline1 = @mysql_result($call_data_projet,0,"matiere1");
-$reg_discipline2 = @mysql_result($call_data_projet,0,"matiere2");
-$reg_adresse1 = @mysql_result($call_data_projet,0,"adresse1");
-$reg_productions = @mysql_result($call_data_projet,0,"productions");
-$reg_public = @mysql_result($call_data_projet,0,"public_destinataire");
-$reg_mots_cles = @mysql_result($call_data_projet,0,"mots_cles");
-$reg_adresse2 = @mysql_result($call_data_projet,0,"adresse2");
-$reg_num = @mysql_result($call_data_projet,0,"numero");
-$reg_fiche_publique = @mysql_result($call_data_projet,0,"fiche_publique");
-$reg_affiche_adresse1 = @mysql_result($call_data_projet,0,"affiche_adresse1");
-$reg_en_construction = @mysql_result($call_data_projet,0,"en_construction");
+$aid_nom = old_mysql_result($call_data_projet, 0, "nom");
+$reg_resume = @old_mysql_result($call_data_projet,0,"resume");
+$reg_contacts = @old_mysql_result($call_data_projet,0,"contacts");
+$reg_divers = @old_mysql_result($call_data_projet,0,"divers");
+$reg_famille = @old_mysql_result($call_data_projet,0,"famille");
+$reg_discipline1 = @old_mysql_result($call_data_projet,0,"matiere1");
+$reg_discipline2 = @old_mysql_result($call_data_projet,0,"matiere2");
+$reg_adresse1 = @old_mysql_result($call_data_projet,0,"adresse1");
+$reg_productions = @old_mysql_result($call_data_projet,0,"productions");
+$reg_public = @old_mysql_result($call_data_projet,0,"public_destinataire");
+$reg_mots_cles = @old_mysql_result($call_data_projet,0,"mots_cles");
+$reg_adresse2 = @old_mysql_result($call_data_projet,0,"adresse2");
+$reg_num = @old_mysql_result($call_data_projet,0,"numero");
+$reg_fiche_publique = @old_mysql_result($call_data_projet,0,"fiche_publique");
+$reg_affiche_adresse1 = @old_mysql_result($call_data_projet,0,"affiche_adresse1");
+$reg_en_construction = @old_mysql_result($call_data_projet,0,"en_construction");
 if ($annee=='') {
-  $reg_perso1 = @mysql_result($call_data_projet,0,"perso1");
-  $reg_perso2 = @mysql_result($call_data_projet,0,"perso2");
-  $reg_perso3 = @mysql_result($call_data_projet,0,"perso3");
-  $reg_eleve_peut_modifier = @mysql_result($call_data_projet,0,"eleve_peut_modifier");
-  $reg_prof_peut_modifier = @mysql_result($call_data_projet,0,"prof_peut_modifier");
-  $reg_cpe_peut_modifier = @mysql_result($call_data_projet,0,"cpe_peut_modifier");
+  $reg_perso1 = @old_mysql_result($call_data_projet,0,"perso1");
+  $reg_perso2 = @old_mysql_result($call_data_projet,0,"perso2");
+  $reg_perso3 = @old_mysql_result($call_data_projet,0,"perso3");
+  $reg_eleve_peut_modifier = @old_mysql_result($call_data_projet,0,"eleve_peut_modifier");
+  $reg_prof_peut_modifier = @old_mysql_result($call_data_projet,0,"prof_peut_modifier");
+  $reg_cpe_peut_modifier = @old_mysql_result($call_data_projet,0,"cpe_peut_modifier");
 } else {
-  $eleves_resp = @mysql_result($call_data_projet,0,"eleves_resp");
-  $eleves = @mysql_result($call_data_projet,0,"eleves");
-  $responsables = @mysql_result($call_data_projet,0,"responsables");
+  $eleves_resp = @old_mysql_result($call_data_projet,0,"eleves_resp");
+  $eleves = @old_mysql_result($call_data_projet,0,"eleves");
+  $responsables = @old_mysql_result($call_data_projet,0,"responsables");
 }
 
 $style_specifique = "aid/style_fiche";
@@ -413,18 +413,18 @@ echo "<div class='bloc'>";
 echo "<span class = 'bold'>Elèves responsables du projet :</span>\n";
 if ($annee=='') {
   // appel de la liste des élèves de l'AID :
-  $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom
+  $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
   FROM eleves e, j_aid_eleves_resp j
   WHERE (j.id_aid='$aid_id' and e.login=j.login and j.indice_aid='$indice_aid')
   ORDER BY nom, prenom");
-  $nombre = mysql_num_rows($call_liste_data);
+  $nombre = mysqli_num_rows($call_liste_data);
   $i = "0";
   while ($i < $nombre) {
-    $login_eleve = mysql_result($call_liste_data, $i, "login");
-    $nom_eleve = mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
-    $call_classe = mysql_query("SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-    $classe_eleve = @mysql_result($call_classe, '0', "classe");
+    $login_eleve = old_mysql_result($call_liste_data, $i, "login");
+    $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
+    $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
+    $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
     echo "$nom_eleve $prenom_eleve ($classe_eleve)";
     if ($i < $nombre-1) echo " - ";
     $i++;
@@ -437,16 +437,16 @@ if ($annee=='') {
 echo "\n<br /><span class = 'bold'>Professeurs responsables du projet : </span>\n";
 if ($annee=='') {
   // appel de la liste des professeurs de l'AID :
-  $call_liste_data = mysql_query("SELECT e.login, e.nom, e.prenom
+  $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
   FROM utilisateurs e, j_aid_utilisateurs j
   WHERE (j.id_aid='$aid_id' and e.login=j.id_utilisateur and j.indice_aid='$indice_aid')
   ORDER BY nom, prenom");
-  $nombre = mysql_num_rows($call_liste_data);
+  $nombre = mysqli_num_rows($call_liste_data);
   $i = "0";
   while ($i < $nombre) {
-    $login_eleve = mysql_result($call_liste_data, $i, "login");
-    $nom_eleve = mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @mysql_result($call_liste_data, $i, "prenom");
+    $login_eleve = old_mysql_result($call_liste_data, $i, "login");
+    $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
+    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
     echo $nom_eleve." ".$prenom_eleve;
     if ($i < $nombre-1) echo " - ";
   $i++;
@@ -600,14 +600,14 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille',"W",$annee)) {
     echo "<span class = 'bold'>Classez votre projet parmi la liste suivante (classification Dewey) : </span><br />\n";
-    $call_famille = mysql_query("select * from aid_familles order by ordre_affichage");
-    $nb_famille = mysql_num_rows($call_famille);
+    $call_famille = mysqli_query($GLOBALS["mysqli"], "select * from aid_familles order by ordre_affichage");
+    $nb_famille = mysqli_num_rows($call_famille);
     echo "<select name=\"reg_famille\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     while ($k < $nb_famille) {
-        $id_famille = mysql_result($call_famille,$k,"id");
-        $nom_famille = mysql_result($call_famille,$k,"type");
+        $id_famille = old_mysql_result($call_famille,$k,"id");
+        $nom_famille = old_mysql_result($call_famille,$k,"type");
         echo "<option value=\"".$id_famille."\" ";
         if ($id_famille == $reg_famille) echo " selected ";
         echo ">".$nom_famille."</option>\n";
@@ -685,8 +685,8 @@ If ($action != "visu")  {
     $k = 0;
     while ($k < $nb_productions) {
         if ($newligne == 1) echo "<tr>";
-        $id_productions = mysql_result($call_productions,$k,"id");
-        $nom_productions = mysql_result($call_productions,$k,"nom");
+        $id_productions = old_mysql_result($call_productions,$k,"id");
+        $nom_productions = old_mysql_result($call_productions,$k,"nom");
         echo "<td><input type=\"checkbox\" name=\"p".$k."\" value=\"".$id_productions."\" ";
         if (in_array($id_productions, $p))  echo " checked ";
         echo " onClick=\"compteur_coches(this)\" />";
@@ -740,8 +740,8 @@ If ($action != "visu") {
     $k = 0;
     while ($k < $nb_public) {
         if ($newligne == 1) echo "<tr>";
-        $id_public = mysql_result($call_public,$k,"id");
-        $nom_public = mysql_result($call_public,$k,"public");
+        $id_public = old_mysql_result($call_public,$k,"id");
+        $nom_public = old_mysql_result($call_public,$k,"public");
         echo "<td><input type=\"checkbox\" name=\"public".$k."\" value=\"".$id_public."\" ";
         if (in_array($id_public, $public))  echo " checked ";
         echo " />";
@@ -835,15 +835,15 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere1',"W",$annee)) {
     echo "<span class = 'bold'>Indiquez la discipline principale à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysql_query("select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
-    $nb_discipline = mysql_num_rows($call_discipline);
+    $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
+    $nb_discipline = mysqli_num_rows($call_discipline);
     echo "<select name=\"reg_discipline1\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     $discipline_reconnue=FALSE;
     while ($k < $nb_discipline) {
-        $id_discipline = mysql_result($call_discipline,$k,"matiere");
-        $nom_discipline = mysql_result($call_discipline,$k,"nom_complet");
+        $id_discipline = old_mysql_result($call_discipline,$k,"matiere");
+        $nom_discipline = old_mysql_result($call_discipline,$k,"nom_complet");
         echo "<option value=\"".$id_discipline."\" ";
         if ($id_discipline == $reg_discipline1) {
             echo " selected ";
@@ -876,15 +876,15 @@ echo "<div class='bloc'>";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere2',"W,$annee")) {
     echo "<span class = 'bold'>Indiquez la discipline secondaire à laquelle se rattache votre projet : </span><br />\n";
-    $call_discipline = mysql_query("select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
-    $nb_discipline = mysql_num_rows($call_discipline);
+    $call_discipline = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where (matiere_aid='y') order by nom_complet");
+    $nb_discipline = mysqli_num_rows($call_discipline);
     echo "<select name=\"reg_discipline2\" size=\"1\">\n";
     echo "<option value=\"\">(choisissez)</option>\n";
     $k = 0;
     $discipline_reconnue=FALSE;
     while ($k < $nb_discipline) {
-        $id_discipline = mysql_result($call_discipline,$k,"matiere");
-        $nom_discipline = mysql_result($call_discipline,$k,"nom_complet");
+        $id_discipline = old_mysql_result($call_discipline,$k,"matiere");
+        $nom_discipline = old_mysql_result($call_discipline,$k,"nom_complet");
         echo "<option value=\"".$id_discipline."\" ";
         if ($id_discipline == $reg_discipline2) {
             echo " selected ";

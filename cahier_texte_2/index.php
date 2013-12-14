@@ -181,8 +181,8 @@ $nom_ou_description_groupe_cdt=getPref($_SESSION['login'], "nom_ou_description_g
 $a = 1;
 foreach($groups as $group) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group->getId()."' AND domaine='cahier_texte' AND visible='n';";
-	$test_grp_visib=mysql_query($sql);
-	if(mysql_num_rows($test_grp_visib)==0) {
+	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_grp_visib)==0) {
 		echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 				id_groupe = '".$group->getId()."';
 				getWinDernieresNotices().hide();

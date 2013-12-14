@@ -59,12 +59,12 @@ if($suhosin_post_max_totalname_length!='') {
 }
 
 $sql="SELECT classe FROM classes WHERE id = '$id_classe';";
-$call_classe = mysql_query($sql);
-if(mysql_num_rows($call_classe)==0) {
+$call_classe = mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($call_classe)==0) {
 	echo "La classe n°$id_classe (id_classe) n'existe pas.<br />\n";
 	die();
 }
-$classe = mysql_result($call_classe, "0", "classe");
+$classe = old_mysql_result($call_classe, "0", "classe");
 
 include "../lib/periodes.inc.php";
 
@@ -73,8 +73,8 @@ if (isset($is_posted) and ($is_posted == 1)) {
 
 	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
 
-	$call_eleves = mysql_query("SELECT login, id_eleve FROM eleves ORDER BY nom, prenom;");
-	$nombreligne = mysql_num_rows($call_eleves);
+	$call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT login, id_eleve FROM eleves ORDER BY nom, prenom;");
+	$nombreligne = mysqli_num_rows($call_eleves);
 
 	/*
 	$_POST['regime_1442']=	d/p
@@ -92,8 +92,8 @@ if (isset($is_posted) and ($is_posted == 1)) {
 	$k = '0';
 	while ($k < $nombreligne) {
 		$pb = 'no';
-		$login_eleve = mysql_result($call_eleves, $k, 'login');
-		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
+		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
+		$id_eleve = old_mysql_result($call_eleves, $k, 'id_eleve');
 
 
 		if(isset($_POST['ajout_eleve_'.$id_eleve])) {
@@ -106,9 +106,9 @@ if (isset($is_posted) and ($is_posted == 1)) {
 					(login = '$login_eleve' and
 					id_classe!='$id_classe' and
 					periode = '$i')";
-					$test_clas_per=mysql_query($sql);
-					if(mysql_num_rows($test_clas_per)>0) {
-						$lig_clas_per=mysql_fetch_object($test_clas_per);
+					$test_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_clas_per)>0) {
+						$lig_clas_per=mysqli_fetch_object($test_clas_per);
 						$msg_complement.=get_nom_prenom_eleve($login_eleve)." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)." en période $i<br />\n";
 						$reg_ok = 'no';
 					}
@@ -117,17 +117,17 @@ if (isset($is_posted) and ($is_posted == 1)) {
 						(login = '$login_eleve' and
 						id_classe = '$id_classe' and
 						periode = '$i')";
-						$res_clas_per=mysql_query($sql);
-						if (mysql_num_rows($res_clas_per)==0) {
+						$res_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (mysqli_num_rows($res_clas_per)==0) {
 							$sql="INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0');";
-							$reg_data = mysql_query($sql);
+							$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!($reg_data))  {$reg_ok = 'no';}
 							else {
 								// Ménage:
 								$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Ajout dans une classe % effectuer pour %($login_eleve)';";
-								$res_actions=mysql_query($sql);
-								if(mysql_num_rows($res_actions)>0) {
-									while($lig_action=mysql_fetch_object($res_actions)) {
+								$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_actions)>0) {
+									while($lig_action=mysqli_fetch_object($res_actions)) {
 										$menage=del_info_action($lig_action->id);
 										if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $login_eleve<br />";}
 									}
@@ -138,14 +138,14 @@ if (isset($is_posted) and ($is_posted == 1)) {
 		
 						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
-						$res_liste_grp_classe=mysql_query($sql);
-						if(mysql_num_rows($res_liste_grp_classe)>0){
-							while($lig_tmp=mysql_fetch_object($res_liste_grp_classe)){
+						$res_liste_grp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_liste_grp_classe)>0){
+							while($lig_tmp=mysqli_fetch_object($res_liste_grp_classe)){
 								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$login_eleve' AND id_groupe='$lig_tmp->id_groupe' AND periode='$i'";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)==0){
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)==0){
 									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
-									$insert_grp=mysql_query($sql);
+									$insert_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!($insert_grp))  {$reg_ok = 'no';}
 								}
 							}
@@ -158,16 +158,16 @@ if (isset($is_posted) and ($is_posted == 1)) {
 										jec.periode='$i'
 									)";
 						//echo "$sql<br />";
-						$res_cpe=mysql_query($sql);
-						if(mysql_num_rows($res_cpe)==1) {
+						$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_cpe)==1) {
 							$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve';";
 							//echo "$sql<br />";
-							$nettoyage=mysql_query($sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 			
-							$lig_tmp=mysql_fetch_object($res_cpe);
+							$lig_tmp=mysqli_fetch_object($res_cpe);
 							$sql="INSERT INTO j_eleves_cpe SET cpe_login='$lig_tmp->cpe_login', e_login='$login_eleve';";
 							//echo "$sql<br />";
-							$insert_cpe=mysql_query($sql);
+							$insert_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_cpe_defini)) {
@@ -183,21 +183,21 @@ if (isset($is_posted) and ($is_posted == 1)) {
 										jep.id_classe='$id_classe'
 									)";
 						//echo "$sql<br />";
-						$res_pp=mysql_query($sql);
-						if(mysql_num_rows($res_pp)==1) {
+						$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_pp)==1) {
 							$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve';";
 							//echo "$sql<br />";
-							$nettoyage=mysql_query($sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 			
-							$lig_tmp=mysql_fetch_object($res_pp);
+							$lig_tmp=mysqli_fetch_object($res_pp);
 							$sql="INSERT INTO j_eleves_professeurs SET professeur='$lig_tmp->professeur', login='$login_eleve', id_classe='$id_classe';";
 							//echo "$sql<br />";
-							$insert_pp=mysql_query($sql);
+							$insert_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_pp_defini)) {
 								$msg_complement.="<br />L'élève $login_eleve n'a pas été <a href='";
-								if(mysql_num_rows($res_pp)==0) {
+								if(mysqli_num_rows($res_pp)==0) {
 									$msg_complement.="prof_suivi.php?id_classe=$id_classe";
 								}
 								else {
@@ -215,30 +215,30 @@ if (isset($is_posted) and ($is_posted == 1)) {
 		
 		if(isset($_POST['regime_'.$id_eleve])) {
 			$sql="SELECT * FROM j_eleves_regime WHERE login='$login_eleve';";
-			$call_regime = mysql_query($sql);
-			$nb_test_regime = mysql_num_rows($call_regime);
+			$call_regime = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_test_regime = mysqli_num_rows($call_regime);
 			if ($nb_test_regime == 0) {
 				$sql="INSERT INTO j_eleves_regime SET login='$login_eleve', regime='".$_POST['regime_'.$id_eleve]."', doublant='-';";
-				$reg_data = mysql_query($sql);
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			} else {
 				$sql="UPDATE j_eleves_regime SET regime='".$_POST['regime_'.$id_eleve]."' WHERE login='$login_eleve';";
-				$reg_data = mysql_query($sql);
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			}
 		}
 	
 		if(isset($_POST['doublant_eleve_'.$id_eleve])) {
 			$sql="SELECT * FROM j_eleves_regime WHERE login='$login_eleve';";
-			$call_regime = mysql_query($sql);
-			$nb_test_regime = mysql_num_rows($call_regime);
+			$call_regime = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_test_regime = mysqli_num_rows($call_regime);
 			if ($nb_test_regime == 0) {
 				$sql="INSERT INTO j_eleves_regime SET login='$login_eleve', doublant='".$_POST['doublant_eleve_'.$id_eleve]."', regime='d/p';";
-				$reg_data = mysql_query($sql);
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			} else {
 				$sql="UPDATE j_eleves_regime SET doublant='".$_POST['doublant_eleve_'.$id_eleve]."' WHERE login='$login_eleve';";
-				$reg_data = mysql_query($sql);
+				$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!($reg_data)) $reg_ok = 'no';
 			}
 		}
@@ -257,8 +257,8 @@ if (isset($is_posted) and ($is_posted == 1)) {
 // AJOUT: boireaus
 $chaine_options_classes="";
 $sql="SELECT id, classe FROM classes ORDER BY classe";
-$res_class_tmp=mysql_query($sql);
-if(mysql_num_rows($res_class_tmp)>0){
+$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_class_tmp)>0){
 	$id_class_prec=0;
 	$id_class_suiv=0;
 	$temoin_tmp=0;
@@ -266,14 +266,14 @@ if(mysql_num_rows($res_class_tmp)>0){
 	$cpt_classe=0;
 	$num_classe=-1;
 
-	while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+	while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 		if($lig_class_tmp->id==$id_classe){
 			// Index de la classe dans les <option>
 			$num_classe=$cpt_classe;
 
 			$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 			$temoin_tmp=1;
-			if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				$id_class_suiv=$lig_class_tmp->id;
 			}
@@ -380,8 +380,8 @@ Liste des élèves non affectés à une classe&nbsp;:</p>
 
 echo add_token_field();
 
-$call_eleves = mysql_query("SELECT * FROM eleves ORDER BY nom, prenom");
-$nombreligne = mysql_num_rows($call_eleves);
+$call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves ORDER BY nom, prenom");
+$nombreligne = mysqli_num_rows($call_eleves);
 if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>\n";
 } else {
@@ -417,14 +417,14 @@ if ($nombreligne == '0') {
 	$chaine_id_eleve=array();
 	$alt=1;
 	while($k < $nombreligne) {
-		$id_eleve = mysql_result($call_eleves, $k, 'id_eleve');
-		$login_eleve = mysql_result($call_eleves, $k, 'login');
-		$nom_eleve = mysql_result($call_eleves, $k, 'nom');
-		$prenom_eleve = mysql_result($call_eleves, $k, 'prenom');
-		$call_regime = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
-		$doublant = @mysql_result($call_regime, 0, 'doublant');
+		$id_eleve = old_mysql_result($call_eleves, $k, 'id_eleve');
+		$login_eleve = old_mysql_result($call_eleves, $k, 'login');
+		$nom_eleve = old_mysql_result($call_eleves, $k, 'nom');
+		$prenom_eleve = old_mysql_result($call_eleves, $k, 'prenom');
+		$call_regime = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login='$login_eleve'");
+		$doublant = @old_mysql_result($call_regime, 0, 'doublant');
 		if ($doublant == '') {$doublant = '-';}
-		$regime = @mysql_result($call_regime, 0, 'regime');
+		$regime = @old_mysql_result($call_regime, 0, 'regime');
 		if ($regime == '') {$regime = 'd/p';}
 		$i="1";
 		while ($i < $nb_periode) {
@@ -433,8 +433,8 @@ if ($nombreligne == '0') {
 		}
 
 		$inserer_ligne = 'no';
-		$call_data = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '$login_eleve'");
-		$test = mysql_num_rows($call_data);
+		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '$login_eleve'");
+		$test = mysqli_num_rows($call_data);
 		if ($test == 0) {
 			$inserer_ligne = 'yes';
 			$eleves_non_affectes = 'yes';
@@ -444,24 +444,24 @@ if ($nombreligne == '0') {
 				$i++;
 			}
 		} else {
-			$id_classe_eleve = mysql_result($call_data, 0, "id_classe");
-			$query_periode_max = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe_eleve'");
-			$periode_max = mysql_num_rows($query_periode_max) + 1 ;
+			$id_classe_eleve = old_mysql_result($call_data, 0, "id_classe");
+			$query_periode_max = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe_eleve'");
+			$periode_max = mysqli_num_rows($query_periode_max) + 1 ;
 			// si l'élève est déjà dans une classe dont le nombre de périodes est différent du nombre de périodes de la classe selctionnée, on ne fait rien. Dans la cas contraire :
 			if ($periode_max == $nb_periode) {
 				$i = '1';
 				while ($i < $nb_periode) {
-					$call_data2 = mysql_query("SELECT id_classe FROM j_eleves_classes WHERE (login = '$login_eleve' and periode = '$i')");
-					$test2 = mysql_num_rows($call_data2);
+					$call_data2 = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE (login = '$login_eleve' and periode = '$i')");
+					$test2 = mysqli_num_rows($call_data2);
 					if ($test2 == 0) {
 						// l'élève n'est affecté à aucune classe pour cette période
 						$inserer_ligne = 'yes';
 						$eleves_non_affectes = 'yes';
 						$nom_classe[$i] = 'vide';
 					} else {
-						$idd_classe = mysql_result($call_data2, 0, "id_classe");
-						$call_classe = mysql_query("SELECT classe FROM classes WHERE (id = '$idd_classe')");
-						$nom_classe[$i] = mysql_result($call_classe, 0, "classe");
+						$idd_classe = old_mysql_result($call_data2, 0, "id_classe");
+						$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE (id = '$idd_classe')");
+						$nom_classe[$i] = old_mysql_result($call_classe, 0, "classe");
 					}
 					$i++;
 				}

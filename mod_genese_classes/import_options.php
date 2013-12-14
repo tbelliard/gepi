@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/import_options.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/import_options.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Import options depuis CSV',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -110,7 +110,7 @@ if($action=="upload_file") {
 	else {
 
 		$sql="DELETE FROM gc_eleves_options WHERE projet='$projet';";
-		$del=mysql_query($sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$tab_non_option=array('NOM','PRENOM','SEXE','NAISSANCE','LOGIN','ELENOET','ELE_ID','INE','EMAIL','CLASSE');
 
@@ -129,8 +129,8 @@ if($action=="upload_file") {
 
 				// VERIFIER AUSSI SI L'OPTION PRéSUMéE EST DANS gc_options
 				$sql="SELECT 1=1 FROM gc_options WHERE projet='$projet' AND opt='".$tabligne_entete[$i]."';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					if(!in_array($tabligne_entete[$i],$tab_options)) {
 						$tab_options[]=$tabligne_entete[$i];
 					}
@@ -180,11 +180,11 @@ if($action=="upload_file") {
 				// Si la clé n'est pas LOGIN, il faut récupérer le login d'après la table eleves... A FAIRE
 				if($cle=="") {
 					$sql="SELECT 1=1 FROM eleves WHERE login='".$valeur_cle."';";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)==1) {
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)==1) {
 						$val_login=$valeur_cle;
 					}
-					elseif(mysql_num_rows($res)==0) {
+					elseif(mysqli_num_rows($res)==0) {
 						echo "<tr><td colspan='2'>\n";
 						echo "<span style='color:red'>Aucun enregistrement n'a été trouvé dans la table 'eleves' pour le login correspondant à la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
 						echo "</td></tr>\n";
@@ -199,12 +199,12 @@ if($action=="upload_file") {
 					//$sql="SELECT login FROM eleves WHERE ".strtolower($tabligne_entete_inverse["$cle"])."='".$valeur_cle."';";
 					$sql="SELECT login FROM eleves WHERE ".$cle."='".$valeur_cle."';";
 					//$sql="SELECT login FROM eleves WHERE ".$cle."='".$valeur_cle."' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)==1) {
-						$lig_tmp=mysql_fetch_object($res);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)==1) {
+						$lig_tmp=mysqli_fetch_object($res);
 						$val_login=$lig_tmp->login;
 					}
-					elseif(mysql_num_rows($res)==0) {
+					elseif(mysqli_num_rows($res)==0) {
 						echo "<tr><td colspan='2'>\n";
 						echo "<span style='color:red'>Aucun enregistrement n'a été trouvé dans la table 'eleves' pour le login correspondant à la ligne '<span style='color:blue'>$ligne</span>'</span><br />\n";
 						echo "</td></tr>\n";
@@ -239,7 +239,7 @@ if($action=="upload_file") {
 						$chaine_opt_eleve.="|";
 						$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
 						//echo "$sql<br />\n";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 

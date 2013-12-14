@@ -12,9 +12,9 @@ include_once '../edt_organisation/fonctions_edt_eleve.php';
 
 function getTypeCurrentWeek($numero_sem_actu){
 	$retour = '';
-	$query = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
 	if (count($query) == 1) {
-		$type = mysql_result($query, 0);
+		$type = old_mysql_result($query, 0);
 		$retour = $type;
 	}
 	return $retour;

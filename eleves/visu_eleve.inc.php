@@ -151,14 +151,14 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 	if(isset($id_classe)) {
 		$sql="SELECT DISTINCT e.login,e.nom,e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom;";
 		//echo "$sql<br />";
-		$res_ele=mysql_query($sql);
-		if(mysql_num_rows($res_ele)>0) {
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele)>0) {
 			echo "<p class='bold'>".casse_mot($gepiSettings['denomination_eleves'], 'majf2')." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			$tab_txt=array();
 			$tab_lien=array();
 
-			while($lig_ele=mysql_fetch_object($res_ele)) {
+			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$tab_txt[]=casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom);
 				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login."&amp;id_classe=".$id_classe;
 			}
@@ -196,14 +196,14 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
 	}
 	//echo "$sql<br />";
-	$res_clas=mysql_query($sql);
-	if(mysql_num_rows($res_clas)>0) {
+	$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_clas)>0) {
 		echo "<p>Ou choisir un ".$gepiSettings['denomination_eleve']." dans une classe:</p>\n";
 
 		$tab_txt=array();
 		$tab_lien=array();
 
-		while($lig_clas=mysql_fetch_object($res_clas)) {
+		while($lig_clas=mysqli_fetch_object($res_clas)) {
 			$tab_txt[]=$lig_clas->classe;
 			$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
 		}
@@ -251,9 +251,9 @@ else {
 
 	if(!isset($id_classe)) {
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$ele_login' ORDER BY periode DESC;";
-		$res_class_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_class_tmp)>0){
-			$lig_class_tmp=mysql_fetch_object($res_class_tmp);
+		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_class_tmp)>0){
+			$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
 			$id_classe=$lig_class_tmp->id_classe;
 		}
 	}
@@ -264,16 +264,16 @@ else {
 
 		$chaine_options_eleves="";
 
-		$res_ele_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_ele_tmp)>0){
+		$res_ele_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele_tmp)>0){
 			$ele_login_prec="";
 			$ele_login_suiv="";
 			$temoin_tmp=0;
-			while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+			while($lig_ele_tmp=mysqli_fetch_object($res_ele_tmp)) {
 				if($lig_ele_tmp->login==$ele_login) {
 					$chaine_options_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 					$temoin_tmp=1;
-					if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)) {
+					if($lig_ele_tmp=mysqli_fetch_object($res_ele_tmp)) {
 						$chaine_options_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 						$ele_login_suiv=$lig_ele_tmp->login;
 					}
@@ -411,9 +411,9 @@ Patientez pendant l'extraction des données... merci.
 
 	// On vérifie que l'élève existe
 	$sql="SELECT 1=1 FROM eleves WHERE login='$ele_login';";
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysql_num_rows($res_ele)==0){
+	if(mysqli_num_rows($res_ele)==0){
 		// On ne devrait pas arriver là.
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
@@ -489,9 +489,9 @@ Patientez pendant l'extraction des données... merci.
 			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
 			    $sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
 
-			    $test=mysql_query($sql);
+			    $test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			    if(mysql_num_rows($test)==0) {
+			    if(mysqli_num_rows($test)==0) {
 				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				    require_once("../lib/footer.inc.php");
 				    die();
@@ -529,9 +529,9 @@ Patientez pendant l'extraction des données... merci.
 		elseif($_SESSION['statut']=='cpe') {
 			if (getSettingValue("GepiAccesTouteFicheEleveCpe")!='yes') {
 			    $sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
-			    $test=mysql_query($sql);
+			    $test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			    if(mysql_num_rows($test)==0) {
+			    if(mysqli_num_rows($test)==0) {
 				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
 				    require_once("../lib/footer.inc.php");
 				    die();
@@ -553,9 +553,9 @@ Patientez pendant l'extraction des données... merci.
 			}
 			elseif($GepiAccesReleveCpe=="yes") {
 				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
-				$test=mysql_query($sql);
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				if(mysql_num_rows($test)>0) {
+				if(mysqli_num_rows($test)>0) {
 					$acces_releves="y";
 				}
 			}
@@ -588,9 +588,9 @@ Patientez pendant l'extraction des données... merci.
 			$acces_fp="y";
 
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='".$ele_login."' AND professeur='".$_SESSION['login']."';";
-			$test=mysql_query($sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($test)>0) {
+			if(mysqli_num_rows($test)>0) {
 				$is_pp="y";
 				$acces_absences="y";
 			}
@@ -628,9 +628,9 @@ Patientez pendant l'extraction des données... merci.
 									jgc.id_groupe=jgp.id_groupe AND
 									jgp.login='".$_SESSION['login']."';";
 			//echo "$sql<br />";
-			$test_eleve_classe_prof=mysql_query($sql);
+			$test_eleve_classe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($test_eleve_classe_prof)>0) {
+			if(mysqli_num_rows($test_eleve_classe_prof)>0) {
 				$eleve_classe_prof="y";
 			}
 			//=====================================
@@ -640,9 +640,9 @@ Patientez pendant l'extraction des données... merci.
 									jeg.id_groupe=jgp.id_groupe AND
 									jgp.login='".$_SESSION['login']."';";
 			//echo "$sql<br />";
-			$test_eleve_groupe_prof=mysql_query($sql);
+			$test_eleve_groupe_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($test_eleve_groupe_prof)>0) {
+			if(mysqli_num_rows($test_eleve_groupe_prof)>0) {
 				$eleve_groupe_prof="y";
 			}
 			//=====================================
@@ -764,10 +764,10 @@ Patientez pendant l'extraction des données... merci.
 
 			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
 			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
-			$query_d = mysql_query($sql_d);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d);
 			$auth_other = array();
 
-			while($rep_d = mysql_fetch_array($query_d)){
+			while($rep_d = mysqli_fetch_array($query_d)){
 
 				//print_r($rep_d);
 				if ($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V') {
@@ -1859,9 +1859,9 @@ Patientez pendant l'extraction des données... merci.
 
 			$sql="SELECT MIN(periode) AS min_per, MAX(periode) AS max_per FROM matieres_notes WHERE login='".$ele_login."';";
 			//echo "$sql<br />";
-			$res_per=mysql_query($sql);
-			if(mysql_num_rows($res_per)>0) {
-				$lig_per=mysql_fetch_object($res_per);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_per)>0) {
+				$lig_per=mysqli_fetch_object($res_per);
 				// Afficher les trois trimestres sur le bulletin simplifié affiche des infos erronées quant au nom des professeurs si l'élève a changé de classe.
 				$periode_numero_1=$lig_per->min_per;
 				$periode_numero_2=$lig_per->max_per;
@@ -1923,7 +1923,7 @@ Patientez pendant l'extraction des données... merci.
 
 
 						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+						$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
 						$nb_coef_superieurs_a_zero=$test_coef;
 
@@ -2204,9 +2204,9 @@ Patientez pendant l'extraction des données... merci.
 
 			$sql="SELECT MIN(ccn.periode) AS min_per, MAX(ccn.periode) AS max_per FROM cn_cahier_notes ccn,j_eleves_groupes jeg WHERE jeg.login='".$ele_login."' AND jeg.id_groupe=ccn.id_groupe AND jeg.periode=ccn.periode;";
 			//echo "$sql<br />";
-			$res_per=mysql_query($sql);
-			if(mysql_num_rows($res_per)>0) {
-				$lig_per=mysql_fetch_object($res_per);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_per)>0) {
+				$lig_per=mysqli_fetch_object($res_per);
 				$periode_numero_1=$lig_per->min_per;
 				$periode_numero_2=$lig_per->max_per;
 			}
@@ -2286,7 +2286,7 @@ Patientez pendant l'extraction des données... merci.
 						include "../lib/periodes.inc.php";
 
 						// On teste la présence d'au moins un coeff pour afficher la colonne des coef
-						$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+						$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 						//echo "\$test_coef=$test_coef<br />";
 						// Apparemment, $test_coef est réaffecté plus loin dans un des include()
 						$nb_coef_superieurs_a_zero=$test_coef;
@@ -2608,27 +2608,27 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			if($onglet!="fp") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['fp']."; ";
 			echo "'>";
-      $call_data = mysql_query("SELECT j.indice_aid, j.id_aid FROM  j_aid_eleves j, aid_config a where
+      $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT j.indice_aid, j.id_aid FROM  j_aid_eleves j, aid_config a where
        j.login='$ele_login' and a.indice_aid=j.indice_aid and a.outils_complementaires='y' order by j.indice_aid");
 
-      $nb_aid = mysql_num_rows($call_data);
+      $nb_aid = mysqli_num_rows($call_data);
       if ($nb_aid>0) {
   			echo "<h2>Tous les projets de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
         echo "<table width=\"80%\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
         while ($z < $nb_aid) {
-          $indice_aid = @mysql_result($call_data, $z, "indice_aid");
-          $aid_id =  @mysql_result($call_data, $z, "id_aid");
+          $indice_aid = @old_mysql_result($call_data, $z, "indice_aid");
+          $aid_id =  @old_mysql_result($call_data, $z, "id_aid");
           $nom_type_aid =  sql_query1("SELECT nom FROM aid_config  WHERE (indice_aid='$indice_aid')");
           $nom_aid = sql_query1("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-          $aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
-          $nb_lig = mysql_num_rows($aid_prof_resp_query);
+          $aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
+          $nb_lig = mysqli_num_rows($aid_prof_resp_query);
           $n = '0';
           while ($n < $nb_lig) {
-            $aid_prof_resp_login = @mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
-            $aid_prof_query = @mysql_query("SELECT nom,prenom FROM utilisateurs WHERE login='$aid_prof_resp_login'");
-            $aid_prof_resp_nom[$n] = @mysql_result($aid_prof_query, 0, "nom");
-            $aid_prof_resp_prenom[$n] = @mysql_result($aid_prof_query, 0, "prenom");
+            $aid_prof_resp_login = @old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+            $aid_prof_query = @mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom FROM utilisateurs WHERE login='$aid_prof_resp_login'");
+            $aid_prof_resp_nom[$n] = @old_mysql_result($aid_prof_query, 0, "nom");
+            $aid_prof_resp_prenom[$n] = @old_mysql_result($aid_prof_query, 0, "prenom");
             $n++;
           }
           echo "<tr><td><span class='small'><strong>$nom_type_aid</strong>";
@@ -2648,7 +2648,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 
       // Affichage des projets des années antérieures
       $id_nat = sql_query1("select no_gep from eleves where login='".$ele_login."'");
-      $call_data = mysql_query("select ta.annee, ta.id, a.id, ta.nom, a.nom, a.responsables
+      $call_data = mysqli_query($GLOBALS["mysqli"], "select ta.annee, ta.id, a.id, ta.nom, a.nom, a.responsables
       from archivage_aids a, archivage_types_aid ta, archivage_aid_eleve ae
       where ta.outils_complementaires='y' and
       a.id=ae.id_aid and
@@ -2656,18 +2656,18 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
       a.id_type_aid = ta.id
       order by ta.annee");
 
-      $nb_aid = mysql_num_rows($call_data);
+      $nb_aid = mysqli_num_rows($call_data);
       if ($nb_aid>0) {
         echo "<h2>Les projets des années antérieures</h2>";
         echo "<table width=\"$larg_tab\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
         while ($z < $nb_aid) {
-          $annee = @mysql_result($call_data, $z, "ta.annee");
-          $indice_aid = @mysql_result($call_data, $z, "ta.id");
-          $aid_id =  @mysql_result($call_data, $z, "a.id");
-          $nom_type_aid = @mysql_result($call_data, $z, "ta.nom");
-          $nom_aid =  @mysql_result($call_data, $z, "a.nom");
-          $aid_prof_resp =  @mysql_result($call_data, $z, "a.responsables");
+          $annee = @old_mysql_result($call_data, $z, "ta.annee");
+          $indice_aid = @old_mysql_result($call_data, $z, "ta.id");
+          $aid_id =  @old_mysql_result($call_data, $z, "a.id");
+          $nom_type_aid = @old_mysql_result($call_data, $z, "ta.nom");
+          $nom_aid =  @old_mysql_result($call_data, $z, "a.nom");
+          $aid_prof_resp =  @old_mysql_result($call_data, $z, "a.responsables");
           echo "<tr>\n";
           echo "<td><span class='small'>".$annee."</td>\n";
           echo "<td><span class='small'><strong>$nom_type_aid</strong>";
@@ -2835,8 +2835,8 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				    //           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
 				    //           sans permettre la modif des retards/abs/nj)
 					$sql="SELECT * FROM absences WHERE (login='".$ele_login."' AND periode='".$periode_note->getNumPeriode()."');";
-					$current_eleve_absences_query = mysql_query($sql);
-					$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+					$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
+					$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 					echo $current_eleve_appreciation_absences;
 				    echo "</td>\n";
 				    echo "</tr>\n";
@@ -2948,16 +2948,16 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
 			//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
 			$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' ORDER BY annee ASC;";
-			$res_ant=mysql_query($sql);
+			$res_ant=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($res_ant)==0){
+			if(mysqli_num_rows($res_ant)==0){
 				echo "<p>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
 			else{
 
 				unset($tab_annees);
 
-				$nb_annees=mysql_num_rows($res_ant);
+				$nb_annees=mysqli_num_rows($res_ant);
 
 				//echo "<p>Bulletins simplifiés:</p>\n";
 				//echo "<table border='0'>\n";
@@ -2966,7 +2966,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				echo "<tr class='lig$alt'>\n";
 				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 				$cpt=0;
-				while($lig_ant=mysql_fetch_object($res_ant)){
+				while($lig_ant=mysqli_fetch_object($res_ant)){
 
 					$tab_annees[]=$lig_ant->annee;
 
@@ -2978,9 +2978,9 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
 					$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='".$tab_ele['no_gep']."' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
-					$res_ant2=mysql_query($sql);
+					$res_ant2=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if(mysql_num_rows($res_ant2)==0){
+					if(mysqli_num_rows($res_ant2)==0){
 						echo "<td>Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".</td>\n";
 					}
 					else{
@@ -2990,7 +2990,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 						}
 
 						$cpt=0;
-						while($lig_ant2=mysql_fetch_object($res_ant2)){
+						while($lig_ant2=mysqli_fetch_object($res_ant2)){
 							//if($cpt>0){echo "<td> - </td>\n";}
 
 							// $id_classe=$tab_ele['periodes'][$index_per]['id_classe']

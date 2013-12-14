@@ -100,9 +100,9 @@ $data['date_jour'] = date("d/m/Y"); //jour/mois/année
 
 if (isset($data['calendrier']) AND isset($data['supprimer'])) {
 
-	$req_supp = mysql_query("DELETE FROM edt_calendrier WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
+	$req_supp = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_calendrier WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
     if ($data['supprimer'] != 0) {
-        $req_supp_cours = mysql_query("DELETE FROM edt_cours WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
+        $req_supp_cours = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
     }
 
 }
@@ -110,8 +110,8 @@ if (isset($data['calendrier']) AND isset($data['supprimer'])) {
 
 if (isset($data['calendrier']) AND isset($data['copier_edt'])) {
     $_SESSION['copier_periode_edt'] = $data['copier_edt'];
-    $req_edt_periode = mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier ='".$data['copier_edt']."'");
-    $rep_edt_periode = mysql_fetch_array($req_edt_periode);
+    $req_edt_periode = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier WHERE id_calendrier ='".$data['copier_edt']."'");
+    $rep_edt_periode = mysqli_fetch_array($req_edt_periode);
     $data['message'] = "Le contenu de la période \"".$rep_edt_periode['nom_calendrier']."\" est prêt à être dupliqué"; 
 }
 
@@ -121,11 +121,11 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
     if (PeriodExistsInDB($_SESSION['copier_periode_edt'])) {
         if (PeriodExistsInDB($data['coller_edt'])) {
             if ($data['coller_edt'] != $_SESSION['copier_periode_edt']) {
-                $req_edt_periode = mysql_query("SELECT * FROM edt_cours WHERE 
+                $req_edt_periode = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE 
                                                             id_calendrier = '".$_SESSION['copier_periode_edt']."'
-                                                            ") or die(mysql_error());  
+                                                            ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
                 $i = 0;
-                while ($rep_edt_periode = mysql_fetch_array($req_edt_periode)) {
+                while ($rep_edt_periode = mysqli_fetch_array($req_edt_periode)) {
                     $sql = "SELECT id_cours FROM edt_cours WHERE 
                              id_groupe = '".$rep_edt_periode['id_groupe']."' AND
 					         id_salle = '".$rep_edt_periode['id_salle']."' AND
@@ -137,9 +137,9 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_calendrier = '".$data['coller_edt']."' AND
 					         login_prof = '".$rep_edt_periode['login_prof']."'
                             ";
-                    $verif_existence = mysql_query($sql) OR DIE('Erreur dans la vérification du cours : '.mysql_error());
-                    if (mysql_num_rows($verif_existence) == 0) {
-				        $nouveau_cours = mysql_query("INSERT INTO edt_cours SET 
+                    $verif_existence = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la vérification du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    if (mysqli_num_rows($verif_existence) == 0) {
+				        $nouveau_cours = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_cours SET 
                              id_groupe = '".$rep_edt_periode['id_groupe']."',
 					         id_salle = '".$rep_edt_periode['id_salle']."',
 					         jour_semaine = '".$rep_edt_periode['jour_semaine']."',
@@ -149,7 +149,7 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_semaine = '".$rep_edt_periode['id_semaine']."',
 					         id_calendrier = '".$data['coller_edt']."',
 					         login_prof = '".$rep_edt_periode['login_prof']."'")
-				        OR DIE('Erreur dans la création du cours : '.mysql_error());
+				        OR DIE('Erreur dans la création du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                         $i++;
                     }
                 }
@@ -218,7 +218,7 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 				}
 			} // else
 		// On vérifie que ce nom de période n'existe pas encore
-		$req_verif_periode = mysql_fetch_array(mysql_query("SELECT nom_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$data['nom_periode']."'"));
+		$req_verif_periode = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier WHERE nom_calendrier = '".$data['nom_periode']."'"));
 		if ($req_verif_periode[0] == NULL) {
 			$data['heure_debut'] = $data['heure_debut'].":00";
 				$expdeb = explode(":", $data['heure_debut']);
@@ -232,7 +232,7 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 
 			// On vérifie que tout soit bien rempli et on sauvegarde
 			if ($data['nom_periode'] != '' AND $heuredeb_ts != '' AND $heurefin_ts != '') {
-				$req_insert = mysql_query("INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
+				$req_insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_calendrier (`nom_calendrier`, `classe_concerne_calendrier`, `debut_calendrier_ts`, `fin_calendrier_ts`, `jourdebut_calendrier`, `heuredebut_calendrier`, `jourfin_calendrier`, `heurefin_calendrier`, `numero_periode`, `etabferme_calendrier`, `etabvacances_calendrier`)
 								VALUES ('".$data["nom_periode"]."',
 										'".$classes_concernees_insert."',
 										'".$heuredeb_ts."',
@@ -282,7 +282,7 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 		}
 	}
 
-	$modif_periode = mysql_query("UPDATE edt_calendrier
+	$modif_periode = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_calendrier
 				SET nom_calendrier = '".traitement_magic_quotes($data['nom_periode'])."',
 				classe_concerne_calendrier = '".$classes_concernees_insert."',
 				debut_calendrier_ts = '".$deb_ts."',
@@ -300,21 +300,21 @@ if (isset($data['modif_ok']) AND isset($data['nom_periode'])) {
 
 
 
-$data['req_affcalendar'] = mysql_query("SELECT * FROM edt_calendrier ORDER BY jourdebut_calendrier") OR die ('Impossible d\'afficher le calendrier.');
-$data['nbre_affcalendar'] = mysql_num_rows($data['req_affcalendar']);
+$data['req_affcalendar'] = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier ORDER BY jourdebut_calendrier") OR die ('Impossible d\'afficher le calendrier.');
+$data['nbre_affcalendar'] = mysqli_num_rows($data['req_affcalendar']);
 $a = 1;
 
 for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
-	$data['rep_affcalendar'][$i]["id_calendrier"] = mysql_result($data['req_affcalendar'], $i, "id_calendrier");
-	$data['rep_affcalendar'][$i]["classe_concerne_calendrier"] = mysql_result($data['req_affcalendar'], $i, "classe_concerne_calendrier");
-	$data['rep_affcalendar'][$i]["nom_calendrier"] = mysql_result($data['req_affcalendar'], $i, "nom_calendrier");
-	$data['rep_affcalendar'][$i]["jourdebut_calendrier"] = mysql_result($data['req_affcalendar'], $i, "jourdebut_calendrier");
-	$data['rep_affcalendar'][$i]["heuredebut_calendrier"] = mysql_result($data['req_affcalendar'], $i, "heuredebut_calendrier");
-	$data['rep_affcalendar'][$i]["jourfin_calendrier"] = mysql_result($data['req_affcalendar'], $i, "jourfin_calendrier");
-	$data['rep_affcalendar'][$i]["heurefin_calendrier"] = mysql_result($data['req_affcalendar'], $i, "heurefin_calendrier");
-	$data['rep_affcalendar'][$i]["numero_periode"] = mysql_result($data['req_affcalendar'], $i, "numero_periode");
-	$data['rep_affcalendar'][$i]["etabferme_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabferme_calendrier");
-	$data['rep_affcalendar'][$i]["etabvacances_calendrier"] = mysql_result($data['req_affcalendar'], $i, "etabvacances_calendrier");
+	$data['rep_affcalendar'][$i]["id_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "id_calendrier");
+	$data['rep_affcalendar'][$i]["classe_concerne_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "classe_concerne_calendrier");
+	$data['rep_affcalendar'][$i]["nom_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "nom_calendrier");
+	$data['rep_affcalendar'][$i]["jourdebut_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "jourdebut_calendrier");
+	$data['rep_affcalendar'][$i]["heuredebut_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "heuredebut_calendrier");
+	$data['rep_affcalendar'][$i]["jourfin_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "jourfin_calendrier");
+	$data['rep_affcalendar'][$i]["heurefin_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "heurefin_calendrier");
+	$data['rep_affcalendar'][$i]["numero_periode"] = old_mysql_result($data['req_affcalendar'], $i, "numero_periode");
+	$data['rep_affcalendar'][$i]["etabferme_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "etabferme_calendrier");
+	$data['rep_affcalendar'][$i]["etabvacances_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "etabvacances_calendrier");
 
 	// établissement ouvert ou fermé ?
 	if ($data['rep_affcalendar'][$i]["etabferme_calendrier"] == "1") {
@@ -333,7 +333,7 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 		$data['contenu_infobulle'] = "<span style=\"color: brown;\">".(count($data['expl_aff'][$i]) - 1)." classe(s).</span><br />";
 		$contenu_infobulle = "";
 		for ($t=0; $t<(count($data['expl_aff'][$i]) - 1); $t++) {
-			$req_nomclasse = mysql_fetch_array(mysql_query("SELECT nom_complet FROM classes WHERE id = '".$data["expl_aff"][$i][$t]."'"));
+			$req_nomclasse = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM classes WHERE id = '".$data["expl_aff"][$i][$t]."'"));
 			$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
 		}
 		//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
@@ -372,7 +372,7 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 }
 if (isset($data['calendrier']) AND isset($data['modifier'])) {
 	// On affiche la période demandée dans un formulaire
-	$rep_modif = mysql_fetch_array(mysql_query("SELECT * FROM edt_calendrier WHERE id_calendrier = '".$data['modifier']."'"));
+	$rep_modif = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier WHERE id_calendrier = '".$data['modifier']."'"));
 	// On affiche la liste des classes
 	$tab_select = renvoie_liste("classe");
 	/*
@@ -410,10 +410,10 @@ if (isset($data['calendrier']) AND isset($data['modifier'])) {
 		mysql> 
 		*/
 		$sql="SELECT id_classe FROM classes c, periodes p WHERE p.id_classe=c.id ORDER BY p.num_periode DESC, c.classe LIMIT 1;";
-		$res_clas_max_per=mysql_query($sql);
-		$id_classe_max_per=mysql_result($res_clas_max_per,0,"id_classe");
-		$req_periodes = mysql_query("SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '$id_classe_max_per'");
-		$nbre_periodes = mysql_num_rows($req_periodes);
+		$res_clas_max_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		$id_classe_max_per=old_mysql_result($res_clas_max_per,0,"id_classe");
+		$req_periodes = mysqli_query($GLOBALS["mysqli"], "SELECT nom_periode, num_periode FROM periodes WHERE id_classe = '$id_classe_max_per'");
+		$nbre_periodes = mysqli_num_rows($req_periodes);
 	
 		// Choix des classes sur 3 (ou 4) colonnes
 		$modulo = count($tab_select) % 3;
@@ -434,9 +434,9 @@ if((isset($_GET['maj_dates_mod_abs2']))&&($_GET['maj_dates_mod_abs2']=='y')) {
 	$nb_reg=0;
 
 	$sql="select * from edt_calendrier WHERE numero_periode>0 AND classe_concerne_calendrier!='';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			if(preg_match("/;/", $lig->classe_concerne_calendrier)) {
 				$tab_classe=explode(";", $lig->classe_concerne_calendrier);
 			}
@@ -445,7 +445,7 @@ if((isset($_GET['maj_dates_mod_abs2']))&&($_GET['maj_dates_mod_abs2']=='y')) {
 			}
 
 			for($loop=0;$loop<count($tab_classe);$loop++) {
-				$register=mysql_query("UPDATE periodes SET date_fin='".$lig->jourfin_calendrier."' WHERE (num_periode='".$lig->numero_periode."' and id_classe='".$tab_classe[$loop]."')");
+				$register=mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET date_fin='".$lig->jourfin_calendrier."' WHERE (num_periode='".$lig->numero_periode."' and id_classe='".$tab_classe[$loop]."')");
 				if(!$register) {
 					$msg.="Erreur lors de la définition de la date de fin pour la classe ".get_class_from_id($tab_classe[$loop])." en période $lig->numero_periode.<br />";
 				}

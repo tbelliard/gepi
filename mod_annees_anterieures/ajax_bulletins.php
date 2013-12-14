@@ -110,14 +110,14 @@ if($acces=="y") {
 		//debug_var();
 
 		$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-		if(mysql_num_rows($res_ele)==0) {
+		if(mysqli_num_rows($res_ele)==0) {
 			// On ne devrait pas arriver là.
 			echo "<p>L'élève dont le login serait '$logineleve' n'est pas dans la table 'eleves'.</p>\n";
 		}
 		else {
-			$lig_ele=mysql_fetch_object($res_ele);
+			$lig_ele=mysqli_fetch_object($res_ele);
 	
 			// Infos élève
 			//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
@@ -145,14 +145,14 @@ if($acces=="y") {
 			// Si l'année scolaire n'a pas été passée en variable, on récupère la première année scolaire pour laquelle il y a des archives pour cet élève.
 			if(!isset($annee_scolaire)) {
 				$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
-				$res_annee=mysql_query($sql);
+				$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				if(mysql_num_rows($res_annee)==0) {
+				if(mysqli_num_rows($res_annee)==0) {
 					echo "<p>Aucune année archivée pour cet élève.</p>\n";
 					die();
 				}
 
-				$lig_annee=mysql_fetch_object($res_annee);
+				$lig_annee=mysqli_fetch_object($res_annee);
 				$annee_scolaire=$lig_annee->annee;
 			}
 
@@ -163,14 +163,14 @@ if($acces=="y") {
 
 			//$sql="SELECT DISTINCT nom_periode FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
 			$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire';";
-			$res_per=mysql_query($sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-			if(mysql_num_rows($res_per)==0) {
+			if(mysqli_num_rows($res_per)==0) {
 				$nom_periode="période $num_periode";
 				$classe_ant="???";
 			}
 			else {
-				$lig_per=mysql_fetch_object($res_per);
+				$lig_per=mysqli_fetch_object($res_per);
 				$nom_periode=$lig_per->nom_periode;
 				$classe_ant=$lig_per->classe;
 			}
@@ -201,14 +201,14 @@ if($acces=="y") {
 			$alt=1;
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY matiere";
 			//echo "$sql<br />\n";
-			$res_mat=mysql_query($sql);
+			$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-			if(mysql_num_rows($res_mat)==0) {
+			if(mysqli_num_rows($res_mat)==0) {
 				// On ne devrait pas arriver là.
 				echo "<tr><td colspan='6'>Aucun résultat enregistré???</td></tr>\n";
 			}
 			else {
-				while($lig_mat=mysql_fetch_object($res_mat)) {
+				while($lig_mat=mysqli_fetch_object($res_mat)) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>";
@@ -236,9 +236,9 @@ if($acces=="y") {
 				type.display_bulletin='y'
 				ORDER BY type.nom, aid.nom";
 			//echo "$sql<br />";
-			$res_aid=mysql_query($sql);
-			if(mysql_num_rows($res_aid)>0) {
-				while($lig_aid=mysql_fetch_object($res_aid)) {
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				while($lig_aid=mysqli_fetch_object($res_aid)) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td>";
@@ -266,16 +266,16 @@ if($acces=="y") {
 			// Affichage des absences
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='ABSENCES'";
 			//echo "$sql<br />\n";
-			$res_abs=mysql_query($sql);
+			$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-			if(mysql_num_rows($res_abs)==0) {
+			if(mysqli_num_rows($res_abs)==0) {
 				echo "<p>Aucune information sur les absences/retards.</p>\n";
 			}
-			elseif(mysql_num_rows($res_abs)>1) {
+			elseif(mysqli_num_rows($res_abs)>1) {
 				echo "<p>Bizarre: Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
 			}
 			else {
-				$lig_abs=mysql_fetch_object($res_abs);
+				$lig_abs=mysqli_fetch_object($res_abs);
 	
 				$nb_absences=$lig_abs->nb_absences;
 				$non_justifie=$lig_abs->non_justifie;
@@ -307,7 +307,7 @@ if($acces=="y") {
 			// Affichage de l'avis du conseil
 			$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='AVIS_CONSEIL'";
 			//echo "$sql<br />\n";
-			$res_avis=mysql_query($sql);
+			$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 	
 			//echo "<table class='table_annee_anterieure' width='100%' summary='Avis du conseil'>\n";
@@ -317,15 +317,15 @@ if($acces=="y") {
 			echo "<p><i>Avis du Conseil de classe : </i><br />\n";
 	
 			$prof_suivi="";
-			if(mysql_num_rows($res_avis)==0) {
+			if(mysqli_num_rows($res_avis)==0) {
 				echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 			}
-			elseif(mysql_num_rows($res_avis)>1) {
+			elseif(mysqli_num_rows($res_avis)>1) {
 				echo "Bizarre: Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
 				$prof_suivi="?";
 			}
 			else {
-				$lig_avis=mysql_fetch_object($res_avis);
+				$lig_avis=mysqli_fetch_object($res_avis);
 				echo "$lig_avis->appreciation</p>\n";
 				$prof_suivi=$lig_avis->prof;
 			}

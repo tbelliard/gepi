@@ -55,8 +55,8 @@ $aff_modif = NULL;
 // On récupère toutes les données du groupe
 if (isset($var) AND is_numeric($var)) {
 	// On y va pour récupérer les données
-	$query_d = mysql_query("SELECT nom, nom_long, subdivision_type, subdivision FROM edt_gr_nom WHERE id = '".$var."'");
-	$rep_d = mysql_fetch_array($query_d);
+	$query_d = mysqli_query($GLOBALS["mysqli"], "SELECT nom, nom_long, subdivision_type, subdivision FROM edt_gr_nom WHERE id = '".$var."'");
+	$rep_d = mysqli_fetch_array($query_d);
 }
 
 
@@ -116,15 +116,15 @@ if ($var2 == "changer_nom") {
 	// On met en place l'affichage
 	$aff_modif .= '<p style="text-align: right;"><a href="edt_liste_eleves.php?id_gr='.$var.'" target="_blank">Modifier cette liste</a></p>';
 
-	$query_e = mysql_query($sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
+	$query_e = mysqli_query($GLOBALS["mysqli"], $sql_e) OR trigger_error('Impossible de récupérer la liste des élèves', E_USER_ERROR);
 
-	while($rep = mysql_fetch_array($query_e)){
+	while($rep = mysqli_fetch_array($query_e)){
 
 		// On récupère alors la classe
-		$query_c = mysql_query("SELECT classe FROM j_eleves_classes jec, classes c
+		$query_c = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM j_eleves_classes jec, classes c
 										WHERE jec.login = '".$rep["login"]."'
 										AND jec.id_classe = c.id");
-		$classe = mysql_result($query_c, 0,"classe");
+		$classe = old_mysql_result($query_c, 0,"classe");
 
 		$aff_modif .= $rep["nom"].'&nbsp;'.$rep["prenom"].' ('.$classe.').<br />';
 
@@ -138,11 +138,11 @@ if ($var2 == "changer_nom") {
 										WHERE egp.id_utilisateurs = u.login
 										AND id_gr_nom = '".$var."'
 										ORDER BY nom, prenom";
-	$query_p = mysql_query($sql_p) OR trigger_error("Impossible de récupérer la liste des professeurs de ce groupe : ", E_USER_ERROR);
+	$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p) OR trigger_error("Impossible de récupérer la liste des professeurs de ce groupe : ", E_USER_ERROR);
 
 	$aff_modif .= '<p style="text-align: right;"><a href="./edt_liste_profs.php?id_gr='.$var.'" target="_blank">Modifier cette liste</a></p>';
 
-	while($rep = mysql_fetch_array($query_p)){
+	while($rep = mysqli_fetch_array($query_p)){
 
 		$aff_modif .= '<br />'.$rep["nom"].' '.$rep["prenom"];
 
@@ -153,7 +153,7 @@ if ($var2 == "changer_nom") {
 // On traite la modification si elle est demandée (liste d'élèves : obsolète)
 if ($action == "modifier_gr") {
 	$sql_m = "UPDATE edt_gr_nom SET nom = '".$nom_gr."', nom_long = '".$nom_long_gr."' WHERE id = '".$var."'";
-	$query_m = mysql_query($sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.mysql_error(), E_USER_ERROR);
+	$query_m = mysqli_query($GLOBALS["mysqli"], $sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 	if ($query_m) {
 		// On ferme la fenêtre
 		echo '<html><body><p>La modification a bien été enregistrée, vous pouvez fermer cette fenêtre et rafraichir votre navigateur.</p></body></html>';

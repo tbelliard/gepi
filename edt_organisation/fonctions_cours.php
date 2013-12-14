@@ -89,8 +89,8 @@ if ($login_prof != "") {
                 while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                     $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                     if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
-                        $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
-		                $rep_nom_creneau = mysql_fetch_array($req_nom_creneau);
+                        $req_nom_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
+		                $rep_nom_creneau = mysqli_fetch_array($req_nom_creneau);
                         if ($tab_enseignement['id_semaine'][$k] != "0") {
                             $creneaux_occupes .= "en ".$rep_nom_creneau['nom_definie_periode']." (Sem ".$tab_enseignement['id_semaine'][$k].") "." ";
                         }
@@ -168,10 +168,10 @@ if (($salle != "") AND ($salle != "rie")) {
             while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                 $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                 if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
-                    $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
-		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
-                    $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
-		            $rep_nom_creneau = mysql_fetch_array($req_nom_creneau);
+                    $req_nom_prof = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
+		            $rep_nom_prof = mysqli_fetch_array($req_nom_prof);
+                    $req_nom_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
+		            $rep_nom_creneau = mysqli_fetch_array($req_nom_creneau);
                     if ($tab_enseignement['id_semaine'][$k] != "0") {
                         $enseignants .= $rep_nom_prof['nom']." (Sem ".$tab_enseignement['id_semaine'][$k].") "."en ".$rep_nom_creneau['nom_definie_periode']." ";
                     }
@@ -252,14 +252,14 @@ if (($groupe != "") OR ($id_aid != "")) {
             $k = 0;
            
 			$LoginTable = array();
-			$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$groupe."' GROUP BY login");
-			while ($rep = mysql_fetch_array($req)) {
+			$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$groupe."' GROUP BY login");
+			while ($rep = mysqli_fetch_array($req)) {
 				$LoginTable[] = $rep['login'];
 			}		   
 
 			$LoginTableAID = array();
-			$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$groupe."' GROUP BY login");
-			while ($rep = mysql_fetch_array($req)) {
+			$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$groupe."' GROUP BY login");
+			while ($rep = mysqli_fetch_array($req)) {
 				$LoginTableAID[] = $rep['login'];
 			}	
 			
@@ -271,8 +271,8 @@ if (($groupe != "") OR ($id_aid != "")) {
                         if ($groupe_type == "ENS") {
 						
 							$MyTable = array();
-							$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."'");
-							while ($rep = mysql_fetch_array($req)) {
+							$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysqli_fetch_array($req)) {
 								$MyTable[] = $rep['login'];
 							}
 							$count = 0;
@@ -290,8 +290,8 @@ if (($groupe != "") OR ($id_aid != "")) {
                         else {
 
 							$MyTable = array();
-							$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."'");
-							while ($rep = mysql_fetch_array($req)) {
+							$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."'");
+							while ($rep = mysqli_fetch_array($req)) {
 								$MyTable[] = $rep['login'];
 							}
 							$count = 0;
@@ -313,8 +313,8 @@ if (($groupe != "") OR ($id_aid != "")) {
                         if ($groupe_type == "ENS") {
 
 							$MyTable = array();
-							$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
-							while ($rep = mysql_fetch_array($req)) {
+							$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysqli_fetch_array($req)) {
 								$MyTable[] = $rep['login'];
 							}
 							$count = 0;
@@ -332,8 +332,8 @@ if (($groupe != "") OR ($id_aid != "")) {
                         else {
 						
 							$MyTable = array();
-							$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
-							while ($rep = mysql_fetch_array($req)) {
+							$req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysqli_fetch_array($req)) {
 								$MyTable[] = $rep['login'];
 							}
 							$count = 0;
@@ -351,8 +351,8 @@ if (($groupe != "") OR ($id_aid != "")) {
 
                         }
                     }
-                    $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
-		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
+                    $req_nom_prof = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
+		            $rep_nom_prof = mysqli_fetch_array($req_nom_prof);
                     
                     //$enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." élèves) ";
                     if($_SESSION['statut']=='administrateur') {
@@ -425,15 +425,15 @@ function getGroupsContainingSameStudents($groupe)
 
 	
 	$sql_request = "SELECT login, id_groupe, periode FROM j_eleves_groupes  WHERE id_groupe = '".$groupe."' GROUP BY login";
-	$req2 = mysql_query($sql_request);
-	while ($rep = mysql_fetch_array($req2)) {
+	$req2 = mysqli_query($GLOBALS["mysqli"], $sql_request);
+	while ($rep = mysqli_fetch_array($req2)) {
 		$LoginTable[] =$rep['login'];
 	}
 
 	$sql_request = "SELECT DISTINCT login, id_groupe FROM j_eleves_groupes ORDER BY id_groupe ASC";
-	$req = mysql_query($sql_request);
+	$req = mysqli_query($GLOBALS["mysqli"], $sql_request);
 	if ($req) {
-		while($rep = mysql_fetch_array($req))
+		while($rep = mysqli_fetch_array($req))
 		{
 			$CompleteTable['login'][] = $rep['login'];
 			$CompleteTable['id_groupe'][] = $rep['id_groupe'];
@@ -455,12 +455,12 @@ function getGroupsContainingSameStudents($groupe)
 	}
 	
 	$sql_request = "DELETE FROM j_eleves_groupes_delestage";
-	$req = mysql_query($sql_request);
+	$req = mysqli_query($GLOBALS["mysqli"], $sql_request);
 	
 	foreach ($GroupsTable as $group) {
 		$sql_request = "INSERT INTO j_eleves_groupes_delestage SET
 			id_groupe = '".$group."'";
-		$req_insertion = mysql_query($sql_request);
+		$req_insertion = mysqli_query($GLOBALS["mysqli"], $sql_request);
 	}		
 }
 
@@ -486,17 +486,17 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
 	
     if ($type_semaine == "0") {
         if ($groupe_type == "ENS") {
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
                                     id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage) AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(mysql_error());
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         }
         else {      //AID
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
                                     id_groupe IN (SELECT id_groupe FROM j_eleves_groupes WHERE 
                                                                 login IN (SELECT login FROM j_aid_eleves WHERE
                                                                         id_aid = '".$groupe."')) AND
@@ -505,12 +505,12 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(mysql_error());
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         }
     }
     else {      
         if ($groupe_type == "ENS") {
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
                                     id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage) AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -518,10 +518,10 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(mysql_error());
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         }
         else {
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
                                     id_groupe IN (SELECT id_groupe FROM j_eleves_groupes WHERE 
                                                                 login IN (SELECT login FROM j_aid_eleves WHERE
                                                                         id_aid = '".$groupe."')) AND
@@ -531,11 +531,11 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(mysql_error());
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         }
     }
 
-    while ($rep_creneau = mysql_fetch_array($req_creneau)) {
+    while ($rep_creneau = mysqli_fetch_array($req_creneau)) {
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_groupe'][$k] = $rep_creneau['id_groupe'];
@@ -546,13 +546,13 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
 
     // --------- Rechercher les AIDs qui ont des élèves en commun avec le groupe visé
 
-    $req_creneau_aid = mysql_query("SELECT DISTINCT id_aid FROM j_aid_eleves WHERE 
+    $req_creneau_aid = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_aid FROM j_aid_eleves WHERE 
                                                             login IN (SELECT login FROM j_eleves_groupes WHERE
                                                                     id_groupe = '".$groupe."') 
-                                ") or die(mysql_error());
-    while ($rep_creneau_aid = mysql_fetch_array($req_creneau_aid)) {
+                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    while ($rep_creneau_aid = mysqli_fetch_array($req_creneau_aid)) {
         if ($type_semaine == "0") {
-            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
+            $req_creneau_aid_2 = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
                                     id_aid = '".$rep_creneau_aid['id_aid']."' AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -562,7 +562,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                      ");
         }
         else {
-            $req_creneau_aid_2 = mysql_query("SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
+            $req_creneau_aid_2 = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
                                     id_aid = '".$rep_creneau_aid['id_aid']."' AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -572,9 +572,9 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     $calendrier
                                      ");
         }
-        if (mysql_num_rows($req_creneau_aid_2) != 0) {
+        if (mysqli_num_rows($req_creneau_aid_2) != 0) {
 
-            $rep_creneau_aid_2 = mysql_fetch_array($req_creneau_aid_2);
+            $rep_creneau_aid_2 = mysqli_fetch_array($req_creneau_aid_2);
             $tab_enseignement['duree'][$k] = $rep_creneau_aid_2['duree'];
             $tab_enseignement['login'][$k] = $rep_creneau_aid_2['login_prof'];
             $tab_enseignement['id_aid'][$k] = $rep_creneau_aid_2['id_aid'];
@@ -607,19 +607,19 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
     }
     // --------- Rechercher les groupes d'enseignement qui ont la salle en commun avec le groupe visé
     if ($type_semaine == "0") {
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                     id_salle = '".$salle."'  AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(mysql_error());            
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));            
 
     }
     else {
 
-            $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
+            $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                     id_salle = '".$salle."'  AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -627,10 +627,10 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(mysql_error());          
+                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));          
 
     }
-    while ($rep_creneau = mysql_fetch_array($req_creneau)) {
+    while ($rep_creneau = mysqli_fetch_array($req_creneau)) {
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_semaine'][$k] = $rep_creneau['id_semaine'];
@@ -673,17 +673,17 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
     }
 
     if ($type_semaine == "0") {
-        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
+        $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                 login_prof = '".$login_prof."'  AND
                                 jour_semaine = '".$jour."' AND
                                 id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                 heuredeb_dec = '".$current_heure."' AND
                                 id_cours <> '".$id_cours."' AND
                                 ".$calendrier."
-                                ") or die(mysql_error());
+                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     }
     else {
-        $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
+        $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
                                 login_prof = '".$login_prof."'  AND
                                 jour_semaine = '".$jour."' AND
                                 id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
@@ -691,9 +691,9 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
                                 (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                 id_cours <> '".$id_cours."' AND
                                 ".$calendrier."
-                                ") or die(mysql_error());
+                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     }
-    while ($rep_creneau = mysql_fetch_array($req_creneau)) {
+    while ($rep_creneau = mysqli_fetch_array($req_creneau)) {
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];
         $tab_enseignement['login'][$k] = $rep_creneau['login_prof'];
         $tab_enseignement['id_semaine'][$k] = $rep_creneau['id_semaine'];
@@ -747,12 +747,12 @@ function creneauPrecedent($creneau){
 // Fonction qui renvoie le nombre de créneaux précédents celui qui est appelé
 function nombreCreneauxPrecedent($creneau){
 	// On récupère l'heure du creneau appelé
-	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
-	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE
+	$heure_creneau_appele = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
+	$requete = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux WHERE
 						heuredebut_definie_periode < '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND
 						type_creneaux != 'pause'
 						ORDER BY heuredebut_definie_periode");
-	$nbre = mysql_num_rows($requete);
+	$nbre = mysqli_num_rows($requete);
 
 	return $nbre;
 } // nombreCreneauxPrecedent()
@@ -760,9 +760,9 @@ function nombreCreneauxPrecedent($creneau){
 // Fonction qui renvoie le nombre de créneaux qui suivent celui qui est appelé
 function nombreCreneauxApres($creneau){
 	// On récupère l'heure du creneau appelé
-	$heure_creneau_appele = mysql_fetch_array(mysql_query("SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
-	$requete = mysql_query("SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode > '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
-	$nbre = mysql_num_rows($requete);
+	$heure_creneau_appele = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT heuredebut_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$creneau."'"));
+	$requete = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux WHERE heuredebut_definie_periode > '".$heure_creneau_appele["heuredebut_definie_periode"]."' AND type_creneaux != 'pause' ORDER BY heuredebut_definie_periode");
+	$nbre = mysqli_num_rows($requete);
 
 	return $nbre;
 } // nombreCreneauxApres()

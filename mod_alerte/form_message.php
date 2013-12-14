@@ -53,8 +53,8 @@ if (($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_alerte/form_message.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_alerte/form_message.php',
 administrateur='V',
 professeur='V',
@@ -66,7 +66,7 @@ secours='V',
 autre='F',
 description='Dispositif d alerte',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // Pour éviter des blagues avec le plugin change_compte (sinon les comptes 'autre' sont désactivés en quelques secondes)
@@ -142,8 +142,8 @@ if((isset($mode))&&($mode=='check')) {
 	}
 	else {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."' ;";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
 
 			echo "<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' style='width:16px; height:16px' alt='Aucun message' title='Aucun message' /></a></span>";
 		}
@@ -290,9 +290,9 @@ $login_dest=isset($_POST['login_dest']) ? $_POST['login_dest'] : (isset($_GET['l
 
 if((isset($_GET['id_incident']))&&(!isset($message))) {
 	$sql="SELECT * FROM s_incidents WHERE id_incident='".$_GET['id_incident']."';";
-	$res_incident=mysql_query($sql);
-	if(mysql_num_rows($res_incident)>0) {
-		$lig_incident=mysql_fetch_object($res_incident);
+	$res_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_incident)>0) {
+		$lig_incident=mysqli_fetch_object($res_incident);
 		//A propos de l'incident n°<a href='$gepiPath/mod_discipline/saisie_incident.php?step=2&id_incident".$_GET['id_incident']."'></a> du ".formate_date
 		$message="Bonjour, 
 
@@ -345,8 +345,8 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 		unset($in_reply_to);
 		if((isset($_POST['in_reply_to']))&&(is_numeric($_POST['in_reply_to']))) {
 			$sql="SELECT 1=1 FROM messagerie WHERE id='".$_POST['in_reply_to']."' AND login_dest='".$_SESSION['login']."';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				$in_reply_to=$_POST['in_reply_to'];
 			}
 		}
@@ -411,20 +411,20 @@ if((isset($mode))&&($mode=='repondre')) {
 	$id_msg=$_GET['id_msg'];
 	if(is_numeric($id_msg)) {
 		$sql="SELECT * FROM messagerie WHERE id='$id_msg' AND login_dest='".$_SESSION['login']."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			$msg.="Le message n°$id_msg s'il existe ne vous était pas destiné.<br />";
 		}
 		else {
 			$retour=marquer_message_lu($id_msg);
 
-			$login_dest=mysql_result($res,0,"login_src");
-			$sujet="Re: ".mysql_result($res,0,"sujet");
+			$login_dest=old_mysql_result($res,0,"login_src");
+			$sujet="Re: ".old_mysql_result($res,0,"sujet");
 
-			//$date_visibilite=mysql_result($res,0,"date_visibilite");
-			$date_msg=mysql_result($res,0,"date_msg");
+			//$date_visibilite=old_mysql_result($res,0,"date_visibilite");
+			$date_msg=old_mysql_result($res,0,"date_msg");
 
-			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".mysql_result($res,0,"message")."\n================================\n";
+			$message="Le ".formate_date($date_msg, 'y').", vous avez écrit:\n================================\n".old_mysql_result($res,0,"message")."\n================================\n";
 
 			$in_reply_to=$id_msg;
 		}
@@ -445,14 +445,14 @@ if(((!isset($mode))||($mode!='rediger_message'))&&(peut_poster_message($_SESSION
 }
 
 $sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)>0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_envoyes'>Tous mes envois</a>";
 }
 
 $sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)>0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."#messages_recus' title='Lus/vus ou non'>Tous mes messages reçus</a>";
 }
 echo "</p>";
@@ -479,9 +479,9 @@ if((isset($mode))&&($mode=='afficher_messages_non_lus')) {
 if(peut_poster_message($_SESSION['statut'])) {
 	$tab_user_mae=array();
 	$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
-	$res_mae=mysql_query($sql);
-	if(mysql_num_rows($res_mae)>0) {
-		while($lig_mae=mysql_fetch_object($res_mae)) {
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
 			$tab_user_mae[]=$lig_mae->value;
 		}
 	}
@@ -550,11 +550,11 @@ if(peut_poster_message($_SESSION['statut'])) {
 								$tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
 								for($loop=0;$loop<count($tab_statut);$loop++) {
 									$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
-									$res_u=mysql_query($sql);
-									if(mysql_num_rows($res_u)>0) {
+									$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_u)>0) {
 										echo "
 							<optgroup label='".$tab_statut[$loop]."'>";
-										while($lig_u=mysql_fetch_object($res_u)) {
+										while($lig_u=mysqli_fetch_object($res_u)) {
 											if(!in_array($lig_u->login, $tab_user_mae)) {
 												echo "
 								<option value='$lig_u->login'";
@@ -657,25 +657,25 @@ $chaine_js_designation_u="var designation_u=new Array(";
 $chaine_prof_classe="";
 for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
-	$res_u=mysql_query($sql);
-	if(mysql_num_rows($res_u)>0) {
+	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_u)>0) {
 		$texte_infobulle.="<br /><p class='bold'><a href=\"javascript:cocher_decocher_statut('$tab_statut[$loop]')\">".ucfirst($tab_statut[$loop])."</a>";
 
 		if($tab_statut[$loop]=='professeur') {
 			//$chaine_prof_classe="";
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY classe;";
-			$res_classe=mysql_query($sql);
-			if(mysql_num_rows($res_classe)>0) {
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe)>0) {
 				$texte_infobulle.=" de <select name='id_classe' id='id_classe' onchange='coche_prof_de_la_classe()'><option value=''>---</option>";
-				while($lig_classe=mysql_fetch_object($res_classe)) {
+				while($lig_classe=mysqli_fetch_object($res_classe)) {
 					$texte_infobulle.="<option value='$lig_classe->id'>$lig_classe->classe</option>";
 
 					$chaine_prof_classe.="var prof_classe_".$lig_classe->id."=new Array(";
 					$sql="SELECT DISTINCT login FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgc.id_classe='$lig_classe->id' AND jgc.id_groupe=jgp.id_groupe;";
-					$res_prof=mysql_query($sql);
+					$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt_prof=0;
-					if(mysql_num_rows($res_prof)>0) {
-						while($lig_prof=mysql_fetch_object($res_prof)) {
+					if(mysqli_num_rows($res_prof)>0) {
+						while($lig_prof=mysqli_fetch_object($res_prof)) {
 							if($cpt_prof>0) {
 								$chaine_prof_classe.=", ";
 							}
@@ -692,7 +692,7 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 		$texte_infobulle.=" <input type='button' value='Ajouter' onclick=\"ajouter_dest_choisis(); cacher_div('div_choix_dest')\"></p>";
 		$texte_infobulle.="<div style='margin-left:1em;'><table class='boireaus boireaus_alt'>";
 
-		while($lig_u=mysql_fetch_object($res_u)) {
+		while($lig_u=mysqli_fetch_object($res_u)) {
 			if(!in_array($lig_u->login, $tab_user_mae)) {
 				$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
 				$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
@@ -825,11 +825,11 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 <!--div style='margin-left:3em; height:30em; maxheight:30em; overflow:auto;'-->
 <?php
 	$sql="SELECT 1=1 FROM messagerie WHERE login_src='".$_SESSION['login']."';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)<=2) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)<=2) {
 		echo "<div style='margin-left:3em; height:6em; maxheight:10em; overflow:auto;'>\n";
 	}
-	elseif(mysql_num_rows($test)<=4) {
+	elseif(mysqli_num_rows($test)<=4) {
 		echo "<div style='margin-left:3em; height:10em; maxheight:10em; overflow:auto;'>\n";
 	}
 	else {

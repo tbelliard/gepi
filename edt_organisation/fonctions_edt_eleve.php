@@ -63,7 +63,7 @@ function RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_el
 
     $req_creneau = LessonsFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
     $j = 0;
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_groupe'][$j] = $rep_creneau['id_groupe'];
         $tab_enseignement_final['id_aid'][$j] = 0;
@@ -73,8 +73,8 @@ function RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_el
         $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
         $tab_enseignement_final['aid'][$j] = 0;
         if (GetSettingEdt("edt_aff_couleur") == "coul") {
-            $req_matiere = mysql_query("SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
-            $rep_matiere = mysql_fetch_array($req_matiere);
+            $req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
+            $rep_matiere = mysqli_fetch_array($req_matiere);
             $matiere = $rep_matiere['id_matiere'];
 	        $recher_couleur = "M_".$matiere;
 	        $color = GetSettingEdt($recher_couleur);
@@ -87,7 +87,7 @@ function RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_el
     }
 
     $req_creneau = AidFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_aid'][$j] = $rep_creneau['id_aid'];
         $tab_enseignement_final['id_groupe'][$j] = 0;
@@ -135,7 +135,7 @@ function RecupCoursIdSemaineEleve($creneau_courant, $jour_semaine, $login_eleve,
     }
     $req_creneau = LessonsFromStudentDaySlotPeriodWeek($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier, $id_semaine);
     $j = 0;
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_groupe'][$j] = $rep_creneau['id_groupe'];
         $tab_enseignement_final['id_aid'][$j] = 0;
@@ -145,8 +145,8 @@ function RecupCoursIdSemaineEleve($creneau_courant, $jour_semaine, $login_eleve,
         $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
         $tab_enseignement_final['aid'][$j] = 0;
         if (GetSettingEdt("edt_aff_couleur") == "coul") {
-            $req_matiere = mysql_query("SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
-            $rep_matiere = mysql_fetch_array($req_matiere);
+            $req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
+            $rep_matiere = mysqli_fetch_array($req_matiere);
             $matiere = $rep_matiere['id_matiere'];
 	        $recher_couleur = "M_".$matiere;
 	        $color = GetSettingEdt($recher_couleur);
@@ -159,7 +159,7 @@ function RecupCoursIdSemaineEleve($creneau_courant, $jour_semaine, $login_eleve,
     }
 
     $req_creneau = AidFromStudentDaySlotPeriodWeek($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier, $id_semaine);
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_aid'][$j] = $rep_creneau['id_aid'];
         $tab_enseignement_final['id_groupe'][$j] = 0;
@@ -205,7 +205,7 @@ function RecupCoursNotIdSemaineEleve($creneau_courant, $jour_semaine, $login_ele
     }
     $req_creneau = LessonsFromStudentDaySlotPeriodNotWeek($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier, $id_semaine);
     $j = 0;
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_groupe'][$j] = $rep_creneau['id_groupe'];
         $tab_enseignement_final['id_aid'][$j] = 0;
@@ -215,8 +215,8 @@ function RecupCoursNotIdSemaineEleve($creneau_courant, $jour_semaine, $login_ele
         $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
         $tab_enseignement_final['aid'][$j] = 0;
         if (GetSettingEdt("edt_aff_couleur") == "coul") {
-            $req_matiere = mysql_query("SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
-            $rep_matiere = mysql_fetch_array($req_matiere);
+            $req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
+            $rep_matiere = mysqli_fetch_array($req_matiere);
             $matiere = $rep_matiere['id_matiere'];
 	        $recher_couleur = "M_".$matiere;
 	        $color = GetSettingEdt($recher_couleur);
@@ -229,7 +229,7 @@ function RecupCoursNotIdSemaineEleve($creneau_courant, $jour_semaine, $login_ele
     }
 
     $req_creneau = AidFromStudentDaySlotPeriodNotWeek($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier, $id_semaine);
-    while ($rep_creneau = mysql_fetch_array($req_creneau))
+    while ($rep_creneau = mysqli_fetch_array($req_creneau))
     {
         $tab_enseignement_final['id_aid'][$j] = $rep_creneau['id_aid'];
         $tab_enseignement_final['id_groupe'][$j] = 0;
@@ -329,15 +329,15 @@ function DureeMax2ColonnesEleve($jour_sem, $login_eleve, $tab_id_creneaux, $elap
         else {
     
     
-            $req_id_semaine = mysql_query("SELECT type_edt_semaine FROM edt_semaines GROUP BY type_edt_semaine") or die(mysql_error());
+            $req_id_semaine = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines GROUP BY type_edt_semaine") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     
-            if (mysql_num_rows($req_id_semaine) <= 1) {
+            if (mysqli_num_rows($req_id_semaine) <= 1) {
                 $id_semaine2 = '0';
             }
-            else if (mysql_num_rows($req_id_semaine) >= 2) {
-                $rep_id_semaine = mysql_fetch_array($req_id_semaine);
+            else if (mysqli_num_rows($req_id_semaine) >= 2) {
+                $rep_id_semaine = mysqli_fetch_array($req_id_semaine);
                 if ($rep_id_semaine['type_edt_semaine'] == $id_semaine1) {
-                    $rep_id_semaine = mysql_fetch_array($req_id_semaine);
+                    $rep_id_semaine = mysqli_fetch_array($req_id_semaine);
                 }
                 $id_semaine2 = $rep_id_semaine['type_edt_semaine'];
             }
@@ -829,16 +829,16 @@ function ConstruireEDTEleve($login_eleve, $period)
     $tab_cours = array();
     $type_edt = "eleve";
 
-    $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());
+    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $jour_sem_tab = array();
-    while($data_sem_tab = mysql_fetch_array($req_jours)) {
+    while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	    $jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
         $tab_data['entete'][] = $data_sem_tab["jour_horaire_etablissement"];
     }
     $jour=0;
-    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
-							    WHERE type_creneaux != 'pause'") or die(mysql_error());
-    $nbre_lignes = mysql_num_rows($req_id_creneaux);
+    $req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
+							    WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $nbre_lignes = mysqli_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {
         $nbre_lignes = 1;
     }
@@ -1259,7 +1259,7 @@ function ConstruireEDTEleveDuJour($login_eleve, $period, $jour)
     $tab_cours = array();
     $type_edt = "eleve";
 
-    $req_jours = mysql_query("SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysql_error());
+    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $jour_sem_tab = array();
 
     $entetes = ConstruireEnteteEDT();
@@ -1269,9 +1269,9 @@ function ConstruireEDTEleveDuJour($login_eleve, $period, $jour)
     $jour_sem_tab[$jour] = $entetes['entete'][$jour];
     $tab_data['entete'][$jour] = $entetes['entete'][$jour];
 
-    $req_id_creneaux = mysql_query("SELECT id_definie_periode FROM edt_creneaux
-							    WHERE type_creneaux != 'pause'") or die(mysql_error());
-    $nbre_lignes = mysql_num_rows($req_id_creneaux);
+    $req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
+							    WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $nbre_lignes = mysqli_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {
         $nbre_lignes = 1;
     }

@@ -71,10 +71,10 @@ $sql = "SELECT * FROM ct_entry WHERE id_login = '".$_SESSION['login']."'
 								BETWEEN '".($ts_semaine_avant - 86400)."' AND '".$ts_semaine_avant."'
 								ORDER BY heure_entry";
 
-$query = mysql_query($sql) OR DIE('ERREUR SQL : ' . $sql . '<br />&nbsp;--> ' . mysql_error());
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('ERREUR SQL : ' . $sql . '<br />&nbsp;--> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 $a = 0;
-while($rep = mysql_fetch_array($query)){
+while($rep = mysqli_fetch_array($query)){
 
 	$tab_rep[$a]['heure'] = $rep['heure_entry'];
 	$tab_rep[$a]['groupe'] = $rep['id_groupe'];

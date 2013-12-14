@@ -74,10 +74,10 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
     die();
 }
 
-$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 include "../lib/periodes.inc.php";
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -97,14 +97,14 @@ if (isset($_GET['action'])) {
 		else {
 			$sql="SELECT 1=1 FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$msg="Le $nom_cc n°$id_dev n'est pas associé à ce Carnet de notes.<br />";
 			}
 			else {
 				$sql="DELETE FROM cc_notes_eval WHERE id_eval IN (SELECT id FROM cc_eval WHERE id_dev='$id_dev');";
 				//echo "$sql<br />";
-				$del=mysql_query($sql);
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$del) {
 					$msg="Erreur lors de la suppression des notes associées au $nom_cc n°$id_dev.<br />";
 				}
@@ -112,14 +112,14 @@ if (isset($_GET['action'])) {
 					// On poursuit
 					$sql="DELETE FROM cc_eval WHERE id_dev='$id_dev';";
 					//echo "$sql<br />";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
 						$msg="Erreur lors de la suppression des évaluations associées au $nom_cc n°$id_dev.<br />";
 					}
 					else {
 						$sql="DELETE FROM cc_dev WHERE id='$id_dev';";
 						//echo "$sql<br />";
-						$del=mysql_query($sql);
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$del) {
 							$msg="Erreur lors de la suppression du $nom_cc n°$id_dev.<br />";
 						}
@@ -140,8 +140,8 @@ if (isset($_GET['action'])) {
 		else {
 			$sql="SELECT 1=1 FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$msg="Le $nom_cc n°$id_dev n'est pas associé à ce Carnet de notes.<br />";
 			}
 			else {
@@ -153,7 +153,7 @@ if (isset($_GET['action'])) {
 				else {
 					$sql="DELETE FROM cc_notes_eval WHERE id_eval='$id_eval';";
 					//echo "$sql<br />";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
 						$msg="Erreur lors de la suppression des notes associées à l'évaluation n°$id_eval du $nom_cc n°$id_dev.<br />";
 					}
@@ -161,7 +161,7 @@ if (isset($_GET['action'])) {
 						// On poursuit
 						$sql="DELETE FROM cc_eval WHERE id='$id_eval';";
 						//echo "$sql<br />";
-						$del=mysql_query($sql);
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$del) {
 							$msg="Erreur lors de la suppression de l'évaluation n°$id_eval du $nom_cc n°$id_dev.<br />";
 						}
@@ -201,12 +201,12 @@ $sql="SELECT DISTINCT ccn.id_cahier_notes, g.*, c.classe FROM cn_cahier_notes cc
 						GROUP BY g.id
 						ORDER BY g.name, g.description, c.classe;";
 //echo "$sql<br/>";
-$res_grp=mysql_query($sql);
+$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 echo " | <select name='id_racine' onchange=\"document.forms['form0'].submit();\">\n";
-while($lig=mysql_fetch_object($res_grp)) {
+while($lig=mysqli_fetch_object($res_grp)) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='' AND domaine='cahier_notes' AND visible='n';";
-	$test_vis=mysql_query($sql);
-	if(mysql_num_rows($test_vis)==0) {
+	$test_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_vis)==0) {
 		echo "<option value='$lig->id_cahier_notes'";
 		if($lig->id_cahier_notes==$id_racine) {echo " selected='true'";}
 		echo ">";
@@ -220,9 +220,9 @@ echo " | ";
 if($periode_num>1) {
 	$periode_prec=$periode_num-1;
 	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_prec';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/back.png' class='icone16' title='Période $periode_prec' alt='Période $periode_prec' /></a> ";
 	}
 }
@@ -231,9 +231,9 @@ if($periode_num<$current_group['nb_periode']) {
 	$periode_suiv=$periode_num+1;
 	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_suiv';";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$lig->id_cahier_notes'><img src='../images/icons/forward.png' class='icone16' title='Période $periode_suiv' alt='Période $periode_suiv' /></a>";
 	}
 }
@@ -256,14 +256,14 @@ echo "<p>Liste des $nom_cc&nbsp;: <br />\n";
 //$sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
 $sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe';";
 //echo "$sql<br />\n";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	//echo "Aucun $nom_cc non rattachée n'est encore définie.</p>\n";
 	echo "Aucun $nom_cc n'est encore définie.</p>\n";
 }
 else {
 	echo "<ul>\n";
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		echo "<li>\n";
 		echo "<p>";
 		echo "$lig->nom_court ";
@@ -293,15 +293,15 @@ else {
 
 		echo "<br />\n";
 		$sql="SELECT * FROM cc_eval WHERE id_dev='$lig->id' ORDER BY date, nom_court;";
-		$res2=mysql_query($sql);
-		if(mysql_num_rows($res2)>0) {
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res2)>0) {
 			echo "<ul>\n";
-			while($lig2=mysql_fetch_object($res2)) {
+			while($lig2=mysqli_fetch_object($res2)) {
 				echo "<li>\n";
 				echo "$lig2->nom_court ";
 				$sql="SELECT 1=1 FROM cc_notes_eval WHERE id_eval='$lig2->id' AND statut!='v';";
-				$res_nb=mysql_query($sql);
-				$nb_notes=mysql_num_rows($res_nb);
+				$res_nb=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_notes=mysqli_num_rows($res_nb);
 				if($nb_notes!=$nb_eleves) {$couleur='red';} else {$couleur='green';}
 				echo "<a href='saisie_notes_cc.php?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id'>Saisir</a> (<span style='color:$couleur'>$nb_notes/$nb_eleves</span>)";
 				echo " | ";

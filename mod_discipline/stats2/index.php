@@ -39,10 +39,10 @@ $sql="CREATE TABLE IF NOT EXISTS `s_categories` ( `id` INT(11) NOT NULL
                 default '',`sigle` varchar(20) NOT NULL
                 default '', PRIMARY KEY (`id`) )
                  ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$test=mysql_query($sql);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
 $sql="SELECT 1=1 FROM `s_categories`;";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
     $categories[]=Array('categorie'=>'Travail','sigle'=>'T');
     $categories[]=Array('categorie'=>'Degradation','sigle'=>'D');
     $categories[]=Array('categorie'=>'Retards Répétés','sigle'=>'R');
@@ -52,19 +52,19 @@ if(mysql_num_rows($test)==0) {
     $categories[]=Array('categorie'=>'Bavardages répétés','sigle'=>'B');    
     foreach($categories as $categorie) {
         $sql="INSERT INTO `s_categories`(categorie,sigle) VALUES ('".$categorie['categorie']."','".$categorie['sigle']."');";
-        $test=mysql_query($sql);
+        $test=mysqli_query($GLOBALS["mysqli"], $sql);
     }
 }
 
-$test_champ_categorie=mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'id_categorie';");
-if(mysql_num_rows($test_champ_categorie)==0) {
+$test_champ_categorie=mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_incidents LIKE 'id_categorie';");
+if(mysqli_num_rows($test_champ_categorie)==0) {
 	$sql="ALTER TABLE `s_incidents` ADD `id_categorie` INT(11) AFTER `nature`;";
-	$test=mysql_query($sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_discipline/stats2/index.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
     $sql="INSERT INTO droits SET id='/mod_discipline/stats2/index.php',
 administrateur='V',
 professeur='F',
@@ -76,7 +76,7 @@ secours='F',
 autre='F',
 description='Module discipline: Statistiques',
 statut='';";
-    $insert=mysql_query($sql);
+    $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {

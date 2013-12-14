@@ -66,9 +66,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	$reg_show_email = isset($_POST["reg_show_email"]) ? $_POST["reg_show_email"] : "no";
 
 	// On commence par récupérer quelques infos.
-	$req = mysql_query("SELECT password, auth_mode FROM utilisateurs WHERE (login = '".$session_gepi->login."')");
-	$old_password = mysql_result($req, 0, "password");
-	$user_auth_mode = mysql_result($req, 0, "auth_mode");
+	$req = mysqli_query($GLOBALS["mysqli"], "SELECT password, auth_mode FROM utilisateurs WHERE (login = '".$session_gepi->login."')");
+	$old_password = old_mysql_result($req, 0, "password");
+	$user_auth_mode = old_mysql_result($req, 0, "auth_mode");
 	if ($no_anti_inject_password_a != '') {
 		// Modification du mot de passe
 
@@ -96,7 +96,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', '', '', $no_anti_inject_password1,'');
 					if ($write_ldap_success) {
 						$msg = "Le mot de passe a ete modifié !";
-						$reg = mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '" . $session_gepi->login . "'");
+						$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp='n' WHERE login = '" . $session_gepi->login . "'");
 						$no_modif = "no";
 						if (isset($_POST['retour'])) {
 							header("Location:../accueil.php?msg=$msg");
@@ -124,7 +124,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					} else {
 						$reg = Session::change_password_gepi($session_gepi->login,$NON_PROTECT['password1']);
 						if ($reg) {
-							mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '$session_gepi->login'");
+							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp='n' WHERE login = '$session_gepi->login'");
 							$msg = "Le mot de passe a ete modifié !";
 							$no_modif = "no";
 							if (isset($_POST['retour'])) {
@@ -142,9 +142,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 	}
 
-	$call_email = mysql_query("SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
-	$user_email = mysql_result($call_email, 0, "email");
-	$user_show_email = mysql_result($call_email, 0, "show_email");
+	$call_email = mysqli_query($GLOBALS["mysqli"], "SELECT email,show_email FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
+	$user_email = old_mysql_result($call_email, 0, "email");
+	$user_show_email = old_mysql_result($call_email, 0, "show_email");
 
 	if(($_SESSION['statut']!='responsable')&&($_SESSION['statut']!='eleve')) {
 		if ($user_email != $reg_email) {
@@ -157,7 +157,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					if (!isset($ldap_server)) $ldap_server = new LDAPServer;
 					$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', $reg_email, '', '', '');
 				}
-				$reg = mysql_query("UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
+				$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
 				if ($reg) {
 					if($msg!="") {$msg.="<br />";}
 					$msg.="L'adresse e_mail a été modifiéé !";
@@ -177,7 +177,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					if (!isset($ldap_server)) $ldap_server = new LDAPServer;
 					$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', $reg_email, '', '', '');
 				}
-				$reg = mysql_query("UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
+				$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
 				if ($reg) {
 					if($msg!="") {$msg.="<br />";}
 					$msg.="L'adresse e_mail a été modifiéé !";
@@ -186,7 +186,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 					if((getSettingValue('mode_email_resp')=='mon_compte')) {
 						$sql="UPDATE resp_pers SET mel='$reg_email' WHERE login='".$_SESSION['login']."';";
-						$update_resp=mysql_query($sql);
+						$update_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update_resp) {$msg.="<br />Erreur lors de la mise à jour de la table 'resp_pers'.";}
 
 						if((getSettingValue('envoi_mail_actif')!='n')&&(getSettingValue('informer_scolarite_modif_mail')!='n')) {
@@ -223,7 +223,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					if (!isset($ldap_server)) $ldap_server = new LDAPServer;
 					$write_ldap_success = $ldap_server->update_user($session_gepi->login, '', '', $reg_email, '', '', '');
 				}
-				$reg = mysql_query("UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
+				$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET email = '$reg_email' WHERE login = '" . $_SESSION['login'] . "'");
 				if ($reg) {
 					if($msg!="") {$msg.="<br />";}
 					$msg.="L'adresse e_mail a été modifiéé !";
@@ -232,7 +232,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 					if((getSettingValue('mode_email_ele')=='mon_compte')) {
 						$sql="UPDATE eleves SET email='$reg_email' WHERE login='".$_SESSION['login']."';";
-						$update_eleve=mysql_query($sql);
+						$update_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update_eleve) {$msg.="<br />Erreur lors de la mise à jour de la table 'eleves'.";}
 
 						if((getSettingValue('envoi_mail_actif')!='n')&&(getSettingValue('informer_scolarite_modif_mail')!='n')) {
@@ -257,7 +257,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	if ($_SESSION['statut'] == "scolarite" OR $_SESSION['statut'] == "professeur" OR $_SESSION['statut'] == "cpe")
 	if ($user_show_email != $reg_show_email) {
 	if ($reg_show_email != "no" and $reg_show_email != "yes") $reg_show_email = "no";
-		$reg = mysql_query("UPDATE utilisateurs SET show_email = '$reg_show_email' WHERE login = '" . $_SESSION['login'] . "'");
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET show_email = '$reg_show_email' WHERE login = '" . $_SESSION['login'] . "'");
 		if ($reg) {
 			if($msg!="") {$msg.="<br />";}
 			$msg.="Le paramétrage d'affichage de votre email a été modifié !";
@@ -283,9 +283,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		// si modification du nom ou du prénom ou du pseudo il faut modifier le nom de la photo d'identitée
 		$i_photo = 0;
 		$user_login=$_SESSION['login'];
-		$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
-		$ancien_nom = mysql_result($calldata_photo, $i_photo, "nom");
-		$ancien_prenom = mysql_result($calldata_photo, $i_photo, "prenom");
+		$calldata_photo = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
+		$ancien_nom = old_mysql_result($calldata_photo, $i_photo, "nom");
+		$ancien_prenom = old_mysql_result($calldata_photo, $i_photo, "prenom");
 
 		// En multisite, on ajoute le répertoire RNE
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -409,9 +409,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 
 		$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
-		$res_elenoet=mysql_query($sql);
-		if(mysql_num_rows($res_elenoet)>0) {
-			$lig_tmp_elenoet=mysql_fetch_object($res_elenoet);
+		$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_elenoet)>0) {
+			$lig_tmp_elenoet=mysqli_fetch_object($res_elenoet);
 			$reg_no_gep=$lig_tmp_elenoet->elenoet;
 
 			// Envoi de la photo
@@ -444,8 +444,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 						// Contrôler qu'un seul élève a bien cet elenoet???
 						$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
-						$test=mysql_query($sql);
-						$nb_elenoet=mysql_num_rows($test);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						$nb_elenoet=mysqli_num_rows($test);
 						if($nb_elenoet==1) {
 							if(isset($_FILES['filephoto']['tmp_name'])) {
 								// filephoto
@@ -564,10 +564,10 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 		$sql="SELECT DISTINCT jpm.id_matiere FROM j_professeurs_matieres jpm WHERE (jpm.id_professeur='".$_SESSION["login"]."') ORDER BY jpm.ordre_matieres;";
 		//echo "$sql<br />\n";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			$tab_matieres=array();
-			while($lig_mat=mysql_fetch_object($test)) {
+			while($lig_mat=mysqli_fetch_object($test)) {
 				$tab_matieres[]=$lig_mat->id_matiere;
 				//echo $lig_mat->id_matiere." ";
 			}
@@ -579,18 +579,18 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 				if($_POST['matiere_principale']!=$tab_matieres[0]) {
 					$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$_SESSION["login"]."';";
 					//echo "$sql<br />\n";
-					$nettoyage=mysql_query($sql);
+					$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$ordre_matieres=1;
 					$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$_SESSION["login"]."', id_matiere='".$_POST['matiere_principale']."', ordre_matieres='$ordre_matieres';";
 					//echo "$sql<br />\n";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					for($loop=0;$loop<count($tab_matieres);$loop++) {
 						if($_POST['matiere_principale']!=$tab_matieres[$loop]) {
 							$ordre_matieres++;
 							$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$_SESSION["login"]."', id_matiere='".$tab_matieres[$loop]."', ordre_matieres='$ordre_matieres';";
 							//echo "$sql<br />\n";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 
@@ -613,12 +613,12 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		}
 		else {
 			$sql="SELECT civilite FROM utilisateurs WHERE login='".$_SESSION['login']."';";
-			$res_civ=mysql_query($sql);
-			if(mysql_num_rows($res_civ)>0) {
-				$tmp_civ=mysql_result($res_civ, 0, "civilite");
+			$res_civ=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_civ)>0) {
+				$tmp_civ=old_mysql_result($res_civ, 0, "civilite");
 				if($tmp_civ!=$_POST['reg_civilite']) {
 					$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
-					$update=mysql_query($sql);
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$update) {
 						$msg.="Erreur lors de la mise à jour de la civilité.";
 					}
@@ -996,9 +996,9 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 	$mod_disc_mail_cat_incluse=isset($_POST['mod_disc_mail_cat_incluse']) ? $_POST['mod_disc_mail_cat_incluse'] : array();
 
 	$sql="SELECT * FROM s_categories ORDER BY categorie;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		while($lig=mysql_fetch_object($res)) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
 			if(!in_array($lig->id, $mod_disc_mail_cat_incluse)) {
 				$chaine.="|".$lig->id;
 			}
@@ -1212,8 +1212,8 @@ if (isset($_POST['ajout_fichier_signature'])) {
 							} else {
 								if (file_exists($dirname."/".$sign_file['name'])) {
 									@unlink($dirname."/".$sign_file['name']);
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='".$_SESSION['login']."';";
-									$menage=mysql_query($sql);
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 									$msg_tmp.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
 								}
 								$ok = @copy($sign_file['tmp_name'], $dirname."/".$sign_file['name']);
@@ -1226,11 +1226,11 @@ if (isset($_POST['ajout_fichier_signature'])) {
 									$msg_tmp.= "Le fichier a été transféré.<br />";
 
 									// Par précaution, pour éviter des blagues avec des scories...
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysql_real_escape_string($sign_file['name'])."' AND login='".$_SESSION['login']."';";
-									$menage=mysql_query($sql);
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".mysql_real_escape_string($sign_file['name'])."';";
-									$insert=mysql_query($sql);
+									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$insert) {
 										$msg_tmp.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
 										$temoin_erreur_sign++;
@@ -1272,7 +1272,7 @@ if (isset($_POST['ajout_fichier_signature'])) {
 				}
 				else {
 					$sql="UPDATE signature_classes SET id_fichier='".$id_fichier."' WHERE id_classe='$id_classe' AND login='".$_SESSION['login']."';";
-					$update=mysql_query($sql);
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($update) {
 						if($id_fichier==-1) {
 							$msg_tmp.="Suppression de l'association de fichier signature avec la classe ".get_nom_classe($id_classe)." effectuée.<br />";
@@ -1312,9 +1312,9 @@ if (isset($_POST['ajout_fichier_signature'])) {
 	$suppr_fichier = isset($_POST["suppr_fichier"]) ? $_POST["suppr_fichier"] : array();
 	for($loop=0;$loop<count($suppr_fichier);$loop++) {
 		$sql="SELECT * FROM signature_fichiers WHERE id_fichier='".$suppr_fichier[$loop]."' AND login='".$_SESSION['login']."';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 
 			$dirname=get_user_temp_directory($_SESSION['login']);
 			$fichier_courant="../temp/".$dirname."/signature/".$lig->fichier;
@@ -1332,12 +1332,12 @@ if (isset($_POST['ajout_fichier_signature'])) {
 			if(isset($tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe'])) {
 				for($loop2=0;$loop2<count($tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe']);$loop2++) {
 					$sql="UPDATE signature_classes WHERE SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_classe='".$tab_signature['fichier'][$suppr_fichier[$loop]]['id_classe'][$loop2]."';";
-					$menage2=mysql_query($sql);
+					$menage2=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 
 			$sql="DELETE FROM signature_fichiers WHERE id_fichier='".$suppr_fichier[$loop]."';";
-			$menage=mysql_query($sql);
+			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($menage) {
 				$cpt_suppr++;
 			}
@@ -1369,17 +1369,17 @@ if (isset($_POST['ajout_fichier_signature'])) {
 
 	// Par précaution:
 	$sql="UPDATE signature_classes SET id_fichier='-1' WHERE login='".$_SESSION['login']."' AND id_fichier NOT IN (SELECT id_fichier FROM signature_fichiers);";
-	$menage=mysql_query($sql);
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // On appelle les informations de l'utilisateur pour les afficher :
-$call_user_info = mysql_query("SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
-$user_civilite = mysql_result($call_user_info, "0", "civilite");
-$user_nom = mysql_result($call_user_info, "0", "nom");
-$user_prenom = mysql_result($call_user_info, "0", "prenom");
-$user_statut = mysql_result($call_user_info, "0", "statut");
-$user_email = mysql_result($call_user_info, "0", "email");
-$user_show_email = mysql_result($call_user_info, "0", "show_email");
+$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,email,show_email,civilite FROM utilisateurs WHERE login='" . $_SESSION['login'] . "'");
+$user_civilite = old_mysql_result($call_user_info, "0", "civilite");
+$user_nom = old_mysql_result($call_user_info, "0", "nom");
+$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+$user_statut = old_mysql_result($call_user_info, "0", "statut");
+$user_email = old_mysql_result($call_user_info, "0", "email");
+$user_show_email = old_mysql_result($call_user_info, "0", "show_email");
 
 //**************** EN-TETE *****************
 $titre_page = "Gérer son compte";
@@ -1472,9 +1472,9 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
 <?php
 	if($_SESSION['statut']=='eleve') {
 		$sql="SELECT naissance, lieu_naissance FROM eleves WHERE login='".$_SESSION['login']."';";
-		$res_nais=mysql_query($sql);
-		if(mysql_num_rows($res_nais)>0) {
-			$user_naissance=mysql_result($res_nais, 0, "naissance");
+		$res_nais=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_nais)>0) {
+			$user_naissance=old_mysql_result($res_nais, 0, "naissance");
 			echo "
                     <tr>
                         <td>Date de naissance : </td>
@@ -1482,11 +1482,11 @@ if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_acce
                     </tr>";
 
 			if(getSettingAOui('ele_lieu_naissance')) {
-				$code_lieu_naissance=mysql_result($res_nais, 0, "lieu_naissance");
+				$code_lieu_naissance=old_mysql_result($res_nais, 0, "lieu_naissance");
 				$sql="SELECT * FROM communes WHERE code_commune_insee='$code_lieu_naissance';";
-				$res_nais=mysql_query($sql);
-				if(mysql_num_rows($res_nais)>0) {
-					$lieu_naissance=mysql_result($res_nais, 0, "commune")." (".mysql_result($res_nais, 0, "departement").")";
+				$res_nais=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_nais)>0) {
+					$lieu_naissance=old_mysql_result($res_nais, 0, "commune")." (".old_mysql_result($res_nais, 0, "departement").")";
 					echo "
                     <tr>
                         <td>Lieu de naissance : </td>
@@ -1580,8 +1580,8 @@ if(($_SESSION['statut']=='administrateur')||
 
 		if($_SESSION['statut']=='eleve') {
 			$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
-			$res_elenoet=mysql_query($sql);
-			if(mysql_num_rows($res_elenoet)==0) {
+			$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_elenoet)==0) {
 				echo "</td></tr></table>\n";
 				echo "<p><b>ERREUR !</b> Votre statut d'élève ne semble pas être confirmé dans la table 'eleves'.</p>\n";
 				// A FAIRE
@@ -1589,7 +1589,7 @@ if(($_SESSION['statut']=='administrateur')||
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$lig_tmp_elenoet=mysql_fetch_object($res_elenoet);
+			$lig_tmp_elenoet=mysqli_fetch_object($res_elenoet);
 			$reg_no_gep=$lig_tmp_elenoet->elenoet;
 
 			if($reg_no_gep!="") {
@@ -1767,13 +1767,13 @@ if (empty($groups)) {
 
 	// Matière principale:
 	$sql="SELECT DISTINCT jpm.id_matiere, m.nom_complet FROM j_professeurs_matieres jpm, matieres m WHERE (jpm.id_professeur='".$_SESSION["login"]."' AND m.matiere=jpm.id_matiere) ORDER BY m.nom_complet;";
-	$test=mysql_query($sql);
-	$nb=mysql_num_rows($test);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb=mysqli_num_rows($test);
 	//echo "\$nb=$nb<br />";
 	if ($nb>1) {
 		echo "Matière principale&nbsp;: <select name='matiere_principale' tabindex='$tabindex'>\n";
 		$tabindex++;
-		while($lig_mat=mysql_fetch_object($test)) {
+		while($lig_mat=mysqli_fetch_object($test)) {
 			echo "<option value='$lig_mat->id_matiere'";
 			if($lig_mat->id_matiere==$_SESSION['matiere']) {echo " selected='selected'";}
 			echo ">$lig_mat->nom_complet</option>\n";
@@ -1783,15 +1783,15 @@ if (empty($groups)) {
 	}
 }
 
-$call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
-$nombre_classe = mysql_num_rows($call_prof_classe);
+$call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+$nombre_classe = mysqli_num_rows($call_prof_classe);
 if ($nombre_classe != "0") {
 	$j = "0";
 	echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>\n";
 	echo "<ul>\n";
 	while ($j < $nombre_classe) {
-		$id_classe = mysql_result($call_prof_classe, $j, "id");
-		$classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+		$id_classe = old_mysql_result($call_prof_classe, $j, "id");
+		$classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
 		echo "<li><b>$classe_suivi</b></li>\n";
 		$j++;
 	}
@@ -1921,9 +1921,9 @@ function cellule_checkbox($prof_login,$item,$num,$special){
 	$checked="";
 	$coche="";
 	$sql="SELECT * FROM preferences WHERE login='$prof_login' AND name='$item'";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0){
-		$lig_test=mysql_fetch_object($test);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		$lig_test=mysqli_fetch_object($test);
 		if($lig_test->value=="y"){
 			echo " class='coche'";
 			$checked=" checked";
@@ -2558,12 +2558,12 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																ORDER BY c.classe)";
 		$qualite="compte Scolarité";
 	}
-	$res_mail=mysql_query($sql);
-	if(mysql_num_rows($res_mail)>0) {
+	$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mail)>0) {
 		echo "<p>Vous êtes destinataire, en tant que $qualite, des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: <br />";
 		$cpt=0;
 		$tab_classe_mail=array();
-		while($lig_mail=mysql_fetch_object($res_mail)) {
+		while($lig_mail=mysqli_fetch_object($res_mail)) {
 			if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
 				if($cpt>0) {
 					echo ", ";
@@ -2591,12 +2591,12 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		}
 	}
 	$sql="SELECT * FROM s_categories ORDER BY categorie;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p>Aucune catégorie n'est définie&nbsp;???</p>";
 	}
 	else {
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_$lig->id' name='mod_disc_mail_cat_incluse[]' value='$lig->id' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_$lig->id')\" ";
 			if(!in_array($lig->id, $tab_id_categories_exclues)) {
 				echo "checked ";
@@ -2624,12 +2624,12 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	}
 
 	if($sql2!="") {
-		$res_mail=mysql_query($sql2);
-		if(mysql_num_rows($res_mail)>0) {
+		$res_mail=mysqli_query($GLOBALS["mysqli"], $sql2);
+		if(mysqli_num_rows($res_mail)>0) {
 			echo "<p style='margin-top:1em;'>Vous êtes destinataire, en tant que ".getSettingValue('gepi_prof_suivi').", des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: ";
 			$cpt=0;
 			$tab_classe_mail=array();
-			while($lig_mail=mysql_fetch_object($res_mail)) {
+			while($lig_mail=mysqli_fetch_object($res_mail)) {
 				if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
 					if($cpt>0) {
 						echo ", ";
@@ -2649,12 +2649,12 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 
 	$sql="(SELECT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, classes c WHERE sam.id_classe=c.id AND destinataire='mail' AND adresse='".$_SESSION['email']."' ORDER BY c.classe)";
 	//echo "$sql<br />";
-	$res_mail=mysql_query($sql);
-	if(mysql_num_rows($res_mail)>0) {
+	$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mail)>0) {
 		echo "<p style='margin-top:1em;'>Vous êtes destinataire, par l'adresse mail saisie directement par l'administrateur, des mail concernant les incidents impliquant des élèves des classes suivantes&nbsp;: ";
 		$cpt=0;
 		$tab_classe_mail=array();
-		while($lig_mail=mysql_fetch_object($res_mail)) {
+		while($lig_mail=mysqli_fetch_object($res_mail)) {
 			if(!in_array($lig_mail->id_classe, $tab_classe_mail)) {
 				if($cpt>0) {
 					echo ", ";
@@ -3038,8 +3038,8 @@ if(getSettingAOui("PeutChoisirAlerteSansSon".ucfirst($_SESSION['statut']))) {
 if(getSettingAOui("active_bulletins")) {
 	$sql="SELECT 1=1 FROM signature_droits WHERE login='".$_SESSION['login']."';";
 	//echo "$sql<br />";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
 		$tab_signature=get_tab_signature_bull();
 		/*
 		echo "<pre>";

@@ -57,26 +57,26 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	check_token();
 
 	$sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr1=mysql_query($sql);
+	$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
 	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
 	$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr2=mysql_query($sql);
+		$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
 	} else {
 		$res_suppr2 = 1;
 	}
 
 	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr3=mysql_query($sql);
+	$res_suppr3=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="DELETE FROM archivage_appreciations_aid WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr4=mysql_query($sql);
+	$res_suppr4=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="DELETE FROM archivage_aids WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr5=mysql_query($sql);
+	$res_suppr5=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
 	suppression_donnees_eleves_inutiles();
@@ -91,24 +91,24 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 elseif((isset($action))&&($action=="renommer_annee")&&(isset($annee))&&($annee!="")&&(isset($annee_nouveau_nom))&&($annee_nouveau_nom!="")) {
 	check_token();
 
-	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysql_real_escape_string($annee)."';";
-	$res_annee=mysql_query($sql);
-	if(mysql_num_rows($res_annee)==0) {
+	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_annee)==0) {
 		$msg="L'année <strong>$annee</strong> n'est pas enregistrée comme année antérieure.<br />\n";
 		unset($action);
 	}
 	else {
-		$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysql_real_escape_string($annee_nouveau_nom)."';";
-		$res_annee=mysql_query($sql);
-		if(mysql_num_rows($res_annee)>0) {
+		$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_annee)>0) {
 			$msg="Le nom <strong>$annee_nouveau_nom</strong> est déjà pris pour une autre année antérieure.<br />\n";
 		}
 		else {
 			$msg="";
 			$table=array('archivage_aids', 'archivage_appreciations_aid', 'archivage_disciplines', 'archivage_ects', 'archivage_eleves2', 'archivage_types_aid');
 			for($i=0;$i<count($table);$i++) {
-				$sql="UPDATE $table[$i] SET annee='".mysql_real_escape_string($annee_nouveau_nom)."' WHERE annee='".mysql_real_escape_string($annee)."';";
-				$res=mysql_query($sql);
+				$sql="UPDATE $table[$i] SET annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="Erreur lors du renommage dans la table $table.<br />\n";
 				}
@@ -134,26 +134,26 @@ if((!isset($action))||($action!='renommer_annee')) {
 	echo "</p></div>\n";
 
 	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
-	$res_annee=mysql_query($sql);
-	if(mysql_num_rows($res_annee)==0){
+	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_annee)==0){
 		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
 	}
 	else{
 		echo "<p>Voici la liste des années sauvegardées:</p>\n";
 		echo "<ul>\n";
-		while($lig_annee=mysql_fetch_object($res_annee)){
+		while($lig_annee=mysqli_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
 			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'>Supprimer</a> - <a href='".$_SERVER['PHP_SELF']."?action=renommer_annee&amp;annee=".$annee_scolaire.add_token_in_url()."'>Renommer</a>) :<br /></b> ";
 			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
-			$res_classes=mysql_query($sql);
-			if(mysql_num_rows($res_classes)==0){
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classes)==0){
 				echo "Aucune classe???";
 			}
 			else{
-				$lig_classe=mysql_fetch_object($res_classes);
+				$lig_classe=mysqli_fetch_object($res_classes);
 				echo $lig_classe->classe;
 
-				while($lig_classe=mysql_fetch_object($res_classes)){
+				while($lig_classe=mysqli_fetch_object($res_classes)){
 					echo ", ".$lig_classe->classe;
 				}
 			}
@@ -174,21 +174,21 @@ else {
 
 	$annee=isset($_POST['annee']) ? $_POST['annee'] : (isset($_GET['annee']) ? $_GET['annee'] : NULL);
 
-	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysql_real_escape_string($annee)."';";
-	$res_annee=mysql_query($sql);
-	if(mysql_num_rows($res_annee)==0) {
+	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_annee)==0) {
 		echo "<p style='color:red'>L'année <strong>$annee</strong> n'est pas enregistrée comme année antérieure.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
-	$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE annee!='".mysql_real_escape_string($annee)."' ORDER BY annee";
-	$res_annee=mysql_query($sql);
-	if(mysql_num_rows($res_annee)>0) {
+	$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE annee!='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' ORDER BY annee";
+	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_annee)>0) {
 		echo "<p>Vous souhaitez renommer l'année <strong>$annee</strong>.</p>\n";
 		echo "<p>Certains noms sont déjà pris&nbsp;: ";
 		$cpt=0;
-		while($lig_annee=mysql_fetch_object($res_annee)){
+		while($lig_annee=mysqli_fetch_object($res_annee)){
 			if($cpt>0) {echo ", ";}
 			echo $lig_annee->annee;
 			$cpt++;

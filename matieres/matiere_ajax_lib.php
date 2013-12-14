@@ -36,10 +36,10 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/matieres/matiere_ajax_lib.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // SQL : INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajax', '');
@@ -60,11 +60,11 @@ if(!in_array($champ, $tab_champs)) {
 	die();
 }
 
-$sql="SELECT $champ AS champ FROM matieres WHERE matiere='".mysql_real_escape_string($matiere)."';";
+$sql="SELECT $champ AS champ FROM matieres WHERE matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
 //echo "$sql";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	$lig=mysql_fetch_object($res);
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	$lig=mysqli_fetch_object($res);
 	echo $lig->champ;
 }
 

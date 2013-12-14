@@ -90,10 +90,10 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		echo "<legend>Dans un premier temps, sélectionnez la (ou les) périodes pour lesquelles vous souhaitez imprimer les avis</legend>\n";
 		echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
 		$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
-		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		echo "<select id='id_liste_periodes' name='id_liste_periodes[]' multiple='yes' size='4'>\n";
 		echo "		<optgroup label=\"-- Les périodes --\">\n";
-		While ($data_periode = mysql_fetch_array ($resultat_periode)) {
+		While ($data_periode = mysqli_fetch_array($resultat_periode)) {
 			echo "		<option value=\"";
 			echo $data_periode['num_periode'];
 			echo "\">";
@@ -142,9 +142,9 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			} else {
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_la_premiere_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 			}
-			$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
+			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
-			While ( $data_classe = mysql_fetch_array ($resultat_classe)) {
+			While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 				echo "		<option value=\"";
 				echo $data_classe['id_classe'];
 				echo "\">";
@@ -169,14 +169,14 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
 
 	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
-	$result_classes=mysql_query($sql);
-	$nb_classes = mysql_num_rows($result_classes);
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_classes = mysqli_num_rows($result_classes);
 
-	if(mysql_num_rows($result_classes)==0){
+	if(mysqli_num_rows($result_classes)==0){
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée.</p>\n";
 	}
 	else {
-		$nb_classes=mysql_num_rows($result_classes);
+		$nb_classes=mysqli_num_rows($result_classes);
 		$nb_class_par_colonne=round($nb_classes/3);
 		echo "<table width='100%'>\n";
 		echo "<tr valign='top' align='left'>\n";
@@ -184,7 +184,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
 		echo "<td>\n";
 		echo "<table border='1' class='boireaus'>\n";
-		while($lig_class=mysql_fetch_object($result_classes)){
+		while($lig_class=mysqli_fetch_object($result_classes)){
 			if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
 				echo "</table>\n";
 				echo "</td>\n";
@@ -194,9 +194,9 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			}
 
 			$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
-			$res_per=mysql_query($sql);
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($res_per)==0){
+			if(mysqli_num_rows($res_per)==0){
 				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 				echo "</body></html>\n";
 				die();
@@ -205,7 +205,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 				echo "<tr>\n";
 				echo "<th>$lig_class->classe</th>\n";
 				$alt=1;
-				while($lig_per=mysql_fetch_object($res_per)){
+				while($lig_per=mysqli_fetch_object($res_per)){
 					$alt=$alt*(-1);
 					echo "<td class='lig$alt'> - <a href='../impression/avis_pdf.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 				}
@@ -220,16 +220,16 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 	}
 } elseif($_SESSION['statut']=='professeur') { // appel pour un prof
     echo "<br />";
-    $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
-    $nombre_classe = mysql_num_rows($call_prof_classe);
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+    $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." ! Il ne vous revient donc pas d'imprimer les avis de conseil de classe.";
     } else {
         $j = "0";
         echo "<p>Vous êtes ".getSettingValue("gepi_prof_suivi")." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
 
             include "../lib/periodes.inc.php";
             $k="1";

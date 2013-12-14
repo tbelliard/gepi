@@ -52,7 +52,7 @@ if(isset($_POST['suppr'])) {
 	$cpt_suppr=0;
 	for($i=0;$i<count($suppr);$i++) {
 		$sql="DELETE FROM log_maj_sconet WHERE id='".$suppr[$i]."';";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="Erreur lors de la suppression du compte-rendu n°".$suppr[$i]."<br />";
 		}
@@ -76,8 +76,8 @@ echo "<p class='bold'>
 echo "<h2>Mises à jour d'après Sconet/Siècle</h2>";
 
 $sql="SELECT * FROM log_maj_sconet ORDER BY date_debut;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0){
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0){
 	echo "<p>Aucun compte-rendu de mise à jour d'après Sconet n'est enregistré dans la table 'log_maj_sconet'.</p>\n";
 	require("../lib/footer.inc.php");
 	die();
@@ -105,7 +105,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post' />
 		<tbody>";
 $cpt=0;
 $alt=1;
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	$alt=$alt*(-1);
 	echo "
 			<tr class='lig$alt white_hover'>

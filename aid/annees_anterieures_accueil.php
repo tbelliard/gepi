@@ -51,8 +51,8 @@ if (!isset($annee_scolaire))  {
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
     echo "</p>\n";
     $sql = "select distinct annee from archivage_types_aid WHERE outils_complementaires = 'y'";
-    $res = mysql_query($sql);
-    $nb_annee = mysql_num_rows($res);
+    $res = mysqli_query($GLOBALS["mysqli"], $sql);
+    $nb_annee = mysqli_num_rows($res);
     if ($nb_annee >= 1) {
         echo "<form name=\"form1\" action=\"annees_anterieures_accueil.php\" method=\"post\">\n";
         echo "<center><h1 class='gepi'>Fiches projet</h1>";
@@ -60,7 +60,7 @@ if (!isset($annee_scolaire))  {
         echo "<select name=\"annee_scolaire\" size=\"1\">\n";
         $k = 0;
         while ($k < $nb_annee) {
-            $annee_scolaire_ = mysql_result($res,$k,"annee");
+            $annee_scolaire_ = old_mysql_result($res,$k,"annee");
             echo "<option value=\"".$annee_scolaire_."\">".$annee_scolaire_."</option>\n";
             $k++;
         }
@@ -76,14 +76,14 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
   echo "<a href=\"annees_anterieures_accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
   echo "</p>\n";
   echo "<center><h1 class='gepi'>Année scolaire " . $annee_scolaire."<br />";
-  $call_aid = mysql_query("select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
+  $call_aid = mysqli_query($GLOBALS["mysqli"], "select * from archivage_types_aid where outils_complementaires='y' and annee='".$annee_scolaire."' order by nom");
 
-  $nb_projet = mysql_num_rows($call_aid);
+  $nb_projet = mysqli_num_rows($call_aid);
   if ($nb_projet!=0) {
         $i = 0;
         $k=0;
         while ($i < $nb_projet) {
-          $indice_aid = mysql_result($call_aid,$i,"id");
+          $indice_aid = old_mysql_result($call_aid,$i,"id");
           $nb_fiches_publiques[$indice_aid] = sql_query1("SELECT count(id) FROM archivage_aids WHERE id_type_aid ='".$indice_aid."'");
           if ($nb_fiches_publiques[$indice_aid]!=0)
             $k++;
@@ -94,10 +94,10 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
             echo "<ul>\n";
             $i = 0;
             while ($i < $nb_projet) {
-              $indice_aid = mysql_result($call_aid,$i,"id");
+              $indice_aid = old_mysql_result($call_aid,$i,"id");
               if ($nb_fiches_publiques[$indice_aid]!=0) {
-                    $nom = mysql_result($call_aid,$i,"nom");
-                    $nom_complet = mysql_result($call_aid,$i,"nom_complet");
+                    $nom = old_mysql_result($call_aid,$i,"nom");
+                    $nom_complet = old_mysql_result($call_aid,$i,"nom_complet");
                     echo "<li><a href='annees_anterieures_accueil.php?indice_aid=".$indice_aid."&amp;annee_scolaire=".$annee_scolaire."'>".$nom_complet."</a> (".$nom.")</li>\n";
               }
               $i++;

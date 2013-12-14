@@ -78,8 +78,8 @@ $id_retour = isset($_POST["id_retour"]) ? $_POST["id_retour"] : (isset($_GET["id
 
 
 if ($id_conteneur)  {
-    $query = mysql_query("SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
-    $id_racine = mysql_result($query, 0, 'id_racine');
+    $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
+    $id_racine = old_mysql_result($query, 0, 'id_racine');
 } else if (isset($_POST['id_racine']) or (isset($_GET['id_racine']))) {
     $id_racine = isset($_POST['id_racine']) ? $_POST['id_racine'] : (isset($_GET['id_racine']) ? $_GET['id_racine'] : NULL);
 } else {
@@ -101,11 +101,11 @@ if(!getSettingAOui('GepiPeutCreerBoitesProf')) {
 }
 
 
-$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes = '$id_racine'");
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 /**
  * Gestion des périodes
  */
@@ -139,8 +139,8 @@ if (isset($_POST['ok'])) {
     if (isset($_POST['new_conteneur']) and $_POST['new_conteneur'] == 'yes') {
         $sql="insert into cn_conteneurs (id_racine,nom_court,parent) values ('$id_racine','nouveau','$id_racine')";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
-        $id_conteneur = mysql_insert_id();
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
+        $id_conteneur = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
         if (!$reg)  $reg_ok = "no";
         $new='yes';
     }
@@ -149,7 +149,7 @@ if (isset($_POST['ok'])) {
         if ($_POST['mode'] == 1) $_SESSION['affiche_tous'] = 'yes';
         $sql="UPDATE cn_conteneurs SET mode = '".$_POST['mode']."' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
 
@@ -161,7 +161,7 @@ if (isset($_POST['ok'])) {
     }
     $sql="UPDATE cn_conteneurs SET nom_court = '".corriger_caracteres($nom_court)."' WHERE id = '$id_conteneur'";
     //echo "$sql<br />";
-    $reg = mysql_query($sql);
+    $reg = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg)  $reg_ok = "no";
 
 
@@ -174,20 +174,20 @@ if (isset($_POST['ok'])) {
 
     $sql="UPDATE cn_conteneurs SET nom_complet = '".corriger_caracteres($nom_complet)."' WHERE id = '$id_conteneur'";
     //echo "$sql<br />";
-    $reg = mysql_query($sql);
+    $reg = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg)  $reg_ok = "no";
 
     if ($_POST['description'])  {
         $sql="UPDATE cn_conteneurs SET description = '".corriger_caracteres($_POST['description'])."' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
     if (isset($_POST['parent']))  {
         $parent = $_POST['parent'];
         $sql="UPDATE cn_conteneurs SET parent = '".$parent."' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
 
@@ -211,31 +211,31 @@ if (isset($_POST['ok'])) {
 		}
         $sql="UPDATE cn_conteneurs SET coef = '" . $tmp_coef . "' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     } else {
         $sql="UPDATE cn_conteneurs SET coef = '0' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
 
     if ($_POST['ponderation']) {
         $sql="UPDATE cn_conteneurs SET ponderation = '". $_POST['ponderation']."' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     } else {
         $sql="UPDATE cn_conteneurs SET ponderation = '0' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
 
     if (($_POST['precision']) and my_ereg("^(s1|s5|se|p1|p5|pe)$", $_POST['precision'])) {
         $sql="UPDATE cn_conteneurs SET arrondir = '". $_POST['precision']."' WHERE id = '$id_conteneur'";
         //echo "$sql<br />";
-        $reg = mysql_query($sql);
+        $reg = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$reg)  $reg_ok = "no";
     }
 
@@ -246,7 +246,7 @@ if (isset($_POST['ok'])) {
     }
     $sql="UPDATE cn_conteneurs SET display_parents = '$display_parents' WHERE id = '$id_conteneur'";
     //echo "$sql<br />";
-    $reg = mysql_query($sql);
+    $reg = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg)  $reg_ok = "no";
     if (isset($_POST['display_bulletin'])) {
         $display_bulletin = 1;
@@ -255,7 +255,7 @@ if (isset($_POST['ok'])) {
     }
     $sql="UPDATE cn_conteneurs SET display_bulletin = '$display_bulletin' WHERE id = '$id_conteneur'";
     //echo "$sql<br />";
-    $reg = mysql_query($sql);
+    $reg = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg)  $reg_ok = "no";
 
     //==========================================================
@@ -299,18 +299,18 @@ if (isset($_POST['ok'])) {
 
 if ($id_conteneur)  {
     $new_conteneur = 'no';
-    $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
-    $id_racine = mysql_result($appel_conteneur, 0, 'id_racine');
-    $nom_court = mysql_result($appel_conteneur, 0, 'nom_court');
-    $nom_complet = mysql_result($appel_conteneur, 0, 'nom_complet');
-    $description = mysql_result($appel_conteneur, 0, 'description');
-    $mode = mysql_result($appel_conteneur, 0, 'mode');
-    $coef = mysql_result($appel_conteneur, 0, 'coef');
-    $arrondir = mysql_result($appel_conteneur, 0, 'arrondir');
-    $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
-    $display_parents = mysql_result($appel_conteneur, 0, 'display_parents');
-    $display_bulletin = mysql_result($appel_conteneur, 0, 'display_bulletin');
-    $parent = mysql_result($appel_conteneur, 0, 'parent');
+    $appel_conteneur = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
+    $id_racine = old_mysql_result($appel_conteneur, 0, 'id_racine');
+    $nom_court = old_mysql_result($appel_conteneur, 0, 'nom_court');
+    $nom_complet = old_mysql_result($appel_conteneur, 0, 'nom_complet');
+    $description = old_mysql_result($appel_conteneur, 0, 'description');
+    $mode = old_mysql_result($appel_conteneur, 0, 'mode');
+    $coef = old_mysql_result($appel_conteneur, 0, 'coef');
+    $arrondir = old_mysql_result($appel_conteneur, 0, 'arrondir');
+    $ponderation = old_mysql_result($appel_conteneur, 0, 'ponderation');
+    $display_parents = old_mysql_result($appel_conteneur, 0, 'display_parents');
+    $display_bulletin = old_mysql_result($appel_conteneur, 0, 'display_bulletin');
+    $parent = old_mysql_result($appel_conteneur, 0, 'parent');
     // liste des sous_conteneur
     $nom_sous_cont = array();
     $id_sous_cont  = array();
@@ -326,10 +326,10 @@ if ($id_conteneur)  {
         // On s'intéresse uniquement au conteneur fils
         sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'',$ponderation_sous_cont);
     }
-    $appel_nom_racine = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
+    $appel_nom_racine = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
 
     // Nom du conteneur racine
-    $nom_racine = mysql_result($appel_nom_racine, 0, 'nom_court');
+    $nom_racine = old_mysql_result($appel_nom_racine, 0, 'nom_court');
 
     // Nom du conteneur racine
 
@@ -497,13 +497,13 @@ if($interface_simplifiee=="y"){
 			echo "<td>\n";
 			echo "<select size='1' name='parent'>\n";
 			$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court";
-			$appel_conteneurs = mysql_query($sql);
-			$nb_cont = mysql_num_rows($appel_conteneurs);
+			$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_cont = mysqli_num_rows($appel_conteneurs);
 			$i = 0;
 			while ($i < $nb_cont) {
 				//==========================================
 				// MODIF: boireaus
-				$lig_cont=mysql_fetch_object($appel_conteneurs);
+				$lig_cont=mysqli_fetch_object($appel_conteneurs);
 				$id_cont=$lig_cont->id;
 				$id_parent=$lig_cont->parent;
 				if(($id_cont!=$id_conteneur)&&($id_parent!=$id_conteneur)){
@@ -513,8 +513,8 @@ if($interface_simplifiee=="y"){
 					while($tmp_parent!=0){
 						$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND id='$tmp_parent'";
 						//echo "<!-- $sql -->\n";
-						$res_parent=mysql_query($sql);
-						$lig_parent=mysql_fetch_object($res_parent);
+						$res_parent=mysqli_query($GLOBALS["mysqli"], $sql);
+						$lig_parent=mysqli_fetch_object($res_parent);
 						$tmp_parent=$lig_parent->parent;
 						if($tmp_parent==$id_conteneur){
 							$temoin_display="non";
@@ -684,11 +684,11 @@ else {
 		echo "<select size='1' name='parent'>\n";
 		
 		$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' order by nom_court";
-		$appel_conteneurs = mysql_query($sql);
-		$nb_cont = mysql_num_rows($appel_conteneurs);
+		$appel_conteneurs = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_cont = mysqli_num_rows($appel_conteneurs);
 		$i = 0;
 		while ($i < $nb_cont) {
-			$lig_cont=mysql_fetch_object($appel_conteneurs);
+			$lig_cont=mysqli_fetch_object($appel_conteneurs);
 			$id_cont=$lig_cont->id;
 			$id_parent=$lig_cont->parent;
 			if(($id_cont!=$id_conteneur)&&($id_parent!=$id_conteneur)){
@@ -698,8 +698,8 @@ else {
 				while($tmp_parent!=0){
 					$sql="SELECT * FROM cn_conteneurs WHERE id_racine ='$id_racine' AND id='$tmp_parent'";
 					//echo "<!-- $sql -->\n";
-					$res_parent=mysql_query($sql);
-					$lig_parent=mysql_fetch_object($res_parent);
+					$res_parent=mysqli_query($GLOBALS["mysqli"], $sql);
+					$lig_parent=mysqli_fetch_object($res_parent);
 					$tmp_parent=$lig_parent->parent;
 					if($tmp_parent==$id_conteneur){
 						$temoin_display="non";

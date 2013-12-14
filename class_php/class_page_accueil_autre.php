@@ -266,7 +266,7 @@ class class_page_accueil_autre {
         $nb_lignes2 = $resp2->num_rows;
 	  
 	  if ($nb_lignes2 > 0){
-		while($lig_log=mysql_fetch_object($resp2)) {
+		while($lig_log=mysqli_fetch_object($resp2)) {
 		  $this->ordre_menus[$lig_log->bloc]=$lig_log->num_menu;
 		}
 	  }else{
@@ -419,7 +419,7 @@ class class_page_accueil_autre {
                 $sql_call_prof = "SELECT * FROM j_aid_utilisateurs_gest
                                           WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
                                           AND indice_aid = '$indice_aid')";
-                $call_prof = mysql_query($sql_call_prof);
+                $call_prof = mysqli_query($GLOBALS["mysqli"], $sql_call_prof);
                 $nb_result = $call_prof->num_rows;
                 if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
                   $nom_aid = $obj_aid->nom;

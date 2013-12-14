@@ -507,11 +507,11 @@ echo ">Autre</option>\n";
 if($afficher_statut=="professeur") {
 	// Proposer de filtrer par matière
 	$sql="SELECT DISTINCT m.* FROM matieres m, j_professeurs_matieres jpm WHERE jpm.id_matiere=m.matiere ORDER BY matiere, nom_complet";
-	$res_matieres=mysql_query($sql);
-	if(mysql_num_rows($res_matieres)>0) {
+	$res_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_matieres)>0) {
 		echo "<select name='afficher_matiere' onchange=\"document.forms['form1'].submit();\">
 	<option value=''>---</option>";
-		while($lig_matiere=mysql_fetch_object($res_matieres)) {
+		while($lig_matiere=mysqli_fetch_object($res_matieres)) {
 			echo "
 	<option value='".$lig_matiere->matiere."'";
 			if((isset($afficher_matiere))&&($lig_matiere->matiere==$afficher_matiere)) {
@@ -529,9 +529,9 @@ if($afficher_statut=="professeur") {
 
 <?php
 $sql="SELECT DISTINCT auth_mode FROM utilisateurs ORDER BY auth_mode;";
-$test_auth_mode=mysql_query($sql);
-if(mysql_num_rows($test_auth_mode)==1) {
-	$lig_auth_mode=mysql_fetch_object($test_auth_mode);
+$test_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test_auth_mode)==1) {
+	$lig_auth_mode=mysqli_fetch_object($test_auth_mode);
 	echo "<input type='hidden' name='afficher_auth_mode' value='$lig_auth_mode->auth_mode' />\n";
 }
 else {
@@ -539,7 +539,7 @@ else {
 	echo "<p>\n";
 	echo "&nbsp;&nbsp;<select name='afficher_auth_mode' onchange=\"document.forms['form1'].submit();\">
 	<option value=''>Tout auth_mode</option>\n";
-	while($lig_auth_mode=mysql_fetch_object($test_auth_mode)) {
+	while($lig_auth_mode=mysqli_fetch_object($test_auth_mode)) {
 		echo "<option value='$lig_auth_mode->auth_mode'\n";
 		if($afficher_auth_mode=="$lig_auth_mode->auth_mode") {echo " selected='true'";}
 		echo ">$lig_auth_mode->auth_mode</option>\n";
@@ -655,22 +655,22 @@ else {
 	}
 }
 //echo "$sql<br />";
-$calldata = mysql_query($sql);
-$nombreligne = mysql_num_rows($calldata);
+$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+$nombreligne = mysqli_num_rows($calldata);
 $i = 0;
 $alt=1;
 while ($i < $nombreligne){
-    $user_nom = mysql_result($calldata, $i, "nom");
-    $user_prenom = mysql_result($calldata, $i, "prenom");
+    $user_nom = old_mysql_result($calldata, $i, "nom");
+    $user_prenom = old_mysql_result($calldata, $i, "prenom");
     // rajout trombinoscope
-    $user_civilite = mysql_result($calldata, $i, "civilite");
+    $user_civilite = old_mysql_result($calldata, $i, "civilite");
     // fin de rajout trombinoscope
-    $user_auth_mode = mysql_result($calldata, $i, "auth_mode");
-    $user_statut = mysql_result($calldata, $i, "statut");
-    $user_login = mysql_result($calldata, $i, "login");
-    $user_pwd = mysql_result($calldata, $i, "password");
-    $user_etat[$i] = mysql_result($calldata, $i, "etat");
-//    $date_verrouillage[$i] = mysql_result($calldata, $i, "date_verrouillage");
+    $user_auth_mode = old_mysql_result($calldata, $i, "auth_mode");
+    $user_statut = old_mysql_result($calldata, $i, "statut");
+    $user_login = old_mysql_result($calldata, $i, "login");
+    $user_pwd = old_mysql_result($calldata, $i, "password");
+    $user_etat[$i] = old_mysql_result($calldata, $i, "etat");
+//    $date_verrouillage[$i] = old_mysql_result($calldata, $i, "date_verrouillage");
     if (($user_etat[$i] == 'actif') and (($display == 'tous') or ($display == 'actifs'))) {
         $affiche = 'yes';
     } else if (($user_etat[$i] != 'actif') and (($display == 'tous') or ($display == 'inactifs'))) {
@@ -689,18 +689,18 @@ while ($i < $nombreligne){
     $col[$i]['auth_mode'] = $user_auth_mode;
 
 	//echo "<p>Contrôle des matières de $user_login: <br />\n";
-    $call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
-    $nb_mat = mysql_num_rows($call_matieres);
+    $call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
+    $nb_mat = mysqli_num_rows($call_matieres);
     $k = 0;
 	$kk=0;
     while ($k < $nb_mat) {
-        $user_matiere_id = mysql_result($call_matieres, $k, "id_matiere");
+        $user_matiere_id = old_mysql_result($call_matieres, $k, "id_matiere");
 		//echo "SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'<br />\n";
-        //$user_matiere[$k] = mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
+        //$user_matiere[$k] = old_mysql_result(mysql_query("SELECT matiere FROM matieres WHERE matiere='$user_matiere_id'"),0);
 		$sql="SELECT matiere FROM matieres WHERE matiere='$user_matiere_id';";
-		$res_test_matiere=mysql_query($sql);
-		if(mysql_num_rows($res_test_matiere)>0) {
-			$user_matiere[$kk] = mysql_result($res_test_matiere,0);
+		$res_test_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_test_matiere)>0) {
+			$user_matiere[$kk] = old_mysql_result($res_test_matiere,0);
 			$kk++;
 		}
 		else {
@@ -748,14 +748,14 @@ while ($i < $nombreligne){
 				"g.id = jgp.id_groupe and " .
 				"jgc.id_groupe = jgp.id_groupe and " .
 				"c.id = jgc.id_classe) order by c.classe;";
-		$call_classes = mysql_query($sql);
-		$nb_classes = mysql_num_rows($call_classes);
+		$call_classes = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes = mysqli_num_rows($call_classes);
 		$k = 0;
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['matiere_nom_court'] = mysql_result($call_classes, $k, "name");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "classe_id");
-			$user_classe['group_id'] = mysql_result($call_classes, $k, "group_id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['matiere_nom_court'] = old_mysql_result($call_classes, $k, "name");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "classe_id");
+			$user_classe['group_id'] = old_mysql_result($call_classes, $k, "group_id");
 	
 			$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 	
@@ -776,13 +776,13 @@ while ($i < $nombreligne){
 				"jecpe.e_login = jec.login and " .
 				"jec.id_classe = c.id) order by c.classe;";
 		//echo "$sql<br />";
-		$call_classes = mysql_query($sql);
-		$nb_classes = mysql_num_rows($call_classes);
+		$call_classes = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes = mysqli_num_rows($call_classes);
 		$k = 0;
 		$col[$i][5] = '';
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "id");
 	
 			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 			$col[$i][5] .= $user_classe['classe_nom_court'];
@@ -800,13 +800,13 @@ while ($i < $nombreligne){
 				"jsc.login = '$user_login' and " .
 				"jsc.id_classe = c.id) order by c.classe;";
 		//echo "$sql<br />";
-		$call_classes = mysql_query($sql);
-		$nb_classes = mysql_num_rows($call_classes);
+		$call_classes = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes = mysqli_num_rows($call_classes);
 		$k = 0;
 		$col[$i][5] = '';
 		while ($k < $nb_classes) {
-			$user_classe['classe_nom_court'] = mysql_result($call_classes, $k, "classe");
-			$user_classe['classe_id'] = mysql_result($call_classes, $k, "id");
+			$user_classe['classe_nom_court'] = old_mysql_result($call_classes, $k, "classe");
+			$user_classe['classe_id'] = old_mysql_result($call_classes, $k, "id");
 	
 			//$col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 			$col[$i][5] .= $user_classe['classe_nom_court'];
@@ -820,13 +820,13 @@ while ($i < $nombreligne){
     if ($col[$i][5]=='') {$col[$i][5] = "&nbsp;";}
 
     // Affichage de la classe suivie
-    $call_suivi = mysql_query("SELECT distinct(id_classe) FROM j_eleves_professeurs j WHERE j.professeur = '$user_login'");
-    $nb_classes_suivies = mysql_num_rows($call_suivi);
+    $call_suivi = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(id_classe) FROM j_eleves_professeurs j WHERE j.professeur = '$user_login'");
+    $nb_classes_suivies = mysqli_num_rows($call_suivi);
     $k = 0;
     $col[$i][6] = '';
     while ($k < $nb_classes_suivies) {
-        $user_classe_suivie_id = mysql_result($call_suivi, $k, "id_classe");
-        $user_classe_suivie = mysql_result(mysql_query("SELECT classe FROM classes WHERE id='$user_classe_suivie_id'"),0);
+        $user_classe_suivie_id = old_mysql_result($call_suivi, $k, "id_classe");
+        $user_classe_suivie = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$user_classe_suivie_id'"),0);
         $col[$i][6]=$col[$i][6]."$user_classe_suivie<br />\n";
         $k++;
     }
@@ -919,10 +919,10 @@ while ($i < $nombreligne){
     // Si c'est un professeur : matières si c'est un "autre" alors on affiche son statut personnalisé
     if ($col[$i][7] == "autre" AND getSettingValue("statuts_prives") == "y") {
     	// On récupère son statut personnalisé
-		$query_s = mysql_query("SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
+		$query_s = mysqli_query($GLOBALS["mysqli"], "SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$user_login."' AND id_statut = ds.id");
 		if ($query_s) {
 
-			$special = mysql_fetch_array($query_s);
+			$special = mysqli_fetch_array($query_s);
 
 		}else{
 

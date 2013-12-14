@@ -99,7 +99,7 @@ if ($enregistrer == "Ajouter ces élèves") {
 													naissance = '" . $_naissance[$i] . "',
 													elenoet = '" . $_elenoet[$i] . "'";
 
-			$query_eleves = mysql_query($sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet élève <br />' . $sql_eleves . '<br /> --> ' . mysql_error());
+			$query_eleves = mysqli_query($GLOBALS["mysqli"], $sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet élève <br />' . $sql_eleves . '<br /> --> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
 			if ($query_eleves) {
@@ -113,7 +113,7 @@ if ($enregistrer == "Ajouter ces élèves") {
 					$_regime[$i] = 'int.';
 				}
 				$sql_reg = "INSERT INTO j_eleves_regime SET doublant = '-', regime = '" . $_regime[$i] . "', login = '".$maj[$i]."'";
-				$query_reg = mysql_query($sql_reg);
+				$query_reg = mysqli_query($GLOBALS["mysqli"], $sql_reg);
 
 				if ($query_reg) {
 					$msg .= '<p style="color: green;">L\'élève ' . $_nom[$i] . ' ' . $_prenom[$i] . ' a bien été enregistré dans la base des élèves de GEPI.</p>';
@@ -133,17 +133,17 @@ if ($enregistrer == "Ajouter ces élèves") {
 
 // On récupère la liste des élèves déjà inscrits dans la base
 $sql_all = "SELECT DISTINCT login FROM eleves";
-$query_all = mysql_query($sql_all);
+$query_all = mysqli_query($GLOBALS["mysqli"], $sql_all);
 $tab_all = array();
-while($rep_all = mysql_fetch_array($query_all)){
+while($rep_all = mysqli_fetch_array($query_all)){
 	$tab_all[] = $rep_all['login'];
 } // while
 
 // Puis la liste des élèves présents dans la table ldap_bx
 $sql_ent = "SELECT DISTINCT login_u FROM ldap_bx WHERE statut_u = 'student'";
-$query_ent = mysql_query($sql_ent);
+$query_ent = mysqli_query($GLOBALS["mysqli"], $sql_ent);
 $tab_ent = array();
-while($rep_ent = mysql_fetch_array($query_ent)){
+while($rep_ent = mysqli_fetch_array($query_ent)){
 	$tab_ent[] = $rep_ent['login_u'];
 } // while
 
@@ -162,12 +162,12 @@ if ($test_new >= 1) {
 	// On récupère les nom_u, prenom_u et identite_u
 	$complement_req = mb_substr($requete_c, 0, -4);
 	$sql_c = "SELECT * FROM ldap_bx WHERE (" . $complement_req . ")";
-	$query_c = mysql_query($sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . mysql_error());
+	$query_c = mysqli_query($GLOBALS["mysqli"], $sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	unset($tab_new_eleves); // pour repartir de zéro
 	$a = 0;
 
-	while($rep_c = mysql_fetch_array($query_c)){
+	while($rep_c = mysqli_fetch_array($query_c)){
 		$tab_new_eleves[$a]['_login'] = $rep_c['login_u'];
 		$tab_new_eleves[$a]['_nom'] = $rep_c['nom_u'];
 		$tab_new_eleves[$a]['_prenom'] = $rep_c['prenom_u'];

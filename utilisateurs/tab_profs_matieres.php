@@ -66,32 +66,32 @@ if(isset($_POST['user_login'])){
 			if(isset($check_matiere[$j]) and $check_matiere[$j] === "oui"){
 				//echo "$tab_matiere[$j]\n";
 				$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$user_login[$i]' AND id_matiere='$tab_matiere[$j]'";
-				$result_test=mysql_query($sql);
-				if(mysql_num_rows($result_test)==0){
+				$result_test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($result_test)==0){
 					$sql="INSERT INTO j_professeurs_matieres VALUES('$user_login[$i]','$tab_matiere[$j]','1')";
-					$result_insert=mysql_query($sql);
+					$result_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 			else{
 				$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$user_login[$i]' AND id_matiere='$tab_matiere[$j]'";
-				$result_test=mysql_query($sql);
-				if(mysql_num_rows($result_test)!=0){
+				$result_test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($result_test)!=0){
 					// On a décoché la matière pour ce professeur!
 
 					// On vérifie que le professeur n'est pas associé à un groupe pour cette matière...
 					$sql="SELECT jgm.id_groupe FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE jgp.login='$user_login[$i]' AND jgm.id_matiere='$tab_matiere[$j]' AND jgm.id_groupe=jgp.id_groupe";
 					//echo "$sql\n";
-					$result_test2=mysql_query($sql);
-					if(mysql_num_rows($result_test2)==0){
+					$result_test2=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($result_test2)==0){
 						// ... puis on supprime l'entrée de la table 'j_professeurs_matieres'
 						$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$user_login[$i]' AND id_matiere='$tab_matiere[$j]'";
-						$result_suppr=mysql_query($sql);
+						$result_suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 					else{
-						$lign_groupe=mysql_fetch_object($result_test2);
+						$lign_groupe=mysqli_fetch_object($result_test2);
 						$sql="SELECT id_classe FROM j_groupes_classes WHERE id_groupe='$lign_groupe->id_groupe'";
-						$result_classe=mysql_query($sql);
-						$lign_classe=mysql_fetch_object($result_classe);
+						$result_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+						$lign_classe=mysqli_fetch_object($result_classe);
 						$msg.="L'utilisateur $user_login[$i] est associé à un <a href='../groupes/edit_class.php?id_classe=$lign_classe->id_classe'>groupe</a> pour $tab_matiere[$j]. La matière n'a pas pu être supprimée.<br />\n";
 					}
 				}
@@ -147,14 +147,14 @@ if($msg!=""){
 	// Tableau de la liste des matières:
 	$tab_matiere=array();
 	$sql="SELECT matiere FROM matieres ORDER BY matiere";
-	$result_matieres=mysql_query($sql);
-	while($ligne=mysql_fetch_object($result_matieres)){
+	$result_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($ligne=mysqli_fetch_object($result_matieres)){
 		$tab_matiere[]=$ligne->matiere;
 	}
 
 	$order_by="nom, prenom";
-	$calldata = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY $order_by");
-	$nombreligne = mysql_num_rows($calldata);
+	$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY $order_by");
+	$nombreligne = mysqli_num_rows($calldata);
 
 	echo "<script type='text/javascript' language='javascript'>
 	function colore(idcellule,idcheckbox){
@@ -294,11 +294,11 @@ if($msg!=""){
 			echo "</tr>\n";
 		}
 
-		$user_nom = mysql_result($calldata, $cpt, "nom");
-		$user_prenom = mysql_result($calldata, $cpt, "prenom");
-		//$user_statut = mysql_result($calldata, $cpt, "statut");
-		$user_login = mysql_result($calldata, $cpt, "login");
-		//$user_etat[$cpt] = mysql_result($calldata, $cpt, "etat");
+		$user_nom = old_mysql_result($calldata, $cpt, "nom");
+		$user_prenom = old_mysql_result($calldata, $cpt, "prenom");
+		//$user_statut = old_mysql_result($calldata, $cpt, "statut");
+		$user_login = old_mysql_result($calldata, $cpt, "login");
+		//$user_etat[$cpt] = old_mysql_result($calldata, $cpt, "etat");
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
@@ -309,8 +309,8 @@ if($msg!=""){
 
 		for($j=0;$j<count($tab_matiere);$j++){
 			$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$user_login' AND id_matiere='".$tab_matiere[$j]."'";
-			$result_matiere_prof=mysql_query($sql);
-			if(mysql_num_rows($result_matiere_prof)!=0){
+			$result_matiere_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($result_matiere_prof)!=0){
 				$checked_ou_pas=" checked";
 				$couleur=" background: lime;";
 			}

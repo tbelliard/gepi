@@ -51,9 +51,9 @@
 
 
 	$sql="show tables";
-	$res_tables=mysql_query($sql);
+	$res_tables=mysqli_query($GLOBALS["mysqli"], $sql);
 	$temoin_commentaires_types="";
-	while($lig_table=mysql_fetch_array($res_tables)){
+	while($lig_table=mysqli_fetch_array($res_tables)){
 		if($lig_table[0]=='commentaires_types'){
 			$temoin_commentaires_types="oui";
 		}
@@ -68,8 +68,8 @@
 
 		$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$periode_num' order by commentaire";
 		//echo "<p>$sql</p>\n";
-		$resultat_commentaire=mysql_query($sql);
-		if(mysql_num_rows($resultat_commentaire)>0){
+		$resultat_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($resultat_commentaire)>0){
 
 			//echo "<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,-150);return false;\">Commentaire-type</a></p>\n";
 			echo "<p>Ajouter un <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);return false;\">Commentaire-type</a></p>\n";
@@ -96,7 +96,7 @@
 			$cpt=0;
 			$alt=1;
 			//echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";
-			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
+			while($ligne_commentaire=mysqli_fetch_object($resultat_commentaire)) {
 				$alt=$alt*(-1);
 				echo "<div class='lig$alt' style='border: 1px solid black; margin: 1px; padding: 1px;'";
 

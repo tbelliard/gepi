@@ -50,9 +50,9 @@
 
 
 	$sql="show tables";
-	$res_tables=mysql_query($sql);
+	$res_tables=mysqli_query($GLOBALS["mysqli"], $sql);
 	$temoin_commentaires_types="";
-	while($lig_table=mysql_fetch_array($res_tables)){
+	while($lig_table=mysqli_fetch_array($res_tables)){
 		if($lig_table[0]=='commentaires_types'){
 			$temoin_commentaires_types="oui";
 		}
@@ -61,11 +61,11 @@
 	if($temoin_commentaires_types=="oui"){
 		$sql="select * from commentaires_types where id_classe='$id_classe' and num_periode='$periode_num' order by commentaire";
 		//echo "<p>$sql</p>\n";
-		$resultat_commentaire=mysql_query($sql);
-		if(mysql_num_rows($resultat_commentaire)>0){
+		$resultat_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($resultat_commentaire)>0){
 			echo "<br />\n";
 			echo "Commentaires-types: <select name='ajout_commentaire_type' id='ajout_commentaire_type'>\n";
-			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
+			while($ligne_commentaire=mysqli_fetch_object($resultat_commentaire)) {
 				// Pour conserver le code HTML saisi dans les commentaires-type...
 				if((preg_match("/</",$ligne_commentaire->commentaire))&&(preg_match("/>/",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:

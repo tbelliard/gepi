@@ -260,8 +260,8 @@ function info_miseajour_base()
 	$prefix_base=''; $info_miseajour_base='';
 
 	//on recherche les mise à jour de fichier dans la base
-	$requete_liste_miseajour = mysql_query("SELECT * FROM ".$prefix_base."miseajour");
-        while ($donne_liste_miseajour = mysql_fetch_array($requete_liste_miseajour))
+	$requete_liste_miseajour = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."miseajour");
+        while ($donne_liste_miseajour = mysqli_fetch_array($requete_liste_miseajour))
           {
 	              $info_miseajour_base[$donne_liste_miseajour['emplacement_miseajour'].''.$donne_liste_miseajour['fichier_miseajour']]['date'] = date_fr($donne_liste_miseajour['date_miseajour']);
 	              $info_miseajour_base[$donne_liste_miseajour['emplacement_miseajour'].''.$donne_liste_miseajour['fichier_miseajour']]['heure'] = $donne_liste_miseajour['heure_miseajour'];

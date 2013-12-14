@@ -65,7 +65,7 @@ if (isset ($_POST['submit'])) {
 			$_SESSION['login'] = $_POST['login'];
 			$_SESSION['statut'] = 'administrateur';
 			$_SESSION['etat'] = 'actif';
-			$_SESSION['start'] = mysql_result(mysql_query("SELECT now();"),0);
+			$_SESSION['start'] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT now();"),0);
 			$sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
 					'" . $_SESSION['login'] . "',
 					'".$_SESSION['start']."',
@@ -372,8 +372,8 @@ if (isset ($result)) {
 	echo "<h2 class='center'>Résultat de la mise à jour</h2>";
 	if(!getSettingValue('conv_new_resp_table')){
 		$sql="SELECT 1=1 FROM responsables";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0){
 			echo "<p class='rouge'><strong>ATTENTION:</strong></p>\n";
 			echo "<blockquote>\n";
 			echo "<p class='center'>Une conversion des données responsables est requise.</p>\n";

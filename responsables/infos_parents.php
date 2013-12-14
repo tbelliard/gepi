@@ -40,8 +40,8 @@ if ($resultat_session == "c") {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/responsables/infos_parents.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/responsables/infos_parents.php',
 administrateur='V',
 professeur='F',
@@ -53,7 +53,7 @@ secours='F',
 autre='F',
 description='Grille élèves/parents',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -65,12 +65,12 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
-$res_classes=mysql_query($sql);
-$nb_classes=mysql_num_rows($res);
+$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_classes=mysqli_num_rows($res);
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
-	while($lig_classe=mysql_fetch_object($res_classes)) {
+	while($lig_classe=mysqli_fetch_object($res_classes)) {
 		$tab_classe[$cpt]=array();
 		$tab_classe[$cpt]['id']=$lig_classe->id;
 		$tab_classe[$cpt]['classe']=$lig_classe->classe;
@@ -89,13 +89,13 @@ if(isset($_GET['export_csv'])) {
 			//$csv.=$tab_classe[$i]['classe'].";";
 	
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
-			$res_ele=mysql_query($sql);
-			while($lig_ele=mysql_fetch_object($res_ele)) {
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE (r.resp_legal='1' OR r.resp_legal='2') AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' ORDER BY r.resp_legal;";
 				//echo "$sql<br />";
-				$res_resp=mysql_query($sql);
+				$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-				while($lig_resp=mysql_fetch_object($res_resp)) {
+				while($lig_resp=mysqli_fetch_object($res_resp)) {
 	
 					$csv.=$tab_classe[$i]['classe'].";";
 					$csv.=mb_strtoupper($lig_ele->nom).";";
@@ -114,10 +114,10 @@ if(isset($_GET['export_csv'])) {
 	
 					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
 					//echo "$sql<br />";
-					$res_adr=mysql_query($sql);
-					if(mysql_num_rows($res_adr)==1) {
+					$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_adr)==1) {
 						$adresse="";
-						$lig_adr=mysql_fetch_object($res_adr);
+						$lig_adr=mysqli_fetch_object($res_adr);
 						$adresse.=$lig_adr->adr1;
 						if($lig_adr->adr1!="") {
 							$adresse.=" ";
@@ -163,8 +163,8 @@ if(isset($_GET['export_csv'])) {
 		$nom_fic = "export_infos_parents_eleves_".date("Ymd_His").".csv";
 
 		$sql="SELECT DISTINCT ra.* FROM resp_adr ra, resp_pers rp, responsables2 r WHERE ra.adr_id=rp.adr_id AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY rp.nom, rp.prenom;";
-		$res_adr=mysql_query($sql);
-		if(mysql_num_rows($res_adr)==0) {
+		$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_adr)==0) {
 			$msg="Aucune association responsable/adresse n'a été trouvée.<br />";
 		}
 		else {
@@ -174,14 +174,14 @@ if(isset($_GET['export_csv'])) {
 			else {
 				$csv="DESIGNATION;ADRESSE;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_1_LOGIN;ELEVE_1_PRENOM_NOM;ELEVE_1_CLASSES;ELEVE_2;ELEVE_2_LOGIN;ELEVE_2_PRENOM_NOM;ELEVE_2_CLASSES;ELEVE_3;ELEVE_3_LOGIN;ELEVE_3_PRENOM_NOM;ELEVE_3_CLASSES;ELEVE_4;ELEVE_4_LOGIN;ELEVE_4_PRENOM_NOM;ELEVE_4_CLASSES;ELEVE_5;ELEVE_5_LOGIN;ELEVE_5_PRENOM_NOM;ELEVE_5_CLASSES;ELEVE_6;ELEVE_6_LOGIN;ELEVE_6_PRENOM_NOM;ELEVE_6_CLASSES;ELEVE_7;ELEVE_7_LOGIN;ELEVE_7_PRENOM_NOM;ELEVE_7_CLASSES;ELEVE_8;ELEVE_8_LOGIN;ELEVE_8_PRENOM_NOM;ELEVE_8_CLASSES;ELEVE_9;ELEVE_9_LOGIN;ELEVE_9_PRENOM_NOM;ELEVE_9_CLASSES;ELEVE_10;ELEVE_10_LOGIN;ELEVE_10_PRENOM_NOM;ELEVE_10_CLASSES;\r\n";
 			}
-			while($lig_adr=mysql_fetch_object($res_adr)) {
+			while($lig_adr=mysqli_fetch_object($res_adr)) {
 				$resp=array();
 				$tab_ele=array();
 				$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal='1' AND rp.adr_id='$lig_adr->adr_id';";
-				$res_rp=mysql_query($sql);
-				if(mysql_num_rows($res_rp)>0) {
+				$res_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_rp)>0) {
 					// On recherche alors aussi les élèves.
-					while($lig_rp=mysql_fetch_object($res_rp)) {
+					while($lig_rp=mysqli_fetch_object($res_rp)) {
 						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
 						if(isset($_GET['ancien_mode'])) {
 							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
@@ -205,10 +205,10 @@ if(isset($_GET['export_csv'])) {
 				}
 		
 				$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal='2' AND rp.adr_id='$lig_adr->adr_id';";
-				$res_rp=mysql_query($sql);
-				if(mysql_num_rows($res_rp)>0) {
+				$res_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_rp)>0) {
 					// On recherche alors aussi les élèves.
-					while($lig_rp=mysql_fetch_object($res_rp)) {
+					while($lig_rp=mysqli_fetch_object($res_rp)) {
 						//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
 						if(isset($_GET['ancien_mode'])) {
 							$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
@@ -396,17 +396,17 @@ if((!isset($mode))||($mode==1)) {
 	$alt=1;
 	for($i=0;$i<count($tab_classe);$i++) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$tab_classe[$i]['id']."' ORDER BY e.nom, e.prenom;";
-		$res_ele=mysql_query($sql);
-		while($lig_ele=mysql_fetch_object($res_ele)) {
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt white_hover'>\n";
 	
 			$rowspan="";
 			$sql="SELECT rp.* FROM resp_pers rp, responsables2 r WHERE (r.resp_legal='1' OR r.resp_legal='2') AND r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' ORDER BY r.resp_legal;";
 			//echo "$sql<br />";
-			$res_resp=mysql_query($sql);
-			if(mysql_num_rows($res_resp)>1) {
-				$rowspan=" rowspan='".mysql_num_rows($res_resp)."'";
+			$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_resp)>1) {
+				$rowspan=" rowspan='".mysqli_num_rows($res_resp)."'";
 			}
 			echo "<td$rowspan>".$tab_classe[$i]['classe']."</td>\n";
 			echo "<td$rowspan>".mb_strtoupper($lig_ele->nom)."</td>\n";
@@ -416,7 +416,7 @@ if((!isset($mode))||($mode==1)) {
 			echo "<td$rowspan>".$lig_ele->login."</td>\n";
 			echo "<td$rowspan>".$lig_ele->ele_id."</td>\n";
 			$cpt=0;
-			while($lig_resp=mysql_fetch_object($res_resp)) {
+			while($lig_resp=mysqli_fetch_object($res_resp)) {
 				if($cpt>0) {
 					echo "</tr>\n";
 					echo "<tr class='lig$alt white_hover'>\n";
@@ -431,10 +431,10 @@ if((!isset($mode))||($mode==1)) {
 				echo "<td>";
 				$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
 				//echo "$sql<br />";
-				$res_adr=mysql_query($sql);
-				if(mysql_num_rows($res_resp)>1) {
+				$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_resp)>1) {
 					$adresse="";
-					$lig_adr=mysql_fetch_object($res_adr);
+					$lig_adr=mysqli_fetch_object($res_adr);
 					$adresse.=$lig_adr->adr1;
 					if($lig_adr->adr1!="") {
 						$adresse.="<br />\n";
@@ -471,8 +471,8 @@ else {
 	echo "<p><strong>Grille 2&nbsp;:</strong> Informations parents/élèves&nbsp;: <a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_eleves&amp;mode=2'>Export CSV</a> (<em><a href='".$_SERVER['PHP_SELF']."?export_csv=export_infos_parents_eleves&amp;mode=2&amp;ancien_mode=y' title=\"Avec une seule colonne par élève\">ancien mode</a></em>)</p>\n";
 
 	$sql="SELECT DISTINCT ra.* FROM resp_adr ra, resp_pers rp, responsables2 r WHERE ra.adr_id=rp.adr_id AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY rp.nom, rp.prenom;";
-	$res_adr=mysql_query($sql);
-	if(mysql_num_rows($res_adr)==0) {
+	$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_adr)==0) {
 		echo "<p style='color:red'>Aucune association responsable/adresse n'a été trouvée.</p>\n";
 
 		require_once("../lib/footer.inc.php");
@@ -495,7 +495,7 @@ else {
 	$alt=1;
 	$cpt=1;
 	//$csv="DESIGNATION;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_2;ELEVE_3;ELEVE_4;ELEVE_5;ELEVE_6;ELEVE_7;ELEVE_8;ELEVE_9;ELEVE_10\r\n";
-	while($lig_adr=mysql_fetch_object($res_adr)) {
+	while($lig_adr=mysqli_fetch_object($res_adr)) {
 		/*
 		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') AND rp.adr_id='$lig_adr->adr_id';";
 		$res_rp=mysql_query($sql);
@@ -516,10 +516,10 @@ else {
 		$resp=array();
 		$tab_ele=array();
 		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal='1' AND rp.adr_id='$lig_adr->adr_id';";
-		$res_rp=mysql_query($sql);
-		if(mysql_num_rows($res_rp)>0) {
+		$res_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_rp)>0) {
 			// On recherche alors aussi les élèves.
-			while($lig_rp=mysql_fetch_object($res_rp)) {
+			while($lig_rp=mysqli_fetch_object($res_rp)) {
 				//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
 				$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 				for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
@@ -539,10 +539,10 @@ else {
 		}
 
 		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal='2' AND rp.adr_id='$lig_adr->adr_id';";
-		$res_rp=mysql_query($sql);
-		if(mysql_num_rows($res_rp)>0) {
+		$res_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_rp)>0) {
 			// On recherche alors aussi les élèves.
-			while($lig_rp=mysql_fetch_object($res_rp)) {
+			while($lig_rp=mysqli_fetch_object($res_rp)) {
 				//$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
 				$tab_ele_tmp=get_enfants_from_pers_id($lig_rp->pers_id,'avec_classe');
 				for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {

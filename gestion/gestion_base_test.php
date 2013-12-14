@@ -162,18 +162,18 @@ function test_ecriture_backup() {
 }
 
 function mysql_version2() {
-   $result = mysql_query('SELECT VERSION() AS version');
-   if ($result != FALSE && @mysql_num_rows($result) > 0)
+   $result = mysqli_query($GLOBALS["mysqli"], 'SELECT VERSION() AS version');
+   if ($result != FALSE && @mysqli_num_rows($result) > 0)
    {
-      $row = mysql_fetch_array($result);
+      $row = mysqli_fetch_array($result);
       $match = explode('.', $row['version']);
    }
    else
    {
-      $result = @mysql_query('SHOW VARIABLES LIKE \'version\'');
-      if ($result != FALSE && @mysql_num_rows($result) > 0)
+      $result = @mysqli_query($GLOBALS["mysqli"], 'SHOW VARIABLES LIKE \'version\'');
+      if ($result != FALSE && @mysqli_num_rows($result) > 0)
       {
-         $row = mysql_fetch_row($result);
+         $row = mysqli_fetch_row($result);
          $match = explode('.', $row[1]);
       }
    }
@@ -221,9 +221,9 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $todump.="# ******* debut du fichier ********\n";
         fwrite ($fileHandle,$todump);
     }
-    $result=mysql_list_tables($db);
+    $result=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES FROM $db");
     $numtab=0;
-    while ($t = mysql_fetch_array($result)) {
+    while ($t = mysqli_fetch_array($result)) {
 	if ($t[0] == "log" ||
 	    $t[0] == "tentatives_intrusion" ||
 	    mb_substr($t[0], 0,4) == "temp" ||
@@ -236,8 +236,8 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $tables[$numtab]=$t[0];
         $numtab++;
     }
-    if (mysql_error()) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysql_error()."<hr/>\n";
+    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
        return false;
        die();
     }
@@ -304,10 +304,10 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 	    if((mb_substr($query,-1)==";")&&(mb_substr($query,0,3)!="-- ")) {
 	    //=============================================
 		    $query = "REPLACE" . mb_substr($query,6, mb_strlen($query));
-		    $reg = mysql_query($query);
+		    $reg = mysqli_query($GLOBALS["mysqli"], $query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {
-			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".mysql_error()."</p>\n";
+			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
 			$result_ok = 'no';
 		    }
 	    }
@@ -337,16 +337,16 @@ function get_content($db, $table,$from,$limit) {
     // les données de la table
     $def = '';
     $query = "SELECT DISTINCT * FROM $table LIMIT $from,$limit";
-    $resData = @mysql_query($query);
+    $resData = @mysqli_query($GLOBALS["mysqli"], $query);
     //peut survenir avec la corruption d'une table, on prévient
     if (!$resData) {
         $def .="Problème avec les données de $table, corruption possible !\n";
     } else {
-        if (@mysql_num_rows($resData) > 0) {
+        if (@mysqli_num_rows($resData) > 0) {
              $sFieldnames = "";
-             $num_fields = mysql_num_fields($resData);
+             $num_fields = (($___mysqli_tmp = mysqli_num_fields($resData)) ? $___mysqli_tmp : false);
               $sInsert = "INSERT INTO $table $sFieldnames values ";
-              while($rowdata = mysql_fetch_row($resData)) {
+              while($rowdata = mysqli_fetch_row($resData)) {
 		  if ($table == "utilisateurs" && $rowdata[0] == "ADMIN") {
 		      continue;
 		  }
@@ -553,8 +553,8 @@ if (isset($action) and ($action == 'dump'))  {
          } else $fichier=$_GET["fichier"];
 
 
-        $tab=mysql_list_tables($dbDb);
-        $tot=mysql_num_rows($tab);
+        $tab=mysqli_query($GLOBALS["mysqli"], "SHOW TABLES FROM $dbDb");
+        $tot=mysqli_num_rows($tab);
         if(isset($offsettable)){
             if ($offsettable>=0)
                 $percent=min(100,round(100*$offsettable/$tot,0));

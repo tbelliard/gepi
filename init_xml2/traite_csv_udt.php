@@ -16,8 +16,8 @@
 	}
 
 	$sql="SELECT 1=1 FROM droits WHERE id='/init_xml2/traite_csv_udt.php';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/init_xml2/traite_csv_udt.php',
 	administrateur='V',
 	professeur='F',
@@ -29,7 +29,7 @@
 	autre='F',
 	description='Import des enseignements via un Export CSV UDT',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 
@@ -42,9 +42,9 @@
 
 	function get_nom_complet_from_matiere($mat) {
 		$sql="SELECT nom_complet FROM matieres WHERE matiere='$mat';";
-		$res_mat=mysql_query($sql);
-		if(mysql_num_rows($res_mat)>0) {
-			$lig_mat=mysql_fetch_object($res_mat);
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mat)>0) {
+			$lig_mat=mysqli_fetch_object($res_mat);
 			return $lig_mat->nom_complet;
 		}
 	}
@@ -238,7 +238,7 @@
 						nom_udt varchar(255) $chaine_mysql_collate NOT NULL default '',
 						nom_gepi varchar(255) $chaine_mysql_collate NOT NULL default ''
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-						$create_table = mysql_query($sql);
+						$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						//$sql="TRUNCATE TABLE udt_corresp;";
 						//$vide_table = mysql_query($sql);
@@ -260,10 +260,10 @@
 						PRIMARY KEY id (id)
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 						//echo "$sql<br />";
-						$create_table = mysql_query($sql);
+						$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						$sql="TRUNCATE TABLE udt_lignes;";
-						$vide_table = mysql_query($sql);
+						$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 
@@ -324,12 +324,12 @@
 								else {
 									$sql="SELECT 1=1 FROM udt_lignes WHERE division='$div' AND matiere='$matiere' AND prof='$professeur';";
 								}
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)==0) {
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)==0) {
 									// Inscrire les correspondances avec noms corrigés
 									$sql="INSERT INTO udt_lignes SET division='$div', matiere='$matiere', prof='$professeur', groupe='$groupe', regroup='$regroup', mo='$mo';";
 									//echo "$sql<br />\n";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {echo "Erreur sur $sql<br />\n";}
 								}
 								// Plus loin corriger les $udt_div[] de la même façon avant d'insérer les correspondances
@@ -340,14 +340,14 @@
 						sort($udt_prof);
 
 						$sql="SELECT id,classe, nom_complet FROM classes ORDER BY classe;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>ERREUR&nbsp;: Il n'existe aucune classe dans la base.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
-						while($lig=mysql_fetch_object($res)) {
+						while($lig=mysqli_fetch_object($res)) {
 							$tab_id_classe[]=$lig->id;
 							$tab_classe[]=$lig->classe;
 							$tab_classe_nom_complet[]=$lig->nom_complet;
@@ -391,14 +391,14 @@
 						echo "</blockquote>\n";
 
 						$sql="SELECT matiere, nom_complet FROM matieres ORDER BY matiere;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>ERREUR&nbsp;: Il n'existe aucune matière dans la base.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
-						while($lig=mysql_fetch_object($res)) {
+						while($lig=mysqli_fetch_object($res)) {
 							$tab_matiere[]=$lig->matiere;
 							$tab_matiere_nom_complet[]=$lig->nom_complet;
 						}
@@ -406,9 +406,9 @@
 						// Les noms avec des PRIME ne sont pas détectés... on se retrouve avec ATPquot pour ATP'
 						$tab_udt_matiere=array();
 						$sql="SELECT * FROM udt_corresp WHERE champ='matiere' ORDER BY nom_udt;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
 								$tab_udt_matiere[$lig->nom_gepi]=$lig->nom_udt;
 								//echo "\$tab_udt_matiere[$lig->nom_gepi]=$lig->nom_udt<br />\n";
 							}
@@ -450,11 +450,11 @@
 							if($matiere_trouvee=="n") {
 								$sql="SELECT * FROM udt_lignes WHERE matiere='$udt_matiere[$i]' ORDER BY division, prof;";
 								//echo "$sql<br />\n";
-								$res_info=mysql_query($sql);
-								if(($res_info)&&(mysql_num_rows($res_info)>0)) {
+								$res_info=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(($res_info)&&(mysqli_num_rows($res_info)>0)) {
 									echo "<table align='center' class='boireaus' summary='Information sur la matière $udt_matiere[$i]'>\n";
 									$info_alt=1;
-									while($lig_info=mysql_fetch_object($res_info)) {
+									while($lig_info=mysqli_fetch_object($res_info)) {
 										$info_alt=$info_alt*(-1);
 										echo "<tr class='lig$info_alt'>\n";
 										echo "<td>$lig_info->division</td>\n";
@@ -482,23 +482,23 @@
 
 						$tab_udt_prof=array();
 						$sql="SELECT * FROM udt_corresp WHERE champ='prof' ORDER BY nom_udt;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
 								$tab_udt_prof[$lig->nom_gepi]=$lig->nom_udt;
 								//echo "\$tab_udt_matiere[$lig->nom_gepi]=$lig->nom_udt<br />\n";
 							}
 						}
 
 						$sql="SELECT login, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)==0) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)==0) {
 							echo "<p>ERREUR&nbsp;: Il n'existe aucun professeur dans la base.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
 
-						while($lig=mysql_fetch_object($res)) {
+						while($lig=mysqli_fetch_object($res)) {
 							$tab_login_prof[]=$lig->login;
 							$tab_nom_prof[]=my_strtoupper($lig->nom);
 							$tab_prenom_prof[]=my_strtoupper($lig->prenom);
@@ -554,11 +554,11 @@
 							echo "<td>\n";
 							if($prof_trouve=="n") {
 								$sql="SELECT * FROM udt_lignes WHERE prof='$udt_prof[$i]' ORDER BY division;";
-								$res_info=mysql_query($sql);
-								if(($res_info)&&(mysql_num_rows($res_info)>0)) {
+								$res_info=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(($res_info)&&(mysqli_num_rows($res_info)>0)) {
 									echo "<table class='boireaus' summary='Information sur le professeur $udt_prof[$i]'>\n";
 									$info_alt=1;
-									while($lig_info=mysql_fetch_object($res_info)) {
+									while($lig_info=mysqli_fetch_object($res_info)) {
 										$info_alt=$info_alt*(-1);
 										echo "<tr class='lig$info_alt'>\n";
 										echo "<td>$lig_info->division</td>\n";
@@ -612,14 +612,14 @@
 				$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : array();
 
 				echo "<p>Suppression des enseignements, associations élèves/enseignements, classes/enseignements et professeurs/enseignements.</p>\n";
-				$del = @mysql_query("DELETE FROM groupes;");
-				$del = @mysql_query("DELETE FROM j_eleves_groupes;");
-				$del = @mysql_query("DELETE FROM j_groupes_classes;");
-				$del = @mysql_query("DELETE FROM j_groupes_professeurs;");
-				$del = @mysql_query("DELETE FROM j_groupes_matieres;");
-				$del = @mysql_query("DELETE FROM j_signalement;");
-				$del = @mysql_query("DELETE FROM j_groupes_visibilite;");
-				$del = @mysql_query("DELETE FROM acces_cdt_groupes;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM groupes;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_groupes;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_classes;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_professeurs;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_matieres;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_signalement;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_visibilite;");
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM acces_cdt_groupes;");
 				// On conserve les associations profs/matières
 				//$del = @mysql_query("DELETE FROM j_professeurs_matieres;");
 
@@ -634,19 +634,19 @@ mar aoû 31 22:12:01 steph@hpcrob:~/2010_01_02/hameau
 $                                                          
 */
 				$sql="TRUNCATE TABLE udt_corresp;";
-				$vide_table=mysql_query($sql);
+				$vide_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				for($i=0;$i<count($classe_udt);$i++) {
 					if($classe[$i]!="") {
 						$sql="INSERT INTO udt_corresp SET champ='classe', nom_udt='".my_ereg_replace("[^a-zA-Z0-9_. -]", "",$classe_udt[$i])."', nom_gepi='$classe[$i]';";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
 				for($i=0;$i<count($matiere_udt);$i++) {
 					if($matiere[$i]!="") {
 						$sql="INSERT INTO udt_corresp SET champ='matiere', nom_udt='".my_ereg_replace("[^a-zA-Z0-9_. -]","", $matiere_udt[$i])."', nom_gepi='$matiere[$i]';";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -667,40 +667,40 @@ $
 					//if((isset($login_prof[$i]))&&($login_prof[$i]!="")) {
 						$sql="INSERT INTO udt_corresp SET champ='prof', nom_udt='".my_ereg_replace("[^a-zA-Z_. -]","", $prof_udt[$i])."', nom_gepi='$login_prof[$i]';";
 						//echo "$sql<br />\n";
-						$res=mysql_query($sql);
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
 				$nom_classe=array();
 				$sql="SELECT id,classe FROM classes;";
-				$res_classes=mysql_query($sql);
-				if(mysql_num_rows($res_classes)==0) {
+				$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_classes)==0) {
 					echo "<p style='color:red'>Aucune classe n'existe encore.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
-				while($lig_classe=mysql_fetch_object($res_classes)) {
+				while($lig_classe=mysqli_fetch_object($res_classes)) {
 					$nom_classe[$lig_classe->id]=$lig_classe->classe;
 				}
 
 				$nom_prenom_prof=array();
 				$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur';";
-				$res_profs=mysql_query($sql);
-				if(mysql_num_rows($res_profs)==0) {
+				$res_profs=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_profs)==0) {
 					echo "<p style='color:red'>Aucun prof n'existe encore.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
-				while($lig_profs=mysql_fetch_object($res_profs)) {
+				while($lig_profs=mysqli_fetch_object($res_profs)) {
 					$nom_prenom_prof[$lig_profs->login]=$lig_profs->civilite." ".my_strtoupper($lig_profs->nom)." ".casse_mot($lig_profs->prenom,'majf2');
 				}
 
 				$lignes_deja_traitees=array();
 				//$sql="SELECT * FROM udt_lignes;";
 				$sql="SELECT * FROM udt_lignes ORDER BY regroup, division, matiere;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						if(in_array($lig->id,$lignes_deja_traitees)) {
 							/*echo "<p style='color:red'><b>Ligne $lig->id déjà traitée.</b><br />\n";
 							echo "division=$lig->division<br />\n";
@@ -735,8 +735,8 @@ $
 								//$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec, classes c, udt_corresp uc WHERE jec.id_classe=c.id AND c.classe=uc.nom_gepi AND uc.champ='classe' AND uc.nom_udt='$lig->division' ORDER BY jec.login;";
 								$sql="SELECT DISTINCT jec.login, c.id FROM j_eleves_classes jec, classes c, udt_corresp uc WHERE jec.id_classe=c.id AND c.classe=uc.nom_gepi AND uc.champ='classe' AND uc.nom_udt='$lig->division' ORDER BY jec.login;";
 								//echo "$sql<br />\n";
-								$res_ele=mysql_query($sql);
-								while($lig_ele=mysql_fetch_object($res_ele)) {
+								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+								while($lig_ele=mysqli_fetch_object($res_ele)) {
 									//$tab_ele[$lig->division][]=$lig_ele->login;
 									$tab_ele[$lig_ele->id][]=$lig_ele->login;
 								}
@@ -748,9 +748,9 @@ $
 								//$sql="SELECT MAX(num_periode) AS max_per, c.id FROM periodes p, classes c, udt_corresp uc WHERE c.classe=uc.nom_gepi AND uc.nom_udt='$lig->division' AND c.id=p.id_classe GROUP BY c.id;";
 								$sql="SELECT num_periode AS max_per, c.id FROM periodes p, classes c, udt_corresp uc WHERE c.classe=uc.nom_gepi AND uc.nom_udt='$lig->division' AND c.id=p.id_classe ORDER BY num_periode DESC LIMIT 1;";
 								//echo "$sql<br />\n";
-								$periode_query=mysql_query($sql);
-								if(mysql_num_rows($periode_query)>0) {
-									$lig_per=mysql_fetch_object($periode_query);
+								$periode_query=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($periode_query)>0) {
+									$lig_per=mysqli_fetch_object($periode_query);
 									//$tab_per[$lig->division]=$lig_per->max_per;
 									//echo "\$tab_per[$lig->division]=$lig_per->max_per<br />\n";
 									$tab_per[$lig_per->id]=$lig_per->max_per;
@@ -767,18 +767,18 @@ $
 								// Est-ce qu'un même regroupement peut correspondre à plusieurs matières? Sans doute...
 								$sql="SELECT DISTINCT c.id FROM classes c, udt_corresp uc, udt_lignes ul WHERE ul.regroup='$lig->regroup' AND ul.matiere='$lig->matiere' AND uc.nom_udt=ul.division AND uc.nom_gepi=c.classe AND uc.champ='classe';";
 								//echo "<span style='color:green'>$sql</span><br />\n";
-								$res_clas=mysql_query($sql);
-								if(mysql_num_rows($res_clas)>0) {
-									while($lig_clas=mysql_fetch_object($res_clas)) {
+								$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_clas)>0) {
+									while($lig_clas=mysqli_fetch_object($res_clas)) {
 										$tab_clas[]=$lig_clas->id;
 										//echo "\$tab_clas[]=$lig_clas->id<br />\n";
 									}
 								}
 
 								$sql="SELECT ul.id FROM udt_lignes ul WHERE ul.regroup='$lig->regroup' AND ul.matiere='$lig->matiere';";
-								$res_lig=mysql_query($sql);
-								if(mysql_num_rows($res_lig)>0) {
-									while($lig_lig=mysql_fetch_object($res_lig)) {
+								$res_lig=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_lig)>0) {
+									while($lig_lig=mysqli_fetch_object($res_lig)) {
 										$lignes_deja_traitees[]=$lig_lig->id;
 									}
 								}
@@ -787,15 +787,15 @@ $
 								$id_classe="";
 								$sql="SELECT DISTINCT c.id FROM classes c, udt_corresp uc WHERE uc.nom_udt='$lig->division' AND uc.nom_gepi=c.classe AND uc.champ='classe';";
 								//echo "$sql<br />\n";
-								$res_clas=mysql_query($sql);
-								if(mysql_num_rows($res_clas)==0) {
+								$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_clas)==0) {
 									echo "<p>Aucune classe n'est associée à $lig->division dans Gepi.</p>\n";
 								}
-								elseif(mysql_num_rows($res_clas)>1) {
+								elseif(mysqli_num_rows($res_clas)>1) {
 									echo "<p>ANOMALIE: Plus d'une classe est associée à $lig->division dans Gepi.</p>\n";
 								}
 								else {
-									$lig_clas=mysql_fetch_object($res_clas);
+									$lig_clas=mysqli_fetch_object($res_clas);
 									$id_classe=$lig_clas->id;
 									//echo "\$id_classe=$id_classe<br />\n";
 	
@@ -806,15 +806,15 @@ $
 							$mat="";
 							$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m, udt_corresp uc WHERE uc.nom_udt='$lig->matiere' AND uc.nom_gepi=m.matiere AND uc.champ='matiere';";
 							//echo "$sql<br />\n";
-							$res_mat=mysql_query($sql);
-							if(mysql_num_rows($res_mat)==0) {
+							$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_mat)==0) {
 								echo "<p>Aucune matière n'est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
 							}
-							elseif(mysql_num_rows($res_mat)>1) {
+							elseif(mysqli_num_rows($res_mat)>1) {
 								echo "<p>ANOMALIE: Plus d'une matière est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
 							}
 							else {
-								$lig_mat=mysql_fetch_object($res_mat);
+								$lig_mat=mysqli_fetch_object($res_mat);
 								$mat=$lig_mat->matiere;
 								$mat_nom_complet=$lig_mat->nom_complet;
 								//echo "\$mat=$mat<br />\n";
@@ -931,11 +931,11 @@ $
 	
 										$sql="SELECT DISTINCT uc.nom_gepi FROM udt_corresp uc WHERE uc.nom_udt='$lig->prof' AND uc.champ='prof';";
 										//echo "<span style='color:plum'>$sql</span><br />\n";
-										$res_prof=mysql_query($sql);
-										if(mysql_num_rows($res_prof)>0) {
+										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_prof)>0) {
 											echo "Association des professeurs au groupe&nbsp;: ";
 											$cpt_prof=0;
-											while($lig_prof=mysql_fetch_object($res_prof)) {
+											while($lig_prof=mysqli_fetch_object($res_prof)) {
 												if($cpt_prof>0) {echo ", ";}
 
 												$tab_prof[]=$lig_prof->nom_gepi;
@@ -944,21 +944,21 @@ $
 
 												// Contrôler l'association avec la matière ou bien le update_group() le fait?
 												$sql="SELECT 1=1 FROM j_professeurs_matieres WHERE id_professeur='$lig_prof->nom_gepi' AND id_matiere='$mat';";
-												$test=mysql_query($sql);
-												if(mysql_num_rows($test)==0) {
+												$test=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(mysqli_num_rows($test)==0) {
 
 													$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$lig_prof->nom_gepi' ORDER BY ordre_matieres DESC LIMIT 1;";
-													$res_max_ordre_matiere=mysql_query($sql);
-													if(mysql_num_rows($res_max_ordre_matiere)==0) {
+													$res_max_ordre_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+													if(mysqli_num_rows($res_max_ordre_matiere)==0) {
 														$ordre_mat=1;
 													}
 													else {
-														$lig_ordre_mat=mysql_fetch_object($res_max_ordre_matiere);
+														$lig_ordre_mat=mysqli_fetch_object($res_max_ordre_matiere);
 														$ordre_mat=$lig_ordre_mat->ordre_matieres+1;
 													}
 
 													$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_prof->nom_gepi', id_matiere='$mat', ordre_matieres='$ordre_mat';";
-													$insert=mysql_query($sql);
+													$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 													if(!$insert) {echo "<br /><b>ERREUR</b> lors de l'association du professeur $lig_prof->nom_gepi avec la matière $mat<br />\n";}
 													else {echo " (<i>association du professeur avec la matière $mat</i>)";}
 												}
@@ -977,8 +977,8 @@ $
 											for($loop=0;$loop<count($tab_clas);$loop++) {
 												foreach($tab_ele[$tab_clas[$loop]] as $key => $value) {
 													$sql="SELECT 1=1 FROM temp_gep_import2 WHERE (ELEOPT1='$mat' OR ELEOPT2='$mat' OR ELEOPT3='$mat' OR ELEOPT4='$mat' OR ELEOPT5='$mat' OR ELEOPT6='$mat' OR ELEOPT7='$mat' OR ELEOPT8='$mat' OR ELEOPT9='$mat' OR ELEOPT10='$mat' OR ELEOPT11='$mat' OR ELEOPT12='$mat') AND LOGIN='$value';";
-													$test=mysql_query($sql);
-													if(mysql_num_rows($test)>0) {
+													$test=mysqli_query($GLOBALS["mysqli"], $sql);
+													if(mysqli_num_rows($test)>0) {
 														$temoin_aucun_eleve_dans_l_enseignement="n";
 														break;
 													}
@@ -1005,8 +1005,8 @@ $
 													}
 													else {
 														$sql="SELECT 1=1 FROM temp_gep_import2 WHERE (ELEOPT1='$mat' OR ELEOPT2='$mat' OR ELEOPT3='$mat' OR ELEOPT4='$mat' OR ELEOPT5='$mat' OR ELEOPT6='$mat' OR ELEOPT7='$mat' OR ELEOPT8='$mat' OR ELEOPT9='$mat' OR ELEOPT10='$mat' OR ELEOPT11='$mat' OR ELEOPT12='$mat') AND LOGIN='$value';";
-														$test=mysql_query($sql);
-														if(mysql_num_rows($test)>0) {
+														$test=mysqli_query($GLOBALS["mysqli"], $sql);
+														if(mysqli_num_rows($test)>0) {
 															$temoin_enseignement_suivi="y";
 														}
 													}

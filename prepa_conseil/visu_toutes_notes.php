@@ -80,7 +80,7 @@ if (isset($id_classe)) {
 	}
 	// On teste si le professeur a le droit d'accéder à cette classe
 	if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-		$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
+		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 		if ($test == "0") {
 			tentative_intrusion("3", "Tentative d'accès par un prof à une classe dans laquelle il n'enseigne pas, sans en avoir l'autorisation. Tentative avancée : changement des valeurs de champs de type 'hidden' du formulaire.");
 			echo "Vous ne pouvez pas accéder à cette classe car vous n'y êtes pas professeur !";
@@ -159,7 +159,7 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 	// On ne sélectionne que les élèves que le professeur a en cours
 	if ($referent=="une_periode")
 		// Calcul sur une seule période
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -172,7 +172,7 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 				"ORDER BY e.nom,e.prenom");
 	else {
 		// Calcul sur l'année
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* " .
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -185,14 +185,14 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesPr
 } else {
 	if ($referent=="une_periode")
 		// Calcul sur une seule période
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login AND j.periode='$num_periode') ORDER BY nom,prenom");
 	else {
 		// Calcul sur l'année
-		$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
+		$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe='$id_classe' AND j.login = e.login) ORDER BY nom,prenom");
 	}
 }
 
-$nb_lignes_eleves = mysql_num_rows($appel_donnees_eleves);
+$nb_lignes_eleves = mysqli_num_rows($appel_donnees_eleves);
 $nb_lignes_tableau = $nb_lignes_eleves;
 
 //==============================
@@ -269,7 +269,7 @@ else{
 $sql="SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0);";
 //echo "$sql<br />";
 //$test_coef=mysql_num_rows(mysql_query($sql));
-$nb_coef_non_nuls=mysql_num_rows(mysql_query($sql));
+$nb_coef_non_nuls=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 $ligne_supl = 0;
 if ($nb_coef_non_nuls!=0) {$ligne_supl = 1;}
 //echo "\$test_coef=$test_coef<br />";
@@ -302,16 +302,16 @@ if($utiliser_coef_perso=='y') {
 }
 else {
 	$sql="SELECT 1=1 FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."' AND jgc.mode_moy='sup10';";
-	$test_note_sup10=mysql_query($sql);
-	$nb_note_sup_10=mysql_num_rows($test_note_sup10);
+	$test_note_sup10=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_note_sup_10=mysqli_num_rows($test_note_sup10);
 	if($nb_note_sup_10>0) {
 		//$ligne_supl++;
 		$temoin_note_sup10="y";
 	}
 
 	$sql="SELECT 1=1 FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe."' AND jgc.mode_moy='bonus';";
-	$test_note_bonus=mysql_query($sql);
-	$nb_note_bonus=mysql_num_rows($test_note_bonus);
+	$test_note_bonus=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_note_bonus=mysqli_num_rows($test_note_bonus);
 	if($nb_note_bonus>0) {
 		//$ligne_supl++;
 		$temoin_note_bonus="y";
@@ -353,9 +353,9 @@ if ($affiche_categories == "y") {
 */
 
 if ($affiche_categories) {
-	$get_cat = mysql_query("SELECT id FROM matieres_categories");
+	$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM matieres_categories");
 	$categories = array();
-	while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+	while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 		$categories[] = $row["id"];
 		$moy_cat_classe_point[$row["id"]] = 0;
 		$moy_cat_classe_effectif[$row["id"]] = 0;
@@ -365,8 +365,8 @@ if ($affiche_categories) {
 
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		//$cat_names[$cat_id] = html_entity_decode(mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
-		$cat_names[$cat_id] = mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
+		//$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
+		$cat_names[$cat_id] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_court FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 }
 
@@ -510,8 +510,8 @@ $displayed_categories = array();
 $j = 0;
 while($j < $nb_lignes_tableau) {
 	// colonne nom+prénom
-	$current_eleve_login[$j] = mysql_result($appel_donnees_eleves, $j, "login");
-	$col[1][$j+$ligne_supl] = @mysql_result($appel_donnees_eleves, $j, "nom")." ".@mysql_result($appel_donnees_eleves, $j, "prenom");
+	$current_eleve_login[$j] = old_mysql_result($appel_donnees_eleves, $j, "login");
+	$col[1][$j+$ligne_supl] = @old_mysql_result($appel_donnees_eleves, $j, "nom")." ".@old_mysql_result($appel_donnees_eleves, $j, "prenom");
 	$ind = 2;
 
 	//echo "<p>\$current_eleve_login[$j]=$current_eleve_login[$j]<br />";
@@ -519,7 +519,7 @@ while($j < $nb_lignes_tableau) {
 	//=======================================
 	// colonne date de naissance
 	if (($aff_date_naiss)&&($aff_date_naiss=='y')) {
-		$tmpdate=mysql_result($appel_donnees_eleves, $j, "naissance");
+		$tmpdate=old_mysql_result($appel_donnees_eleves, $j, "naissance");
 		$tmptab=explode("-",$tmpdate);
 		if(mb_strlen($tmptab[0])==4){$tmptab[0]=mb_substr($tmptab[0],2,2);}
 		$col[$ind][$j+$ligne_supl]=$tmptab[2]."/".$tmptab[1]."/".$tmptab[0];
@@ -529,15 +529,15 @@ while($j < $nb_lignes_tableau) {
 
 	// colonne régime
 	if ((($aff_reg)&&($aff_reg=='y')) or (($aff_doub)&&($aff_doub=='y'))) {
-		$regime_doublant_eleve = mysql_query("SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]';");
+		$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login[$j]';");
 	}
 	if (($aff_reg)&&($aff_reg=='y')) {
-		$col[$ind][$j+$ligne_supl] = @mysql_result($regime_doublant_eleve, 0, "regime");
+		$col[$ind][$j+$ligne_supl] = @old_mysql_result($regime_doublant_eleve, 0, "regime");
 		$ind++;
 	}
 	// colonne doublant
 	if (($aff_doub)&&($aff_doub=='y')) {
-		$col[$ind][$j+$ligne_supl] = @mysql_result($regime_doublant_eleve, 0, "doublant");
+		$col[$ind][$j+$ligne_supl] = @old_mysql_result($regime_doublant_eleve, 0, "doublant");
 		$ind++;
 	}
 	// Colonne absence
@@ -803,7 +803,7 @@ while($i < $lignes_groupes) {
 
 	foreach ($moyenne_annee_matiere as $tableau => $value) { unset($moyenne_annee_matiere[$tableau]);}
 
-	//$var_group_id = mysql_result($groupeinfo, $i, "id_groupe");
+	//$var_group_id = old_mysql_result($groupeinfo, $i, "id_groupe");
 	//$current_group = get_group($var_group_id);
 
 	// On choisit une période pour la récup des infos générales sur le groupe (id, coef,... bref des trucs qui ne dépendent pas de la période)
@@ -814,11 +814,11 @@ while($i < $lignes_groupes) {
 	$current_group=$tab_moy['current_group'][$i];
 
 	// Coeff pour la classe
-	//$current_coef = mysql_result($groupeinfo, $i, "coef");
+	//$current_coef = old_mysql_result($groupeinfo, $i, "coef");
 	$current_coef=$tab_moy['periodes'][$p]['current_coef'][$i];
 
 	// Mode de calcul sur la moyenne: standard (-) ou note supérieure à 10
-	//$current_mode_moy = mysql_result($groupeinfo, $i, "mode_moy");
+	//$current_mode_moy = old_mysql_result($groupeinfo, $i, "mode_moy");
 	$current_mode_moy=$current_group["classes"]["classes"][$id_classe]["mode_moy"];
 
 	// A FAIRE: A l'affichage, il faudrait mettre 1.0(*) quand le coeff n'est pas 1.0 pour tous les élèves à cause de coeffs personnalisés.
@@ -886,8 +886,8 @@ while($i < $lignes_groupes) {
 			$moy_max_classe_grp=$tab_moy['periodes'][$p]['moy_max_classe_grp'][$i];
 		}
 		else {
-			$call_moyenne = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "')");
-			$moy_classe_tmp = @mysql_result($call_moyenne, 0, "moyenne");
+			$call_moyenne = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "')");
+			$moy_classe_tmp = @old_mysql_result($call_moyenne, 0, "moyenne");
 		}
 
 
@@ -899,7 +899,7 @@ while($i < $lignes_groupes) {
 				"name = 'coef')";
 		$test_coef_personnalise = mysql_query($sql);
 		if (mysql_num_rows($test_coef_personnalise) > 0) {
-			$coef_eleve = mysql_result($test_coef_personnalise, 0);
+			$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
 		} else {
 			// Coefficient du groupe:
 			$coef_eleve = $current_coef;
@@ -935,7 +935,7 @@ while($i < $lignes_groupes) {
 				//echo "\$indice_j_ele=$indice_j_ele<br />";
 				/*
 				$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
-				$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
+				$current_eleve_statut = @old_mysql_result($current_eleve_note_query, 0, "statut");
 				*/
 
 				$current_eleve_statut=$tab_moy['periodes'][$num_periode]['current_eleve_statut'][$i][$indice_j_ele];
@@ -971,7 +971,7 @@ while($i < $lignes_groupes) {
 									"name = 'coef')";
 							$test_coef_personnalise = mysql_query($sql);
 							if (mysql_num_rows($test_coef_personnalise) > 0) {
-								$coef_eleve = mysql_result($test_coef_personnalise, 0);
+								$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
 							} else {
 								// Coefficient du groupe:
 								$coef_eleve = $current_coef;
@@ -1012,8 +1012,8 @@ while($i < $lignes_groupes) {
 
 
 					$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."' AND periode='$num_periode'";
-					$test_eleve_grp=mysql_query($sql);
-					if(mysql_num_rows($test_eleve_grp)>0){
+					$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_eleve_grp)>0){
 						if(!isset($chaine_matieres[$j+$ligne_supl])){
 						//if($chaine_matieres[$j+$ligne_supl]==""){
 							$chaine_matieres[$j+$ligne_supl]=$current_group["matiere"]["matiere"];
@@ -1061,14 +1061,14 @@ while($i < $lignes_groupes) {
 					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
 
 					//$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$p')");
-					//$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
+					//$current_eleve_statut = @old_mysql_result($current_eleve_note_query, 0, "statut");
 
 					$current_eleve_statut=$tab_moy['periodes'][$p]['current_eleve_statut'][$i][$indice_j_ele];
 					$current_eleve_note=$tab_moy['periodes'][$p]['current_eleve_note'][$i][$indice_j_ele];
 
 					//if ($current_eleve_statut == "") {
 					if(($current_eleve_statut=="")&&($current_eleve_note!="")&&($current_eleve_note!="-")) {
-						//$temp = @mysql_result($current_eleve_note_query, 0, "note");
+						//$temp = @old_mysql_result($current_eleve_note_query, 0, "note");
 						$temp=$current_eleve_note;
 						if  ($temp != '')  {
 							$moy += $temp;
@@ -1120,9 +1120,9 @@ while($i < $lignes_groupes) {
 							"login = '".$current_eleve_login[$j]."' AND " .
 							"id_groupe = '".$current_group["id"]."' AND " .
 							"name = 'coef')";
-					$test_coef_personnalise = mysql_query($sql);
-					if (mysql_num_rows($test_coef_personnalise) > 0) {
-						$coef_eleve = mysql_result($test_coef_personnalise, 0);
+					$test_coef_personnalise = mysqli_query($GLOBALS["mysqli"], $sql);
+					if (mysqli_num_rows($test_coef_personnalise) > 0) {
+						$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
 					}
 
 					//==============================
@@ -1229,8 +1229,8 @@ while($i < $lignes_groupes) {
 
 
 			$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."'";
-			$test_eleve_grp=mysql_query($sql);
-			if(mysql_num_rows($test_eleve_grp)>0) {
+			$test_eleve_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_eleve_grp)>0) {
 				//if($chaine_matieres[$j+$ligne_supl]==""){
 				if(!isset($chaine_matieres[$j+$ligne_supl])){
 					$chaine_matieres[$j+$ligne_supl]=$current_group["matiere"]["matiere"];
@@ -1266,7 +1266,7 @@ while($i < $lignes_groupes) {
 		//$call_max = mysql_query("SELECT max(note) note_max FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
 		//$call_min = mysql_query("SELECT min(note) note_min FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$num_periode')");
 
-		//$temp = @mysql_result($call_moyenne, 0, "moyenne");
+		//$temp = @old_mysql_result($call_moyenne, 0, "moyenne");
 
 		$temp=$tab_moy['periodes'][$p]['current_classe_matiere_moyenne'][$i];
 		$moy_min_classe_grp=$tab_moy['periodes'][$p]['moy_min_classe_grp'][$i];
@@ -1274,8 +1274,8 @@ while($i < $lignes_groupes) {
 
 	}
 	else {
-		$call_moyenne = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "')");
-		$temp = @mysql_result($call_moyenne, 0, "moyenne");
+		$call_moyenne = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "')");
+		$temp = @old_mysql_result($call_moyenne, 0, "moyenne");
 	}
 
 	//$moy_classe_tmp=$temp;
@@ -1350,7 +1350,7 @@ while($i < $lignes_groupes) {
 	}
 
 	if ($referent == "une_periode") {
-		//$temp = @mysql_result($call_min, 0, "note_min");
+		//$temp = @old_mysql_result($call_min, 0, "note_min");
 		$temp = $moy_min_classe_grp;
 		if ($temp != '') {
 			//$col[$k][$nb_lignes_tableau+1+$ligne_supl] = $temp;
@@ -1358,7 +1358,7 @@ while($i < $lignes_groupes) {
 		} else {
 			$col[$k][$nb_lignes_tableau+1+$ligne_supl] = '-';
 		}
-		//$temp = @mysql_result($call_max, 0, "note_max");
+		//$temp = @old_mysql_result($call_max, 0, "note_max");
 		$temp = $moy_max_classe_grp;
 		if ($temp != '') {
 			//$col[$k][$nb_lignes_tableau+2+$ligne_supl] = $temp;
@@ -2627,25 +2627,25 @@ require_once("../lib/header.inc.php");
 if($vtn_coloriser_resultats=='y') {
 	check_token(false);
 	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
-	$del=mysql_query($sql);
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	foreach($vtn_couleur_texte as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_texte$key', value='$value';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	foreach($vtn_couleur_cellule as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_cellule$key', value='$value';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 	foreach($vtn_borne_couleur as $key => $value) {
 		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_borne_couleur$key', value='$value';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
 //if(!isset($_SESSION['vtn_pref_num_periode'])) {
 	$sql="DELETE FROM preferences WHERE name LIKE 'vtn_pref_%' AND login='".$_SESSION['login']."';";
-	$del=mysql_query($sql);
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	//$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang');
 	$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang', 'avec_moy_gen_periodes_precedentes');
@@ -2655,14 +2655,14 @@ if($vtn_coloriser_resultats=='y') {
 		if($$tmp_var=='') {$$tmp_var="n";}
 		$sql="INSERT INTO preferences SET name='vtn_pref_".$tmp_var."', value='".$$tmp_var."', login='".$_SESSION['login']."';";
 		//echo "$sql<br />";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		$_SESSION['vtn_pref_'.$tmp_var]=$$tmp_var;
 	}
 
 	// Mettre aussi utiliser_coef_perso et vtn_coloriser_resultats
 	// PB pour les coef perso, ce sont des associations coef/groupe qui sont faites et le groupe n'est que rarement commun d'une classe à une autre
 	$sql="INSERT INTO preferences SET name='vtn_pref_coloriser_resultats', value='$vtn_coloriser_resultats', login='".$_SESSION['login']."';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	$_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
 	
 //}

@@ -145,11 +145,11 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 // id_conteneur
 // id_devoir
 
-$appel_cahier_notes = mysql_query("SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
+$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
-$periode_num = mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
 
 if (count($current_group["classes"]["list"]) > 1) {
     $multiclasses = true;
@@ -182,8 +182,8 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
-$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-$nom_periode = mysql_result($periode_query, $periode_num-1, "nom_periode");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
 
 if(!isset($type_export)) {
 	//**************** EN-TETE *****************
@@ -348,8 +348,8 @@ if($type_export=="CSV") {
 
 
 	// On fait la liste des devoirs de ce carnet de notes
-	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
-	$nb_dev = mysql_num_rows($appel_dev);
+	$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
+	$nb_dev = mysqli_num_rows($appel_dev);
 
 	$ligne_entete="GEPI_INFOS;GEPI_LOGIN_ELEVE;NOM;PRENOM;CLASSE;MOYENNE;GEPI_COL_1ER_DEVOIR";
 	$fd.="$ligne_entete\n";
@@ -370,7 +370,7 @@ if($type_export=="CSV") {
 	// On peut faire plus simple: La fonction MOYENNE de OpenOffice Calc tient compte des valeurs non numériques.
 
 	$cpt=0;
-	while($lig_dev=mysql_fetch_object($appel_dev)) {
+	while($lig_dev=mysqli_fetch_object($appel_dev)) {
 
 		$id_dev[$cpt]=$lig_dev->id;
 		$nomc_dev[$cpt]=$lig_dev->nom_court;
@@ -390,9 +390,9 @@ if($type_export=="CSV") {
          * @todo A améliorer par la suite: calculer la moyenne de la classe:
          */
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
-		$res_moy=mysql_query($sql);
+		$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res_moy) {
-			$lig_moy=mysql_fetch_array($res_moy);
+			$lig_moy=mysqli_fetch_array($res_moy);
 			if($lig_moy[1]!=0) {
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
 				$ligne_info_dev[4].=";".$moy;
@@ -460,15 +460,15 @@ if($type_export=="CSV") {
 		// Calculer la moyenne de l'élève est assez illusoire si on ne gère pas les boites et leurs coefficients...
 
 		while ($k < $nb_dev) {
-			$note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+			$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
-			if(mysql_num_rows($note_query)==0) {
+			if(mysqli_num_rows($note_query)==0) {
 				$eleve_note='';
 				$eleve_statut='-';
 			}
 			else{
-				$eleve_statut = @mysql_result($note_query, 0, "statut");
-				$eleve_note = @mysql_result($note_query, 0, "note");
+				$eleve_statut = @old_mysql_result($note_query, 0, "statut");
+				$eleve_note = @old_mysql_result($note_query, 0, "note");
 			}
 			// Problème avec les 17.5 qui sont convertis en dates -> 17/05/07
 			$eleve_note=strtr($eleve_note,".",",");
@@ -506,14 +506,14 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	savePref($_SESSION['login'], 'export_cn', 'ods');
 
 	// On fait la liste des devoirs de ce carnet de notes
-	$appel_dev = mysql_query("select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
-	$nb_dev  = mysql_num_rows($appel_dev);
+	$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where (id_racine='$id_racine') order by id_conteneur,date");
+	$nb_dev  = mysqli_num_rows($appel_dev);
 
 	unset($id_dev);
 	$id_dev=array();
 
 	$cpt=0;
-	while($lig_dev=mysql_fetch_object($appel_dev)) {
+	while($lig_dev=mysqli_fetch_object($appel_dev)) {
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
@@ -535,9 +535,9 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		// Moyenne
 		$moy="";
 		$sql="SELECT SUM(note) AS somme,COUNT(note) AS nb FROM cn_notes_devoirs WHERE (id_devoir='$id_dev[$cpt]' AND statut='')";
-		$res_moy=mysql_query($sql);
+		$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($res_moy) {
-			$lig_moy=mysql_fetch_array($res_moy);
+			$lig_moy=mysqli_fetch_array($res_moy);
 			if($lig_moy[1]!=0) {
 				$moy=strtr(round(10*$lig_moy[0]/$lig_moy[1])/10,".",",");
 			}
@@ -765,15 +765,15 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$num_col=6;
 		while ($k < $nb_dev) {
-			$note_query=mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
+			$note_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
 
-			if(mysql_num_rows($note_query)==0) {
+			if(mysqli_num_rows($note_query)==0) {
 				$eleve_note='';
 				$eleve_statut='-';
 			}
 			else{
-				$eleve_statut = @mysql_result($note_query, 0, "statut");
-				$eleve_note = @mysql_result($note_query, 0, "note");
+				$eleve_statut = @old_mysql_result($note_query, 0, "statut");
+				$eleve_note = @old_mysql_result($note_query, 0, "note");
 			}
 			if($eleve_statut=='v') {
 				// Pas de note saisie -> statut = v pour vide

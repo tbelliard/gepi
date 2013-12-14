@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/select_arriv_red.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/select_arriv_red.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Sélection des arrivants/redoublants',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -73,11 +73,11 @@ if((isset($projet))&&(isset($choix))&&(($choix=='Red')||($choix=='Arriv'))&&(iss
 		if(($ele_login[$i]!='')&&(my_ereg_replace("[A-Za-z0-9_.-]","",$ele_login[$i])=='')) {
 			$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$ele_login[$i]';";
 			//echo "$sql<br />";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="INSERT INTO gc_ele_arriv_red SET projet='$projet', login='$ele_login[$i]', statut='$choix';";
 			//echo "$sql<br />";
-			if($insert=mysql_query($sql)) {
+			if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				$nb_reg++;
 			}
 			else {
@@ -117,7 +117,7 @@ if(isset($_POST['suppr'])) {
 
 	for($i=0;$i<count($suppr);$i++) {
 		$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$suppr[$i]';";
-		$del=mysql_query($sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
@@ -145,8 +145,8 @@ if(!isset($choix)) {
 	//echo "<p style='color:red'>Mettre la liste des red/arriv déjà saisi et pouvoir en supprimer.</p>\n";
 
 	$sql="SELECT * FROM gc_ele_arriv_red WHERE projet='$projet' ORDER BY statut, login;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "<p>Liste des red/arriv déjà saisis&nbsp;:</p>\n";
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 		echo "<table class='boireaus' border='1' summary='Redoublants et arrivants'>\n";
@@ -160,13 +160,13 @@ if(!isset($choix)) {
 		echo "</tr>\n";
 		$alt=1;
 		$cpt=0;
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			$sql="SELECT nom,prenom FROM eleves WHERE login='$lig->login';";
-			$res2=mysql_query($sql);
-			$lig2=mysql_fetch_object($res2);
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			$lig2=mysqli_fetch_object($res2);
 			echo "<label for='suppr_$cpt'>".strtoupper($lig2->nom)." ".ucfirst(mb_strtolower($lig2->prenom))."</label>";
 			echo "</td>\n";
 			echo "<td>\n";
@@ -196,8 +196,8 @@ elseif($choix=='Red') {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
-		$res_classes=mysql_query($sql);
-		$nb_classes=mysql_num_rows($res_classes);
+		$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes=mysqli_num_rows($res_classes);
 		// Ajouter des classes
 		echo "<p>Dans quelles classes sont les redoublants à inscrire dans le projet '$projet'&nbsp;:\n";
 		echo "</p>\n";
@@ -213,7 +213,7 @@ elseif($choix=='Red') {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 		
-		while($lig_clas=mysql_fetch_object($res_classes)) {
+		while($lig_clas=mysqli_fetch_object($res_classes)) {
 		
 			//affichage 2 colonnes
 			if(($cpt_i>0)&&(round($cpt_i/$nb_classes_par_colonne)==$cpt_i/$nb_classes_par_colonne)){
@@ -265,9 +265,9 @@ elseif($choix=='Red') {
 							AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%')
 				ORDER BY e.nom,e.prenom;";
 			*/
-			$res_ele=mysql_query($sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			$alt=1;
-			while($lig_ele=mysql_fetch_object($res_ele)) {
+			while($lig_ele=mysqli_fetch_object($res_ele)) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
 				echo "<td style='text-align:left;'><label for='tab_selection_ele_".$i."_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
@@ -275,8 +275,8 @@ elseif($choix=='Red') {
 				echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$i."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 				$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) { echo "checked ";}
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) { echo "checked ";}
 		
 				echo "/></td>\n";
 
@@ -347,9 +347,9 @@ elseif($choix=='Arriv') {
 		LEFT JOIN j_eleves_classes jec ON jec.login=e.login
 		where jec.login is NULL AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%');";
 	*/
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
-	while($lig_ele=mysql_fetch_object($res_ele)) {
+	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='text-align:left;'><label for='tab_selection_ele_".$cpt."'>".$lig_ele->nom." ".$lig_ele->prenom."</label></td>\n";
@@ -357,8 +357,8 @@ elseif($choix=='Arriv') {
 		echo "<td><input type='checkbox' name='ele_login[]' id='tab_selection_ele_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 		$sql="SELECT 1=1 FROM gc_ele_arriv_red WHERE projet='$projet' AND login='$lig_ele->login' AND statut='$choix';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) { echo "checked ";}
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) { echo "checked ";}
 		echo "/></td>\n";
 		
 		echo "<td>";

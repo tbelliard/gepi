@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/utilisateurs/ajax_modif_utilisateur.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/utilisateurs/ajax_modif_utilisateur.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Ajax : Modification utilisateur',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -89,13 +89,13 @@ if($mode=='changer_auth_mode2') {
 	}
 
 	$sql="SELECT auth_mode, nom, prenom FROM utilisateurs WHERE login='$login_user';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
 		echo "<p style='color:red'>ERREUR&nbsp;: Le compte $login_user n'existe pas.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-	$lig_user=mysql_fetch_object($res);
+	$lig_user=mysqli_fetch_object($res);
 	$nom_user=$lig_user->nom;
 	$prenom_user=$lig_user->prenom;
 	$auth_mode_user=$lig_user->auth_mode;
@@ -143,15 +143,15 @@ elseif($mode=='changer_auth_mode') {
 	}
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_user';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
 		echo "<span style='color:red' title='$login_user non présent dans la table utilisateurs.'> KO</span>";
 		return false;
 		die();
 	}
 
 	$sql="UPDATE utilisateurs SET auth_mode='$auth_mode_user' WHERE login='$login_user';";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		echo "<span style='color:green;'>$auth_mode_user</span>";
 	}

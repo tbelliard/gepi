@@ -59,8 +59,8 @@ if (($donnees_personne_csv)) {
 	//$login=$donnees_personne_csv['login'][1];
 	$login=$donnees_personne_csv['login'][0];
 	$sql_statut="SELECT statut FROM utilisateurs WHERE login='$login'";
-	$resultat_statut = mysql_query($sql_statut);
-	$statut = mysql_result($resultat_statut, 0, "statut");
+	$resultat_statut = mysqli_query($GLOBALS["mysqli"], $sql_statut);
+	$statut = old_mysql_result($resultat_statut, 0, "statut");
 
 	switch ($statut) {
 	case 'eleve':

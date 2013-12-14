@@ -20,9 +20,9 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 	if($logineleve!="") {
 		$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-		if(mysql_num_rows($res_ele)==0) {
+		if(mysqli_num_rows($res_ele)==0) {
 			// On ne devrait pas arriver là.
 			echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
 			$poursuivre="n";
@@ -34,9 +34,9 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	}
 	else {
 		$sql="SELECT * FROM archivage_eleves WHERE ine='$ine';";
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-		if(mysql_num_rows($res_ele)==0) {
+		if(mysqli_num_rows($res_ele)==0) {
 			// On ne devrait pas arriver là.
 			echo "<p>L'élève dont l'INE serait $ine n'est pas dans la table 'archivage_eleves'.</p>\n";
 			$poursuivre="n";
@@ -44,7 +44,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	}
 
 	if($poursuivre=="y") {
-		$lig_ele=mysql_fetch_object($res_ele);
+		$lig_ele=mysqli_fetch_object($res_ele);
 
 		// Infos élève
 		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
@@ -59,23 +59,23 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 		// Liste des années conservées pour l'élève choisi:
 		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
-		$res_annees=mysql_query($sql);
+		$res_annees=mysqli_query($GLOBALS["mysqli"], $sql);
 		$annee_precedente="";
 		$annee_suivante="";
 		$derniere_periode_annee_precedente=1;
-		if(mysql_num_rows($res_annees)>0){
-			while($lig_annee=mysql_fetch_object($res_annees)){
+		if(mysqli_num_rows($res_annees)>0){
+			while($lig_annee=mysqli_fetch_object($res_annees)){
 				if($lig_annee->annee!=$annee_scolaire){
 					$annee_precedente=$lig_annee->annee;
 					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
-					$res_per_prec=mysql_query($sql);
-					if(mysql_num_rows($res_per_prec)>0){
-						$lig_per_prec=mysql_fetch_object($res_per_prec);
+					$res_per_prec=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_per_prec)>0){
+						$lig_per_prec=mysqli_fetch_object($res_per_prec);
 						$derniere_periode_annee_precedente=$lig_per_prec->num_periode;
 					}
 				}
 				else{
-					if($lig_annee=mysql_fetch_object($res_annees)){
+					if($lig_annee=mysqli_fetch_object($res_annees)){
 						$annee_suivante=$lig_annee->annee;
 					}
 					break;
@@ -85,9 +85,9 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 		// Liste des périodes pour l'année choisie:
 		$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_scolaire' ORDER BY num_periode";
-		$res_periodes=mysql_query($sql);
+		$res_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_periodes)==0){
+		if(mysqli_num_rows($res_periodes)==0){
 			// Ca ne doit pas arriver...
 		}
 		else{
@@ -127,7 +127,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "</li>\n";
 
 			$cpt=0;
-			while($lig_periode=mysql_fetch_object($res_periodes)){
+			while($lig_periode=mysqli_fetch_object($res_periodes)){
 				//if($cpt>0){echo " - ";}
 				//echo "<li style='display:inline;'>\n";
 				if($lig_periode->num_periode!=$num_periode){
@@ -167,14 +167,14 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 
 		$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
-		$res_per=mysql_query($sql);
+		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_per)==0){
+		if(mysqli_num_rows($res_per)==0){
 			$nom_periode="période $num_periode";
 			$classe_ant="???";
 		}
 		else{
-			$lig_per=mysql_fetch_object($res_per);
+			$lig_per=mysqli_fetch_object($res_per);
 			$nom_periode=$lig_per->nom_periode;
 			$classe_ant=$lig_per->classe;
 		}
@@ -203,14 +203,14 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='' ORDER BY ordre_matiere, matiere;";
 		//echo "$sql<br />\n";
-		$res_mat=mysql_query($sql);
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_mat)==0){
+		if(mysqli_num_rows($res_mat)==0){
 			// On ne devrait pas arriver là.
 			echo "<tr><td colspan='6'>Aucun résultat enregistré???</td></tr>\n";
 		}
 		else{
-			while($lig_mat=mysql_fetch_object($res_mat)){
+			while($lig_mat=mysqli_fetch_object($res_mat)){
 				echo "<tr>\n";
 				echo "<td>";
 				echo "<b>".htmlspecialchars(stripslashes($lig_mat->matiere))."</b><br />\n";
@@ -237,7 +237,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	type.display_bulletin='y'
 	ORDER BY type.nom, aid.nom";
 		//echo "$sql<br />";
-		$res_aid=mysql_query($sql);
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 		/*
 		if(mysql_num_rows($res_aid)==0){
 			// On ne devrait pas arriver là.
@@ -247,8 +247,8 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 		else{
 		*/
-		if(mysql_num_rows($res_aid)>0){
-			while($lig_aid=mysql_fetch_object($res_aid)){
+		if(mysqli_num_rows($res_aid)>0){
+			while($lig_aid=mysqli_fetch_object($res_aid)){
 				echo "<tr>\n";
 				echo "<td>";
 				echo "<b>".htmlspecialchars(stripslashes($lig_aid->type_nom))." : ".htmlspecialchars(stripslashes($lig_aid->nom_aid))."</b><br />\n";
@@ -275,16 +275,16 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		// Affichage des absences
 		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='ABSENCES'";
 		//echo "$sql<br />\n";
-		$res_abs=mysql_query($sql);
+		$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_abs)==0){
+		if(mysqli_num_rows($res_abs)==0){
 			echo "<p>Aucune information sur les absences/retards.</p>\n";
 		}
-		elseif(mysql_num_rows($res_abs)>1){
+		elseif(mysqli_num_rows($res_abs)>1){
 			echo "<p>Bizarre: Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
 		}
 		else{
-			$lig_abs=mysql_fetch_object($res_abs);
+			$lig_abs=mysqli_fetch_object($res_abs);
 
 			$nb_absences=$lig_abs->nb_absences;
 			$non_justifie=$lig_abs->non_justifie;
@@ -316,7 +316,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		// Affichage de l'avis du conseil
 		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND num_periode='$num_periode' AND ine='$ine' AND special='AVIS_CONSEIL'";
 		//echo "$sql<br />\n";
-		$res_avis=mysql_query($sql);
+		$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 		echo "<table class='table_annee_anterieure' width='100%' summary='Avis du conseil'>\n";
@@ -325,15 +325,15 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		echo "<p><i>Avis du Conseil de classe : </i><br />\n";
 
 		$prof_suivi="";
-		if(mysql_num_rows($res_avis)==0){
+		if(mysqli_num_rows($res_avis)==0){
 			echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 		}
-		elseif(mysql_num_rows($res_avis)>1){
+		elseif(mysqli_num_rows($res_avis)>1){
 			echo "Bizarre : Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
 			$prof_suivi="?";
 		}
 		else{
-			$lig_avis=mysql_fetch_object($res_avis);
+			$lig_avis=mysqli_fetch_object($res_avis);
 			echo "$lig_avis->appreciation</p>\n";
 			$prof_suivi=$lig_avis->prof;
 		}
@@ -358,14 +358,14 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 
 	// Tableau des avis de conseils de classes
 	$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysql_num_rows($res_ele)==0){
+	if(mysqli_num_rows($res_ele)==0){
 		// On ne devrait pas arriver là.
 		echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else{
-		$lig_ele=mysql_fetch_object($res_ele);
+		$lig_ele=mysqli_fetch_object($res_ele);
 
 		// Infos élève
 		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
@@ -379,12 +379,12 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 
 		// Liste des années conservées pour l'élève choisi:
 		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
-		$res_annees=mysql_query($sql);
+		$res_annees=mysqli_query($GLOBALS["mysqli"], $sql);
 		$annee_precedente="";
 		$annee_suivante="";
 		//$derniere_periode_annee_precedente=1;
-		if(mysql_num_rows($res_annees)>0){
-			while($lig_annee=mysql_fetch_object($res_annees)){
+		if(mysqli_num_rows($res_annees)>0){
+			while($lig_annee=mysqli_fetch_object($res_annees)){
 				if($lig_annee->annee!=$annee_scolaire){
 					$annee_precedente=$lig_annee->annee;
 					/*
@@ -397,7 +397,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 					*/
 				}
 				else{
-					if($lig_annee=mysql_fetch_object($res_annees)){
+					if($lig_annee=mysqli_fetch_object($res_annees)){
 						$annee_suivante=$lig_annee->annee;
 					}
 					break;
@@ -442,9 +442,9 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 		// Affichage de l'avis du conseil
 		$sql="SELECT * FROM archivage_disciplines WHERE annee='$annee_scolaire' AND ine='$ine' AND special='AVIS_CONSEIL' ORDER BY num_periode";
 		//echo "$sql<br />\n";
-		$res_avis=mysql_query($sql);
+		$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_avis)==0){
+		if(mysqli_num_rows($res_avis)==0){
 			echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 		}
 		else{
@@ -454,7 +454,7 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 			echo "<th>Avis du conseil de classe</th>\n";
 			echo "<th>Classe suivie par</th>\n";
 			echo "</tr>\n";
-			while($lig_avis=mysql_fetch_object($res_avis)){
+			while($lig_avis=mysqli_fetch_object($res_avis)){
 				echo "<tr>\n";
 				echo "<th>\n";
 				/*
@@ -494,9 +494,9 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 	elseif($ine!="") {
 		$sql="SELECT * FROM archivage_eleves WHERE ine='$ine';";
 	}
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysql_num_rows($res_ele)==0){
+	if(mysqli_num_rows($res_ele)==0){
 		//echo "<p>Aucun élève dans la classe $classe pour la période '$nom_periode'.</p>\n";
 		if($logineleve!="") {
 			echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
@@ -506,7 +506,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 		}
 	}
 	else{
-		$lig_ele=mysql_fetch_object($res_ele);
+		$lig_ele=mysqli_fetch_object($res_ele);
 
 		// Infos élève
 		if($ine=='') {
@@ -533,15 +533,15 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 		//$sql="SELECT DISTINCT annee,num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC, num_periode ASC";
 		//$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee DESC;";
 		$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee ASC;";
-		$res_ant=mysql_query($sql);
+		$res_ant=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_ant)==0){
+		if(mysqli_num_rows($res_ant)==0){
 			echo "<p>Aucun résultat antérieur n'a été conservé pour cet élève.</p>\n";
 
 			$sql="SELECT 1=1 FROM eleves e WHERE e.login='$logineleve' AND e.no_gep!='NULL' AND e.no_gep!='';";
 			//echo "$sql<br />";
-			$test_ine=mysql_query($sql);
-			if(mysql_num_rows($test_ine)==0) {
+			$test_ine=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_ine)==0) {
 				echo "<p style='color:red'>Le numéro INE de cet élève n'est pas renseigné.</p>\n";
 			}
 		}
@@ -549,7 +549,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 
 			unset($tab_annees);
 
-			$nb_annees=mysql_num_rows($res_ant);
+			$nb_annees=mysqli_num_rows($res_ant);
 
 			//echo "<p>Bulletins simplifiés:</p>\n";
 			//echo "<table border='0'>\n";
@@ -558,7 +558,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 			echo "<tr class='lig$alt'>\n";
 			echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 			$cpt=0;
-			while($lig_ant=mysql_fetch_object($res_ant)){
+			while($lig_ant=mysqli_fetch_object($res_ant)){
 
 				$tab_annees[]=$lig_ant->annee;
 
@@ -569,16 +569,16 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 				echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
 				$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
-				$res_ant2=mysql_query($sql);
+				$res_ant2=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				if(mysql_num_rows($res_ant2)==0){
+				if(mysqli_num_rows($res_ant2)==0){
 					echo "<td>";
 					echo "Aucun résultat antérieur n'a été conservé pour cet élève.";
 					echo "</td>\n";
 				}
 				else{
 					$cpt=0;
-					while($lig_ant2=mysql_fetch_object($res_ant2)){
+					while($lig_ant2=mysqli_fetch_object($res_ant2)){
 						//if($cpt>0){echo "<td> - </td>\n";}
 						echo "<td style='text-align:center;'>";
 						echo "<a href='".$_SERVER['PHP_SELF']."?";
@@ -641,8 +641,8 @@ function insert_eleve($login,$ine,$annee,$param) {
 	// on insère le regime et le statut doublant
 	$sql="SELECT DISTINCT regime, doublant FROM j_eleves_regime WHERE login='".$login."'";
 	//echo "$sql<br />";
-	$res_regime=mysql_query($sql);
-	while($lig_ele=mysql_fetch_object($res_regime)){
+	$res_regime=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_ele=mysqli_fetch_object($res_regime)){
 		$regime=$lig_ele->regime;
 		$doublant=$lig_ele->doublant;
 	}
@@ -653,18 +653,18 @@ function insert_eleve($login,$ine,$annee,$param) {
 	doublant='".addslashes($doublant)."',
 	regime='".addslashes($regime)."'";
 	//echo "$sql<br />";
-	$res_insert_regime=mysql_query($sql);
+	$res_insert_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 	// on traite la table archivage_eleve
 	$test = sql_query1("select count(ine) from archivage_eleves where ine= '".$ine."'");
 	if ($test == 0) {
 		$sql="SELECT DISTINCT nom, prenom, no_gep, naissance, sexe FROM eleves WHERE login='".$login."'";
 		//echo "$sql<br />";
-		$res_ele=mysql_query($sql);
-		if(mysql_num_rows($res_ele)==0) {
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele)==0) {
 			return "<tr><td colspan='4'>Aucune donnée disponible pour l'élève dont l'identifiant est ".$login."</td></tr>";
 			die();
 		} else {
-			while($lig_ele=mysql_fetch_object($res_ele)){
+			while($lig_ele=mysqli_fetch_object($res_ele)){
 				// Infos élève
 				$nom=$lig_ele->nom;
 				$prenom=$lig_ele->prenom;
@@ -680,7 +680,7 @@ function insert_eleve($login,$ine,$annee,$param) {
 				sexe='".addslashes($sexe)."',
 					naissance='$naissance'";
 				//echo "$sql<br />";
-				$res_insert=mysql_query($sql);
+				$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_insert){
 					return "<tr><td colspan='4'><font color='red'>Erreur d'enregistrement des données pour l'élève dont l'identifiant est ".$login."</font></td></tr>";
 					exit();
@@ -699,16 +699,16 @@ function cree_substitut_INE_unique($login){
 	$test_unicite = '';
 	while ($test_unicite != 1) {
 	// On vérifie que le login ne figure pas déjà dans la table archivage_eleves
-	$req_test = mysql_query("SELECT nom, prenom, sexe, naissance FROM archivage_eleves WHERE (ine='".$login.$m."')");
-	$test = mysql_num_rows($req_test);
+	$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom, sexe, naissance FROM archivage_eleves WHERE (ine='".$login.$m."')");
+	$test = mysqli_num_rows($req_test);
 	if ($test!=0) {
 		// un même identifiant existe déjà !
 		// s'agit-il de la même personne. On considère que oui si les noms, prénom, date de naissance et sexe correspondent
-		$nom = mysql_result($req_test,0,"nom");
-		$prenom = mysql_result($req_test,0,"prenom");
-		$sexe = mysql_result($req_test,0,"sexe");
-		$naissance = mysql_result($req_test,0,"naissance");
-		$test_unicite = mysql_num_rows(mysql_query("SELECT login FROM eleves WHERE (nom='".$nom."' and prenom='".$prenom."' and sexe='".$sexe."' and naissance='".$naissance."')"));
+		$nom = old_mysql_result($req_test,0,"nom");
+		$prenom = old_mysql_result($req_test,0,"prenom");
+		$sexe = old_mysql_result($req_test,0,"sexe");
+		$naissance = old_mysql_result($req_test,0,"naissance");
+		$test_unicite = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT login FROM eleves WHERE (nom='".$nom."' and prenom='".$prenom."' and sexe='".$sexe."' and naissance='".$naissance."')"));
 	} else
 		$test_unicite = 1;
 	if ($test_unicite != 1) {
@@ -727,11 +727,11 @@ function cree_substitut_INE_unique($login){
 function suppression_donnees_eleves_inutiles(){
 	// Supprimer des données élèves qui ne servent plus à rien
 
-	$res_eleve = mysql_query("select ine from archivage_eleves");
-	$nb_eleves = mysql_num_rows($res_eleve);
+	$res_eleve = mysqli_query($GLOBALS["mysqli"], "select ine from archivage_eleves");
+	$nb_eleves = mysqli_num_rows($res_eleve);
 	$k = 0;
 	while($k < $nb_eleves){
-	$ine = mysql_result($res_eleve,$k,"ine");
+	$ine = old_mysql_result($res_eleve,$k,"ine");
 	$test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_aid_eleve aae
 	where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
 	$test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves ae, archivage_appreciations_aid aa
@@ -745,11 +745,11 @@ function suppression_donnees_eleves_inutiles(){
 	$k++;
 	}
 
-	$res_eleve = mysql_query("select ine from archivage_eleves2");
-	$nb_eleves = mysql_num_rows($res_eleve);
+	$res_eleve = mysqli_query($GLOBALS["mysqli"], "select ine from archivage_eleves2");
+	$nb_eleves = mysqli_num_rows($res_eleve);
 	$k = 0;
 	while($k < $nb_eleves){
-	$ine = mysql_result($res_eleve,$k,"ine");
+	$ine = old_mysql_result($res_eleve,$k,"ine");
 	$test1 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_aid_eleve aae
 	where ((aae.id_eleve = ae.ine) and (ae.ine='".$ine."'))");
 	$test2 = sql_query1("SELECT count(ae.ine) FROM archivage_eleves2 ae, archivage_appreciations_aid aa
@@ -808,8 +808,8 @@ function check_acces_aa($logineleve) {
 										jgc.id_groupe=jgp.id_groupe AND
 										jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$acces="y";
 				}
 			}
@@ -820,8 +820,8 @@ function check_acces_aa($logineleve) {
 										jeg.id_groupe=jgp.id_groupe AND
 										jgp.login='".$_SESSION['login']."';";
 				//echo "$sql<br />";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$acces="y";
 				}
 			}
@@ -830,8 +830,8 @@ function check_acces_aa($logineleve) {
 				$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
 																login='$logineleve';";
 				//echo "$sql<br />";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$acces="y";
 				}
 			}
@@ -850,8 +850,8 @@ function check_acces_aa($logineleve) {
 			elseif($AACpeResp=="yes") {
 				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND
 															e_login='$logineleve'";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$acces="y";
 				}
 			}
@@ -872,8 +872,8 @@ function check_acces_aa($logineleve) {
 								WHERE jec.login='$logineleve' AND
 										jec.id_classe=jsc.id_classe AND
 										jsc.login='".$_SESSION['login']."';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)>0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)>0) {
 					$acces="y";
 				}
 			}
@@ -887,8 +887,8 @@ function check_acces_aa($logineleve) {
 																					rp.pers_id=r.pers_id AND
 																					r.ele_id=e.ele_id AND
 																					e.login='$logineleve'";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==1) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==1) {
 					$acces="y";
 				}
 			}
@@ -906,9 +906,9 @@ function check_acces_aa($logineleve) {
 			//$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
 		
 			$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/ajax_bulletins.php' AND ds.autorisation='V';";
-			$res_acces=mysql_query($sql);
+			$res_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 		
-			if(mysql_num_rows($res_acces)>0) {
+			if(mysqli_num_rows($res_acces)>0) {
 				$acces="y";
 			}
 		}
@@ -932,14 +932,14 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 			$tab_periodes=array();
 		
 			$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-			$res_ele=mysql_query($sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		
-			if(mysql_num_rows($res_ele)==0) {
+			if(mysqli_num_rows($res_ele)==0) {
 				// On ne devrait pas arriver là.
 				echo "<p>L'élève dont le login serait '$logineleve' n'est pas dans la table 'eleves'.</p>\n";
 			}
 			else {
-				$lig_ele=mysql_fetch_object($res_ele);
+				$lig_ele=mysqli_fetch_object($res_ele);
 		
 				// Infos élève
 				//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
@@ -955,25 +955,25 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 				// Liste des années conservées pour l'élève choisi:
 				$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
 				//echo "$sql<br />";
-				$res_annees=mysql_query($sql);
+				$res_annees=mysqli_query($GLOBALS["mysqli"], $sql);
 				$annee_precedente="";
 				$annee_suivante="";
 				$derniere_periode_annee_precedente=1;
-				if(mysql_num_rows($res_annees)>0) {
+				if(mysqli_num_rows($res_annees)>0) {
 					$cpt=0;
-					while($lig_annee=mysql_fetch_object($res_annees)) {
+					while($lig_annee=mysqli_fetch_object($res_annees)) {
 						//$tab_annee[$cpt]['annee']=$lig_annee->annee;
 						//$tab_annee[$cpt]['annee']['annee']=$lig_annee->annee;
 		
 						$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_annee->annee' ORDER BY num_periode";
 						//echo "$sql<br />";
-						$res_periodes=mysql_query($sql);
+						$res_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
 		
-						if(mysql_num_rows($res_periodes)==0) {
+						if(mysqli_num_rows($res_periodes)==0) {
 							// ANOMALIE
 						}
 						else {
-							while($lig_per=mysql_fetch_object($res_periodes)) {
+							while($lig_per=mysqli_fetch_object($res_periodes)) {
 								//$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
 								$tab_periodes[]=$lig_annee->annee."|".$lig_per->num_periode;
 							}
@@ -987,9 +987,9 @@ function check_acces_et_liste_periodes($logineleve,$id_classe) {
 						if($lig_annee->annee!=$annee_scolaire) {
 							$annee_precedente=$lig_annee->annee;
 							$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
-							$res_per_prec=mysql_query($sql);
-							if(mysql_num_rows($res_per_prec)>0) {
-								$lig_per_prec=mysql_fetch_object($res_per_prec);
+							$res_per_prec=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_per_prec)>0) {
+								$lig_per_prec=mysqli_fetch_object($res_per_prec);
 								$derniere_periode_annee_precedente=$lig_per_prec->num_periode;
 							}
 						}

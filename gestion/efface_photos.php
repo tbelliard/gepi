@@ -74,9 +74,9 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
 			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
-			$test=mysql_query($sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($test)==0){
+			if(mysqli_num_rows($test)==0){
 				//$tab_file[] = $file;
 				if($n>0){
 					//echo ", \n";
@@ -119,9 +119,9 @@ else {
 			if (isset($gepiSettings['alea_nom_photo'])) $prefixe=mb_substr($prefixe,5);
 			$sql="SELECT 1=1 FROM eleves WHERE elenoet='".$prefixe."'";
 			//echo "<br />$sql<br />\n";
-			$test=mysql_query($sql);
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($test)==0){
+			if(mysqli_num_rows($test)==0){
 				//$tab_file[] = $file;
 				if($n>0){
 					//echo ", \n";

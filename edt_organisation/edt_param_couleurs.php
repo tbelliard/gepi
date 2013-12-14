@@ -130,12 +130,12 @@ require_once("./menu.inc.php");
 
 <?php
 // On affiche la liste des matières
-$req_sql = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
-$nbre_matieres = mysql_num_rows($req_sql);
+$req_sql = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet");
+$nbre_matieres = mysqli_num_rows($req_sql);
 
 	for($i=0; $i < $nbre_matieres; $i++){
-	$aff_matiere[$i]["court"] = mysql_result($req_sql, $i, "matiere");
-	$aff_matiere[$i]["long"] = mysql_result($req_sql, $i, "nom_complet");
+	$aff_matiere[$i]["court"] = old_mysql_result($req_sql, $i, "matiere");
+	$aff_matiere[$i]["long"] = old_mysql_result($req_sql, $i, "nom_complet");
 	// On détermine la couleur choisie
 	$recher_couleur = "M_".$aff_matiere[$i]["court"];
 	$color = GetSettingEdt($recher_couleur);

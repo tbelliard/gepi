@@ -59,15 +59,15 @@ $msg = $aff_liste_profs = $aff_select_profs = $titre = NULL;
 
 	// Les renseignements sur cet edt_gr
 	$sql_t = "SELECT * FROM edt_gr_nom WHERE id = '".$id_gr."'";
-	$query_t = mysql_query($sql_t) OR trigger_error('Erreur lors du traitement de cet edt_gr.', E_USER_ERROR);
-	$rep = mysql_fetch_array($query_t);
+	$query_t = mysqli_query($GLOBALS["mysqli"], $sql_t) OR trigger_error('Erreur lors du traitement de cet edt_gr.', E_USER_ERROR);
+	$rep = mysqli_fetch_array($query_t);
 
 	$titre .= '<p>EDT : '.$rep["nom"].'&nbsp;('.$rep["nom_long"].')&nbsp;-&nbsp;Liste des professeurs.</p>';
 
 	// La liste des professeurs de l'établissement
-$query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
+$query_p = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
-	$nbre_p = mysql_num_rows($query_p);
+	$nbre_p = mysqli_num_rows($query_p);
 
 
 	$aff_select_profs .= '
@@ -77,9 +77,9 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 
 	for($i = 0 ; $i < $nbre_p ; $i++){
 
-		$login_p[$i] = mysql_result($query_p, $i, "login");
-		$nom_p[$i] = mysql_result($query_p, $i, "nom");
-		$prenom_p[$i] = mysql_result($query_p, $i, "prenom");
+		$login_p[$i] = old_mysql_result($query_p, $i, "login");
+		$nom_p[$i] = old_mysql_result($query_p, $i, "nom");
+		$prenom_p[$i] = old_mysql_result($query_p, $i, "prenom");
 
 		$aff_select_profs .= '
 		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';
@@ -91,14 +91,14 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 	if ($action == "ajouter") {
 
 		// On vérifie si ce prof existe et si il n'est pas déjà membre de ce edt_gr
-		$verif_exist = mysql_query("SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
-		$test1 = mysql_result($verif_exist,0, "etat");
+		$verif_exist = mysqli_query($GLOBALS["mysqli"], "SELECT etat FROM utilisateurs WHERE login = '".$choix_prof."'");
+		$test1 = old_mysql_result($verif_exist,0, "etat");
 
 		if ($test1) {
 
 			// On vérifie alors s'il n'est pas déjà membre de cet edt_gr
-			$query_v = mysql_query("SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
-			$test2 = mysql_result($query_v, 0,"id");
+			$query_v = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'");
+			$test2 = old_mysql_result($query_v, 0,"id");
 
 			if ($test2 AND is_numeric($test2) AND $test2 >= 1) {
 
@@ -108,7 +108,7 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 
 				// On peut alors insérer cet utilisateur dans la table
 				$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
-				$query_insert = mysql_query($sql_insert);
+				$query_insert = mysqli_query($GLOBALS["mysqli"], $sql_insert);
 
 				if ($query_insert) {
 
@@ -118,7 +118,7 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 
 					// On peut alors insérer cet utilisateur dans la table
 					$sql_insert = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs) VALUES('', '".$id_gr."', '".$choix_prof."')";
-					$query_insert = mysql_query($sql_insert);
+					$query_insert = mysqli_query($GLOBALS["mysqli"], $sql_insert);
 
 					if ($query_insert) {
 
@@ -139,7 +139,7 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 
 		// On efface le prof car c'est demandé ;)
 		$sql_del = "DELETE FROM edt_gr_profs WHERE id_utilisateurs = '".$choix_prof."' AND id_gr_nom = '".$id_gr."'";
-		$query_del = mysql_query($sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
+		$query_del = mysqli_query($GLOBALS["mysqli"], $sql_del) OR trigger_error('Impossible de supprimer ce professeur : '.$sql_del, E_USER_WARNING);
 
 		if ($query_del) {
 
@@ -158,9 +158,9 @@ $query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut
 										WHERE u.login = egp.id_utilisateurs
 										AND egp.id_gr_nom = '".$id_gr."'
 										ORDER BY nom, prenom";
-	$query_l = mysql_query($sql_l) OR trigger_error('Impossible de lister les professeurs de ce groupe', E_USER_WARNING);
+	$query_l = mysqli_query($GLOBALS["mysqli"], $sql_l) OR trigger_error('Impossible de lister les professeurs de ce groupe', E_USER_WARNING);
 
-	while($rep = mysql_fetch_array($query_l)){
+	while($rep = mysqli_fetch_array($query_l)){
 
 		$aff_liste_profs .= '<br /><a href="./edt_liste_profs.php?action=effacer&amp;choix_prof='.$rep["login"].'&amp;id_gr='.$id_gr.'">
 		<img src="../images/icons/delete.png" alt="Effacer un professeur : '.$rep["nom"].'" />'.$rep["nom"].' '.$rep["prenom"].'</a>'."\n";

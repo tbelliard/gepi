@@ -93,8 +93,8 @@ if (isset($_POST['is_posted'])) {
 		// 20131204
 		$acces_exceptionnel_complet="n";
 		$sql="SELECT 1=1 FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k' AND mode='acces_complet' AND UNIX_TIMESTAMP(date_limite)>'".time()."';";
-		$test_acces_exceptionnel=mysql_query($sql);
-		if(mysql_num_rows($test_acces_exceptionnel)>0) {
+		$test_acces_exceptionnel=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_acces_exceptionnel)>0) {
 			$acces_exceptionnel_complet="y";
 		}
 
@@ -118,19 +118,19 @@ if (isset($_POST['is_posted'])) {
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 				$app=suppression_sauts_de_lignes_surnumeraires($app);
 
-				$test_grp_app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
-				$test = mysql_num_rows($test_grp_app_query);
+				$test_grp_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+				$test = mysqli_num_rows($test_grp_app_query);
 				if ($test != "0") {
 					if ($app != "") {
-						$register = mysql_query("UPDATE matieres_appreciations_grp SET appreciation='" . $app . "' WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations_grp SET appreciation='" . $app . "' WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 					} else {
-						$register = mysql_query("DELETE FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
+						$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 					}
 					if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
 
 				} else {
 					if ($app != "") {
-						$register = mysql_query("INSERT INTO matieres_appreciations_grp SET id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
+						$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations_grp SET id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour le groupe/classe<br />";}
 					}
 				}
@@ -184,23 +184,23 @@ if (isset($_POST['is_posted'])) {
 							// 20100604
 							// Ménage: pour ne pas laisser une demande de validation de correction alors qu'on a rouvert la période en saisie... on risquerait d'écraser par la suite l'enregistrement fait après la rouverture de période.
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='$reg_eleve_login' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
-							$del=mysql_query($sql);
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 							//=========================
 
 
-							$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
-							$test = mysql_num_rows($test_eleve_app_query);
+							$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
+							$test = mysqli_num_rows($test_eleve_app_query);
 							if ($test != "0") {
 								if ($app != "") {
-									$register = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
+									$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
 								} else {
-									$register = mysql_query("DELETE FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
+									$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
 								}
 								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
 
 							} else {
 								if ($app != "") {
-									$register = mysql_query("INSERT INTO matieres_appreciations SET login='$reg_eleve_login',id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
+									$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations SET login='$reg_eleve_login',id_groupe='" . $current_group["id"]."',periode='$k',appreciation='" . $app . "'");
 									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des données de la période $k pour l'élève $reg_eleve_login<br />";}
 								}
 							}
@@ -216,8 +216,8 @@ if (isset($_POST['is_posted'])) {
 		// On ne vide que si l'enregistrement s'est bien passé
 
 		// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
-		$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysql_error());
+		$effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 
 	if($msg=="") {
@@ -237,9 +237,9 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		$mode_app="proposition";
 		$autorisation_exceptionnelle_de_saisie='n';
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$date_limite=$lig->date_limite;
 	
 			$date_courante=time();
@@ -264,8 +264,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 		else {
 			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
 			$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				// Il y avait une appréciation saisie
 				// Si l'autorisation de proposition de correction est donnée, c'est OK
 				// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
@@ -301,8 +301,8 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 				else {
 		
 					$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$correction_login_eleve' AND periode='$correction_periode' AND id_groupe='$id_groupe';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
 						$msg.="L'élève $correction_nom_prenom_eleve n'est pas associé au groupe n°$id_groupe pour la période $correction_periode.<br />";
 					}
 					else {
@@ -316,12 +316,12 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 						}
 						else {
 							$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-							$test_correction=mysql_query($sql);
-							$test=mysql_num_rows($test_correction);
+							$test_correction=mysqli_query($GLOBALS["mysqli"], $sql);
+							$test=mysqli_num_rows($test_correction);
 							if ($test!="0") {
 								if ($app!="") {
 									$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 									else {
 										$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
@@ -329,7 +329,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 									}
 								} else {
 									$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 									else {
 										$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
@@ -341,7 +341,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							else {
 								if ($app != "") {
 									$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
-									$register=mysql_query($sql);
+									$register=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
 									else {
 										$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
@@ -371,9 +371,9 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 
 		$autorisation_exceptionnelle_de_saisie='n';
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
 			$date_limite=$lig->date_limite;
 	
 			$date_courante=time();
@@ -396,8 +396,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 		else {
 			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
 			$sql="SELECT 1=1 FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				// Il y avait une appréciation saisie
 				// Si l'autorisation de proposition de correction est donnée, c'est OK
 				// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
@@ -424,12 +424,12 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 				$texte_mail="";
 
 				$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-				$test_correction=mysql_query($sql);
-				$test=mysql_num_rows($test_correction);
+				$test_correction=mysqli_query($GLOBALS["mysqli"], $sql);
+				$test=mysqli_num_rows($test_correction);
 				if ($test!="0") {
 					if ($app!="") {
 						$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
+						$register=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
 						else {
 							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
@@ -437,7 +437,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						}
 					} else {
 						$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
+						$register=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";} 
 						else {
 							$msg.="Suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectuée.<br />";
@@ -449,7 +449,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 				else {
 					if ($app != "") {
 						$sql="INSERT INTO matieres_app_corrections SET login='', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
-						$register=mysql_query($sql);
+						$register=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";}
 						else {
 							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
@@ -470,20 +470,20 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 						$sql="(select email from utilisateurs where statut='secours' AND email!='')";
 						$sql.=" UNION (select email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='$id_groupe')";
 						//echo "$sql<br />";
-						$req=mysql_query($sql);
-						if(mysql_num_rows($req)>0) {
-							$lig_u=mysql_fetch_object($req);
+						$req=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($req)>0) {
+							$lig_u=mysqli_fetch_object($req);
 							$email_destinataires=$lig_u->email;
-							while($lig_u=mysql_fetch_object($req)) {
+							while($lig_u=mysqli_fetch_object($req)) {
 								$email_destinataires=", ".$lig_u->email;
 							}
 		
 							$email_declarant="";
 							$nom_declarant="";
 							$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-							$req=mysql_query($sql);
-							if(mysql_num_rows($req)>0) {
-								$lig_u=mysql_fetch_object($req);
+							$req=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($req)>0) {
+								$lig_u=mysqli_fetch_object($req);
 								$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 								$email_declarant=$lig_u->email;
 							}
@@ -492,11 +492,11 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 							// Recherche des autres profs du groupe
 							$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
 							//echo "$sql<br />";
-							$req=mysql_query($sql);
-							if(mysql_num_rows($req)>0) {
-								$lig_u=mysql_fetch_object($req);
+							$req=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($req)>0) {
+								$lig_u=mysqli_fetch_object($req);
 								$email_autres_profs_grp.=$lig_u->email;
-								while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+								while($lig_u=mysqli_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
 							}
 		
 							$sujet_mail="Demande de validation de correction d'appréciation";
@@ -591,9 +591,9 @@ $k=1;
 while ($k < $nb_periode) {
 	$tab_autorisation_exceptionnelle_de_saisie[$k]='n';
 	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
 		$date_limite=$lig->date_limite;
 		// 20131204
 		//echo "\$date_limite=$date_limite en période $k.<br />";
@@ -769,14 +769,14 @@ if($proposer_liens_enregistrement=="y") {
 		// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
 
 		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$create_table=mysql_query($sql);
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		// Pour tester:
 		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
 
 		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-		$res_droit=mysql_query($sql);
-		if(mysql_num_rows($res_droit)>0) {
+		$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_droit)>0) {
 			$droit_insert_mass_appreciation_type="y";
 		}
 		else {
@@ -911,19 +911,19 @@ function focus_suivant(num){
 		// On supprime les appreciation_tempo qui sont identiques aux appreciations enregistrées dans matieres_appreciations
 		$sql="SELECT mat.* FROM matieres_appreciations_tempo mat, matieres_appreciations ma WHERE
 			(mat.id_groupe='".$current_group["id"]."' AND mat.id_groupe=ma.id_groupe AND mat.periode=ma.periode AND mat.login=ma.login AND mat.appreciation=ma.appreciation);";
-		$res_app_identiques=mysql_query($sql);
-		if(mysql_num_rows($res_app_identiques)>0) {
-			while($lig_app_id=mysql_fetch_object($res_app_identiques)) {
+		$res_app_identiques=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_app_identiques)>0) {
+			while($lig_app_id=mysqli_fetch_object($res_app_identiques)) {
 				$sql="DELETE FROM matieres_appreciations_tempo WHERE login='$lig_app_id->login' AND id_groupe='".$current_group["id"]."' AND periode='$lig_app_id->periode';";
 				//echo "$sql<br />";
-				$menage=mysql_query($sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 	}
 
 	// On teste s'il existe des données dans la table matieres_appreciations_tempo
-	$sql_test = mysql_query("SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
-	$test = mysql_num_rows($sql_test);
+	$sql_test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM matieres_appreciations_tempo WHERE id_groupe = '" . $current_group["id"] . "'");
+	$test = mysqli_num_rows($sql_test);
 	if ($test !== 0 AND $restauration == NULL) {
 		// On envoie un message à l'utilisateur
 		echo "
@@ -988,10 +988,10 @@ $k=1;
 $num_id = 10;
 while ($k < $nb_periode) {
 
-	$app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-	$app_grp[$k] = @mysql_result($app_query, 0, "appreciation");
+	$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+	$app_grp[$k] = @old_mysql_result($app_query, 0, "appreciation");
 
-	$call_moyenne_t[$k] = mysql_query("SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
+	$call_moyenne_t[$k] = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM matieres_notes n, j_eleves_groupes j " .
 								"WHERE (" .
 								"n.id_groupe='" . $current_group["id"] ."' AND " .
 								"n.login = j.login AND " .
@@ -999,7 +999,7 @@ while ($k < $nb_periode) {
 								"j.id_groupe = n.id_groupe AND " .
 								"n.periode='$k' AND j.periode='$k'" .
 								")");
-	$moyenne_t[$k] = mysql_result($call_moyenne_t[$k], 0, "moyenne");
+	$moyenne_t[$k] = old_mysql_result($call_moyenne_t[$k], 0, "moyenne");
 
 	if ($moyenne_t[$k]=='') {
 		$moyenne_t[$k]="&nbsp;";
@@ -1017,9 +1017,9 @@ while ($k < $nb_periode) {
 		$mess[$k].=nl2br($app_grp[$k]);
 
 		$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
-		$correct_app_query=mysql_query($sql);
-		if(mysql_num_rows($correct_app_query)>0) {
-			$lig_correct_app=mysql_fetch_object($correct_app_query);
+		$correct_app_query=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($correct_app_query)>0) {
+			$lig_correct_app=mysqli_fetch_object($correct_app_query);
 			$mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
 		}
 
@@ -1209,8 +1209,8 @@ foreach ($liste_eleves as $eleve_login) {
 			// AJOUT boireaus 20071115
 			if($k==1){
 				$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
-				$res_ele=mysql_query($sql);
-				$lig_ele=mysql_fetch_object($res_ele);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				$lig_ele=mysqli_fetch_object($res_ele);
 				$eleve_elenoet=$lig_ele->elenoet;
 
 				// Photo...
@@ -1240,9 +1240,9 @@ foreach ($liste_eleves as $eleve_login) {
 			// On contrôle s'il y a des boites avec moyennes à afficher
 			$sql="SELECT DISTINCT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='" . $current_group["id"] . "' AND periode='$k';";
 			//if($current_group["id"]==637) {echo "$sql<br />";}
-			$test_cn=mysql_query($sql);
-			if(mysql_num_rows($test_cn)>0) {
-				$lig_cn=mysql_fetch_object($test_cn);
+			$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_cn)>0) {
+				$lig_cn=mysqli_fetch_object($test_cn);
 				/*
 				$sql="SELECT cc.nom_court, cc.nom_complet, cnc.note, cnc.statut FROM cn_conteneurs cc, cn_notes_conteneurs cnc 
 					WHERE cc.id_racine='$lig_cn->id_cahier_notes' AND 
@@ -1259,16 +1259,16 @@ foreach ($liste_eleves as $eleve_login) {
 						cnc.id_conteneur=cc.id AND 
 						cnc.login='$eleve_login';";
 				//if($current_group["id"]==637) {echo "$sql<br />";}
-				$test_cn_moy=mysql_query($sql);
-				if(mysql_num_rows($test_cn_moy)>0) {
-					$lig_cnc=mysql_fetch_object($test_cn_moy);
+				$test_cn_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_cn_moy)>0) {
+					$lig_cnc=mysqli_fetch_object($test_cn_moy);
 					//$notes_conteneurs.="<center>\n";
 					//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
 					$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
 					if($lig_cnc->statut=='y') {$notes_conteneurs.=$lig_cnc->note;} else {$notes_conteneurs.=$lig_cnc->statut;}
 
 					$cpt_cnc=1;
-					while($lig_cnc=mysql_fetch_object($test_cn_moy)) {
+					while($lig_cnc=mysqli_fetch_object($test_cn_moy)) {
 						$notes_conteneurs.=", ";
 						//$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_complet))."&nbsp;:</b> ";
 						$notes_conteneurs.="<b>".ucfirst(htmlspecialchars($lig_cnc->nom_court))."&nbsp;:</b> ";
@@ -1282,11 +1282,11 @@ foreach ($liste_eleves as $eleve_login) {
 
 			if ($restauration != "oui" AND $restauration != "non") {
 				// On récupère l'appréciation tempo pour la rajouter à $eleve_app
-				$app_t_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE
+				$app_t_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_tempo WHERE
 					(login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-				$verif_t = mysql_num_rows($app_t_query);
+				$verif_t = mysqli_num_rows($app_t_query);
 				if ($verif_t != 0) {
-					$eleve_app_t = "\n".'<p><strong>Appréciation non enregistrée :</strong> <span style="color: red;">'.@mysql_result($app_t_query, 0, "appreciation").'</span></p>';
+					$eleve_app_t = "\n".'<p><strong>Appréciation non enregistrée :</strong> <span style="color: red;">'.@old_mysql_result($app_t_query, 0, "appreciation").'</span></p>';
 				} else {
 					$eleve_app_t = '';
 				}
@@ -1296,21 +1296,21 @@ foreach ($liste_eleves as $eleve_login) {
 
 			// Appel des appréciations (en vérifiant si une restauration est demandée ou non)
 			if ($restauration == "oui") {
-				$app_query = mysql_query("SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations_tempo WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				// Si la sauvegarde ne donne rien pour cet élève, on va quand même voir dans la table définitive
 				// (il se peut qu'il n'y ait pas d'enregistrement tempo pour cet élève)
-				$verif = mysql_num_rows($app_query);
+				$verif = mysqli_num_rows($app_query);
 				if ($verif == 0){
-					$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+					$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 				}
 			} else {
-				$app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+				$app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
 			}
-			$eleve_app = @mysql_result($app_query, 0, "appreciation");
+			$eleve_app = @old_mysql_result($app_query, 0, "appreciation");
 			// Appel des notes
-			$note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
-			$eleve_statut = @mysql_result($note_query, 0, "statut");
-			$eleve_note = @mysql_result($note_query, 0, "note");
+			$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe = '" . $current_group["id"] . "' AND periode='$k')");
+			$eleve_statut = @old_mysql_result($note_query, 0, "statut");
+			$eleve_note = @old_mysql_result($note_query, 0, "note");
 			// Formatage de la note
 			$note ="<center>";
 			$note.="<a href='saisie_notes.php?id_groupe=".$current_group["id"]."&amp;periode_cn=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder aux notes du bulletin en période $k\">";
@@ -1386,9 +1386,9 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 
 				$sql="SELECT * FROM matieres_app_corrections WHERE (login='$eleve_login' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
-				$correct_app_query=mysql_query($sql);
-				if(mysql_num_rows($correct_app_query)>0) {
-					$lig_correct_app=mysql_fetch_object($correct_app_query);
+				$correct_app_query=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($correct_app_query)>0) {
+					$lig_correct_app=mysqli_fetch_object($correct_app_query);
 					$mess[$k].="<div style='color:darkgreen; border: 1px solid red;'><b>Proposition de correction en attente&nbsp;:</b><br />".nl2br($lig_correct_app->appreciation)."</div>\n";
 				}
 
@@ -1416,15 +1416,15 @@ foreach ($liste_eleves as $eleve_login) {
 					ORDER BY cc.nom_court, cd.date;";
 
 				//echo "\n<!--sql=$sql-->\n";
-				$result_nbct=mysql_query($sql);
-				$current_eleve_nbct=mysql_num_rows($result_nbct);
+				$result_nbct=mysqli_query($GLOBALS["mysqli"], $sql);
+				$current_eleve_nbct=mysqli_num_rows($result_nbct);
 
 				// on prend les notes dans $string_notes
 				$liste_notes='';
 				$liste_notes_detaillees='';
 				$conteneur_precedent='';
 				if ($result_nbct) {
-					while ($snnote=mysql_fetch_assoc($result_nbct)) {
+					while ($snnote=mysqli_fetch_assoc($result_nbct)) {
 						if ($liste_notes != '') {$liste_notes .= ", ";}
 						$liste_notes.=$snnote['note'];
 						if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $snnote['note_sur']!=getSettingValue("referentiel_note")) {
@@ -1496,9 +1496,9 @@ foreach ($liste_eleves as $eleve_login) {
 				if(getSettingValue("gepi_pmv")!="n"){
 					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
 					//echo "$sql<br />";
-					$res_ele=mysql_query($sql);
-					if(mysql_num_rows($res_ele)>0) {
-						$lig_ele=mysql_fetch_object($res_ele);
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ele)>0) {
+						$lig_ele=mysqli_fetch_object($res_ele);
 						$_photo_eleve = nom_photo($lig_ele->elenoet);
 						if(file_exists($_photo_eleve)) {
 							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(my_strtoupper($eleve_nom)." ".casse_mot($eleve_prenom,'majf2'))."')";
@@ -1578,14 +1578,14 @@ foreach ($liste_eleves as $eleve_login) {
 		$id_premiere_classe="";
 		$current_id_classe=array();
 		$sql="SELECT id_classe,periode FROM j_eleves_classes WHERE login='$eleve_login' ORDER BY periode;";
-		$res_classe=mysql_query($sql);
-		if(mysql_num_rows($res_classe)>0) {
-			$lig_classe=mysql_fetch_object($res_classe);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_classe)>0) {
+			$lig_classe=mysqli_fetch_object($res_classe);
 			$id_premiere_classe=$lig_classe->id_classe;
 			$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
 			$num_per1=$lig_classe->periode;
 			$num_per2=$num_per1;
-			while($lig_classe=mysql_fetch_object($res_classe)) {
+			while($lig_classe=mysqli_fetch_object($res_classe)) {
 				$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
 				$num_per2=$lig_classe->periode;
 			}
@@ -2091,8 +2091,8 @@ echo "</form>\n";
 // ====================== SYSTEME  DE SAUVEGARDE ========================
 // Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
 if ($restauration == "oui" OR $restauration == "non") {
-	$effacer = mysql_query("DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.mysql_error());
+	$effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
+	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 // Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
 

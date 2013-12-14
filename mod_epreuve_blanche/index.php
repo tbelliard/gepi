@@ -38,8 +38,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_epreuve_blanche/index.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_epreuve_blanche/index.php',
 administrateur='V',
 professeur='V',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Epreuve blanche: Accueil',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 
@@ -81,7 +81,7 @@ etat VARCHAR( 255 ) NOT NULL ,
 note_sur int(11) unsigned not null default '20',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_copies (
 id int(11) unsigned NOT NULL auto_increment,
@@ -94,7 +94,7 @@ statut VARCHAR(255) NOT NULL default '',
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_salles (
 id int(11) unsigned NOT NULL auto_increment,
@@ -102,7 +102,7 @@ salle VARCHAR( 255 ) NOT NULL ,
 id_epreuve int(11) unsigned NOT NULL,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_groupes (
 id int(11) unsigned NOT NULL auto_increment,
@@ -112,7 +112,7 @@ transfert varchar(1) NOT NULL DEFAULT 'n',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS eb_profs (
 id int(11) unsigned NOT NULL auto_increment,
@@ -121,7 +121,7 @@ login_prof VARCHAR(255) NOT NULL default '',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 //=========================================================
 
@@ -137,12 +137,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 	if(isset($id_epreuve)) {
 		$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			$msg="L'épreuve choisie (<i>$id_epreuve</i>) n'existe pas.\n";
 		}
 		else {
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
 		
 			if($etat=='clos') {
@@ -204,8 +204,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(!isset($id_epreuve)) {
 			//$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='".addslashes($description)."', type_anonymat='$type_anonymat', date='', etat='';";
 			$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', etat='', note_sur='$note_sur';";
-			if($insert=mysql_query($sql)) {
-				$id_epreuve=mysql_insert_id();
+			if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
+				$id_epreuve=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 				$msg.="Epreuve n°$id_epreuve : '$intitule' créée.<br />";
 			}
 			else {
@@ -219,12 +219,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			//********************************************
 
 			$sql="SELECT type_anonymat FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			$lig=mysql_fetch_object($res);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			$lig=mysqli_fetch_object($res);
 			$old_type_anonymat=$lig->type_anonymat;
 
 			$sql="UPDATE eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', note_sur='$note_sur' WHERE id='$id_epreuve';";
-			if($update=mysql_query($sql)) {
+			if($update=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				$msg.="Epreuve n°$id_epreuve : '$intitule' mise à jour.";
 
 				if($type_anonymat!=$old_type_anonymat) {
@@ -232,15 +232,15 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					// On commence par vider les numéros d'anonymat avant de refaire l'affectation
 					$sql="UPDATE eb_copies SET n_anonymat='' WHERE id='$id_epreuve';";
-					$nettoyage=mysql_query($sql);
+					$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// Mettre à jour le type anonymat pour les copies déjà inscrites
 					// ERic : Ajout du order by pour numéroter dans l'ordre alphabétique (Le id_elv est là en cas d'homonyme)
 					$sql="SELECT e.* FROM eb_copies ec, eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login order by e.nom, e.prenom, e.id_eleve;";
 					//echo "$sql<br />";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt_ano = 1;
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						// Témoin d'une erreur anonymat pour l'élève courant
 						$temoin_erreur="n";
 						if($type_anonymat=='alea') {
@@ -265,7 +265,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						
 						if($temoin_erreur=="n") {
 							$sql="UPDATE eb_copies SET n_anonymat='$n_anonymat' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
-							$update=mysql_query($sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($update) {
 								$temoin_n_anonymat='y';
 							}
@@ -290,7 +290,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		for($i=0;$i<count($tab_tables);$i++) {
 			//$sql="DELETE FROM eb_epreuves WHERE id='$id_epreuve';";
 			$sql="DELETE FROM $tab_tables[$i] WHERE id_epreuve='$id_epreuve';";
-			$suppr=mysql_query($sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
 				$msg="ERREUR lors de la suppression de l'épreuve $id_epreuve";
 				//for($j=0;$j<$i;$j++) {$msg.=""}
@@ -301,7 +301,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 		if($msg=='') {
 			$sql="DELETE FROM eb_epreuves WHERE id='$id_epreuve';";
-			$suppr=mysql_query($sql);
+			$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$suppr) {
 				$msg="ERREUR lors de la suppression de l'épreuve $id_epreuve";
 			}
@@ -319,31 +319,31 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 
 		$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve';";
-		$suppr=mysql_query($sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$suppr) {
 			$msg="ERREUR lors de la réinitialisation des groupes inscrits.";
 		}
 		else {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				$msg="L'épreuve n°$id_epreuve n'existe pas.<br />";
 			}
 			else {
-				$lig=mysql_fetch_object($res);
+				$lig=mysqli_fetch_object($res);
 				$type_anonymat=$lig->type_anonymat;
 				$tab_anonymat=array('elenoet','ele_id','no_gep','alea','chrono');
 				if(!in_array($type_anonymat,$tab_anonymat)) {$type_anonymat="ele_id";}
 
 				// On ne supprime que les enregistrements de copies pour lesquelles aucune note n'est encore saisie
 				$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v';";
-				$suppr=mysql_query($sql);
+				$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$tab_n_anonymat_affectes=array();
 				$sql="SELECT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						$tab_n_anonymat_affectes[]=$lig->n_anonymat;
 					}
 				}
@@ -351,7 +351,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$msg="";
 				for($i=0;$i<count($id_groupe);$i++) {
 					$sql="INSERT INTO eb_groupes SET id_epreuve='$id_epreuve', id_groupe='$id_groupe[$i]';";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						$msg.="Erreur lors de l'ajout du groupe n°$id_groupe[$i]<br />";
 					}
@@ -368,12 +368,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 					// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
 					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'élève. Elève présent ==> date_sortie=0 ou null
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt_ano = 1;
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							if($type_anonymat=='alea') {
 								$n_anonymat=chaine_alea(3,4);
 								while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
@@ -390,7 +390,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							}
 							
 							$sql="INSERT INTO eb_copies SET id_epreuve='$id_epreuve', login_ele='$lig->login', n_anonymat='$n_anonymat', statut='v';";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 							if(!$insert) {
 								$msg.="Erreur lors de l'ajout de l'élève $lig->login<br />";
@@ -414,12 +414,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		if(isset($id_groupe)) {
 			$sql="SELECT 1=1 FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve='$id_epreuve' AND eg.id_groupe='$id_groupe' AND statut!='v';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==1) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==1) {
 				$msg="Une note a déjà été saisie pour une copie associée au groupe.";
 			}
-			elseif(mysql_num_rows($test)>1) {
-				$msg=mysql_num_rows($test)." notes ont déjà été saisies pour des copies associées au groupe.";
+			elseif(mysqli_num_rows($test)>1) {
+				$msg=mysqli_num_rows($test)." notes ont déjà été saisies pour des copies associées au groupe.";
 			}
 			else {
 				//$sql="DELETE FROM eb_copies ec, eb_groupes eg WHERE ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve AND eg.id_groupe='$id_groupe';";
@@ -429,18 +429,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$nb_err_suppr=0;
 				$sql="SELECT ec.login_ele FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes eg WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
 				//echo "<p>$sql<br />";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						// Pour ne pas supprimer un élève passé d'un groupe à un autre lors d'un changement de classe
 						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
 						//echo "$sql<br />";
-						$test=mysql_query($sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
-						if(mysql_num_rows($test)==1) {
+						if(mysqli_num_rows($test)==1) {
 							$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
 							//echo "$sql<br />";
-							$suppr=mysql_query($sql);
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$suppr) {$nb_err_suppr++;}
 						}
 					}
@@ -455,7 +455,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				else {
 					$sql="DELETE FROM eb_groupes WHERE id_epreuve='$id_epreuve' AND id_groupe='$id_groupe';";
 					//echo "$sql<br />";
-					$suppr=mysql_query($sql);
+					$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$suppr) {
 						$msg="ERREUR lors de la suppression du groupe n°$id_groupe.";
 					}
@@ -474,14 +474,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : array());
 
 		$sql="DELETE FROM eb_profs WHERE id_epreuve='$id_epreuve';";
-		$suppr=mysql_query($sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$suppr) {
 			$msg="ERREUR lors de la réinitialisation des professeurs inscrits.";
 		}
 		else {
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				$msg="L'épreuve n°$id_epreuve n'existe pas.<br />";
 			}
 			else {
@@ -492,7 +492,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					if(!in_array($login_prof[$i],$tab_profs_inscrits)) {
 						$tab_profs_inscrits[]=$login_prof[$i];
 						$sql="INSERT INTO eb_profs SET id_epreuve='$id_epreuve', login_prof='$login_prof[$i]';";
-						$insert=mysql_query($sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							$msg.="Erreur lors de l'ajout du professeur $login_prof[$i]<br />";
 						}
@@ -503,14 +503,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				// Vérification:
 				// A-t-on supprimé un prof qui était associé à des copies?
 				$sql="SELECT DISTINCT login_prof FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof!='';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
 					//$tab_profs_associes_copies=array();
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						//$tab_profs_associes_copies
 						if(!in_array($lig->login_prof,$tab_profs_inscrits)) {
 							$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve' AND login_prof='$lig->login_prof';";
-							$update=mysql_query($sql);
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							$msg.="Suppression de professeur(s) qui étai(en)t associé(s) à des copies.<br />";
 						}
 					}
@@ -524,7 +524,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		// Cloture d'une épreuve
 		$sql="UPDATE eb_epreuves SET etat='clos' WHERE id='$id_epreuve';";
-		$cloture=mysql_query($sql);
+		$cloture=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$cloture) {
 			$msg="ERREUR lors de la cloture de l'épreuve $id_epreuve";
 			unset($id_epreuve);
@@ -540,7 +540,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		// Réouverture d'une épreuve
 		$sql="UPDATE eb_epreuves SET etat='' WHERE id='$id_epreuve';";
-		$cloture=mysql_query($sql);
+		$cloture=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$cloture) {
 			$msg="ERREUR lors de la réouverture de l'épreuve $id_epreuve";
 			unset($id_epreuve);
@@ -601,10 +601,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			for($loop=0;$loop<count($id_groupe);$loop++) {
 				$sql="SELECT 1=1 FROM eb_groupes WHERE id_groupe='$id_groupe[$loop]' AND  id_epreuve='$id_epreuve';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==0) {
 					$sql="INSERT INTO eb_groupes SET id_groupe='$id_groupe[$loop]', id_epreuve='$id_epreuve', transfert='n';";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}
@@ -613,23 +613,23 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		// Il faudrait avoir une table eb_salles ne dépendant pas de id_epreuve
 		if(isset($id_salle)) {
 			$sql="DELETE FROM eb_salles WHERE id_epreuve='$id_epreuve';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="UPDATE eb_copies SET id_salle='' WHERE id_epreuve='$id_epreuve';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$tab_corresp_id_salle=array();
 
 			for($loop=0;$loop<count($id_salle);$loop++) {
 				$sql="SELECT * FROM eb_salles WHERE id='$id_salle[$loop]' AND id_epreuve='$id_epreuve_modele';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					$lig=mysql_fetch_object($res);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$lig=mysqli_fetch_object($res);
 
 					$sql="INSERT INTO eb_salles SET salle='$lig->salle', id_epreuve='$id_epreuve';";
 					//echo "$sql<br />";
-					$insert=mysql_query($sql);
-					$tmp_id_salle=mysql_insert_id();
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					$tmp_id_salle=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 					$tab_salle[$tmp_id_salle]=$lig->salle;
 					$tab_corresp_id_salle[$id_salle[$loop]]=$tmp_id_salle;
 
@@ -646,17 +646,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					else {
 						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.id_salle='$copie_affect_ele_salle[$loop]';";
 						//echo "$sql<br />";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
 
 								$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
 								//echo "$sql<br />";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)>0) {
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)>0) {
 									$sql="UPDATE eb_copies SET id_salle='".$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]."' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
 									//echo "$sql<br />";
-									$update=mysql_query($sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$update) {
 										$msg.="Erreur lors de l'affectation de $lig->login_ele dans ".$tab_salle[$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]]."<br />";
 									}
@@ -664,7 +664,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								else {
 									$sql="INSERT INTO eb_copies SET id_salle='".$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]."', id_epreuve='$id_epreuve', login_ele='".$lig->login_ele."', statut='v';";
 									//echo "$sql<br />";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="Erreur lors de l'affectation de $lig->login_ele dans ".$tab_salle[$tab_corresp_id_salle[$copie_affect_ele_salle[$loop]]]."<br />";
 									}
@@ -680,14 +680,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		// Si on n'a pas copié les groupes, on ne doit pas pouvoir copier les affectations... sauf si ce sont des profs qui ont les mêmes élèves dans plusieurs groupes.
 		if(isset($login_prof)) {
 			$sql="DELETE FROM eb_profs WHERE id_epreuve='$id_epreuve';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			for($loop=0;$loop<count($login_prof);$loop++) {
 				$sql="INSERT INTO eb_profs SET login_prof='$login_prof[$loop]', id_epreuve='$id_epreuve';";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 
 			if(isset($copie_affect_copie_prof)) {
@@ -697,22 +697,22 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 					else {
 						$sql="SELECT ec.login_ele FROM eb_copies ec WHERE ec.id_epreuve='$id_epreuve_modele' AND ec.login_prof='$copie_affect_copie_prof[$loop]';";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
 
 								$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)>0) {
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)>0) {
 									$sql="UPDATE eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
-									$update=mysql_query($sql);
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$update) {
 										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
 									}
 								}
 								else {
 									$sql="INSERT INTO eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."', id_epreuve='$id_epreuve', login_ele='".$lig->login_ele."';";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
 									}
@@ -793,11 +793,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			// Accéder aux épreuves blanches: closes ou non
 			$sql="SELECT * FROM eb_epreuves WHERE etat!='clos' ORDER BY date, intitule;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				echo "<li>\n";
 				echo "<p><b>Epreuves en cours&nbsp;:</b><br />\n";
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					//echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;modif_epreuve=y'";
 					echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=modif_epreuve'";
 					if($lig->description!='') {
@@ -823,11 +823,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			// - Affecter les copies aux profs...
 
 			$sql="SELECT * FROM eb_epreuves WHERE etat='clos' ORDER BY date, intitule;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
 				echo "<li>\n";
 				echo "<p><b>Epreuves closes&nbsp;:</b><br />\n";
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					echo "Epreuve $lig->intitule(<i>".formate_date($lig->date)."</i>)\n";
 
 					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=modif_epreuve'>Consulter</a>\n";
@@ -847,11 +847,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		elseif($mode=='creer_epreuve') {
 			echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Menu épreuves blanches</a>\n";
 			$sql="SELECT * FROM eb_epreuves ORDER BY date, intitule, description;";
-			$res_eb=mysql_query($sql);
-			if(mysql_num_rows($res_eb)>0) {
+			$res_eb=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_eb)>0) {
 				echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
 				echo "<option value=''>---</option>\n";
-				while($lig_eb=mysql_fetch_object($res_eb)) {
+				while($lig_eb=mysqli_fetch_object($res_eb)) {
 					echo "<option value='$lig_eb->id'>$lig_eb->intitule (".formate_date($lig_eb->date).")</option>\n";
 				}
 				echo "</select>\n";
@@ -973,11 +973,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$indice_epreuve_courante=-1;
 		$cpt_ep=0;
 		$sql="SELECT * FROM eb_epreuves ORDER BY date, intitule, description;";
-		$res_eb=mysql_query($sql);
-		if(mysql_num_rows($res_eb)>0) {
+		$res_eb=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_eb)>0) {
 			echo " | <select name='id_epreuve' id='id_epreuve_a_passage_autre_epreuve' onchange=\"confirm_changement_epreuve(change, '$themessage');\">\n";
 			//echo "<option value=''>---</option>\n";
-			while($lig_eb=mysql_fetch_object($res_eb)) {
+			while($lig_eb=mysqli_fetch_object($res_eb)) {
 				echo "<option value='$lig_eb->id'";
 				if($lig_eb->id==$id_epreuve) {
 					echo " selected";
@@ -1019,8 +1019,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		if(isset($id_epreuve)) {
 		// VERIFIER: Il faut avoir saisi un intitulé,...
 			$sql="SELECT 1=1 FROM eb_epreuves;";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix".add_token_in_url()."'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				echo ">Copier des paramétrages depuis une autre épreuve blanche</a>\n";
@@ -1035,26 +1035,26 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<p><b>Modification d'une épreuve blanche&nbsp;:</b> Epreuve n°$id_epreuve</p>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'épreuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
 
 			//==============================================
 			// Requêtes exploitées plus bas
 			$sql="SELECT g.* FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name;";
-			$res_groupes=mysql_query($sql);
+			$res_groupes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
 			//$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login AND u.etat='actif' ORDER BY u.nom,u.prenom;";
 			//echo "$sql<br />";
-			$res_profs=mysql_query($sql);
+			$res_profs=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($res_groupes)>0) {
+			if(mysqli_num_rows($res_groupes)>0) {
 				echo "<div style='float:right; width:15em; border: 1px solid black;'>\n";
 
 				echo "<ol>\n";
@@ -1083,8 +1083,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				// Il n'est pas possible de générer lesfeuilles d'émargement sans affecter les élèves dans des salles
 				$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
-				$test_affect_salle=mysql_query($sql);
-				if(mysql_num_rows($test_affect_salle)>0) {
+				$test_affect_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_affect_salle)>0) {
 					echo "<li>\n";
 					echo "<a href='genere_emargement.php?id_epreuve=$id_epreuve'";
 					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -1096,8 +1096,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					// Générer CSV, PDF
 
 					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='-1';";
-					$test_affect_salle=mysql_query($sql);
-					if(mysql_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysql_num_rows($test_affect_salle)." élève(s) non affecté(s) dans une salle.</span>";}
+					$test_affect_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysqli_num_rows($test_affect_salle)." élève(s) non affecté(s) dans une salle.</span>";}
 					echo "</li>\n";
 
 					echo "<li>\n";
@@ -1113,7 +1113,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 
 				if($etat!='clos') {
-					if(mysql_num_rows($res_profs)>0) {
+					if(mysqli_num_rows($res_profs)>0) {
 						echo "<li>\n";
 						echo "<a href='attribuer_copies.php?id_epreuve=$id_epreuve'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -1155,15 +1155,15 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				if($etat!='clos') {
 					$info_affectation_salle="";
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
-					$test_affectation_salle=mysql_query($sql);
-					if(mysql_num_rows($test_affectation_salle)==0) {
+					$test_affectation_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_affectation_salle)==0) {
 						$info_affectation_salle="<span style='color:red'>Aucun élève n'est encore affecté dans une salle.</span><br />\n";
 					}
 
 					//$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v' AND id_salle!='-1';";
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v';";
-					$test=mysql_query($sql);
-					if(($info_affectation_salle=='')&&(mysql_num_rows($test)==0)) {
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(($info_affectation_salle=='')&&(mysqli_num_rows($test)==0)) {
 						echo "<li>\n";
 						echo "<a href='transfert_cn.php?id_epreuve=$id_epreuve'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -1185,7 +1185,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					else {
 						echo "<li>\n";
 						echo $info_affectation_salle;
-						echo mysql_num_rows($test)." note(s) non encore saisie(s).<br />\n";
+						echo mysqli_num_rows($test)." note(s) non encore saisie(s).<br />\n";
 						echo "Les choix suivants ne sont donc pas encore accessibles&nbsp;:";
 						echo "<ul>\n";
 						echo "<li>Transfert vers carnets de notes</li>\n";
@@ -1337,18 +1337,18 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			//$sql="SELECT g.* FROM eb_groupes eg, groupes g WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name;";
 			//$res_groupes=mysql_query($sql);
-			if(mysql_num_rows($res_groupes)>0) {
+			if(mysqli_num_rows($res_groupes)>0) {
 				echo "<p><b>Liste des groupes inscrits à l'épreuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
-				while($lig=mysql_fetch_object($res_groupes)) {
+				while($lig=mysqli_fetch_object($res_groupes)) {
 
 					//$current_group=get_group($lig->id);
 
 					$sql="SELECT DISTINCT c.classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_groupe='".$lig->id."' AND jgc.id_classe=c.id ORDER BY classe;";
-					$res_classes=mysql_query($sql);
+					$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=0;
 					$classlist_string="";
-					while($lig_class=mysql_fetch_object($res_classes)) {
+					while($lig_class=mysqli_fetch_object($res_classes)) {
 						if($cpt>0) {$classlist_string.=", ";}
 						$classlist_string.=$lig_class->classe;
 						$cpt++;
@@ -1384,23 +1384,23 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			//$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
 			//$res_profs=mysql_query($sql);
-			if(mysql_num_rows($res_profs)>0) {
+			if(mysqli_num_rows($res_profs)>0) {
 				echo "<p><b>Liste des professeurs heureux correcteurs désignés pour l'épreuve&nbsp;:</b></p>\n";
 				echo "<blockquote>\n";
-				while($lig=mysql_fetch_object($res_profs)) {
+				while($lig=mysqli_fetch_object($res_profs)) {
 					//echo "<a href='#'>".$lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1)."<br />\n";
 					echo $lig->civilite." ".$lig->nom." ".mb_substr($lig->prenom,0,1);
 					//echo " <span style='color:red'>Compter les copies attribuées</span>";
 
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."';";
-					$compte_total=mysql_num_rows(mysql_query($sql));
+					$compte_total=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 
 					if($compte_total==0) {
 						echo " (<span style='font-style:italic;color:red;'>aucune copie attribuée</span>)";
 					}
 					else {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof='".$lig->login."' AND statut!='v';";
-						$compte_saisie=mysql_num_rows(mysql_query($sql));
+						$compte_saisie=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 						echo " (<span style='font-style:italic;";
 						if($compte_saisie==$compte_total) {
 							echo "color:green;";
@@ -1430,16 +1430,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			//=====================================
 
-			if(mysql_num_rows($res_groupes)>0) {
+			if(mysqli_num_rows($res_groupes)>0) {
 				$sql="SELECT * FROM eb_salles es WHERE es.id_epreuve='$id_epreuve' ORDER BY es.salle;";
-				$res_salles=mysql_query($sql);
-				if(mysql_num_rows($res_salles)>0) {
+				$res_salles=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_salles)>0) {
 					echo "<p><b>Liste des salles choisies pour l'épreuve&nbsp;:</b></p>\n";
 					echo "<blockquote>\n";
-					while($lig=mysql_fetch_object($res_salles)) {
+					while($lig=mysqli_fetch_object($res_salles)) {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle='$lig->id';";
-						$res_eff=mysql_query($sql);
-						echo "Salle '<b>$lig->salle</b>' (<i>eff.".mysql_num_rows($res_eff)."</i>)";
+						$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+						echo "Salle '<b>$lig->salle</b>' (<i>eff.".mysqli_num_rows($res_eff)."</i>)";
 						echo "<br />\n";
 					}
 					echo "</blockquote>\n";
@@ -1467,13 +1467,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</form>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'épreuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
@@ -1491,8 +1491,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes j WHERE p.id_classe = c.id AND j.id_classe=c.id ORDER BY classe";
 				// Permettre aussi de voir toutes les classes...
 			}
-			$classes_list = mysql_query($sql);
-			$nb = mysql_num_rows($classes_list);
+			$classes_list = mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb = mysqli_num_rows($classes_list);
 			if ($nb==0) {
 				echo "<p>Aucune classe ne semble définie.</p>\n";
 			}
@@ -1500,9 +1500,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				// Liste des classes déjà associées à l'épreuve via des groupes inscrits dans eb_groupes
 				$tab_id_classe=array();
 				$sql="SELECT DISTINCT j.id_classe FROM eb_groupes eg, j_groupes_classes j WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=j.id_groupe";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						$tab_id_classe[]=$lig->id_classe;
 					}
 				}
@@ -1521,9 +1521,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	
 				/*
 				while ($i < $nb) {
-					$id_classe = mysql_result($classes_list, $i, 'id');
+					$id_classe = old_mysql_result($classes_list, $i, 'id');
 					$temp = "case_".$id_classe;
-					$classe = mysql_result($classes_list, $i, 'classe');
+					$classe = old_mysql_result($classes_list, $i, 'classe');
 	
 					if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 						echo "</td>\n";
@@ -1540,9 +1540,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 				*/
 				while ($i < $nb) {
-					$id_classe=mysql_result($classes_list, $i, 'id');
+					$id_classe=old_mysql_result($classes_list, $i, 'id');
 					//$temp = "id_classe_".$id_classe;
-					$classe=mysql_result($classes_list, $i, 'classe');
+					$classe=old_mysql_result($classes_list, $i, 'classe');
 	
 					if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 						echo "</td>\n";
@@ -1595,13 +1595,13 @@ function checkbox_change(cpt) {
 
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'épreuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
@@ -1623,8 +1623,8 @@ function checkbox_change(cpt) {
 			echo "<p class='bold'>Choix des groupes pour l'épreuve $id_epreuve&nbsp;:</p>\n";
 
 			$sql="SELECT type_anonymat FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			$lig=mysql_fetch_object($res);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			$lig=mysqli_fetch_object($res);
 			if($lig->type_anonymat=='alea') {
 				echo "<div style='float:right; width:20em; border: 1px solid black;'>\n";
 				echo "<p>Le type d'anonymat choisi est un numéro 'aléatoire'.</p>\n";
@@ -1642,9 +1642,9 @@ function checkbox_change(cpt) {
 
 			$tab_groupes_inscrits=array();
 			$sql="SELECT id_groupe FROM eb_groupes eg WHERE eg.id_epreuve='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_groupes_inscrits[]=$lig->id_groupe;
 				}
 			}
@@ -1663,9 +1663,9 @@ function checkbox_change(cpt) {
 				echo "<td class='lig$alt' style='text-align:left;vertical-align:top;'>\n";
 				$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc WHERE jgc.id_groupe=g.id AND jgc.id_classe='$id_classe[$i]' ORDER BY g.name;";
 				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='$lig->id' ";
 						echo "onchange=\"checkbox_change($cpt); changement()\" ";
 						if(in_array($lig->id,$tab_groupes_inscrits)) {echo "checked ";$temp_style="style='font-weight:bold;'";} else {$temp_style="";}
@@ -1728,13 +1728,13 @@ function checkbox_change(cpt) {
 
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red;'>ERREUR&nbsp;: L'épreuve $id_epreuve n'existe pas.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
 
 			if($etat=='clos') {
@@ -1750,20 +1750,20 @@ function checkbox_change(cpt) {
 			$tab_profs_deja_punis=array();
 			$sql="SELECT u.login FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
 			//$sql="SELECT u.login FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login AND u.etat='actif' ORDER BY u.nom,u.prenom;";
-			$res_profs=mysql_query($sql);
-			if(mysql_num_rows($res_profs)>0) {
-				while($lig=mysql_fetch_object($res_profs)) {
+			$res_profs=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_profs)>0) {
+				while($lig=mysqli_fetch_object($res_profs)) {
 					$tab_profs_deja_punis[]=$lig->login;
 				}
 			}
 
 			$cpt=0;
 			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM eb_groupes eg, j_groupes_professeurs jgp, utilisateurs u WHERE eg.id_epreuve='$id_epreuve' AND eg.id_groupe=jgp.id_groupe AND u.login=jgp.login ORDER BY u.nom,u.prenom;";
-			$res_profs_groupes=mysql_query($sql);
-			if(mysql_num_rows($res_profs_groupes)>0) {
+			$res_profs_groupes=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_profs_groupes)>0) {
 				echo "<p>Les professeurs appelés à corriger sont probablement les enseignants des groupes sélectionnés.</p>\n";
 				//$cpt=0;
-				while($lig=mysql_fetch_object($res_profs_groupes)) {
+				while($lig=mysqli_fetch_object($res_profs_groupes)) {
 					echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
 					echo "onchange=\"checkbox_change($cpt);changement();\" ";
 					//if(in_array($lig->login,$tab_profs_deja_punis)) {echo "checked ";}
@@ -1776,11 +1776,11 @@ function checkbox_change(cpt) {
 
 			//$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom,u.prenom;";
 			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom,u.prenom;";
-			$res_profs=mysql_query($sql);
-			if(mysql_num_rows($res_profs)>0) {
+			$res_profs=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_profs)>0) {
 				echo "<p>Sélectionner des professeurs sans préoccupation de groupes&nbsp;:</p>\n";
 
-				$nb=mysql_num_rows($res_profs);
+				$nb=mysqli_num_rows($res_profs);
 				$nb_prof_par_colonne=round($nb/3);
 				echo "<table width='100%' summary='Choix des professeurs'>\n";
 				echo "<tr valign='top' align='center'>\n";
@@ -1791,7 +1791,7 @@ function checkbox_change(cpt) {
 	
 				while ($i < $nb) {
 
-					$lig=mysql_fetch_object($res_profs);
+					$lig=mysqli_fetch_object($res_profs);
 
 					if(($i>0)&&(round($i/$nb_prof_par_colonne)==$i/$nb_prof_par_colonne)){
 						echo "</td>\n";
@@ -1866,8 +1866,8 @@ eb_salles
 */
 
 		$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "</p>\n";
 			echo "</form>\n";
 
@@ -1876,7 +1876,7 @@ eb_salles
 			die();
 		}
 		else {
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$intitule_epreuve=$lig->intitule;
 			$description_epreuve=$lig->description;
 			$date_epreuve=$lig->date;
@@ -1890,13 +1890,13 @@ eb_salles
 
 			echo "<p class='bold'>Liste des autres épreuves&nbsp;:</p>\n";
 			$sql="SELECT * FROM eb_epreuves WHERE id!='$id_epreuve';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red'>Aucune autre épreuve n'a été trouvée.</p>\n";
 			}
 			else {
 				echo "<ul>\n";
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
 				}
 				echo "</ul>\n";
@@ -1910,12 +1910,12 @@ eb_salles
 			echo "<h3>Copie de paramètres pour l'épreuve n°$id_epreuve: $intitule_epreuve (".formate_date($date_epreuve).")</h3>\n";
 
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve_modele';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red'>L'épreuve n°$id_epreuve_modele n'a pas été trouvée.</p>\n";
 			}
 			else {
-				$lig=mysql_fetch_object($res);
+				$lig=mysqli_fetch_object($res);
 
 
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_copie_param_modele'>\n";
@@ -1928,14 +1928,14 @@ eb_salles
 
 				// Liste des groupes
 				$sql="SELECT * FROM eb_groupes eg WHERE id_epreuve='$id_epreuve_modele';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun groupe/enseignement.</p>\n";
 				}
 				else {
 					echo "<p>Liste des enseignements de l'épreuve modèle&nbsp;:</p>\n";
 					echo "<p style='margin-left: 3em;'>";
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						$tmp_grp=get_group($lig->id_groupe);
 						echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_".$lig->id_groupe."' value='$lig->id_groupe' onchange='changement()' checked /><label for='id_groupe_".$lig->id_groupe."'> ".$tmp_grp['name']." (<i>".$tmp_grp['classlist_string']."</i>)</label>\n";
 					}
@@ -1944,14 +1944,14 @@ eb_salles
 
 				// Liste des salles
 				$sql="SELECT * FROM eb_salles es WHERE id_epreuve='$id_epreuve_modele' ORDER BY salle;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucune salle.</p>\n";
 				}
 				else {
 					echo "<p>Liste des salles&nbsp;:</p>\n";
 					echo "<p style='margin-left: 3em;'>";
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						echo "<input type='checkbox' name='id_salle[]' id='id_salle_".$lig->id."' value='$lig->id' onchange='changement()' checked /><label for='id_salle_".$lig->id."'> ".$lig->salle."</label>\n";
 						$tab_salle[$lig->id]=$lig->salle;
 					}
@@ -1959,14 +1959,14 @@ eb_salles
 
 					// Liste des associations élèves/salles
 					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve_modele' ORDER BY id_salle;";
-					$res_ele_salle=mysql_query($sql);
-					if(mysql_num_rows($res_ele_salle)==0) {
+					$res_ele_salle=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ele_salle)==0) {
 						echo "<p>Aucun élève n'est affecté dans une salle pour l'épreuve n°$id_epreuve_modele.</p>\n";
 					}
 					else {
 						$current_id_salle="";
 						$cpt=0;
-						while($lig=mysql_fetch_object($res_ele_salle)) {
+						while($lig=mysqli_fetch_object($res_ele_salle)) {
 
 							if($lig->id_salle!='-1') {
 
@@ -2016,14 +2016,14 @@ eb_salles
 
 				// Liste des correcteurs
 				$sql="SELECT * FROM eb_profs ep WHERE id_epreuve='$id_epreuve_modele' ORDER BY login_prof;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
 					echo "<p>L'épreuve n°$id_epreuve_modele n'est associée à aucun correcteur.</p>\n";
 				}
 				else {
 					echo "<p>Liste des correcteurs&nbsp;:</p>\n";
 					echo "<p style='margin-left: 3em;'>";
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						$tab_prof[$lig->login_prof]=civ_nom_prenom($lig->login_prof);
 
 						echo "<input type='checkbox' name='login_prof[]' id='login_prof_".$lig->login_prof."' value='$lig->login_prof' onchange='changement()' checked /><label for='login_prof_".$lig->login_prof."'> ".$tab_prof[$lig->login_prof]."</label>\n";
@@ -2033,14 +2033,14 @@ eb_salles
 					// Liste des associations professeur/copies
 					$sql="SELECT * FROM eb_copies WHERE id_epreuve='$id_epreuve_modele' AND login_prof!='' ORDER BY login_prof;";
 					//echo "$sql<br />";
-					$res_ele_prof=mysql_query($sql);
-					if(mysql_num_rows($res_ele_prof)==0) {
+					$res_ele_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ele_prof)==0) {
 						echo "<p>Aucun copie élève n'est affectée à un correcteur pour l'épreuve n°$id_epreuve_modele.</p>\n";
 					}
 					else {
 						$current_login_prof="";
 						$cpt=0;
-						while($lig=mysql_fetch_object($res_ele_prof)) {
+						while($lig=mysqli_fetch_object($res_ele_prof)) {
 
 							if($lig->login_prof!=$current_login_prof) {
 								if($current_login_prof!="") {
@@ -2111,19 +2111,19 @@ elseif($_SESSION['statut']=='professeur') {
 	// - saisie
 	// - génération d'un listing n_anonymat,note,statut
 
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "<p><b>Epreuves en cours&nbsp;:</b><br />\n";
 		echo "<ul>\n";
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			echo "<li>\n";
 
 			$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$lig->id';";
-			$test1=mysql_query($sql);
+			$test1=mysqli_query($GLOBALS["mysqli"], $sql);
 			
 			$sql="SELECT DISTINCT n_anonymat FROM eb_copies WHERE id_epreuve='$lig->id';";
-			$test2=mysql_query($sql);
-			if(mysql_num_rows($test1)!=mysql_num_rows($test2)) {
+			$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test1)!=mysqli_num_rows($test2)) {
 				echo "<span style='color:red;'>Les numéros anonymats ne sont pas uniques sur l'épreuve (<i>cela ne devrait pas arriver</i>).<br />La saisie n'est pas possible sur l'épreuve </span>";
 				if($lig->description!='') {
 					echo "<a href='#'";

@@ -145,11 +145,11 @@ die();
 header("Content-Type: application/csv-tab-delimited-table");
 header("Content-disposition: filename=exportation.csv");
 
-	$executer = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br>'.mysql_error());
+	$executer = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
     echo "NOM;PRENOM;CLASSE;TYPE ABS;JUSTIFIE;MOTIF;DATE DU;HEURE DE;DATE AU;HEURE A;\n";
 
-	while ( $donner = mysql_fetch_array( $executer ) )
+	while ( $donner = mysqli_fetch_array( $executer ) )
    {
 		echo $donner['nom'].";".$donner['prenom'].";".$donner['nom_complet'].";".$donner['type_absence_eleve'].";".$donner['justify_absence_eleve'].";".$donner['motif_absence_eleve'].";".$donner['d_date_absence_eleve'].";".$donner['d_heure_absence_eleve'].";".$donner['a_date_absence_eleve'].";".$donner['a_heure_absence_eleve'].";\n";
    }

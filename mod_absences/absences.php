@@ -76,20 +76,20 @@ for($i = 0; $i < $nbre; ){
 	$n = $i + 1; // pour le nom et le prénom de l'élève
 
 	// On récupère toutes les absences qui correspondent à ce login
-	$query = mysql_query("SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
-					OR DIE('Erreur dans la récupération des absences de votre enfant : '.mysql_error());
-	$nbre_absence = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
+					OR DIE('Erreur dans la récupération des absences de votre enfant : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$nbre_absence = mysqli_num_rows($query);
 
 	// et on les mets en forme
 	for($a = 0; $a < $nbre_absence; $a++){
 		// on récupère ce dont on a besoin
-		$abs[$a]["d_date_absence_eleve"] = mysql_result($query, $a, "d_date_absence_eleve");
-		$abs[$a]["a_date_absence_eleve"] = mysql_result($query, $a, "a_date_absence_eleve");
-		$abs[$a]["heuredeb_absence"] = mysql_result($query, $a, "d_heure_absence_eleve");
-		$abs[$a]["heurefin_absence"] = mysql_result($query, $a, "a_heure_absence_eleve");
-		$abs[$a]["justification"] = mysql_result($query, $a, "justify_absence_eleve");
-		$abs[$a]["type"] = mysql_result($query, $a, "type_absence_eleve");
-		$abs[$a]["id"] = mysql_result($query, $a, "id_absence_eleve");
+		$abs[$a]["d_date_absence_eleve"] = old_mysql_result($query, $a, "d_date_absence_eleve");
+		$abs[$a]["a_date_absence_eleve"] = old_mysql_result($query, $a, "a_date_absence_eleve");
+		$abs[$a]["heuredeb_absence"] = old_mysql_result($query, $a, "d_heure_absence_eleve");
+		$abs[$a]["heurefin_absence"] = old_mysql_result($query, $a, "a_heure_absence_eleve");
+		$abs[$a]["justification"] = old_mysql_result($query, $a, "justify_absence_eleve");
+		$abs[$a]["type"] = old_mysql_result($query, $a, "type_absence_eleve");
+		$abs[$a]["id"] = old_mysql_result($query, $a, "id_absence_eleve");
 		// on vérifie le type
 		if ($abs[$a]["type"] == "A") {
 			$type = "<td style=\"abs\">Abs.</td>";
@@ -123,8 +123,8 @@ for($i = 0; $i < $nbre; ){
 
 	}
 	// On vérifie si les bulletins ont été renseignés pour les différentes périodes
-	$query_b = mysql_query("SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
-	$verif = mysql_num_rows($query_b);
+	$query_b = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE login = '".$tab_tmp_ele[$i]."' ORDER BY periode");
+	$verif = mysqli_num_rows($query_b);
 		$aff_absences_bulletin = '';
 	if ($verif >= 1) {
 		$aff_absences_bulletin .= '<br /><br />
@@ -144,11 +144,11 @@ for($i = 0; $i < $nbre; ){
 			<tbody>
 		';
 		for($ab = 0; $ab < $verif; $ab++){
-			$absbull[$ab]["periode"] = mysql_result($query_b, $ab, "periode");
-			$absbull[$ab]["nb_absences"] = mysql_result($query_b, $ab, "nb_absences");
-			$absbull[$ab]["non_justifie"] = mysql_result($query_b, $ab, "non_justifie");
-			$absbull[$ab]["nb_retards"] = mysql_result($query_b, $ab, "nb_retards");
-			$absbull[$ab]["appreciation"] = mysql_result($query_b, $ab, "appreciation");
+			$absbull[$ab]["periode"] = old_mysql_result($query_b, $ab, "periode");
+			$absbull[$ab]["nb_absences"] = old_mysql_result($query_b, $ab, "nb_absences");
+			$absbull[$ab]["non_justifie"] = old_mysql_result($query_b, $ab, "non_justifie");
+			$absbull[$ab]["nb_retards"] = old_mysql_result($query_b, $ab, "nb_retards");
+			$absbull[$ab]["appreciation"] = old_mysql_result($query_b, $ab, "appreciation");
 			if ($absbull[$ab]["appreciation"] == "") {
 				$appreciation = "Aucune";
 			}else {

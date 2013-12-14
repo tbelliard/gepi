@@ -122,8 +122,8 @@ if ($_SESSION['statut'] == "responsable") {
 	}
 	$sql.=";";
 	//echo "$sql<br />";
-	$test = mysql_query($sql);
-	if (mysql_num_rows($test) == 0) {
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($test) == 0) {
 	    tentative_intrusion(3, "Tentative d'un parent de visualiser un bulletin simplifié d'un élève ($login_eleve) dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les bulletins simplifiés des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
@@ -150,9 +150,9 @@ if ($_SESSION['statut'] == "responsable" AND $choix_edit != "2") {
 	else {
 		// Récupérer l'id_classe:
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_eleve."' ORDER BY periode DESC LIMIT 1;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$id_classe=mysql_result($res, 0, "id_classe");
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$id_classe=old_mysql_result($res, 0, "id_classe");
 		}
 	}
 }
@@ -167,9 +167,9 @@ if ($_SESSION['statut'] == "eleve" AND $choix_edit != "2") {
 	else {
 		// Récupérer l'id_classe:
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$login_eleve."' ORDER BY periode DESC LIMIT 1;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$id_classe=mysql_result($res, 0, "id_classe");
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$id_classe=old_mysql_result($res, 0, "id_classe");
 		}
 	}
 }
@@ -208,9 +208,9 @@ if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSi
 			"ORDER BY e.nom,e.prenom";
 	}
 	//echo "$sql<br />";
-	$res_test = mysql_query($sql);
+	$res_test = mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$test = mysql_num_rows($res_test);
+	$test = mysqli_num_rows($res_test);
 	//$test = mysql_num_rows(mysql_query("SELECT jgc.* FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (jgp.login='".$_SESSION['login']."' AND jgc.id_groupe = jgp.id_groupe AND jgc.id_classe = '".$id_classe."')"));
 
 	if ($test == "0") {
@@ -249,7 +249,7 @@ $choix_edit == "2") {
 	}
 	//echo "$sql<br />";
 
-	$test = mysql_num_rows(mysql_query($sql));
+	$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql));
 	if ($test == "0") {
 		tentative_intrusion("2", "Tentative d'accès par un prof à un bulletin simplifié d'un élève ($login_eleve) qu'il n'a pas en cours, sans en avoir l'autorisation.");
 		echo "Vous ne pouvez pas accéder à cet élève !";
@@ -280,7 +280,7 @@ if ($periode1 > $periode2) {
 }
 
 // On teste la présence d'au moins un coeff pour afficher la colonne des coef
-$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 //echo "\$test_coef=$test_coef<br />";
 // Apparemment, $test_coef est réaffecté plus loin dans un des include()
 $nb_coef_superieurs_a_zero=$test_coef;
@@ -370,9 +370,9 @@ WHERE (
 c.id_classe='$id_classe' AND 
 e.login = c.login
 ) ORDER BY e.nom,e.prenom;";
-$res_ele= mysql_query($sql);
-if(mysql_num_rows($res_ele)>0) {
-	while($lig_ele=mysql_fetch_object($res_ele)) {
+$res_ele= mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_ele)>0) {
+	while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$tab_moy['eleves'][]=$lig_ele->login;
 	}
 }
@@ -463,7 +463,7 @@ if ($choix_edit != '2') {
 						"e.login = jep.login AND " .
 						"jep.login = jec.login AND " .
 						"jep.professeur = '".$_SESSION['login']."')) ORDER BY nom,prenom;";
-					$appel_liste_eleves = mysql_query($sql);
+					$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 				else {
 					$sql="SELECT DISTINCT e.* " .
@@ -473,7 +473,7 @@ if ($choix_edit != '2') {
 						"e.login = jep.login AND " .
 						"jep.login = jec.login AND " .
 						"jep.professeur = '".$_SESSION['login']."') ORDER BY e.nom,e.prenom;";
-					$appel_liste_eleves = mysql_query($sql);
+					$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 			else {
@@ -486,7 +486,7 @@ if ($choix_edit != '2') {
 					"jeg.id_groupe = jgp.id_groupe AND " .
 					"jgp.login = '".$_SESSION['login']."') " .
 					"ORDER BY e.nom,e.prenom";
-				$appel_liste_eleves = mysql_query($sql);
+				$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 	    } else {
 			// On a alors $choix_edit==3 uniquement les élèves du professeur principal $login_prof
@@ -544,9 +544,9 @@ if ($choix_edit != '2') {
 		die();
 	}
 	//echo "$sql<br />";
-	$appel_liste_eleves = mysql_query($sql);
+	$appel_liste_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 
-    $nombre_eleves = mysql_num_rows($appel_liste_eleves);
+    $nombre_eleves = mysqli_num_rows($appel_liste_eleves);
 
 	$avec_moy_min_max_classe="y";
 	if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseMinMaxEleve')))||
@@ -568,7 +568,7 @@ if ($choix_edit != '2') {
     $i=0;
     $k=0;
     while ($i < $nombre_eleves) {
-        $current_eleve_login = mysql_result($appel_liste_eleves, $i, "login");
+        $current_eleve_login = old_mysql_result($appel_liste_eleves, $i, "login");
         $k++;
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);
         //bulletin($current_eleve_login,$k,$nombre_eleves,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories);

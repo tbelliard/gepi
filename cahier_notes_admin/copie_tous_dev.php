@@ -44,10 +44,10 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes_admin/copie_tous_dev.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits VALUES ('/cahier_notes_admin/copie_tous_dev.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création de devoirs copie d une autre classe', '1');";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 // INSERT INTO droits VALUES ('/cahier_notes_admin/copie_tous_dev.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Création de devoirs copie d une autre classe', '1');
@@ -92,8 +92,8 @@ if(!isset($id_classe_source)) {
 	echo "</p>\n";
 
 	echo "<p class='bold'>De quelle classe voulez-vous copier les devoirs&nbsp;?</p>\n";
-	$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-	$nb = mysql_num_rows($classes_list);
+	$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+	$nb = mysqli_num_rows($classes_list);
 	if ($nb !=0) {
 		$nb_class_par_colonne=round($nb/3);
 		//echo "<table width='100%' border='1'>\n";
@@ -106,8 +106,8 @@ if(!isset($id_classe_source)) {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$t_id_classe = mysql_result($classes_list, $i, 'id');
-			$t_classe = mysql_result($classes_list, $i, 'classe');
+			$t_id_classe = old_mysql_result($classes_list, $i, 'id');
+			$t_classe = old_mysql_result($classes_list, $i, 'classe');
 
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";
@@ -130,8 +130,8 @@ elseif(!isset($id_classe_dest)) {
 
 	echo "<p class='bold'>Vers quelle classe voulez-vous copier les devoirs de <strong>$classe_source</strong>&nbsp;?</p>\n";
 
-	$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-	$nb = mysql_num_rows($classes_list);
+	$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+	$nb = mysqli_num_rows($classes_list);
 	if ($nb !=0) {
 		$nb_class_par_colonne=round($nb/3);
 		//echo "<table width='100%' border='1'>\n";
@@ -144,9 +144,9 @@ elseif(!isset($id_classe_dest)) {
 		echo "<td align='left'>\n";
 
 		while ($i < $nb) {
-			$t_id_classe = mysql_result($classes_list, $i, 'id');
+			$t_id_classe = old_mysql_result($classes_list, $i, 'id');
 			if($t_id_classe!=$id_classe_source) {
-				$t_classe = mysql_result($classes_list, $i, 'classe');
+				$t_classe = old_mysql_result($classes_list, $i, 'classe');
 
 				if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 					echo "</td>\n";
@@ -246,14 +246,14 @@ else {
 	*/
 
 	$sql="DELETE FROM matieres_appreciations_acces WHERE id_classe='$id_classe_dest';";
-	$menage=mysql_query($sql);
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_dest' ORDER BY num_periode;";
-	$res_per=mysql_query($sql);
-	while($lig_per=mysql_fetch_object($res_per)) {
+	$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_per=mysqli_fetch_object($res_per)) {
 		$sql="INSERT INTO matieres_appreciations_acces SET id_classe='$id_classe_dest', periode='$lig_per->num_periode', statut='responsable', date='0000-00-00', acces='y';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql="INSERT INTO matieres_appreciations_acces SET id_classe='$id_classe_dest', periode='$lig_per->num_periode', statut='eleve', date='0000-00-00', acces='y';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	for($i=0;$i<$cpt_grp;$i++) {
@@ -268,9 +268,9 @@ else {
 				echo "<blockquote>\n";
 				$current_group_dest=get_group($id_groupe_dest[$i]);
 				$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY periode;";
-				$res_ccn_src=mysql_query($sql);
-				if(mysql_num_rows($res_ccn_src)>0) {
-					while($lig_ccn_src=mysql_fetch_object($res_ccn_src)) {
+				$res_ccn_src=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_ccn_src)>0) {
+					while($lig_ccn_src=mysqli_fetch_object($res_ccn_src)) {
 						unset($id_cahier_notes_dest);
 
 						echo "<p><strong>Période $lig_ccn_src->periode</strong></p>\n";
@@ -278,27 +278,27 @@ else {
 						$id_cahier_notes_src=$lig_ccn_src->id_cahier_notes;
 
 						$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_groupe_dest[$i]."' AND periode='$lig_ccn_src->periode';";
-						$res_ccn_dest=mysql_query($sql);
-						if(mysql_num_rows($res_ccn_dest)>0) {
-							$lig_ccn_dest=mysql_fetch_object($res_ccn_dest);
+						$res_ccn_dest=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_ccn_dest)>0) {
+							$lig_ccn_dest=mysqli_fetch_object($res_ccn_dest);
 							$id_cahier_notes_dest=$lig_ccn_dest->id_cahier_notes;
 						}
 						else {
 							// Création d'un cahier de notes 
-							$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".mysql_real_escape_string($current_group_dest["description"])."', nom_complet='". mysql_real_escape_string($current_group_dest["matiere"]["nom_complet"])."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
-							$creation_cnc=mysql_query($sql);
+							$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='". ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
+							$creation_cnc=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($creation_cnc) {
-								$id_cahier_notes_dest=mysql_insert_id();
+								$id_cahier_notes_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 								$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes_dest', parent = '0' WHERE id='$id_cahier_notes_dest';";
-								$update_cn = mysql_query($sql);
+								$update_cn = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update_cn) {
 									echo "<span style='color:red'>Erreur en créant le cahier de notes destination en période $lig_ccn_src->periode.</span><br />\n";
 									unset($id_cahier_notes_dest);
 								}
 								else {
 									$sql="INSERT INTO cn_cahier_notes SET id_cahier_notes='$id_cahier_notes_dest', id_groupe='$id_groupe_dest[$i]', periode='$lig_ccn_src->periode';";
-									$creation_ccn=mysql_query($sql);
+									$creation_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$creation_ccn) {
 										echo "<span style='color:red'>Erreur en créant le cahier de notes destination en période $lig_ccn_src->periode.</span><br />\n";
 										unset($id_cahier_notes_dest);
@@ -312,15 +312,15 @@ else {
 
 						if(isset($id_cahier_notes_dest)) {
 							$sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_cahier_notes_src';";
-							$res_dev_src=mysql_query($sql);
-							if(mysql_num_rows($res_dev_src)>0) {
-								while($lig_dev_src=mysql_fetch_object($res_dev_src)) {
+							$res_dev_src=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_dev_src)>0) {
+								while($lig_dev_src=mysqli_fetch_object($res_dev_src)) {
 									echo "Création de $lig_dev_src->nom_court ($lig_dev_src->date)&nbsp;: ";
 									$sql="INSERT INTO cn_devoirs SET id_racine='$id_cahier_notes_dest', 
 										id_conteneur='$id_cahier_notes_dest', 
-										nom_court='".mysql_real_escape_string($lig_dev_src->nom_court)."', 
-										nom_complet='".mysql_real_escape_string($lig_dev_src->nom_complet)."', 
-										description='".mysql_real_escape_string($lig_dev_src->description)."', 
+										nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+										nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+										description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 										facultatif='".$lig_dev_src->facultatif."', 
 										date='".$lig_dev_src->date."', 
 										coef='".$lig_dev_src->coef."', 
@@ -330,10 +330,10 @@ else {
 										display_parents_app='".$lig_dev_src->display_parents_app."', 
 										date_ele_resp='".$lig_dev_src->date_ele_resp."';";
 									//echo "$sql<br />\n";
-									$creation_dev=mysql_query($sql);
+									$creation_dev=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($creation_dev) {
 										echo "<span style='color:green;'>SUCCES</span>";
-										$id_devoir_dest=mysql_insert_id();
+										$id_devoir_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 										if(isset($notes_aleatoires)) {
 											$nb_notes=0;
@@ -345,7 +345,7 @@ else {
 												else {
 													$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$login_ele', note='$note.0';";
 												}
-												$insert_note=mysql_query($sql);
+												$insert_note=mysqli_query($GLOBALS["mysqli"], $sql);
 												if($insert_note) {
 													$nb_notes++;
 												}
@@ -365,55 +365,55 @@ else {
 
 								foreach($current_group_dest['eleves'][$lig_ccn_src->periode]['list'] as $login_ele) {
 									$sql="SELECT * FROM cn_notes_conteneurs WHERE login='$login_ele' AND id_conteneur='$id_cahier_notes_dest' AND statut='y'";
-									$res_moy_carnet=mysql_query($sql);
-									if(mysql_num_rows($res_moy_carnet)==0){
+									$res_moy_carnet=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_moy_carnet)==0){
 										$moy_carnet="-";
 									}
 									else{
-										$lig_moy_carnet=mysql_fetch_object($res_moy_carnet);
+										$lig_moy_carnet=mysqli_fetch_object($res_moy_carnet);
 										$moy_carnet=$lig_moy_carnet->note;
 
 										$sql="DELETE FROM matieres_notes WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-										$menage=mysql_query($sql);
+										$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 										$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
 										//echo "$sql<br />";
-										$insert=mysql_query($sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 										if($moy_carnet>=15) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Bon travail. Continuez.';";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 										elseif($moy_carnet>=12) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 										elseif($moy_carnet>=9) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='C\'est trop moyen. Vous ne faites pas le maximum.';";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 										elseif($moy_carnet>=6) {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Il faut se mettre au travail.';";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 										else {
 											$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 
 									}
@@ -428,20 +428,20 @@ else {
 					$cpt_cte=0;
 					$cpt_ctd=0;
 					$sql="SELECT * FROM ct_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
-					$res_cte=mysql_query($sql);
-					while($lig_cte=mysql_fetch_object($res_cte)) {
-						$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysql_real_escape_string($lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
+					$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($lig_cte=mysqli_fetch_object($res_cte)) {
+						$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
 						//echo "$sql<br />";
-						$insert=mysql_query($sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
-							$id_ct_cte=mysql_insert_id();
+							$id_ct_cte=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$sql="SELECT * FROM ct_documents WHERE id_ct='$id_ct_cte';";
 							//echo "$sql<br />";
-							$res_ctd=mysql_query($sql);
-							while($lig_ctd=mysql_fetch_object($res_ctd)) {
+							$res_ctd=mysqli_query($GLOBALS["mysqli"], $sql);
+							while($lig_ctd=mysqli_fetch_object($res_ctd)) {
 								// ATTENTION: On pointe vers le même fichier... donc attention en cas de suppression, c'est pour les deux.
 								$sql="INSERT INTO ct_documents SET id_ct='$id_ct_cte', titre='".$lig_ctd->titre."', taille='".$lig_ctd->taille."', emplacement='".$lig_ctd->emplacement."', visible_eleve_parent='".$lig_ctd->visible_eleve_parent."';";
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
 									$cpt_ctd++;
 								}
@@ -453,20 +453,20 @@ else {
 					$cpt_ctde=0;
 					$cpt_ctdd=0;
 					$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
-					$res_cte=mysql_query($sql);
-					while($lig_cte=mysql_fetch_object($res_cte)) {
-						$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysql_real_escape_string($lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
+					$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($lig_cte=mysqli_fetch_object($res_cte)) {
+						$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
 						//echo "$sql<br />";
-						$insert=mysql_query($sql);
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
-							$id_ct_cte=mysql_insert_id();
+							$id_ct_cte=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct_cte';";
 							//echo "$sql<br />";
-							$res_ctd=mysql_query($sql);
-							while($lig_ctd=mysql_fetch_object($res_ctd)) {
+							$res_ctd=mysqli_query($GLOBALS["mysqli"], $sql);
+							while($lig_ctd=mysqli_fetch_object($res_ctd)) {
 								// ATTENTION: On pointe vers le même fichier... donc attention en cas de suppression, c'est pour les deux.
 								$sql="INSERT INTO ct_devoirs_documents SET id_ct='$id_ct_cte', titre='".$lig_ctd->titre."', taille='".$lig_ctd->taille."', emplacement='".$lig_ctd->emplacement."', visible_eleve_parent='".$lig_ctd->visible_eleve_parent."';";
-								$insert=mysql_query($sql);
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
 									$cpt_ctdd++;
 								}
@@ -499,13 +499,13 @@ else {
 				$id_groupe_dest[$i]=$create;
 
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe_dest'";
-				$result_list_periodes=mysql_query($sql);
-				while($ligne_periode=mysql_fetch_object($result_list_periodes)){
+				$result_list_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($ligne_periode=mysqli_fetch_object($result_list_periodes)){
 					$reg_eleves[$ligne_periode->num_periode]=array();
 					//$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY periode,login";
 					$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe_dest' AND periode='$ligne_periode->num_periode' ORDER BY periode,login";
-					$result_list_eleves=mysql_query($sql);
-					while($ligne_eleve=mysql_fetch_object($result_list_eleves)){
+					$result_list_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($ligne_eleve=mysqli_fetch_object($result_list_eleves)){
 						$reg_eleves[$ligne_periode->num_periode][]=$ligne_eleve->login;
 					}
 				}
@@ -526,9 +526,9 @@ else {
 					$current_group_dest=get_group($id_groupe_dest[$i]);
 
 					$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY periode;";
-					$res_ccn_src=mysql_query($sql);
-					if(mysql_num_rows($res_ccn_src)>0) {
-						while($lig_ccn_src=mysql_fetch_object($res_ccn_src)) {
+					$res_ccn_src=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ccn_src)>0) {
+						while($lig_ccn_src=mysqli_fetch_object($res_ccn_src)) {
 							unset($id_cahier_notes_dest);
 
 							echo "<p><strong>Période $lig_ccn_src->periode</strong></p>\n";
@@ -537,20 +537,20 @@ else {
 							$id_cahier_notes_src=$lig_ccn_src->id_cahier_notes;
 
 							$sql="SELECT * FROM cn_cahier_notes WHERE id_groupe='".$id_groupe_dest[$i]."' AND periode='$lig_ccn_src->periode';";
-							$res_ccn_dest=mysql_query($sql);
-							if(mysql_num_rows($res_ccn_dest)>0) {
-								$lig_ccn_dest=mysql_fetch_object($res_ccn_dest);
+							$res_ccn_dest=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_ccn_dest)>0) {
+								$lig_ccn_dest=mysqli_fetch_object($res_ccn_dest);
 								$id_cahier_notes_dest=$lig_ccn_dest->id_cahier_notes;
 							}
 							else {
 								// Création d'un cahier de notes
-								$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".mysql_real_escape_string($current_group_dest["description"])."', nom_complet='". mysql_real_escape_string($current_group_dest["matiere"]["nom_complet"])."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
-								$creation_cnc=mysql_query($sql);
+								$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='". ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
+								$creation_cnc=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($creation_cnc) {
-									$id_cahier_notes_dest=mysql_insert_id();
+									$id_cahier_notes_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 									$sql="INSERT INTO cn_cahier_notes SET id_cahier_notes='$id_cahier_notes_dest', id_groupe='$id_groupe_dest[$i]', periode='$lig_ccn_src->periode';";
-									$creation_ccn=mysql_query($sql);
+									$creation_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$creation_ccn) {
 										echo "<span style='color:red'>Erreur en créant le cahier de notes destination en période $lig_ccn_src->periode.</span><br />\n";
 										unset($id_cahier_notes_dest);
@@ -563,15 +563,15 @@ else {
 
 							if(isset($id_cahier_notes_dest)) {
 								$sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_cahier_notes_src';";
-								$res_dev_src=mysql_query($sql);
-								if(mysql_num_rows($res_dev_src)>0) {
-									while($lig_dev_src=mysql_fetch_object($res_dev_src)) {
+								$res_dev_src=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_dev_src)>0) {
+									while($lig_dev_src=mysqli_fetch_object($res_dev_src)) {
 										echo "Création de $lig_dev_src->nom_court ($lig_dev_src->date)&nbsp;: ";
 										$sql="INSERT INTO cn_devoirs SET id_racine='$id_cahier_notes_dest', 
 											id_conteneur='$id_cahier_notes_dest', 
-											nom_court='".mysql_real_escape_string($lig_dev_src->nom_court)."', 
-											nom_complet='".mysql_real_escape_string($lig_dev_src->nom_complet)."', 
-											description='".mysql_real_escape_string($lig_dev_src->description)."', 
+											nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+											nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+											description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
 											facultatif='".$lig_dev_src->facultatif."', 
 											date='".$lig_dev_src->date."', 
 											coef='".$lig_dev_src->coef."', 
@@ -581,10 +581,10 @@ else {
 											display_parents_app='".$lig_dev_src->display_parents_app."', 
 											date_ele_resp='".$lig_dev_src->date_ele_resp."';";
 										//echo "$sql<br />\n";
-										$creation_dev=mysql_query($sql);
+										$creation_dev=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($creation_dev) {
 											echo "<span style='color:green;'>SUCCES</span>";
-											$id_devoir_dest=mysql_insert_id();
+											$id_devoir_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
 											if(isset($notes_aleatoires)) {
 												$nb_notes=0;
@@ -596,7 +596,7 @@ else {
 													else {
 														$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$login_ele', note='$note.0';";
 													}
-													$insert_note=mysql_query($sql);
+													$insert_note=mysqli_query($GLOBALS["mysqli"], $sql);
 													if($insert_note) {
 														$nb_notes++;
 													}
@@ -615,60 +615,60 @@ else {
 
 									foreach($reg_eleves[$lig_ccn_src->periode] as $login_ele) {
 										$sql="SELECT * FROM cn_notes_conteneurs WHERE login='$login_ele' AND id_conteneur='$id_cahier_notes_dest' AND statut='y'";
-										$res_moy_carnet=mysql_query($sql);
-										if(mysql_num_rows($res_moy_carnet)==0){
+										$res_moy_carnet=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_moy_carnet)==0){
 											$moy_carnet="-";
 										}
 										else{
-											$lig_moy_carnet=mysql_fetch_object($res_moy_carnet);
+											$lig_moy_carnet=mysqli_fetch_object($res_moy_carnet);
 											$moy_carnet=$lig_moy_carnet->note;
 
 											$sql="DELETE FROM matieres_notes WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-											$menage=mysql_query($sql);
+											$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											$sql="INSERT INTO matieres_notes SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', note='$moy_carnet';";
 											//echo "$sql<br />";
-											$insert=mysql_query($sql);
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 											if($moy_carnet>=15) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-												$menage=mysql_query($sql);
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Bon travail. Continuez.';";
 												//echo "$sql<br />";
-												$insert=mysql_query($sql);
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 											elseif($moy_carnet>=12) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-												$menage=mysql_query($sql);
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble correct. Vous pouvez mieux faire en vous investissant davantage.';";
 												//echo "$sql<br />";
-												$insert=mysql_query($sql);
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 											elseif($moy_carnet>=9) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-												$menage=mysql_query($sql);
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='C\'est trop moyen. Vous ne faites pas le maximum.';";
 												//echo "$sql<br />";
-												$insert=mysql_query($sql);
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 											elseif($moy_carnet>=6) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-												$menage=mysql_query($sql);
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Il faut se mettre au travail.';";
 												//echo "$sql<br />";
-												$insert=mysql_query($sql);
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 											elseif($moy_carnet>=0) {
 												$sql="DELETE FROM matieres_appreciations WHERE id_groupe='".$id_groupe_dest[$i]."' AND login='$login_ele' AND periode='$lig_ccn_src->periode';";
-												$menage=mysql_query($sql);
+												$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 												$sql="INSERT INTO matieres_appreciations SET id_groupe='".$id_groupe_dest[$i]."', login='$login_ele', periode='$lig_ccn_src->periode', appreciation='Ensemble faible. La bonne volonté est-elle au rendez-vous?';";
 												//echo "$sql<br />";
-												$insert=mysql_query($sql);
+												$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
 
 										}
@@ -683,21 +683,21 @@ else {
 						$cpt_cte=0;
 						$cpt_ctd=0;
 						$sql="SELECT * FROM ct_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
-						$res_cte=mysql_query($sql);
-						while($lig_cte=mysql_fetch_object($res_cte)) {
-							$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysql_real_escape_string($lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
+						$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_cte=mysqli_fetch_object($res_cte)) {
+							$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
 							//echo "$sql<br />";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
-								$id_ct_cte=mysql_insert_id();
+								$id_ct_cte=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 								$sql="SELECT * FROM ct_documents WHERE id_ct='$id_ct_cte';";
 								//echo "$sql<br />";
-								$res_ctd=mysql_query($sql);
-								while($lig_ctd=mysql_fetch_object($res_ctd)) {
+								$res_ctd=mysqli_query($GLOBALS["mysqli"], $sql);
+								while($lig_ctd=mysqli_fetch_object($res_ctd)) {
 									// ATTENTION: On pointe vers le même fichier... donc attention en cas de suppression, c'est pour les deux.
 									$sql="INSERT INTO ct_documents SET id_ct='$id_ct_cte', titre='".$lig_ctd->titre."', taille='".$lig_ctd->taille."', emplacement='".$lig_ctd->emplacement."', visible_eleve_parent='".$lig_ctd->visible_eleve_parent."';";
 									//echo "$sql<br />";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
 										$cpt_ctd++;
 									}
@@ -709,20 +709,20 @@ else {
 						$cpt_ctde=0;
 						$cpt_ctdd=0;
 						$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
-						$res_cte=mysql_query($sql);
-						while($lig_cte=mysql_fetch_object($res_cte)) {
-							$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysql_real_escape_string($lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
+						$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_cte=mysqli_fetch_object($res_cte)) {
+							$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
 							//echo "$sql<br />";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
-								$id_ct_cte=mysql_insert_id();
+								$id_ct_cte=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 								$sql="SELECT * FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct_cte';";
 								//echo "$sql<br />";
-								$res_ctd=mysql_query($sql);
-								while($lig_ctd=mysql_fetch_object($res_ctd)) {
+								$res_ctd=mysqli_query($GLOBALS["mysqli"], $sql);
+								while($lig_ctd=mysqli_fetch_object($res_ctd)) {
 									// ATTENTION: On pointe vers le même fichier... donc attention en cas de suppression, c'est pour les deux.
 									$sql="INSERT INTO ct_devoirs_documents SET id_ct='$id_ct_cte', titre='".$lig_ctd->titre."', taille='".$lig_ctd->taille."', emplacement='".$lig_ctd->emplacement."', visible_eleve_parent='".$lig_ctd->visible_eleve_parent."';";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
 										$cpt_ctdd++;
 									}

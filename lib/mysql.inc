@@ -1,7 +1,7 @@
 <?php
 
 // Si l'api mysql est désactivée ou absente
-if (!function_exists("mysql_connect")) require("mysql2mysqli.php");
+if (!function_exists("mysqli_connect")) require("mysql2mysqli.php");
 
 /**
  * Initialisation de mysql
@@ -17,24 +17,8 @@ if (!function_exists("mysql_connect")) require("mysql2mysqli.php");
  * - Including this file connects you to the database, or exits on error
  * 
  */
-// Etablir la connexion à la base
-if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
-  // On utilise le module pdo de php pour entrer en contact avec la base
-  $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
 
-}
-if (!isset($db_nopersist) || $db_nopersist)
-    $db_c = mysql_connect($dbHost, $dbUser, $dbPass,true);
-else
-    $db_c = mysql_pconnect($dbHost, $dbUser, $dbPass,true);
-
-if (!$db_c || !mysql_select_db ($dbDb))
-{
-    echo "\n<p>Erreur grave: Echec de la connexion à la base de données";
-    exit;
-}
-
-mysql_query("SET NAMES UTF8");
+mysqli_query($GLOBALS["mysqli"], "SET NAMES UTF8");
 
 /** Free a results handle. You need not call this if you call sql_row or
  * sql_row_keyed until the row returns 0, since sql_row frees the results
@@ -44,7 +28,7 @@ mysql_query("SET NAMES UTF8");
  */
 function sql_free ($r)
 {
-    mysql_free_result($r);
+    ((mysqli_free_result($r) || (is_object($r) && (get_class($r) == "mysqli_result"))) ? true : false);
 }
 
 /**
@@ -57,7 +41,7 @@ function sql_free ($r)
  */
 function sql_command ($sql)
 {
-    if (mysql_query($sql)) return mysql_affected_rows();
+    if (mysqli_query($GLOBALS["mysqli"], $sql)) return mysqli_affected_rows($GLOBALS["mysqli"]);
     return -1;
 }
 
@@ -74,13 +58,14 @@ function sql_command ($sql)
  */
 function sql_query1 ($sql)
 {
-    $r = mysql_query($sql);
+    $r = mysqli_query($GLOBALS["mysqli"], $sql);
     if (! $r) return -1;
-    if (mysql_num_rows($r) != 1 || mysql_num_fields($r) != 1
-        || ($result = mysql_result($r, 0, 0)) == "") $result = -1;
-    mysql_free_result($r);
+    if (mysqli_num_rows($r) != 1 || (($___mysqli_tmp = mysqli_num_fields($r)) ? $___mysqli_tmp : false) != 1
+        || ($result = old_mysql_result($r, 0, 0)) == "") $result = -1;
+    ((mysqli_free_result($r) || (is_object($r) && (get_class($r) == "mysqli_result"))) ? true : false);
     return $result;
 }
+
 
 /**
  * Execute an SQL query. 
@@ -93,7 +78,7 @@ function sql_query1 ($sql)
  */
 function sql_query ($sql)
 {
-    $r = mysql_query($sql);
+    $r = mysqli_query($GLOBALS["mysqli"], $sql);
     return $r;
 }
 
@@ -106,13 +91,13 @@ function sql_query ($sql)
  */
 function sql_row ($r, $i)
 {
-    if ($i >= mysql_num_rows($r))
+    if ($i >= mysqli_num_rows($r))
     {
-        mysql_free_result($r);
+        ((mysqli_free_result($r) || (is_object($r) && (get_class($r) == "mysqli_result"))) ? true : false);
         return 0;
     }
-    mysql_data_seek($r, $i);
-    return mysql_fetch_row($r);
+    mysqli_data_seek($r,  $i);
+    return mysqli_fetch_row($r);
 }
 
 /** 
@@ -126,13 +111,13 @@ function sql_row ($r, $i)
  */
 function sql_row_keyed ($r, $i)
 {
-    if ($i >= mysql_num_rows($r))
+    if ($i >= mysqli_num_rows($r))
     {
-        mysql_free_result($r);
+        ((mysqli_free_result($r) || (is_object($r) && (get_class($r) == "mysqli_result"))) ? true : false);
         return 0;
     }
-    mysql_data_seek($r, $i);
-    return mysql_fetch_array($r);
+    mysqli_data_seek($r,  $i);
+    return mysqli_fetch_array($r);
 }
 
 /** 
@@ -142,7 +127,7 @@ function sql_row_keyed ($r, $i)
  */
 function sql_count ($r)
 {
-    return mysql_num_rows($r);
+    return mysqli_num_rows($r);
 }
 
 /**
@@ -155,7 +140,7 @@ function sql_count ($r)
  */
 function sql_insert_id($table, $field)
 {
-    return mysql_insert_id();
+    return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 }
 
 /** Return the text of the last error message.
@@ -164,7 +149,7 @@ function sql_insert_id($table, $field)
  */
 function sql_error()
 {
-    return mysql_error();
+    return ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 }
 
 /**

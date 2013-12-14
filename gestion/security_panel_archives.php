@@ -172,18 +172,18 @@ $sql.="t.date DESC ".$requete1;
 
 //echo $sql;
 
-$req = mysql_query($sql);
-if (!$req) echo mysql_error();
+$req = mysqli_query($GLOBALS["mysqli"], $sql);
+if (!$req) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 $alt=1;
-while ($row = mysql_fetch_object($req)) {
+while ($row = mysqli_fetch_object($req)) {
 	$alt=$alt*(-1);
 	$user = null;
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	if ($row->login != "-") {
 		// On récupère des informations sur l'utilisateur :
-		$user_req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
-		$user = mysql_fetch_object($user_req);
+		$user_req = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte, u.observation_securite FROM utilisateurs u WHERE (u.login = '".$row->login . "')");
+		$user = mysqli_fetch_object($user_req);
 	}
 
 	if (!empty($user)) {

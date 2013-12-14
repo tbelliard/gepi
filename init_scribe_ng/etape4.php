@@ -135,7 +135,7 @@ if ($_POST['step'] == "4") {
               if ($eleves_de_la_classe != null) {
                 foreach($eleves_de_la_classe as $eleve) {
                   $sql_ajout_rel_prof_princ = "INSERT INTO j_eleves_professeurs VALUES('".$eleve->getLogin()."','$uid_as_login',".$classe_courante[0]->getId().")";
-                  mysql_query($sql_ajout_rel_prof_princ);
+                  mysqli_query($GLOBALS["mysqli"], $sql_ajout_rel_prof_princ);
                 }
               }
             }

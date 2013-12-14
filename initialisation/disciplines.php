@@ -107,7 +107,7 @@ if (!isset($step1)) {
     $j=0;
     $flag=0;
     while (($j < count($liste_tables_del)) and ($flag==0)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
             $flag=1;
         }
         $j++;
@@ -131,8 +131,8 @@ if (!isset($step1)) {
 if (!isset($is_posted)) {
     $j=0;
     while ($j < count($liste_tables_del)) {
-        if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-            $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+        if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+            $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
         }
         $j++;
     }
@@ -193,17 +193,17 @@ if (!isset($is_posted)) {
                 for($i = 0; $i < count($tabchamps); $i++) {
                     $affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[$tabindice[$i]]))));
                 }
-                $verif = mysql_query("select matiere, nom_complet from matieres where matiere='$affiche[0]'");
-                $resverif = mysql_num_rows($verif);
+                $verif = mysqli_query($GLOBALS["mysqli"], "select matiere, nom_complet from matieres where matiere='$affiche[0]'");
+                $resverif = mysqli_num_rows($verif);
                 if($resverif == 0) {
-                    $req = mysql_query("insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
+                    $req = mysqli_query($GLOBALS["mysqli"], "insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
                     if(!$req) {
-                        $nb_reg_no++; echo mysql_error();
+                        $nb_reg_no++; echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
                     } else {
                         echo "<tr><td><p><font color='red'>$affiche[0]</font></p></td><td><p>$affiche[1]</p></td></tr>";
                     }
                 } else {
-                    $nom_complet = mysql_result($verif,0,'nom_complet');
+                    $nom_complet = old_mysql_result($verif,0,'nom_complet');
                     echo "<tr><td><p><font color='green'>$affiche[0]</font></p></td><td><p>$nom_complet</p></td></tr>";
                 }
             }

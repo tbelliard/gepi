@@ -40,16 +40,16 @@ if (!checkAccess()) {
     die();
 
 }
-$periode_query = mysql_query("select max(num_periode) max from periodes");
-$max_periode = mysql_result($periode_query, 0, 'max');
+$periode_query = mysqli_query($GLOBALS["mysqli"], "select max(num_periode) max from periodes");
+$max_periode = old_mysql_result($periode_query, 0, 'max');
 
 // On dresse la liste de toutes les classes non virtuelles
-$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-$nb_classe = mysql_num_rows($classes_list);
+$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+$nb_classe = mysqli_num_rows($classes_list);
 
 // On va chercher les matières existantes
-$matieres_list = mysql_query("SELECT * FROM matieres ORDER BY matiere");
-$nb_matieres = mysql_num_rows($matieres_list);
+$matieres_list = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres ORDER BY matiere");
+$nb_matieres = mysqli_num_rows($matieres_list);
 
 
 if (isset($_POST['is_posted'])) {
@@ -59,13 +59,13 @@ if (isset($_POST['is_posted'])) {
     $reg_ok = '';
     $nbc = 0;
     while ($nbc < $nb_classe) {
-        $id_classe = mysql_result($classes_list,$nbc,'id');
+        $id_classe = old_mysql_result($classes_list,$nbc,'id');
         $temp = "case_".$id_classe;
         if (isset($_POST[$temp])) {
             // boucle sur les matières
             $i = 0;
             while ($i < $nb_matieres) {
-                $current_matiere = @mysql_result($matieres_list, $i, "matiere");
+                $current_matiere = @old_mysql_result($matieres_list, $i, "matiere");
                 if (isset($_POST[$current_matiere.'_priorite']) and ($_POST[$current_matiere.'_priorite']!='')) {
         //=============================
         // MODIF: boireaus
@@ -83,7 +83,7 @@ if (isset($_POST['is_posted'])) {
                     ";
             //echo "$sql<br />\n";
             // BIZARRE: Il ajoute 10 ???
-                    $reg_data = mysql_query($sql);
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
         //=============================
                     if (!$reg_data) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                 }
@@ -95,13 +95,13 @@ if (isset($_POST['is_posted'])) {
                     where
                     (jgc.id_classe='".$id_classe."' and jgc.id_groupe = jgm.id_groupe and jgm.id_matiere='".$current_matiere."')
                     ";
-                    $reg_data = mysql_query($sql);
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
                     if (!$reg_data) $reg_ok = 'no'; else $reg_ok = 'yes' ;
                 }
 
                 // Le coef
                 if (isset($_POST[$current_matiere.'_coef']) and ($_POST[$current_matiere.'_coef']!='')) {
-                    $reg_data = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm, groupes g
+                    $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm, groupes g
                     SET jgc.coef='".$_POST[$current_matiere.'_coef']."' , g.recalcul_rang='y'
                     where
                     (jgc.id_classe='".$id_classe."' and jgc.id_groupe = jgm.id_groupe and g.id = jgm.id_groupe and jgm.id_matiere='".$current_matiere."')
@@ -148,8 +148,8 @@ echo "<p><input type='button' name='cochetout' value='Tout cocher' onClick='coch
 
 $nbc = 0;
 while ($nbc < $nb_classe) {
-    $tab_id_classe[$nbc] = mysql_result($classes_list,$nbc,'id');;
-    $tab_nom_classe[$nbc] = mysql_result($classes_list,$nbc,'classe');
+    $tab_id_classe[$nbc] = old_mysql_result($classes_list,$nbc,'id');;
+    $tab_nom_classe[$nbc] = old_mysql_result($classes_list,$nbc,'classe');
     $nbc++;
 }
 $nb_ligne = intval($nb_classe/3);
@@ -240,15 +240,15 @@ echo "<script type='text/javascript' language='javascript'>
 $i = 0;
 $alt=1;
 while ($i < $nb_matieres){
-    $current_matiere = @mysql_result($matieres_list, $i, "matiere");
-    $current_matiere_nom = @mysql_result($matieres_list, $i, "nom_complet");
-    $matquery = mysql_query("select 1=1 from j_groupes_matieres jgm, j_groupes_classes jgc, classes c
+    $current_matiere = @old_mysql_result($matieres_list, $i, "matiere");
+    $current_matiere_nom = @old_mysql_result($matieres_list, $i, "nom_complet");
+    $matquery = mysqli_query($GLOBALS["mysqli"], "select 1=1 from j_groupes_matieres jgm, j_groupes_classes jgc, classes c
     where (
     c.id = jgc.id_classe and
     jgc.id_groupe = jgm.id_groupe and
     jgm.id_matiere = '".$current_matiere."'
     )");
-    $nb_mat = mysql_num_rows($matquery);
+    $nb_mat = mysqli_num_rows($matquery);
     if ($nb_mat != 0) {
 		$alt=$alt*(-1);
         echo "<tr class='lig$alt white_hover'><td>$current_matiere</td>\n";
@@ -274,10 +274,10 @@ while ($i < $nb_matieres){
         // Catégorie de matière
         echo "<td>";
         echo "<select size=1 name=\"".$current_matiere."_categorie\">\n";
-        $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
+        $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court FROM matieres_categories");
 
         echo "<option value=''>-----</option>";
-        while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+        while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
             echo "<option value='".$row["id"]."'>".html_entity_decode($row["nom_court"])."</option>";
         }
         echo "</select>";
@@ -294,8 +294,8 @@ $i++;
 <?php
 /*$i = 0;
 while ($i < $nb_matieres){
-    $current_matiere = @mysql_result($matieres_list, $i, "matiere");
-    $current_matiere_nom = @mysql_result($matieres_list, $i, "nom_complet");
+    $current_matiere = @old_mysql_result($matieres_list, $i, "matiere");
+    $current_matiere_nom = @old_mysql_result($matieres_list, $i, "nom_complet");
         echo "<DIV ID=\"".$current_matiere."\" STYLE=\"position:absolute; visibility: hidden; left: 300px; top: 10px;\">";
     echo "<table width=\"200\" border=\"1\" cols=\"1\" cellpadding=\"1\" cellspacing=\"1\" bgcolor=\"#FFFFFF\">";
     echo "<tr><td>
@@ -310,7 +310,7 @@ while ($i < $nb_matieres){
     $nb_mat = mysql_num_rows($matquery);
     $k = 0;
     while ($k < $nb_mat) {
-        $classe = mysql_result($matquery, $k, 'classe');
+        $classe = old_mysql_result($matquery, $k, 'classe');
         echo "<tr><td>".$classe."</td></tr>";
         $k++;
     }

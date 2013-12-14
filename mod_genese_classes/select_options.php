@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/select_options.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/select_options.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Choix des options',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -77,7 +77,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 
 	$sql="DELETE FROM gc_options WHERE projet='$projet';";
 	//echo "$sql<br />";
-	$suppr=mysql_query($sql);
+	$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(isset($lv1)) {
 		$enregistrements_inseres=array();
@@ -86,7 +86,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 			if(($lv1[$i]!="")&&(!in_array($lv1[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv1[$i]."', type='lv1';";
 				//echo "$sql<br />";
-				if($insert=mysql_query($sql)) {$nb_reg1++;} else {$nb_err++;}
+				if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg1++;} else {$nb_err++;}
 				$enregistrements_inseres[]=$lv1[$i];
 			}
 		}
@@ -99,7 +99,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 			if(($lv2[$i]!="")&&(!in_array($lv2[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv2[$i]."', type='lv2';";
 				//echo "$sql<br />";
-				if($insert=mysql_query($sql)) {$nb_reg2++;} else {$nb_err++;}
+				if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg2++;} else {$nb_err++;}
 				$enregistrements_inseres[]=$lv2[$i];
 			}
 		}
@@ -112,7 +112,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 			if(($lv3[$i]!="")&&(!in_array($lv3[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$lv3[$i]."', type='lv3';";
 				//echo "$sql<br />";
-				if($insert=mysql_query($sql)) {$nb_reg3++;} else {$nb_err++;}
+				if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg3++;} else {$nb_err++;}
 				$enregistrements_inseres[]=$lv3[$i];
 			}
 		}
@@ -125,7 +125,7 @@ if((isset($choix_options))&&((isset($lv1))||(isset($lv2))||(isset($lv3))||(isset
 			if(($autre_option[$i]!="")&&(!in_array($autre_option[$i],$enregistrements_inseres))) {
 				$sql="INSERT INTO gc_options SET projet='$projet', opt='".$autre_option[$i]."', type='autre';";
 				//echo "$sql<br />";
-				if($insert=mysql_query($sql)) {$nb_reg4++;} else {$nb_err++;}
+				if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg4++;} else {$nb_err++;}
 				$enregistrements_inseres[]=$autre_option[$i];
 			}
 		}
@@ -171,16 +171,16 @@ echo "</td>\n";
 echo "<td>\n";
 $cpt=0;
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "Aucune LV1<br />\n";
 }
 else {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
-		$nb_ele_opt=mysql_query($sql);
-		echo "<input type='checkbox' name='lv1[]' id='lv1_$cpt' value='$lig->opt' checked /><label for='lv1_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
+		$nb_ele_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+		echo "<input type='checkbox' name='lv1[]' id='lv1_$cpt' value='$lig->opt' checked /><label for='lv1_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysqli_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -190,10 +190,10 @@ echo "<a href='#' onclick=\"afficher_div('ajout_lv1','y',100,100);\">Ajouter</a>
 $titre="Ajout LV1";
 $texte_checkbox_matieres="";
 $sql="SELECT matiere FROM matieres ORDER BY matiere;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$texte_checkbox_matieres.="<input type='checkbox' name='lv1[]' id='lv1_$cpt' value='$lig->matiere' /><label for='lv1_$cpt'>$lig->matiere</label><br />";
 		$cpt++;
 	}
@@ -212,16 +212,16 @@ echo "</td>\n";
 echo "<td>\n";
 $cpt=0;
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv2' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "Aucune LV2<br />\n";
 }
 else {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
-		$nb_ele_opt=mysql_query($sql);
-		echo "<input type='checkbox' name='lv2[]' id='lv2_$cpt' value='$lig->opt' checked /><label for='lv2_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
+		$nb_ele_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+		echo "<input type='checkbox' name='lv2[]' id='lv2_$cpt' value='$lig->opt' checked /><label for='lv2_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysqli_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -231,10 +231,10 @@ echo "<a href='#' onclick=\"afficher_div('ajout_lv2','y',100,100);\">Ajouter</a>
 $titre="Ajout LV2";
 $texte_checkbox_matieres="";
 $sql="SELECT matiere FROM matieres ORDER BY matiere;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$texte_checkbox_matieres.="<input type='checkbox' name='lv2[]' id='lv2_$cpt' value='$lig->matiere' /><label for='lv2_$cpt'>$lig->matiere</label><br />";
 		$cpt++;
 	}
@@ -252,16 +252,16 @@ echo "</td>\n";
 echo "<td>\n";
 $cpt=0;
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='lv3' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "Aucune lv3<br />\n";
 }
 else {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
-		$nb_ele_opt=mysql_query($sql);
-		echo "<input type='checkbox' name='lv3[]' id='lv3_$cpt' value='$lig->opt' checked /><label for='lv3_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
+		$nb_ele_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+		echo "<input type='checkbox' name='lv3[]' id='lv3_$cpt' value='$lig->opt' checked /><label for='lv3_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysqli_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -271,10 +271,10 @@ echo "<a href='#' onclick=\"afficher_div('ajout_lv3','y',100,100);\">Ajouter</a>
 $titre="Ajout lv3";
 $texte_checkbox_matieres="";
 $sql="SELECT matiere FROM matieres ORDER BY matiere;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$texte_checkbox_matieres.="<input type='checkbox' name='lv3[]' id='lv3_$cpt' value='$lig->matiere' /><label for='lv3_$cpt'>$lig->matiere</label><br />";
 		$cpt++;
 	}
@@ -292,16 +292,16 @@ echo "</td>\n";
 echo "<td>\n";
 $cpt=0;
 $sql="SELECT * FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "Aucune autre option<br />\n";
 }
 else {
 	//$cpt=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE liste_opt LIKE '%|$lig->opt|%' AND projet='$projet';";
-		$nb_ele_opt=mysql_query($sql);
-		echo "<input type='checkbox' name='autre_option[]' id='autre_option_$cpt' value='$lig->opt' checked /><label for='autre_option_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysql_num_rows($nb_ele_opt).")</em></label><br />\n";
+		$nb_ele_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+		echo "<input type='checkbox' name='autre_option[]' id='autre_option_$cpt' value='$lig->opt' checked /><label for='autre_option_$cpt'>$lig->opt <em title=\"Nombre d'élèves suivant cette option\" style='color:green'>(".mysqli_num_rows($nb_ele_opt).")</em></label><br />\n";
 		$cpt++;
 	}
 }
@@ -314,9 +314,9 @@ $texte_checkbox_matieres="";
 $texte_checkbox_matieres.="<input type='text' name='autre_option[]' id='autre_option_$cpt' value='' /><br />\n";
 $cpt++;
 $sql="SELECT matiere FROM matieres ORDER BY matiere;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
-	while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
 		$texte_checkbox_matieres.="<input type='checkbox' name='autre_option[]' id='autre_option_$cpt' value='$lig->matiere' /><label for='autre_option_$cpt'>$lig->matiere</label><br />\n";
 		$cpt++;
 	}

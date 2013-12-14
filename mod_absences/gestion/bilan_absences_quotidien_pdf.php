@@ -214,15 +214,15 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
 
 	// on recherche l'horaire d'ouverture et de fermetture de l'établissement
-	$requete = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement
+	$requete = mysqli_query($GLOBALS["mysqli"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement
 				FROM horaires_etablissement
 				WHERE jour_horaire_etablissement = '" . $jour_choisi . "'");
-	$nbre_rep = mysql_num_rows($requete);
+	$nbre_rep = mysqli_num_rows($requete);
 	if ($nbre_rep >= 1)
 	{
 
 		// Avec le résultat, on calcule les timestamps UNIX
-		$req = mysql_fetch_array($requete);
+		$req = mysqli_fetch_array($requete);
 		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
@@ -275,8 +275,8 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// compteur de classe temporaire
 	$cpt_classe = 0;
 
-	$execution_classes = mysql_query($requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.mysql_error());
-	while ( $donnee_classes = mysql_fetch_array($execution_classes) )
+	$execution_classes = mysqli_query($GLOBALS["mysqli"], $requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while ( $donnee_classes = mysqli_fetch_array($execution_classes) )
 	{
 
 		$tab_classe[$cpt_classe] = $donnee_classes['classe'];
@@ -297,9 +297,9 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$eleve_precedent = '';
 	$classe_precedent = '';
 
-	$execution = mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-	while ( $donnee = mysql_fetch_array($execution))
+	while ( $donnee = mysqli_fetch_array($execution))
 	{
 
 		$passe = 0;

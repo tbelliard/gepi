@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/index.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/index.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Accueil',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 
@@ -75,7 +75,7 @@ projet VARCHAR( 255 ) NOT NULL ,
 commentaire TEXT NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_divisions (
 id int(11) unsigned NOT NULL auto_increment,
@@ -85,7 +85,7 @@ classe varchar(100) NOT NULL default '',
 statut enum( 'actuelle', 'future', 'red', 'arriv' ) NOT NULL DEFAULT 'future',
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_options (
 id int(11) unsigned NOT NULL auto_increment,
@@ -97,7 +97,7 @@ exclusive smallint(6) unsigned NOT NULL,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_options_classes (
 id int(11) unsigned NOT NULL auto_increment,
@@ -107,7 +107,7 @@ classe_future VARCHAR( 255 ) NOT NULL ,
 commentaire TEXT NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 $sql="CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (
 login VARCHAR( 50 ) NOT NULL,
@@ -116,7 +116,7 @@ projet VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( login , projet )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 
@@ -129,7 +129,7 @@ type VARCHAR(255) NOT NULL,
 valeur varchar(255) NOT NULL,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 $sql="CREATE TABLE IF NOT EXISTS gc_eleves_options (
@@ -147,15 +147,15 @@ liste_opt VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 //echo "$sql<br />";
-$create_table=mysql_query($sql);
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
-$req_test=mysql_query("SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["mysqli"], "SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test<2){
-  $query=mysql_query("ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
+  $query=mysqli_query($GLOBALS["mysqli"], "ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
   if ($query) {
-    $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
+    $query=mysqli_query($GLOBALS["mysqli"], "ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
     if (!$query) {
       $msg="Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />";
     }
@@ -181,10 +181,10 @@ if(isset($projet)) {
 		$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 		if($projet!="") {
 			$sql="SELECT 1=1 FROM gc_projets WHERE projet='$projet';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO gc_projets SET projet='$projet', commentaire='';";
-				if($insert=mysql_query($sql)) {$msg="Le projet $projet a été créé.";}
+				if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {$msg="Le projet $projet a été créé.";}
 			}
 			else {
 				$msg="Un projet du même nom '$projet' existe déjà.\n";
@@ -198,20 +198,20 @@ if(isset($projet)) {
 		$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 		if($projet!="") {
 			$sql="DELETE FROM gc_projets WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			// Il y aura d'autres tables à nettoyer
 			$sql="DELETE FROM gc_divisions WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$sql="DELETE FROM gc_options WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$sql="DELETE FROM gc_eleves_options WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$sql="DELETE FROM gc_affichages WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$sql="DELETE FROM gc_ele_arriv_red WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$sql="DELETE FROM gc_options_classes WHERE projet='$projet';";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			$msg="Suppression du projet '$projet' effectuée.\n";
 		}
 		else {
@@ -227,10 +227,10 @@ if(isset($projet)) {
 			$projet=my_ereg_replace("[^A-Za-z0-9_]","",$projet);
 			if($projet!="") {
 				$sql="SELECT 1=1 FROM gc_projets WHERE projet='$projet';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0) {
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==0) {
 					$sql="INSERT INTO gc_projets SET projet='$projet', commentaire='';";
-					if($insert=mysql_query($sql)) {
+					if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 						$msg="Le projet $projet a été créé.";
 
 						//,'gc_projets'
@@ -238,12 +238,12 @@ if(isset($projet)) {
 						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes');
 						for($j=0;$j<count($tab_table);$j++) {
 							$sql="SELECT * FROM ".$tab_table[$j]." WHERE projet='$projet_original';";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							unset($nom_champ);
-							for($i=0;$i<mysql_num_fields($res);$i++){
-								$nom_champ[$i]=mysql_field_name($res,$i);
+							for($i=0;$i<(($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);$i++){
+								$nom_champ[$i]=((($___mysqli_tmp = mysqli_fetch_field_direct($res, 0)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false);
 							}
-							while($tab=mysql_fetch_array($res)) {
+							while($tab=mysqli_fetch_array($res)) {
 								$sql="INSERT INTO ".$tab_table[$j]." SET projet='$projet'";
 								for($i=0;$i<count($nom_champ);$i++) {
 									// Pour la recopie, on exclut les champs nom initial du projet et id (auto_increment)
@@ -251,7 +251,7 @@ if(isset($projet)) {
 								}
 								$sql.=";";
 								//echo "$sql<br />\n";
-								$res2=mysql_query($sql);
+								$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 						}
 					}
@@ -311,14 +311,14 @@ if(!isset($projet)) {
 	echo "</form>\n";
 
 	$sql="SELECT * FROM gc_projets ORDER BY projet;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_projet'>\n";
 		echo "<tr class='lig-1'>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo "Sélectionner un projet existant&nbsp;: </td><td style='text-align:left;'>";
 		$lignes_select_projet="<select name='projet'>\n";
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			$lignes_select_projet.="<option value='$lig->projet'>$lig->projet</option>\n";
 		}
 		$lignes_select_projet.="</select>\n";
@@ -376,9 +376,9 @@ if(!isset($projet)) {
 else {
 	echo " | <a href='index.php'>Autre projet</a>&nbsp;: ";
 	$sql="SELECT DISTINCT projet FROM gc_projets ORDER BY projet;";
-	$res_proj=mysql_query($sql);
+	$res_proj=mysqli_query($GLOBALS["mysqli"], $sql);
 	echo "<select onchange='document.form1.submit();' name='projet'>\n";
-	while ($lig_proj=mysql_fetch_object($res_proj)) {
+	while ($lig_proj=mysqli_fetch_object($res_proj)) {
 		echo "<option value='$lig_proj->projet'";
 		if($lig_proj->projet==$projet) {echo "selected";}
 		echo ">$lig_proj->projet</option>\n";

@@ -99,13 +99,13 @@ if ($_POST['step'] == "6") {
           
           # On initialisation la liste des élèves de la classe
           
-          $students_query = mysql_query("SELECT login FROM j_eleves_classes WHERE 
+          $students_query = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE 
                                         id_classe = '".$classe_courante->getId()."' AND
                                         periode = '1'");
           
           unset($students);
           $students = array();
-          while ($row = mysql_fetch_object($students_query)) {
+          while ($row = mysqli_fetch_object($students_query)) {
             $students[] = $row->login;
           }
           
@@ -120,16 +120,16 @@ if ($_POST['step'] == "6") {
               
               foreach($matieres as $matiere) {
                 
-                  $rec_groupe = mysql_query("INSERT INTO groupes SET
+                  $rec_groupe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO groupes SET
                       name = '".$matiere->getNomComplet()."',
                       description = '".$matiere->getNomComplet()."'");
-                  $id_groupe = mysql_insert_id();
+                  $id_groupe = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
                   
-                  $rec_mat = mysql_query("INSERT INTO j_groupes_matieres SET
+                  $rec_mat = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_matieres SET
                       id_matiere = '".$matiere->getMatiere()."',
                       id_groupe = '".$id_groupe."'");
                   
-                  $rec_prof = mysql_query("INSERT INTO j_groupes_professeurs SET
+                  $rec_prof = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_professeurs SET
                       login = '".$prof->getLogin()."',
                       id_groupe = '".$id_groupe."'");
                       
@@ -137,7 +137,7 @@ if ($_POST['step'] == "6") {
                   foreach ($students as $student) {
                     
                     foreach ($classe_courante->getPeriodeNotes() as $periode) {
-                      $rec = mysql_query("INSERT INTO j_eleves_groupes SET
+                      $rec = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET
                                   login = '".$student."',
                                   id_groupe = '".$id_groupe."',
                                   periode = '".$periode->getNumPeriode()."'");
@@ -146,7 +146,7 @@ if ($_POST['step'] == "6") {
                   
                   
                   # Association à la classe
-                  $rec = mysql_query("INSERT INTO j_groupes_classes SET
+                  $rec = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_classes SET
                                   id_groupe = '".$id_groupe."',
                                   id_classe = '".$classe_courante->getId()."'");
                   

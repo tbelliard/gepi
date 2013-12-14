@@ -16,8 +16,6 @@
 
 // Etablir la connexion à la base
 
-global $mysqli;
-
 if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
   // On utilise le module pdo de php pour entrer en contact avec la base
   $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);

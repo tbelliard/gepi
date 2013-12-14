@@ -64,7 +64,7 @@ if (isset($_POST['is_posted'])) {
         /* NON! On ne fait qu'une mise à jour de la liste, le cas échéant...
         $j=0;
         while ($j < count($liste_tables_del)) {
-            if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+            if (old_mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
                 $del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
             }
             $j++;
@@ -77,17 +77,17 @@ if (isset($_POST['is_posted'])) {
             $matiere = $info[$i]["cn"][0];
             $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
             $matiere = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
-            $get_matieres = mysql_query("SELECT matiere FROM matieres");
-            $nbmat = mysql_num_rows($get_matieres);
+            $get_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere FROM matieres");
+            $nbmat = mysqli_num_rows($get_matieres);
             $matieres = array();
             for($j=0;$j<$nbmat;$j++) {
-                $matieres[] = mysql_result($get_matieres, $j, "matiere");
+                $matieres[] = old_mysql_result($get_matieres, $j, "matiere");
             }
 
             if (!in_array($matiere, $matieres)) {
-                $reg_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
+                $reg_matiere = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres SET matiere='".$matiere."',nom_complet='".($_POST['reg_nom_complet'][$matiere])."', priority='11',matiere_aid='n',matiere_atelier='n'");
             } else {
-                $reg_matiere = mysql_query("UPDATE matieres SET nom_complet='".($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
+                $reg_matiere = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET nom_complet='".($_POST['reg_nom_complet'][$matiere])."' WHERE matiere = '" . $matiere . "'");
             }
             if (!$reg_matiere) echo "<p>Erreur lors de l'enregistrement de la matière $matiere.";
             $new_matieres[] = $matiere;
@@ -95,9 +95,9 @@ if (isset($_POST['is_posted'])) {
             // On regarde maintenant les affectations professeur/matière
             for($k=0;$k<$info[$i]["memberuid"]["count"];$k++) {
                 $member = $info[$i]["memberuid"][$k];
-                $test = mysql_result(mysql_query("SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
+                $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_professeurs_matieres WHERE (id_professeur = '" . $member . "' and id_matiere = '" . $matiere . "')"), 0);
                 if ($test == 0) {
-                    $res = mysql_query("INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "INSERT into j_professeurs_matieres SET id_professeur = '" . $member . "', id_matiere = '" . $matiere . "'");
                 }
             }
 
@@ -108,8 +108,8 @@ if (isset($_POST['is_posted'])) {
         $to_remove = array_diff($matieres, $new_matieres);
 
         foreach($to_remove as $delete) {
-            $res = mysql_query("DELETE from matieres WHERE matiere = '" . $delete . "'");
-            $res2 = mysql_query("DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
+            $res = mysqli_query($GLOBALS["mysqli"], "DELETE from matieres WHERE matiere = '" . $delete . "'");
+            $res2 = mysqli_query($GLOBALS["mysqli"], "DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
         }
 
         echo "<p>Opération effectuée.</p>";
@@ -135,8 +135,8 @@ if (isset($_POST['is_posted'])) {
                 $matiere = traitement_magic_quotes(corriger_caracteres(trim($matiere)));
                 $nom_court = preg_replace("/[^A-Za-z0-9.\-]/","",strtoupper($matiere));
                 $nom_long = htmlspecialchars($matiere);
-                $test_exist = mysql_query("SELECT * FROM matieres WHERE matiere='$nom_court'");
-                $nb_test_matiere_exist = mysql_num_rows($test_exist);
+                $test_exist = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres WHERE matiere='$nom_court'");
+                $nb_test_matiere_exist = mysqli_num_rows($test_exist);
 
                 if ($nb_test_matiere_exist==0) {
                     $disp_nom_court = "<font color=red>".$nom_court."</font>";

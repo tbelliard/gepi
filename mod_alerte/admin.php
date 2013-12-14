@@ -42,8 +42,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_alerte/admin.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_alerte/admin.php',
 administrateur='V',
 professeur='F',
@@ -55,7 +55,7 @@ secours='F',
 autre='F',
 description='Dispositif d alerte : Administration du module',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -160,7 +160,7 @@ if (isset($_POST['is_posted2'])) {
 	else {
 		$sql="DELETE FROM messagerie WHERE date_msg < '$annee-$mois-$jour 00:00:00';";
 		//echo "$sql<br />\n";
-		$suppr=mysql_query($sql);
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($suppr) {
 			$msg="Les alertes antérieures au $jour/$mois/$annee ont été supprimées.<br />\n";
 			$post_reussi=TRUE;
@@ -179,9 +179,9 @@ if (isset($_POST['is_posted3'])) {
 	$tab_user_mae=array();
 
 	$sql="SELECT value FROM mod_alerte_divers WHERE name='login_exclus';";
-	$res_mae=mysql_query($sql);
-	if(mysql_num_rows($res_mae)>0) {
-		while($lig_mae=mysql_fetch_object($res_mae)) {
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
 			$tab_user_mae[]=$lig_mae->value;
 		}
 	}
@@ -190,7 +190,7 @@ if (isset($_POST['is_posted3'])) {
 	for($loop=0;$loop<count($login_user);$loop++) {
 		if(!in_array($login_user[$loop], $tab_user_mae)) {
 			$sql="INSERT INTO mod_alerte_divers SET name='login_exclus', value='".$login_user[$loop]."';";
-			$insert=mysql_query($sql);
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($insert) {
 				$cpt_comptes_exclus_ajoutes++;
 			}
@@ -202,7 +202,7 @@ if (isset($_POST['is_posted3'])) {
 	for($loop=0;$loop<count($tab_user_mae);$loop++) {
 		if(!in_array($tab_user_mae[$loop], $login_user)) {
 			$sql="DELETE FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user[$loop]."';";
-			$delete=mysql_query($sql);
+			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($delete) {
 				$cpt_comptes_exclus_supprimes++;
 			}

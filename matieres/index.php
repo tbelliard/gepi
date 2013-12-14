@@ -43,8 +43,8 @@ if (isset($_POST['is_posted'])) {
     // Les données ont été postées, on met à jour
     check_token();
 
-    $get_all_matieres = mysql_query("SELECT matiere, priority, categorie_id FROM matieres");
-    while ($row = mysql_fetch_object($get_all_matieres)) {
+    $get_all_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, priority, categorie_id FROM matieres");
+    while ($row = mysqli_fetch_object($get_all_matieres)) {
         // On passe les matières une par une et on met à jour
         $varname_p = my_strtolower($row->matiere)."_priorite";
 		//echo "<p>Test \$varname_p=$varname_p<br />";
@@ -55,7 +55,7 @@ if (isset($_POST['is_posted'])) {
             	// La valeur est correcte
             	if ($_POST[$varname_p] != $row->priority) {
                 // On a une valeur différente. On met à jour.
-                    $res = mysql_query("UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET priority = '".$_POST[$varname_p] . "' WHERE matiere = '" . $row->matiere . "'");
                     if (!$res) {
                         $msg .= "<br/>Erreur lors de la mise à jour de la priorité de la matière ".$row->matiere.".";
                         $error = true;
@@ -66,7 +66,7 @@ if (isset($_POST['is_posted'])) {
 			        $sql="UPDATE j_groupes_matieres jgm, j_groupes_classes jgc SET jgc.priorite='".$_POST[$varname_p]."' " .
 			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')";
 					//echo "$sql<br />";
-					$req = mysql_query($sql);
+					$req = mysqli_query($GLOBALS["mysqli"], $sql);
 			        if (!$req) {
 			        	$msg .="<br/>Erreur lors de la mise à jour de la priorité de matière dans les classes pour la matière ".$row->matiere.".";
 			        	$error = true;
@@ -82,7 +82,7 @@ if (isset($_POST['is_posted'])) {
         		// On a une valeur correcte. On y va !
             	if ($_POST[$varname_c] != $row->categorie_id) {
                 	// On a une valeur différente. On met à jour.
-                    $res = mysql_query("UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
+                    $res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET categorie_id = '".$_POST[$varname_c] . "' WHERE matiere = '" . $row->matiere . "'");
                     if (!$res) {
                         $msg .= "<br/>Erreur lors de la mise à jour de la catégorie de la matière ".$row->matiere.".";
                         $error = true;
@@ -91,7 +91,7 @@ if (isset($_POST['is_posted'])) {
 
                 // On met à jour toutes les catégories dans les classes si ça a été demandé
                 if (isset($_POST['forcer_defauts']) AND $_POST['forcer_defauts'] == "yes") {
-			        $req = mysql_query("UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
+			        $req = mysqli_query($GLOBALS["mysqli"], "UPDATE j_groupes_classes jgc, j_groupes_matieres jgm SET jgc.categorie_id='".$_POST[$varname_c]."' " .
 			        		"WHERE (jgc.id_groupe = jgm.id_groupe AND jgm.id_matiere='".$row->matiere."')");
 			        if (!$req) {
 			        	$msg .="<br/>Erreur lors de la mise à jour de la catégorie de matière dans les classes pour la matière ".$row->matiere.".";
@@ -128,9 +128,9 @@ require_once("../lib/header.inc.php");
 	$tab_priorites_categories=array();
 	$temoin_pb_ordre_categories="n";
 	$sql="select * from matieres_categories;";
-	$res_cat=mysql_query($sql);
-	if(mysql_num_rows($res_cat)>0) {
-		while($lig_cat=mysql_fetch_object($res_cat)) {
+	$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_cat)>0) {
+		while($lig_cat=mysqli_fetch_object($res_cat)) {
 			$current_priority=$lig_cat->priority;
 			if(in_array($current_priority, $tab_priorites_categories)) {
 				$temoin_pb_ordre_categories="y";
@@ -172,28 +172,28 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 // On va chercher les classes déjà existantes, et on les affiche.
 
 $categories=array();
-$call_data = mysql_query("SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
-$get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
-while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
+$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court FROM matieres_categories");
+while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
     $categories[] = $row;
 }
 
-$nombre_lignes = mysql_num_rows($call_data);
+$nombre_lignes = mysqli_num_rows($call_data);
 $i = 0;
 $alt=1;
 while ($i < $nombre_lignes){
     $alt=$alt*(-1);
 
-	$current_matiere = mysql_result($call_data, $i, "matiere");
-	$current_matiere_nom = mysql_result($call_data, $i, "nom_complet");
-    $current_matiere_priorite = mysql_result($call_data, $i, "priority");
-    $current_matiere_categorie_id = mysql_result($call_data, $i, "categorie_id");
+	$current_matiere = old_mysql_result($call_data, $i, "matiere");
+	$current_matiere_nom = old_mysql_result($call_data, $i, "nom_complet");
+    $current_matiere_priorite = old_mysql_result($call_data, $i, "priority");
+    $current_matiere_categorie_id = old_mysql_result($call_data, $i, "categorie_id");
 
     if ($current_matiere_priorite > 1) {$current_matiere_priorite -= 10;}
 
 	$sql="SELECT 1=1 FROM j_groupes_matieres WHERE id_matiere='$current_matiere';";
-	$res_grp_associes=mysql_query($sql);
-	$nb_grp_assoc=mysql_num_rows($res_grp_associes);
+	$res_grp_associes=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_grp_assoc=mysqli_num_rows($res_grp_associes);
 
 	if($nb_grp_assoc==0) {
 		echo "<tr style='background-color:grey;' class='white_hover' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon()." style=\"color:#0000AA\">$current_matiere</a></td>\n";

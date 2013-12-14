@@ -93,10 +93,10 @@ if (isset($supprimer_cours) AND $confirme_suppression=="yes") {
         // ---- formattage du paramètre pour éviter une injection SQL
         settype($supprimer_cours, "int");
         // ---- En cas de rechargement de page, on ne fait pas la suppression deux fois.
-        $test_avant_effacement = mysql_query("SELECT * FROM edt_cours WHERE id_cours= '".$supprimer_cours."'");
-        if (mysql_num_rows($test_avant_effacement) != 0) {
+        $test_avant_effacement = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE id_cours= '".$supprimer_cours."'");
+        if (mysqli_num_rows($test_avant_effacement) != 0) {
             // --- suppression effective.
-            $effacer_cours = mysql_query("DELETE FROM edt_cours WHERE id_cours = '".$supprimer_cours."'") OR die ('Impossible d\'effacer ce cours');
+            $effacer_cours = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours WHERE id_cours = '".$supprimer_cours."'") OR die ('Impossible d\'effacer ce cours');
             if (!$effacer_cours) {
 	            $message = DELETE_FAILURE;
             }

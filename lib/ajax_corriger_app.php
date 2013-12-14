@@ -135,16 +135,16 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 		//=========================
 		// Ménage: pour ne pas laisser une demande de validation de correction alors qu'on a rouvert la période en saisie... on risquerait d'écraser par la suite l'enregistrement fait après la rouverture de période.
 		$sql="DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='".$current_group["id"]."' AND periode='$corriger_app_num_periode');";
-		$del=mysql_query($sql);
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		//=========================
 
-		$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
-		$test = mysql_num_rows($test_eleve_app_query);
+		$test_eleve_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+		$test = mysqli_num_rows($test_eleve_app_query);
 		if ($test != "0") {
 			if ($app != "") {
-				$register = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
 			} else {
-				$register = mysql_query("DELETE FROM matieres_appreciations WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
 			}
 
 			if (!$register) {
@@ -159,7 +159,7 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 
 		} else {
 			if ($app != "") {
-				$register = mysql_query("INSERT INTO matieres_appreciations SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "'");
+				$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "'");
 
 				if (!$register) {
 					echo "<span style='color:red'> KO</span>";

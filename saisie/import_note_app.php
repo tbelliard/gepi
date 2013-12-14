@@ -203,11 +203,11 @@ if (isset($is_posted )) {
                             //login
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
-                            $call_login = mysql_query("SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
-                            $test = @mysql_num_rows($call_login);
+                            $call_login = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='" . $data[$c] . "'");
+                            $test = @mysqli_num_rows($call_login);
                             if ($test != 0) {
-                                $nom_eleve = @mysql_result($call_login, 0, "nom");
-                                $prenom_eleve = @mysql_result($call_login, 0, "prenom");
+                                $nom_eleve = @old_mysql_result($call_login, 0, "nom");
+                                $prenom_eleve = @old_mysql_result($call_login, 0, "prenom");
 
                                 //
                                 // Si l'élève ne suit pas la matière

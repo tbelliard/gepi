@@ -101,7 +101,7 @@ if ($action == "ajouter_gr") {
 
 	}else{
 		// On vérifie aussi que le nom n'existe pas déjà
-		$verif = mysql_fetch_array(mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."'"));
+		$verif = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."'"));
 		if ($verif >= 1) {
 			// Ce nom existe déjà, il ne faut pas de doublon ;)
 			$msg_gr = '<p>Ce nom existe déjà, veuillez le modifier avant de sauvegarder.</p>';
@@ -128,18 +128,18 @@ if ($action == "ajouter_gr") {
 		if ($auto == 'oui') {
 			$sql_e = "INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 									VALUES ('', '".$nom_gr."', '".$nom_long_gr."', '".$type."', '".$choix_classe."')";
-			$query_e = mysql_query($sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.mysql_error(), E_USER_WARNING);
+			$query_e = mysqli_query($GLOBALS["mysqli"], $sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
 			//$id_gr_nom = mysql_insert_id($query_e);
 			// Avec une connexion permanente à la base, impossible de récupérer l'id
-			$select_id = mysql_query("SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
-			$id_gr_nom = mysql_result($select_id, 0,"id");
+			$select_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
+			$id_gr_nom = old_mysql_result($select_id, 0,"id");
 
 			if ($choix_prof != NULL AND $choix_prof != 'plusieurs' AND $prof != 'plusieurs') {
 				// On ajoute aussi une ligne pour le/les professeurs de ce edt_gr
 				$sql_p = "INSERT INTO edt_gr_profs (id, id_gr_nom, id_utilisateurs)
 									VALUES ('', '".$id_gr_nom."', '".$choix_prof."')";
 				//$query_p = mysql_query($sql_p) OR trigger_error("Impossible d'enregistrer le nom du professeur.".$sql_p, E_USER_NOTICE);
-				$query_p = mysql_query($sql_p) OR DIE('ERREUR'.$sql_p);
+				$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p) OR DIE('ERREUR'.$sql_p);
 
 			}
 		}
@@ -148,7 +148,7 @@ if ($action == "ajouter_gr") {
 
 	if (is_numeric($id_gr)) {
 		// On peut alors effacer ce groupe EdT
-		$query_del = mysql_query("DELETE FROM edt_gr_nom WHERE id = '".$id_gr."' LIMIT 1") OR trigger_error('Erreur lors de la suppression ', E_USER_NOTICE);
+		$query_del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_gr_nom WHERE id = '".$id_gr."' LIMIT 1") OR trigger_error('Erreur lors de la suppression ', E_USER_NOTICE);
 
 	}else{
 
@@ -159,7 +159,7 @@ if ($action == "ajouter_gr") {
 
 // On affiche la liste des groupes qui existent
 $sql_g = "SELECT * FROM edt_gr_nom ORDER BY nom";
-$query_g = mysql_query($sql_g) OR trigger_error('Impossible de lire les tables de la BDD : '.mysql_error(), E_USER_ERROR);
+$query_g = mysqli_query($GLOBALS["mysqli"], $sql_g) OR trigger_error('Impossible de lire les tables de la BDD : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 
 // on recherche la liste des classes
 //	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
@@ -167,7 +167,7 @@ $query_g = mysql_query($sql_g) OR trigger_error('Impossible de lire les tables d
 
 
 $a = 0;
-while($gr = mysql_fetch_array($query_g)){
+while($gr = mysqli_fetch_array($query_g)){
 
 	// On formate l'affichage des groupes de l'EdT
 
@@ -212,8 +212,8 @@ while($gr = mysql_fetch_array($query_g)){
 
 // la liste des classes pour la création de nouveaux groupes :
 
-	$query = mysql_query("SELECT id, classe FROM classes ORDER BY id");
-	$nbre = mysql_num_rows($query);
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY id");
+	$nbre = mysqli_num_rows($query);
 
 	$aff_select_classes .= '
 	<select name="choix_classe">
@@ -221,8 +221,8 @@ while($gr = mysql_fetch_array($query_g)){
 			';
 
 		for($i = 0; $i < $nbre; $i++){
-			$classes[$i] = mysql_result($query, $i, "id");
-			$nom[$i] = mysql_result($query, $i, "classe");
+			$classes[$i] = old_mysql_result($query, $i, "id");
+			$nom[$i] = old_mysql_result($query, $i, "classe");
 
 			$aff_select_classes .= '
 			<option value="'.$classes[$i].'">'.$nom[$i].'</option>';
@@ -231,9 +231,9 @@ while($gr = mysql_fetch_array($query_g)){
 
 // La liste des professeurs pour la création de nouveaux groupes :
 
-	$query_p = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
+	$query_p = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE statut = 'professeur' AND etat = 'actif' ORDER BY nom, prenom")
 						OR trigger_error('Impossible de lire la liste des professeurs.', E_USER_ERROR);
-	$nbre_p = mysql_num_rows($query_p);
+	$nbre_p = mysqli_num_rows($query_p);
 
 
 	$aff_select_profs .= '
@@ -243,9 +243,9 @@ while($gr = mysql_fetch_array($query_g)){
 
 	for($i = 0 ; $i < $nbre_p ; $i++){
 
-		$login_p[$i] = mysql_result($query_p, $i, "login");
-		$nom_p[$i] = mysql_result($query_p, $i, "nom");
-		$prenom_p[$i] = mysql_result($query_p, $i, "prenom");
+		$login_p[$i] = old_mysql_result($query_p, $i, "login");
+		$nom_p[$i] = old_mysql_result($query_p, $i, "nom");
+		$prenom_p[$i] = old_mysql_result($query_p, $i, "prenom");
 
 		$aff_select_profs .= '
 		<option value="'.$login_p[$i].'">'.$nom_p[$i].' '.$prenom_p[$i].'</option>';

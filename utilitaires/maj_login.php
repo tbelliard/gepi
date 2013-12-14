@@ -116,16 +116,16 @@ $liste_tables = array(
 $message = '';
 $j=0;
 while ($j < count($liste_tables))  {
-  $req = mysql_query("SELECT login FROM $liste_tables[$j]");
-  $nb_lignes = mysql_num_rows($req);
+  $req = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM $liste_tables[$j]");
+  $nb_lignes = mysqli_num_rows($req);
   $i = 0;
   $affiche = 'yes';
   while ($i < $nb_lignes) {
-      $temp = mysql_result($req, $i, 'login');
+      $temp = old_mysql_result($req, $i, 'login');
       $pos = strpos($temp, "-");
       if ($pos >=1) {
           $tempo = str_replace("-", "_", $temp);
-          $up = mysql_query("UPDATE $liste_tables[$j] set login = '".$tempo."' where login ='".$temp."'");
+          $up = mysqli_query($GLOBALS["mysqli"], "UPDATE $liste_tables[$j] set login = '".$tempo."' where login ='".$temp."'");
           if ($affiche == 'yes') {
               $message .= "Dans la table ".$liste_tables[$j].", l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
               $affiche = 'no';
@@ -136,23 +136,23 @@ while ($j < count($liste_tables))  {
   $j++;
 }
 // cas particulier de j_eleves_etablissements
-$req = mysql_query("SELECT id_eleve FROM j_eleves_etablissements");
-$nb_lignes = mysql_num_rows($req);
+$req = mysqli_query($GLOBALS["mysqli"], "SELECT id_eleve FROM j_eleves_etablissements");
+$nb_lignes = mysqli_num_rows($req);
 $affiche = 'yes';
 $i = 0;
 while ($i < $nb_lignes) {
-    $temp = mysql_result($req, $i, 'id_eleve');
+    $temp = old_mysql_result($req, $i, 'id_eleve');
     $pos = strpos($temp, "-");
     if ($pos >=1) {
 		// A ce stade, la table 'eleves' a déjà été mise à jour
 		$sql="SELECT elenoet FROM eleves WHERE login='$tempo';";
-		$res_elenoet=mysql_query($sql);
-		if(mysql_num_rows($res_elenoet)>0) {
-			$lig_elenoet=mysql_fetch_object($res_elenoet);
+		$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_elenoet)>0) {
+			$lig_elenoet=mysqli_fetch_object($res_elenoet);
 			$reg_no_gep=$lig_elenoet->elenoet;
 			if($reg_no_gep!="") {
 				//$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$tempo."' where id_eleve ='".$temp."'");
-				$up = mysql_query("UPDATE j_eleves_etablissements set id_eleve = '".$res_elenoet."' where id_eleve ='".$temp."'");
+				$up = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_etablissements set id_eleve = '".$res_elenoet."' where id_eleve ='".$temp."'");
 				if ($affiche == 'yes') {
 					//$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$tempo."<br>";
 					$message .= "Dans la table j_eleves_etablissements, l'identifiant : ".$temp." a été changé en : ".$res_elenoet."<br>";

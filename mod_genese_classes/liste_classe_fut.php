@@ -38,8 +38,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/liste_classe_fut.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/liste_classe_fut.php',
 administrateur='V',
 professeur='F',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Liste des classes futures (appel ajax)',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -74,10 +74,10 @@ else {
 	echo "<p style='text-align:center; font-weight:bold;'>";
 	if(isset($ele_login)) {
 		$sql="SELECT nom, prenom FROM eleves WHERE login='$ele_login';";
-		$res_ele_courant=mysql_query($sql);
+		$res_ele_courant=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_ele_courant)>0) {
-			$lig_ele_courant=mysql_fetch_object($res_ele_courant);
+		if(mysqli_num_rows($res_ele_courant)>0) {
+			$lig_ele_courant=mysqli_fetch_object($res_ele_courant);
 
 			echo htmlspecialchars(mb_strtoupper($lig_ele_courant->nom))." ".htmlspecialchars(ucfirst(mb_strtolower($lig_ele_courant->prenom)));
 			if($avec_classe_origine) {
@@ -93,8 +93,8 @@ else {
 
 	//$sql="SELECT e.nom,e.prenom FROM gc_eleve_fut_classe g, eleves e WHERE g.projet='$projet' AND g.classe='$classe_fut' AND g.login=e.login ORDER BY nom, prenom;";
 	$sql="SELECT e.login,e.nom,e.prenom FROM gc_eleves_options g, eleves e WHERE g.projet='$projet' AND g.classe_future='$classe_fut' AND g.login=e.login ORDER BY nom, prenom;";
-	$res_ele_clas_fut=mysql_query($sql);
-	$eff_ele_clas_fut=mysql_num_rows($res_ele_clas_fut);
+	$res_ele_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
+	$eff_ele_clas_fut=mysqli_num_rows($res_ele_clas_fut);
 	if($eff_ele_clas_fut>0) {
 
 		echo "<div align='center'>\n";
@@ -108,7 +108,7 @@ else {
 			echo "</tr>\n";
 	
 			$alt=1;
-			while($lig_ele_clas_fut=mysql_fetch_object($res_ele_clas_fut)) {
+			while($lig_ele_clas_fut=mysqli_fetch_object($res_ele_clas_fut)) {
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
@@ -139,7 +139,7 @@ else {
 	
 			$cpt=0;
 			$alt=1;
-			while($lig_ele_clas_fut=mysql_fetch_object($res_ele_clas_fut)) {
+			while($lig_ele_clas_fut=mysqli_fetch_object($res_ele_clas_fut)) {
 				if($cpt>=ceil($eff_ele_clas_fut/2)) {
 					echo "</table>\n";
 					echo "</td>\n";

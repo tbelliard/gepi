@@ -193,8 +193,8 @@ if ( $etape === '0' ) {
 	if ( $periode_num != '' ) {
 	// si une période est bien sélectionner alors on demande la date de début et de fin de cette période
 
-		$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-		$classe = mysql_result($call_classe, "0", "classe");
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+		$classe = old_mysql_result($call_classe, "0", "classe");
 ?>
 
 <div style="text-align: center;">
@@ -241,8 +241,8 @@ if ( $etape === '1' ) {
 	<?php
 		echo add_token_field();
 
-		$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '".$id_classe."'");
-		$classe = mysql_result($call_classe, "0", "classe");
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '".$id_classe."'");
+		$classe = old_mysql_result($call_classe, "0", "classe");
 	?>
 
 <?php /* div de centrage du tableau pour ie5 */ ?>
@@ -268,20 +268,20 @@ if ( $etape === '1' ) {
 
 	<?php
 	if ($_SESSION['statut'] == "cpe") {
-	        $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
+	        $appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num') order by e.nom, e.prenom");
 	    } else {
-        	$appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
+        	$appel_donnees_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num') order by e.nom, e.prenom");
 	}
 
-	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
+	$nombre_lignes = mysqli_num_rows($appel_donnees_eleves);
 	$i = '0';
 	$num_id=10;
 	while($i < $nombre_lignes) {
-	    $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+	    $current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
         if(getSettingValue("active_module_absence")==='2'){
             $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
         }
-	    $current_eleve_absences_query = mysql_query("SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+	    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
         if(getSettingValue("active_module_absence")==='2'){
             $current_eleve_nb_absences = strval($eleve->getDemiJourneesAbsence($date_absence_eleve_debut, $date_absence_eleve_fin)->count());
         }else{
@@ -301,9 +301,9 @@ if ( $etape === '1' ) {
         }
 	    if ( $current_eleve_nb_retards == '0' ) { $current_eleve_nb_retards = ''; }
 
-	    $current_eleve_ap_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-	    $current_eleve_nom = mysql_result($appel_donnees_eleves, $i, "nom");
-	    $current_eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
+	    $current_eleve_ap_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
+	    $current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
+	    $current_eleve_prenom = old_mysql_result($appel_donnees_eleves, $i, "prenom");
 
 	    $current_eleve_login_nb = $current_eleve_login."_nb_abs";
 	    $current_eleve_login_nj = $current_eleve_login."_nb_nj";

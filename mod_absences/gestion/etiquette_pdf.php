@@ -83,8 +83,8 @@ die();
 if ( $etiquette_action === 'test' ) {
 //importation des informations de présentation de la lettre type
            $requete_structure ="SELECT * FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$etiquette_format."'";
-           $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
-           while ( $donne_structure = mysql_fetch_array($execution_structure))
+           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 		$xcote = $donne_structure['xcote_etiquette_format'];
 		$ycote = $donne_structure['ycote_etiquette_format'];
@@ -110,8 +110,8 @@ $etiquette_agencement = '3';
 	if($classe === 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
 	if($classe != 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE c.id = '".$classe."' AND ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
         
-        $execution_persone = mysql_query($requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysql_error());
-        while ( $donne_persone = mysql_fetch_array($execution_persone))
+        $execution_persone = mysqli_query($GLOBALS["mysqli"], $requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        while ( $donne_persone = mysqli_fetch_array($execution_persone))
 	 {
 
 		// information sur l'élève
@@ -127,12 +127,12 @@ $etiquette_agencement = '3';
 
 		// information sur les responsables
 		$nombre_de_responsable = 0;
-		$nombre_de_responsable =  mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
+		$nombre_de_responsable =  old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id )"),0);
 		if($nombre_de_responsable != 0)
 		{
 			$cpt_parents = '1';
-			$requete_parents = mysql_query("SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
-			while ($donner_parents = mysql_fetch_array($requete_parents))
+			$requete_parents = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM ".$prefix_base."resp_pers rp, ".$prefix_base."resp_adr ra, ".$prefix_base."responsables2 r WHERE ( r.ele_id = '".$eleve_numid[$i]."' AND r.pers_id = rp.pers_id AND rp.adr_id = ra.adr_id ) ORDER BY resp_legal ASC");
+			while ($donner_parents = mysqli_fetch_array($requete_parents))
 		  	{
 				$civilitee_responsable[$cpt_parents][$i] = $donner_parents['civilite'];
 			        $nom_responsable[$cpt_parents][$i] = $donner_parents['nom'];
@@ -166,8 +166,8 @@ $etiquette_agencement = '3';
 
 
            $requete_structure ="SELECT * FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$etiquette_format."'";
-           $execution_structure = mysql_query($requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysql_error());
-           while ( $donne_structure = mysql_fetch_array($execution_structure))
+           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 		$xcote = $donne_structure['xcote_etiquette_format'];
 		$ycote = $donne_structure['ycote_etiquette_format'];

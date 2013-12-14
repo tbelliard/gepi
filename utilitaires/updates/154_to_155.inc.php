@@ -118,10 +118,10 @@ if ($test == -1) {
 
 //===================================================
 
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_documents LIKE 'visible';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_documents LIKE 'visible';"));
 if ($test_champ>0) {
 	$result .= "&nbsp;->Ajout d'un champ visible à la table 'ct_documents'<br />";
-	$query = mysql_query("ALTER TABLE ct_documents DROP visible;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_documents DROP visible;");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -130,12 +130,12 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' à la table 'ct_documents'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_documents LIKE 'visible_eleve_parent';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_documents LIKE 'visible_eleve_parent';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ct_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -143,10 +143,10 @@ else {
 	}
 }
 
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible';"));
 if ($test_champ>0) {
 	$result .= "&nbsp;->Suppression du champ 'visible' de la table 'ct_devoirs_documents'<br />";
-	$query = mysql_query("ALTER TABLE ct_devoirs_documents DROP visible;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_devoirs_documents DROP visible;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -155,12 +155,12 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'visible_eleve_parent' à la table 'ct_devoirs_documents'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible_eleve_parent';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible_eleve_parent';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ct_devoirs_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_devoirs_documents ADD visible_eleve_parent BOOLEAN DEFAULT true COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -171,12 +171,12 @@ else {
 //===================================================
 
 $result .= "&nbsp;->Ajout d'un champ 'date_visibilite_eleve' à la table 'ct_devoirs_entry'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_entry LIKE 'date_visibilite_eleve';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM ct_devoirs_entry LIKE 'date_visibilite_eleve';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE ct_devoirs_entry ADD date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp precisant quand les devoirs sont portes a la conaissance des eleves' AFTER id_sequence;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE ct_devoirs_entry ADD date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp precisant quand les devoirs sont portes a la conaissance des eleves' AFTER id_sequence;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -188,18 +188,18 @@ else {
 
 $result .= "<br /><strong>Mots de passe :</strong><br />";
 $result .= "&nbsp;->Ajout d'un champ 'salt' à la table 'utilisateur' et allongement du champs password<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM utilisateurs LIKE 'salt';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE utilisateurs ADD salt varchar(128) COMMENT 'sel pour le hmac du mot de passe' AFTER password;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE utilisateurs ADD salt varchar(128) COMMENT 'sel pour le hmac du mot de passe' AFTER password;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
 			$result .= msj_erreur();
 	}
-	$query = mysql_query("ALTER TABLE utilisateurs MODIFY password varchar(128);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE utilisateurs MODIFY password varchar(128);");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -211,12 +211,12 @@ else {
 
 $result .= "<br /><strong>Messagerie :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'destinataires' de la table 'messages' en 'statuts_destinataires'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'statuts_destinataires';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM messages LIKE 'statuts_destinataires';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ est déjà modifié.");
 }
 else {
-	$query = mysql_query("ALTER TABLE messages CHANGE destinataires statuts_destinataires VARCHAR( 10 ) NOT NULL DEFAULT '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE messages CHANGE destinataires statuts_destinataires VARCHAR( 10 ) NOT NULL DEFAULT '';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -225,12 +225,12 @@ else {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'login_destinataire' à la table 'messages'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'login_destinataire';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM messages LIKE 'login_destinataire';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 }
 else {
-	$query = mysql_query("ALTER TABLE messages ADD login_destinataire VARCHAR( 50 ) NOT NULL default '' AFTER statuts_destinataires, ADD INDEX ( login_destinataire ) ;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE messages ADD login_destinataire VARCHAR( 50 ) NOT NULL default '' AFTER statuts_destinataires, ADD INDEX ( login_destinataire ) ;");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -241,14 +241,14 @@ else {
 // Ajout d'index
 $result .= "&nbsp;->Ajout de l'index 'login_destinataire' à la table 'messages'<br />";
 $req_res=0;
-$req_test = mysql_query("SHOW INDEX FROM messages ");
-if (mysql_num_rows($req_test)!=0) {
-	while ($enrg = mysql_fetch_object($req_test)) {
+$req_test = mysqli_query($GLOBALS["mysqli"], "SHOW INDEX FROM messages ");
+if (mysqli_num_rows($req_test)!=0) {
+	while ($enrg = mysqli_fetch_object($req_test)) {
 		if ($enrg-> Key_name == 'login_destinataire') {$req_res++;}
 	}
 }
 if ($req_res == 0) {
-	$query = mysql_query("ALTER TABLE messages ADD INDEX login_destinataire ( login_destinataire )");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE messages ADD INDEX login_destinataire ( login_destinataire )");
 	if ($query) {
 		$result .= msj_ok();
 	} else {
@@ -274,15 +274,15 @@ if ($test == -1) {
 
 $result .= "<br /><strong>Absence 2 :</strong><br />";
 $result .= "&nbsp;->Ajout des champs versions a la table a_saisies<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
 	$result .= msj_present("Les versions de saisies existent déjà.");
 } else {
-	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
+	 $query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
 	if ($query) {
                 $result .= msj_ok();
 				$result .= "&nbsp;->Remplissage des champs version_created_at et version_created_by de la table a_saisies<br />";
-				$query = mysql_query("UPDATE
+				$query = mysqli_query($GLOBALS["mysqli"], "UPDATE
 												a_saisies
 											SET
 												version_created_at = created_at,
@@ -301,11 +301,11 @@ if ($test_champ>0) {
 }
 
 
-$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_saisies_version'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'a_saisies_version'"));
 if ($test!=0) {
 	$result .= msj_present("La table des versions de saisies existent déjà.");
 } else {
-	$query = mysql_query("CREATE TABLE a_saisies_version
+	$query = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE a_saisies_version
 (
 	id INTEGER(11) NOT NULL,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
@@ -337,7 +337,7 @@ if ($test!=0) {
                 $result .= msj_ok();
                 
 				$result .= "&nbsp;->Remplissage de la table a_saisies_version<br />";
-				$query = mysql_query("INSERT INTO a_saisies_version (id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,id_lieu,created_at,updated_at,version,version_created_at,version_created_by)
+				$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO a_saisies_version (id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,id_lieu,created_at,updated_at,version,version_created_at,version_created_by)
 									SELECT                           id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,id_lieu,created_at,updated_at,version,version_created_at,version_created_by FROM a_saisies;");
 				if ($query) {
 					$result .= msj_ok();
@@ -351,7 +351,7 @@ if ($test!=0) {
 }
 
 $result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies<br />";
-$query = mysql_query("ALTER TABLE `a_saisies` DROP `modifie_par_utilisateur_id` ;");
+$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= msj_present("Le champ modifie_par_utilisateur_id de la table a_saisies n'existe plus.");
 } else {
@@ -359,7 +359,7 @@ if ($query) {
 }
 
 $result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies_version<br />";
-$query = mysql_query("ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
+$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= msj_present("Le champ modifie_par_utilisateur_id de la table a_saisies_version n'existe plus.");
 } else {
@@ -367,11 +367,11 @@ if ($query) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_saisies'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
 			$result .= msj_present("Le champ deleted_at de la table a_saisies a été ajouté.");
 	} else {
@@ -380,11 +380,11 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_saisies_version'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
 			$result .= msj_present("Le champ deleted_at de la table a_saisies_version a été ajouté.");
 	} else {
@@ -393,11 +393,11 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_by' à la table 'a_saisies'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_by';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_saisies LIKE 'deleted_by';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
 	if ($query) {
 			$result .= msj_present("Le champ deleted_by de la table a_saisies a été ajouté.");
 	} else {
@@ -406,11 +406,11 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_by' à la table 'a_saisies_version'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_by';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_by';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_saisies_version` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
 	if ($query) {
 			$result .= msj_present("Le champ deleted_by de la table a_saisies_version a été ajouté.");
 	} else {
@@ -419,12 +419,12 @@ if ($test_champ>0) {
 }
 
 
-$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_agregation_decompte'"));
+$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'a_agregation_decompte'"));
 if ($test!=0) {
 	$result .= msj_present("La table des agrégation de décompte de saisies existe déjà.");
 } else {
 	$result .= msj_present("Ajout de la table des agrégation de décompte de saisies.");
-	$query = mysql_query("CREATE TABLE a_agregation_decompte
+	$query = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE a_agregation_decompte
 (
 	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
 	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
@@ -452,11 +452,11 @@ if ($test!=0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_traitements'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_traitements LIKE 'deleted_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_traitements LIKE 'deleted_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_traitements` ADD deleted_at DATETIME AFTER updated_at;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_traitements` ADD deleted_at DATETIME AFTER updated_at;");
 	if ($query) {
 			$result .= msj_present("Le champ deleted_at de la table a_traitements a été ajouté.");
 	} else {
@@ -465,42 +465,42 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_types'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'created_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_types LIKE 'created_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Les champs existent déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_types` ADD (created_at DATETIME, updated_at DATETIME);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_types` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
 			$result .= msj_present("Les champs ont étés ajoutés.");
-			$query = mysql_query("UPDATE a_types SET created_at = NOW(), updated_at = NOW();");
+			$query = mysqli_query($GLOBALS["mysqli"], "UPDATE a_types SET created_at = NOW(), updated_at = NOW();");
 	} else {
 			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_types n'ont pas étés ajoutés");
 	}
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_motifs'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_motifs LIKE 'created_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_motifs LIKE 'created_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Les champs existent déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_motifs` ADD (created_at DATETIME, updated_at DATETIME);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_motifs` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
 			$result .= msj_present("Les champs ont étés ajoutés.");
-			$query = mysql_query("UPDATE a_motifs SET created_at = NOW(), updated_at = NOW();");
+			$query = mysqli_query($GLOBALS["mysqli"], "UPDATE a_motifs SET created_at = NOW(), updated_at = NOW();");
 	} else {
 			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_motifs n'ont pas étés ajoutés");
 	}
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_justifications'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_justifications LIKE 'created_at';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM a_justifications LIKE 'created_at';"));
 if ($test_champ>0) {
 	$result .= msj_present("Les champs existent déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE `a_justifications` ADD (created_at DATETIME, updated_at DATETIME);");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `a_justifications` ADD (created_at DATETIME, updated_at DATETIME);");
 	if ($query) {
 			$result .= msj_present("Les champs ont étés ajoutés.");
-			$query = mysql_query("UPDATE a_justifications SET created_at = NOW(), updated_at = NOW();");
+			$query = mysqli_query($GLOBALS["mysqli"], "UPDATE a_justifications SET created_at = NOW(), updated_at = NOW();");
 	} else {
 			$result .= msj_erreur(": Les champ created_at' et 'updated_at' de la table a_justifications n'ont pas étés ajoutés");
 	}
@@ -546,11 +546,11 @@ ordre TINYINT(4) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'id_mention' à la table 'avis_conseil_classe'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM avis_conseil_classe LIKE 'id_mention';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM avis_conseil_classe LIKE 'id_mention';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL DEFAULT '0' AFTER avis;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL DEFAULT '0' AFTER avis;");
 	if ($query) {
 		$result .= msj_present("Le champ id_mention de la table avis_conseil_classe a été ajouté.");
 	} else {
@@ -573,11 +573,11 @@ if ($test == -1) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'id_categorie' à la table 's_natures'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_natures LIKE 'id_categorie';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM s_natures LIKE 'id_categorie';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("alter table s_natures add id_categorie int(11) not null default '0' after nature;");
+	$query = mysqli_query($GLOBALS["mysqli"], "alter table s_natures add id_categorie int(11) not null default '0' after nature;");
 	if ($query) {
 		$result .= msj_present("Le champ id_categorie de la table s_natures a été ajouté.");
 	} else {
@@ -628,12 +628,12 @@ nom_gepi varchar(255) NOT NULL default ''
 
 $result .= "<br /><strong>Mef :</strong><br />";
 $result .= "&nbsp;->Modification du champ 'ext_id' de la table 'mef' en 'mef_code'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'mef_code';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM mef LIKE 'mef_code';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ est déjà modifié.");
 }
 else {
-	$query = mysql_query("ALTER TABLE mef CHANGE ext_id mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE mef CHANGE ext_id mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -641,12 +641,12 @@ else {
 	}
 }
 $result .= "&nbsp;->Modification du champ 'id_mef' de la table 'eleves' en 'mef_code'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'mef_code';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM eleves LIKE 'mef_code';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ est déjà modifié.");
 }
 else {
-	$query = mysql_query("ALTER TABLE eleves CHANGE id_mef mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE eleves CHANGE id_mef mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
 	if ($query) {
 			$result .= msj_ok();
 	} else {
@@ -678,11 +678,11 @@ if ($query) {
 */
 
 $result .= "<br />&nbsp;->Ajout d'un champ 'nom_requete' à la table 'gc_affichages'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM gc_affichages LIKE 'nom_requete';"));
+$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM gc_affichages LIKE 'nom_requete';"));
 if ($test_champ>0) {
 	$result .= msj_present("Le champ existe déjà.");
 } else {
-	$query = mysql_query("ALTER TABLE gc_affichages ADD nom_requete VARCHAR( 255 ) NOT NULL AFTER projet;");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE gc_affichages ADD nom_requete VARCHAR( 255 ) NOT NULL AFTER projet;");
 	if ($query) {
 		$result .= msj_present("Le champ 'nom_requete' de la table 'gc_affichages' a été ajouté.");
 	} else {
@@ -691,8 +691,8 @@ if ($test_champ>0) {
 }
 
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'sso_cas_table'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_cas_table'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('sso_cas_table', 'no');");
   if ($result_inter == '') {
@@ -786,13 +786,13 @@ if ($test != -1) {
     }
     $result.="<br />";
     $result.="Désinstallation du plugin_sso_table :";
-    $req = mysql_query("SELECT `id` FROM `plugins` WHERE `nom`='plugin_sso_table'");
-    $nb_entrees = mysql_num_rows($req);
+    $req = mysqli_query($GLOBALS["mysqli"], "SELECT `id` FROM `plugins` WHERE `nom`='plugin_sso_table'");
+    $nb_entrees = mysqli_num_rows($req);
     if ($nb_entrees != 1) {
         $result.="<br />";
         $result.="Il y'a un problème , désinstaller le plugin sso_table depuis la page des plugins :";
     } else {
-        $data = mysql_fetch_array($req);
+        $data = mysqli_fetch_array($req);
         $id_plugin = $data[0];
         $result.="<br />";
         $result.="Suppression des entrées de la table plugins pour le plugin sso_table :";        
@@ -870,13 +870,13 @@ if ($test != -1) {
     }
     $result.="<br />";
     $result.="Désinstallation du plugin_sso_table :";
-    $req = mysql_query("SELECT `id` FROM `plugins` WHERE `nom`='plugin_sso_table'");
-    $nb_entrees = mysql_num_rows($req);
+    $req = mysqli_query($GLOBALS["mysqli"], "SELECT `id` FROM `plugins` WHERE `nom`='plugin_sso_table'");
+    $nb_entrees = mysqli_num_rows($req);
     if ($nb_entrees != 1) {
         $result.="<br />";
         $result.="Il y'a un problème , désinstaller le plugin sso_table depuis la page des plugins :";
     } else {
-        $data = mysql_fetch_array($req);
+        $data = mysqli_fetch_array($req);
         $id_plugin = $data[0];
         $result.="<br />";
         $result.="Suppression des entrées de la table plugins pour le plugin sso_table :";        
@@ -982,10 +982,10 @@ MEL varchar(255) NOT NULL default ''
 	}
 }
 else {
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_gep_import2 LIKE 'LIEU_NAISSANCE';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM temp_gep_import2 LIKE 'LIEU_NAISSANCE';"));
 	if ($test_champ==0) {
 		$result .= "<br />&nbsp;->Ajout d'un champ 'LIEU_NAISSANCE' à la table 'temp_gep_import2'<br />";
-		$query = mysql_query("ALTER TABLE temp_gep_import2 ADD LIEU_NAISSANCE VARCHAR( 50 ) NOT NULL AFTER ELEOPT12;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE temp_gep_import2 ADD LIEU_NAISSANCE VARCHAR( 50 ) NOT NULL AFTER ELEOPT12;");
 		if ($query) {
 			$result .= msj_present("Le champ 'LIEU_NAISSANCE' de la table 'temp_gep_import2' a été ajouté.");
 		} else {
@@ -993,10 +993,10 @@ else {
 		}
 	}
 	
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM temp_gep_import2 LIKE 'MEL';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM temp_gep_import2 LIKE 'MEL';"));
 	if ($test_champ==0) {
 		$result .= "<br />&nbsp;->Ajout d'un champ 'MEL' à la table 'temp_gep_import2'<br />";
-		$query = mysql_query("ALTER TABLE temp_gep_import2 ADD MEL VARCHAR( 255 ) NOT NULL AFTER LIEU_NAISSANCE;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE temp_gep_import2 ADD MEL VARCHAR( 255 ) NOT NULL AFTER LIEU_NAISSANCE;");
 		if ($query) {
 			$result .= msj_present("Le champ 'MEL' de la table 'temp_gep_import2' a été ajouté.");
 		} else {
@@ -1008,17 +1008,17 @@ else {
 
 $test = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs_resp';");
 if ($test != -1) {
-	$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp CHANGE password password VARCHAR( 128 ) NOT NULL DEFAULT '';");
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE tempo_utilisateurs_resp CHANGE password password VARCHAR( 128 ) NOT NULL DEFAULT '';");
 	if ($query) {
 		$result .= msj_present("Extension à 128 caractères du champ 'password' de la table 'tempo_utilisateurs_resp'");
 	} else {
 		$result .= msj_erreur("Echec de l'extension à 128 caractères du champ 'password' de la table 'tempo_utilisateurs_resp'");
 	}
 
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'salt';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'salt';"));
 	if ($test_champ==0) {
 		$result .= "<br />&nbsp;->Ajout d'un champ 'salt' à la table 'tempo_utilisateurs_resp'<br />";
-		$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp ADD salt VARCHAR( 128 ) NOT NULL AFTER password;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE tempo_utilisateurs_resp ADD salt VARCHAR( 128 ) NOT NULL AFTER password;");
 		if ($query) {
 			$result .= msj_present("Le champ 'salt' de la table 'tempo_utilisateurs_resp' a été ajouté");
 		} else {
@@ -1026,10 +1026,10 @@ if ($test != -1) {
 		}
 	}
 
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'email';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM tempo_utilisateurs_resp LIKE 'email';"));
 	if ($test_champ==0) {
 		$result .= "<br />&nbsp;->Ajout d'un champ 'email' à la table 'tempo_utilisateurs_resp'<br />";
-		$query = mysql_query("ALTER TABLE tempo_utilisateurs_resp ADD email VARCHAR( 50 ) NOT NULL AFTER salt;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE tempo_utilisateurs_resp ADD email VARCHAR( 50 ) NOT NULL AFTER salt;");
 		if ($query) {
 			$result .= msj_present("Le champ 'email' de la table 'tempo_utilisateurs_resp' a été ajouté");
 		} else {
@@ -1064,10 +1064,10 @@ if ($test_tempo_utilisateurs == -1) {
 $test_tempo_utilisateurs = sql_query1("SHOW TABLES LIKE 'tempo_utilisateurs';");
 if ($test_tempo_utilisateurs!=-1) {
 
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs LIKE 'pers_id';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM tempo_utilisateurs LIKE 'pers_id';"));
 	if ($test_champ!=0) {
 		$result .= "<br />&nbsp;->Changement du champ 'pers_id' de la table 'tempo_utilisateurs' en 'identifiant1'<br />";
-		$query = mysql_query("ALTER TABLE tempo_utilisateurs CHANGE pers_id identifiant1 VARCHAR( 10 ) NOT NULL;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE tempo_utilisateurs CHANGE pers_id identifiant1 VARCHAR( 10 ) NOT NULL;");
 		if ($query) {
 			$result .= msj_present("Le champ 'pers_id' de la table 'tempo_utilisateurs' a été changé en 'identifiant1'");
 		} else {
@@ -1075,10 +1075,10 @@ if ($test_tempo_utilisateurs!=-1) {
 		}
 	}
 
-	$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM tempo_utilisateurs LIKE 'identifiant2';"));
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM tempo_utilisateurs LIKE 'identifiant2';"));
 	if ($test_champ==0) {
 		$result .= "<br />&nbsp;->Ajout d'un champ 'identifiant2' à la table 'tempo_utilisateurs'<br />";
-		$query = mysql_query("ALTER TABLE tempo_utilisateurs ADD identifiant2 VARCHAR( 50 ) NOT NULL AFTER identifiant1;");
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE tempo_utilisateurs ADD identifiant2 VARCHAR( 50 ) NOT NULL AFTER identifiant1;");
 		if ($query) {
 			$result .= msj_present("Le champ 'identifiant2' de la table 'tempo_utilisateurs' a été ajouté");
 		} else {
@@ -1090,13 +1090,13 @@ if ($test_tempo_utilisateurs!=-1) {
 	if ($test != -1) {
 
 		$temoin_erreur_migration="n";
-		$test = mysql_query("SELECT 1=1 FROM tempo_utilisateurs_resp;");
-		if (mysql_num_rows($test)!=0) {
+		$test = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM tempo_utilisateurs_resp;");
+		if (mysqli_num_rows($test)!=0) {
 		//$test = sql_query1("SELECT 1=1 FROM tempo_utilisateurs_resp;");
 		//if ($test != -1) {
 			$result .= "<strong>Migration des données de la table 'tempo_utilisateurs_resp' à la table 'tempo_utilisateurs' :</strong><br />";
 			//on vide tempo_utilisateurs
-			$test2 = mysql_query("TRUNCATE `tempo_utilisateurs`;");
+			$test2 = mysqli_query($GLOBALS["mysqli"], "TRUNCATE `tempo_utilisateurs`;");
 			$sql="INSERT INTO `tempo_utilisateurs` SELECT login, password, salt, email, pers_id, pers_id, statut, auth_mode, '0000-00-00', statut FROM `tempo_utilisateurs_resp` ";
 			$result_inter = traite_requete($sql);
 			if ($result_inter == '') {
@@ -1123,8 +1123,8 @@ if ($test_tempo_utilisateurs!=-1) {
 	}
 }
 
-$req_test=mysql_query("SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
-$res_test=mysql_num_rows($req_test);
+$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'utiliserMenuBarre'");
+$res_test=mysqli_num_rows($req_test);
 if ($res_test==0){
   $result_inter = traite_requete("INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');");
   if ($result_inter == '') {

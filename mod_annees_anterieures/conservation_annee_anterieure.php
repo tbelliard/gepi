@@ -79,20 +79,20 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 	check_token();
 
 	$sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr1=mysql_query($sql);
+	$res_suppr1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
 	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
 	$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
 	if ($test == 0) {
 		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr2=mysql_query($sql);
+		$res_suppr2=mysqli_query($GLOBALS["mysqli"], $sql);
 	} else {
 		$res_suppr2 = 1;
 	}
 
 	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
-	$res_suppr3=mysql_query($sql);
+	$res_suppr3=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
 	suppression_donnees_eleves_inutiles();
@@ -128,27 +128,27 @@ if(!isset($annee_scolaire)){
 	echo "</p></div>\n";
 
 	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
-	$res_annee=mysql_query($sql);
+	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 	//if(){
-	if(mysql_num_rows($res_annee)==0){
+	if(mysqli_num_rows($res_annee)==0){
 		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
 	}
 	else{
 		echo "<p>Voici la liste des années sauvegardées:</p>\n";
 		echo "<ul>\n";
-		while($lig_annee=mysql_fetch_object($res_annee)){
+		while($lig_annee=mysqli_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
 			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données archivées pour cette année</a>) :<br /></b> ";
 			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
-			$res_classes=mysql_query($sql);
-			if(mysql_num_rows($res_classes)==0){
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classes)==0){
 				echo "Aucune classe???";
 			}
 			else{
-				$lig_classe=mysql_fetch_object($res_classes);
+				$lig_classe=mysqli_fetch_object($res_classes);
 				echo $lig_classe->classe;
 
-				while($lig_classe=mysql_fetch_object($res_classes)){
+				while($lig_classe=mysqli_fetch_object($res_classes)){
 					echo ", ".$lig_classe->classe;
 				}
 			}
@@ -186,17 +186,17 @@ else{
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
 	$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire'";
-	$res_test=mysql_query($sql);
+	$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysql_num_rows($res_test)>0){
+	if(mysqli_num_rows($res_test)>0){
 		if(!isset($confirmer)){
 			echo "</p></div>\n";
 
-			$lig_classe=mysql_fetch_object($res_test);
+			$lig_classe=mysqli_fetch_object($res_test);
 			$chaine_classes=$lig_classe->classe;
 
-			if(mysql_num_rows($res_test)>1){
-				while($lig_classe=mysql_fetch_object($res_test)){
+			if(mysqli_num_rows($res_test)>1){
+				while($lig_classe=mysqli_fetch_object($res_test)){
 					$chaine_classes.=", ".$lig_classe->classe;
 				}
 
@@ -229,8 +229,8 @@ else{
 		// Afficher les classes pour lesquelles les données sont déjà migrées...
 
 		$sql="SELECT id,classe FROM classes ORDER BY classe";
-		$res1=mysql_query($sql);
-		$nb_classes=mysql_num_rows($res1);
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes=mysqli_num_rows($res1);
 		if($nb_classes==0){
 			echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore définie.</p>\n";
 			require("../lib/footer.inc.php");
@@ -255,7 +255,7 @@ else{
 				echo "<td align='left'>\n";
 			}
 
-			$lig_classe=mysql_fetch_object($res1);
+			$lig_classe=mysqli_fetch_object($res1);
 
 			echo "<input type='checkbox' id='classe".$i."' name='id_classe[]' value='$lig_classe->id' /><label for='classe".$i."' style='cursor:pointer;'> $lig_classe->classe</label><br />\n";
 
@@ -305,12 +305,12 @@ else{
 
 		$temoin_ects="n";
 		$sql="SELECT 1=1 FROM ects_credits LIMIT 1";
-		$test1=mysql_query($sql);
-		if(mysql_num_rows($test1)>0) {$temoin_ects="y";}
+		$test1=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test1)>0) {$temoin_ects="y";}
 		else {
 			$sql="SELECT 1=1 FROM ects_global_credits LIMIT 1";
-			$test2=mysql_query($sql);
-			if(mysql_num_rows($test2)>0) {$temoin_ects="y";}
+			$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test2)>0) {$temoin_ects="y";}
 		}
 
 
@@ -359,9 +359,9 @@ else{
 
 		// Boucle sur les périodes de la classe
 		$sql="SELECT * FROM periodes WHERE id_classe='".$id_classe[0]."' ORDER BY num_periode";
-		$res_periode=mysql_query($sql);
+		$res_periode=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_periode)==0){
+		if(mysqli_num_rows($res_periode)==0){
 			echo "<p>Aucune période ne semble définie pour la classe $classe</p>\n";
 		}
 		else{
@@ -369,7 +369,7 @@ else{
 			$tab_periode=array();
 			//$cpt=0;
 			$cpt=1;
-			while($lig_periode=mysql_fetch_object($res_periode)){
+			while($lig_periode=mysqli_fetch_object($res_periode)){
 				$tab_periode[$cpt]=$lig_periode->nom_periode;
 				$cpt++;
 			}
@@ -378,16 +378,16 @@ else{
 
 			$sql="SELECT DISTINCT e.* FROM eleves e,j_eleves_classes jec WHERE id_classe='".$id_classe[0]."' AND jec.login=e.login ORDER BY login";
 			//echo "$sql<br />\n";
-			$res_ele=mysql_query($sql);
+			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysql_num_rows($res_ele)==0){
+			if(mysqli_num_rows($res_ele)==0){
 				echo "<p>Aucun élève dans la classe $classe???</p>\n";
 			}
 			else{
 				unset($tab_eleve);
 				$tab_eleve=array();
 				$cpt=0;
-				while($lig_ele=mysql_fetch_object($res_ele)){
+				while($lig_ele=mysqli_fetch_object($res_ele)){
 					// Infos élève
 					$tab_eleve[$cpt]=array();
 
@@ -411,29 +411,29 @@ else{
 
 					// Statut de redoublant ou non:
 					$sql="SELECT * FROM j_eleves_regime WHERE login='".$tab_eleve[$cpt]['login_eleve']."'";
-					$res_red=mysql_query($sql);
+					$res_red=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if(mysql_num_rows($res_red)==0){
+					if(mysqli_num_rows($res_red)==0){
 						$tab_eleve[$cpt]['doublant']="-";
 					}
 					else{
-						$lig_red=mysql_fetch_object($res_red);
+						$lig_red=mysqli_fetch_object($res_red);
 						$tab_eleve[$cpt]['doublant']=$lig_red->doublant;
 					}
 
 
 					// CPE associé(s) à l'élève
 					$sql="SELECT jec.cpe_login FROM j_eleves_cpe jec WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."';";
-					$res_cpe=mysql_query($sql);
+					$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if(mysql_num_rows($res_cpe)==0){
+					if(mysqli_num_rows($res_cpe)==0){
 						$tab_eleve[$cpt]['cpe']="";
 					}
 					else{
-						$lig_cpe=mysql_fetch_object($res_cpe);
+						$lig_cpe=mysqli_fetch_object($res_cpe);
 						$tab_eleve[$cpt]['cpe']=affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 
-						while($lig_cpe=mysql_fetch_object($res_cpe)){
+						while($lig_cpe=mysqli_fetch_object($res_cpe)){
 							$tab_eleve[$cpt]['cpe'].=", ".affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 						}
 					}
@@ -447,12 +447,12 @@ else{
 
 				// Personne assurant le suivi de la classe...
 				$sql="SELECT suivi_par FROM classes WHERE id='$id_classe[0]'";
-				$res_suivi=mysql_query($sql);
-				if(mysql_num_rows($res_suivi)==0){
+				$res_suivi=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_suivi)==0){
 					$suivi_par="-";
 				}
 				else{
-					$lig_suivi=mysql_fetch_object($res_suivi);
+					$lig_suivi=mysqli_fetch_object($res_suivi);
 					$suivi_par=$lig_suivi->suivi_par;
 				}
 
@@ -490,7 +490,7 @@ else{
 				for($i=1;$i<=count($tab_periode);$i++){
 					// Nettoyage:
 					$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i'";
-					$res_nettoyage=mysql_query($sql);
+					$res_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(!$res_nettoyage){
 						echo "<p style='color:red'><b>ERREUR</b> lors du nettoyage</p>\n";
@@ -508,50 +508,50 @@ else{
 					// Calculer les moyennes de classe, rechercher min et max pour tous les groupes associés à la classe sur la période.
 					//$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
 					$sql="SELECT DISTINCT id_groupe, priorite FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
-					$res_groupes=mysql_query($sql);
+					$res_groupes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$moymin=array();
 					$moymax=array();
 					$moyclasse=array();
 					$ordre_matiere=array();
 
-					if(mysql_num_rows($res_groupes)==0){
+					if(mysqli_num_rows($res_groupes)==0){
 						// Dans ce cas, il ne doit pas y avoir de note,... pour les élèves
 					}
 					else{
-						while($lig_groupes=mysql_fetch_object($res_groupes)){
+						while($lig_groupes=mysqli_fetch_object($res_groupes)){
 							$id_groupe=$lig_groupes->id_groupe;
 
 							$ordre_matiere[$id_groupe]=$lig_groupes->priorite;
 
 							$sql="SELECT AVG(note) moyenne FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND periode='$i'";
 							//echo "$sql<br />\n";
-							$res_moy=mysql_query($sql);
-							if(mysql_num_rows($res_moy)==0){
+							$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_moy)==0){
 								$moyclasse[$id_groupe]="-";
 							}
 							else{
-								$lig_moy=mysql_fetch_object($res_moy);
+								$lig_moy=mysqli_fetch_object($res_moy);
 								$moyclasse[$id_groupe]=round($lig_moy->moyenne*10)/10;
 							}
 
 							$sql="SELECT MAX(note) moyenne FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND periode='$i'";
-							$res_moy=mysql_query($sql);
-							if(mysql_num_rows($res_moy)==0){
+							$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_moy)==0){
 								$moymax[$id_groupe]="-";
 							}
 							else{
-								$lig_moy=mysql_fetch_object($res_moy);
+								$lig_moy=mysqli_fetch_object($res_moy);
 								$moymax[$id_groupe]=$lig_moy->moyenne;
 							}
 
 							$sql="SELECT MIN(note) moyenne FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND periode='$i'";
-							$res_moy=mysql_query($sql);
-							if(mysql_num_rows($res_moy)==0){
+							$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_moy)==0){
 								$moymin[$id_groupe]="-";
 							}
 							else{
-								$lig_moy=mysql_fetch_object($res_moy);
+								$lig_moy=mysqli_fetch_object($res_moy);
 								$moymin[$id_groupe]=$lig_moy->moyenne;
 							}
 						}
@@ -579,16 +579,16 @@ else{
 
 						// Absences, retards,... de l'élève
 						$sql="SELECT * FROM absences WHERE login='".$login_eleve."' AND periode='$i'";
-						$res_abs=mysql_query($sql);
+						$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if(mysql_num_rows($res_abs)==0){
+						if(mysqli_num_rows($res_abs)==0){
 							$nb_absences="-";
 							$non_justifie="-";
 							$nb_retards="-";
 							$appreciation="-";
 						}
 						else{
-							$lig_abs=mysql_fetch_object($res_abs);
+							$lig_abs=mysqli_fetch_object($res_abs);
 							$nb_absences=$lig_abs->nb_absences;
 							$non_justifie=$lig_abs->non_justifie;
 							$nb_retards=$lig_abs->nb_retards;
@@ -614,7 +614,7 @@ else{
 											nb_retards='$nb_retards'
 											";
 						echo "<!-- $sql -->\n";
-						$res_insert=mysql_query($sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(!$res_insert){
 							$erreur++;
@@ -631,13 +631,13 @@ else{
 
 						// Avis du conseil de classe
 						$sql="SELECT * FROM avis_conseil_classe WHERE login='$login_eleve' AND periode='$num_periode'";
-						$res_avis=mysql_query($sql);
+						$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if(mysql_num_rows($res_avis)==0){
+						if(mysqli_num_rows($res_avis)==0){
 							$avis="-";
 						}
 						else{
-							$lig_avis=mysql_fetch_object($res_avis);
+							$lig_avis=mysqli_fetch_object($res_avis);
 							$avis=$lig_avis->avis;
 							// A quoi sert le champ statut de la table avis_conseil_classe ?
 						}
@@ -662,7 +662,7 @@ else{
 											nb_retards=''
 											";
 						echo "<!-- $sql -->\n";
-						$res_insert=mysql_query($sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(!$res_insert){
 							$erreur++;
@@ -697,9 +697,9 @@ else{
 																jgm.id_matiere=m.matiere;";
 
 						echo "<!-- $sql -->\n";
-						$res_grp=mysql_query($sql);
+						$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if(mysql_num_rows($res_grp)==0){
+						if(mysqli_num_rows($res_grp)==0){
 							// Que faire? Est-il possible qu'il y ait quelque chose dans matieres_appreciations dans ce cas?
 							// Ca ne devrait pas...
 							// Si... on peut avoir un professeur qui n'a pas saisi de note ni même un tiret (malheureusement), mais mis une appréciation
@@ -708,7 +708,7 @@ else{
 							echo "<!-- En période $num_periode, l'élève $login_eleve n'est associé à aucun enseignement -->\n";
 						}
 						else{
-							while($lig_grp=mysql_fetch_object($res_grp)){
+							while($lig_grp=mysqli_fetch_object($res_grp)){
 
 								$id_groupe=$lig_grp->id_groupe;
 								$matiere=$lig_grp->nom_complet;
@@ -717,13 +717,13 @@ else{
 														WHERE mn.login='$login_eleve' AND
 																mn.periode='$num_periode' AND
 																mn.id_groupe='$id_groupe';";
-								$res_note=mysql_query($sql);
-								if(mysql_num_rows($res_note)==0) {
+								$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_note)==0) {
 									$note='';
 									$rang=-1;
 								}
 								else {
-									$lig_note=mysql_fetch_object($res_note);
+									$lig_note=mysqli_fetch_object($res_note);
 
 									if($lig_note->statut!=''){
 										$note=$lig_note->statut;
@@ -740,13 +740,13 @@ else{
 																periode='$num_periode' AND
 																id_groupe='$id_groupe'";
 								echo "<!-- $sql -->\n";
-								$res_app=mysql_query($sql);
+								$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								if(mysql_num_rows($res_app)==0){
+								if(mysqli_num_rows($res_app)==0){
 									$appreciation="-";
 								}
 								else{
-									$lig_app=mysql_fetch_object($res_app);
+									$lig_app=mysqli_fetch_object($res_app);
 									$appreciation=$lig_app->appreciation;
 								}
 
@@ -754,15 +754,15 @@ else{
 									// Récupération des professeurs associés
 									$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
 									echo "<!-- $sql -->\n";
-									$res_prof=mysql_query($sql);
+									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-									if(mysql_num_rows($res_prof)==0){
+									if(mysqli_num_rows($res_prof)==0){
 										$prof="";
 									}
 									else{
-										$lig_prof=mysql_fetch_object($res_prof);
+										$lig_prof=mysqli_fetch_object($res_prof);
 										$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
-										while($lig_prof=mysql_fetch_object($res_prof)){
+										while($lig_prof=mysqli_fetch_object($res_prof)){
 											$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
 										}
 									}
@@ -793,7 +793,7 @@ else{
 														ordre_matiere='".$ordre_matiere[$id_groupe]."'
 														";
 									echo "<!-- $sql -->\n";
-									$res_insert=mysql_query($sql);
+									$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 									if(!$res_insert){
 										$erreur++;

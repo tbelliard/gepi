@@ -67,15 +67,15 @@ if($acces=="n") {
 
 if (!isset($step)) {
 	// On verifie que la table absences_gep est remplie
-	$test_abs_gep = mysql_query("select id_seq from absences_gep");
-	if (mysql_num_rows($test_abs_gep) == 0) {
+	$test_abs_gep = mysqli_query($GLOBALS["mysqli"], "select id_seq from absences_gep");
+	if (mysqli_num_rows($test_abs_gep) == 0) {
 		$step_suivant = '1';
 	} else {
 		$step_suivant = '3';
 	}
 
 	// On verife que tous les élèves ont un numéro GEP
-	$test = mysql_query("select DISTINCT e.login, e.nom, e.prenom from eleves e, j_eleves_classes j where
+	$test = mysqli_query($GLOBALS["mysqli"], "select DISTINCT e.login, e.nom, e.prenom from eleves e, j_eleves_classes j where
 	(
 	e.login = j.login and
 	j.id_classe = '".$id_classe."' and
@@ -83,7 +83,7 @@ if (!isset($step)) {
 	)
 	order by 'e.nom, e.prenom'
 	");
-	$nb_test = mysql_num_rows($test);
+	$nb_test = mysqli_num_rows($test);
 	if ($nb_test != '0') {
 		$step = "0";
 	} else {
@@ -111,8 +111,8 @@ require_once("../lib/header.inc.php");
 <p class="bold">| <a href="../accueil.php">Accueil</a> | <a href="index.php?id_classe=<?php echo $id_classe; ?>">Retour</a> |</p>
 
 <?php
-$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-$classe = mysql_result($call_classe, "0", "classe");
+$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+$classe = old_mysql_result($call_classe, "0", "classe");
 ?>
 <p><b>Classe de <?php echo "$classe"; ?> - Importation des absences : <?php echo $nom_periode[$periode_num]; ?></b></p>
 
@@ -135,9 +135,9 @@ if ($step == 0) {
 	$alt=1;
 	while ($i < $nb_test) {
 		$alt=$alt*(-1);
-		$login_eleve = mysql_result($test,$i,'e.login');
-		$nom_eleve = mysql_result($test,$i,'e.nom');
-		$prenom_eleve = mysql_result($test,$i,'e.prenom');
+		$login_eleve = old_mysql_result($test,$i,'e.login');
+		$nom_eleve = old_mysql_result($test,$i,'e.nom');
+		$prenom_eleve = old_mysql_result($test,$i,'e.prenom');
 		//echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		echo "<tr class='lig$alt'><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		$i++;
@@ -165,8 +165,8 @@ if ($step == 0) {
 	echo "</form>\n";
 
 	// On verifie que la table absences_gep est remplie
-	$test_abs_gep = mysql_query("select id_seq from absences_gep");
-	if (mysql_num_rows($test_abs_gep) != 0) {
+	$test_abs_gep = mysqli_query($GLOBALS["mysqli"], "select id_seq from absences_gep");
+	if (mysqli_num_rows($test_abs_gep) != 0) {
 		echo "<hr /><form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
 		echo add_token_field();
 		echo "<p align=\"center\"><input type=submit value=\"Continuer sans procéder à l'importation\" /></p>\n";
@@ -221,7 +221,7 @@ if ($step == 0) {
 				}
 
 				// On vide la table absences_gep
-				$req = mysql_query("delete from absences_gep");
+				$req = mysqli_query($GLOBALS["mysqli"], "delete from absences_gep");
 
 				$erreur = 'no';
 				for($k = 1; ($k < $nblignes+1); $k++){
@@ -231,7 +231,7 @@ if ($step == 0) {
 					}
 					// On repère les lignes qui sont en rapport avec les séquences
 					if ($affiche[0] == "S") {
-					$reg = mysql_query("insert into absences_gep set id_seq='$affiche[1]', type='$affiche[2]'");
+					$reg = mysqli_query($GLOBALS["mysqli"], "insert into absences_gep set id_seq='$affiche[1]', type='$affiche[2]'");
 					if (!$reg) $erreur = 'yes';
 					}
 				}
@@ -407,11 +407,11 @@ if ($step == 0) {
 
 	// Conctitution du tableau sequence<->type
 	$tab_seq = array();
-	$sql = mysql_query("select id_seq, type  from absences_gep order by id_seq");
+	$sql = mysqli_query($GLOBALS["mysqli"], "select id_seq, type  from absences_gep order by id_seq");
 	$i = 0;
-	while ($i < mysql_num_rows($sql)) {
-		$id_seq = mysql_result($sql,$i,'id_seq');
-		$tab_seq[$id_seq] = mysql_result($sql,$i,'type');
+	while ($i < mysqli_num_rows($sql)) {
+		$id_seq = old_mysql_result($sql,$i,'id_seq');
+		$tab_seq[$id_seq] = old_mysql_result($sql,$i,'type');
 		$i++;
 	}
 	// Constitution du tableau login<->numéro gep
@@ -419,15 +419,15 @@ if ($step == 0) {
 	$abs = array();
 	$abs_nj = array();
 	$retard = array();
-	$req_eleves = mysql_query("select DISTINCT e.login, e.elenoet from eleves e, j_eleves_classes j where (
+	$req_eleves = mysqli_query($GLOBALS["mysqli"], "select DISTINCT e.login, e.elenoet from eleves e, j_eleves_classes j where (
 	e.login = j.login and
 	j.id_classe = '".$id_classe."'
 	)
 	order by e.nom, e.prenom");
 	$i = 0;
-	while ($i < mysql_num_rows($req_eleves)) {
-		$login_eleve = mysql_result($req_eleves,$i,'e.login');
-		$elenoet = mysql_result($req_eleves,$i,'e.elenoet');
+	while ($i < mysqli_num_rows($req_eleves)) {
+		$login_eleve = old_mysql_result($req_eleves,$i,'e.login');
+		$elenoet = old_mysql_result($req_eleves,$i,'e.elenoet');
 		if ($elenoet != '') $tab[$login_eleve] = $elenoet;
 		$i++;
 	}
@@ -754,16 +754,16 @@ if ($step == 0) {
 	foreach ($tab as $key => $value) {
 		$nom_eleve = sql_query1("select nom from eleves where login = '".$key."'");
 		$prenom_eleve = sql_query1("select prenom from eleves where login = '".$key."'");
-		$test_eleve_nb_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$key' AND periode='$periode_num')");
-		$test_nb = mysql_num_rows($test_eleve_nb_absences_query);
+		$test_eleve_nb_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$key' AND periode='$periode_num')");
+		$test_nb = mysqli_num_rows($test_eleve_nb_absences_query);
 		if ($test_nb != "0") {
-			$register = mysql_query("UPDATE absences
+			$register = mysqli_query($GLOBALS["mysqli"], "UPDATE absences
 			SET nb_absences='".$abs[$key]."',
 			non_justifie='".$abs_nj[$key]."',
 			nb_retards='".$retard[$key]."'
 			WHERE (login='".$key."' AND periode='".$periode_num."')");
 		} else {
-			$register = mysql_query("INSERT INTO absences SET
+			$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO absences SET
 			login='".$key."',
 			periode='".$periode_num."',
 			nb_absences='".$abs[$key]."',

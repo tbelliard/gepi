@@ -47,18 +47,18 @@ $requete = "select * from droits_aid where (id!='cpe_peut_modifier' and id!='pro
 if (isset($is_posted) and ($is_posted == "1")) {
 	check_token();
 
-    $res = mysql_query($requete);
-    $nb_lignes = mysql_num_rows($res);
+    $res = mysqli_query($GLOBALS["mysqli"], $requete);
+    $nb_lignes = mysqli_num_rows($res);
     $i = 0;
     while ($i < $nb_lignes) {
-        $id = mysql_result($res,$i,"id");
+        $id = old_mysql_result($res,$i,"id");
         if ($_POST["description_".$id]=="") $_POST["description_".$id] = "A préciser";
         if (!(isset($_POST["public_".$id]))) $_POST["public_".$id] = '-';
         if (!(isset($_POST["professeur_".$id]))) $_POST["professeur_".$id] = '-';
         if (!(isset($_POST["cpe_".$id]))) $_POST["cpe_".$id] = '-';
         if (!(isset($_POST["eleve_".$id]))) $_POST["eleve_".$id] = '-';
         if (!(isset($_POST["statut_".$id]))) $_POST["statut_".$id]= '0';
-        $sql = mysql_query("update droits_aid set
+        $sql = mysqli_query($GLOBALS["mysqli"], "update droits_aid set
         public = '".$_POST["public_".$id]."',
         professeur = '".$_POST["professeur_".$id]."',
         cpe = '".$_POST["cpe_".$id]."',
@@ -105,19 +105,19 @@ echo "<tr><th><b>Champ de la fiche projet</b></th>
 <th><span class='small'>Les élèves peuvent modifier ce champ</span></th>
 <th><span class='small'>Le champ est actif</span></th>
 </tr>";
-$res = mysql_query($requete);
-$nb_lignes = mysql_num_rows($res);
+$res = mysqli_query($GLOBALS["mysqli"], $requete);
+$nb_lignes = mysqli_num_rows($res);
 $i = 0;
 $alt=1;
 while ($i < $nb_lignes) {
-    $id = mysql_result($res,$i,"id");
-    $public = mysql_result($res,$i,"public");
-    $professeur = mysql_result($res,$i,"professeur");
-    $cpe = mysql_result($res,$i,"cpe");
-    $eleve = mysql_result($res,$i,"eleve");
-    $responsable = mysql_result($res,$i,"responsable");
-    $description = mysql_result($res,$i,"description");
-    $_statut = mysql_result($res,$i,"statut");
+    $id = old_mysql_result($res,$i,"id");
+    $public = old_mysql_result($res,$i,"public");
+    $professeur = old_mysql_result($res,$i,"professeur");
+    $cpe = old_mysql_result($res,$i,"cpe");
+    $eleve = old_mysql_result($res,$i,"eleve");
+    $responsable = old_mysql_result($res,$i,"responsable");
+    $description = old_mysql_result($res,$i,"description");
+    $_statut = old_mysql_result($res,$i,"statut");
     $alt=$alt*(-1);
     echo "<tr class='lig$alt'>";
     if (($id!="perso1") and ($id!="perso2") and ($id!="perso3"))

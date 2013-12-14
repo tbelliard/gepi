@@ -3,6 +3,7 @@
  * The configuration of simpleSAMLphp
  * 
  */
+global $mysqli;
 
 $config = array (
 
@@ -482,9 +483,9 @@ $path = dirname(dirname(dirname(dirname(__FILE__))));
 include("$path/secure/connect.inc.php");
 // Database connection
 ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
-require_once("$path/lib/mysql.inc");
+// require_once("$path/lib/mysql.inc");
 require_once("$path/lib/mysqli.inc.php");
-require_once("$path/lib/settings.inc");
+// require_once("$path/lib/settings.inc");
 require_once("$path/lib/settings.inc.php");
 // Load settings
 if (!loadSettings()) {

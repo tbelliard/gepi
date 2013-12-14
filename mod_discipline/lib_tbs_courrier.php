@@ -19,11 +19,11 @@ function adresse_responsables($login_eleve) {
 
 	// Récup infos responsables
 	$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.adr4,ra.cp,ra.commune,ra.pays,ra.adr_id FROM resp_pers rp, resp_adr ra, responsables2 r,eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$login_eleve' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
-	$res_resp=mysql_query($sql);
+	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 	//echo "$sql<br />";
-	if(mysql_num_rows($res_resp)>0) {
+	if(mysqli_num_rows($res_resp)>0) {
 		$cpt=0;
-		while($lig_resp=mysql_fetch_object($res_resp)) {
+		while($lig_resp=mysqli_fetch_object($res_resp)) {
 			$tab_ele['resp'][$cpt]=array();
 			//$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
 			//$tab_ele['resp'][$cpt]['login']=$lig_resp->login;

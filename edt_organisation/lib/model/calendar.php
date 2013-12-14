@@ -56,26 +56,26 @@ class calendar {
 					id_calendar INT,
 					id_classe INT
 					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-		$req_creation = mysql_query($sql);
+		$req_creation = mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql = "CREATE TABLE IF NOT EXISTS edt_calendrier_manager (
 					id INT AUTO_INCREMENT,
 					nom_calendrier TEXT,
 					PRIMARY KEY (id)
 					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-		$req_creation = mysql_query($sql);
+		$req_creation = mysqli_query($GLOBALS["mysqli"], $sql);
 		$sql = "SELECT id FROM edt_calendrier_manager";
-		$req_calendar = mysql_query($sql);
+		$req_calendar = mysqli_query($GLOBALS["mysqli"], $sql);
 		$id_primary = 0;
 		if ($req_calendar) {
-			if (mysql_num_rows($req_calendar) == 0) {
+			if (mysqli_num_rows($req_calendar) == 0) {
 				$sql = "INSERT INTO edt_calendrier_manager SET
 					nom_calendrier = 'calendrier 1' ";
-				$req = mysql_query($sql);
+				$req = mysqli_query($GLOBALS["mysqli"], $sql);
 				if ($req) {
 					$sql = "SELECT id FROM edt_calendrier_manager";
-					$req = mysql_query($sql);
+					$req = mysqli_query($GLOBALS["mysqli"], $sql);
 					if ($req) {
-						$rep = mysql_fetch_array($req);
+						$rep = mysqli_fetch_array($req);
 						$id_primary = $rep['id'];
 					}
 				
@@ -87,17 +87,17 @@ class calendar {
 
 		// ===============================================================
 		$sql = "SHOW COLUMNS FROM edt_calendrier ";
-        $req_colonne = mysql_query($sql);
+        $req_colonne = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nomsChamps = array();
 		if ($req_colonne) {
-			while ($rep = mysql_fetch_array($req_colonne)) {
+			while ($rep = mysqli_fetch_array($req_colonne)) {
 				$nomsChamps[] = $rep[0];
 			}
 			if (!in_array("id_calendar",$nomsChamps)) {
 				$sql = "ALTER TABLE edt_calendrier ADD id_calendar INT";
-				$add_column = mysql_query($sql);
+				$add_column = mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql = "UPDATE edt_calendrier SET id_calendar = '".$id_primary."' ";
-				$req = mysql_query($sql);
+				$req = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		
@@ -436,9 +436,9 @@ class calendar {
 	public static function getTypeCurrentWeek(){
 		$retour = '';
 		$numero_sem_actu = date("W");
-		$query = mysql_query("SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
+		$query = mysqli_query($GLOBALS["mysqli"], "SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine = '".$numero_sem_actu."'");
 		if (count($query) == 1) {
-			$type = mysql_result($query, 0);
+			$type = old_mysql_result($query, 0);
 			$retour = $type;
 		}
 		return $retour;
@@ -454,10 +454,10 @@ class calendar {
 
  	public static function getPeriodName($date_ts)
 	{
-		$req_periode = mysql_query("SELECT * FROM edt_calendrier");
+		$req_periode = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier");
 		$endprocess = false;
 		$result = '';
-		while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+		while (($rep_periode = mysqli_fetch_array($req_periode)) AND (!$endprocess)) {
 			if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
 				$result.= "<p>".$rep_periode['nom_calendrier']."</p>";
 				//$endprocess = true;
@@ -476,14 +476,14 @@ class calendar {
  	public static function getSinglePeriod($date_ts, $id_calendar)
 	{
 		if ($id_calendar) {
-			$req_periode = mysql_query("SELECT * FROM edt_calendrier");
+			$req_periode = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier");
 		}
 		else {
-			$req_periode = mysql_query("SELECT * FROM edt_calendrier WHERE id_calendar='".$id_calendar."'");		
+			$req_periode = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_calendrier WHERE id_calendar='".$id_calendar."'");		
 		}
 		$endprocess = false;
 		$result = array();
-		while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+		while (($rep_periode = mysqli_fetch_array($req_periode)) AND (!$endprocess)) {
 			if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
 				$result['id'] = $rep_periode['id_calendrier'];
 				$result['nom'] = $rep_periode['nom_calendrier'];

@@ -86,9 +86,9 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 			$classe=get_class_from_id($id_classe[$i]);
 
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_eleves_OOo[$nb_eleve]=array();
 
 					$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
@@ -117,9 +117,9 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 			$current_group=get_group($id_groupe[$i]);
 
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_eleves_OOo[$nb_eleve]=array();
 
 					$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
@@ -493,8 +493,8 @@ else {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
 		}
 		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
 			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";
 			echo " <a href=\"javascript:cocher_decocher('id_classe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_classe_', false)\">décocher</a> toutes les classes\n";
@@ -502,7 +502,7 @@ else {
 			echo add_token_field();
 			echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
-			$nombreligne=mysql_num_rows($res);
+			$nombreligne=mysqli_num_rows($res);
 			$nbcol=3;
 			$nb_par_colonne=round($nombreligne/$nbcol);
 
@@ -511,7 +511,7 @@ else {
 			echo "<td align='left'>\n";
 
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 					echo "</td>\n";
 					echo "<td align='left'>\n";
@@ -541,7 +541,7 @@ else {
 				echo add_token_field();
 				echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
-				$nombreligne=mysql_num_rows($res);
+				$nombreligne=mysqli_num_rows($res);
 				$nbcol=3;
 				$nb_par_colonne=round($nombreligne/$nbcol);
 	

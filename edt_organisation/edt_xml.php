@@ -16,8 +16,8 @@
 	}
 
 	$sql="SELECT 1=1 FROM droits WHERE id='/edt_organisation/edt_xml.php';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/edt_organisation/edt_xml.php',
 	administrateur='V',
 	professeur='F',
@@ -29,7 +29,7 @@
 	autre='F',
 	description='Import XML EDT',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 	if (!checkAccess()) {
@@ -64,7 +64,7 @@
 	texte TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 	info VARCHAR(200) NOT NULL
 	) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysql_query($sql);
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	// =======================================================
 	if(isset($_GET['nettoyage'])) {
@@ -129,8 +129,8 @@
 			$dest_file="../temp/".$tempdir."/edt.xml";
 			if(file_exists($dest_file)) {
 				$sql="SELECT texte AS col1 FROM tempo5 WHERE info='groupe' OR info='classe';";
-				$res_grp=mysql_query($sql);
-				if(mysql_num_rows($res_grp)>0) {
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_grp)>0) {
 					echo "<br />\n";
 					echo "<p><span class='bold'>Ou</span> <a href='".$_SERVER['PHP_SELF']."?step=1'>repartir du fichier précédemment uploadé</a>.</p>\n";
 				}
@@ -325,18 +325,18 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 				$tab_grp=array();
 				//$sql="SELECT * FROM tempo2 WHERE col2='groupe';";
 				$sql="SELECT texte AS col1 FROM tempo5 WHERE info='groupe';";
-				$res_grp=mysql_query($sql);
-				if(mysql_num_rows($res_grp)>0) {
-					while($lig_grp=mysql_fetch_object($res_grp)) {
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_grp)>0) {
+					while($lig_grp=mysqli_fetch_object($res_grp)) {
 						$tab_grp[]=$lig_grp->col1;
 					}
 				}
 
 				$tab_classes_base=array();
 				$sql="SELECT classe FROM classes;";
-				$res_classes_base=mysql_query($sql);
-				if(mysql_num_rows($res_classes_base)>0) {
-					while($lig_classes_base=mysql_fetch_object($res_classes_base)) {
+				$res_classes_base=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_classes_base)>0) {
+					while($lig_classes_base=mysqli_fetch_object($res_classes_base)) {
 						$tab_classes_base[]=$lig_classes_base->classe;
 					}
 				}
@@ -394,9 +394,9 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 					$tab_sem=array();
 					$sql="SELECT * FROM tempo5 WHERE info='type_edt_semaine';";
-					$res_sem=mysql_query($sql);
-					if(mysql_num_rows($res_sem)>0) {
-						while($lig_sem=mysql_fetch_object($res_sem)) {
+					$res_sem=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_sem)>0) {
+						while($lig_sem=mysqli_fetch_object($res_sem)) {
 							$tab_sem[]=$lig_sem->texte;
 						}
 					}
@@ -500,14 +500,14 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 				//$sql="TRUNCATE TABLE tempo2;";
 				//$sql="TRUNCATE TABLE tempo5;";
 				$sql="DELETE FROM tempo5 WHERE info='groupe' OR info='classe';";
-				$vide_table = mysql_query($sql);
+				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$tab_clas_grp=array();
 				//$sql="SELECT * FROM tempo2 WHERE col2='groupe';";
 				$sql="SELECT * FROM tempo5;";
-				$res_grp=mysql_query($sql);
-				if(mysql_num_rows($res_grp)>0) {
-					while($lig_grp=mysql_fetch_object($res_grp)) {
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_grp)>0) {
+					while($lig_grp=mysqli_fetch_object($res_grp)) {
 						$tab_clas_grp[$lig_grp->texte][]=$lig_grp->info;
 					}
 				}
@@ -520,8 +520,8 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 				$tab_clas=array();
 				for($i=0;$i<count($clas_ou_grp);$i++) {
 					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($clas_ou_grp[$i])."', col2='".$type[$i]."';";
-					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($clas_ou_grp[$i])."', info='".$type[$i]."';";
-					$insert=mysql_query($sql);
+					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $clas_ou_grp[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='".$type[$i]."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($type[$i]=='groupe') {$tab_grp[]=$clas_ou_grp[$i];}
 					else {
 						$tab_clas[]=$clas_ou_grp[$i];
@@ -534,12 +534,12 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 				}
 
 				$sql="DELETE FROM tempo5 WHERE info='type_edt_semaine';";
-				$menage=mysql_query($sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				$tab_sem=isset($_POST['tab_sem']) ? $_POST['tab_sem'] : array();
 				for($i=0;$i<count($tab_sem);$i++) {
-					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($tab_sem[$i])."', info='type_edt_semaine';";
-					$insert=mysql_query($sql);
+					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_sem[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='type_edt_semaine';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(count($tab_grp)>0) {
@@ -740,8 +740,8 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 					for($j=0;$j<count($tab_clas);$j++) {
 						//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($grp[$i])."', col2='".mysql_real_escape_string($tab_clas[$j])."';";
-						$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($grp[$i])."', info='".mysql_real_escape_string($tab_clas[$j])."';";
-						$insert=mysql_query($sql);
+						$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $grp[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_clas[$j]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						$tab_clas_grp[$grp[$i]][]=$tab_clas[$j];
 					}
 				}
@@ -775,9 +775,9 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 				$tab_sem=array();
 				$sql="SELECT * FROM tempo5 WHERE info='type_edt_semaine';";
-				$res_sem=mysql_query($sql);
-				if(mysql_num_rows($res_sem)>0) {
-					while($lig_sem=mysql_fetch_object($res_sem)) {
+				$res_sem=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sem)>0) {
+					while($lig_sem=mysqli_fetch_object($res_sem)) {
 						$tab_sem[]=$lig_sem->texte;
 					}
 				}

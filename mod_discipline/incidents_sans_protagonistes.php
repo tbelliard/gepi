@@ -71,8 +71,8 @@ $msg="";
 			$acces_modif_etat="y";
 			if($_SESSION['statut']=='professeur') {
 				$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='".$form_id_incident[$i]."' AND declarant='".$_SESSION['login']."';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {$acces_modif_etat="n";}
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {$acces_modif_etat="n";}
 			}
 
 			if($acces_modif_etat=="y") {
@@ -85,7 +85,7 @@ $msg="";
 					$sql="UPDATE s_incidents SET etat='' WHERE id_incident='".$form_id_incident[$i]."';";
 				}
 				//echo "$sql<br />";
-				$res=mysql_query($sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de la mise à jour de l'état de l'incident n°".$form_id_incident[$i].".<br />\n";
 				}
@@ -104,7 +104,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 
 		$sql="DELETE FROM s_protagonistes WHERE id_incident='$suppr_incident[$i]';";
 		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de la suppression des protagonistes de l'incident ".$suppr_incident[$i].".<br />\n";
 			$temoin_erreur="y";
@@ -112,25 +112,25 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 
 		if($temoin_erreur=="n") {
 			$sql="SELECT id_sanction FROM s_sanctions s WHERE s.id_incident='$suppr_incident[$i]';";
-			$res_sanction=mysql_query($sql);
-			if(mysql_num_rows($res_sanction)>0) {
-				while($lig=mysql_fetch_object($res_sanction)) {
+			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_sanction)>0) {
+				while($lig=mysqli_fetch_object($res_sanction)) {
 					$sql="DELETE FROM s_retenues WHERE id_sanction='$lig->id_sanction';";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la suppression de retenues attachées à l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
 					$sql="DELETE FROM s_exclusions WHERE id_sanction='$lig->id_sanction';";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la suppression d'excluions attachées à l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
 
 					$sql="DELETE FROM s_travail WHERE id_sanction='$lig->id_sanction';";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la suppression de travaux attachés à l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
@@ -139,7 +139,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 
 				if($temoin_erreur=="n") {
 					$sql="DELETE FROM s_sanctions s WHERE s.id_incident='$suppr_incident[$i]';";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="ERREUR lors de la suppression de la sanction associée à l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
@@ -151,7 +151,7 @@ if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
 			if($temoin_erreur=="n") {
 				$sql="DELETE FROM s_incidents WHERE id_incident='$suppr_incident[$i]';";
 				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="ERREUR lors de la suppression de l'incident ".$suppr_incident[$i].".<br />\n";
 				}
@@ -179,20 +179,20 @@ if(($_SESSION['statut']=='administrateur')||
 elseif ($_SESSION['statut']=='professeur') {
 	// Rechercher les incidents signalés par le prof ou ayant le prof pour protagoniste
 	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)>0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
 		echo " | <a href='traiter_incident.php'>Incidents avec protagonistes</a>\n";
 	}
 	else {
 		$sql="SELECT 1=1 FROM s_protagonistes WHERE login='".$_SESSION['login']."';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0) {
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
 			echo " | <a href='traiter_incident.php'>Incidents avec protagonistes</a>\n";
 		}
 		else {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
 				echo " | <a href='traiter_incident.php'>Incidents avec protagonistes</a>\n";
 			}
 		}
@@ -224,9 +224,9 @@ if(!isset($id_incident)) {
 	$sql.=" ORDER BY si.date DESC, si.heure DESC;";
 	$sql2.=" ORDER BY si.date DESC, si.heure DESC;";
 
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	//echo "$sql<br />";
-	if(mysql_num_rows($res)==0) {
+	if(mysqli_num_rows($res)==0) {
 		// Cette partie ne sert quasiment jamais parce qu'on teste tous les incidents, pas seulement ceux sans protagonistes.
 		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick='history.go(-1);return false;'> Retour à la page précédente</a>\n";
 		echo "</p>\n";
@@ -240,8 +240,8 @@ if(!isset($id_incident)) {
 			echo ".</p>\n";
 		}
 		else {
-			$res=mysql_query($sql2);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql2);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucun incident n'est encore déclaré";
 				if(($date_incident!="")||
 				($heure_incident!="")||
@@ -290,8 +290,8 @@ if(!isset($id_incident)) {
 	$sql="(SELECT DISTINCT si.date FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL) ORDER BY si.date DESC;";
-	$res_dates=mysql_query($sql);
-	while($lig_date=mysql_fetch_object($res_dates)) {
+	$res_dates=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_date=mysqli_fetch_object($res_dates)) {
 		echo "<option value='$lig_date->date'";
 		if($date_incident==$lig_date->date) {echo " selected='selected'";}
 		echo ">".formate_date($lig_date->date)."</option>\n";
@@ -312,8 +312,8 @@ if(!isset($id_incident)) {
 	$sql="(SELECT DISTINCT si.heure FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL) ORDER BY si.heure ASC;";
-	$res_heures=mysql_query($sql);
-	while($lig_heure=mysql_fetch_object($res_heures)) {
+	$res_heures=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_heure=mysqli_fetch_object($res_heures)) {
 		echo "<option value='$lig_heure->heure'";
 		if($heure_incident==$lig_heure->heure) {echo " selected='selected'";}
 		echo ">".$lig_heure->heure."</option>\n";
@@ -329,8 +329,8 @@ if(!isset($id_incident)) {
 	$sql="(SELECT DISTINCT si.nature FROM s_incidents si
 	LEFT JOIN s_protagonistes sp ON sp.id_incident=si.id_incident
 	WHERE sp.id_incident IS NULL) ORDER BY si.nature ASC;";
-	$res_natures=mysql_query($sql);
-	while($lig_nature=mysql_fetch_object($res_natures)) {
+	$res_natures=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_nature=mysqli_fetch_object($res_natures)) {
 		echo "<option value='$lig_nature->nature'";
 		if($nature_incident==$lig_nature->nature) {echo " selected='selected'";}
 		//echo ">".$lig_nature->nature."</option>\n";
@@ -356,11 +356,11 @@ if(!isset($id_incident)) {
 	echo "</tr>\n";
 
 	$alt=1;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$lig->id_incident';";
-		$test=mysql_query($sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		// On n'affiche que les incidents sans protagonistes
-		if(mysql_num_rows($test)==0) {
+		if(mysqli_num_rows($test)==0) {
 			$alt=$alt*(-1);
 
 			if($lig->etat=='clos') {
@@ -458,8 +458,8 @@ if(!isset($id_incident)) {
 else {
 	$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY statut,qualite,login;";
 	//echo "$sql<br />";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		echo "<p>Incident n°$id_incident</p>\n";
 
 		echo "<p>Normalement, on n'arrive pas ici...</p>\n";

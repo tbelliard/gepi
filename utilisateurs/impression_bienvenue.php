@@ -100,9 +100,9 @@ if(!isset($user_login)) {
 		for($i=0;$i<count($user_statut);$i++) {
 			if(in_array($user_statut[$i],$tab_statut)) {
 				$sql="SELECT login FROM utilisateurs WHERE statut='$user_statut[$i]' AND etat='actif' ORDER BY nom, prenom;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig=mysql_fetch_object($res)) {$user_login[]=$lig->login;}
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {$user_login[]=$lig->login;}
 				}
 			}
 		}
@@ -134,14 +134,14 @@ if(!isset($user_login)) {
 												rp.login=u.login AND
 												jec.id_classe=c.id
 										ORDER BY classe;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucune compte responsable n'a encore été créé.</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
 				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
-				while ($lig=mysql_fetch_object($res)) {
+				while ($lig=mysqli_fetch_object($res)) {
 					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id' onchange='change_style_classe($lig->id)'><label id='clas_id_classe_$lig->id' for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
 				}
 				echo "<input type='checkbox' name='affiche_adresse_resp' id='affiche_adresse_resp' value='y' /><label for='affiche_adresse_resp'> avec l'adresse du responsable</label><br />\n";
@@ -183,9 +183,9 @@ if(!isset($user_login)) {
 															rp.login=u.login AND
 															jec.id_classe='$id_classe[$i]'
 													ORDER BY u.nom, u.prenom;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while ($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while ($lig=mysqli_fetch_object($res)) {
 								if(!in_array($lig->login,$user_login)) {
 									$user_login[]=$lig->login;
 								}
@@ -206,9 +206,9 @@ if(!isset($user_login)) {
 													rp.login=u.login AND
 													jec.id_classe='$id_classe[$i]'
 											ORDER BY u.nom, u.prenom;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while ($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while ($lig=mysqli_fetch_object($res)) {
 						if(!in_array($lig->login,$user_login)) {
 							$user_login[]=$lig->login;
 						}
@@ -239,14 +239,14 @@ if(!isset($user_login)) {
 									WHERE jec.login=u.login AND
 											jec.id_classe=c.id
 									ORDER BY classe;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Aucune compte élève n'a encore été créé.</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
 				echo "<p>Choisissez les classes pour lesquelles générer les fiches bienvenue&nbsp;:<br />\n";
-				while ($lig=mysql_fetch_object($res)) {
+				while ($lig=mysqli_fetch_object($res)) {
 					echo "<input type='checkbox' name='id_classe[]' id='id_classe_$lig->id' value='$lig->id'><label for='id_classe_$lig->id'> ".$lig->classe."</label><br />\n";
 				}
 				echo "<input type='submit' value='Valider' /></p>\n";
@@ -267,9 +267,9 @@ if(!isset($user_login)) {
 										WHERE jec.login=u.login AND
 												jec.id_classe='$id_classe[$i]'
 										ORDER BY u.nom, u.prenom;";
-						$res=mysql_query($sql);
-						if(mysql_num_rows($res)>0) {
-							while ($lig=mysql_fetch_object($res)) {
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while ($lig=mysqli_fetch_object($res)) {
 								if(!in_array($lig->login,$user_login)) {
 									$user_login[]=$lig->login;
 								}
@@ -283,9 +283,9 @@ if(!isset($user_login)) {
 								WHERE jec.login=u.login AND
 										jec.id_classe='$id_classe'
 								ORDER BY u.nom, u.prenom;";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while ($lig=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while ($lig=mysqli_fetch_object($res)) {
 						if(!in_array($lig->login,$user_login)) {
 							$user_login[]=$lig->login;
 						}
@@ -352,20 +352,20 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 
 	$lignes_FB="";
 
-	$call_user_info = mysql_query("SELECT * FROM utilisateurs WHERE login='$user_login'");
+	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login='$user_login'");
 	
-	//$user_login = mysql_result($call_user_info, "0", "login");
-	$user_nom = mysql_result($call_user_info, "0", "nom");
-	$user_prenom = mysql_result($call_user_info, "0", "prenom");
-	$user_statut = mysql_result($call_user_info, "0", "statut");
-	$user_email = mysql_result($call_user_info, "0", "email");
+	//$user_login = old_mysql_result($call_user_info, "0", "login");
+	$user_nom = old_mysql_result($call_user_info, "0", "nom");
+	$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+	$user_statut = old_mysql_result($call_user_info, "0", "statut");
+	$user_email = old_mysql_result($call_user_info, "0", "email");
 
 	if($user_statut=='professeur') {
-		$call_matieres = mysql_query("SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
-		$nb_mat = mysql_num_rows($call_matieres);
+		$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres");
+		$nb_mat = mysqli_num_rows($call_matieres);
 		$k = 0;
 		while ($k < $nb_mat) {
-			$user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
+			$user_matiere[$k] = old_mysql_result($call_matieres, $k, "id_matiere");
 			$k++;
 		}
 	}
@@ -375,7 +375,7 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 	$nombre_classes = mysql_num_rows($call_data);
 	$i = 0;
 	while ($i < $nombre_classes){
-		$classe[$i] = mysql_result($call_data, $i, "classe");
+		$classe[$i] = old_mysql_result($call_data, $i, "classe");
 		$i++;
 	}
 	*/
@@ -423,14 +423,14 @@ function fiche_bienvenue($user_login, $mot_de_passe=NULL, $mode_retour="echo") {
 		*/
 
 		$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-		$res_adr_resp=mysql_query($sql);
-		if(mysql_num_rows($res_adr_resp)==0) {
+		$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_adr_resp)==0) {
 			$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 			$ligne2="";
 			$ligne3="";
 		}
 		else {
-			$lig_adr_resp=mysql_fetch_object($res_adr_resp);
+			$lig_adr_resp=mysqli_fetch_object($res_adr_resp);
 
 			$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
 			$ligne2=$lig_adr_resp->adr1;

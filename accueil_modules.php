@@ -62,7 +62,7 @@ $tab[5] = "secours";
 function acces($id,$statut) {
     $tab_id = explode("?",$id);
     $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-    $droit = @mysql_result($query_droits, 0, $statut);
+    $droit = @old_mysql_result($query_droits, 0, $statut);
     if ($droit == "V") {
         return "1";
     } else {

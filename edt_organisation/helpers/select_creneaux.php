@@ -45,11 +45,11 @@ echo '
 //$sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' AND type_creneaux != 'repas' ORDER BY heuredebut_definie_periode";
 $sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 
-$query = mysql_query($sql)
-			OR trigger_error('Erreur dans la recherche des créneaux : '.mysql_error());
+$query = mysqli_query($GLOBALS["mysqli"], $sql)
+			OR trigger_error('Erreur dans la recherche des créneaux : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 $cpt_creneau_cours=0;
-while($creneaux = mysql_fetch_array($query)) {
+while($creneaux = mysqli_fetch_array($query)) {
 	// On teste pour le selected
 	// Dans le cas de edt_init_csv2.php, on modifie la forme des heures de début de créneau
 	$test_creneau = explode("/", $_SERVER["SCRIPT_NAME"]);

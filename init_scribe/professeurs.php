@@ -56,7 +56,7 @@ if (isset($_POST['is_posted'])) {
 	$info = ldap_get_entries($ldap_server->ds,$sr);
 	
 	// On met tous les professeurs en état inactif
-	$update = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
+	$update = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET etat='inactif' WHERE statut='professeur'");
 	
 	for($i=0;$i<$info["count"];$i++) {
 		

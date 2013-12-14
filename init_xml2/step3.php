@@ -77,47 +77,47 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 	$temoin_erreur_pour_un_eleve_au_moins=0;
 
 	check_token(false);
-    $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE,MEF_CODE, DATE_ENTREE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
-    $nb = mysql_num_rows($call_data);
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE,MEF_CODE, DATE_ENTREE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
+    $nb = mysqli_num_rows($call_data);
     $nb_utilisateurs_eleves_restaures=0;
     $i = "0";
     while ($i < $nb) {
         //$req = mysql_query("select col2 from tempo2 where col1 = '$i'");
-        //$reg_login = @mysql_result($req, 0, 'col2');
+        //$reg_login = @old_mysql_result($req, 0, 'col2');
 
-        $id_tempo = @mysql_result($call_data, $i, "ID_TEMPO");
+        $id_tempo = @old_mysql_result($call_data, $i, "ID_TEMPO");
 
-	    $no_gep = @mysql_result($call_data, $i, "ELENONAT");
+	    $no_gep = @old_mysql_result($call_data, $i, "ELENONAT");
 
-	    $reg_nom = @mysql_result($call_data, $i, "ELENOM");
+	    $reg_nom = @old_mysql_result($call_data, $i, "ELENOM");
 	    $reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
 	    $reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
-	    $reg_prenom = @mysql_result($call_data, $i, "ELEPRE");
+	    $reg_prenom = @old_mysql_result($call_data, $i, "ELEPRE");
 	    $tab_prenom = explode(" ",$reg_prenom);
 	    $tab_prenom[0] = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
 	    $reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
-	    $reg_elenoet = @mysql_result($call_data, $i, "ELENOET");
-	    //$reg_ereno = @mysql_result($call_data, $i, "ERENO");
-	    $reg_ele_id = @mysql_result($call_data, $i, "ELE_ID");
-	    $reg_sexe = @mysql_result($call_data, $i, "ELESEXE");
-	    $reg_naissance = @mysql_result($call_data, $i, "ELEDATNAIS");
-	    $reg_doublant = @mysql_result($call_data, $i, "ELEDOUBL");
-	    $reg_classe = @mysql_result($call_data, $i, "DIVCOD");
-	    $reg_etab = @mysql_result($call_data, $i, "ETOCOD_EP");
-	    $reg_regime = mysql_result($call_data, $i, "ELEREG");
+	    $reg_elenoet = @old_mysql_result($call_data, $i, "ELENOET");
+	    //$reg_ereno = @old_mysql_result($call_data, $i, "ERENO");
+	    $reg_ele_id = @old_mysql_result($call_data, $i, "ELE_ID");
+	    $reg_sexe = @old_mysql_result($call_data, $i, "ELESEXE");
+	    $reg_naissance = @old_mysql_result($call_data, $i, "ELEDATNAIS");
+	    $reg_doublant = @old_mysql_result($call_data, $i, "ELEDOUBL");
+	    $reg_classe = @old_mysql_result($call_data, $i, "DIVCOD");
+	    $reg_etab = @old_mysql_result($call_data, $i, "ETOCOD_EP");
+	    $reg_regime = old_mysql_result($call_data, $i, "ELEREG");
 
-	    $reg_lieu_naissance = mysql_result($call_data, $i, "LIEU_NAISSANCE");
+	    $reg_lieu_naissance = old_mysql_result($call_data, $i, "LIEU_NAISSANCE");
 
-	    $reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+	    $reg_mef_code = old_mysql_result($call_data, $i, "MEF_CODE");
 
-	    $reg_date_entree = mysql_result($call_data, $i, "DATE_ENTREE");
+	    $reg_date_entree = old_mysql_result($call_data, $i, "DATE_ENTREE");
 
 		$reg_login="";
-	    $req = mysql_query("select col2 from tempo2 where col1 = '$id_tempo'");
+	    $req = mysqli_query($GLOBALS["mysqli"], "select col2 from tempo2 where col1 = '$id_tempo'");
 	    if($req) {
-		    $reg_login = @mysql_result($req, 0, 'col2');
+		    $reg_login = @old_mysql_result($req, 0, 'col2');
 		}
 		else {
 		    echo "<p style='color:red'>Erreur pour l'élève $reg_nom $reg_prenom (<em>non trouvé dans 'tempo2', donc pas de login trouvé</em>).</p>\n";
@@ -132,28 +132,28 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 
 		    if (($reg_sexe != "M") and ($reg_sexe != "F")) {$reg_sexe = "M";}
 		    if ($reg_naissance == '') {$reg_naissance = "19000101";}
-		    $maj_tempo = mysql_query("UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
+		    $maj_tempo = mysqli_query($GLOBALS["mysqli"], "UPDATE temp_gep_import2 SET LOGIN='$reg_login' WHERE ID_TEMPO='$id_tempo'");
 
-		    $reg_eleve = mysql_query("INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".mysql_real_escape_string($reg_nom)."',prenom='".mysql_real_escape_string($reg_prenom)."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance',mef_code='$reg_mef_code',date_entree='$reg_date_entree'");
+		    $reg_eleve = mysqli_query($GLOBALS["mysqli"], "INSERT INTO eleves SET no_gep='$no_gep',login='$reg_login',nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='$reg_elenoet',ele_id='$reg_ele_id', lieu_naissance='$reg_lieu_naissance',mef_code='$reg_mef_code',date_entree='$reg_date_entree'");
 
 		    if (!$reg_eleve) {echo "<p style='color:red'>Erreur lors de l'enregistrement de l'élève $reg_nom $reg_prenom.</p>\n";}
 			else {
 				$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 				if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-				$res_tmp_u=mysql_query($sql);
-				if(mysql_num_rows($res_tmp_u)>0) {
-					$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+				$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_tmp_u)>0) {
+					$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
 
-					$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysql_real_escape_string($reg_nom)."', prenom='".mysql_real_escape_string($reg_prenom)."', ";
+					$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
 					if($reg_sexe=='M') {
 						$sql.="civilite='M', ";
 					}
 					else {
 						$sql.="civilite='MLLE', ";
 					}
-					$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysql_real_escape_string($lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+					$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-					$insert_u=mysql_query($sql);
+					$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert_u) {
 						echo "<span style='color:red'>Erreur lors de la re-création du compte utilisateur pour ".$reg_nom." ".$reg_prenom."</span>.<br />\n";
 					}
@@ -169,20 +169,20 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 		    if ($reg_doublant == "O") {$doublant = 'R';}
 		    if ($reg_doublant != "O") {$doublant = '-';}
 
-		    $register = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
+		    $register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_regime SET login='$reg_login',regime='$regime',doublant='$doublant'");
 		    if (!$register) echo "<p style='color:red'>Erreur lors de l'enregistrement des infos de régime pour l'élève $reg_nom $reg_prenom.</p>\n";
 
-		    $call_classes = mysql_query("SELECT * FROM classes");
-		    $nb_classes = mysql_num_rows($call_classes);
+		    $call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes");
+		    $nb_classes = mysqli_num_rows($call_classes);
 		    $j = 0;
 		    while ($j < $nb_classes) {
-		        $classe = mysql_result($call_classes, $j, "classe");
+		        $classe = old_mysql_result($call_classes, $j, "classe");
 		        if ($reg_classe == $classe) {
-		            $id_classe = mysql_result($call_classes, $j, "id");
-		            $number_periodes = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
+		            $id_classe = old_mysql_result($call_classes, $j, "id");
+		            $number_periodes = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM periodes WHERE id_classe='$id_classe'"),0);
 		            $u = 1;
 		            while ($u <= $number_periodes) {
-		                $reg = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
+		                $reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_classes SET login='$reg_login',id_classe='$id_classe',periode='$u', rang='0'");
 		                if (!$reg) echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à la classe $classe pour la période $u</p>\n";
 		                $u++;
 		            }
@@ -195,17 +195,17 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 				if($gepiSchoolRne!="") {
 					if($gepiSchoolRne!=$reg_etab) {
 						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
-						$test_etab=mysql_query($sql);
-						if(mysql_num_rows($test_etab)==0){
+						$test_etab=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_etab)==0){
 							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
-							$insert_etab=mysql_query($sql);
+							$insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$insert_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
 							}
 						}
 						else {
 							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
-							$update_etab=mysql_query($sql);
+							$update_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$update_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
 							}
@@ -218,10 +218,10 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 					//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
 					// une fois le RNE renseigné.
 					$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
-					$test_etab=mysql_query($sql);
-					if(mysql_num_rows($test_etab)==0){
+					$test_etab=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_etab)==0){
 						$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
-						$insert_etab=mysql_query($sql);
+						$insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$insert_etab) {
 							echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
 						}
@@ -233,7 +233,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
         $i++;
     }
     // on vide la table tempo2 qui nous a servi à stocker les login temporaires des élèves
-    $del = @mysql_query("DELETE FROM tempo2");
+    $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo2");
 
 	// On renseigne le témoin: La mise à jour à partir de sconet sera possible.
 	saveSetting("import_maj_xml_sconet", 1);
@@ -256,7 +256,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 }
 else {
     // on vide la table tempo2 qui va nous servir à stocker les login temporaires des élèves
-    $del = @mysql_query("DELETE FROM tempo2");
+    $del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo2");
 
 	//if(getSettingValue('use_sso')=="lcs") {
 	//if(getSettingValue('auth_sso')=="lcs") {
@@ -298,7 +298,7 @@ else {
     $ii = "0";
 
 	for($loop=0;$loop<count($tab_sql);$loop++) {
-		$call_data = mysql_query($tab_sql[$loop]);
+		$call_data = mysqli_query($GLOBALS["mysqli"], $tab_sql[$loop]);
 		if($debug_ele=='y') {
 			echo "<tr>\n";
 			echo "<td colspan='10'>\n";
@@ -306,46 +306,46 @@ else {
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
-		$nb = mysql_num_rows($call_data);
+		$nb = mysqli_num_rows($call_data);
 	    $i = "0";
 		while ($i < $nb) {
 			$lcs_eleve_en_erreur="n";
 	
 			$alt=$alt*(-1);
 			$ligne_pb = 'no';
-			$id_tempo = mysql_result($call_data, $i, "ID_TEMPO");
-			$no_gep = mysql_result($call_data, $i, "ELENONAT");
+			$id_tempo = old_mysql_result($call_data, $i, "ID_TEMPO");
+			$no_gep = old_mysql_result($call_data, $i, "ELENONAT");
 
-			$reg_nom = mysql_result($call_data, $i, "ELENOM");
+			$reg_nom = old_mysql_result($call_data, $i, "ELENOM");
 			$reg_nom = nettoyer_caracteres_nom($reg_nom, "a", " '_-", "");
 			$reg_nom = trim(preg_replace("/'/", " ", $reg_nom));
 
-			$reg_prenom = mysql_result($call_data, $i, "ELEPRE");
+			$reg_prenom = old_mysql_result($call_data, $i, "ELEPRE");
 			$tab_prenom = explode(" ",$reg_prenom);
 			$reg_prenom = $tab_prenom[0];
 			$reg_prenom = nettoyer_caracteres_nom($tab_prenom[0], "a", " '_-", "");
 			$reg_prenom = preg_replace("/'/", "", $tab_prenom[0]);
 
-			$reg_elenoet = mysql_result($call_data, $i, "ELENOET");
-			//$reg_ereno = mysql_result($call_data, $i, "ERENO");
-			$reg_ele_id = mysql_result($call_data, $i, "ELE_ID");
-			$reg_sexe = mysql_result($call_data, $i, "ELESEXE");
-			$reg_naissance = mysql_result($call_data, $i, "ELEDATNAIS");
-			$reg_doublant = mysql_result($call_data, $i, "ELEDOUBL");
-			$reg_classe = mysql_result($call_data, $i, "DIVCOD");
-			$reg_etab = mysql_result($call_data, $i, "ETOCOD_EP");
+			$reg_elenoet = old_mysql_result($call_data, $i, "ELENOET");
+			//$reg_ereno = old_mysql_result($call_data, $i, "ERENO");
+			$reg_ele_id = old_mysql_result($call_data, $i, "ELE_ID");
+			$reg_sexe = old_mysql_result($call_data, $i, "ELESEXE");
+			$reg_naissance = old_mysql_result($call_data, $i, "ELEDATNAIS");
+			$reg_doublant = old_mysql_result($call_data, $i, "ELEDOUBL");
+			$reg_classe = old_mysql_result($call_data, $i, "DIVCOD");
+			$reg_etab = old_mysql_result($call_data, $i, "ETOCOD_EP");
 
-			$reg_mef_code = mysql_result($call_data, $i, "MEF_CODE");
+			$reg_mef_code = old_mysql_result($call_data, $i, "MEF_CODE");
 
-			$reg_date_entree = mysql_result($call_data, $i, "DATE_ENTREE");
+			$reg_date_entree = old_mysql_result($call_data, $i, "DATE_ENTREE");
 
 			if(!isset($tab_mef[$reg_mef_code])) {
 				$tab_mef[$reg_mef_code]="<span style='color:red' title=\"Code MEF inconnu : $reg_mef_code\">???</span>";
 
 				$sql="SELECT * FROM mef WHERE mef_code='$reg_mef_code';";
-				$res_mef=mysql_query($sql);
-				if(mysql_num_rows($res_mef)>0) {
-					$lig_mef=mysql_fetch_object($res_mef);
+				$res_mef=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_mef)>0) {
+					$lig_mef=mysqli_fetch_object($res_mef);
 					if($lig_mef->libelle_edition!='') {
 						$tab_mef[$reg_mef_code]=$lig_mef->libelle_edition;
 					}
@@ -358,7 +358,7 @@ else {
 				}
 			}
 
-			$reg_regime = mysql_result($call_data, $i, "ELEREG");
+			$reg_regime = old_mysql_result($call_data, $i, "ELEREG");
 			if ($no_gep != '') {
 				$no_gep_aff = $no_gep;
 			} else {
@@ -393,9 +393,9 @@ else {
 				if($reg_ele_id!='') {
 					$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$reg_ele_id."' AND statut='eleve';";
 					if($debug_ele=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-					$res_tmp_u=mysql_query($sql);
-					if(mysql_num_rows($res_tmp_u)>0) {
-						$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+					$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_tmp_u)>0) {
+						$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
 						$login_eleve=$lig_tmp_u->login;
 					}
 				}
@@ -418,11 +418,11 @@ else {
 					// voir aussi les explications de la ligne 710 du fichiers professeurs.php
 					$sql_p = "SELECT login_u FROM ldap_bx
 											WHERE identite_u = '".$no_gep."'";
-					$query_p = mysql_query($sql_p);
-					$nbre = mysql_num_rows($query_p);
+					$query_p = mysqli_query($GLOBALS["mysqli"], $sql_p);
+					$nbre = mysqli_num_rows($query_p);
 					if ($nbre >= 1) {
 						// On considère que l'information est bonne puisqu'elle a été construite avec la même source sconet
-						$login_eleve = mysql_result($query_p, 0,"login_u");
+						$login_eleve = old_mysql_result($query_p, 0,"login_u");
 					}else{
 						// Il faudra trouver une solution dans ce cas là (même s'il ne doit pas être très fréquent
 						//$login_eleve = "erreur_".$i;
@@ -439,12 +439,12 @@ else {
 						$login_eleve=get_lcs_login($reg_elenoet, 'eleve');
 						//echo "get_lcs_login($reg_elenoet, 'eleve')=".$login_eleve."<br />";
 						if($login_eleve!='') {
-							$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".my_strtoupper($login_eleve)."')"));
+							$test_tempo2 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".my_strtoupper($login_eleve)."')"));
 							if ($test_tempo2 != "0") {
 								$ligne_pb = 'yes';
 							} else {
 								//$reg = mysql_query("INSERT INTO tempo2 VALUES ('$i', '$login_eleve')");
-								$reg = mysql_query("INSERT INTO tempo2 VALUES ('$id_tempo', '$login_eleve')");
+								$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO tempo2 VALUES ('$id_tempo', '$login_eleve')");
 								//return 'yes';
 								$lcs_eleve_en_erreur="n";
 							}
@@ -523,12 +523,12 @@ else {
 				$ligne_pb = 'yes';
 			}
 	
-			$call_classes = mysql_query("SELECT * FROM classes");
-			$nb_classes = mysql_num_rows($call_classes);
+			$call_classes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes");
+			$nb_classes = mysqli_num_rows($call_classes);
 			$j = 0;
 			$classe_error = 'yes';
 			while ($j < $nb_classes) {
-				$classe = mysql_result($call_classes, $j, "classe");
+				$classe = old_mysql_result($call_classes, $j, "classe");
 				if ($reg_classe == $classe) {
 					$classe_aff = $classe;
 					$classe_error = 'no';
@@ -540,12 +540,12 @@ else {
 				$ligne_pb = 'yes';
 			}
 			if ($reg_etab != '') {
-				$calletab = mysql_query("SELECT * FROM etablissements WHERE (id = '$reg_etab')");
-				$result_etab = mysql_num_rows($calletab);
+				$calletab = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM etablissements WHERE (id = '$reg_etab')");
+				$result_etab = mysqli_num_rows($calletab);
 				if ($result_etab != 0) {
-					$etab_nom = @mysql_result($calletab, 0, "nom");
-					$etab_cp = @mysql_result($calletab, 0, "cp");
-					$etab_ville = @mysql_result($calletab, 0, "ville");
+					$etab_nom = @old_mysql_result($calletab, 0, "nom");
+					$etab_cp = @old_mysql_result($calletab, 0, "cp");
+					$etab_ville = @old_mysql_result($calletab, 0, "ville");
 					$reg_etab_aff = "$etab_nom, $etab_cp $etab_ville";
 				} else {
 					$reg_etab_aff = "<span style='color:red'>RNE : $reg_etab, étab. non répertorié</span>";

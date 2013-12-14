@@ -68,7 +68,7 @@ if(isset($form_id_sanction)) {
 			$sql="UPDATE s_sanctions SET effectuee='N' WHERE id_sanction='".$form_id_sanction[$i]."';";
 		}
 		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de la mise à jour du statut de la sanction n°".$form_id_sanction[$i].".<br />\n";
 		}
@@ -175,9 +175,9 @@ if($_SESSION['statut']=='professeur') {
 	//$sql="(SELECT si.id_incident FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."') UNION (SELECT sp.id_incident FROM s_protagonistes sp WHERE sp.login='".$_SESSION['login']."');";
 	$sql="SELECT si.id_incident FROM s_incidents si WHERE si.declarant='".$_SESSION['login']."';";
 	//echo "$sql<br />";
-	$res_incidents_prof=mysql_query($sql);
-	if(mysql_num_rows($res_incidents_prof)>0) {
-		while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+	$res_incidents_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_incidents_prof)>0) {
+		while($lig_tmp=mysqli_fetch_object($res_incidents_prof)) {
 			$tab_incidents_prof[]=$lig_tmp->id_incident;
 		}
 	}
@@ -185,9 +185,9 @@ if($_SESSION['statut']=='professeur') {
 
 	$sql="SELECT sp.id_incident FROM s_protagonistes sp WHERE sp.login='".$_SESSION['login']."';";
 	//echo "$sql<br />";
-	$res_incidents_prof=mysql_query($sql);
-	if(mysql_num_rows($res_incidents_prof)>0) {
-		while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+	$res_incidents_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_incidents_prof)>0) {
+		while($lig_tmp=mysqli_fetch_object($res_incidents_prof)) {
 			$tab_incidents_prof[]=$lig_tmp->id_incident;
 		}
 	}
@@ -205,9 +205,9 @@ if($_SESSION['statut']=='professeur') {
 									jec.login=sp.login;";
 		//echo "$sql<br />";
 		// Il faudrait peut-être une restriction sur le rôle du protagoniste dans l'incident
-		$res_incidents_prof=mysql_query($sql);
-		if(mysql_num_rows($res_incidents_prof)>0) {
-			while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+		$res_incidents_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_incidents_prof)>0) {
+			while($lig_tmp=mysqli_fetch_object($res_incidents_prof)) {
 				$tab_incidents_prof[]=$lig_tmp->id_incident;
 			}
 		}
@@ -223,9 +223,9 @@ if($_SESSION['statut']=='professeur') {
 									jeg.login=sp.login;";
 		//echo "$sql<br />";
 		// Il faudrait peut-être une restriction sur le rôle du protagoniste dans l'incident
-		$res_incidents_prof=mysql_query($sql);
-		if(mysql_num_rows($res_incidents_prof)>0) {
-			while($lig_tmp=mysql_fetch_object($res_incidents_prof)) {
+		$res_incidents_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_incidents_prof)>0) {
+			while($lig_tmp=mysqli_fetch_object($res_incidents_prof)) {
 				$tab_incidents_prof[]=$lig_tmp->id_incident;
 			}
 		}
@@ -237,8 +237,8 @@ if($_SESSION['statut']=='professeur') {
 $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".$mysql_jour_sanction."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
 //$retour.="$sql<br />\n";
 //echo "$sql<br />\n";
-$res_sanction=mysql_query($sql);
-if(mysql_num_rows($res_sanction)>0) {
+$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Retenues (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
@@ -256,7 +256,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</tr>\n";
 	$alt_b=1;
 	$num=0;
-	while($lig_sanction=mysql_fetch_object($res_sanction)) {
+	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
 			if($lig_sanction->effectuee=="O") {
@@ -373,8 +373,8 @@ if(mysql_num_rows($res_sanction)>0) {
 // Exclusions
 $sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND se.date_debut<='".$mysql_jour_sanction."' AND se.date_fin>='".$mysql_jour_sanction."' ORDER BY se.date_debut, se.heure_debut, se.lieu;";
 //echo "$sql<br />\n";
-$res_sanction=mysql_query($sql);
-if(mysql_num_rows($res_sanction)>0) {
+$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Exclusions (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Exclusions' style='margin:2px;'>\n";
@@ -391,7 +391,7 @@ if(mysql_num_rows($res_sanction)>0) {
     echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
-	while($lig_sanction=mysql_fetch_object($res_sanction)) {
+	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
 			echo "<tr class='lig$alt_b'>\n";
@@ -493,8 +493,8 @@ if(mysql_num_rows($res_sanction)>0) {
 // Simple travail
 $sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour='".$mysql_jour_sanction."' ORDER BY st.date_retour;";
 //echo "$sql<br />\n";
-$res_sanction=mysql_query($sql);
-if(mysql_num_rows($res_sanction)>0) {
+$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Travaux à rendre pour le jour&nbsp;: $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
@@ -507,7 +507,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
-	while($lig_sanction=mysql_fetch_object($res_sanction)) {
+	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
 			if($lig_sanction->effectuee=="O") {
@@ -626,9 +626,9 @@ echo "<p><br /></p>\n";
 $tab_sanctions_prof=array();
 if($_SESSION['statut']=='professeur') {
 	$sql="SELECT id_sanction FROM s_sanctions WHERE saisie_par='".$_SESSION['login']."';";
-	$res_sanctions_prof=mysql_query($sql);
-	if(mysql_num_rows($res_sanctions_prof)>0) {
-		while($lig_tmp=mysql_fetch_object($res_sanctions_prof)) {
+	$res_sanctions_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_sanctions_prof)>0) {
+		while($lig_tmp=mysqli_fetch_object($res_sanctions_prof)) {
 			$tab_sanctions_prof[]=$lig_tmp->id_sanction;
 		}
 	}
@@ -638,8 +638,8 @@ echo "<a name='retenues_en_souffrance'></a>\n";
 // Retenues
 $sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date<'$annee-$mois-$jour' AND s.effectuee!='O' AND sr.id_sanction=s.id_sanction ORDER BY sr.date $order_by_date, sr.heure_debut, sr.lieu, s.login;";
 //echo "$sql<br />";
-$res_sanction=mysql_query($sql);
-if(mysql_num_rows($res_sanction)>0) {
+$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Liste des retenues (<em>et assimilées</em>) non effectuées pour une date antérieure au $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
@@ -660,7 +660,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
-	while($lig_sanction=mysql_fetch_object($res_sanction)) {
+	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
 			echo "<tr class='lig$alt_b'>\n";
@@ -768,8 +768,8 @@ if(mysql_num_rows($res_sanction)>0) {
 echo "<a name='travaux_en_souffrance'></a>\n";
 $sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour<'$annee-$mois-$jour' AND s.effectuee!='O' ORDER BY st.date_retour $order_by_date;";
 //echo "$sql<br />\n";
-$res_sanction=mysql_query($sql);
-if(mysql_num_rows($res_sanction)>0) {
+$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Travaux à rendre pour une date antérieure au $jour_sanction</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
@@ -786,7 +786,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
-	while($lig_sanction=mysql_fetch_object($res_sanction)) {
+	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
 			echo "<tr class='lig$alt_b'>\n";

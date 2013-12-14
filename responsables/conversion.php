@@ -72,9 +72,9 @@ if(isset($_SESSION['ad_retour'])){
 // ... et proposer d'autre part une mise à jour par import Sconet
 
 $sql="SELECT value FROM setting WHERE name='conv_new_resp_table'";
-$test=mysql_query($sql);
-if(mysql_num_rows($test) > 0){
-	$ligtmp=mysql_fetch_object($test);
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test) > 0){
+	$ligtmp=mysqli_fetch_object($test);
 	if($ligtmp->value>0){
 		echo "<p>La mise à jour a déjà été effectuée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -93,16 +93,16 @@ if($temoin==1){
 
 	// Ajout, si nécessaire, du champ 'ele_id' à la table 'eleves':
 	$sql="SHOW FIELDS FROM eleves";
-	$test=mysql_query($sql);
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	$temoin_ele_id="";
-	while($tabtmp=mysql_fetch_array($test)){
+	while($tabtmp=mysqli_fetch_array($test)){
 		if(my_strtolower($tabtmp[0])=="ele_id"){
 			$temoin_ele_id="oui";
 		}
 	}
 	if($temoin_ele_id==""){
 		$sql="ALTER TABLE `eleves` ADD `ele_id` VARCHAR( 10 ) NOT NULL ;";
-		$res_ele_id=mysql_query($sql);
+		$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 
 
@@ -112,7 +112,7 @@ if($temoin==1){
 	`resp_legal` varchar(1) NOT NULL,
 	`pers_contact` varchar(1) NOT NULL
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create=mysql_query($sql);
+	$res_create=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_adr` (
 	`adr_id` varchar(10) NOT NULL,
@@ -125,7 +125,7 @@ if($temoin==1){
 	`commune` varchar(50) NOT NULL,
 	PRIMARY KEY  (`adr_id`)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create=mysql_query($sql);
+	$res_create=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="CREATE TABLE IF NOT EXISTS `resp_pers` (
 	`pers_id` varchar(10) NOT NULL,
@@ -140,7 +140,7 @@ if($temoin==1){
 	`adr_id` varchar(10) NOT NULL,
 	PRIMARY KEY  (`pers_id`)
 	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$res_create=mysql_query($sql);
+	$res_create=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 	if(!isset($mode)){
@@ -151,8 +151,8 @@ if($temoin==1){
 		echo "</ul>";
 
 		$sql="SELECT * FROM eleves WHERE elenoet=''";
-		$res1=mysql_query($sql);
-		if(mysql_num_rows($res1)>0){
+		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res1)>0){
 			echo "<p>Les élèves suivants n'ont pas leur ELENOET renseigné.<br />Ils ne seront donc pas identifiés/associés par la suite avec les élèves inscrits dans Sconet.<br />Si vous envisagez le mode avec Sconet (<em>recommandé quand c'est possible</em>), vous devriez commencer par rechercher les ELENOET manquants et les renseigner dans la Gestion des élèves.</p>\n";
 			echo "<table border='1'>\n";
 			echo "<tr>\n";
@@ -161,7 +161,7 @@ if($temoin==1){
 			echo "<td style='font-weight:bold; text-align:center;'>Prenom</td>\n";
 			echo "<td style='font-weight:bold; text-align:center;'>Naissance</td>\n";
 			echo "</tr>\n";
-			while($lig1=mysql_fetch_object($res1)){
+			while($lig1=mysqli_fetch_object($res1)){
 				echo "<tr>\n";
 				echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig1->login' target='_blank'>$lig1->login</a></td>\n";
 				echo "<td>$lig1->nom</td>\n";
@@ -185,17 +185,17 @@ if($temoin==1){
 
 			$erreur=0;
 			$sql="SELECT * FROM eleves ORDER BY nom,prenom";
-			$res1=mysql_query($sql);
-			if(mysql_num_rows($res1)>0){
+			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res1)>0){
 				// On vide les tables avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 				$sql="TRUNCATE TABLE resp_adr";
-				$res_truncate=mysql_query($sql);
+				$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="TRUNCATE TABLE resp_pers";
-				$res_truncate=mysql_query($sql);
+				$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 				$sql="TRUNCATE TABLE responsables2";
-				$res_truncate=mysql_query($sql);
+				$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				while($lig1=mysql_fetch_object($res1)){
+				while($lig1=mysqli_fetch_object($res1)){
 					//if($lig1->ele_id==''){
 					unset($ele_id);
 					if(!isset($lig1->ele_id)){
@@ -210,10 +210,10 @@ if($temoin==1){
 						// Recherche du plus grand ele_id:
 						$sql="SELECT ele_id FROM eleves WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
 						//echo "$sql<br />\n";
-						$res_ele_id_eleve=mysql_query($sql);
-						if(mysql_num_rows($res_ele_id_eleve)>0){
+						$res_ele_id_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_ele_id_eleve)>0){
 							$tmp=0;
-							$lig_ele_id_eleve=mysql_fetch_object($res_ele_id_eleve);
+							$lig_ele_id_eleve=mysqli_fetch_object($res_ele_id_eleve);
 							$tmp=mb_substr($lig_ele_id_eleve->ele_id,1);
 							$tmp++;
 							$max_ele_id=$tmp;
@@ -224,10 +224,10 @@ if($temoin==1){
 
 						$sql="SELECT ele_id FROM responsables2 WHERE ele_id LIKE 'e%' ORDER BY ele_id DESC";
 						//echo "$sql<br />\n";
-						$res_ele_id_responsables2=mysql_query($sql);
-						if(mysql_num_rows($res_ele_id_responsables2)>0){
+						$res_ele_id_responsables2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_ele_id_responsables2)>0){
 							$tmp=0;
-							$lig_ele_id_responsables2=mysql_fetch_object($res_ele_id_responsables2);
+							$lig_ele_id_responsables2=mysqli_fetch_object($res_ele_id_responsables2);
 							$tmp=mb_substr($lig_ele_id_responsables2->ele_id,1);
 							$tmp++;
 							$max_ele_id2=$tmp;
@@ -242,7 +242,7 @@ if($temoin==1){
 						//$sql="UPDATE eleves SET ele_id='$ele_id' WHERE elenoet='$lig1->elenoet'";
 						$sql="UPDATE eleves SET ele_id='$ele_id' WHERE login='$lig1->login'";
 						//echo "$sql<br />\n";
-						$res_update=mysql_query($sql);
+						$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_update){
 							//echo "<span style='color:red'>Erreur</span> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->elenoet).<br />\n";
 							echo "<span style='color:red'>Erreur</span> lors de la définition de l'ele_id $ele_id pour $lig1->nom $lig1->prenom ($lig1->login).<br />\n";
@@ -268,28 +268,28 @@ if($temoin==1){
 					if($lig1->ereno!=''){
 						$sql="SELECT * FROM responsables WHERE ereno='$lig1->ereno'";
 						//echo "$sql<br />\n";
-						$res2=mysql_query($sql);
-						if(mysql_num_rows($res2)>0){
-							while($lig2=mysql_fetch_object($res2)){
+						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res2)>0){
+							while($lig2=mysqli_fetch_object($res2)){
 								// Est-ce que cet ereno a déjà fait l'objet d'une insertion dans les nouvelles tables?
 								// Recherche des pers_id ou recherche du plus grand pers_id affecté.
 
 								$sql="SELECT r2.* FROM responsables2 r2, responsables r, eleves e WHERE r2.ele_id=e.ele_id AND r.ereno=e.ereno AND e.ereno='$lig1->ereno'";
 								//echo "$sql<br />\n";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)>0){
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)>0){
 									// Le couple de responsables correspondant à $lig1->ereno est déjà dans les nouvelles tables.
-									while($ligtmp=mysql_fetch_object($test)){
+									while($ligtmp=mysqli_fetch_object($test)){
 										//$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$lig1->ele_id'";
 										$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$ligtmp->pers_id' AND ele_id='$ele_id'";
 										//echo "$sql<br />\n";
-										$test2=mysql_query($sql);
-										if(mysql_num_rows($test2)==0){
+										$test2=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test2)==0){
 											// L'élève courant n'est pas encore inscrit...
 											//$sql="INSERT INTO responsables2 SET ele_id='$lig1->ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
 											$sql="INSERT INTO responsables2 SET ele_id='$ele_id', pers_id='$ligtmp->pers_id', resp_legal='$ligtmp->resp_legal', pers_contact='$ligtmp->pers_contact'";
 											//echo "$sql<br />\n";
-											$res_insert=mysql_query($sql);
+											$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(!$res_insert){
 												echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association avec le responsable ($ligtmp->resp_legal) $ligtmp->pers_id<br />\n";
 												$erreur++;
@@ -306,12 +306,12 @@ if($temoin==1){
 									// Recherche du plus grand pers_id:
 									$sql="SELECT pers_id FROM resp_pers WHERE pers_id LIKE 'p%' ORDER BY pers_id DESC";
 									//echo "$sql<br />\n";
-									$restmp=mysql_query($sql);
-									if(mysql_num_rows($restmp)==0){
+									$restmp=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($restmp)==0){
 										$nb1=1;
 									}
 									else{
-										$ligtmp=mysql_fetch_object($restmp);
+										$ligtmp=mysqli_fetch_object($restmp);
 										$nb1=mb_substr($ligtmp->pers_id,1);
 										$nb1++;
 									}
@@ -320,12 +320,12 @@ if($temoin==1){
 									// Recherche du plus grand adr_id:
 									$sql="SELECT adr_id FROM resp_adr WHERE adr_id LIKE 'a%' ORDER BY adr_id DESC";
 									//echo "$sql<br />\n";
-									$restmp=mysql_query($sql);
-									if(mysql_num_rows($restmp)==0){
+									$restmp=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($restmp)==0){
 										$nb2=1;
 									}
 									else{
-										$ligtmp=mysql_fetch_object($restmp);
+										$ligtmp=mysqli_fetch_object($restmp);
 										$nb2=mb_substr($ligtmp->adr_id,1);
 										$nb2++;
 									}
@@ -337,7 +337,7 @@ if($temoin==1){
 									if($lig2->nom1!=''){
 										$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='1', pers_contact='1'";
 										//echo "$sql<br />\n";
-										$res_insert1=mysql_query($sql);
+										$res_insert1=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert1){
 											echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association de l'élève $ele_id avec le responsable (1) $pers_id<br />\n";
 											$erreur++;
@@ -347,9 +347,9 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom1',prenom='$lig2->prenom1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysql_real_escape_string($lig2->nom1)."',prenom='".mysql_real_escape_string($lig2->prenom1)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
-										$res_insert2=mysql_query($sql);
+										$res_insert2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert2){
 											echo "<span style='color:red'>Erreur</span> lors de l'insertion du responsable ($pers_id): $lig2->nom1 $lig2->prenom1 (avec le n° adresse $adr_id).<br />\n";
 											$erreur++;
@@ -359,9 +359,9 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr1',adr2='$lig2->adr1_comp',cp='$lig2->cp1',commune='$lig2->commune1',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_adr SET adr1='".mysql_real_escape_string($lig2->adr1)."',adr2='".mysql_real_escape_string($lig2->adr1_comp)."',cp='$lig2->cp1',commune='".mysql_real_escape_string($lig2->commune1)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_adr SET adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->adr1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->adr1_comp) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',cp='$lig2->cp1',commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->commune1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
-										$res_insert3=mysql_query($sql);
+										$res_insert3=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert3){
 											echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $lig2->adr1, $lig2->adr1_comp, $lig2->cp1, $lig2->commune1 avec le n° adresse $adr_id.<br />\n";
 											$erreur++;
@@ -385,9 +385,9 @@ if($temoin==1){
 												echo "Le deuxième responsable n'a pas la même adresse.<br />\n";
 
 												//$sql="INSERT INTO resp_adr SET adr1='$lig2->adr2',adr2='$lig2->adr2_comp',cp='$lig2->cp2',commune='$lig2->commune2',adr_id='$adr_id'";
-												$sql="INSERT INTO resp_adr SET adr1='".mysql_real_escape_string($lig2->adr2)."',adr2='".mysql_real_escape_string($lig2->adr2_comp)."',cp='$lig2->cp2',commune='".mysql_real_escape_string($lig2->commune2)."',adr_id='$adr_id'";
+												$sql="INSERT INTO resp_adr SET adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->adr2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->adr2_comp) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',cp='$lig2->cp2',commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->commune2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr_id='$adr_id'";
 												//echo "$sql<br />\n";
-												$res_insert3=mysql_query($sql);
+												$res_insert3=mysqli_query($GLOBALS["mysqli"], $sql);
 												if(!$res_insert3){
 													echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $lig2->adr2, $lig2->adr2_comp, $lig2->cp2, $lig2->commune2 avec le n° adresse $adr_id.<br />\n";
 													$erreur++;
@@ -400,7 +400,7 @@ if($temoin==1){
 
 										$sql="INSERT INTO responsables2 SET pers_id='$pers_id', ele_id='$ele_id', resp_legal='2', pers_contact='1'";
 										//echo "$sql<br />\n";
-										$res_insert1=mysql_query($sql);
+										$res_insert1=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert1){
 											echo "<span style='color:red'>Erreur</span> de l'insertion de l'association de l'élève $ele_id avec le responsable (2) $pers_id<br />\n";
 											$erreur++;
@@ -410,9 +410,9 @@ if($temoin==1){
 										}
 
 										//$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='$lig2->nom2',prenom='$lig2->prenom2',adr_id='$adr_id'";
-										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".mysql_real_escape_string($lig2->nom2)."',prenom='".mysql_real_escape_string($lig2->prenom2)."',adr_id='$adr_id'";
+										$sql="INSERT INTO resp_pers SET pers_id='$pers_id', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->nom2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig2->prenom2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',adr_id='$adr_id'";
 										//echo "$sql<br />\n";
-										$res_insert2=mysql_query($sql);
+										$res_insert2=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_insert2){
 											echo "<span style='color:red'>Erreur</span> de l'insertion du responsable ($pers_id): $lig2->nom2 $lig2->prenom2 (avec le n° adresse $adr_id).<br />\n";
 											$erreur++;
@@ -483,7 +483,7 @@ if($temoin==1){
 						echo " et on met à jour les donnnées élèves (regime, doublant, identifiant national, établissement d'origine)";
 
 						// Par sécurité, on vide la table j_eleves_etablissements (établissement d'origine)
-						mysql_query("TRUNCATE TABLE j_eleves_etablissements");
+						mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE j_eleves_etablissements");
 					}
 					echo ".</p>";
 
@@ -556,12 +556,12 @@ if($temoin==1){
 								
 								$sql="SELECT * FROM eleves WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
 								//echo "$sql<br />\n";
-								$res1=mysql_query($sql);
-								if(mysql_num_rows($res1)>0) {
+								$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res1)>0) {
 									//$sql="UPDATE eleves SET ele_id='$affiche[1]' WHERE elenoet='$affiche[0]'";
 									$sql="UPDATE eleves SET ele_id='$affiche[1]' WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
 									//echo "$sql<br />\n";
-									$res_update=mysql_query($sql);
+									$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$res_update){
 										$erreur++;
 										echo "<span style='color:red'>Erreur</span> lors du renseignement de l'ele_id avec la valeur $affiche[1] pour l'élève d'ELENOET $affiche[0]<br />\n";
@@ -580,7 +580,7 @@ if($temoin==1){
 										}
 										else {
 											$sql="UPDATE eleves SET no_gep='$affiche[2]' WHERE elenoet='$affiche[0]' OR elenoet='".sprintf("%05d",$affiche[0])."'";
-											$res_update=mysql_query($sql);
+											$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(!$res_update){
 													echo "<span style='color:red'>Erreur</span> lors du renseignement de l'identifiant national la valeur $affiche[2] pour l'élève d'ELENOET $affiche[0] ($eleve_login)<br />\n";
 											}
@@ -609,10 +609,10 @@ if($temoin==1){
 											$regime = "ext.";
 										}
 
-										$res = mysql_query("update j_eleves_regime SET regime='".$regime."', doublant = '".$doublant."' where login ='".$eleve_login."'");
+										$res = mysqli_query($GLOBALS["mysqli"], "update j_eleves_regime SET regime='".$regime."', doublant = '".$doublant."' where login ='".$eleve_login."'");
 										// Etablissement d'origine
 										$sql="insert into j_eleves_etablissements SET id_etablissement='$affiche[5]', id_eleve='".sprintf("%05d",$affiche[0])."'";
-     									$res_insert=mysql_query($sql);
+     									$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									}
 								}
 								else {
@@ -653,7 +653,7 @@ if($temoin==1){
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE resp_pers";
-					$res_truncate=mysql_query($sql);
+					$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// on constitue le tableau des champs à extraire
 					//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
@@ -721,9 +721,9 @@ if($temoin==1){
 
 								$login_resp="";
 								$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='$affiche[0]';";
-								$res_tmp_u=mysql_query($sql);
-								if(mysql_num_rows($res_tmp_u)>0) {
-									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
+								$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_tmp_u)>0) {
+									$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
 									$login_resp=$lig_tmp_u->login;
 									if(test_unique_login($login_resp)!='yes') {
 										$login_resp="";
@@ -732,20 +732,20 @@ if($temoin==1){
 
 								$sql="insert into resp_pers set
 											pers_id = '$affiche[0]',
-											nom = '".mysql_real_escape_string($affiche[1])."',
-											prenom = '".mysql_real_escape_string($affiche[2])."',
-											civilite = '".mysql_real_escape_string(casse_mot($affiche[3],'majf2'))."',
-											tel_pers = '".mysql_real_escape_string($affiche[4])."',
-											tel_port = '".mysql_real_escape_string($affiche[5])."',
-											tel_prof = '".mysql_real_escape_string($affiche[6])."',
-											mel = '".mysql_real_escape_string($affiche[7])."',
+											nom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											civilite = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], casse_mot($affiche[3],'majf2')) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											tel_pers = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											tel_port = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											tel_prof = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											mel = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
 											adr_id = '$affiche[8]'
 											";
 								//echo "$sql<br />\n";
-								$req = mysql_query($sql);
+								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no3++;
-									echo mysql_error();
+									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
 								} else {
 									$nb_record3++;
@@ -756,18 +756,18 @@ if($temoin==1){
 										$sql.="civilite='".casse_mot($affiche[3],'majf2')."', ";
 										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".$lig_tmp_u->email."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$insert_u=mysql_query($sql);
+										$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert_u) {
 											echo "<span style='color:red'>Erreur</span> lors de la création du compte utilisateur pour ".$affiche[1]." ".$affiche[2]."&nbsp;:<br /><span style='color:red'>$sql</span><br />";
 										}
 										else {
 											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$affiche[0]."';";
 											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_rp=mysql_query($sql);
+											$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 											$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$affiche[0]."';";
 											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_tmp_u=mysql_query($sql);
+											$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 									}
 								}
@@ -818,7 +818,7 @@ if($temoin==1){
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE responsables2";
-					$res_truncate=mysql_query($sql);
+					$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// on constitue le tableau des champs à extraire
 					$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
@@ -887,10 +887,10 @@ if($temoin==1){
 											pers_contact = '$affiche[3]'
 											";
 								//echo "$sql<br />\n";
-								$req = mysql_query($sql);
+								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no1++;
-									echo mysql_error();
+									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association élève $affiche[0] et responsable ($affiche[2]) $affiche[1].<br />\n";
 								} else {
 									$nb_record1++;
@@ -943,7 +943,7 @@ if($temoin==1){
 
 					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
 					$sql="TRUNCATE TABLE resp_adr";
-					$res_truncate=mysql_query($sql);
+					$res_truncate=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// on constitue le tableau des champs à extraire
 					$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
@@ -1007,19 +1007,19 @@ if($temoin==1){
 								}
 								$sql="insert into resp_adr set
 											adr_id = '$affiche[0]',
-											adr1 = '".mysql_real_escape_string($affiche[1])."',
-											adr2 = '".mysql_real_escape_string($affiche[2])."',
-											adr3 = '".mysql_real_escape_string($affiche[3])."',
-											adr4 = '".mysql_real_escape_string($affiche[4])."',
-											cp = '".mysql_real_escape_string($affiche[5])."',
-											pays = '".mysql_real_escape_string($affiche[6])."',
-											commune = '".mysql_real_escape_string($affiche[7])."'
+											adr1 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											adr2 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											adr3 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[3]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											adr4 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											cp = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											pays = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+											commune = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'
 											";
 								//echo "$sql<br />\n";
-								$req = mysql_query($sql);
+								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no2++;
-									echo mysql_error();
+									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $affiche[1], $affiche[2], $affiche[3], $affiche[4], $affiche[5], $affiche[7], ($affiche[6]), avec le numéro $affiche[0].<br />\n";
 								} else {
 									$nb_record2++;

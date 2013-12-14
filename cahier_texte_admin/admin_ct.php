@@ -204,10 +204,10 @@ if (isset($_GET['action'])) {
   if ($nom_groupe == "-1") {
      $nom_groupe = "<font color='red'>".$id_groupe." : groupe inexistant</font>\n";
   } else {
-  	  $get_classes = mysql_query("SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
-      $nb_classes = mysql_num_rows($get_classes);
+  	  $get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
+      $nb_classes = mysqli_num_rows($get_classes);
       for ($c=0;$c<$nb_classes;$c++) {
-      	$current_classe = mysql_result($get_classes, $c, "classe");
+      	$current_classe = old_mysql_result($get_classes, $c, "classe");
       	$classes .= $current_classe;
       	if ($c+1<$nb_classes) $classes .= ", ";
       }
@@ -244,10 +244,10 @@ if (isset($_GET['action'])) {
         $new_id_groupe = $row[0];
         $nom_groupe = $row[1];
         $classes = null;
-        $get_classes = mysql_query("SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $new_id_groupe . "')");
-	    $nb_classes = mysql_num_rows($get_classes);
+        $get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $new_id_groupe . "')");
+	    $nb_classes = mysqli_num_rows($get_classes);
 	      for ($c=0;$c<$nb_classes;$c++) {
-	      	$current_classe = mysql_result($get_classes, $c, "classe");
+	      	$current_classe = old_mysql_result($get_classes, $c, "classe");
 	      	$classes .= $current_classe;
 	      	if ($c+1<$nb_classes) $classes .= ", ";
 	      }
@@ -336,11 +336,11 @@ if (!(isset($_GET['action']))) {
       $id_prop = $row[1];
       $nom_groupe = sql_query1("select name from groupes where id = '".$id_groupe."'");
       $nom_matiere = sql_query1("select m.nom_complet from matieres m, j_groupes_matieres jm where (jm.id_groupe = '".$id_groupe."' AND m.matiere = jm.id_matiere)");
-      $get_classes = mysql_query("SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
-      $nb_classes = mysql_num_rows($get_classes);
+      $get_classes = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_groupes_classes jc WHERE (c.id = jc.id_classe and jc.id_groupe = '" . $id_groupe . "')");
+      $nb_classes = mysqli_num_rows($get_classes);
       $classes = null;
       for ($c=0;$c<$nb_classes;$c++) {
-      	$current_classe = mysql_result($get_classes, $c, "classe");
+      	$current_classe = old_mysql_result($get_classes, $c, "classe");
       	$classes .= $current_classe;
       	if ($c+1<$nb_classes) $classes .= ", ";
       }

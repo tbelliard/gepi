@@ -353,7 +353,7 @@ else{
 
 					$sql="DROP TABLE IF EXISTS temp_gep_import2;";
 					//echo "$sql<br />";
-					$suppr_table = mysql_query($sql);
+					$suppr_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$sql="CREATE TABLE IF NOT EXISTS temp_gep_import2 (
 					`ID_TEMPO` varchar(40) NOT NULL default '',
@@ -383,14 +383,14 @@ else{
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
 					) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-					$create_table = mysql_query($sql);
+					$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$sql="TRUNCATE TABLE temp_gep_import2;";
-					$vide_table = mysql_query($sql);
+					$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// On va stocker dans cette deuxième table les correspondances ELE_ID/ELENOET à appliquer sur les tables 'eleves' et 'responsables2'
 					$sql="TRUNCATE TABLE tempo2;";
-					$vide_table = mysql_query($sql);
+					$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$fp=fopen($dest_file,"r");
 					if($fp){
@@ -501,7 +501,7 @@ else{
 								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
 								$sql.="divcod='".$eleves[$i]['classe']."';";
 								//echo "$sql<br />\n";
-								$res_insert=mysql_query($sql);
+								$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res_insert){
 									echo "Erreur lors de la requête $sql<br />\n";
 									$nb_err++;
@@ -556,7 +556,7 @@ else{
 			else{
 				// On récupère les ele_id des élèves qui sont affectés dans une classe
 				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
-				$res_ele_id=mysql_query($sql);
+				$res_ele_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
 
 				unset($tab_ele_id);
@@ -565,7 +565,7 @@ else{
 				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
 				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
 				//while($lig=mysql_fetch_object($res_ele_id)){
-				while($lig=mysql_fetch_array($res_ele_id)){
+				while($lig=mysqli_fetch_array($res_ele_id)){
 					//$tab_ele_id[$cpt]="$lig->ele_id";
 					$tab_ele_id[$cpt]=$lig[0];
 					affiche_debug("\$tab_ele_id[$cpt]=$tab_ele_id[$cpt]<br />");
@@ -791,7 +791,7 @@ else{
 						$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 						$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 						affiche_debug("$sql<br />\n");
-						$res_insert=mysql_query($sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_insert){
 							echo "Erreur lors de la requête $sql<br />\n";
 							$nb_err++;
@@ -851,7 +851,7 @@ else{
 						//$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]';";
 						$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
 						affiche_debug("$sql<br />\n");
-						$nettoyage=mysql_query($sql);
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if($elenoet[$i]!='') {
 							if((isset($ele_id[$i]))&&($ele_id[$i]!='')) {
@@ -866,13 +866,13 @@ else{
 								fwrite($fsql,"$sql\n");
 								fclose($fsql);
 								*/
-								$correction1=mysql_query($sql);
+								$correction1=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								if($old_ele_id[$i]!='') {
 									$sql="UPDATE responsables2 SET ele_id='$ele_id[$i]' WHERE ele_id='$old_ele_id[$i]';";
 									affiche_debug("$sql<br />\n");
 									//echo "$sql<br />\n";
-									$correction2=mysql_query($sql);
+									$correction2=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
 								$cpt++;
 							}
@@ -891,20 +891,20 @@ else{
 			//$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE e.elenoet=t.elenoet AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
 			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe,e.elenoet, e.ele_id AS old_ele_id,t.ele_id FROM eleves e, temp_gep_import2 t WHERE LPAD(e.elenoet,5,'0')=LPAD(t.elenoet,5,'0') AND e.ele_id!=t.ele_id ORDER BY e.nom, e.prenom LIMIT 20;";
 			affiche_debug("$sql<br />\n");
-			if(!$res=mysql_query($sql)) {
+			if(!$res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 				//Illegal mix of collations
-				if(my_eregi("Illegal mix of collations",mysql_error())) {
+				if(my_eregi("Illegal mix of collations",((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)))) {
 					//echo "<span style='color:red'>".mysql_error()."</span>\n";
 					echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
-					echo "<span style='color:red'>".mysql_error()."</span><br />\n";
+					echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
 					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
 				}
 				echo "</p>\n";
 			}
 			else {
-				if(mysql_num_rows($res)==0){
+				if(mysqli_num_rows($res)==0){
 					if(isset($_POST['is_posted'])) {
 						echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
 						echo "<p>Terminé.</p>\n";
@@ -934,7 +934,7 @@ else{
 					echo "</tr>\n";
 					$alt=1;
 					$cpt=0;
-					while($lig=mysql_fetch_object($res)){
+					while($lig=mysqli_fetch_object($res)){
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>";

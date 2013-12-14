@@ -86,7 +86,7 @@ if((isset($id_incident))&&(isset($login))&&(isset($avertie))) {
 	}
 	*/
 	$sql="UPDATE s_protagonistes SET avertie='$avertie' WHERE id_incident='$id_incident' AND login='$login';";
-	$update=mysql_query($sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($update) {
 		echo "Famille de $login avertie: ";
 		if($avertie=="O") {echo "Oui";} else {echo "Non";}

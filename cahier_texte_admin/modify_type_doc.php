@@ -148,11 +148,11 @@ if (isset($_POST['reinit_assoc_fichiers'])) {
 	$tab_sql[]="INSERT INTO ct_types_documents SET titre='Zip', extension='zip', upload='oui';";
 
 	$sql="TRUNCATE ct_types_documents;";
-	$menage=mysql_query($sql);
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_reg=0;
 	for($loop=0;$loop<count($tab_sql);$loop++) {
-		$insert=mysql_query($tab_sql[$loop]);
+		$insert=mysqli_query($GLOBALS["mysqli"], $tab_sql[$loop]);
 		if(!$insert) {$msg.="Erreur lors de l'insertion : <br />".$tab_sql[$loop]."<br />";} else {$nb_reg++;}
 	}
 

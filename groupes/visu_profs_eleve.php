@@ -57,11 +57,11 @@ if ($_SESSION['statut'] == "responsable") {
 			"r.login = '".$_SESSION['login']."' AND re.resp_legal='0' AND re.acces_sp='y'))";
 	}
 	$sql.=";";
-	$get_eleves = mysql_query($sql);
-	if (mysql_num_rows($get_eleves) == 1) {
+	$get_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($get_eleves) == 1) {
 		// Un seul élève associé : on initialise tout de suite la variable $login_eleve
-		$login_eleve = mysql_result($get_eleves, 0);
-	} elseif (mysql_num_rows($get_eleves) == 0) {
+		$login_eleve = old_mysql_result($get_eleves, 0);
+	} elseif (mysqli_num_rows($get_eleves) == 0) {
 		$error_login = true;
 	}
 	// Si le nombre d'élèves associés est supérieur à 1, alors soit $login_eleve a été déjà défini, soit il faut présenter le formulaire.
@@ -120,8 +120,8 @@ if ($login_eleve != null and $_SESSION['statut'] == "responsable") {
 			"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
 	}
 	$sql.=";";
-	$test = mysql_query($sql);
-	if (mysql_num_rows($test) == 0) {
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($test) == 0) {
 	    tentative_intrusion(2, "Tentative par un parent d'accéder à l'équipe pédagogique d'un élève dont il n'est pas responsable légal.");
 	    echo "Vous ne pouvez visualiser que les relevés de notes des élèves pour lesquels vous êtes responsable légal.\n";
 	    require("../lib/footer.inc.php");
@@ -148,7 +148,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 				"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y'))";
 	}
 	$sql.=";";
-	$quels_eleves = mysql_query($sql);
+	$quels_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
     echo "<form enctype=\"multipart/form-data\" action=\"visu_profs_eleve.php\" method=\"post\">\n";
 	echo "<table summary='Choix'>\n";
 	echo "<tr>\n";
@@ -156,9 +156,9 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 	echo "<span class='bold'>Choisissez l'élève : </span>";
 	echo "</td>\n";
 	echo "<td valign='top'>\n";
-	echo "<select size=\"".mysql_num_rows($quels_eleves)."\" name=\"login_eleve\">";
+	echo "<select size=\"".mysqli_num_rows($quels_eleves)."\" name=\"login_eleve\">";
 	$cpt=0;
-	while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+	while ($current_eleve = mysqli_fetch_object($quels_eleves)) {
 		echo "<option value=".$current_eleve->login;
 		if($cpt==0) {echo " selected='selected'";}
 		echo ">" . $current_eleve->prenom . " " . $current_eleve->nom . "</option>\n";
@@ -188,23 +188,23 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 					"r.login = '" . $_SESSION['login'] . "' AND re.resp_legal='0' AND re.acces_sp='y' AND e.login!='".$login_eleve."'))";
 		}
 		$sql.=";";
-		$quels_eleves = mysql_query($sql);
-		while($lig_autres_eleves=mysql_fetch_object($quels_eleves)) {
+		$quels_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig_autres_eleves=mysqli_fetch_object($quels_eleves)) {
 			echo " | <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$lig_autres_eleves->login."'>".casse_mot($lig_autres_eleves->nom,'maj')." ".casse_mot($lig_autres_eleves->prenom,'majf2')."</a>";
 		}
 	}
 	echo "</p>\n";
 
 	// On a un élève. On affiche l'équipe pédagogique !
-	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
-	$nom_eleve = mysql_result($eleve, 0, "nom");
-	$prenom_eleve = mysql_result($eleve, 0, "prenom");
-	//$id_classe = mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
+	$eleve = mysqli_query($GLOBALS["mysqli"], "SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
+	$nom_eleve = old_mysql_result($eleve, 0, "nom");
+	$prenom_eleve = old_mysql_result($eleve, 0, "prenom");
+	//$id_classe = old_mysql_result(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '" . $login_eleve ."' LIMIT 1"), 0);
 
 	//$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1";
 	$sql="SELECT DISTINCT jec.id_classe, c.* FROM j_eleves_classes jec, classes c WHERE jec.login='".$login_eleve."' AND jec.id_classe=c.id ORDER BY periode;";
-	$res_class=mysql_query($sql);
-	if(mysql_num_rows($res_class)==0) {
+	$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_class)==0) {
 		echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
 		echo "</h3>\n";
 		echo "<p>L'élève n'est dans aucune classe???</p>\n";
@@ -212,7 +212,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		die();
 	}
 
-	while($lig_clas=mysql_fetch_object($res_class)) {
+	while($lig_clas=mysqli_fetch_object($res_class)) {
 		echo "<h3>Equipe pédagogique de l'élève : <strong>".$prenom_eleve ." " . $nom_eleve."</strong>";
 
 		$id_classe=$lig_clas->id_classe;
@@ -242,10 +242,10 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 					"u.login=jec.cpe_login " .
 					"ORDER BY jec.cpe_login;";
 		//echo "$sql<br />";
-		$req = mysql_query($sql);
-		if(mysql_num_rows($req)>0) {
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($req)>0) {
 			// Il ne doit y en avoir qu'un...
-			$cpe = mysql_fetch_object($req);
+			$cpe = mysqli_fetch_object($req);
 			echo "<tr valign='top'><td>VIE SCOLAIRE</td>\n";
 			echo "<td></td>";
 			echo "<td>";
@@ -269,7 +269,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 
 		// On passe maintenant les groupes un par un, sans se préoccuper de la période : on affiche tous les groupes
 		// auxquel l'élève appartient ou a appartenu
-		$groupes = mysql_query("SELECT DISTINCT jeg.id_groupe, m.nom_complet, g.* " .
+		$groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jeg.id_groupe, m.nom_complet, g.* " .
 								"FROM j_eleves_groupes jeg, matieres m, j_groupes_matieres jgm, j_groupes_classes jgc, groupes g WHERE " .
 								"g.id=jeg.id_groupe AND ".
 								"jeg.login = '".$login_eleve."' AND " .
@@ -278,7 +278,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 								"jgc.id_groupe = jeg.id_groupe AND " .
 								"jgc.id_classe = '".$id_classe . "' " .
 								"ORDER BY jgc.priorite, m.matiere");
-		while ($groupe = mysql_fetch_object($groupes)) {
+		while ($groupe = mysqli_fetch_object($groupes)) {
 			// On est dans la boucle 'groupes'. On traite les groupes un par un.
 
 		    // Matière correspondant au groupe:
@@ -289,24 +289,24 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		    // Professeurs
 		    echo "<td>";
 		    $sql="SELECT jgp.login,u.nom,u.prenom,u.email,u.show_email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='".$groupe->id_groupe."' AND u.login=jgp.login";
-		    $result_prof=mysql_query($sql);
-		    while($lig_prof=mysql_fetch_object($result_prof)){
+		    $result_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		    while($lig_prof=mysqli_fetch_object($result_prof)){
 
 		        // Le prof est-il PP de l'élève ?
 		        $sql="SELECT * FROM j_eleves_professeurs WHERE login = '".$login_eleve."' AND professeur='".$lig_prof->login."'";
-		        $res_pp=mysql_query($sql);
+		        $res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if($lig_prof->email!="" AND $lig_prof->show_email == "yes" AND
 					(($_SESSION['statut'] == "responsable" AND
 						(getSettingValue("GepiAccesEquipePedaEmailParent") == "yes"
 							OR
-						 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysql_num_rows($res_pp)>0)
+						 (getSettingValue("GepiAccesCpePPEmailParent") == "yes" AND mysqli_num_rows($res_pp)>0)
 						 )
 		    		) OR (
 					  $_SESSION['statut'] == "eleve" AND
 						(getSettingValue("GepiAccesEquipePedaEmailEleve") == "yes"
 							OR
-						 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysql_num_rows($res_pp)>0)
+						 (getSettingValue("GepiAccesCpePPEmailEleve") == "yes" AND mysqli_num_rows($res_pp)>0)
 						 )
 					)
 					)){
@@ -317,7 +317,7 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		        }
 
 
-		        if(mysql_num_rows($res_pp)>0){
+		        if(mysqli_num_rows($res_pp)>0){
 		             echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
 		        }
 		        echo "<br />\n";

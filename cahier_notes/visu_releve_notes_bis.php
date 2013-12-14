@@ -37,10 +37,10 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php';";
-$res_test=mysql_query($sql);
-if (mysql_num_rows($res_test)==0) {
+$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+if (mysqli_num_rows($res_test)==0) {
 	$sql="INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_bis.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V','F', 'Relevé de notes', '1');";
-	$res_insert=mysql_query($sql);
+	$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -136,8 +136,8 @@ if(isset($id_groupe)) {
 
 	// On vérifie si le prof est bien associé au groupe
 	$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' AND login='".$_SESSION['login']."';";
-	$test_grp_prof=mysql_query($sql);
-	if(mysql_num_rows($test_grp_prof)==0) {
+	$test_grp_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_grp_prof)==0) {
 		//intrusion
 		tentative_intrusion(2, "Tentative d'un professeur d'accéder aux relevés de notes d'un groupe auquel il n'est pas associé.");
 		echo "<p>Vous n'êtes pas associé au groupe choisi.</p>\n";
@@ -173,15 +173,15 @@ if($_SESSION['statut']=='eleve') {
 	}
 
 	$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (jec.id_classe=c.id AND jec.login='".$_SESSION['login']."');";
-	$test_ele_clas=mysql_query($sql);
-	if(mysql_num_rows($test_ele_clas)==0) {
+	$test_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_ele_clas)==0) {
 		echo "<p>Vous n'êtes pas affecté dans une classe et donc pas autorisé à accéder aux relevés de notes.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-	elseif(mysql_num_rows($test_ele_clas)==1) {
+	elseif(mysqli_num_rows($test_ele_clas)==1) {
 		// On préremplit la classe
-		$lig_clas=mysql_fetch_object($test_ele_clas);
+		$lig_clas=mysqli_fetch_object($test_ele_clas);
 		$tab_id_classe=array();
 		$tab_id_classe[]=$lig_clas->id;
 		//echo "\$lig_clas->id=$lig_clas->id<br />";
@@ -204,15 +204,15 @@ elseif($_SESSION['statut']=='responsable') {
 					rp.login='".$_SESSION['login']."' AND
 					c.id=jec.id_classe AND
 					jec.login=e.login);";
-	$test_ele_clas=mysql_query($sql);
-	if(mysql_num_rows($test_ele_clas)==0) {
+	$test_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_ele_clas)==0) {
 		echo "<p>Aucun des élèves dont vous êtes responsable ne semble inscrit dans une classe; vous n'êtes donc pas autorisé à accéder aux relevés de notes.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-	elseif(mysql_num_rows($test_ele_clas)==1) {
+	elseif(mysqli_num_rows($test_ele_clas)==1) {
 		// On préremplit la classe
-		$lig_clas=mysql_fetch_object($test_ele_clas);
+		$lig_clas=mysqli_fetch_object($test_ele_clas);
 		$tab_id_classe=array();
 		$tab_id_classe[]=$lig_clas->id;
 		//echo "\$lig_clas->id=$lig_clas->id<br />";
@@ -328,8 +328,8 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		}
 		elseif(getSettingValue("GepiAccesReleveProfP")=="yes") {
 			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' LIMIT 1;";
-			$test_acces=mysql_query($sql);
-			if(mysql_num_rows($test_acces)>0) {
+			$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_acces)>0) {
 				$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep,
 											classes c
 									WHERE (
@@ -384,9 +384,9 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		die();
 	}
 	//echo "$sql<br />";
-	$call_classes=mysql_query($sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$nb_classes=mysql_num_rows($call_classes);
+	$nb_classes=mysqli_num_rows($call_classes);
 	if($nb_classes==0){
 		echo "<p>Aucune classe avec élève affecté n'a été trouvée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -406,7 +406,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 	echo "<td>\n";
 
-	while($lig_clas=mysql_fetch_object($call_classes)) {
+	while($lig_clas=mysqli_fetch_object($call_classes)) {
 
 		//affichage 2 colonnes
 		if(($cpt>0)&&(round($cpt/$nb_classes_par_colonne)==$cpt/$nb_classes_par_colonne)){
@@ -521,14 +521,14 @@ elseif(!isset($choix_periode)) {
 			// On a fait un choix de groupe... on refait la liste des classes d'après l'id_groupe choisi
 			unset($tab_id_classe);
 			$sql="SELECT DISTINCT id_classe FROM j_groupes_classes WHERE id_groupe='$id_groupe';";
-			$res_clas=mysql_query($sql);
-			if(mysql_num_rows($res_clas)==0) {
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_clas)==0) {
 				echo "<p>ERREUR: Le groupe choisi ne semble associé à aucune classe???</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
 
-			while($lig_clas=mysql_fetch_object($res_clas)) {
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
 				$tab_id_classe[]=$lig_clas->id_classe;
 			}
 		}
@@ -641,8 +641,8 @@ elseif(!isset($choix_periode)) {
 	echo "<td>\n";
 
 		$sql="SELECT MAX(num_periode) max_per FROM periodes;";
-		$res_max_per=mysql_query($sql);
-		$lig_max_per=mysql_fetch_object($res_max_per);
+		$res_max_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		$lig_max_per=mysqli_fetch_object($res_max_per);
 		$max_per=$lig_max_per->max_per;
 
 		$tab_periode_exclue=array();
@@ -667,13 +667,13 @@ elseif(!isset($choix_periode)) {
 				if(!isset($tab_nom_periode[$j])) {$tab_nom_periode[$j]=array();}
 
 				$sql="SELECT * FROM periodes WHERE num_periode='$j' AND id_classe='".$tab_id_classe[$i]."';";
-				$res_per=mysql_query($sql);
-				if(mysql_num_rows($res_per)==0) {
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_per)==0) {
 					if(!in_array($j,$tab_periode_exclue)) {$tab_periode_exclue[]=$j;}
 					echo "<td style='background-color:red;'>X</td>\n";
 				}
 				else {
-					$lig_per=mysql_fetch_object($res_per);
+					$lig_per=mysqli_fetch_object($res_per);
 					if(!in_array($lig_per->nom_periode,$tab_nom_periode[$j])) {$tab_nom_periode[$j][]=$lig_per->nom_periode;}
 					echo "<td>";
 					if($lig_per->verouiller=="O") {
@@ -1128,8 +1128,8 @@ echo "</script>\n";
 			for($j=0;$j<count($tab_periode_num);$j++) {
 				//echo "<th>Période $j</th>\n";
 				$sql="SELECT nom_periode FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND num_periode='".$tab_periode_num[$j]."';";
-				$res_per=mysql_query($sql);
-				$lig_per=mysql_fetch_object($res_per);
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				$lig_per=mysqli_fetch_object($res_per);
 				echo "<th>\n";
 
 				echo $lig_per->nom_periode;
@@ -1213,8 +1213,8 @@ echo "</script>\n";
 								jep.professeur='".$_SESSION['login']."' AND
 								jec.id_classe='".$tab_id_classe[$i]."'
 						ORDER BY e.nom,e.prenom;";
-					$test_acces=mysql_query($sql);
-					if(mysql_num_rows($test_acces)==0) {
+					$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_acces)==0) {
 						// On pourrait mettre un tentative_intrusion()
 						echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
 						require("../lib/footer.inc.php");
@@ -1266,10 +1266,10 @@ echo "</script>\n";
 		}
 		//echo "$sql<br />";
 
-		$res_ele=mysql_query($sql);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		$alt=1;
 		$cpt=0;
-		while($lig_ele=mysql_fetch_object($res_ele)) {
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
 
 			//$acces_prof_a_cet_eleve="y";
 			//if() {
@@ -1290,14 +1290,14 @@ echo "</script>\n";
 					$sql="SELECT 1=1 FROM j_eleves_classes jec
 						WHERE jec.id_classe='".$tab_id_classe[$i]."' AND
 								jec.periode='".$tab_periode_num[$j]."';";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0) {
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)>0) {
 						if (isset($id_groupe)) {
 							// Cas d'un prof
 							// Dans le cas du choix d'un groupe, on contrôle si l'élève fait partie du groupe
 							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' AND id_groupe='$id_groupe' AND periode='".$tab_periode_num[$j]."');";
-							$test_ele_grp=mysql_query($sql);
-							if(mysql_num_rows($test_ele_grp)>0) {
+							$test_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_ele_grp)>0) {
 								echo "<td>
 									<label for='tab_selection_ele_".$i."_".$j."[]'_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$j."</label>
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
@@ -1325,8 +1325,8 @@ echo "</script>\n";
 														jgp.login='".$_SESSION['login']."' AND
 														jeg.periode='".$tab_periode_num[$j]."'
 														);";
-								$test_ele_grp=mysql_query($sql);
-								if(mysql_num_rows($test_ele_grp)==0) {
+								$test_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_ele_grp)==0) {
 									echo "<td>-</td>\n";
 								}
 								else {
@@ -1362,8 +1362,8 @@ echo "</script>\n";
 												WHERE (jec.id_classe='".$tab_id_classe[$i]."' AND
 														jec.login='".$lig_ele->login."' AND
 														jec.periode='".$tab_periode_num[$j]."');";
-								$test_ele_grp=mysql_query($sql);
-								if(mysql_num_rows($test_ele_grp)==0) {
+								$test_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_ele_grp)==0) {
 									echo "<td>-</td>\n";
 								}
 								else {
@@ -1391,8 +1391,8 @@ echo "</script>\n";
 				if (isset($id_groupe)) {
 					// Dans le cas du choix d'un groupe, on contrôle si l'élève fait partie du groupe
 					$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$lig_ele->login."' AND id_groupe='$id_groupe');";
-					$test_ele_grp=mysql_query($sql);
-					if(mysql_num_rows($test_ele_grp)>0) {
+					$test_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_ele_grp)>0) {
 						echo "<label for='tab_selection_ele_".$i."_".$periode."_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$periode."</label>
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$periode."[]' id='tab_selection_ele_".$i."_".$periode."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
@@ -1418,8 +1418,8 @@ echo "</script>\n";
 												jeg.login='".$lig_ele->login."' AND
 												jgp.login='".$_SESSION['login']."'
 												);";
-						$test_ele_grp=mysql_query($sql);
-						if(mysql_num_rows($test_ele_grp)==0) {
+						$test_ele_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_ele_grp)==0) {
 							echo "<td>-</td>\n";
 						}
 						else {

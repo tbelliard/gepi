@@ -45,8 +45,8 @@ function classe_de($id_classe_eleve)
 		{
 		include("../secure/connect.inc.php");
 			$requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
-			$execution_classe_eleve = mysql_query($requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysql_error());
-			$data_classe_eleve = mysql_fetch_array($execution_classe_eleve);
+			$execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$data_classe_eleve = mysqli_fetch_array($execution_classe_eleve);
 			$id_classe_eleve = $data_classe_eleve['nom_complet'];
 		return($id_classe_eleve);
 		}
@@ -170,13 +170,13 @@ if(isset($_POST['upload_photo'])) {
 		} else {
 			$dest = $rep_photos;
 
-			$sql="SELECT elenoet FROM eleves WHERE login='".mysql_real_escape_string($_POST['login_photo'])."';";
-			$res_elenoet=mysql_query($sql);
-			if(mysql_num_rows($res_elenoet)==0) {
+			$sql="SELECT elenoet FROM eleves WHERE login='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+			$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_elenoet)==0) {
 				$msg.="Aucun elenoet n'a été trouvé pour renommer la photo de cet élève.<br />\n";
 			}
 			else {
-				$quiestce=encode_nom_photo(mysql_result($res_elenoet,0,'elenoet'));
+				$quiestce=encode_nom_photo(old_mysql_result($res_elenoet,0,'elenoet'));
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
 					$msg.="Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
@@ -334,16 +334,16 @@ function reactiver(mavar) {
 		}
 		$chaine_options_classes="";
 	
-		$res_class_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_class_tmp)>0){
+		$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_class_tmp)>0){
 			$id_class_prec=0;
 			$id_class_suiv=0;
 			$temoin_tmp=0;
-			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+			while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 				if($lig_class_tmp->id==$id_classe){
 					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 					$temoin_tmp=1;
-					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)){
 						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 						$id_class_suiv=$lig_class_tmp->id;
 					}
@@ -439,7 +439,7 @@ function reactiver(mavar) {
 				$requete_classe_prof = ('SELECT * FROM '.$prefix_base.'classes c
 					ORDER BY c.nom_complet ASC');
 			}
-			$resultat_classe_prof = mysql_query($requete_classe_prof) or die('Erreur SQL !'.$requete_classe_prof.'<br />'.mysql_error());
+			$resultat_classe_prof = mysqli_query($GLOBALS["mysqli"], $requete_classe_prof) or die('Erreur SQL !'.$requete_classe_prof.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 			echo "<option value='' ";
 			if ( empty($classe) ) { echo "selected='selected'"; }
@@ -459,7 +459,7 @@ function reactiver(mavar) {
 
 			echo "<optgroup label='-- Les classes --'>\n";
 
-			while ( $data_classe_prof = mysql_fetch_array ($resultat_classe_prof)) {
+			while ( $data_classe_prof = mysqli_fetch_array($resultat_classe_prof)) {
 				echo "<option value='".$data_classe_prof['id']."'";
 				if(!empty($classe) and $classe == $data_classe_prof['id']) {
 					echo " selected='selected'";
@@ -513,7 +513,7 @@ function reactiver(mavar) {
 											jgc.id_classe = c.id
 										ORDER BY name ASC, nom_complet ASC");
 			}
-			$resultat_groupe_prof = mysql_query($requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.mysql_error());
+			$resultat_groupe_prof = mysqli_query($GLOBALS["mysqli"], $requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			echo "<option value=''";
 			if ( empty($classe) ) {
 				echo " selected='selected'";
@@ -533,7 +533,7 @@ function reactiver(mavar) {
 			}
 
 			echo "<optgroup label='-- Les groupes --'>\n";
-			while ( $donnee_groupe_prof = mysql_fetch_array ($resultat_groupe_prof)) {
+			while ( $donnee_groupe_prof = mysqli_fetch_array($resultat_groupe_prof)) {
 				echo "<option value='".$donnee_groupe_prof['id_groupe']."' onclick=\"desactiver('classe,equipepeda,discipline,statusgepi,affdiscipline');\">";
 
 				//modif ERIC
@@ -616,7 +616,7 @@ function reactiver(mavar) {
 				$requete_equipe_pedagogique = ('SELECT * FROM '.$prefix_base.'classes c
 					ORDER BY c.nom_complet ASC');
 			}
-			$resultat_equipe_pedagogique = mysql_query($requete_equipe_pedagogique) or die('Erreur SQL !'.$requete_equipe_pedagogique.'<br />'.mysql_error());
+			$resultat_equipe_pedagogique = mysqli_query($GLOBALS["mysqli"], $requete_equipe_pedagogique) or die('Erreur SQL !'.$requete_equipe_pedagogique.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 			echo "<option value=''";
 			if ( empty($equipepeda) ) {
@@ -639,7 +639,7 @@ function reactiver(mavar) {
 			}
 
 			echo "<optgroup label='-- Les classes --'>\n";
-			while ( $donnee_equipe_pedagogique = mysql_fetch_array ($resultat_equipe_pedagogique)) {
+			while ( $donnee_equipe_pedagogique = mysqli_fetch_array($resultat_equipe_pedagogique)) {
 
 				echo "<option value='".$donnee_equipe_pedagogique['id']."'";
 				if(!empty($equipepeda) and $equipepeda == $donnee_equipe_pedagogique['id']) {
@@ -686,7 +686,7 @@ function reactiver(mavar) {
 					$requete_discipline = ('SELECT * FROM '.$prefix_base.'matieres m
 								ORDER BY m.nom_complet ASC');
 				}
-				$resultat_discipline = mysql_query($requete_discipline) or die('Erreur SQL !'.$requete_discipline.'<br />'.mysql_error());
+				$resultat_discipline = mysqli_query($GLOBALS["mysqli"], $requete_discipline) or die('Erreur SQL !'.$requete_discipline.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
 
@@ -704,7 +704,7 @@ function reactiver(mavar) {
 				}
 
 				echo "<optgroup label='-- Les disciplines --'>\n";
-				while ( $donnee_discipline = mysql_fetch_array ($resultat_discipline)) {
+				while ( $donnee_discipline = mysqli_fetch_array($resultat_discipline)) {
 					echo "<option value='".$donnee_discipline['matiere']."'";
 
 					if(!empty($discipline) and $discipline == $donnee_discipline['matiere']) {
@@ -737,7 +737,7 @@ function reactiver(mavar) {
 							ORDER BY u.statut ASC');
 				}
 			}
-			$resultat_statusgepi = mysql_query($requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.mysql_error());
+			$resultat_statusgepi = mysqli_query($GLOBALS["mysqli"], $requete_statusgepi) or die('Erreur SQL !'.$requete_statusgepi.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
 			echo "<option value=''";
@@ -746,7 +746,7 @@ function reactiver(mavar) {
 			}
 			echo " onclick=\"reactiver('classe,groupe,equipepeda,discipline,affdiscipline');\">pas de s&eacute;lection</option>\n";
 			echo "<optgroup label='-- Les statuts --'>\n";
-			while ( $donnee_statusgepi = mysql_fetch_array ($resultat_statusgepi)) {
+			while ( $donnee_statusgepi = mysqli_fetch_array($resultat_statusgepi)) {
 				echo "<option value='".$donnee_statusgepi['statut']."'";
 				if(!empty($statusgepi) and $statusgepi == $donnee_statusgepi['statut']) {
 					echo " selected='selected'";
@@ -896,14 +896,14 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 		$requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";';
 	}
 
-	$execute_qui = mysql_query($requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysql_error());
-	if(mysql_num_rows($execute_qui)==0) {
+	$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($execute_qui)==0) {
 		// On doit être dans le cas d'un élève qui a tenté d'accéder aux photos d'une classe, groupe, équipe,... à laquelle il n'est pas associé.
 		echo "<p>La requête n'a retourné aucun enregistrement.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-	$donnees_qui = mysql_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysql_error());
+	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	if ( $action_affiche === 'classe' ) {
 		echo "Classe : ".$donnees_qui['nom_complet'];
@@ -1030,8 +1030,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					AND jgm.id_matiere = m.matiere
 					AND jgp.id_groupe = jgm.id_groupe
 					AND jgp.login = "'.$prof.'"';
-			$execution_matiere = mysql_query($requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysql_error());
-			while ($donnee_matiere = mysql_fetch_array($execution_matiere)) {
+			$execution_matiere = mysqli_query($GLOBALS["mysqli"], $requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while ($donnee_matiere = mysqli_fetch_array($execution_matiere)) {
 				$prof_de = $prof_de.'<br />'.htmlspecialchars($donnee_matiere['nom_complet']).' ';
 			}
 		}
@@ -1040,9 +1040,9 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	//===========================================
 
 
-	$execution_trombi = mysql_query($requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysql_error());
+	$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$cpt_photo = 1;
-	while ($donnee_trombi = mysql_fetch_array($execution_trombi))
+	while ($donnee_trombi = mysqli_fetch_array($execution_trombi))
 	{
 		//insertion de l'élève dans la varibale $eleve_absent
 		$login_trombinoscope[$cpt_photo] = $donnee_trombi['login'];

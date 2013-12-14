@@ -48,19 +48,19 @@ if (!isset($_SESSION['order_by'])) {$_SESSION['order_by'] = "date ASC";}
 $_SESSION['order_by'] = isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_by']) ? $_GET['order_by'] : $_SESSION['order_by']);
 $order_by = $_SESSION['order_by'];
 
-$call_data = mysql_query("SELECT * FROM inscription_items ORDER BY $order_by");
-$nombre_lignes = mysql_num_rows($call_data);
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM inscription_items ORDER BY $order_by");
+$nombre_lignes = mysqli_num_rows($call_data);
 
 
 if (isset($_POST['is_posted'])) {
 	check_token();
 
-    $del = mysql_query("delete from inscription_j_login_items where login='".$_SESSION['login']."'");
+    $del = mysqli_query($GLOBALS["mysqli"], "delete from inscription_j_login_items where login='".$_SESSION['login']."'");
     $i = 0;
     while ($i < $nombre_lignes){
-        $id = mysql_result($call_data, $i, "id");
+        $id = old_mysql_result($call_data, $i, "id");
         if (isset($_POST[$id])) {
-            $req = mysql_query("insert into inscription_j_login_items
+            $req = mysqli_query($GLOBALS["mysqli"], "insert into inscription_j_login_items
             set login='".$_SESSION['login']."',
             id = '".$id."'
             ");
@@ -121,8 +121,8 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 $i = 0;
 $aujourdhui=date('Y/m/d');
 while ($i < $nombre_lignes){
-    $id = mysql_result($call_data, $i, "id");
-    $date = mysql_result($call_data, $i, "date");
+    $id = old_mysql_result($call_data, $i, "id");
+    $date = old_mysql_result($call_data, $i, "date");
 	if (($_SESSION['items_a_afficher']=="tous") || ($_SESSION['items_a_afficher']=="ouverts" && $date>$aujourdhui) || ($_SESSION['items_a_afficher']=="clos" && $date<=$aujourdhui)) {
 		$day = mb_substr($date, 8, 2);
 		$month = mb_substr($date, 5, 2);
@@ -130,21 +130,21 @@ while ($i < $nombre_lignes){
 
 		$f_date = strftime("%A %d %B %Y", mktime(0,0,0,$month,$day,$year));
 
-		$heure = mysql_result($call_data, $i, "heure");
-		$description = mysql_result($call_data, $i, "description");
+		$heure = old_mysql_result($call_data, $i, "heure");
+		$description = old_mysql_result($call_data, $i, "description");
 
 		$inscrit = sql_query1("select id from inscription_j_login_items
 		where login='".$_SESSION['login']."' and id='".$id."' ");
 
 
-		$inscrits = mysql_query("select login from inscription_j_login_items
+		$inscrits = mysqli_query($GLOBALS["mysqli"], "select login from inscription_j_login_items
 		where id='".$id."' ");
-		$nb_inscrits = mysql_num_rows($inscrits);
+		$nb_inscrits = mysqli_num_rows($inscrits);
 		if ($nb_inscrits == 0) $noms_inscrits = "<center>-</center>"; else $noms_inscrits = "";
 		$k = 0;
 		$nom_prenom = "";
 		while ($k < $nb_inscrits) {
-			$login_inscrit = mysql_result($inscrits, $k, "login");
+			$login_inscrit = old_mysql_result($inscrits, $k, "login");
 			$nom_inscrit = sql_query1("select nom from utilisateurs where login='".$login_inscrit."'");
 			$prenom_inscrit = sql_query1("select prenom from utilisateurs where login='".$login_inscrit."'");
 			if ($nom_inscrit == -1) $nom_inscrit = "<font color='red'>(Nom absent => login : ".$login_inscrit.")</font>";

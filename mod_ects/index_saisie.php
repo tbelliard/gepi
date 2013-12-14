@@ -71,15 +71,15 @@ if ($acces_scol) {
   echo "<p>Accès pour saisie complètes de crédits ECTS. Sélectionnez la classe pour laquelle vous souhaitez réaliser la saisie :</p>";
     // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
 	if($_SESSION['statut']=='scolarite'){
-		$call_classe = mysql_query("SELECT DISTINCT c.*
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.*
                                     FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
                                     WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
 	}
 	else{
-		$call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
 	}
 
-    $nombre_classe = mysql_num_rows($call_classe);
+    $nombre_classe = mysqli_num_rows($call_classe);
 	if($nombre_classe==0){
 		echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
@@ -88,8 +88,8 @@ if ($acces_scol) {
 		$j = "0";
 		$alt=1;
 		while ($j < $nombre_classe) {
-			$id_classe = mysql_result($call_classe, $j, "id");
-			$classe_suivi = mysql_result($call_classe, $j, "classe");
+			$id_classe = old_mysql_result($call_classe, $j, "id");
+			$classe_suivi = old_mysql_result($call_classe, $j, "classe");
 			echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
 			$j++;
 		}
@@ -100,8 +100,8 @@ if ($acces_scol) {
 if ($acces_prof_suivi) {
     echo "<br/>";
     echo "<p>Accès pour saisie définitive et complète des crédits ECTS. Sélectionnez la classe pour laquelle vous souhaitez réaliser la saisie :</p>";
-    $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
-    $nombre_classe = mysql_num_rows($call_prof_classe);
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+    $nombre_classe = mysqli_num_rows($call_prof_classe);
     
     if ($nombre_classe == "0") {
         echo "Vous n'êtes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits à des ECTS.";
@@ -109,8 +109,8 @@ if ($acces_prof_suivi) {
         $j = "0";
         echo "<p>Vous êtes ".$gepiSettings['gepi_prof_suivi']." dans la classe de :</p>";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
             $j++;
         }
@@ -120,16 +120,16 @@ if ($acces_prof_suivi) {
 if ($acces_prof) {
     echo "<br/>";
     echo "<p>Accès à l'interface de pré-saisie des crédits ECTS pour les enseignements dont vous êtes responsable :</p>";
-    $call_prof_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE
+    $call_prof_classe = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE
         (jgp.login = '" . $_SESSION['login'] . "' AND jgc.id_groupe = jgp.id_groupe AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
-    $nombre_classe = mysql_num_rows($call_prof_classe);
+    $nombre_classe = mysqli_num_rows($call_prof_classe);
     if ($nombre_classe == "0") {
         echo "<p>Aucun enseignement dont vous êtes responsables n'ouvre droit à crédits ECTS.</p>";
     } else {
         $j = "0";
         while ($j < $nombre_classe) {
-            $id_classe = mysql_result($call_prof_classe, $j, "id");
-            $classe_suivi = mysql_result($call_prof_classe, $j, "classe");
+            $id_classe = old_mysql_result($call_prof_classe, $j, "id");
+            $classe_suivi = old_mysql_result($call_prof_classe, $j, "classe");
             echo "<br /><b>$classe_suivi</b> --- <a href='saisie_ects.php?mode=presaisie&id_classe=$id_classe'>Saisir les crédits, élève par élève, avec visualisation des résultats de l'élève.</a><br />";
             $j++;
         }

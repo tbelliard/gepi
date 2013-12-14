@@ -245,7 +245,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
 );
    $j=0;
    while ($j < count($liste_tables_del)) {
-       $del = mysql_query("DELETE FROM $liste_tables_del[$j]");
+       $del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
        $j++;
    }
    echo "<p class='grand'>Suppression des données réussie.</p>";

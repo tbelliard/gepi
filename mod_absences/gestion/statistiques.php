@@ -200,14 +200,14 @@ function present_nombre($nombre, $precision, $nb_chiffre_virgule, $chiffre_avec_
 	 { $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves ae, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$eleve_selectionne." AND ".$type_selectionne." AND ".$justification_selectionne." AND ".$long_absence_cocher." AND c.id = ec.id_classe AND ec.login = ae.eleve_absence_eleve GROUP BY id_absence_eleve ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC"; }
 
 	$i = '0';
-	$execution_komenti = mysql_query($requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysql_error());
+	$execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	// compte les données
-	$cpt_donnees = mysql_num_rows($execution_komenti);
+	$cpt_donnees = mysqli_num_rows($execution_komenti);
 
 	// vérification s'il contient des données
 	if ( $cpt_donnees != '0' ) {
 	    // si oui on charge les informations
-             while ( $donnee_base = mysql_fetch_array($execution_komenti))
+             while ( $donnee_base = mysqli_fetch_array($execution_komenti))
                 { 
 			$tableau[$i]['id'] = $i;
 			$tableau[$i]['login'] = $donnee_base['eleve_absence_eleve'];
@@ -611,8 +611,8 @@ if($echelle_y === 'E') {
           		        <option value="" <?php if($classe[0] === '') { ?>selected="selected"<?php } ?>>toutes</option>
                  		<?php
 				$requete_liste_classe = "SELECT id, classe, nom_complet FROM ".$prefix_base."classes ORDER BY nom_complet ASC";
-	                    	$resultat_liste_classe = mysql_query($requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysql_error());
-	                    	while ( $data_liste_classe = mysql_fetch_array ($resultat_liste_classe)) 
+	                    	$resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	                    	while ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) 
 				{ ?>
 	                          <option value="<?php echo $data_liste_classe['id']; ?>" <?php if(!empty($classe) and in_array($data_liste_classe['id'], $classe)) { ?>selected="selected"<?php } ?>><?php echo $data_liste_classe['nom_complet']." (".$data_liste_classe['classe'].")"; ?></option>
         	          <?php } ?>
@@ -629,8 +629,8 @@ if($echelle_y === 'E') {
 	                        <?php
   				if ($classe[0] === '') { $requete_liste_eleve = "SELECT login, nom, prenom FROM ".$prefix_base."eleves ORDER BY nom, prenom ASC";
 				  } else { $requete_liste_eleve = "SELECT e.login, e.nom, e.prenom, ec.login, ec.id_classe, ec.periode, c.id, c.classe, c.nom_complet FROM ".$prefix_base."eleves e, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."classes c WHERE ".$classe_selectionne." AND e.login=ec.login AND ec.id_classe=c.id GROUP BY e.login ORDER BY e.nom, e.prenom ASC"; }
-                    		$resultat_liste_eleve = mysql_query($requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysql_error());
-                    		while ( $data_liste_eleve = mysql_fetch_array ($resultat_liste_eleve))
+                    		$resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    		while ( $data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve))
 				{ ?>
                   	          <option value="<?php echo $data_liste_eleve['login']; ?>" <?php if(!empty($eleve) and in_array($data_liste_eleve['login'], $eleve)) { ?>selected="selected"<?php } ?>><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?></option>
         	          <?php } ?>

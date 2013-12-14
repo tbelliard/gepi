@@ -38,8 +38,8 @@ if (!checkAccess()) {
 	die();
 }
 
-$periode_query = mysql_query("select max(num_periode) max from periodes");
-$max_periode = mysql_result($periode_query, 0, 'max');
+$periode_query = mysqli_query($GLOBALS["mysqli"], "select max(num_periode) max from periodes");
+$max_periode = old_mysql_result($periode_query, 0, 'max');
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -52,16 +52,16 @@ if (isset($_POST['is_posted'])) {
 	while ($per < $max_periode) {
 		$per++;
 		// On dresse la liste de toutes les classes non virtuelles
-		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-		$nb_classe = mysql_num_rows($classes_list);
+		$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+		$nb_classe = mysqli_num_rows($classes_list);
 		// $nb : nombre de classes ayant un nombre de periodes égal à $per
 		$nb=0;
 		$nbc = 0;
 		while ($nbc < $nb_classe) {
 			$modif_classe = 'no';
-			$id_classe = mysql_result($classes_list,$nbc,'id');
-			$query_per = mysql_query("SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
-			$nb_periode = mysql_num_rows($query_per);
+			$id_classe = old_mysql_result($classes_list,$nbc,'id');
+			$query_per = mysqli_query($GLOBALS["mysqli"], "SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
+			$nb_periode = mysqli_num_rows($query_per);
 			if ($nb_periode == $per) {
 				// la classe dont l'identifiant est $id_classe a $per périodes
 				$temp = "case_".$id_classe;
@@ -71,7 +71,7 @@ if (isset($_POST['is_posted'])) {
 						$temp2 = "nb_".$per."_".$k;
 						if ($_POST[$temp2] != '') {
 							$sql="UPDATE periodes SET nom_periode='".$_POST[$temp2]."' WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
-							$register = mysql_query($sql);
+							$register = mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 
@@ -84,7 +84,7 @@ if (isset($_POST['is_posted'])) {
 							else {
 								$sql="UPDATE periodes SET date_fin='".$tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00'";
 								$sql.=" WHERE (id_classe='".$id_classe."' and num_periode='".$k."')";
-								$register = mysql_query($sql);
+								$register = mysqli_query($GLOBALS["mysqli"], $sql);
 								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 							}
 						}
@@ -92,96 +92,96 @@ if (isset($_POST['is_posted'])) {
 					}
 					$temp2 ="nb_".$per."_reg_suivi_par";
 					if ($_POST[$temp2] != '') {
-						$register = mysql_query("UPDATE classes SET suivi_par='".$_POST[$temp2]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET suivi_par='".$_POST[$temp2]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - reg_suivi_par".$per." : ".$_POST[$temp2]."</br>";
 					}
 					$temp2 = "nb_".$per."_reg_formule";
 					if ($_POST[$temp2] != '') {
 						//$register = mysql_query("UPDATE classes SET formule='".$_POST[$temp2]."' where id='".$id_classe."'");
-						$register = mysql_query("UPDATE classes SET formule='".html_entity_decode($_POST[$temp2])."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET formule='".html_entity_decode($_POST[$temp2])."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - reg_formule".$per." : ".$_POST[$temp2]."</br>";
 					}
 					if (isset($_POST['nb_'.$per.'_reg_format'])) {
 						$tab = explode("_", $_POST['nb_'.$per.'_reg_format']);
-						$register = mysql_query("UPDATE classes SET format_nom='".$tab[2]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET format_nom='".$tab[2]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - ".$_POST['nb_'.$per.'_reg_format']."</br>";
 					}
 					if (isset($_POST['display_rang_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_rang='".$_POST['display_rang_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_rang='".$_POST['display_rang_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 					//====================================
 					// AJOUT: boireaus
 					if (isset($_POST['display_address_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_address='".$_POST['display_address_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_address='".$_POST['display_address_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 					if (isset($_POST['display_coef_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_coef='".$_POST['display_coef_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_coef='".$_POST['display_coef_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 					if (isset($_POST['display_nbdev_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_nbdev='".$_POST['display_nbdev_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_nbdev='".$_POST['display_nbdev_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 
 					if (isset($_POST['display_moy_gen_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_moy_gen='".$_POST['display_moy_gen_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_moy_gen='".$_POST['display_moy_gen_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 
 					if (isset($_POST['display_mat_cat_'.$per])) {
-						$register = mysql_query("UPDATE classes SET display_mat_cat='".$_POST['display_mat_cat_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_mat_cat='".$_POST['display_mat_cat_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if ((isset($_POST['modele_bulletin_'.$per])) AND ($_POST['modele_bulletin_'.$per]!=0)) {
-						$register = mysql_query("UPDATE classes SET modele_bulletin_pdf='".$_POST['modele_bulletin_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET modele_bulletin_pdf='".$_POST['modele_bulletin_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_nomdev_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_nomdev='".$_POST['rn_nomdev_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_nomdev='".$_POST['rn_nomdev_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_toutcoefdev_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_toutcoefdev='".$_POST['rn_toutcoefdev_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_toutcoefdev='".$_POST['rn_toutcoefdev_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_coefdev_si_diff_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_coefdev_si_diff='".$_POST['rn_coefdev_si_diff_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_coefdev_si_diff='".$_POST['rn_coefdev_si_diff_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_datedev_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_datedev='".$_POST['rn_datedev_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_datedev='".$_POST['rn_datedev_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_abs_2_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_abs_2='".$_POST['rn_abs_2_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_abs_2='".$_POST['rn_abs_2_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_sign_chefetab_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_sign_chefetab='".$_POST['rn_sign_chefetab_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_sign_chefetab='".$_POST['rn_sign_chefetab_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_sign_pp_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_sign_pp='".$_POST['rn_sign_pp_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_sign_pp='".$_POST['rn_sign_pp_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					if (isset($_POST['rn_sign_resp_'.$per])) {
-						$register = mysql_query("UPDATE classes SET rn_sign_resp='".$_POST['rn_sign_resp_'.$per]."' where id='".$id_classe."'");
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_sign_resp='".$_POST['rn_sign_resp_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
@@ -190,49 +190,49 @@ if (isset($_POST['is_posted'])) {
 						if(mb_strlen(my_ereg_replace("[0-9]","",$_POST['rn_sign_nblig_'.$per]))!=0){$_POST['rn_sign_nblig_'.$per]=3;}
 
 						if (isset($_POST['rn_sign_nblig_'.$per])) {
-							$register = mysql_query("UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_sign_nblig='".$_POST['rn_sign_nblig_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
 					if (isset($_POST['rn_formule_'.$per])) {
 						if ($_POST['rn_formule_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET rn_formule='".$_POST['rn_formule_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET rn_formule='".$_POST['rn_formule_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
 					if (isset($_POST['ects_fonction_signataire_attestation_'.$per])) {
 						if ($_POST['ects_fonction_signataire_attestation_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET ects_fonction_signataire_attestation='".$_POST['ects_fonction_signataire_attestation_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_fonction_signataire_attestation='".$_POST['ects_fonction_signataire_attestation_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
 					if (isset($_POST['ects_type_formation_'.$per])) {
 						if ($_POST['ects_type_formation_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET ects_type_formation='".$_POST['ects_type_formation_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_type_formation='".$_POST['ects_type_formation_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
                     if (isset($_POST['ects_parcours_'.$per])) {
 						if ($_POST['ects_parcours_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET ects_parcours='".$_POST['ects_parcours_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_parcours='".$_POST['ects_parcours_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
                     if (isset($_POST['ects_domaines_etude_'.$per])) {
 						if ($_POST['ects_domaines_etude_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET ects_domaines_etude='".$_POST['ects_domaines_etude_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_domaines_etude='".$_POST['ects_domaines_etude_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
 
                     if (isset($_POST['ects_code_parcours_'.$per])) {
 						if ($_POST['ects_code_parcours_'.$per]!='') {
-							$register = mysql_query("UPDATE classes SET ects_code_parcours='".$_POST['ects_code_parcours_'.$per]."' where id='".$id_classe."'");
+							$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET ects_code_parcours='".$_POST['ects_code_parcours_'.$per]."' where id='".$id_classe."'");
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
@@ -252,8 +252,8 @@ if (isset($_POST['is_posted'])) {
 					// On enregistre les infos relatives aux catégories de matières
 					$tab_priorites_categories=array();
 					$temoin_pb_ordre_categories="n";
-					$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-					while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+					$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
+					while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 						$reg_priority = $_POST['priority_'.$row["id"].'_'.$per];
 						if($reg_priority!='') {
 							if (isset($_POST['moyenne_'.$row["id"].'_'.$per])) {$reg_aff_moyenne = 1;} else { $reg_aff_moyenne = 0;}
@@ -266,13 +266,13 @@ if (isset($_POST['is_posted'])) {
 							}
 							$tab_priorites_categories[]=$reg_priority;
 
-							$test = mysql_result(mysql_query("select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
+							$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "select count(classe_id) FROM j_matieres_categories_classes WHERE (categorie_id = '" . $row["id"] . "' and classe_id = '" . $id_classe . "')"), 0);
 							if ($test == 0) {
 								// Pas d'entrée... on créé
-								$res = mysql_query("INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
+								$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_matieres_categories_classes SET classe_id = '" . $id_classe . "', categorie_id = '" . $row["id"] . "', priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "'");
 							} else {
 								// Entrée existante, on met à jour
-								$res = mysql_query("UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
+								$res = mysqli_query($GLOBALS["mysqli"], "UPDATE j_matieres_categories_classes SET priority = '" . $reg_priority . "', affiche_moyenne = '" . $reg_aff_moyenne . "' WHERE (classe_id = '" . $id_classe . "' and categorie_id = '" . $row["id"] . "')");
 							}
 							if (!$res) {
 								$msg .= "<br />Une erreur s'est produite lors de l'enregistrement des données de catégorie.";
@@ -292,7 +292,7 @@ if (isset($_POST['is_posted'])) {
 							$coef_enseignements=my_ereg_replace("[^0-9]","",$_POST['coef_enseignements']);
 							if($coef_enseignements!="") {
 								$sql="UPDATE j_groupes_classes SET coef='".$coef_enseignements."' WHERE id_classe='".$id_classe."';";
-								$update_coef=mysql_query($sql);
+								$update_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update_coef) {
 									$msg .= "<br />Une erreur s'est produite lors de la mise à jour des coefficients pour la classe $id_classe.";
 								}
@@ -305,14 +305,14 @@ if (isset($_POST['is_posted'])) {
 
 					if((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y')) {
 						$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC LIMIT 1;";
-						$res_per=mysql_query($sql);
-						if(mysql_num_rows($res_per)>0) {
-							$lig_per=mysql_fetch_object($res_per);
+						$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_per)>0) {
+							$lig_per=mysqli_fetch_object($res_per);
 							$recalcul_rang="";
 							for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
 							$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe');";
 							//echo "$sql<br />";
-							$res=mysql_query($sql);
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res) {
 								$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($id_classe).".";
 							}
@@ -331,8 +331,8 @@ if (isset($_POST['is_posted'])) {
 
 							$matiere_nouvel_enseignement=$_POST['matiere_nouvel_enseignement'];
 							$sql="SELECT 1=1 FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
-							$verif=mysql_query($sql);
-							if(mysql_num_rows($verif)==0) {
+							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($verif)==0) {
 								$msg .= "<br />La matière $matiere_nouvel_enseignement n'existe pas.";
 							}
 							else {
@@ -351,28 +351,28 @@ if (isset($_POST['is_posted'])) {
 								$professeur_nouvel_enseignement=my_ereg_replace("[^A-Za-z0-9._-]","",$professeur_nouvel_enseignement);
 								if($professeur_nouvel_enseignement!="") {
 									$sql="SELECT 1=1 FROM utilisateurs u WHERE u.login='$professeur_nouvel_enseignement';";
-									$verif=mysql_query($sql);
-									if(mysql_num_rows($verif)==0) {
+									$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($verif)==0) {
 										$professeur_nouvel_enseignement="";
 									}
 
 									$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
-									$verif=mysql_query($sql);
-									if(mysql_num_rows($verif)==0) {
+									$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($verif)==0) {
 										// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
 										// Associons le alors à la matière.
 
 										$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$professeur_nouvel_enseignement' ORDER BY ordre_matieres DESC LIMIT 1;";
-										$res_ordre_matieres=mysql_query($sql);
-										if(mysql_num_rows($res_ordre_matieres)==0) {
+										$res_ordre_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_ordre_matieres)==0) {
 											$tmp_ordre_matieres=1;
 										}
 										else {
-											$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+											$tmp_ordre_matieres=old_mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
 										}
 
 										$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$professeur_nouvel_enseignement', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
-										$insert=mysql_query($sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											$professeur_nouvel_enseignement="";
 											$msg.="Erreur lors de l'association de ".civ_nom_prenom($professeur_nouvel_enseignement)." avec la matière '$matiere_nouvel_enseignement'";
@@ -393,9 +393,9 @@ if (isset($_POST['is_posted'])) {
 								}
 
 								$sql="SELECT nom_complet,categorie_id FROM matieres WHERE matiere='$matiere_nouvel_enseignement';";
-								$res_mat=mysql_query($sql);
-								if(mysql_num_rows($res_mat)>0) {
-									$lig_mat=mysql_fetch_object($res_mat);
+								$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_mat)>0) {
+									$lig_mat=mysqli_fetch_object($res_mat);
 									$reg_categorie=$lig_mat->categorie_id;
 									$reg_nom_complet=$lig_mat->nom_complet;
 								}
@@ -419,27 +419,27 @@ if (isset($_POST['is_posted'])) {
 
 									if(isset($_POST['declarer_pp_professeur_nouvel_enseignement'])) {
 										$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe';";
-										$res_pp=mysql_query($sql);
-										if(mysql_num_rows($res_pp)>0) {
-											while($lig_pp=mysql_fetch_object($res_pp)) {
+										$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_pp)>0) {
+											while($lig_pp=mysqli_fetch_object($res_pp)) {
 												if(!in_array($lig_pp->professeur, $reg_professeurs)) {
 													$sql="SELECT 1=1 FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' AND jpm.id_matiere='$matiere_nouvel_enseignement'";
-													$verif=mysql_query($sql);
-													if(mysql_num_rows($verif)==0) {
+													$verif=mysqli_query($GLOBALS["mysqli"], $sql);
+													if(mysqli_num_rows($verif)==0) {
 														// Si JavaScript est inactif, on peut proposer un prof qui n'est pas professeur dans la matière.
 														// Associons le alors à la matière.
 
 														$sql="SELECT ordre_matieres FROM j_professeurs_matieres jpm WHERE jpm.id_professeur='$lig_pp->professeur' ORDER BY ordre_matieres DESC LIMIT 1;";
-														$res_ordre_matieres=mysql_query($sql);
-														if(mysql_num_rows($res_ordre_matieres)==0) {
+														$res_ordre_matieres=mysqli_query($GLOBALS["mysqli"], $sql);
+														if(mysqli_num_rows($res_ordre_matieres)==0) {
 															$tmp_ordre_matieres=1;
 														}
 														else {
-															$tmp_ordre_matieres=mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
+															$tmp_ordre_matieres=old_mysql_result($res_ordre_matieres,0,"ordre_matieres")+1;
 														}
 
 														$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$lig_pp->professeur', id_matiere='$matiere_nouvel_enseignement', ordre_matieres='$tmp_ordre_matieres';";
-														$insert=mysql_query($sql);
+														$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 														if(!$insert) {
 															$msg.="Erreur lors de l'association de ".civ_nom_prenom($lig_pp->professeur)." avec la matière '$matiere_nouvel_enseignement'.<br />";
 															//$msg.="$sql<br />";
@@ -464,12 +464,12 @@ if (isset($_POST['is_posted'])) {
 										$reg_eleves[$period['num_periode']]=array();
 										if($nouvel_enseignement_eleves!="aucun") {
 											$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='$id_classe' AND jec.periode='".$period['num_periode']."' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-											$res_ele=mysql_query($sql);
-											$eff_ele_ens=mysql_num_rows($res_ele);
+											$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+											$eff_ele_ens=mysqli_num_rows($res_ele);
 											if($eff_ele_ens>0){
 												$cpt_ele_ens=0;
 												if($nouvel_enseignement_eleves=='1') {
-													while($lig_ele=mysql_fetch_object($res_ele)){
+													while($lig_ele=mysqli_fetch_object($res_ele)){
 														if($cpt_ele_ens<$eff_ele_ens/2) {
 															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
 														}
@@ -477,7 +477,7 @@ if (isset($_POST['is_posted'])) {
 													}
 												}
 												elseif($nouvel_enseignement_eleves=='2') {
-													while($lig_ele=mysql_fetch_object($res_ele)){
+													while($lig_ele=mysqli_fetch_object($res_ele)){
 														if($cpt_ele_ens>=$eff_ele_ens/2) {
 															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
 														}
@@ -485,7 +485,7 @@ if (isset($_POST['is_posted'])) {
 													}
 												}
 												else {
-													while($lig_ele=mysql_fetch_object($res_ele)){
+													while($lig_ele=mysqli_fetch_object($res_ele)){
 														$reg_eleves[$period['num_periode']][]=$lig_ele->login;
 													}
 												}
@@ -497,7 +497,7 @@ if (isset($_POST['is_posted'])) {
 
 									if($coef_nouvel_enseignement!="") {
 										$sql="UPDATE j_groupes_classes SET coef='$coef_nouvel_enseignement' WHERE id_groupe='$create' AND id_classe='$id_classe';";
-										$res_coef=mysql_query($sql);
+										$res_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res_coef) {
 											$msg .= "<br />Erreur lors de la mise à jour du coefficient du groupe n°$create pour la classe n°$id_classe.";
 										}
@@ -508,7 +508,7 @@ if (isset($_POST['is_posted'])) {
 
 									for($loop=0;$loop<count($nouvel_enseignement_non_visible);$loop++) {
 										$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$create', domaine='".$nouvel_enseignement_non_visible[$loop]."', visible='n';";
-										$insert=mysql_query($sql);
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert) {
 											$msg .= "<br />Erreur lors de la mise à jour de la non visibilité de ".$nouvel_enseignement_non_visible[$loop]." du groupe n°$create pour la classe n°$id_classe.";
 										}
@@ -530,14 +530,14 @@ if (isset($_POST['is_posted'])) {
 
 						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_visibilite_enseignement."';";
 						//echo "$sql<br />";
-						$res_grp_vis=mysql_query($sql);
-						while($lig_grp_vis=mysql_fetch_object($res_grp_vis)) {
+						$res_grp_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_grp_vis=mysqli_fetch_object($res_grp_vis)) {
 							for($loop=0;$loop<count($tab_domaines);$loop++) {
 								$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='$lig_grp_vis->id_groupe' AND domaine='$tab_domaines[$loop]';";
-								$menage=mysql_query($sql);
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!in_array($tab_domaines[$loop], $modif_enseignement_visibilite)) {
 									$sql="INSERT INTO j_groupes_visibilite SET id_groupe='$lig_grp_vis->id_groupe', domaine='$tab_domaines[$loop]', visible='n';";
-									$insert=mysql_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="<br />Erreur lors de l'enregistrement de la non-visibilité du groupe n°$lig_grp_vis->id_groupe sur ".$tab_domaines[$loop];
 									}
@@ -572,7 +572,7 @@ if (isset($_POST['is_posted'])) {
 										$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
 									}
 
-									$res_modif_coef=mysql_query($sql);
+									$res_modif_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$res_modif_coef) {
 										$msg.="Erreur lors de la requête<br />$sql<br />";
 									}
@@ -596,11 +596,11 @@ if (isset($_POST['is_posted'])) {
 									else {
 										$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgm.id_matiere='".$matiere_modif_coef."' AND jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' AND jgc.id_groupe IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='".$tmp_tab_vis[0]."' AND visible='n');";
 									}
-									$res_grp_modif_coef=mysql_query($sql);
-									if(mysql_num_rows($res_grp_modif_coef)>0) {
-										while($lig_grp_modif_coef=mysql_fetch_object($res_grp_modif_coef)) {
+									$res_grp_modif_coef=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_grp_modif_coef)>0) {
+										while($lig_grp_modif_coef=mysqli_fetch_object($res_grp_modif_coef)) {
 											$sql="UPDATE j_groupes_classes SET coef='$coef_enseignements2' WHERE id_classe='$id_classe' AND id_groupe='$lig_grp_modif_coef->id_groupe';";
-											$res_modif_coef=mysql_query($sql);
+											$res_modif_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(!$res_modif_coef) {
 												$msg.="Erreur lors de la requête<br />$sql<br />";
 											}
@@ -634,7 +634,7 @@ if (isset($_POST['is_posted'])) {
 
 							}
 							//echo "$sql<br />";
-							$res_modif_coef=mysql_query($sql);
+							$res_modif_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_modif_coef) {
 								$msg.="Erreur lors de la requête<br />$sql<br />";
 							}
@@ -724,18 +724,18 @@ $per = 0;
 while ($per < $max_periode) {
 	$per++;
 	// On dresse la liste de toutes les classes non virtuelles
-	$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
-	$nb_classe = mysql_num_rows($classes_list);
+	$classes_list = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
+	$nb_classe = mysqli_num_rows($classes_list);
 	// $nb : nombre de classes ayant un nombre de periodes égal à $per
 	$nb=0;
 	$nbc = 0;
 	while ($nbc < $nb_classe) {
-		$id_classe = mysql_result($classes_list,$nbc,'id');
-		$query_per = mysql_query("SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
-		$nb_periode = mysql_num_rows($query_per);
+		$id_classe = old_mysql_result($classes_list,$nbc,'id');
+		$query_per = mysqli_query($GLOBALS["mysqli"], "SELECT p.num_periode FROM classes c, periodes p WHERE (p.id_classe = c.id  and c.id = '".$id_classe."')");
+		$nb_periode = mysqli_num_rows($query_per);
 		if ($nb_periode == $per) {
 			$tab_id_classe[$nb] = $id_classe;
-			$tab_nom_classe[$nb] = mysql_result($classes_list,$nbc,'classe');
+			$tab_nom_classe[$nb] = old_mysql_result($classes_list,$nbc,'classe');
 			$nb++;
 		}
 		$nbc++;
@@ -980,8 +980,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 <?php
 	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
-	$res_mat=mysql_query($sql);
-	if(mysql_num_rows($res_mat)>0) {
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mat)>0) {
 ?>
 <table border='0' cellspacing='0'>
 <tr>
@@ -1002,7 +1002,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<option value=''>---</option>
 		<option value='___Tous_les_enseignements___'>Tous les enseignements</option>
 	<?php
-		while($lig_mat=mysql_fetch_object($res_mat)) {
+		while($lig_mat=mysqli_fetch_object($res_mat)) {
 			echo "		<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 		}
 	?>
@@ -1048,8 +1048,8 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 <?php
 	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
-	$res_mat=mysql_query($sql);
-	if(mysql_num_rows($res_mat)>0) {
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mat)>0) {
 		echo "<table border='0' cellspacing='0'>
 	<tr>
 		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
@@ -1059,7 +1059,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<td colspan='2'>
 			<select name='matiere_modif_visibilite_enseignement' id='matiere_modif_visibilite_enseignement' onchange=\"document.getElementById('change_visibilite').checked=true;\">\n";
 			echo "			<option value=''>---</option>\n";
-			while($lig_mat=mysql_fetch_object($res_mat)) {
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "	</select>
@@ -1101,15 +1101,15 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	</td>
 	<?php
 		$sql="SELECT DISTINCT matiere,nom_complet FROM matieres ORDER BY nom_complet,matiere;";
-		$res_mat=mysql_query($sql);
-		if(mysql_num_rows($res_mat)==0) {
+		$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_mat)==0) {
 			echo "<td>Aucune matière n'est encore créée.</td>\n";
 		}
 		else {
 			echo "<td colspan='2'>\n";
 			echo "<select name='matiere_nouvel_enseignement' id='matiere_nouvel_enseignement' onchange=\"document.getElementById('creer_enseignement').checked=true;maj_prof_enseignement();maj_nom_descr_enseignement();\">\n";
 			echo "<option value=''>---</option>\n";
-			while($lig_mat=mysql_fetch_object($res_mat)) {
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				echo "<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\" nom_matiere=\"$lig_mat->nom_complet\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
 			}
 			echo "</select>\n";
@@ -1213,14 +1213,14 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<span id='span_prof_nouvel_enseignement'>";
 			// Pour fonctionner sans JavaScript:
 			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs WHERE u.statut='professeur' AND u.etat='actif';";
-			$res_prof=mysql_query($sql);
-			if(mysql_num_rows($res_prof)==0) {
+			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_prof)==0) {
 				echo "&nbsp;";
 			}
 			else {
 				echo "<select name='professeur_nouvel_enseignement'>\n";
-				if(mysql_num_rows($res_prof)>0) {
-					while($lig_prof=mysql_fetch_object($res_prof)) {
+				if(mysqli_num_rows($res_prof)>0) {
+					while($lig_prof=mysqli_fetch_object($res_prof)) {
 						echo "<option value='$lig_prof->login'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</option>\n";
 					}
 				}
@@ -1322,12 +1322,12 @@ td {
 		</tr>
 		<?php
 		$max_priority_cat=0;
-		$get_max_cat = mysql_query("SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
-		if(mysql_num_rows($get_max_cat)>0) {
-			$max_priority_cat=mysql_result($get_max_cat, 0, "priority");
+		$get_max_cat = mysqli_query($GLOBALS["mysqli"], "SELECT priority FROM matieres_categories ORDER BY priority DESC LIMIT 1");
+		if(mysqli_num_rows($get_max_cat)>0) {
+			$max_priority_cat=old_mysql_result($get_max_cat, 0, "priority");
 		}
-		$get_cat = mysql_query("SELECT id, nom_court, priority FROM matieres_categories");
-		while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
+		$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court, priority FROM matieres_categories");
+		while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 			$current_priority = $row["priority"];
 			$current_affiche_moyenne = "0";
 
@@ -1433,9 +1433,9 @@ td {
 		echo "<select tabindex=\"5\" name=\"modele_bulletin_".$per."\">";
 		// sélection des modèle des bulletins.
 		//$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
-		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
+		$requete_modele = mysqli_query($GLOBALS["mysqli"], "SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
 		echo "<option value=\"0\">Aucun changement</option>";
-		while($donner_modele = mysql_fetch_array($requete_modele)) {
+		while($donner_modele = mysqli_fetch_array($requete_modele)) {
 			echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
 			echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
 		}

@@ -81,7 +81,7 @@ if ($uid_post==$uid_prime) {
 		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
 	
 		$sql="INSERT INTO ct_private_entry SET date_ct='$date_devoir', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
-		$insert=mysql_query($sql);
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		echo("Erreur enregistrement de devoir : formulaire dejà posté précédemment.\nUne copie de sauvegarde a été créée en notice privée.");
 	}
@@ -160,7 +160,7 @@ if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
 if($ctTravailAFaire->getContenu()!=$contenu_cor) {
 	$date_modif=strftime("%Y-%m-%d %H:%M:%S");
 	$sql="UPDATE ct_devoirs_faits SET etat='', commentaire='Le professeur a modifié la notice de travail à faire ($date_modif).', date_modif='".$date_modif."' WHERE id_ct='$id_devoir';";
-	$update=mysql_query($sql);
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 $ctTravailAFaire->setContenu($contenu_cor);

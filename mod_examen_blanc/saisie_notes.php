@@ -38,8 +38,8 @@ if ($resultat_session == 'c') {
 
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_examen_blanc/saisie_notes.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_examen_blanc/saisie_notes.php',
 administrateur='V',
 professeur='V',
@@ -51,7 +51,7 @@ secours='F',
 autre='F',
 description='Examen blanc: Saisie devoir hors enseignement',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 
@@ -115,8 +115,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
 		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			$msg="L'examen choisi (<i>$id_exam</i>) n'existe pas.<br />\n";
 			unset($reg_eleves);
 			unset($reg_notes);
@@ -124,14 +124,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		else {
 			$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
 			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				$msg="Aucun groupe hors enseignement n'a été trouvé pour cet examen.<br />\n";
 				unset($reg_eleves);
 				unset($reg_notes);
 			}
 			else {
-				$lig=mysql_fetch_object($res);
+				$lig=mysqli_fetch_object($res);
 				$id_ex_grp=$lig->id;
 			}
 		}
@@ -145,16 +145,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			//$suppr=mysql_query($sql);
 			$sql="SELECT login FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
 			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_ele_inscrits=array();
 			$nb_suppr_ele=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab_ele_inscrits[]=$lig->login;
 				if(!in_array($lig->login, $login_ele)) {
 					//$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp' AND login='$login_ele[$i]';";
 					$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp' AND login='$lig->login';";
 					//echo "$sql<br />\n";
-					$suppr=mysql_query($sql);
+					$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($suppr) {$nb_suppr_ele++;}
 				}
 			}
@@ -165,7 +165,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if(!in_array($login_ele[$i], $tab_ele_inscrits)) {
 					$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$login_ele[$i]', statut='v';";
 					//echo "$sql<br />\n";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($insert) {$nb_ajout_ele++;}
 				}
 			}
@@ -209,7 +209,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				if(($elev_note!='')or($elev_statut!='')){
 					$sql="UPDATE ex_notes SET note='$elev_note', statut='$elev_statut' WHERE id_ex_grp='$id_ex_grp' AND login='$login_ele[$i]';";
 					//echo "$sql<br />\n";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$msg.="Erreur: $sql<br />";
 					}
@@ -228,17 +228,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 	if($export_csv=='y') {
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$msg="Le groupe hors enseignement n'a pas été identifié???";
 		}
 		else {
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$id_ex_grp=$lig->id;
 	
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
-			$res_classes=mysql_query($sql);
-			$nb_classes=mysql_num_rows($res_classes);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_classes=mysqli_num_rows($res_classes);
 			if($nb_classes==0) {
 				$msg="Aucune classe n'est associée à l'examen n°$id_exam???\n";
 			}
@@ -246,12 +246,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$csv="";
 				$csv.="LOGIN;NOM_PRENOM;CLASSE;NOTE\n";
 
-				while($lig_class=mysql_fetch_object($res_classes)) {
+				while($lig_class=mysqli_fetch_object($res_classes)) {
 					$sql="SELECT DISTINCT e.login, e.nom, e.prenom, en.note, en.statut FROM j_eleves_classes jec, eleves e, ex_notes en WHERE jec.id_classe='$lig_class->id_classe' AND jec.login=e.login AND en.login=e.login AND en.id_ex_grp='$id_ex_grp' ORDER BY e.nom, e.prenom;";
-					$res_ele=mysql_query($sql);
-					$nb_ele=mysql_num_rows($res_ele);
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_ele=mysqli_num_rows($res_ele);
 					if($nb_ele>0) {
-						while($lig=mysql_fetch_object($res_ele)) {
+						while($lig=mysqli_fetch_object($res_ele)) {
 
 							$csv.=$lig->login.";".casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";".$lig_class->classe.";";
 
@@ -280,30 +280,30 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
 		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			$msg="Le groupe hors enseignement n'a pas été identifié???";
 		}
 		else {
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			$id_ex_grp=$lig->id;
 	
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
 			//echo "$sql<br />\n";
-			$res_classes=mysql_query($sql);
-			$nb_classes=mysql_num_rows($res_classes);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_classes=mysqli_num_rows($res_classes);
 			if($nb_classes==0) {
 				$msg="Aucune classe n'est associée à l'examen n°$id_exam???\n";
 			}
 			else {
 				$tab_ele_inscrits=array();
-				while($lig_class=mysql_fetch_object($res_classes)) {
+				while($lig_class=mysqli_fetch_object($res_classes)) {
 					$sql="SELECT DISTINCT e.login, e.nom, e.prenom, en.note, en.statut FROM j_eleves_classes jec, eleves e, ex_notes en WHERE jec.id_classe='$lig_class->id_classe' AND jec.login=e.login AND en.login=e.login AND en.id_ex_grp='$id_ex_grp' ORDER BY e.nom, e.prenom;";
 					//echo "$sql<br />\n";
-					$res_ele=mysql_query($sql);
-					$nb_ele=mysql_num_rows($res_ele);
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_ele=mysqli_num_rows($res_ele);
 					if($nb_ele>0) {
-						while($lig=mysql_fetch_object($res_ele)) {
+						while($lig=mysqli_fetch_object($res_ele)) {
 							$tab_ele_inscrits[]=$lig->login;
 						}
 					}
@@ -426,7 +426,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									if(($elev_note!='')or($elev_statut!='')){
 										$sql="UPDATE ex_notes SET note='$elev_note', statut='$elev_statut' WHERE id_ex_grp='$id_ex_grp' AND login='$current_ele_login';";
 										//echo "$sql<br />\n";
-										$res=mysql_query($sql);
+										$res=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$res) {
 											$msg.="Erreur: $sql<br />";
 										}
@@ -474,20 +474,20 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	if(($id_groupe!=NULL)&&($matiere!=NULL)) {
 
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
 			echo "</p>\n";
 
 			echo "<p>ERREUR&nbsp;: Le devoir n'existe pas.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
-		$lig=mysql_fetch_object($res);
+		$lig=mysqli_fetch_object($res);
 		$id_ex_grp=$lig->id;
 
 		$sql="SELECT 1=1 FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)==0) {$mode='choix_eleves';}
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {$mode='choix_eleves';}
 
 		if(!isset($mode)) {
 			echo "</p>\n";
@@ -510,8 +510,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		}
 		elseif($mode=='choix_eleves') {
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
-			$res_classes=mysql_query($sql);
-			$nb_classes=mysql_num_rows($res_classes);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_classes=mysqli_num_rows($res_classes);
 			if($nb_classes==0) {
 				echo "</p>\n";
 
@@ -523,10 +523,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			$sql="SELECT login FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
 			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$tab_ele_inscrits=array();
-			if(mysql_num_rows($res)>0) {
-				while($lig=mysql_fetch_object($res)) {
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
 					$tab_ele_inscrits[]=$lig->login;
 				}
 
@@ -555,7 +555,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			echo "<tr valign='top' align='center'>\n";
 			echo "<td align='left'>\n";
 
-			while($lig_class=mysql_fetch_object($res_classes)) {
+			while($lig_class=mysqli_fetch_object($res_classes)) {
 
 				if(($cpt_classe>0)&&(round($cpt_classe/$nb_classes_par_colonne)==$cpt_classe/$nb_classes_par_colonne)){
 					echo "</td>\n";
@@ -565,8 +565,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				echo "<p class='bold'>Classe $lig_class->classe</p>\n";
 
 				$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='$lig_class->id_classe' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
-				$res_ele=mysql_query($sql);
-				$nb_ele=mysql_num_rows($res_ele);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_ele=mysqli_num_rows($res_ele);
 				if($nb_ele==0) {
 					echo "<p>Aucun élève dans cette classe???</p>\n";
 				}
@@ -584,7 +584,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 					echo "</tr>\n";
 					$cpt=0;
-					while($lig_ele=mysql_fetch_object($res_ele)) {
+					while($lig_ele=mysqli_fetch_object($res_ele)) {
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt'>\n";
 						echo "<td style='text-align:left;'>\n";
@@ -672,8 +672,8 @@ function decocher_tous_eleves() {
 			//$sql="SELECT DISTINCT e.nom, e.prenom, en.* FROM ex_groupes eg, ex_notes en, eleves e WHERE eg.id_groupe='$id_groupe' AND eg.id=en.id_ex_grp AND en.login=e.login ORDER BY e.nom, e.prenom, e.naissance;";
 			$sql="SELECT DISTINCT 1=1 FROM ex_notes en WHERE en.id_ex_grp='$id_ex_grp';";
 			//echo "$sql<br />\n";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				echo "<p>Erreur&nbsp;: Aucun élève inscrit.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -683,8 +683,8 @@ function decocher_tous_eleves() {
 			echo add_token_field();
 
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
-			$res_classes=mysql_query($sql);
-			$nb_classes=mysql_num_rows($res_classes);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_classes=mysqli_num_rows($res_classes);
 			if($nb_classes==0) {
 				echo "</p>\n";
 	
@@ -694,13 +694,13 @@ function decocher_tous_eleves() {
 			}
 
 			$cpt=0;
-			while($lig_class=mysql_fetch_object($res_classes)) {
+			while($lig_class=mysqli_fetch_object($res_classes)) {
 				echo "<p class='bold'>Classe $lig_class->classe</p>\n";
 				echo "<blockquote>\n";
 	
 				$sql="SELECT DISTINCT e.login, e.nom, e.prenom, en.note, en.statut FROM j_eleves_classes jec, eleves e, ex_notes en WHERE jec.id_classe='$lig_class->id_classe' AND jec.login=e.login AND en.login=e.login AND en.id_ex_grp='$id_ex_grp' ORDER BY e.nom, e.prenom;";
-				$res_ele=mysql_query($sql);
-				$nb_ele=mysql_num_rows($res_ele);
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_ele=mysqli_num_rows($res_ele);
 				if($nb_ele==0) {
 					echo "<p>Aucun élève de cette classe n'est inscrit.</p>\n";
 				}
@@ -715,7 +715,7 @@ function decocher_tous_eleves() {
 	
 					//$cpt=0;
 					$alt=1;
-					while($lig=mysql_fetch_object($res_ele)) {
+					while($lig=mysqli_fetch_object($res_ele)) {
 						$alt=$alt*(-1);
 						echo "<tr class='lig$alt'>\n";
 						echo "<td style='text-align:left;'>\n";
@@ -817,8 +817,8 @@ function verifcol(num_id){
 
 			$sql="SELECT DISTINCT 1=1 FROM ex_notes en WHERE en.id_ex_grp='$id_ex_grp';";
 			//echo "$sql<br />\n";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				echo "<p>Erreur&nbsp;: Aucun élève inscrit.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -826,8 +826,8 @@ function verifcol(num_id){
 	
 
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
-			$res_classes=mysql_query($sql);
-			$nb_classes=mysql_num_rows($res_classes);
+			$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_classes=mysqli_num_rows($res_classes);
 			if($nb_classes==0) {
 				echo "</p>\n";
 	

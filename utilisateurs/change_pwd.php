@@ -64,7 +64,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	}
 
 	if(($mdp_INE=='y')&&($user_statut=='eleve')&&($ine_password!="")) {
-		$auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+		$auth_mode = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 		if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 			// On est en mode d'écriture LDAP
 			$ldap_server = new LDAPServer;
@@ -76,7 +76,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 		//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
 		if ($_SESSION['statut'] == 'administrateur') {
-			$reg_data = mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='".$user_login."'");
+			$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp = 'y' WHERE login='".$user_login."'");
 		}
 
 		if (!$reg_data) {
@@ -92,7 +92,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
 			if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 		} else {
-			$auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
+			$auth_mode = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 				// On est en mode d'écriture LDAP
 				$ldap_server = new LDAPServer;
@@ -104,7 +104,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 			//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
 			if ($_SESSION['statut'] == 'administrateur') {
-				$reg_data = mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='".$user_login."'");
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp = 'y' WHERE login='".$user_login."'");
 			}
 
 			if (!$reg_data) {
@@ -118,11 +118,11 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 // On appelle les informations de l'utilisateur
 if (isset($user_login) and ($user_login!='')) {
-    $call_user_info = mysql_query("SELECT nom,prenom,statut,auth_mode FROM utilisateurs WHERE login='".$user_login."'");
-    $auth_mode = mysql_result($call_user_info, "0", "auth_mode");
-    $user_statut = mysql_result($call_user_info, "0", "statut");
-    $user_nom = mysql_result($call_user_info, "0", "nom");
-    $user_prenom = mysql_result($call_user_info, "0", "prenom");
+    $call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,auth_mode FROM utilisateurs WHERE login='".$user_login."'");
+    $auth_mode = old_mysql_result($call_user_info, "0", "auth_mode");
+    $user_statut = old_mysql_result($call_user_info, "0", "statut");
+    $user_nom = old_mysql_result($call_user_info, "0", "nom");
+    $user_prenom = old_mysql_result($call_user_info, "0", "prenom");
 }
 
 //**************** EN-TETE *****************
@@ -216,9 +216,9 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 	$user_statut = sql_query1("select statut from utilisateurs where login='".$user_login."';");
 	if($user_statut=='eleve') {
 		$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
-		$res_ine=mysql_query($sql);
-		if(mysql_num_rows($res_ine)>0){
-			$lig_ine=mysql_fetch_object($res_ine);
+		$res_ine=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ine)>0){
+			$lig_ine=mysqli_fetch_object($res_ine);
 			if($lig_ine->no_gep!='') {
 				echo "<input type='hidden' name='ine_password' value=\"$lig_ine->no_gep\" />\n";
 				echo "<p><input type='checkbox' name='mdp_INE' id='mdp_INE' value='y' tabindex='4' /> <label for='mdp_INE' style='cursor:pointer'>Utiliser le numéro national de l'élève (<em>INE</em>) comme mot de passe initial lorsqu'il est renseigné.</label></p>\n";

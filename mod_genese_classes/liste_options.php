@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/liste_options.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/liste_options.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Liste des options de classes existantes',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -113,8 +113,8 @@ if(isset($_POST['valider_param'])) {
 		for($i=0;$i<count($id_classe);$i++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY nom,prenom;";
 			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
-			$res=mysql_query($sql);
-			while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
 				$ligne="";
 	
 				if((isset($nom))&&($nom=='y')) {
@@ -166,9 +166,9 @@ if(isset($_POST['valider_param'])) {
 					if($cpt==0) {$ligne_entete.="CLASSE;";}
 	
 					$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig->login' AND jec.id_classe=c.id ORDER BY jec.periode;";
-					$res_clas=mysql_query($sql);
+					$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt2=0;
-					while($lig_clas=mysql_fetch_object($res_clas)) {
+					while($lig_clas=mysqli_fetch_object($res_clas)) {
 						if($cpt2>0) {$ligne.=" ";}
 						$ligne.=$lig_clas->classe;
 						$cpt2++;
@@ -182,8 +182,8 @@ if(isset($_POST['valider_param'])) {
 	
 						$sql="SELECT 1=1 FROM j_groupes_matieres jgm, j_eleves_groupes jeg WHERE jeg.login='$lig->login' AND jgm.id_groupe=jeg.id_groupe AND jgm.id_matiere='$matiere[$j]';";
 						//echo "$sql<br />";
-						$res_grp=mysql_query($sql);
-						if(mysql_num_rows($res_grp)>0) {$ligne.="1";}
+						$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_grp)>0) {$ligne.="1";}
 						$ligne.=";";
 					}
 				}
@@ -293,8 +293,8 @@ if(isset($_POST['valider_param'])) {
 		for($k=0;$k<count($id_classe);$k++) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' ORDER BY nom,prenom;";
 			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$k]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY nom,prenom;";
-			$res=mysql_query($sql);
-			while($lig=mysql_fetch_object($res)) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
 				$ecriture=fwrite($fichier_content_xml,'<table:table-row table:style-name="ro2">');
 
 				for($i=0;$i<count($tab_champs);$i++) {
@@ -303,9 +303,9 @@ if(isset($_POST['valider_param'])) {
 						if($tab_champs[$i]=='classe') {
 							$chaine_classes="";
 							$sql="SELECT DISTINCT c.classe FROM classes c, j_eleves_classes jec WHERE jec.login='$lig->login' AND jec.id_classe=c.id ORDER BY jec.periode;";
-							$res_clas=mysql_query($sql);
+							$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 							$cpt2=0;
-							while($lig_clas=mysql_fetch_object($res_clas)) {
+							while($lig_clas=mysqli_fetch_object($res_clas)) {
 								if($cpt2>0) {$chaine_classes.=" ";}
 								$chaine_classes.=$lig_clas->classe;
 								$cpt2++;
@@ -327,8 +327,8 @@ if(isset($_POST['valider_param'])) {
 	
 						$sql="SELECT 1=1 FROM j_groupes_matieres jgm, j_eleves_groupes jeg WHERE jeg.login='$lig->login' AND jgm.id_groupe=jeg.id_groupe AND jgm.id_matiere='$matiere[$j]';";
 						//echo "$sql<br />";
-						$res_grp=mysql_query($sql);
-						if(mysql_num_rows($res_grp)>0) {
+						$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_grp)>0) {
 							$ecriture=fwrite($fichier_content_xml,'<table:table-cell table:style-name="ce8" office:value-type="float" office:value="1"><text:p>1</text:p></table:table-cell>');
 						}
 						else {
@@ -470,8 +470,8 @@ if(isset($lien_fichier_ods)) {
 }
 
 $sql="SELECT id_classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle';";
-$res=mysql_query($sql);
-while($lig=mysql_fetch_object($res)) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+while($lig=mysqli_fetch_object($res)) {
 	$tab_id_classe[]=$lig->id_classe;
 }
 
@@ -485,8 +485,8 @@ if(!isset($_POST['choix_param'])) {
 		echo "</p>\n";
 		
 		$sql="SELECT id,classe FROM classes ORDER BY classe;";
-		$res_classes=mysql_query($sql);
-		$nb_classes=mysql_num_rows($res_classes);
+		$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes=mysqli_num_rows($res_classes);
 		
 		// Affichage sur 4/5 colonnes
 		$nb_classes_par_colonne=round($nb_classes/3);
@@ -499,7 +499,7 @@ if(!isset($_POST['choix_param'])) {
 		echo "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 		echo "<td align='left'>\n";
 		
-		while($lig_clas=mysql_fetch_object($res_classes)) {
+		while($lig_clas=mysqli_fetch_object($res_classes)) {
 		
 			//affichage 2 colonnes
 			if(($cpt_i>0)&&(round($cpt_i/$nb_classes_par_colonne)==$cpt_i/$nb_classes_par_colonne)){
@@ -569,20 +569,20 @@ if(!isset($_POST['choix_param'])) {
 	
 		$tab_options=array();
 		$sql="SELECT * FROM gc_options WHERE projet='$projet';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			while ($lig=mysql_fetch_object($res)) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while ($lig=mysqli_fetch_object($res)) {
 				$tab_options[]=$lig->opt;
 			}
 		}
 
 		$chaine_champs_matiere="";
 		$sql="SELECT matiere FROM matieres ORDER BY matiere;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			$cpt=0;
 			echo "<div style='width: 20em; height: 20em; overflow: auto;'>\n";
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {$chaine_champs_matiere.=", ";}
 				echo "<input type='checkbox' name='matiere[]' id='matiere_$cpt' value='$lig->matiere' ";
 				if(in_array($lig->matiere,$tab_options)) {echo "checked ";}

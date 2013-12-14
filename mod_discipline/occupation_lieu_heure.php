@@ -99,15 +99,15 @@ if((!isset($lieu))||(!isset($date))||(!isset($heure))||(!isset($duree))||(!isset
 }
 
 $sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-$res_abs_cren=mysql_query($sql);
-if(mysql_num_rows($res_abs_cren)==0) {
+$res_abs_cren=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_abs_cren)==0) {
 	echo "<p>La table edt_creneaux n'est pas renseignée!</p>\n";
 	require("../lib/footer.inc.php");
 	die();
 }
 else {
 	$tab_creneaux=array();
-	while($lig_ac=mysql_fetch_object($res_abs_cren)) {
+	while($lig_ac=mysqli_fetch_object($res_abs_cren)) {
 		$cpt=$lig_ac->id_definie_periode;
 
 		$tab_creneaux["$lig_ac->nom_definie_periode"]=array();
@@ -149,8 +149,8 @@ $date_mysql=formate_date_mysql($date);
 
 $sql="SELECT * FROM s_retenues sr, s_sanctions s WHERE sr.id_sanction!='$id_sanction' AND sr.date='$date_mysql' AND sr.lieu='$lieu' AND s.id_sanction=sr.id_sanction ORDER BY sr.heure_debut, s.login;";
 //echo "$sql<br />";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune autre retenue de la journée dans ce lieu.</p>\n";
 	echo "</blockquote>\n";
 	require("../lib/footer.inc.php");
@@ -160,7 +160,7 @@ if(mysql_num_rows($res)==0) {
 $chaine_retenues="";
 $alt=1;
 // Mettre dans un tableau les retenues pour calculer heure+durée s'il y a des intersections.
-while($lig=mysql_fetch_object($res)) {
+while($lig=mysqli_fetch_object($res)) {
 	if(
 		(($heure_debut_sec>=$tab_creneaux["$lig->heure_debut"]['debut_sec'])&&($heure_debut_sec<=$tab_creneaux["$lig->heure_debut"]['fin_sec']))||
 		(($heure_fin_sec>=$tab_creneaux["$lig->heure_debut"]['debut_sec'])&&($heure_fin_sec<=$tab_creneaux["$lig->heure_debut"]['fin_sec']))||

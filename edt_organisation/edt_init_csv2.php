@@ -84,10 +84,10 @@ if(mysql_num_rows($res_udt_lignes)>0) {
 function cherche_udt_ligne($nom_regroup) {
 	$retour="";
 	$sql="SELECT uc.*, ul.matiere, ul.prof, ul.groupe, ul.regroup, ul.mo FROM udt_lignes ul, udt_corresp uc WHERE ul.division=uc.nom_udt AND ul.regroup='".addslashes($nom_regroup)."';";
-	$res_udt_ligne=mysql_query($sql);
-	if(mysql_num_rows($res_udt_ligne)>0) {
+	$res_udt_ligne=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_udt_ligne)>0) {
 		$cpt=0;
-		while($lig_udt=mysql_fetch_object($res_udt_ligne)) {
+		while($lig_udt=mysqli_fetch_object($res_udt_ligne)) {
 			if($cpt>0) {$retour.=", ";}
 			$retour.=$lig_udt->regroup." (".$lig_udt->nom_gepi.") avec ".$lig_udt->prof;
 			$cpt++;
@@ -164,21 +164,21 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
     	$_SESSION["explications"] = "oui";
     }
 
-    $supprimer = mysql_query("DELETE FROM edt_init WHERE ident_export >= '" . $recommencer . "' AND ident_export != 'fichierTexte2'")
-    OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . mysql_error(), E_USER_ERROR);
-    $modifier = mysql_query("UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
-    OR trigger_error('Erreur dans le retour en arrière : ' . mysql_error(), E_USER_ERROR);
+    $supprimer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_init WHERE ident_export >= '" . $recommencer . "' AND ident_export != 'fichierTexte2'")
+    OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+    $modifier = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
+    OR trigger_error('Erreur dans le retour en arrière : ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
 
 	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
 	if ($truncate_cours == "oui") {
-		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+		$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
     }
 
 }elseif($recommencer == 'non' AND is_numeric($recommencer)){
 
 	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
 	if ($truncate_cours == "oui") {
-		$vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+		$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
     }
 
 }
@@ -199,15 +199,15 @@ if ($truncate_cours == "oui" OR ($referer[5] == "edt_init_concordance2.php" AND 
 
 
 // On teste d'abord pour savoir à quelle étape on est
-$query = mysql_query("SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
+$query = mysqli_query($GLOBALS["mysqli"], "SELECT nom_export, nom_gepi FROM edt_init WHERE ident_export = 'fichierTexte2'");
 // On affiche le numéro de l'étape
 if ($query) {
-    $etape_effectuee = mysql_fetch_array($query);
+    $etape_effectuee = mysqli_fetch_array($query);
     $etape = $etape_effectuee["nom_export"];
     $date_last = explode(" ", $etape_effectuee["nom_gepi"]);
     // Si $etape est null, on crée l'entrée
     if ($etape == '') {
-        $insert = mysql_query("INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
+        $insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
         $etape = '0';
     }
     $aff_etape = '
@@ -220,7 +220,7 @@ if ($query) {
     }
 } else {
     // On crée le compteur d'étapes
-    $insert = mysql_query("INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
+    $insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_init SET ident_export = 'fichierTexte2', nom_export = '0', nom_gepi = '" . date("d-m-Y h:i") . "'");
     $etape = 0;
     $aff_etape = '
 	<p class="red">Vous n\'avez pas commencé la concordance.</p>';
@@ -265,7 +265,7 @@ if ($action == "upload_file") {
         } else {
             // A partir de là, on vide la table edt_cours
             if ($truncate_cours == "oui") {
-                $vider_table = mysql_query("TRUNCATE TABLE edt_cours");
+                $vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
             }
             // On ouvre alors toutes les lignes de tous les champs
             $tableau = array();
@@ -400,11 +400,11 @@ if ($action == "upload_file") {
 				texte TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 				info VARCHAR(200) NOT NULL
 				) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-				$create_table=mysql_query($sql);
+				$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				//$sql="TRUNCATE tempo2;";
 				$sql="TRUNCATE tempo5;";
-				$menage=mysql_query($sql);
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
                 echo '
 				<form name="edtInitCsv2" action="edt_init_concordance2.php" method="post">';
@@ -430,8 +430,8 @@ if ($action == "upload_file") {
 
                     //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
 					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
-					$sql="INSERT INTO tempo5 SET texte='".mysql_real_escape_string($toutelaligne)."';";
-					$insert=mysql_query($sql);
+					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $toutelaligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
                     $b++; // on incrémente le compteur pour le name
                 }

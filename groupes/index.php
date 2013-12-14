@@ -78,15 +78,15 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 // On va chercher les classes déjà existantes, et on les affiche.
 
-$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
-$nombre_lignes = mysql_num_rows($call_data);
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes ORDER BY classe");
+$nombre_lignes = mysqli_num_rows($call_data);
 if ($nombre_lignes != 0) {
     $flag = 1;
     echo "<table cellpadding=3 cellspacing=0 border=0>\n";
     $i = 0;
     while ($i < $nombre_lignes){
-        $id_classe = mysql_result($call_data, $i, "id");
-        $classe = mysql_result($call_data, $i, "classe");
+        $id_classe = old_mysql_result($call_data, $i, "id");
+        $classe = old_mysql_result($call_data, $i, "classe");
 
         // On n'affiche que si la classe en question n'est pas une classe virtuelle
 	    if (get_period_number($id_classe) != "0") {

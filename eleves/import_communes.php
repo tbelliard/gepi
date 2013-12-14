@@ -218,19 +218,19 @@ if(!isset($step)) {
 	echo "<h2>Import des communes de naissance des élèves</h2>\n";
 
 	$sql="SELECT e.* FROM eleves e WHERE e.lieu_naissance='';";
-	$res=mysql_query($sql);
-	$nb_lieu_nais_non_renseignes=mysql_num_rows($res);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_lieu_nais_non_renseignes=mysqli_num_rows($res);
 	if($nb_lieu_nais_non_renseignes>0) {
 		if($nb_lieu_nais_non_renseignes==1) {
 			echo "<p>".$nb_lieu_nais_non_renseignes." lieu de naissance n'est pas renseigné&nbsp;: \n";
-			$lig=mysql_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 			echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 			echo "</p>\n";
 		}
 		elseif($nb_lieu_nais_non_renseignes>1) {
 			echo "<p>".$nb_lieu_nais_non_renseignes." lieux de naissance ne sont pas renseignés&nbsp;: \n";
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
 				echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
 				// Pour des tests... echo " (UPDATE eleves SET lieu_naissance='' WHERE login='$lig->login';)<br />";
@@ -252,22 +252,22 @@ if(!isset($step)) {
 	$sql="SELECT e.* FROM eleves e
 	LEFT JOIN communes c ON c.code_commune_insee=e.lieu_naissance
 	where c.code_commune_insee is NULL;";
-	$res=mysql_query($sql);
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	//if(mysql_num_rows($res)==0) {
-	if(mysql_num_rows($res)<=$nb_lieu_nais_non_renseignes) {
+	if(mysqli_num_rows($res)<=$nb_lieu_nais_non_renseignes) {
 		echo "<p>Tous les lieux de naissances saisis pour les élèves ont leur correspondant dans la table 'communes'.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
 
 	$sql="TRUNCATE TABLE tempo2;";
-	$res0=mysql_query($sql);
+	$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$retour_commune_manquante="";
 	$retour_commune_etrangere="";
 	$cpt=0;
 	$cpt2=0;
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		if($lig->lieu_naissance!='') {
 
 			if(strstr($lig->lieu_naissance,'@')) {
@@ -505,17 +505,17 @@ else {
 					echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
 
 					$sql="TRUNCATE TABLE tempo2;";
-					$res0=mysql_query($sql);
+					$res0=mysqli_query($GLOBALS["mysqli"], $sql);
 				
 					$sql="SELECT e.* FROM eleves e
 					LEFT JOIN communes c ON c.code_commune_insee=e.lieu_naissance
 					where c.code_commune_insee is NULL;";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				
-					while($lig=mysql_fetch_object($res)) {
+					while($lig=mysqli_fetch_object($res)) {
 						if($lig->lieu_naissance!='') {
 							$sql="INSERT INTO tempo2 SET col1='$lig->login', col2='$lig->lieu_naissance';";
-							$res2=mysql_query($sql);
+							$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 
@@ -559,9 +559,9 @@ else {
 			$tab_ele=array();
 			$tab_lieu=array();
 			$sql="SELECT * FROM tempo2;";
-			$res=mysql_query($sql);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				$tab_ele[$cpt]=$lig->col1;
 				$tab_lieu[$cpt]=$lig->col2;
 				$cpt++;
@@ -598,19 +598,19 @@ else {
 
 					$sql="INSERT INTO communes SET code_commune_insee='$code_commune_insee', departement='$departement', commune='".addslashes($commune)."';";
 					//echo "$sql<br />\n";
-					$insert=mysql_query($sql);
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$sql="DELETE FROM tempo2 WHERE col2='$code_commune_insee';";
 					//echo "$sql<br />\n";
-					$del=mysql_query($sql);
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$temoin_trouve++;
 				}
 			}
 
 			$sql="SELECT 1=1 FROM tempo2;";
-			$res=mysql_query($sql);
-			$nb_eleves_a_traiter=mysql_num_rows($res);
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb_eleves_a_traiter=mysqli_num_rows($res);
 
 			if($fin_fichier=='y') {
 				fclose($fich);
@@ -628,9 +628,9 @@ else {
 	
 					// A FAIRE: Lister les élèves
 					$sql="SELECT e.login,e.nom,e.prenom,e.lieu_naissance, t.col2 FROM tempo2 t, eleves e WHERE e.login=t.col1 ORDER BY e.nom, e.prenom;";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=0;
-					if(mysql_num_rows($res)==0) {
+					if(mysqli_num_rows($res)==0) {
 						echo "Aucun élève trouvé";
 						echo ".</p>\n";
 					}
@@ -641,7 +641,7 @@ else {
 						echo "<th>Lieu</th>\n";
 						echo "</tr>\n";
 						$alt=1;
-						while($lig=mysql_fetch_object($res)) {
+						while($lig=mysqli_fetch_object($res)) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt white_hover'>\n";
 							echo "<td>".casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')."</td>\n";

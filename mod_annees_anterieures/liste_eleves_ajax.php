@@ -24,8 +24,8 @@
 
 
 	include("../secure/connect.inc.php");
-	$mysql_db = @mysql_connect("localhost", $dbUser, $dbPass);
-	@mysql_select_db($dbDb);
+	$mysql_db = @($GLOBALS["mysqli"] = mysqli_connect("localhost",  $dbUser,  $dbPass));
+	@((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"));
 
 	// CONTROLER CE QUI EST POSTé
 	if((mb_strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸ -]","",$_POST['nom_ele']))!=0)||(mb_strlen(my_ereg_replace("[A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸ -]","",$_POST['prenom_ele']))!=0)){
@@ -34,9 +34,9 @@
 	else{
 		$sql="SELECT no_gep,nom,prenom,naissance FROM eleves WHERE nom LIKE '%".$_POST['nom_ele']."%' AND prenom LIKE '%".$_POST['prenom_ele']."%' ";
 
-		$res=@mysql_query($sql);
+		$res=@mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res)==0){
+		if(mysqli_num_rows($res)==0){
 			$chaine="Aucun résultat retourné.";
 		}
 		else{
@@ -62,7 +62,7 @@
 			$chaine.="</tr>";
 
 			$alt=-1;
-			while($lig=mysql_fetch_object($res)){
+			while($lig=mysqli_fetch_object($res)){
 				//$chaine.="<tr>";
 
 				$alt=$alt*(-1);
@@ -109,5 +109,5 @@
 	}
 	echo "document.getElementById('div_resultat').innerHTML=\"$chaine\";";
 
-	@mysql_close($mysql_db);
+	@((is_null($___mysqli_res = mysqli_close($mysql_db))) ? false : $___mysqli_res);
 ?>

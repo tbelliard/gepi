@@ -74,7 +74,7 @@ $req_devoirs =
     where contenu != ''
     and id_groupe = '" . $current_group["id"] ."'";
 $req_union = "select * from (" . $req_notices . ") as notices UNION (" . $req_devoirs . ") order by date_ct desc";
-$sql_union = mysql_query($req_union);
+$sql_union = mysqli_query($GLOBALS["mysqli"], $req_union);
 
 //nom du fichier à telecharger
 $nom_fic = mb_substr($current_group["description"],0 , 4);
@@ -85,7 +85,7 @@ foreach ($current_group["classes"]["classes"] as $classe) {
 $nom_fic.="_".date("dmY") . ".csv";
 
 $csv="";
-if (mysql_num_rows($sql_union) == 0) {
+if (mysqli_num_rows($sql_union) == 0) {
 	$csv.="aucune donnée";
 } else {
 	// titre des colonnes
@@ -93,7 +93,7 @@ if (mysql_num_rows($sql_union) == 0) {
 	$csv.="\n";
 	
 	// données de la table
-	while ($arrSelect = mysql_fetch_array($sql_union, MYSQL_ASSOC)) {
+	while ($arrSelect = mysqli_fetch_array($sql_union,  MYSQLI_ASSOC)) {
 		if ($arrSelect["date_ct"] != 0) {
 			$csv.=strftime("%d/%m/%y", $arrSelect["date_ct"]).",";
 		} else {

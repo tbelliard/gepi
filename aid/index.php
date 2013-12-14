@@ -78,8 +78,8 @@ if ($test_outils_comp != 0) {
 }
 echo "</p><p class=\"medium\">";
 
-$call_data = mysql_query("SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
-$nb_aid = mysql_num_rows($call_data);
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
+$nb_aid = mysqli_num_rows($call_data);
 if ($nb_aid == 0) {
    echo "<p class='grand'>Il n'y a actuellement aucune catégorie d'AID</p>";
 } else {
@@ -93,10 +93,10 @@ if ($nb_aid == 0) {
     $i=0;
 	$alt=1;
     while ($i < $nb_aid) {
-        $nom_aid = @mysql_result($call_data, $i, "nom");
-        $nom_complet_aid = @mysql_result($call_data, $i, "nom_complet");
-        $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-        $outils_complementaires  = @mysql_result($call_data, $i, "outils_complementaires");
+        $nom_aid = @old_mysql_result($call_data, $i, "nom");
+        $nom_complet_aid = @old_mysql_result($call_data, $i, "nom_complet");
+        $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
+        $outils_complementaires  = @old_mysql_result($call_data, $i, "outils_complementaires");
         if ($outils_complementaires=='y')
             $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
         else

@@ -79,8 +79,8 @@ if((isset($_POST['is_posted']))&&
 	// vérifier si l'élève est bien dans la classe et si la période est ouverte en saisie
 
 	$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$ele_login' AND id_classe='$id_classe' AND periode='$periode_num';";
-	$test=mysql_query($sql);
-	if(mysql_num_rows($test)==0) {
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
 		$msg.="L'élève $ele_login n'est pas dans la classe n°$id_classe sur la période choisie $periode_num.\n";
 	}
 
@@ -123,17 +123,17 @@ if((isset($_POST['is_posted']))&&
 			}
 
 			if (($note != '') or ($elev_statut != '')) {
-				$test_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
-				$test = mysql_num_rows($test_eleve_note_query);
+				$test_eleve_note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
+				$test = mysqli_num_rows($test_eleve_note_query);
 				if ($test != "0") {
-					$register = mysql_query("UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
+					$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_notes SET note='$note',statut='$elev_statut', rang='0' WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
 					if (!$register) {$msg.="Erreur lors de la mise à jour de la note de l'enseignement n°".$id_groupe[$k];}
 				} else {
-					$register = mysql_query("INSERT INTO matieres_notes SET login='$ele_login', id_groupe='".$id_groupe[$k]."', periode='$periode_num', note='$note', statut='$elev_statut', rang='0'");
+					$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_notes SET login='$ele_login', id_groupe='".$id_groupe[$k]."', periode='$periode_num', note='$note', statut='$elev_statut', rang='0'");
 					if (!$register) {$msg.="Erreur lors de l'insertion de la note de l'enseignement n°".$id_groupe[$k];}
 				}
 			} else {
-				$register = mysql_query("DELETE FROM matieres_notes WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
+				$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_notes WHERE (login='$ele_login' AND id_groupe='".$id_groupe[$k]."' AND periode='$periode_num')");
 				if (!$register) {$msg.="Erreur lors de la suppression de la note de l'enseignement n°".$id_groupe[$k];}
 			}
 
@@ -150,19 +150,19 @@ if((isset($_POST['is_posted']))&&
 			//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 			$app=suppression_sauts_de_lignes_surnumeraires($app);
 
-			$test_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
-			$test = mysql_num_rows($test_app_query);
+			$test_app_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
+			$test = mysqli_num_rows($test_app_query);
 			if ($test != "0") {
 				if ($app != "") {
-					$register = mysql_query("UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
+					$register = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET appreciation='" . $app . "' WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
 					if (!$register) {$msg.="Erreur lors de la mise à jour de l'appréciation de l'enseignement n°".$id_groupe[$k];}
 				} else {
-					$register = mysql_query("DELETE FROM matieres_appreciations WHERE (id_groupe='".$id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
+					$register = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations WHERE (id_groupe='".$id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
 					if (!$register) {$msg.="Erreur lors de la suppression de l'appréciation de l'enseignement n°".$id_groupe[$k];}
 				}
 			} else {
 				if ($app != "") {
-					$register = mysql_query("INSERT INTO matieres_appreciations SET id_groupe='" . $id_groupe[$k]."',periode='$periode_num',appreciation='" . $app . "',login='$ele_login'");
+					$register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations SET id_groupe='" . $id_groupe[$k]."',periode='$periode_num',appreciation='" . $app . "',login='$ele_login'");
 					if (!$register) {$msg.="Erreur lors de l'insertion de l'appréciation de l'enseignement n°".$id_groupe[$k];}
 				}
 			}
@@ -243,8 +243,8 @@ function cherche_eleves(champ) {
 
 	$sql="SELECT DISTINCT c.* FROM classes c WHERE 1 ORDER BY classe;";
 	//echo "$sql<br />";
-	$calldata = mysql_query($sql);
-	$nombreligne = mysql_num_rows($calldata);
+	$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nombreligne = mysqli_num_rows($calldata);
 	echo "<p>Total : $nombreligne classe";
 	if ($nombreligne>1) {
 		echo "s";
@@ -264,8 +264,8 @@ function cherche_eleves(champ) {
 		unset($txt_classe);
 		$i = 0;
 		while ($i < $nombreligne){
-			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($calldata, $i, "id");
-			$txt_classe[]=mysql_result($calldata, $i, "classe");
+			$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".old_mysql_result($calldata, $i, "id");
+			$txt_classe[]=old_mysql_result($calldata, $i, "classe");
 			$i++;
 		}
 
@@ -325,9 +325,9 @@ elseif(!isset($ele_login)) {
 	echo "<blockquote>\n";
 
 	$sql="SELECT e.nom, e.prenom, e.login FROM j_eleves_classes jec, eleves e WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom, e.prenom;";
-	$res_ele=mysql_query($sql);
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$nombreligne=mysql_num_rows($res_ele);
+	$nombreligne=mysqli_num_rows($res_ele);
 
 	$nbcol=3;
 
@@ -340,7 +340,7 @@ elseif(!isset($ele_login)) {
 
 	$i = 0;
 	while ($i < $nombreligne){
-		$lig_ele=mysql_fetch_object($res_ele);
+		$lig_ele=mysqli_fetch_object($res_ele);
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
@@ -382,22 +382,22 @@ else {
 							ORDER BY e.nom,e.prenom";
 	//echo "$sql<br />";
 	//echo "\$ele_login=$ele_login<br />";
-	$res_ele_tmp=mysql_query($sql);
+	$res_ele_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	$chaine_options_login_eleves="";
 	$cpt_eleve=0;
 	$num_eleve=-1;
-	if(mysql_num_rows($res_ele_tmp)>0){
+	if(mysqli_num_rows($res_ele_tmp)>0){
 		$login_eleve_prec=0;
 		$login_eleve_suiv=0;
 		$temoin_tmp=0;
-		while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+		while($lig_ele_tmp=mysqli_fetch_object($res_ele_tmp)){
 			if($lig_ele_tmp->login==$ele_login){
 				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 	
 				$num_eleve=$cpt_eleve;
 	
 				$temoin_tmp=1;
-				if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+				if($lig_ele_tmp=mysqli_fetch_object($res_ele_tmp)){
 					$login_eleve_suiv=$lig_ele_tmp->login;
 					$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
 				}
@@ -471,13 +471,13 @@ else {
 
 
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$ele_login';";
-	$res_ele=mysql_query($sql);
-	if(mysql_num_rows($res_ele)==0) {
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
 		echo "<p>L'élève $ele_login est inconnu.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-	$lig_ele=mysql_fetch_object($res_ele);
+	$lig_ele=mysqli_fetch_object($res_ele);
 	$info_ele=my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
 
 	include "../lib/periodes.inc.php";
@@ -505,8 +505,8 @@ else {
 				jgc.id_classe='$id_classe' AND
 				jeg.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n') ORDER BY jgc.priorite,jgm.id_matiere;";
 	//echo "$sql<br />\n";
-	$res_grp=mysql_query($sql);
-	if(mysql_num_rows($res_grp)==0) {
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp)==0) {
 		echo "<p>L'élève n'est inscrit dans aucun enseignement sur la période.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -529,7 +529,7 @@ else {
 		echo "<th>Note</th>\n";
 		echo "<th>Appréciation</th>\n";
 		echo "</tr>\n";
-		while($lig_grp=mysql_fetch_object($res_grp)) {
+		while($lig_grp=mysqli_fetch_object($res_grp)) {
 			$id_groupe=$lig_grp->id_groupe;
 			$matiere_nom_complet=$lig_grp->nom_complet;
 			$description_groupe=$lig_grp->description;
@@ -538,18 +538,18 @@ else {
 			$app="";
 			$sql="SELECT appreciation FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND login='$ele_login' AND periode='$periode_num';";
 			//echo "$sql<br />\n";
-			$res_app=mysql_query($sql);
-			if(mysql_num_rows($res_app)>0) {
-				$lig_app=mysql_fetch_object($res_app);
+			$res_app=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_app)>0) {
+				$lig_app=mysqli_fetch_object($res_app);
 				$app=$lig_app->appreciation;
 			}
 
 			$note="";
 			$sql="SELECT note,statut FROM matieres_notes WHERE id_groupe='$id_groupe' AND login='$ele_login' AND periode='$periode_num';";
 			//echo "$sql<br />\n";
-			$res_note=mysql_query($sql);
-			if(mysql_num_rows($res_note)>0) {
-				$lig_note=mysql_fetch_object($res_note);
+			$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_note)>0) {
+				$lig_note=mysqli_fetch_object($res_note);
 				if($lig_note->statut=='') {
 					$note=$lig_note->note;
 				}

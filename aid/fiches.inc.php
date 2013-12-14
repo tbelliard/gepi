@@ -31,10 +31,10 @@ $annee -> il s'agit de l'année en cours. Si non précisé, il s'agit de l'anné
 
 // Initialisation des variables
 if (!isset($annee)) $annee='';
-$call_productions = mysql_query("select * from aid_productions order by nom");
-$nb_productions = mysql_num_rows($call_productions);
-$call_public = mysql_query("select * from aid_public order by public");
-$nb_public = mysql_num_rows($call_public );
+$call_productions = mysqli_query($GLOBALS["mysqli"], "select * from aid_productions order by nom");
+$nb_productions = mysqli_num_rows($call_productions);
+$call_public = mysqli_query($GLOBALS["mysqli"], "select * from aid_public order by public");
+$nb_public = mysqli_num_rows($call_public );
 
 // si le plugin "port_folio" existe et est activé
 $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
@@ -53,14 +53,14 @@ else
 if ($_login=="")
     $requete .= " and fiche_publique='y'";
 $requete .= " ORDER BY nom";
-$calldata = mysql_query($requete);
-$nombreligne = mysql_num_rows($calldata);
+$calldata = mysqli_query($GLOBALS["mysqli"], $requete);
+$nombreligne = mysqli_num_rows($calldata);
 
 echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de détails\" title=\"Plus de détails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les détails du projet. Vous pouvez aussi ";
 echo "<a href=\"#\" style=\"background-color:#FF8543; color:white; font-size:130%; font-family:serif\" onclick=\"javascript:";
 $i = 0;
 while ($i < $nombreligne){
-    $aid_id = @mysql_result($calldata, $i, "id");
+    $aid_id = @old_mysql_result($calldata, $i, "id");
     echo "Element.show('id_".$aid_id."');";
     $i++;
 }
@@ -69,7 +69,7 @@ echo " ou ";
 echo "<a href=\"#\" style=\"background-color:#FF8543; color:white; font-size:130%; font-family:serif\" onclick=\"javascript:";
 $i = 0;
 while ($i < $nombreligne){
-    $aid_id = @mysql_result($calldata, $i, "id");
+    $aid_id = @old_mysql_result($calldata, $i, "id");
     echo "Element.hide('id_".$aid_id."');";
     $i++;
 }
@@ -80,37 +80,37 @@ if ($_login!="")
 echo "<br />";
 $i = 0;
 while ($i < $nombreligne){
-    $aid_nom = @mysql_result($calldata, $i, "nom");
-    $aid_num = @mysql_result($calldata, $i, "numero");
+    $aid_nom = @old_mysql_result($calldata, $i, "nom");
+    $aid_num = @old_mysql_result($calldata, $i, "numero");
     if ($aid_num =='') {$aid_num='&nbsp;';}
-    $aid_id = @mysql_result($calldata, $i, "id");
+    $aid_id = @old_mysql_result($calldata, $i, "id");
     // autres champs :
     if ($annee=='')
-      $call_data_projet = mysql_query("select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+      $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
     else
-      $call_data_projet = mysql_query("select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
+      $call_data_projet = mysqli_query($GLOBALS["mysqli"], "select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
 
-    $resume = @mysql_result($call_data_projet,0,"resume");
-    $discipline1 = @mysql_result($call_data_projet,0,"matiere1");
-    $discipline2 = @mysql_result($call_data_projet,0,"matiere2");
-    $famille = @mysql_result($call_data_projet,0,"famille");
-    $adresse1 = @mysql_result($call_data_projet,0,"adresse1");
-    $adresse2 = @mysql_result($call_data_projet,0,"adresse2");
-    $productions = @mysql_result($call_data_projet,0,"productions");
-    $public = @mysql_result($call_data_projet,0,"public_destinataire");
-    $mots_cles = @mysql_result($call_data_projet,0,"mots_cles");
-    $divers = @mysql_result($call_data_projet,0,"divers");
-    $contacts = @mysql_result($call_data_projet,0,"contacts");
-    $affiche_adresse1 = @mysql_result($call_data_projet,0,"affiche_adresse1");
-    $en_construction = @mysql_result($call_data_projet,0,"en_construction");
-    $fiche_publique = @mysql_result($call_data_projet,0,"fiche_publique");
+    $resume = @old_mysql_result($call_data_projet,0,"resume");
+    $discipline1 = @old_mysql_result($call_data_projet,0,"matiere1");
+    $discipline2 = @old_mysql_result($call_data_projet,0,"matiere2");
+    $famille = @old_mysql_result($call_data_projet,0,"famille");
+    $adresse1 = @old_mysql_result($call_data_projet,0,"adresse1");
+    $adresse2 = @old_mysql_result($call_data_projet,0,"adresse2");
+    $productions = @old_mysql_result($call_data_projet,0,"productions");
+    $public = @old_mysql_result($call_data_projet,0,"public_destinataire");
+    $mots_cles = @old_mysql_result($call_data_projet,0,"mots_cles");
+    $divers = @old_mysql_result($call_data_projet,0,"divers");
+    $contacts = @old_mysql_result($call_data_projet,0,"contacts");
+    $affiche_adresse1 = @old_mysql_result($call_data_projet,0,"affiche_adresse1");
+    $en_construction = @old_mysql_result($call_data_projet,0,"en_construction");
+    $fiche_publique = @old_mysql_result($call_data_projet,0,"fiche_publique");
     if ($annee=='') {
-      $perso1 = @mysql_result($call_data_projet,0,"perso1");
-      $perso2 = @mysql_result($call_data_projet,0,"perso2");
-      $perso3 = @mysql_result($call_data_projet,0,"perso3");
-      $eleve_peut_modifier = @mysql_result($call_data_projet,0,"eleve_peut_modifier");
-      $prof_peut_modifier = @mysql_result($call_data_projet,0,"prof_peut_modifier");
-      $cpe_peut_modifier = @mysql_result($call_data_projet,0,"cpe_peut_modifier");
+      $perso1 = @old_mysql_result($call_data_projet,0,"perso1");
+      $perso2 = @old_mysql_result($call_data_projet,0,"perso2");
+      $perso3 = @old_mysql_result($call_data_projet,0,"perso3");
+      $eleve_peut_modifier = @old_mysql_result($call_data_projet,0,"eleve_peut_modifier");
+      $prof_peut_modifier = @old_mysql_result($call_data_projet,0,"prof_peut_modifier");
+      $cpe_peut_modifier = @old_mysql_result($call_data_projet,0,"cpe_peut_modifier");
     } else {
       $perso1 = '';
       $perso2 = '';
@@ -118,9 +118,9 @@ while ($i < $nombreligne){
       $eleve_peut_modifier = 'n';
       $prof_peut_modifier = 'n';
       $cpe_peut_modifier = 'n';
-      $eleves_resp = @mysql_result($call_data_projet,0,"eleves_resp");
-      $eleves = @mysql_result($call_data_projet,0,"eleves");
-      $responsables = @mysql_result($call_data_projet,0,"responsables");
+      $eleves_resp = @old_mysql_result($call_data_projet,0,"eleves_resp");
+      $eleves = @old_mysql_result($call_data_projet,0,"eleves");
+      $responsables = @old_mysql_result($call_data_projet,0,"responsables");
     }
 
     echo "<span id=\"info1_".$aid_id."\" style=\"cursor:pointer;\" onclick=\"javascript:Element.show('id_".$aid_id."');Element.hide('info1_".$aid_id."');Element.show('info2_".$aid_id."');\" >

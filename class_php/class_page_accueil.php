@@ -1938,11 +1938,11 @@ if(getSettingAOui('active_bulletins')) {
 				  AND nom_fichier = '".$autorise[$a][0]."'
 				  ORDER BY id";
         
-            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
+            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
             $nbre = $query_f->num_rows;
 		
 		if ($nbre >= 1) {
-		  $rep_f = mysql_result($query_f, 0, "autorisation");
+		  $rep_f = old_mysql_result($query_f, 0, "autorisation");
 		}else{
 		  $rep_f = '';
 		}
@@ -2076,7 +2076,7 @@ if(getSettingAOui('active_bulletins')) {
                           WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
                 $nb_result2 = $call_prof2->num_rows;
                 if (($nb_result1 != 0) or ($nb_result2 != 0)) {
-                  //$nom_aid = @mysql_result($call_data, $i, "nom");
+                  //$nom_aid = @old_mysql_result($call_data, $i, "nom");
                   $nom_aid = $obj->nom;
                 if ($nb_result2 != 0)
                     $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,

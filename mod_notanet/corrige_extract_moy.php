@@ -69,8 +69,8 @@ echo "<div class='noprint'>\n";
 echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -81,8 +81,8 @@ if(mysql_num_rows($res)==0) {
 }
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets ORDER BY type_brevet";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -112,17 +112,17 @@ else {
 	//=========================================================
 	unset($tab_mat);
 	$sql="SELECT * FROM notanet_corresp ORDER BY type_brevet;";
-	$res1=mysql_query($sql);
-	while($lig1=mysql_fetch_object($res1)) {
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig1=mysqli_fetch_object($res1)) {
 		//$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet';";
 		// Le ORDER BY id_mat, id permet de tenir compte de l'ordre des options ajoutées dans select_matieres (pas moyen autrement de faire passer les LV2 après les LV1 (dans le brevet pro, c'est mélangé...))
 		$sql="SELECT * FROM notanet_corresp WHERE type_brevet='$lig1->type_brevet' ORDER BY id_mat, id;";
-		$res2=mysql_query($sql);
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		unset($id_matiere);
 		unset($statut_matiere);
 
-		while($lig2=mysql_fetch_object($res2)) {
+		while($lig2=mysqli_fetch_object($res2)) {
 			$id_matiere[$lig2->id_mat][]=$lig2->matiere;
 			//$statut_matiere[$lig2->id_mat][]=$lig2->statut;
 			$statut_matiere[$lig2->id_mat]=$lig2->statut;
@@ -150,8 +150,8 @@ else {
 						WHERE n.login=jec.login AND
 							n.type_brevet=nc.type_brevet
 						ORDER BY id_classe";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p>Il semble que des associations soient manquantes.<br />Auriez-vous sauté des étapes?</p>\n";
 
 				require("../lib/footer.inc.php");
@@ -161,7 +161,7 @@ else {
 				unset($id_classe);
 
 				$cpt=0;
-				while($lig=mysql_fetch_object($res)) {
+				while($lig=mysqli_fetch_object($res)) {
 					$id_classe[$cpt]=$lig->id_classe;
 					$cpt++;
 				}
@@ -171,9 +171,9 @@ else {
 			$sql="SELECT net.login FROM notanet_ele_type net
 				LEFT JOIN notanet n ON net.login=n.login
 				WHERE n.login is NULL;";
-			$test_na=mysql_query($sql);
+			$test_na=mysqli_query($GLOBALS["mysqli"], $sql);
 			//if($test_na){
-			if(mysql_num_rows($test_na)==0){
+			if(mysqli_num_rows($test_na)==0){
 				echo "<p>Tous les élèves associés à un type de brevet ont bien des enregistrements dans la table 'notanet'.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -202,15 +202,15 @@ else {
 									n.login=e.login)
 							ORDER BY jec.id_classe,e.nom,e.prenom";
 			*/
-			while($lig_ele=mysql_fetch_object($test_na)) {
+			while($lig_ele=mysqli_fetch_object($test_na)) {
 
 				$sql="SELECT DISTINCT e.*,n.type_brevet FROM eleves e,
 								notanet_ele_type n
 							WHERE (e.login='".$lig_ele->login."' AND n.login=e.login);";
 				//echo $sql;
-				$call_eleve = mysql_query($sql);
-				$nombreligne = mysql_num_rows($call_eleve);
-				while($ligne=mysql_fetch_object($call_eleve)){
+				$call_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
+				$nombreligne = mysqli_num_rows($call_eleve);
+				while($ligne=mysqli_fetch_object($call_eleve)){
 					unset($tab_ele);
 					$tab_ele=array();
 
@@ -223,8 +223,8 @@ else {
 					// La classe n'est utilisée dans tab_extract_moy($tab_ele, $id_clas) que pour récupérer la liste des périodes.
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$lig_ele->login."' ORDER BY periode DESC LIMIT 1;";
 					//echo "$sql<br />";
-					$res_clas=mysql_query($sql);
-					$lig_clas=mysql_fetch_object($res_clas);
+					$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+					$lig_clas=mysqli_fetch_object($res_clas);
 					$id_clas=$lig_clas->id_classe;
 
 					/*
@@ -237,8 +237,8 @@ else {
 					// VERIFIER SI LES ASSOCIATIONS SONT FAITES POUR LE TYPE BREVET $ligne->type_brevet
 					// ********************************************************************************
 					$sql="SELECT 1=1 FROM notanet_corresp WHERE type_brevet='$ligne->type_brevet';";
-					$res=mysql_query($sql);
-					if(mysql_num_rows($res)>0) {
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
 						//tab_extract_moy($tab_ele, $id_classe[$i]);
 						tab_extract_moy($tab_ele, $id_clas);
 						flush();
@@ -272,8 +272,8 @@ else {
 				$cpt=0;
 				$sql="SELECT DISTINCT id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE (jec.login=net.login) ORDER BY id_classe;";
 				//echo "$sql<br />";
-				$res_clas=mysql_query($sql);
-				while($lig_clas=mysql_fetch_object($res_clas)) {
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_clas=mysqli_fetch_object($res_clas)) {
 
 					$classe=get_classe_from_id($lig_clas->id_classe);
 					echo "<h4>Classe de ".$classe."</h4>\n";
@@ -287,8 +287,8 @@ else {
 										n.login=e.login)
 								ORDER BY e.nom,e.prenom";
 					//echo "$sql<br />";
-					$res_ele=mysql_query($sql);
-					if(mysql_num_rows($res_ele)==0) {
+					$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ele)==0) {
 						echo "<p>Aucun élève dans la classe $classe ne semble avoir été trouvé.</p>\n";
 					}
 					else{
@@ -301,7 +301,7 @@ else {
 						echo "</tr>\n";
 						$alt=1;
 						//$cpt=0;
-						while($lig_ele=mysql_fetch_object($res_ele)) {
+						while($lig_ele=mysqli_fetch_object($res_ele)) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'>\n";
 
@@ -341,13 +341,13 @@ else {
 											e.login='".$ele_login[$i]."')
 									ORDER BY e.nom,e.prenom;";
 						//echo "$sql<br />";
-						$call_eleve = mysql_query($sql);
+						$call_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 
-						if(mysql_num_rows($call_eleve)==0) {
+						if(mysqli_num_rows($call_eleve)==0) {
 							echo "<p>L'élève dont le login est ".$ele_login[$i]." n'est pas dans la table 'eleves' ou alors il n'est pas associé à un type de brevet.</p>\n";
 						}
 						else {
-							$ligne=mysql_fetch_object($call_eleve);
+							$ligne=mysqli_fetch_object($call_eleve);
 							unset($tab_ele);
 							$tab_ele=array();
 
@@ -360,8 +360,8 @@ else {
 							// La classe n'est utilisée dans tab_extract_moy($tab_ele, $id_clas) que pour récupérer la liste des périodes.
 							$sql="SELECT id_classe FROM j_eleves_classes WHERE login='".$ele_login[$i]."' ORDER BY periode DESC LIMIT 1;";
 							//echo "$sql<br />";
-							$res_clas=mysql_query($sql);
-							$lig_clas=mysql_fetch_object($res_clas);
+							$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+							$lig_clas=mysqli_fetch_object($res_clas);
 							$id_clas=$lig_clas->id_classe;
 
 							/*
@@ -374,8 +374,8 @@ else {
 							// VERIFIER SI LES ASSOCIATIONS SONT FAITES POUR LE TYPE BREVET $ligne->type_brevet
 							// ********************************************************************************
 							$sql="SELECT 1=1 FROM notanet_corresp WHERE type_brevet='$ligne->type_brevet';";
-							$res=mysql_query($sql);
-							if(mysql_num_rows($res)>0) {
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
 								//tab_extract_moy($tab_ele, $id_classe[$i]);
 								tab_extract_moy($tab_ele, $id_clas);
 								flush();
@@ -471,15 +471,15 @@ function retablir_notes_enregistrees() {
 			}
 			else{
 				$sql="SELECT login FROM eleves WHERE no_gep='".$INE[$m]."'";
-				$res_login_ele=mysql_query($sql);
-				if(mysql_num_rows($res_login_ele)>0){
-					$lig_login_ele=mysql_fetch_object($res_login_ele);
+				$res_login_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_login_ele)>0){
+					$lig_login_ele=mysqli_fetch_object($res_login_ele);
 					$login_eleve=$lig_login_ele->login;
 
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC";
-					$res_classe_ele=mysql_query($sql);
-					if(mysql_num_rows($res_classe_ele)>0){
-						$lig_classe_ele=mysql_fetch_object($res_classe_ele);
+					$res_classe_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_classe_ele)>0){
+						$lig_classe_ele=mysqli_fetch_object($res_classe_ele);
 						$id_classe_eleve=$lig_classe_ele->id_classe;
 					}
 					else{
@@ -498,18 +498,18 @@ function retablir_notes_enregistrees() {
 
 
 				$sql="DELETE FROM notanet WHERE login='$login_eleve';";
-				$nettoyage=mysql_query($sql);
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
 				$sql="SELECT n.type_brevet FROM notanet_ele_type n
 							WHERE n.login='$login_eleve';";
 				//echo "$sql<br />";
-				$res_type_brevet_eleve=mysql_query($sql);
-				if(mysql_num_rows($res_type_brevet_eleve)==0) {
+				$res_type_brevet_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_type_brevet_eleve)==0) {
 					echo "<span style='color:red'>ERREUR</span>: Le type de brevet n'a pas été choisi pour cet élève.<br />\n";
 				}
 				else {
-					$lig_type_brevet_eleve=mysql_fetch_object($res_type_brevet_eleve);
+					$lig_type_brevet_eleve=mysqli_fetch_object($res_type_brevet_eleve);
 
 					echo "(<i><span style='font-size:x-small;'>".$tab_type_brevet[$lig_type_brevet_eleve->type_brevet]."</span></i>)<br />";
 
@@ -524,7 +524,7 @@ function retablir_notes_enregistrees() {
 
 						$sql="DELETE FROM notanet WHERE login='$login_eleve';";
 						//echo "$sql<br />";
-						$nettoyage=mysql_query($sql);
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						unset($tab_opt_matiere_eleve);
 						$tab_opt_matiere_eleve=array();
@@ -770,7 +770,7 @@ function retablir_notes_enregistrees() {
 											$sql.="note_notanet='".$note_notanet."',";
 											$sql.="id_classe='$id_classe_eleve'";
 											//echo "$sql<br />";
-											$res_insert=mysql_query($sql);
+											$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(!$res_insert){
 												echo "<span style='color:red'>ERREUR</span> lors de l'insertion des informations dans la table 'notanet'.<br />La fiche brevet ne pourra pas être générée.<br />\n";
 											}

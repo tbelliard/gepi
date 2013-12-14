@@ -34,8 +34,8 @@ if ($resultat_session == 'c') {
 }
 
 $sql="SELECT 1=1 FROM droits WHERE id='/groupes/ajout_groupes_csv.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 	$sql="INSERT INTO droits SET id='/groupes/ajout_groupes_csv.php',
 	administrateur='V',
 	professeur='F',
@@ -47,7 +47,7 @@ if(mysql_num_rows($test)==0) {
 	autre='F',
 	description='Groupes : Ajout de groupes depuis un CSV',
 	statut='';";
-	$insert=mysql_query($sql);
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
@@ -57,9 +57,9 @@ if (!checkAccess()) {
 
 function get_nom_complet_from_matiere($mat) {
 	$sql="SELECT nom_complet FROM matieres WHERE matiere='$mat';";
-	$res_mat=mysql_query($sql);
-	if(mysql_num_rows($res_mat)>0) {
-		$lig_mat=mysql_fetch_object($res_mat);
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mat)>0) {
+		$lig_mat=mysqli_fetch_object($res_mat);
 		return $lig_mat->nom_complet;
 	}
 }
@@ -195,14 +195,14 @@ if(!$tempdir) {
 					}
 
 					$sql="TRUNCATE tempo2;";
-					$menage=mysql_query($sql);
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// Lecture de la ligne 1 et la mettre dans $temp
 					$temp=fgets($fp,4096);
 					$en_tete=explode(";",$temp);
 
-					$sql="INSERT INTO tempo2 SET col1='en_tete', col2='".mysql_real_escape_string($temp)."';";
-					$menage=mysql_query($sql);
+					$sql="INSERT INTO tempo2 SET col1='en_tete', col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $temp) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// On range dans tabindice les indices des champs retenus
 					for ($k = 0; $k < count($tabchamps); $k++) {
@@ -267,8 +267,8 @@ if(!$tempdir) {
 								$matiere_inconnue="y";
 								$matiere=$tab[$tabindice[2]];
 								$sql="SELECT * FROM matieres WHERE matiere='".$matiere."';";
-								$res_mat=mysql_query($sql);
-								if(mysql_num_rows($res_mat)>0) {
+								$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_mat)>0) {
 									$matiere_inconnue="n";
 								}
 
@@ -289,13 +289,13 @@ if(!$tempdir) {
 									}
 									for($loop=0;$loop<count($tab_classe);$loop++) {
 										$sql="SELECT * FROM classes WHERE classe='".$tab_classe[$loop]."';";
-										$res_classe=mysql_query($sql);
-										if(mysql_num_rows($res_classe)==0) {
+										$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_classe)==0) {
 											$classe_inconnue="y";
 											$tab_classes_inconnues[]=$tab_classe[$loop];
 										}
 										else {
-											$id_classe=mysql_result($res_classe, 0, "id");
+											$id_classe=old_mysql_result($res_classe, 0, "id");
 											if($chaine_jgc!="") {$chaine_jgc.=" OR ";}
 											$chaine_jgc.="jgc.id_classe='$id_classe'";
 										}
@@ -319,8 +319,8 @@ if(!$tempdir) {
 									}
 									for($loop=0;$loop<count($tab_profs);$loop++) {
 										$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$tab_profs[$loop]."' AND statut='professeur';";
-										$res_prof=mysql_query($sql);
-										if(mysql_num_rows($res_prof)==0) {
+										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_prof)==0) {
 											$prof_inconnu="y";
 											$tab_profs_inconnus[]=$tab_profs[$loop];
 										}
@@ -331,8 +331,8 @@ if(!$tempdir) {
 									}
 								}
 
-								$sql="INSERT INTO tempo2 SET col1='$i', col2='".mysql_real_escape_string($ligne[$i])."';";
-								$insert=mysql_query($sql);
+								$sql="INSERT INTO tempo2 SET col1='$i', col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $ligne[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								echo "
 		<tr>
@@ -381,11 +381,11 @@ if(!$tempdir) {
 									if($chaine_jgc!="") {$sql.=" AND ($chaine_jgc)";}
 									if($chaine_jgp!="") {$sql.=" AND ($chaine_jgp);";}
 									//echo "$sql<br />";
-									$res_grp=mysql_query($sql);
-									if(mysql_num_rows($res_grp)>0) {
+									$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_grp)>0) {
 										echo "<span style='font-size:x-small'>";
 										$cpt_grp=0;
-										while($lig_grp=mysql_fetch_object($res_grp)) {
+										while($lig_grp=mysqli_fetch_object($res_grp)) {
 											if($cpt_grp>0) {
 												echo "<br />";
 											}
@@ -479,14 +479,14 @@ if(!$tempdir) {
 			$tabchamps = array("NOM_GROUPE", "DESCRIPTION_GROUPE", "ID_MATIERE_GEPI", "NOM_DES_CLASSES", "LOGIN_PROFS");
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='en_tete';";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
 				echo "<p style='color:red'>Ligne d'entête non trouvée.</p>\n";
 				echo "<p'><a href='".$_SERVER['PHP_SELF']."'>Retour</a></p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
-			$en_tete=explode(";", mysql_result($res, 0, "col2"));
+			$en_tete=explode(";", old_mysql_result($res, 0, "col2"));
 
 			// On range dans tabindice les indices des champs retenus
 			for ($k = 0; $k < count($tabchamps); $k++) {
@@ -505,12 +505,12 @@ if(!$tempdir) {
 
 			for($i=0;$i<count($ligne_a_enregistrer);$i++) {
 				$sql="SELECT * FROM tempo2 WHERE col1='".$ligne_a_enregistrer[$i]."';";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
 					echo "<span style='color:red'>Ligne n°".$ligne_a_enregistrer[$i]." non trouvée.</span><br />\n";
 				}
 				else {
-					$col2=mysql_result($res, 0, "col2");
+					$col2=old_mysql_result($res, 0, "col2");
 					if($col2!='') {
 						$tab=explode(";",$col2);
 
@@ -526,9 +526,9 @@ if(!$tempdir) {
 
 							$matiere=$tab[$tabindice[2]];
 							$sql="SELECT * FROM matieres WHERE matiere='".$matiere."';";
-							$res_mat=mysql_query($sql);
-							if(mysql_num_rows($res_mat)>0) {
-								$categorie_id=mysql_result($res_mat,0,"categorie_id");
+							$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_mat)>0) {
+								$categorie_id=old_mysql_result($res_mat,0,"categorie_id");
 
 								$tab_classes_inconnues=array();
 								$nom_des_classes=$tab[$tabindice[3]];
@@ -546,12 +546,12 @@ if(!$tempdir) {
 									$reg_clazz=array();
 									for($loop=0;$loop<count($tab_classe);$loop++) {
 										$sql="SELECT * FROM classes WHERE classe='".$tab_classe[$loop]."';";
-										$res_classe=mysql_query($sql);
-										if(mysql_num_rows($res_classe)==0) {
+										$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_classe)==0) {
 											$tab_classes_inconnues[]=$tab_classe[$loop];
 										}
 										else {
-											$id_classe=mysql_result($res_classe, 0, "id");
+											$id_classe=old_mysql_result($res_classe, 0, "id");
 											if(!in_array($id_classe, $reg_clazz)) {
 												$reg_clazz[]=$id_classe;
 											}
@@ -573,8 +573,8 @@ if(!$tempdir) {
 
 											for($loop=0;$loop<count($tmp_tab_profs);$loop++) {
 												$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$tmp_tab_profs[$loop]."' AND statut='professeur';";
-												$res_prof=mysql_query($sql);
-												if(mysql_num_rows($res_prof)==0) {
+												$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+												if(mysqli_num_rows($res_prof)==0) {
 													$tab_profs_inconnus[]=$tmp_tab_profs[$loop];
 												}
 												else {
@@ -594,9 +594,9 @@ if(!$tempdir) {
 
 													$tab_profs_matiere=array();
 													$sql="SELECT DISTINCT id_professeur FROM j_professeurs_matieres WHERE id_matiere='$matiere';";
-													$res_prof_matiere=mysql_query($sql);
-													if(mysql_num_rows($res_prof_matiere)>0){
-														while($lig_prof_matiere=mysql_fetch_object($res_prof_matiere)){
+													$res_prof_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+													if(mysqli_num_rows($res_prof_matiere)>0){
+														while($lig_prof_matiere=mysqli_fetch_object($res_prof_matiere)){
 															$tab_profs_matiere[]=$lig_prof_matiere->id_professeur;
 														}
 													}
@@ -606,17 +606,17 @@ if(!$tempdir) {
 														if(!in_array($tab_profs[$loo], $tab_profs_matiere)) {
 															$sql="SELECT MAX(ordre_matieres) AS max_ordre_matiere FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs[$loo]."';";
 															//echo "$sql<br />";
-															$res_ordre=mysql_query($sql);
-															if(mysql_num_rows($res_ordre)==0) {
+															$res_ordre=mysqli_query($GLOBALS["mysqli"], $sql);
+															if(mysqli_num_rows($res_ordre)==0) {
 																$ordre_matiere=1;
 															}
 															else {
-																$ordre_matiere=mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
+																$ordre_matiere=old_mysql_result($res_ordre, 0, "max_ordre_matiere")+1;
 															}
 
 															$sql="INSERT INTO j_professeurs_matieres SET id_professeur='".$tab_profs[$loo]."', id_matiere='$matiere', ordre_matieres='$ordre_matiere';";
 															//echo "$sql<br />";
-															$insert=mysql_query($sql);
+															$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 														}
 													}
 

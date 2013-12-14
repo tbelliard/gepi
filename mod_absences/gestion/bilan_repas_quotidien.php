@@ -98,13 +98,13 @@ $date_voulue = $choix_date[2]."-".$choix_date[1]."-".$choix_date[0];
 // ===================== Quelques variables utiles ===============
 	// On détermine le jour en Français actuel
 	$jour_choisi = retourneJour(date("w", $date_choisie_ts));
-	$query = mysql_query("SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
+	$query = mysqli_query($GLOBALS["mysqli"], "SELECT ouverture_horaire_etablissement, fermeture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement = '".$jour_choisi."'");
 	$attention = ''; // message de prévention au cas où $query ne retourne rien
 
-	$nbre_rep = mysql_num_rows($query);
+	$nbre_rep = mysqli_num_rows($query);
 	if ($nbre_rep >= 1) {
 		// Avec le résultat, on calcule les timestamps UNIX
-		$req = mysql_fetch_array($query);
+		$req = mysqli_fetch_array($query);
 		$rep_deb = explode(":", $req["ouverture_horaire_etablissement"]);
 		$rep_fin = explode(":", $req["fermeture_horaire_etablissement"]);
 		$time_actu_deb = mktime($rep_deb[0], $rep_deb[1], 0, $choix_date[1], $choix_date[0], $choix_date[2]);
@@ -118,13 +118,13 @@ $date_voulue = $choix_date[2]."-".$choix_date[1]."-".$choix_date[0];
 	}
 
 // Affichage des noms répartis par classe
-$req_classe = mysql_query("SELECT id, classe FROM classes ORDER BY classe");
-$nbre = mysql_num_rows($req_classe);
+$req_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id, classe FROM classes ORDER BY classe");
+$nbre = mysqli_num_rows($req_classe);
 
 for($i = 0; $i < $nbre; $i++) {
 	// On récupère le nom de toutes les classes
-	$rep_classe[$i]["classe"] = mysql_result($req_classe, $i, "classe");
-	$rep_classe[$i]["id"] = mysql_result($req_classe, $i, "id");
+	$rep_classe[$i]["classe"] = old_mysql_result($req_classe, $i, "classe");
+	$rep_classe[$i]["id"] = old_mysql_result($req_classe, $i, "id");
 	echo '
 		<tr>
 			<td>'.$rep_classe[$i]["classe"].'</td>
@@ -134,18 +134,18 @@ for($i = 0; $i < $nbre; $i++) {
 	// On traite alors l'affichage de tous les élèves de chaque classe
 	$sql_repas = "SELECT DISTINCT eleve_id FROM absences_repas WHERE date_repas = '$date_voulue' ORDER BY eleve_id";
 	//echo $sql_repas;
-	$req_repas = mysql_query($sql_repas);
+	$req_repas = mysqli_query($GLOBALS["mysqli"], $sql_repas);
 
-	$nbre_a = mysql_num_rows($req_repas);
+	$nbre_a = mysqli_num_rows($req_repas);
 
 	for($b = 0; $b < $nbre_a; $b++){
-		$rep_absences[$b]["eleve_id"] = mysql_result($req_repas, $b, "eleve_id");
-		$req_id_classe = mysql_fetch_array(mysql_query("SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
+		$rep_absences[$b]["eleve_id"] = old_mysql_result($req_repas, $b, "eleve_id");
+		$req_id_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 
 		// On affiche l'élève en fonction de la classe à laquelle il appartient
 		if ($rep_classe[$i]["id"] == $req_id_classe["id_classe"]) {
 			// On récupère nom et prénom de l'élève
-			$rep_nom = mysql_fetch_array(mysql_query("SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
+			$rep_nom = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM eleves WHERE login = '".$rep_absences[$b]["eleve_id"]."'"));
 			echo '<tr>
 			<td></td>
 			<td>'.$rep_nom["nom"].' '.$rep_nom["prenom"].'</td>

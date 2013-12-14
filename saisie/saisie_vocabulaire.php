@@ -53,9 +53,9 @@ if((isset($export_vocab))&&($export_vocab=="y")) {
 	$fd='';
 	
 	$sql="SELECT * FROM vocabulaire ORDER BY terme, terme_corrige;";
-	$txt=mysql_query($sql);
+	$txt=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-	while($lig=mysql_fetch_object($txt)){
+	while($lig=mysqli_fetch_object($txt)){
 		$fd.=$lig->terme.";".$lig->terme_corrige."\r\n";
 	}
 	//echo $fd;
@@ -159,11 +159,11 @@ elseif(isset($valide_import_vocab)) {
 
 						$sql="SELECT 1=1 FROM vocabulaire WHERE terme='".addslashes($tab_tmp[0])."' AND terme_corrige='".addslashes($tab_tmp[1])."';";
 						//echo "$sql<br />";
-						$test=mysql_query($sql);
-						if(mysql_num_rows($test)==0) {
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
 							$sql="INSERT INTO vocabulaire SET terme='".addslashes($tab_tmp[0])."', terme_corrige='".addslashes($tab_tmp[1])."';";
 							//echo "$sql<br />";
-							$insert=mysql_query($sql);
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
 								$nb_reg++;
 							}
@@ -204,9 +204,9 @@ if(isset($compteur_nb_vocab)) {
 
 		$chaine_collate="";
 		$sql="show full columns from vocabulaire WHERE Field='terme';";
-		$res_col=mysql_query($sql);
-		if(mysql_num_rows($res_col)>0) {
-			$lig_col=mysql_fetch_object($res_col);
+		$res_col=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_col)>0) {
+			$lig_col=mysqli_fetch_object($res_col);
 			//if($lig_col->Collation!='utf8_unicode_ci') {$chaine_collate="COLLATE latin1_bin ";}
 			if($lig_col->Collation!='utf8_general_ci') {$chaine_collate="COLLATE latin1_bin ";}
 		}
@@ -215,11 +215,11 @@ if(isset($compteur_nb_vocab)) {
 		if(($terme!='')&&($terme_corrige!='')) {
 			$sql="SELECT 1=1 FROM vocabulaire WHERE terme $chaine_collate='".$terme."' AND terme_corrige $chaine_collate='".$terme_corrige."';";
 			//echo "$sql<br />";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
 				$sql="INSERT INTO vocabulaire SET terme='".$terme."', terme_corrige='".$terme_corrige."';";
 				//echo "$sql<br />";
-				$insert=mysql_query($sql);
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($insert) {
 					echo "<span style='color:red;'><b>Enregistrement effectué.</span><br />\n";
 				}
@@ -240,7 +240,7 @@ if(isset($compteur_nb_vocab)) {
 		if(isset($suppr[$i])) {
 			$sql="DELETE FROM vocabulaire WHERE id='".$suppr[$i]."';";
 			//echo "sql=$sql<br />";
-			$del=mysql_query($sql);
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$del) {
 				echo "<span style='color:red;'>Erreur lors de la suppression du couple n°".$suppr[$i].".</span><br />\n";
 			}
@@ -295,9 +295,9 @@ echo "</blockquote>\n";
 // Recherche du vocabulaire déjà saisi:
 $sql="SELECT DISTINCT * FROM vocabulaire ORDER BY terme, terme_corrige;";
 //echo "$sql";
-$resultat_vocab=mysql_query($sql);
+$resultat_vocab=mysqli_query($GLOBALS["mysqli"], $sql);
 $cpt=1;
-if(mysql_num_rows($resultat_vocab)!=0){
+if(mysqli_num_rows($resultat_vocab)!=0){
 	echo "<p>Voici la liste des termes de vocabulaire et leurs corrections&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 	echo "<table class='boireaus' border='1' summary='Vocabulaire'>\n";
@@ -308,7 +308,7 @@ if(mysql_num_rows($resultat_vocab)!=0){
 	echo "</tr>\n";
 
 	$alt=1;
-	while($ligne_vocab=mysql_fetch_object($resultat_vocab)){
+	while($ligne_vocab=mysqli_fetch_object($resultat_vocab)){
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt' style='text-align:center;'>\n";
 

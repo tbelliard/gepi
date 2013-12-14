@@ -37,8 +37,8 @@ if ($resultat_session == 'c') {
 //======================================================================================
 
 $sql="SELECT 1=1 FROM droits WHERE id='/mod_genese_classes/saisie_contraintes_opt_classe.php';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_genese_classes/saisie_contraintes_opt_classe.php',
 administrateur='V',
 professeur='F',
@@ -50,7 +50,7 @@ secours='F',
 autre='F',
 description='Genèse des classes: Saisie des contraintes options/classes',
 statut='';";
-$insert=mysql_query($sql);
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 //======================================================================================
@@ -83,7 +83,7 @@ if((isset($is_posted))&&(isset($projet))) {
 		for($j=0;$j<count($clas_fut);$j++) {
 			for($i=0;$i<count($sans_lv1);$i++) {
 				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv1[$i]';";
-				if($res=mysql_query($sql)) {
+				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 					$nb_reg++;
 				}
 				else {
@@ -93,7 +93,7 @@ if((isset($is_posted))&&(isset($projet))) {
 
 			for($i=0;$i<count($sans_lv1);$i++) {
 				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv1[$i]';";
-				if($res=mysql_query($sql)) {
+				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 					$nb_reg++;
 				}
 				else {
@@ -103,7 +103,7 @@ if((isset($is_posted))&&(isset($projet))) {
 
 			for($i=0;$i<count($sans_lv2);$i++) {
 				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv2[$i]';";
-				if($res=mysql_query($sql)) {
+				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 					$nb_reg++;
 				}
 				else {
@@ -113,7 +113,7 @@ if((isset($is_posted))&&(isset($projet))) {
 
 			for($i=0;$i<count($sans_lv3);$i++) {
 				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_lv3[$i]';";
-				if($res=mysql_query($sql)) {
+				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 					$nb_reg++;
 				}
 				else {
@@ -123,7 +123,7 @@ if((isset($is_posted))&&(isset($projet))) {
 
 			for($i=0;$i<count($sans_autre);$i++) {
 				$sql="INSERT INTO gc_options_classes SET projet='$projet', classe_future='$clas_fut[$j]', opt_exclue='$sans_autre[$i]';";
-				if($res=mysql_query($sql)) {
+				if($res=mysqli_query($GLOBALS["mysqli"], $sql)) {
 					$nb_reg++;
 				}
 				else {
@@ -140,7 +140,7 @@ if((isset($is_posted))&&(isset($projet))) {
 		$suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
 		for($i=0;$i<count($suppr);$i++) {
 			$sql="DELETE FROM gc_options_classes WHERE projet='$projet' AND id='$suppr[$i]';";
-			if($del=mysql_query($sql)) {
+			if($del=mysqli_query($GLOBALS["mysqli"], $sql)) {
 				$nb_suppr++;
 			}
 			else {
@@ -175,8 +175,8 @@ echo "</p>\n";
 
 
 $sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
-$res_clas_fut=mysql_query($sql);
-$nb_clas_fut=mysql_num_rows($res_clas_fut);
+$res_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_clas_fut=mysqli_num_rows($res_clas_fut);
 if($nb_clas_fut==0) {
 	echo "<p>Aucune classe future n'est encore définie pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
@@ -184,8 +184,8 @@ if($nb_clas_fut==0) {
 }
 
 $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' ORDER BY opt;";
-$res_opt=mysql_query($sql);
-$nb_opt=mysql_num_rows($res_opt);
+$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_opt=mysqli_num_rows($res_opt);
 if($nb_opt==0) {
 	echo "<p>Aucune option n'est encore définie pour ce projet.</p>\n";
 	require("../lib/footer.inc.php");
@@ -197,20 +197,20 @@ echo "<h2>Projet $projet</h2>\n";
 echo "<p>Vous pouvez saisir ici les options que l'on ne doit pas trouver sur certaines classes.</p>\n";
 
 $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
-$res_lv1=mysql_query($sql);
-$nb_lv1=mysql_num_rows($res_lv1);
+$res_lv1=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_lv1=mysqli_num_rows($res_lv1);
 
 $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv2' ORDER BY opt;";
-$res_lv2=mysql_query($sql);
-$nb_lv2=mysql_num_rows($res_lv2);
+$res_lv2=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_lv2=mysqli_num_rows($res_lv2);
 
 $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv3' ORDER BY opt;";
-$res_lv3=mysql_query($sql);
-$nb_lv3=mysql_num_rows($res_lv3);
+$res_lv3=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_lv3=mysqli_num_rows($res_lv3);
 
 $sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='autre' ORDER BY opt;";
-$res_autre=mysql_query($sql);
-$nb_autre=mysql_num_rows($res_autre);
+$res_autre=mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_autre=mysqli_num_rows($res_autre);
 
 $cpt=0;
 if($nb_lv1>0) {$cpt++;}
@@ -235,7 +235,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 $cpt=0;
-while($lig=mysql_fetch_object($res_clas_fut)) {
+while($lig=mysqli_fetch_object($res_clas_fut)) {
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' /><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
 	$cpt++;
 }
@@ -244,7 +244,7 @@ echo "</td>\n";
 $cpt=0;
 if($nb_lv1>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
-	while($lig=mysql_fetch_object($res_lv1)) {
+	while($lig=mysqli_fetch_object($res_lv1)) {
 		echo "<input type='checkbox' name='sans_lv1[]' id='opt_$cpt' value='$lig->opt' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
@@ -255,7 +255,7 @@ if($nb_lv1>0) {
 
 if($nb_lv2>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
-	while($lig=mysql_fetch_object($res_lv2)) {
+	while($lig=mysqli_fetch_object($res_lv2)) {
 		echo "<input type='checkbox' name='sans_lv2[]' id='opt_$cpt' value='$lig->opt' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
@@ -266,7 +266,7 @@ if($nb_lv2>0) {
 
 if($nb_lv3>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
-	while($lig=mysql_fetch_object($res_lv3)) {
+	while($lig=mysqli_fetch_object($res_lv3)) {
 		echo "<input type='checkbox' name='sans_lv3[]' id='opt_$cpt' value='$lig->opt' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
@@ -277,7 +277,7 @@ if($nb_lv3>0) {
 
 if($nb_autre>0) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
-	while($lig=mysql_fetch_object($res_autre)) {
+	while($lig=mysqli_fetch_object($res_autre)) {
 		echo "<input type='checkbox' name='sans_autre[]' id='opt_$cpt' value='$lig->opt' />\n";
 		echo "<label for='opt_$cpt'>$lig->opt</label>\n";
 		echo "<br />\n";
@@ -302,15 +302,15 @@ echo "</form>\n";
 
 
 $sql="SELECT * FROM gc_options_classes WHERE projet='$projet' ORDER BY classe_future,opt_exclue;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)>0) {
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr'>\n";
 	echo "<p>Si vous souhaitez supprimer des contraintes préalablement définies, cochez et validez&nbsp;:</p>\n";
 	$cpt=0;
 	$classe_prec="";
 	$alt=1;
 	echo "<table class='boireaus' border='1' summary='Contraintes saisies'>\n";
-	while($lig=mysql_fetch_object($res)) {
+	while($lig=mysqli_fetch_object($res)) {
 		if($lig->classe_future!=$classe_prec) {
 			if($cpt>0) {echo "</td></tr>\n";}
 			$alt=$alt*(-1);

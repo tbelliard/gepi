@@ -175,9 +175,9 @@
 			$matiere_nom_long[$i]=$matiere[$i];
 		}
 		else {
-			$call_matiere = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
-			if(mysql_num_rows($call_matiere)>0) {
-				$matiere_nom_long[$i] = mysql_result($call_matiere, "0", "nom_complet");
+			$call_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere[$i]."'");
+			if(mysqli_num_rows($call_matiere)>0) {
+				$matiere_nom_long[$i] = old_mysql_result($call_matiere, "0", "nom_complet");
 			}
 			else {
 				$matiere_nom_long[$i]=$matiere[$i];
@@ -208,9 +208,9 @@
 	$eleve1=$_GET['v_legend1'];
 	$eleve1=preg_replace("/[^A-Za-z0-9_.-]/", "", $eleve1);
 	$sql="SELECT * FROM eleves WHERE login='$eleve1';";
-	$resultat_infos_eleve1=mysql_query($sql);
-	if(mysql_num_rows($resultat_infos_eleve1)>0) {
-		$ligne=mysql_fetch_object($resultat_infos_eleve1);
+	$resultat_infos_eleve1=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($resultat_infos_eleve1)>0) {
+		$ligne=mysqli_fetch_object($resultat_infos_eleve1);
 		//$nom_eleve1=$ligne->nom." ".$ligne->prenom;
 		$nom_eleve[1]=$ligne->nom." ".$ligne->prenom;
 	}
@@ -228,11 +228,11 @@
 		$eleve2="";
 
 		$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
-		$result_periode=mysql_query($sql);
-		$nb_periode=mysql_num_rows($result_periode);
+		$result_periode=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_periode=mysqli_num_rows($result_periode);
 
 		$cpt=1;
-		while($lign_periode=mysql_fetch_object($result_periode)){
+		while($lign_periode=mysqli_fetch_object($result_periode)){
 			$nom_periode[$cpt]=$lign_periode->nom_periode;
 			$nom_periode[$cpt]=remplace_accents($nom_periode[$cpt],'simple');
 			$cpt++;
@@ -308,9 +308,9 @@
 			default:
 				$eleve2=preg_replace("/[^A-Za-z0-9_.-]/", "", $eleve2);
 				$sql="SELECT * FROM eleves WHERE login='$eleve2'";
-				$resultat_infos_eleve2=mysql_query($sql);
-				if(mysql_num_rows($resultat_infos_eleve2)>0) {
-					$ligne=mysql_fetch_object($resultat_infos_eleve2);
+				$resultat_infos_eleve2=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($resultat_infos_eleve2)>0) {
+					$ligne=mysqli_fetch_object($resultat_infos_eleve2);
 					//$nom_eleve2=$ligne->nom." ".$ligne->prenom;
 					$nom_eleve[2]=$ligne->nom." ".$ligne->prenom;
 				}
@@ -455,9 +455,9 @@
 	for($i=0;$i<count($tab);$i++){
 		for($j=0;$j<count($comp);$j++){
 			$sql="SELECT value FROM setting WHERE name='couleur_".$tab[$i]."_".$comp[$j]."'";
-			$res_couleur=mysql_query($sql);
-			if(mysql_num_rows($res_couleur)>0){
-				$tmp=mysql_fetch_object($res_couleur);
+			$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_couleur)>0){
+				$tmp=mysqli_fetch_object($res_couleur);
 				$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
 			}
 		}
@@ -483,9 +483,9 @@
 		for($i=4;$i<=$nb_series;$i++){
 			for($j=0;$j<count($comp);$j++){
 				$sql="SELECT value FROM setting WHERE name='couleur_Periode_".$i."_".$comp[$j]."'";
-				$res_couleur=mysql_query($sql);
-				if(mysql_num_rows($res_couleur)>0){
-					$tmp=mysql_fetch_object($res_couleur);
+				$res_couleur=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_couleur)>0){
+					$tmp=mysqli_fetch_object($res_couleur);
 					$tabcouleurs["Periode_".$i][$comp[$j]]=$tmp->value;
 				}
 				else{

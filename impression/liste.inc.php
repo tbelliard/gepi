@@ -16,8 +16,8 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
     $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode[$i]. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
 	//echo $requete;
 	//echo sizeof($id_periode)." : $i : ==>$requete <br />";
-	$call_eleve = mysql_query($requete);	
-	$nb_eleves = @mysql_num_rows($call_eleve);
+	$call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);	
+	$nb_eleves = @mysqli_num_rows($call_eleve);
 	
 	//en réalité, le nombre de ligne
 	$nombre_eleves = $nb_eleves*sizeof($id_periode); // parametre de la fonction
@@ -38,7 +38,7 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
 	echo "</tr>";
 	*/
 	
-	while ($donner = @mysql_fetch_array( $call_eleve ))
+	while ($donner = @mysqli_fetch_array( $call_eleve ))
 	{
 	    $donnees_eleves[$cpt_i]['login'] = $donner['login']; 
 		$donnees_eleves[$cpt_i]['ereno'] = $donner['ereno']; 
@@ -68,18 +68,18 @@ for ($i=0; $i<sizeof($id_periode) ; $i++) {
 		{
 		 $call_resp = @mysql_query('SELECT * FROM responsables WHERE ereno = "'.$ereno[$cpt_i].'"');
 		     $civilite_parents[$ident_eleve_sel1][0] = "M. et Mme";
-			 $nom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "nom1");
-			 $prenom_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "prenom1");
-			 $adresse1_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1");
-			 $adresse2_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "adr1_comp");
-			 $ville_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "commune1");
-			 $cp_parents[$ident_eleve_sel1][0] = @mysql_result($call_resp , 0, "cp1");
-			 $nom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "nom2");
-			 $prenom_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "prenom2");
-			 $adresse1_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2");
-			 $adresse2_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "adr2_comp");
-			 $ville_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "commune2");
-			 $cp_parents[$ident_eleve_sel1][1] = @mysql_result($call_resp , 0, "cp2");
+			 $nom_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "nom1");
+			 $prenom_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "prenom1");
+			 $adresse1_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "adr1");
+			 $adresse2_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "adr1_comp");
+			 $ville_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "commune1");
+			 $cp_parents[$ident_eleve_sel1][0] = @old_mysql_result($call_resp , 0, "cp1");
+			 $nom_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "nom2");
+			 $prenom_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "prenom2");
+			 $adresse1_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "adr2");
+			 $adresse2_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "adr2_comp");
+			 $ville_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "commune2");
+			 $cp_parents[$ident_eleve_sel1][1] = @old_mysql_result($call_resp , 0, "cp2");
 		} else {
 			 $civilite_parents[$ident_eleve_sel1][0] = '';
 				 $nom_parents[$ident_eleve_sel1][0] = '';
@@ -120,12 +120,12 @@ global $prefix_base ;
 
 		$sql="SELECT classe, nom_complet FROM classes WHERE id='".$current_eleve["classe"]."'";
 	    //echo "$sql<br />";
-		$res_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_tmp)==0){
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_tmp)==0){
 			die("$eleve_login ne serait dans aucune classe???</body></html>");
 		}
 		else{
-			$lig_tmp=mysql_fetch_object($res_tmp);
+			$lig_tmp=mysqli_fetch_object($res_tmp);
 			$eleve_classe=$lig_tmp->classe;
 			$eleve_classe_nom_complet=$lig_tmp->nom_complet;
 		}
@@ -133,26 +133,26 @@ global $prefix_base ;
 		//$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
 		$sql="SELECT id_classe,naissance,ereno FROM eleves, j_eleves_classes WHERE eleves.login='$eleve_login' AND j_eleves_classes.login=eleves.login;";
 	    //echo "$sql<br />";
-		$res_tmp=mysql_query($sql);
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 
-		if(mysql_num_rows($res_tmp)==0){
+		if(mysqli_num_rows($res_tmp)==0){
 			die("Problème avec les infos de $eleve_login</body></html>");
 		}
 		else{
-			$lig_tmp=mysql_fetch_object($res_tmp);
+			$lig_tmp=mysqli_fetch_object($res_tmp);
 			$eleve_naissance=$lig_tmp->naissance;
 			$eleve_ereno=$lig_tmp->ereno;
 			$eleve_id_classe=$lig_tmp->id_classe;	
 
 			// A quoi servent les données ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
 			$sql="SELECT doublant,regime FROM j_eleves_regime WHERE login='$eleve_login';";
-			$res_regime=mysql_query($sql);
-			if(mysql_num_rows($res_regime)==0) {
+			$res_regime=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_regime)==0) {
 				$eleve_doublant='';
 				$eleve_regime='';
 			}
 			else {
-				$lig_tmp2=mysql_fetch_object($res_regime);
+				$lig_tmp2=mysqli_fetch_object($res_regime);
 				$eleve_doublant=$lig_tmp2->doublant;
 				$eleve_regime=$lig_tmp2->regime;
 			}

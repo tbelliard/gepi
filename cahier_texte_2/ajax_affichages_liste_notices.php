@@ -101,8 +101,8 @@ echo ("<select id=\"id_groupe_colonne_gauche\" onChange=\"javascript:
 echo "<option value='-1'>choisissez un groupe</option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group->getId()."' AND domaine='cahier_texte' AND visible='n';";
-	$test_grp_visib=mysql_query($sql);
-	if(mysql_num_rows($test_grp_visib)==0) {
+	$test_grp_visib=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_grp_visib)==0) {
 		echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
 		if ($current_group->getId() == $group->getId()) echo " SELECTED ";
 
@@ -152,8 +152,8 @@ foreach ($current_group->getClasses() as $classe) {
 			from ct_devoirs_entry
 			where (id_groupe = '" . $group->getId() . "'
 			and date_ct > $aujourdhui)";
-		$res_total = mysql_query($req_total);
-		$sum = mysql_fetch_object($res_total);
+		$res_total = mysqli_query($GLOBALS["mysqli"], $req_total);
+		$sum = mysqli_fetch_object($res_total);
 		$total[$classe->getId()] += $sum->total;
 		if ($sum->date > $date[$classe->getId()]) $date[$classe->getId()] = $sum->date;
 	}

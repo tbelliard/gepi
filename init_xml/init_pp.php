@@ -65,7 +65,7 @@ if (!isset($step1)) {
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+		if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 			$flag=1;
 		}
 		$j++;
@@ -91,8 +91,8 @@ if (!isset($is_posted)) {
 		check_token(false);
 		$j=0;
 		while ($j < count($liste_tables_del)) {
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM $liste_tables_del[$j]");
 			}
 			$j++;
 		}
@@ -213,9 +213,9 @@ if (!isset($is_posted)) {
 						}
 						if($temoin_erreur!="oui"){
 							$sql="SELECT id FROM classes WHERE classe='$affiche[0]'";
-							$res_classe=mysql_query($sql);
-							if(mysql_num_rows($res_classe)==1){
-								$lig_classe=mysql_fetch_object($res_classe);
+							$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_classe)==1){
+								$lig_classe=mysqli_fetch_object($res_classe);
 								$id_classe=$lig_classe->id;
 
 								/*
@@ -228,17 +228,17 @@ if (!isset($is_posted)) {
 								}
 								*/
 								$sql="SELECT col1 FROM tempo2 WHERE col2='$affiche[1]'";
-								$res_prof=mysql_query($sql);
-								$lig_prof=mysql_fetch_object($res_prof);
+								$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+								$lig_prof=mysqli_fetch_object($res_prof);
 
 								//$sql="SELECT login,periode FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login,periode"
 								//$sql="SELECT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
 								$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe' ORDER BY login";
-								$res_eleve=mysql_query($sql);
+								$res_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
 								$temoin_erreur_classe=0;
-								while($lig_eleve=mysql_fetch_object($res_eleve)){
+								while($lig_eleve=mysqli_fetch_object($res_eleve)){
 									$sql="INSERT INTO j_eleves_professeurs VALUES('$lig_eleve->login','$lig_prof->col1','$id_classe')";
-									$res_prof_eleve=mysql_query($sql);
+									$res_prof_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$res_prof_eleve){
 										$temoin_erreur_classe++;
 										//echo "<tr><td>$sql</td></tr>\n";

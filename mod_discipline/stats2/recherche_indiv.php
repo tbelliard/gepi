@@ -42,19 +42,19 @@ if(isset($_POST['nom'])) {
                 WHERE nom LIKE '%".$_POST['nom']."%'
                 AND e.login=jec.login AND jec.id_classe=c.id
                 GROUP BY e.login";
-      $req = mysql_query($sql);
+      $req = mysqli_query($GLOBALS["mysqli"], $sql);
       break;
     case('personnels'):
       $sql = "SELECT nom,prenom,login,statut FROM utilisateurs
                 WHERE nom LIKE '%".$_POST['nom']."%'
                 AND (statut='professeur' OR statut='CPE' OR statut='SCOLARITE' OR statut='AUTRE' OR statut='ADMINISTRATEUR')";
-      $req = mysql_query($sql);
+      $req = mysqli_query($GLOBALS["mysqli"], $sql);
       break;
   }
   $i = 0;
   echo '<ul class="affichage_nom">';
 
-  while($resultat = mysql_fetch_assoc($req)) {
+  while($resultat = mysqli_fetch_assoc($req)) {
     echo '<li class="affichage_nom" id="'.$resultat['login'].'"><div class="photo_trombi">';
     switch ($choix) {
       case('eleves'):

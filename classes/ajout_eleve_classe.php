@@ -73,15 +73,15 @@ else {
 		}
 		else {
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe';";
-			$res_per=mysql_query($sql);
-			if(mysql_num_rows($res_per)==0) {
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_per)==0) {
 				//$msg="Aucune période n'existe pour la classe <a href='../classes/periodes.php?id_classe=$id_classe'>$classe</a>.";
 				$msg="Aucune période n'existe pour la classe $classe.";
 				$erreur="y";
 			}
 			else {
 				$tab_per=array();
-				while($lig_per=mysql_fetch_object($res_per)) {
+				while($lig_per=mysqli_fetch_object($res_per)) {
 					$tab_per[]=$lig_per->num_periode;
 				}
 
@@ -98,9 +98,9 @@ else {
 					(login = '$login_eleve' and
 					id_classe!='$id_classe' and
 					periode = '$i')";
-					$test_clas_per=mysql_query($sql);
-					if(mysql_num_rows($test_clas_per)>0) {
-						$lig_clas_per=mysql_fetch_object($test_clas_per);
+					$test_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_clas_per)>0) {
+						$lig_clas_per=mysqli_fetch_object($test_clas_per);
 						//$msg.=$login_eleve." est déjà dans une autre classe&nbsp;: <a href=../classes/classes_const.php?id_classe=$lig_clas_per->id_classe>".get_class_from_id($lig_clas_per->id_classe)."</a> en période $i.<br />\n";
 						$msg.=$login_eleve." est déjà dans une autre classe&nbsp;: ".get_class_from_id($lig_clas_per->id_classe)." en période $i.<br />\n";
 					}
@@ -109,19 +109,19 @@ else {
 						(login = '$login_eleve' and
 						id_classe = '$id_classe' and
 						periode = '$i')";
-						$res_clas_per=mysql_query($sql);
-						if (mysql_num_rows($res_clas_per)==0) {
+						$res_clas_per=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (mysqli_num_rows($res_clas_per)==0) {
 							$sql="INSERT INTO j_eleves_classes VALUES('$login_eleve', '$id_classe', $i, '0');";
-							$reg_data = mysql_query($sql);
+							$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!($reg_data))  {$msg.="Erreur lors de l'inscription de $nom_prenom dans la classe $classe en période $i.<br />";}
 							else {
 								//$msg.="$nom_prenom a été inscrit(e) dans la classe <a href=\"../classes/classes_const.php?id_classe=$id_classe\">$classe</a> en période $i.<br />";
 								$msg.="$nom_prenom a été inscrit(e) dans la classe $classe en période $i.<br />";
 								// Ménage:
 								$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Ajout dans une classe % effectuer pour %($login_eleve)';";
-								$res_actions=mysql_query($sql);
-								if(mysql_num_rows($res_actions)>0) {
-									while($lig_action=mysql_fetch_object($res_actions)) {
+								$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_actions)>0) {
+									while($lig_action=mysqli_fetch_object($res_actions)) {
 										$menage=del_info_action($lig_action->id);
 										if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $login_eleve<br />";}
 									}
@@ -132,14 +132,14 @@ else {
 		
 						// UPDATE: Ajouter l'élève à tous les groupes pour la période:
 						$sql="SELECT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe'";
-						$res_liste_grp_classe=mysql_query($sql);
-						if(mysql_num_rows($res_liste_grp_classe)>0){
-							while($lig_tmp=mysql_fetch_object($res_liste_grp_classe)){
+						$res_liste_grp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_liste_grp_classe)>0){
+							while($lig_tmp=mysqli_fetch_object($res_liste_grp_classe)){
 								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$login_eleve' AND id_groupe='$lig_tmp->id_groupe' AND periode='$i'";
-								$test=mysql_query($sql);
-								if(mysql_num_rows($test)==0){
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)==0){
 									$sql="INSERT INTO j_eleves_groupes SET login='$login_eleve',id_groupe='$lig_tmp->id_groupe',periode='$i'";
-									$insert_grp=mysql_query($sql);
+									$insert_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!($insert_grp)) {
 										//$msg.="Erreur lors de l'inscription de $nom_prenom dans le groupe n°<a href='../groupes/edit_eleves.php?id_groupe=$lig_tmp->id_groupe&id_classe=$id_classe' target='_blank'>$lig_tmp->id_groupe</a> en période $i.<br />";
 										$msg.="Erreur lors de l'inscription de $nom_prenom dans le groupe n°$lig_tmp->id_groupe en période $i.<br />";
@@ -155,16 +155,16 @@ else {
 										jec.periode='$i'
 									)";
 						//echo "$sql<br />";
-						$res_cpe=mysql_query($sql);
-						if(mysql_num_rows($res_cpe)==1) {
+						$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_cpe)==1) {
 							$sql="DELETE FROM j_eleves_cpe WHERE e_login='$login_eleve';";
 							//echo "$sql<br />";
-							$nettoyage=mysql_query($sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 			
-							$lig_tmp=mysql_fetch_object($res_cpe);
+							$lig_tmp=mysqli_fetch_object($res_cpe);
 							$sql="INSERT INTO j_eleves_cpe SET cpe_login='$lig_tmp->cpe_login', e_login='$login_eleve';";
 							//echo "$sql<br />";
-							$insert_cpe=mysql_query($sql);
+							$insert_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_cpe_defini)) {
@@ -183,16 +183,16 @@ else {
 										jep.id_classe='$id_classe'
 									)";
 						//echo "$sql<br />";
-						$res_pp=mysql_query($sql);
-						if(mysql_num_rows($res_pp)==1) {
+						$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_pp)==1) {
 							$sql="DELETE FROM j_eleves_professeurs WHERE login='$login_eleve';";
 							//echo "$sql<br />";
-							$nettoyage=mysql_query($sql);
+							$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 			
-							$lig_tmp=mysql_fetch_object($res_pp);
+							$lig_tmp=mysqli_fetch_object($res_pp);
 							$sql="INSERT INTO j_eleves_professeurs SET professeur='$lig_tmp->professeur', login='$login_eleve', id_classe='$id_classe';";
 							//echo "$sql<br />";
-							$insert_pp=mysql_query($sql);
+							$insert_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 						else {
 							if(!in_array($login_eleve, $tab_ele_sans_pp_defini)) {

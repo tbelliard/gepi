@@ -31,14 +31,14 @@ if ((isset($id_classe))||(isset($current_group))) {
 	}
 
 	if(isset($_id_classe)) {
-		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
-		$nb_periode = mysql_num_rows($periode_query) + 1 ;
+		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$_id_classe' ORDER BY num_periode");
+		$nb_periode = mysqli_num_rows($periode_query) + 1 ;
 		$i = "1";
 		while ($i < $nb_periode) {
-			$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
-			$ver_periode[$i] = mysql_result($periode_query, $i-1, "verouiller");
-			$date_ver_periode[$i] = mysql_result($periode_query, $i-1, "date_verrouillage");
-			$date_fin_periode[$i] = mysql_result($periode_query, $i-1, "date_fin");
+			$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
+			$ver_periode[$i] = old_mysql_result($periode_query, $i-1, "verouiller");
+			$date_ver_periode[$i] = old_mysql_result($periode_query, $i-1, "date_verrouillage");
+			$date_fin_periode[$i] = old_mysql_result($periode_query, $i-1, "date_fin");
 			$i++;
 		}
 	}

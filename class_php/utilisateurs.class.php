@@ -28,11 +28,11 @@ class prof{
 
 		// On initialise en récupérant toutes les infos
 		$sql = "SELECT nom, prenom, civilite, email, statut, etat, change_mdp, niveau_alerte FROM utilisateurs WHERE login = '".$login_user."'";
-		$query = mysql_query($sql) OR trigger_error('erreur $query/construct : ', E_USER_NOTICE);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('erreur $query/construct : ', E_USER_NOTICE);
 		if ($query) {
 			$this->login = $login_user;
 
-			$rep = mysql_fetch_array($query);
+			$rep = mysqli_fetch_array($query);
 
 			$this->nom = $rep["nom"];
 			$this->prenom = $rep["prenom"];
@@ -52,11 +52,11 @@ class prof{
 	function prof($login_user){
 		// On initialise en récupérant toutes les infos
 		$sql = "SELECT nom, prenom, civilite, email, statut, etat, change_mdp, niveau_alerte FROM utilisateurs WHERE login = '".$login_user."'";
-		$query = mysql_query($sql);
+		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($query) {
 			$this->login = $login_user;
 
-			$rep = mysql_fetch_array($query);
+			$rep = mysqli_fetch_array($query);
 
 			$this->nom = $rep["nom"];
 			$this->prenom = $rep["prenom"];
@@ -78,8 +78,8 @@ class prof{
 
 			// On récupère le statut de l'utilisateur dans la table droits_utilisateurs
 			$sql = "SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE login_user = '".$this->login."' AND id_statut = ds.id";
-			$query = mysql_query($sql);
-			$rep = mysql_fetch_array($query);
+			$query = mysqli_query($GLOBALS["mysqli"], $sql);
+			$rep = mysqli_fetch_array($query);
 
 			return $rep["nom_statut"];
 

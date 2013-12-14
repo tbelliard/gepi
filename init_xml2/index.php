@@ -85,7 +85,7 @@ if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue(
 		identite_u VARCHAR( 50 ) NOT NULL ,
 		PRIMARY KEY ( id )
 		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-	$create_table=mysql_query($sql);
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	/*
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";

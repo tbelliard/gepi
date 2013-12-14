@@ -132,8 +132,8 @@ elseif($_SESSION['statut']=="professeur"){
 									jec.id_classe=jgc.id_classe AND
 									jgc.id_groupe=jgp.id_groupe AND
 									jgp.login='".$_SESSION['login']."';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0){
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
 				//echo "$sql<br />";
@@ -179,8 +179,8 @@ elseif($_SESSION['statut']=="professeur"){
 							WHERE jeg.login='$logineleve' AND
 									jeg.id_groupe=jgp.id_groupe AND
 									jgp.login='".$_SESSION['login']."';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0){
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0){
 				// A DEGAGER
 				// A VOIR: Comment enregistrer une tentative d'accès illicite?
 				//echo "$sql<br />";
@@ -227,9 +227,9 @@ elseif($_SESSION['statut']=="professeur"){
 			}
 			elseif(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
 				$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$logineleve' ORDER BY periode,classe;";
-				$res_class=mysql_query($sql);
-				if(mysql_num_rows($res_class)>0){
-					while($lig_tmp=mysql_fetch_object($res_class)){
+				$res_class=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_class)>0){
+					while($lig_tmp=mysqli_fetch_object($res_class)){
 						if(is_pp($_SESSION['login'], $lig_tmp->id_classe)) {
 							$acces_pp="y";
 							break;
@@ -268,8 +268,8 @@ elseif($_SESSION['statut']=="cpe"){
 	}
 	elseif($AACpeResp=="yes"){
 		$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."'";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0){
 			$acces="y";
 
 			$sql_classes="SELECT DISTINCT c.id,c.classe FROM classes c,
@@ -295,8 +295,8 @@ elseif($_SESSION['statut']=="cpe"){
 			if(isset($logineleve)){
 				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND
 															e_login='$logineleve'";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0){
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
 					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
@@ -327,8 +327,8 @@ elseif($_SESSION['statut']=="scolarite"){
 	elseif($AAScolResp=="yes"){
 		$sql="SELECT 1=1 FROM j_scol_classes jsc
 						WHERE jsc.login='".$_SESSION['login']."';";
-		$test=mysql_query($sql);
-		if(mysql_num_rows($test)>0){
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0){
 			$acces="y";
 
 			$sql_classes="SELECT DISTINCT c.id,c.classe FROM classes c,
@@ -354,8 +354,8 @@ elseif($_SESSION['statut']=="scolarite"){
 								WHERE jec.login='$logineleve' AND
 										jec.id_classe=jsc.id_classe AND
 										jsc.login='".$_SESSION['login']."';";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0){
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
 					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve qui n'est pas élève d'une des classes dont le CPE est responsable.");
@@ -374,9 +374,9 @@ elseif($_SESSION['statut']=="responsable"){
 		$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND
 																			r.ele_id=e.ele_id AND
 																			rp.login='".$_SESSION['login']."'";
-		$test=mysql_query($sql);
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />\n";
-		if(mysql_num_rows($test)>0){
+		if(mysqli_num_rows($test)>0){
 			$acces="y";
 
 			$tab_eleves_resp=array();
@@ -497,8 +497,8 @@ elseif($_SESSION['statut']=="responsable"){
 										r.acces_sp='y')";
 				}
 				$sql.=";";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0){
+				$test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test)==0){
 					// A DEGAGER
 					// A VOIR: Comment enregistrer une tentative d'accès illicite?
 					tentative_intrusion(1, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") d'accéder aux données d'Années antérieures de $logineleve dont il n'est pas responsable.");
@@ -522,18 +522,18 @@ elseif($_SESSION['statut']=="eleve"){
 						WHERE jec.login='".$_SESSION['login']."' AND
 								jec.id_classe=c.id
 						ORDER BY c.classe DESC;";
-		$res_classe=mysql_query($sql_classes);
-		if(mysql_num_rows($res_classe)>0){
-			$lig_classe=mysql_fetch_object($res_classe);
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql_classes);
+		if(mysqli_num_rows($res_classe)>0){
+			$lig_classe=mysqli_fetch_object($res_classe);
 			$id_classe=$lig_classe->id;
 		}
 	}
 }
 elseif($_SESSION['statut']=="autre") {
 	$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/consultation_annee_anterieure.php' AND ds.autorisation='V';";
-	$res_acces=mysql_query($sql);
+	$res_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysql_num_rows($res_acces)>0){
+	if(mysqli_num_rows($res_acces)>0){
 		$acces="y";
 
 		$sql_classes="SELECT DISTINCT id,classe FROM classes ORDER BY classe";
@@ -655,8 +655,8 @@ if(!isset($id_classe)){
 		die();
 	}
 
-	$res1=mysql_query($sql_classes);
-	$nb_classes=mysql_num_rows($res1);
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql_classes);
+	$nb_classes=mysqli_num_rows($res1);
 	if($nb_classes==0){
 		echo "<p>ERREUR: Il semble qu'aucune classe ne soit encore définie.</p>\n";
 		require("../lib/footer.inc.php");
@@ -681,7 +681,7 @@ if(!isset($id_classe)){
 			echo "<td align='left'>\n";
 		}
 
-		$lig_classe=mysql_fetch_object($res1);
+		$lig_classe=mysqli_fetch_object($res1);
 
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_classe->id'>$lig_classe->classe</a><br />\n";
 
@@ -817,9 +817,9 @@ else {
 		}
 
 		//echo "$sql_ele<br />\n";
-		$res_ele=mysql_query($sql_ele);
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 
-		if(mysql_num_rows($res_ele)==0){
+		if(mysqli_num_rows($res_ele)==0){
 			echo "<p>ERREUR: Il semble qu'l n'y ait aucun ".$gepiSettings['denomination_eleve']." dans cette classe.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -827,7 +827,7 @@ else {
 		else{
 			echo "<p>Choisissez un ".$gepiSettings['denomination_eleve']." pour lequel vous souhaitez consulter les informations antérieures.</p>\n";
 
-			$nb_eleves=mysql_num_rows($res_ele);
+			$nb_eleves=mysqli_num_rows($res_ele);
 
 			// Affichage sur 3 colonnes
 			$nb_par_colonne=round($nb_eleves/3);
@@ -847,7 +847,7 @@ else {
 					echo "<td align='left'>\n";
 				}
 
-				$lig_ele=mysql_fetch_object($res_ele);
+				$lig_ele=mysqli_fetch_object($res_ele);
 
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$lig_ele->login'>$lig_ele->nom $lig_ele->prenom</a><br />\n";
 
@@ -873,14 +873,14 @@ else {
 
 			$sql="SELECT DISTINCT ad.annee FROM archivage_disciplines ad, eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND ad.INE=e.no_gep ORDER BY annee ASC;";
 			//echo "$sql<br />\n";
-			$res_ant=mysql_query($sql);
-			if(mysql_num_rows($res_ant)==0){
+			$res_ant=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_ant)==0){
 				echo "<p>Aucun résultat antérieur n'a été conservé pour cette classe.</p>\n";
 
 				$sql="SELECT 1=1 FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND e.no_gep!='NULL' AND e.no_gep!='';";
 				//echo "$sql<br />";
-				$test_ine=mysql_query($sql);
-				if(mysql_num_rows($test_ine)==0) {
+				$test_ine=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_ine)==0) {
 					echo "<p style='color:red'>Il se peut que la table 'eleves' souffre de quelques lacunes&nbsp;: Aucun ".$gepiSettings['denomination_eleve']." n'a son numéro INE renseigné.<br />Une Mise à jour d'après Sconet peut permettre de corriger cela (<em>avec un compte administrateur</em>).<br />Vous pouvez aussi contrôler dans Gestion des bases/Gestion des élèves si une conversion ne vous est pas demandée pour compléter certaines informations.</p>\n";
 				}
 			}
@@ -888,14 +888,14 @@ else {
 
 				unset($tab_annees);
 
-				$nb_annees=mysql_num_rows($res_ant);
+				$nb_annees=mysqli_num_rows($res_ant);
 
 				$alt=1;
 				echo "<table class='boireaus table_annee_anterieure' summary='Bulletins'>\n";
 				echo "<tr class='lig$alt'>\n";
 				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 				$cpt=0;
-				while($lig_ant=mysql_fetch_object($res_ant)){
+				while($lig_ant=mysqli_fetch_object($res_ant)){
 
 					$tab_annees[]=$lig_ant->annee;
 
@@ -907,9 +907,9 @@ else {
 
 					//$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
 					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
-					$res_ant2=mysql_query($sql);
+					$res_ant2=mysqli_query($GLOBALS["mysqli"], $sql);
 
-					if(mysql_num_rows($res_ant2)==0){
+					if(mysqli_num_rows($res_ant2)==0){
 						echo "<td>";
 						//echo "Aucun résultat antérieur n'a été conservé pour cet ".$gepiSettings['denomination_eleve'].".";
 						echo "Aucun résultat antérieur n'a été conservé pour l'année ".$lig_ant->annee.".";
@@ -917,7 +917,7 @@ else {
 					}
 					else{
 						$cpt=0;
-						while($lig_ant2=mysql_fetch_object($res_ant2)){
+						while($lig_ant2=mysqli_fetch_object($res_ant2)){
 							//echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
 							echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;aff_classe=y&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>Période $lig_ant2->num_periode</a></td>\n";
 							$cpt++;
@@ -970,14 +970,14 @@ else {
 			echo "</form>\n";
 			echo "</div>\n";
 
-		$res_liste_ele=mysql_query($sql_ele);
-		if(mysql_num_rows($res_liste_ele)==0) {
+		$res_liste_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
+		if(mysqli_num_rows($res_liste_ele)==0) {
 			echo "<p>Aucun ".$gepiSettings['denomination_eleve']." n'a semble-t-il été trouvé.</p>\n";
 		}
 		else {
 			require("fonctions_annees_anterieures.inc.php");
 
-			while($lig_ele=mysql_fetch_object($res_liste_ele)) {
+			while($lig_ele=mysqli_fetch_object($res_liste_ele)) {
 				bull_simp_annee_anterieure($lig_ele->login,$id_classe,$annee_scolaire,$num_periode);
 			}
 

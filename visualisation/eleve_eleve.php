@@ -113,13 +113,13 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 	}
 	*/
 
-	$call_classes=mysql_query($sql);
+	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	$nombreligne = mysql_num_rows($call_classes);
+	$nombreligne = mysqli_num_rows($call_classes);
 	$i = "0" ;
 	while ($i < $nombreligne) {
-		$ide_classe = mysql_result($call_classes, $i, "id");
-		$nom_classe = mysql_result($call_classes, $i, "classe");
+		$ide_classe = old_mysql_result($call_classes, $i, "id");
+		$nom_classe = old_mysql_result($call_classes, $i, "classe");
 		echo "<option value='$ide_classe'>$nom_classe</option>\n";
 	$i++;
 	}
@@ -129,18 +129,18 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 	echo "<select size='1' name='id_classe2'>\n";
 	$i = "0" ;
 	while ($i < $nombreligne) {
-		$ide_classe = mysql_result($call_classes, $i, "id");
-		$nom_classe = mysql_result($call_classes, $i, "classe");
+		$ide_classe = old_mysql_result($call_classes, $i, "id");
+		$nom_classe = old_mysql_result($call_classes, $i, "classe");
 		echo "<option value='$ide_classe'>$nom_classe</option>\n";
 	$i++;
 	}
 	echo "</select><br /><br /><input type='submit' value='Valider' /></form>\n";
 
 } else {
-	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
-	$classe = mysql_result($call_classe, "0", "classe");
-	$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe2'");
-	$classe2 = mysql_result($call_classe, "0", "classe");
+	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe'");
+	$classe = old_mysql_result($call_classe, "0", "classe");
+	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe2'");
+	$classe2 = old_mysql_result($call_classe, "0", "classe");
 
 	if ((!isset($v_eleve1)) OR (!isset($v_eleve2))) {
 		if (($v_eleve1) AND (!$v_eleve2)) { $msg="Vous devez entrer le nom d'un second élève...";}
@@ -151,13 +151,13 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		<p>Classe : <?php echo $classe; ?><br />Veuillez sélectionner l'élève n°1:<br />
 		<select size='1' name='v_eleve1'>
 		<?php
-		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and c.login=e.login) order by nom");
-		$nombreligne = mysql_num_rows($call_eleve);
+		$call_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and c.login=e.login) order by nom");
+		$nombreligne = mysqli_num_rows($call_eleve);
 		$i = "0" ;
 		while ($i < $nombreligne) {
-			$eleve = mysql_result($call_eleve, $i, 'login');
-			$nom_el = mysql_result($call_eleve, $i, 'nom');
-			$prenom_el = mysql_result($call_eleve, $i, 'prenom');
+			$eleve = old_mysql_result($call_eleve, $i, 'login');
+			$nom_el = old_mysql_result($call_eleve, $i, 'nom');
+			$prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
 			echo "<option value='$eleve'>$nom_el  $prenom_el </option>\n";
 			$i++;
 		}
@@ -167,13 +167,13 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		<p>Classe : <?php echo $classe2; ?><br /> Veuillez sélectionner l'élève n°2:<br />
 		<select size='1' name='v_eleve2'>
 		<?php
-		$call_eleve = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe2' and c.login=e.login) order by nom");
-		$nombreligne = mysql_num_rows($call_eleve);
+		$call_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe2' and c.login=e.login) order by nom");
+		$nombreligne = mysqli_num_rows($call_eleve);
 		$i = "0" ;
 		while ($i < $nombreligne) {
-			$eleve = mysql_result($call_eleve, $i, 'login');
-			$nom_el = mysql_result($call_eleve, $i, 'nom');
-			$prenom_el = mysql_result($call_eleve, $i, 'prenom');
+			$eleve = old_mysql_result($call_eleve, $i, 'login');
+			$nom_el = old_mysql_result($call_eleve, $i, 'nom');
+			$prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
 			echo "<option value='$eleve'>$nom_el  $prenom_el  </option>\n";
 		$i++;
 		}
@@ -182,11 +182,11 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 		<p>Choisissez quelle période vous souhaitez visualiser :<br />
 		<?php
-		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-		$nb_periode = mysql_num_rows($periode_query) + 1 ;
+		$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+		$nb_periode = mysqli_num_rows($periode_query) + 1 ;
 		$i = "1";
 		while ($i < $nb_periode) {
-			$nom_periode[$i] = mysql_result($periode_query, $i-1, "nom_periode");
+			$nom_periode[$i] = old_mysql_result($periode_query, $i-1, "nom_periode");
 			echo "<input type='radio' name='periode' value='$i' "; if ($i == '1') { echo "CHECKED";} echo " />$nom_periode[$i]<br />";
 		$i++;
 		}
@@ -202,13 +202,13 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 		?> | <a href="eleve_eleve.php">Choix des classes</a> | <a href="eleve_eleve.php?id_classe=<?php echo $id_classe;?>&amp;id_classe2=<?php echo $id_classe2;?>">Choix des élèves</a></p><?php
 		// On appelle les informations de l'utilisateur pour les afficher :
 		//$call_eleve1_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve1'");
-		$call_eleve1_info = mysql_query("SELECT * FROM eleves WHERE login='$v_eleve1'");
-		$eleve1_nom = mysql_result($call_eleve1_info, "0", "nom");
-		$eleve1_prenom = mysql_result($call_eleve1_info, "0", "prenom");
+		$call_eleve1_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$v_eleve1'");
+		$eleve1_nom = old_mysql_result($call_eleve1_info, "0", "nom");
+		$eleve1_prenom = old_mysql_result($call_eleve1_info, "0", "prenom");
 		//$call_eleve2_info = mysql_query("SELECT login,nom,prenom FROM eleves WHERE login='$v_eleve2'");
-		$call_eleve2_info = mysql_query("SELECT * FROM eleves WHERE login='$v_eleve2'");
-		$eleve2_nom = mysql_result($call_eleve2_info, "0", "nom");
-		$eleve2_prenom = mysql_result($call_eleve2_info, "0", "prenom");
+		$call_eleve2_info = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$v_eleve2'");
+		$eleve2_nom = old_mysql_result($call_eleve2_info, "0", "nom");
+		$eleve2_prenom = old_mysql_result($call_eleve2_info, "0", "prenom");
 		$v_legend1 = "";
 		$v_legend2 = "";
 		$v_legend1 = $eleve1_nom." ".$eleve1_prenom;
@@ -216,20 +216,20 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 
 		// On récupère des infos sur l'élève 1:
-		$v_elenoet1=mysql_result($call_eleve1_info, "0", 'elenoet');
-		$v_naissance1=mysql_result($call_eleve1_info, "0", 'naissance');
+		$v_elenoet1=old_mysql_result($call_eleve1_info, "0", 'elenoet');
+		$v_naissance1=old_mysql_result($call_eleve1_info, "0", 'naissance');
 		$tmp_tab_naissance=explode("-",$v_naissance1);
 		$v_naissance1=$tmp_tab_naissance[2]."/".$tmp_tab_naissance[1]."/".$tmp_tab_naissance[0];
-		$v_sexe1=mysql_result($call_eleve1_info, "0", 'sexe');
+		$v_sexe1=old_mysql_result($call_eleve1_info, "0", 'sexe');
 		$v_eleve_nom_prenom1=$v_legend1;
 
 		// On récupère des infos sur l'élève 2:
-		$v_elenoet2=mysql_result($call_eleve2_info, "0", 'elenoet');
-		$v_naissance2=mysql_result($call_eleve2_info, "0", 'naissance');
+		$v_elenoet2=old_mysql_result($call_eleve2_info, "0", 'elenoet');
+		$v_naissance2=old_mysql_result($call_eleve2_info, "0", 'naissance');
 		unset($tmp_tab_naissance);
 		$tmp_tab_naissance=explode("-",$v_naissance2);
 		$v_naissance2=$tmp_tab_naissance[2]."/".$tmp_tab_naissance[1]."/".$tmp_tab_naissance[0];
-		$v_sexe2=mysql_result($call_eleve2_info, "0", 'sexe');
+		$v_sexe2=old_mysql_result($call_eleve2_info, "0", 'sexe');
 		$v_eleve_nom_prenom2=$v_legend2;
 
 
@@ -252,7 +252,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 		if ($affiche_categories) {
 			// On utilise les valeurs spécifiées pour la classe en question
-			$call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe ".
+			$call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe ".
 			"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
 			"WHERE ( " .
 			"jeg.login = '" . $v_eleve1 ."' AND " .
@@ -265,7 +265,7 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 			") " .
 			"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
 		} else {
-			$call_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef " .
+			$call_groupes = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT jgc.id_groupe, jgc.coef " .
 			"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg " .
 			"WHERE ( " .
 			"jeg.login = '" . $v_eleve1 . "' AND " .
@@ -279,22 +279,22 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 
 
-		$nombre_lignes = mysql_num_rows($call_groupes);
+		$nombre_lignes = mysqli_num_rows($call_groupes);
 		$i = 0;
 		$compteur = 0;
 		$prev_cat_id = null;
 		while ($i < $nombre_lignes) {
 			$inserligne="no";
-			$group_id = mysql_result($call_groupes, $i, "id_groupe");
+			$group_id = old_mysql_result($call_groupes, $i, "id_groupe");
 			$current_group = get_group($group_id);
 			// On essaie maintenant de récupérer un groupe avec la même matière, auquel participerait l'élève 2
-			$call_group2 = mysql_query("SELECT distinct(jeg.id_groupe) id_groupe FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (" .
+			$call_group2 = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(jeg.id_groupe) id_groupe FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE (" .
 					"jeg.login = '" . $v_eleve2 . "' and " .
 					"jeg.id_groupe = jgm.id_groupe and " .
 					"jgm.id_matiere = '" . $current_group["matiere"]["matiere"] . "')");
 
-			if (mysql_num_rows($call_group2) == 1) {
-				$group2_id = mysql_result($call_group2, 0, "id_groupe");
+			if (mysqli_num_rows($call_group2) == 1) {
+				$group2_id = old_mysql_result($call_group2, 0, "id_groupe");
 				$current_group2 = get_group($group2_id);
 			} else {
 				$current_group2 = false;
@@ -304,14 +304,14 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 				if ($periode != 'annee') {
 					if (in_array($v_eleve1, $current_group["eleves"][$periode]["list"]) AND in_array($v_eleve2, $current_group2["eleves"][$periode]["list"])) {
 						$inserligne="yes";
-						$note_eleve1_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$v_eleve1' AND periode='$periode' AND id_groupe='" . $current_group["id"] . "')");
-						$note_eleve2_query=mysql_query("SELECT * FROM matieres_notes WHERE (login='$v_eleve2' AND periode='$periode' AND id_groupe='" . $current_group2["id"] . "')");
-						$eleve1_matiere_statut = @mysql_result($note_eleve1_query, 0, "statut");
-						$note_eleve1 = @mysql_result($note_eleve1_query, 0, "note");
+						$note_eleve1_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$v_eleve1' AND periode='$periode' AND id_groupe='" . $current_group["id"] . "')");
+						$note_eleve2_query=mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_notes WHERE (login='$v_eleve2' AND periode='$periode' AND id_groupe='" . $current_group2["id"] . "')");
+						$eleve1_matiere_statut = @old_mysql_result($note_eleve1_query, 0, "statut");
+						$note_eleve1 = @old_mysql_result($note_eleve1_query, 0, "note");
 						if ($eleve1_matiere_statut != "") { $note_eleve1 = $eleve1_matiere_statut;}
 						if ($note_eleve1 == '') {$note_eleve1 = '-';}
-						$eleve2_matiere_statut = @mysql_result($note_eleve2_query, 0, "statut");
-						$note_eleve2 = @mysql_result($note_eleve2_query, 0, "note");
+						$eleve2_matiere_statut = @old_mysql_result($note_eleve2_query, 0, "statut");
+						$note_eleve2 = @old_mysql_result($note_eleve2_query, 0, "note");
 						if ($eleve2_matiere_statut != "") { $note_eleve2 = $eleve2_matiere_statut;}
 						if ($note_eleve2 == '') {$note_eleve2 = '-';}
 					}
@@ -319,11 +319,11 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 
 					if (in_array($v_eleve1, $current_group["eleves"]["all"]["list"]) AND in_array($v_eleve2, $current_group2["eleves"]["all"]["list"])) {
 						$inserligne="yes";
-						$note_eleve1_query=mysql_query("SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (login='$v_eleve1' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
-						$note_eleve2_query=mysql_query("SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (login='$v_eleve2' AND id_groupe='" . $current_group2["id"] . "' AND statut ='')");
-						$note_eleve1 = @mysql_result($note_eleve1_query, 0, "moyenne");
+						$note_eleve1_query=mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (login='$v_eleve1' AND id_groupe='" . $current_group["id"] . "' AND statut ='')");
+						$note_eleve2_query=mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) as moyenne FROM matieres_notes WHERE (login='$v_eleve2' AND id_groupe='" . $current_group2["id"] . "' AND statut ='')");
+						$note_eleve1 = @old_mysql_result($note_eleve1_query, 0, "moyenne");
 						if ($note_eleve1 == '') {$note_eleve1 = '-';}
-						$note_eleve2 = @mysql_result($note_eleve2_query, 0, "moyenne");
+						$note_eleve2 = @old_mysql_result($note_eleve2_query, 0, "moyenne");
 						if ($note_eleve2 == '') {$note_eleve2 = '-';}
 					}
 				}
@@ -335,8 +335,8 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 							$prev_cat_id = $current_group["classes"]["classes"][$id_classe]["categorie_id"];
 							// On est dans une nouvelle catégorie
 							// On récupère les infos nécessaires, et on affiche une ligne
-							//$cat_name = html_entity_decode(mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
-							$cat_name = mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
+							//$cat_name = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0));
+							$cat_name = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $current_group["classes"]["classes"][$id_classe]["categorie_id"] . "'"), 0);
 							// On détermine le nombre de colonnes pour le colspan
 							$nb_total_cols = 4;
 

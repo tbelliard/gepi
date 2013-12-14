@@ -46,8 +46,8 @@ if (is_numeric($id_groupe)) {
 }
 
 // Nom complet de la classe
-$appel_classe = mysql_query("SELECT classe FROM classes WHERE id='$id_classe'");
-$classe_nom = @mysql_result($appel_classe, 0, "classe");
+$appel_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id='$id_classe'");
+$classe_nom = @old_mysql_result($appel_classe, 0, "classe");
 // Nom complet de la matière
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
@@ -113,18 +113,18 @@ if ($current_group) {
     echo " - <a href=index.php?id_classe=$id_classe&amp;id_groupe=$id_groupe>Retour</a> - ";
 }
 echo "<hr />";
-$test_cahier_texte = mysql_query("SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
-$nb_test = mysql_num_rows($test_cahier_texte);
+$test_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu  FROM ct_entry WHERE (id_groupe='$id_groupe')");
+$nb_test = mysqli_num_rows($test_cahier_texte);
 if ($nb_test == 0) {
     echo "<center><h3 class='gepi'>Choisissez une classe et une matière.</h3></center>";
     echo "</body></html>";
     die();
 }
 // Affichage des informations générales
-$appel_info_cahier_texte = mysql_query("SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
-$nb_cahier_texte = mysql_num_rows($appel_info_cahier_texte);
-$content = @mysql_result($appel_info_cahier_texte, 0, 'contenu');
-$id_ct = @mysql_result($appel_info_cahier_texte, 0, 'id_ct');
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
+$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
+$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
 $content .= affiche_docs_joints($id_ct,"c");
 if ($content != '') {
     echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><b>INFORMATIONS GENERALES</b></div>";
@@ -144,8 +144,8 @@ $req_notices =
     and date_ct <= '$current_time'
     and date_ct <= '".getSettingValue("end_bookings")."')
     ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
-$res_notices = mysql_query($req_notices);
-$notice = mysql_fetch_object($res_notices);
+$res_notices = mysqli_query($GLOBALS["mysqli"], $req_notices);
+$notice = mysqli_fetch_object($res_notices);
 
 $req_devoirs =
     "select 't' type, contenu, date_ct, id_ct
@@ -156,8 +156,8 @@ $req_devoirs =
     and date_ct >= '".getSettingValue("begin_bookings")."'
     and date_ct <= '".getSettingValue("end_bookings")."'
     ) order by date_ct ".$current_ordre;
-$res_devoirs = mysql_query($req_devoirs);
-$devoir = mysql_fetch_object($res_devoirs);
+$res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
+$devoir = mysqli_fetch_object($res_devoirs);
 
 // Boucle d'affichage des notices dans la colonne de gauche
 $date_ct_old = -1;
@@ -167,11 +167,11 @@ while (true) {
     if ($notice && (!$devoir || $notice->date_ct >= $devoir->date_ct)) {
         // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
         $not_dev = $notice;
-        $notice = mysql_fetch_object($res_notices);
+        $notice = mysqli_fetch_object($res_notices);
     } elseif($devoir) {
         // Plus de notices et toujours un devoir, ou devoir plus récent
         $not_dev = $devoir;
-        $devoir = mysql_fetch_object($res_devoirs);
+        $devoir = mysqli_fetch_object($res_devoirs);
     } else {
         // Plus rien à afficher, on sort de la boucle
         break;
@@ -181,11 +181,11 @@ while (true) {
     if ($notice && (!$devoir || $notice->date_ct <= $devoir->date_ct)) {
         // Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
         $not_dev = $notice;
-        $notice = mysql_fetch_object($res_notices);
+        $notice = mysqli_fetch_object($res_notices);
     } elseif($devoir) {
         // Plus de notices et toujours un devoir, ou devoir plus récent
         $not_dev = $devoir;
-        $devoir = mysql_fetch_object($res_devoirs);
+        $devoir = mysqli_fetch_object($res_devoirs);
     } else {
         // Plus rien à afficher, on sort de la boucle
         break;

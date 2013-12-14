@@ -74,19 +74,19 @@ if ($saisie->getIdSIncidents() == null || $saisie->getIdSIncidents() == -1) {
 									    id_lieu='',
 									    message_id='';";
     //echo "$sql<br />\n";
-    $res=mysql_query($sql);
+    $res=mysqli_query($GLOBALS["mysqli"], $sql);
     if(!$res) {
 	    $msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
     }
     else {
-	    $id_incident=mysql_insert_id();
+	    $id_incident=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 	    $msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
     }
     $saisie->setIdSIncidents($id_incident);
     $saisie->save();
 
     $sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$saisie->getEleve()->getLogin()."', statut='eleve', qualite='Responsable';";
-    $res=mysql_query($sql);
+    $res=mysqli_query($GLOBALS["mysqli"], $sql);
     if(!$res) {
 	    $msg.="ERREUR lors de l'enregistrement de ".$saisie->getEleve()->getLogin()."<br />\n";
     }

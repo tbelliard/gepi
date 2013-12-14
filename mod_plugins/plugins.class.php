@@ -133,7 +133,7 @@ class gepiPlugIn {
         return $_globals["cnx"]->exec($sql);
 
       }else{
-        return mysql_query($sql);
+        return mysqli_query($GLOBALS["mysqli"], $sql);
       }
 
     }
@@ -143,7 +143,7 @@ class gepiPlugIn {
         return $query->fetchAll();
       }else{
         $query = self::_sqlQuery($sql, $use_PDO);
-        return mysql_fetch_array($query);
+        return mysqli_fetch_array($query);
       }
     }
     public static function _sqlQueryObject($sql, $use_PDO = false){
@@ -152,7 +152,7 @@ class gepiPlugIn {
         return $query->fetchAll();
       }else{
         $query = self::_sqlQuery($sql, $use_PDO);
-        return mysql_fetch_object($query);
+        return mysqli_fetch_object($query);
       }
     }
     public static function _sqlCount ($sql, $use_PDO = false){
@@ -162,7 +162,7 @@ class gepiPlugIn {
         return count($result);
       }else{
         $query = self::_sqlQuery($sql, $use_PDO);
-        return mysql_num_rows($query);
+        return mysqli_num_rows($query);
       }
     }
 
@@ -174,7 +174,7 @@ class gepiPlugIn {
      * @return integer
      */
     public static function _sqlInsertId($use_PDO = false){
-      return mysql_insert_id();
+      return ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
     }
 
 }

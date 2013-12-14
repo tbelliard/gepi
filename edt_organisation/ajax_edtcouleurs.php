@@ -55,8 +55,8 @@ $matiere = isset($M_couleur) ? mb_substr($M_couleur, 2) : NULL; // pour récupé
 $couleur = "";
 
 // on récupère les éléments sur la matière en question
-$sql = mysql_query("SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
-$matiere_long = mysql_fetch_array($sql);
+$sql = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '".$matiere."'");
+$matiere_long = mysqli_fetch_array($sql);
 // les requêtes AJAX se font en utf8, il faut donc encoder utf8 pour être tranquille
 //$aff_matiere_long = utf8_encode($matiere_long["nom_complet"]);
 $aff_matiere_long = $matiere_long["nom_complet"];
@@ -107,15 +107,15 @@ if ($nouvelle_couleur == "non") {
 	';
 } else {
 	// On vérifie si le réglage existe et on le met à jour, sinon on le crée
-	$sql = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = '".$M_couleur."'");
-	$nbre_rep = mysql_num_rows($sql);
+	$sql = mysqli_query($GLOBALS["mysqli"], "SELECT valeur FROM edt_setting WHERE reglage = '".$M_couleur."'");
+	$nbre_rep = mysqli_num_rows($sql);
 
 	if ($nbre_rep !== 0) {
-		$miseajour = mysql_query("UPDATE edt_setting SET valeur = '".$nouvelle_couleur."'
+		$miseajour = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_setting SET valeur = '".$nouvelle_couleur."'
 													WHERE reglage = '".$M_couleur."'")
 												OR DIE (IMPOSSIBLE_TO_UPDATE);
 	} else {
-		$create = mysql_query("INSERT INTO edt_setting (`id`, `reglage`, `valeur`)
+		$create = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_setting (`id`, `reglage`, `valeur`)
 												VALUES ('', '$M_couleur', '$nouvelle_couleur')");
 	}
 

@@ -95,10 +95,10 @@ if($_SESSION['statut']=='professeur') {
 			AND id_groupe = '".$var2."'
 			AND periode = '".$verif_var1[1]."'";
 	log_ajax_app("$sql");
-	$verif_eleve = mysql_query($sql)
-			or die('Erreur de verif_var1 : '.mysql_error());
+	$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
+			or die('Erreur de verif_var1 : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	log_ajax_app("Test passe.");
-	$temoin_eleve=mysql_num_rows($verif_eleve);
+	$temoin_eleve=mysqli_num_rows($verif_eleve);
 
 	// On vérifie que le prof logué peut saisir ces appréciations
 	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
@@ -106,10 +106,10 @@ if($_SESSION['statut']=='professeur') {
 	//echo "mode=$mode<br />";
 	if($mode!="verif_avis") {
 		// On ne vient pas de la page de saisie d'avis du conseil de classe
-		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
-		if (mysql_num_rows($verif_prof) >= 1) {
+		$verif_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
+		if (mysqli_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
-			$temoin_prof=mysql_num_rows($verif_prof);
+			$temoin_prof=mysqli_num_rows($verif_prof);
 		} else {
 			log_ajax_app("Vous ne pouvez pas saisir d'appreciations pour cet eleve");
 			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
@@ -119,10 +119,10 @@ if($_SESSION['statut']=='professeur') {
 		// On vient de la page de saisie d'avis du conseil de classe
 		$sql="SELECT login FROM j_eleves_professeurs WHERE login = '".$verif_var1[0]."' AND id_classe='".$var2."' AND professeur='".$_SESSION['login']."'";
 		//echo "$sql<br />";
-		$verif_prof = mysql_query($sql);
-		if (mysql_num_rows($verif_prof) >= 1) {
+		$verif_prof = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (mysqli_num_rows($verif_prof) >= 1) {
 			// On ne fait rien
-			$temoin_prof=mysql_num_rows($verif_prof);
+			$temoin_prof=mysqli_num_rows($verif_prof);
 			$temoin_eleve=1;
 		} else {
 			log_ajax_app("Vous ne pouvez pas saisir d'avis pour cet eleve");
@@ -154,32 +154,32 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 			$insertion_ou_maj_tempo="y";
 			$sql="SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 			log_ajax_app($sql);
-			$test_app_enregistree=mysql_query($sql);
-			if(mysql_num_rows($test_app_enregistree)>0) {
-				$lig_app_enregistree=mysql_fetch_object($test_app_enregistree);
+			$test_app_enregistree=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_app_enregistree)>0) {
+				$lig_app_enregistree=mysqli_fetch_object($test_app_enregistree);
 				if($lig_app_enregistree->appreciation==$appreciation) {
 					// On supprime l'enregistrement tempo pour éviter de conserver un tempo qui est déjà enregistré dans la table principale.
 					$sql="DELETE FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 					log_ajax_app($sql);
-					$menage=mysql_query($sql);
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					$insertion_ou_maj_tempo="n";
 				}
 			}
 	
 			if($insertion_ou_maj_tempo=="y") {
 				// On vérifie si cette appréciation existe déjà ou non
-				$verif_appreciation = mysql_query("SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
+				$verif_appreciation = mysqli_query($GLOBALS["mysqli"], "SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 				// Si elle existe, on la met à jour
-				if (mysql_num_rows($verif_appreciation) == 1) {
+				if (mysqli_num_rows($verif_appreciation) == 1) {
 					$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
 					log_ajax_app($sql);
-					$miseajour = mysql_query($sql);
+					$miseajour = mysqli_query($GLOBALS["mysqli"], $sql);
 				} else {
 					//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
 					if ($appreciation != "") {
 						$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
 						log_ajax_app($sql);
-						$sauvegarde = mysql_query($sql);
+						$sauvegarde = mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 			}
@@ -203,7 +203,7 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 				PRIMARY KEY (id)
 				) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 			//log_ajax_app($sql);
-			$create_table=mysql_query($sql);
+			$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$create_table) {
 				echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
 			}
@@ -211,9 +211,9 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 				$sql="SELECT * FROM vocabulaire;";
 				//echo "$sql<br />";
 				//log_ajax_app($sql);
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)>0) {
-					while($lig_voc=mysql_fetch_object($res)) {
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig_voc=mysqli_fetch_object($res)) {
 						$tab_voc[]=$lig_voc->terme;
 						$tab_voc_corrige[]=$lig_voc->terme_corrige;
 						//log_ajax_app("Tableau des corrections possibles : ".$lig_voc->terme." -> ".$lig_voc->terme_corrige);

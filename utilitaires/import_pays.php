@@ -296,9 +296,9 @@ else {
 				$tab_code_pays_connus=array();
 				$tab_nom_pays_connus=array();
 				$sql="SELECT * FROM pays;";
-				$res_pays=mysql_query($sql);
-				if(mysql_num_rows($res_pays)>0) {
-					while($lig=mysql_fetch_object($res_pays)) {
+				$res_pays=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_pays)>0) {
+					while($lig=mysqli_fetch_object($res_pays)) {
 						$tab_code_pays_connus[]=$lig->code_pays;
 						$tab_nom_pays_connus[$lig->code_pays]=$lig->nom_pays;
 						//echo "\$tab_nom_pays_connus[$lig->code_pays]=".$tab_nom_pays_connus[$lig->code_pays]."<br />";
@@ -392,9 +392,9 @@ else {
 
 		$tab_code_pays_connus=array();
 		$sql="SELECT code_pays FROM pays;";
-		$res_pays=mysql_query($sql);
-		if(mysql_num_rows($res_pays)>0) {
-			while($lig=mysql_fetch_object($res_pays)) {
+		$res_pays=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_pays)>0) {
+			while($lig=mysqli_fetch_object($res_pays)) {
 				$tab_code_pays_connus[]=$lig->code_pays;
 			}
 		}
@@ -415,7 +415,7 @@ else {
 						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
 					}
 					//echo "$sql<br />";
-					$res=mysql_query($sql);
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
 						$nb_err++;
 					}

@@ -178,13 +178,13 @@ function afficher_contraintes($tab_clas_fut) {
 	$retour="";
 
 	$sql="SELECT * FROM gc_options_classes WHERE projet='$projet' ORDER BY classe_future,opt_exclue;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
 		$cpt=0;
 		$classe_prec="";
 		$alt=1;
 		$retour.="<table class='boireaus' border='1' summary='Contraintes saisies'>\n";
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			if(in_array($lig->classe_future,$tab_clas_fut)) {
 				if($lig->classe_future!=$classe_prec) {
 					if($cpt>0) {$retour.="</td></tr>\n";}
@@ -457,9 +457,9 @@ function ligne_choix_classe_future($ele_login) {
 	$fut_classe="";
 	$tab_ele_opt=array();
 	$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$ele_login';";
-	$res_opt=mysql_query($sql);
-	if(mysql_num_rows($res_opt)>0) {
-		$lig_opt=mysql_fetch_object($res_opt);
+	$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_opt)>0) {
+		$lig_opt=mysqli_fetch_object($res_opt);
 
 		$fut_classe=$lig_opt->classe_future;
 
@@ -473,9 +473,9 @@ function ligne_choix_classe_future($ele_login) {
 	else {
 		// On récupère les options de l'année écoulée
 		$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='ele_';";
-		$res_opt=mysql_query($sql);
-		if(mysql_num_rows($res_opt)>0) {
-			while($lig_opt=mysql_fetch_object($res_opt)) {
+		$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_opt)>0) {
+			while($lig_opt=mysqli_fetch_object($res_opt)) {
 				$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
 			}
 		}

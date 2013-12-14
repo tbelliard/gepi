@@ -64,7 +64,7 @@ class PeriodeCalendaire {
 				etabvacances_calendrier = '".$this->etabvacances."',
 				id_calendar = '".$this->id_calendar."'
 				WHERE id_calendrier = '".$this->id."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -81,7 +81,7 @@ class PeriodeCalendaire {
 		$sql="UPDATE edt_calendrier SET
 				classe_concerne_calendrier = '".$this->classes_concernees."'
 				WHERE id_calendar = '".$this->id_calendar."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -96,7 +96,7 @@ class PeriodeCalendaire {
  
 	public function delete() {
 		$sql="DELETE FROM edt_calendrier WHERE id_calendrier = '".$this->id."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -111,7 +111,7 @@ class PeriodeCalendaire {
  
 	public function deleteCalendar() {
 		$sql="DELETE FROM edt_calendrier WHERE id_calendar = '".$this->id_calendar."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -127,9 +127,9 @@ class PeriodeCalendaire {
 	public function getCalendarID() {
 		$result = null;
 		$sql="SELECT id_calendar FROM edt_calendrier WHERE id_calendrier='".$this->id."' ";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
-			while ($rep = mysql_fetch_array($req)) {
+			while ($rep = mysqli_fetch_array($req)) {
 				$result = $rep['id_calendar'];
 			}
 		}
@@ -154,7 +154,7 @@ class PeriodeCalendaire {
 				etabferme_calendrier = '".$this->etabferme."',
 				etabvacances_calendrier = '".$this->etabvacances."',
 				id_calendar = '".$this->id_calendar."'	";
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
 			return true;
 		}
@@ -175,10 +175,10 @@ class PeriodeCalendaire {
 		else {
 			$sql="SELECT id_calendrier, debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";		
 		}
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
-			if (mysql_num_rows($req) != 0) {
-				while ($rep = mysql_fetch_array($req)) {
+			if (mysqli_num_rows($req) != 0) {
+				while ($rep = mysqli_fetch_array($req)) {
 					$result['id'][] = $rep['id_calendrier'];
 					$result['debut'][] = $rep['debut_calendrier_ts'];
 					$result['fin'][] = $rep['fin_calendrier_ts'];
@@ -219,10 +219,10 @@ class PeriodeCalendaire {
 							id_calendar = '".$this->id_calendar."' ORDER BY debut_calendrier_ts ASC";		
 		}
 
-		$req = mysql_query($sql);
+		$req = mysqli_query($GLOBALS["mysqli"], $sql);
 		if ($req) {
-			if (mysql_num_rows($req) != 0) {
-				while ($rep = mysql_fetch_array($req)) {
+			if (mysqli_num_rows($req) != 0) {
+				while ($rep = mysqli_fetch_array($req)) {
 					$result['debut'][] = $rep['debut_calendrier_ts'];
 					$result['fin'][] = $rep['fin_calendrier_ts'];
 				}

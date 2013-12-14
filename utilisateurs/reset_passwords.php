@@ -136,9 +136,9 @@ if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
 
 	$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$res_statut=mysql_query($sql);
-	if(mysql_num_rows($res_statut)>0) {
-		$lig_statut=mysql_fetch_object($res_statut);
+	$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_statut)>0) {
+		$lig_statut=mysqli_fetch_object($res_statut);
 		$user_status=$lig_statut->statut;
 		//echo "\$user_status=$user_status<br />";
 	}
@@ -184,9 +184,9 @@ if ($user_login) {
 	// On a fourni un login... on peut retrouver le statut dans utilisateurs:
 	$sql="SELECT statut FROM utilisateurs WHERE login='$user_login';";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$res_statut=mysql_query($sql);
-	if(mysql_num_rows($res_statut)>0) {
-		$lig_statut=mysql_fetch_object($res_statut);
+	$res_statut=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_statut)>0) {
+		$lig_statut=mysqli_fetch_object($res_statut);
 		$user_status=$lig_statut->statut;
 		//echo "\$user_status=$user_status<br />";
 	}
@@ -228,7 +228,7 @@ if ($user_login) {
 		*/
 
 		if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-		$call_user_info = mysql_query($sql_user_info);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 		//echo "mysql_num_rows(\$call_user_info)=".mysql_num_rows($call_user_info)."<br />";
 
 		//$cas_traite=2;
@@ -255,7 +255,7 @@ if ($user_login) {
 				"etat='actif' and " .
 				"statut != 'administrateur');";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$call_user_info = mysql_query($sql);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 else {
@@ -317,14 +317,14 @@ else {
 					$sql_user_resp .= " ORDER BY u.nom,u.prenom";
 				}
 				if($debug_create_resp=="y") {echo "$sql_user_resp<br />\n";}
-				$call_user_info = mysql_query($sql_user_resp);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_resp);
 				//echo $sql_user_resp."<br />\n";
 				$cas_traite=1;
 
 				$sql_classe = "SELECT * FROM classes WHERE id='$user_classe'";
 				if($debug_create_resp=="y") {echo "$sql_classe<br />\n";}
-				$data_user_classe = mysql_query($sql_classe);
-				$classe_resp= mysql_result($data_user_classe, 0, "classe");
+				$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
+				$classe_resp= old_mysql_result($data_user_classe, 0, "classe");
 
 			} elseif ($user_status == "eleve") {
 				// Sélection de tous les utilisateurs élèves de la classe donnée
@@ -333,7 +333,7 @@ else {
 						"u.login = jec.login AND " .
 						"jec.id_classe = '".$user_classe."') ORDER BY u.nom, u.prenom;";
 				if($debug_create_resp=="y") {echo "$sql<br />\n";}
-				$call_user_info = mysql_query($sql);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		else {
@@ -369,7 +369,7 @@ else {
 									}
 				// Pour les parents de plusieurs enfants, on récupère plusieurs enregistrements par enfant à cause du ele_id: modifié avec getSettingValue('fiches_bienvenue_un_jeu_par_parent')
 				if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-				$call_user_info = mysql_query($sql_user_info);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 				$cas_traite=2;
 
 			} elseif ($user_status == "eleve"){
@@ -384,7 +384,7 @@ else {
 								)
 								ORDER BY c.classe ASC, u.nom ASC";
 				if($debug_create_resp=="y") {echo "$sql_user_info<br />\n";}
-				$call_user_info = mysql_query($sql_user_info);
+				$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql_user_info);
 			}
 		}
 	}
@@ -400,12 +400,12 @@ else {
 				"statut = 'cpe' OR " .
 				"statut = 'secours'))";
 		if($debug_create_resp=="y") {echo "$sql<br />\n";}
-		$call_user_info = mysql_query($sql);
+		$call_user_info = mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
 
-$nb_users = mysql_num_rows($call_user_info);
+$nb_users = mysqli_num_rows($call_user_info);
 
 if($debug_create_resp=="y") {
 	echo "\$call_user_info=$call_user_info<br />";
@@ -452,13 +452,13 @@ $pcsv=0;
 $saut = 1;
 while ($p < $nb_users) {
 
-	$user_login = mysql_result($call_user_info, $p, "login");
-	$user_nom = mysql_result($call_user_info, $p, "nom");
-	$user_prenom = mysql_result($call_user_info, $p, "prenom");
-	$user_password = mysql_result($call_user_info, $p, "password");
-	$user_statut = mysql_result($call_user_info, $p, "statut");
-	$user_email = mysql_result($call_user_info, $p, "email");
-	$user_auth_mode = mysql_result($call_user_info, $p, "auth_mode");
+	$user_login = old_mysql_result($call_user_info, $p, "login");
+	$user_nom = old_mysql_result($call_user_info, $p, "nom");
+	$user_prenom = old_mysql_result($call_user_info, $p, "prenom");
+	$user_password = old_mysql_result($call_user_info, $p, "password");
+	$user_statut = old_mysql_result($call_user_info, $p, "statut");
+	$user_email = old_mysql_result($call_user_info, $p, "email");
+	$user_auth_mode = old_mysql_result($call_user_info, $p, "auth_mode");
 
 	if($debug_create_resp=="y") {
 		echo "\$user_login=$user_login<br />";
@@ -467,17 +467,17 @@ while ($p < $nb_users) {
 
 	//Pour les responsables :
 	if ($cas_traite!=0) {
-		$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
-		$resp_civilite= mysql_result($call_user_info, $p, "civilite");
-		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-		$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-		$resp_adr2=mysql_result($call_user_info, $p, "adr2");
-		$resp_adr3=mysql_result($call_user_info, $p, "adr3");
-		$resp_adr4=mysql_result($call_user_info, $p, "adr4");
-		$resp_cp=mysql_result($call_user_info, $p, "cp");
-		$resp_commune=mysql_result($call_user_info, $p, "commune");
-		$resp_pays=mysql_result($call_user_info, $p, "pays");
-		$resp_pers_id=mysql_result($call_user_info, $p, "pers_id");
+		$resp_num_legal= old_mysql_result($call_user_info, $p, "resp_legal");
+		$resp_civilite= old_mysql_result($call_user_info, $p, "civilite");
+		$resp_adr1=old_mysql_result($call_user_info, $p, "adr1");
+		$resp_adr1=old_mysql_result($call_user_info, $p, "adr1");
+		$resp_adr2=old_mysql_result($call_user_info, $p, "adr2");
+		$resp_adr3=old_mysql_result($call_user_info, $p, "adr3");
+		$resp_adr4=old_mysql_result($call_user_info, $p, "adr4");
+		$resp_cp=old_mysql_result($call_user_info, $p, "cp");
+		$resp_commune=old_mysql_result($call_user_info, $p, "commune");
+		$resp_pays=old_mysql_result($call_user_info, $p, "pays");
+		$resp_pers_id=old_mysql_result($call_user_info, $p, "pers_id");
 
 		//recherche des élèves + leur classe associés aux responsables
 		$sql_resp_eleves="SELECT DISTINCT c.id, e.* , c.*
@@ -491,8 +491,8 @@ while ($p < $nb_users) {
 							)";
 		//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 		if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
-		$call_resp_eleves=mysql_query($sql_resp_eleves);
-		$nb_elv_resp = mysql_num_rows($call_resp_eleves);
+		$call_resp_eleves=mysqli_query($GLOBALS["mysqli"], $sql_resp_eleves);
+		$nb_elv_resp = mysqli_num_rows($call_resp_eleves);
 		//echo "\$nb_elv_resp=$nb_elv_resp<br />";
 		if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
 
@@ -507,11 +507,11 @@ while ($p < $nb_users) {
 		$i = 0;
 		while ($i < $nb_elv_resp){
 
-			$elv_resp['login'][$i] = mysql_result($call_resp_eleves, $i, "login");
-			$elv_resp['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
-			$elv_resp['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
-			$elv_resp['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
-			$elv_resp['nom_complet_classe'][$i] = mysql_result($call_resp_eleves, $i, "nom_complet");
+			$elv_resp['login'][$i] = old_mysql_result($call_resp_eleves, $i, "login");
+			$elv_resp['nom'][$i] = old_mysql_result($call_resp_eleves, $i, "nom");
+			$elv_resp['prenom'][$i] = old_mysql_result($call_resp_eleves, $i, "prenom");
+			$elv_resp['classe'][$i] = old_mysql_result($call_resp_eleves, $i, "classe");
+			$elv_resp['nom_complet_classe'][$i] = old_mysql_result($call_resp_eleves, $i, "nom_complet");
 
 			if($i>0){
 				$liste_elv_resp.=", ";
@@ -537,19 +537,19 @@ while ($p < $nb_users) {
 								)";
 			//echo "<br />\$sql_resp_eleves=".$sql_resp_eleves."<br />";
 			if($debug_create_resp=="y") {echo "<br />$sql_resp_eleves<br />\n";}
-			$call_resp_eleves=mysql_query($sql_resp_eleves);
-			$nb_elv_resp = mysql_num_rows($call_resp_eleves);
+			$call_resp_eleves=mysqli_query($GLOBALS["mysqli"], $sql_resp_eleves);
+			$nb_elv_resp = mysqli_num_rows($call_resp_eleves);
 			//echo "\$nb_elv_resp=$nb_elv_resp<br />";
 			if($debug_create_resp=="y") {echo "\$nb_elv_resp=$nb_elv_resp<br />\n";}
 
 			$i = 0;
 			while ($i < $nb_elv_resp){
 
-				$elv_resp0['login'][$i] = mysql_result($call_resp_eleves, $i, "login");
-				$elv_resp0['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
-				$elv_resp0['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
-				$elv_resp0['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
-				$elv_resp0['nom_complet_classe'][$i] = mysql_result($call_resp_eleves, $i, "nom_complet");
+				$elv_resp0['login'][$i] = old_mysql_result($call_resp_eleves, $i, "login");
+				$elv_resp0['nom'][$i] = old_mysql_result($call_resp_eleves, $i, "nom");
+				$elv_resp0['prenom'][$i] = old_mysql_result($call_resp_eleves, $i, "prenom");
+				$elv_resp0['classe'][$i] = old_mysql_result($call_resp_eleves, $i, "classe");
+				$elv_resp0['nom_complet_classe'][$i] = old_mysql_result($call_resp_eleves, $i, "nom_complet");
 
 				if($i>0){
 					$liste_elv_resp_0.=", ";
@@ -565,13 +565,13 @@ while ($p < $nb_users) {
 
 		// il va y avoir la classe à récuperer
 		if ($cas_traite==2) {
-			$user_classe = $resp_pers_id=mysql_result($call_user_info, $p, "id_classe");
+			$user_classe = $resp_pers_id=old_mysql_result($call_user_info, $p, "id_classe");
 			//recherche du nom court de la classe de la prsonne en cours
 			$sql_classe = "SELECT * FROM classes WHERE id='$user_classe';";
 			if($debug_create_resp=="y") {echo "$sql_classe<br />\n";}
 			//echo "\$sql_classe=$sql_classe<br />";
-			$data_user_classe = mysql_query($sql_classe);
-			$classe_resp= mysql_result($data_user_classe, 0, "classe");
+			$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
+			$classe_resp= old_mysql_result($data_user_classe, 0, "classe");
 		}
 
 
@@ -601,8 +601,8 @@ while ($p < $nb_users) {
 		else {
 			$sql="SELECT 1=1 FROM utilisateurs WHERE login='$user_login' AND password!='';";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
-			$test_pass_non_vide=mysql_query($sql);
-			if(mysql_num_rows($test_pass_non_vide)>0){
+			$test_pass_non_vide=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_pass_non_vide)>0){
 				$new_password="Non modifié";
 				$temoin_user_deja_traite="y";
 			}
@@ -610,9 +610,9 @@ while ($p < $nb_users) {
 				if(($user_status=='eleve')&&($mdp_INE=='y')) {
 					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					$res_ine=mysql_query($sql);
-					if(mysql_num_rows($res_ine)>0){
-						$lig_ine=mysql_fetch_object($res_ine);
+					$res_ine=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ine)>0){
+						$lig_ine=mysqli_fetch_object($res_ine);
 						if($lig_ine->no_gep!='') {
 							$new_password=$lig_ine->no_gep;
 						}
@@ -636,7 +636,7 @@ while ($p < $nb_users) {
 				if ($save_new_pass) {
 					$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
 					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					mysql_query($sql);
+					mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
 		}
@@ -650,8 +650,8 @@ while ($p < $nb_users) {
 		}
 		else {
 			$sql="SELECT login FROM utilisateurs WHERE login='$user_login' AND password!='';";
-			$test_pass_non_vide=mysql_query($sql);
-			if(mysql_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
+			$test_pass_non_vide=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_pass_non_vide) && $ne_pas_ecraser_passwd>0){
 				$new_password="Non modifié";
 				$ecraser_passwd_user=false;
 			} else {
@@ -659,9 +659,9 @@ while ($p < $nb_users) {
 				$ecraser_passwd_user=true;
 				if(($user_status=='eleve')&&($mdp_INE=='y')) {
 					$sql="SELECT no_gep FROM eleves WHERE login='$user_login';";
-					$res_ine=mysql_query($sql);
-					if(mysql_num_rows($res_ine)>0){
-						$lig_ine=mysql_fetch_object($res_ine);
+					$res_ine=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ine)>0){
+						$lig_ine=mysqli_fetch_object($res_ine);
 						if($lig_ine->no_gep!='') {
 							$new_password=$lig_ine->no_gep;
 						}
@@ -686,7 +686,7 @@ while ($p < $nb_users) {
 				$tab_password[$user_login]=$new_password;
 				if ($user_auth_mode != "gepi") {
 					// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
-					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+					$save_new_pass = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
 					// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 					// directement dans l'annuaire.
 					if ($gepiSettings['ldap_write_access'] == "yes") {
@@ -707,10 +707,10 @@ while ($p < $nb_users) {
 					if ($ecraser_passwd_user) {
 						$save_new_pass = Session::change_password_gepi($user_login,$new_password);
 						if ($save_new_pass) {
-							mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
 							$sql="UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'";
 							if($debug_create_resp=="y") {echo "$sql<br />\n";}
-							mysql_query($sql);
+							mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 				}
@@ -721,19 +721,19 @@ while ($p < $nb_users) {
 
 	$sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '$user_login' ORDER BY ordre_matieres";
 	if($debug_create_resp=="y") {echo "$sql<br />\n";}
-	$call_matieres = mysql_query($sql);
-	$nb_mat = mysql_num_rows($call_matieres);
+	$call_matieres = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_mat = mysqli_num_rows($call_matieres);
 	$k = 0;
 	while ($k < $nb_mat) {
-		$user_matiere[$k] = mysql_result($call_matieres, $k, "id_matiere");
+		$user_matiere[$k] = old_mysql_result($call_matieres, $k, "id_matiere");
 		$k++;
 	}
 
-	$call_data = mysql_query("SELECT * FROM classes");
-	$nombre_classes = mysql_num_rows($call_data);
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes");
+	$nombre_classes = mysqli_num_rows($call_data);
 	$i = 0;
 	while ($i < $nombre_classes){
-		$classe[$i] = mysql_result($call_data, $i, "classe");
+		$classe[$i] = old_mysql_result($call_data, $i, "classe");
 		$i++;
 	}
 
@@ -812,14 +812,14 @@ while ($p < $nb_users) {
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
-						$res_adr_resp=mysql_query($sql);
-						if(mysql_num_rows($res_adr_resp)==0) {
+						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_adr_resp)==0) {
 							$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 							$ligne2="";
 							$ligne3="";
 						}
 						else {
-							$lig_adr_resp=mysql_fetch_object($res_adr_resp);
+							$lig_adr_resp=mysqli_fetch_object($res_adr_resp);
 	
 							$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
 							$ligne2=$lig_adr_resp->adr1;
@@ -990,8 +990,8 @@ width:".$largeur1."%;\n";
 						//recherche de la classe de l'élève si mode
 						if ($user_status == 'eleve') {
 							$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
-							$data_user_classe = mysql_query($sql_classe);
-							$classe_eleve = mysql_result($data_user_classe, 0, "classe");
+							$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
+							$classe_eleve = old_mysql_result($data_user_classe, 0, "classe");
 							$donnees_personne_csv['classe'][$pcsv] = $classe_eleve;
 						}
 	
@@ -1001,27 +1001,27 @@ width:".$largeur1."%;\n";
 							$donnees_personne_csv['classe'][$pcsv] = $classe_resp;
 	
 							/*
-							$resp_num_legal= mysql_result($call_user_info, $pcsv, "resp_legal");
-							$resp_civilite= mysql_result($call_user_info, $pcsv, "civilite");
-							$resp_adr1=mysql_result($call_user_info, $pcsv, "adr1");
-							$resp_adr1=mysql_result($call_user_info, $pcsv, "adr1");
-							$resp_adr2=mysql_result($call_user_info, $pcsv, "adr2");
-							$resp_adr3=mysql_result($call_user_info, $pcsv, "adr3");
-							$resp_adr4=mysql_result($call_user_info, $pcsv, "adr4");
-							$resp_cp=mysql_result($call_user_info, $pcsv, "cp");
-							$resp_commune=mysql_result($call_user_info, $pcsv, "commune");
-							$resp_pays=mysql_result($call_user_info, $pcsv, "pays");
+							$resp_num_legal= old_mysql_result($call_user_info, $pcsv, "resp_legal");
+							$resp_civilite= old_mysql_result($call_user_info, $pcsv, "civilite");
+							$resp_adr1=old_mysql_result($call_user_info, $pcsv, "adr1");
+							$resp_adr1=old_mysql_result($call_user_info, $pcsv, "adr1");
+							$resp_adr2=old_mysql_result($call_user_info, $pcsv, "adr2");
+							$resp_adr3=old_mysql_result($call_user_info, $pcsv, "adr3");
+							$resp_adr4=old_mysql_result($call_user_info, $pcsv, "adr4");
+							$resp_cp=old_mysql_result($call_user_info, $pcsv, "cp");
+							$resp_commune=old_mysql_result($call_user_info, $pcsv, "commune");
+							$resp_pays=old_mysql_result($call_user_info, $pcsv, "pays");
 							*/
-							$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
-							$resp_civilite= mysql_result($call_user_info, $p, "civilite");
-							$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-							$resp_adr1=mysql_result($call_user_info, $p, "adr1");
-							$resp_adr2=mysql_result($call_user_info, $p, "adr2");
-							$resp_adr3=mysql_result($call_user_info, $p, "adr3");
-							$resp_adr4=mysql_result($call_user_info, $p, "adr4");
-							$resp_cp=mysql_result($call_user_info, $p, "cp");
-							$resp_commune=mysql_result($call_user_info, $p, "commune");
-							$resp_pays=mysql_result($call_user_info, $p, "pays");
+							$resp_num_legal= old_mysql_result($call_user_info, $p, "resp_legal");
+							$resp_civilite= old_mysql_result($call_user_info, $p, "civilite");
+							$resp_adr1=old_mysql_result($call_user_info, $p, "adr1");
+							$resp_adr1=old_mysql_result($call_user_info, $p, "adr1");
+							$resp_adr2=old_mysql_result($call_user_info, $p, "adr2");
+							$resp_adr3=old_mysql_result($call_user_info, $p, "adr3");
+							$resp_adr4=old_mysql_result($call_user_info, $p, "adr4");
+							$resp_cp=old_mysql_result($call_user_info, $p, "cp");
+							$resp_commune=old_mysql_result($call_user_info, $p, "commune");
+							$resp_pays=old_mysql_result($call_user_info, $p, "pays");
 	
 							//on met les données dans le tableau
 							$donnees_personne_csv['resp_legal'][$pcsv] = $resp_num_legal;
@@ -1088,8 +1088,8 @@ width:".$largeur1."%;\n";
 				if ($user_status) {
 					if ($user_status == 'eleve') {
 						$sql_classe = "SELECT DISTINCT classe FROM `classes` c, `j_eleves_classes` jec WHERE (jec.login='".$user_login."' AND jec.id_classe=c.id)";
-						$data_user_classe = mysql_query($sql_classe);
-						$classe_eleve = mysql_result($data_user_classe, 0, "classe");
+						$data_user_classe = mysqli_query($GLOBALS["mysqli"], $sql_classe);
+						$classe_eleve = old_mysql_result($data_user_classe, 0, "classe");
 					}
 				}
 	
@@ -1181,14 +1181,14 @@ width:".$largeur1."%;\n";
 						*/
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
-						$res_adr_resp=mysql_query($sql);
-						if(mysql_num_rows($res_adr_resp)==0) {
+						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_adr_resp)==0) {
 							$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";
 							$ligne2="";
 							$ligne3="";
 						}
 						else {
-							$lig_adr_resp=mysql_fetch_object($res_adr_resp);
+							$lig_adr_resp=mysqli_fetch_object($res_adr_resp);
 	
 							$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
 							$ligne2=$lig_adr_resp->adr1;

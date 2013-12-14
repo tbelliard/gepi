@@ -116,25 +116,25 @@ for ($row=1; $row<$nb_row; $row++) {
     $reg_prof_suivi = isset($_POST[$temp])?$_POST[$temp]:NULL;
     $reg_prof_suivi = urldecode($reg_prof_suivi);
 
-    $call_test = mysql_query("SELECT * FROM eleves WHERE login='$reg_login'");
-    $test = mysql_num_rows($call_test);
+    $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$reg_login'");
+    $test = mysqli_num_rows($call_test);
     if ($test == 0) {
-        $reg_data1 = mysql_query("INSERT INTO eleves SET nom='$reg_nom',prenom='$reg_prenom',login='$reg_login',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='',ereno=''");
+        $reg_data1 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO eleves SET nom='$reg_nom',prenom='$reg_prenom',login='$reg_login',sexe='$reg_sexe',naissance='$reg_naissance',elenoet='',ereno=''");
     } else {
-        $reg_data1 = mysql_query("UPDATE eleves SET nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance' WHERE login='$reg_login'");
+        $reg_data1 = mysqli_query($GLOBALS["mysqli"], "UPDATE eleves SET nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='$reg_naissance' WHERE login='$reg_login'");
     }
 
-    $call_classe = mysql_query("SELECT id FROM classes WHERE classe='$reg_classe'");
-    $id_classe = @mysql_result($call_classe, 0, 'id');
-    $call_test = mysql_query("SELECT login FROM j_eleves_classes WHERE login='$reg_login'");
-    $test = mysql_num_rows($call_test);
+    $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe='$reg_classe'");
+    $id_classe = @old_mysql_result($call_classe, 0, 'id');
+    $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE login='$reg_login'");
+    $test = mysqli_num_rows($call_test);
     if ($test == 0) {
         if ($reg_classe != '-') {
-            $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-            $nb_periode = mysql_num_rows($periode_query) + 1 ;
+            $periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+            $nb_periode = mysqli_num_rows($periode_query) + 1 ;
             $i = "1";
             while ($i < $nb_periode) {
-                $reg_data3 = mysql_query("INSERT INTO j_eleves_classes SET login='$reg_login', id_classe='$id_classe', periode='$i', rang='0'");
+                $reg_data3 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_classes SET login='$reg_login', id_classe='$id_classe', periode='$i', rang='0'");
                 $i++;
             }
         } else {
@@ -144,28 +144,28 @@ for ($row=1; $row<$nb_row; $row++) {
         $reg_data3 = 'ok';
     }
 
-    $call_test = mysql_query("SELECT * FROM j_eleves_regime WHERE login='$reg_login'");
-    $test = mysql_num_rows($call_test);
+    $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login='$reg_login'");
+    $test = mysqli_num_rows($call_test);
     if ($test == 0) {
-        $reg_data5 = mysql_query("INSERT INTO j_eleves_regime SET login='$reg_login',     doublant='$reg_doublant', regime='$reg_regime'");
+        $reg_data5 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_regime SET login='$reg_login',     doublant='$reg_doublant', regime='$reg_regime'");
     } else {
-        $reg_data5 = mysql_query("UPDATE j_eleves_regime SET doublant='$reg_doublant', regime='$reg_regime' WHERE login='$reg_login'");
+        $reg_data5 = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_regime SET doublant='$reg_doublant', regime='$reg_regime' WHERE login='$reg_login'");
     }
 
     if ($id_classe != '') {
-        $call_test = mysql_query("SELECT login FROM j_eleves_professeurs WHERE     login='$reg_login'");
-        $test = mysql_num_rows($call_test);
+        $call_test = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_professeurs WHERE     login='$reg_login'");
+        $test = mysqli_num_rows($call_test);
         if ($test == 0) {
             if ($reg_prof_suivi != '-') {
-                $reg_data2 = mysql_query("INSERT INTO j_eleves_professeurs SET login='$reg_login',professeur= '$reg_prof_suivi',id_classe='$id_classe'");
+                $reg_data2 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_professeurs SET login='$reg_login',professeur= '$reg_prof_suivi',id_classe='$id_classe'");
             } else {
                 $reg_data2 = 'ok';
             }
         } else {
             if ($reg_prof_suivi != '-') {
-                $reg_data2 = mysql_query("UPDATE j_eleves_professeurs SET professeur= '$reg_prof_suivi' WHERE (login='$reg_login' and id_classe='$id_classe')");
+                $reg_data2 = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_professeurs SET professeur= '$reg_prof_suivi' WHERE (login='$reg_login' and id_classe='$id_classe')");
             } else {
-                $reg_data2 = mysql_query("DELETE FROM j_eleves_professeurs WHERE (login='$reg_login' and id_classe='$id_classe')");
+                $reg_data2 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_professeurs WHERE (login='$reg_login' and id_classe='$id_classe')");
             }
         }
     } else {
@@ -173,21 +173,21 @@ for ($row=1; $row<$nb_row; $row++) {
     }
 
 
-    $call_elenoet = mysql_query("SELECT elenoet FROM eleves WHERE login='$reg_login';");
-    if(mysql_num_rows($call_test)>0) {
-		$lig_elenoet=mysql_fetch_object($call_elenoet);
+    $call_elenoet = mysqli_query($GLOBALS["mysqli"], "SELECT elenoet FROM eleves WHERE login='$reg_login';");
+    if(mysqli_num_rows($call_test)>0) {
+		$lig_elenoet=mysqli_fetch_object($call_elenoet);
 		if($lig_elenoet->elenoet=='') {
 			// On initialise à OK $reg_data4 pour ne pas provoquer une erreur sous prétexte qu'il n'y a pas d'elenoet
 			$reg_data4 = 'ok';
 		}
 		else {
 			//$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$reg_login'");
-			$call_test = mysql_query("SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$lig_elenoet->elenoet';");
-			$test = mysql_num_rows($call_test);
+			$call_test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_etablissements WHERE id_eleve ='$lig_elenoet->elenoet';");
+			$test = mysqli_num_rows($call_test);
 			if ($test == 0) {
 				if ($reg_etab != '-') {
 					//$reg_data4 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve ='$reg_login',id_etablissement= '$reg_etab'");
-					$reg_data4 = mysql_query("INSERT INTO j_eleves_etablissements SET id_eleve ='$lig_elenoet->elenoet',id_etablissement= '$reg_etab';");
+					$reg_data4 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_etablissements SET id_eleve ='$lig_elenoet->elenoet',id_etablissement= '$reg_etab';");
 				} else {
 					$reg_data4 = 'ok';
 				}
@@ -195,10 +195,10 @@ for ($row=1; $row<$nb_row; $row++) {
 			} else {
 				if ($reg_etab != '-') {
 					//$reg_data4 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$reg_login'");
-					$reg_data4 = mysql_query("UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$lig_elenoet->elenoet';");
+					$reg_data4 = mysqli_query($GLOBALS["mysqli"], "UPDATE j_eleves_etablissements SET id_etablissement = '$reg_etab' WHERE id_eleve='$lig_elenoet->elenoet';");
 				} else {
 					//$reg_data4 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_login'");
-					$reg_data4 = mysql_query("DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig_elenoet->elenoet';");
+					$reg_data4 = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_eleves_etablissements WHERE id_eleve='$lig_elenoet->elenoet';");
 				}
 			}
 		}

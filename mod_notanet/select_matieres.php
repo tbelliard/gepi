@@ -110,7 +110,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 		echo "<p>Suppression des enregistrements précédents&nbsp;:<br />";
 		echo "$sql<br />";
 	}
-	$res_nettoyage=mysql_query($sql);
+	$res_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res_nettoyage){
 		$msg.="ERREUR lors du nettoyage de la table 'notanet_corresp'.<br />\n";
 	}
@@ -137,7 +137,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 								echo "$sql<br />";
 							}
 							//echo "$sql<br />";
-							$res_insert=mysql_query($sql);
+							$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_insert) {
 								$nb_err++;
 								if($debug_ajout_matiere=="y") {
@@ -160,7 +160,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 							echo "$sql<br />";
 						}
 						//echo "$sql<br />";
-						$res_insert=mysql_query($sql);
+						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res_insert) {
 							$nb_err++;
 							if($debug_ajout_matiere=="y") {
@@ -190,7 +190,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 				echo "$sql<br />";
 			}
 			//echo "$sql<br />";
-			$res_insert=mysql_query($sql);
+			$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res_insert) {$nb_err++;}else{$cpt_enr++;}
 
 			if($nb_err==0) {$msg.="Enregistrement effectué pour $cpt_enr matière(s).";}
@@ -228,8 +228,8 @@ if (!isset($type_brevet)) {
 	*/
 
 	$sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet;";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)==0){
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0){
 		echo "<p>Aucun élève n'est encore associé à un type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
 
 		require("../lib/footer.inc.php");
@@ -238,7 +238,7 @@ if (!isset($type_brevet)) {
 	else {
 		echo "<p>Choisissez un type de brevet:<br />\n";
 
-		while($lig=mysql_fetch_object($res)) {
+		while($lig=mysqli_fetch_object($res)) {
 			echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$lig->type_brevet'>".$tab_type_brevet[$lig->type_brevet]."</a><br />\n";
 		}
 
@@ -262,7 +262,7 @@ else {
 						statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL ,
 						PRIMARY KEY  (id)
 						) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-	$res_creation_table=mysql_query($sql);
+	$res_creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(!$res_creation_table){
 		echo "<p><b style='color:red;'>ERREUR</b> lors de la création de la table 'notanet_corresp'.</p>\n";
 		require("../lib/footer.inc.php");
@@ -277,8 +277,8 @@ else {
 
 		//$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type n WHERE n.login=jec.login ORDER BY id_classe";
 		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE net.login=jec.login AND net.type_brevet='$type_brevet' ORDER BY id_classe";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
 			echo "<p>Aucun élève n'est encore associé à ce type de brevet.<br />Commencez par <a href='select_eleves.php'>sélectionner les élèves</a>.</p>\n";
 
 			require("../lib/footer.inc.php");
@@ -286,7 +286,7 @@ else {
 		}
 		else {
 			$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				$id_classe[$cpt]=$lig->id_classe;
 				$cpt++;
 			}
@@ -312,11 +312,11 @@ else {
 
 		$sql="SELECT DISTINCT j_groupes_matieres.id_matiere FROM j_groupes_matieres,j_groupes_classes WHERE j_groupes_matieres.id_groupe=j_groupes_classes.id_groupe AND $conditions ORDER BY id_matiere";
 		//echo "$sql<br />";
-		$call_classe_infos = mysql_query($sql);
+		$call_classe_infos = mysqli_query($GLOBALS["mysqli"], $sql);
 
-		$nombre_lignes = mysql_num_rows($call_classe_infos);
+		$nombre_lignes = mysqli_num_rows($call_classe_infos);
 		$cpt=0;
-		while($ligne=mysql_fetch_object($call_classe_infos)){
+		while($ligne=mysqli_fetch_object($call_classe_infos)){
 			$tab_mat_classes[$cpt]="$ligne->id_matiere";
 			$cpt++;
 		}
@@ -360,9 +360,9 @@ else {
 
 				//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY id;";
-				$res_notanet_corresp=mysql_query($sql);
-				if(mysql_num_rows($res_notanet_corresp)>0){
-					$lig_notanet_corresp=mysql_fetch_object($res_notanet_corresp);
+				$res_notanet_corresp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_notanet_corresp)>0){
+					$lig_notanet_corresp=mysqli_fetch_object($res_notanet_corresp);
 					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
 					if($lig_notanet_corresp->statut=='imposee'){
 						echo " checked='true'";
@@ -417,21 +417,21 @@ else {
 					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY matiere;";
 					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY id;";
 					//echo "$sql<br />";
-					$res_test=mysql_query($sql);
-					if(mysql_num_rows($res_test)>0){
+					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_test)>0){
 						$cpt=0;
 						echo "<p align='left'>";
-						while($lig_tmp=mysql_fetch_object($res_test)) {
+						while($lig_tmp=mysqli_fetch_object($res_test)) {
 							echo "<input type='checkbox' name='id_matiere".$j."[]' id='id_matiere".$j."_$cpt' value='$lig_tmp->matiere' checked /><label for='id_matiere".$j."_$cpt'>$lig_tmp->matiere</label>";
 							$sql="SELECT 1=1 FROM matieres WHERE matiere='$lig_tmp->matiere';";
 							//echo "$sql<br />";
-							$test_matiere=mysql_query($sql);
-							if(mysql_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" alt=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" />\n";}
+							$test_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" alt=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" />\n";}
 							else {
 								$sql="SELECT 1=1 FROM notanet n, notanet_ele_type net WHERE n.matiere='$lig_tmp->matiere' AND n.login=net.login AND net.type_brevet='$type_brevet';";
 								//echo "$sql<br />";
-								$test_matiere=mysql_query($sql);
-								$nb_ele_matiere=mysql_num_rows($test_matiere);
+								$test_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+								$nb_ele_matiere=mysqli_num_rows($test_matiere);
 								if($nb_ele_matiere>0) {
 									echo "&nbsp;(<span style='font-style: italic;' title=\"Matière associée à $nb_ele_matiere enregistrement(s) dans l'extraction notanet pour le type de brevet choisi. Si aucune association n'est signalée, c'est soit que la matière n'est associée à aucune note d'élève, soit que l'extraction n'a pas été effectuée (ou pas avec cette matière présente)\">$nb_ele_matiere</span>)";
 								}
@@ -461,10 +461,10 @@ else {
 		$texte_checkbox_matieres.="<input type='hidden' name='j_matiere' id='j_matiere' value='' />";
 		$texte_checkbox_matieres.="<input type='hidden' name='matiere_a_ajouter' id='matiere_a_ajouter' value='' />";
 		$sql="SELECT matiere FROM matieres ORDER BY matiere;";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
 			//$cpt=0;
-			while($lig=mysql_fetch_object($res)) {
+			while($lig=mysqli_fetch_object($res)) {
 				//$texte_checkbox_matieres.="<input type='checkbox' name='matiere[]' id='matiere_$cpt' value='$lig->matiere' /><label for='matiere_$cpt'>$lig->matiere</label><br />";
 				//$texte_checkbox_matieres.="<a href='#' onclick=\"document.getElementById('matiere_a_ajouter').value='$lig->matiere';return false;\">$lig->matiere</a><br />";
 				$texte_checkbox_matieres.="<a href='#' onclick=\"document.getElementById('matiere_a_ajouter').value='$lig->matiere';cacher_div('ajout_matiere');document.form_choix_matieres.submit()\">$lig->matiere</a><br />";
