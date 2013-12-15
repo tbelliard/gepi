@@ -110,7 +110,7 @@ echo $message;
 <p>
 <?php
 if (isset($_GET['mode']) && $_GET['mode'] == "sso") {
-	echo "<a href='login_sso.php'>Retourner à la page d'authentification</a>";
+	echo "<a href='logout.php?auto=0'>Retourner à la page d'authentification</a>";
 	if ($session_gepi->auth_locale || $session_gepi->auth_ldap) {
 		echo "</p><p><a href='login.php'>Accéder au formulaire d'authentification locale</a>";
 	}
