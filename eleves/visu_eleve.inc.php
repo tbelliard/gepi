@@ -980,7 +980,7 @@ Patientez pendant l'extraction des données... merci.
 			echo "</p>\n";
 		}
 		if(!isset($tab_ele['cpe'])) {
-			echo "<p style='color:red;'>Aucun CPE n'est associé à cet(te) élève.";
+			echo "<p style='color:red;'>Aucun ".$gepi_cpe_suivi." n'est associé à cet(te) élève.";
 			if(isset($tab_ele['classe'][$indice_derniere_classe]['id_classe'])) {
 				echo " <a href='../classes/classes_const.php?id_classe=".$tab_ele['classe'][$indice_derniere_classe]['id_classe']."#".$tab_ele['login']."'>Associer</a>.";
 			}
@@ -1836,7 +1836,7 @@ Patientez pendant l'extraction des données... merci.
 					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 					if(preg_match("/,/",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
-					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
+					echo ",%0d%0aCordialement.'>tous les enseignants et au ".$gepi_cpe_suivi." de l'élève</a>.</p>\n";
 				}
 			}
 			echo "</div>\n";
