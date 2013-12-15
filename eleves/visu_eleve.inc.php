@@ -834,7 +834,6 @@ Patientez pendant l'extraction des données... merci.
 		$gepiSchoolPays=getSettingValue("gepiSchoolPays") ? getSettingValue("gepiSchoolPays") : "";
 		$gepiYear = getSettingValue("gepiYear");
 
-		$gepi_prof_suivi=getSettingValue("prof_suivi") ? getSettingValue("prof_suivi") : "";
 
 		// Photo si module trombino actif
 		$active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
