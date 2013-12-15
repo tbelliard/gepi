@@ -49,7 +49,7 @@ require_once("../lib/header.inc.php");
 
 <?php
 
-echo "Vous âtes actuellement connecté sur l'application <b>GEPI (".getSettingValue("gepiSchoolName").")</b>.
+echo "Vous êtes actuellement connecté sur l'application <b>GEPI (".getSettingValue("gepiSchoolName").")</b>.
 
 <br />Par sécurité, si vous n'envoyez aucune information au serveur (activation d'un lien ou soumission d'un formulaire) pendant plus de <b>".getSettingValue("sessionMaxLength")." minutes</b>, vous serez automatiquement déconnecté de l'application.";
 
@@ -65,7 +65,7 @@ echo "<tr><td>Email de l'administrateur : </td><td><b><a href=\"mailto:" . getSe
 
 echo "<tr><td>Nom de l'établissement : </td><td><b>".getSettingValue("gepiSchoolName")."</b></td></tr>\n";
 
-echo "<tr><td Valign='top'>Adresse : </td><td><b>".getSettingValue("gepiSchoolAdress1")."<br />".getSettingValue("gepiSchoolAdress2")."<br />".getSettingValue("gepiSchoolZipCode").", ".getSettingValue("gepiSchoolCity")."</b></td></tr>\n";
+echo "<tr><td Valign='top'>Adresse : </td><td><b>".getSettingValue("gepiSchoolAdress1")."<br />".getSettingValue("gepiSchoolAdress2")."<br />".getSettingValue("gepiSchoolZipCode")." ".getSettingValue("gepiSchoolCity")."</b></td></tr>\n";
 
 echo "</table>\n";
 
@@ -126,7 +126,7 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
     echo "<h2>Destinataires des données relatives au cahier de texte</h2>\n";
 
-    echo "Conformément aux directives de l'Education Nationale, chaque professeur dispose dans GEPI d'un cahier de texte pour chacune de ses classes qu'il peut tenir � jour
+    echo "Conformément aux directives de l'Education Nationale, chaque professeur dispose dans GEPI d'un cahier de texte pour chacune de ses classes qu'il peut tenir à jour
 
     en étant connecté.
 
@@ -154,13 +154,13 @@ if (getSettingValue("active_cahiers_texte")=='y') {
 
     if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != '')) {
 
-       echo " <b>En raison du caractére personnel du contenu, l'accés à l'interface de consultation publique est restreint</b>. Pour accéder aux cahiers de texte, il est n�cessaire de demander aupr�s de l'administrateur,
+       echo " <b>En raison du caractére personnel du contenu, l'accès à l'interface de consultation publique est restreint</b>. Pour accéder aux cahiers de texte, il est nécessaire de demander auprès de l'administrateur,
 
        le nom d'utilisateur et le mot de passe valides.";
 
     } else {
 
-       echo " <b>L'accès à l'interface de consultation publique est entiérement libre et n'est soumise à aucune restriction.</b>\n";
+       echo " <b>L'accès à l'interface de consultation publique est entièrement libre et n'est soumise à aucune restriction.</b>\n";
 
     }
 
@@ -181,7 +181,7 @@ if (getSettingValue("active_carnets_notes")=='y') {
 
     Le carnet de note permet la saisie des notes et/ou des commentaires de tout type d'évaluation (formatives, sommatives, oral, TP, TD, ...).
 
-    <br /><b>Le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élàve (note et commentaire port�s sur la copie, ...).</b>
+    <br /><b>Le professeur s'engage à ne faire figurer dans le carnet de notes que des notes et commentaires portés à la connaissance de l'élève (note et commentaire portés sur la copie, ...).</b>
 
     Ces données stockées dans GEPI n'ont pas d'autre destinataire que le professeur lui-même et le ou les professeurs principaux de la classe.
 
@@ -200,7 +200,7 @@ if ($test_plugin=='y') {
 
     <br />
 
-    Dans l'observatoire, le professeur a la possibilité d'attribuer à chacun de ses élàves un code pour chaque période.
+    Dans l'observatoire, le professeur a la possibilité d'attribuer à chacun de ses élèves un code pour chaque période.
 
     Ces codes et leur signification sont paramétrables par les administrateurs de l'observatoire désignés par l'administrateur général de GEPI.
 
