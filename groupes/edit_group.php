@@ -175,7 +175,7 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 
 				if(in_array($prof_login,$tab_prof_suivi)) {
 					echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-					if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+					if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('gepi_prof_suivi')." est ".$liste_prof_suivi.".";}
 					echo "\" />\n";
 				}
 
