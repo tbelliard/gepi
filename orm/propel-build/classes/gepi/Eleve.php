@@ -993,6 +993,8 @@ class Eleve extends BaseEleve {
 	 * @param $arbo : niveau d'aborescence (1 ou 2).
 	 */
 	public function getNomPhoto($arbo=1) {
+		global $mysqli;
+
 		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 		$repertoire = "eleves";
 		if (getSettingValue("active_module_trombinoscopes")!='y') {
@@ -1612,6 +1614,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		global $mysqli;
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
@@ -1672,13 +1675,14 @@ class Eleve extends BaseEleve {
 			) AS union_date_select
 		) ON 1=1;';
 			
-		$result_query = mysql_query($query);
+		$result_query = mysqli_query($mysqli, $query);
 		if ($result_query === false) {
-			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
+			//echo 'Erreur sur la requete : '.$query.'<br/>'.mysql_error().'<br/>';
+			echo 'Erreur sur la requete : '.$mysqli->error.'<br/>';
 			return false;
 		}
-		$row = mysql_fetch_array($result_query, MYSQL_ASSOC);
-		mysql_free_result($result_query);
+		$row = $result_query->fetch_array(MYSQLI_ASSOC);
+		mysqli_free_result($result_query);
 		if (!$row['marqueur_calcul']) {//si il n'y a pas le marqueur de calcul fini, on retourne faux
 			return false;
 		} else if ($row['updated_at'] && $row['updated_at']  > $row['now']) {
