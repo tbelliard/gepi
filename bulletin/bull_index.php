@@ -1335,11 +1335,13 @@ else {
 	$bull_affiche_abs_tot=getSettingValue("bull_affiche_abs_tot");
 	$bull_affiche_abs_nj=getSettingValue("bull_affiche_abs_nj");
 	$bull_affiche_abs_ret=getSettingValue("bull_affiche_abs_ret");
-	if(($bull_affiche_abs_tot=='')&&($bull_affiche_abs_nj=='')&&($bull_affiche_abs_ret=='')) {
+	$bull_affiche_abs_cpe=getSettingValue("bull_affiche_abs_cpe");
+	if(($bull_affiche_abs_tot=='')&&($bull_affiche_abs_nj=='')&&($bull_affiche_abs_ret=='')&&($bull_affiche_abs_cpe=='')) {
 		if($bull_affiche_absences=='y') {
 			$bull_affiche_abs_tot="y";
 			$bull_affiche_abs_nj="y";
 			$bull_affiche_abs_ret="y";
+			$bull_affiche_abs_cpe="y";
 		}
 	}
 

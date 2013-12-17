@@ -509,22 +509,29 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if (isset($_POST['bull_affiche_abs_cpe'])) {
+		if (!saveSetting("bull_affiche_abs_cpe", $_POST['bull_affiche_abs_cpe'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_abs_cpe !";
+			$reg_ok = 'no';
+		}
+	}
+
 	if (isset($_POST['bull_affiche_avis'])) {
-	
+		
 		if (!saveSetting("bull_affiche_avis", $_POST['bull_affiche_avis'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_avis !";
 			$reg_ok = 'no';
 		}
 	}
 	if (isset($_POST['bull_affiche_aid'])) {
-	
+
 		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
 			$reg_ok = 'no';
 		}
 	}
 	if (isset($_POST['bull_affiche_formule'])) {
-	
+
 		if (!saveSetting("bull_affiche_formule", $_POST['bull_affiche_formule'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_formule !";
 			$reg_ok = 'no';
@@ -592,22 +599,21 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	
-	
 	if(isset($_POST['bull_bordure_classique'])) {
 		if (!saveSetting("bull_bordure_classique", $_POST['bull_bordure_classique'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_bordure_classique !";
 			$reg_ok = 'no';
 		}
 	}
-	
+
 	if (isset($_POST['choix_bulletin'])) {
-	
+
 		if (!saveSetting("choix_bulletin", $_POST['choix_bulletin'])) {
 			$msg .= "Erreur lors de l'enregistrement de choix_bulletin";
 			$reg_ok = 'no';
 		}
 	}
-	
+
 	if (isset($_POST['min_max_moyclas'])) {
 	
 		if (!saveSetting("min_max_moyclas", $_POST['min_max_moyclas'])) {
@@ -677,14 +683,13 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	
-	
 	if(isset($_POST['bull_affiche_tel'])) {
 		if (!saveSetting("bull_affiche_tel", $_POST['bull_affiche_tel'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_tel !";
 			$reg_ok = 'no';
 		}
 	}
-	
+
 	if(isset($_POST['bull_affiche_fax'])) {
 		if (!saveSetting("bull_affiche_fax", $_POST['bull_affiche_fax'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_fax !";
@@ -1422,16 +1427,18 @@ if(getSettingAOui('active_bulletins')) {
 
     <?php
         // A mettre dans 162_to_163
-        if((getSettingValue("bull_affiche_abs_tot")=="")&&(getSettingValue("bull_affiche_abs_nj")=="")&&(getSettingValue("bull_affiche_abs_ret")=="")) {
+        if((getSettingValue("bull_affiche_abs_tot")=="")&&(getSettingValue("bull_affiche_abs_nj")=="")&&(getSettingValue("bull_affiche_abs_ret")=="")&&(getSettingValue("bull_affiche_abs_cpe")=="")) {
             if(getSettingValue("bull_affiche_absences")=="y") {
                 saveSetting("bull_affiche_abs_tot", "y");
                 saveSetting("bull_affiche_abs_nj", "y");
                 saveSetting("bull_affiche_abs_ret", "y");
+                saveSetting("bull_affiche_abs_cpe", "y");
             }
             else {
                 saveSetting("bull_affiche_abs_tot", "n");
                 saveSetting("bull_affiche_abs_nj", "n");
                 saveSetting("bull_affiche_abs_ret", "n");
+                saveSetting("bull_affiche_abs_cpe", "n");
             }
         }
     ?>
@@ -1480,6 +1487,22 @@ if(getSettingAOui('active_bulletins')) {
         echo "<input type=\"radio\" name=\"bull_affiche_abs_ret\" id=\"bull_affiche_abs_retn\" value=\"n\" ";
         if (getSettingValue("bull_affiche_abs_ret") != 'y') echo " checked";
         echo " /><label for='bull_affiche_abs_retn' style='cursor: pointer;'>&nbsp;Non</label>";
+
+        ?>
+        </td>
+    </tr>
+    <tr <?php /*if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++;*/ ?>>
+        <td style="font-variant: small-caps;">
+        Afficher le nom du C.P.E.&nbsp;:
+        </td>
+        <td>
+        <?php
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpey\" value=\"y\" ";
+        if (getSettingValue("bull_affiche_abs_cpe") == 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_cpey' style='cursor: pointer;'>&nbsp;Oui</label>";
+        echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpen\" value=\"n\" ";
+        if (getSettingValue("bull_affiche_abs_cpe") != 'y') echo " checked";
+        echo " /><label for='bull_affiche_abs_cpen' style='cursor: pointer;'>&nbsp;Non</label>";
 
         ?>
         </td>
