@@ -92,14 +92,16 @@ if ($id_devoir)  {
 	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
 	//echo "$sql<br />";
 	$appel_devoir = mysqli_query($GLOBALS["mysqli"], $sql);
-	$nom_devoir = old_mysql_result($appel_devoir, 0, 'nom_court');
-	$ramener_sur_referentiel_dev_choisi=old_mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
-	$note_sur_dev_choisi=old_mysql_result($appel_devoir, 0, 'note_sur');
+	$obj_devoir=$appel_devoir->fetch_object();
+	$nom_devoir = $obj_devoir->nom_court;
+	$ramener_sur_referentiel_dev_choisi=$obj_devoir->ramener_sur_referentiel;
+	$note_sur_dev_choisi=$obj_devoir->note_sur;
 
 	$sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
-	$id_racine = old_mysql_result($query, 0, 'id_racine');
-	$id_conteneur = old_mysql_result($query, 0, 'id_conteneur');
+	$obj_cn=$query->fetch_object();
+	$id_racine = $obj_cn->id_racine;
+	$id_conteneur = $obj_cn->id_conteneur;
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
 	$id_conteneur = isset($_POST['id_conteneur']) ? $_POST['id_conteneur'] : (isset($_GET['id_conteneur']) ? $_GET['id_conteneur'] : NULL);
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_racine FROM cn_conteneurs WHERE id = '$id_conteneur'");
@@ -109,7 +111,8 @@ if ($id_devoir)  {
 		die();
 	}
 	else {
-		$id_racine = old_mysql_result($query, 0, 'id_racine');
+		$obj_cn=$query->fetch_object();
+		$id_racine = $obj_cn->id_racine;
 	}
 } else {
 	//debug_var();
@@ -144,7 +147,8 @@ if ($id_devoir)  {
 					$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine'");
 				}
 			} else {
-				$id_racine = old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');
+				$obj_cn=$appel_cahier_notes->fetch_object();
+				$id_racine = $obj_cn->id_cahier_notes;
 			}
 			$id_conteneur=$id_racine;
 		}
@@ -170,11 +174,12 @@ $header_pdf=array();
 $data_pdf=array();
 
 $appel_conteneur = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
-$nom_conteneur = old_mysql_result($appel_conteneur, 0, 'nom_court');
-$mode = old_mysql_result($appel_conteneur, 0, 'mode');
-$arrondir = old_mysql_result($appel_conteneur, 0, 'arrondir');
-$ponderation = old_mysql_result($appel_conteneur, 0, 'ponderation');
-$display_bulletin = old_mysql_result($appel_conteneur, 0, 'display_bulletin');
+$obj_cn=$appel_conteneur->fetch_object();
+$nom_conteneur = $obj_cn->nom_court;
+$mode = $obj_cn->mode;
+$arrondir = $obj_cn->arrondir;
+$ponderation = $obj_cn->ponderation;
+$display_bulletin = $obj_cn->display_bulletin;
 
 // On teste si le carnet de notes appartient bien à la personne connectée
 if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
@@ -190,10 +195,11 @@ if (!(Verif_prof_cahier_notes ($_SESSION['login'],$id_racine))) {
 // id_devoir
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$obj_ccn=$appel_cahier_notes->fetch_object();
+$id_groupe = $obj_ccn->id_groupe;
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
-$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = $obj_ccn->periode;
 if (count($current_group["classes"]["list"]) > 1) {
 	$multiclasses = true;
 } else {
@@ -236,8 +242,11 @@ $matiere_nom_court = $current_group["matiere"]["matiere"];
 $nom_classe = $current_group["classlist_string"];
 
 
-$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
-$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
+//$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+//$nom_periode = old_mysql_result($periode_query, $periode_num-1, "nom_periode");
+$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe' AND num_periode='$periode_num' ORDER BY num_periode");
+$obj_periode=$periode_query->fetch_object();
+$nom_periode = $obj_periode->nom_periode;
 
 //
 // Détermination des sous-conteneurs
@@ -358,8 +367,9 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
-	$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
-	$note_sur_verif = old_mysql_result($appel_note_sur,0 ,'note_sur');
+	$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cn_devoirs WHERE id = '$id_devoir'");
+	$obj_note_sur=$appel_note_sur->fetch_object();
+	$note_sur_verif = $obj_note_sur->note_sur;
 
 	for($i=0;$i<$indice_max_log_eleve;$i++){
 		if(isset($log_eleve[$i])) {
@@ -569,16 +579,17 @@ $nb_dev  = mysqli_num_rows($appel_dev);
 
 // Détermination des noms et identificateurs des devoirs
 $j = 0;
-while ($j < $nb_dev) {
-	$nom_dev[$j] = old_mysql_result($appel_dev, $j, 'nom_court');
-	$id_dev[$j] = old_mysql_result($appel_dev, $j, 'id');
-	$coef[$j] = old_mysql_result($appel_dev, $j, 'coef');
-	$note_sur[$j] = old_mysql_result($appel_dev, $j, 'note_sur');
-	$ramener_sur_referentiel[$j] = old_mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
-	$facultatif[$j] = old_mysql_result($appel_dev, $j, 'facultatif');
-	$display_parents[$j] = old_mysql_result($appel_dev, $j, 'display_parents');
-	$date_visibilite_ele_resp[$j] = old_mysql_result($appel_dev, $j, 'date_ele_resp');
-	$date = old_mysql_result($appel_dev, $j, 'date');
+//while ($j < $nb_dev) {
+while ($obj_dev=$appel_dev->fetch_object()) {
+	$nom_dev[$j] = $obj_dev->nom_court;
+	$id_dev[$j] = $obj_dev->id;
+	$coef[$j] = $obj_dev->coef;
+	$note_sur[$j] = $obj_dev->note_sur;
+	$ramener_sur_referentiel[$j] = $obj_dev->ramener_sur_referentiel;
+	$facultatif[$j] = $obj_dev->facultatif;
+	$display_parents[$j] = $obj_dev->display_parents;
+	$date_visibilite_ele_resp[$j] = $obj_dev->date_ele_resp;
+	$date = $obj_dev->date;
 	$annee = mb_substr($date,0,4);
 	$mois =  mb_substr($date,5,2);
 	$jour =  mb_substr($date,8,2);
@@ -913,8 +924,9 @@ $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
 $note_sur_verif = 20;
 if ($id_devoir != 0) {
-        $appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
-        $note_sur_verif = old_mysql_result($appel_note_sur,'0' ,'note_sur');
+	$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cn_devoirs WHERE id = '$id_devoir'");
+	$obj_note_sur=$appel_note_sur->fetch_object();
+	$note_sur_verif = $obj_note_sur->note_sur;
 	echo "<p class='cn'>Taper une note de 0 à ".$note_sur_verif." pour chaque élève, ou à défaut le code 'a' pour 'absent', le code 'd' pour 'dispensé', le code '-' ou 'n' pour absence de note.</p>\n";
 	echo "<p class='cn'>Vous pouvez également <b>importer directement vos notes par \"copier/coller\"</b> à partir d'un tableur ou d'une autre application : voir <a href='#import_notes_tableur'>tout en bas de cette page</a>.</p>\n";
 
@@ -1018,9 +1030,10 @@ foreach ($liste_eleves as $eleve) {
 		
 		if($note_query){
 			if(mysqli_num_rows($note_query)>0){
-				$eleve_statut = @old_mysql_result($note_query, 0, "statut");
-				$eleve_note = @old_mysql_result($note_query, 0, "note");
-				$eleve_comment = @old_mysql_result($note_query, 0, "comment");
+				$obj_note_query=$note_query->fetch_object();
+				$eleve_statut = $obj_note_query->statut;
+				$eleve_note = $obj_note_query->note;
+				$eleve_comment = $obj_note_query->comment;
 			}
 			else{
 				$eleve_statut = "";
@@ -1232,14 +1245,15 @@ if ($id_devoir==0) {
 			$query_nb_dev = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_devoirs where (id_conteneur='$id_sous_cont[$i]' and id_racine='$id_racine') order by date");
 			$nb_dev_s_cont[$i]  = mysqli_num_rows($query_nb_dev);
 			$m = 0;
-			while ($m < $nb_dev_s_cont[$i]) {
-				$id_s_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'id');
-				$nom_sous_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'nom_court');
-				$coef_s_dev[$i][$m]  = old_mysql_result($query_nb_dev, $m, 'coef');
-				$note_sur_s_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'note_sur');
-				$ramener_sur_referentiel_s_dev[$i][$m] = old_mysql_result($query_nb_dev, $m, 'ramener_sur_referentiel');
-				$fac_s_dev[$i][$m]  = old_mysql_result($query_nb_dev, $m, 'facultatif');
-				$date = old_mysql_result($query_nb_dev, $m, 'date');
+			//while ($m < $nb_dev_s_cont[$i]) {
+			while ($obj_nb_dev=$query_nb_dev->fetch_object()) {
+				$id_s_dev[$i][$m] = $obj_nb_dev->id;
+				$nom_sous_dev[$i][$m] = $obj_nb_dev->nom_court;
+				$coef_s_dev[$i][$m]  = $obj_nb_dev->coef;
+				$note_sur_s_dev[$i][$m] = $obj_nb_dev->note_sur;
+				$ramener_sur_referentiel_s_dev[$i][$m] = $obj_nb_dev->ramener_sur_referentiel;
+				$fac_s_dev[$i][$m]  = $obj_nb_dev->facultatif;
+				$date = $obj_nb_dev->date;
 				$annee = mb_substr($date,0,4);
 				$mois =  mb_substr($date,5,2);
 				$jour =  mb_substr($date,8,2);
@@ -1733,8 +1747,9 @@ while($i < $nombre_lignes) {
 					$temp = $id_s_dev[$k][$m];
 					$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
 					if($note_query){
-						$eleve_statut = @old_mysql_result($note_query, 0, "statut");
-						$eleve_note = @old_mysql_result($note_query, 0, "note");
+						$obj_note_query=$note_query->fetch_object();
+						$eleve_statut = $obj_note_query->statut;
+						$eleve_note = $obj_note_query->note;
 						if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 							$tmp = $eleve_statut;
 							$data_pdf[$pointer][] = $eleve_statut;
@@ -1777,10 +1792,11 @@ while($i < $nombre_lignes) {
 
 			$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
 			
-            if($moyenne_query){
-				$statut_moy = @old_mysql_result($moyenne_query, 0, "statut");
+			if($moyenne_query){
+				$obj_moyenne_query=$moyenne_query->fetch_object();
+				$statut_moy = $obj_moyenne_query->statut;
 				if ($statut_moy == 'y') {
-					$moy = @old_mysql_result($moyenne_query, 0, "note");
+					$moy = $obj_moyenne_query->note;
 					$moy = number_format($moy,1, ',', ' ');
 					$data_pdf[$pointer][] = $moy;
 					$tab_ele_notes[$i][]=$moy;
@@ -1807,10 +1823,11 @@ while($i < $nombre_lignes) {
 	if ($id_devoir==0)  {
 		$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
 		
-        if($moyenne_query){
-			$statut_moy = @old_mysql_result($moyenne_query, 0, "statut");
+		if($moyenne_query){
+			$obj_moyenne_query=$moyenne_query->fetch_object();
+			$statut_moy = $obj_moyenne_query->statut;
 			if ($statut_moy == 'y') {
-				$moy = @old_mysql_result($moyenne_query, 0, "note");
+				$moy = $obj_moyenne_query->note;
 				$moy = number_format($moy,1, ',', ' ');
 				$data_pdf[$pointer][] = $moy;
 				$tab_ele_notes[$i][]=$moy;
@@ -1901,14 +1918,15 @@ $k='0';
 while ($k < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
-		$call_moyenne[$k] = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
+		$call_moyenne = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(n.note),1) moyenne FROM cn_notes_devoirs n, j_eleves_groupes j WHERE (
 		j.id_groupe='$id_groupe' AND
 		j.periode = '$periode_num' AND
 		j.login = n.login AND
 		n.statut='' AND
 		n.id_devoir='$id_dev[$k]'
 		)");
-		$moyenne[$k] = old_mysql_result($call_moyenne[$k], 0, "moyenne");
+		$obj_moy_courante=$call_moyenne->fetch_object();
+		$moyenne[$k] = $obj_moy_courante->moyenne;
 		if ($moyenne[$k] != '') {
 			echo "<td class='cn'><center><b>".number_format($moyenne[$k],1, ',', ' ')."</b></center></td>\n";
 			$data_pdf[$tot_data_pdf][] = number_format($moyenne[$k],1, ',', ' ');
@@ -1942,7 +1960,8 @@ if ($id_devoir==0) {
 				n.statut='' AND
 				n.id_devoir='$temp'
 				)");
-				$moy_s_dev = old_mysql_result($call_moy, 0, "moyenne");
+				$obj_moy=$call_moy->fetch_object();
+				$moy_s_dev = $obj_moy->moyenne;
 				if ($moy_s_dev != '') {
 					echo "<td class='cn'><center><b>".number_format($moy_s_dev,1, ',', ' ')."</b></center></td>\n";
 					$data_pdf[$tot_data_pdf][] = number_format($moy_s_dev,1, ',', ' ');
@@ -1960,7 +1979,8 @@ if ($id_devoir==0) {
 		n.statut='y' AND
 		n.id_conteneur='$id_sous_cont[$k]'
 		)");
-		$moy_moy = old_mysql_result($call_moy_moy, 0, "moyenne");
+		$obj_moy_moy=$call_moy_moy->fetch_object();
+		$moy_moy = $obj_moy_moy->moyenne;
 		if ($moy_moy != '') {
 			echo "<td class='cn'><center><b>".number_format($moy_moy,1, ',', ' ')."</b></center></td>\n";
 			$data_pdf[$tot_data_pdf][] = number_format($moy_moy,1, ',', ' ');
@@ -1984,7 +2004,8 @@ if ($id_devoir==0) {
 	n.statut='y' AND
 	n.id_conteneur='$id_conteneur'
 	)");
-	$moy_moy = old_mysql_result($call_moy_moy, 0, "moyenne");
+	$obj_moy_moy=$call_moy_moy->fetch_object();
+	$moy_moy = $obj_moy_moy->moyenne;
 	if ($moy_moy != '') {
 		echo "<td class='cn'><center><b>".number_format($moy_moy,1, ',', ' ')."</b></center></td>\n";
 		$data_pdf[$tot_data_pdf][] = number_format($moy_moy,1, ',', ' ');
