@@ -164,6 +164,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$bull_affiche_abs_tot,
 		$bull_affiche_abs_nj,
 		$bull_affiche_abs_ret,
+		$bull_affiche_abs_cpe,
 
 		$bull_affiche_avis,
 
@@ -881,7 +882,7 @@ width:".$largeur1."%;\n";
 				}
 			}
 			// C.P.E.
-			if($bull_affiche_abs_cpe!='n') {
+			if($bull_affiche_abs_cpe=='y') {
 				echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
 				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
@@ -5511,7 +5512,6 @@ fclose($f);
 					}
 				}
 
-				//if($tab_modele_pdf[""][$classe_id]==='1') {
 				if($tab_modele_pdf["afficher_abs_ret"][$classe_id]=='1') {
 					if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
 					{

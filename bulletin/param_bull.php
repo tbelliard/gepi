@@ -1498,11 +1498,12 @@ if(getSettingAOui('active_bulletins')) {
         <td>
         <?php
         echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpey\" value=\"y\" ";
-        if (getSettingValue("bull_affiche_abs_cpe") != 'n') echo " checked";
+        if (getSettingValue("bull_affiche_abs_cpe") == 'y') echo " checked";
         echo " /><label for='bull_affiche_abs_cpey' style='cursor: pointer;'>&nbsp;Oui</label>";
         echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpen\" value=\"n\" ";
-        if (getSettingValue("bull_affiche_abs_cpe") == 'n') echo " checked";
+        if (getSettingValue("bull_affiche_abs_cpe") != 'y') echo " checked";
         echo " /><label for='bull_affiche_abs_cpen' style='cursor: pointer;'>&nbsp;Non</label>";
+
         ?>
         </td>
     </tr>
