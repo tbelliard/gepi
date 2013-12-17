@@ -164,6 +164,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$bull_affiche_abs_tot,
 		$bull_affiche_abs_nj,
 		$bull_affiche_abs_ret,
+		$bull_affiche_abs_cpe,
 
 		$bull_affiche_avis,
 
@@ -879,13 +880,15 @@ width:".$largeur1."%;\n";
 				}
 			}
 			// C.P.E.
-			echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
+			if($bull_affiche_abs_cpe=='y') {
+				echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
-			if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
-				echo "e";
+				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
+					echo "e";
+				}
+				echo " du suivi : ". affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe']) . ")";
 			}
 
-			echo " du suivi : ". affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe']) . ")";
 			if ($tab_bull['eleve'][$i]['appreciation_absences']!="") {echo "<br />".texte_html_ou_pas($tab_bull['eleve'][$i]['appreciation_absences']);}
 			echo "</p>\n";
 			echo "</td>\n</tr>\n</table>\n";
@@ -5503,34 +5506,35 @@ fclose($f);
 						$info_absence="<i>Aucune absence non justifiée</i>.";
 					} else {
 						$info_absence="<i>Nombre de demi-journées d'absence non justifiées ";
-						$info_absence.=": </i><b>".$tab_bull['eleve'][$i]['eleve_nj']."</b>";
+						$info_absence.=": </i><b>".$tab_bull['eleve'][$i]['eleve_nj'].".</b>";
 					}
 				}
 
-				//if($tab_modele_pdf["afficher_abs_ret"][$classe_id]==='1') {
 				if($tab_modele_pdf["afficher_abs_ret"][$classe_id]=='1') {
 					if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
 					{
-						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards'].".</b>";
 					}
 				}
-				$pdf->SetFont('DejaVu','',8);
-				// C.P.E.
-				$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
-				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
-					$info_absence = $info_absence."e";
-				}
-				/*
-				$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
-				$res_civi=mysql_query($sql);
-				if(mysql_num_rows($res_civi)>0){
-					$lig_civi=mysql_fetch_object($res_civi);
-					if($lig_civi->civilite!="M."){
+				if($tab_modele_pdf["afficher_abs_cpe"][$classe_id]=='1') {
+					$pdf->SetFont('DejaVu','',8);
+					// C.P.E.
+					$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
+					if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
 						$info_absence = $info_absence."e";
 					}
+					/*
+					$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
+					$res_civi=mysql_query($sql);
+					if(mysql_num_rows($res_civi)>0){
+						$lig_civi=mysql_fetch_object($res_civi);
+						if($lig_civi->civilite!="M."){
+							$info_absence = $info_absence."e";
+						}
+					}
+					*/
+					$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				}
-				*/
-				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
 				//$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, $info_absence, '', 'J', '');
 
