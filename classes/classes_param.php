@@ -109,6 +109,14 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - ".$_POST['nb_'.$per.'_reg_format']."</br>";
 					}
+
+					if (isset($_POST['nb_'.$per.'_reg_elformat'])) {
+						$tab = explode("_", $_POST['nb_'.$per.'_reg_elformat']);
+						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET format_nom_eleve='".$tab[2]."' where id='".$id_classe."'");
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+//                        echo "classe : ".$id_classe." - ".$_POST['nb_'.$per.'_reg_elformat']."</br>";
+					}
+
 					if (isset($_POST['display_rang_'.$per])) {
 						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET display_rang='".$_POST['display_rang_'.$per]."' where id='".$id_classe."'");
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
@@ -955,8 +963,17 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<input type="radio" name="<?php echo "nb_".$per."_reg_format"; ?>" id="<?php echo "nb_".$per."_reg_format"; ?>_cn" value="<?php echo "nb_".$per."_cn"; ?>" />
 		<label for='<?php echo "nb_".$per."_reg_format"; ?>_cn' style='cursor: pointer;'>Civ. Nom (M. Durand)</label>
 		<br />
-<br />
 
+	<p>Formatage de l'identité des élèves sur les bulletins&nbsp;:
+
+	<br />
+	<input type="radio" name="<?php echo "nb_".$per."_reg_elformat"; ?>" id="<?php echo "nb_".$per."_reg_elformat"; ?>_np" value="<?php echo "nb_".$per."_np"; ?>" />
+	<label for='<?php echo "nb_".$per."_reg_elformat"; ?>_np' style='cursor: pointer;'>Nom Prénom (Durand Albert)</label>
+	<br />
+	<input type="radio" name="<?php echo "nb_".$per."_reg_elformat"; ?>" id="<?php echo "nb_".$per."_reg_elformat"; ?>_pn" value="<?php echo "nb_".$per."_pn"; ?>" />
+	<label for='<?php echo "nb_".$per."_reg_elformat"; ?>_pn' style='cursor: pointer;'>Prénom Nom (Albert Durand)</label>
+	<br />
+<br />
 <h2><b>Enseignements</b></h2>
 <table border='0' cellspacing='0'>
 <tr>

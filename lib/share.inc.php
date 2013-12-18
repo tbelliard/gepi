@@ -84,7 +84,6 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
  * 
  * composé de lettres et d'au moins un chiffre
  *
-
  * @param string $password Mot de passe
  * @param boolean $flag Si $flag = 1, il faut également au moins un caractères spécial
  * @return boolean TRUE si le mot de passe est valable
@@ -745,6 +744,39 @@ function affiche_utilisateur($login,$id_classe) {
     case 'cn':
     if ($civilite != '') $result = $civilite." ";
     $result .= $nom;
+    break;
+    $result = $nom." ".$prenom;
+
+    }
+    return $result;
+}
+/**
+ * Fonction qui propose l'ordre d'affichage du nom, prénom de l'élève en fonction des réglages de la classe de l'élève
+ *
+ * @param string $nom nom de l'élève
+ * @param string $prenom prénom de l'élève
+ * @param integer $id_classe Id de la classe
+ * @return string nom, prénom formaté
+ */
+function affiche_eleve($nom,$prenom,$id_classe) {
+    global $mysqli;
+    $sql_format = "select format_nom_eleve from classes where id = '".$id_classe."'";
+	$resultat_format = mysqli_query($mysqli, $sql_format);
+	if($resultat_format->num_rows > 0) {
+		$obj_format = $resultat_format->fetch_object();
+		$format = $obj_format->format_nom_eleve;
+		$resultat_format->close();
+	}
+	else {
+		$format="";
+	}
+
+    switch( $format ) {
+    case 'np':
+    $result = $nom." ".$prenom;
+    break;
+    case 'pn':
+    $result = $prenom." ".$nom;
     break;
     $result = $nom." ".$prenom;
 
