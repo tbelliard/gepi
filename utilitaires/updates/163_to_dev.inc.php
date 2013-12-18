@@ -490,5 +490,89 @@ if ($gepi_cpe_suivi=="") {
 } else {
 	$result .= msj_present("déjà faite");
 }
+$result .= "<br />";
+
+$result .= "<strong>Modularité de l'affichage du nom du C.P.E. sur les bulletins HTML&nbsp;:</strong> ";
+if (getSettingValue("bull_affiche_abs_cpe")=="") {
+	if (getSettingValue("bull_affiche_absences")=="y") {
+		if (!saveSetting("bull_affiche_abs_cpe", "y")) {
+			$result .= msj_erreur("ECHEC !");
+		}
+		else {
+			$result .= msj_ok("SUCCES !");
+		}
+	}
+	else {
+		if (!saveSetting("bull_affiche_abs_cpe", "n")) {
+			$result .= msj_erreur("ECHEC !");
+		}
+		else {
+			$result .= msj_ok("SUCCES !");
+		}
+	}
+}
+else {
+	$result .= msj_present("déjà faite");
+}
+$result .= "<strong>Modularité de l'affichage du nom du C.P.E. sur les bulletins PDF&nbsp;:</strong><br />";
+$result .= "&nbsp;->Contrôle de la suppression d'anomalies sur les modèles de bulletins PDF&nbsp;: ";
+
+	// nettoyage des valeurs vides
+	//$sql = "SELECT * FROM `modele_bulletin` WHERE nom ='active_bloc_absence' ";
+	$sql="DELETE FROM `modele_bulletin` WHERE nom ='afficher_abs_tot' AND valeur ='';";
+	$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+	$sql="DELETE FROM `modele_bulletin` WHERE nom ='afficher_abs_ret' AND valeur ='';";
+	$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+	$sql="DELETE FROM `modele_bulletin` WHERE nom ='afficher_abs_nj' AND valeur ='';";
+	$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+	$sql="DELETE FROM `modele_bulletin` WHERE nom ='afficher_abs_cpe' AND valeur ='';";
+	$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+$result .= msj_ok("SUCCES !");
+
+// forcage à 1 de la valeur de afficher_abs_cpe si il existe afficher_abs_tot
+$result .= "&nbsp;->Mise à niveau des modèles PDF existants &nbsp;: ";
+$nb_changes = 0;
+//On recherche les différents modeles
+$sql="SELECT DISTINCT `id_model_bulletin` FROM `modele_bulletin`;";
+$res_mod=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_mod)>0) {
+	$result .= "&nbsp;->Mise à jour des modèles de bulletins PDF&nbsp;: ";
+	while($lig_mod=mysqli_fetch_object($res_mod)) {
+		//Si le modèle contient déja une valeur afficher_abs_cpe
+		$sql = "SELECT `id_model_bulletin`, `nom`, `valeur` FROM `modele_bulletin` WHERE nom = 'afficher_abs_cpe' AND `id_model_bulletin`= $lig_mod->id_model_bulletin";
+		//echo "$sql<br />";
+		$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cpe)>0) continue; //on passe directement au modèle suivant
+		//Si le modèle à des particularités d'absences pour ne pas changer l'affichage existant
+		$sql = "SELECT `id_model_bulletin`, `nom`, `valeur` FROM `modele_bulletin` WHERE nom = 'afficher_abs_tot' AND `id_model_bulletin`= $lig_mod->id_model_bulletin";
+		//echo "$sql<br />";
+		$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cpe)>0)
+		{//selon qu'il affiche ou pas le bloc absences
+			$sql = "SELECT `id_model_bulletin`, `nom`, `valeur` FROM `modele_bulletin` WHERE nom = 'affiche_bloc_absences' AND `id_model_bulletin`= $lig_mod->id_model_bulletin";
+			//echo "$sql<br />";
+			$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_resp)>0) { //on force afficher_abs_cpe à 1
+				$sql="INSERT INTO `modele_bulletin` SET `nom` ='afficher_abs_cpe', `valeur` ='1', `id_model_bulletin` ='$lig_mod->id_model_bulletin';";
+				//echo "$sql<br />";
+				$query=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_changes++;
+			}
+			else { //sinon on force afficher_abs_cpe à 0
+				$sql="INSERT INTO `modele_bulletin` SET `nom` ='afficher_abs_cpe', `valeur` ='0', `id_model_bulletin` ='$lig_mod->id_model_bulletin';";
+				//echo "$sql<br />";
+				$query=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_changes++;
+			}
+		}
+	}
+}
+$res_mod->close();
+if ($nb_changes != 0) {
+    $result .= msj_ok($nb_changes." modèles de bulletins ont été mis à niveau");
+}
+else {
+    $result .= msj_present("déjà à niveau");
+}
 
 ?>

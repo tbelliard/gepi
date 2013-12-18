@@ -16,6 +16,7 @@
 	$champ_bull_pdf[]="afficher_abs_tot";
 	$champ_bull_pdf[]="afficher_abs_nj";
 	$champ_bull_pdf[]="afficher_abs_ret";
+	$champ_bull_pdf[]="afficher_abs_cpe";
 
 	$champ_bull_pdf[]="active_bloc_note_appreciation";
 	$champ_bull_pdf[]="active_bloc_avis_conseil";
@@ -229,6 +230,7 @@
 	$val_defaut_champ_bull_pdf["afficher_abs_tot"]=1;
 	$val_defaut_champ_bull_pdf["afficher_abs_nj"]=1;
 	$val_defaut_champ_bull_pdf["afficher_abs_ret"]=1;
+	$val_defaut_champ_bull_pdf["afficher_abs_cpe"]=1;
 
 	$val_defaut_champ_bull_pdf["active_bloc_note_appreciation"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_avis_conseil"]=1;
