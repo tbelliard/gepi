@@ -550,7 +550,8 @@ width:".$largeur1."%;\n";
 			//affichage des données sur une seule ligne ou plusieurs
 			if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				//echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -583,7 +584,7 @@ width:".$largeur1."%;\n";
 			}
 			else { //sur une ligne
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -685,7 +686,7 @@ width:".$largeur1."%;\n";
 				//affichage des données sur une seule ligne ou plusieurs
 			if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -719,7 +720,7 @@ width:".$largeur1."%;\n";
 
 			} else { //sur une ligne
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -2130,7 +2131,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->SetXY($X_eleve_2,$Y_eleve_2);
 
 			//$pdf->Cell(90,7, ($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
-			$nom_prenom=($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']);
+			$nom_prenom=affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe']);
 
 			$hauteur_caractere_nom_prenom=14;
 			$pdf->SetFont('DejaVu','B',$hauteur_caractere_nom_prenom);

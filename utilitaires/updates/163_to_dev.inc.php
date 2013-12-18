@@ -491,4 +491,17 @@ if ($gepi_cpe_suivi=="") {
 	$result .= msj_present("déjà faite");
 }
 
+$result .= "<strong>Paramétrage de l'affichage de l'ordre nom prénom des élèves&nbsp;:</strong><br />";
+$result .= "&nbsp;->Ajout d'un champ format_nom_eleve à la table classes&nbsp;: ";
+$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'format_nom_eleve'"));
+if ($test1 == 0) {
+	$querynp = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `classes` ADD `format_nom_eleve` VARCHAR(5) NOT NULL DEFAULT 'np' AFTER `format_nom`");
+	if ($querynp) {
+		$result .= msj_ok('Ok !');
+	} else {
+		$result .= msj_erreur('!');
+	}
+} else {
+	$result .= msj_present('Le champ existe déjà');
+}
 ?>
