@@ -411,6 +411,7 @@ else {
 										suivi_par='$nom_etab_ori',
 										formule='Pour le conseil',
 										format_nom='np',
+										format_nom_eleve='np',
 										modele_bulletin_pdf='1'
 										;";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -442,6 +443,7 @@ else {
 												suivi_par='$nom_etab_ori',
 												formule='Pour le conseil',
 												format_nom='np',
+												format_nom_eleve='np',
 												modele_bulletin_pdf='1'
 												;";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
