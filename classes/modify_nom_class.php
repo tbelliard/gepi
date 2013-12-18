@@ -115,6 +115,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													suivi_par='$reg_suivi_par',
 													formule= '".html_entity_decode($reg_formule)."',
 													format_nom='$reg_format',
+													format_nom_eleve='$reg_elformat',
 													display_rang='$display_rang',
 													display_address='$display_address',
 													display_coef='$display_coef',
@@ -208,6 +209,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 													suivi_par = '$reg_suivi_par',
 													formule = '$reg_formule',
 													format_nom = '$reg_format',
+													format_nom_eleve = '$reg_elformat',
 													display_rang = '$display_rang',
 													display_address = '$display_address',
 													display_coef = '$display_coef',
@@ -462,6 +464,7 @@ if (isset($id_classe)) {
 	$suivi_par = old_mysql_result($call_nom_class, 0, 'suivi_par');
 	$formule = old_mysql_result($call_nom_class, 0, 'formule');
 	$format_nom = old_mysql_result($call_nom_class, 0, 'format_nom');
+	$format_nom_eleve = old_mysql_result($call_nom_class, 0, 'format_nom_eleve');
 	$display_rang = old_mysql_result($call_nom_class, 0, 'display_rang');
 	$display_address = old_mysql_result($call_nom_class, 0, 'display_address');
 	$display_coef = old_mysql_result($call_nom_class, 0, 'display_coef');
@@ -511,6 +514,7 @@ if (isset($id_classe)) {
 	$formule = '';
 	//$format_nom = 'np';
 	$format_nom = 'cni';
+	$format_nom = 'np';
 	$display_rang = 'n';
 	$display_address = 'n';
 	$display_coef = 'n';
@@ -602,6 +606,14 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <br />
 <input type="radio" name="reg_format" id='reg_format_cn' value="<?php echo "cn"; ?>" <?php   if ($format_nom=="cn") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cn' style='cursor: pointer;'>Civ. Nom  (<em>M. Durand</em>)</label>
+
+<p><b>Formatage de l'identité des élèves pour les bulletins&nbsp;:</b>
+<br /><br />
+<input type="radio" name="reg_elformat" id='reg_elformat_np' value="<?php echo "np"; ?>" <?php if ($format_nom_eleve=="np") echo " checked='checked ' "; ?> onchange='changement()' />
+<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>
+<br />
+<input type="radio" name="reg_elformat" id='reg_elformat_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom_eleve=="pn") echo " checked='checked ' "; ?> onchange='changement()' />
+<label for='reg_elformat_pn' style='cursor: pointer;'>Prénom Nom (<em>Albert Durand</em>)</label>
 
 <input type=hidden name=is_posted value=1 />
 <?php if (isset($id_classe)) {echo "<input type=hidden name=id_classe value=$id_classe />";} ?>

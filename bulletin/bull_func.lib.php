@@ -550,7 +550,8 @@ width:".$largeur1."%;\n";
 			//affichage des données sur une seule ligne ou plusieurs
 			if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				//echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -583,7 +584,7 @@ width:".$largeur1."%;\n";
 			}
 			else { //sur une ligne
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -685,7 +686,7 @@ width:".$largeur1."%;\n";
 				//affichage des données sur une seule ligne ou plusieurs
 			if  ($bull_affiche_eleve_une_ligne == 'no') { // sur plusieurs lignes
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -719,7 +720,7 @@ width:".$largeur1."%;\n";
 
 			} else { //sur une ligne
 				echo "<p class='bulletin'>\n";
-				echo "<b><span class=\"bgrand\">".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']."</span></b><br />";
+				echo "<b><span class=\"bgrand\">".affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe'])."</span></b><br />";
 				echo "Né";
 				if (mb_strtoupper($tab_bull['eleve'][$i]['sexe'])=="F") {echo "e";}
 				echo "&nbsp;le&nbsp;".$tab_bull['eleve'][$i]['naissance'];
@@ -879,13 +880,15 @@ width:".$largeur1."%;\n";
 				}
 			}
 			// C.P.E.
-			echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
+			if($bull_affiche_abs_cpe=='y') {
+				echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
-			if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
-				echo "e";
+				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
+					echo "e";
+				}
+				echo " du suivi : ". affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe']) . ")";
 			}
 
-			echo " du suivi : ". affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe']) . ")";
 			if ($tab_bull['eleve'][$i]['appreciation_absences']!="") {echo "<br />".texte_html_ou_pas($tab_bull['eleve'][$i]['appreciation_absences']);}
 			echo "</p>\n";
 			echo "</td>\n</tr>\n</table>\n";
@@ -2130,7 +2133,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->SetXY($X_eleve_2,$Y_eleve_2);
 
 			//$pdf->Cell(90,7, ($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']),0,2,'');
-			$nom_prenom=($tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom']);
+			$nom_prenom=affiche_eleve($tab_bull['eleve'][$i]['nom'],$tab_bull['eleve'][$i]['prenom'],$tab_bull['id_classe']);
 
 			$hauteur_caractere_nom_prenom=14;
 			$pdf->SetFont('DejaVu','B',$hauteur_caractere_nom_prenom);
@@ -5503,34 +5506,36 @@ fclose($f);
 						$info_absence="<i>Aucune absence non justifiée</i>.";
 					} else {
 						$info_absence="<i>Nombre de demi-journées d'absence non justifiées ";
-						$info_absence.=": </i><b>".$tab_bull['eleve'][$i]['eleve_nj']."</b>";
+						$info_absence.=": </i><b>".$tab_bull['eleve'][$i]['eleve_nj'].".</b>";
 					}
 				}
 
-				//if($tab_modele_pdf["afficher_abs_ret"][$classe_id]==='1') {
+				//if($tab_modele_pdf[""][$classe_id]==='1') {
 				if($tab_modele_pdf["afficher_abs_ret"][$classe_id]=='1') {
 					if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
 					{
-						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards']."</b>";
+						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards'].".</b>";
 					}
 				}
-				$pdf->SetFont('DejaVu','',8);
-				// C.P.E.
-				$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
-				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
-					$info_absence = $info_absence."e";
-				}
-				/*
-				$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
-				$res_civi=mysql_query($sql);
-				if(mysql_num_rows($res_civi)>0){
-					$lig_civi=mysql_fetch_object($res_civi);
-					if($lig_civi->civilite!="M."){
+				if($tab_modele_pdf["afficher_abs_cpe"][$classe_id]=='1') {
+					$pdf->SetFont('DejaVu','',8);
+					// C.P.E.
+					$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
+					if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
 						$info_absence = $info_absence."e";
 					}
+					/*
+					$sql="SELECT civilite FROM utilisateurs WHERE login='".$cperesp_login[$i]."'";
+					$res_civi=mysql_query($sql);
+					if(mysql_num_rows($res_civi)>0){
+						$lig_civi=mysql_fetch_object($res_civi);
+						if($lig_civi->civilite!="M."){
+							$info_absence = $info_absence."e";
+						}
+					}
+					*/
+					$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				}
-				*/
-				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
 				//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
 				//$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, $info_absence, '', 'J', '');
 

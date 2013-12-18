@@ -170,6 +170,8 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['afficher_abs_nj'])) { $afficher_abs_nj = $_GET['afficher_abs_nj']; } if (isset($_POST['afficher_abs_nj'])) { $afficher_abs_nj = $_POST['afficher_abs_nj']; } }
 	if (empty($_GET['afficher_abs_ret']) and empty($_POST['afficher_abs_ret'])) { $afficher_abs_ret = ''; }
 	else { if (isset($_GET['afficher_abs_ret'])) { $afficher_abs_ret = $_GET['afficher_abs_ret']; } if (isset($_POST['afficher_abs_ret'])) { $afficher_abs_ret = $_POST['afficher_abs_ret']; } }
+	if (empty($_GET['afficher_abs_cpe']) and empty($_POST['afficher_abs_cpe'])) { $afficher_abs_cpe = ''; }
+	else { if (isset($_GET['afficher_abs_cpe'])) { $afficher_abs_cpe = $_GET['afficher_abs_cpe']; } if (isset($_POST['afficher_abs_cpe'])) { $afficher_abs_cpe = $_POST['afficher_abs_cpe']; } }
 
 	if (empty($_GET['active_bloc_note_appreciation']) and empty($_POST['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = ''; }
 	else { if (isset($_GET['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = $_GET['active_bloc_note_appreciation']; } if (isset($_POST['active_bloc_note_appreciation'])) { $active_bloc_note_appreciation = $_POST['active_bloc_note_appreciation']; } }
@@ -1640,16 +1642,18 @@ function DecocheCheckbox() {
 
 			<?php
 				// A mettre dans 162_to_163
-				if((!isset($afficher_abs_tot))||($afficher_abs_tot=="")||(!isset($afficher_abs_nj))||($afficher_abs_nj=="")||(!isset($afficher_abs_ret))||($afficher_abs_ret=="")) {
+				if((!isset($afficher_abs_tot))||($afficher_abs_tot=="")||(!isset($afficher_abs_nj))||($afficher_abs_nj=="")||(!isset($afficher_abs_ret))||($afficher_abs_ret=="")||(!isset($afficher_abs_cpe))||($afficher_abs_cpe=="")) {
 					if($active_bloc_absence=="1") {
 						$afficher_abs_tot='1';
 						$afficher_abs_nj='1';
 						$afficher_abs_ret='1';
+						$afficher_abs_cpe='1';
 					}
 					else {
 						$afficher_abs_tot='0';
 						$afficher_abs_nj='0';
 						$afficher_abs_ret='0';
+						$afficher_abs_cpe='0';
 					}
 				}
 			?>
@@ -1674,6 +1678,11 @@ function DecocheCheckbox() {
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 					<td>Affichage du nombre de retards&nbsp;:</td>
 					<td><input name="afficher_abs_ret" id="afficher_abs_ret_1" value="1" type="radio" <?php if(!empty($afficher_abs_ret) and $afficher_abs_ret==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_abs_ret_1'>&nbsp;Activer</label> &nbsp;<input name="afficher_abs_ret" id="afficher_abs_ret_0" value="0" type="radio" <?php if(empty($afficher_abs_ret) or (!empty($afficher_abs_ret) and $afficher_abs_ret!='1')) { ?>checked="checked"<?php } ?> /><label for='afficher_abs_ret_0'>&nbsp;Désactiver</label></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Affichage du nom du CPE&nbsp;:</td>
+					<td><input name="afficher_abs_cpe" id="afficher_abs_cpe_1" value="1" type="radio" <?php if(!empty($afficher_abs_cpe) and $afficher_abs_cpe==='1') { ?>checked="checked"<?php } ?> /><label for='afficher_abs_cpe_1'>&nbsp;Activer</label> &nbsp;<input name="afficher_abs_cpe" id="afficher_abs_cpe_0" value="0" type="radio" <?php if(empty($afficher_abs_cpe) or (!empty($afficher_abs_cpe) and $afficher_abs_cpe!='1')) { ?>checked="checked"<?php } ?> /><label for='afficher_abs_cpe_0'>&nbsp;Désactiver</label></td>
 				</tr>
 			</table>
 
@@ -1751,7 +1760,7 @@ function DecocheCheckbox() {
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 
-				<div style="font-weight: bold; background: #CFCFCF;">Cadre signature du chef</div>
+				<div style="font-weight: bold; background: #CFCFCF;">Cadre signature du chef d'établissement</div>
 			<input name="active_bloc_chef" id="active_bloc_chef_1" value="1" type="radio" <?php if(!empty($active_bloc_chef) and $active_bloc_chef==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_chef_1'>&nbsp;Activer &nbsp;</label><input name="active_bloc_chef" id="active_bloc_chef_0" value="0" type="radio" <?php if(empty($active_bloc_chef) or (!empty($active_bloc_chef) and $active_bloc_chef!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_chef_0'>&nbsp;Désactiver</label><br />
 			Positionnement X&nbsp;<input name="X_sign_chef" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_sign_chef)) { ?>value="<?php echo $X_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_sign_chef)) { ?>value="<?php echo $Y_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="longeur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($longeur_sign_chef)) { ?>value="<?php echo $longeur_sign_chef; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_sign_chef" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($hauteur_sign_chef)) { ?>value="<?php echo $hauteur_sign_chef; ?>" <?php } ?> />mm&nbsp;<br />

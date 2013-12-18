@@ -31,6 +31,7 @@ INSERT INTO setting VALUES ('GepiRubConseilProf', 'yes');
 INSERT INTO setting VALUES ('GepiRubConseilScol', 'yes');
 INSERT INTO setting VALUES ('bull_ecart_entete', '0');
 INSERT INTO setting VALUES ('gepi_prof_suivi', 'professeur principal');
+INSERT INTO setting VALUES ('gepi_cpe_suivi', 'C.P.E.');
 INSERT INTO setting VALUES ('GepiProfImprBul', 'no');
 INSERT INTO setting VALUES ('GepiProfImprBulSettings', 'no');
 INSERT INTO setting VALUES ('GepiScolImprBulSettings', 'yes');
