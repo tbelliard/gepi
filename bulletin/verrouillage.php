@@ -475,7 +475,9 @@ Calendar.setup({
 	<li><p>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.<br />Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></p></li>";
 		if(getSettingValue("active_module_absence")=="2"){
 			echo "
-	<li><p>Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous.</p></li>";
+	<li><p>Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous.</p></li>
+	<li><p>Notez bien que les dates indiquées ne correspondent pas à des des dates de verrouillage automatique des périodes.<br />
+	Ces dates sont juste prises en compte dans le module Absences pour proposer les bonnes listes d'élèves à une date donnée.</p></li>";
 		}
 		echo "
 	<li><p>Il est possible d'<strong>autoriser exceptionnellement un professeur à saisir</strong> des notes dans des <a href='../cahier_notes/autorisation_exceptionnelle_saisie.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">carnets de notes</a> ou dans les <a href='../bulletin/autorisation_exceptionnelle_saisie_note.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">bulletins</a> ou à saisir des <a href='../bulletin/autorisation_exceptionnelle_saisie_app.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">appréciations dans les bulletins</a> <strong>sans devoir ouvrir la période en saisie pour tous</strong> les professeurs.</p></li>
