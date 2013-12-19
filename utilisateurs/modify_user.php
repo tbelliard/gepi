@@ -713,7 +713,7 @@ if (($_SESSION['statut']=='administrateur') and (isset($user_login)) and ($user_
 }
 
 if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
-	echo "<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto;'></div>\n";
+	echo "<div id='suggestion_login' style='float:right; width:400px; height: 200px; border: 1px solid black; overflow:auto; display:none; margin-right:0.5em; padding:3px; background-image: url(\"../images/background/opacite50.png\");'></div>\n";
 }
 ?>
 
@@ -764,6 +764,8 @@ if ($ldap_write_access) {
 
 				nom=document.getElementById('reg_nom').value;
 				prenom=document.getElementById('reg_prenom').value;
+
+				document.getElementById('suggestion_login').style.display='';
 
 				//alert('valeur='+valeur);
 				/*
@@ -986,6 +988,12 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 <center><input type=submit value=Enregistrer /></center>
 <!--/span-->
 </div>
+
+<script type='text/javascript'>
+	if(document.getElementById('reg_login')) {
+		document.getElementById('reg_login').focus();
+	}
+</script>
 </fieldset>
 </form>
 
