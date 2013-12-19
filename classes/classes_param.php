@@ -887,11 +887,11 @@ while ($per < $max_periode) {
 
 		?>
 		<p style='text-indent:-6em; margin-left:6em;'><em>Remarque&nbsp;:</em> Les modifications qui seront apportées ne concerneront que les cases cochées ci-dessus.<br />
-		Aucune modification n'est apportée aux champs laissés vides ci-dessous.</p>
+		Les modifications porteront sur ce que vous cocherez/remplirez ci-dessous.<br />
+		Aucune modification ne sera apportée (<em>sur les classes choisies</em>) pour les champs laissés vides ci-dessous.</p>
 		<br />
 
 		<p class='bold'>Pour la ou les classe(s) sélectionnée(s) ci-dessus&nbsp;: </p>
-		<p>Aucune modification ne sera apportée aux champs laissés vides</p>
 
 		<table width=100% border=2 cellspacing=1  cellpadding=3 class='boireaus'>
 		<tr>
