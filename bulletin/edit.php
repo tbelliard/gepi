@@ -363,7 +363,6 @@ echo "}\n";
 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi");
-	if($gepi_cpe_suivi=="") {$gepi_cpe_suivi="C.P.E.";}
 
 	$bull_espace_avis=getSettingValue("bull_espace_avis");
 
