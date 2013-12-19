@@ -184,7 +184,8 @@ if(($nom!="")||($prenom!="")) {
 																document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
 																document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
 																document.getElementById('reg_sexe$sexe').checked=true;
-																return false;\">".$info[$i]["uid"][0]."</a></td>\n";
+																return false;\"
+											title=\"Compléter les champs de formulaire avec les informations trouvées dans l'annuaire LDAP pour cet identifiant.\">".$info[$i]["uid"][0]."</a></td>\n";
 							echo "<td>".$info[$i]["sn"][0]."</td>\n";
 							echo "<td>".$info[$i]["givenname"][0]."</td>\n";
 							echo "<td>".$naissance."</td>\n";
@@ -219,7 +220,8 @@ if(($nom!="")||($prenom!="")) {
 																document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
 																if('$sexe'=='F') {document.getElementById('reg_civilite').selectedIndex=2;} else {document.getElementById('reg_civilite').selectedIndex=1;}
 																//document.getElementById('elenoet').value='".$info[$i]["employeenumber"][0]."';
-																return false;\">".$info[$i]["uid"][0]."</a></td>\n";
+																return false;\"
+											title=\"Compléter les champs de formulaire avec les informations trouvées dans l'annuaire LDAP pour cet identifiant.\">".$info[$i]["uid"][0]."</a></td>\n";
 							echo "<td>".$info[$i]["sn"][0]."</td>\n";
 							echo "<td>".$info[$i]["givenname"][0]."</td>\n";
 							//echo "<td>".$naissance."</td>\n";
