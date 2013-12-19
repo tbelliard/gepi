@@ -282,8 +282,10 @@ echo "</form>\n";
 <form enctype="multipart/form-data" method="post" name="formulaire" action="periodes.php">
 <center><input type='submit' value='Enregistrer' /></center>
 <p class='bold'>Classe : <?php echo $classe; ?></p>
-<p><b>Remarque&nbsp;: </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité"<br />
-(<em>il est question ici de verrrouillage des saisies dans le carnet de notes, contrairement à la date de fin proposée ci-dessous</em>).</p>
+<br />
+<p style='text-indent:-7em; margin-left:7em;'><b>Remarque&nbsp;: </b>Le verrouillage/déverrouillage d'une période (*) est possible en étant connecté sous un compte ayant le statut "<strong>scolarité</strong>"<br />
+(<em>(*) il est question dans cette remarque de verrouillage des saisies dans le carnet de notes, contrairement à la date de fin proposée ci-dessous qui concerne les absences et listes d'élèves proposées</em>).</p>
+<br />
 
 <?php
 
@@ -318,7 +320,7 @@ echo "</p>\n";
 
 if ($test_periode == 0) {
 	echo "<p>Si vous choisissez de ne pas définir de périodes pour cette classe (nombre de périodes = 0), cette classe sera considérée comme virtuelle.</p>\n";
-	echo "<p>Remarques : </p>\n";
+	echo "<p>Remarques&nbsp;: </p>\n";
 	echo "<ul><li>Vous pouvez affecter une ou plusieurs matières à une classe virtuelle.</li>\n";
 	echo "<li>Vous ne pouvez pas affecter d'élèves à une classe virtuelle.</li>\n";
 	echo "<li>Une classe virtuelle peut être utilisée dans le cadre des cahiers de texte : création d'une rubrique accessible au public et remplie par un professeur d'une matière affectée à cette classe.</li>\n";
@@ -465,7 +467,7 @@ echo "<br />
 Il s'agit de dates prises en compte pour l'appartenance d'élèves à la classe pour telle période.<br />
 C'est utile notamment pour les élèves qui changent de classe.<br />
 Ces dates sont aussi prises en compte dans les modules Absences.</p></li>
-<li><p>Le verrouillage des périodes de notes s'effectue en compte \"scolarité\" à la rubrique \"Verrouillage/déverrouillage des périodes\".</p></li>
+<li><p>Le verrouillage des périodes de notes s'effectue en compte \"<strong>scolarité</strong>\" à la rubrique \"Verrouillage/déverrouillage des périodes\".</p></li>
 <li><p>L'accès des parents/élèves aux appréciations et avis des conseils de classe se paramètre en compte \"administrateur\" ou sous réserve d'en donner le droit dans Gestion générale/Droits d'accès en compte \"scolarité\" ou \"professeur\" s'il est ".getSettingValue('gepi_prof_suivi').".</p></li>
 </ul>\n";
 
