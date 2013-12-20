@@ -133,6 +133,8 @@ if(isset($id_eval))  {
 
 		$display_date=mysql_result($query, 0, 'date');
 		$note_sur=mysql_result($query, 0, 'note_sur');
+
+		$display_date=formate_date($display_date);
 	}
 	else {
 		header("Location: index.php?msg=".rawurlencode("L évaluation n°$id_eval n'existe pas."));
