@@ -164,6 +164,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$bull_affiche_abs_tot,
 		$bull_affiche_abs_nj,
 		$bull_affiche_abs_ret,
+		$bull_affiche_abs_cpe,
 
 		$bull_affiche_avis,
 
@@ -177,8 +178,6 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		$signature_bull,
 
 		$bull_affiche_etab,			// Etablissement d'origine
-
-		$bull_affiche_abs_cpe,
 
 		$activer_photo_bulletin,
 		// $bull_photo_largeur_max et $bull_photo_hauteur_max sont récupérées via global dans redimensionne_image()
@@ -881,7 +880,7 @@ width:".$largeur1."%;\n";
 				}
 			}
 			// C.P.E.
-			if($bull_affiche_abs_cpe!='n') {
+			if($bull_affiche_abs_cpe=='y') {
 				echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
 				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
@@ -5511,7 +5510,6 @@ fclose($f);
 					}
 				}
 
-				//if($tab_modele_pdf[""][$classe_id]==='1') {
 				if($tab_modele_pdf["afficher_abs_ret"][$classe_id]=='1') {
 					if($tab_bull['eleve'][$i]['eleve_retards'] != '0' and $tab_bull['eleve'][$i]['eleve_retards'] != '?')
 					{
@@ -5575,7 +5573,7 @@ $hauteur_pris_app_abs=0;
 				{
 					// supprimer les espaces
 					$text_absences_appreciation = trim(str_replace(array("\r\n","\r","\n"), ' ', unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences'])));
-					$info_absence_appreciation = "<i>Avis CPE :</i> <b>".$text_absences_appreciation."</b>";
+					$info_absence_appreciation = "<i>Avis ".ucfirst($gepi_cpe_suivi)." :</i> <b>".$text_absences_appreciation."</b>";
 					$text_absences_appreciation = '';
 					$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
 					$pdf->SetFont('DejaVu','',8);
