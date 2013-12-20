@@ -1110,12 +1110,12 @@ if(getSettingValue('active_mod_discipline')=='y') {
 	  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 	$titreItem='DisciplineCpeChangeDeclarant';
-	$texteItem="a le droit de changer le déclarant d'un incident";
+	$texteItem="a le droit de changer le déclarant d'un incident<br />(<em>pour saisir des incidents à la place d'un professeur,<br />sous réserve que le droit soit explicitement donné par le professeur dans '<strong>Gérer mon compte</strong>'</em>)";
 	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 	$titreItem='DisciplineCpeChangeDefaut';
-	$texteItem="Par défaut, a le droit de changer le déclarant d'un incident (si ce droit existe)";
+	$texteItem="a, par défaut, le droit de changer le déclarant d'un incident<br />(<em>pour saisir des incidents à la place des professeurs qui ont autorisé/délégué la saisie de leurs incidents par un CPE<br />et pour ceux n'ont pas explicitement interdit la saisie par un CPE à leur place</em>)";
 	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }

@@ -1351,7 +1351,17 @@ if(isset($id_incident) ) {
             <p class='bold'>Changer le déclarant</p>
             <p>
                 <select id="choixProf" name="choixProf">
-                    <option value='0'>Choisir un déclarant</option>
+                    <option value='0'<?php
+                        if(mysqli_num_rows($resProf)==0) {
+                            echo ' title="Aucun professeur n\'a autorisé/délégué (via Gérer mon compte) la saisie de ses '.$mod_disc_terme_incident.'s aux CPE."';
+                        }
+                        elseif(getSettingAOui('DisciplineCpeChangeDefaut')) {
+                            echo ' title="Seuls les professeurs n\'ayant pas explicitement refusé de déléguer (via Gérer mon compte) la saisie de leurs '.$mod_disc_terme_incident.'s aux CPE apparaissent ici."';
+                        }
+                        else {
+                            echo ' title="Seuls les professeurs ayant délégué (dans Gérer mon compte) la saisie de leurs '.$mod_disc_terme_incident.'s aux CPE apparaissent ici."';
+                        }
+                    ?>>Choisir un déclarant</option>
 <?php
                     if(mysqli_num_rows($resProf)>0){
                         while($lig_class_tmp=mysqli_fetch_object($resProf)){
@@ -1360,8 +1370,8 @@ if(isset($id_incident) ) {
                                 <?php echo $lig_class_tmp->nom; ?> <?php echo $lig_class_tmp->prenom; ?>
                             </option>
 <?php
-                }
-            }
+                        }
+                    }
 ?>
                 </select>
                 <input type='hidden' name='id_incident' value='<?php echo $id_incident; ?>' />
