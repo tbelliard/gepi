@@ -5573,7 +5573,7 @@ $hauteur_pris_app_abs=0;
 				{
 					// supprimer les espaces
 					$text_absences_appreciation = trim(str_replace(array("\r\n","\r","\n"), ' ', unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences'])));
-					$info_absence_appreciation = "<i>Avis CPE :</i> <b>".$text_absences_appreciation."</b>";
+					$info_absence_appreciation = "<i>Avis ".ucfirst($gepi_cpe_suivi)." :</i> <b>".$text_absences_appreciation."</b>";
 					$text_absences_appreciation = '';
 					$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
 					$pdf->SetFont('DejaVu','',8);
