@@ -179,8 +179,6 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 
 		$bull_affiche_etab,			// Etablissement d'origine
 
-		$bull_affiche_abs_cpe,
-
 		$activer_photo_bulletin,
 		// $bull_photo_largeur_max et $bull_photo_hauteur_max sont récupérées via global dans redimensionne_image()
 
