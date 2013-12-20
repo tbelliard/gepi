@@ -74,15 +74,17 @@ if(!isset($id_racine)) {
 
 // On teste si le carnet de notes appartient bien à la personne connectée
 if (!(Verif_prof_cahier_notes($_SESSION['login'],$id_racine))) {
-    $mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
-    header("Location: index.php?msg=$mess");
-    die();
+	$mess=rawurlencode("Vous tentez de pénétrer dans un carnet de notes qui ne vous appartient pas !");
+	header("Location: index.php?msg=$mess");
+	die();
 }
 
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_cahier_notes WHERE id_cahier_notes ='$id_racine'");
-$id_groupe = old_mysql_result($appel_cahier_notes, 0, 'id_groupe');
+$obj_cn=$appel_cahier_notes->fetch_object();
+$id_groupe = $obj_cn->id_groupe;
 $current_group = get_group($id_groupe);
-$periode_num = old_mysql_result($appel_cahier_notes, 0, 'periode');
+$periode_num = $obj_cn->periode;
+
 /**
  * Gestion des périodes
  */
@@ -94,12 +96,13 @@ if ($id_dev)  {
 	$sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	if($query) {
-		$id_cn_dev = old_mysql_result($query, 0, 'id_cn_dev');
-		$nom_court = old_mysql_result($query, 0, 'nom_court');
-		$nom_complet = old_mysql_result($query, 0, 'nom_complet');
-		$description = nettoyage_retours_ligne_surnumeraires(old_mysql_result($query, 0, 'description'));
-	    $precision = old_mysql_result($query, 0, 'arrondir');
-        $famille=old_mysql_result($query, 0, 'vision_famille');
+		$tab_cc_dev=$query->fetch_array();
+		$id_cn_dev = $tab_cc_dev['id_cn_dev'];
+		$nom_court = $tab_cc_dev['nom_court'];
+		$nom_complet = $tab_cc_dev['nom_complet'];
+		$description = nettoyage_retours_ligne_surnumeraires($tab_cc_dev['description']);
+		$precision = $tab_cc_dev['arrondir'];
+		$famille=$tab_cc_dev['vision_famille'];
 	}
 	else {
 		header("Location: index.php?msg=".rawurlencode("Le numéro de devoir n est pas associé à ce groupe."));
@@ -113,7 +116,7 @@ else {
 	$description = "";
 	//$precision="s1";
 	$precision=getPref($_SESSION['login'], 'eval_cumul_precision', 's1');
-    $famille = "";
+	$famille=getPref($_SESSION['login'], 'eval_cumul_vision_famille', 'no');;
 }
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
