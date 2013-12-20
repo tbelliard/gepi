@@ -134,6 +134,8 @@ if(isset($id_eval))  {
 		$display_date=old_mysql_result($query, 0, 'date');
 		$vision_famille =old_mysql_result($query, 0, 'vision_famille');
 		$note_sur=old_mysql_result($query, 0, 'note_sur');
+
+		$display_date=formate_date($display_date);
 	}
 	else {
 		header("Location: index.php?msg=".rawurlencode("L évaluation n°$id_eval n'existe pas."));
