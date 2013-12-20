@@ -422,7 +422,9 @@ echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) 
 //echo "<h3>Evaluation n°$id_eval&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date)."</h3>\n";
 
 echo "<h3><b>$nom_cc</b>&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h3>\n";
-echo "<h4><b>Evaluation</b>&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date)."</h4>\n";
+echo "<h4><b>Evaluation</b>&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date);
+echo "<a href=\"add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$id_dev&amp;id_eval=$id_eval\" onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier les paramètres de cette évaluation\"> <img src='../images/icons/configure.png' class='icone16' alt='Configurer' /></a>";
+echo "</h4>\n";
 
 echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
