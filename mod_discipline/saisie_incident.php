@@ -1318,12 +1318,22 @@ if(isset($id_incident) ) {
             if($peutChanger){
                 if (getSettingAOui('DisciplineCpeChangeDefaut')) {
                     // ===== Par défaut changement autorisé
-                    $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
-                        WHERE u.statut='professeur' 
-                            AND u.etat='actif'
-                            AND (u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
-                                OR u.login != (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger'))
-                        ORDER BY u.nom , u.prenom";
+                    $sql_test="SELECT 1=1 FROM preferences p WHERE p.name='cpePeuChanger';";
+                    $res_test=mysqli_query($GLOBALS["mysqli"], $sql_test);
+                    if(mysqli_num_rows($res_test)==0) {
+                        $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
+                            WHERE u.statut='professeur' 
+                                AND u.etat='actif'
+                            ORDER BY u.nom , u.prenom";
+                    }
+                    else {
+                        $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
+                            WHERE u.statut='professeur' 
+                                AND u.etat='actif'
+                                AND (u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
+                                    OR u.login != (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger'))
+                            ORDER BY u.nom , u.prenom";
+                    }
                 } else {
                     // ===== Par défaut changement interdit
                     $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
@@ -1332,7 +1342,7 @@ if(isset($id_incident) ) {
                             AND u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
                         ORDER BY u.nom , u.prenom";
                 }
-                // echo $sqlProf."<br />";
+                //echo $sqlProf."<br />";
                 $resProf=mysqli_query($GLOBALS["mysqli"], $sqlProf);
     ?>
         <form enctype='multipart/form-data' action='saisie_incident.php' method='post' id='change_declare'>
