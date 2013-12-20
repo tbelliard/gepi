@@ -517,28 +517,24 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if (isset($_POST['bull_affiche_avis'])) {
-		
 		if (!saveSetting("bull_affiche_avis", $_POST['bull_affiche_avis'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_avis !";
 			$reg_ok = 'no';
 		}
 	}
 	if (isset($_POST['bull_affiche_aid'])) {
-
 		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
 			$reg_ok = 'no';
 		}
 	}
 	if (isset($_POST['bull_affiche_formule'])) {
-
 		if (!saveSetting("bull_affiche_formule", $_POST['bull_affiche_formule'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_formule !";
 			$reg_ok = 'no';
 		}
 	}
 	if (isset($_POST['bull_affiche_signature'])) {
-	
 		if (!saveSetting("bull_affiche_signature", $_POST['bull_affiche_signature'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_signature !";
 			$reg_ok = 'no';
@@ -546,7 +542,6 @@ if (isset($_POST['is_posted'])) {
 	}
 	/*
 	if (isset($_POST['bull_affiche_img_signature'])) {
-	
 		if (!saveSetting("bull_affiche_img_signature", $_POST['bull_affiche_img_signature'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_img_signature !";
 			$reg_ok = 'no';
@@ -585,7 +580,6 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if (isset($_POST['bull_affiche_numero'])) {
-	
 		if (!saveSetting("bull_affiche_numero", $_POST['bull_affiche_numero'])) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affiche_numero !";
 			$reg_ok = 'no';
@@ -607,7 +601,6 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if (isset($_POST['choix_bulletin'])) {
-
 		if (!saveSetting("choix_bulletin", $_POST['choix_bulletin'])) {
 			$msg .= "Erreur lors de l'enregistrement de choix_bulletin";
 			$reg_ok = 'no';
@@ -615,7 +608,6 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	if (isset($_POST['min_max_moyclas'])) {
-	
 		if (!saveSetting("min_max_moyclas", $_POST['min_max_moyclas'])) {
 			$msg .= "Erreur lors de l'enregistrement de min_max_moyclas !";
 			$reg_ok = 'no';
@@ -635,7 +627,6 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
-
 
 	if(isset($_POST['activer_photo_bulletin'])) {
 		if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
@@ -667,7 +658,6 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
-	
 	
 	if(isset($_POST['bull_intitule_app'])) {
 		if (!saveSetting("bull_intitule_app", $_POST['bull_intitule_app'])) {
@@ -1498,11 +1488,12 @@ if(getSettingAOui('active_bulletins')) {
         <td>
         <?php
         echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpey\" value=\"y\" ";
-        if (getSettingValue("bull_affiche_abs_cpe") != 'n') echo " checked";
+        if (getSettingValue("bull_affiche_abs_cpe") == 'y') echo " checked";
         echo " /><label for='bull_affiche_abs_cpey' style='cursor: pointer;'>&nbsp;Oui</label>";
         echo "<input type=\"radio\" name=\"bull_affiche_abs_cpe\" id=\"bull_affiche_abs_cpen\" value=\"n\" ";
-        if (getSettingValue("bull_affiche_abs_cpe") == 'n') echo " checked";
+        if (getSettingValue("bull_affiche_abs_cpe") != 'y') echo " checked";
         echo " /><label for='bull_affiche_abs_cpen' style='cursor: pointer;'>&nbsp;Non</label>";
+
         ?>
         </td>
     </tr>
