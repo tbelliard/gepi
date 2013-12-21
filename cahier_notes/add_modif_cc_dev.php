@@ -138,7 +138,9 @@ if (isset($_POST['is_posted'])) {
 		$msg.="Précision '$precision' invalide; Elle a été remplacée par 's1'.";
 	}
 
+	// Il faudrait plutôt permettre de paramétrer ce choix dans utilisateurs/mon_compte.php
 	savePref($_SESSION['login'], 'eval_cumul_precision', $precision);
+	savePref($_SESSION['login'], 'eval_cumul_vision_famille', $famille);
 
 	if(!isset($id_dev)) {
 		$sql="INSERT INTO cc_dev SET id_groupe='$id_groupe', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille';";
