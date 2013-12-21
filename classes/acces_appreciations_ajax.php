@@ -10,7 +10,7 @@
 
 	if($_SESSION['statut']=="professeur") {
 		if(getSettingValue('GepiAccesRestrAccesAppProfP')!="yes") {
-			$msg="Accès interdit au paramétrage des accès aux appréciatons/avis pour les parents et élèves.";
+			$msg="Accès interdit au paramétrage des accès aux appréciations/avis pour les parents et élèves.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
 			die();
 		}
