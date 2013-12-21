@@ -1746,7 +1746,7 @@ while($i < $nombre_lignes) {
 				while ($m < $nb_dev_s_cont[$k]) {
 					$temp = $id_s_dev[$k][$m];
 					$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$temp')");
-					if($note_query){
+					if($note_query && $note_query->num_rows){
 						$obj_note_query=$note_query->fetch_object();
 						$eleve_statut = $obj_note_query->statut;
 						$eleve_note = $obj_note_query->note;
@@ -1792,7 +1792,7 @@ while($i < $nombre_lignes) {
 
 			$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_sous_cont[$k]')");
 			
-			if($moyenne_query){
+			if($moyenne_query && $moyenne_query->num_rows){
 				$obj_moyenne_query=$moyenne_query->fetch_object();
 				$statut_moy = $obj_moyenne_query->statut;
 				if ($statut_moy == 'y') {
@@ -1823,7 +1823,7 @@ while($i < $nombre_lignes) {
 	if ($id_devoir==0)  {
 		$moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_conteneurs WHERE (login='$eleve_login[$i]' AND id_conteneur='$id_conteneur')");
 		
-		if($moyenne_query){
+		if($moyenne_query && $moyenne_query->num_rows){
 			$obj_moyenne_query=$moyenne_query->fetch_object();
 			$statut_moy = $obj_moyenne_query->statut;
 			if ($statut_moy == 'y') {
