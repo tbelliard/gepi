@@ -1206,7 +1206,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 }
 
 if($_SESSION['statut']=="administrateur") {
-	echo "Le mode d'accès aux appréciatons (<i>manuel/date/période close</i>) ainsi que le délais après clôture de période se paramètrent en administrateur dans <a href='../gestion/param_gen.php#delais_apres_cloture'>Gestion générale/Configuration générale</a>";
+	echo "Le mode d'accès aux appréciatons (<i>manuel/date/période close</i>) ainsi que le délai après clôture de période se paramètrent en administrateur dans <a href='../gestion/param_gen.php#delais_apres_cloture'>Gestion générale/Configuration générale</a>";
 }
 
 echo "<p><br /></p>\n";

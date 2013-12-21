@@ -346,7 +346,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 
 	//===============================================
 	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_cnil',"Saisies et CNIL","",$message_cnil_bons_usages,"",30,0,'y','y','n','n');
-	// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
+	// Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 	// Hauteur de la bande testée pour la position de la souris:
 	$hauteur_survol_infobulle=20;
 	// Largeur de la bande testée pour la position de la souris:
