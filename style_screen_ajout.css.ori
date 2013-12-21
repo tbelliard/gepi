@@ -1,7 +1,0 @@
-/*
-$Id$
-
-Fichier à renommer en style_screen_ajout.css lors de l'installation de Gepi.
-Et donner sur ce fichier des droits en écriture suffisants pour que les couleurs personnalisées puissent être appliquées via:
-   Gestion générale/Paramétrage des couleurs
-*/

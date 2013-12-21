@@ -297,7 +297,9 @@ while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
 
 $cat_names = array();
 foreach ($categories as $cat_id) {
-	$cat_names[$cat_id] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
+	$result = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'");
+        $row = $result->fetch_row();
+        $cat_names[$cat_id] = $row[0];
 }
 
 function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$anneef,$moisf,$jourf) {
@@ -335,13 +337,15 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	//- $gepiYear : année
 	//- $id_classe : identifiant de la classe.
 
-	$data_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$current_eleve_login'");
-	$current_eleve_nom = old_mysql_result($data_eleve, 0, "nom");
-	$current_eleve_prenom = old_mysql_result($data_eleve, 0, "prenom");
-	$current_eleve_sexe = old_mysql_result($data_eleve, 0, "sexe");
-	$current_eleve_naissance = old_mysql_result($data_eleve, 0, "naissance");
+	$result = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves WHERE login='$current_eleve_login'");
+	        
+        $data_eleve = $result->fetch_object();
+        $current_eleve_nom = $data_eleve->nom;
+	$current_eleve_prenom = $data_eleve->prenom;
+	$current_eleve_sexe = $data_eleve->sexe;
+	$current_eleve_naissance = $data_eleve->naissance;
 	$current_eleve_naissance = affiche_date_naissance($current_eleve_naissance);
-
+	
 	//$choix_periode
 	if($choix_periode==0) {
 		$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_eleves_classes WHERE login = '" . $current_eleve_login . "' ORDER BY periode DESC");
@@ -357,22 +361,24 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 		exit();
 	}
 
-	$id_classe = old_mysql_result($call_classe, 0, "id_classe");
+	
+        $row = $call_classe->fetch_object();
+        $id_classe = $row->id_classe;
+        
 	$classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
-	$current_eleve_classe = old_mysql_result($classe_eleve, 0, "classe");
-	$current_eleve_classe_complet = old_mysql_result($classe_eleve, 0, "nom_complet");
-
-	$id_classe = old_mysql_result($classe_eleve, 0, "id");
+        $row = $classe_eleve->fetch_object();
+        $current_eleve_classe = $row->classe;        
+        $current_eleve_classe_complet = $row->nom_complet; 
+        $id_classe = $row->id;
 
 	$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login'");
-	//$current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
-	//$current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
 	$sql="SELECT * FROM j_eleves_regime WHERE login = '$current_eleve_login'";
 	//echo "$sql<br />\n";
 	$regime_doublant_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($regime_doublant_eleve)>0){
-		$current_eleve_regime = old_mysql_result($regime_doublant_eleve, 0, "regime");
-		$current_eleve_doublant = old_mysql_result($regime_doublant_eleve, 0, "doublant");
+            $regime_doublant_eleve_objet = $regime_doublant_eleve->fetch_object();
+            $current_eleve_regime = $regime_doublant_eleve_objet->regime;
+            $current_eleve_doublant = $regime_doublant_eleve_objet->doublant;
 	}
 	else{
 		$current_eleve_regime = "-";

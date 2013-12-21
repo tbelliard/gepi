@@ -543,10 +543,10 @@ if ($affiche_rang == 'y'){include "../lib/calcul_rang.inc.php";}
 $affiche_nbdev=sql_query1("SELECT display_nbdev FROM classes WHERE id='".$id_classe."'");
 //============================================
 
-
+$test_coef2=$test_coef;
 // Le cas échéant, calcul des moyennes générales
 include "../lib/calcul_moy_gen.inc.php";
-
+$test_coef=$test_coef2;
 //Initialisation des tableaux d'affichage
 $largeurtableau = getSettingValue("largeurtableau");
 $col_matiere_largeur = getSettingValue("col_matiere_largeur");
@@ -572,6 +572,7 @@ c.periode='".$periode_num."'
 )
 ORDER BY e.nom, e.prenom");
 $nombre_eleves = mysqli_num_rows($appel_liste_eleves);
+
 if (($affiche_rang != 'y') and ($test_coef==0)) {
     if ($affiche_categories) {
 		// On utilise les valeurs spécifiées pour la classe en question
