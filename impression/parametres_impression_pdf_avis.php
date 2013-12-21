@@ -88,8 +88,8 @@ if ($ok==0) {
 	echo "<h3>Choix des paramètres&nbsp;: </h3>\n";
 	
 	echo "<div>\n";
-	echo "<fieldset>\n";
-	echo "<legend>Modifiez l'apparence du document PDF&nbsp;:</legend>\n";
+	echo "<fieldset style='background-image: url(\"../images/background/opacite50.png\");'>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;'>Modifiez l'apparence du document PDF&nbsp;:</legend>\n";
 	echo "<form method=\"post\" action=\"../impression/parametres_impression_pdf_avis.php\" name=\"choix_parametres\">\n";
 	echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
 	echo "<br />\n";
@@ -158,6 +158,19 @@ if ($ok==0) {
 	echo "<tr><td valign='top'>Hauteur d'une ligne&nbsp;:</td><td valign='top'><input type=\"text\" name=\"h_ligne\" id=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /> </td><td><em>La hauteur de ligne demandée n'est prise en compte que dans le cas<br />où on n'impose pas d'afficher tout sur une seule page</em></td></tr>\n";
 	$valeur=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
 	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
+
+	$valeur=getPref($_SESSION['login'],'avis_pdf_l_mentions',40);
+	echo "<tr>
+	<td>
+		Largeur colonne ".getSettingValue('gepi_denom_mention')."&nbsp;:<br />
+		(<em>sous réserve que des mentions aient été définies</em>)
+	</td>
+	<td>
+		<input type=\"text\" name=\"l_mentions\" id=\"l_mentions\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" />
+	</td>
+	<td>&nbsp;</td>
+</tr>\n";
+
 	echo "</table>\n";
 	echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
 	echo "<br />\n";
@@ -200,6 +213,9 @@ if ($ok==0) {
 
 	$_SESSION['avis_pdf_l_nomprenom']=isset($_POST['l_nomprenom']) ? $_POST["l_nomprenom"] : 40;
 	savePref($_SESSION['login'],'avis_pdf_l_nomprenom',$_SESSION['avis_pdf_l_nomprenom']);
+
+	$_SESSION['avis_pdf_l_mentions']=isset($_POST['l_mentions']) ? $_POST["l_mentions"] : 40;
+	savePref($_SESSION['login'],'avis_pdf_l_mentions',$_SESSION['avis_pdf_l_mentions']);
 
 	header("Location: ../saisie/impression_avis.php");
 	die();

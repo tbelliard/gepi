@@ -110,6 +110,8 @@ $h_cell=getPref($_SESSION['login'],'avis_pdf_h_ligne',8);
 //if (!isset($_SESSION['avis_pdf_l_nomprenom'])) { $l_cell_nom = 40 ; } else {$l_cell_nom =  $_SESSION['avis_pdf_l_nomprenom'];} // la largeur de la colonne nom - prénom
 $l_cell_nom=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
 
+$l_cell_mentions=getPref($_SESSION['login'],'avis_pdf_l_mentions',40);
+
 //if (!isset($_SESSION['avis_pdf_affiche_pp'])) { $option_affiche_pp = 1 ; } else {$option_affiche_pp =  $_SESSION['avis_pdf_affiche_pp'];}// 0 On n'affiche pas le PP 1 on l'affiche
 $option_affiche_pp=getPref($_SESSION['login'],'avis_pdf_affiche_pp',1);
 
@@ -196,7 +198,16 @@ if (!isset($_GET['periode_num'])) {
 
 //echo " ".$nb_pages;
 //$nb_pages=$nb_pages*$nb_periodes;
-		
+
+$tab_mentions=get_mentions();
+$affiche='n';
+if ($affiche=='y') {
+	echo "<pre>";
+	print_r($tab_mentions);
+	echo "</pre>";
+	//die();
+}
+
 // Cette boucle crée les différentes pages du PDF (page = un entête et des lignes par élèves.
 for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
@@ -231,6 +242,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		echo "<pre>";
 		print_r($donnees_eleves);
 		echo "</pre>";
+		//die();
 	}
 	
 	//Si plusieurs périodes, on trie les données par nom et période.
@@ -380,14 +392,34 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	// Largeur de la colonne Avis du conseil:
 	$l_cell_avis=$EspaceX - $l_cell_nom;
 
+	$avec_col_mention="n";
+	if(isset($id_classe)) {
+		if(test_existence_mentions_classe($id_classe)) {
+			$l_cell_avis-=$l_cell_mentions;
+			$avec_col_mention="y";
+		}
+	}
+
 	// Boucle sur les eleves de la classe courante:
 	$compteur_eleves_page=0;
 	while($nb_eleves_i < $nb_eleves) {	
 		$login_elv = $donnees_eleves[$nb_eleves_i]['login'];
-		$sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
+		$sql_current_eleve_avis = "SELECT avis,id_mention FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 		//echo "$sql_current_eleve_avis<br />\n";
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], $sql_current_eleve_avis);
 		$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
+		$current_eleve_mention="";
+		$id_mention_courante = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
+		//echo "\$id_mention_courante=$id_mention_courante<br />";
+		//if(array_key_exists($id_mention_courante, $tab_mention)) {
+		if($id_mention_courante!=0) {
+			if(!isset($tab_mentions[$id_mention_courante])) {
+				$current_eleve_mention="???";
+			}
+			else {
+				$current_eleve_mention=$tab_mentions[$id_mention_courante];
+			}
+		}
 
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-5) {
 		//if(strtr($y_tmp,",",".")+strtr($h_cell,",",".")>297-$MargeBas-$h_cell-5) {
@@ -457,6 +489,32 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$largeur_dispo=$l_cell_avis;
 		//cell_ajustee($avis,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 		cell_ajustee($avis,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+
+		//================================
+		// Colonne mention
+		if($avec_col_mention=="y") {
+			$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
+
+			if ($nb_periodes>1) {
+				$texte = "P".$donnees_eleves[$nb_eleves_i]['id_periode']." : ";
+				if ($current_eleve_mention != '') {
+					$current_eleve_mention = $texte." ".$current_eleve_mention;
+				} else {
+					$current_eleve_mention =$texte." ";
+				}
+			}
+
+			$pdf->Setxy($X_tableau+$l_cell_nom+$l_cell_avis,$y_tmp);
+
+			$pdf->SetFont('DejaVu','',7.5);
+
+			$hauteur_caractere_appreciation=9;
+			$taille_max_police=$hauteur_caractere_appreciation;
+			$taille_min_police=ceil($taille_max_police/3);
+			$largeur_dispo=$l_cell_mentions;
+			cell_ajustee($current_eleve_mention,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+
+		}
 
 		$pdf->SetFont('DejaVu','',7.5);
 

@@ -705,7 +705,7 @@ if (!$session_gepi->auth_ldap || !$session_gepi->auth_sso) {
 }
 
 if (($_SESSION['statut']=='administrateur') and (isset($user_login)) and ($user_login!='')) {
-	echo "<div style='float:right; width:10em; margin-top: 0.5em; text-align:center; border: 1px solid black;'>\n";
+	echo "<div style='float:right; width:10em; margin-top: 0.5em; padding:3px; text-align:center; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	echo affiche_actions_compte($user_login, '_blank');
 	echo "<br />\n";
 	echo affiche_reinit_password($user_login);
@@ -738,11 +738,11 @@ if (!isset($user_login) or $user_login == '') {
 <?php
 if ($ldap_write_access) {
 	echo "<tr><td></td>&nbsp;<td>";
-	echo "<p style='font-size: small;'><input type='checkbox' name='prevent_ldap_removal' value='yes' checked /> Ne pas supprimer du LDAP<br/>(si cette case est décochée et que vous passez d'un mode d'authentification LDAP ou SSO à un mode d'authentification locale, l'utilisateur sera supprimé de l'annuaire LDAP).</p>";
+	echo "<p style='font-size: small;'><input type='checkbox' name='prevent_ldap_removal' value='yes' checked onchange=\"changement()\" /> Ne pas supprimer du LDAP<br/>(si cette case est décochée et que vous passez d'un mode d'authentification LDAP ou SSO à un mode d'authentification locale, l'utilisateur sera supprimé de l'annuaire LDAP).</p>";
 	echo "</td></tr>";
 }
  ?>
-<tr><td>Nom&nbsp;:</td><td><input type='text' name='reg_nom' id='reg_nom' size='20' <?php
+<tr><td>Nom&nbsp;:</td><td><input type='text' name='reg_nom' id='reg_nom' size='20' onchange="changement()" <?php
 	if (isset($user_nom)) {
 		echo "value=\"".$user_nom."\"";
 	}
@@ -787,7 +787,7 @@ if ($ldap_write_access) {
 	}
 
 ?></td></tr>
-<tr><td>Prénom&nbsp;:</td><td><input type='text' name='reg_prenom' id='reg_prenom' size='20' <?php
+<tr><td>Prénom&nbsp;:</td><td><input type='text' name='reg_prenom' id='reg_prenom' size='20' onchange="changement()" <?php
 	if (isset($user_prenom)) { echo "value=\"".$user_prenom."\"";}
 
 	if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
@@ -981,11 +981,11 @@ if (isset($user_login) and ($user_login!='')) {
 	}
 }
 
-echo "<input type=hidden name=max_mat value=$nb_mat />\n";
+echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 ?>
-<input type=hidden name=valid value="yes" />
-<?php if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n"; ?>
-<center><input type=submit value=Enregistrer /></center>
+<input type='hidden' name='valid' value="yes" />
+<?php if (isset($user_login)) echo "<input type='hidden' name='user_login' value=\"".$user_login."\" />\n"; ?>
+<center><input type='submit' value='Enregistrer' /></center>
 <!--/span-->
 </div>
 
@@ -1009,12 +1009,12 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 			echo "<p>Le professeur est associé aux enseignements suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains enseignements&nbsp;:</p>";
 			$k = 0;
 			foreach($groups as $current_group) {
-				echo "<input type='checkbox' id='user_group_$k' name='user_group[]' value='".$current_group["id"]."' checked /><label for='user_group_$k'> ".$current_group['name']." (<em>".$current_group['description'];
+				echo "<input type='checkbox' id='user_group_$k' name='user_group[]' value='".$current_group["id"]."' checked onchange=\"changement()\" /><label for='user_group_$k'> ".$current_group['name']." (<em>".$current_group['description'];
 				if((($current_group['name']!=$current_group['matiere']['matiere']))&&
 				 (($current_group['description']!=$current_group['matiere']['nom_complet']))) {
 					echo " (".$current_group['matiere']['matiere'].")";
 				}
-				echo "</em>) en ".$current_group['classlist_string']."</label><br />\n";
+				echo "</em>) en ".$current_group['classlist_string']."</label> <a href='../groupes/edit_group.php?id_groupe=".$current_group['id']."' title='Éditer cet enseignement' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer cet enseignement' /></a><br />\n";
 				$k++;
 			}
 			echo "<input type='hidden' name='user_login' value='$user_login' />\n";

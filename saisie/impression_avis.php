@@ -59,6 +59,9 @@ if (($_SESSION['statut'] == 'scolarite') and getSettingValue("GepiRubConseilScol
 }
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if ($id_liste_periodes!=0) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a>";
+}
 echo " | <a href='../impression/parametres_impression_pdf_avis.php'>Régler les paramètres du PDF</a>";
 echo "</p>\n";
 
@@ -84,10 +87,10 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 
 	// Impression multiple
 	echo "<div style=\"text-align: center;\">\n";
-	echo "<fieldset>\n";
+	echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
 
 	if ($id_liste_periodes == 0) {
-		echo "<legend>Dans un premier temps, sélectionnez la (ou les) périodes pour lesquelles vous souhaitez imprimer les avis</legend>\n";
+		echo "<legend style='border: 1px solid grey; background-color: white;'>Dans un premier temps, sélectionnez la (ou les) périodes pour lesquelles vous souhaitez imprimer les avis</legend>\n";
 		echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
 		$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
 		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
@@ -106,7 +109,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n<br />\n";			
 		echo "</form>\n";
 	} else {
-		echo "<legend>Puis, pour les périodes choisies, séléctionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les avis.</legend>\n";
+		echo "<legend style='border: 1px solid grey; background-color: white;'>Puis, pour les périodes choisies, séléctionnez la (ou les) classe(s) pour lesquelles vous souhaitez imprimer les avis.</legend>\n";
 		echo "<form method=\"post\" action=\"../impression/avis_pdf.php\" target='_blank' name=\"avis_pdf\">\n";
 		
 		//passage des paramètres de la période dans la session.
@@ -144,7 +147,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			}
 			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
-			While ( $data_classe = mysqli_fetch_array($resultat_classe)) {
+			while ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 				echo "		<option value=\"";
 				echo $data_classe['id_classe'];
 				echo "\">";

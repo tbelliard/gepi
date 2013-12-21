@@ -295,6 +295,8 @@ if (isset($id_classe)) {
 
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
+	$acces_avis_pdf=acces('/impression/avis_pdf.php', $_SESSION['statut']);
+
 	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 	echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a>";
 	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
@@ -311,7 +313,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
 		if ($ver_periode[$i] != "O") {
 			echo "<li><a href='saisie_avis2.php?id_classe=".$id_classe."&amp;periode_num=".$i."'>".ucfirst($nom_periode[$i])."</a>";
 		} else {
-			echo "<li>".ucfirst($nom_periode[$i])." (".$gepiClosedPeriodLabel.", édition impossible)";
+			echo "<li>".ucfirst($nom_periode[$i])." (<em>".$gepiClosedPeriodLabel.", édition impossible</em>)";
 		}
 
 		if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
@@ -323,8 +325,12 @@ if (isset($id_classe) and (!isset($periode_num))) {
 			}
 			else {
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$i." ne sont pas encore visibles des parents/élèves.
-		$msg_acces_app_ele_resp\" />";
+$msg_acces_app_ele_resp\" />";
 			}
+		}
+
+		if($acces_avis_pdf) {
+			echo " <a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=$i' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour la période n°$i.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /></a>";
 		}
 
 		echo ".</li>\n";
