@@ -465,7 +465,13 @@ if(!isset($id_classe)) {
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
-	echo "<script type='text/javascript'>
+	echo "<p><br /></p>
+
+<p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Cette page est destinée à effectuer des extractions de certaines données des bulletins.<br />
+Elle a initialement été réalisée pour permettre de générer un export des appréciations, notes et sexe des élèves à des fins statistiques.<br />
+L'extraction a été rendue plus paramétrable en permettant de choisir les classes, périodes,... et champs à inclure dans l'<strong>export CSV</strong> produit.</p>
+
+<script type='text/javascript'>
 	function ModifCase(mode) {
 		for (var k=0;k<$cpt;k++) {
 			if(document.getElementById('tab_id_classe_'+k)){
