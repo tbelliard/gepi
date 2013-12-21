@@ -439,16 +439,21 @@ function cocher_toutes_classes(mode) {
 				echo ", ";
 				$sql.=" OR ";
 			}
-			echo get_class_from_id($id_classe[$i]);
+			echo "<strong>".get_class_from_id($id_classe[$i])."</strong>";
 			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 			//echo " ($id_classe[$i])";
 			$sql.="id_classe='$id_classe[$i]'";
+
+			$tab_mentions_classe[$i]=get_tab_mentions_affectees($id_classe[$i]);
 		}
 		$sql.=")";
 		echo "<br />\n";
 
 		$tab_mentions=get_mentions();
 		$tab_mentions_aff=get_tab_mentions_affectees();
+		//select * from avis_conseil_classe acc, j_eleves_classes jec where acc.login=jec.login AND id_mention='2' AND id_classe='44';
+		//delete from avis_conseil_classe where login in (select login from j_eleves_classes where id_classe='44');
+		//update avis_conseil_classe set id_mention='0' where login in (select login from j_eleves_classes where id_classe='33');
 
 		$tab_mentions_classes=array();
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -473,14 +478,19 @@ function cocher_toutes_classes(mode) {
 			echo "<td>";
 
 			$chaine_classes="";
-			$sql="SELECT DISTINCT c.classe FROM classes c, j_mentions_classes j WHERE j.id_classe=c.id AND j.id_mention='$key' ORDER BY c.classe;";
+			$sql="SELECT DISTINCT c.classe, c.id FROM classes c, j_mentions_classes j WHERE j.id_classe=c.id AND j.id_mention='$key' ORDER BY c.classe;";
 			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				$cpt_classe=0;
 				while($lig=mysqli_fetch_object($res)) {
 					if($cpt_classe>0) {$chaine_classes.=", ";}
-					$chaine_classes.=$lig->classe;
+					if(in_array($lig->id, $id_classe)) {
+						$chaine_classes.="<strong>".$lig->classe."</strong>";
+					}
+					else {
+						$chaine_classes.=$lig->classe;
+					}
 					$cpt_classe++;
 				}
 			}
@@ -488,6 +498,12 @@ function cocher_toutes_classes(mode) {
 			echo "<input type='checkbox' name='id_mention[]' id='id_mention_$key'value='$key' ";
 			//if($chaine_classes!="") {echo "checked ";}
 			if(in_array($key, $tab_mentions_classes)) {echo "checked ";}
+			for($i=0;$i<count($id_classe);$i++) {
+				if(in_array($key, $tab_mentions_classe[$i])) {
+					echo "disabled title=\"La mention est attribuée à au moins un élève pour la ou les classes choisies.\"";
+					break;
+				}
+			}
 			echo "/>";
 			echo "</td>\n";
 
@@ -522,7 +538,7 @@ function cocher_toutes_classes(mode) {
 				echo ", ";
 				$sql.=" OR ";
 			}
-			echo get_class_from_id($id_classe[$i]);
+			echo "<strong>".get_class_from_id($id_classe[$i])."</strong>";
 			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 			$sql.="id_classe='$id_classe[$i]'";
 		}
