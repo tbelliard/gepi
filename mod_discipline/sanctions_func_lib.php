@@ -9,7 +9,7 @@ if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
-// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
+// Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 // Hauteur de la bande testée pour la position de la souris:
 $hauteur_survol_infobulle=20;
 // Largeur de la bande testée pour la position de la souris:

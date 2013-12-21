@@ -2005,7 +2005,7 @@ $_POST['projet']=	4eme_vers_3eme
 	
 
 	//===============================================
-	// Paramètres concernant le délais avant affichage d'une infobulle via delais_afficher_div()
+	// Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 	// Hauteur de la bande testée pour la position de la souris:
 	$hauteur_survol_infobulle=20;
 	// Largeur de la bande testée pour la position de la souris:
