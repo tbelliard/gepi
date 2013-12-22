@@ -136,6 +136,7 @@ if ($current_group) {
 				//echo "alt='Saisir les moyennes' title='Consulter les moyennes' ";
 				echo "/></a>\n";
 			}
+			echo nb_saisies_bulletin("notes", $current_group["id"], $i, "couleur");
 			echo "</td>\n";
 			$i++;
 		}
@@ -187,9 +188,10 @@ if ($current_group) {
 				$tabdiv_infobulle[]=creer_div_infobulle("info_app_periode_$i","","","<center>".$gepiClosedPeriodLabel."</center>","",8,0,"n","n","y","n");
 
 				echo "<a href='saisie_appreciations.php?id_groupe=$id_groupe' onmouseover=\"afficher_div('info_app_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_app_periode_$i')\">";
-				echo "<img src='../images/icons/chercher.png' width='32' height='32' alt='Consultation des appréciations' ";
+				echo "<img src='../images/icons/chercher.png' width='32' height='32' alt='Consultation des appréciations' />";
 				echo "</a>";
 			}
+			echo nb_saisies_bulletin("appreciations", $current_group["id"], $i, "couleur");
 			echo "</td>\n";
 			$i++;
 		}
