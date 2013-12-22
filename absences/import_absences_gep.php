@@ -135,9 +135,9 @@ if ($step == 0) {
 	$alt=1;
 	while ($i < $nb_test) {
 		$alt=$alt*(-1);
-		$login_eleve = old_mysql_result($test,$i,'e.login');
-		$nom_eleve = old_mysql_result($test,$i,'e.nom');
-		$prenom_eleve = old_mysql_result($test,$i,'e.prenom');
+		$login_eleve = old_mysql_result($test,$i,'login');
+		$nom_eleve = old_mysql_result($test,$i,'nom');
+		$prenom_eleve = old_mysql_result($test,$i,'prenom');
 		//echo "<tr><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		echo "<tr class='lig$alt'><td>$login_eleve</td><td>$nom_eleve</td><td>$prenom_eleve</td></tr>\n";
 		$i++;
@@ -426,8 +426,8 @@ if ($step == 0) {
 	order by e.nom, e.prenom");
 	$i = 0;
 	while ($i < mysqli_num_rows($req_eleves)) {
-		$login_eleve = old_mysql_result($req_eleves,$i,'e.login');
-		$elenoet = old_mysql_result($req_eleves,$i,'e.elenoet');
+		$login_eleve = old_mysql_result($req_eleves,$i,'login');
+		$elenoet = old_mysql_result($req_eleves,$i,'elenoet');
 		if ($elenoet != '') $tab[$login_eleve] = $elenoet;
 		$i++;
 	}

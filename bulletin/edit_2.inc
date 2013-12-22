@@ -124,9 +124,9 @@
             $nb_ligne_cn = mysqli_num_rows($test_cn);
             $n = 0;
             while ($n < $nb_ligne_cn) {
-                $cn_id[$n] = old_mysql_result($test_cn, $n, 'c.id');
-                $cn_nom[$n] = old_mysql_result($test_cn, $n, 'c.nom_court');
-                $cn_note[$n] = @old_mysql_result($test_cn, $n ,'nc.note');
+                $cn_id[$n] = old_mysql_result($test_cn, $n, 'id');
+                $cn_nom[$n] = old_mysql_result($test_cn, $n, 'nom_court');
+                $cn_note[$n] = @old_mysql_result($test_cn, $n ,'note');
                 $cn_note[$n] = number_format($cn_note[$n],1, ',', ' ');
                 $n++;
             }

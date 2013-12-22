@@ -690,7 +690,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 				$visible="y";
 				if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-					$date_ele_resp=@old_mysql_result($query_notes,$m,'d.date_ele_resp');
+					$date_ele_resp=@old_mysql_result($query_notes,$m,'date_ele_resp');
 					$tmp_tabdate=explode(" ",$date_ele_resp);
 					$tabdate=explode("-",$tmp_tabdate[0]);
 
@@ -702,14 +702,14 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 
 				if($visible=="y") {
 
-					$eleve_display_app = @old_mysql_result($query_notes,$m,'d.display_parents_app');
-					$eleve_app = @old_mysql_result($query_notes,$m,'nd.comment');
-					$eleve_note = @old_mysql_result($query_notes,$m,'nd.note');
-					if(getSettingValue("note_autre_que_sur_referentiel")=="V" || old_mysql_result($query_notes,$m,'d.note_sur')!= getSettingValue("referentiel_note")) {
-						$eleve_note = $eleve_note."/".@old_mysql_result($query_notes,$m,'d.note_sur');
+					$eleve_display_app = @old_mysql_result($query_notes,$m,'display_parents_app');
+					$eleve_app = @old_mysql_result($query_notes,$m,'comment');
+					$eleve_note = @old_mysql_result($query_notes,$m,'note');
+					if(getSettingValue("note_autre_que_sur_referentiel")=="V" || old_mysql_result($query_notes,$m,'note_sur')!= getSettingValue("referentiel_note")) {
+						$eleve_note = $eleve_note."/".@old_mysql_result($query_notes,$m,'note_sur');
 					}
-					$eleve_statut = @old_mysql_result($query_notes,$m,'nd.statut');
-					$eleve_nom_court = @old_mysql_result($query_notes,$m,'d.nom_court');
+					$eleve_statut = @old_mysql_result($query_notes,$m,'statut');
+					$eleve_nom_court = @old_mysql_result($query_notes,$m,'nom_court');
 					if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 						$affiche_note = $eleve_statut;
 					} else if ($eleve_statut == 'v') {
@@ -748,7 +748,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 						}
 	
 						if(($avec_tous_coef_devoir=="oui")||(($avec_coef_devoir=="oui")&&($affiche_coef=="oui"))){
-							$coef_devoir = @old_mysql_result($query_notes,$m,'d.coef');
+							$coef_devoir = @old_mysql_result($query_notes,$m,'coef');
 							echo " (<em><small>".$chaine_coef.$coef_devoir."</small></em>)";
 							//echo " \$affiche_coef=$affiche_coef";
 						}
@@ -762,7 +762,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 							}
 						}
 						if($avec_date_devoir=="oui"){
-							$date_note = @old_mysql_result($query_notes,$m,'d.date');
+							$date_note = @old_mysql_result($query_notes,$m,'date');
 							// Format: 2006-09-28 00:00:00
 							$tmpdate=explode(" ",$date_note);
 							$tmpdate=explode("-",$tmpdate[0]);

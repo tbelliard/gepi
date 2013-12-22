@@ -2647,26 +2647,33 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 
       // Affichage des projets des années antérieures
       $id_nat = sql_query1("select no_gep from eleves where login='".$ele_login."'");
-      $call_data = mysqli_query($GLOBALS["mysqli"], "select ta.annee, ta.id, a.id, ta.nom, a.nom, a.responsables
+      $sql_projet_aa="select ta.annee, 
+                             ta.id AS ta_id, 
+                             a.id AS a_id, 
+                             ta.nom AS ta_nom, 
+                             a.nom AS a_nom, 
+                             a.responsables
       from archivage_aids a, archivage_types_aid ta, archivage_aid_eleve ae
       where ta.outils_complementaires='y' and
       a.id=ae.id_aid and
       ae.id_eleve='".$id_nat."' and
       a.id_type_aid = ta.id
-      order by ta.annee");
+      order by ta.annee";
+      $call_data = mysqli_query($GLOBALS["mysqli"], $sql_projet_aa);
 
       $nb_aid = mysqli_num_rows($call_data);
       if ($nb_aid>0) {
         echo "<h2>Les projets des années antérieures</h2>";
         echo "<table width=\"$larg_tab\" border=\"1\" cellspacing=\"1\" cellpadding=\"3\">";
         $z=0;
-        while ($z < $nb_aid) {
-          $annee = @old_mysql_result($call_data, $z, "ta.annee");
-          $indice_aid = @old_mysql_result($call_data, $z, "ta.id");
-          $aid_id =  @old_mysql_result($call_data, $z, "a.id");
-          $nom_type_aid = @old_mysql_result($call_data, $z, "ta.nom");
-          $nom_aid =  @old_mysql_result($call_data, $z, "a.nom");
-          $aid_prof_resp =  @old_mysql_result($call_data, $z, "a.responsables");
+        //while ($z < $nb_aid) {
+        while($obj_projet_aa=$call_data->fetch_object()) {
+          $annee = $obj_projet_aa->annee;
+          $indice_aid = $obj_projet_aa->ta_id;
+          $aid_id =  $obj_projet_aa->a_id;
+          $nom_type_aid = $obj_projet_aa->ta_nom;
+          $nom_aid =  $obj_projet_aa->a_nom;
+          $aid_prof_resp =  $obj_projet_aa->responsables;
           echo "<tr>\n";
           echo "<td><span class='small'>".$annee."</td>\n";
           echo "<td><span class='small'><strong>$nom_type_aid</strong>";

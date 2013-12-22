@@ -476,8 +476,8 @@ if ($on_continue == 'yes') {
 			$nb_ligne_cn[$nb] = mysqli_num_rows($test_cn);
 			$n = 0;
 			while ($n < $nb_ligne_cn[$nb]) {
-				$cn_id[$nb][$n] = old_mysql_result($test_cn, $n, 'c.id');
-				$cn_nom[$nb][$n] = old_mysql_result($test_cn, $n, 'c.nom_court');
+				$cn_id[$nb][$n] = old_mysql_result($test_cn, $n, 'id');
+				$cn_nom[$nb][$n] = old_mysql_result($test_cn, $n, 'nom_court');
 				$n++;
 			}
 			$nb++;
