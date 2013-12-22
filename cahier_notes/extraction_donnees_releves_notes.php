@@ -701,7 +701,8 @@
 
 								$visible="y";
 								if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-									$date_ele_resp=@old_mysql_result($query_notes,$mm,'d.date_ele_resp');
+									//$date_ele_resp=@old_mysql_result($query_notes,$mm,'d.date_ele_resp');
+									$date_ele_resp=@old_mysql_result($query_notes,$mm,'date_ele_resp');
 									$date_ele_resp=$obj_note_courant->date_ele_resp;
 									$tmp_tabdate=explode(" ",$date_ele_resp);
 									$tabdate=explode("-",$tmp_tabdate[0]);
