@@ -11,7 +11,7 @@
 					$sujet_mail="[Gepi]: Probleme old_mysql_result";
 					$texte_mail="Bonjour,
 
-Un problème a été détecté dans ".$_SERVER['PHP_SELF']." avec la fonction old_mysql_result().
+Un problème a été détecté avec le champ '$field' dans ".$_SERVER['PHP_SELF']." avec la fonction old_mysql_result().
 Merci d'en informer la liste de diffusion officielle Gepi pour aider à corriger ce problème.
 
 Cordialement.
@@ -20,7 +20,7 @@ Equipe de developpement Gepi.";
 					$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 				}
 			}
-			die ("<br /><h1>Pb old_mysql_result dans ".$_SERVER['PHP_SELF']."</h1>");
+			die ("<br /><h1>Pb avec le champ '$field' old_mysql_result dans ".$_SERVER['PHP_SELF']."</h1>");
 		}
 
 		if (mysqli_data_seek($result, $row) === false) return false;
