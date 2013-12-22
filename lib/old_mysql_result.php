@@ -11,7 +11,12 @@
 					$sujet_mail="[Gepi]: Probleme old_mysql_result";
 					$texte_mail="Bonjour,
 
-Un problème a été détecté avec le champ '$field' dans ".$_SERVER['PHP_SELF']." avec la fonction old_mysql_result().
+Un problème a été détecté avec le champ '$field' dans ".$_SERVER['PHP_SELF']." avec la fonction old_mysql_result().";
+					if((isset($_SESSION['nom']))&&(isset($_SESSION['prenom']))&&(isset($_SESSION['statut']))) {
+						$texte_mail.="
+Le problème s'est produit pour ".$_SESSION['nom']." ".$_SESSION['prenom']." (".$_SESSION['statut'].").";
+					}
+					$texte_mail.="
 Merci d'en informer la liste de diffusion officielle Gepi pour aider à corriger ce problème.
 
 Cordialement.
