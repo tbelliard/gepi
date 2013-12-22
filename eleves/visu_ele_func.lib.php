@@ -342,14 +342,14 @@ function info_eleve($ele_login) {
 						$count_notes = mysqli_num_rows($query_notes);
 						$m = 0;
 						while ($m < $count_notes) {
-							$eleve_display_app = @old_mysql_result($query_notes,$m,'d.display_parents_app');
-							$eleve_app = @old_mysql_result($query_notes,$m,'nd.comment');
-							$eleve_note = @old_mysql_result($query_notes,$m,'nd.note');
-							$eleve_statut = @old_mysql_result($query_notes,$m,'nd.statut');
-							$eleve_nom_court = @old_mysql_result($query_notes,$m,'d.nom_court');
-							$date_note = @old_mysql_result($query_notes,$m,'d.date');
-							$coef_devoir = @old_mysql_result($query_notes,$m,'d.coef');
-							$note_sur_devoir = @old_mysql_result($query_notes,$m,'d.note_sur');
+							$eleve_display_app = @old_mysql_result($query_notes,$m,'display_parents_app');
+							$eleve_app = @old_mysql_result($query_notes,$m,'comment');
+							$eleve_note = @old_mysql_result($query_notes,$m,'note');
+							$eleve_statut = @old_mysql_result($query_notes,$m,'statut');
+							$eleve_nom_court = @old_mysql_result($query_notes,$m,'nom_court');
+							$date_note = @old_mysql_result($query_notes,$m,'date');
+							$coef_devoir = @old_mysql_result($query_notes,$m,'coef');
+							$note_sur_devoir = @old_mysql_result($query_notes,$m,'note_sur');
 
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['display_app']=$eleve_display_app;
 							$tab_ele['periodes'][$cpt]['groupes'][$cpt2]['devoir'][$m]['app']=$eleve_app;
