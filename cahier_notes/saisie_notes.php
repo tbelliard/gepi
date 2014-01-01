@@ -309,8 +309,16 @@ if (isset($_POST['appreciations'])) {
 	check_token();
 
 	$temp = $_POST['appreciations']." 1";
-	$temp = my_ereg_replace("\\\\r","`",$temp);
-	$temp = my_ereg_replace("\\\\n","",$temp);
+	// Sous Linux, on n'envoie que des \n
+	if(preg_match("/\\\\r/", $temp)) {
+		// Cas Window$ et Mac
+		$temp = my_ereg_replace("\\\\r","`",$temp);
+		$temp = my_ereg_replace("\\\\n","",$temp);
+	}
+	elseif(preg_match("/\\\\n/", $temp)) {
+		// Cas Linux
+		$temp = my_ereg_replace("\\\\n","`",$temp);
+	}
 	$temp = unslashes($temp);
  	$longueur = mb_strlen($temp);
 	$i = 0;
@@ -2386,6 +2394,7 @@ if ($id_devoir) {
   	echo "<script type=\"text/javascript\" language=\"javascript\">
   	<!--
   	alert(\"Attention, les appréciations importées ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton 'Enregistrer') !\");
+  	changement();
   	//-->
   	</script>\n";
   }
