@@ -83,7 +83,7 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : (isset($_GET["etape"]) ? $_G
 if (file_exists($nom_fic)) {
 	require_once("../secure/connect.inc.php");
 	if (@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
-		if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE $dbDb"))) {
+		if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE `$dbDb`"))) {
 			$call_test = @mysqli_query($GLOBALS["mysqli"], "SELECT * FROM setting WHERE name='sessionMaxLength'");
 			$test2 = @mysqli_num_rows($call_test);
 			$call_test = @mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs");
@@ -122,7 +122,7 @@ if ($etape == 4) {
 	else {
 		$sel_db = $_POST['choix_db'];
 	}
-	((bool)mysqli_query($GLOBALS["mysqli"], "USE $sel_db"));
+	((bool)mysqli_query($GLOBALS["mysqli"], "USE `$sel_db`"));
 	mysqli_query($GLOBALS["mysqli"], "SET NAMES UTF8");
 	$queryBase = mysqli_query($GLOBALS["mysqli"], "ALTER DATABASE  CHARACTER SET utf8 COLLATE utf8_general_ci");
 	
@@ -230,21 +230,25 @@ if ($etape == 4) {
 		$R_encodage=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
 		if (!$R_encodage) {$ok='no';
 		} else {
-				$encodage=@old_mysql_result($R_encodage,0);
-				if ($encodage=="yes") {
-					// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
-					$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
-					if (!$R_alea) {$ok='no';
-					} else { 
-						$alea=@old_mysql_result($R_alea,0);
-						// on crée le fichier témoin
-						$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
-						if (!$fic_temoin) {
-							$ok = 'no';
+				if ($t_encodage=@mysqli_fetch_assoc($R_encodage)) {
+				$encodage=$t_encodage["VALUE"];
+					if ($encodage=="yes") {
+						// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
+						$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
+						if (!$R_alea) {$ok='no';
 						} else {
-							// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
-							$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
-							if ($retour===false || !@fclose($fic_temoin)) $ok='no';
+							if ($t_alea=@mysqli_fetch_assoc($R_alea)) {
+								$alea=$t_alea["VALUE"];
+								// on crée le fichier témoin
+								$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
+								if (!$fic_temoin) {
+									$ok = 'no';
+								} else {
+									// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
+									$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
+									if ($retour===false || !@fclose($fic_temoin)) $ok='no';
+									}
+								}
 							}
 						}
 					}
@@ -260,7 +264,7 @@ if ($etape == 4) {
 		}
 	}
 
-	if (($result_ok != 'yes') or ($ok != 'yes')) {
+	if (($result_ok != 'yes') || ($ok != 'yes')) {
 		echo "<p><strong>L'opération a échoué.</strong> Retournez à la page précédente, sélectionnez une autre base ou créez-en une nouvelle. Vérifiez les informations fournies par votre hébergeur.</p>\n";
 	}
 
