@@ -41,6 +41,10 @@ $resultat_session = $session_gepi->security_check();
 //Décommenter la ligne suivante pour le mode "manuel et bavard"
 //$debug="yes";
 
+// Désactiver le mode deflate afin que les ob_flush() et flush() fonctionnent
+apache_setenv("no-gzip","1");
+//apache_setenv("dont-vary","1");
+
 if (!isset($action) or ($action != "restaure")) {
     if ($resultat_session == 'c') {
         header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
