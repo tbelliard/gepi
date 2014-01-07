@@ -249,20 +249,20 @@ if (isset($style_screen_ajout))  {
 			if (@file_exists('./style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
 				$tbsStyleScreenAjout=$gepiPath."/style_screen_ajout_".getSettingValue("gepiSchoolRne").".css";	
 			}else {
-				$tbsStyleScreenAjout="n";	
+				$tbsStyleScreenAjout="";	
 			}
 		} else {
 			if (@file_exists('./style_screen_ajout.css')) {
 				$tbsStyleScreenAjout=$gepiPath."/style_screen_ajout.css";	
 			}else {
-				$tbsStyleScreenAjout="n";	
+				$tbsStyleScreenAjout="";	
 			}
 		}
 	} else {
-		$tbsStyleScreenAjout="n";	
+		$tbsStyleScreenAjout="";	
 	}
 } else {
-	$tbsStyleScreenAjout="n";	
+	$tbsStyleScreenAjout="";	
 }
 	
 
