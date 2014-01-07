@@ -7,8 +7,8 @@
  * @subpackage initialisation
  */
 
-
-ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
+// Pour enlever les E_DEPRECATED de la liste des erreurs affichées:
+error_reporting(error_reporting() & (-1 ^ E_DEPRECATED)); 
 
 global $mysqli;
 
