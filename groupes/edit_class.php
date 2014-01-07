@@ -1006,6 +1006,7 @@ for($i=0;$i<10;$i++){
 		echo "<tr id='tr_enseignement_$cpt_grp' class='lig$alt white_hover'>\n";
 		// Suppression
 		echo "<td>";
+		echo "<a name='ancre_enseignement_".$group["id"]."'></a>";
 		echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Supprimer cet enseignement\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
 		echo "</td>\n";
 
