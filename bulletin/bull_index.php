@@ -966,7 +966,7 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 			if(mysqli_num_rows($test_visu)==0) {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'>\n";
-				echo "<td>\n";
+				echo "<td style='font-weight:bold'>\n";
 				echo $tmp_current_group['name']."\n";
 				echo "</td>\n";
 
@@ -980,17 +980,27 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 				echo $tmp_current_group['classlist_string']."\n";
 				echo "</td>\n";
 
-				echo "<td>\n";
+				echo "<td style='font-weight:bold'>\n";
 				$sql="SELECT coef FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$i]."' AND id_groupe='".$tmp_current_group['id']."';";
 				$res_coef=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_coef)>0) {
 				  $obj_coef=$res_coef->fetch_object();
 				  $tmp_coef=$obj_coef->coef;
-					if($_SESSION['statut']=='administrateur') {
-						echo "<a href='../groupes/edit_class.php?id_classe=".$tab_id_classe[$i]."' target='_blank'>".$tmp_coef."</a>";
+					if($tmp_coef==0) {
+						if($_SESSION['statut']=='administrateur') {
+							echo "<a href='../groupes/edit_class.php?id_classe=".$tab_id_classe[$i]."#ancre_enseignement_".$tmp_current_group['id']."' target='_blank' title=\"Modifier le coefficient (ou d'autres paramètres) de l'enseignement.\">"."<span style='color:red'>".$tmp_coef."</span>"."</a>";
+						}
+						else {
+							echo "<span style='color:red'>".$tmp_coef."</span>";
+						}
 					}
 					else {
-						echo $tmp_coef;
+						if($_SESSION['statut']=='administrateur') {
+							echo "<a href='../groupes/edit_class.php?id_classe=".$tab_id_classe[$i]."#ancre_enseignement_".$tmp_current_group['id']."' target='_blank' title=\"Modifier le coefficient (ou d'autres paramètres) de l'enseignement.\">".$tmp_coef."</a>";
+						}
+						else {
+							echo $tmp_coef;
+						}
 					}
 				}
 				echo "</td>\n";
