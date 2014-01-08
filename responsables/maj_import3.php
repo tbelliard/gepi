@@ -1318,13 +1318,12 @@ else{
 						$sql="UPDATE temp_gep_import2 SET ";
 						$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 						if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-						//$sql.="elenom='".mysql_real_escape_string($eleves[$i]['nom'])."', ";
-						$sql.="elenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($eleves[$i]['nom'])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="elenom='".mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($eleves[$i]['nom']))."', ";
 
 						//$sql.="elepre='".mysql_real_escape_string($eleves[$i]['prenom'])."', ";
 						// On ne retient que le premier prénom:
 						$tab_prenom = explode(" ",$eleves[$i]['prenom']);
-						$sql.="elepre='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($tab_prenom[0])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+						$sql.="elepre='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($tab_prenom[0]))."'";
 
 						//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 						if(isset($eleves[$i]["code_sexe"])) {
@@ -1348,7 +1347,7 @@ else{
 
 						if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&
 							(isset($eleves[$i]["ville_naiss"]))&&($eleves[$i]["ville_naiss"]!='')) {
-								$sql.=", lieu_naissance='".$eleves[$i]["code_pays"]."@".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["ville_naiss"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+								$sql.=", lieu_naissance='".$eleves[$i]["code_pays"]."@".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["ville_naiss"])."'";
 						}
 						elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {
 							$sql.=", lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."'";
@@ -2367,8 +2366,20 @@ else{
 					if(mysqli_num_rows($test2)>0) {$temoin_init_date_entree="y";}
 				}
 
+				$temoin_diff_mail_compte_vs_sconet="n";
+				if((mysqli_num_rows($test)==0)&&($alert_diff_mail_ele=="y")&&($temoin_chgt_ancien_etab!="y")&&($temoin_init_date_entree=="n")) {
+					// On teste si il y a une différence d'adresse mail entre le compte utilisateur et le contenu de sconet
+					$sql="SELECT 1=1 FROM eleves e, utilisateurs u, temp_gep_import2 t
+							WHERE e.ele_id=t.ELE_ID AND 
+									e.login=u.login AND
+									u.email!=t.MEL AND
+									e.ele_id='$tab_ele_id[$i]';";
+					$test3=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test3)>0) {$temoin_diff_mail_compte_vs_sconet="y";}
+				}
+
 				//if(mysql_num_rows($test)>0) {
-				if((mysqli_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")||($temoin_init_date_entree=="y")) {
+				if((mysqli_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")||($temoin_init_date_entree=="y")||($temoin_diff_mail_compte_vs_sconet=="y")) {
 					if($cpt==0){
 						echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 						echo "<br />\n";
@@ -2384,7 +2395,7 @@ else{
 
 					//echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 					$sql="UPDATE tempo4 SET col3='modif' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id[$i]';";
-					if($tab_ele_id[$i]==$eleve_id_debug) {echo "Changement etab<br />";echo "$sql<br />\n";}
+					if($tab_ele_id[$i]==$eleve_id_debug) {echo "Changement etab ou date d'entrée ou email sconet/compte<br />";echo "$sql<br />\n";}
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					echo $tab_ele_id[$i];
@@ -2951,6 +2962,15 @@ else{
 									$test_diff_email="y";
 								}
 
+								if(getSettingValue('mode_email_ele')=='mon_compte') {
+									unset($tmp_email_utilisateur_eleve);
+									$sql="SELECT email FROM utilisateurs WHERE login='$lig_ele->login' AND statut='eleve';";
+									$res_email_utilisateur_eleve=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_email_utilisateur_eleve)>0) {
+										$lig_email_utilisateur_eleve=mysqli_fetch_object($res_email_utilisateur_eleve);
+										$tmp_email_utilisateur_eleve=$lig_email_utilisateur_eleve->email;
+									}
+								}
 
 								$new_date=mb_substr($affiche[3],0,4)."-".mb_substr($affiche[3],4,2)."-".mb_substr($affiche[3],6,2);
 
@@ -2964,6 +2984,7 @@ else{
 									($lig_ele->lieu_naissance!=stripslashes($affiche[11]))||
 									($lig_ele->no_gep!=$affiche[7])||
 									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))||
+									(($alert_diff_mail_ele=="y")&&(isset($tmp_email_utilisateur_eleve))&&($tmp_email_utilisateur_eleve!=$affiche[12]))||
 									((getSettingAOui('ele_tel_pers_signaler_modif'))&&($lig_ele->tel_pers!=$affiche[13]))||
 									((getSettingAOui('ele_tel_port_signaler_modif'))&&($lig_ele->tel_port!=$affiche[14]))||
 									((getSettingAOui('ele_tel_prof_signaler_modif'))&&($lig_ele->tel_prof!=$affiche[15]))
@@ -2984,6 +3005,7 @@ else{
 									($lig_ele->naissance!=$new_date)||
 									($lig_ele->no_gep!=$affiche[7])||
 									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))||
+									(($alert_diff_mail_ele=="y")&&(isset($tmp_email_utilisateur_eleve))&&($tmp_email_utilisateur_eleve!=$affiche[12]))||
 									((getSettingAOui('ele_tel_pers_signaler_modif'))&&($lig_ele->tel_pers!=$affiche[13]))||
 									((getSettingAOui('ele_tel_port_signaler_modif'))&&($lig_ele->tel_port!=$affiche[14]))||
 									((getSettingAOui('ele_tel_prof_signaler_modif'))&&($lig_ele->tel_prof!=$affiche[15]))
@@ -3174,7 +3196,6 @@ else{
 									echo "white";
 								}
 								echo ";'>\n";
-								*/
 
 								if(getSettingValue('mode_email_ele')=='mon_compte') {
 									unset($tmp_email_utilisateur_eleve);
@@ -3185,6 +3206,7 @@ else{
 										$tmp_email_utilisateur_eleve=$lig_email_utilisateur_eleve->email;
 									}
 								}
+								*/
 
 								echo "<tr class='lig$alt'>\n";
 
@@ -3399,23 +3421,24 @@ else{
 										//echo " background-color:lightgreen;'>";
 										echo " class='modif'>";
 										if($lig_ele->email!=''){
-											echo stripslashes($lig_ele->email)." <font color='red'>-&gt;</font>\n";
+											echo "<span title=\"Email actuellement enregistré dans la table 'eleves'.\">".stripslashes($lig_ele->email)."</span> <font color='red'>-&gt;</font>\n";
 										}
 									}
 									else{
 										//echo "'>";
 										echo ">";
 									}
-									echo $affiche[12];
+									echo "<span title=\"Email trouvé dans votre fichier XML Sconet.\">".$affiche[12]."</span>";
 //									echo "<input type='hidden' name='modif_".$cpt."_email' value=\"$affiche[12]\" />\n";
 									if(isset($tmp_email_utilisateur_eleve)) {
 										//if($tmp_email_utilisateur_eleve!=$affiche[12]) {
 										if(($tmp_email_utilisateur_eleve!=$affiche[12])&&($alert_diff_mail_ele=='y')) {
 											//echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 											echo "<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+											echo "<img src='../images/icons/buddy.png' class='icone16' alt=\"Email compte : $tmp_email_utilisateur_eleve\" title=\"Le mail renseigné par l'élève dans 'Gérer mon compte' est '$tmp_email_utilisateur_eleve'.\" />";
 
 											$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
-											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='eleves/synchro_mail.php'>synchronisation globalement</a>.";
+											$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' ($tmp_email_utilisateur_eleve) est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").<br />Vous pouvez également effectuer la <a href='eleves/synchro_mail.php'>synchronisation globalement</a>.";
 											$info_action_destinataire=array("administrateur","scolarite");
 											$info_action_mode="statut";
 											enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
@@ -3527,7 +3550,7 @@ else{
 									else {
 										$info_action_titre="Ajout dans une classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
 
-										$sql="SELECT id FROM classes WHERE classe='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[9]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+										$sql="SELECT id FROM classes WHERE classe='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[9])."';";
 										$res_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_clas_fut)>0) {
 											$lig_clas_fut=mysqli_fetch_object($res_clas_fut);
@@ -3565,7 +3588,7 @@ else{
 										$info_action_texte="Il se peut qu'il faille <a href='classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet de $lig_clas1->classe vers $affiche[9].")."'>réinscrire ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." dans la classe de $affiche[9]</a>.<br />Elle a un temps été déclarée sortie de l'établissement.<br />Ce n'est plus le cas dans Sconet.";
 									}
 									else {
-										$sql="SELECT * FROM classes where classe='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[9]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+										$sql="SELECT * FROM classes where classe='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[9])."';";
 										$res_clas_fut=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_clas_fut)==1) {
 											$lig_clas_fut=mysqli_fetch_object($res_clas_fut);
@@ -4045,29 +4068,30 @@ else{
 							break;
 					}
 
-					$sql="UPDATE eleves SET nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-											prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELEPRE) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					$sql="UPDATE eleves SET nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM)."',
+											prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELEPRE)."',
 											sexe='".$lig->ELESEXE."',
 											naissance='".$naissance."',
 											no_gep='".$lig->ELENONAT."'";
 
 					if($ele_lieu_naissance=="y") {
-						$sql.=", lieu_naissance='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->LIEU_NAISSANCE) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+						$sql.=", lieu_naissance='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->LIEU_NAISSANCE)."'";
 					}
 
-					if(getSettingValue('mode_email_ele')!="mon_compte") {
-						$sql.=", email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+					//if(getSettingValue('mode_email_ele')!="mon_compte") {
+					if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+						$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 					}
 
 					// 20120630
 					if((getSettingAOui('ele_tel_pers'))&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
-						$sql.=", tel_pers='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PERS) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+						$sql.=", tel_pers='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PERS)."'";
 					}
 					if((getSettingAOui('ele_tel_port'))&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
-						$sql.=", tel_port='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PORT) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+						$sql.=", tel_port='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PORT)."'";
 					}
 					if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
-						$sql.=", tel_prof='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PROF) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+						$sql.=", tel_prof='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PROF)."'";
 					}
 
 					// 20130607
@@ -4152,8 +4176,9 @@ else{
 							$old_ele_id=$lig_tmp->ele_id;
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
-							if(getSettingValue('mode_email_ele')!="mon_compte") {
-								$sql.=", email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+							//if(getSettingValue('mode_email_ele')!="mon_compte") {
+							if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+								$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 							}
 
 							$login_eleve=$lig_tmp->login;
@@ -4441,8 +4466,8 @@ else{
 							else {
 								// On ne renseigne plus l'ERENO et on n'a pas l'EMAIL dans temp_gep_import2
 								$sql="INSERT INTO eleves SET login='$login_eleve',
-														nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-														prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELEPRE) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+														nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELENOM)."',
+														prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->ELEPRE)."',
 														sexe='".$lig->ELESEXE."',
 														naissance='".$naissance."',
 														no_gep='".$lig->ELENONAT."',
@@ -4455,13 +4480,13 @@ else{
 
 								// 20120630
 								if((getSettingAOui('ele_tel_pers'))&&(getSettingAOui('ele_tel_pers_signaler_modif'))) {
-									$sql.=", tel_pers='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PERS) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+									$sql.=", tel_pers='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PERS)."'";
 								}
 								if((getSettingAOui('ele_tel_port'))&&(getSettingAOui('ele_tel_port_signaler_modif'))) {
-									$sql.=", tel_port='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PORT) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+									$sql.=", tel_port='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PORT)."'";
 								}
 								if((getSettingAOui('ele_tel_prof'))&&(getSettingAOui('ele_tel_prof_signaler_modif'))) {
-									$sql.=", tel_prof='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PROF) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+									$sql.=", tel_prof='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->TEL_PROF)."'";
 								}
 
 								// 20130607
@@ -5032,9 +5057,12 @@ else{
 					$call_group = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT g.id, g.name FROM groupes g, j_groupes_classes jgc WHERE (g.id = jgc.id_groupe and jgc.id_classe = '" . $id_classe ."') ORDER BY jgc.priorite, g.name");
 					$nombre_ligne = mysqli_num_rows($call_group);
 					$i=0;
-					while ($i < $nombre_ligne) {
-						$id_groupe = old_mysql_result($call_group, $i, "id");
-						$nom_groupe = old_mysql_result($call_group, $i, "name");
+					//while ($i < $nombre_ligne) {
+						//$id_groupe = old_mysql_result($call_group, $i, "id");
+						//$nom_groupe = old_mysql_result($call_group, $i, "name");
+					while ($lig_call_group=$call_group->fetch_object()) {
+						$id_groupe = $lig_call_group->id;
+						$nom_groupe = $lig_call_group->name;
 						$id_group[$j] = $id_groupe."_".$j;
 						$test_query = mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 								"id_groupe = '" . $id_groupe . "' and " .
@@ -5236,9 +5264,12 @@ else{
 					$nb_erreurs=0;
 					$i=0;
 					$alt=-1;
-					while ($i < $nombre_ligne) {
-						$id_groupe = old_mysql_result($call_group, $i, "id");
-						$nom_groupe = old_mysql_result($call_group, $i, "name");
+					//while ($i < $nombre_ligne) {
+					//	$id_groupe = old_mysql_result($call_group, $i, "id");
+					//	$nom_groupe = old_mysql_result($call_group, $i, "name");
+					while ($lig_call_group=$call_group->fetch_object()) {
+						$id_groupe = $lig_call_group->id;
+						$nom_groupe = $lig_call_group->name;
 
 						$tmp_group=get_group($id_groupe,$tab_champs_grp);
 						$chaine_profs="";
@@ -5803,8 +5834,8 @@ else{
 							$sql="INSERT INTO temp_resp_pers_import SET ";
 							//$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-							$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+							$sql.="nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"])."', ";
+							$sql.="prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"])."', ";
 							if(isset($personnes[$i]["lc_civilite"])){
 								$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 							}
@@ -5818,7 +5849,7 @@ else{
 								$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
 							}
 							if(isset($personnes[$i]["mel"])){
-								$sql.="mel='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["mel"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+								$sql.="mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["mel"])."', ";
 							}
 							if(isset($personnes[$i]["adresse_id"])){
 								$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
@@ -6172,27 +6203,27 @@ else{
 					//$sql="INSERT INTO resp_adr SET ";
 					$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
 					if(isset($adresses[$i]["ligne1_adresse"])){
-						$sql.="adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne1_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr1='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne1_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne2_adresse"])){
-						$sql.="adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne2_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr2='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne2_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne3_adresse"])){
-						$sql.="adr3='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne3_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr3='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne3_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne4_adresse"])){
-						$sql.="adr4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne4_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr4='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne4_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["code_postal"])){
 						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
 					}
 					if(isset($adresses[$i]["ll_pays"])){
-						$sql.="pays='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ll_pays"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="pays='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ll_pays"])."', ";
 					}
 					if(isset($adresses[$i]["libelle_postal"])){
-						$sql.="commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["libelle_postal"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["libelle_postal"])."', ";
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
-						$sql.="commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["commune_etrangere"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["commune_etrangere"])."', ";
 					}
 					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";
@@ -6311,7 +6342,7 @@ else{
 					else {
 						// Chercher les homonymes.
 						$lig_rp=mysqli_fetch_object($res_rp);
-						$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_rp->nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_rp->prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.pers_id!='".$suppr[$loop]."' ORDER BY pers_id;";
+						$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_rp->nom)."' AND rp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_rp->prenom)."' AND rp.pers_id!='".$suppr[$loop]."' ORDER BY pers_id;";
 						$res_rp2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_rp2)==0) {
 							// On ne devrait pas arriver là... si: si on a supprimé les précédents homonymes dans le même submit
@@ -6367,7 +6398,9 @@ else{
 									enregistre_log_maj_sconet($texte);
 								}
 								else {
-									$statut_test=old_mysql_result($test, 0, "statut");
+									//$statut_test=old_mysql_result($test, 0, "statut");
+									$lig_test=$test->fetch_object();
+									$statut_test=$lig_test->statut;
 									if($statut_test!='responsable') {
 										$texte.="<span style='color:red'>Le login proposé ".$conserver[$lig_rp->pers_id]." n'est pas un compte 'responsable', mais '$statut_test'.</span><br />";
 
@@ -6544,7 +6577,7 @@ else{
 				$cpt_rp=0;
 				$alt=1;
 				while($lig=mysqli_fetch_object($test)) {
-					$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND rp.prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' ORDER BY pers_id;";
+					$sql="SELECT rp.* FROM resp_pers rp WHERE rp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->nom)."' AND rp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->prenom)."' ORDER BY pers_id;";
 					$res_rp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_rp)>0) {
 						$cpt_nom_prenom_courant=0;
@@ -6646,7 +6679,9 @@ else{
 								//echo "$sql<br />";
 								$res_log=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_log)>0) {
-									$date_connexion=old_mysql_result($res_log, 0, "START");
+									//$date_connexion=old_mysql_result($res_log, 0, "START");
+									$lig_res_log=$res_log->fetch_object();
+									$date_connexion=$lig_res_log->START;
 									$derniere_connexion=formate_date($date_connexion);
 
 									$id_checkbox_login_connexion_reussie="conserver_".$cpt_rp."_".$cpt_nom_prenom_courant;
@@ -6657,7 +6692,9 @@ else{
 									$sql="SELECT * FROM log WHERE login='$lig_rp->login' ORDER BY START DESC LIMIT 1;";
 									$res_log=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_log)>0) {
-										$date_connexion=old_mysql_result($res_log, 0, "START");
+										//$date_connexion=old_mysql_result($res_log, 0, "START");
+										$lig_res_log=$res_log->fetch_object();
+										$date_connexion=$lig_res_log->START;
 										$derniere_connexion="<span style='color:red'>Erreur sur le mot de passe le ".formate_date($date_connexion)."</span>";
 									}
 								}
@@ -7097,7 +7134,6 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						}
 						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "\$temoin_doublon_adr=$temoin_doublon_adr<br />\n";}
 
-						//if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 							$sql.="						OR rp.mel!=t.mel";
 						}
@@ -7131,7 +7167,23 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 							die();
 						}
 
-						if((mysqli_num_rows($test)>0)&&($temoin_doublon_adr=="n")) {
+						$temoin_diff_mail_compte_vs_sconet="n";
+						if((mysqli_num_rows($test)==0)&&($alert_diff_mail_resp=="y")) {
+							// On teste si il y a une différence de mail entre temp_resp_pers et utilisateurs
+							$sql="SELECT 1=1 FROM temp_resp_pers_import t, resp_pers rp, utilisateurs u
+										WHERE rp.pers_id='".$lig->pers_id."' AND 
+											rp.pers_id=t.pers_id AND 
+											rp.login=u.login AND 
+											t.MEL!=u.email;";
+							info_debug($sql);
+							$test_diff_mail_compte_vs_sconet=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_diff_mail_compte_vs_sconet)>0) {
+								$temoin_diff_mail_compte_vs_sconet="y";
+							}
+						}
+
+						if(((mysqli_num_rows($test)>0)||($temoin_diff_mail_compte_vs_sconet=="y"))&&
+							($temoin_doublon_adr=="n")) {
 							info_debug("... avec une diff au moins dans resp_pers");
 							if($cpt>0) {
 								echo ", ";
@@ -7813,7 +7865,7 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						echo $ligne_parent;
 
 						// Détection d'une situation de doublon:
-						$sql="SELECT tp.* FROM temp_resp_pers_import tp, temp_responsables2_import tr WHERE tp.pers_id!='$pers_id' AND tp.pers_id=tr.pers_id AND tp.nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND tp.prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prenom1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND tr.ele_id IN (SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2')) AND tp.pers_id NOT IN (SELECT pers_id FROM resp_pers);";
+						$sql="SELECT tp.* FROM temp_resp_pers_import tp, temp_responsables2_import tr WHERE tp.pers_id!='$pers_id' AND tp.pers_id=tr.pers_id AND tp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom1)."' AND tp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom1)."' AND tr.ele_id IN (SELECT ele_id FROM responsables2 WHERE pers_id='$pers_id' AND (resp_legal='1' OR resp_legal='2')) AND tp.pers_id NOT IN (SELECT pers_id FROM resp_pers);";
 						//echo "$sql<br />";
 						$verif_d=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($verif_d)>0) {
@@ -8893,6 +8945,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_parent.="</tr>\n";
 
 						if($alert_diff_mail_resp=="y") {
+							$ajout_email_compte="";
 							$ligne_parent.="<tr>\n";
 							$ligne_parent.="<td style='text-align:center; font-weight:bold;'>mel</td>\n";
 							$ligne_parent.="<td";
@@ -8900,8 +8953,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								if($lig_pers2->mel!=$mel1) {
 									if(($lig_pers2->mel!='')||($mel1!='')){
 	
-										//if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
-										if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')&&($alert_diff_mail_resp=='y')) {
+										if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
 	
 											if($login_resp1!='') {
 												$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
@@ -8922,6 +8974,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 													}
 													else {
+														$ajout_email_compte="<img src='../images/icons/buddy.png' class='icone16' alt=\"Email compte : $lig_email_resp->email\" title=\"Email renseigné par l'utilisateur dans 'Gérer mon compte' : $lig_email_resp->email\" />";
 														if($lig_email_resp->email!=$lig_pers2->mel) {
 															// L'email Sconet diffère de celui non vide déclaré dans Gérer mon compte
 															$ligne_parent.=" class='modif'>";
@@ -8963,7 +9016,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 										}
 	
 										if($mel1!=''){
-											$ligne_parent.=$mel1." <font color='red'>-&gt;</font>\n";
+											$ligne_parent.="<span title=\"Email actuellement renseigné dans la table 'resp_pers'.\">".$mel1."</span> <font color='red'>-&gt;</font>\n";
 										}
 	
 										$temoin_diff_autre="y";
@@ -8982,7 +9035,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								//$ligne_parent.="'>";
 								$ligne_parent.=">";
 							}
-							$ligne_parent.=$lig_pers2->mel;
+							$ligne_parent.="<span title=\"Email trouvé dans votre fichier XML Sconet.\">".$lig_pers2->mel."</span>";
+							$ligne_parent.=$ajout_email_compte;
 							$ligne_parent.="</td>\n";
 							$ligne_parent.="</tr>\n";
 						}
@@ -9448,13 +9502,13 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						if(mysqli_num_rows($test)==0){
 
 							$sql="INSERT INTO resp_pers SET pers_id='$lig1->col2',
-													nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+													nom='".mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom))."',
+													prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom))."',
 													civilite='".ucfirst(my_strtolower($lig->civilite))."',
-													tel_pers='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_pers) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													tel_port='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_port) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													tel_prof='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_prof) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													mel='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+													tel_pers='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_pers)."',
+													tel_port='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_port)."',
+													tel_prof='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_prof)."',
+													mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."',
 													adr_id='".$lig->adr_id."';";
 							info_debug($sql);
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -9505,14 +9559,14 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 							}
 						}
 						else{
-							$sql="UPDATE resp_pers SET nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+							$sql="UPDATE resp_pers SET nom='".mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom))."',
+													prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom))."',
 													civilite='".casse_mot($lig->civilite,'majf2')."',
-													tel_pers='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_pers) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													tel_port='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_port) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													tel_prof='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_prof) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";
+													tel_pers='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_pers)."',
+													tel_port='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_port)."',
+													tel_prof='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->tel_prof)."',";
 							if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
-								$sql.="						mel='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";
+								$sql.="						mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."',";
 							}
 							else {
 								// Plusieurs cas peuvent survenir
@@ -9539,7 +9593,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								// Si le responsable n'a pas de compte
 								else {
 									// Alors on fait la mise à jour
-									$sql.="						mel='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";
+									$sql.="						mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."',";
 									info_debug("Il n'y a pas d'email dans la table utilisateurs; on met à jour d'apres le XML: $lig->mel");
 								}
 							}
@@ -9556,7 +9610,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								$texte.="</span></a>";
 
 								if(getSettingValue('mode_email_resp')=='sconet') {
-									$sql="UPDATE utilisateurs SET email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+									$sql="UPDATE utilisateurs SET email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
 									info_debug($sql);
 									$update_utilisateurs=mysqli_query($GLOBALS["mysqli"], $sql);
 								}
@@ -9572,8 +9626,8 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 
 							if((isset($update_utilisateurs))&&(!$update_utilisateurs)) {$texte.=" <span style='color:red;'>Erreur lors de la mise à jour du mail du compte utilisateur.</span><br />\n";}
 
-							$sql_tmp="UPDATE utilisateurs SET nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-													prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom)) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+							$sql_tmp="UPDATE utilisateurs SET nom='".mysqli_real_escape_string($GLOBALS["mysqli"], my_strtoupper($lig->nom))."',
+													prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_ini_prenom($lig->prenom))."',
 													civilite='".casse_mot($lig->civilite,'majf2')."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2' AND login!='');";
 							info_debug($sql_tmp);
 							$update_nom_prenom_utilisateur=mysqli_query($GLOBALS["mysqli"], $sql_tmp);
@@ -9610,13 +9664,13 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 									$commune1=$lig_adr1->commune;
 									$pays1=$lig_adr1->pays;
 
-									$sql="UPDATE resp_adr SET adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr1_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr2_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr3='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr3_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr4_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																cp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $cp2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $commune2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																pays='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $pays2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'
+									$sql="UPDATE resp_adr SET adr1='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr1_2)."',
+																adr2='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr2_2)."',
+																adr3='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr3_2)."',
+																adr4='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr4_2)."',
+																cp='".mysqli_real_escape_string($GLOBALS["mysqli"], $cp2)."',
+																commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $commune2)."',
+																pays='".mysqli_real_escape_string($GLOBALS["mysqli"], $pays2)."'
 														WHERE adr_id='$lig->adr_id'";
 									info_debug($sql);
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -9634,13 +9688,13 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 									$commune1="";
 									$pays1="";
 
-									$sql="INSERT INTO resp_adr SET adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr1_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr2_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr3='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr3_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																adr4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adr4_2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																cp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $cp2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $commune2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																pays='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $pays2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									$sql="INSERT INTO resp_adr SET adr1='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr1_2)."',
+																adr2='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr2_2)."',
+																adr3='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr3_2)."',
+																adr4='".mysqli_real_escape_string($GLOBALS["mysqli"], $adr4_2)."',
+																cp='".mysqli_real_escape_string($GLOBALS["mysqli"], $cp2)."',
+																commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $commune2)."',
+																pays='".mysqli_real_escape_string($GLOBALS["mysqli"], $pays2)."',
 																adr_id='$lig->adr_id'";
 									info_debug($sql);
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
