@@ -12,9 +12,14 @@ Bulletins:
 - Possibilité de modifier l'accès parent/élève aux appréciations depuis les pages 
   de saisie de l'avis du conseil de classe dans le cas où l'accès est basculé manuellement.
 - Possibilité de désactiver la recherche de lapsus lors des saisies d'appréciations et avis du conseil de classe.
+- Possibilité de proposer des corrections d'appréciations depuis le bulletins et plus seulement depuis la saisie d'appréciations.
+- Formatage de l'identité des élèves pour les bulletins.
+- Possibilité de faire apparaitre les mentions sur l'export PDF des avis de conseil de classe.
+- Mise en évidence des coefficients nuls avant la génération des bulletins (pour repérer un coefficient différent des autres).
 
 Graphes:
 - Possibilité de définir la taille du texte sous le graphique.
+- Possibilité de régler la vitesse de défilement des appréciations dans le champ Textarea.
 
 Carnets de notes:
 - Visualiser toutes les notes de l'année: Affichage de la moyenne annuelle.
@@ -22,17 +27,20 @@ Carnets de notes:
 - Possibilité d'interdire la création/paramétrage de boites/conteneurs par les professeurs.
 - Possibilité, en tant qu'administrateur, de créer des boites/conteneurs par lots dans les carnets de notes d'une sélection d'enseignements.
 - Accès des professeurs principaux à la page Moyennes des carnets de notes si ils ont accès à la Visualisation des carnets de notes.
+- Évaluations cumulées: Possibilité de choisir les évaluations visibles des parents/élèves.
 
 Cahier de textes:
 - Possibilité d'afficher la liste des documents joints à un CDT.
 - Possibilité pour les parents et élèves de pointer leurs travaux faits ou non.
 - Possibilité de redimensionner les infobulles dans l'affichage semaine.
 - Possibilité d'envoyer par mail une portion du cahier de textes.
+- CDT2: Possibilité de préciser le nombre de notices à afficher par défaut dans WinListeNotices.
 
 Absences2:
 - Possibilité de modifier les dates/heure de début et fin d'une saisie depuis la page de saisie d'un traitement.
 - Accès à l'onglet 'Saisir un groupe' pour les statuts 'autre' avec le droit 'Saisir les absences de tous les élèves'.
 - Possibilité de créer des traitements et notifications par lots.
+- Possibilité de filtrer Retards/Manquements/Non_manquements dans la page Bilan jour.
 
 Discipline:
 - Affichage par tranches des incidents à traiter (pour limiter le temps de chargement de la page).
@@ -42,22 +50,39 @@ Discipline:
 - Possibilité de restreindre dans Mon compte ce qui a été défini dans Définir les destinataires d'alertes,
   les catégories d'incidents pour lesquelles on souhaite être averti.
 - Saisie d'incident: Recherche des élèves et personnels dans le même formulaire.
+- Possibilité d'imprimer des fichiers OOo avec adresse responsable pour les rapports d'incidents.
 
 Modèles Ooo:
 - Possibilité de gérer des modèles OOo en compte scolarité ou cpe.
 
 Gestion:
 - Ajout de la date d'entrée d'un élève dans l'établissement.
-- Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élèev a eu lieu.
+- Possibilité de choisir l'adresse mail destinataire de l'information comme quoi un changement d'adresse mail responsable ou élève a eu lieu.
 - Possibilité d'ajouter un préfixe au sujet des mails envoyés par Gepi.
 - Possibilité de donner l'accès à l'impression de leur Fiche Bienvenue pour les différents statuts depuis la page Gérer mon compte.
 - Possibilité de définir des messages d'information à faire apparaître dans 'Gérer mon compte' (messages éventuellement différents pour chaque statut).
 - Possibilité d'accéder à la date de dernière connexion d'élèves/responsables.
 - Possibilité de donner l'accès aux statistiques, voire aux détails de connexion pour les comptes scolarité, cpe, professeurs principaux et/ou professeurs.
 - Possibilité de choisir le professeur principal depuis la page d'index Élèves.
+- Facilités pour renommer les enseignements que l'on crée ou modifie.
+- Facilités pour créer des demi-groupes,... d'après un groupe existant.
+- Gestion des responsables: Possibilité de lancer la même recherche sur les autres catégories (resp1,2,ele) quand la recherche n'a pas abouti.
+- Possibilité de donner le droit aux comptes scolarité/cpe de modifier la composition des groupes.
+- Gestion des élèves: Possibilité d'extraire les élèves sans compte d'utilisateur ou avec compte inactif.
+- Ajout d'une page de recherche (pour les administrateurs, scolarité et cpe) sur les élèves/responsables/personnels par nom, prénom, matière,... avec possibilité d'export CSV.
+- Possibilité d'envoyer la fiche bienvenue par mail.
+- Ajout de barres de menu élève et responsable.
+- Ajout d'une facilité d'édition d'un message du Panneau d'affichage.
+- Dénomination du C.P.E. modifiable dans les paramètres généraux
+
+Alertes:
+- Possibilité d'utiliser le module Alertes en compte 'autre'.
+- Possibilité d'exclure du mod_alerte certains utilisateurs.
 
 Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
+- Possibilité d'afficher le mot de passe lors de la saisie (pour ceux qui s'empêtrent dans les majuscules/minuscules, clavier avec ou sans pavé numérique).
+- Possibilité de donner l'accès aux grilles PDF et listes CSV aux statuts autres.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================
