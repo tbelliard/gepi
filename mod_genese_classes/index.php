@@ -428,8 +428,7 @@ On répartit les cas restants.<br />
 Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
 <p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
 </li>\n";
-$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
-if($suhosin_post_max_totalname_length!='') {
+if(test_alerte_config_suhosin()) {
 	$alerte_config_suhosin=alerte_config_suhosin();
 	echo "<li>$alerte_config_suhosin</li>\n";
 }

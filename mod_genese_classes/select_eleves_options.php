@@ -1572,8 +1572,7 @@ echo "function modif_colonne(col,j,mode) {
 }
 </script>\n";
 
-$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
-if($suhosin_post_max_totalname_length!='') {
+if(test_alerte_config_suhosin()) {
 	$alerte_config_suhosin=alerte_config_suhosin();
 	echo "<div align='center'>$alerte_config_suhosin";
 

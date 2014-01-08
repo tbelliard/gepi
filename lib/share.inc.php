@@ -8929,6 +8929,24 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 	return $retour;
 }
 
+/** fonction testant la présence de limitations à la transmission de variables (par suhosin ou autre)
+ *
+ * @return boolean Limitation ou pas
+ */
+function test_alerte_config_suhosin() {
+	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+	$max_input_vars=ini_get('max_input_vars');
+	if($suhosin_post_max_totalname_length!='') {
+		return true;
+	}
+	elseif(($max_input_vars!="")&&($max_input_vars>0)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 /** Fonction destinée à récupérer dans la table 'utilisateurs' le mail d'un utilisateur
  *
  * @param string $login_user Login de l'utilisateur
