@@ -116,8 +116,7 @@ if(!isset($extract_mode)) {
 
 	echo "<p><i>ATTENTION&nbsp;:</i></p><p style='margin-left: 3em;'>Il ne faut faire l'<b>extraction</b> qu'<b>une seule fois</b> par type de brevet.<br />Lors de l'extraction, les valeurs préalablement saisies/enregistrées sont supprimées/remplacées.<br />Si vous devez corriger une extraction, il faut passer par le choix suivant&nbsp;: <a href='corrige_extract_moy.php'>Corriger l'extraction des moyennes</a>.</p>\n";
 
-	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
-	if($suhosin_post_max_totalname_length!='') {
+	if(test_alerte_config_suhosin()) {
 		echo alerte_config_suhosin();
 	}
 
@@ -592,8 +591,7 @@ function DecocheColonneSelectEleves(i,j) {
 		echo "</li>\n";
 
 
-		$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
-		if($suhosin_post_max_totalname_length!='') {
+		if(test_alerte_config_suhosin()) {
 			echo "<li>";
 
 				echo alerte_config_suhosin();

@@ -2101,13 +2101,14 @@ function insere_lien_insertion_lien_geogebra_dans_ckeditor($titre_ggb, $url_ggb)
  * @return string Chaine de texte HTML 
  */
 function alerte_config_suhosin() {
-	$retour="<p class='bold' style='color:red'>Configuration suhosin</p>\n";
+	$retour="<p class='bold' style='color:red'>Limitations à la transmission de variables</p>\n";
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {
 		$retour.="<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
 		$retour.="<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
 
+		$retour="<p class='bold'>Configuration suhosin&nbsp;:</p>\n";
 		$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
 		'suhosin.get.max_vars', 
 		'suhosin.get.max_totalname_length', 
@@ -2131,6 +2132,12 @@ function alerte_config_suhosin() {
 	else {
 		$retour.="<p>Le module suhosin n'est pas activé.<br />Il ne peut pas perturber Gepi.</p>\n";
 	}
+
+	$max_input_vars=ini_get('max_input_vars');
+	if(($max_input_vars!="")&&($max_input_vars>0)) {
+		$retour.="<p class='bold'>Limitation propre à PHP&nbsp;:</p><p>La variable PHP 'max_input_vars' est limitée à $max_input_vars.<br />Si le nombre de variables transmises dépasse cette valeur, Gepi peut être perturbé.<br />Tentez de soumettre moins de valeurs ou augmentez la valeur de 'max_input_vars' dans le fichier php.ini.</p>\n";
+	}
+
 	return $retour;
 }
 
