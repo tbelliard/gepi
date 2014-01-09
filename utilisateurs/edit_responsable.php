@@ -834,7 +834,7 @@ while ($current_parent = mysqli_fetch_object($quels_parents)) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover' style='text-align:center;'>\n";
 		echo "<td>";
-			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."&amp;journal_connexions=y'>".$current_parent->login."</a>";
+			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."&amp;journal_connexions=y' title=\"Éditer/Modifier la fiche de ce responsable.\">".$current_parent->login."</a>";
 		echo "</td>\n";
 		echo "<td>";
 			echo $current_parent->nom . " " . $current_parent->prenom;
@@ -875,7 +875,7 @@ while ($current_parent = mysqli_fetch_object($quels_parents)) {
 		else{
 			while($current_enfant=mysqli_fetch_object($res_enfants)){
 
-				echo "<a href='../eleves/modify_eleve.php?eleve_login=$current_enfant->login'>".casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')."</a> (<i>".$current_enfant->classe."</i>)";
+				echo "<a href='../eleves/modify_eleve.php?eleve_login=$current_enfant->login' title=\"Éditer/Modifier la fiche de cet élève.\">".casse_mot($current_enfant->prenom,'majf2')." ".casse_mot($current_enfant->nom,'maj')."</a> (<i>".$current_enfant->classe."</i>)";
 				if($current_enfant->resp_legal==0) {
 					if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
 						if($current_enfant->acces_sp=='y') {
@@ -886,7 +886,8 @@ while ($current_parent = mysqli_fetch_object($quels_parents)) {
 							if(isset($afficher_tous_les_resp)) {echo "&amp;afficher_tous_les_resp=".$afficher_tous_les_resp;}
 							echo add_token_in_url()."'";
 							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs).
+Cliquer pour retirer l'accès.\" /></a>";
 						}
 						else {
 							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$current_parent->pers_id&amp;ele_id=".$current_enfant->ele_id."&amp;acces_resp_legal_0=y";
@@ -896,7 +897,8 @@ while ($current_parent = mysqli_fetch_object($quels_parents)) {
 							if(isset($afficher_tous_les_resp)) {echo "&amp;afficher_tous_les_resp=".$afficher_tous_les_resp;}
 							echo add_token_in_url()."'";
 							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $current_parent->prenom $current_parent->nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs).
+Cliquer pour donner l'accès.\" /></a>";
 						}
 					}
 				}

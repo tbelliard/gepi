@@ -986,7 +986,7 @@ if(isset($pers_id)){
 		while($lig_ele=mysqli_fetch_object($res1)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."'>".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</a></td>\n";
+			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."' title=\"Éditer/Modifier la fiche élève.\">".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</a></td>\n";
 
 			$resp_legal1=$lig_ele->resp_legal;
 
@@ -1080,7 +1080,8 @@ if(isset($pers_id)){
 						$affichage_message_erreur_resp_legaux++;
 					}
 
-					echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span>\n";
+					echo "<span title='Responsable légal $lig_resp->resp_legal
+Éditer/Modifier la fiche de ce responsable.'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span>\n";
 					//if(($lig_resp->resp_legal==2)&&($nb_resp_legaux_2<=1)) {
 					//if(($nb_resp_legaux_1<=1)&&($nb_resp_legaux_2<=1)) {
 					if(($lig_resp->resp_legal==1)||($lig_resp->resp_legal==2)) {
