@@ -1046,21 +1046,6 @@ if(isset($pers_id)){
 			echo "<td style='text-align:center;'>\n";
 
 			if(mysqli_num_rows($res_resp)>0){
-				/*
-				if(mysql_num_rows($res_resp)==1){
-					$lig_resp=mysql_fetch_object($res_resp);
-					echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span>\n";
-					echo "<input type='hidden' name='pers_id2[".$cpt."]' value='$lig_resp->pers_id' />\n";
-				}
-				else{
-					echo "<input type='hidden' name='resp_erreur[".$cpt."]' value='y' />\n";
-					// 20121213 : A FAIRE: CA BUGGUE AVEC L'AFFICHAGE DES RESP_LEGAL=0
-					echo "<font color='red'>L'élève a trop de responsables légaux. Faites le ménage!</font><br />\n";
-					while($lig_resp=mysql_fetch_object($res_resp)){
-						echo "<span title='Responsable légal $lig_resp->resp_legal'><a href='modify_resp.php?pers_id=$lig_resp->pers_id' onclick=\"return confirm_abandon (this, change, '$themessage')\">".mb_strtoupper($lig_resp->nom)." ".ucfirst(mb_strtolower($lig_resp->prenom))."</a>($lig_resp->resp_legal)</span><br />\n";
-					}
-				}
-				*/
 				$nb_resp_legaux_1=0;
 				if($resp_legal1==1) {$nb_resp_legaux_1++;}
 				$nb_resp_legaux_2=0;

@@ -496,23 +496,6 @@ else {
 	$cpt=1;
 	//$csv="DESIGNATION;ADR_1;ADR_2;ADR_3;ADR_4;CP;COMMUNE;PAYS;NOM_RESP_1;PRENOM_RESP_1;TEL_PERS_1;TEL_PROF_1;TEL_PORT_1;MEL_1;NOM_RESP_2;PRENOM_RESP_2;TEL_PERS_2;TEL_PROF_2;TEL_PORT_2;MEL_2;ELEVE_1;ELEVE_2;ELEVE_3;ELEVE_4;ELEVE_5;ELEVE_6;ELEVE_7;ELEVE_8;ELEVE_9;ELEVE_10\r\n";
 	while($lig_adr=mysqli_fetch_object($res_adr)) {
-		/*
-		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') AND rp.adr_id='$lig_adr->adr_id';";
-		$res_rp=mysql_query($sql);
-		if(mysql_num_rows($res_rp)>0) {
-			// On recherche alors aussi les élèves.
-			$tab_ele=array();
-			while($lig_rp=mysql_fetch_object($res_rp)) {
-				$tab_ele_tmp=get_enfants_from_resp_login($lig_rp->login,'avec_classe');
-				for($loop=1;$loop<count($tab_ele_tmp);$loop+=2) {
-					if(!in_array($tab_ele_tmp[$loop], $tab_ele)) {
-						$tab_ele[]=$tab_ele_tmp[$loop];
-					}
-				}
-			}
-		}
-		*/
-
 		$resp=array();
 		$tab_ele=array();
 		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.resp_legal='1' AND rp.adr_id='$lig_adr->adr_id';";

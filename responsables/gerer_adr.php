@@ -157,12 +157,6 @@ if(!getSettingValue('conv_new_resp_table')){
 
 <?php
 	//debug_var();
-	/*
-	$sql="SELECT COUNT(adr_id) AS nb_tot_adr_id FROM resp_adr;";
-	$res_tot=mysql_query($sql);
-	$lig_tot=mysql_fetch_object($res_tot);
-	$nb_tot_adr_id=$lig_tot->nb_tot_adr_id;
-	*/
 
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü0-9_ -]/", "", $critere_recherche);

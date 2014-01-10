@@ -322,12 +322,6 @@ else{
 							//echo "<br />$sql<br />";
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
-							/*
-							$sql="UPDATE tempo2 SET col2='$adr_id' WHERE col1='$lig3->pers_id';";
-							//echo "<br />$sql<br />";
-							$update=mysql_query($sql);
-							*/
-
 							//echo " <span style='color:red'>$lig3->pers_id</span>";
 							if($cpt==0) {echo "<p><b>Dédoublonnage pour:</b> ";} else {echo " - ";}
 

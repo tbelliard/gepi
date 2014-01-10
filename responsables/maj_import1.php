@@ -210,11 +210,6 @@ else{
 									// CASES A COCHER POUR VALIDER
 
 
-									//$res_update=mysql_query($sql);
-									//if(!$res_update){
-									//	$erreur++;
-									//}
-
 									//$eleves[$cpt]
 
 									$lig_ele=mysqli_fetch_object($res1);
@@ -919,10 +914,6 @@ else{
 					$adr_new=array();
 					$adr_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
-					//$sql="TRUNCATE TABLE resp_adr";
-					//$res_truncate=mysql_query($sql);
-
 					// on constitue le tableau des champs à extraire
 					$tabchamps=array("adr_id","adr1","adr2","adr3","adr4","cp","pays","commune");
 
@@ -992,24 +983,6 @@ else{
 									//$ind = $tabindice[$i];
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 								}
-								/*
-								$req = mysql_query("insert into resp_adr set
-											adr_id = '$affiche[0]',
-											adr1 = '$affiche[1]',
-											adr2 = '$affiche[2]',
-											adr3 = '$affiche[3]',
-											adr4 = '$affiche[4]',
-											cp = '$affiche[5]',
-											pays = '$affiche[6]',
-											commune = '$affiche[7]'
-											");
-								if(!$req) {
-									$nb_reg_no2++;
-									echo mysql_error();
-								} else {
-									$nb_record2++;
-								}
-								*/
 
 								// Stockage des données:
 								$adresse[$affiche[0]]=array();
@@ -1018,28 +991,6 @@ else{
 								}
 
 
-								/*
-								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
-								//echo "$sql<br />\n";
-								$res1=mysql_query($sql);
-								if(mysql_num_rows($res1)==0){
-									$adr_new[]=$affiche[0];
-										//echo "Ajout de l'adresse n°$affiche[0]<br />\n";
-								}
-								else{
-									$lig=mysql_fetch_object($res1);
-									if((stripslashes($lig->adr1)!=stripslashes($affiche[1]))||
-									(stripslashes($lig->adr2)!=stripslashes($affiche[2]))||
-									(stripslashes($lig->adr3)!=stripslashes($affiche[3]))||
-									(stripslashes($lig->adr4)!=stripslashes($affiche[4]))||
-									(stripslashes($lig->cp)!=stripslashes($affiche[5]))||
-									(stripslashes($lig->pays)!=stripslashes($affiche[6]))||
-									(stripslashes($lig->commune)!=stripslashes($affiche[7]))){
-										$adr_modif[]=$affiche[0];
-										//echo "Modification de l'adresse n°$affiche[0]<br />\n";
-									}
-								}
-								*/
 
 								$temoin_nouvelle_adresse="n";
 								$sql="SELECT * FROM resp_adr WHERE (adr_id='$affiche[0]')";
@@ -1120,10 +1071,6 @@ else{
 					$pers_new=array();
 					$pers_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
-					//$sql="TRUNCATE TABLE resp_pers";
-					//$res_truncate=mysql_query($sql);
-
 					// on constitue le tableau des champs à extraire
 					//$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
 					$tabchamps=array("pers_id","nom","prenom","civilite","tel_pers","tel_port","tel_prof","mel","adr_id");
@@ -1187,24 +1134,6 @@ else{
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 									//echo "\$affiche[$i]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(\$tabligne[\$tabindice[$i]]))))=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(\$tabligne[$tabindice[$i]]))))=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim(".$tabligne[$tabindice[$i]]."))));<br />\n";
 								}
-								/*
-								$req = mysql_query("insert into resp_pers set
-											pers_id = '$affiche[0]',
-											nom = '$affiche[1]',
-											prenom = '$affiche[2]',
-											tel_pers = '$affiche[3]',
-											tel_port = '$affiche[4]',
-											tel_prof = '$affiche[5]',
-											mel = '$affiche[6]',
-											adr_id = '$affiche[7]'
-											");
-								if(!$req) {
-									$nb_reg_no3++;
-									echo mysql_error();
-								} else {
-									$nb_record3++;
-								}
-								*/
 
 								// Stockage des données:
 								$personne[$affiche[0]]=array();
@@ -1273,36 +1202,6 @@ else{
 
 
 			// ***************************************
-			/*
-			for($i=0;$i<count($resp_modif);$i++){
-				$tabchamps=array("pers_id","nom","prenom","tel_pers","tel_port","tel_prof","mel","adr_id");
-
-				$tmp=explode(":",$resp_modif[$i]);
-				$ele_id=$tmp[0];
-				$pers_id=$tmp[1];
-				if((!in_array($pers_id,$pers_modif))||(!in_array($pers_id,$pers_new))){
-					if(!isset($personne[$pers_id])){
-						$personne[$pers_id]=array();
-						$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id'";
-						$res1=mysql_query($sql);
-
-						if(mysql_num_rows($res1)==0){
-							// PROBLEME: s'il y a modif de responsable...
-							// ... et que le responsable n'est pas dans la table resp_pers, c'est que c'est une nouvelle personne...
-							// Mais alors elle devrait être dans le tableau $personne
-						}
-						else{
-							$lig1=mysql_fetch_object($res1);
-							for($j=1;$j<count($tabchamps);$j++) {
-								$pers_modif[]=$pers_id;
-								$personne[$pers_id]["$tabchamps[$j]"]=$lig1->$tabchamps[$j];
-								echo "\$personne[$pers_id][\"$tabchamps[$j]\"]=".$personne[$pers_id]["$tabchamps[$j]"]."<br />\n";
-							}
-						}
-					}
-				}
-			}
-			*/
 
 			/*
 			// DEBUG:
@@ -2161,10 +2060,6 @@ else{
 					$resp_new=array();
 					$resp_modif=array();
 
-					// On vide la table avant traitement (au cas où il aurait fallu s'y prendre à deux fois)
-					//$sql="TRUNCATE TABLE responsables2";
-					//$res_truncate=mysql_query($sql);
-
 					// on constitue le tableau des champs à extraire
 					$tabchamps=array("ele_id","pers_id","resp_legal","pers_contact");
 
@@ -2258,21 +2153,6 @@ else{
 									//$ind = $tabindice[$i];
 									$affiche[$i] = traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($tabligne[$tabindice[$i]]))));
 								}
-
-								/*
-								$req = mysql_query("insert into responsables2 set
-											ele_id = '$affiche[0]',
-											pers_id = '$affiche[1]',
-											resp_legal = '$affiche[2]',
-											pers_contact = '$affiche[3]'
-											");
-								if(!$req) {
-									$nb_reg_no1++;
-									echo mysql_error();
-								} else {
-									$nb_record1++;
-								}
-								*/
 
 								// Stockage des données:
 								$responsable[$affiche[0]]=array();
@@ -2657,8 +2537,6 @@ else{
 						//echo "$sql<br />\n";
 						$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res1)>0){
-							//$lig1=mysql_fetch_object($sql);
-							//$sql="DELETE FROM responsables2 WHERE pers_id='$lig1->pers_id',
 							$sql="DELETE FROM responsables2 WHERE (pers_id='$pers_id' AND
 											ele_id='$ele_id')";
 							//echo "$sql<br />\n";

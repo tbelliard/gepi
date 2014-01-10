@@ -256,7 +256,6 @@ require_once("../lib/header.inc.php");
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
-	//echo "mysql_num_rows($test)=".mysql_num_rows($test)."<br />";
 	if(mysqli_num_rows($test)>0){
 		echo "<p>Une conversion des données ".$gepiSettings['denomination_responsables']." est requise.</p>\n";
 		echo "<p>Suivez ce lien: <a href='conversion.php'>CONVERTIR</a></p>\n";
@@ -429,29 +428,6 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 	//if(($order_by=="nom,prenom")&&($num_resp==0)){
 	if(($order_by=="nom,prenom")&&("$num_resp"=="0")){
 		$cpt=0;
-		/*
-		$sql="SELECT DISTINCT pers_id FROM resp_pers";
-		$res1=mysql_query($sql);
-		if(mysql_num_rows($res1)>0){
-			while($lig1=mysql_fetch_object($res1)){
-				$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='$lig1->pers_id'";
-				$test=mysql_query($sql);
-				if(mysql_num_rows($test)==0){
-					$cpt++;
-				}
-			}
-		}
-		echo "\$cpt=$cpt<br />";
-		*/
-
-		/*
-		$sql="SELECT 1=1 FROM responsables2 r
-			LEFT JOIN eleves e ON e.ele_id=r.ele_id
-			WHERE e.ele_id is NULL;";
-		$res1=mysql_query($sql);
-		$cpt=mysql_num_rows($res1);
-		echo "\$cpt=$cpt<br />";
-		*/
 
 		$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1111,7 +1087,7 @@ if("$num_resp"=="0"){
 	}
 </script>\n";
 
-		//echo "<p align='center'>Effectif: ".mysql_num_rows($res1)."</p>\n";
+		//echo "<p align='center'>Effectif: ".mysqli_num_rows($res1)."</p>\n";
 
 		echo "<table class='boireaus' align='center' summary='Responsables'>\n";
 
@@ -1119,9 +1095,6 @@ if("$num_resp"=="0"){
 		else {$avec_lien="n";}
 
 		while($lig1=mysqli_fetch_object($res1)){
-			//$sql="SELECT 1=1 FROM responsables2 r WHERE r.pers_id='$lig1->pers_id'";
-			//$test=mysql_query($sql);
-			//if(mysql_num_rows($test)==0){
 
 				if($cpt%10==0){
 					echo $ligne_titre;
@@ -1180,39 +1153,6 @@ if("$num_resp"=="0"){
 
 				$cpt++;
 
-/*
-				$sql="SELECT rp.nom,rp.prenom,ra.* FROM resp_pers rp, resp_adr ra WHERE
-										rp.adr_id=ra.adr_id AND
-										rp.pers_id='$lig1->pers_id'
-									ORDER BY $order_by";
-				echo "<tr><td colspan='3'>$sql</td></tr>\n";
-				$res2=mysql_query($sql);
-				if(mysql_num_rows($res2)>0){
-					$lig2=mysql_fetch_object($res2);
-					echo "<tr style='background-color:".$alt.";'>\n";
-					echo "<td style='text-align:center;'>\n";
-					echo "<a href='modify_resp.php?pers_id=$lig1->pers_id'>$lig2->nom $lig2->prenom</a>\n";
-					echo "</td>\n";
-
-					echo "<td style='text-align:center;'>\n";
-					if($lig2->adr1!=''){echo "$lig2->adr1\n";}
-					if($lig2->adr2!=''){echo "<br />\n$lig2->adr2\n";}
-					if($lig2->adr3!=''){echo "<br />\n$lig2->adr3\n";}
-					if($lig2->adr4!=''){echo "<br />\n$lig2->adr4\n";}
-					if(($lig2->commune!='')||($lig2->cp!='')){echo "<br />\n$lig2->cp $lig2->commune\n";}
-					if($lig2->pays!=''){echo "<br />\n$lig2->pays\n";}
-					echo "</td>\n";
-
-					echo "<td style='text-align:center;'>\n";
-					echo "<input type='checkbox' name='suppr_resp1[]' value='$lig1->pers_id' />";
-					echo "</td>\n";
-					echo "</tr>\n";
-
-					$cpt++;
-				}
-				*/
-
-			//}
 		}
 
 		echo "</table>\n";
@@ -1348,7 +1288,6 @@ else{
 					while($lig2=mysqli_fetch_object($res2)){
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
 						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
-						//if(mysql_num_rows($res3)>0){
 							//echo "<tr style='background-color:".$alt.";'>\n";
 							echo "<tr class='lig$alt'>\n";
 							echo "<td style='text-align:center;'";
@@ -1537,7 +1476,6 @@ else{
 					while($lig2=mysqli_fetch_object($res2)){
 						$sql="SELECT DISTINCT e.ele_id,e.login,e.nom,e.prenom FROM responsables2 r, eleves e WHERE r.pers_id='$lig1->pers_id' AND r.resp_legal='$num_resp' AND r.ele_id=e.ele_id";
 						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
-						//if(mysql_num_rows($res3)>0){
 							//echo "<tr style='background-color:".$alt.";'>\n";
 							echo "<tr class='lig$alt'>\n";
 
@@ -1775,7 +1713,6 @@ else{
 				echo "<tr class='lig$alt'>\n";
 
 				if(mysqli_num_rows($res2)>0){
-					//while($lig2=mysql_fetch_object($res2)){
 						$lig2=mysqli_fetch_object($res2);
 						echo "<td style='text-align:center;'>\n";
 						//echo "<a href='modify_resp.php?pers_id=$lig2->pers_id'>$lig2->nom $lig2->prenom</a>\n";
