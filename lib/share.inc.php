@@ -9031,13 +9031,16 @@ function get_classes_from_user($login_user, $statut) {
  * @return boolean True/False selon que l'utilisateur est ou non prof du groupe
  */
 function verif_prof_groupe($login,$id_groupe) {
+	global $mysqli;
 	if(empty($login) || empty($id_groupe)) {
 		return FALSE;
 		die();
 	}
 
-	$call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$id_groupe."' and login='" . $login . "')");
-	$nb = mysql_num_rows($call_prof);
+	$sql="SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$id_groupe."' and login='" . $login . "')";
+	//echo "$sql<br />";
+	$call_prof = mysqli_query($mysqli , $sql);
+	$nb = mysqli_num_rows($call_prof);
 
 	if ($nb != 0) {
 		return TRUE;
@@ -9056,6 +9059,7 @@ function verif_prof_groupe($login,$id_groupe) {
  * @return $string Chaine pour $msg
  */
 function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_app_id_groupe, $corriger_app_num_periode, $texte_mail) {
+	global $mysqli;
 	$msg="";
 
 	if($texte_mail!="") {
@@ -9069,9 +9073,11 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 			$email_destinataires="";
 
 			$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$corriger_app_login_eleve' AND periode='$corriger_app_num_periode');";
-			$req=mysql_query($sql);
-			if(mysql_num_rows($req)>0) {
-				$correction_id_classe=mysql_result($req,0,"id_classe");
+			$req=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($req)>0) {
+				//$correction_id_classe=mysql_result($req,0,"id_classe");
+				$obj_classe=$req->fetch_object();
+				$correction_id_classe=$obj_classe->id_classe;
 				$sql="(SELECT DISTINCT email FROM utilisateurs WHERE statut='secours' AND email!='')
 				UNION (SELECT DISTINCT email FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login AND id_classe='$correction_id_classe');";
 			}
@@ -9080,20 +9086,20 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
 			}
 			//echo "$sql<br />";
-			$req=mysql_query($sql);
-			if(mysql_num_rows($req)>0) {
-				$lig_u=mysql_fetch_object($req);
+			$req=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($req)>0) {
+				$lig_u=mysqli_fetch_object($req);
 				$email_destinataires=$lig_u->email;
-				while($lig_u=mysql_fetch_object($req)) {
+				while($lig_u=mysqli_fetch_object($req)) {
 					$email_destinataires=", ".$lig_u->email;
 				}
 
 				$email_declarant="";
 				$nom_declarant="";
 				$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-				$req=mysql_query($sql);
-				if(mysql_num_rows($req)>0) {
-					$lig_u=mysql_fetch_object($req);
+				$req=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($req)>0) {
+					$lig_u=mysqli_fetch_object($req);
 					$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 					$email_declarant=$lig_u->email;
 				}
@@ -9102,11 +9108,11 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				// Recherche des autres profs du groupe
 				$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$corriger_app_id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
 				//echo "$sql<br />";
-				$req=mysql_query($sql);
-				if(mysql_num_rows($req)>0) {
-					$lig_u=mysql_fetch_object($req);
+				$req=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($req)>0) {
+					$lig_u=mysqli_fetch_object($req);
 					$email_autres_profs_grp.=$lig_u->email;
-					while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+					while($lig_u=mysqli_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
 				}
 
 				$sujet_mail="Demande de validation de correction d'appréciation";
