@@ -177,21 +177,13 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$app=suppression_sauts_de_lignes_surnumeraires($app);
 
-		/*
-		//=========================
-		// Ménage: pour ne pas laisser une demande de validation de correction alors qu'on a rouvert la période en saisie... on risquerait d'écraser par la suite l'enregistrement fait après la rouverture de période.
-		$sql="DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='".$current_group["id"]."' AND periode='$corriger_app_num_periode');";
-		$del=mysql_query($sql);
-		//=========================
-		*/
-
-		$test_eleve_app_query = mysql_query("SELECT * FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
-		$test = mysql_num_rows($test_eleve_app_query);
+		$test_eleve_app_query = mysqli_query($mysqli, "SELECT * FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+		$test = mysqli_num_rows($test_eleve_app_query);
 		if ($test != "0") {
 			if ($app != "") {
-				$register = mysql_query("UPDATE matieres_app_corrections SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$register = mysqli_query($mysqli, "UPDATE matieres_app_corrections SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
 			} else {
-				$register = mysql_query("DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$register = mysqli_query($mysqli, "DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
 			}
 
 			if (!$register) {
@@ -214,7 +206,7 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 
 		} else {
 			if ($app != "") {
-				$register = mysql_query("INSERT INTO matieres_app_corrections SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "'");
+				$register = mysqli_query($mysqli, "INSERT INTO matieres_app_corrections SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "'");
 
 				if (!$register) {
 					echo "<span style='color:red' title=\"Echec de l'enregistrement de la proposition de correction\"> KO</span>";
