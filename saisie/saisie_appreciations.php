@@ -947,43 +947,6 @@ $chaine_champs_textarea_correction="";
 $chaine_champs_input_correction="";
 $cpt_correction=0;
 //=================================
-
-//=================================
-/*
-// Tableau pour les autorisations exceptionnelles de saisie
-// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une période partiellement close
-$une_autorisation_exceptionnelle_de_saisie_au_moins='n';
-$tab_autorisation_exceptionnelle_de_saisie=array();
-$date_courante=time();
-//echo "\$id_groupe=$id_groupe<br />";
-//echo "\$date_courante=$date_courante<br />";
-$k=1;
-while ($k < $nb_periode) {
-	$tab_autorisation_exceptionnelle_de_saisie[$k]='n';
-	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite, mode FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
-	$res=mysql_query($sql);
-	if(mysql_num_rows($res)>0) {
-		$lig=mysql_fetch_object($res);
-		$date_limite=$lig->date_limite;
-		// 20131204
-		echo "\$date_limite=$date_limite en période $k.<br />";
-		echo "\$date_courante=$date_courante.<br />";
-
-		if($date_courante<$date_limite) {
-			$tab_autorisation_exceptionnelle_de_saisie[$k]='y';
-			if($lig->mode=='acces_complet') {
-				$tab_autorisation_exceptionnelle_de_saisie[$k]='yy';
-			}
-			$une_autorisation_exceptionnelle_de_saisie_au_moins='y';
-		}
-	}
-	echo "\$tab_autorisation_exceptionnelle_de_saisie[$k]=".$tab_autorisation_exceptionnelle_de_saisie[$k]."<br />";
-	$k++;
-}
-*/
-//=================================
-
-//=================================
 $k=1;
 $num_id = 10;
 while ($k < $nb_periode) {

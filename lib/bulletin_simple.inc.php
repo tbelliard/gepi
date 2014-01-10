@@ -164,7 +164,6 @@ if ($on_continue == 'yes') {
 
 	echo "<input type='hidden' name='nom_prenom_eleve[$current_id_eleve]' id='nom_prenom_eleve_$current_id_eleve' value=\"$current_eleve_nom $current_eleve_prenom\" />\n";
 
-	//$data_etab = mysql_query("SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_login' AND e.id = j.id_etablissement) ");
 	$data_etab = mysqli_query($GLOBALS["mysqli"], "SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='$current_eleve_elenoet' AND e.id = j.id_etablissement) ");
 	$current_eleve_etab_id = @old_mysql_result($data_etab, 0, "id");
 	$current_eleve_etab_nom = @old_mysql_result($data_etab, 0, "nom");
@@ -300,95 +299,7 @@ if ($on_continue == 'yes') {
 	// Boucle 'groupes'
 	//------------------------------
 
-/*
-	if ($affiche_categories) {
-		// On utilise les valeurs spécifiées pour la classe en question
-		$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe ".
-		"FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_matieres jgm, j_matieres_categories_classes jmcc, matieres m " .
-		"WHERE ( " .
-		"jeg.login = '" . $current_eleve_login ."' AND " .
-		"jgc.id_groupe = jeg.id_groupe AND " .
-		"jgc.categorie_id = jmcc.categorie_id AND " .
-		"jgc.id_classe = '".$id_classe."' AND " .
-		"jgm.id_groupe = jgc.id_groupe AND " .
-		"m.matiere = jgm.id_matiere" .
-		") " .
-		"ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
-	} else {
-		$appel_liste_groupes = mysql_query("SELECT DISTINCT jgc.id_groupe, jgc.coef " .
-		"FROM j_groupes_classes jgc, j_groupes_matieres jgm, j_eleves_groupes jeg " .
-		"WHERE ( " .
-		"jeg.login = '" . $current_eleve_login . "' AND " .
-		"jgc.id_groupe = jeg.id_groupe AND " .
-		"jgc.id_classe = '".$id_classe."' AND " .
-		"jgm.id_groupe = jgc.id_groupe" .
-		") " .
-		"ORDER BY jgc.priorite,jgm.id_matiere");
-	}
-	
-	// La ligne suivante a été remplacée par les requêtes intégrant le classement par catégories de matières
-	// $appel_liste_groupes = mysql_query("SELECT DISTINCT jeg.id_groupe id_groupe FROM j_eleves_groupes jeg, j_groupes_classes jgc WHERE (jeg.login = '" . $current_eleve_login . "' AND jeg.id_groupe = jgc.id_groupe AND jgc.id_classe = '" . $id_classe . "') ORDER BY jgc.priorite");
-	$nombre_groupes = mysql_num_rows($appel_liste_groupes);
-
-	$get_cat = mysql_query("SELECT id FROM matieres_categories");
-	$categories = array();
-	while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
-		$categories[] = $row["id"];
-	}
-	
-	$cat_names = array();
-	foreach ($categories as $cat_id) {
-		$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
-	}
-	
-	$total_cat_eleve = array();
-	$total_cat_classe = array();
-	
-	//===========================
-	// MODIF: boireaus 20070627
-	//$total_cat_coef = array();
-	$total_cat_coef_eleve = array();
-	$total_cat_coef_classe = array();
-	//===========================
-	
-	//===========================
-	// AJOUT: boireaus 20070627
-	$total_coef_eleve=array();
-	$total_coef_classe=array();
-	//===========================
-	
-	$nb=$periode1;
-	while ($nb < $periode2+1) {
-		$total_points_classe[$nb] = 0;
-		$total_points_eleve[$nb] = 0;
-	
-		//===========================
-		// MODIF: boireaus 20070627
-		//$total_coef[$nb] = 0;
-		$total_coef_eleve[$nb] = 0;
-		$total_coef_classe[$nb] = 0;
-		//===========================
-	
-		$total_cat_eleve[$nb] = array();
-		$total_cat_classe[$nb] = array();
-		$total_cat_coef[$nb] = array();
-		foreach($categories as $cat_id) {
-			$total_cat_eleve[$nb][$cat_id] = 0;
-			$total_cat_classe[$nb][$cat_id] = 0;
-	
-			//===========================
-			// MODIF: boireaus 20070627
-			//$total_cat_coef[$nb][$cat_id] = 0;
-			$total_cat_coef_eleve[$nb][$cat_id] = 0;
-			$total_cat_coef_classe[$nb][$cat_id] = 0;
-			//===========================
-		}
-		$nb++;
-	}
-
-*/
-
-	// Récupération des noms de catgories
+	// Récupération des noms de categories
 	$get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM matieres_categories");
 	$categories = array();
 	while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
@@ -397,7 +308,6 @@ if ($on_continue == 'yes') {
 	
 	$cat_names = array();
 	foreach ($categories as $cat_id) {
-		//$cat_names[$cat_id] = html_entity_decode(old_mysql_result(mysql_query("SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0));
 		$cat_names[$cat_id] = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres_categories WHERE id = '" . $cat_id . "'"), 0);
 	}
 
@@ -464,10 +374,6 @@ if ($on_continue == 'yes') {
 
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
-			/*
-			$current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM matieres_notes WHERE (statut ='' AND id_groupe='" . $current_group["id"] . "' AND periode='$nb')");
-			$current_classe_matiere_moyenne[$nb] = old_mysql_result($current_classe_matiere_moyenne_query, 0, "moyenne");
-			*/
 			$current_classe_matiere_moyenne[$nb]=$tab_moy['periodes'][$nb]['current_classe_matiere_moyenne'][$j];
 
 			// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichée
@@ -507,24 +413,6 @@ if ($on_continue == 'yes') {
 				$current_eleve_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM matieres_appreciations ma, j_eleves_classes jec WHERE (ma.login='$current_eleve_login' AND ma.id_groupe='" . $current_group["id"] . "' AND ma.periode='$nb' and jec.periode='$nb' and jec.login='$current_eleve_login' and jec.id_classe='$id_classe')");
 				$current_eleve_appreciation[$nb] = @old_mysql_result($current_eleve_appreciation_query, 0, "appreciation");
 
-				/*
-				// Coefficient personnalisé pour l'élève?
-				$sql="SELECT value FROM eleves_groupes_settings WHERE (" .
-						"login = '".$current_eleve_login."' AND " .
-						"id_groupe = '".$group_id."' AND " .
-						"name = 'coef')";
-				$test_coef_personnalise = mysql_query($sql);
-				if (mysql_num_rows($test_coef_personnalise) > 0) {
-					$coef_eleve = old_mysql_result($test_coef_personnalise, 0);
-				} else {
-					// Coefficient du groupe:
-					$coef_eleve = $current_coef;
-				}
-				//=========================
-				// MODIF: boireaus 20071217 On arrondira seulement à l'affichage
-				//$coef_eleve=number_format($coef_eleve,1, ',', ' ');
-				//=========================
-				*/
 				$coef_eleve=$tab_moy['periodes'][$nb]['current_coef_eleve'][$tab_login_indice[$nb]][$j];
 
 				//echo "\$coef_eleve=\$tab_moy['periodes'][$nb]['current_coef_eleve'][".$tab_login_indice[$nb]."][$j]=".$coef_eleve."<br />\n";
