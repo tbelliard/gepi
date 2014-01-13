@@ -42,7 +42,7 @@ if ($resultat_session == 'c') {
   VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '')
   ON DUPLICATE KEY UPDATE `responsable` = 'V'";
 
-  $result = mysql_query($sql);
+  $result = mysqli_query($mysqli, $sql);
  */
 
 if (!checkAccess()) {

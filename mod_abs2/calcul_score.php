@@ -520,7 +520,7 @@ if(!isset($num_periode)) {
 			//           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
 			//           sans permettre la modif des retards/abs/nj)
 			$sql="SELECT * FROM absences WHERE (login='".$lig_ele->login."' AND periode='".$periode_note->getNumPeriode()."');";
-			$current_eleve_absences_query = mysql_query($sql);
+			$current_eleve_absences_query = mysqli_query($mysqli, $sql);
 			$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 			echo $current_eleve_appreciation_absences;
 			echo "</td>\n";
@@ -589,7 +589,7 @@ else {
 		//           Revoir la façon dont on remplit l'appréciation, peut-être donner l'accès à la page absences/saisie_absences.php
 		//           sans permettre la modif des retards/abs/nj)
 		$sql="SELECT * FROM absences WHERE (login='".$lig_ele->login."' AND periode='".$periode_note->getNumPeriode()."');";
-		$current_eleve_absences_query = mysql_query($sql);
+		$current_eleve_absences_query = mysqli_query($mysqli, $sql);
 		$current_eleve_appreciation_absences = @old_mysql_result($current_eleve_absences_query, 0, "appreciation");
 		echo $current_eleve_appreciation_absences;
 		echo "</td>\n";
