@@ -652,6 +652,7 @@ foreach ($results as $traitement) {
 	    $eleve_col->add($saisie->getEleve());
 	}
     }
+    $cpt_eleve_col=0;
     foreach ($eleve_col as $eleve) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
@@ -683,7 +684,42 @@ foreach ($results as $traitement) {
 	}
 	echo "</a>";
 	echo "</td></tr></table>";
+	$cpt_eleve_col++;
     }
+
+	// Les saisies ont dû être supprimées.
+    if($cpt_eleve_col==0) {
+		$chaine_saisies_supprimees="";
+		$sql="SELECT a_saisie_id FROM j_traitements_saisies WHERE a_traitement_id='".$traitement->getPrimaryKey()."';";
+		$res_saisies=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_saisies)>0) {
+			echo "<span style='color:red' title=\"Saisie supprimée.\">";
+			$cpt_saisie_cachees=0;
+			while($lig_saisie=mysqli_fetch_object($res_saisies)) {
+				if($cpt_saisie_cachees>0) {
+					echo " - ";
+					$chaine_saisies_supprimees.=" - ";
+				}
+				$chaine_saisies_supprimees.=" <a href='visu_saisie.php?id_saisie=$lig_saisie->a_saisie_id' title='Voir la saisie supprimée n°$lig_saisie->a_saisie_id' style='color:red'>$lig_saisie->a_saisie_id</a>";
+
+				$saisie_suppr = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($lig_saisie->a_saisie_id);
+				if ($saisie_suppr != null) {
+					//echo $saisie_suppr->getEleve()->getLogin();
+					echo ($saisie_suppr->getEleve()->getCivilite().' '.$saisie_suppr->getEleve()->getNom().' '.$saisie_suppr->getEleve()->getPrenom());
+					if ($utilisateur->getAccesFicheEleve($saisie_suppr->getEleve())) {
+						echo "<br /><a href='../eleves/visu_eleve.php?ele_login=".$saisie_suppr->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' style='color:red'>";
+						echo ' (voir fiche)';
+						echo "</a>";
+					}
+				}
+
+
+				$cpt_saisie_cachees++;
+			}
+			echo "</span>";
+		}
+    }
+
     echo '</td>';
 
     //donnees saisies
@@ -707,6 +743,12 @@ foreach ($results as $traitement) {
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "</table>";
     }
+
+	// Les saisies ont dû être supprimées.
+    if($cpt_eleve_col==0) {
+        echo "<span style='color:red' title=\"Saisie supprimée.\">".$chaine_saisies_supprimees."</span>";
+    }
+
     echo '</td>';
 
     //donnees type
