@@ -1244,7 +1244,7 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 					if ($tab_rel['rn_col_moy']=="y") {
 						echo "<td class='releve'>\n";
-						if(!isset($tab_rel['eleve'][$i]['groupe'][$j]['moyenne'])) {
+						if(!isset($tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']])) {
 							echo "&nbsp;";
 						}
 						else {
@@ -1255,11 +1255,11 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
                     Des notes peuvent encore être ajoutées,
                     des coefficients de devoirs peuvent être
                     modifiés,...\">";
-								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'];
+								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
 								echo "</span>";
 							}
 							else {
-								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'];
+								echo $tab_rel['eleve'][$i]['groupe'][$j]['moyenne'][$tab_rel['num_periode']];
 							}
 						}
 						echo "</td>\n";
