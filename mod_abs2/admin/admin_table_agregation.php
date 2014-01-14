@@ -101,7 +101,8 @@ echo "</p>";
                     $del = AbsenceAgregationDecompteQuery::create()->deleteAll();
                     $nb = AbsenceAgregationDecompteQuery::create()->count();
                     if ($nb === 0) {
-                        echo"<p>La Table est vide.</p>";
+                        echo"<p>La Table est maintenant vide.</p>";
+                        echo "<p>Revenir à l'<a href='".$_SERVER['PHP_SELF']."'>Agrégation des absences</a></p>";
                         die();
                     } else {
                         echo"<p>Un problème est survenu.</p>";
