@@ -747,13 +747,12 @@ class class_page_accueil_autre {
               $this->creeNouveauItemPlugin("/".$menuItem->lien_item,
                     supprimer_numero($menuItem->titre_item),$menuItem->description_item);
             }
-
-            
           }
-          
+		  if ($this->b>0){
+			$this->creeNouveauTitre('accueil',$plugin->description,'images/icons/package.png');
+			}
         }
-        $resultat->close();
-
+    $resultat->close();
   }
 
   protected function geneseClasses(){
