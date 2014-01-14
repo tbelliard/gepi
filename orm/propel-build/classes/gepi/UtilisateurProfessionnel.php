@@ -138,6 +138,8 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @return     Boolean
 	 */
 	public function getAccesFicheEleve(Eleve $eleve) {
+	    global $mysqli;
+
 	    if ($eleve === null) return false;
 	    if ($this->getStatut() == "admin") {
 			return true;
@@ -200,9 +202,9 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 		    // On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
 		    $sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
-		    $query_d = mysql_query($sql_d);
+		    $query_d = mysqli_query($mysqli, $sql_d);
 
-		    while($rep_d = mysql_fetch_array($query_d)){
+		    while($rep_d = mysqli_fetch_array($query_d)){
 			    //print_r($rep_d);
 			    if (($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V')
 				|| ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V')
