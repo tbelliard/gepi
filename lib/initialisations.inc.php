@@ -6,6 +6,11 @@
  * @package Initialisation
  * @subpackage initialisation
  */
+
+//ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
+// Pour enlever les E_DEPRECATED de la liste des erreurs affichées:
+error_reporting(error_reporting() & (-1 ^ E_DEPRECATED));  
+
 /* Utilise l'encodage interne UTF-8 */
 header('Content-type: text/html; charset=UTF-8');
 ini_set('mbstring.language','UTF-8');
@@ -14,7 +19,8 @@ if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding("UTF-8");
 }
 
-if (date_default_timezone_get() == 'UTC') {
+//if (date_default_timezone_get() == 'UTC') {
+if ((ini_get('date.timezone') == 'UTC') || (ini_get('date.timezone') == '')) {
     date_default_timezone_set('Europe/Paris');
 } else {
     //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),
