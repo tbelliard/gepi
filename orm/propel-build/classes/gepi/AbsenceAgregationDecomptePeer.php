@@ -27,6 +27,8 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	 *
 	 */
 	public static function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null, $reparation_nbr = 50) {
+		$mysqli;
+
 		$debug = false;
 		if ($debug) {
 			print_r('AbsenceAgregationDecomptePeer::checkSynchroAbsenceAgregationTable() called<br/>');
@@ -61,14 +63,14 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 				WHERE date_demi_jounee = \'0001-01-01 00:00:00\') as a_agregation_decompte_selection
 			ON (eleves.ID_ELEVE=a_agregation_decompte_selection.ELEVE_ID)
 			WHERE a_agregation_decompte_selection.ELEVE_ID IS NULL';
-		$result = mysql_query($query);
-		$num_rows = mysql_num_rows($result);
+		$result = mysqli_query($mysqli, $query);
+		$num_rows = mysqli_num_rows($result);
 		if ($num_rows>0 && $num_rows < $reparation_nbr) {
 			if ($debug) {
 				print_r('Il manque des marqueurs de fin de calcul<br/>');
 			}
 			//on va corriger la table pour ces élèves là
-			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+			while ($row = mysqli_fetch_array($result, MYSQL_NUM)) {
 				$eleve = EleveQuery::create()->findOneById($row[0]);
 				if ($debug) {
 					print_r('recalcul pour l eleve '.$eleve->getId().'<br/>');
@@ -110,10 +112,10 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
     				WHERE '.$date_agregation_selection.') as a_agregation_decompte_selection
     			ON (eleves.ID_ELEVE=a_agregation_decompte_selection.ELEVE_ID)
     			group by eleves.ID_ELEVE';
-    		$result = mysql_query($query);
+    		$result = mysqli_query($mysqli, $query);
     		$wrong_eleve = array();
     		$nbre_demi_journees=(int)(($dateFinClone->format('U')+3700-$dateDebutClone->format('U'))/(3600*12));
-    		while($row = mysql_fetch_array($result)){
+    		while($row = mysqli_fetch_array($result)){
     			if ($row[1]!=$nbre_demi_journees) {
     				if ($debug) {
     					print_r('Il manque des entrees pour l eleve '.$row[0].'<br/>');
@@ -162,16 +164,16 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 			) AS union_date_select
 		) ON 1=1;';
 			
-		$result_query = mysql_query($query);
+		$result_query = mysqli_query($mysqli, $query);
 		if ($result_query === false) {
 			if ($debug) {
 				echo $query;
 			}
-			echo 'Erreur sur la requete : '.mysql_error().'<br/>';
+			echo 'Erreur sur la requete : '.mysqli_error($mysqli).'<br/>';
 			return false;
 		}
-		$row = mysql_fetch_array($result_query);
-		mysql_free_result($result_query);
+		$row = mysqli_fetch_array($result_query);
+		mysqli_free_result($result_query);
 		if ($debug) {
 		    print_r($row);
 		}

@@ -20,7 +20,8 @@ if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding("UTF-8");
 }
 
-if (date_default_timezone_get() == 'UTC') {
+//if (date_default_timezone_get() == 'UTC') {
+if ((ini_get('date.timezone') == 'UTC') || (ini_get('date.timezone') == '')) {
     date_default_timezone_set('Europe/Paris');
 } else {
     //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),

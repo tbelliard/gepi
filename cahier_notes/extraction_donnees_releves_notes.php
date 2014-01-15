@@ -12,8 +12,8 @@
 */
 
 	$debug_extract="n";
-	$debug_ele_login="caillaup";
-	$debug_id_groupe=2675;
+	$debug_ele_login="toto";
+	$debug_id_groupe=2673;
 
 	//========================================
 
@@ -586,18 +586,21 @@
 								if($choix_periode!="intervalle") {
 									if($tab_releve[$id_classe][$periode_num]['rn_col_moy']=="y") {
 										$sql="SELECT * FROM cn_notes_conteneurs WHERE login='".$current_eleve_login[$i]."' AND id_conteneur='".$lig_grp_id_cn->id_cahier_notes."';";
+										if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
+											echo "$sql<br />\n";
+										}
 										$res_moy=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(mysqli_num_rows($res_moy)>0) {
 											$lig_moy=mysqli_fetch_object($res_moy);
 											if($lig_moy->statut=='y') {
-												$tab_ele['groupe'][$j]['moyenne']=$lig_moy->note;
+												$tab_ele['groupe'][$j]['moyenne'][$lig_grp_id_cn->periode]=$lig_moy->note;
 											}
 											else {
-												$tab_ele['groupe'][$j]['moyenne']="-";
+												$tab_ele['groupe'][$j]['moyenne'][$lig_grp_id_cn->periode]="-";
 											}
 										}
 										else {
-											$tab_ele['groupe'][$j]['moyenne']="-";
+											$tab_ele['groupe'][$j]['moyenne'][$lig_grp_id_cn->periode]="-";
 										}
 									}
 								}

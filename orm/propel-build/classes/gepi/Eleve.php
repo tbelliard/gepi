@@ -1024,7 +1024,7 @@ class Eleve extends BaseEleve {
 		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			// On récupère le login de l'élève
 			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-			$query = mysql_query($sql);
+			$query = mysqli_query($mysqli, $sql);
 			$_elenoet_ou_login = old_mysql_result($query, 0,'login');
 		  }
 

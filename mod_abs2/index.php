@@ -61,7 +61,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
-//on va redirigé vers le bon onglet
+//on va rediriger vers le bon onglet
 if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') {
 
 	if((isset($_SESSION['abs2_onglet']))&&(!acces("/mod_abs2/".$_SESSION['abs2_onglet'], $_SESSION['statut']))) {
