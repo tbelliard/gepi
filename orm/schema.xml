@@ -721,7 +721,7 @@
 		<foreign-key foreignTable="edt_creneaux" onDelete="cascade"><reference local="id_definie_periode" foreign="id_definie_periode"/></foreign-key>
 		<column name="duree" required="true" default="2" type="VARCHAR" size="10" description="duree du cours definie en demi-creneaux.1h de cours correspond a une duree=2. Les creneaux de pause ne sont pas comptabilisé"/>
 		<column name="heuredeb_dec" required="true" default="0" type="VARCHAR" size="3" description="0 si le cours commence au debut du creneau - 0.5 s'il commence au milieu"/>
-		<column name="id_semaine" phpName="TypeSemaine" required="false" default ="" type="VARCHAR" size="3" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B."/>
+		<column name="id_semaine" phpName="TypeSemaine" required="false" default ="" type="VARCHAR" size="10" description="type de semaine - typiquement, 'A' ou 'B' si on a une alternance semaine A, semaine B."/>
 		<column name="id_calendrier" required="false" type="VARCHAR" size="3" description="NULL = le cours a lieu toute l'annee - sinon, id de la periode (EdtCalendrierPeriode) durant laquelle a lieu le cours"/>
 		<foreign-key foreignTable="edt_calendrier" onDelete="setnull"><reference local="id_calendrier" foreign="id_calendrier"/></foreign-key>
 		<column name="modif_edt" required="false" type="VARCHAR" size="3" description="champ inutilise"/>
