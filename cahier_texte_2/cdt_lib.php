@@ -188,7 +188,7 @@ require_once("'.$pref_arbo.'/entete.php");
 					foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
 						// A VOIR: PB avec les bordures.
 						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
-							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/chercher.png' width='16' height='16' /></a></div>\n";
+							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_t_".$value['id_ct']."'>\n";
 								$html.=$value['contenu'];
 								$adj=my_affiche_docs_joints($value['id_ct'],"t");
@@ -218,7 +218,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				if(isset($tab_notices[$tab_dates[$k]])) {
 					foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
 						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
-							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_c_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/chercher.png' width='16' height='16' /></a></div>\n";
+							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_c_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_c_".$value['id_ct']."'>\n";
 								$html.=$value['contenu'];
 								$adj=my_affiche_docs_joints($value['id_ct'],"c");
