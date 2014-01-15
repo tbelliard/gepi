@@ -52,7 +52,7 @@ function traite_requete($requete = "") {
 
 require_once dirname(__FILE__) . '/../fixtures/config/connect.test.inc.php';
 $link = ($GLOBALS["mysqli"] = mysqli_connect($GLOBALS['dbHost'],  $GLOBALS['dbUser'],  $GLOBALS['dbPass']));
-((bool)mysqli_query($GLOBALS["mysqli"], "USE $GLOBALS['dbDb']"));
+((bool)mysqli_query($GLOBALS["mysqli"], "USE ".$GLOBALS['dbDb']));
 $result = '';
 require_once dirname(__FILE__) . '/../../utilitaires/update_functions.php';
 require_once dirname(__FILE__) . '/../../lib/mysql.inc';
