@@ -560,13 +560,25 @@ function reactiver(mavar) {
 			//=================================================================
 			// AID
 			
-			$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
-			   FROM aid_config ac, j_aid_utilisateurs u
-			   WHERE ac.outils_complementaires = 'y'
-			   AND u.indice_aid = ac.indice_aid
-               AND u.id_utilisateur='".$_SESSION['login']."'
-               ORDER BY ac.nom_complet"; 
+			
+			if (($_SESSION['statut']=='eleve')) {
+			   $sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+			      FROM aid_config ac, j_aid_eleves u
+			      WHERE ac.outils_complementaires = 'y'
+			      AND u.indice_aid = ac.indice_aid
+                  AND u.login='".$_SESSION['login']."'
+                  ORDER BY ac.nom_complet"; 
+			   
+			} else {
+			   $sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+			      FROM aid_config ac, j_aid_utilisateurs u
+			      WHERE ac.outils_complementaires = 'y'
+			      AND u.indice_aid = ac.indice_aid
+                  AND u.id_utilisateur='".$_SESSION['login']."'
+                  ORDER BY ac.nom_complet"; 
+			}
 			// echo $sql;
+			
         	$call_data = mysqli_query($mysqli, $sql);  
         	$nb_aid = $call_data->num_rows;
 			
