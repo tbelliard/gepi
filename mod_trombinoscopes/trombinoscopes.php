@@ -592,10 +592,20 @@ function reactiver(mavar) {
 	
 <?php
 while ($aid_prof = mysqli_fetch_object($call_data)) {
-   $sql2 = "SELECT  a.nom, a.id, a.indice_aid
-			   FROM aid a
-			   WHERE a.indice_aid = '".$aid_prof->indice_aid."'"; 
-   // echo $sql2 ;
+   if ($_SESSION['statut']=='eleve') {
+	  $sql2 = "SELECT DISTINCT a.nom, a.id, a.indice_aid
+			   FROM aid a , j_aid_eleves u
+			   WHERE a.indice_aid = '".$aid_prof->indice_aid."'
+			   AND a.id = u.id_aid 
+               AND u.login = '".$_SESSION['login']."'
+			    ";
+	} else {
+      $sql2 = "SELECT  a.nom, a.id, a.indice_aid
+			   FROM aid a , j_aid_utilisateurs u
+			   WHERE a.indice_aid = '".$aid_prof->indice_aid."'
+			   AND a.id = u.id_aid 
+               AND u.id_utilisateur = '".$_SESSION['login']."'"; 
+	}
    $call_aid =  mysqli_query($mysqli, $sql2);
 ?>
 		<optgroup label='-- <?php echo $aid_prof->nom_complet ?> --'>
