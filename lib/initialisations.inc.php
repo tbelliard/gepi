@@ -27,7 +27,7 @@ if ((ini_get('date.timezone') == 'UTC') || (ini_get('date.timezone') == '')) {
     //dans le cas où on détecte mal une zone UTC (donc non configurée à priori),
     //on fait comme si il y avait bien une conf de précisée pour éviter l'erreur
     //PHP Fatal error:  Uncaught exception 'Exception' with message 'DateTime::__construct(): It is not safe to rely on the system's timezone settings.
-    date_default_timezone_set(date_default_timezone_get());
+    date_default_timezone_set(ini_get('date.timezone'));
 }
 
 //header('Content-Type: text/html; charset=UTF-8');
