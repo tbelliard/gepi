@@ -43,6 +43,8 @@ if (!checkAccess()) {
 	die();
 }
 
+// debug_var();
+
 function classe_de($id_classe_eleve)
 		{
 		include("../secure/connect.inc.php");
@@ -184,14 +186,6 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									GROUP BY nom, prenom"; }
 	// élève d'un groupe
 		if ( $action_affiche === 'groupe' ) { 
-			/*
-			$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
-									FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
-									WHERE jeg.login = e.login
-									AND jeg.id_groupe = g.id
-									AND g.id = '".$groupe."'
-									GROUP BY nom, prenom"; 
-			*/
 			if((isset($_GET['order_by']))&&($_GET['order_by']=='classe')) {
 				$grp_order_by="c.classe, e.nom, e.prenom";
 				$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
@@ -222,7 +216,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		
 	// élève d'un AID
 		if ( $action_affiche === 'aid' ) {
-			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+			if (((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) || ((isset($_GET['order_by']))&&($_GET['order_by']=='classe'))) {
 				$grp_order_by="c.classe, e.nom, e.prenom";
 				$requete_trombi = "SELECT e.login , e.nom, e.prenom , e.elenoet , a.id , a.nom nom_complet
 										FROM eleves e, aid a, j_aid_eleves j , j_eleves_classes jec , classes c

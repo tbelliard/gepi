@@ -563,7 +563,7 @@ function reactiver(mavar) {
 			$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
 			   FROM aid_config ac, j_aid_utilisateurs u
 			   WHERE ac.outils_complementaires = 'y'
-			   AND u.id_aid = ac.indice_aid
+			   AND u.indice_aid = ac.indice_aid
                AND u.id_utilisateur='".$_SESSION['login']."'
                ORDER BY ac.nom_complet"; 
 			// echo $sql;

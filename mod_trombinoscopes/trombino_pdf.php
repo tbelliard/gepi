@@ -183,7 +183,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		
 	// élève d'un AID
 		if ( $action_affiche === 'aid' ) {
-			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+			if (((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) || ((isset($_GET['order_by']))&&($_GET['order_by']=='classe'))) {
+			 
 				$grp_order_by="c.classe, e.nom, e.prenom";
 				$requete_trombi = "SELECT e.login , e.nom, e.prenom , e.elenoet , a.id , a.nom nom_complet
 										FROM eleves e, aid a, j_aid_eleves j , j_eleves_classes jec , classes c
