@@ -112,6 +112,9 @@ if (empty($_GET['classe']) and empty($_POST['classe'])) { $classe = ''; }
 else { if (isset($_GET['classe'])) { $classe = $_GET['classe']; } if (isset($_POST['classe'])) { $classe = $_POST['classe']; } }
 if (empty($_GET['groupe']) and empty($_POST['groupe'])) { $groupe = ''; }
 else { if (isset($_GET['groupe'])) { $groupe = $_GET['groupe']; } if (isset($_POST['groupe'])) { $groupe = $_POST['groupe']; } }
+
+$aid = isset($_POST['aid']) ? $_POST['aid'] : ( isset($_GET['aid']) ? $_GET['aid'] : '' );
+
 if (empty($_GET['equipepeda']) and empty($_POST['equipepeda'])) { $equipepeda = ''; }
 else { if (isset($_GET['equipepeda'])) { $equipepeda = $_GET['equipepeda']; } if (isset($_POST['equipepeda'])) { $equipepeda = $_POST['equipepeda']; } }
 if (empty($_GET['discipline']) and empty($_POST['discipline'])) { $discipline = ''; }
@@ -123,12 +126,14 @@ else { if (isset($_GET['affdiscipline'])) { $affdiscipline = $_GET['affdisciplin
 
 
 
-if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
+if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and $equipepeda != 'toutes' and ( $classe != '' or $aid != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 	// on regarde ce qui à était choisie
 	// c'est une classe
 	if ( $classe != '' and $groupe === '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'classe'; }
 	// c'est un groupe
 	if ( $classe === '' and $groupe != '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'groupe'; }
+	// c'est un aid
+	if ( $classe === '' and $groupe === '' and $aid != '' and $equipepeda === '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'aid'; }
 	// c'est une équipe pédagogique
 	if ( $classe === '' and $groupe === '' and $equipepeda != '' and $discipline === '' and $statusgepi === '' ) { $action_affiche = 'equipepeda'; }
 	// c'est une discipline
@@ -138,6 +143,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 
 	if ( $action_affiche === 'classe' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$classe.'"'; }
 	if ( $action_affiche === 'groupe' ) { $requete_qui = 'SELECT g.id, g.name FROM '.$prefix_base.'groupes g WHERE g.id = "'.$groupe.'"'; }
+	if ( $action_affiche === 'aid' ) { $requete_qui = "SELECT id , nom FROM aid WHERE id = '".$aid."'"; }
 	if ( $action_affiche === 'equipepeda' ) { $requete_qui = 'SELECT c.id, c.nom_complet, c.classe FROM '.$prefix_base.'classes c WHERE c.id = "'.$equipepeda.'"'; }
 	if ( $action_affiche === 'discipline' ) { $requete_qui = 'SELECT m.matiere, m.nom_complet FROM '.$prefix_base.'matieres m WHERE m.matiere = "'.$discipline.'"'; }
 
@@ -154,6 +160,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		$entete = "Groupe : ".htmlspecialchars($donnees_qui['name'])." (<i>".$current_group['classlist_string']."</i>)";
 
 	}
+	if ( $action_affiche === 'aid' ) {$entete = "AID : ".$donnees_qui['nom'];}
 	if ( $action_affiche === 'equipepeda' ) { $entete = "Equipe pédagogique : ".$donnees_qui['nom_complet']." (<i>".$donnees_qui['classe']."</i>)"; }
 	if ( $action_affiche === 'discipline' ) { $entete = "Discipline : ".$donnees_qui['nom_complet']." (".$donnees_qui['matiere'].")"; }
 	if ( $action_affiche === 'statusgepi' ) { $entete = "Statut : ".my_ereg_replace("scolarite","scolarité",$statusgepi); }
@@ -161,6 +168,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	// choix du répertoire ou chercher les photos entre professeur ou élève
 	if ( $action_affiche === 'classe' ) { $repertoire = 'eleves'; }
 	if ( $action_affiche === 'groupe' ) { $repertoire = 'eleves'; }
+	if ( $action_affiche === 'aid' ) { $repertoire = 'eleves'; }
 	if ( $action_affiche === 'equipepeda' ) { $repertoire = 'personnels'; }
 	if ( $action_affiche === 'discipline' ) { $repertoire = 'personnels'; }
 	if ( $action_affiche === 'statusgepi' ) { $repertoire = 'personnels'; }
@@ -210,6 +218,35 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 			}
 
 
+		}
+		
+	// élève d'un AID
+		if ( $action_affiche === 'aid' ) {
+			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+				$grp_order_by="c.classe, e.nom, e.prenom";
+				$requete_trombi = "SELECT e.login , e.nom, e.prenom , e.elenoet , a.id , a.nom nom_complet
+										FROM eleves e, aid a, j_aid_eleves j , j_eleves_classes jec , classes c
+										WHERE j.login = e.login
+										AND  e.login = jec.login
+										AND jec.id_classe = c.id
+										AND j.id_aid = a.id
+										AND a.id = '".$aid."'
+										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
+										GROUP BY e.login , e.nom , e.prenom
+										ORDER BY $grp_order_by;";	
+
+			}
+			else {
+				$grp_order_by="e.nom, e.prenom";
+				$requete_trombi = "SELECT e.login, e.nom, e.prenom, e.elenoet, a.id, a.nom nom_complet
+										FROM eleves e , aid a , j_aid_eleves j , classes c
+										WHERE j.login = e.login
+										AND j.id_aid = a.id
+										AND a.id = '".$aid."'
+										AND (e.date_sortie is NULL OR e.date_sortie NOT LIKE '20%')
+										GROUP BY e.nom, e.prenom
+										ORDER BY $grp_order_by;";			
+			}
 		}
 
 	// professeurs d'une équipe pédagogique
@@ -273,6 +310,7 @@ function matiereprof($prof, $equipepeda) {
 
 			if ( $action_affiche === 'classe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
 			if ( $action_affiche === 'groupe' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
+			if ( $action_affiche === 'aid' ) { $id_photo_trombinoscope[$cpt_photo] = strtolower($donnee_trombi['elenoet']); }
 			if ( $action_affiche === 'equipepeda' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 			if ( $action_affiche === 'discipline' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
 			if ( $action_affiche === 'statusgepi' ) { $id_photo_trombinoscope[$cpt_photo] = $donnee_trombi['login']; }
