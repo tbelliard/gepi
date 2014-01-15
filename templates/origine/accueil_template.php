@@ -414,9 +414,8 @@
 		</div>
 		<div>
 			<div style="padding-left: 1px;">
-				<!--div style="text-align:center;"-->
-				<div align="center">
-					<table class='boireaus sortable resizable'>
+				<div style="text-align:center;">
+					<table class='boireaus sortable resizable' style='margin: .5em auto;'>
 						<tr>
 							<th class='text'>Personne</th>
 							<th class='text'>Statut</th>
