@@ -9,7 +9,8 @@ function RecupereNotices(&$tab_data, $entetes) {
 
 	$jour = 0;
 	while (isset($entetes['entete'][$jour])) {
-		$timestamp = RecupereTimestampJour($jour);
+		//$timestamp = RecupereTimestampJour($jour);
+		$timestamp = RecupereTimestampJour_CDT2($jour);
 		//$timestamp-=3600;	
 		//echo "jour = ".$jour."<br/>";
 		//echo strftime("%S %M %H %d %b %Y", 1288825200 	)."<br/>";		
@@ -57,7 +58,7 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
         }
 		if ($id_ct == 0) {
 			echo ("<span class=\"image\">");
-			$MaDate = RecupereTimestampJour($jour);
+			$MaDate = RecupereTimestampJour_CDT2($jour);
 			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 					id_groupe = '".$id_groupe."';
 					getWinDernieresNotices().hide();
@@ -78,7 +79,7 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
 		}
 		else {
 			echo ("<span class=\"image\">");
-			$MaDate = RecupereTimestampJour($jour);
+			$MaDate = RecupereTimestampJour_CDT2($jour);
 			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
 					id_groupe = '".$id_groupe."';
 					getWinDernieresNotices().hide();
