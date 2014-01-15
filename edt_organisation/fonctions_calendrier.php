@@ -86,7 +86,7 @@ function AfficheDatesDebutFinSemaine() {
  * et du N° du jour dans la semaine
  * @param type $jour
  * @return type
- * @todo à quoi sert le premier test ? il ne manquerait pas un + 1 ?
+ * @TODO à quoi sert le premier test ? il ne manquerait pas un + 1 ?
  */
 function RecupereTimestampJour ($jour) {
     if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
@@ -107,6 +107,48 @@ function RecupereTimestampJour ($jour) {
     }
 	$timestamp = $ts+86400*($jour+0);
     return $timestamp;
+}
+
+/**
+ * Calcule le timestamp d'un jour
+ * 
+ * Calcule à partir du N° de la semaine stocké dans $_SESSION['week_selected'] 
+ * et du N° du jour dans la semaine
+ * @param type $jour
+ * @return type
+ */
+function RecupereTimestampJour_CDT2 ($jour) {
+	//echo "U=".strftime("%U")."<br />";
+	if(strftime("%U")<=28) {
+		if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
+			$annee = date("Y");
+		}
+		else {
+			$annee = date("Y")-1;
+		}
+	}
+	else {
+		if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
+			$annee = date("Y")+1;
+		}
+		else {
+			$annee = date("Y");
+		}
+	}
+	//echo "A=".$annee."<br />";
+
+	$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+	while (date("D", $ts) != "Mon") {
+		$ts-=86400;
+	}
+	$semaine = 1;
+
+	while ($semaine != $_SESSION['week_selected']) {
+		$ts+=86400*7;
+		$semaine++;
+	}
+	$timestamp = $ts+86400*($jour+0);
+	return $timestamp;
 }
 
 /**
