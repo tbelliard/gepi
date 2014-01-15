@@ -28,9 +28,9 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.4(dev) :</h3>"
 // Section d'exemple
 
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
-	$query = mysql_query("ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
+	$query = mysqli_query("ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
