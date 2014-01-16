@@ -199,7 +199,7 @@ include('menu_bilans.inc.php');
     }?>
 <?php
 
-echo "<p style='color:red; font-weight:bold'>Cette page, réclamée peu de temps avant la sortie de la 1.6.3, est inachevée.</p>\n";
+//echo "<p style='color:red; font-weight:bold'>Cette page, réclamée peu de temps avant la sortie de la 1.6.3, est inachevée.</p>\n";
 
 // Choix du mois
 if(!isset($mois)) {
@@ -260,8 +260,18 @@ echo "</p>
 <p class='bold'>Tableau \$tab_stat extrait pour le mois de ".$tab_stat['mois']."&nbsp;:</p>
 <pre>";
 print_r($tab_stat);
-echo "</pre>
-</div>";
+echo "</pre>";
+
+echo "<table class='boireaus_alt'>
+	<tr>
+		<th>MEF</th>
+		<th></th>
+		<th></th>
+		<th></th>
+	</tr>
+</table>";
+
+echo "</div>";
 
 require_once("../lib/footer.inc.php");
 ?>

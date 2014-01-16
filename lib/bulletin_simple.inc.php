@@ -252,6 +252,7 @@ if ($on_continue == 'yes') {
 	}
 	echo "' cellspacing='1' cellpadding='1' summary='Matières/Notes/Appréciations'>\n";
 	//=========================
+	echo "<thead>\n";
 	echo "<tr><td width=\"$larg_col1\" class='bull_simpl text'>$compteur";
 	if ($total != '') {echo "/$total";}
 	echo "</td>\n";
@@ -276,7 +277,9 @@ if ($on_continue == 'yes') {
 		echo "<td class='bull_simpl noprint'>Signaler</td>\n";
 	}
 	echo "</tr>\n";
+	echo "</thead>\n";
 
+	echo "<tbody>\n";
 	//echo "</table>";
 	// On attaque maintenant l'affichage des appréciations des Activités Interdisciplinaires devant apparaître en tête des bulletins :
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE order_display1 = 'b' ORDER BY order_display2");
@@ -838,7 +841,10 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 	//====================================================================
 	//====================================================================
 
+	echo "</tbody>\n";
+
 	// Affichage des moyennes générales
+	echo "<tfoot>\n";
 	if($display_moy_gen=="y") {
 		if ($test_coef != 0) {
 			echo "<tr>\n<td";
@@ -995,6 +1001,7 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 			}
 		}
 	}
+	echo "</tfoot>\n";
 	echo "</table>\n";
 	
 	// Les absences

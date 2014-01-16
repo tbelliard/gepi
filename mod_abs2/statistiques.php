@@ -321,7 +321,7 @@ if ($affichage != 'ods') {
         }
         if ($affichage == 'html') {
             echo 'Total élèves : ' . $eleve_col->count();
-            echo '<table class="sortable resizable"  border="1" cellspacing="0">';
+            echo '<table class="boireaus boireaus_alt sortable resizable"  border="1" cellspacing="0">';
             echo '<thead>';
             echo '<tr style="text-align:center;">';
 
@@ -416,33 +416,33 @@ if ($affichage != 'ods') {
             echo '<tfoot>';
             echo '<tr>';
 
-            echo '<td>';
+            echo '<th>';
             echo 'Nombre d\'élèves : ';
             echo $eleve_col->count();
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th>';
             echo 'Taux moyen  ';
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th>';
             echo str_replace(",",".",getTauxAbsenteisme($nb_demijournees, $demi_journees_decompte));
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th>';
             echo str_replace(",",".",getTauxAbsenteisme($nb_nonjustifiees, $demi_journees_decompte));
-            echo '</td>';
+            echo '</th>';
 
-            echo '<td>';
+            echo '<th>';
             echo str_replace(",",".",getTauxAbsenteisme($nb_justifiees, $demi_journees_decompte));
-            echo '</td>';
+            echo '</th>';
 
             if ($affichage_motifs) {
                 foreach ($motifs_col as $motif) {
-                    echo '<td>';
+                    echo '<th>';
                     $test = 'nb_demijourneesMotif' . $motif->getId();
                     echo str_replace(",",".",getTauxAbsenteisme($$test, $demi_journees_decompte));
-                    echo '</td>';
+                    echo '</th>';
                 }
             }            
             echo '</tr>';
