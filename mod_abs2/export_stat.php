@@ -129,7 +129,7 @@ if($extraire=="y") {
 		//======================================
 		// A partir de 4 demi-journées
 		// Non justifiée:
-		$sql="SELECT e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND
 		 a.non_justifiee!='0' AND 
@@ -138,6 +138,19 @@ if($extraire=="y") {
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_4']=mysqli_num_rows($res);
+		if(mysqli_num_rows($res)>0) {
+			$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_4']="";
+			$cpt_ele=0;
+			while($lig_ele=mysqli_fetch_object($res)) {
+				if($cpt_ele>0) {
+					$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_4'].=", ";
+				}
+				$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_4'].=$lig_ele->nom." ".$lig_ele->prenom;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_4'][$cpt_ele]['login']=$lig_ele->login;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_4'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+				$cpt_ele++;
+			}
+		}
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
@@ -145,7 +158,7 @@ if($extraire=="y") {
 
 		//======================================
 		// De 4 à 10 demi-journées
-		$sql="SELECT e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND
 		 a.non_justifiee!='0' AND 
@@ -154,6 +167,19 @@ if($extraire=="y") {
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4 and COUNT(a.non_justifiee)<=10;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_4_a_10']=mysqli_num_rows($res);
+		if(mysqli_num_rows($res)>0) {
+			$tab_stat['mef'][$cpt_mef]['liste_nj_4_a_10']="";
+			$cpt_ele=0;
+			while($lig_ele=mysqli_fetch_object($res)) {
+				if($cpt_ele>0) {
+					$tab_stat['mef'][$cpt_mef]['liste_nj_4_a_10'].=", ";
+				}
+				$tab_stat['mef'][$cpt_mef]['liste_nj_4_a_10'].=$lig_ele->nom." ".$lig_ele->prenom;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_4_a_10'][$cpt_ele]['login']=$lig_ele->login;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_4_a_10'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+				$cpt_ele++;
+			}
+		}
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
@@ -161,7 +187,7 @@ if($extraire=="y") {
 
 		//======================================
 		// A partir de 11 demi-journées
-		$sql="SELECT e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e  
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND
 		 a.non_justifiee!='0' AND 
@@ -170,6 +196,19 @@ if($extraire=="y") {
 		 GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=11;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_11']=mysqli_num_rows($res);
+		if(mysqli_num_rows($res)>0) {
+			$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_11']="";
+			$cpt_ele=0;
+			while($lig_ele=mysqli_fetch_object($res)) {
+				if($cpt_ele>0) {
+					$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_11'].=", ";
+				}
+				$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_11'].=$lig_ele->nom." ".$lig_ele->prenom;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_11'][$cpt_ele]['login']=$lig_ele->login;
+				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_11'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+				$cpt_ele++;
+			}
+		}
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
@@ -295,16 +334,32 @@ for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
 		<tr>
 			<td>".$tab_stat['mef'][$loop]['libelle_court']."</td>
 			<td>".$tab_stat['mef'][$loop]['libelle_long']."</td>
-			<td>".$tab_stat['mef'][$loop]['libelle_edition']."</td>
-			<td>
-				".$tab_stat['mef'][$loop]['nj_sup_egal_4']."
-			</td>
-			<td>
-				".$tab_stat['mef'][$loop]['nj_4_a_10']."
-			</td>
-			<td>
-				".$tab_stat['mef'][$loop]['nj_sup_egal_11']."
-			</td>
+			<td>".$tab_stat['mef'][$loop]['libelle_edition']."</td>";
+	if($tab_stat['mef'][$loop]['nj_sup_egal_4']>0) {
+		echo "
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_4']."\">".$tab_stat['mef'][$loop]['nj_sup_egal_4']."</td>";
+	}
+	else {
+		echo "
+			<td>0</td>";
+	}
+	if($tab_stat['mef'][$loop]['nj_4_a_10']>0) {
+		echo "
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_4_a_10']."\">".$tab_stat['mef'][$loop]['nj_4_a_10']."</td>";
+	}
+	else {
+		echo "
+			<td>0</td>";
+	}
+	if($tab_stat['mef'][$loop]['nj_sup_egal_11']>0) {
+		echo "
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_11']."\">".$tab_stat['mef'][$loop]['nj_sup_egal_11']."</td>";
+	}
+	else {
+		echo "
+			<td>0</td>";
+	}
+	echo "
 		</tr>";
 }
 echo "
