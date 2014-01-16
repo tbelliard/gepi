@@ -27,7 +27,7 @@ class AbsenceAgregationDecomptePeer extends BaseAbsenceAgregationDecomptePeer {
 	 *
 	 */
 	public static function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null, $reparation_nbr = 50) {
-		$mysqli;
+		global $mysqli;
 
 		$debug = false;
 		if ($debug) {
