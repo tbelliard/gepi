@@ -5,6 +5,16 @@
 
 Gepi-master (Version de développement)
 ===========================
+
+Note importante:
+  Les fonctions mysql_* de PHP sont marquées obsolètes dans les versions récentes de PHP.
+  Il est recommandé de passer à l'utilisation de fonctions mysqli_* de l'extension mysqli.
+  Gepi-1.6.4 suit donc les préconisations des développeurs PHP quant à l'abandon de ces fonctions.
+  La modification devrait être transparente pour les utilisateurs, mais elle implique de mettre à 
+  jour les éventuels plugins mis en place sur votre Gepi.
+  Les plugins officiels mis à jour sont disponibles ici: 
+  http://www.sylogix.org/projects/gepi/files
+
 Bulletins:
 - Bulletins HTML: Possibilité de définir la taille des textes des cellules Avis du conseil de classe et Signature.
 - Possibilité de gérer plusieurs fichiers de signature des bulletins.
