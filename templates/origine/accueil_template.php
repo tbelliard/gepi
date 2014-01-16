@@ -416,7 +416,7 @@
 			<div style="padding-left: 1px;">
 				<!--div style="text-align:center;"-->
 				<div align="center">
-					<table class='boireaus sortable resizable'>
+					<table class='boireaus boireaus_alt sortable resizable'>
 						<tr>
 							<th class='text'>Personne</th>
 							<th class='text'>Statut</th>
@@ -434,7 +434,8 @@
 
 		foreach ($afficheAccueil->nom_connecte as $newentree) {
 ?>
-						<tr class='<?php echo $newentree['style']; ?>'>
+						<!--tr class='<?php echo $newentree['style']; ?>'-->
+						<tr>
 							<td>
 								<?php
 									if((getSettingAOui('active_mod_alerte'))&&(in_array($newentree['statut'], array("administrateur", "scolarite", "cpe", "professeur", "secours", "autre")))) {
