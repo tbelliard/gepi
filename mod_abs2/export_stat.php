@@ -185,6 +185,10 @@ $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+
+$javascript_specifique[] = "lib/tablekit";
+//$dojo=true;
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Exports statistiques";
 require_once("../lib/header.inc.php");
@@ -257,18 +261,54 @@ else {
 }
 echo "</p>
 
-<p class='bold'>Tableau \$tab_stat extrait pour le mois de ".$tab_stat['mois']."&nbsp;:</p>
+<p class='bold'>Tableau \$tab_stat extrait pour le mois de ".$tab_stat['mois']."&nbsp;:</p>";
+/*
+echo "
 <pre>";
 print_r($tab_stat);
 echo "</pre>";
-
-echo "<table class='boireaus_alt'>
-	<tr>
-		<th>MEF</th>
-		<th></th>
-		<th></th>
-		<th></th>
-	</tr>
+*/
+echo "<table class='boireaus boireaus_alt sortable resizable'>
+	<thead>
+		<tr>
+			<th colspan='3'>MEF</th>
+			<th colspan='3'>Absences non justifiées</th>
+		</tr>
+		<tr>
+			<th class='text'>Libellé court</th>
+			<th class='text'>Libellé long</th>
+			<th class='text'>Libellé édition</th>
+			<th class='number'>
+				nj_sup_egal_4
+			</th>
+			<th class='number'>
+				nj_4_a_10
+			</th>
+			<th class='number'>
+				nj_sup_egal_11
+			</th>
+		</tr>
+	<thead>
+	<tbody>";
+for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
+	echo "
+		<tr>
+			<td>".$tab_stat['mef'][$loop]['libelle_court']."</td>
+			<td>".$tab_stat['mef'][$loop]['libelle_long']."</td>
+			<td>".$tab_stat['mef'][$loop]['libelle_edition']."</td>
+			<td>
+				".$tab_stat['mef'][$loop]['nj_sup_egal_4']."
+			</td>
+			<td>
+				".$tab_stat['mef'][$loop]['nj_4_a_10']."
+			</td>
+			<td>
+				".$tab_stat['mef'][$loop]['nj_sup_egal_11']."
+			</td>
+		</tr>";
+}
+echo "
+	</tbody>
 </table>";
 
 echo "</div>";
