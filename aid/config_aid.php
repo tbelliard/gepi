@@ -93,21 +93,23 @@ if (isset($is_posted) and ($is_posted == "1")) {
 	  if (!$reg_data)
 		  $msg_inter .= "Erreur lors de l'enregistrement des données !<br />";
 
-		// Suppression de professeurs dans le cas des outils complémentaire
+		// Suppression de professeurs dans le cas des outils complémentaires
 		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_utilisateurs WHERE (indice_aid='$indice_aid')");
 		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
-		while($i < $nb_profs) {
-		    $login_prof = old_mysql_result($call_profs,$i);
+		// while($i < $nb_profs) {
+		while ($aid_prof = mysqli_fetch_object($call_profs)) {
+		    // $login_prof = old_mysql_result($call_profs,$i);
+		    $login_prof = $aid_prof->id_utilisateur;
 		    if (isset($_POST["delete_".$login_prof])) {
-		        $reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
-            if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_prof!<br />";
+		       $reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_utilisateurs WHERE (id_utilisateur = '$login_prof' and indice_aid='$indice_aid')");
+			   if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur ".$login_prof." !<br />";
 		    }
 		    $i++;
 		} // while
     if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
         // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and indice_aid='$indice_aid')");
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '".$_POST["reg_prof_login"]."' and indice_aid='$indice_aid')");
         if ($test != "0") {
             $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
         } else {
@@ -119,8 +121,10 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		$call_profs = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
 		$nb_profs = mysqli_num_rows($call_profs);
 		$i = 0;
-		while($i < $nb_profs) {
-		    $login_gestionnaire = old_mysql_result($call_profs,$i);
+		// while($i < $nb_profs) {
+		while ($aid_prof = mysqli_fetch_object($call_profs)) {
+		    // $login_gestionnaire = old_mysql_result($call_profs,$i);
+		    $login_gestionnaire = $aid_prof->id_utilisateur;
 		    if (isset($_POST["delete_gestionnaire_".$login_gestionnaire])) {
 		        $reg_data = mysqli_query($GLOBALS["mysqli"], "delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
             if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
@@ -201,6 +205,7 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 <?php
 if (isset($indice_aid)) {
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+	/*
     $reg_nom = @old_mysql_result($call_data, 0, "nom");
     $reg_nom_complet = @old_mysql_result($call_data, 0, "nom_complet");
     $note_max = @old_mysql_result($call_data, 0, "note_max");
@@ -216,12 +221,33 @@ if (isset($indice_aid)) {
     $bull_simplifie = @old_mysql_result($call_data, 0, "bull_simplifie");
     $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
     $feuille_presence = @old_mysql_result($call_data, 0, "feuille_presence");
+	 * 
+	 */
+	$obj_data = $call_data->fetch_object();
+	$reg_nom = $obj_data->nom;
+    $reg_nom_complet = $obj_data->nom_complet;
+    $note_max = $obj_data->note_max;
+    $order_display1 = $obj_data->order_display1;
+    $order_display2 = $obj_data->order_display2;
+    $type_note = $obj_data->type_note;
+    $display_begin = $obj_data->display_begin;
+    $display_end = $obj_data->display_end;
+    $message = $obj_data->message;
+    $display_nom = $obj_data->display_nom;
+    $display_bulletin = $obj_data->display_bulletin;
+    $autoriser_inscript_multiples = $obj_data->autoriser_inscript_multiples;
+    $bull_simplifie = $obj_data->bull_simplifie;
+    $activer_outils_comp = $obj_data->outils_complementaires;
+    $feuille_presence = $obj_data->feuille_presence;
+	
     // Compatibilité avec version
     if ($display_bulletin=='')  $display_bulletin = "y";
     if ($autoriser_inscript_multiples=='')  $autoriser_inscript_multiples = "n";
 } else {
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT max(indice_aid) max FROM aid_config");
-    $indice_aid = @old_mysql_result($call_data, 0, "max");
+	$obj_data = $call_data->fetch_object();
+    // $indice_aid = @old_mysql_result($call_data, 0, "max");
+    $indice_aid = $obj_data->max;
     $indice_aid++;
     $note_max = 20;
     $display_begin = '';
@@ -281,8 +307,10 @@ Type de notation :  <br />
 
 $query_max_periode = mysqli_query($GLOBALS["mysqli"], "SELECT max(num_periode) max FROM periodes");
 
-$max_periode = old_mysql_result($query_max_periode, 0, "max")+1;
-
+//$max_periode = old_mysql_result($query_max_periode, 0, "max")+1;
+$obj_periode = $query_max_periode->fetch_object();
+$max_periode = $obj_periode->max+1;
+   
 echo "Durée de l'AID : ";
 
 if ($max_periode == '1') {
@@ -411,10 +439,14 @@ $nombre = mysqli_num_rows($call_liste_data);
 if ($nombre !=0)
     echo "<table border=0>";
 $i = "0";
-while ($i < $nombre) {
-    $login_gestionnaire = old_mysql_result($call_liste_data, $i, "login");
-    $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-    $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+// while ($i < $nombre) {
+while ($obj_liste_data = $call_liste_data->fetch_object()) {
+    // $login_gestionnaire = old_mysql_result($call_liste_data, $i, "login");
+    $login_gestionnaire = $obj_liste_data->login;
+    // $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+    $nom_prof =  $obj_liste_data->nom;
+    // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+    $prenom_prof = $obj_liste_data->prenom;
     echo "<tr><td><b>";
     echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_gestionnaire_".$login_gestionnaire."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
 
@@ -427,10 +459,14 @@ echo "<option value=''>(aucun)</option>\n";
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
-while ($i < $nombreligne) {
-    $login_prof = old_mysql_result($call_prof, $i, 'login');
-    $nom_el = old_mysql_result($call_prof, $i, 'nom');
-    $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+// while ($i < $nombreligne) {
+while ($obj_call_prof = $call_prof->fetch_object()) {
+    // $login_prof = old_mysql_result($call_prof, $i, 'login');
+    $login_prof = $obj_call_prof->login;
+    // $nom_el = old_mysql_result($call_prof, $i, 'nom');
+    $nom_el = $obj_call_prof->nom;
+    // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+    $prenom_el = $obj_call_prof->prenom;
     echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
 }
@@ -462,10 +498,14 @@ $nombre = mysqli_num_rows($call_liste_data);
 if ($nombre !=0)
     echo "<table border=0>";
 $i = "0";
-while ($i < $nombre) {
-    $login_prof = old_mysql_result($call_liste_data, $i, "login");
-    $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-    $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+// while ($i < $nombre) {
+while ($obj_call_data = $call_liste_data->fetch_object()) {
+    // $login_prof = old_mysql_result($call_liste_data, $i, "login");
+    $login_prof = $obj_call_data->login;
+    // $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
+    $nom_prof = $obj_call_data->nom;
+    // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+    $prenom_prof = $obj_call_data->prenom;
     echo "<tr><td><b>";
     echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_".$login_prof."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
 
@@ -478,10 +518,14 @@ echo "<option value=''>(aucun)</option>\n";
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
-while ($i < $nombreligne) {
-    $login_gestionnaire = old_mysql_result($call_prof, $i, 'login');
-    $nom_el = old_mysql_result($call_prof, $i, 'nom');
-    $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+// while ($i < $nombreligne) {
+while ($obj_call_prof = $call_prof->fetch_object()) {
+    // $login_gestionnaire = old_mysql_result($call_prof, $i, 'login');
+    $login_gestionnaire = $obj_call_prof->login;
+    // $nom_el = old_mysql_result($call_prof, $i, 'nom');
+    $nom_el = $obj_call_prof->nom;
+    // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
+    $prenom_el = $obj_call_prof->prenom;
     echo "<option value=\"".$login_gestionnaire."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
 }
