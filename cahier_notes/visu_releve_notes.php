@@ -392,12 +392,6 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	$display_date_debut = $jourd."/".$moisd."/".$anneed;
 	$display_date_fin = $jourf."/".$moisf."/".$anneef;
 
-	// Modif Eric CODE MORT
-	/*
-	// On calcule le nombre de périodes
-	$nb_periode_dans_classe = mysql_query("SELECT * FROM j_eleves_classes WHERE (login='$current_eleve_login' AND id_classe='$id_classe')");
-	$count_per = mysql_num_rows($nb_periode_dans_classe);
-	*/
 
 	// Est-ce qu'on affiche les catégories de matières ?
 	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
@@ -854,7 +848,9 @@ $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 
 //**************** EN-TETE *******************************
-if (!isset($_POST['display_entete'])) $titre_page = "Visualisation des relevés de notes";
+if (!isset($_POST['display_entete'])) {
+   $titre_page = "Visualisation des relevés de notes";
+}
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 

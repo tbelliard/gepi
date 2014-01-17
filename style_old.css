@@ -464,17 +464,6 @@ p.saut {
     page-break-after: always;
 }
 
-/*
-table#messagerie {
-    width: 70%;
-    padding: 5px 5px 5px 10px;
-    border: 1px dashed #0000AA;
-    /*background-image: url("./images/background/left-top-corner.jpg");*/
-    background-repeat: no-repeat;
-    background-position: 0% 0%;
-    margin: 10px;
-}
-*/
 #messagerie {
   width: 70%;
   padding-top: 5px;
