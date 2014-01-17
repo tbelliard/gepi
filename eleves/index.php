@@ -285,19 +285,28 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		//
 		// On efface les enregistrements liés à la session en cours
 		//
-		mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+		$sql="DELETE FROM tempo WHERE num = '".SESSION_ID()."';";
+		//echo "$sql<br />";
+		mysqli_query($GLOBALS["mysqli"], $sql);
 		//
 		// On efface les enregistrements obsolètes
 		//
-		$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM tempo");
+		$sql="SELECT DISTINCT num FROM tempo;";
+		//echo "$sql<br />";
+		$call_data = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_enr = mysqli_num_rows($call_data);
 		$nb = 0;
+		//echo "\$nb_enr=$nb_enr<br />";
 		while ($nb < $nb_enr) {
 			$num = old_mysql_result($call_data, $nb, 'num');
-			$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM log WHERE SESSION_ID = '$num'");
+			$sql="SELECT * FROM log WHERE SESSION_ID = '$num';";
+			//echo "$sql<br />";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
 			$nb_en = mysqli_num_rows($test);
 			if ($nb_en == 0) {
-				mysqli_query($GLOBALS["mysqli"], "DELETE FROM tempo WHERE num = '$num'");
+				$sql="DELETE FROM tempo WHERE num = '$num'";
+				//echo "$sql<br />";
+				mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			$nb++;
 		}
