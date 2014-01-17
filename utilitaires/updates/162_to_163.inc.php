@@ -321,17 +321,16 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {
 	}
 }
 
-
 $result .= "<br /><strong>Correction taille du champ 'num' de la table 'tempo' pour qu'il corresponde à celle du champ 'SESSION_ID' de la table 'log'&nbsp;:</strong><br />";
-$test1 = mysql_query("SHOW COLUMNS FROM tempo LIKE 'num'");
-$test2 = mysql_query("SHOW COLUMNS FROM log LIKE 'SESSION_ID'");
+$test1 = mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM tempo LIKE 'num'");
+$test2 = mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM log LIKE 'SESSION_ID'");
 
-if (mysql_num_rows($test1) != 0 && mysql_num_rows($test2) != 0) {
-   $obj_test1 = mysql_fetch_object($test1);
-   $obj_test2 = mysql_fetch_object($test2);
+if (mysqli_num_rows($test1) != 0 && mysqli_num_rows($test2) != 0) {
+   $obj_test1 = $test1->fetch_object();
+   $obj_test2 = $test2->fetch_object();
    $result .= "Passage du champ à ".$obj_test2->Type."<br />";
    if ($obj_test1->Type != $obj_test2->Type) {
-	  $querynp = mysql_query("ALTER TABLE `tempo` CHANGE `num` `num` ".$obj_test2->Type." CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0';");
+	  $querynp = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `tempo` CHANGE `num` `num` ".$obj_test2->Type." CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0';");
 	  if ($querynp) {
 		  $result .= msj_ok('Ok !');
 	  } else {
