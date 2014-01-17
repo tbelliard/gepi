@@ -198,19 +198,29 @@ if (isset($is_posted) and ($is_posted == '2')) {
 		//
 		// On efface les enregistrements liés à la session en cours
 		//
-		mysql_query("DELETE FROM tempo WHERE num = '".SESSION_ID()."'");
+		$sql="DELETE FROM tempo WHERE num = '".SESSION_ID()."';";
+		//echo "$sql<br />";
+		mysql_query($sql);
 		//
 		// On efface les enregistrements obsolètes
 		//
-		$call_data = mysql_query("SELECT * FROM tempo");
+		$sql="SELECT DISTINCT num FROM tempo;";
+		//echo "$sql<br />";
+		$call_data = mysql_query($sql);
 		$nb_enr = mysql_num_rows($call_data);
 		$nb = 0;
+		//echo "\$nb_enr=$nb_enr<br />";
 		while ($nb < $nb_enr) {
 			$num = mysql_result($call_data, $nb, 'num');
-			$test = mysql_query("SELECT * FROM log WHERE SESSION_ID = '$num'");
+
+			$sql="SELECT * FROM log WHERE SESSION_ID = '$num';";
+			//echo "$sql<br />";
+			$test = mysql_query($sql);
 			$nb_en = mysql_num_rows($test);
 			if ($nb_en == 0) {
-				mysql_query("DELETE FROM tempo WHERE num = '$num'");
+				$sql="DELETE FROM tempo WHERE num = '$num'";
+				//echo "$sql<br />";
+				mysql_query($sql);
 			}
 			$nb++;
 		}
