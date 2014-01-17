@@ -244,7 +244,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
 		}
 		echo " | ";
-		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
+		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
@@ -253,7 +253,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
 		}
 		echo " | ";
-		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
+		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	elseif($_SESSION['statut']=='administrateur') {
 		// Normalement, l'administrateur n'a pas accès aux relevés de notes...
@@ -261,7 +261,7 @@ if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 		echo " | ";
 		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
 		echo " | ";
-		echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
+		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	else {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";

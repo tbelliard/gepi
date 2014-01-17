@@ -110,7 +110,7 @@ INSERT INTO droits VALUES ('/cahier_notes/add_modif_dev.php', 'F', 'V', 'F', 'F'
 INSERT INTO droits VALUES ('/cahier_notes/index.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
 INSERT INTO droits VALUES ('/cahier_notes/saisie_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
 INSERT INTO droits VALUES ('/cahier_notes/toutes_notes.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
-INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation et impression des relevés de notes', '');
+INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes.php', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Visualisation et impression des relevés de notes', '');
 INSERT INTO droits VALUES ('/cahier_texte_admin/admin_ct.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des cahier de texte', '');
 INSERT INTO droits VALUES ('/cahier_texte_admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des cahier de texte', '');
 INSERT INTO droits VALUES ('/cahier_texte_admin/modify_limites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des cahier de texte', '');
@@ -1195,7 +1195,7 @@ INSERT INTO setting SET name='gepi_en_production', value='y';
 INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
 INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Mise à jour Sconet',statut='';
 INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
-INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Consultation des compte-renduds de mise à jour Sconet',statut='';
+INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Consultation des compte-rendus de mise à jour Sconet',statut='';
 INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F','F', 'Relevé de notes : accès parents et élèves', '1');
 INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Personnels : Traitements par lots', '1');
 INSERT INTO droits VALUES ('/bulletin/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Bulletins : Activation du module bulletins', '1');
