@@ -109,11 +109,22 @@ if($extraire=="y") {
 		$annee_mois_suiv=$annee_extract+1;
 	}
 
+	$dernier_jour_du_mois=30;
+	if(($mois==1)||($mois==3)||($mois==5)||($mois==7)||($mois==8)||($mois==10)||($mois==12)) {
+		$dernier_jour_du_mois=31;
+	}
+	if($mois==2) {
+		$dernier_jour_du_mois=28;
+	}
+
 	// Il faudrait un champ eleves.date_entree pour repérer les élèves arrivés en cours d'année.
 	//$tab_stat['effectif_total']=-1;
 	$sql="SELECT DISTINCT e.nom,e.login,e.date_sortie FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND (date_sortie IS NULL OR date_sortie>'".$annee_extract."-".$mois."-01 00:00:00');";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$tab_stat['effectif_total']=mysqli_num_rows($res);
+
+	$tabdiv_infobulle_0=array();
+	//$tabid_infobulle=array();
 
 	// Recherche des mef associés à des élèves:
 	$cpt_mef=0;
@@ -139,6 +150,10 @@ if($extraire=="y") {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_4']=mysqli_num_rows($res);
 		if(mysqli_num_rows($res)>0) {
+
+			$titre_infobulle=$lig_mef->libelle_edition." (nj&gt;=4)";
+			$texte_infobulle="";
+
 			$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_4']="";
 			$cpt_ele=0;
 			while($lig_ele=mysqli_fetch_object($res)) {
@@ -148,8 +163,16 @@ if($extraire=="y") {
 				$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_4'].=$lig_ele->nom." ".$lig_ele->prenom;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_4'][$cpt_ele]['login']=$lig_ele->login;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_4'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+
+				$texte_infobulle.="<a href='../eleves/visu_eleve.php?ele_login=$lig_ele->login&amp;onglet=absences&amp;quitter_la_page=y&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir la fiche élève (onglet Absences).\" target='_blank'>".$lig_ele->nom." ".$lig_ele->prenom."</a>";
+				$texte_infobulle.=" - <a href='bilan_individuel.php?id_eleve=$lig_ele->eleve_id&amp;affichage=html&amp;tri=&amp;sans_commentaire=&amp;texte_conditionnel=&amp;filtrage=&amp;ndj=&amp;ndjnj=&amp;nr=&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir le bilan de l'élève pour le mois choisi.\" target='_blank'>Bilan</a>\n";
+				$texte_infobulle.="<br />\n";
+
 				$cpt_ele++;
 			}
+
+			$tabdiv_infobulle_0[]=creer_div_infobulle('infobulle_mef_'.$cpt_mef.'_nj_sup_egal_4',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
 		}
 
 		// Aucun motif (i.e. non valable)
@@ -168,6 +191,10 @@ if($extraire=="y") {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_4_a_10']=mysqli_num_rows($res);
 		if(mysqli_num_rows($res)>0) {
+
+			$titre_infobulle=$lig_mef->libelle_edition." (4=&lt;nj&lt;=10)";
+			$texte_infobulle="";
+
 			$tab_stat['mef'][$cpt_mef]['liste_nj_4_a_10']="";
 			$cpt_ele=0;
 			while($lig_ele=mysqli_fetch_object($res)) {
@@ -177,8 +204,15 @@ if($extraire=="y") {
 				$tab_stat['mef'][$cpt_mef]['liste_nj_4_a_10'].=$lig_ele->nom." ".$lig_ele->prenom;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_4_a_10'][$cpt_ele]['login']=$lig_ele->login;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_4_a_10'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+
+				$texte_infobulle.="<a href='../eleves/visu_eleve.php?ele_login=$lig_ele->login&amp;onglet=absences&amp;quitter_la_page=y&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir la fiche élève (onglet Absences).\" target='_blank'>".$lig_ele->nom." ".$lig_ele->prenom."</a>";
+				$texte_infobulle.=" - <a href='bilan_individuel.php?id_eleve=$lig_ele->eleve_id&amp;affichage=html&amp;tri=&amp;sans_commentaire=&amp;texte_conditionnel=&amp;filtrage=&amp;ndj=&amp;ndjnj=&amp;nr=&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir le bilan de l'élève pour le mois choisi.\" target='_blank'>Bilan</a>\n";
+				$texte_infobulle.="<br />\n";
+
 				$cpt_ele++;
 			}
+
+			$tabdiv_infobulle_0[]=creer_div_infobulle('infobulle_mef_'.$cpt_mef.'_nj_4_a_10',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		}
 
 		// Aucun motif (i.e. non valable)
@@ -197,6 +231,10 @@ if($extraire=="y") {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$tab_stat['mef'][$cpt_mef]['nj_sup_egal_11']=mysqli_num_rows($res);
 		if(mysqli_num_rows($res)>0) {
+
+			$titre_infobulle=$lig_mef->libelle_edition." (nj&gt;=11)";
+			$texte_infobulle="";
+
 			$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_11']="";
 			$cpt_ele=0;
 			while($lig_ele=mysqli_fetch_object($res)) {
@@ -206,8 +244,15 @@ if($extraire=="y") {
 				$tab_stat['mef'][$cpt_mef]['liste_nj_sup_egal_11'].=$lig_ele->nom." ".$lig_ele->prenom;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_11'][$cpt_ele]['login']=$lig_ele->login;
 				$tab_stat['mef'][$cpt_mef]['ele_nj_sup_egal_11'][$cpt_ele]['nom_prenom']=$lig_ele->nom." ".$lig_ele->prenom;
+
+				$texte_infobulle.="<a href='../eleves/visu_eleve.php?ele_login=$lig_ele->login&amp;onglet=absences&amp;quitter_la_page=y&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir la fiche élève (onglet Absences).\" target='_blank'>".$lig_ele->nom." ".$lig_ele->prenom."</a>";
+				$texte_infobulle.=" - <a href='bilan_individuel.php?id_eleve=$lig_ele->eleve_id&amp;affichage=html&amp;tri=&amp;sans_commentaire=&amp;texte_conditionnel=&amp;filtrage=&amp;ndj=&amp;ndjnj=&amp;nr=&amp;date_absence_eleve_debut=01/$mois/$annee_extract&amp;date_absence_eleve_fin=$dernier_jour_du_mois/$mois/$annee_extract' title=\"Voir le bilan de l'élève pour le mois choisi.\" target='_blank'>Bilan</a>\n";
+				$texte_infobulle.="<br />\n";
+
 				$cpt_ele++;
 			}
+
+			$tabdiv_infobulle_0[]=creer_div_infobulle('infobulle_mef_'.$cpt_mef.'_nj_sup_egal_11',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 		}
 
 		// Aucun motif (i.e. non valable)
@@ -218,6 +263,8 @@ if($extraire=="y") {
 	}
 
 }
+
+$tabid_infobulle_0=$tabid_infobulle;
 
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
@@ -234,6 +281,9 @@ require_once("../lib/header.inc.php");
 //**************** EN-TETE *****************
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
+
+$tabdiv_infobulle=$tabdiv_infobulle_0;
+$tabid_infobulle=$tabid_infobulle_0;
 
 ?>
 <div id="contain_div" class="css-panes">
@@ -337,7 +387,9 @@ for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
 			<td>".$tab_stat['mef'][$loop]['libelle_edition']."</td>";
 	if($tab_stat['mef'][$loop]['nj_sup_egal_4']>0) {
 		echo "
-			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_4']."\">".$tab_stat['mef'][$loop]['nj_sup_egal_4']."</td>";
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_4']."\" onclick=\"afficher_div('infobulle_mef_".$loop."_nj_sup_egal_4', 'y', 10, 10); return false;\">
+				<a href='#' onclick=\"afficher_div('infobulle_mef_".$loop."_nj_sup_egal_4', 'y', 10, 10); return false;\">".$tab_stat['mef'][$loop]['nj_sup_egal_4']."</a>
+			</td>";
 	}
 	else {
 		echo "
@@ -345,7 +397,9 @@ for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
 	}
 	if($tab_stat['mef'][$loop]['nj_4_a_10']>0) {
 		echo "
-			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_4_a_10']."\">".$tab_stat['mef'][$loop]['nj_4_a_10']."</td>";
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_4_a_10']."\" onclick=\"afficher_div('infobulle_mef_".$loop."_nj_4_a_10', 'y', 10, 10); return false;\">
+				<a href='#' onclick=\"afficher_div('infobulle_mef_".$loop."_nj_4_a_10', 'y', 10, 10); return false;\">".$tab_stat['mef'][$loop]['nj_4_a_10']."</a>
+			</td>";
 	}
 	else {
 		echo "
@@ -353,7 +407,9 @@ for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
 	}
 	if($tab_stat['mef'][$loop]['nj_sup_egal_11']>0) {
 		echo "
-			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_11']."\">".$tab_stat['mef'][$loop]['nj_sup_egal_11']."</td>";
+			<td title=\"".$tab_stat['mef'][$loop]['liste_nj_sup_egal_11']."\" onclick=\"afficher_div('infobulle_mef_".$loop."_nj_sup_egal_11', 'y', 10, 10); return false;\">
+				<a href='#' onclick=\"afficher_div('infobulle_mef_".$loop."_nj_sup_egal_11', 'y', 10, 10); return false;\">".$tab_stat['mef'][$loop]['nj_sup_egal_11']."</a>
+			</td>";
 	}
 	else {
 		echo "
@@ -365,7 +421,8 @@ for($loop=0;$loop<count($tab_stat['mef']);$loop++) {
 echo "
 	</tbody>
 </table>";
-
+//echo count($tabdiv_infobulle);
+//echo count($tabid_infobulle);
 echo "</div>";
 
 require_once("../lib/footer.inc.php");
