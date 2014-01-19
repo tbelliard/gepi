@@ -231,40 +231,40 @@ elseif($_SESSION['statut']=='responsable') {
 if ((!isset($tab_id_classe))&&(!isset($id_groupe))) {
 	echo "<p class='bold'>";
 	if($_SESSION['statut']=='professeur') {
-		echo "<a href='index.php'>Retour</a>";
+		echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 		if(getSettingAOui('GepiProfImprRelSettings')) {
 			echo " | ";
-			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+			echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
 		}
 	}
 	elseif($_SESSION['statut']=='scolarite') {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 		if(getSettingAOui('GepiScolImprRelSettings')) {
 			echo " | ";
-			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+			echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
 		}
-		echo " | ";
+		//echo " | ";
 		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 		if(getSettingAOui('GepiCpeImprRelSettings')) {
 			echo " | ";
-			echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+			echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
 		}
-		echo " | ";
+		//echo " | ";
 		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	elseif($_SESSION['statut']=='administrateur') {
 		// Normalement, l'administrateur n'a pas accès aux relevés de notes...
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 		echo " | ";
-		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
-		echo " | ";
+		echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
+		//echo " | ";
 		//echo "<a href='visu_releve_notes.php'>Ancien dispositif</a>";
 	}
 	else {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 	}
 	echo "</p>\n";
 
@@ -498,19 +498,30 @@ elseif(!isset($choix_periode)) {
 
 	echo "<p class='bold'>";
 	if($_SESSION['statut']=='professeur') {
-		echo "<a href='index.php'>Retour</a>";
+		echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 	}
-	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+	elseif($_SESSION['statut']=='scolarite') {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+		if(getSettingAOui('GepiScolImprRelSettings')) {
+			echo " | ";
+			echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
+		}
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		// Normalement, l'administrateur n'a pas accès aux relevés de notes...
+		// On ne devrait jamais passer là sauf modification de la politique des rôles.
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 		echo " | ";
-		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
 	}
 	else {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 	}
 	echo "</p>\n";
 
@@ -768,12 +779,14 @@ elseif(!isset($choix_periode)) {
 <?php
 	echo "<p><br /></p>\n";
 
-	echo "<p><em>Remarque&nbsp;:</em></p>\n";
-	echo "<blockquote>\n";
-	echo "<p>Les relevés d'une date à une autre ne font apparaître que les matières dans lesquelles il y a des notes.<br />\n";
-	echo "Les relevés pour une période complète en revanche font apparaître toutes les matières, même si aucune note n'est saisie.</p>\n";
-	echo "<p>On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<em>au verso par exemple</em>) et en fin de période, il est bon d'avoir toutes les matières.</p>\n";
-	echo "</blockquote>\n";
+	echo "<p><em>Remarques&nbsp;:</em></p>\n";
+	echo "<ul>\n";
+	echo "<li><p>Les relevés d'une date à une autre ne font apparaître que les matières dans lesquelles il y a des notes.<br />
+	C'est un bon choix pour un relevé de notes de demi-période (<em>afficher les enseignements dans lesquels il n'y a pas encore de notes ne présente pas vraiment d'intérêt</em>).<br />
+	Ce choix permet généralement d'imprimer deux relevés de notes par page (<em>case à cocher à l'étape suivante</em>).</p></li>\n";
+	echo "<li><p>Les relevés pour une période complète en revanche font apparaître toutes les matières, même si aucune note n'est saisie.</p>\n";
+	echo "<p>On choisit en général la période complète lorsqu'on veut imprimer un relevé en même temps que le bulletin (<em>au verso par exemple</em>) et en fin de période, il est bon d'avoir tous les enseignements.</p></li>\n";
+	echo "</ul>\n";
 
 	echo "<script type='text/javascript'>
 	//<![CDATA[ 
@@ -810,20 +823,33 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "<p class='bold'>";
 	if($_SESSION['statut']=='professeur') {
-		echo "<a href='index.php'>Retour</a>";
+		echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."' onclick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 	}
-	elseif(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
-		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
+	elseif($_SESSION['statut']=='scolarite') {
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+		echo " | ";
+		echo "<a href='".$_SERVER['PHP_SELF']."' onclick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
+		if(getSettingAOui('GepiScolImprRelSettings')) {
+			echo " | ";
+			echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
+		}
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		// Normalement, l'administrateur n'a pas accès aux relevés de notes...
+		// On ne devrait jamais passer là sauf modification de la politique des rôles.
+		echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."' onclick=\"document.forms['form_retour'].submit();return false;\">Choisir d'autres périodes</a>\n";
 		echo " | ";
-		echo "<a href='param_releve_html.php' target='_blank'>Paramètres du relevé HTML</a>";
+		echo "<a href='param_releve_html.php' target='_blank'><img src='../images/icons/configure.png' class='icone16' alt='Paramétrer' /> Paramètres du relevé HTML</a>";
 	}
 	else {
 		echo "<a href='../accueil.php'>Retour à l'accueil</a>";
@@ -995,7 +1021,7 @@ echo "</p>";
 	}
 	else {
 		echo "<p>\n";
-		echo "<strong>Paramètres:</strong> \n";
+		echo "<strong><img src='../images/icons/configure.png' class='icone16' alt='Paramètres' /> Paramètres:</strong> \n";
 		echo "<span id='pliage_param_releve'>\n";
 		echo "(<em>";
 		echo "<a href='#' onclick=\"document.getElementById('div_param_releve').style.display='';return false;\">Afficher</a>";
