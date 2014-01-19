@@ -305,6 +305,18 @@ echo "<h1 class='grand center'>Mise à jour de la base de données MySql de GEPI
 
 echo "<hr /><p class='grand center ecarte'>Numéro de version actuel de la base MySql : GEPI " . $version_old . $rc_old . $beta_old . "</p>";
 echo "<hr />";
+
+// Test sur la version des plugins (installés ou pas)
+require_once("../mod_plugins/verif_version_plugins.php");
+$verif_version_plugins=verif_version_plugins(1);
+if ($verif_version_plugins!="") {
+	echo "<p class='grand center ecarte' style='color: red'>";
+	echo "Attention ! le ou les plugins suivants :<br />";
+	echo $verif_version_plugins."<br />";
+	echo "ne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
+	echo "</p>";
+}
+
 // Mise à jour de la base de donnée
 
 if ($pb_maj_bd != 'yes') {
