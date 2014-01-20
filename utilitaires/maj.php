@@ -308,11 +308,11 @@ echo "<hr />";
 
 // Test sur la version des plugins (installés ou pas)
 require_once("../mod_plugins/verif_version_plugins.php");
-$verif_version_plugins=verif_version_plugins(1);
+$verif_version_plugins=verif_version_plugins(1,true);
 if ($verif_version_plugins!="") {
 	echo "<p class='grand center ecarte' style='color: red'>";
-	echo "Attention ! le ou les plugins suivants :<br />";
-	echo $verif_version_plugins."<br />";
+	echo "Attention ! le ou les plugins suivants :<br/>";
+	echo $verif_version_plugins;
 	echo "ne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
 	echo "</p>";
 }
