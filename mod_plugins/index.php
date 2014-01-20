@@ -241,32 +241,40 @@ echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
   <a onclick="window.open(this.href, '_blank'); return false;" href="http://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur#Syst%C3%A8me-de-plugins">la documentation collaborative (wiki)</a>
-</p>
- <table class="table">
+</p><br/>
+ <table class="table" style="border-spacing: 5px;">
   <tr>
     <th>Plugin</th>
+    <th>Version Gepi</th>
     <th>Description</th>
     <th>Auteur</th>
     <th>Version</th>
-    <th>Install&eacute; ?</th>
+    <th>Installé ?</th>
     <th>Ouvert ?</th>
   </tr>
 <?php
+$avertissement_version_gepi=false;
 foreach($liste_plugins as $plugin){
   if (!is_object($plugin)){
     // le plugin n'est pas installé
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin).'</td>
-      <td>-</td>
-      <td>-</td>
-      <td>-</td>
-      <td><a href="index.php?nom_plugin='.$plugin.'&amp;action=installer'.add_token_in_url().'" title="Voulez-vous l\'installer ?">NON</a></td>
-      <td>NON</td>
+      <td style="text-align: center;">-</td>
+      <td style="text-align: center;">-</td>
+      <td style="text-align: center;">-</td>
+      <td style="text-align: center;">-</td>
+      <td style="text-align: center;"><a href="index.php?nom_plugin='.$plugin.'&amp;action=installer'.add_token_in_url().'" title="Voulez-vous l\'installer ?">NON</a></td>
+      <td style="text-align: center;">NON</td>
     </tr>';
   }else{
     // Le plugin est installé
     $xml = simplexml_load_file($plugin->getNom() . "/plugin.xml");
+	$versiongepi=$xml->versiongepi;
+	if ($versiongepi!=$gepiVersion) {
+		$versiongepi='<span style="color: red;font-weight:bold;">'.$versiongepi.'</span>';
+		$avertissement_version_gepi=true;
+		}
     // On teste s'il est ouvert
     if ($plugin->getOuvert() == 'y'){
       $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=fermer'.add_token_in_url().'" title="Voulez-vous le fermer ?">OUI</a>';
@@ -276,16 +284,26 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin->getNom()).'</td>
+      <td style="text-align: center;">'.$versiongepi.'</td>
       <td>'.$xml->description.'</td>
       <td>'.$xml->auteur.'</td>
-      <td>'.$xml->version.'</td>
-      <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller'.add_token_in_url().'" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
-      <td>'.$aff_ouvert.'</td>
+      <td style="text-align: center;">'.$xml->version.'</td>
+      <td style="text-align: center;"><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller'.add_token_in_url().'" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
+      <td style="text-align: center;">'.$aff_ouvert.'</td>
     </tr>';
   }
 }
 ?>
 
 </table>
+
+<?php
+if ($avertissement_version_gepi) {
+?>
+<br/><span style="color: red;font-weight:bold;">Attention</span> : les plugins dont la version gepi est indiquée en rouge ne sont peut être pas adaptés à la version courante de Gepi (<?php echo $gepiVersion; ?>).
+<?php
+}
+?>
+
 
 <?php include '../lib/footer.inc.php'; ?>
