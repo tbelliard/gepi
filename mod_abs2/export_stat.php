@@ -98,6 +98,9 @@ if(isset($mois)) {
 	}
 }
 
+$tabdiv_infobulle_0=array();
+//$tabid_infobulle=array();
+
 if($extraire=="y") {
 	$tab_stat['mois']=strftime("%b-%y", strtotime($mois."/01/$annee_extract"));
 	$tab_stat['ville']=getSettingValue('gepiSchoolCity');
@@ -122,9 +125,6 @@ if($extraire=="y") {
 	$sql="SELECT DISTINCT e.nom,e.login,e.date_sortie FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND (date_sortie IS NULL OR date_sortie>'".$annee_extract."-".$mois."-01 00:00:00');";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$tab_stat['effectif_total']=mysqli_num_rows($res);
-
-	$tabdiv_infobulle_0=array();
-	//$tabid_infobulle=array();
 
 	// Recherche des mef associés à des élèves:
 	$cpt_mef=0;
