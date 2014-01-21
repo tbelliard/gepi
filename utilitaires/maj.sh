@@ -157,6 +157,16 @@ Exemples d'utilisation :
         require './updates/163_to_dev.inc.php';
     }
 
+// Test sur la version des plugins (installés ou pas)
+require_once("../mod_plugins/verif_version_plugins.php");
+$verif_version_plugins=verif_version_plugins(1,"\n");
+if ($verif_version_plugins!="") {
+	echo "\nAttention ! le ou les plugins suivants :\n";
+	echo $verif_version_plugins;
+	echo "\nne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
+	echo "\n\n";
+}
+
 // Nettoyage pour envoyer le résultat dans la console
     $result = str_replace('<br />',"\n",$result);
     $result = str_replace('<br/>',"\n",$result);
