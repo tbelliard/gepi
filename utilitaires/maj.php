@@ -308,12 +308,13 @@ echo "<hr />";
 
 // Test sur la version des plugins (installés ou pas)
 require_once("../mod_plugins/verif_version_plugins.php");
-$verif_version_plugins=verif_version_plugins(1,true);
+$verif_version_plugins=verif_version_plugins(1,"<br/>");
 if ($verif_version_plugins!="") {
-	echo "<p class='grand center ecarte' style='color: red'>";
+	echo "<p class='grand center ecarte' style='color: red;'>";
 	echo "Attention ! le ou les plugins suivants :<br/>";
 	echo $verif_version_plugins;
-	echo "ne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
+	echo "<br/>ne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
+	echo "<br/><span style='color: black; font-size: 66%;'>(Page de téléchargement des plugins : <a href='https://www.sylogix.org/projects/gepi/files'target='_blank'>https://www.sylogix.org/projects/gepi/files</a>)</span>";
 	echo "</p>";
 }
 
