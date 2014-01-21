@@ -6,7 +6,7 @@
  * @param string $br chaîne de caractère à intercaler entre chaque nom de plugin
  * @return string liste des plugins obsolètes
  */
-function verif_version_plugins($niveau_arbo,$br=false) {
+function verif_version_plugins($niveau_arbo,$br=" ") {
 	global $gepiVersion,$gepiPath;
 	$dossier_plugins=str_repeat("../",$niveau_arbo)."mod_plugins";
 	$liste_plugins_obsoletes="";
