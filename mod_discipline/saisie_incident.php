@@ -762,7 +762,18 @@ if($etat_incident!='clos') {
 									if(!file_exists($dossier_courant)) {
 										mkdir($dossier_courant, 0770, true);
 									}
-									$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
+
+									if(strstr($document_joint['name'],".")) {
+										$extension_fichier=substr(strrchr($document_joint['name'],'.'),1);
+										$nom_fichier_sans_extension=preg_replace("/.$extension_fichier$/","",$document_joint['name']);
+
+										$dest_file=$dossier_courant."/".remplace_accents($nom_fichier_sans_extension, "all").".".$extension_fichier;
+									}
+									else {
+										// Pas d'extension dans le nom de fichier fourni
+										$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
+									}
+
 									$res_copy=copy("$source_file" , "$dest_file");
 									if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
 								}
