@@ -613,4 +613,25 @@ if (mysqli_num_rows($test1) != 0 && mysqli_num_rows($test2) != 0) {
 	$result .= msj_erreur("Un des champs n'existe pas<br />");
 }
 
+// Correctif sur des droits manquants
+$sql="select * from droits_speciaux where nom_fichier='/groupes/mes_listes.php' and autorisation='V';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="select 1=1 from droits_speciaux where id_statut='$lig->id_statut' AND nom_fichier='/groupes/update_colonne_retenue.php';";
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res2)==0) {
+			$result.="Ajout d'un droit manquant pour l'édition de listes CSV en statut personnalisé n° $lig->id_statut (<em>".get_nom_statut_autre($lig->id_statut)."</em>) : ";
+			$sql="INSERT INTO droits_speciaux SET id_statut='$lig->id_statut', nom_fichier='/groupes/update_colonne_retenue.php', autorisation='V';";
+			$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+			if ($res3) {
+				$result .= msj_ok('Ok !');
+			} else {
+				$result .= msj_erreur('!');
+			}
+			$result.="<br />";
+		}
+	}
+}
+
 ?>

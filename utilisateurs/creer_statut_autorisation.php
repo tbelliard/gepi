@@ -72,7 +72,7 @@ $autorise[21]= array('/mod_abs2/bilan_individuel.php' );
 $autorise[22]= array('/mod_abs2/totaux_du_jour.php' );
 $autorise[23]= array('/bulletin/bull_index.php' );
 $autorise[24]= array('/groupes/visu_profs_class.php', '/groupes/popup.php');
-$autorise[25]= array('/groupes/visu_mes_listes.php', '/groupes/popup.php', '/groupes/update_champs_periode.php', '/impression/liste_pdf.php', '/impression/impression.php', '/impression/impression_serie.php', '/impression/parametres_impression_pdf.php');
+$autorise[25]= array('/groupes/visu_mes_listes.php', '/groupes/popup.php', '/impression/liste_pdf.php', '/impression/impression.php', '/impression/impression_serie.php', '/impression/parametres_impression_pdf.php');
 $autorise[26]= array('/groupes/mes_listes.php', '/groupes/get_csv.php', '/groupes/update_champs_periode.php');
 
 

@@ -9144,4 +9144,29 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 	return $msg;
 }
 
+/** Fonction destinée à renvoyer le nom du statut personnalisé d'après l'id du statut ou à défaut d'après le login de l'utilisateur
+ *
+ * @param integer $id_statut identifiant du statut personnalisé
+ * @param string $login_user login de l'utilisateur
+ *
+ * @return $string le nom du statut
+ */
+function get_nom_statut_autre($id_statut, $login_user="") {
+	global $mysqli;
+	if($login_user!="") {
+		$sql = "SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE du.login_user = '".$login_user."' AND du.id_statut = ds.id;";
+	}
+	else {
+		$sql = "SELECT nom_statut FROM droits_statut ds WHERE ds.id = '".$id_statut."';";
+	}
+	//echo "$sql<br />";
+	$query = mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($query)>0) {
+		$rep = mysqli_fetch_array($query);
+		return $rep["nom_statut"];
+	}
+	else {
+		return "";
+	}
+}
 ?>
