@@ -1,36 +1,31 @@
 <?php
-# http://mysql.dotpointer.com/
-# mysql to mysqli migration library
-# by dotpointer
-	function old_mysql_result ($result , $row , $field = 0) {
-		if (!(strpos($field,".")===false)) {
-			if(getSettingValue('debug_old_mysql_result')!="no") {
-				$ajout_header="";
-				$email_destinataires=getSettingValue('gepiAdminAdress');
-				if(check_mail($email_destinataires)) {
-					$sujet_mail="[Gepi]: Probleme old_mysql_result";
-					$texte_mail="Bonjour,
-
-Un problÃ¨me a Ã©tÃ© dÃ©tectÃ© avec le champ '$field' dans ".$_SERVER['PHP_SELF']." avec la fonction old_mysql_result().";
-					if((isset($_SESSION['nom']))&&(isset($_SESSION['prenom']))&&(isset($_SESSION['statut']))) {
-						$texte_mail.="
-Le problÃ¨me s'est produit pour ".$_SESSION['nom']." ".$_SESSION['prenom']." (".$_SESSION['statut'].").";
-					}
-					$texte_mail.="
-Merci d'en informer la liste de diffusion officielle Gepi pour aider Ã  corriger ce problÃ¨me.
-
-Cordialement.
--- 
-Equipe de developpement Gepi.";
-					$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
-				}
+/**
+ * Fonction basée sur l'api mysqli et
+ * simulant la fonction mysql_result()
+ * Copyright 2014 Marc Leygnac
+ *
+ * @param type $result résultat après requête
+ * @param integer $row numéro de la ligne
+ * @param string/integer $field indice ou nom du champ
+ * @return type valeur du champ ou false si erreur
+ */
+function old_mysql_result($result,$row,$field=0) {
+	if ($result===false) return;
+	if (mysqli_data_seek($result,$row) === false) return false;
+	$pos=strpos($field,".");
+	if (!($pos===false)) {
+		// si $field est de la forme table.field ou alias.field
+		// on convertit $field en indice numérique
+		$t_field=explode(".",$field);
+		$field=-1;
+		$t_fields=mysqli_fetch_fields($result);
+		for ($id=0;$id<mysqli_num_fields($result);$id++) {
+			if ($t_fields[$id]->table==$t_field[0] && $t_fields[$id]->name==$t_field[1]) $field=$id;
 			}
-			die ("<br /><h1>Pb avec le champ '$field' old_mysql_result dans ".$_SERVER['PHP_SELF']."</h1>");
-		}
-
-		if (mysqli_data_seek($result, $row) === false) return false;
-		if (is_int($field)) $line=mysqli_fetch_array($result); else $line=mysqli_fetch_assoc($result);
-		if (!isset($line[$field])) return false;
-		return $line[$field];
+		if ($field==-1) return false;
 	}
+	$line=mysqli_fetch_array($result);
+	if (!isset($line[$field])) return false;
+	return $line[$field];
+}
 ?>
