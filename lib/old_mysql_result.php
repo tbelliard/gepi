@@ -10,8 +10,8 @@
  * @return type valeur du champ ou false si erreur
  */
 function old_mysql_result($result,$row,$field=0) {
-	if ($result===false) return;
-	if ($row>mysqli_num_rows($result)) return false;
+	if ($result===false) return false;
+	if ($row>=mysqli_num_rows($result)) return false;
 	if (is_string($field) && !(strpos($field,".")===false)) {
 		// si $field est de la forme table.field ou alias.field
 		// on convertit $field en indice numérique
