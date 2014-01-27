@@ -740,7 +740,7 @@ if (isset($_POST['action']) and ($_POST['action']=='upload_photos_eleves'))  {
 				if (!@mkdir($dir_temp_photos_eleves,0700,true)) $msg.="Impossible de créer ".$dir_temp_photos_eleves.".<br/>\n"; ;
 			if ($msg=="") {
 				// copie du fichier ZIP dans $dir_temp
-				$reponse=telecharge_fichier($sav_file,$dir_temp_photos_eleves,"zip",'application/zip application/octet-stream application/x-zip-compressed');
+				$reponse=telecharge_fichier($sav_file,$dir_temp_photos_eleves,"zip",'application/zip application/octet-stream application/x-zip-compressed multipart/x-zip');
 				if ($reponse!="ok") {
 					$msg.=$reponse;
 				} else {
