@@ -2,6 +2,15 @@
 
 $config = array(
 
+	/*authentification admin saml en utilisant un profil administrateur gepi
+	'admin' => array(
+		'gepiauth:LocalDB',
+		'required_statut' => 'administrateur',
+		'name' => array(
+		    'fr' => 'Administration simplesaml',
+		),
+	),*/
+
 	//authentification gepi
 	'Authentification locale gepi' => array(
 		'gepiauth:LocalDB',
@@ -41,4 +50,3 @@ if (!empty($sources_array)) {
 	//la source définie ci dessous est utilisé par la classe SimpleSAML_Auth_GepiSimple dans les cas d'erreur de configuration de choix de source
 	$config['Authentification au choix entre toutes les sources configurees'] = array('multiauth:MultiAuth', 'sources' => $sources_array);
 }
-

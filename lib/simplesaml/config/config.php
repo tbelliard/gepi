@@ -4,6 +4,7 @@
  * 
  * $Id: config.php 3246 2013-05-23 11:43:52Z olavmrk $
  */
+global $mysqli;
 
 $config = array (
 
@@ -22,7 +23,8 @@ $config = array (
 	 * external url, no matter where you come from (direct access or via the
 	 * reverse proxy).
 	 */
-	'baseurlpath'           => 'simplesaml/',
+	//'baseurlpath'           => 'simplesaml/',
+	'baseurlpath'           => 'gepi/lib/simplesaml/www/', //voir configuration automatique à la fin de ce fichier
 	'certdir'               => 'cert/',
 	'loggingdir'            => 'log/',
 	'datadir'               => 'data/',
@@ -32,7 +34,8 @@ $config = array (
 	 *
 	 * SimpleSAMLphp will attempt to create this directory if it doesn't exist.
 	 */
-	'tempdir'               => '/tmp/simplesaml',
+	//'tempdir'               => '/tmp/simplesaml',
+	'tempdir'               => '../../temp/simpleSAML',
 	
 
 	/*
@@ -69,7 +72,8 @@ $config = array (
 	 * metadata listing and diagnostics pages.
 	 * You can also put a hash here; run "bin/pwgen.php" to generate one.
 	 */
-	'auth.adminpassword'		=> '123',
+	//'auth.adminpassword'		=> '123',
+	'auth.adminpassword'		=> '482qcabv',//réglage inutile car l'authentification de l'admin simplesaml se fait par gepi, donc il faut un login admin gepi
 	'admin.protectindexpage'	=> false,
 	'admin.protectmetadata'		=> false,
 
@@ -81,15 +85,20 @@ $config = array (
 	 * A possible way to generate a random salt is by running the following command from a unix shell:
 	 * tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo
 	 */
-	'secretsalt' => 'defaultsecretsalt',
+	//'secretsalt' => 'defaultsecretsalt',
+	'secretsalt' => 'fc3bs6eojtk8ax1zv77e6m08r73bva4h',
+	
 	
 	/*
 	 * Some information about the technical persons running this installation.
 	 * The email address will be used as the recipient address for error reports, and
 	 * also as the technical contact in generated metadata.
 	 */
-	'technicalcontact_name'     => 'Administrator',
-	'technicalcontact_email'    => 'na@example.org',
+	//'technicalcontact_name'     => 'Administrator',
+	//'technicalcontact_email'    => 'na@example.org',
+	'technicalcontact_name'     => 'Administrateur',
+	'technicalcontact_email'    => 'noemail', //voir configuration automatique à la fin de ce fichier
+
 
 	/*
 	 * The timezone of the server. This option should be set to the timezone you want
@@ -115,7 +124,8 @@ $config = array (
 	 * Options: [syslog,file,errorlog]
 	 * 
 	 */
-	'logging.level'         => SimpleSAML_Logger::NOTICE,
+	//'logging.level'         => SimpleSAML_Logger::NOTICE,
+	'logging.level'         => LOG_ERR,
 	'logging.handler'       => 'syslog',
 
 	/*
@@ -201,7 +211,10 @@ $config = array (
 	 * This value is the duration of the session in seconds. Make sure that the time duration of
 	 * cookies both at the SP and the IdP exceeds this duration.
 	 */
-	'session.duration'		=>  8 * (60*60), // 8 hours.
+	// 'session.duration'		=>  8 * (60*60), // 8 hours.
+	'session.duration'		=>  8 * (60*60), // 8 hours. //voir configuration automatique à la fin de ce fichier
+	'session.requestcache'	=>  4 * (60*60), // 4 hours
+
 
 	/*
 	 * Sets the duration, in seconds, data should be stored in the datastore. As the datastore is used for
@@ -258,6 +271,7 @@ $config = array (
 	 * both http and https, this must be set to FALSE.
 	 */
 	'session.cookie.secure' => FALSE,
+	
 
 	/*
 	 * When set to FALSE fallback to transient session on session initialization
@@ -281,7 +295,10 @@ $config = array (
 	/*
 	 * Options to override the default settings for php sessions.
 	 */
-	'session.phpsession.cookiename'  => null,
+	//'session.phpsession.cookiename'  => null,
+	//'session.phpsession.savepath'    => null,
+	//'session.phpsession.httponly'    => FALSE,
+	'session.phpsession.cookiename'  => 'GEPI',
 	'session.phpsession.savepath'    => null,
 	'session.phpsession.httponly'    => FALSE,
 
@@ -295,7 +312,7 @@ $config = array (
 	 */
 	'language.available'	=> array('en', 'no', 'nn', 'se', 'da', 'de', 'sv', 'fi', 'es', 'fr', 'it', 'nl', 'lb', 'cs', 'sl', 'lt', 'hr', 'hu', 'pl', 'pt', 'pt-br', 'tr', 'ja', 'zh', 'zh-tw', 'ru', 'et', 'he', 'id', 'sr', 'lv'),
 	'language.rtl'		=> array('ar','dv','fa','ur','he'),
-	'language.default'		=> 'en',
+	'language.default'		=> 'fr',
 
 	/*
 	 * Options to override the default settings for the language parameter
@@ -352,7 +369,8 @@ $config = array (
 	/*
 	 * Which theme directory should be used?
 	 */
-	'theme.use' 		=> 'default',
+	//'theme.use' 		=> 'default',
+	'theme.use'         => 'gepimodule:gepitheme',
 
 	
 	/*
@@ -679,3 +697,38 @@ $config = array (
 	'redirect.trustedsites' => NULL,
 
 );
+
+$path = dirname(dirname(dirname(dirname(__FILE__))));
+include("$path/secure/connect.inc.php");
+// Database connection
+ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
+// require_once("$path/lib/mysql.inc");
+require_once("$path/lib/mysqli.inc.php");
+// require_once("$path/lib/settings.inc");
+require_once("$path/lib/settings.inc.php");
+// Load settings
+if (!loadSettings()) {
+    die("Erreur chargement settings");
+}
+$config['technicalcontact_email'] = getSettingValue('gepiAdminAdress');	
+if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
+	$config['enable.saml20-idp'] = true;
+}
+
+$str = $gepiPath;
+//si le premier caractère est un / on le prend pas en compte
+if (substr($str,0,1) == '/') {
+       $str = substr($str,1);
+}
+// Le dernier caractère doit être un / si on a un chemin non null
+if (strlen($str) > 0 and substr($str, 0, -1) != '/') {
+       $str .= '/';
+}
+$hoststr = '';
+if (isset($gepiBaseUrl)) {
+       $hoststr = $gepiBaseUrl;
+       if (substr($hoststr,0,-1) != '/') {
+               $hoststr .= '/';
+       }
+}
+$config['baseurlpath'] = $hoststr.$str.'lib/simplesaml/www/';
