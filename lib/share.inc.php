@@ -759,10 +759,11 @@ function affiche_utilisateur($login,$id_classe) {
  * @return string nom, prénom formaté
  */
 function affiche_eleve($nom,$prenom,$id_classe) {
-    global $mysqli;
-    $sql_format = "select format_nom_eleve from classes where id = '".$id_classe."'";
+	global $mysqli;
+	$sql_format = "select format_nom_eleve from classes where id = '".$id_classe."'";
 	$resultat_format = mysqli_query($mysqli, $sql_format);
-	if($resultat_format->num_rows > 0) {
+	// Dans le cas d'une mise à jour oubliée, le champ format_nom_eleve n'existe pas.
+	if((is_object($resultat_format))&&($resultat_format->num_rows > 0)) {
 		$obj_format = $resultat_format->fetch_object();
 		$format = $obj_format->format_nom_eleve;
 		$resultat_format->close();
@@ -771,17 +772,17 @@ function affiche_eleve($nom,$prenom,$id_classe) {
 		$format="";
 	}
 
-    switch( $format ) {
-    case 'np':
-    $result = $nom." ".$prenom;
-    break;
-    case 'pn':
-    $result = $prenom." ".$nom;
-    break;
-    $result = $nom." ".$prenom;
-
-    }
-    return $result;
+	switch( $format ) {
+		case 'np':
+			$result = $nom." ".$prenom;
+			break;
+		case 'pn':
+			$result = $prenom." ".$nom;
+			break;
+		default:
+			$result = $nom." ".$prenom;
+	}
+	return $result;
 }
 
 /**
