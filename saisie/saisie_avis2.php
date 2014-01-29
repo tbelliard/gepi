@@ -929,18 +929,21 @@ if (isset($fiche)) {
 		"' onclick=\"afficher_div('graphe_toutes_periodes_".$current_eleve_login."','y',20,20); return false;\" target='_blank'>Toutes périodes</a>";
 
 		for($loop=1;$loop<=$periode_num_reserve;$loop++) {
-			$titre_infobulle="$current_eleve_nom $current_eleve_prenom (Période $loop)";
+			// Pour les élèves arrivés en cours d'année, certains rangs peuvent ne pas être renseignés.
+			if(isset($graphe_chaine_periode[$loop])) {
+				$titre_infobulle="$current_eleve_nom $current_eleve_prenom (Période $loop)";
 
-			$texte_infobulle="<div align='center'>\n";
-			$texte_infobulle.="<img src='../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."' width='600' height='400' alt=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" title=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" />";
-			$texte_infobulle.="<br />\n";
-			$texte_infobulle.="</div>\n";
+				$texte_infobulle="<div align='center'>\n";
+				$texte_infobulle.="<img src='../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."' width='600' height='400' alt=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" title=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" />";
+				$texte_infobulle.="<br />\n";
+				$texte_infobulle.="</div>\n";
 
-			$tabdiv_infobulle[]=creer_div_infobulle('graphe_periode_'.$loop.'_'.$current_eleve_login,$titre_infobulle,"",$texte_infobulle,"",'610px','410px','y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('graphe_periode_'.$loop.'_'.$current_eleve_login,$titre_infobulle,"",$texte_infobulle,"",'610px','410px','y','y','n','n');
 
-			echo " - <a href='../visualisation/draw_graphe.php?".
-			$graphe_chaine_periode[$loop].
-			"' onclick=\"afficher_div('graphe_periode_".$loop."_".$current_eleve_login."','y',20,20); return false;\" target='_blank'>P".$loop."</a>";
+				echo " - <a href='../visualisation/draw_graphe.php?".
+				$graphe_chaine_periode[$loop].
+				"' onclick=\"afficher_div('graphe_periode_".$loop."_".$current_eleve_login."','y',20,20); return false;\" target='_blank'>P".$loop."</a>";
+			}
 		}
 		echo "<br />\n";
 	}
