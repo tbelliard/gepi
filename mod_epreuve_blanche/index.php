@@ -232,6 +232,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					// On commence par vider les numéros d'anonymat avant de refaire l'affectation
 					$sql="UPDATE eb_copies SET n_anonymat='' WHERE id='$id_epreuve';";
+					//echo "$sql<br />";
 					$nettoyage=mysql_query($sql);
 
 					// Mettre à jour le type anonymat pour les copies déjà inscrites
@@ -265,6 +266,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						
 						if($temoin_erreur=="n") {
 							$sql="UPDATE eb_copies SET n_anonymat='$n_anonymat' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
+							//echo "$sql<br />";
 							$update=mysql_query($sql);
 							if($update) {
 								$temoin_n_anonymat='y';
@@ -348,6 +350,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 				}
 
+				$cpt_ano = 1;
+				if ($type_anonymat=='chrono') {
+					$sql="SELECT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY n_anonymat DESC LIMIT 1;";
+					$res_max_anonymat=mysql_query($sql);
+					if(mysql_num_rows($res_max_anonymat)>0) {
+						$lig_max_anonymat=mysql_fetch_object($res_max_anonymat);
+						$cpt_ano=preg_replace("/^0*/", "", preg_replace("/^MC/", "", $lig_max_anonymat->n_anonymat));
+					}
+				}
+				
+
 				$msg="";
 				for($i=0;$i<count($id_groupe);$i++) {
 					$sql="INSERT INTO eb_groupes SET id_epreuve='$id_epreuve', id_groupe='$id_groupe[$i]';";
@@ -369,7 +382,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
 					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'élève. Elève présent ==> date_sortie=0 ou null
 					$res=mysql_query($sql);
-					$cpt_ano = 1;
 					while($lig=mysql_fetch_object($res)) {
 						$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login';";
 						$test=mysql_query($sql);
@@ -378,11 +390,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								$n_anonymat=chaine_alea(3,4);
 								while(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$n_anonymat=chaine_alea(3,4);}
 								$tab_n_anonymat_affectes[]=$n_anonymat;
-							} else if ($type_anonymat=='chrono'){// Eric Ajout du numéro d'anonymat chronologique
-							 $n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
-							$tab_n_anonymat_affectes[]=$n_anonymat;
-							$cpt_ano += 1;		
-						    }
+							} else if ($type_anonymat=='chrono'){
+								// Eric Ajout du numéro d'anonymat chronologique
+								$n_anonymat='MC'.sprintf("%05s",$cpt_ano); //MC00nnn
+								$tab_n_anonymat_affectes[]=$n_anonymat;
+								$cpt_ano += 1;
+							}
 							else {
 								$n_anonymat=$lig->$type_anonymat;
 								if(in_array($n_anonymat,$tab_n_anonymat_affectes)) {$msg.="Erreur: Le numéro '$n_anonymat' de $lig->login est déjà affecté à un autre élève.<br />";}
@@ -390,6 +403,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							}
 							
 							$sql="INSERT INTO eb_copies SET id_epreuve='$id_epreuve', login_ele='$lig->login', n_anonymat='$n_anonymat', statut='v';";
+							//echo "$sql<br />";
 							$insert=mysql_query($sql);
 	
 							if(!$insert) {
@@ -510,6 +524,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						//$tab_profs_associes_copies
 						if(!in_array($lig->login_prof,$tab_profs_inscrits)) {
 							$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve' AND login_prof='$lig->login_prof';";
+							//echo "$sql<br />";
 							$update=mysql_query($sql);
 							$msg.="Suppression de professeur(s) qui étai(en)t associé(s) à des copies.<br />";
 						}
@@ -616,6 +631,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$del=mysql_query($sql);
 
 			$sql="UPDATE eb_copies SET id_salle='' WHERE id_epreuve='$id_epreuve';";
+			//echo "$sql<br />";
 			$del=mysql_query($sql);
 
 			$tab_corresp_id_salle=array();
@@ -683,6 +699,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$del=mysql_query($sql);
 
 			$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve';";
+			//echo "$sql<br />";
 			$del=mysql_query($sql);
 
 			for($loop=0;$loop<count($login_prof);$loop++) {
@@ -705,6 +722,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								$test=mysql_query($sql);
 								if(mysql_num_rows($test)>0) {
 									$sql="UPDATE eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."' WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
+									//echo "$sql<br />";
 									$update=mysql_query($sql);
 									if(!$update) {
 										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
@@ -712,6 +730,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 								}
 								else {
 									$sql="INSERT INTO eb_copies SET login_prof='".$copie_affect_copie_prof[$loop]."', id_epreuve='$id_epreuve', login_ele='".$lig->login_ele."';";
+									//echo "$sql<br />";
 									$insert=mysql_query($sql);
 									if(!$insert) {
 										$msg.="Erreur lors de l'affectation de la copie $lig->login_ele au correcteur ".$copie_affect_copie_prof[$loop]."<br />";
