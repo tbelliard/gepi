@@ -1115,7 +1115,7 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login)
 		(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
 	)
 ) {
-	echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black;'>\n";
+	echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	if($_SESSION['statut']=="administrateur") {
 		echo affiche_actions_compte($resp_login);
 		echo "<br />\n";
