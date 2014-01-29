@@ -353,7 +353,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$cpt_ano = 1;
 				if ($type_anonymat=='chrono') {
 					$sql="SELECT n_anonymat FROM eb_copies WHERE id_epreuve='$id_epreuve' ORDER BY n_anonymat DESC LIMIT 1;";
-					$res_max_anonymat=mysql_query($sql);
+					$res_max_anonymat=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysql_num_rows($res_max_anonymat)>0) {
 						$lig_max_anonymat=mysql_fetch_object($res_max_anonymat);
 						$cpt_ano=preg_replace("/^0*/", "", preg_replace("/^MC/", "", $lig_max_anonymat->n_anonymat));
@@ -701,7 +701,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="UPDATE eb_copies SET login_prof='' WHERE id_epreuve='$id_epreuve';";
 			//echo "$sql<br />";
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
-			$del=mysql_query($sql);
 
 			for($loop=0;$loop<count($login_prof);$loop++) {
 				$sql="INSERT INTO eb_profs SET login_prof='$login_prof[$loop]', id_epreuve='$id_epreuve';";
