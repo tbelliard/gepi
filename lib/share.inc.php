@@ -683,17 +683,17 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
  * @return string nom, prénom, civilité formaté
  */
 function affiche_utilisateur($login,$id_classe) {
-    global $mysqli;
-    $sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."'";
-       
+	global $mysqli;
+	$sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."'";
+
 	$resultat = mysqli_query($mysqli, $sql); 
 	$obj = $resultat->fetch_object();
 	$nom = $obj->nom;
 	$prenom = $obj->prenom;
 	$civilite = $obj->civilite;
 	$resultat->close();
-    
-    $sql_format = "select format_nom from classes where id = '".$id_classe."'";
+
+	$sql_format = "select format_nom from classes where id = '".$id_classe."'";
 	$resultat_format = mysqli_query($mysqli, $sql_format); 
 	if($resultat_format->num_rows > 0) {
 		$obj_format = $resultat_format->fetch_object();
@@ -713,42 +713,45 @@ function affiche_utilisateur($login,$id_classe) {
 		$format="";
 	}
 
-    switch( $format ) {
-    case 'np':
-    $result = $nom." ".$prenom;
-    break;
-    case 'pn':
-    $result = $prenom." ".$nom;
-    break;
-    case 'in':
-    $result = $i.$nom;
-    break;
-    case 'ni':
-    $result = $nom." ".$i;
-    break;
-    case 'cnp':
-    if ($civilite != '') $result = $civilite." ";
-    $result .= $nom." ".$prenom;
-    break;
-    case 'cpn':
-    if ($civilite != '') $result = $civilite." ";
-    $result .= $prenom." ".$nom;
-    break;
-    case 'cin':
-    if ($civilite != '') $result = $civilite." ";
-    $result .= $i.$nom;
-    break;
-    case 'cni':
-    if ($civilite != '') $result = $civilite." ";
-    $result .= $nom." ".$i;
-    case 'cn':
-    if ($civilite != '') $result = $civilite." ";
-    $result .= $nom;
-    break;
-    $result = $nom." ".$prenom;
+	$result="";
+	switch( $format ) {
+		case 'np':
+			$result = $nom." ".$prenom;
+			break;
+		case 'pn':
+			$result = $prenom." ".$nom;
+			break;
+		case 'in':
+			$result = $i.$nom;
+			break;
+		case 'ni':
+			$result = $nom." ".$i;
+			break;
+		case 'cnp':
+			if ($civilite != '') $result = $civilite." ";
+			$result .= $nom." ".$prenom;
+			break;
+		case 'cpn':
+			if ($civilite != '') $result = $civilite." ";
+			$result .= $prenom." ".$nom;
+			break;
+		case 'cin':
+			if ($civilite != '') $result = $civilite." ";
+			$result .= $i.$nom;
+			break;
+		case 'cni':
+			if ($civilite != '') $result = $civilite." ";
+			$result .= $nom." ".$i;
+			break;
+		case 'cn':
+			if ($civilite != '') $result = $civilite." ";
+			$result .= $nom;
+			break;
+		default:
+			$result = $nom." ".$prenom;
+	}
 
-    }
-    return $result;
+	return $result;
 }
 /**
  * Fonction qui propose l'ordre d'affichage du nom, prénom de l'élève en fonction des réglages de la classe de l'élève
