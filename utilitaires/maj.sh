@@ -154,7 +154,7 @@ Exemples d'utilisation :
     }
 
     if ($force || $start_from == '1.6.3') {
-        require './updates/163_to_dev.inc.php';
+        require './updates/163_to_164.inc.php';
     }
 
 // Test sur la version des plugins (installés ou pas)
