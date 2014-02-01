@@ -15,7 +15,7 @@ if ($argc != 2) {
     $script_error = true;
 } else {
     // Premier argument (obligatoire, pour éviter les accidents)
-    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','1.6.2','1.6.3','defaut','forcer'))) {
+    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','1.6.2','1.6.3','1.6.4','defaut','forcer'))) {
         if ($argv[1] == 'forcer') {
             $force = true;
         } elseif($argv[1] == 'defaut'){
@@ -155,6 +155,10 @@ Exemples d'utilisation :
 
     if ($force || $start_from == '1.6.3') {
         require './updates/163_to_164.inc.php';
+    }
+
+    if ($force || $start_from == '1.6.4') {
+        require './updates/164_to_dev.inc.php';
     }
 
 // Test sur la version des plugins (installés ou pas)

@@ -2792,7 +2792,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$texte_info_action="<h2>Vérification des catégories de matières</h2>\n";
 	}
 
-	$texte_info_action.="<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
+	$texte_info_action.="<p><b>Contrôle des catégories de matières&nbsp;:</b> \n";
 	$texte_info_action.="</p>\n";
 
 	$sql="SELECT id, classe FROM classes ORDER BY classe;";
@@ -2859,6 +2859,33 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$texte_info_action.="<p>Terminé.</p>\n";
 	echo $texte_info_action;
 	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	// A VOIR: Faut-il mettre un correctif
+	/*
+	Rechercher les classes pour lesquelles les catégories sont demandées, mais pour lesquelles la table j_matieres_categories_classes est vide.
+	SELECT display_mat_cat FROM classes WHERE id='7';
+	Faire alors UPDATE classes SET display_mat_cat='n' WHERE id='XXX'; et alerter.
+
+	// Les modifs précédentes corrigent ce pb.
+
+	$texte_info_action.="<p><b>Contrôle des classes avec affichage des catégories de matières demandé, mais sans aucun paramétrage défini dans j_matieres_categories_classes&nbsp;:</b> \n";
+	$sql="SELECT id, classe FROM classes WHERE display_mat_cat='y' AND id NOT in (SELECT classe_id FROM j_matieres_categories_classes);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig_cat=mysqli_fetch_object($res)) {
+			$texte_info_action.="<br />Suppression de l'affichage des catégories (<em>mal paramétré</em>) pour la classe de $lig_cat->classe&nbsp;: \n";
+			$sql="UPDATE classes SET display_mat_cat='n' WHERE id='$lig_cat->id';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {$texte_info_action.="<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
+		}
+	}
+	else {
+		$texte_info_action.="<span style='color:green'>Aucune anomalie trouvée</span>";
+	}
+	$texte_info_action.="</p>\n";
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+	*/
 
 	$texte_info_action="<hr />\n";
 	$texte_info_action.="<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
