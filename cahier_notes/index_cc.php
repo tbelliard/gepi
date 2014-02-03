@@ -175,6 +175,8 @@ if (isset($_GET['action'])) {
 	}
 }
 
+$message_dev = "Etes-vous sûr de vouloir supprimer ce(tte) $nom_cc, les évaluations et les notes qu\\'elle contient ?";
+$message_eval = "Etes-vous sûr de vouloir supprimer cette évaluation et les notes qu\\'elle contient ?";
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
 
@@ -273,7 +275,7 @@ else {
 		echo " | ";
 		echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id'>Ajouter une évaluation</a>";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."'>Supprimer</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($lig->nom_court)."', '".$message_dev."')\">Supprimer</a>";
 		echo " | ";
 		if($ver_periode[$periode_num]=='N') {
 			if(file_exists("transfert_cc_vers_cn.php")) {
@@ -307,7 +309,7 @@ else {
 				echo " | ";
 				echo "<a href='add_modif_cc_eval.php?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id'>Configuration</a>";
 				echo " | ";
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id&amp;action=suppr_eval".add_token_in_url()."'>Supprimer</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;id_eval=$lig2->id&amp;action=suppr_eval".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($lig->nom_court)."', '".$message_eval."')\">Supprimer</a>";
 				echo "</li>\n";
 			}
 			echo "</ul>\n";
