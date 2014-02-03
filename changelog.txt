@@ -96,6 +96,7 @@ Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
 - Possibilité d'afficher le mot de passe lors de la saisie (pour ceux qui s'empêtrent dans les majuscules/minuscules, clavier avec ou sans pavé numérique).
 - Possibilité de donner l'accès aux grilles PDF et listes CSV aux statuts autres.
+- Affichage des trombinoscopes des AID.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================
