@@ -89,17 +89,24 @@ if ($date_absence_eleve_fin != null) {
 $dt_date_absence_eleve_debut->setTime(0,0,0);
 $dt_date_absence_eleve_fin->setTime(23,59,59);
 
+$type_saisie=isset($_POST['type_saisie']) ? $_POST['type_saisie'] : "";
+if (($type_saisie != "")&&($type_saisie != "SANS")) {
+	$type_extrait=2;
+}
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 $dojo=true;
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
     require_once("../lib/header.inc.php");
-    
+//******************************************
+
     if ($traitement_csv_en_cours != 'true') {
 
 	    include('menu_abs2.inc.php');
@@ -119,6 +126,14 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
 	    au               
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
+	    <!--a href="#" onclick="document.getElementById('date_absence_eleve_debut').value='<?php echo strftime('%Y-%m-%d');?>'; document.getElementById('date_absence_eleve_fin').value='<?php echo strftime('%Y-%m-%d', time()+3600*24);?>'; return false;"> Aujourd'hui</a-->
+	    <!-- 
+	    
+	    20140208
+	    CA NE FONCTIONNE PAS NON PLUS: LA DATE CHANGE BIEN EN APPARENCE MAIS A LA VALIDATION LA DATE N'EST PAS PRISE EN COMPTE SI ON NE CLIQUE PAS DANS LES CHAMPS DE DATE
+	    
+	    &nbsp;<a href="#" onclick="document.getElementById('date_absence_eleve_debut').value='<?php echo strftime('%d/%m/%Y');?>'; document.getElementById('date_absence_eleve_fin').value='<?php echo strftime('%d/%m/%Y', time()+3600*24);?>'; return false;" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
+	    -->
 		</h2>
 	    <?php 
 	    if ($utilisateur->getStatut()!="administrateur" ) {
@@ -147,13 +162,50 @@ if ($affichage != 'ods') {// on affiche pas de html
 		    }
 	    ?>
 		</p>
+
 	    <p>
 	    Type :
-	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
+	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait" id="type_extrait">
 	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected="selected"';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
 	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected="selected"';}?>>Liste de toutes les saisies</option>
 	    </select>
-	    <br />
+	    </p>
+
+	    <p>
+	    Type de saisie :
+	    <!-- Dojo transforme le SELECT en object HtmlTableElement 
+	    On ne parvient pas à récupérer l'indice sélectionné.
+	    -->
+	    <!--select dojoType="dijit.form.Select" style="font-size:12px;" name="type_saisie" id="type_saisie"
+	        onchange="
+	        		alert(document.getElementById('type_saisie'));
+	        		alert(document.getElementById('type_saisie').selectedIndex);
+	        		if(document.getElementById('type_saisie').selectedIndex>1) {
+	        			document.getElementById('type_extrait').selectedIndex=1;
+        			}"-->
+	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_saisie" id="type_saisie">
+			<option value=''>---</option>
+<?php
+	echo "
+			<option value='SANS'";
+	if ($type_saisie == 'SANS') {
+		echo " selected='selected' ";
+	}
+	echo ">SANS TYPE</option>";
+	foreach (AbsenceEleveTypeQuery::create()->orderBySortableRank()->find() as $type) {
+		echo "
+			<option value='".$type->getId()."'";
+		if ($type_saisie === (string) $type->getId()) {
+			echo " selected='selected' ";
+		}
+		echo ">";
+		echo $type->getNom();
+		echo "</option>";
+	}
+?>
+	    </select>
+
+	    <p>
 	    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="html">Afficher</button>
 	    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
 	    <?php } else {
@@ -186,7 +238,10 @@ if ($affichage != null && $affichage != '') {
 	->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
 	->filterByEleveId($eleve_col->toKeyValue('Id', 'Id'));
 
-    if ($type_extrait == '1') {
+    if (($type_saisie != "")&&($type_saisie != "SANS")) {
+        $saisie_query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId($type_saisie)->endUse()->endUse();
+    }
+    elseif ($type_extrait == '1') {
 		$saisie_query->filterByManquementObligationPresence(true);
     }
 
@@ -199,54 +254,67 @@ if ($affichage != null && $affichage != '') {
 if ($affichage == 'html') {
 	$alt=1;
 
+	$cpt_eleve=0;
 	$saisie_col = $saisie_query->find();
-    echo '<table style="border:1px solid">';
-    $precedent_eleve_id = null;
-    foreach ($saisie_col as $saisie) {
-	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
-	    continue;
-	}
-	if ($precedent_eleve_id != $saisie->getEleveId()) {
-	    if ($precedent_eleve_id != null) {
-		//on fini la nouvelle ligne
-		echo '</table>';
-		echo '</td>';
-		echo '</tr>';
-	    }
-	    $precedent_eleve_id = $saisie->getEleveId();
-	    //on affiche une nouvelle ligne
-	    echo '<tr style="border:1px solid">';
-	    echo '<td style="border:1px solid; vertical-align:top">';
-	    echo '<a href="../eleves/visu_eleve.php?ele_login='.$saisie->getEleve()->getLogin().'&amp;onglet=absences&amp;quitter_la_page=y" target="_blank" title="Voir la fiche élève">';
-	    echo $saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom().' '.$saisie->getEleve()->getClasseNom();
-	    echo '</a>';
-	    echo '</td>';
-	    echo '<td style="border:1px solid">';
-	    echo '<table cellspacing="0" width="100%">';
-	}
+	echo '<table class="resizable sortable boireaus_alt2">
+	<tr>
+		<th class="text" title="Trier par nom d\'élève">Élèves</th>
+		<th class="text" title="Trier par classe">Classes</th>
+		<th class="text" title="Trier par date">Saisies</th>
+	</tr>';
+	$precedent_eleve_id = null;
+	foreach ($saisie_col as $saisie) {
+		if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
+			continue;
+		}
+		if ($precedent_eleve_id != $saisie->getEleveId()) {
+			if ($precedent_eleve_id != null) {
+				//on finit la nouvelle ligne
+				echo '
+			</table>
+		</td>
+	</tr>';
+			}
+			$precedent_eleve_id = $saisie->getEleveId();
+			//on affiche une nouvelle ligne
+			$cpt_eleve++;
+			echo '
+	<tr style="border:1px solid" class="tr_alt">
+		<td style="border:1px solid; vertical-align:top">
+			<a href="../eleves/visu_eleve.php?ele_login='.$saisie->getEleve()->getLogin().'&amp;onglet=absences&amp;quitter_la_page=y" target="_blank" title="Voir la fiche élève">
+				'.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom().'
+			</a>
+		</td>
+		<td style="border:1px solid; vertical-align:top">
+			'.$saisie->getEleve()->getClasseNom().'
+		</td>
+		<td style="border:1px solid">
+			<table cellspacing="0" width="100%">';
+		}
 
-	$tmp_tab=explode(" ", $saisie->getDateDescription());
-	if((!isset($jour_precedent))||($tmp_tab[2]!=$jour_precedent)) {
-		$alt=$alt*(-1);
-		$jour_precedent=$tmp_tab[2];
+		// Pour afficher d'une couleur différente les saisies des différents jours
+		$tmp_tab=explode(" ", $saisie->getDateDescription());
+		if((!isset($jour_precedent))||($tmp_tab[2]!=$jour_precedent)) {
+			$alt=$alt*(-1);
+			$jour_precedent=$tmp_tab[2];
+		}
+		echo '
+				<tr class="lig'.$alt.'">
+					<td>
+						<span style="display:none" title="Non affichée. Juste là pour le tri">'.$saisie->getDebutAbs('Ymd_Hi').'</span>
+						<a href="visu_saisie.php?id_saisie='.$saisie->getId().'">'.$saisie->getDateDescription().'</a>
+					</td>
+					<td>'.$saisie->getTypesDescription().'</td>
+				</tr>';
 	}
-	echo '<tr class="lig'.$alt.'">';
-	echo '<td>';
-	echo '<a href="visu_saisie.php?id_saisie='.$saisie->getId().'">';
-	echo $saisie->getDateDescription();
-	echo '</a>';
-	echo '</td>';
-	echo '<td>';
-	echo $saisie->getTypesDescription();
-	echo '</td>';
-	echo '</tr>';
-    }
-    echo '</table>';
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
-    echo '<h5>Extraction faite le '.date("d/m/Y - H:i").'</h5>';
-    
+	echo '
+			</table>
+		</td>
+	</tr>
+</table>
+<p>'.$cpt_eleve.' élève(s).</p>
+<h5>Extraction faite le '.date("d/m/Y - H:i").'</h5>';
+
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries    
 	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine
