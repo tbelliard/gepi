@@ -91,6 +91,13 @@ function info_eleve($ele_login) {
 		$tab_ele['lieu_naissance']="";
 	}
 
+	$tab_ele['mef']="";
+	$tmp_tab=get_tab_mef_from_mef_code($lig_ele->mef_code);
+	if(isset($tmp_tab['designation_courte'])) {
+		$tab_ele['mef']=$tmp_tab['designation_courte'];
+	}
+	unset($tmp_tab);
+
 	if($_SESSION['statut']=="professeur") {
 		$is_pp=is_pp($_SESSION['login'], "", $ele_login);
 	}

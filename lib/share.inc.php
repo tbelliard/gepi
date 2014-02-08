@@ -8096,6 +8096,44 @@ function get_tab_mef($mode="indice_mef_code") {
 	return $tab_mef;
 }
 
+/**
+ * Fonction destinée à extraire les informations associées à un MEF_CODE
+ *
+ * @global string
+ * @param string $mef_code Le MEF_CODE à rechercher
+ *
+ * @return array Tableau des champs du MEF extrait
+ */
+function get_tab_mef_from_mef_code($mef_code) {
+	global $mysqli;
+	$tab_mef=array();
+
+	$sql="SELECT * FROM mef WHERE mef_code='$mef_code';";
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$lig=$res->fetch_object();
+		$tab_mef['mef_code']=$lig->mef_code;
+		$tab_mef['libelle_court']=$lig->libelle_court;
+		$tab_mef['libelle_long']=$lig->libelle_long;
+		$tab_mef['libelle_edition']=$lig->libelle_edition;
+		$tab_mef['mef_rattachement']=$lig->mef_rattachement;
+		if($lig->libelle_edition!="") {
+			$tab_mef['designation_courte']=$lig->libelle_edition;
+		}
+		elseif($lig->libelle_long!="") {
+			$tab_mef['designation_courte']=$lig->libelle_long;
+		}
+		elseif($lig->libelle_court!="") {
+			$tab_mef['designation_courte']=$lig->libelle_court;
+		}
+		elseif($lig->mef_code!="") {
+			$tab_mef['designation_courte']=$lig->mef_code;
+		}
+		$res->close();
+	}
+	return $tab_mef;
+}
+
 function clean_temp_tables() {
 	global $mysqli;
 	$retour="";
