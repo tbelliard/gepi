@@ -113,14 +113,29 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    include('menu_bilans.inc.php');
 	    ?>
 	    <div id="contain_div" class="css-panes">
-	    <?php
-	        /*
-	        if(acces("/mod_abs2/calcul_score.php", $_SESSION['statut'])) {
-	            echo "
-	    <div style='float:right; width:3em;'><a href='calcul_score.php'>Scores</a></div>";
-	        }
-	        */
-	    ?>
+
+		<form name='form_change_date' id='form_change_date' action="<?php $_SERVER['PHP_SELF']?>" method="post">
+			<input type='hidden' name='date_absence_eleve_debut' id='date_absence_eleve_debut_2' value="" />
+			<input type='hidden' name='date_absence_eleve_fin' id='date_absence_eleve_fin_2' value="" />
+			<input type='hidden' name='nom_eleve' id='nom_eleve_2' value="" />
+			<input type='hidden' name='id_classe' id='id_classe_2' value="" />
+			<input type='hidden' name='type_extrait' id='type_extrait_2' value="" />
+			<input type='hidden' name='type_saisie' id='type_saisie_2' value="" />
+		</form>
+		<script type='text/javascript'>
+			function raffraichit_a_aujourdhui() {
+				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y');?>";
+				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', time()+3600*24);?>";
+				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
+				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
+				document.getElementById('id_classe_2').value=document.getElementById('id_classe').value;
+				document.getElementById('type_extrait_2').value=document.getElementById('type_extrait').value;
+				document.getElementById('type_saisie_2').value=document.getElementById('type_saisie').value;
+
+				document.getElementById('form_change_date').submit();
+			}
+		</script>
+
 	    <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 	    <h2>Extraire les saisies du 		
 	    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
@@ -134,10 +149,12 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    
 	    &nbsp;<a href="#" onclick="document.getElementById('date_absence_eleve_debut').value='<?php echo strftime('%d/%m/%Y');?>'; document.getElementById('date_absence_eleve_fin').value='<?php echo strftime('%d/%m/%Y', time()+3600*24);?>'; return false;" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
 	    -->
+	    &nbsp;<a href="javascript:raffraichit_a_aujourdhui()" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
+
 		</h2>
 	    <?php 
 	    if ($utilisateur->getStatut()!="administrateur" ) {
-			echo '<p>Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="'.$nom_eleve.'"/>';
+			echo '<p>Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" id="nom_eleve" size="10" value="'.$nom_eleve.'"/>';
 		
 		    //on affiche une boite de selection avec les classe
 		    if ($affichage != 'ods')
@@ -147,7 +164,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 			$classe_col = $utilisateur->getClasses();
 		    }
 		    if (!$classe_col->isEmpty()) {
-			    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
+			    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" id=\"id_classe\">");
 			    echo "<option value='-1'>Toutes les classes</option>\n";
 			    foreach ($classe_col as $classe) {
 				    echo "<option value='".$classe->getId()."'";
