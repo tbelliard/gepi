@@ -824,6 +824,13 @@ div.info_abs {
 	background-color: #$couleur_lig_alt_1;
 }
 
+.boireaus_alt2 tr.tr_alt:nth-child(even) {
+	background-color: #$couleur_lig_alt1;
+}
+.boireaus_alt2 tr.tr_alt:nth-child(odd) {
+	background-color: #$couleur_lig_alt_1;
+}
+
 ");
 				fclose($fich);
 			}

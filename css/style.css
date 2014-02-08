@@ -280,13 +280,27 @@ table.boireaus {
 	border-style: solid;
 	border-width: 1px;
 	border-color: black;
-    padding: .2em .5em;
+	padding: .2em .5em;
 }
 
 .boireaus .lig-1 {
 	background-color: #C8FFC8;
 }
 .boireaus .lig1 {
+	background-color: #FFE6AA;
+}
+
+.boireaus_alt tr:nth-child(even) {
+	background-color: #C8FFC8;
+}
+.boireaus_alt tr:nth-child(odd) {
+	background-color: #FFE6AA;
+}
+
+.boireaus_alt2 tr.tr_alt:nth-child(even) {
+	background-color: #C8FFC8;
+}
+.boireaus_alt2 tr.tr_alt:nth-child(odd) {
 	background-color: #FFE6AA;
 }
 
