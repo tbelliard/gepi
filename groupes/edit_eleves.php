@@ -382,10 +382,11 @@ if(mysqli_num_rows($res_grp)>1) {
 	$indice_grp_courant=0;
 	while($lig_grp=mysqli_fetch_object($res_grp)) {
 
-		$tmp_grp=get_group($lig_grp->id_groupe);
+		$tmp_grp=get_group($lig_grp->id_groupe, array('classes', 'profs'));
 
 		echo "<option value='$lig_grp->id_groupe'";
 		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo " title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
 	}
@@ -451,10 +452,11 @@ if(mysqli_num_rows($res_grp)>1) {
 	//echo "<option value=''>---</option>\n";
 	while($lig_grp=mysqli_fetch_object($res_grp)) {
 
-		$tmp_grp=get_group($lig_grp->id_groupe);
+		$tmp_grp=get_group($lig_grp->id_groupe, array('classes', 'profs'));
 
 		echo "<option value='$lig_grp->id_groupe'";
 		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo " title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
 	}
@@ -507,10 +509,11 @@ if(count($tab_autres_sig)>0) {
 	echo "<option value=''>---</option>\n";
 	for($loop=0;$loop<count($tab_autres_sig);$loop++) {
 
-		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes'));
+		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes', 'profs'));
 
 		echo "<option value='".$tab_autres_sig[$loop]."'";
 		if($tab_autres_sig[$loop]==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo " title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
 	}
@@ -614,8 +617,14 @@ echo "<div style='clear:both;'></div>\n";
 			$id_groupe_js[$cpt_ele_grp]=$lig_grp_avec_eleves->id_groupe;
 
 			echo "<option value='$cpt_ele_grp'";
-			if($temoin_classe_entiere=="y") {echo " style='color:grey;' title='Classe(s) entière(s)'";}
-			else {echo " title='Sous-groupe'";}
+			if($temoin_classe_entiere=="y") {
+				echo " style='color:grey;' title=\"Classe(s) entière(s).
+Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+			}
+			else {
+				echo " title=\"Sous-groupe.
+Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+			}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
 			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
