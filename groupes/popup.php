@@ -343,15 +343,24 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
+
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:left; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
 				echo "</td>\n";
 
 				if($avec_details=='y') {
@@ -368,7 +377,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -442,14 +451,22 @@ if($gepi_prof_suivi==""){
                 echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:right; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.' style='text-decoration:none; color:black;'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
 				echo "</td>\n";
 
 				if($avec_details=='y') {
@@ -466,7 +483,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -546,17 +563,29 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'><td>";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:right; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.' style='text-decoration:none; color:black;'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
+
 				echo "</td>\n";
 				echo "<td>$lig_eleve->classe</td>\n";
+/*
 
+				echo "</td>\n";
+*/
 				if($avec_details=='y') {
 					if(getSettingValue('active_module_trombinoscopes')=='y') {
 						echo "<td>\n";
@@ -571,7 +600,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
