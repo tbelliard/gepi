@@ -40,6 +40,13 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	header("Location: ../accueil.php?msg=Classe non choisie.");
+	die();
+}
+
 include "../lib/periodes.inc.php";
 
 $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$id_classe;
