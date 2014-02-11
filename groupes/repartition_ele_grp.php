@@ -590,7 +590,7 @@ if(!isset($_POST['recopie_select'])) {
 
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir d'autres classes</a>\n";
 
 	echo " | \n";
 
