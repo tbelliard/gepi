@@ -997,7 +997,7 @@ Patientez pendant l'extraction des données... merci.
 			$texte_infobulle="";
 			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
 
-			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'>EDT</a></div>
+			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
 
 <style type='text/css'>
 	.lecorps {
