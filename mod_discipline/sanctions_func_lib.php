@@ -1025,7 +1025,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
 
 	$id_nature="";
 	if($nature!="") {
-		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $nature)."';";
 		$res_nature=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_nature)) {
 			$id_nature=old_mysql_result($res_nature, 0, "id");

@@ -429,9 +429,9 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 							if(mysqli_num_rows($res_cn)==0) {
 								if($debug_appliquer_modele) echo "Aucun conteneur n'existe encore avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
 								$sql="INSERT INTO cn_conteneurs SET id_racine='$id_cahier_notes',
-																	nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court'])."',
+																	nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet'])."',
+																	description='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description'])."',
 																	mode='".$tab_modele[$m]['mode']."',
 																	coef='".$tab_modele[$m]['coef']."',
 																	arrondir='".$tab_modele[$m]['arrondir']."',
@@ -455,9 +455,9 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 								// Faut-il modifier parent pour remettre à la racine du carnet de notes?
 								// Faut-il réimposer le id_racine qui doit déjà être à $id_cahier_notes
 								$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes',
-																	nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court'])."',
+																	nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet'])."',
+																	description='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['description'])."',
 																	mode='".$tab_modele[$m]['mode']."',
 																	coef='".$tab_modele[$m]['coef']."',
 																	arrondir='".$tab_modele[$m]['arrondir']."',

@@ -430,7 +430,7 @@ if ($action == "upload_file") {
 
                     //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
 					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
-					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $toutelaligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$sql="INSERT INTO tempo5 SET texte='".mysqli_real_escape_string($GLOBALS["mysqli"], $toutelaligne)."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
                     $b++; // on incrémente le compteur pour le name

@@ -214,10 +214,10 @@ if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
 					$suffixe="_".$suffixe;
 				}
 
-				$sql="UPDATE groupes SET description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_grp_descr_homonyme[$i].$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+				$sql="UPDATE groupes SET description='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_grp_descr_homonyme[$i].$suffixe)."'";
 				if($corriger_noms=="y") {
 					$nom_groupe_courant=$tab_grp_name[$id_groupe_courant];
-					$sql.=", name= '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_courant.$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+					$sql.=", name= '".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_courant.$suffixe)."'";
 				}
 				$sql.=" WHERE id='".$id_groupe_courant."';";
 				$update=mysqli_query($GLOBALS["mysqli"], $sql);

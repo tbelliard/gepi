@@ -285,7 +285,7 @@ if (!isset($_POST["action"])) {
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>\n";
 						$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-						col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["options"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["options"])."';";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>";

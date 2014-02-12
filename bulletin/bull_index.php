@@ -3409,7 +3409,7 @@ else {
 				$id_classe=$tab_id_classe[$loop_classe];
 				$classe=get_class_from_id($id_classe);
 
-				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
 				$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {

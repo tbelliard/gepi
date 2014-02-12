@@ -436,7 +436,7 @@
 											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 										}
 										elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
-											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["structures"][$j]["code_structure"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+											$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["structures"][$j]["code_structure"])."';";
 											$insert_assoc_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 										}
 									}
@@ -686,8 +686,8 @@
 							$sql="UPDATE temp_gep_import2 SET ";
 							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
 							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-							$sql.="elenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['nom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="elepre='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['prenom']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+							$sql.="elenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['nom'])."', ";
+							$sql.="elepre='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]['prenom'])."', ";
 							if(!isset($eleves[$i]["code_sexe"])) {
 								$eleves[$i]["code_sexe"]=1;
 								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
@@ -731,7 +731,7 @@
 										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
 										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-											$sql.="id='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["scolarite_an_dernier"]["code_rne"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="id='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
 											$cpt_debut_requete++;
 										}
 
@@ -774,13 +774,13 @@
 												$nom_etab=casse_mot($chaine,'majf2');
 											}
 											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-											$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab)."'";
 											$cpt_debut_requete++;
 										}
 										else{
 											$sql.=", ";
 											$nom_etab=casse_mot($chaine,'majf2');
-											$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_etab)."'";
 											$cpt_debut_requete++;
 										}
 
@@ -814,7 +814,7 @@
 											// *****************************************
 											// PROBLEME: code_commune_insee!=code_postal
 											// *****************************************
-											$sql.="cp='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="cp='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -823,7 +823,7 @@
 											if($cpt_debut_requete>0){
 												$sql.=", ";
 											}
-											$sql.="ville='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+											$sql.="ville='".mysqli_real_escape_string($GLOBALS["mysqli"], maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
 											$cpt_debut_requete++;
 										}
 
@@ -1282,9 +1282,9 @@
 										}
 
 										$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
-																	libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['formation']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_long']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-																	libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_edition']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+																	libelle_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['formation'])."',
+																	libelle_long='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_long'])."',
+																	libelle_edition='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_edition'])."',
 																	code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
 																	mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
 																	;";

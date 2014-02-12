@@ -511,8 +511,8 @@ else {
 					if ($result_test == 0) {
 						// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
 						$sql="select login from utilisateurs where (
-						nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-						prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+						nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."' and
+						prenom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."' and
 						statut='professeur')";
 	
 						// Pour debug:
@@ -523,8 +523,8 @@ else {
 							if ($prenom_compose != '') {
 								$test_exist2 = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs
 								where (
-								nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-								prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_compose) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+								nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."' and
+								prenom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_compose)."' and
 								statut='professeur'
 								)");
 								$result_test2 = mysqli_num_rows($test_exist2);
@@ -662,7 +662,7 @@ else {
 	
 						// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
+						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
 						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}
@@ -680,7 +680,7 @@ else {
 						echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 					} else {
 						// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
-						$sql="UPDATE utilisateurs set etat='actif', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
+						$sql="UPDATE utilisateurs set etat='actif', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
 						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}

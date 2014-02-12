@@ -182,9 +182,9 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 				$sql="insert into cn_devoirs SET
 					id_racine='$id_cn_dest',
 					id_conteneur='$id_cn_dest',
-					nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+					nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court)."',
+					nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet)."',
+					description='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description)."',
 					coef='".$lig_dev_src->coef."',
 					note_sur='".$lig_dev_src->note_sur."',
 					ramener_sur_referentiel='".$lig_dev_src->ramener_sur_referentiel."',
@@ -206,7 +206,7 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 						if($groupe_dest["classe"]["ver_periode"][$tmp_id_classe][$periode_num_dest]=='N') {
 							foreach($groupe_dest["eleves"][$periode_num_dest]["telle_classe"][$tmp_id_classe] as $ele_login) {
 								if(isset($tab_note[$ele_login])) {
-									$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$ele_login', note='".$tab_note[$ele_login]['note']."', statut='".$tab_note[$ele_login]['statut']."', comment='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_note[$ele_login]['comment']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+									$sql="INSERT INTO cn_notes_devoirs SET id_devoir='$id_devoir_dest', login='$ele_login', note='".$tab_note[$ele_login]['note']."', statut='".$tab_note[$ele_login]['statut']."', comment='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_note[$ele_login]['comment'])."';";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert) {
 										$msg.="Erreur lors de l'enregistrement de la note pour ".civ_nom_prenom($ele_login)."<br />";

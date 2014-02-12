@@ -281,8 +281,8 @@ if (!isset($_POST["action"])) {
 					$sql="INSERT INTO eleves SET " .
 							"no_gep = '" . $reg_id_nat . "', " .
 							"login = '" . $reg_login . "', " .
-							"nom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-							"prenom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+							"nom = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) . "', " .
+							"prenom = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) . "', " .
 							"sexe = '" . $reg_sexe . "', " .
 							"naissance = '" . $reg_naissance . "', " .
 							"elenoet = '" . $reg_id_int . "', " .
@@ -303,14 +303,14 @@ if (!isset($_POST["action"])) {
 							if(mysqli_num_rows($res_tmp_u)>0) {
 								$lig_tmp_u=mysqli_fetch_object($res_tmp_u);
 
-								$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+								$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom)."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom)."', ";
 								if($reg_sexe=='M') {
 									$sql.="civilite='M', ";
 								}
 								else {
 									$sql.="civilite='MLLE', ";
 								}
-								$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+								$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='eleve', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 								if($debug_ele=='y') {echo "<span style='color:blue;'>$sql</span><br />";}
 								$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert_u) {
@@ -583,15 +583,15 @@ if (!isset($_POST["action"])) {
 					echo "<td>\n";
 
 					$sql="INSERT INTO temp_gep_import2 SET id_tempo='$i',
-					elenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					elepre='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					elesexe='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["sexe"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					eledatnais='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["naissance"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					elenoet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_int"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					elenonat='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_nat"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					etocod_ep='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["etab_prec"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					eledoubl='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["doublement"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					elereg='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["regime"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					elenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"])."',
+					elepre='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"])."',
+					elesexe='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["sexe"])."',
+					eledatnais='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["naissance"])."',
+					elenoet='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_int"])."',
+					elenonat='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_nat"])."',
+					etocod_ep='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["etab_prec"])."',
+					eledoubl='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["doublement"])."',
+					elereg='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["regime"])."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<span style='color:red'>".$data_tab[$i]["nom"]."</span>";

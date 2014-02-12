@@ -117,7 +117,7 @@ if ((isset($categorie)) && ($categorie != '')) {
     if ($a_enregistrer == 'y') {
 		$categorie=suppression_sauts_de_lignes_surnumeraires($categorie);
 
-        $sql = "INSERT INTO s_categories SET categorie='" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $categorie) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', sigle='" . $sigle . "';";
+        $sql = "INSERT INTO s_categories SET categorie='" . mysqli_real_escape_string($GLOBALS["mysqli"], $categorie) . "', sigle='" . $sigle . "';";
         $res = mysqli_query($GLOBALS["mysqli"], $sql);
         if (!$res) {
             $msg.="ERREUR lors de l'enregistrement de " . $categorie . "<br />\n";

@@ -1212,7 +1212,7 @@ if (isset($_POST['ajout_fichier_signature'])) {
 							} else {
 								if (file_exists($dirname."/".$sign_file['name'])) {
 									@unlink($dirname."/".$sign_file['name']);
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."' AND login='".$_SESSION['login']."';";
 									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 									$msg_tmp.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
 								}
@@ -1226,10 +1226,10 @@ if (isset($_POST['ajout_fichier_signature'])) {
 									$msg_tmp.= "Le fichier a été transféré.<br />";
 
 									// Par précaution, pour éviter des blagues avec des scories...
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."' AND login='".$_SESSION['login']."';";
 									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."';";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$insert) {
 										$msg_tmp.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";

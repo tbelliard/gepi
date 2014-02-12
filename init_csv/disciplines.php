@@ -130,7 +130,7 @@ if (!isset($_POST["action"])) {
 
 				$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres SET " .
 						"matiere = '" . $reg_nom_court . "', " .
-						"nom_complet = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom_long) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "',priority='0',matiere_aid='n',matiere_atelier='n'");
+						"nom_complet = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom_long) . "',priority='0',matiere_aid='n',matiere_atelier='n'");
 						//"nom_complet = '" . htmlspecialchars($reg_nom_long) . "'");
 
 				if (!$insert) {
@@ -272,7 +272,7 @@ if (!isset($_POST["action"])) {
                     echo "<tr class='lig$alt'>\n";
 					echo "<td>\n";
 					$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["nom_court"]."',
-					col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom_long"])."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";

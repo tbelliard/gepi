@@ -804,7 +804,7 @@ function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num
 		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
 		$lig=mysqli_fetch_object($res);
 		$texte=$lig->commentaires."\n".$texte_ajoute;
-		$sql="UPDATE acces_cn SET commentaires='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $texte) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$lig->id';";
+		$sql="UPDATE acces_cn SET commentaires='".mysqli_real_escape_string($GLOBALS["mysqli"], $texte)."' WHERE id='$lig->id';";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($update) {
 			return true;

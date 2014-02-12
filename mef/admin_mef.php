@@ -308,9 +308,9 @@ if ($action=="importnomenclature") {
 								}
 
 								$sql="INSERT INTO mef SET mef_code='".$tab_mef[$loop]['code_mef']."',
-															libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['formation']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-															libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_long']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-															libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_edition']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+															libelle_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['formation'])."',
+															libelle_long='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_long'])."',
+															libelle_edition='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_mef[$loop]['libelle_edition'])."',
 															code_mefstat='".$tab_mef[$loop]['code_mefstat']."',
 															mef_rattachement='".$tab_mef[$loop]['mef_rattachement']."'
 															;";

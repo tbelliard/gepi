@@ -173,7 +173,7 @@ if(isset($_POST['upload_photo'])) {
 		} else {
 			$dest = $rep_photos;
 
-			$sql="SELECT elenoet FROM eleves WHERE login='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+			$sql="SELECT elenoet FROM eleves WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo'])."';";
 			$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_elenoet)==0) {
 				$msg.="Aucun elenoet n'a été trouvé pour renommer la photo de cet élève.<br />\n";

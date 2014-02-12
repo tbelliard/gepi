@@ -133,7 +133,7 @@ if ((isset($nature))&&($nature != '')) {
 			$msg.="La catégorie choisie pour la nouvelle nature n'existe pas.<br />";
 		}
 
-		$sql = "INSERT INTO s_natures SET nature='" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', id_categorie='".$id_categorie_nature_nouvelle."';";
+		$sql = "INSERT INTO s_natures SET nature='" . mysqli_real_escape_string($GLOBALS["mysqli"], $nature) . "', id_categorie='".$id_categorie_nature_nouvelle."';";
 		//echo "$sql<br />";
 		$res = mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$res) {

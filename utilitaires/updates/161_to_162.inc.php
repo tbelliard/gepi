@@ -153,12 +153,12 @@ if ($test_champ>0) {
 			$sql="SELECT * FROM s_types_sanctions;";
 			$res_sts=mysqli_query($GLOBALS["mysqli"], $sql);
 			while($lig_sts=mysqli_fetch_object($res_sts)) {
-				$sql="INSERT INTO s_types_sanctions2 SET nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', type='autre';";
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature)."', type='autre';";
 				$result_inter = traite_requete($sql);
 				if ($result_inter == '') {
 					$id_nature_sanction=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
-					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
+					$sql="update s_sanctions set id_nature_sanction='$id_nature_sanction', nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_sts->nature)."' where id_sanction in (select id_sanction from s_autres_sanctions where id_nature='".$lig_sts->id_nature."');";
 					$result_inter = traite_requete($sql);
 					if ($result_inter == '') {
 						$result.="&nbsp;-> Mise à jour des sanctions ".$lig_sts->nature." existantes : ".msj_ok("Ok !");

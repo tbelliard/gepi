@@ -231,13 +231,13 @@ if (!isset($is_posted)) {
 						}
 						$sql="insert into resp_pers set
 									pers_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
-									nom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									civilite = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], casse_mot($affiche[3],'majf2')) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									tel_pers = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									tel_port = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									tel_prof = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									mel = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+									nom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1])."',
+									prenom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2])."',
+									civilite = '".mysqli_real_escape_string($GLOBALS["mysqli"], casse_mot($affiche[3],'majf2'))."',
+									tel_pers = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4])."',
+									tel_port = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5])."',
+									tel_prof = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6])."',
+									mel = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7])."',
 									adr_id = '".preg_replace("/[^0-9]/","",$affiche[8])."'
 									";
 						$req = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -263,11 +263,11 @@ if (!isset($is_posted)) {
 								}
 								else {
 
-									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2])."', ";
 									if(isset($affiche[3])){
-										$sql.="civilite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], casse_mot($affiche[3],'majf2')) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+										$sql.="civilite='".mysqli_real_escape_string($GLOBALS["mysqli"], casse_mot($affiche[3],'majf2'))."', ";
 									}
-									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+									$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 									$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(!$insert_u) {
@@ -491,13 +491,13 @@ if (!isset($is_posted)) {
 						}
 						$sql="insert into resp_adr set
 									adr_id = '".preg_replace("/[^0-9]/","",$affiche[0])."',
-									adr1 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									adr2 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									adr3 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[3]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									adr4 = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									cp = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									pays = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-									commune = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'
+									adr1 = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1])."',
+									adr2 = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[2])."',
+									adr3 = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[3])."',
+									adr4 = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[4])."',
+									cp = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[5])."',
+									pays = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[6])."',
+									commune = '".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[7])."'
 									";
 						$req = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req) {

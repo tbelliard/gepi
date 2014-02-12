@@ -980,7 +980,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 					    // L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
 						// On s'assure que la chaîne est bien enregistrée en UTF-8.
 						$valeur = ensure_utf8($valeur);
-						$this->cas_extra_attributes[$attribut] = trim(((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $valeur) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")));
+						$this->cas_extra_attributes[$attribut] = trim(mysqli_real_escape_string($GLOBALS["mysqli"], $valeur));
 					}
         }
       }
