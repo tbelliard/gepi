@@ -745,7 +745,7 @@ if($temoin==1){
 								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no3++;
-									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+									echo mysqli_error($GLOBALS["mysqli"]);
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion du responsable ($affiche[0]) $affiche[1] $affiche[2] avec les numéros de téléphone $affiche[4], $affiche[5], $affiche[6], le mel $affiche[7] et le numéro d'adresse $affiche[8].<br />\n";
 								} else {
 									$nb_record3++;
@@ -890,7 +890,7 @@ if($temoin==1){
 								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no1++;
-									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+									echo mysqli_error($GLOBALS["mysqli"]);
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'association élève $affiche[0] et responsable ($affiche[2]) $affiche[1].<br />\n";
 								} else {
 									$nb_record1++;
@@ -1019,7 +1019,7 @@ if($temoin==1){
 								$req = mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no2++;
-									echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+									echo mysqli_error($GLOBALS["mysqli"]);
 									echo "<span style='color:red'>Erreur</span> lors de l'insertion de l'adresse $affiche[1], $affiche[2], $affiche[3], $affiche[4], $affiche[5], $affiche[7], ($affiche[6]), avec le numéro $affiche[0].<br />\n";
 								} else {
 									$nb_record2++;

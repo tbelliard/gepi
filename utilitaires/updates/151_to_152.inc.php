@@ -973,11 +973,11 @@ description_item VARCHAR( 255 ) NOT NULL
 			    $result .= msj_present("Suppression effectuée");
 			} else {
 			    $result .= msj_erreur();
-			    $result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			    $result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . mysqli_error($GLOBALS["mysqli"]) . "< br/>";
 			}
 		} else {
 			$result .= msj_erreur();
-			$result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			$result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . mysqli_error($GLOBALS["mysqli"]) . "< br/>";
 		}
 
 

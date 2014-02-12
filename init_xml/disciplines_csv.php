@@ -176,7 +176,7 @@ if (!isset($is_posted)) {
 						if($resverif == 0) {
 							$req = mysqli_query($GLOBALS["mysqli"], "insert into matieres set matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom(remplace_accents($affiche[0],''),"an","_-","")) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[1]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='0',matiere_aid='n',matiere_atelier='n'");
 							if(!$req) {
-								$nb_reg_no++; echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+								$nb_reg_no++; echo mysqli_error($GLOBALS["mysqli"]);
 							} else {
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlentities($affiche[1])."</p></td></tr>";
 							}

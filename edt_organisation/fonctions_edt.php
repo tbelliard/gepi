@@ -250,14 +250,14 @@ function VerifierTablesDelestage()
                 id_groupe INT(11),
                 periode INT(11)
                 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 	// ======= table pour optimiser les requêtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage2 (
                 login VARCHAR(50),
                 id_groupe INT(11),
                 periode INT(11)
                 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 }	
 
 // ======================================================
@@ -464,7 +464,7 @@ function ConstruireEnteteEDT()
 {
     $table_data = array();
 
-    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysqli_error($GLOBALS["mysqli"]));
     $jour_sem_tab = array();
     while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	    $jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
@@ -481,7 +481,7 @@ function ConstruireCreneauxEDT()
 {
     $table_data = array();
     $req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
-							    WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+							    WHERE type_creneaux != 'pause'") or die(mysqli_error($GLOBALS["mysqli"]));
     $nbre_lignes = mysqli_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {
         $nbre_lignes = 1;
@@ -591,7 +591,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     if (($type == "vide") AND ($couleur == "cadre")) {
         $sql_request = "SELECT type_creneaux FROM edt_creneaux
 							        WHERE id_definie_periode  = '".$id_creneaux."'";
-        $req_type_creneaux = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $req_type_creneaux = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
         if ($req_type_creneaux) {
             if ($rep_type_creneau = mysqli_fetch_array($req_type_creneaux)) {
                 if ($rep_type_creneau['type_creneaux'] == "repas") {
@@ -1268,7 +1268,7 @@ function renvoie_liste_a($type, $alpha){
 // Fonction qui renvoie la liste des élèves d'une classe
 
 function renvoie_liste_classe($id_classe_post){
-	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'.');
+	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysqli_error($GLOBALS["mysqli"]).'.');
 	$nb_eleves = mysqli_num_rows($req_liste_login);
 
 	$rep_liste_eleves = array();
@@ -1397,7 +1397,7 @@ function renvoieAid($statut, $nom){
 	}
 	// On envoie la requête
 	if ($sql) {
-		$requete = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$requete = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
 		$nbre = mysqli_num_rows($requete);
 		// Et on retourne le tableau
 			$resultat = array();

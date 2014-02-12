@@ -211,7 +211,7 @@ if (!isset($is_posted)) {
                 commune2 = '$affiche[11]'
                 ");
                 if(!$req) {
-                    $nb_reg_no++; echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                    $nb_reg_no++; echo mysqli_error($GLOBALS["mysqli"]);
                 } else {
                     $nb_record++;
                 }

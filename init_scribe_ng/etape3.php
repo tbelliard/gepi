@@ -175,7 +175,7 @@ if ($_POST['step'] == "3") {
               $req_nb_resp_deja_presents = "SELECT count(*) FROM responsables2 WHERE ele_id = '$eleve_associe_ele_id'";
               $res_nb_resp = mysqli_query($GLOBALS["mysqli"], $req_nb_resp_deja_presents);
               if (((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) != 0) {
-                  error_log("Erreur : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                  error_log("Erreur : ".mysqli_error($GLOBALS["mysqli"]));
                   die("Une erreur s'est produite lors la r&eacute;cup&eacute;ration des responsables d&eacute;j&agrave; pr&eacute;sents.");
               }
               $nb_resp = mysqli_fetch_array($res_nb_resp);

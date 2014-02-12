@@ -135,7 +135,7 @@ if (!isset($_POST["action"])) {
 
 				if (!$insert) {
 					$error++;
-					echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+					echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 				} else {
 					$total++;
 				}

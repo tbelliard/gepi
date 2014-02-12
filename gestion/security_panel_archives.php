@@ -173,7 +173,7 @@ $sql.="t.date DESC ".$requete1;
 //echo $sql;
 
 $req = mysqli_query($GLOBALS["mysqli"], $sql);
-if (!$req) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+if (!$req) echo mysqli_error($GLOBALS["mysqli"]);
 $alt=1;
 while ($row = mysqli_fetch_object($req)) {
 	$alt=$alt*(-1);

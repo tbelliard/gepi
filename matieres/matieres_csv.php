@@ -124,7 +124,7 @@ else {
 							if(!$req) {
 								$nb_reg_no++;
 								//echo mysql_error();
-								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</font></td></tr>\n";
+								echo "<tr class='lig$alt white_hover'><td colspan='2'><font color='red'>".mysqli_error($GLOBALS["mysqli"])."</font></td></tr>\n";
 							} else {
 								echo "<tr class='lig$alt white_hover'><td><p><font color='red'>".htmlspecialchars($affiche[0])."</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>\n";
 							}

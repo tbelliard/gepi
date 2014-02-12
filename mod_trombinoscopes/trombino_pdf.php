@@ -107,8 +107,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	//if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
 	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";'; }
 
-	$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+	$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 
 	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")";}
@@ -250,7 +250,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 						AND jgm.id_matiere = m.matiere
 						AND jgp.id_groupe = jgm.id_groupe
 						AND jgp.login = "'.$prof.'"';
-			$execution_matiere = mysqli_query($GLOBALS["mysqli"], $requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution_matiere = mysqli_query($GLOBALS["mysqli"], $requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 				while ($donnee_matiere = mysqli_fetch_array($execution_matiere))
 				{
 					//$prof_de = $prof_de."\n".$donnee_matiere['nom_complet'].' ';
@@ -260,7 +260,7 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 		return ($prof_de);
 	}
 
-	$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	//$cpt_photo = 1;
 	$tab_classes=array();
 	$cpt_photo = 0;

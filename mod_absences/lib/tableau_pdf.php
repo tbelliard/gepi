@@ -108,7 +108,7 @@ $tri = isset($_GET['tri']) ? $_GET['tri'] : 'nom, prenom';
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysqli_error($GLOBALS["mysqli"]));
 $test_cpe = array();
 
 $test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
@@ -207,7 +207,7 @@ if ($type=='I') {$typetableau='de l\'Infirmerie';}
 					AND ".$requete_recherche.$complement_requete_du.$complement_requete_au.$complement_requete_dateincluse.//modif didier
 					" GROUP BY id_absence_eleve ORDER BY ".$tri." ASC";
 
-	$executer = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$executer = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br>'.mysqli_error($GLOBALS["mysqli"]));
 	$nb_d_entree_total = mysqli_num_rows( $executer );
 	$i = 0;
 

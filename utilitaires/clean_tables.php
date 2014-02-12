@@ -2648,7 +2648,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$sql="ALTER TABLE `".$_GET['table']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
-			echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+			echo "<span style='color:red; font-weight:bold;'>Erreur ".mysqli_error($GLOBALS["mysqli"])."</span><br />";
 		}
 		else {
 			echo "<span style='color:green'>Ok</span>";
@@ -2664,7 +2664,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
-					echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+					echo "<span style='color:red; font-weight:bold;'>Erreur ".mysqli_error($GLOBALS["mysqli"])."</span><br />";
 				}
 				else {
 					echo "<span style='color:green'>Ok</span>";
@@ -2692,7 +2692,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 							$sql="ALTER TABLE `".$une_table['Name']."` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;";
 							$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res3) {
-								echo "<span style='color:red; font-weight:bold;'>Erreur ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />";
+								echo "<span style='color:red; font-weight:bold;'>Erreur ".mysqli_error($GLOBALS["mysqli"])."</span><br />";
 							}
 							else {
 								echo "<span style='color:green'>Ok</span>";

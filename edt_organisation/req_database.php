@@ -37,7 +37,7 @@ function LessonsFromDayTeacherSlotPeriod($jour_sem, $login_edt, $id_creneau, $pe
                                     id_definie_periode = '".$id_creneau."' AND
                                     (id_calendrier = '".$period."' OR id_calendrier = '0')";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -58,7 +58,7 @@ function LessonsFromDayTeacherSlotWeekPeriod($jour_sem, $login_edt, $id_creneau,
                                             id_semaine = '".$id_semaine."' AND
                                             (id_calendrier = '".$period."' OR id_calendrier = '0')";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -80,7 +80,7 @@ function LessonsFromStudentDaySlotPeriod($login_eleve, $jour_sem, $id_creneau, $
                                 $calendrier";
 
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -100,7 +100,7 @@ function LessonsFromClassDaySlotPeriodWeek($id_classe, $jour_sem, $id_creneau, $
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -120,7 +120,7 @@ function LessonsFromStudentDaySlotPeriodWeek($login_eleve, $jour_sem, $id_crenea
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -141,7 +141,7 @@ function LessonsFromClassDaySlotPeriodNotWeek($id_classe, $jour_sem, $id_creneau
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -162,7 +162,7 @@ function LessonsFromStudentDaySlotPeriodNotWeek($login_eleve, $jour_sem, $id_cre
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -181,7 +181,7 @@ function LessonsFromClassDaySlotPeriod($id_classe, $jour_sem, $id_creneau, $cale
                                 id_groupe IN (SELECT id_groupe FROM j_groupes_classes WHERE id_classe = '".$id_classe."') AND
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -200,7 +200,7 @@ function AidFromClassDaySlotPeriod($id_classe, $jour_sem, $id_creneau, $calendri
                                 jour_semaine = '".$jour_sem."' AND
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier ";
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 }
 // =============================================================================
@@ -260,7 +260,7 @@ function AidFromStudentDaySlotPeriod($login_eleve, $jour_sem, $id_creneau, $cale
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -281,7 +281,7 @@ function AidFromClassDaySlotPeriodWeek($id_classe, $jour_sem, $id_creneau, $cale
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -301,7 +301,7 @@ function AidFromStudentDaySlotPeriodWeek($login_eleve, $jour_sem, $id_creneau, $
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -323,7 +323,7 @@ function AidFromClassDaySlotPeriodNotWeek($id_classe, $jour_sem, $id_creneau, $c
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -344,7 +344,7 @@ function AidFromStudentDaySlotPeriodNotWeek($login_eleve, $jour_sem, $id_creneau
                                 id_definie_periode = '".$id_creneau."' AND
                                 $calendrier";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }
@@ -364,7 +364,7 @@ function LessonsFromDayClassroomSlotWeekPeriod($jour_sem, $id_salle, $id_creneau
                                             id_semaine = '".$id_semaine."' AND
                                             (id_calendrier = '".$period."' OR id_calendrier = '0')";
 
-    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creneau = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
     return $req_creneau;
 
 }

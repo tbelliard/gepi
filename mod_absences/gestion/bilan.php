@@ -389,7 +389,7 @@ $pdf->SetY(90);
         $pdf->Cell(22, 5, 'Motif', 1, 0, 'C', '');
         $pdf->Cell(54, 5, ('le motif spécifié'), 1, 1, 'C', '');
 		$requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'A' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
-		$execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		while ( $data_1 = mysqli_fetch_array($execution_1))
       	{
 
@@ -424,7 +424,7 @@ $pdf->SetY(90);
         $pdf->Cell(55, 5, 'Le', 1, 0, '', '');
         $pdf->Cell(131, 5, ('le motif spécifié'), 1, 1, 'C', '');
 		$requete_2 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'R' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
-		$execution_2 = mysqli_query($GLOBALS["mysqli"], $requete_2) or die('Erreur SQL !'.$requete_2.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_2 = mysqli_query($GLOBALS["mysqli"], $requete_2) or die('Erreur SQL !'.$requete_2.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		while ( $data_2 = mysqli_fetch_array($execution_2))
         {
        		//tableau des retards
@@ -455,7 +455,7 @@ $pdf->SetY(90);
         $pdf->Cell(76, 5, ('le motif spécifié'), 1, 1, 'C', '');
 
 		$requete_3 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE ((d_date_absence_eleve >= '".date_sql($du)."' AND d_date_absence_eleve <= '".date_sql($au)."') OR (a_date_absence_eleve >= '".date_sql($du)."' AND a_date_absence_eleve <= '".date_sql($au)."')) AND type_absence_eleve = 'D' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
-		$execution_3 = mysqli_query($GLOBALS["mysqli"], $requete_3) or die('Erreur SQL !'.$requete_3.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_3 = mysqli_query($GLOBALS["mysqli"], $requete_3) or die('Erreur SQL !'.$requete_3.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		while ( $data_3 = mysqli_fetch_array($execution_3))
        {
       //tableau des absences

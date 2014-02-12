@@ -145,7 +145,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier") {
 												WHERE id_definie_periode = '".$id_definie_periode_ins."' ";
 							}
 							// Execution de cette requete dans la base cartouche
-							mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+							mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 							$verification[$total] = 1;
 						} else {
 							// vérification = 2 - Ce créneau horaire existe déjà
@@ -210,12 +210,12 @@ if ($action_sql == "supprimer") {
 	//Requete d'insertion MYSQL
 	$requete = "DELETE FROM ".$prefix_base."edt_creneaux".$choix_table." WHERE id_definie_periode ='$id_periode'";
 	// Execution de cette requete
-	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 }
 
 if ($action == "modifier") {
 	$requete_modif_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' WHERE id_definie_periode="'.$id_periode.'"';
-	$resultat_modif_periode = mysqli_query($GLOBALS["mysqli"], $requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_modif_periode = mysqli_query($GLOBALS["mysqli"], $requete_modif_periode) or die('Erreur SQL !'.$requete_modif_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	$data_modif_periode = mysqli_fetch_array($resultat_modif_periode);
 }
 // ===================================================================
@@ -309,7 +309,7 @@ if ($compter >= 1) {
 <?php
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux'.$choix_table.' ORDER BY heuredebut_definie_periode, nom_definie_periode ASC';
 
-    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     $i=1;
 	while ( $data_periode = mysqli_fetch_array( $execution_periode ) ) {
 		if ($i === '1') {

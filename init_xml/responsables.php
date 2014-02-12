@@ -242,7 +242,7 @@ if (!isset($is_posted)) {
 									";
 						$req = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req) {
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 							$nb_reg_no3++;
 						} else {
 							$nb_record3++;
@@ -380,7 +380,7 @@ if (!isset($is_posted)) {
 						$req = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req) {
 							$nb_reg_no1++;
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record1++;
 						}
@@ -502,7 +502,7 @@ if (!isset($is_posted)) {
 						$req = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req) {
 							$nb_reg_no2++;
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span> sur <span style='color:red'>".$sql."</span><br />\n";
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span> sur <span style='color:red'>".$sql."</span><br />\n";
 						} else {
 							$nb_record2++;
 						}

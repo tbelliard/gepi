@@ -130,7 +130,7 @@ if(($action_sql === "ajouter" or $action_sql === "modifier") and $valide_form ==
                               $requete = "UPDATE ".$prefix_base."suivi_eleve_cpe SET parqui_suivi_eleve_cpe='".$_SESSION['login']."', komenti_suivi_eleve_cpe = '$data_info_suivi', niveau_message_suivi_eleve_cpe = '$niveau_urgent', action_suivi_eleve_cpe = '$action_suivi' WHERE id_suivi_eleve_cpe = '".$id_suivi_eleve_cpe."'";
                       }
                             // Execution de cette requete dans la base cartouche
-                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                              $verification = '1';
                     } else {
                                // vérification = 2 - C'est initiale pour les motif existe déjas
@@ -151,14 +151,14 @@ if ($action_sql === 'supprimer' and $valide_form === 'yes')
          //Requete de suppresion MYSQL
             $requete = "DELETE FROM ".$prefix_base."suivi_eleve_cpe WHERE id_suivi_eleve_cpe ='$id_suivi_eleve_cpe'";
          // Execution de cette requete
-            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
  }
 
 if ($action === 'modifier')
  {
       $id_suivi_eleve_cpe = $_GET['id_suivi_eleve_cpe'];
       $requete_modif_fiche = 'SELECT * FROM '.$prefix_base.'suivi_eleve_cpe WHERE id_suivi_eleve_cpe="'.$id_suivi_eleve_cpe.'"';
-      $resultat_modif_fiche = mysqli_query($GLOBALS["mysqli"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_modif_fiche = mysqli_query($GLOBALS["mysqli"], $requete_modif_fiche) or die('Erreur SQL !'.$requete_modif_fiche.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       $data_modif_fiche = mysqli_fetch_array($resultat_modif_fiche);
  }
 
@@ -205,7 +205,7 @@ if ($action === 'modifier')
   <div style="text-align: center;">
   <?php
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
-         $execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+         $execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysqli_error($GLOBALS["mysqli"]));
          while ( $data_liste_fiche = mysqli_fetch_array($execution_liste_fiche))
           {
               $login_eleve = $data_liste_fiche['login'];
@@ -273,7 +273,7 @@ if ($action === 'modifier')
            <?php
 	     $cpt_komenti = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."'"),0);
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC LIMIT ".$debut_selection_suivi.", 2";
-             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysqli_error($GLOBALS["mysqli"]));
               while ( $data_komenti = mysqli_fetch_array($execution_komenti))
                 {
 			$action_pour_eleve = '';
@@ -330,7 +330,7 @@ if ($action === 'modifier')
 			<select name="action_suivi" style="width: 250px;">
  	                <?php
 			      $requete_liste_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
-        	              $resultat_liste_action = mysqli_query($GLOBALS["mysqli"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        	              $resultat_liste_action = mysqli_query($GLOBALS["mysqli"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	                      while ( $data_liste_action = mysqli_fetch_array($resultat_liste_action)) { ?>
                                      <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
                               <?php } ?>

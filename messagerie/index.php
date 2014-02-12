@@ -137,7 +137,7 @@ if (isset($_POST['purger']))
 	{
 	//$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".mktime(0,0,0,date("m"),date("d"),date("Y"));
 	$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".time();
-	if (!mysqli_query($GLOBALS["mysqli"], $r_sql)) $msg_erreur="Erreur lors de la purge des messages&nbsp;: ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+	if (!mysqli_query($GLOBALS["mysqli"], $r_sql)) $msg_erreur="Erreur lors de la purge des messages&nbsp;: ".mysqli_error($GLOBALS["mysqli"]);
 	else	{
 			$msg_OK="Purge effectuée. ";
 			if (mysqli_affected_rows($GLOBALS["mysqli"])==0) $msg_OK.="Aucun message supprimé.";
@@ -317,7 +317,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			//unset($matiere_destinataire);
 			unset($id_classe);
 		} else {
-			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysqli_error($GLOBALS["mysqli"]);
 		}
 	}
 }

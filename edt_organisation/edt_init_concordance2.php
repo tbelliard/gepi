@@ -98,7 +98,7 @@ if ($etape != NULL) {
 					VALUE ".$values." ('', ".$etape.", 'fin', 'fin')";
 		//echo "<br />$sql<br />";
 		$envoie = mysqli_query($GLOBALS["mysqli"], $sql)
-					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<br />'.$envoie);
+					OR error_reporting('Erreur dans la requête $envoie de l\'étape '.$etape.' : '.mysqli_error($GLOBALS["mysqli"]).'<br />'.$envoie);
 		// On récupère le nombre de valeurs enregistrées et on affiche
 		if ($etape == 6 OR $etape == 8 OR $etape == 9 OR $etape == 11) {
 			echo '<p>Aucun enregistrement, passez à l\'étape suivante.</p>';

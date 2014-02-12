@@ -152,7 +152,7 @@ if (isset($add_new_numero) AND isset($add_new_salle)) {
 			$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO salle_cours
 									(id_salle, numero_salle, nom_salle) VALUES
 									('', '$add_new_numero', '$add_new_salle')")
-								OR trigger_error('Echec lors de l\'enregistrement : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+								OR trigger_error('Echec lors de l\'enregistrement : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 
 			echo "<span class=\"accept\">La salle numéro ".unslashes($add_new_numero)." appelée \"".unslashes($add_new_salle)."\" a bien été enregistrée !</span>";
 		}

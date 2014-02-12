@@ -77,7 +77,7 @@ for($i = 0; $i < $nbre; ){
 
 	// On récupère toutes les absences qui correspondent à ce login
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences_eleves WHERE eleve_absence_eleve = '".$tab_tmp_ele[$i]."' ORDER BY a_date_absence_eleve")
-					OR DIE('Erreur dans la récupération des absences de votre enfant : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					OR DIE('Erreur dans la récupération des absences de votre enfant : '.mysqli_error($GLOBALS["mysqli"]));
 	$nbre_absence = mysqli_num_rows($query);
 
 	// et on les mets en forme

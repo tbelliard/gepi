@@ -96,7 +96,7 @@ if($_SESSION['statut']=='professeur') {
 			AND periode = '".$verif_var1[1]."'";
 	log_ajax_app("$sql");
 	$verif_eleve = mysqli_query($GLOBALS["mysqli"], $sql)
-			or die('Erreur de verif_var1 : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			or die('Erreur de verif_var1 : '.mysqli_error($GLOBALS["mysqli"]));
 	log_ajax_app("Test passe.");
 	$temoin_eleve=mysqli_num_rows($verif_eleve);
 

@@ -609,9 +609,9 @@ if(!empty($valide_modif_model))
 			//AJOUT ERIC Si on supprime un modèle, s'il est utilisé pour une classe on réinitialise pour la classe la valeur à NULL du champs modele_bulletin_pdf
 			$requete_classe="UPDATE classes SET modele_bulletin_pdf=NULL WHERE (modele_bulletin_pdf='$id_model_bulletin')";
 			//echo $requete_classe;
-			mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br>'.mysqli_error($GLOBALS["mysqli"]));
 
-			mysqli_query($GLOBALS["mysqli"], $requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			mysqli_query($GLOBALS["mysqli"], $requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.mysqli_error($GLOBALS["mysqli"]));
 		}
 	}
 	//mysql_query($requete_model) or die('Erreur SQL !'.$requete_model.'<br>'.mysql_error());

@@ -279,7 +279,7 @@ if ( $etiquette_action === 'originaux' ) {
 // REQUETE SQL SUR LES PERIODES (HORAIRE)
 	$i = '0';
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
-        $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee_periode = mysqli_fetch_array( $execution_periode ) ) {
 		$Horaire[$i] = heure_texte_court($donnee_periode['heuredebut_definie_periode']).' - '.heure_texte_court($donnee_periode['heurefin_definie_periode']);
 		$HorDeb[$i] = $donnee_periode['heuredebut_definie_periode'];

@@ -75,13 +75,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id)");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} elseif (is_numeric($_POST['classe'])) {
 			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."')");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";

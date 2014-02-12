@@ -227,7 +227,7 @@ if (!isset($is_posted)) {
                         if($resverif == 0) {
                             $req = mysqli_query($GLOBALS["mysqli"], "insert into matieres set matiere='$affiche[0]', nom_complet='$affiche[1]', priority='0',matiere_aid='n',matiere_atelier='n'");
                             if(!$req) {
-                                $nb_reg_no++; echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                                $nb_reg_no++; echo mysqli_error($GLOBALS["mysqli"]);
                             } else {
                                 echo "<tr><td><p><font color='red'>$affiche[0]</font></p></td><td><p>".htmlspecialchars($affiche[1])."</p></td></tr>";
                             }

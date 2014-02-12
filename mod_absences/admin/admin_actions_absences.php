@@ -99,7 +99,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
                                                   WHERE id_absence_action = '".$id_absence_action_ins."' ";
                       }
                             // Execution de cette requete dans la base cartouche
-                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                             mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                              $verification[$total] = 1;
                     } else {
                                // vérification = 2 - C'est initiale pour les motif existe déjas
@@ -147,7 +147,7 @@ if ($action_sql == "supprimer") {
          //Requete de suppresion MYSQL
             $requete = "DELETE FROM absences_actions WHERE id_absence_action ='$id_motif'";
          // Execution de cette requete
-            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
             $msg = "La suppresion a été effectuée avec succès.";
       } else {
           $msg = "Suppression impossible car une ou plusieurs suivi ont été enregistrées avec ce type d'action. Commencez par supprimer les suivis concernées";
@@ -158,7 +158,7 @@ if ($action_sql == "supprimer") {
 if ($action == "modifier")
  {
       $requete_modif_motif = 'SELECT * FROM absences_actions WHERE id_absence_action="'.$id_motif.'"';
-      $resultat_modif_motif = mysqli_query($GLOBALS["mysqli"], $requete_modif_motif) or die('Erreur SQL !'.$requete_modif_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_modif_motif = mysqli_query($GLOBALS["mysqli"], $requete_modif_motif) or die('Erreur SQL !'.$requete_modif_motif.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       $data_modif_motif = mysqli_fetch_array($resultat_modif_motif);
  }
 
@@ -252,7 +252,7 @@ if ($action == "reinit_lettres_pdf") {
       </tr>
     <?php
     $requete_motif = 'SELECT * FROM absences_actions WHERE init_absence_action !="DI" AND init_absence_action !="IN" ORDER BY init_absence_action ASC';
-    $execution_motif = mysqli_query($GLOBALS["mysqli"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_motif = mysqli_query($GLOBALS["mysqli"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br>'.mysqli_error($GLOBALS["mysqli"]));
     $i = '1';
     while ( $data_motif = mysqli_fetch_array( $execution_motif ) ) {
        if ($i === '1') { $couleur_cellule = 'couleur_ligne_1'; $i = '2'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>

@@ -202,17 +202,17 @@ if (!isset($_POST["action"])) {
 						$new_group = mysqli_query($GLOBALS["mysqli"], "INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . html_entity_decode($reg_matiere_complet) . "'");
 						$group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 						if (!$new_group) {
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// Le groupe est créé. On associe la matière.
 						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'");
 						if (!$res) {
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// On associe le prof
 						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'");
 						if (!$res) {
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// On associe la matière au prof
 						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'");
@@ -220,7 +220,7 @@ if (!isset($_POST["action"])) {
 						foreach ($valid_classes as $classe_id) {
 							$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'");
 							if (!$res) {
-								echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 							}
 						}
 
@@ -236,7 +236,7 @@ if (!isset($_POST["action"])) {
 								for ($p=1;$p<=$periods;$p++) {
 									$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'");
 									if (!$res) {
-										echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+										echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 									}
 								}
 							}

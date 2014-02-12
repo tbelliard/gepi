@@ -57,12 +57,12 @@ if ($mode == "classe") {
 		$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(jec.login) login, u.auth_mode " .
 				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
 				"jec.id_classe = c.id and u.login = jec.login)");
-		if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} elseif (is_numeric($_POST['classe'])) {
 		$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(jec.login), u.auth_mode " .
 				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
 				"jec.id_classe = '" . $_POST['classe']."' and u.login = jec.login)");
-		if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} else {
 		$error = true;
 		$msg .= "Vous devez sélectionner au moins une classe !<br/>";

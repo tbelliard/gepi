@@ -270,7 +270,7 @@ function DataOpen(&$Query) {
 		case 1: $this->RecSet = $this->SrcId; break;
 		case 2: $this->RecSet = @mysqli_query($GLOBALS["mysqli"], $Query); break;
 		}
-		if ($this->RecSet===false) $this->DataAlert('MySql error message when opening the query: '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		if ($this->RecSet===false) $this->DataAlert('MySql error message when opening the query: '.mysqli_error($GLOBALS["mysqli"]));
 		break;
 	case 1: // Num
 		$this->RecSet = true;

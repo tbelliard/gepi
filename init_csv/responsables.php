@@ -268,7 +268,7 @@ if (!isset($_POST["action"])) {
 
 						if ($insert == false) {
 							$error++;
-							$erreur_mysql=((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+							$erreur_mysql=mysqli_error($GLOBALS["mysqli"]);
 							if($erreur_mysql!=""){echo "<p style='color:red'>".$erreur_mysql."</p>\n";}
 							//echo "<p>$sql</p>\n";
 						} else {

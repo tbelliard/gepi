@@ -291,7 +291,7 @@ if (!isset($_POST["action"])) {
 					$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 					if (!$insert) {
 						$error++;
-						echo "<span style='color:red'><b>ERREUR&nbsp;: </b>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+						echo "<span style='color:red'><b>ERREUR&nbsp;: </b>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 					} else {
 						$total++;
 
@@ -333,7 +333,7 @@ if (!isset($_POST["action"])) {
 										if (!$insert_etab) {
 											//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 											$error++;
-											echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+											echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 										}
 									}
 									else {
@@ -342,7 +342,7 @@ if (!isset($_POST["action"])) {
 										if (!$update_etab) {
 											//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 											$error++;
-											echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+											echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 										}
 									}
 								}
@@ -360,7 +360,7 @@ if (!isset($_POST["action"])) {
 									if (!$insert_etab) {
 										//echo "<p>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab_prec.</p>\n";
 										$error++;
-										echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+										echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 									}
 								}
 							}
@@ -387,7 +387,7 @@ if (!isset($_POST["action"])) {
 						$insert3 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_regime SET login = '" . $reg_login . "', doublant = '" . $reg_double . "', regime = '" . $reg_regime . "'");
 						if (!$insert3) {
 							$error++;
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 					}
 				}

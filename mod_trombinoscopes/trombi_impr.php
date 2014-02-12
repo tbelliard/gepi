@@ -49,7 +49,7 @@ function classe_de($id_classe_eleve)
 		{
 		include("../secure/connect.inc.php");
 			$requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
-			$execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			$data_classe_eleve = mysqli_fetch_array($execution_classe_eleve);
 			$id_classe_eleve = $data_classe_eleve['nom_complet'];
 		return($id_classe_eleve);
@@ -152,8 +152,8 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 	//if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'"'; }
 	if ( $action_affiche === 'statusgepi' ) { $requete_qui = 'SELECT statut FROM '.$prefix_base.'utilisateurs u WHERE u.statut = "'.$statusgepi.'" AND etat="actif";'; }
 
-			$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-			$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execute_qui = mysqli_query($GLOBALS["mysqli"], $requete_qui) or die('Erreur SQL !'.$requete_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+			$donnees_qui = mysqli_fetch_array($execute_qui) or die('Erreur SQL !'.$execute_qui.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	if ( $action_affiche === 'classe' ) { $entete = "Classe : ".$donnees_qui['nom_complet']." (".$donnees_qui['classe'].")";}
 	if ( $action_affiche === 'groupe' ) {
 		//$entete = "Groupe : ".$donnees_qui['name'];
@@ -282,7 +282,7 @@ function matiereprof($prof, $equipepeda) {
 					AND jgm.id_matiere = m.matiere
 					AND jgp.id_groupe = jgm.id_groupe
 					AND jgp.login = "'.$prof.'"';
-		$execution_matiere = mysqli_query($GLOBALS["mysqli"], $requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_matiere = mysqli_query($GLOBALS["mysqli"], $requete_matiere) or die('Erreur SQL !'.$requete_matiere.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			while ($donnee_matiere = mysqli_fetch_array($execution_matiere))
 			{
 				$prof_de = $prof_de.'<br />'.$donnee_matiere['nom_complet'].' ';
@@ -293,7 +293,7 @@ function matiereprof($prof, $equipepeda) {
 
 //echo "$requete_trombi<br/>";
 
-		$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution_trombi = mysqli_query($GLOBALS["mysqli"], $requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		$cpt_photo = 1;
 		while ($donnee_trombi = mysqli_fetch_array($execution_trombi))
 			{

@@ -344,7 +344,7 @@ if ($aff_infos != "oui") {
 			}
 		// Afficher les différents types de semaine : $aff_type_semaines
 		$aff_type_semaines = "";
-		$sql_semaines = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$sql_semaines = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT type_edt_semaine FROM edt_semaines") or die ('Erreur dans la requête [Select distinct] : '.mysqli_error($GLOBALS["mysqli"]));
 		$nbre_types = mysqli_num_rows($sql_semaines);
 			for($b=0; $b < $nbre_types; $b++) {
 				$liste_types[$b] = old_mysql_result($sql_semaines, $b, "type_edt_semaine");
@@ -355,7 +355,7 @@ if ($aff_infos != "oui") {
 			}
 		// Afficher le nom des différentes périodes du calendrier
 		$aff_calendrier = "";
-		$sql_calendar = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$sql_calendar = mysqli_query($GLOBALS["mysqli"], "SELECT nom_calendrier FROM edt_calendrier") or die ('Erreur dans la requête nom_calendrier :'.mysqli_error($GLOBALS["mysqli"]));
 		$nbre_calendar = mysqli_num_rows($sql_calendar);
 			if ($nbre_calendar === 0) {
 				$aff_calendrier = "<span class=\"red\">Vous n'avez pas d&eacute;fini de périodes de cours.</span>";

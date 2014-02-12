@@ -91,9 +91,9 @@ require_once("../lib/header.inc.php");
 				$rep_log_eleve[$i]["login"] = old_mysql_result($req_login, $i, "login");
 				// On teste si cet élève n'est pas déjà membre de l'AID
         if ($autoriser_inscript_multiples == 'y')
-  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'.');
+  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
         else
-  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'.');
+  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
 				$verif = mysqli_num_rows($req_verif);
 				if ($verif === 0) {
 					$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
@@ -160,7 +160,7 @@ if (isset($aff_liste_m)) {
 					FROM j_eleves_classes jec, eleves e
 					WHERE id_classe = '".$aff_liste_m."'
 					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						OR DIE('Erreur dans la requête $req_ele : '.mysqli_error($GLOBALS["mysqli"]));
 	$nbre_ele_m = mysqli_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -186,7 +186,7 @@ if (isset($aff_liste_m)) {
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysqli_error($GLOBALS["mysqli"]));
 
 			$aff_ele_m[$b]["id_eleve"] = old_mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = old_mysql_result($req_ele, $b, "nom");
@@ -238,7 +238,7 @@ if (isset($aff_liste_m)) {
 										jec.login = j.login AND
 										jec.id_classe = c.id
 										ORDER BY c.classe, e.nom, e.prenom")
-									OR trigger_error('Erreur sur la liste d\'élèves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+									OR trigger_error('Erreur sur la liste d\'élèves : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 	$nbre = mysqli_num_rows($req_ele_aid);
 		$s = "";
 		if ($nbre >= 2) {

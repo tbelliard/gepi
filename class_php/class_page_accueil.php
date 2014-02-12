@@ -1938,7 +1938,7 @@ if(getSettingAOui('active_bulletins')) {
 				  AND nom_fichier = '".$autorise[$a][0]."'
 				  ORDER BY id";
         
-            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
             $nbre = $query_f->num_rows;
 		
 		if ($nbre >= 1) {
