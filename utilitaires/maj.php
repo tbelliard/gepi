@@ -248,7 +248,7 @@ if (isset ($_POST['maj'])) {
             require 'updates/161_to_162.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("1.6.2"))) {
+	if (($force_maj == 'yes') or (quelle_maj("1.6.3"))) {
             //require 'updates/162_to_dev.inc.php';
             require 'updates/162_to_163.inc.php';
 	}
