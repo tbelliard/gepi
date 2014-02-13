@@ -1222,6 +1222,8 @@ function test_maj() {
  * @return booleanTRUE s'il faut faire la mise à jour
  */
 function quelle_maj($num) {
+    return (getSettingValue("version") <= $num);
+    /*
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
     $version_old = getSettingValue("version");
     $versionRc_old = getSettingValue("versionRc");
@@ -1243,6 +1245,7 @@ function quelle_maj($num) {
         }
     }
     return FALSE;
+    */
 }
 
 /**
