@@ -1215,37 +1215,11 @@ function test_maj() {
 /**
  * Recherche si la mise à jour est à faire
  *
- * @global mixed 
- * @global mixed 
- * @global mixed 
  * @param mixed $num le numéro de version
  * @return booleanTRUE s'il faut faire la mise à jour
  */
 function quelle_maj($num) {
-    return (getSettingValue("version") <= $num);
-    /*
-    global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
-    $version_old = getSettingValue("version");
-    $versionRc_old = getSettingValue("versionRc");
-    $versionBeta_old = getSettingValue("versionBeta");
-    if ($version_old < $num) {
-        return TRUE;
-        die();
-    }
-    if ($version_old == $num) {
-        if ($gepiRcVersion > $versionRc_old) {
-            return TRUE;
-            die();
-        }
-        if ($gepiRcVersion == $versionRc_old) {
-            if ($gepiBetaVersion > $versionBeta_old) {
-                return TRUE;
-                die();
-            }
-        }
-    }
-    return FALSE;
-    */
+    return (getSettingValue("version") < $num);
 }
 
 /**
