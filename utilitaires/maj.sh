@@ -72,32 +72,6 @@ Exemples d'utilisation :
 // Si on arrive ici, c'est qu'on a les bons arguments, et qu'on peut appliquer
 // la mise à jour.
 
-    // Numéro de version effective
-    $version_old = $gepiSettings['version'];
-    // Numéro de version RC effective
-    $versionRc_old = $gepiSettings['versionRc'];
-    // Numéro de version Beta effective
-    $versionBeta_old = $gepiSettings['versionBeta'];
-
-    $rc_old = '';
-    if ($versionRc_old != '') {
-            $rc_old = "-RC" . $versionRc_old;
-    }
-    $rc = '';
-    if ($gepiRcVersion != '') {
-            $rc = "-RC" . $gepiRcVersion;
-    }
-
-    $beta_old = '';
-    if ($versionBeta_old != '') {
-            $beta_old = "-beta" . $versionBeta_old;
-    }
-    $beta = '';
-    if ($gepiBetaVersion != '') {
-            $beta = "-beta" . $gepiBetaVersion;
-    }
-
-
     $pb_maj = '';
     $result = '';
     $result_inter = '';
@@ -183,8 +157,6 @@ if ($verif_version_plugins!="") {
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
-    saveSetting("versionRc", $gepiRcVersion);
-    saveSetting("versionBeta", $gepiBetaVersion);
     saveSetting("pb_maj", $pb_maj);
 
 }

@@ -1174,40 +1174,18 @@ function affiche_date_naissance($date) {
 /**
  *
  * @global mixed 
- * @global mixed 
- * @global mixed 
  * @return boolean TRUE si on a une nouvelle version 
  */
 function test_maj() {
-    global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
+    global $gepiVersion
     $version_old = getSettingValue("version");
-    $versionRc_old = getSettingValue("versionRc");
-    $versionBeta_old = getSettingValue("versionBeta");
 
     if ($version_old =='') {
        return TRUE;
-       die();
    }
    if ($gepiVersion > $version_old) {
         // On a une nouvelle version stable
        return TRUE;
-       die();
-   }
-   if (($gepiVersion == $version_old) and ($versionRc_old!='')) {
-        // On avait une RC
-       if (($gepiRcVersion > $versionRc_old) or ($gepiRcVersion=='')) {
-            // Soit on a une nouvelle RC, soit on est passé de RC à stable
-           return TRUE;
-           die();
-       }
-   }
-   if (($gepiVersion == $version_old) and ($versionBeta_old!='')) {
-        // On avait une Beta
-       if (($gepiBetaVersion > $versionBeta_old) or ($gepiBetaVersion=='')) {
-            // Soit on a une nouvelle Beta, soit on est passé à une RC ou une stable
-           return TRUE;
-           die();
-       }
    }
    return FALSE;
 }
