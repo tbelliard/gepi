@@ -1177,7 +1177,7 @@ function affiche_date_naissance($date) {
  * @return boolean TRUE si on a une nouvelle version 
  */
 function test_maj() {
-    global $gepiVersion
+    global $gepiVersion;
     $version_old = getSettingValue("version");
 
     if ($version_old =='') {
