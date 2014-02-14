@@ -57,8 +57,8 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=2");
-    die();
+	header("Location: ../logout.php?auto=2");
+	die();
 }
 
 
@@ -116,7 +116,7 @@ else {
 }
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
-$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
 if(isset($mode)) {
 	if($_SESSION['statut']=='administrateur') {
@@ -323,6 +323,140 @@ if($nb_classes>0) {
 	}
 }
 
+
+//========================================================
+// Export CSV
+
+$categorie_utilisateur[2]="responsable";
+$categorie_utilisateur[3]="élève";
+
+$categorie_utilisateur[4]="responsable";
+$categorie_utilisateur[5]="élève";
+
+$categorie_utilisateur[6]="élève et responsable";
+
+//$mode_2=isset($_GET['mode_2']) ? $_GET['mode_2'] : NULL;
+
+$date_mysql_debut=isset($_GET['date_mysql_debut']) ? $_GET['date_mysql_debut'] : NULL;
+$date_mysql_fin=isset($_GET['date_mysql_fin']) ? $_GET['date_mysql_fin'] : NULL;
+
+if((isset($_GET['csv']))&&(isset($id_classe))&&(isset($mode))&&(isset($date_mysql_debut))&&(isset($date_mysql_fin))) {
+
+	$AccesStatConnexionEle=false;
+	$AccesDetailConnexionEle=false;
+	$AccesStatConnexionResp=false;
+	$AccesDetailConnexionResp=false;
+
+	$mode_2=$mode;
+
+	if(preg_match("/^[0-9]{1,}$/", $id_classe)) {
+		$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle", "", $id_classe);
+		$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle", "", $id_classe);
+		$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp", "", "", $id_classe);
+		$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $id_classe);
+	}
+	elseif(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+		// Toutes les classes
+		$AccesStatConnexionEle=true;
+		$AccesDetailConnexionEle=true;
+		$AccesStatConnexionResp=true;
+		$AccesDetailConnexionResp=true;
+
+		if($mode==2) {
+			$mode_2=4;
+		}
+		elseif($mode==3) {
+			$mode_2=5;
+		}
+		else {
+			$mode_2=6;
+		}
+	}
+
+	$csv="";
+	if(($mode_2==2)&&(!$AccesStatConnexionResp)&&(!$AccesDetailConnexionResp)) {
+		$msg="Vous n'avez pas accès à cette classe.";
+		unset($csv);
+	}
+
+	if(($mode_2==3)&&(!$AccesStatConnexionEle)&&(!$AccesDetailConnexionEle)) {
+		$msg="Vous n'avez pas accès à cette classe.";
+		unset($csv);
+	}
+
+	if(($mode_2>=4)&&(!in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))) {
+		$msg="Vous n'avez pas accès à ces modes.";
+		unset($csv);
+	}
+
+
+	if(isset($csv)) {
+		// Connexions responsables:
+		$sql_partie[2]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		// Pour toutes les classes:
+		$sql_partie[4]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+
+		// Connexions élèves:
+		$sql_partie[3]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		// Pour toutes les classes:
+		$sql_partie[5]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		// Elèves et parents confondus
+		if(preg_match("/^[0-9]{1,}$/", $id_classe)) {
+			$sql_partie[6]="(SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') UNION (SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') ORDER BY START, login;";
+		}
+		else {
+			$sql_partie[6]="(SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') UNION (SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') ORDER BY START, login;";
+		}
+
+
+		$sql=$sql_partie[$mode_2];
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$msg="Aucun compte ".$categorie_utilisateur[$mode_2]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.";
+		}
+		else {
+
+			$tab_connexions=array();
+			while($lig=mysqli_fetch_object($res)) {
+				$tab=explode(" ", $lig->START);
+				$date=$tab[0];
+				/*
+				$tmp_date=explode("-", $date);
+				$jour=$tmp_date[2];
+				$mois=$tmp_date[1];
+				$annee=$tmp_date[0];
+
+				$timestamp=gmmktime(0, 0, 0, $mois, $jour, $annee);
+				//$date=$timestamp;
+				*/
+				if(!isset($tab_connexions[$date]['login'])) {
+					$tab_connexions[$date]['login']=array();
+				}
+				if(!in_array(mb_strtoupper($lig->login), $tab_connexions[$date]['login'])) {
+					$tab_connexions[$date]['login'][]=mb_strtoupper($lig->login);
+				}
+			}
+
+			$csv="Date;Nombre de connexions;\r\n";
+			foreach($tab_connexions as $date => $tab_login) {
+				$csv.=formate_date($date).";".count($tab_login['login']).";\r\n";
+			}
+
+			$nom_fic="statistiques_de_connexion_mode".$mode."_".strftime("%Y%m%d_%H%M%S").".csv";
+			send_file_download_headers('text/x-csv',$nom_fic);
+			echo echo_csv_encoded($csv);
+			die();
+		}
+	}
+}
+//========================================================
+
+
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -423,10 +557,15 @@ if(!isset($mode)) {
 	echo "<ul>\n";
 	echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=1'>Statistiques globales de connexions élèves et responsables</a></li>\n";
 	if(($AccesStatConnexionResp)||($AccesDetailConnexionResp)) {
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=2'>Statistiques des connexions parents d'une classe</a> (<em>ou toutes classes confondues</em>)</li>\n";
 	}
 	if(($AccesStatConnexionEle)||($AccesDetailConnexionEle)) {
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=3'>Statistiques des connexions élèves d'une classe</a> (<em>ou toutes classes confondues</em>)</li>\n";
+	}
+	if((($AccesStatConnexionEle)||($AccesDetailConnexionEle))&&(($AccesStatConnexionResp)||($AccesDetailConnexionResp))) {
+		if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+			echo "<li><a href='".$_SERVER['PHP_SELF']."?mode=6'>Statistiques des connexions élèves et parents d'une classe cumulées</a> (<em>ou toutes classes confondues</em>)</li>\n";
+		}
 	}
 	echo "</ul>\n";
 
@@ -434,7 +573,7 @@ if(!isset($mode)) {
 }
 elseif($mode==1) {
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-	
+
 	$sql="select START from log order by START ASC limit 1;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -835,11 +974,9 @@ elseif($mode==1) {
 	}
 </script>\n";
 }
-elseif(($mode==2)||($mode==3)) {
+//elseif(($mode==2)||($mode==3)||($mode==4)||($mode==5)||($mode==6)) {
+elseif(($mode==2)||($mode==3)||($mode==6)) {
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
-
-	$categorie_utilisateur[2]="responsable";
-	$categorie_utilisateur[3]="élève";
 
 	echo "<p class='bold'>Connexions ".$categorie_utilisateur[$mode]."s&nbsp;:</p>\n";
 
@@ -863,8 +1000,8 @@ elseif(($mode==2)||($mode==3)) {
 	
 	echo "<br />\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-	echo "<fieldset id='connexions' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>\n";
-	echo "<legend style='border: 1px solid grey; background-color: white;  '>Connexions ".$categorie_utilisateur[$mode]."</legend>\n";
+	echo "<fieldset id='connexions' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white;'>Connexions ".$categorie_utilisateur[$mode]."</legend>\n";
 	echo add_token_field();
 	
 	// Choix de la classe
@@ -879,6 +1016,11 @@ elseif(($mode==2)||($mode==3)) {
 		$temoin_tmp=0;
 		//$cpt_classe=0;
 		$num_classe=-1;
+
+		if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+			$chaine_options_classes.="<option value='Toutes' selected='true'>Toutes</option>\n";
+		}
+
 		for($loop=0;$loop<count($tab_classe);$loop++) {
 			if((isset($id_classe))&&($tab_classe[$loop]['id']==$id_classe)) {
 				// Index de la classe dans les <option>
@@ -901,32 +1043,6 @@ elseif(($mode==2)||($mode==3)) {
 				$id_class_prec=$tab_classe[$loop]['id'];
 			}
 		}
-		/*
-		while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-			if((isset($id_classe))&&($lig_class_tmp->id==$id_classe)) {
-				// Index de la classe dans les <option>
-				$num_classe=$cpt_classe;
-	
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
-				$temoin_tmp=1;
-				if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-					$id_class_suiv=$lig_class_tmp->id;
-				}
-				else{
-					$id_class_suiv=0;
-				}
-			}
-			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
-			}
-	
-			if($temoin_tmp==0){
-				$id_class_prec=$lig_class_tmp->id;
-			}
-			$cpt_classe++;
-		}
-		*/
 	}// =================================
 	
 	echo "Classe&nbsp;: <select name='id_classe' id='id_classe'>\n";
@@ -974,32 +1090,84 @@ elseif(($mode==2)||($mode==3)) {
 
 	if($id_classe!='') {
 
-		$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle", "", $id_classe);
-		$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle", "", $id_classe);
-		$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp", "", "", $id_classe);
-		$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $id_classe);
+		$mode_2=$mode;
 
-		if(($mode==2)&&(!$AccesStatConnexionResp)&&(!$AccesDetailConnexionResp)) {
+		$AccesStatConnexionEle=false;
+		$AccesDetailConnexionEle=false;
+		$AccesStatConnexionResp=false;
+		$AccesDetailConnexionResp=false;
+
+		if(preg_match("/^[0-9]{1,}$/", $id_classe)) {
+			$AccesStatConnexionEle=AccesInfoEle("AccesStatConnexionEle", "", $id_classe);
+			$AccesDetailConnexionEle=AccesInfoEle("AccesDetailConnexionEle", "", $id_classe);
+			$AccesStatConnexionResp=AccesInfoResp("AccesStatConnexionResp", "", "", $id_classe);
+			$AccesDetailConnexionResp=AccesInfoResp("AccesDetailConnexionResp", "", "", $id_classe);
+		}
+		elseif(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+			// Toutes les classes
+			$AccesStatConnexionEle=true;
+			$AccesDetailConnexionEle=true;
+			$AccesStatConnexionResp=true;
+			$AccesDetailConnexionResp=true;
+
+			if($mode==2) {
+				$mode_2=4;
+			}
+			elseif($mode==3) {
+				$mode_2=5;
+			}
+			else {
+				$mode_2=6;
+			}
+		}
+
+		if(($mode_2==2)&&(!$AccesStatConnexionResp)&&(!$AccesDetailConnexionResp)) {
 			echo "<p style='color:red'>Vous n'avez pas accès à cette classe.</p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
 
-		if(($mode==3)&&(!$AccesStatConnexionEle)&&(!$AccesDetailConnexionEle)) {
+		if(($mode_2==3)&&(!$AccesStatConnexionEle)&&(!$AccesDetailConnexionEle)) {
 			echo "<p style='color:red'>Vous n'avez pas accès à cette classe.</p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
 
+		if(($mode_2>=4)&&(!in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))) {
+			echo "<p style='color:red'>Vous n'avez pas accès à ces modes.</p>\n";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+
+
+
+		// Connexions responsables:
 		$sql_partie[2]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
 
+		// Pour toutes les classes:
+		$sql_partie[4]="SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+
+		// Connexions élèves:
 		$sql_partie[3]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
 
-		$sql=$sql_partie[$mode];
+		// Pour toutes les classes:
+		$sql_partie[5]="SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."' ORDER BY l.START, l.login;";
+
+		// Elèves et parents confondus
+		if(preg_match("/^[0-9]{1,}$/", $id_classe)) {
+			$sql_partie[6]="(SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') UNION (SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') ORDER BY START, login;";
+		}
+		else {
+			$sql_partie[6]="(SELECT DISTINCT l.login, l.START from log l, resp_pers rp, responsables2 r, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND r.ele_id=e.ele_id AND r.pers_id=rp.pers_id AND rp.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') UNION (SELECT DISTINCT l.login, l.START from log l, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND e.login=l.login AND l.login!='' AND autoclose>='0' AND autoclose<='3' AND START>='".$date_mysql_debut."' AND END<='".$date_mysql_fin."') ORDER BY START, login;";
+		}
+
+
+		$sql=$sql_partie[$mode_2];
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
-			echo "<p>Aucun compte ".$categorie_utilisateur[$mode]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
+			echo "<p>Aucun compte ".$categorie_utilisateur[$mode_2]." n'a encore essayé de (<em>ou réussi à</em>) se connecter.</p>\n";
 		}
 		else {
 
@@ -1191,7 +1359,7 @@ elseif(($mode==2)||($mode==3)) {
 
 	context.fillStyle = 'black';
 	context.lineWidth = '1.0';
-	context.fillText('Connexions ".$categorie_utilisateur[$mode]."s', x0+20, -$hauteur_totale_min+10);
+	context.fillText('Connexions ".$categorie_utilisateur[$mode_2]."s', x0+20, -$hauteur_totale_min+10);
 
 	mois_precedent='';
 	for (i=0; i<jour.length; i++) {
@@ -1228,22 +1396,22 @@ elseif(($mode==2)||($mode==3)) {
 	
 </script>\n";
 
+			$ligne_date="<tr>";
+			$ligne_eff="<tr>";
+			$ligne_personnes="<tr>";
+			$alt=1;
+			$tab_designation=array();
+			foreach($tab_connexions as $date => $tab_login) {
+				$alt=$alt*(-1);
+				$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
+				$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
 
-			if((($mode==2)&&($AccesDetailConnexionResp))||
-				(($mode==3)&&($AccesDetailConnexionEle))) {
+				if(((($mode_2==2)||($mode_2==4)||($mode_2==6))&&($AccesDetailConnexionResp))||
+					((($mode_2==3)||($mode_2==5)||($mode_2==6))&&($AccesDetailConnexionEle))) {
 
-				$ligne_date="<tr>";
-				$ligne_eff="<tr>";
-				$ligne_personnes="<tr>";
-				$alt=1;
-				$tab_designation=array();
-				foreach($tab_connexions as $date => $tab_login) {
-					$alt=$alt*(-1);
-					$ligne_date.="<td class='lig$alt'>".formate_date($date)."</td>";
-					$ligne_eff.="<td class='lig$alt' title=\"Effectif de connexion\">".count($tab_login['login'])."</td>";
 					$ligne_personnes.="<td class='lig$alt' style='vertical-align:top'>";
 					for($loop=0;$loop<count($tab_login['login']);$loop++) {
-						if($mode==2) {
+						if(($mode_2==2)||($mode_2==4)||($mode_2==6)) {
 							if(!array_key_exists($tab_login['login'][$loop], $tab_designation)) {$tab_designation[$tab_login['login'][$loop]]=civ_nom_prenom($tab_login['login'][$loop]);}
 						}
 						else {
@@ -1253,13 +1421,26 @@ elseif(($mode==2)||($mode==3)) {
 					}
 					$ligne_personnes.="</td>";
 				}
-				$ligne_date.="</tr>";
-				$ligne_eff.="</tr>";
-				$ligne_personnes.="</tr>";
+			}
+			$ligne_date.="</tr>";
+			$ligne_eff.="</tr>";
+			$ligne_personnes.="</tr>";
+
+			//echo "<a href='".$_SERVER['PHP_SELF']."?csv=y&amp;id_classe=$id_classe&amp;mode=$mode&amp;mode_2=$mode_2&amp;date_mysql_debut=$date_mysql_debut&amp;date_mysql_fin=$date_mysql_fin' title=\"Exporter les statistiques de connexion au format CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?csv=y&amp;id_classe=$id_classe&amp;mode=$mode&amp;date_mysql_debut=$date_mysql_debut&amp;date_mysql_fin=$date_mysql_fin' title=\"Exporter les statistiques de connexion au format CSV.\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
+
+			if(((($mode_2==2)||($mode_2==4)||($mode_2==6))&&($AccesDetailConnexionResp))||
+				((($mode_2==3)||($mode_2==5)||($mode_2==6))&&($AccesDetailConnexionEle))) {
 				echo "<table class='boireaus' summary='Identité des personnes connectées'>
 	$ligne_date
 	$ligne_eff
 	$ligne_personnes
+</table>";
+			}
+			else {
+				echo "<table class='boireaus' summary='Effectifs des personnes connectées'>
+	$ligne_date
+	$ligne_eff
 </table>";
 			}
 		}
