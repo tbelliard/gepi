@@ -206,7 +206,7 @@ if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
 }
 
 if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
-	echo "| <a href='dates_classes.php' title=\"Définir des événements particuliers pour les classes (conseils de classe, arrêt des notes,...).\">Événements classe</a>";
+	echo "| <a href='../classes/dates_classes.php' title=\"Définir des événements particuliers pour les classes (conseils de classe, arrêt des notes,...).\">Événements classe</a>";
 }
 
 echo "</p>\n";
