@@ -1213,4 +1213,5 @@ INSERT INTO droits SET id='/mod_abs2/calcul_score.php',administrateur='V',profes
 INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'V', 'F', 'F', 'V', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');
 INSERT INTO setting SET name='MessagerieDelaisTest', value='1';
 INSERT INTO setting SET name='MessagerieLargeurImg', value='16';
+INSERT INTO setting SET name='active_bulletins', value='y';
 
