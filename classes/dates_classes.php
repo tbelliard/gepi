@@ -718,6 +718,22 @@ echo "
 						<tr>
 							<td colspan=\"4\">";
 
+						echo "
+								<table class='boireaus boireaus_alt' summary=\"Tableau de choix des classes et du paramétrage des dates\">
+									<thead>
+										<tr>
+											<th>Classe</th>
+											<th>Date</th>
+											<th title=\"Choisissez la ligne modèle pour copier une date.\">D</th>
+											<th><img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la date sélectionnée.\"/></th>
+											<th></th>
+											<th>Heure</th>
+											<th title=\"Choisissez la ligne modèle pour copier une heure.\">H</th>
+											<th><img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller l'heure sélectionnée.\"/></th>
+										</tr>
+									</thead>
+									<tbody>";
+
 $cpt=0;
 $tab_champs_date_a_cacher=array();
 foreach($tab_classe as $id_classe => $classe) {
@@ -731,35 +747,58 @@ foreach($tab_classe as $id_classe => $classe) {
 	}
 
 	echo "
-								<div id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
-								<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"checkbox_change('id_classe_".$id_classe."'); if(document.getElementById('id_classe_".$id_classe."').checked==true) {document.getElementById('span_date_id_classe_".$id_classe."').style.display=''}else {document.getElementById('span_date_id_classe_".$id_classe."').style.display='none'};changement()\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
+										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
+										<td>
+										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe)\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
+										</td>
 
-								<span id='span_date_id_classe_".$id_classe."'>
-									&nbsp;
-									<input type='text' name='display_date_id_classe[$cpt]' id='display_date_id_classe_".$id_classe."' size='10' value=\"".(isset($tab_classe_ev[$id_classe]['date_evenement_formatee']) ? $tab_classe_ev[$id_classe]['date_evenement_formatee'] : "")."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
-									".img_calendrier_js("display_date_id_classe_".$id_classe, "img_bouton_display_date_id_classe_".$id_classe)."
-									&nbsp;à&nbsp;
-									<input type='text' name = 'display_heure_id_classe[".$cpt."]' id= 'display_heure_id_classe_".$id_classe."' size='5' value = \"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />
+										<td>
+											<span id='span_date_id_classe_".$id_classe."'>
+												&nbsp;
+												<input type='text' name='display_date_id_classe[$cpt]' id='display_date_id_classe_".$id_classe."' size='10' value=\"".(isset($tab_classe_ev[$id_classe]['date_evenement_formatee']) ? $tab_classe_ev[$id_classe]['date_evenement_formatee'] : "")."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
+												".img_calendrier_js("display_date_id_classe_".$id_classe, "img_bouton_display_date_id_classe_".$id_classe)."
 
-									<!-- On n'affiche le dispositif de copier/coller de dates que si JS est actif -->
-									<span id='js_copier_coller_$cpt' style='display:none;'>
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D&nbsp;:
-										<input type='radio' name = 'copier_date' id= 'copier_date_".$id_classe."' value = \"".$id_classe."\" /><label for='copier_date_".$id_classe."'><img src='../images/icons/copy-16.png' class='icone16' title=\"Copier la date associée à cette classe.\"/></label>
-										&nbsp;
-										<a href='#' onclick=\"coller_date($id_classe);return false;\" id='js_coller_$cpt'>
-											<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la date sélectionnée.\"/>
-										</a>
+											</span>
+										</td>
 
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;:
-										<input type='radio' name = 'copier_heure' id= 'copier_heure_".$id_classe."' value = \"".$id_classe."\" /><label for='copier_heure_".$id_classe."'><img src='../images/icons/copy-16.png' class='icone16' title=\"Copier l'heure associée à cette classe.\"/></label>
-										&nbsp;
-										<a href='#' onclick=\"coller_heure($id_classe);return false;\" id='js_coller_$cpt'>
-											<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller l'heure sélectionnée.\"/>
-										</a>
-									</span>
+										<td>
+											<span id='js_copier_date_".$id_classe."' style='display:none;'>
+												<input type='radio' name = 'copier_date' id= 'copier_date_".$id_classe."' value = \"".$id_classe."\" /><label for='copier_date_".$id_classe."'><img src='../images/icons/copy-16.png' class='icone16' title=\"Copier la date associée à cette classe.\"/></label>
+											</span>
+										</td>
 
-								</span>
-								</div>";
+										<td>
+											<span id='js_coller_date_".$id_classe."' style='display:none;'>
+												<a href='#' onclick=\"coller_date($id_classe);return false;\" id='js_coller_$cpt'>
+													<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la date sélectionnée.\"/>
+												</a>
+											</span>
+										</td>
+
+
+										<td>
+											&nbsp;à&nbsp;
+										</td>
+										<td>
+											<span id='span_heure_id_classe_".$id_classe."'>
+												<input type='text' name = 'display_heure_id_classe[".$cpt."]' id= 'display_heure_id_classe_".$id_classe."' size='5' value = \"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />
+											</span>
+										</td>
+
+										<td>
+											<span id='js_copier_heure_".$id_classe."' style='display:none;'>
+												<input type='radio' name = 'copier_heure' id= 'copier_heure_".$id_classe."' value = \"".$id_classe."\" /><label for='copier_heure_".$id_classe."'><img src='../images/icons/copy-16.png' class='icone16' title=\"Copier l'heure associée à cette classe.\"/></label>
+											</span>
+										</td>
+										<td>
+											<span id='js_coller_heure_".$id_classe."' style='display:none;'>
+												&nbsp;
+												<a href='#' onclick=\"coller_heure($id_classe);return false;\" id='js_coller_$cpt'>
+													<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller l'heure sélectionnée.\"/>
+												</a>
+											</span>
+										</td>
+										</tr>";
 
 	if(!array_key_exists($id_classe, $tab_classe_ev)) {
 		$tab_champs_date_a_cacher[]=$id_classe;
@@ -767,6 +806,11 @@ foreach($tab_classe as $id_classe => $classe) {
 
 	$cpt++;
 }
+
+echo "
+									</tbody>
+								</table>";
+
 echo "
 							</td>
 						</tr>
@@ -846,42 +890,66 @@ echo "
 	checkbox_change('destinataire_prof');
 	checkbox_change('destinataire_cpe');
 	checkbox_change('destinataire_scol');
+
+	function modif_affichage_ligne_classe(id_classe) {
+		checkbox_change('id_classe_'+id_classe);
+
+		if(document.getElementById('id_classe_'+id_classe).checked==true) {
+			document.getElementById('span_date_id_classe_'+id_classe).style.display=''
+			document.getElementById('span_heure_id_classe_'+id_classe).style.display=''
+			document.getElementById('js_copier_date_'+id_classe).style.display='';
+			document.getElementById('js_coller_date_'+id_classe).style.display='';
+			document.getElementById('js_copier_heure_'+id_classe).style.display='';
+			document.getElementById('js_coller_heure_'+id_classe).style.display='';
+		}
+		else {
+			document.getElementById('span_date_id_classe_'+id_classe).style.display='none'
+			document.getElementById('span_heure_id_classe_'+id_classe).style.display='none'
+			document.getElementById('js_copier_date_'+id_classe).style.display='none';
+			document.getElementById('js_coller_date_'+id_classe).style.display='none';
+			document.getElementById('js_copier_heure_'+id_classe).style.display='none';
+			document.getElementById('js_coller_heure_'+id_classe).style.display='none';
+		}
+		changement();
+	}
 ";
 
 foreach($tab_classe as $id_classe => $classe) {
 	echo "
-	checkbox_change('id_classe_".$id_classe."');";
+	checkbox_change('id_classe_".$id_classe."');
+	modif_affichage_ligne_classe($id_classe);";
 }
 
 for($loop=0;$loop<count($tab_champs_date_a_cacher);$loop++) {
 	echo "
-	document.getElementById('span_date_id_classe_".$tab_champs_date_a_cacher[$loop]."').style.display='none';";
-}
-
-for($loop=0;$loop<$cpt;$loop++) {
-	echo "
-	document.getElementById('js_copier_coller_".$loop."').style.display='';";
+	document.getElementById('span_date_id_classe_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('span_heure_id_classe_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_copier_date_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_coller_date_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_copier_heure_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_coller_heure_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	";
 }
 
 echo "
 
-function coller_date(id_classe) {
-	radio_copier_date=document.formulaire_saisie_evenement.copier_date;
-	for(i=0;i<radio_copier_date.length;i++) {
-		if (radio_copier_date[i].checked) {
-			document.getElementById('display_date_id_classe_'+id_classe).value=document.getElementById('display_date_id_classe_'+radio_copier_date[i].value).value;
+	function coller_date(id_classe) {
+		radio_copier_date=document.formulaire_saisie_evenement.copier_date;
+		for(i=0;i<radio_copier_date.length;i++) {
+			if (radio_copier_date[i].checked) {
+				document.getElementById('display_date_id_classe_'+id_classe).value=document.getElementById('display_date_id_classe_'+radio_copier_date[i].value).value;
+			}
 		}
 	}
-}
 
-function coller_heure(id_classe) {
-	radio_copier_heure=document.formulaire_saisie_evenement.copier_heure;
-	for(i=0;i<radio_copier_heure.length;i++) {
-		if (radio_copier_heure[i].checked) {
-			document.getElementById('display_heure_id_classe_'+id_classe).value=document.getElementById('display_heure_id_classe_'+radio_copier_heure[i].value).value;
+	function coller_heure(id_classe) {
+		radio_copier_heure=document.formulaire_saisie_evenement.copier_heure;
+		for(i=0;i<radio_copier_heure.length;i++) {
+			if (radio_copier_heure[i].checked) {
+				document.getElementById('display_heure_id_classe_'+id_classe).value=document.getElementById('display_heure_id_classe_'+radio_copier_heure[i].value).value;
+			}
 		}
 	}
-}
 
 </script>\n";
 
