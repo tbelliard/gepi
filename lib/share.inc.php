@@ -1184,12 +1184,10 @@ function test_maj() {
 
     if ($version_old =='') {
        return TRUE;
-       die();
    }
    if ($gepiVersion > $version_old) {
         // On a une nouvelle version stable
        return TRUE;
-       die();
    }
    return FALSE;
 }

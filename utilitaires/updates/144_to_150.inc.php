@@ -12,7 +12,7 @@
  * @see msj_erreur()
  * @see msj_present()
  */
-		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.0" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.0" . " :</h3>";
 		$result .= "<p>";
 		$result .= "&nbsp;->Extension de la taille du champ NAME de la table 'setting'<br />";
 		$query28 = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE setting CHANGE NAME NAME VARCHAR( 255 ) NOT NULL");

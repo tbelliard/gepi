@@ -121,4 +121,19 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Suppression des références aux versions RC et Beta dans la table setting :</strong><br />";
+$test = mysqli_num_rows(mysqli_query($mysqli, "SELECT `NAME` FROM `setting` WHERE (`NAME`='versionRc' OR `NAME`='versionBeta');"));
+if ($test == 2) {
+	$result_supp = mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='versionRc'") && mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='versionBeta'");
+	if ($result_supp) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Les références ne sont pas présentes dans la table");
+}
+
 ?>

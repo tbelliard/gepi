@@ -90,6 +90,9 @@ if (isset ($_POST['submit'])) {
 $valid = isset ($_POST["valid"]) ? $_POST["valid"] : 'no';
 $force_maj = isset ($_POST["force_maj"]) ? $_POST["force_maj"] : '';
 
+// Numéro de version effective
+$version_old = getSettingValue("version");
+
 echo ('
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -237,8 +240,6 @@ if (isset ($_POST['maj'])) {
 
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);
-	saveSetting("versionRc", $gepiRcVersion);
-	saveSetting("versionBeta", $gepiBetaVersion);
 	saveSetting("pb_maj", $pb_maj);
 }
 
