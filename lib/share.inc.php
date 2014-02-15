@@ -9351,7 +9351,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					if(!in_array($tmp_jour, $tab_jours)) {
 						$tab_jours[]=$tmp_jour;
 					}
-					sort($tab_jours);
+					//sort($tab_jours);
 
 					$tmp_tab_pp=get_tab_prof_suivi($lig2->id_classe);
 					//$liste_pp=implode(", ", $tmp_tab_pp);
@@ -9370,11 +9370,23 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					sort($tab_heures);
 
 					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
-						$tab_cellules[$tmp_jour][$tmp_heure]="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span><br />";
+						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
+							$tab_cellules[$tmp_jour][$tmp_heure]="";
+						}
+						else {
+							$tab_cellules[$tmp_jour][$tmp_heure].=" - ";
+						}
+						$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
 					}
 					else {
-						$tab_cellules[$tmp_jour][$tmp_heure]="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
+							$tab_cellules[$tmp_jour][$tmp_heure]="";
+						}
+						else {
+							$tab_cellules[$tmp_jour][$tmp_heure].=" - ";
+						}
+						$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
 ".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span><br />";
 					}
 				}
