@@ -1064,6 +1064,18 @@ autre='V',
 description='Effectuer une recherche sur une personne',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/classes/dates_classes.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Définition de dates pour les classes',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

@@ -5,6 +5,15 @@
 
 Gepi-master (Version de développement)
 ===========================
+Gestion:
+- Gestion des classes/enseignements: Ajout de liens d'affichage de l'EDT prof en infobulle.
+- Consultation élève: Ajout de l'affichage de MEF.
+- Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
+
+Divers:
+- Statistiques de connexion:
+   . Possibilité de cumuler les connexions élèves et parents.
+   . Export CSV des dates/effectifs de connexion.
 
 Gepi-1.6.4 (01/02/2014)
 ===========================

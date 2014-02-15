@@ -205,6 +205,10 @@ if(acces("/bulletin/verif_bulletins.php", $_SESSION['statut'])) {
 	echo " | <a href='verif_bulletins.php' title=\"Vérifier le remplissage des bulletins.\">Vérification bulletins</a>";
 }
 
+if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
+	echo "| <a href='dates_classes.php' title=\"Définir des événements particuliers pour les classes (conseils de classe, arrêt des notes,...).\">Événements classe</a>";
+}
+
 echo "</p>\n";
 
 $texte_deverrouiller = urlencode("Déverrouiller");

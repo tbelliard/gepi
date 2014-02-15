@@ -62,4 +62,63 @@ if ($test == -1) {
 }
 */
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'd_dates_evenements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'd_dates_evenements'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE d_dates_evenements (
+			id_ev int(11) NOT NULL AUTO_INCREMENT, 
+			type varchar(50) NOT NULL default '', 
+			texte_avant TEXT NOT NULL default '', 
+			texte_apres TEXT NOT NULL default '', 
+			date_debut TIMESTAMP NOT NULL, 
+			PRIMARY KEY  (id_ev)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'd_dates_evenements_classes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'd_dates_evenements_classes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE d_dates_evenements_classes (
+			id_ev_classe int(11) NOT NULL AUTO_INCREMENT, 
+			id_ev int(11) NOT NULL, 
+			id_classe int(11) NOT NULL default '0', 
+			date_evenement TIMESTAMP NOT NULL, 
+			PRIMARY KEY  (id_ev_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'd_dates_evenements_utilisateurs' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'd_dates_evenements_utilisateurs'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE d_dates_evenements_utilisateurs (
+			id_ev int(11) NOT NULL, 
+			statut varchar(20) NOT NULL, 
+			KEY id_ev_u (id_ev,statut)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

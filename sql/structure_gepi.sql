@@ -901,3 +901,26 @@ INDEX parent_racine (parent,id_racine),
 INDEX racine_bulletin (id_racine,display_bulletin)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS d_dates_evenements;
+CREATE TABLE d_dates_evenements (
+id_ev int(11) NOT NULL AUTO_INCREMENT, 
+type varchar(50) NOT NULL default '', 
+texte_avant TEXT NOT NULL default '', 
+texte_apres TEXT NOT NULL default '', 
+date_debut TIMESTAMP NOT NULL, 
+PRIMARY KEY  (id_ev)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS d_dates_evenements_classes;
+CREATE TABLE d_dates_evenements_classes (
+id_ev_classe int(11) NOT NULL AUTO_INCREMENT, 
+id_ev int(11) NOT NULL, 
+id_classe int(11) NOT NULL default '0', 
+date_evenement TIMESTAMP NOT NULL, 
+PRIMARY KEY  (id_ev_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS d_dates_evenements_utilisateurs;
+CREATE TABLE d_dates_evenements_utilisateurs (
+id_ev int(11) NOT NULL, 
+statut varchar(20) NOT NULL, 
+KEY id_ev_u (id_ev,statut)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
