@@ -517,7 +517,7 @@ if ($nb_messages>0) {
 	echo "<p><span class='grand'>Événements pouvant être modifiés&nbsp;:</span></p>\n";
 	$ind = 0;
 	while ($lig=mysqli_fetch_object($res)) {
-		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");padding: 3px;margin: 3px 3px 1em 3px;'>";
+		echo "<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");padding: 3px;margin: 3px 3px 1em 3px; width: 350px; overflow: auto;'>";
 		echo "<p><strong><i>Affichage</i></strong> à compter du <strong>".get_date_slash_from_mysql_date($lig->date_debut)."</strong> d'un événement de type <strong>".$lig->type."</strong>";
 
 		$tab_u=array();
