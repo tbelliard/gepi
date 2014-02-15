@@ -220,7 +220,7 @@
 		$liste_evenements=afficher_les_evenements();
 	}
 
-	if ((count($afficheAccueil->message))||(isset($liste_evenements))) :
+	if ((count($afficheAccueil->message))||((isset($liste_evenements))&&($liste_evenements!=""))) :
 ?>
 
 	<div class="panneau_affichage">
