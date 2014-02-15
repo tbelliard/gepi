@@ -9387,7 +9387,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 							$tab_cellules[$tmp_jour][$tmp_heure].=" - ";
 						}
 						$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span><br />";
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
 					}
 				}
 
