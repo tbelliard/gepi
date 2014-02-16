@@ -23,7 +23,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.5" . $rc . $beta . " :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.5" . " :</h3>";
 
 //===================================================
 /*

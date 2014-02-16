@@ -13,7 +13,7 @@
  * @see msj_present()
  */
 
-		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.2" . " :</h3>";
 
 		$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_display_portail'");
 		$res_test=mysqli_num_rows($req_test);
