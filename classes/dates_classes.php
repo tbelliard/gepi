@@ -442,6 +442,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
 }
 */
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_suppression = "Confirmation de suppression";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des dates";
@@ -461,7 +462,7 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouvel événement</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouvel événement</a></p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
@@ -556,7 +557,7 @@ if ($nb_messages>0) {
 		echo "</p>\n";
 
 		//echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
-		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_ev=$lig->id_ev'>modifier</a>
+		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\">modifier</a>
 		- <a href='".$_SERVER['PHP_SELF']."?id_del=$lig->id_ev&amp;action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer cet événement ?', '".$message_suppression."')\">supprimer</a>
 		<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");padding: 3px; margin: 3px;'>".affiche_evenement($lig->id_ev, "y")."</div>
 		</div>\n";
@@ -749,7 +750,7 @@ foreach($tab_classe as $id_classe => $classe) {
 	echo "
 										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
 										<td>
-										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe)\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
+										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe);changement();\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
 										</td>
 
 										<td>
@@ -910,7 +911,7 @@ echo "
 			document.getElementById('js_copier_heure_'+id_classe).style.display='none';
 			document.getElementById('js_coller_heure_'+id_classe).style.display='none';
 		}
-		changement();
+		//changement();
 	}
 ";
 

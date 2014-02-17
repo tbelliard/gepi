@@ -323,6 +323,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 }
 
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_suppression = "Confirmation de suppression";
 //**************** EN-TETE *****************
 $titre_page = "Gestion des messages";
@@ -330,7 +331,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
-
+//onclick=\"return confirm_abandon (this, change, '$themessage')\"
 echo "<a name=\"debut_de_page\"></a>";
 
 //debug_var();
@@ -342,9 +343,9 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouveau message</a>";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouveau message</a>";
 if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
-	echo " | <a href='../classes/dates_classes.php'>Nouvel événement classe</a>";
+	echo " | <a href='../classes/dates_classes.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouvel événement classe</a>";
 }
 "</p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
@@ -380,7 +381,7 @@ $nb_messages = mysqli_num_rows($appel_messages);
 if ($nb_messages>0) {
 	echo "<span class='grand'>Messages pouvant être modifiés&nbsp;:</span><br />\n";
 	echo "<span class='small'>Classer par : ";
-	echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>\n";
+	echo "<a href='index.php?order_by=date_debut' onclick=\"return confirm_abandon (this, change, '$themessage')\">date début</a> | <a href='index.php?order_by=date_fin' onclick=\"return confirm_abandon (this, change, '$themessage')\">date fin</a> | <a href='index.php?order_by=id' onclick=\"return confirm_abandon (this, change, '$themessage')\">date création</a>\n";
 	echo "</span><br /><br />\n";
 	$ind = 0;
 	while ($ind < $nb_messages) {
@@ -440,7 +441,7 @@ if ($nb_messages>0) {
 		}
 		echo $chaine_statuts_destinataires;
 		//echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
-		echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
+		echo "<br /><a href='index.php?id_mess=$id_message' onclick=\"return confirm_abandon (this, change, '$themessage')\">modifier</a>
 		- <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
 		<table border=0 width = '100%' cellpadding='5'><tr><td style=\"border:1px solid black\">".$content."</td></tr></table><br />\n";
 		$ind++;
