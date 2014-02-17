@@ -9,7 +9,7 @@
 
 //ini_set('error_reporting',E_ALL ^ E_DEPRECATED);
 // Pour enlever les E_DEPRECATED de la liste des erreurs affichées:
-error_reporting(error_reporting() & (-1 ^ E_DEPRECATED));  
+if (version_compare(PHP_VERSION, '5.3.0', '>=')) error_reporting(error_reporting() & (-1 ^ E_DEPRECATED));  
 
 /* Utilise l'encodage interne UTF-8 */
 header('Content-type: text/html; charset=UTF-8');
