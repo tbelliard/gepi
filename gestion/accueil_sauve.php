@@ -42,7 +42,7 @@ $resultat_session = $session_gepi->security_check();
 //$debug="yes";
 
 // Désactiver le mode deflate afin que les ob_flush() et flush() fonctionnent
-apache_setenv("no-gzip","1");
+if (function_exists('apache_setenv')) apache_setenv("no-gzip","1");
 //apache_setenv("dont-vary","1");
 
 if (!isset($action) or ($action != "restaure")) {
