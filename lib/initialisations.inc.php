@@ -8,7 +8,7 @@
  */
 
 // Pour enlever les E_DEPRECATED de la liste des erreurs affichées:
-error_reporting(error_reporting() & (-1 ^ E_DEPRECATED)); 
+if (version_compare(PHP_VERSION, '5.3.0', '>=')) error_reporting(error_reporting() & (-1 ^ E_DEPRECATED)); 
 
 global $mysqli;
 

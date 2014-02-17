@@ -1227,6 +1227,6 @@ INSERT INTO setting SET name='active_recherche_lapsus', value='y';
 INSERT INTO droits SET id='/mod_abs2/traitements_par_lots.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Abs2: Creation lot de traitements',statut='';
 INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='Discipline : Aide',statut='';
 INSERT INTO droits SET id='/eleves/recherche.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='V',description='Effectuer une recherche sur une personne',statut='';
-INSERT INTO droits SET id='/classes/dates_classes.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Définition de dates pour les classes',statut='';
 INSERT INTO setting SET name='active_bulletins', value='y';
+INSERT INTO droits SET id='/classes/dates_classes.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Définition de dates pour les classes',statut='';
 

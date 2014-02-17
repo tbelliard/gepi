@@ -1200,7 +1200,7 @@ function test_maj() {
  */
 function quelle_maj($num) {
     return (getSettingValue("version") < $num);
- }
+}
 
 /**
  *
@@ -8373,6 +8373,7 @@ function is_prof_ele($login_prof, $login_ele="", $login_resp="", $id_classe="") 
 
 function is_prof_classe($login_prof, $id_classe) {
 	global $mysqli;
+
 	$is_prof_classe=false;
 
 	$sql="SELECT 1=1 FROM j_groupes_classes jgc, 
