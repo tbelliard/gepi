@@ -342,7 +342,11 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouveau message</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Nouveau message</a>";
+if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
+	echo " | <a href='../classes/dates_classes.php'>Nouvel événement classe</a>";
+}
+"</p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
