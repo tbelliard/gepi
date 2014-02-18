@@ -469,6 +469,13 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<div style='border: 1px solid red; background-image: url(\"../images/background/opacite50.png\"); margin:1em; padding:0.5em;'>
+	<p style='color:red'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter d'afficher moins de lignes à la fois.</p>\n";
+	echo alerte_config_suhosin();
+	echo "</div>\n";
+}
+
 // Initialisation de la variable utilisée pour noter si des modifications ont été effectuées dans la page.
 echo "<script type='text/javascript'>
 	change='no';
@@ -513,6 +520,8 @@ else{
 	echo "'>\n";
 
 	echo add_token_field();
+
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
 
 	unset($prof);
 	$prof=array();
@@ -1139,6 +1148,7 @@ else{
 	echo "</ul>\n";
 	//}
 }
+echo "<input type='hidden' name='temoin_suhosin_2' value='2' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
 
@@ -1146,11 +1156,12 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 	echo "<br />\n";
 	$ouverture_auto_WinDevoirsDeLaClasse=getPref($_SESSION['login'], 'ouverture_auto_WinDevoirsDeLaClasse', 'y');
 	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
-	echo add_token_field();
 	echo "<fieldset style='border: 1px solid grey;";
 	echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "'>\n";
 	echo "<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Cahier de textes 2</legend>\n";
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
+	echo add_token_field();
 	echo "<p>Lors de la saisie de notices de Travaux à faire dans le CDT2,<br />\n";
 	echo "<input type='radio' name='ouverture_auto_WinDevoirsDeLaClasse' id='ouverture_auto_WinDevoirsDeLaClasse_y' value='y' ";
 	echo "onchange=\"checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_y');checkbox_change('ouverture_auto_WinDevoirsDeLaClasse_n');changement()\" ";
@@ -1164,6 +1175,7 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 
 	echo "</p>\n";
+	echo "<input type='hidden' name='temoin_suhosin_2' value='2' />\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
 
@@ -1173,15 +1185,17 @@ if ((getSettingValue('active_cahiers_texte')!='n')&&($_SESSION["statut"] == "pro
 if (getSettingValue('active_mod_discipline')!='n') {
 	$mod_discipline_travail_par_defaut=getPref($_SESSION['login'], 'mod_discipline_travail_par_defaut', 'Travail : ');
 	echo "<form name='form_cdt_pref' method='post' action='./config_prefs.php'>\n";
-	echo add_token_field();
 	echo "<fieldset style='border: 1px solid grey;";
 	echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "'>\n";
 	echo "<legend style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>Module Discipline et sanctions</legend>\n";
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
+	echo add_token_field();
 	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: ,<br />\n";
 	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' /><br />\n";
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";
+	echo "<input type='hidden' name='temoin_suhosin_2' value='2' />\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
 
@@ -1205,6 +1219,8 @@ if ($aff == "oui") {
 ';
 
 	echo add_token_field();
+
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
 
 	echo '
 		<fieldset style="border: 1px solid grey;
@@ -1236,6 +1252,7 @@ if ($aff == "oui") {
 		<p>
 			<em>La barre de menu horizontale allégée a une arborescence moins profonde pour que les menus \'professeurs\' s\'affichent plus rapidement au cas où le serveur serait saturé.</em>
 		</p>
+		<input type="hidden" name="temoin_suhosin_2" value="2" />
 	</fieldset>
 		</form>
 		'.$messageMenu
@@ -1252,6 +1269,8 @@ if ($_SESSION["statut"] == 'administrateur') {
 
 	echo add_token_field();
 
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
+
 	echo '
 
 			<fieldset style="border: 1px solid grey;
@@ -1267,6 +1286,7 @@ if ($_SESSION["statut"] == 'administrateur') {
 					<input type="radio" id="headerNormal" name="header_bas" value="n"'.eval_checked("impose_petit_entete_prof", "n", "administrateur", $_SESSION["login"]).' onclick="document.change_header_prof.submit();" />
 				</p>
 				' . $message_header_prof . '
+				<input type="hidden" name="temoin_suhosin_2" value="2" />
 			</fieldset>
 		</form>';
 }
@@ -1295,6 +1315,7 @@ if(count($tab_sound)>=0) {
 	echo "<br />\n";
 	echo "<form name='change_footer_sound' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
 	echo add_token_field();
+	echo "<input type='hidden' name='temoin_suhosin_1' value='1' />\n";
 
 	echo "<fieldset style='border: 1px solid grey;";
 	echo "background-image: url(\"../images/background/opacite50.png\"); ";
@@ -1325,6 +1346,7 @@ if(count($tab_sound)>=0) {
 
 	echo "
 	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+	<input type='hidden' name='temoin_suhosin_2' value='2' />
 </fieldset>
 </form>\n";
 
