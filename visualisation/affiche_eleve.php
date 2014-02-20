@@ -1743,7 +1743,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//========================
 			// AJOUT boireaus 20090115
-			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+			if(($_SESSION['statut']=="administrateur")||
+				($_SESSION['statut']=="scolarite")||
+				(($_SESSION['statut']=='professeur')&&(isset($id_classe))&&(is_pp($_SESSION['login'],$id_classe))&&(getSettingAOui('GepiRubConseilProf')))) {
 				echo "<tr>\n";
 				echo "<td valign='top'>Permettre la saisie de l'avis du conseil:</td>\n";
 				echo "<td>\n";
@@ -4847,7 +4849,7 @@ function div_cmnt_type() {
 
 			$retour_lignes_cmnt_type.=" <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);";
 			if($graphe_champ_saisie_avis_fixe!='y') {$retour_lignes_cmnt_type.="ajuste_pos('commentaire_type');";}
-			$retour_lignes_cmnt_type.="return false;\">CT</a>\n";
+			$retour_lignes_cmnt_type.="return false;\" title=\"Insérer un commentaire-type.\">CT</a>\n";
 
 			$retour_lignes_cmnt_type.="<div id='commentaire_type' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
 			$retour_lignes_cmnt_type.="<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px;'  onmousedown=\"dragStart(event, 'commentaire_type')\">\n";
