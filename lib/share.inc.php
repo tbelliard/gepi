@@ -9449,4 +9449,52 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 	return $retour;
 }
 
+
+function get_info_id_definie_periode($id_definie_periode) {
+	$tab=array();
+
+	$sql="SELECT * FROM edt_creneaux WHERE id_definie_periode='$id_definie_periode';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab['id_definie_periode']=$lig->id_definie_periode;
+		$tab['nom_definie_periode']=$lig->nom_definie_periode;
+
+		$tab['heuredebut_definie_periode']=$lig->heuredebut_definie_periode;
+		$tab['heurefin_definie_periode']=$lig->heurefin_definie_periode;
+
+		$tab['type_creneaux']=$lig->type_creneaux;
+	}
+
+	return $tab;
+}
+
+function get_info_id_cours($id_cours) {
+	$retour="";
+	$sql="SELECT * FROM edt_cours WHERE id_cours='$id_cours';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$tab_h=get_info_id_definie_periode($lig->id_definie_periode);
+		$retour=$lig->jour_semaine." en ".$tab_h['nom_definie_periode'];
+		if($lig->id_semaine!="0") {$retour.=" (semaine $lig->id_semaine)";}
+		$retour.=" ";
+		$retour.=get_info_grp($lig->id_groupe);
+	}
+	return $retour;
+}
+
+function formate_info_id_definie_periode($id_definie_periode) {
+	$retour="";
+
+	$tab=get_info_id_definie_periode($id_definie_periode);
+	if(isset($tab['nom_definie_periode'])) {
+		$retour.=$tab['nom_definie_periode'];
+		$retour.=" (".$tab['heuredebut_definie_periode'];
+		$retour.=" - ".$tab['heurefin_definie_periode'].")";
+	}
+	return $retour;
+}
+
 ?>
