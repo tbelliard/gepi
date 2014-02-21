@@ -3,7 +3,7 @@
  * Ensemble des fonctions qui permettent d'afficher les emplois du temps des profs
  *
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -208,224 +208,260 @@ function DureeMax2Colonnes($jour_sem, $login_edt, $tab_id_creneaux, $elapse_time
 // =============================================================================
 function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $jour, $tab_id_creneaux, $j, $type_edt, $login_edt, $id_semaine_previous, &$tab_data, &$index_box, $period)
 {
+	global $debug_edt;
+	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
+	global $week_selected;
 
-            $elapse_time1 = $elapse_time;
+	if($debug_edt=="y") {
+		echo "<p><b>ConstruireColonne</b><br />";
+	}
 
-            // =============== 1 enregistrement existe : initialisation
-            if ($rep_creneau = mysqli_fetch_array($req_creneau)) {
+	$current_edt_id_cours="";
 
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], "", "demicellule".$duree_max, "", "");
-                $id_semaine = $rep_creneau['id_semaine'];
-                $duree1 = (int)$rep_creneau['duree'];
-                if (($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time1%2 == 0))  {
+	$elapse_time1 = $elapse_time;
 
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], "", "cellule1", "cadre", "");
-                    $duree1++;
-                    $elapse_time1++;
-                    $k = (int)($elapse_time1 / 2);
-                }
-                $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'],$id_semaine, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
-                $elapse_time1 += $duree1;
-                $k = (int)($elapse_time1 / 2);
-            }
-            // =============== aucun enregistrement trouvé : initialisation
-            else {
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$duree_max, "", "");
-                if ($elapse_time1%2 == 0) {
-                    $duree1 = 2;
-                }
-                else {
-                    $duree1 = 1;
-                }
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule".$duree1, "cadre", "");
-                $elapse_time1 += $duree1;
-                $k = (int)($elapse_time1 / 2);
-                $rep_creneau['heuredeb_dec']=0;
-                $rep_creneau['duree']=0;
+	// =============== 1 enregistrement existe : initialisation
+	if ($rep_creneau = mysqli_fetch_array($req_creneau)) {
 
-            }
+		$current_edt_id_cours=$rep_creneau['id_cours'];
 
-            // ================= procédure de remplissage
-            $end_process = false;
-            if (($rep_creneau['heuredeb_dec']==0) AND ($rep_creneau['duree']==1)) {
+		if($debug_edt=="y") {
+			echo "\$current_edt_id_cours=$current_edt_id_cours<br />";
+			echo "<strong>".get_info_id_cours($current_edt_id_cours)."</strong><br />";
 
+			$current_edt_id_groupe=$rep_creneau['id_groupe'];
+			echo "\$current_edt_id_groupe=$current_edt_id_groupe<br />";
+			echo get_info_grp($current_edt_id_groupe)."<br />";
+		}
 
-                if ((mysqli_num_rows($req_creneau) == 1) OR (mysqli_num_rows($req_creneau) == 2)) {
-                    // ========== étude des cas n°14,15
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
-                    $duree1++;
-                    $elapse_time1 ++;
-                    $k = (int)($elapse_time1 / 2);  
-                }
-                else if (mysqli_num_rows($req_creneau) == 3) {
-                    // ========== étude des cas n°19, 20
-                    $req_creneau_aux = $req_creneau;        // à voir : utiliser une requête auxiliaire ne permet pas apparemment de conserver la requête d'origine dans son état initial
-                                                            // c'est embêtant mais j'en ai tenu compte
-                    mysqli_data_seek($req_creneau_aux, 0);
-                    $rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
-                    $heuredeb_dec_1 = $rep_creneau_aux['heuredeb_dec'];
-                    $id_semaine_1 = $rep_creneau_aux['id_semaine'];
-                    $duree1_aux = $rep_creneau_aux['duree'];
-                    $id_groupe1_aux = $rep_creneau_aux['id_groupe'];
-                    $id_cours1_aux = $rep_creneau_aux['id_cours'];
+		RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], "", "demicellule".$duree_max, "", "");
+		$id_semaine = $rep_creneau['id_semaine'];
+		$duree1 = (int)$rep_creneau['duree'];
+		if (($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time1%2 == 0))  {
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], "", "cellule1", "cadre", "");
+			$duree1++;
+			$elapse_time1++;
+			$k = (int)($elapse_time1 / 2);
+		}
+		$contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'],$id_semaine, $period);
+		RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
+		$elapse_time1 += $duree1;
+		$k = (int)($elapse_time1 / 2);
+	}
+	// =============== aucun enregistrement trouvé : initialisation
+	else {
+		/*
+		echo "DEBUG: plop<br />";
+		echo "\$tab_data[$jour]=<pre>";
+		print_r($tab_data[$jour]);
+		echo "</pre>";
+		*/
+		RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$duree_max, "", "");
+		if ($elapse_time1%2 == 0) {
+			$duree1 = 2;
+		}
+		else {
+			$duree1 = 1;
+		}
+		RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule".$duree1, "cadre", "");
+		$elapse_time1 += $duree1;
+		$k = (int)($elapse_time1 / 2);
+		$rep_creneau['heuredeb_dec']=0;
+		$rep_creneau['duree']=0;
+	}
 
-                    $rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
-                    $heuredeb_dec_2 = $rep_creneau_aux['heuredeb_dec'];
-                    $id_semaine_2 = $rep_creneau_aux['id_semaine'];
-                    $duree2_aux = $rep_creneau_aux['duree'];
-                    $id_groupe2_aux = $rep_creneau_aux['id_groupe'];
-                    $id_cours2_aux = $rep_creneau_aux['id_cours'];
-
-                    $rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
-                    $heuredeb_dec_3 = $rep_creneau_aux['heuredeb_dec'];
-                    $id_semaine_3 = $rep_creneau_aux['id_semaine'];
-                    $duree3_aux = $rep_creneau_aux['duree'];
-                    $id_groupe3_aux = $rep_creneau_aux['id_groupe'];
-                    $id_cours3_aux = $rep_creneau_aux['id_cours'];
-
-                    if (($heuredeb_dec_1 != 0) AND ($id_semaine_1 == $rep_creneau['id_semaine'])) {
-
-                        $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_1, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree1_aux, GetColor($rep_creneau['id_groupe']), $contenu);
-                        $duree1 += (int)$duree1_aux;
-                        $elapse_time1 += (int)$duree1_aux;
-                        $k = (int)($elapse_time1 / 2);
-                    }
-                    else if (($heuredeb_dec_2 != 0) AND ($id_semaine_2 == $rep_creneau['id_semaine'])) {
-
-                        $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_2, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree2_aux, GetColor($rep_creneau['id_groupe']), $contenu);
-                        $duree1 += (int)$duree2_aux;
-                        $elapse_time1 += (int)$duree2_aux;
-                        $k = (int)($elapse_time1 / 2);
-                    }
-                    if (($heuredeb_dec_3 != 0) AND ($id_semaine_3 == $rep_creneau['id_semaine'])) {
-
-                        $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_3, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree3_aux, GetColor($rep_creneau['id_groupe']), $contenu);
-                        $duree1 += (int)$duree3_aux;
-                        $elapse_time1 += (int)$duree3_aux;
-                        $k = (int)($elapse_time1 / 2);
-                    }
-                    else {
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
-                        $duree1++;
-                        $elapse_time1 ++;
-                        $k = (int)($elapse_time1 / 2);
-                    }
+	// ================= procédure de remplissage
+	$end_process = false;
+	if (($rep_creneau['heuredeb_dec']==0) AND ($rep_creneau['duree']==1)) {
 
 
-                }
-                else 
-                {
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C01");
-                    $elapse_time1+=2;
-                }
+	if ((mysqli_num_rows($req_creneau) == 1) OR (mysqli_num_rows($req_creneau) == 2)) {
+		// ========== étude des cas n°14,15
+		RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
+		$duree1++;
+		$elapse_time1 ++;
+		$k = (int)($elapse_time1 / 2);  
+	}
+	else if (mysqli_num_rows($req_creneau) == 3) {
+		//echo "DEBUG: plip<br />";
+		// ========== étude des cas n°19, 20
+		$req_creneau_aux = $req_creneau;        // à voir : utiliser une requête auxiliaire ne permet pas apparemment de conserver la requête d'origine dans son état initial
+		// c'est embêtant mais j'en ai tenu compte
+		mysqli_data_seek($req_creneau_aux, 0);
+		$rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
+		$heuredeb_dec_1 = $rep_creneau_aux['heuredeb_dec'];
+		$id_semaine_1 = $rep_creneau_aux['id_semaine'];
+		$duree1_aux = $rep_creneau_aux['duree'];
+		$id_groupe1_aux = $rep_creneau_aux['id_groupe'];
+		$id_cours1_aux = $rep_creneau_aux['id_cours'];
+
+		$rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
+		$heuredeb_dec_2 = $rep_creneau_aux['heuredeb_dec'];
+		$id_semaine_2 = $rep_creneau_aux['id_semaine'];
+		$duree2_aux = $rep_creneau_aux['duree'];
+		$id_groupe2_aux = $rep_creneau_aux['id_groupe'];
+		$id_cours2_aux = $rep_creneau_aux['id_cours'];
+
+		$rep_creneau_aux = mysqli_fetch_array($req_creneau_aux);
+		$heuredeb_dec_3 = $rep_creneau_aux['heuredeb_dec'];
+		$id_semaine_3 = $rep_creneau_aux['id_semaine'];
+		$duree3_aux = $rep_creneau_aux['duree'];
+		$id_groupe3_aux = $rep_creneau_aux['id_groupe'];
+		$id_cours3_aux = $rep_creneau_aux['id_cours'];
+
+		$current_edt_id_cours=$rep_creneau['id_cours'];
+
+		if (($heuredeb_dec_1 != 0) AND ($id_semaine_1 == $rep_creneau['id_semaine'])) {
+
+			$contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_1, $period);
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree1_aux, GetColor($rep_creneau['id_groupe']), $contenu);
+			$duree1 += (int)$duree1_aux;
+			$elapse_time1 += (int)$duree1_aux;
+			$k = (int)($elapse_time1 / 2);
+		}
+		else if (($heuredeb_dec_2 != 0) AND ($id_semaine_2 == $rep_creneau['id_semaine'])) {
+
+			$contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_2, $period);
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree2_aux, GetColor($rep_creneau['id_groupe']), $contenu);
+			$duree1 += (int)$duree2_aux;
+			$elapse_time1 += (int)$duree2_aux;
+			$k = (int)($elapse_time1 / 2);
+		}
+
+		if (($heuredeb_dec_3 != 0) AND ($id_semaine_3 == $rep_creneau['id_semaine'])) {
+
+			$contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_3, $period);
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree3_aux, GetColor($rep_creneau['id_groupe']), $contenu);
+			$duree1 += (int)$duree3_aux;
+			$elapse_time1 += (int)$duree3_aux;
+			$k = (int)($elapse_time1 / 2);
+		}
+		else {
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
+			$duree1++;
+			$elapse_time1 ++;
+			$k = (int)($elapse_time1 / 2);
+		}
+	}
+	else 
+	{
+		RemplirBox($elapse_time,$tab_data[$jour], $index_box, "erreur", $tab_id_creneaux[$j], "none", "none", "cellule2", "cadreRouge", "C01");
+		$elapse_time1+=2;
+	}
 
 
-            }
-            while (isset($tab_id_creneaux[$k]) AND (!$end_process) AND ($duree1<$duree_max)) {
-                //if ($id_semaine_previous == '0') {
-                if (isset($id_semaine)) {
-                    $req_demicreneau = LessonsFromDayTeacherSlotWeekPeriod($jour_sem, $login_edt, $tab_id_creneaux[$k], $id_semaine, $period);
-                }
-                else {
-                    $req_demicreneau = mysqli_query($GLOBALS["mysqli"], "SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
-                                                jour_semaine = '".$jour_sem."' AND
-                                                login_prof = '".$login_edt."' AND
-                                                id_definie_periode = '".$tab_id_creneaux[$k]."' AND
-                                                id_semaine <> '".$id_semaine_previous."' AND
-                                                id_semaine <> '0' AND
-                                                (id_calendrier = '".$period."' OR id_calendrier = '0')
-                                                ") or die(mysqli_error($GLOBALS["mysqli"]));
+	}
+	while (isset($tab_id_creneaux[$k]) AND (!$end_process) AND ($duree1<$duree_max)) {
+		//if ($id_semaine_previous == '0') {
+		if (isset($id_semaine)) {
+			$req_demicreneau = LessonsFromDayTeacherSlotWeekPeriod($jour_sem, $login_edt, $tab_id_creneaux[$k], $id_semaine, $period);
+		}
+		else {
+			$sql="SELECT id_cours, duree, id_groupe, id_aid, heuredeb_dec, id_semaine FROM edt_cours WHERE 
+			jour_semaine = '".$jour_sem."' AND
+			login_prof = '".$login_edt."' AND
+			id_definie_periode = '".$tab_id_creneaux[$k]."' AND
+			id_semaine <> '".$id_semaine_previous."' AND
+			id_semaine <> '0' AND
+			(id_calendrier = '".$period."' OR id_calendrier = '0')
+			";
+			if($debug_edt=="y") {
+				echo "$sql<br />";
+			}
+			$req_demicreneau = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 
-                }
-                $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                if (mysqli_num_rows($req_demicreneau) == 2) {
-                    // =========== récupérer les deux cours
-                    mysqli_data_seek($req_demicreneau, 0);
-                    $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                    $heuredeb_dec_demi1 = $rep_demicreneau['heuredeb_dec'];
-                    $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                    $heuredeb_dec_demi2 = $rep_demicreneau['heuredeb_dec'];                
+		}
 
-                    // =========== afficher le bon cours
-                    if ($elapse_time1%2 == 0) {
-                        if ($heuredeb_dec_demi1 == 0) {
-                            mysqli_data_seek($req_demicreneau, 0);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                        }
-                        else {
-                            mysqli_data_seek($req_demicreneau, 0);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                        }
-                    }
-                    else {
-                        if ($heuredeb_dec_demi1 != 0) {
-                            mysqli_data_seek($req_demicreneau, 0);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                        }
-                        else {
-                            mysqli_data_seek($req_demicreneau, 0);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                            $rep_demicreneau = mysqli_fetch_array($req_demicreneau);
-                       }
-                    }
-                    $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
+		$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+		if (mysqli_num_rows($req_demicreneau) == 2) {
+			// =========== récupérer les deux cours
+			mysqli_data_seek($req_demicreneau, 0);
+			$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+			$heuredeb_dec_demi1 = $rep_demicreneau['heuredeb_dec'];
+			$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+			$heuredeb_dec_demi2 = $rep_demicreneau['heuredeb_dec'];                
 
-                    $duree1 += (int)$rep_demicreneau['duree'];
-                    $elapse_time1 += (int)$rep_demicreneau['duree'];
-                    $k = (int)($elapse_time1 / 2);
+			// =========== afficher le bon cours
+			if ($elapse_time1%2 == 0) {
+				if ($heuredeb_dec_demi1 == 0) {
+					mysqli_data_seek($req_demicreneau, 0);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+				}
+				else {
+					mysqli_data_seek($req_demicreneau, 0);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+				}
+			}
+			else {
+				if ($heuredeb_dec_demi1 != 0) {
+					mysqli_data_seek($req_demicreneau, 0);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+				}
+				else {
+					mysqli_data_seek($req_demicreneau, 0);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+					$rep_demicreneau = mysqli_fetch_array($req_demicreneau);
+				}
+			}
+			$contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
 
-                }
-                else if (mysqli_num_rows($req_demicreneau) == 1) {
-                    //$rep_demicreneau = mysql_fetch_array($req_demicreneau);
+			$current_edt_id_cours=$rep_demicreneau['id_cours'];
+			//echo "demicreneau \$current_edt_id_cours=$current_edt_id_cours<br />";
 
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
 
-                    if (($rep_demicreneau['heuredeb_dec'] != 0) AND ($elapse_time1%2 == 0)) {
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
-                        $duree1++;
-                        $elapse_time1++;                        
-                    }
- 
+			$duree1 += (int)$rep_demicreneau['duree'];
+			$elapse_time1 += (int)$rep_demicreneau['duree'];
+			$k = (int)($elapse_time1 / 2);
 
-                    $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
-                    $duree1 += (int)$rep_demicreneau['duree'];
-                    $elapse_time1 += (int)$rep_demicreneau['duree'];
+		}
+		else if (mysqli_num_rows($req_demicreneau) == 1) {
+			//$rep_demicreneau = mysql_fetch_array($req_demicreneau);
 
-                    if (($rep_demicreneau['heuredeb_dec'] == 0) AND ($rep_demicreneau['duree'] == 1))  {
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
-                        $duree1++;
-                        $elapse_time1++;                        
-                    }
-             
-                    $k = (int)($elapse_time1 / 2);
-                }
-                else if ($duree1 < $duree_max) {
-                    if ($elapse_time1%2 == 0) {
+			//echo "DEBUG: plup<br />";
+			if (($rep_demicreneau['heuredeb_dec'] != 0) AND ($elapse_time1%2 == 0)) {
+				RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
+				$duree1++;
+				$elapse_time1++;
+			}
 
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
-                        $duree1++;
-                        $elapse_time1++;
-                        $k = (int)($elapse_time1 / 2);
-                    }
-                    else {
+			$current_edt_id_cours=$rep_demicreneau['id_cours'];
+			//echo "demicreneau \$current_edt_id_cours=$current_edt_id_cours<br />";
 
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
-                        $duree1++;
-                        $elapse_time1++;
-                        $k = (int)($elapse_time1 / 2);
-                    }
-                }
-                else {
-                    $end_process = true;
-                }
-            }
-            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "fin_conteneur", "", "", "", "", "", "");
+			$contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
+			RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_demicreneau['id_groupe']), $contenu);
+			$duree1 += (int)$rep_demicreneau['duree'];
+			$elapse_time1 += (int)$rep_demicreneau['duree'];
+
+			if (($rep_demicreneau['heuredeb_dec'] == 0) AND ($rep_demicreneau['duree'] == 1))  {
+				RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
+				$duree1++;
+				$elapse_time1++;
+			}
+
+			$k = (int)($elapse_time1 / 2);
+		}
+		else if ($duree1 < $duree_max) {
+			//echo "DEBUG: plyp<br />";
+			if ($elapse_time1%2 == 0) {
+				RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
+				$duree1++;
+				$elapse_time1++;
+				$k = (int)($elapse_time1 / 2);
+			}
+			else {
+				RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$k], "", "", "cellule1", "cadre", "");
+				$duree1++;
+				$elapse_time1++;
+				$k = (int)($elapse_time1 / 2);
+			}
+		}
+		else {
+			$end_process = true;
+		}
+	}
+	RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "fin_conteneur", "", "", "", "", "", "");
 
 }
 // =============================================================================
@@ -433,19 +469,57 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
 //
 // =============================================================================
 function GetColor($id_groupe) {
+	global $week_selected;
+	global $tab_cadreCouleur;
+	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
 
-	if (GetSettingEdt("edt_aff_couleur_prof") == "coul") {
-		$req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."'");
-		$rep_matiere = mysqli_fetch_array($req_matiere);
-		$matiere = $rep_matiere['id_matiere'];
-		$recher_couleur = "M_".$matiere;
-		$color = GetSettingEdt($recher_couleur);
+	if($week_selected=="") {
+		$week_selected=date("W");
+	}
+
+	//echo "GetColor \$week_selected=$week_selected<br />";
+
+	$temoin_semAB="";
+	if(($week_selected!="")&&(preg_match("/^[0-9]{1,}$/",$current_edt_id_cours))) {
+		$sql="SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine='".$week_selected."';";
+		//echo "$sql<br />";
+		$res_type_sem=mysqli_query($GLOBALS["mysqli"], $sql);
+		$type_sem = mysqli_fetch_array($res_type_sem);
+
+		$req_sem = mysqli_query($GLOBALS["mysqli"], "SELECT id_semaine FROM edt_cours WHERE id_cours ='".$current_edt_id_cours."'");
+		$rep_sem = mysqli_fetch_array($req_sem);
+		if (($rep_sem["id_semaine"] != "0")&&($rep_sem["id_semaine"]!=$type_sem["type_edt_semaine"])) {
+			$temoin_semAB="On ne met pas de couleur.";
+		}
+	}
+
+	if (($temoin_semAB=="")&&(GetSettingEdt("edt_aff_couleur_prof") == "coul")) {
+		if(isset($tab_cadreCouleur[$id_groupe])) {
+			$ReturnColor=$tab_cadreCouleur[$id_groupe];
+			//echo "Couleur déjà recherchée pour le groupe $id_groupe<br />";
+		}
+		else {
+			$sql="SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."';";
+			//echo "$sql<br />";
+			$req_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
+			$rep_matiere = mysqli_fetch_array($req_matiere);
+			$matiere = $rep_matiere['id_matiere'];
+			$recher_couleur = "M_".$matiere;
+			$color = GetSettingEdt($recher_couleur);
+			$ReturnColor = "cadreCouleur".$color;
+			$tab_cadreCouleur[$id_groupe]=$ReturnColor;
+		}
+	}
+	elseif($temoin_semAB!="") {
+		$color="gainsboro";
 		$ReturnColor = "cadreCouleur".$color;
 	}
 	else {
 		$ReturnColor = "cadreCouleur";
-	}	
-		return $ReturnColor;
+	}
+	//echo "\$ReturnColor=$ReturnColor<br />";
+
+	return $ReturnColor;
 }
 // =============================================================================
 //
@@ -465,12 +539,21 @@ function GetColor($id_groupe) {
 // =============================================================================
 function ConstruireEDTProf($login_edt, $period) 
 {
-	$debug_edt="n";
+	global $debug_edt;
+	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
 
-    $table_data = array();
-    $type_edt = "prof";
+	//$debug_edt="y";
 
-$req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysqli_error($GLOBALS["mysqli"]));
+	$table_data = array();
+	$type_edt = "prof";
+
+	if($debug_edt=="y") {
+		echo "DEBUG: ConstruireEDTProf($login_edt, $period)<br />";
+	}
+
+$sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1";
+//echo "$sql<br />";
+$req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 $jour_sem_tab = array();
 while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
@@ -479,8 +562,10 @@ while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 
 
 $jour=0;
-$req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
-							WHERE type_creneaux != 'pause'") or die(mysqli_error($GLOBALS["mysqli"]));
+$sql="SELECT id_definie_periode FROM edt_creneaux
+							WHERE type_creneaux != 'pause'";
+//echo "$sql<br />";
+$req_id_creneaux = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 $nbre_lignes = mysqli_num_rows($req_id_creneaux);
 if ($nbre_lignes == 0) {
     $nbre_lignes = 1;
@@ -498,7 +583,7 @@ if ($type_edt=="prof") {
     $elapse_time = 0;
 
 	if($debug_edt=='y') {
-		echo "<pre>";
+		echo "tab_id_creneaux<br /><pre>";
 		print_r($tab_id_creneaux);
 		echo "</pre>";
 		echo "<hr />";
@@ -508,16 +593,21 @@ if ($type_edt=="prof") {
     while (isset($tab_id_creneaux[$j])) {
     //while ((isset($tab_id_creneaux[$j]))&&($nb_tours<10)) {
         $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
- 
+
 		$rep_creneau = mysqli_fetch_array($req_creneau);
-		//print_r($rep_creneau);
         $nb_rows = mysqli_num_rows($req_creneau);
 
 		if($debug_edt=='y') {
+			echo "Jour: ".$jour_sem_tab[$jour]."<br />";
+			echo "Créneau: ".formate_info_id_definie_periode($tab_id_creneaux[$j])."<br />";
+			echo "LessonsFromDayTeacherSlotPeriod<br />";
 			echo "\$nb_rows=$nb_rows<br />";
 			echo "<pre>";
 			print_r($rep_creneau);
 			echo "</pre>";
+			if($rep_creneau['id_groupe']!="") {
+				echo get_info_grp($rep_creneau['id_groupe'])."<br />";
+			}
 		}
 
 
@@ -536,7 +626,13 @@ if ($type_edt=="prof") {
         }
         // ========================================== 1 seul cours
         else if ($nb_rows == 1) {
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
+
             if ($rep_creneau['id_semaine'] != '0') {
+
                 $duree_max = $rep_creneau['duree'];
                 $heuredeb_dec = $rep_creneau['heuredeb_dec'];
                 // ========= études des cas n°2 , 6 et 7
@@ -629,6 +725,11 @@ if ($type_edt=="prof") {
             $id_semaine2 = $rep_creneau['id_semaine'];
             mysqli_data_seek($req_creneau, 0);
             $rep_creneau = mysqli_fetch_array($req_creneau);
+
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
 
             // ========= étude du cas PapaTango 1 (Problème de Transition de edt version 1 vers edt version 2) 
 
@@ -841,7 +942,11 @@ if ($type_edt=="prof") {
             $heuredeb_dec3 = $rep_creneau['heuredeb_dec'];
             $id_semaine3 = $rep_creneau['id_semaine'];
 
-            
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
+
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')|| ($id_semaine3 == '0')) {
                 // ======= étude du cas 17
                 if (($heuredeb_dec1  == 0) AND ($id_semaine1 == '0')) {
@@ -1258,6 +1363,8 @@ return $tab_data;
 // =============================================================================
 function ConstruireEDTProfDuJour($login_edt, $period, $jour) 
 {
+	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
+
     $table_data = array();
     $type_edt = "prof";
 
@@ -1310,9 +1417,16 @@ if ($type_edt=="prof") {
         }
         // ========================================== 1 seul cours
         else if ($nb_rows == 1) {
+
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
+
             if ($rep_creneau['id_semaine'] != '0') {
                 $duree_max = $rep_creneau['duree'];
                 $heuredeb_dec = $rep_creneau['heuredeb_dec'];
+
                 // ========= études des cas n°2 , 6 et 7
                 if (($duree_max == 1)) {        // ||(($duree_max == 2) AND ($rep_creneau['heuredeb_dec'] == 0))
                     if (($heuredeb_dec == 0) AND ($elapse_time%2 != 0))
@@ -1403,6 +1517,11 @@ if ($type_edt=="prof") {
             $id_semaine2 = $rep_creneau['id_semaine'];
             mysqli_data_seek($req_creneau, 0);
             $rep_creneau = mysqli_fetch_array($req_creneau);
+
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
 
             // ========= étude du cas PapaTango 1 (Problème de Transition de edt version 1 vers edt version 2) 
 
@@ -1501,6 +1620,11 @@ if ($type_edt=="prof") {
                 $rep_creneau = mysqli_fetch_array($req_creneau);
                 $id_semaine2 = $rep_creneau['id_semaine'];
                 $heuredeb_dec2 = $rep_creneau['heuredeb_dec'];
+
+			$current_edt_id_cours="";
+			if(isset($rep_creneau['id_cours'])) {
+				$current_edt_id_cours=$rep_creneau['id_cours'];
+			}
 
                 if ($id_semaine1 != $id_semaine2) {
                     // ========= étude des cas n°8 et n°9 et n°14 et n°15 et n°16 et 10
@@ -1615,7 +1739,12 @@ if ($type_edt=="prof") {
             $heuredeb_dec3 = $rep_creneau['heuredeb_dec'];
             $id_semaine3 = $rep_creneau['id_semaine'];
 
-            
+
+		$current_edt_id_cours="";
+		if(isset($rep_creneau['id_cours'])) {
+			$current_edt_id_cours=$rep_creneau['id_cours'];
+		}
+
             if (($id_semaine1 == '0') || ($id_semaine2 == '0')|| ($id_semaine3 == '0')) {
                 // ======= étude du cas 17
                 if (($heuredeb_dec1  == 0) AND ($id_semaine1 == '0')) {
