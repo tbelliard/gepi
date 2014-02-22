@@ -1410,7 +1410,8 @@ else {
 				$lig_per=mysql_fetch_object($res_per);
 				$recalcul_rang="";
 				for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
-				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
+				//$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
+				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='".$tab_id_classe[$loop_classe]."' AND jgc.id_groupe=jeg.id_groupe);";
 				//echo "$sql<br />";
 				$res=mysql_query($sql);
 				if(!$res) {
