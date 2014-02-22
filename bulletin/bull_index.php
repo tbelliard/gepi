@@ -2082,9 +2082,28 @@ else {
 			//$affiche_rang="y";
 			if (($affiche_rang == 'y')||
 			((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y'))) {
+				// Mise en réserve, même si en principe, c'est le même test aux différentes étapes
+				$test_coef_prec = $test_coef;
+
 				// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 				$test_coef = mysql_num_rows(mysql_query("SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 				include("../lib/calcul_rang.inc.php");
+
+				unset($nombre_eleves);
+				// Il y a aussi $affiche_categories qui est utilisé ici et dans calcul_rang.inc.php, mais avec la même valeur.
+				unset($moy_gen_classe);
+				unset($moy_gen_eleve);
+				unset($total_coef);
+				unset($nombre_groupes);
+				unset($current_group);
+				unset($nb_notes);
+				unset($note);
+				unset($current_eleve_note);
+				unset($current_eleve_statut);
+				unset($coef_eleve);
+
+				// En principe, c'est le même test aux différentes étapes
+				$test_coef=$test_coef_prec;
 			}
 
 
