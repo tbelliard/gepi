@@ -303,7 +303,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 	// Récupérer le détail du modèle
 	$tab_modele=array();
 	$sql="SELECT * FROM cn_conteneurs_modele_conteneurs WHERE id_modele='$id_modele' ORDER BY nom_court, nom_complet, description;";
-	if($debug_appliquer_modele) echo "$sql<br />";
+	if($debug_appliquer_modele) {echo "$sql<br />";}
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt=0;
@@ -336,7 +336,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 		$nb_erreur=0;
 		// Parcourir les classes, puis boucler sur les enseignements et enfin sur les périodes
 		for($i=0;$i<count($id_classe);$i++) {
-			if($debug_appliquer_modele) echo "<br /><p class='bold'>".get_nom_classe($id_classe[$i])."<br />";
+			if($debug_appliquer_modele) {echo "<br /><p class='bold'>".get_nom_classe($id_classe[$i])."<br />";}
 
 			unset($id_groupe);
 			if($choix_matieres=="certaines") {
@@ -346,7 +346,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 				$id_groupe=array();
 				//$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc WHERE g.id=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND g.id NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
 				$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe[$i]."' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
-				if($debug_appliquer_modele) echo "$sql<br />";
+				if($debug_appliquer_modele) {echo "$sql<br />";}
 				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_grp=mysqli_fetch_object($res_grp)) {
 					$id_groupe[]=$lig_grp->id;
@@ -360,7 +360,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 			else {
 				$num_periode=array();
 				$sql="SELECT num_periode FROM periodes WHERE id_classe='".$id_classe[$i]."' ORDER BY num_periode;";
-				if($debug_appliquer_modele) echo "$sql<br />";
+				if($debug_appliquer_modele) {echo "$sql<br />";}
 				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_per=mysqli_fetch_object($res_per)) {
 					$num_periode[]=$lig_per->num_periode;
@@ -370,19 +370,19 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 			// Boucler sur les enseignements
 			for($j=0;$j<count($id_groupe);$j++) {
 				$current_group=get_group($id_groupe[$j]);
-				if($debug_appliquer_modele) echo "<br /><p>".$current_group['name']." ".$current_group['classlist_string']." ".$current_group['profs']['proflist_string']."<br />";
+				if($debug_appliquer_modele) {echo "<br /><p>".$current_group['name']." ".$current_group['classlist_string']." ".$current_group['profs']['proflist_string']."<br />";}
 				// Boucler sur les périodes
 				for($k=0;$k<count($num_periode);$k++) {
 					unset($id_cahier_notes);
 
 					// Tester si le carnet de notes existe
 					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='".$id_groupe[$j]."' AND periode='".$num_periode[$k]."';";
-					if($debug_appliquer_modele) echo "$sql<br />";
+					if($debug_appliquer_modele) {echo "$sql<br />";}
 					$res_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
 					// Créer le carnet de notes s'il n'existe pas.
 					if(mysqli_num_rows($res_ccn)==0) {
 						// Créer le carnet de notes
-						if($debug_appliquer_modele) echo "Le carnet de notes n'existe pas en période ".$num_periode[$k].".<br />";
+						if($debug_appliquer_modele) {echo "Le carnet de notes n'existe pas en période ".$num_periode[$k].".<br />";}
 						$current_group=get_group($id_groupe[$j]);
 
 						$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
@@ -398,23 +398,23 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 															display_parents = '0', 
 															display_bulletin = '1', 
 															parent = '0'";
-						if($debug_appliquer_modele) echo "$sql<br />";
+						if($debug_appliquer_modele) {echo "$sql<br />";}
 						$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 						if ($reg) {
 							$id_cahier_notes = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 							$sql="UPDATE cn_conteneurs SET id_racine='$id_cahier_notes', parent = '0' WHERE id='$id_cahier_notes'";
-							if($debug_appliquer_modele) echo "$sql<br />";
+							if($debug_appliquer_modele) {echo "$sql<br />";}
 							$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 							$sql="INSERT INTO cn_cahier_notes SET id_groupe = '".$id_groupe[$j]."', periode = '".$num_periode[$k]."', id_cahier_notes='$id_cahier_notes'";
-							if($debug_appliquer_modele) echo "$sql<br />";
+							if($debug_appliquer_modele) {echo "$sql<br />";}
 							$reg = mysqli_query($GLOBALS["mysqli"], $sql);
 						}
 					}
 					else {
-						if($debug_appliquer_modele) echo "Le carnet de notes existait déjà en période ".$num_periode[$k].".<br />";
+						if($debug_appliquer_modele) {echo "Le carnet de notes existait déjà en période ".$num_periode[$k].".<br />";}
 						$id_cahier_notes=old_mysql_result($res_ccn, 0, "id_cahier_notes");
 					}
-					if($debug_appliquer_modele) echo "\$id_cahier_notes=$id_cahier_notes<br />";
+					if($debug_appliquer_modele) {echo "\$id_cahier_notes=$id_cahier_notes<br />";}
 
 					if(isset($id_cahier_notes)) {
 						// Récupérer la liste des conteneurs existants... ou comparer avec les modele_id_conteneur
@@ -422,12 +422,12 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 						// Boucler sur les conteneurs du modèle
 						for($m=0;$m<count($tab_modele);$m++) {
 							// Tester si le conteneur existe déjà
-							if($debug_appliquer_modele) echo "<br /><p>On va tester si un conteneur correspondant à modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."' existe ou non déjà<br />";
+							if($debug_appliquer_modele) {echo "<br /><p>On va tester si un conteneur correspondant à modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."' existe ou non déjà<br />";}
 							$sql="SELECT * FROM cn_conteneurs WHERE id_racine='$id_cahier_notes' AND modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."';";
-							if($debug_appliquer_modele) echo "$sql<br />";
+							if($debug_appliquer_modele) {echo "$sql<br />";}
 							$res_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_cn)==0) {
-								if($debug_appliquer_modele) echo "Aucun conteneur n'existe encore avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
+								if($debug_appliquer_modele) {echo "Aucun conteneur n'existe encore avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";}
 								$sql="INSERT INTO cn_conteneurs SET id_racine='$id_cahier_notes',
 																	nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_court'])."',
 																	nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_modele[$m]['nom_complet'])."',
@@ -440,7 +440,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 																	display_bulletin='".$tab_modele[$m]['display_bulletin']."',
 																	modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."',
 																	parent='$id_cahier_notes';";
-								if($debug_appliquer_modele) echo "$sql<br />";
+								if($debug_appliquer_modele) {echo "$sql<br />";}
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
 									$nb_insert++;
@@ -450,7 +450,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 								}
 							}
 							else {
-								if($debug_appliquer_modele) echo "Un conteneur existe déjà avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";
+								if($debug_appliquer_modele) {echo "Un conteneur existe déjà avec modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."'<br />";}
 								$id_conteneur=old_mysql_result($res_cn, 0, "id");
 								// Faut-il modifier parent pour remettre à la racine du carnet de notes?
 								// Faut-il réimposer le id_racine qui doit déjà être à $id_cahier_notes
@@ -467,7 +467,7 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 																	modele_id_conteneur='".$tab_modele[$m]['modele_id_conteneur']."',
 																	parent='$id_cahier_notes'
 															WHERE id='$id_conteneur';";
-								if($debug_appliquer_modele) echo "$sql<br />";
+								if($debug_appliquer_modele) {echo "$sql<br />";}
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
 									$nb_update++;
