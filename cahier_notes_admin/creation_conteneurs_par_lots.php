@@ -649,6 +649,10 @@ Toutes les classes et enseignements choisis auront ainsi la même structure de "
 	<li style='color:red'>A faire: Permettre de consulter l'état actuel des boites des enseignements...<br />
 	Modifier: choisir les classes, périodes, enseignements, puis choisir le modèle à appliquer.</li>
 	<li>Ce dispositif ne permet pas de supprimer des ".$gepi_denom_boite."s existant(e)s.</li>
+	<li>Si vous créez dans un enseignement, via un modèle, une ".$gepi_denom_boite." <strong>DM</strong> alors que le professeur a déjà créé une ".$gepi_denom_boite." de même nom, le professeur se retrouvera avec deux ".$gepi_denom_boite."s <strong>DM</strong>.<br />
+	Seule celle que vous aurez vous-même créé pourra être modifiée depuis la présente page.<br />
+	Un administrateur ne peut pas intervenir sur les ".$gepi_denom_boite."s qu'un professeur se crée lui-même.<br />
+	(<em>les ".$gepi_denom_boite."s créées depuis la présente page ont un identifiant les rattachant au modèle sur lequel elles ont été créées (champ 'modele_id_conteneur' de la table 'cn_conteneurs')</em>)</li>
 </ul>";
 }
 //==============================================================================
