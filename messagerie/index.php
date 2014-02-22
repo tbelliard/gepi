@@ -129,6 +129,7 @@ $msg_erreur=""; $msg_OK="";
 //
 if (isset($_POST['purger']))
 	{
+	check_token();
 	//$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".mktime(0,0,0,date("m"),date("d"),date("Y"));
 	$r_sql="DELETE FROM messages WHERE date_fin+86400 <= ".time();
 	if (!mysql_query($r_sql)) $msg_erreur="Erreur lors de la purge des messages&nbsp;: ".mysql_error();
@@ -211,8 +212,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$moisd = mb_substr($_POST['display_date_decompte'],3,2);
 			$jourd = mb_substr($_POST['display_date_decompte'],0,2);
 			//echo "$jourd/$moisd/$anneed<br />";
-			while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)) {
-				$jourf--;
+			while ((!checkdate($moisd, $jourd, $anneed)) and ($jourd > 0)) {
+				$jourd--;
 				//echo "$jourd/$moisd/$anneed<br />";
 			}
 			$date_decompte=mktime(0,0,0,$moisd,$jourd,$anneed);
@@ -348,7 +349,8 @@ echo "<td width = \"350px\" valign=\"top\">\n";
 
 echo "<span class='grand'>Purge des messages</span><br />\n";
 echo "<p>La purge des messages consiste à supprimer tous les messages dont la date de fin d'affichage est antérieure de plus de 24 h. à la date actuelle.</p>";
-echo "<form alin=\"center\" action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<form align=\"center\" action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo add_token_field();
 echo "<p align=\"center\"><input type=\"submit\" name=\"purger\" value=\" Purger les messages \"></p>";
 echo "</form>";
 echo "<br /><br />";
