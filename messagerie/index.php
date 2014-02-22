@@ -209,7 +209,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$jourd = mb_substr($_POST['display_date_decompte'],0,2);
 			//echo "$jourd/$moisd/$anneed<br />";
 			while ((!checkdate($moisd, $jourd, $anneed)) and ($jourd > 0)) {
-				$jourf--;
+				$jourd--;
 				//echo "$jourd/$moisd/$anneed<br />";
 			}
 			$date_decompte=mktime(0,0,0,$moisd,$jourd,$anneed);
