@@ -126,11 +126,6 @@ $key_setting[]='active_module_absence%';
 $chemin[] = "/edt_organisation/edt.php";
 $key_setting[]='autorise_edt%';
 
-if ($force_msj) {
-	$chemin[] = "/mod_miseajour/admin/index.php";
-	$key_setting[]='active_module_msj';
-}
-
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $key_setting[]='active_module_trombinoscopes';
 $chemin[] = "/mod_notanet/notanet_admin.php";
@@ -362,20 +357,6 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
-	
-// Mise à jour automatisée
-	if ($force_msj) {
-		$nouveauItem = new itemGeneral();
-		$nouveauItem->chemin='/mod_miseajour/admin/index.php';	
-		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
-		{
-			$nouveauItem->choix_icone('active_module_msj') ;	
-			$nouveauItem->titre="Mise à jour automatisée" ;
-			$nouveauItem->expli="Pour gérer le module de mise à jour de GEPI" ;
-			$menuPage[]=$nouveauItem;
-		}
-		unset($nouveauItem);
-	}
 	
 // Trombinoscope
 	$nouveauItem = new itemGeneral();

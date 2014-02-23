@@ -136,4 +136,23 @@ if ($test == 2) {
 	$result .= msj_present("Les références ne sont pas présentes dans la table");
 }
 
+$result .= "<br />";
+$result .= "<strong>Suppression des entrées du module miseajour dans la table setting :</strong><br />";
+$test = mysqli_num_rows(mysqli_query($mysqli, "SELECT `NAME` FROM `setting` WHERE (`NAME`='active_module_msj' OR `NAME`='site_msj_gepi' OR `NAME`='rc_module_msj' OR `NAME`='beta_module_msj' OR `NAME`='dossier_ftp_gepi');"));
+if ($test == 5) {
+	$result_supp = mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='active_module_msj'")
+		&& mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='site_msj_gepi'")
+		&& mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='rc_module_msj'")
+		&& mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='beta_module_msj'")
+		&& mysqli_query($mysqli,"DELETE FROM `setting` WHERE `NAME`='dossier_ftp_gepi'");
+	if ($result_supp) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Les entrées ne sont pas présentes dans la table setting");
+}
+
 ?>

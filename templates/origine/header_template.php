@@ -47,16 +47,6 @@
 <!-- Fin des styles -->
 
 <!-- Début des fichiers en javascript -->
-	<!-- christian -->
-	<script type="text/javascript">
-		//<![CDATA[ 
-		function ouvre_popup(url) {
-				eval("window.open('/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
-				fen.focus();
-			}
-		//]]>
-	</script>
-
 
 	<script type="text/javascript" src="<?php echo $tbs_gepiPath ?>/lib/functions.js"></script>
 	<?php
