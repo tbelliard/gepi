@@ -442,6 +442,9 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
 }
 */
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_suppression = "Confirmation de suppression";
 //**************** EN-TETE *****************
@@ -720,11 +723,11 @@ echo "
 							<td colspan=\"4\">";
 
 						echo "
-								<table class='boireaus boireaus_alt' summary=\"Tableau de choix des classes et du paramétrage des dates\">
+								<table class='boireaus boireaus_alt sortable resizable' summary=\"Tableau de choix des classes et du paramétrage des dates\">
 									<thead>
 										<tr>
-											<th>Classe</th>
-											<th>Date</th>
+											<th class='text' title='Cliquez pour trier par nom de classe.'>Classe</th>
+											<th class='text' title='Cliquez pour trier par date.\nLe tri fonctionne avec les dates validées/enregistrées.'>Date</th>
 											<th title=\"Choisissez la ligne modèle pour copier une date.\">D</th>
 											<th><img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la date sélectionnée.\"/></th>
 											<th></th>
@@ -750,10 +753,12 @@ foreach($tab_classe as $id_classe => $classe) {
 	echo "
 										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
 										<td>
+										<span style='display:none' title='Pour le tri.'>".$classe['classe']."</span>
 										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe);changement();\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
 										</td>
 
 										<td>
+											<span style='display:none' title='Pour le tri.'>".(isset($tab_classe_ev[$id_classe]['date_evenement']) ? $tab_classe_ev[$id_classe]['date_evenement'] : "")."</span>
 											<span id='span_date_id_classe_".$id_classe."'>
 												&nbsp;
 												<input type='text' name='display_date_id_classe[$cpt]' id='display_date_id_classe_".$id_classe."' size='10' value=\"".(isset($tab_classe_ev[$id_classe]['date_evenement_formatee']) ? $tab_classe_ev[$id_classe]['date_evenement_formatee'] : "")."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />
