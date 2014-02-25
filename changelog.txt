@@ -5,6 +5,12 @@
 
 Gepi-master (Version de développement)
 ===========================
+EDT: 
+- Facilités de navigation Classe/Prof/Salle en cliquant dans le créneau affiché.
+
+Absences2:
+- Tableau des appels: Possibilité d'afficher l'EDT de la classe en infobulle.
+
 Gestion:
 - Gestion des classes/enseignements: Ajout de liens d'affichage de l'EDT prof en infobulle.
 - Consultation élève: Ajout de l'affichage de MEF.
