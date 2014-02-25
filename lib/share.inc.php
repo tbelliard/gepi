@@ -9497,4 +9497,24 @@ function formate_info_id_definie_periode($id_definie_periode) {
 	return $retour;
 }
 
+function acces_edt_prof() {
+	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
+		return true;
+	}
+	elseif(($_SESSION['statut']=="professeur")&&(getSettingAOui('AccesProf_EdtProfs'))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function acces_edt_classe() {
+	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe', 'professeur'))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>
