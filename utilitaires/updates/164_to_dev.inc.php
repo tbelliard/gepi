@@ -180,7 +180,7 @@ if ($test == -1) {
 }
 
 $result .= "<br />";
-$result .= "<strong>Ajout d'une table 's_avertissements' :</strong><br />";
+$result .= "<strong>Ajout d'une table 's_types_avertissements' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 's_avertissements'");
 if ($test == -1) {
 	$sql="CREATE TABLE IF NOT EXISTS s_types_avertissements (
