@@ -181,7 +181,7 @@ if ($test == -1) {
 
 $result .= "<br />";
 $result .= "<strong>Ajout d'une table 's_types_avertissements' :</strong><br />";
-$test = sql_query1("SHOW TABLES LIKE 's_avertissements'");
+$test = sql_query1("SHOW TABLES LIKE 's_types_avertissements'");
 if ($test == -1) {
 	$sql="CREATE TABLE IF NOT EXISTS s_types_avertissements (
 	id_type_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -193,15 +193,16 @@ if ($test == -1) {
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 
-		$result.=insere_avertissement_fin_periode_par_defaut()."<br />";
-	}
-	else {
-		$result .= msj_erreur("ECHEC !");
-	}
+		$result .= "Initialisation de 'mod_disc_terme_avertissement_fin_periode' : ";
+		if(saveSetting("mod_disc_terme_avertissement_fin_periode", "avertissement de fin de période")) {
+			$result .= msj_ok("SUCCES !");
+			$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
 
-	$result .= "Initialisation de 'mod_disc_terme_avertissement_fin_periode' : ";
-	if(saveSetting("mod_disc_terme_avertissement_fin_periode", "avertissement de fin de période")) {
-		$result .= msj_ok("SUCCES !");
+		$result.=insere_avertissement_fin_periode_par_defaut()."<br />";
 	}
 	else {
 		$result .= msj_erreur("ECHEC !");
