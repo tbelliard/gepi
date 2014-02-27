@@ -358,4 +358,8 @@ table.boireaus {
 	font-weight:normal;
 }
 
+.fieldset_opacite50 {
+	border: 1px solid grey;
+	background-image: url("../images/background/opacite50.png");
+}
 

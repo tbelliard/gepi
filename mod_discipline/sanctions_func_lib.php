@@ -9,6 +9,9 @@ if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 // Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 // Hauteur de la bande testée pour la position de la souris:
 $hauteur_survol_infobulle=20;

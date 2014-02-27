@@ -1224,4 +1224,7 @@ INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professe
 INSERT INTO droits SET id='/eleves/recherche.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='V',description='Effectuer une recherche sur une personne',statut='';
 INSERT INTO setting SET name='active_bulletins', value='y';
 INSERT INTO droits SET id='/classes/dates_classes.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Définition de dates pour les classes',statut='';
+INSERT INTO droits VALUES ( '/mod_discipline/definir_bilan_periode.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les sanctions/avertissements de fin de période', '');
+INSERT INTO droits VALUES ( '/mod_discipline/imprimer_bilan_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Imprimer les avertissements de fin de période', '');
+INSERT INTO droits VALUES ( '/mod_discipline/saisie_avertissement_fin_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Saisie des sanctions/avertissements de fin de période', '');
 

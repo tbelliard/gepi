@@ -16,6 +16,11 @@ Gestion:
 - Consultation élève: Ajout de l'affichage de MEF.
 - Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
 
+Discipline:
+- Possibilité de définir des avertissements de fin de période,
+  de les saisir depuis les pages de saisie de l'avis du conseil de classe,
+  et de les imprimer au format OOo.
+
 Divers:
 - Statistiques de connexion:
    . Possibilité de cumuler les connexions élèves et parents.

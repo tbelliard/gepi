@@ -75,6 +75,9 @@ if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
 }
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 $date_du_jour=strftime("%d/%m/%Y");
 $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 //$acces_classes_acces_appreciations=acces("/classes/acces_appreciations.php", $_SESSION['statut']);
@@ -735,6 +738,10 @@ if ($insert_mass_appreciation_type=="y") {
 	//$i++;
 	echo "</table>\n<br />\n<br />\n";
 
+	// 20140226
+	if(getSettingAOui('active_mod_discipline')) {
+		echo necessaire_saisie_avertissement_fin_periode();
+	}
 
 	$chaine_test_vocabulaire="";
 
@@ -817,6 +824,14 @@ if ($insert_mass_appreciation_type=="y") {
 			$current_eleve_login_t[$k] = $current_eleve_login."_t".$k;
 			$k++;
 		}
+
+		// 20140226
+		// Liste des avertissements
+		/*
+		if(getSettingAOui('active_mod_discipline')) {
+			$tab_avertissement_fin_periode=get_tab_avertissement($current_eleve_login);
+		}
+		*/
 
 		$k='1';
 		$alt=1;
@@ -943,6 +958,25 @@ $msg_acces_app_ele_resp\" />";
 					}
 					// **** FIN DE L'AJOUT POUR LES MENTIONS ****
 
+					// 20140226
+					if(getSettingAOui('active_mod_discipline')) {
+						if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
+							echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$current_eleve_login&amp;periode=$k&amp;lien_refermer=y'";
+						echo " onclick=\"afficher_saisie_avertissement_fin_periode('$current_eleve_login', $k, 'liste_avertissements_fin_periode_".$i."_$k');return false;\"";
+						echo " style='color:black;' target='_blank'>
+		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+		<span class='bold' id='liste_avertissements_fin_periode_".$i."_$k'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+	</a>
+</div>";
+						}
+						else {
+							echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+		<span class='bold'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+</div>";
+						}
+					}
+
 					//echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='no_anti_inject_".$current_eleve_login_t[$k]."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajout CC</a>";
 
 					if((file_exists('saisie_commentaires_types.php'))
@@ -977,6 +1011,13 @@ $msg_acces_app_ele_resp\" />";
 					echo "</b></p>\n";
 				}
 				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
+				// 20140226
+				if(getSettingAOui('active_mod_discipline')) {
+					echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+		<span class='bold'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+</div>";
+				}
 				echo "</td>\n";
 			}
 			echo "</tr>\n";

@@ -155,4 +155,59 @@ if ($test == 5) {
 	$result .= msj_present("Les entrées ne sont pas présentes dans la table setting");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 's_avertissements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_avertissements'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS s_avertissements (
+	id_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	login_ele VARCHAR( 50 ) NOT NULL ,
+	id_type_avertissement INT(11),
+	periode INT(11),
+	date_avertissement DATE NOT NULL ,
+	declarant VARCHAR( 50 ) NOT NULL ,
+	commentaire TEXT NOT NULL
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 's_avertissements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_avertissements'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS s_types_avertissements (
+	id_type_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	nom_court VARCHAR( 50 ) NOT NULL ,
+	nom_complet VARCHAR( 255 ) NOT NULL,
+	description TEXT NOT NULL
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result.=insere_avertissement_fin_periode_par_defaut()."<br />";
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+
+	$result .= "Initialisation de 'mod_disc_terme_avertissement_fin_periode' : ";
+	if(saveSetting("mod_disc_terme_avertissement_fin_periode", "avertissement de fin de période")) {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

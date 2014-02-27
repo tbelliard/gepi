@@ -4634,7 +4634,7 @@ function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $logi
 		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
 		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
 		$sql.="professeur='$login_prof' AND login='$login_eleve';";
-	}       
+	}
 	$resultat = mysqli_query($mysqli, $sql); 
 	if($resultat->num_rows > 0) {
 		$resultat->close();
@@ -4701,6 +4701,9 @@ function is_cpe($login_cpe,$id_classe="",$login_eleve="") {
 	}
 	elseif($id_classe!='') {
 		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
+	}
+	else {
+		$sql="SELECT 1=1 FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='$login_cpe';";
 	}
 	if(isset($sql)) {
 		$test=mysqli_query($mysqli, $sql);
@@ -9517,4 +9520,399 @@ function acces_edt_classe() {
 		return false;
 	}
 }
+
+function get_tab_type_avertissement() {
+	$tab_type_avertissement_fin_periode=array();
+
+	$sql="SELECT * FROM s_types_avertissements ORDER BY nom_court, nom_complet;";
+	//echo "$sql<br />";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_type_avertissement_fin_periode['cpt'][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab_type_avertissement_fin_periode['cpt'][$cpt]['nom_court']=$lig->nom_court;
+			$tab_type_avertissement_fin_periode['cpt'][$cpt]['nom_complet']=$lig->nom_complet;
+			$tab_type_avertissement_fin_periode['cpt'][$cpt]['description']=$lig->description;
+
+			$tab_type_avertissement_fin_periode['id_type_avertissement'][$lig->id_type_avertissement]['nom_court']=$lig->nom_court;
+			$tab_type_avertissement_fin_periode['id_type_avertissement'][$lig->id_type_avertissement]['nom_complet']=$lig->nom_complet;
+			$tab_type_avertissement_fin_periode['id_type_avertissement'][$lig->id_type_avertissement]['description']=$lig->description;
+
+			$sql="SELECT 1=1 FROM s_avertissements WHERE id_type_avertissement='".$lig->id_type_avertissement."';";
+			$test = mysqli_query($GLOBALS["mysqli"], $sql);
+			$tab_type_avertissement_fin_periode['cpt'][$cpt]['effectif']=mysqli_num_rows($test);
+			$tab_type_avertissement_fin_periode['id_type_avertissement'][$lig->id_type_avertissement]['effectif']=mysqli_num_rows($test);
+
+			$cpt++;
+		}
+	}
+
+	return $tab_type_avertissement_fin_periode;
+}
+
+function affiche_tab_type_avertissement() {
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$retour="";
+
+	$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	if(!isset($tab_type_avertissement_fin_periode['id_type_avertissement'])) {
+		$retour.="
+<p style='color:red'>Aucun type d'$mod_disc_terme_avertissement_fin_periode n'est encore défini.</p>";
+	}
+	else {
+		$retour.="
+<p>Liste des ".$mod_disc_terme_avertissement_fin_periode."s définis&nbsp;:</p>
+<table class='boireaus boireaus_alt' summary='Tableau des ".$mod_disc_terme_avertissement_fin_periode."s définis'>
+	<tr>
+		<th>Identifiant</th>
+		<th>Nom court</th>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>
+	</tr>";
+
+		foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
+			$retour.="
+	<tr>
+		<td><label for='suppr_$key'>".$key."</label></td>
+		<td><label for='suppr_$key'>".$value['nom_court']."</label></td>
+		<td><label for='suppr_$key'>".$value['nom_complet']."</label></td>
+	</tr>";
+		}
+		$retour.="
+</table>";
+	}
+
+	return $retour;
+}
+
+function get_tab_avertissement($login_ele, $periode="") {
+	$tab=array();
+
+	$sql="SELECT * FROM s_avertissements WHERE login_ele='$login_ele' ";
+	if(($periode!="")&&(preg_match("/^[0-9]{1,}$/",$periode))) {
+		$sql.="AND periode='$periode' ";
+	}
+	$sql.="ORDER BY date_avertissement;";
+	//echo "$sql<br />";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
+			$tab['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
+			$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet") {
+	global $tab_type_avertissement_fin_periode;
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$tab=get_tab_avertissement($login_ele, $periode);
+	/*
+	echo "<p>get_tab_avertissement($login_ele, $periode)<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+
+	if(!is_array($tab_type_avertissement_fin_periode)) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	}
+
+	$retour="";
+
+	if(isset($tab_type_avertissement_fin_periode['id_type_avertissement'])) {
+		if(isset($tab['id_type_avertissement'][$periode])) {
+			for($loop=0;$loop<count($tab['id_type_avertissement'][$periode]);$loop++) {
+				if($loop>0) {$retour.=", ";}
+				if($mode=="nom_court") {
+					$retour.="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court']."</span>";
+				}
+				else {
+					//$retour.="<span style='color:red'>\$tab['id_type_avertissement'][$periode][$loop]=".$tab['id_type_avertissement'][$periode][$loop]."</span>";
+					$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet'];
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
+	global $tab_type_avertissement_fin_periode;
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	if($login_ele!="") {
+		$tab=get_tab_avertissement($login_ele, $periode);
+	}
+	else {
+		$tab=array();
+	}
+
+	if(!is_array($tab_type_avertissement_fin_periode)) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	}
+
+	if(!isset($tab_type_avertissement_fin_periode['id_type_avertissement'])) {
+		$retour="<span style='color:red'>Aucun type d'$mod_disc_terme_avertissement_fin_periode n'est encore défini.</span>";
+	}
+	else {
+		$retour="<table class='boireaus boireaus_alt' summary=\"Tableau des $mod_disc_terme_avertissement_fin_periode\">";
+		foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
+			$retour.="
+	<tr>
+		<td><input type='checkbox' id='id_type_avertissement_$key' name='id_type_avertissement[]' value='$key' onchange=\"checkbox_change('id_type_avertissement_$key')\" ";
+			if((isset($tab['id_type_avertissement'][$periode]))&&(in_array($key, $tab['id_type_avertissement'][$periode]))) {
+				$retour.="checked ";
+			}
+			$retour.="/></td>
+		<td><label for='id_type_avertissement_$key' id='texte_id_type_avertissement_$key'";
+			if((isset($tab['id_type_avertissement'][$periode]))&&(in_array($key, $tab['id_type_avertissement'][$periode]))) {
+				$retour.=" style='font-weight:bold;'";
+			}
+			$retour.=">".$value['nom_complet']."</label></td>
+	</tr>";
+		}
+		$retour.="
+</table>";
+	}
+
+	return $retour;
+}
+
+/** Fonction destinée tester si l'utilisateur courant est autorisé à accéder à la saisie d'avertissement de fin de période pour l'élève choisi
+ *
+ * @param string $login_ele identifiant de l'élève
+ *
+ * @return boolean Accès ou non
+ */
+function acces_saisie_avertissement_fin_periode($login_ele) {
+
+	if($_SESSION['statut']=='professeur') {
+		if((getSettingAOui('GepiRubConseilProf'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+			return true;
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		if(getSettingAOui('GepiRubConseilScol')) {
+			return true;
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(getSettingAOui('GepiRubConseilCpeTous')) {
+			return true;
+		}
+		elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		return true;
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		return true;
+	}
+
+	return false;
+}
+
+function necessaire_saisie_avertissement_fin_periode() {
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$largeur_infobulle="400px";
+
+	$sql="SELECT id_type_avertissement FROM s_types_avertissements;";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		$chaine_js="var tab_id_type_avertissement=new Array(";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if($cpt>0) {
+				$chaine_js.=", ";
+			}
+			$chaine_js.=$lig->id_type_avertissement;
+			$cpt++;
+		}
+		$chaine_js.=");";
+	}
+
+	$retour="
+<script type='text/javascript'>
+
+	function valider_saisie_avertissement_fin_periode() {
+
+		saisie_avertissement_fin_periode_login_ele=document.getElementById('saisie_avertissement_fin_periode_login_ele').value;
+		saisie_avertissement_fin_periode_periode=document.getElementById('saisie_avertissement_fin_periode_periode').value;
+		saisie_avertissement_fin_periode_id_retour_ajax=document.getElementById('saisie_avertissement_fin_periode_id_retour_ajax').value;
+
+		$chaine_js
+
+		id_type_avertissement='';
+		j=0;
+		for(i=0;i<tab_id_type_avertissement.length;i++) {
+			if(document.getElementById('id_type_avertissement_'+tab_id_type_avertissement[i]).checked==true) {
+				if(j>0) {
+					id_type_avertissement=id_type_avertissement+'|';
+				}
+
+				id_type_avertissement=id_type_avertissement+tab_id_type_avertissement[i];
+				j++;
+			}
+		}
+
+		//alert(id_retour_ajax);
+
+		if(saisie_avertissement_fin_periode_id_retour_ajax=='') {
+			alert('Erreur');
+		}
+		else {
+			new Ajax.Updater($(saisie_avertissement_fin_periode_id_retour_ajax),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
+			parameters: {
+				login_ele: saisie_avertissement_fin_periode_login_ele,
+				periode: saisie_avertissement_fin_periode_periode,
+				saisie_avertissement_fin_periode: 'y',
+				mode_js: 'y',
+				lien_refermer: 'y',
+				id_type_avertissement: id_type_avertissement,
+			}});
+
+			cacher_div('div_saisie_avertissement_fin_periode');
+		}
+	}
+
+	function afficher_saisie_avertissement_fin_periode(login_ele, periode, id_retour_ajax) {
+		document.getElementById('saisie_avertissement_fin_periode_id_retour_ajax').value=id_retour_ajax;
+		document.getElementById('saisie_avertissement_fin_periode_login_ele').value=login_ele;
+		document.getElementById('saisie_avertissement_fin_periode_periode').value=periode;
+
+		document.getElementById('titre_entete_saisie_avertissement_fin_periode').innerHTML='Saisie pour '+login_ele+' en période '+periode;
+
+		afficher_div('div_saisie_avertissement_fin_periode','y',100,100);
+	}
+
+	".js_checkbox_change_style('checkbox_change', 'texte_', 'n')."
+
+</script>
+
+<div id='div_saisie_avertissement_fin_periode' style='position: absolute; top: 220px; right: 20px; width: $largeur_infobulle; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>
+
+	<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: $largeur_infobulle; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_saisie_avertissement_fin_periode')\">
+		<div style='color: #ffffff; cursor: move; float:right; width: 16px; margin-right: 1px;'>
+			<a href='#' onClick=\"cacher_div('div_saisie_avertissement_fin_periode');return false;\">
+				<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />
+			</a>
+		</div>
+
+		<div id='titre_entete_saisie_avertissement_fin_periode'></div>
+	</div>
+
+	<div id='corps_saisie_avertissement_fin_periode' class='infobulle_corps' style='color: black; cursor: auto; padding: 0px; height: 15em; width: $largeur_infobulle; overflow: auto;'>
+		<form name='form_saisie_avertissement_fin_periode' id='form_saisie_avertissement_fin_periode' action ='../mod_discipline/saisie_avertissement_fin_periode.php' method='post' target='_blank'>
+			<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+				<input type='hidden' name='saisie_avertissement_fin_periode_login_ele' id='saisie_avertissement_fin_periode_login_ele' value='' />
+				<input type='hidden' name='saisie_avertissement_fin_periode_periode' id='saisie_avertissement_fin_periode_periode' value='' />
+				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
+				<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode</p>
+				".champs_checkbox_avertissements_fin_periode("", 1)."
+
+
+<div id='div_signalement_message'></div>
+
+				<input type='button' onclick='valider_saisie_avertissement_fin_periode()' name='Valider' value='Valider' />
+				".add_token_field()."
+
+				<p><br /></p>
+				<p><em>NOTE&nbsp;:</em> Les cases cochées dans cette infobulle ne correspondent pas nécessairement à l'état actuel des saisies sur la période choisie pour l'élève choisi.</p>
+			</fieldset>
+		</form>
+	</div>
+</div>\n";
+
+	return $retour;
+}
+
+function insere_avertissement_fin_periode_par_defaut() {
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$cpt_erreur=0;
+	$cpt_reg=0;
+	$retour="";
+
+	$tab_avertissement_fin_periode_nom_court=array('Av.T', 'Av.C');
+	$tab_avertissement_fin_periode=array('Avertissement travail', 'Avertissement conduite');
+	for($i=0;$i<count($tab_avertissement_fin_periode);$i++) {
+		$sql="SELECT 1=1 FROM s_types_avertissements WHERE nom_complet='$tab_avertissement_fin_periode[$i]';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$retour.="L'$mod_disc_terme_avertissement_fin_periode '$tab_avertissement_fin_periode[$i]' est déjà enregistré.<br />\n";
+		}
+		else {
+			$sql="INSERT INTO s_types_avertissements SET nom_court='$tab_avertissement_fin_periode_nom_court[$i]',
+											nom_complet='$tab_avertissement_fin_periode[$i]'
+											;";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$res) {$cpt_erreur++;} else {$cpt_reg++;}
+		}
+	}
+
+	if($cpt_erreur>0) {
+		$retour.="$cpt_erreur erreur(s) lors de l'insertion des ".$mod_disc_terme_avertissement_fin_periode."s par défaut.<br />\n";
+	}
+
+	if($cpt_reg>0) {
+		$retour.="$cpt_reg $mod_disc_terme_avertissement_fin_periode(s) enregistré(s).<br />\n";
+	}
+
+	return $retour;
+}
+
+function get_info_eleve($login_ele, $periode) {
+	$tab=array();
+
+	$sql="SELECT * FROM eleves WHERE login='$login_ele';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab['nom']=$lig->nom;
+		$tab['prenom']=$lig->prenom;
+		$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+		$tab['naissance']=$lig->naissance;
+		$tab['sexe']=$lig->sexe;
+		$tab['no_gep']=$lig->no_gep;
+		$tab['elenoet']=$lig->elenoet;
+		$tab['ele_id']=$lig->ele_id;
+		$tab['email']=$lig->email;
+		$tab['tel_pers']=$lig->tel_pers;
+		$tab['tel_prof']=$lig->tel_prof;
+		$tab['tel_port']=$lig->tel_port;
+		$tab['date_entree']=$lig->date_entree;
+		$tab['date_sortie']=$lig->date_sortie;
+		$tab['id_eleve']=$lig->id_eleve;
+		$tab['mef_code']=$lig->mef_code;
+
+		$sql="SELECT c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' AND jec.periode='$periode';";
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res2)>0) {
+			$lig2=mysqli_fetch_object($res2);
+
+			$tab['classe']=$lig2->classe;
+
+		}
+	}
+
+	return $tab;
+}
+
 ?>

@@ -87,6 +87,9 @@ if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
 }
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 //*******************************************************************************************************
 $msg = '';
 
@@ -185,6 +188,41 @@ if (isset($_POST['is_posted'])) {
 					$affiche_message = 'yes';             }
 				}
 			}
+
+			// A FAIRE: 20140226: Pouvoir restreindre la liste des personnes pouvant saisir un avertissement de fin de période.
+			if(isset($_POST['saisie_avertissement_fin_periode'])) {
+				$id_type_avertissement=isset($_POST['id_type_avertissement']) ? $_POST['id_type_avertissement'] : array();
+
+				$tab_av_ele=get_tab_avertissement($current_eleve_login, $periode_num);
+				if(isset($tab_av_ele['id_type_avertissement'][$periode_num])) {
+					for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode_num]);$loop++) {
+						if(!in_array($tab_av_ele['id_type_avertissement'][$periode_num][$loop], $id_type_avertissement)) {
+							$sql="DELETE FROM s_avertissements WHERE login_ele='$current_eleve_login' AND periode='$periode_num' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode_num][$loop]."';";
+							//$msg.="$sql<br />";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+							if (!$del) {
+								$msg.="Erreur lors de la suppression de l'avertissement.";
+							}
+						}
+					}
+				}
+
+				for($loop=0;$loop<count($id_type_avertissement);$loop++) {
+					if((!isset($tab_av_ele['id_type_avertissement'][$periode_num]))||(!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode_num]))) {
+						$sql="INSERT INTO s_avertissements SET login_ele='$current_eleve_login', 
+												periode='$periode_num', 
+												id_type_avertissement='".$id_type_avertissement[$loop]."',
+												declarant='".$_SESSION['login']."',
+												date_avertissement='".strftime("%Y-%m-%d")."';";
+						//$msg.="$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$insert) {
+							$msg.="Erreur lors de l'enregistrement de l'avertissement.";
+						}
+					}
+				}
+			}
+
 	} else {
 		$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
 	}
@@ -528,6 +566,17 @@ echo "</form>\n";
 			if($avec_mentions=="y") {
 				echo "<th><b>".ucfirst($gepi_denom_mention)."</b></th>\n";
 			}
+			$avec_avertissements_fin_periode="n";
+			if(getSettingAOui('active_mod_discipline')) {
+				$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+				if(count($tab_type_avertissement_fin_periode)>0) {
+					$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+					if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+					echo "<th><img src='../images/icons/balance_justice.png' class='icone20' alt=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" /></th>\n";
+					$avec_avertissements_fin_periode="y";
+				}
+			}
 		?>
 	</tr>
 	<?php
@@ -580,7 +629,7 @@ echo "</form>\n";
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 		$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 		// ***** AJOUT POUR LES MENTIONS *****
-        $current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
+		$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
@@ -599,6 +648,9 @@ echo "</form>\n";
 			}
 			echo "</span></td>\n";
 			// *** FIN D'AJOUT POUR LES MENTIONS ****
+		}
+		if($avec_avertissements_fin_periode=="y") {
+			echo "<td>".liste_avertissements_fin_periode($current_eleve_login, $periode_num, "nom_court")."</td>";
 		}
 		echo "</tr>\n";
 		$i++;
@@ -1124,6 +1176,26 @@ if (isset($fiche)) {
 		}
 	?>
 	<input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+
+	<?php
+		// 20140226
+		// Liste des avertissements
+		if(getSettingAOui('active_mod_discipline')) {
+			$tab_avertissement_fin_periode=get_tab_avertissement($current_eleve_login, $periode_num);
+
+			echo "<div>
+		<img src='../images/icons/balance_justice.png' class='icone20' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" style='float:left;' />
+		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
+		<div>
+			".champs_checkbox_avertissements_fin_periode($current_eleve_login, $periode_num)."
+		</div>
+</div>";
+
+			echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
+
+		}
+	?>
+
 	<br /><br />&nbsp;
 
 	<div id="debug_fixe" style="position: fixed; bottom: 20%; right: 5%;"></div>

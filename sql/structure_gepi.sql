@@ -924,3 +924,22 @@ id_ev int(11) NOT NULL,
 statut varchar(20) NOT NULL, 
 KEY id_ev_u (id_ev,statut)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS s_avertissements;
+CREATE TABLE IF NOT EXISTS s_avertissements (
+id_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+login_ele VARCHAR( 50 ) NOT NULL ,
+id_type_avertissement INT(11),
+periode INT(11),
+date_avertissement DATE NOT NULL ,
+declarant VARCHAR( 50 ) NOT NULL ,
+commentaire TEXT NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS s_types_avertissements;
+CREATE TABLE IF NOT EXISTS s_types_avertissements (
+id_type_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+nom_court VARCHAR( 50 ) NOT NULL ,
+nom_complet VARCHAR( 255 ) NOT NULL,
+description TEXT NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
