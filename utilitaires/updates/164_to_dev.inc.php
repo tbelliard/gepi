@@ -30,7 +30,7 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.5(dev) :</h3>"
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
-	$query = mysqli_query("ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
+	$query = mysqli_query($mysqli, "ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
@@ -211,4 +211,18 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "Test du type du champ 'date_avertissement' de la table 's_avertissements'<br />";
+$sql="show columns from s_avertissements where type like 'datetime' and field='date_avertissement';";
+$res_sa=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_sa)>0) {
+	$result .= msj_present("Le champ a le bon type (DATETIME)");
+}
+else {
+	$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE s_avertissements CHANGE date_avertissement date_avertissement DATETIME NOT NULL;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+}
 ?>

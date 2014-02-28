@@ -214,7 +214,7 @@ if (isset($_POST['is_posted'])) {
 											periode='$periode_num', 
 											id_type_avertissement='".$id_type_avertissement[$loop]."',
 											declarant='".$_SESSION['login']."',
-											date_avertissement='".strftime("%Y-%m-%d")."';";
+											date_avertissement='".strftime("%Y-%m-%d %H:%M:%S")."';";
 					//$msg.="$sql<br />";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if (!$insert) {

@@ -154,7 +154,7 @@ if((isset($periode))&&(isset($login_ele))) {
 												periode='$periode', 
 												id_type_avertissement='".$id_type_avertissement[$loop]."',
 												declarant='".$_SESSION['login']."',
-												date_avertissement='".strftime("%Y-%m-%d")."';";
+												date_avertissement='".strftime("%Y-%m-%d %H:%M:%S")."';";
 						//$msg.="$sql<br />";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
