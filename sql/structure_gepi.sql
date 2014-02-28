@@ -930,7 +930,7 @@ id_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login_ele VARCHAR( 50 ) NOT NULL ,
 id_type_avertissement INT(11),
 periode INT(11),
-date_avertissement DATE NOT NULL ,
+date_avertissement DATETIME NOT NULL ,
 declarant VARCHAR( 50 ) NOT NULL ,
 commentaire TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
