@@ -110,73 +110,85 @@ if((isset($periode))&&(isset($login_ele))) {
 	if(isset($_POST['saisie_avertissement_fin_periode'])) {
 		check_token();
 
-		$id_type_avertissement=isset($_POST['id_type_avertissement']) ? $_POST['id_type_avertissement'] : array();
+		$etat_verrouillage_eleve_periode=etat_verrouillage_eleve_periode($login_ele, $periode);
+		if(($etat_verrouillage_eleve_periode=="N")||($etat_verrouillage_eleve_periode=="P")) {
+			$id_type_avertissement=isset($_POST['id_type_avertissement']) ? $_POST['id_type_avertissement'] : array();
 
-		if(!is_array($id_type_avertissement)) {
-			//echo "\$id_type_avertissement n'est pas un tableau : '$id_type_avertissement'<br />";
-			$tmp_chaine=$id_type_avertissement;
-			$id_type_avertissement=explode("|", $tmp_chaine);
-		}
+			if(!is_array($id_type_avertissement)) {
+				//echo "\$id_type_avertissement n'est pas un tableau : '$id_type_avertissement'<br />";
+				$tmp_chaine=$id_type_avertissement;
+				$id_type_avertissement=explode("|", $tmp_chaine);
+			}
 
-		/*
-		echo "<p>\$id_type_avertissement<pre>";
-		print_r($id_type_avertissement);
-		echo "</pre>";
-		*/
+			/*
+			echo "<p>\$id_type_avertissement<pre>";
+			print_r($id_type_avertissement);
+			echo "</pre>";
+			*/
 
-		$nb_err=0;
-		$tab_av_ele=get_tab_avertissement($login_ele, $periode);
-		if(isset($tab_av_ele['id_type_avertissement'][$periode])) {
-			for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode]);$loop++) {
-				if(!in_array($tab_av_ele['id_type_avertissement'][$periode][$loop], $id_type_avertissement)) {
-					$sql="DELETE FROM s_avertissements WHERE login_ele='$login_ele' AND periode='$periode' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode][$loop]."';";
-					//$msg.="$sql<br />";
-					//echo "$sql<br />";
-					$del=mysqli_query($GLOBALS["mysqli"], $sql);
-					if (!$del) {
-						$msg.="Erreur lors de la suppression de l'avertissement.";
-						$nb_err++;
+			$nb_err=0;
+			$tab_av_ele=get_tab_avertissement($login_ele, $periode);
+			if(isset($tab_av_ele['id_type_avertissement'][$periode])) {
+				for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode]);$loop++) {
+					if(!in_array($tab_av_ele['id_type_avertissement'][$periode][$loop], $id_type_avertissement)) {
+						$sql="DELETE FROM s_avertissements WHERE login_ele='$login_ele' AND periode='$periode' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode][$loop]."';";
+						//$msg.="$sql<br />";
+						//echo "$sql<br />";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$del) {
+							$msg.="Erreur lors de la suppression de l'avertissement.";
+							$nb_err++;
+						}
 					}
 				}
 			}
-		}
 
-		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+			$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
 
-		for($loop=0;$loop<count($id_type_avertissement);$loop++) {
-			if((preg_match("/^[0-9]{1,}$/", $id_type_avertissement[$loop]))&&
-				(array_key_exists($id_type_avertissement[$loop] ,$tab_type_avertissement_fin_periode['id_type_avertissement']))) {
-				if((!isset($tab_av_ele['id_type_avertissement'][$periode]))||
-				((!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode])))) {
-					$sql="INSERT INTO s_avertissements SET login_ele='$login_ele', 
-											periode='$periode', 
-											id_type_avertissement='".$id_type_avertissement[$loop]."',
-											declarant='".$_SESSION['login']."',
-											date_avertissement='".strftime("%Y-%m-%d")."';";
-					//$msg.="$sql<br />";
-					//echo "$sql<br />";
-					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-					if (!$insert) {
-						$msg.="Erreur lors de l'enregistrement de l'avertissement.";
-						$nb_err++;
+			for($loop=0;$loop<count($id_type_avertissement);$loop++) {
+				if((preg_match("/^[0-9]{1,}$/", $id_type_avertissement[$loop]))&&
+					(array_key_exists($id_type_avertissement[$loop] ,$tab_type_avertissement_fin_periode['id_type_avertissement']))) {
+					if((!isset($tab_av_ele['id_type_avertissement'][$periode]))||
+					((!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode])))) {
+						$sql="INSERT INTO s_avertissements SET login_ele='$login_ele', 
+												periode='$periode', 
+												id_type_avertissement='".$id_type_avertissement[$loop]."',
+												declarant='".$_SESSION['login']."',
+												date_avertissement='".strftime("%Y-%m-%d")."';";
+						//$msg.="$sql<br />";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$insert) {
+							$msg.="Erreur lors de l'enregistrement de l'avertissement.";
+							$nb_err++;
+						}
 					}
 				}
 			}
-		}
 
-		if($nb_err==0) {
-			$msg.="Enregistrement effectué.<br />";
-		}
-
-		if($mode_js=="y") {
 			if($nb_err==0) {
-				//echo "liste_avertissements_fin_periode($login_ele, $periode)<br />";
-				echo liste_avertissements_fin_periode($login_ele, $periode);
+				$msg.="Enregistrement effectué.<br />";
+			}
+
+			if($mode_js=="y") {
+				if($nb_err==0) {
+					//echo "liste_avertissements_fin_periode($login_ele, $periode)<br />";
+					echo liste_avertissements_fin_periode($login_ele, $periode);
+				}
+				else {
+					echo "<span style='color:red'>Erreur</span>";
+				}
+				die();
+			}
+		}
+		else {
+			if($mode_js=="y") {
+				echo "<span style='color:red'>Période close</span>";
+				die();
 			}
 			else {
-				echo "<span style='color:red'>Erreur</span>";
+				$msg.="La période $periode est close en saisie pour ".get_nom_prenom_eleve($login_ele)."<br />";
 			}
-			die();
 		}
 	}
 
