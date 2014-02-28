@@ -367,7 +367,7 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
 			echo "
-				<p style='margin-left:4em; color:red;'>Aucun élève ???</p>";
+				<p style='margin-left:4em;'>Aucun élève.</p>";
 		}
 		else {
 			echo "
@@ -392,8 +392,33 @@ echo "
 
 		<div style='clear:both;'></div>
 		<p><input type='submit' name='Valider' value='Valider' /></p>
+
+		<p><a href='javascript: checkAll();'>Tout cocher</a> / <a href='javascript:
+UncheckAll();'>Tout décocher</a></p>
 	</fieldset>
-</form>\n";
+</form>
+
+<script type='text/javascript'>
+	function checkAll(){
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			type=champs_input[i].getAttribute('type');
+			if(type=='checkbox'){
+				champs_input[i].checked=true;
+			}
+		}
+	}
+
+	function UncheckAll(){
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			type=champs_input[i].getAttribute('type');
+			if(type=='checkbox'){
+				champs_input[i].checked=false;
+			}
+		}
+	}
+</script>\n";
 
 
 require("../lib/footer.inc.php");
