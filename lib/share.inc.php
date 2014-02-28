@@ -9915,4 +9915,23 @@ function get_info_eleve($login_ele, $periode) {
 	return $tab;
 }
 
+/** Fonction destinée tester si la période est est ouverte/partiellement/close pour un élève sans devoir préciser la classe de l'élève sur la période en question
+ *
+ * @param string $login_ele identifiant de l'élève
+ * @param integer $periode numéro de la période
+ *
+ * @return string Etat du champ periodes.verouiller
+ */
+function etat_verrouillage_eleve_periode($login_ele, $periode) {
+	$retour="";
+
+	$sql="SELECT verouiller FROM periodes p, j_eleves_classes jec WHERE jec.id_classe=p.id_classe AND jec.periode=p.num_periode AND jec.login='$login_ele' AND jec.periode='$periode';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$retour=$lig->verouiller;
+	}
+
+	return $retour;
+}
 ?>
