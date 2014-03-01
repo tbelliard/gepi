@@ -89,6 +89,7 @@ function add_user($_login, $_nom, $_prenom, $_sexe, $_statut, $_email) {
         nom = '" . $_nom . "',
         prenom = '" . $_prenom . "',
         password = '',
+        salt='',
         civilite = '" . $_civilite . "',
         email = '" . $_email . "',
         statut = '" . $_statut . "',
