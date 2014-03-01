@@ -15,6 +15,7 @@ Gestion:
 - Gestion des classes/enseignements: Ajout de liens d'affichage de l'EDT prof en infobulle.
 - Consultation élève: Ajout de l'affichage de MEF.
 - Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
+- Possibilité de conserver des mots de passe dans la base Gepi en mode SSO pour mettre en place un accès de secours quand l'authentification SSO fait des siennes.
 
 Discipline:
 - Possibilité de définir des avertissements de fin de période,

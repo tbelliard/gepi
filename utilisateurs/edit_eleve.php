@@ -252,7 +252,10 @@ if (!$error) {
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
 							$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_eleve->login."'"), 0);
-							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_eleve->login."'");
+							// 20140301
+							if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+								mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_eleve->login."'");
+							}
 							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 							if ($ldap_write_access) {
 								$create_ldap_user = true;

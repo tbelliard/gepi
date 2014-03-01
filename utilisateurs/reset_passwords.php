@@ -686,7 +686,9 @@ while ($p < $nb_users) {
 				$tab_password[$user_login]=$new_password;
 				if ($user_auth_mode != "gepi") {
 					// L'utilisateur est un utilisateur SSO. On enregistre un mot de passe vide.
-					$save_new_pass = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+					if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+						$save_new_pass = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password='', change_mdp = 'n' WHERE login='" . $user_login . "'");
+					}
 					// Si l'accès LDAP en écriture est paramétré, on va mettre à jour le mot de passe de l'utilisateur
 					// directement dans l'annuaire.
 					if ($gepiSettings['ldap_write_access'] == "yes") {

@@ -201,7 +201,7 @@ class Session {
 	# 9 : échec de l'authentification (mauvais couple login/mot de passe, sans doute).
 	public function authenticate($_login = null, $_password = null) {
 		global $debug_test_mdp, $debug_test_mdp_file, $debug_login_nouveaux_comptes, $loguer_nouveau_login;
-        global $mysqli;
+		global $mysqli;
 
 		// Quelques petits tests de sécurité
 
@@ -245,7 +245,17 @@ class Session {
 	    // pour l'utilisateur. Si l'utilisateur n'existe pas, on essaiera
 	    // l'authentification LDAP et le SSO quand même.
 		$auth_mode = self::user_auth_mode($_login);
-    
+
+		// 20140301
+		$auth_sso_secours=isset($_POST['auth_sso_secours']) ? $_POST['auth_sso_secours'] : NULL;
+		if((isset($auth_sso_secours))&&
+			($auth_sso_secours=="y")&&
+			($_login!="")&&
+			($_password!="")&&
+			(getSettingAOui('autoriser_sso_password_auth'))) {
+			$auth_mode="gepi";
+		}
+
 		switch ($auth_mode) {
 			case "gepi":
 			  # Authentification locale sur la base de données Gepi
@@ -318,17 +328,17 @@ class Session {
 			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == "y") {
 
 				if (!isset($_GET['rne']) AND (!isset($_COOKIE["RNE"]) OR $_COOKIE["RNE"] == 'RNE')) {
-					if (isset($GLOBALS['mode_choix_base']) && $GLOBALS['mode_choix_base'] == "url"){
-            // dans ce cas, on se connecte à l'url $url_cas_sso donnée par le secure/connect.inc.php
-            $t_rne = file_get_contents($GLOBALS[url_cas_sso] . '?login=' . $this->login . '&cle=' . $GLOBALS['cle_url_cas']);
-            if ($t_rne != 'erreur'){
-              $rep_rne = explode("|", $t_rne);
-              $nbre_rne = count($rep_rne);
-              if ($nbre_rne > 1){
-                header("Location: choix_rne.php?nbre=".$nbre_rne."&lesrne=".$t_rne);
+					if (isset($GLOBALS['mode_choix_base']) && $GLOBALS['mode_choix_base'] == "url") {
+						// dans ce cas, on se connecte à l'url $url_cas_sso donnée par le secure/connect.inc.php
+						$t_rne = file_get_contents($GLOBALS[url_cas_sso] . '?login=' . $this->login . '&cle=' . $GLOBALS['cle_url_cas']);
+						if ($t_rne != 'erreur') {
+							$rep_rne = explode("|", $t_rne);
+							$nbre_rne = count($rep_rne);
+							if ($nbre_rne > 1) {
+								header("Location: choix_rne.php?nbre=".$nbre_rne."&lesrne=".$t_rne);
 								exit();
-              }else{
-                if ($this->current_auth_mode == "sso") {
+							} else{
+								if ($this->current_auth_mode == "sso") {
 									setcookie('RNE', $t_rne, null, '/');
 									header("Location: login_sso.php?rne=".$t_rne);
 									exit();
@@ -336,9 +346,9 @@ class Session {
 									header("Location: login.php?rne=".$t_rne);
 									exit();
 								}
-              }
-            }
-          } elseif (LDAPServer::is_setup()) {
+							}
+						}
+					} elseif (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
 						// pour obtenir la bonne base de données
 						$ldap = new LDAPServer;
@@ -395,23 +405,23 @@ class Session {
 				# Si on ne parvient pas à charger les données, c'est que
 				# l'utilisateur n'est pas présent en base de données.
 				# On essaie d'importer son profil depuis le LDAP.
-        
-        # Si on a activé la synchro Scribe, on utilise alors l'import spécifique
+
+				# Si on a activé la synchro Scribe, on utilise alors l'import spécifique
 				if (getSettingValue("may_import_user_profile") == "yes" && getSettingValue("sso_scribe") == "yes") {
-          $load = $this->import_user_profile_from_scribe();
-        
-        # Sinon, on utilise l'import classique, très basique.
-        } elseif (getSettingValue("may_import_user_profile")) {
-          $load = $this->import_user_profile();
-        }
-        if (!$load) {
-          return "6";
-          exit();
-        } else {
-          # Si l'import a réussi, on tente à nouveau de charger
-          # les données de l'utilisateur.
-          $this->load_user_data();
-        }
+					$load = $this->import_user_profile_from_scribe();
+
+					# Sinon, on utilise l'import classique, très basique.
+				} elseif (getSettingValue("may_import_user_profile")) {
+					$load = $this->import_user_profile();
+				}
+				if (!$load) {
+					return "6";
+					exit();
+				} else {
+					# Si l'import a réussi, on tente à nouveau de charger
+					# les données de l'utilisateur.
+					$this->load_user_data();
+				}
 			}
 
 			# On vérifie que l'utilisateur est bien actif
@@ -422,40 +432,45 @@ class Session {
 			}
 
 			# On vérifie que les connexions sont bien activées.
-		    $disable_login = getSettingValue("disable_login");
-		    if ($this->statut != "administrateur" && ($disable_login == "yes" || $disable_login == "soft")) {
-		    	$this->reset(2);
-		    	return "7";
-		    	exit();
-		    }
+			$disable_login = getSettingValue("disable_login");
+			if ($this->statut != "administrateur" && ($disable_login == "yes" || $disable_login == "soft")) {
+				$this->reset(2);
+				return "7";
+				exit();
+			}
 
 			# On teste la cohérence de mode de connexion
-		    $auth_mode = self::user_auth_mode($this->login);
-		    if ($this->current_auth_mode != 'simpleSAML' && $auth_mode != $this->current_auth_mode) {
-		    	$this->reset(2);
-		    	return "5";
-		    	exit;
-		    }
+			// 20140301
+			if((!isset($auth_sso_secours))||
+				($auth_sso_secours!="y")||
+				(!getSettingAOui('autoriser_sso_password_auth'))) {
+				$auth_mode = self::user_auth_mode($this->login);
+				if ($this->current_auth_mode != 'simpleSAML' && $auth_mode != $this->current_auth_mode) {
+					$this->reset(2);
+					return "5";
+					exit;
+				}
+			}
 
-      # Si on est en mode CAS, on met à jour à la volée les attributs de
-      # l'utilisateur (le cas échéant)
-      if ($this->auth_sso == 'cas') {
-        $this->update_user_with_cas_attributes();
-      }
+			# Si on est en mode CAS, on met à jour à la volée les attributs de
+			# l'utilisateur (le cas échéant)
+			if ($this->auth_sso == 'cas') {
+				$this->update_user_with_cas_attributes();
+			}
 
 			# Tout est bon. On valide définitivement la session.
-              
-                $sql_start = mysqli_query($mysqli, "SELECT now();");
-                $row = $sql_start->fetch_row();
-                $this->start = $row[0];
-                $sql_start->close();
+
+			$sql_start = mysqli_query($mysqli, "SELECT now();");
+			$row = $sql_start->fetch_row();
+			$this->start = $row[0];
+			$sql_start->close();
 			
 			$_SESSION['start'] = $this->start;
 			$this->insert_log();
 			# On supprime l'historique des logs conformément à la durée définie.
-                $sql_del = "delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()";
-                $resultat = mysqli_query($mysqli, $sql_del);
-			
+			$sql_del = "delete from log where START < now() - interval " . getSettingValue("duree_conservation_logs") . " day and END < now()";
+			$resultat = mysqli_query($mysqli, $sql_del);
+
 			# On envoie un mail, si l'option a été activée
 			mail_connexion();
 			return "1";
@@ -485,7 +500,7 @@ class Session {
 	# l'être. Elle remplace la fonction resumeSession qui était préalablement utilisée.
 	public function security_check() {
 		global $pas_acces_a_une_page_sans_etre_logue;
-        global $mysqli;
+		global $mysqli;
 		# Codes renvoyés :
 		# 0 = logout automatique
 		# 1 = session valide
