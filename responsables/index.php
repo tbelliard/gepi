@@ -305,13 +305,15 @@ if ($_SESSION['statut'] == 'administrateur') {
 	}
 
 	if($num_resp!=0){
-		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\">Personnes non associées</a>\n";
+		echo " | <a href=\"index.php?num_resp=0&amp;order_by=nom,prenom\" title=\"Il peut arriver que certains parents,... ne soient plus déclarés responsables d'aucun élève dans l'établissement.
+Ces personnes devraient être supprimées dans Gepi.
+Vous pouvez le faire ici.\">Personnes non associées</a>\n";
 	}
 	else{
-		echo " | <a href=\"index.php?num_resp=1&amp;order_by=nom,prenom\">Personnes associées</a>\n";
+		echo " | <a href=\"index.php?num_resp=1&amp;order_by=nom,prenom\" title=\"Retour à la liste des responsables (parents) associés à des élèves.\">Personnes associées</a>\n";
 	}
 
-	echo " | <a href=\"gerer_adr.php\">Gérer les adresses</a>\n";
+	echo " | <a href=\"gerer_adr.php\" title=\"Gérer les adresses, supprimer les adresses non associées, dédoublonner les adresses,...\">Gérer les adresses</a>\n";
 
 	$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 	$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
