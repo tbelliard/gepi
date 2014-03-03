@@ -338,7 +338,7 @@ if($_SESSION['statut']=="scolarite") {
 }
 
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe')) {
-	echo " | <a href='infos_parents.php'>Informations élèves/parents, tel, mail et adresse</a>";
+	echo " | <a href='infos_parents.php' title=\"Extraire les informations parents/élèves au format CSV.\">Informations élèves/parents, tel, mail et adresse</a>";
 }
 echo "</p>\n";
 
@@ -355,6 +355,9 @@ if(!isset($order_by)) {$order_by = "nom,prenom";$num_resp=1;}
 $cpt=0;
 
 //debug_var();
+
+// 20140303
+$critere_id_classe=isset($_POST['critere_id_classe']) ? $_POST['critere_id_classe'] : (isset($_GET['critere_id_classe']) ? $_GET['critere_id_classe'] : "");
 
 unset($chaine_recherche);
 if(!isset($val_rech)) {$val_rech="";}
@@ -392,33 +395,49 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 		$chaine_recherche_resp="rp.$crit_rech LIKE '$valeur_cherchee'";
 		$chaine_recherche_ele="e.$crit_rech LIKE '$valeur_cherchee'";
 
+		// 20140303
+		// Mettre quelque chose sur id_classe?
+
 		switch($champ_rech){
 			case "resp0":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=0;
 
 					//$chaine_info_recherche.="le $crit_rech de la personne non responsable $mode_rech $val_rech";
-					$chaine_info_recherche.="le $crit_rech du responsable non légal $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable non légal $mode_rech \"$val_rech\"";
 				break;
 			case "resp1":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=1;
 
-					$chaine_info_recherche.="le $crit_rech du responsable légal 1 $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable légal 1 $mode_rech \"$val_rech\"";
 				break;
 			case "resp2":
 					$chaine_recherche="rp.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp=2;
 
-					$chaine_info_recherche.="le $crit_rech du responsable légal 2 $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech du responsable légal 2 $mode_rech \"$val_rech\"";
 				break;
 			case "eleves":
 					$chaine_recherche="e.$crit_rech LIKE '$valeur_cherchee'";
 					$num_resp="ele";
 
-					$chaine_info_recherche.="le $crit_rech de l'élève $mode_rech $val_rech";
+					$chaine_info_recherche.="le $crit_rech de l'élève $mode_rech \"$val_rech\"";
 				break;
 		}
+	}
+}
+
+// 20140303
+$chaine_recherche_id_classe="";
+if($critere_id_classe!="") {
+	if($chaine_info_recherche=="") {
+		$chaine_info_recherche.=" les élèves sont en classe de ".get_nom_classe($critere_id_classe)." ";
+		$chaine_recherche_id_classe="jec.id_classe='$critere_id_classe'";
+	}
+	else {
+		$chaine_info_recherche.=" et les élèves sont en classe de ".get_nom_classe($critere_id_classe)." ";
+		$chaine_recherche_id_classe="jec.id_classe='$critere_id_classe'";
 	}
 }
 
@@ -453,54 +472,64 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 			$sql.=" AND $chaine_recherche";
 			//echo "<!--$sql-->\n";
 		}
+	}
+	elseif(($order_by=="nom,prenom")&&
+		(($num_resp==1)||($num_resp==2))) {
 
-		/*
-		$sql="(SELECT 1=1 FROM resp_pers rp
-			LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
-			WHERE r.pers_id is NULL) UNION (SELECT 1=1 FROM responsables2 r
-			LEFT JOIN eleves e ON e.ele_id=r.ele_id
-			WHERE e.ele_id is NULL);";
-		*/
-		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
-		$cpt=mysqli_num_rows($res1);
-		//echo "\$cpt=$cpt<br />";
-		//echo "\$cpt2=$cpt2<br />";
-	}
-	elseif(($order_by=="nom,prenom")&&($num_resp==1)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
-		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp' ";
-		if(isset($chaine_recherche)){
-			$sql.=" AND $chaine_recherche";
-			//echo "<!--$sql-->\n";
+		if($critere_id_classe=="") {
+			$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+					rp.pers_id=r.pers_id AND
+					r.resp_legal='$num_resp' ";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+				//echo "<!--$sql-->\n";
+			}
+			$sql.=" ORDER BY $order_by";
 		}
-		$sql.=" ORDER BY $order_by";
-		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
-		$cpt=mysqli_num_rows($res1);
-	}
-	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
-		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-				rp.pers_id=r.pers_id AND
-				r.resp_legal='$num_resp' ";
-		if(isset($chaine_recherche)){
-			$sql.=" AND $chaine_recherche";
-			//echo "<!--$sql-->\n";
+		else {
+			$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, 
+									responsables2 r, 
+									eleves e,
+									j_eleves_classes jec
+								WHERE
+					rp.pers_id=r.pers_id AND
+					r.resp_legal='$num_resp' AND
+					r.ele_id=e.ele_id AND
+					e.login=jec.login AND
+					jec.id_classe='$critere_id_classe'";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+			}
+			$sql.=" ORDER BY rp.nom,rp.prenom";
 		}
-		$sql.=" ORDER BY $order_by";
-		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
-		$cpt=mysqli_num_rows($res1);
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
-		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
-		if(isset($chaine_recherche)){
-			$sql.=" AND $chaine_recherche";
-			//echo "<!--$sql-->\n";
+		if($critere_id_classe=="") {
+			$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+				//echo "<!--$sql-->\n";
+			}
+			$sql.=" ORDER BY e.nom,e.prenom";
 		}
-		$sql.=" ORDER BY e.nom,e.prenom";
-		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
-		$cpt=mysqli_num_rows($res1);
+		else {
+			$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, 
+													eleves e, 
+													j_eleves_classes jec 
+												WHERE e.ele_id=r.ele_id AND 
+													e.login=jec.login AND 
+													jec.id_classe='$critere_id_classe'";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+				//echo "<!--$sql-->\n";
+			}
+			$sql.=" ORDER BY e.nom,e.prenom";
+		}
 	}
+	$sql_recherche_resp_sans_limit=$sql;
+	//echo "$sql< br />";
+	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
+	$cpt=mysqli_num_rows($res1);
 
 
 	// Dans le cas où la recherche ne retourne rien:
@@ -544,11 +573,30 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 	<p>Ou effectuer la même recherche parmi les &nbsp;:</p>
 	<ul>";
 				if($num_resp!="1") {
-					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-							rp.pers_id=r.pers_id AND
-							r.resp_legal='1' ";
-					if(isset($chaine_recherche)){
-						$sql.=" AND $chaine_recherche_resp";
+					//$chaine_recherche_id_classe
+					// 20140303
+					if($critere_id_classe=="") {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='1' ";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
+					}
+					else {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, 
+												responsables2 r, 
+												eleves e,
+												j_eleves_classes jec
+											WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='1' AND
+								r.ele_id=e.ele_id AND
+								e.login=jec.login AND
+								jec.id_classe='$critere_id_classe'";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
 					}
 					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
@@ -567,17 +615,42 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 						$chaine_rech_retour.="&amp;debut=0";
 						$chaine_rech_retour.="&amp;limit=20";
 						//$chaine_rech_retour.="&amp;retour_index=y";
-						echo $chaine_rech_retour;
 					}
+					if($critere_id_classe!="") {
+						if($chaine_rech_retour!="") {
+							$chaine_rech_retour.="&amp;critere_id_classe=$critere_id_classe";
+						}
+						else {
+							$chaine_rech_retour.="?critere_id_classe=$critere_id_classe";
+						}
+					}
+					echo $chaine_rech_retour;
 					echo "'>responsables légaux 1</a> (<em>$cpt</em>)</li>";
 				}
 
 				if($num_resp!="2") {
-					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-							rp.pers_id=r.pers_id AND
-							r.resp_legal='2' ";
-					if(isset($chaine_recherche_resp)){
-						$sql.=" AND $chaine_recherche_resp";
+					if($critere_id_classe=="") {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='2' ";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
+					}
+					else {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, 
+												responsables2 r, 
+												eleves e,
+												j_eleves_classes jec
+											WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='2' AND
+								r.ele_id=e.ele_id AND
+								e.login=jec.login AND
+								jec.id_classe='$critere_id_classe'";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
 					}
 					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
@@ -596,17 +669,42 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 						$chaine_rech_retour.="&amp;debut=0";
 						$chaine_rech_retour.="&amp;limit=20";
 						//$chaine_rech_retour.="&amp;retour_index=y";
-						echo $chaine_rech_retour;
 					}
+					if($critere_id_classe!="") {
+						if($chaine_rech_retour!="") {
+							$chaine_rech_retour.="&amp;critere_id_classe=$critere_id_classe";
+						}
+						else {
+							$chaine_rech_retour.="?critere_id_classe=$critere_id_classe";
+						}
+					}
+					echo $chaine_rech_retour;
 					echo "'>responsables légaux 2</a> (<em>$cpt</em>)</li>";
 				}
 
 				if($num_resp!="0") {
-					$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
-							rp.pers_id=r.pers_id AND
-							r.resp_legal='0' ";
-					if(isset($chaine_recherche_resp)){
-						$sql.=" AND $chaine_recherche_resp";
+					if($critere_id_classe=="") {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='0' ";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
+					}
+					else {
+						$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, 
+												responsables2 r, 
+												eleves e,
+												j_eleves_classes jec
+											WHERE
+								rp.pers_id=r.pers_id AND
+								r.resp_legal='0' AND
+								r.ele_id=e.ele_id AND
+								e.login=jec.login AND
+								jec.id_classe='$critere_id_classe'";
+						if(isset($chaine_recherche_resp)){
+							$sql.=" AND $chaine_recherche_resp";
+						}
 					}
 					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
@@ -625,15 +723,36 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 						$chaine_rech_retour.="&amp;debut=0";
 						$chaine_rech_retour.="&amp;limit=20";
 						//$chaine_rech_retour.="&amp;retour_index=y";
-						echo $chaine_rech_retour;
 					}
+					if($critere_id_classe!="") {
+						if($chaine_rech_retour!="") {
+							$chaine_rech_retour.="&amp;critere_id_classe=$critere_id_classe";
+						}
+						else {
+							$chaine_rech_retour.="?critere_id_classe=$critere_id_classe";
+						}
+					}
+					echo $chaine_rech_retour;
 					echo "'>responsables non légaux</a> (<em>$cpt</em>)</li>";
 				}
 
 				if($num_resp!="ele") {
-					$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
-					if(isset($chaine_recherche_ele)){
-						$sql.=" AND $chaine_recherche_ele";
+					if($critere_id_classe=="") {
+						$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id ";
+						if(isset($chaine_recherche_ele)){
+							$sql.=" AND $chaine_recherche_ele";
+						}
+					}
+					else {
+						$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, 
+																eleves e, 
+																j_eleves_classes jec 
+															WHERE e.ele_id=r.ele_id AND 
+																e.login=jec.login AND
+																jec.id_classe='$critere_id_classe'";
+						if(isset($chaine_recherche_ele)){
+							$sql.=" AND $chaine_recherche_ele";
+						}
 					}
 					$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 					$cpt=mysqli_num_rows($res1);
@@ -654,6 +773,14 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 						//$chaine_rech_retour.="&amp;retour_index=y";
 						echo $chaine_rech_retour;
 					}
+					if($critere_id_classe!="") {
+						if($chaine_rech_retour!="") {
+							$chaine_rech_retour.="&amp;critere_id_classe=$critere_id_classe";
+						}
+						else {
+							$chaine_rech_retour.="?critere_id_classe=$critere_id_classe";
+						}
+					}
 					echo "'>élèves</a> (<em>$cpt</em>)</li>";
 				}
 
@@ -673,6 +800,34 @@ if(($val_rech!="")&&(!isset($_GET['retour_index']))) {
 //debug_var();
 
 //echo "<p>\$chaine_recherche=$chaine_recherche et \$num_resp=$num_resp</p>";
+
+		if($critere_id_classe=="") {
+			$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
+					rp.pers_id=r.pers_id AND
+					r.resp_legal='$num_resp' ";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+				//echo "<!--$sql-->\n";
+			}
+			$sql.=" ORDER BY $order_by";
+		}
+		else {
+			$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, 
+									responsables2 r, 
+									eleves e,
+									j_eleves_classes jec
+								WHERE
+					rp.pers_id=r.pers_id AND
+					r.resp_legal='$num_resp' AND
+					r.ele_id=e.ele_id AND
+					e.login=jec.login AND
+					jec.id_classe='$critere_id_classe'";
+			if(isset($chaine_recherche)){
+				$sql.=" AND $chaine_recherche";
+			}
+			$sql.=" ORDER BY rp.nom,rp.prenom";
+		}
+
 
 echo "<p style='font-weight:bold; text-align:center;'>";
 if("$num_resp"=="0"){
@@ -856,6 +1011,38 @@ if($num_resp==0){
 	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "
+	<tr>
+		<td colspan='5'>
+			ne retenir que les responsables d'élève(s) de la <b>classe</b> de&nbsp;: 
+		</td>
+		<td>
+			<select name='critere_id_classe'>
+				<option value=''>---</option>";
+	$sql="SELECT DISTINCT id, classe FROM classes c, 
+							j_eleves_classes jec, 
+							eleves e, 
+							resp_pers rp, 
+							responsables2 r 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=e.login AND 
+							e.ele_id=r.ele_id AND 
+							r.pers_id=rp.pers_id
+						ORDER BY classe;";
+	$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_classes)>0) {
+		while($lig_classe=mysqli_fetch_object($res_classes)) {
+			echo "<option value='$lig_classe->id'";
+			if($lig_classe->id==$critere_id_classe) {echo " selected='true'";}
+			echo ">$lig_classe->classe</option>\n";
+		}
+	}
+	echo "
+			</select>
+		</td>
+	</tr>\n";
+
 	echo "</table>\n";
 	echo "<center><input type='submit' value='Valider' /></center>\n";
 	echo "</div>\n";
@@ -894,35 +1081,7 @@ else{
 	echo "<td>\n";
 	echo " ceux dont le \n";
 	echo "</td>\n";
-/*
-	echo "<td>\n";
-	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom' checked /> nom\n";
-	echo "</label>\n";
-	echo "<br />\n";
-	echo "<label for='crit_rech_prenom' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='crit_rech' id='crit_rech_prenom' value='prenom' /> prénom\n";
-	echo "</label>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<label for='mode_rech_contient' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_contient' value='contient' checked /> contient \n";
-	echo "</label>\n";
-	echo "<br />\n";
-	echo "<label for='mode_rech_commence' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_commence' value='commence par' /> commence par \n";
-	echo "</label>\n";
-	echo "<br />\n";
-	echo "<label for='mode_rech_termine' style='cursor: pointer;'>\n";
-	echo "<input type='radio' name='mode_rech' id='mode_rech_termine' value='se termine par' /> se termine par \n";
-	echo "</label>\n";
-	echo "</td>\n";
-	echo "<td>\n";
-	echo "<input type='text' name='val_rech' value='' />\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-*/
+
 	echo "<td>\n";
 	echo "<label for='crit_rech_nom' style='cursor: pointer;'>\n";
 	echo "<input type='radio' name='crit_rech' id='crit_rech_nom' value='nom'";
@@ -985,12 +1144,44 @@ else{
 	echo "<input type='text' name='val_rech' id='val_rech' value='$val_rech' />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	echo "
+	<tr>
+		<td colspan='5'>
+			ne retenir que les responsables d'élève(s) de la <b>classe</b> de&nbsp;: 
+		</td>
+		<td>
+			<select name='critere_id_classe'>
+				<option value=''>---</option>";
+	$sql="SELECT DISTINCT id, classe FROM classes c, 
+							j_eleves_classes jec, 
+							eleves e, 
+							resp_pers rp, 
+							responsables2 r 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=e.login AND 
+							e.ele_id=r.ele_id AND 
+							r.pers_id=rp.pers_id
+						ORDER BY classe;";
+	$res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_classes)>0) {
+		while($lig_classe=mysqli_fetch_object($res_classes)) {
+			echo "<option value='$lig_classe->id'";
+			if($lig_classe->id==$critere_id_classe) {echo " selected='true'";}
+			echo ">$lig_classe->classe</option>\n";
+		}
+	}
+	echo "
+			</select>
+		</td>
+	</tr>\n";
+
 	echo "</table>\n";
 	echo "<center><input type='submit' value='Valider' /></center>\n";
 	echo "</div>\n";
 	echo "</div>\n";
 }
-if($val_rech!=""){
+if(($val_rech!="")||($critere_id_classe!="")) {
 	echo "<script type='text/javascript'>
 	document.getElementById('div_rech').style.display='';
 </script>\n";
@@ -1013,31 +1204,11 @@ $cpt_suppr=0;
 if("$num_resp"=="0"){
 	// Afficher les personnes non associées à des élèves.
 
-	//echo "<tr><td colspan='3'>TEMOIN: $num_resp</td></tr>";
-
 	echo "<input type='hidden' name='num_resp' value='0' />\n";
 	echo "<input type='hidden' name='order_by' value='nom,prenom' />\n";
 
-	/*
-	$ligne_titre="";
-	$ligne_titre.="<tr>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Nom prénom</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
-	$ligne_titre.="</tr>\n";
-	*/
-
 	$cpt=0;
-	//$sql="SELECT DISTINCT pers_id,nom,prenom,adr_id,civilite FROM resp_pers";
-	/*
-	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
-		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
-		WHERE r.pers_id is NULL;";
 
-	$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
-		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
-		WHERE r.pers_id is NULL";
-	*/
 	$sql="SELECT DISTINCT rp.login, rp.pers_id,rp.nom,rp.prenom,rp.adr_id,rp.civilite FROM resp_pers rp
 		LEFT JOIN responsables2 r ON r.pers_id=rp.pers_id
 		WHERE r.pers_id is NULL";
@@ -1054,7 +1225,6 @@ if("$num_resp"=="0"){
 	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 	$alt=1;
 	if(mysqli_num_rows($res1)>0){
-
 
 		$ligne_titre="";
 		$ligne_titre.="<tr>\n";
@@ -1100,14 +1270,6 @@ if("$num_resp"=="0"){
 					echo $ligne_titre;
 				}
 
-				/*
-				if($cpt%2==0){
-					$alt='silver';
-				}
-				else{
-					$alt='white';
-				}
-				*/
 				$alt=$alt*(-1);
 
 
@@ -1164,67 +1326,46 @@ if("$num_resp"=="0"){
 
 }
 else{
-	//echo "\$num_resp=$num_resp<br />";
+	//echo "\$num_resp=$num_resp<br ";
 
 	// Pour pouvoir faire la recherche en suivant les liens <a href...
 	if(isset($champ_rech)){$champ_rech=my_ereg_replace("[^a-zA-Z]","",remplace_accents($champ_rech,'all'));}
-	// Une alternative commode serait de transformer les liens de tri en JavaScripts soumettant un formulaire (pas le même selon que la chaine_recherche est vide ou non)
+
+	$ajout_filtres_recherche="";
+	if(isset($val_rech)) {
+		$ajout_filtres_recherche.="&amp;val_rech=$val_rech";
+	}
+	if(isset($crit_rech)) {
+		$ajout_filtres_recherche.="&amp;crit_rech=$crit_rech";
+	}
+	if(isset($mode_rech)) {
+		$ajout_filtres_recherche.="&amp;mode_rech=$mode_rech";
+	}
+	if(isset($champ_rech)) {
+		$ajout_filtres_recherche.="&amp;champ_rech=$champ_rech";
+	}
+	if($critere_id_classe!="") {
+		$ajout_filtres_recherche.="&amp;critere_id_classe=$critere_id_classe";
+	}
 
 	echo "<table class='boireaus' align='center' summary='Responsables'>\n";
 
 	$ligne_titre="";
 	$ligne_titre.="<tr>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='2'>Responsable légal 1</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;' colspan='3'>Responsable légal 1</td>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;tri=ele'>Elève(s)</a></td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;num_resp=ele&amp;debut=$debut&amp;limit=$limit";
-	if(isset($val_rech)) {
-		$ligne_titre.="&amp;val_rech=$val_rech";
-	}
-	if(isset($crit_rech)) {
-		$ligne_titre.="&amp;crit_rech=$crit_rech";
-	}
-	if(isset($mode_rech)) {
-		$ligne_titre.="&amp;mode_rech=$mode_rech";
-	}
-	if(isset($champ_rech)) {
-		$ligne_titre.="&amp;champ_rech=$champ_rech";
-	}
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#FAFABE;' rowspan='2'><a href='index.php?order_by=nom,prenom&amp;num_resp=ele&amp;debut=$debut&amp;limit=$limit".$ajout_filtres_recherche;
 	$ligne_titre.="'>Elève(s)</a></td>\n";
-	//$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='2'>Responsable légal 2</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='3'>Responsable légal 2</td>\n";
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;' colspan='3'>Responsable légal 2</td>";
 	$ligne_titre.="</tr>\n";
+
 	$ligne_titre.="<tr>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><a href='index.php?order_by=nom,prenom&amp;num_resp=1&amp;debut=$debut&amp;limit=$limit";
-	if(isset($val_rech)) {
-		$ligne_titre.="&amp;val_rech=$val_rech";
-	}
-	if(isset($crit_rech)) {
-		$ligne_titre.="&amp;crit_rech=$crit_rech";
-	}
-	if(isset($mode_rech)) {
-		$ligne_titre.="&amp;mode_rech=$mode_rech";
-	}
-	if(isset($champ_rech)) {
-		$ligne_titre.="&amp;champ_rech=$champ_rech";
-	}
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'><a href='index.php?order_by=nom,prenom&amp;num_resp=1&amp;debut=$debut&amp;limit=$limit".$ajout_filtres_recherche;
 	$ligne_titre.="'>Nom prénom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#AAE6AA;'>Supprimer</td>\n";
-	//$ligne_titre.="<td>Elève</td>\n";
-	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><a href='index.php?order_by=nom,prenom&amp;num_resp=2&amp;debut=$debut&amp;limit=$limit";
-	if(isset($val_rech)) {
-		$ligne_titre.="&amp;val_rech=$val_rech";
-	}
-	if(isset($crit_rech)) {
-		$ligne_titre.="&amp;crit_rech=$crit_rech";
-	}
-	if(isset($mode_rech)) {
-		$ligne_titre.="&amp;mode_rech=$mode_rech";
-	}
-	if(isset($champ_rech)) {
-		$ligne_titre.="&amp;champ_rech=$champ_rech";
-	}
+
+	//$ligne_titre.="<td>Elève</td>\;
+	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'><a href='index.php?order_by=nom,prenom&amp;num_resp=2&amp;debut=$debut&amp;limit=$limit".$ajout_filtres_recherche;
 	$ligne_titre.="'>Nom prénom</a></td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Adresse</td>\n";
 	$ligne_titre.="<td style='font-weight:bold; text-align:center; background-color:#96C8F0;'>Supprimer</td>\n";
@@ -1233,7 +1374,10 @@ else{
 	$max_cpt_res4=0;
 
 	if(($order_by=="nom,prenom")&&($num_resp==1)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
+
+		// 20140303
+		// On refait la requête en limitant à la tranche choisie.
+		/*
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
 				r.resp_legal='$num_resp'";
@@ -1242,6 +1386,8 @@ else{
 			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
+		*/
+		$sql=$sql_recherche_resp_sans_limit;
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
@@ -1260,25 +1406,10 @@ else{
 					echo $ligne_titre;
 				}
 
-				/*
-				if($cpt%2==0){
-					$alt='silver';
-				}
-				else{
-					$alt='white';
-				}
-				*/
 				$alt=$alt*(-1);
-
 
 				if($num_resp==1){$autre_resp=2;}else{$autre_resp=1;}
 
-				/*
-				$sql="SELECT rp.nom,rp.prenom,rp.civilite,ra.* FROM resp_pers rp, resp_adr ra WHERE
-										rp.adr_id=ra.adr_id AND
-										rp.pers_id='$lig1->pers_id'
-									ORDER BY $order_by";
-				*/
 				$sql="SELECT rp.login, rp.nom,rp.prenom,rp.civilite,ra.* FROM resp_pers rp, resp_adr ra WHERE
 										rp.adr_id=ra.adr_id AND
 										rp.pers_id='$lig1->pers_id'
@@ -1427,7 +1558,7 @@ else{
 		}
 	}
 	elseif(($order_by=="nom,prenom")&&($num_resp==2)){
-		// Pour ne récupérer qu'une seule occurence de pers_id:
+		/*
 		$sql="SELECT DISTINCT r.pers_id FROM resp_pers rp, responsables2 r WHERE
 				rp.pers_id=r.pers_id AND
 				r.resp_legal='$num_resp'";
@@ -1437,6 +1568,8 @@ else{
 			//echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY $order_by";
+		*/
+		$sql=$sql_recherche_resp_sans_limit;
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
@@ -1478,8 +1611,6 @@ else{
 						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
 							//echo "<tr style='background-color:".$alt.";'>\n";
 							echo "<tr class='lig$alt'>\n";
-
-
 
 							if(mysqli_num_rows($res3)>0){
 								$cpt_temoin=0;
@@ -1645,11 +1776,6 @@ else{
 								echo "</tr>\n";
 							}
 
-
-
-
-
-
 						//}
 					}
 				}
@@ -1668,12 +1794,15 @@ else{
 	*/
 	//elseif(($order_by=="nom,prenom")&&($_GET['tri']=="ele")){
 	elseif(($order_by=="nom,prenom")&&($num_resp=="ele")){
+		/*
 		$sql="SELECT DISTINCT r.ele_id,e.nom,e.prenom,e.login FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id";
 		if(isset($chaine_recherche)){
 			$sql.=" AND $chaine_recherche";
 			echo "<!--$sql-->\n";
 		}
 		$sql.=" ORDER BY e.nom,e.prenom";
+		*/
+		$sql=$sql_recherche_resp_sans_limit;
 		if($limit!='TOUS'){
 			$sql.=" LIMIT $debut,$limit";
 		}
