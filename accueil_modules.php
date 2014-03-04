@@ -471,7 +471,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_ects') ;	
-		$nouveauItem->titre="Saisie ECTS" ;
+		$nouveauItem->titre="Crédits ECTS" ;
 		$nouveauItem->expli="Pour gérer les crédits ECTS attribués pour chaque enseignement." ;
 		$menuPage[]=$nouveauItem;
 	}
