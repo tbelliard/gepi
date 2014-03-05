@@ -557,6 +557,86 @@ if (isset($_POST['is_posted'])) {
 						}
 					}
 
+
+					/*
+					$_POST['change_inscription_eleves']=	y
+					$_POST['matiere_modif_inscription_eleves']=	Asdt
+					$_POST['change_inscription_eleves_inscrire']=	n
+					$_POST['change_inscription_eleves_periodes']=	Array (*)
+					$_POST[change_inscription_eleves_periodes]['0']=	1
+					$_POST[change_inscription_eleves_periodes]['1']=	2
+					$_POST[change_inscription_eleves_periodes]['2']=	3
+					*/
+					if((isset($_POST['change_inscription_eleves']))&&(isset($_POST['matiere_modif_inscription_eleves']))&&($_POST['change_inscription_eleves_inscrire']!="")&&(isset($_POST['change_inscription_eleves_periodes']))) {
+
+						$matiere_modif_inscription_eleves=$_POST['matiere_modif_inscription_eleves'];
+						$change_inscription_eleves_inscrire=$_POST['change_inscription_eleves_inscrire'];
+						$change_inscription_eleves_periodes=$_POST['change_inscription_eleves_periodes'];
+
+						if($change_inscription_eleves_inscrire=="y") {
+							$tab_ele_clas=array();
+							for($loop=0;$loop<count($change_inscription_eleves_periodes);$loop++) {
+								$tab_ele_clas[$change_inscription_eleves_periodes[$loop]]=array();
+								$sql="SELECT * FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='".$change_inscription_eleves_periodes[$loop]."';";
+								$res_ele_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+								while($lig_ele_clas=mysqli_fetch_object($res_ele_clas)) {
+									$tab_ele_clas[$change_inscription_eleves_periodes[$loop]][]=$lig_ele_clas->login;
+								}
+							}
+						}
+
+						$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_classe='".$id_classe."' AND jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere='".$matiere_modif_inscription_eleves."';";
+						//echo "$sql<br />";
+						$res_grp_inscr=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_grp_inscr=mysqli_fetch_object($res_grp_inscr)) {
+							if($change_inscription_eleves_inscrire=="y") {
+								for($loop=0;$loop<count($change_inscription_eleves_periodes);$loop++) {
+									foreach($tab_ele_clas[$change_inscription_eleves_periodes[$loop]] as $current_eleve_login) {
+										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='".$current_eleve_login."' AND id_groupe='$lig_grp_inscr->id_groupe' AND periode='".$change_inscription_eleves_periodes[$loop]."';";
+										$test=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test)==0) {
+											$sql="INSERT INTO j_eleves_groupes SET login='".$current_eleve_login."', id_groupe='$lig_grp_inscr->id_groupe', periode='".$change_inscription_eleves_periodes[$loop]."';";
+											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+											if($insert) {
+												$nb_reg_ok++;
+											}
+											else {
+												$msg.="<br />ERREUR lors de l'inscription de ".get_nom_prenom_eleve($current_eleve_login)." du groupe n°".$lig_grp_inscr->id_groupe." en période ".$change_inscription_eleves_periodes[$loop];
+											}
+										}
+									}
+								}
+							}
+							else {
+								for($loop=0;$loop<count($change_inscription_eleves_periodes);$loop++) {
+									$sql="SELECT login FROM j_eleves_groupes WHERE id_groupe='$lig_grp_inscr->id_groupe' AND periode='".$change_inscription_eleves_periodes[$loop]."';";
+									$res_ele_inscr=mysqli_query($GLOBALS["mysqli"], $sql);
+
+									while($lig_ele_inscr=mysqli_fetch_object($res_ele_inscr)) {
+										if (!test_before_eleve_removal($lig_ele_inscr->login, $lig_grp_inscr->id_groupe, $change_inscription_eleves_periodes[$loop])) {
+											$msg.="<br />".get_nom_prenom_eleve($lig_ele_inscr->login)." a un bulletin non vide en période ".$change_inscription_eleves_periodes[$loop];
+										}
+										elseif(nb_notes_ele_dans_tel_enseignement($lig_ele_inscr->login, $lig_grp_inscr->id_groupe, $change_inscription_eleves_periodes[$loop])>0) {
+											$msg.="<br />".get_nom_prenom_eleve($lig_ele_inscr->login)." a un bulletin non vide en période ".$change_inscription_eleves_periodes[$loop];
+										}
+										else {
+											$sql="DELETE FROM j_eleves_groupes WHERE login='".$lig_ele_inscr->login."' AND id_groupe='$lig_grp_inscr->id_groupe' AND periode='".$change_inscription_eleves_periodes[$loop]."';";
+											$del=mysqli_query($GLOBALS["mysqli"], $sql);
+											if($del) {
+												$nb_reg_ok++;
+											}
+											else {
+												$msg.="<br />ERREUR lors de la désinscription de ".get_nom_prenom_eleve($lig_ele_inscr->login)." du groupe n°".$lig_grp_inscr->id_groupe." en période ".$change_inscription_eleves_periodes[$loop];
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+
+
 					/*
 					$_POST['change_coef2']=	y
 					$_POST['coef_enseignements2']=	3
@@ -1102,6 +1182,42 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "
 				</tr>
 			</table>
+		</td>
+	</tr>
+</table>\n";
+	}
+
+
+
+	$sql="SELECT DISTINCT matiere,nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere ORDER BY m.nom_complet,m.matiere;";
+	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mat)>0) {
+		echo "<table border='0' cellspacing='0'>
+	<tr>
+		<td rowspan='2'>&nbsp;&nbsp;&nbsp;</td>
+		<td valign='top' rowspan='2'>
+			<input type='checkbox' name='change_inscription_eleves' id='change_inscription_eleves' value='y' /><label for='change_inscription_eleves'> Modifier les inscriptions d'élèves dans les enseignements de</label>&nbsp;:
+		</td>
+		<td colspan='3'>
+			<select name='matiere_modif_inscription_eleves' id='matiere_modif_inscription_eleves' onchange=\"document.getElementById('change_inscription_eleves').checked=true;\">\n";
+			echo "			<option value=''>---</option>\n";
+			while($lig_mat=mysqli_fetch_object($res_mat)) {
+				echo "			<option value='$lig_mat->matiere' title=\"$lig_mat->matiere ($lig_mat->nom_complet)\">".htmlspecialchars($lig_mat->nom_complet)."</option>\n";
+			}
+			echo "	</select>
+		</td>
+	</tr>
+	<tr>
+		<td valign='top'>
+			<input type='radio' name='change_inscription_eleves_inscrire' id='change_inscription_eleves_inscrire_y' value='y' checked /><label for='change_inscription_eleves_inscrire_y'> Inscrire tous les élèves</label><br />
+			<input type='radio' name='change_inscription_eleves_inscrire' id='change_inscription_eleves_inscrire_n' value='n' /><label for='change_inscription_eleves_inscrire_n' title=\"Désinscrire sous réserve qu'il n'y ait pas de note ou appréciation sur les bulletins ou dans les carnets de notes.\"> Désinscrire tous les élèves (*)</label>
+		</td>
+		<td valign='top'>sur les périodes&nbsp;: </td>
+		<td>";
+			for($loop=1;$loop<=$max_periode;$loop++) {
+				echo "<input type='checkbox' name='change_inscription_eleves_periodes[]' id='change_inscription_eleves_periodes_$loop' value='$loop' checked /><label for='change_inscription_eleves_periodes_$loop'> $loop </label><br />\n";
+			}
+			echo "
 		</td>
 	</tr>
 </table>\n";
