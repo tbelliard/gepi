@@ -873,4 +873,19 @@ function creer_carnet_notes($id_groupe, $periode_num) {
 	}
 }
 
+/**
+ * Récupérer le nombre de notes de l'élève dans un groupe sur une période
+ *
+ * @param string $login_ele Le login de l'élève
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $periode Le numéro de la période
+ *
+ * @return integer nombre de notes
+ */
+function nb_notes_ele_dans_tel_enseignement($login_ele, $id_groupe, $periode) {
+	$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_ele."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$periode."');";
+	$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_notes_cn=mysqli_num_rows($test_cn);
+	return $nb_notes_cn;
+}
 ?>
