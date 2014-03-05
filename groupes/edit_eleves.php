@@ -1010,9 +1010,11 @@ if(count($total_eleves)>0) {
 							}
 						}
 
-						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
+						/*$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
 						$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_notes_cn=mysqli_num_rows($test_cn);
+						*/
+						$nb_notes_cn=nb_notes_ele_dans_tel_enseignement($e_login, $current_group['id'], $period["num_periode"]);
 						if($nb_notes_cn>0) {
 							echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
 							//echo "$sql<br />";
