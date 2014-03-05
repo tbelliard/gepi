@@ -2447,13 +2447,23 @@ function get_nom_classe($id_classe){
  * @param string $date
  * @return string La date formatée
  */
-function formate_date($date, $avec_heure="n") {
+function formate_date($date, $avec_heure="n", $avec_nom_jour="") {
 	$tmp_date=explode(" ",$date);
 	$tab_date=explode("-",$tmp_date[0]);
 
 	$retour="";
 
 	if(isset($tab_date[2])) {
+		if($avec_nom_jour=="court") {
+			$instant=mktime(12, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
+			$jour=strftime("%a", $instant)." ";
+			$retour.=$jour;
+		}
+		elseif($avec_nom_jour=="complet") {
+			$instant=mktime(12, 0, 0, $tab_date[1], $tab_date[2], $tab_date[0]);
+			$jour=strftime("%A", $instant)." ";
+			$retour.=$jour;
+		}
 		$retour.=sprintf("%02d",$tab_date[2])."/".sprintf("%02d",$tab_date[1])."/".$tab_date[0];
 	}
 	elseif(isset($tab_date[0])) {
