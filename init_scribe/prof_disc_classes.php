@@ -177,19 +177,19 @@ if (!isset($_POST["action"])) {
 
                         $new_group = mysqli_query($GLOBALS["mysqli"], "INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . $reg_matiere_complet . "'");
                         $group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-                        if (!$new_group) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                        if (!$new_group) echo mysqli_error($GLOBALS["mysqli"]);
                         // Le groupe est créé. On associe la matière.
                         $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'");
-                        if (!$res) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                        if (!$res) echo mysqli_error($GLOBALS["mysqli"]);
                         // On associe le prof
                         $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'");
-                        if (!$res) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                        if (!$res) echo mysqli_error($GLOBALS["mysqli"]);
                         // On associe la matière au prof
                         $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'");
                         // On associe le groupe aux classes (ou à la classe)
                         foreach ($valid_classes as $classe_id) {
                             $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'");
-                            if (!$res) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                            if (!$res) echo mysqli_error($GLOBALS["mysqli"]);
                         }
 
                         // Si le type est à "CG", on associe les élèves de la classe au groupe
@@ -203,7 +203,7 @@ if (!isset($_POST["action"])) {
                                 $current_eleve = old_mysql_result($get_eleves, $e, "login");
                                 for ($p=1;$p<=$periods;$p++) {
                                     $res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'");
-                                    if (!$res) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+                                    if (!$res) echo mysqli_error($GLOBALS["mysqli"]);
                                 }
                             }
                         }

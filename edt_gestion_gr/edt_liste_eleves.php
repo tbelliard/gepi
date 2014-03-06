@@ -181,7 +181,7 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 					FROM j_eleves_classes jec, eleves e
 					WHERE id_classe = '".$classe_e."'
 					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						OR DIE('Erreur dans la requête $req_ele : '.mysqli_error($GLOBALS["mysqli"]));
 	$nbre_ele_m = mysqli_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -207,7 +207,7 @@ if ($classe_e AND is_numeric($classe_e) AND $rep_gr["subdivision_type"] != "clas
 						";
 
 	for($b=0; $b<$nbre_ele_m; $b++) {
-		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$aff_ele_m[$b]["login"] = old_mysql_result($req_ele, $b, "login") OR DIE('Erreur requête liste_eleves : '.mysqli_error($GLOBALS["mysqli"]));
 
 			$aff_ele_m[$b]["id_eleve"] = old_mysql_result($req_ele, $b, "id_eleve");
 			$aff_ele_m[$b]["nom"] = old_mysql_result($req_ele, $b, "nom");
@@ -269,7 +269,7 @@ if ($rep_gr["subdivision_type"] == 'classe') {
 										e.login = jec.login AND
 										jec.id_classe = c.id
 										ORDER BY c.classe, e.nom, e.prenom")
-									OR trigger_error('Impossible de récupérer la liste des élèves : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+									OR trigger_error('Impossible de récupérer la liste des élèves : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 
 }
 

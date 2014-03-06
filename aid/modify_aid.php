@@ -146,7 +146,7 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
@@ -177,7 +177,7 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
@@ -201,7 +201,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
-    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
     while($temp = mysqli_fetch_array($query)) {
         $liste_profs[] = $temp["id_utilisateur"];
     }
@@ -249,7 +249,7 @@ else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
 
 
-$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
 $nbre = mysqli_num_rows($query);
 
 $aff_precedent = '';
@@ -286,7 +286,7 @@ echo '<form action="modify_aid.php" method="post" name="autre_aid">
 	';
 
 // On recommence le query
-$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 while($infos = mysqli_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {

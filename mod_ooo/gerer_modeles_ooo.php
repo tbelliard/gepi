@@ -84,6 +84,12 @@ if(($_SESSION['statut']=='administrateur')||
 	$fich[]="discipline_autre.odt";
     $utilisation[]="Autre sanction";
 	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="avertissement_fin_periode.odt";
+	$utilisation[]="Avertissement de fin de période";
+	$special[]="";
 }
 
 if(($_SESSION['statut']=='administrateur')||

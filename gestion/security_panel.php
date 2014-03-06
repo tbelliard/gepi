@@ -69,7 +69,7 @@ if (isset($_GET['action'])) {
 			$res = mysqli_query($GLOBALS["mysqli"], "UPDATE tentatives_intrusion SET statut = '' WHERE (statut = 'new')");
 			break;
 	}
-	if (!$res) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+	if (!$res) {echo mysqli_error($GLOBALS["mysqli"]);}
 }
 
 //**************** EN-TETE *****************
@@ -295,7 +295,7 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 	$sql.="t.date DESC";
 
 	$req = mysqli_query($GLOBALS["mysqli"], $sql);
-	if (!$req) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+	if (!$req) {echo mysqli_error($GLOBALS["mysqli"]);}
 
 	$alt=1;
 	while ($row = mysqli_fetch_object($req)) {
@@ -393,7 +393,7 @@ echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est
 
 $sql="SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u WHERE (u.observation_securite = '1') ORDER BY u.niveau_alerte DESC;";
 $req_observation = mysqli_query($GLOBALS["mysqli"], $sql);
-if (!$req_observation) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+if (!$req_observation) {echo mysqli_error($GLOBALS["mysqli"]);}
 elseif(mysqli_num_rows($req_observation)>0) {
 	echo "<p style='color:red'><a href='#utilisateurs_en_observation'>".mysqli_num_rows($req_observation)." utilisateur(s)</a> en <b>observation</b>.</p>\n";
 }
@@ -401,7 +401,7 @@ elseif(mysqli_num_rows($req_observation)>0) {
 // Comptes désactivés
 $sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u, tentatives_intrusion t WHERE (u.etat='inactif' AND t.login=u.login AND t.statut='new');";
 $req_desactive=mysqli_query($GLOBALS["mysqli"], $sql);
-if (!$req_desactive) {echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));}
+if (!$req_desactive) {echo mysqli_error($GLOBALS["mysqli"]);}
 elseif(mysqli_num_rows($req_desactive)>0) {
 	echo "<p style='color:red'><a href='#utilisateurs_desactives'>".mysqli_num_rows($req_desactive)." utilisateur(s)</a> avec alerte dans cette page ont leur <b>compte désactivé</b>.</p>\n";
 }
@@ -449,7 +449,7 @@ if(isset($_GET['order_by'])) {
 }
 $sql.="t.date DESC";
 $req = mysqli_query($GLOBALS["mysqli"], $sql);
-if (!$req) echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+if (!$req) echo mysqli_error($GLOBALS["mysqli"]);
 $alt=1;
 while ($row = mysqli_fetch_object($req)) {
 	$alt=$alt*(-1);

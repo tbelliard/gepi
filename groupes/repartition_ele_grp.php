@@ -590,7 +590,7 @@ if(!isset($_POST['recopie_select'])) {
 
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
+	echo " | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir d'autres classes</a>\n";
 
 	echo " | \n";
 
@@ -871,7 +871,8 @@ if(!isset($_POST['recopie_select'])) {
 			echo "</td>\n";
 			*/
 
-			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\" title=\"Mettre $nom_prenom_ele dans le groupe ".$group[$i]['name']." de ".$group[$i]['classlist_string']."\">\n";
+			$ligne_si_desinscription_possible.="<td onclick=\"document.getElementById('grp_eleve_".$i."_".$cpt."').checked=true;calcule_effectifs();changement();\" title=\"Mettre $nom_prenom_ele dans le groupe ".$group[$i]['name']." de ".$group[$i]['classlist_string']."
+Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 			$ligne_si_desinscription_possible.="<input type='radio' name='grp_eleve[$cpt]' id='grp_eleve_".$i."_".$cpt."' value='".$id_groupe[$i]."' onchange='calcule_effectifs();changement()' ";
 			if(in_array($login_ele,$group[$i]["eleves"][$num_periode]["list"])) {
 				$ligne_si_desinscription_possible.="checked ";

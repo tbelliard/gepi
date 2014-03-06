@@ -46,7 +46,7 @@ echo '
 $sql="SELECT * FROM edt_creneaux WHERE type_creneaux != 'pause' ORDER BY heuredebut_definie_periode";
 
 $query = mysqli_query($GLOBALS["mysqli"], $sql)
-			OR trigger_error('Erreur dans la recherche des créneaux : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			OR trigger_error('Erreur dans la recherche des créneaux : '.mysqli_error($GLOBALS["mysqli"]));
 
 $cpt_creneau_cours=0;
 while($creneaux = mysqli_fetch_array($query)) {

@@ -32,7 +32,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 	global $prefix_base;
 
 	$requete_a_qui_appartient_id = 'SELECT * FROM '.$prefix_base.'absences_eleves WHERE id_absence_eleve = "' . $id_absence_eleve . '"';
-    $execution_a_qui_appartient_id = mysqli_query($GLOBALS["mysqli"], $requete_a_qui_appartient_id) or die('Erreur SQL !'.$requete_a_qui_appartient_id.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_a_qui_appartient_id = mysqli_query($GLOBALS["mysqli"], $requete_a_qui_appartient_id) or die('Erreur SQL !'.$requete_a_qui_appartient_id.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee_a_qui_appartient_id = mysqli_fetch_array( $execution_a_qui_appartient_id ) ) {
 
 		$eleve_absence_eleve = $donnee_a_qui_appartient_id['eleve_absence_eleve'];
@@ -50,7 +50,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 	              			   WHERE partde_lettre_suivi = 'absences_eleves'
 	              			  	 AND type_lettre_suivi = '6'
 	              			  	 AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
-	              mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	              mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 		}
 		else
@@ -79,7 +79,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve='')
 		    				WHERE partde_lettre_suivi = 'absences_eleves'
 		    				  AND type_lettre_suivi = '6'
 		    				  AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-	            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 			}
 
@@ -133,7 +133,7 @@ function supprime_id($tableau_des_ids, $prefix_base, $table, $selection)
           	$requete = "DELETE
            			    FROM ".$prefix_base.$table."
            			    WHERE id_absence_eleve ='".$id_selectionne."'";
-            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
         }
 
@@ -199,7 +199,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 						   		(eleve_id, retard_absence, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie)
 						   VALUES
 						   		('" . $eleve_id . "', '" . $retard_absence . "', '" . $groupe_id . "', '0', '" . $jour_semaine . "', '" . $creneau_id . "', '" . $debut_ts . "', '" . $fin_ts . "', '" . $date_saisie . "', '" . $_SESSION["login"] . "')";
-			$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+			$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
 
 		}
 		else
@@ -214,7 +214,7 @@ function gerer_absence($id='',$eleve_id,$retard_absence,$groupe_id='',$edt_id=''
 					   		AND fin_ts <= '" . $fin_ts . "'"
 				   	   );
 
-			$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
         	while ($donnee = mysqli_fetch_array($execution))
         	{
 
@@ -292,7 +292,7 @@ function suppr_absences_rb($id)
 						FROM " . $prefix_base . "absences_eleves
 						WHERE id_absence_eleve = '" . $id . "' ";
 
-	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 
@@ -373,7 +373,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 						FROM " . $prefix_base . "absences_eleves
 						WHERE id_absence_eleve = '" . $id . "' ";
 
-	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 
@@ -412,7 +412,7 @@ function modifier_absences_rb($id,$debut_ts_modif,$fin_ts_modif)
 			   		 		  AND eleve_id = '" . $eleve_absent . "'
 			   		 	   ";
 
-	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	        $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     	    while ( $donnee = mysqli_fetch_array($resultat) )
         	{
 

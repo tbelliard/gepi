@@ -217,7 +217,7 @@ if (isset($_POST['is_posted'])) {
 
 		// A partir de là, toutes les appréciations ont été sauvegardées proprement, on vide la table tempo
 		$effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		OR die('Erreur dans l\'effacement de la table temporaire (1) :'.mysqli_error($GLOBALS["mysqli"]));
 	}
 
 	if($msg=="") {
@@ -2055,7 +2055,7 @@ echo "</form>\n";
 // Dans tous les cas, suite à une demande de restauration, et quelle que soit la réponse, les sauvegardes doivent être effacées
 if ($restauration == "oui" OR $restauration == "non") {
 	$effacer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."'")
-	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	OR DIE('Erreur dans l\'effacement de la table temporaire (2) : '.mysqli_error($GLOBALS["mysqli"]));
 }
 // Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
 

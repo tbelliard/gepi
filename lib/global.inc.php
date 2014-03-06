@@ -157,14 +157,6 @@ $gepiSvnRev = "";
 $gepiGitCommit = "";
 $gepiGitBranch = "";
 
-// Forcer l'utilisation du module de gestion des mise à jour de GEPI
-//
-// Ce paramètre sert à forcer l'utilisation du module de gestion des
-// des mise à jour de GEPI, qui n'est pas encore considéré comme stable
-// mais reste présent dans l'archive
-// Note : ce module devrait être stabilisé pour la prochaine version de Gepi
-$force_msj = false; // bool "true|false"
-
 // Forcer l'utilisation du module de référencement de GEPI
 //
 // Ce paramètre sert à forcer l'utilisation du module d'enregistrement

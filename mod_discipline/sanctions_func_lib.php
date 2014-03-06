@@ -9,6 +9,9 @@ if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 // Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 // Hauteur de la bande testée pour la position de la souris:
 $hauteur_survol_infobulle=20;
@@ -1025,7 +1028,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
 
 	$id_nature="";
 	if($nature!="") {
-		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $nature)."';";
 		$res_nature=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_nature)) {
 			$id_nature=old_mysql_result($res_nature, 0, "id");

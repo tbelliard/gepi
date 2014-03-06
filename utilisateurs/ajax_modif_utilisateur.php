@@ -150,7 +150,21 @@ elseif($mode=='changer_auth_mode') {
 		die();
 	}
 
-	$sql="UPDATE utilisateurs SET auth_mode='$auth_mode_user' WHERE login='$login_user';";
+	$chaine_vidage_mdp="";
+	if((($auth_mode_user=="ldap")||($auth_mode_user=="sso"))&&
+	(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi'))) {
+		$sql="SELECT auth_mode FROM utilisateurs WHERE login='".$login_user."';";
+		$res_old_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_old_auth_mode)>0) {
+			$lig_old_auth_mode=mysqli_fetch_object($res_old_auth_mode);
+			if($lig_old_auth_mode->auth_mode=="gepi") {
+				$chaine_vidage_mdp=", password='', salt='', change_mdp='n' ";
+			}
+		}
+	}
+
+	$sql="UPDATE utilisateurs SET auth_mode='$auth_mode_user' $chaine_vidage_mdp WHERE login='$login_user';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		echo "<span style='color:green;'>$auth_mode_user</span>";

@@ -804,7 +804,7 @@ function log_modifs_acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $num
 		// Il n'y a au plus qu'un enregistrement par (id_groupe;periode) dans acces_cn
 		$lig=mysqli_fetch_object($res);
 		$texte=$lig->commentaires."\n".$texte_ajoute;
-		$sql="UPDATE acces_cn SET commentaires='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $texte) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$lig->id';";
+		$sql="UPDATE acces_cn SET commentaires='".mysqli_real_escape_string($GLOBALS["mysqli"], $texte)."' WHERE id='$lig->id';";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if($update) {
 			return true;
@@ -873,4 +873,19 @@ function creer_carnet_notes($id_groupe, $periode_num) {
 	}
 }
 
+/**
+ * Récupérer le nombre de notes de l'élève dans un groupe sur une période
+ *
+ * @param string $login_ele Le login de l'élève
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $periode Le numéro de la période
+ *
+ * @return integer nombre de notes
+ */
+function nb_notes_ele_dans_tel_enseignement($login_ele, $id_groupe, $periode) {
+	$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$login_ele."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$id_groupe."' AND ccn.periode = '".$periode."');";
+	$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_notes_cn=mysqli_num_rows($test_cn);
+	return $nb_notes_cn;
+}
 ?>

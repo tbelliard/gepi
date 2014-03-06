@@ -151,7 +151,7 @@ if ($etape == 4) {
 			$reg = mysqli_query($GLOBALS["mysqli"], $query);
 			if (!$reg) {
 				echo "<p><font color=red>ERROR</font> : '$query' : ";
-				echo "<p>Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
+				echo "<p>Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."</p>\n";
 				$result_ok = 'no';
 			}
 		}
@@ -171,7 +171,7 @@ if ($etape == 4) {
 				$reg = mysqli_query($GLOBALS["mysqli"], $query);
 				if (!$reg) {
 					echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
-					echo "<p>Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
+					echo "<p>Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."</p>\n";
 					$result_ok = 'no';
 				}
 			}
@@ -369,7 +369,7 @@ else if ($etape == 2) {
 	else {
 		echo "<B>La connexion au serveur MySQL a échoué.</B>\n";
 		echo "<p>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>\n";
-		echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		echo mysqli_error($GLOBALS["mysqli"]);
 	}
 
 	end_html();

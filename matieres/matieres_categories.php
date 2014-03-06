@@ -79,7 +79,7 @@ if (isset($_POST['action'])) {
         }
         if (!$res) {
             $msg .= "Erreur lors de l'enregistrement de la nouvelle catégorie.</br>";
-            echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+            echo mysqli_error($GLOBALS["mysqli"]);
         }
     } elseif ($_POST['action'] == "edit") {
         // On met à jour une catégorie

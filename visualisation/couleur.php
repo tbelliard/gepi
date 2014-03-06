@@ -268,11 +268,7 @@ function show_message_deconnexion(){
          }
       }
       $temp = '';
-  $rc = null;
-  $beta = null;
-    if ($gepiRcVersion != '') $rc = "-RC".$gepiRcVersion;
-    if ($gepiBetaVersion != '') $beta = "-beta".$gepiBetaVersion;
-      echo("<br />\nGEPI ".$gepiVersion.$rc.$beta." - ");
+      echo("<br />\nGEPI ".$gepiVersion." - ");
       ?>
       <a href="<?php echo($gepiPath); ?>/accueil.php">Accueil</a> - <a href="<?php echo($gepiPath); ?>/utilisateurs/mon_compte.php">Gérer mon compte</a> - <a href="<?php echo($gepiPath); ?>/logout.php?auto=0">Déconnexion</a>
    </div>

@@ -493,7 +493,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));
         }
         else {      //AID
             $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
@@ -505,7 +505,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));
         }
     }
     else {      
@@ -518,7 +518,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));
         }
         else {
             $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
@@ -531,7 +531,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     $calendrier
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));
         }
     }
 
@@ -549,7 +549,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
     $req_creneau_aid = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT id_aid FROM j_aid_eleves WHERE 
                                                             login IN (SELECT login FROM j_eleves_groupes WHERE
                                                                     id_groupe = '".$groupe."') 
-                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                ") or die(mysqli_error($GLOBALS["mysqli"]));
     while ($rep_creneau_aid = mysqli_fetch_array($req_creneau_aid)) {
         if ($type_semaine == "0") {
             $req_creneau_aid_2 = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe , id_aid FROM edt_cours WHERE 
@@ -614,7 +614,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
                                     heuredeb_dec = '".$current_heure."' AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));            
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));            
 
     }
     else {
@@ -627,7 +627,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
                                     (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                     id_cours <> '".$id_cours."' AND
                                     ".$calendrier."
-                                    ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));          
+                                    ") or die(mysqli_error($GLOBALS["mysqli"]));          
 
     }
     while ($rep_creneau = mysqli_fetch_array($req_creneau)) {
@@ -680,7 +680,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
                                 heuredeb_dec = '".$current_heure."' AND
                                 id_cours <> '".$id_cours."' AND
                                 ".$calendrier."
-                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                ") or die(mysqli_error($GLOBALS["mysqli"]));
     }
     else {
         $req_creneau = mysqli_query($GLOBALS["mysqli"], "SELECT duree , login_prof , id_groupe, id_aid, id_semaine FROM edt_cours WHERE 
@@ -691,7 +691,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
                                 (id_semaine = '".$type_semaine."' OR id_semaine = '0') AND
                                 id_cours <> '".$id_cours."' AND
                                 ".$calendrier."
-                                ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                ") or die(mysqli_error($GLOBALS["mysqli"]));
     }
     while ($rep_creneau = mysqli_fetch_array($req_creneau)) {
         $tab_enseignement['duree'][$k] = $rep_creneau['duree'];

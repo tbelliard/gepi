@@ -96,7 +96,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysqli_query($GLOBALS["mysqli"], $sql);
-			if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} elseif (is_numeric($_POST['classe'])) {
 			/*
 			$quels_parents = mysql_query("SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
@@ -117,7 +117,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysqli_query($GLOBALS["mysqli"], $sql);
-			if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";

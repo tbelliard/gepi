@@ -186,7 +186,7 @@ if (!isset($is_posted)) {
 							$affiche = trim(preg_replace("/'/"," ",nettoyer_caracteres_nom($tabligne[$ind], "an", " '_-", "")));
 							if($tabchamps[$ind]!=''){
 								$query = $query.",";
-								$query = $query."$tabchamps[$ind]='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+								$query = $query."$tabchamps[$ind]='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche)."'";
 							}
 							if (($en_tete[$ind] == 'DIVCOD') and ($affiche == '')) {$enregistre = "no";}
 						}

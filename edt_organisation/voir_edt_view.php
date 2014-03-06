@@ -71,7 +71,7 @@ if($mode_infobulle=="n") {
 }
 
 //=========================== AFFICHAGE DES MENUS DEROULANTS DE SELECTION
-if (isset($visioedt)) {
+if ((isset($visioedt))&&($no_menu!="y")) {
     if (!$IE6) {
         echo ("<div class=\"fenetre\">\n");
         echo("<div class=\"contenu\">

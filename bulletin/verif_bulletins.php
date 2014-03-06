@@ -60,6 +60,17 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 
 //debug_var();
 
+$tab_date_conseil=array();
+$sql="SELECT id_classe, date_evenement, classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE type='conseil_de_classe' AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S")."' AND dde.id_ev=ddec.id_ev AND c.id=ddec.id_classe ORDER BY date_evenement;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+while($lig_date=mysqli_fetch_object($res)) {
+	// Pour ne retenir que la première date de conseil dans le cas où les dates de conseil des 3 périodes seraient saisies dès le début de l'année:
+	if(!isset($tab_date_conseil[$lig_date->id_classe])) {
+		$tab_date_conseil[$lig_date->id_classe]['classe']=$lig_date->classe;
+		$tab_date_conseil[$lig_date->id_classe]['date']=$lig_date->date_evenement;
+	}
+}
+
 // Selection de la classe
 if (!(isset($id_classe))) {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
@@ -82,84 +93,61 @@ if (!(isset($id_classe))) {
 	//<table><tr><td>\n";
 	if ($_SESSION["statut"] == "scolarite") {
 		//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	else {
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)");
+		$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id)";
 	}
-
+	$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 	$lignes = mysqli_num_rows($appel_donnees);
 
 
 	if($lignes==0) {
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
-	else{
+	else {
+		echo "<div style='margin-left:3em;'>\n";
+
 		unset($lien_classe);
 		unset($txt_classe);
-		$i = 0;
-		//while ($i < $nombreligne) {
-		while ($i < $lignes) {
-			$lien_classe[]="verif_bulletins.php?id_classe=".old_mysql_result($appel_donnees, $i, "id");
-			$txt_classe[]=ucfirst(old_mysql_result($appel_donnees, $i, "classe"));
-			$i++;
+		// Tableau des identifiants de classes à retenir:
+		$tab_id_classe=array();
+
+		while($lig_classe=mysqli_fetch_object($appel_donnees)) {
+			$tab_id_classe[]=$lig_classe->id;
+
+			$lien_classe[]="verif_bulletins.php?id_classe=".$lig_classe->id;
+
+			$chaine_classe="<strong>".ucfirst($lig_classe->classe)."</strong>";
+			if(isset($tab_date_conseil[$lig_classe->id])) {
+				$chaine_classe.=" <span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date']).")</span>";
+			}
+			$txt_classe[]=$chaine_classe;
 		}
 
 		tab_liste($txt_classe,$lien_classe,3);
-	}
+		echo "</div>\n";
 
-	/*
-	$nb_class_par_colonne=round($lignes/3);
-	echo "<table width='100%'>\n";
-	echo "<tr valign='top' align='center'>\n";
-
-	$i = 0;
-
-	echo "<td align='left'>\n";
-	while($i < $lignes) {
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)) {
-			echo "</td>\n";
-			echo "<td align='left'>\n";
+		if(count($tab_date_conseil)>0) {
+			echo "<br />
+<p class='bold'>Classes triées par dates de conseil de classe&nbsp;:</p>
+<div style='margin-left:3em;'>";
+			foreach($tab_date_conseil as $id_classe => $value) {
+				if(in_array($id_classe, $tab_id_classe)) {
+					echo "
+	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a><br />";
+				}
+			}
+			echo "<div>\n";
 		}
-
-		$id_classe = old_mysql_result($appel_donnees, $i, "id");
-		$display_class = old_mysql_result($appel_donnees, $i, "classe");
-		echo "<a href='verif_bulletins.php?id_classe=$id_classe'>".ucfirst($display_class)."</a><br />\n";
-		$i++;
 	}
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	*/
-
-	//echo "</td><td></td></table>";
 } else if (!(isset($per))) {
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-	//echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
-
-
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	//if($_SESSION['statut']=='scolarite') {
-		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
-	/*
-	}
-	elseif($_SESSION['statut']=='professeur') {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
-	}
-	elseif($_SESSION['statut']=='cpe') {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe";
-	}
-	*/
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 
 	$chaine_options_classes="";
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -168,11 +156,21 @@ if (!(isset($id_classe))) {
 		$id_class_suiv=0;
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+			$info_conseil_classe="";
+			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
+			}
+
 			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$info_conseil_classe="";
+					if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
+					}
+
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
@@ -180,7 +178,7 @@ if (!(isset($id_classe))) {
 				}
 			}
 			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 			}
 
 			if($temoin_tmp==0) {
@@ -282,43 +280,13 @@ if (!(isset($id_classe))) {
 	}
 	echo "</tr>\n";
 
-	/*
-	$i="1";
-	while ($i < $nb_periode) {
-		echo "<p><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i'>".ucfirst($nom_periode[$i])."</a>\n";
-		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
-		}
-		//echo "<p>\n";
-		echo "</p>\n";
-		$i++;
-	}
-	*/
-
 	$alt=1;
 	$i="1";
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<th>Notes et appréciations</th>\n";
 	while ($i < $nb_periode) {
-
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=note_app'>";
 		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
-		/*
-		echo "<br />\n";
-		echo "<span style='font-size:x-small;'>";
-		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
-		}
-		echo "</span>\n";
-		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -329,21 +297,8 @@ if (!(isset($id_classe))) {
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<th>Absences</th>\n";
 	while ($i < $nb_periode) {
-
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=abs'>";
 		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
-		/*
-		echo "<br />\n";
-		echo "<span style='font-size:x-small;'>";
-		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
-		}
-		echo "</span>\n";
-		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -354,74 +309,35 @@ if (!(isset($id_classe))) {
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<th>Avis du conseil</th>\n";
 	while ($i < $nb_periode) {
-
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=avis'>";
 		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
-		/*
-		echo "<br />\n";
-		echo "<span style='font-size:x-small;'>";
-		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
-		}
-		echo "</span>\n";
-		*/
 		echo "</td>\n";
 		$i++;
 	}
 	echo "</tr>\n";
 
 
-	if(getSettingValue('avis_conseil_classe_a_la_mano')=='y') {
+	//if(getSettingValue('avis_conseil_classe_a_la_mano')=='y') {
 		$alt=$alt*(-1);
 		$i="1";
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<th>Tout sauf les avis du conseil</th>\n";
 		while ($i < $nb_periode) {
-	
-			echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=tout_sauf_avis'>";
+				echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i&amp;mode=tout_sauf_avis'>";
 			echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
-			/*
-			echo "<br />\n";
-			echo "<span style='font-size:x-small;'>";
-			if ($ver_periode[$i] == "P")  {
-				echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-			} else if ($ver_periode[$i] == "O")  {
-				echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-			} else {
-				echo " (période ouverte, les saisies/modifications sont possibles)\n";
-			}
-			echo "</span>\n";
-			*/
 			echo "</td>\n";
 			$i++;
 		}
 		echo "</tr>\n";
-	}
+	//}
 
 	$alt=$alt*(-1);
 	$i="1";
 	echo "<tr class='lig$alt'>\n";
 	echo "<th>Tout</th>\n";
 	while ($i < $nb_periode) {
-
 		echo "<td><a href='verif_bulletins.php?id_classe=$id_classe&amp;per=$i'>";
 		echo "<img src='../images/icons/chercher.png' width='32' height='32' alt=\"".ucfirst($nom_periode[$i])." \" title=\"".ucfirst($nom_periode[$i])." \" /></a>";
-		/*
-		echo "<br />\n";
-		echo "<span style='font-size:x-small;'>";
-		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
-		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
-		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
-		}
-		echo "</span>\n";
-		*/
 		echo "</td>\n";
 		$i++;
 	}
@@ -455,26 +371,10 @@ if (!(isset($id_classe))) {
 	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
-
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	//if($_SESSION['statut']=='scolarite') {
-		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
-	/*
-	}
-	elseif($_SESSION['statut']=='professeur') {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
-	}
-	elseif($_SESSION['statut']=='cpe') {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
-			p.id_classe = c.id AND
-			jec.id_classe=c.id AND
-			jec.periode=p.num_periode AND
-			jecpe.e_login=jec.login AND
-			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe";
-	}
-	*/
+	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+
 	$chaine_options_classes="";
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0) {
@@ -482,11 +382,21 @@ if (!(isset($id_classe))) {
 		$id_class_suiv=0;
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+			$info_conseil_classe="";
+			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
+			}
+
 			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+					$info_conseil_classe="";
+					if(isset($tab_date_conseil[$lig_class_tmp->id])) {
+						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
+					}
+
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
@@ -494,7 +404,7 @@ if (!(isset($id_classe))) {
 				}
 			}
 			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 			}
 
 			if($temoin_tmp==0) {

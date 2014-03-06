@@ -234,6 +234,16 @@
 </div>
 
 <p><br /></p>\n";
+
+		echo "<p><em>Remarque&nbsp;:</em> Il est possible de ";
+		if(getSettingAOui('active_carnets_notes')) {
+			echo "<a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a></p>";
+		}
+		else {
+			echo "créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots (<em>lorsque le module est actif</em>)</p>";
+		}
+		echo "<p><br /></p>\n";
+
 ?>
 
 	<h2>

@@ -227,11 +227,11 @@ if (!isset($_POST["action"])) {
 
 				$insert = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET " .
 						"login = '" . $reg_login . "', " .
-						"nom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-						"prenom = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+						"nom = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) . "', " .
+						"prenom = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) . "', " .
 						"civilite = '" . $reg_civilite . "', " .
 						"password = '" . $reg_password . "', " .
-						"email = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+						"email = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_email) . "', " .
 						"statut = 'professeur', " .
 						"etat = 'actif', " .
 						"change_mdp = '" . $change_mdp . "', " .
@@ -239,7 +239,7 @@ if (!isset($_POST["action"])) {
 
 				if (!$insert) {
 					$error++;
-					echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'<span><br />';
+					echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 				} else {
 					$total++;
 				}
@@ -438,12 +438,12 @@ if (!isset($_POST["action"])) {
 						echo "<td>\n";
 					}
 
-					$sql="INSERT INTO temp_profs SET login='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["reg_login"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					civilite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["civilite"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["email"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					sso='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["sso"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$sql="INSERT INTO temp_profs SET login='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["reg_login"])."',
+					nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"])."',
+					prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"])."',
+					civilite='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["civilite"])."',
+					email='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["email"])."',
+					sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["sso"])."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$insert) {
 						echo "<span style='color:red'>";

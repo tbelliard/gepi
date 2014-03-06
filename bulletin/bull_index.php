@@ -1471,7 +1471,7 @@ else {
 				$lig_per=mysqli_fetch_object($res_per);
 				$recalcul_rang="";
 				for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
-				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
+				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
@@ -2045,9 +2045,28 @@ else {
 			//$affiche_rang="y";
 			if (($affiche_rang == 'y')||
 			((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y'))) {
+				// Mise en réserve, même si en principe, c'est le même test aux différentes étapes
+				$test_coef_prec = $test_coef;
+
 				// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 				$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 				include("../lib/calcul_rang.inc.php");
+
+				unset($nombre_eleves);
+				// Il y a aussi $affiche_categories qui est utilisé ici et dans calcul_rang.inc.php, mais avec la même valeur.
+				unset($moy_gen_classe);
+				unset($moy_gen_eleve);
+				unset($total_coef);
+				unset($nombre_groupes);
+				unset($current_group);
+				unset($nb_notes);
+				unset($note);
+				unset($current_eleve_note);
+				unset($current_eleve_statut);
+				unset($coef_eleve);
+
+				// En principe, c'est le même test aux différentes étapes
+				$test_coef=$test_coef_prec;
 			}
 
 
@@ -3409,7 +3428,7 @@ else {
 				$id_classe=$tab_id_classe[$loop_classe];
 				$classe=get_class_from_id($id_classe);
 
-				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
 				$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
@@ -3536,162 +3555,209 @@ else {
 		$responsable_place = 0;
 	}
 
-	// Compteur pour insérer un saut dans les bulletins HTML
-	$compteur_bulletins=0;
-	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
-		$id_classe=$tab_id_classe[$loop_classe];
-		$classe=get_class_from_id($id_classe);
-
-		if($mode_bulletin=="html") {
-			echo "<script type='text/javascript'>
-	document.getElementById('td_classe').innerHTML='".$classe."';
-</script>\n";
-		}
-
-		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
-
-			$periode_num=$tab_periode_num[$loop_periode_num];
-
-			//==============================
-			if($mode_bulletin=="html") {
-				$motif="Classe_".$id_classe."_".$periode_num;
-				decompte_debug($motif,"$motif avant");
-				flush();
-				echo "<script type='text/javascript'>
-	document.getElementById('td_periode').innerHTML='".$periode_num."';
-</script>\n";
-			}
-			//==============================
-
-			if($mode_bulletin=="html") {
-				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
-				echo "<h2>Classe de ".$classe."</h2>\n";
-				echo "<p><b>Période $periode_num</b></p>\n";
-
-				echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
-				echo "</div>\n";
-			}
-
-			//======================================
-			// Pour le tri par établissement d'origine
-			unset($tmp_tab);
-			unset($rg);
-			//$tri_par_etab_orig="y";
-			if($tri_par_etab_orig=='y') {
-				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eleve'])=".count($tab_bulletin[$id_classe][$periode_num]['eleve'])."<br />\n";
-				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eff_classe'])=".count($tab_bulletin[$id_classe][$periode_num]['eff_classe'])."<br />\n";
-				//for($k=0;$k<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$k++) {
-				for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
-					$rg[$k]=$k;
-					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']."<br />\n";
-					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']."<br />\n";
-					if(!isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
-						$tmp_tab[$k]="";
-					}
-					else {
-						$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
-					}
-				}
-				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
-			}
-			//======================================
-
-			//$compteur=0;
-			//for($i=0;$i<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$i++) {
-			for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
-				if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
-
+	if($tri_par_etab_orig=='y') {
+		$tab_indices_etab=array();
+		for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+			$id_classe=$tab_id_classe[$loop_classe];
+			for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+				$periode_num=$tab_periode_num[$loop_periode_num];
 				if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-					//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
-					if((isset($rg[$i]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
-					//if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
-
-						//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-
-							// ++++++++++++++++++++++++++++++++++++++
-							// ++++++++++++++++++++++++++++++++++++++
-							// AJOUTER UN TEST: L'élève fait-il bien partie de la classe?
-							//                  Inutile: la liste $current_eleve_login est obtenue de calcul_moy_gen.inc.php
-							//                  Pas d'injection/intervention possible.
-							//                  Le test sur l'accès à la classe plus haut (*) doit suffire.
-							//                  On pourrait injecter un login dans la sélection d'élève, mais pas dans $current_eleve_login
-							//                  Et on test seulement si $current_eleve_login[$i] est bien dans la sélection (pas le contraire)
-							//                  (*) dans cette section tout de même.
-							// ++++++++++++++++++++++++++++++++++++++
-							// ++++++++++++++++++++++++++++++++++++++
-
-							if($mode_bulletin=="html") {
-								echo "<script type='text/javascript'>
-	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
-</script>\n";
-							}
-
-
-							if($mode_bulletin=="html") {
-								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								//decompte_debug($motif,"$motif élève $i avant");
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-								decompte_debug($motif,"$motif élève $rg[$i] avant");
-								flush();
-
-								// Saut de page si jamais ce n'est pas le premier bulletin
-								if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
-
-								// Génération du bulletin de l'élève
-								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
-								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-								bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
-
-								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								//decompte_debug($motif,"$motif élève $i après");
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-								decompte_debug($motif,"$motif élève $rg[$i] après");
-								flush();
-							}
-							else {
-								//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
-							}
-
-/*
-echo "Tableau de la classe $id_classe en période $periode_num<br />
-<pre>";
-print_r($tab_bulletin[$id_classe][$periode_num]);
-echo "</pre>";
-
-echo "Tableau du modèle PDF<br />
-<pre>";
-print_r($tab_modele_pdf);
-echo "</pre>";
-*/
-
-							//==============================================================================================
-							// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
-							//==============================================================================================
-
-							if($mode_bulletin=="html") {
-								echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
-							}
-
-							$compteur_bulletins++;
-
-							if($mode_bulletin=="html") {
-								flush();
-							}
+					for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
+						if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
+							$etab_id_courant=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+							//echo "\$etab_id_courant=\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']=$etab_id_courant<br />";
+							$tab_indices_etab[$etab_id_courant][]=$id_classe."|".$periode_num."|".$k;
+							//echo "\$tab_indices_etab[$etab_id_courant][]=$id_classe|$periode_num|$k<br />";
 						}
 					}
 				}
 			}
+		}
 
-			//==============================
-			if($mode_bulletin=="html") {
-				$motif="Classe_".$id_classe."_".$periode_num;
-				decompte_debug($motif,"$motif après");
-				flush();
+		$compteur_bulletins=0;
+		foreach($tab_indices_etab as $etab_id_courant => $tab_id_classe_per_k) {
+			for($loop=0;$loop<count($tab_id_classe_per_k);$loop++) {
+				$tmp_tab=explode("|", $tab_id_classe_per_k[$loop]);
+				$id_classe=$tmp_tab[0];
+				$periode_num=$tmp_tab[1];
+				$k=$tmp_tab[2];
+
+				if($mode_bulletin=="html") {
+					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+					decompte_debug($motif,"$motif élève $k avant");
+					flush();
+
+					// Saut de page si jamais ce n'est pas le premier bulletin
+					if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+					// Génération du bulletin de l'élève
+					bulletin_html($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+
+					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+					decompte_debug($motif,"$motif élève $k après");
+					flush();
+				}
+				else {
+					bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+				}
+				$compteur_bulletins++;
 			}
-			//==============================
+		}
 
+	}
+	else {
+		// Compteur pour insérer un saut dans les bulletins HTML
+		$compteur_bulletins=0;
+		for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+			$id_classe=$tab_id_classe[$loop_classe];
+			$classe=get_class_from_id($id_classe);
+
+			if($mode_bulletin=="html") {
+				echo "<script type='text/javascript'>
+	document.getElementById('td_classe').innerHTML='".$classe."';
+</script>\n";
+			}
+
+			for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+
+				$periode_num=$tab_periode_num[$loop_periode_num];
+
+				//==============================
+				if($mode_bulletin=="html") {
+					$motif="Classe_".$id_classe."_".$periode_num;
+					decompte_debug($motif,"$motif avant");
+					flush();
+					echo "<script type='text/javascript'>
+	document.getElementById('td_periode').innerHTML='".$periode_num."';
+</script>\n";
+				}
+				//==============================
+
+				if($mode_bulletin=="html") {
+					echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+					echo "<h2>Classe de ".$classe."</h2>\n";
+					echo "<p><b>Période $periode_num</b></p>\n";
+
+					echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
+					echo "</div>\n";
+				}
+
+				//======================================
+				// Pour le tri par établissement d'origine
+				unset($tmp_tab);
+				unset($rg);
+				/*
+				if($tri_par_etab_orig=='y') {
+					for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
+						$rg[$k]=$k;
+						if(!isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
+							$tmp_tab[$k]="";
+						}
+						else {
+							$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+						}
+					}
+					array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+				}
+				*/
+				//======================================
+
+				//$compteur=0;
+				for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+					if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
+
+					if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+						//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
+						if((isset($rg[$i]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
+						//if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
+
+							//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+							if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+
+								// ++++++++++++++++++++++++++++++++++++++
+								// ++++++++++++++++++++++++++++++++++++++
+								// AJOUTER UN TEST: L'élève fait-il bien partie de la classe?
+								//                  Inutile: la liste $current_eleve_login est obtenue de calcul_moy_gen.inc.php
+								//                  Pas d'injection/intervention possible.
+								//                  Le test sur l'accès à la classe plus haut (*) doit suffire.
+								//                  On pourrait injecter un login dans la sélection d'élève, mais pas dans $current_eleve_login
+								//                  Et on test seulement si $current_eleve_login[$i] est bien dans la sélection (pas le contraire)
+								//                  (*) dans cette section tout de même.
+								// ++++++++++++++++++++++++++++++++++++++
+								// ++++++++++++++++++++++++++++++++++++++
+
+								if($mode_bulletin=="html") {
+									echo "<script type='text/javascript'>
+	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
+</script>\n";
+								}
+
+
+								if($mode_bulletin=="html") {
+									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+									//decompte_debug($motif,"$motif élève $i avant");
+									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+									decompte_debug($motif,"$motif élève $rg[$i] avant");
+									flush();
+
+									// Saut de page si jamais ce n'est pas le premier bulletin
+									if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+									// Génération du bulletin de l'élève
+									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
+									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+									bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+
+									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+									//decompte_debug($motif,"$motif élève $i après");
+									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+									decompte_debug($motif,"$motif élève $rg[$i] après");
+									flush();
+								}
+								else {
+									//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+									bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+								}
+
+		/*
+		echo "Tableau de la classe $id_classe en période $periode_num<br />
+		<pre>";
+		print_r($tab_bulletin[$id_classe][$periode_num]);
+		echo "</pre>";
+
+		echo "Tableau du modèle PDF<br />
+		<pre>";
+		print_r($tab_modele_pdf);
+		echo "</pre>";
+		*/
+
+								//==============================================================================================
+								// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
+								//==============================================================================================
+
+								if($mode_bulletin=="html") {
+									echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+								}
+
+								$compteur_bulletins++;
+
+								if($mode_bulletin=="html") {
+									flush();
+								}
+							}
+						}
+					}
+				}
+
+				//==============================
+				if($mode_bulletin=="html") {
+					$motif="Classe_".$id_classe."_".$periode_num;
+					decompte_debug($motif,"$motif après");
+					flush();
+				}
+				//==============================
+
+			}
 		}
 	}
 

@@ -152,7 +152,7 @@ function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $
     echo "<div class=\"spacer\"></div>";
 
     echo "<div style=\"float:left;width:100%;\";>";
-    echo "<p>Semaine sélectionnée : ";
+    echo "<p class='bold'>Semaine sélectionnée : ";
 
     echo $tab[$week_selected-1]["lundis"]." - ";      
     echo $tab[$week_selected-1]["vendredis"];

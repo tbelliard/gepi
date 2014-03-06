@@ -93,7 +93,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		echo "<legend style='border: 1px solid grey; background-color: white;'>Dans un premier temps, sélectionnez la (ou les) périodes pour lesquelles vous souhaitez imprimer les avis</legend>\n";
 		echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
 		$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
-		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		echo "<select id='id_liste_periodes' name='id_liste_periodes[]' multiple='yes' size='4'>\n";
 		echo "		<optgroup label=\"-- Les périodes --\">\n";
 		While ($data_periode = mysqli_fetch_array($resultat_periode)) {
@@ -145,7 +145,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 			} else {
 				$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_la_premiere_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
 			}
-			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			echo "		<optgroup label=\"-- Les classes --\">\n";
 			while ( $data_classe = mysqli_fetch_array($resultat_classe)) {
 				echo "		<option value=\"";

@@ -135,7 +135,7 @@ require_once("../../lib/header.inc.php");
 												AND ls.quirecois_lettre_suivi = '" . $donnees["eleve_id"] . "'
 												AND ls.statu_lettre_suivi = 'en attente'
 												AND ls.envoye_date_lettre_suivi = '0000-00-00'"; // ce dernier point permet d'éviter de détruire des lettres déjà envoyées
-			$query_lettre = mysqli_query($GLOBALS["mysqli"], $sql_lettre) OR DIE('Impossible de détruire la lettre déjà émise <br /> -->' . $sql_lettre . '<br /><p style="color: red;">' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</p>');
+			$query_lettre = mysqli_query($GLOBALS["mysqli"], $sql_lettre) OR DIE('Impossible de détruire la lettre déjà émise <br /> -->' . $sql_lettre . '<br /><p style="color: red;">' . mysqli_error($GLOBALS["mysqli"]) . '</p>');
 			$test = mysqli_num_rows($query_lettre);
 
 			if ($test === 1) {
@@ -232,7 +232,7 @@ $aff_classe = array();
 $nbre_abs_cren = 0; // On initialise le nombre d'absents du créneau
 // On détermine la période active :
 $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
-$periode_active = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$periode_active = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysqli_error($GLOBALS["mysqli"]));
 $periode = mysqli_fetch_array($periode_active);
 
 $nbre_per = count($periode);
@@ -241,7 +241,7 @@ $_periode = isset($periode[0]) ? $periode[0] : '1';
 // On mouline alors sur la liste des enregistrements des absences
 for($i = 0; $i < $nbre_rep; $i++) {
 	//$req_prof = mysql_fetch_array(mysql_query("SELECT login_saisie FROM absences_rb WHERE id = '".$rep_absences[$i]["id_abs"]."'")) or die ('erreur 1a : '.mysql_error());
-	$rep_prof = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$rep_prof = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom, prenom FROM utilisateurs WHERE login = '".$rep_absences[$i]["login_saisie"]."'")) or die ('erreur 1b : '.mysqli_error($GLOBALS["mysqli"]));
 
 	if ($rep_absences[$i]["eleve_id"] != "appel") {
 		$nbre_abs_cren++; // on incrémente le nombre d'absents du créneau
@@ -272,7 +272,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
                 // On explose pour vérifier qu'il ne s'agit pas d'une aid
 		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
                 if ($verif_aid[0] == "AID"){
-                  $rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                  $rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysqli_error($GLOBALS["mysqli"]));
                   // On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
                   // quand un prof a fait l'appel alors qu'il est avec un aid
                   $aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";
@@ -292,7 +292,7 @@ for($i = 0; $i < $nbre_rep; $i++) {
 		// On explose poour vérifier qu'il ne s'agit pas d'une aid
 		$verif_aid = explode("|", $rep_absences[$i]["groupe_id"]);
 		if ($verif_aid[0] == "AID") {
-			$rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$rep_aid = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$verif_aid[1]."'")) or die ('erreur 1c : '.mysqli_error($GLOBALS["mysqli"]));
 			// On construit alors l'affichage de cette info qui doit permettre à la vie scolaire de savoir
 			// quand un prof a fait l'appel alors qu'il est avec un aid
 			$aff_aid_absences .= "".$rep_prof["nom"]." ".$rep_prof["prenom"]." a fait l'appel avec le groupe ".$rep_aid["nom"]."<br />";

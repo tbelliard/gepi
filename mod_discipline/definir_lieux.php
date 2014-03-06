@@ -106,7 +106,7 @@ if((isset($lieu))&&($lieu!='')) {
 
 		$lieu=suppression_sauts_de_lignes_surnumeraires($lieu);
 
-		$sql="INSERT INTO s_lieux_incidents SET lieu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lieu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="INSERT INTO s_lieux_incidents SET lieu='".mysqli_real_escape_string($GLOBALS["mysqli"], $lieu)."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$lieu."<br />\n";

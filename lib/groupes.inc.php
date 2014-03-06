@@ -599,7 +599,7 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
     $_group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
     if (!$_insert) {
-        $error = ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+        $error = mysqli_error($GLOBALS["mysqli"]);
     }
     if (!is_numeric($_categorie)) {
         $_categorie = 1;
@@ -655,14 +655,14 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
 
 			if (!$_res) {
 				echo "<span style='color:red;'>Bug&nbsp;:</span> ".$sql."'<br />";
-				echo "<span style='color:red;'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span>";
+				echo "<span style='color:red;'>".mysqli_error($GLOBALS["mysqli"])."</span>";
 				echo "<br />";
 			}
 			$sql="update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "');";
 			$res = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$_res) {
 				echo "<span style='color:red;'>Bug&nbsp;:</span> ".$sql."'<br />";
-				echo "<span style='color:red;'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span>";
+				echo "<span style='color:red;'>".mysqli_error($GLOBALS["mysqli"])."</span>";
 				echo "<br />";
 			}
 

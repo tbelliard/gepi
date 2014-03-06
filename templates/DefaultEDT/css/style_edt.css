@@ -1658,6 +1658,15 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      margin:0px 0px 15px 0px;
 }
 /* ========================== couleurs pour les cours ==================== */
+.cadreCouleurgainsboro {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:gainsboro;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
 /* pour conserver une compatibilité avec l'ancien système de gestion des couleurs */
 /* chaque div peut avoir deux noms : le nom numéroté (nouveau système) ou le nom avec sa couleur(ancien système) */
 .cadreCouleur1 , .cadreCouleurblue{

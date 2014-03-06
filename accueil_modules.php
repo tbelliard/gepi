@@ -126,11 +126,6 @@ $key_setting[]='active_module_absence%';
 $chemin[] = "/edt_organisation/edt.php";
 $key_setting[]='autorise_edt%';
 
-if ($force_msj) {
-	$chemin[] = "/mod_miseajour/admin/index.php";
-	$key_setting[]='active_module_msj';
-}
-
 $chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
 $key_setting[]='active_module_trombinoscopes';
 $chemin[] = "/mod_notanet/notanet_admin.php";
@@ -146,7 +141,6 @@ $titre = array(
 $titre[] = "Absences";
 $titre[] = "Absences 2";
 $titre[] = "Emploi du temps";
-if ($force_msj) {$titre[] = "Mise à jour automatisée";}
 $titre[] = "Trombinoscope";
 $titre[] = "Notanet/Fiches Brevet";
 $titre[] = "Inscription";
@@ -158,7 +152,6 @@ $expli = array(
 $expli[] = "Pour gérer le module absences";
 $expli[] = "Pour gérer le module absences 2 (en cours de developpement)";
 $expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
-if ($force_msj) {$expli[] = "Pour gérer le module de mise à jour de GEPI";}
 $expli[] = "Pour gérer le module trombinoscope";
 $expli[] = "Pour gérer le module Notanet/Fiches Brevet";
 $expli[] = "Pour gérer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple à des stages ou bien des interventions dans les collèges";
@@ -363,20 +356,6 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	}
 	unset($nouveauItem);
 	
-// Mise à jour automatisée
-	if ($force_msj) {
-		$nouveauItem = new itemGeneral();
-		$nouveauItem->chemin='/mod_miseajour/admin/index.php';	
-		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
-		{
-			$nouveauItem->choix_icone('active_module_msj') ;	
-			$nouveauItem->titre="Mise à jour automatisée" ;
-			$nouveauItem->expli="Pour gérer le module de mise à jour de GEPI" ;
-			$menuPage[]=$nouveauItem;
-		}
-		unset($nouveauItem);
-	}
-	
 // Trombinoscope
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_trombinoscopes/trombinoscopes_admin.php';	
@@ -492,7 +471,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_ects') ;	
-		$nouveauItem->titre="Saisie ECTS" ;
+		$nouveauItem->titre="Crédits ECTS" ;
 		$nouveauItem->expli="Pour gérer les crédits ECTS attribués pour chaque enseignement." ;
 		$menuPage[]=$nouveauItem;
 	}

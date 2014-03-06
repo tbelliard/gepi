@@ -313,15 +313,25 @@ if (isset($style_screen_ajout))  {
 //==================================
 
 $msg_page_login="";
-$test = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'message_login'");
-if(mysqli_num_rows($test)>0) {
-	$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
-	//echo "$sql <br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	if(mysqli_num_rows($res)>0) {
-		$lig_page_login=mysqli_fetch_object($res);
-		$msg_page_login=$lig_page_login->texte;
+// 20140301
+$auth_sso_secours=isset($_GET['auth_sso_secours']) ? $_GET['auth_sso_secours'] : "n";
+if((isset($auth_sso_secours))&&
+	($auth_sso_secours=="y")&&
+	(getSettingAOui('autoriser_sso_password_auth'))) {
+		$msg_page_login=getSettingValue('auth_sso_secours_msg');
+}
+else {
+	$test = mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE 'message_login'");
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT ml.texte FROM message_login ml, setting s WHERE s.value=ml.id AND s.name='message_login';";
+		//echo "$sql <br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		if(mysqli_num_rows($res)>0) {
+			$lig_page_login=mysqli_fetch_object($res);
+			$msg_page_login=$lig_page_login->texte;
+		}
 	}
 }
 

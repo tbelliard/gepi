@@ -186,7 +186,7 @@ if(isset($_POST['modifier_cours'])) {
 						//echo "$sql<br />";
 						$req_modif = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$req_modif) {
-							echo "Erreur: ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+							echo "Erreur: ".mysqli_error($GLOBALS["mysqli"]);
 							die();
 						}
 						else {
@@ -220,7 +220,7 @@ if(isset($_POST['modifier_cours'])) {
 						//echo "$sql<br />";
 						$nouveau_cours = mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$nouveau_cours) {
-							echo "Erreur: ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+							echo "Erreur: ".mysqli_error($GLOBALS["mysqli"]);
 							die();
 						}
 						else {
@@ -443,7 +443,7 @@ echo "<br />
 
 $sql="SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1";
 //echo "$sql<br />";
-$req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$req_jours = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 $jour_sem_tab = array();
 while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	$jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];

@@ -375,21 +375,41 @@ if(mysqli_num_rows($res_grp)>1) {
 	echo " | ";
 
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
-	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp' onchange=\"confirm_changement_grp(change, '$themessage');\">\n";
+
+	$chaine_html_select="<select name='id_groupe' id='id_groupe_a_passage_autre_grp' onchange=\"confirm_changement_grp(change, '$themessage');\">\n";
 	$cpt_grp=0;
 	$chaine_js=array();
 	//echo "<option value=''>---</option>\n";
 	$indice_grp_courant=0;
+	$grp_indice=array();
 	while($lig_grp=mysqli_fetch_object($res_grp)) {
 
-		$tmp_grp=get_group($lig_grp->id_groupe);
+		$tmp_grp=get_group($lig_grp->id_groupe, array('classes', 'profs'));
 
-		echo "<option value='$lig_grp->id_groupe'";
-		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
-		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+		$chaine_html_select.="<option value='$lig_grp->id_groupe'";
+		if($lig_grp->id_groupe==$id_groupe) {
+			$chaine_html_select.=" selected";
+			$indice_grp_courant=$cpt_grp;
+		}
+		$chaine_html_select.=" title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+		$chaine_html_select.=">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+
+		$grp_indice[$cpt_grp]=$lig_grp->id_groupe;
+
 		$cpt_grp++;
 	}
-	echo "</select>\n";
+	$chaine_html_select.="</select>\n";
+
+	if(($cpt_grp>1)&&(isset($grp_indice[$indice_grp_courant-1]))) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=".$grp_indice[$indice_grp_courant-1]."&amp;id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' class='icone16' alt='Précédent' title=\"Afficher le groupe précédent dans la même classe.\" /></a>";
+	}
+
+	echo $chaine_html_select;
+
+	if(isset($grp_indice[$indice_grp_courant+1])) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=".$grp_indice[$indice_grp_courant+1]."&amp;id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/forward.png' class='icone16' alt='Suivant' title=\"Afficher le groupe suivant dans la même classe.\" /></a>";
+	}
+
 	echo " <input type='submit' id='button_submit_passage_autre_groupe' value='Go'>\n";
 
 	echo "<script type='text/javascript'>
@@ -445,20 +465,36 @@ if(mysqli_num_rows($res_grp)>1) {
 	echo " | ";
 
 	$indice_grp_courant=0;
-	echo "<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
+	$chaine_html_select="<select name='id_groupe' id='id_groupe_a_passage_autre_grp2' onchange=\"confirm_changement_grp2(change, '$themessage');\">\n";
 	$cpt_grp=0;
 	$chaine_js=array();
+	$grp_indice=array();
 	//echo "<option value=''>---</option>\n";
 	while($lig_grp=mysqli_fetch_object($res_grp)) {
+		$tmp_grp=get_group($lig_grp->id_groupe, array('classes', 'profs'));
+		$chaine_html_select.="<option value='$lig_grp->id_groupe'";
+		if($lig_grp->id_groupe==$id_groupe) {
+			$chaine_html_select.=" selected";
+			$indice_grp_courant=$cpt_grp;
+		}
+		$chaine_html_select.=" title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+		$chaine_html_select.=">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 
-		$tmp_grp=get_group($lig_grp->id_groupe);
+		$grp_indice[$cpt_grp]=$lig_grp->id_groupe;
 
-		echo "<option value='$lig_grp->id_groupe'";
-		if($lig_grp->id_groupe==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
-		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
 	}
-	echo "</select>\n";
+	$chaine_html_select.="</select>\n";
+
+	if(($cpt_grp>1)&&(isset($grp_indice[$indice_grp_courant-1]))) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=".$grp_indice[$indice_grp_courant-1]."&amp;id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' class='icone16' alt='Précédent' title=\"Afficher le groupe précédent dans la même matière.\" /></a>";
+	}
+
+	echo $chaine_html_select;
+
+	if(isset($grp_indice[$indice_grp_courant+1])) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=".$grp_indice[$indice_grp_courant+1]."&amp;id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/forward.png' class='icone16' alt='Suivant' title=\"Afficher le groupe suivant dans la même matière.\" /></a>";
+	}
 
 	echo " <input type='submit' id='button_submit_passage_autre_groupe2' value='Go'>\n";
 
@@ -507,10 +543,11 @@ if(count($tab_autres_sig)>0) {
 	echo "<option value=''>---</option>\n";
 	for($loop=0;$loop<count($tab_autres_sig);$loop++) {
 
-		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes'));
+		$tmp_grp=get_group($tab_autres_sig[$loop], array('classes', 'profs'));
 
 		echo "<option value='".$tab_autres_sig[$loop]."'";
 		if($tab_autres_sig[$loop]==$id_groupe) {echo " selected";$indice_grp_courant=$cpt_grp;}
+		echo " title=\"Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 		$cpt_grp++;
 	}
@@ -614,8 +651,14 @@ echo "<div style='clear:both;'></div>\n";
 			$id_groupe_js[$cpt_ele_grp]=$lig_grp_avec_eleves->id_groupe;
 
 			echo "<option value='$cpt_ele_grp'";
-			if($temoin_classe_entiere=="y") {echo " style='color:grey;' title='Classe(s) entière(s)'";}
-			else {echo " title='Sous-groupe'";}
+			if($temoin_classe_entiere=="y") {
+				echo " style='color:grey;' title=\"Classe(s) entière(s).
+Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+			}
+			else {
+				echo " title=\"Sous-groupe.
+Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+			}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
 			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
 			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
@@ -967,9 +1010,11 @@ if(count($total_eleves)>0) {
 							}
 						}
 
-						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
+						/*$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
 						$test_cn=mysqli_query($GLOBALS["mysqli"], $sql);
 						$nb_notes_cn=mysqli_num_rows($test_cn);
+						*/
+						$nb_notes_cn=nb_notes_ele_dans_tel_enseignement($e_login, $current_group['id'], $period["num_periode"]);
 						if($nb_notes_cn>0) {
 							echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
 							//echo "$sql<br />";

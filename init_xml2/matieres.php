@@ -351,10 +351,10 @@
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO temp_matieres_import SET ";
 							$sql.="code='".$matiere[$i]["code"]."', ";
-							$sql.="code_gestion='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["code_gestion"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_court"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_edition"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+							$sql.="code_gestion='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["code_gestion"])."', ";
+							$sql.="libelle_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_court"])."', ";
+							$sql.="libelle_long='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_long"])."', ";
+							$sql.="libelle_edition='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]["libelle_edition"])."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(!$res_insert){
@@ -388,11 +388,11 @@
 							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 							$resverif = mysqli_num_rows($verif);
 							if($resverif==0) {
-								$sql="insert into matieres set matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['code_gestion']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['libelle_court']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='0',matiere_aid='n',matiere_atelier='n';";
+								$sql="insert into matieres set matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['code_gestion'])."', nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['libelle_court'])."', priority='0',matiere_aid='n',matiere_atelier='n';";
 								$req=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no++;
-									echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+									echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 								}
 								else {
 									$alt=$alt*(-1);
@@ -485,14 +485,14 @@
 							if(mysqli_num_rows($test)>0) {
 								$sql="UPDATE mef SET ";
 								if(isset($mefs[$i]["libelle_court"])) {
-									$sql.=" libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_court"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";
+									$sql.=" libelle_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_court"])."',";
 								}
 								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								else {
 									$sql.=" libelle_court='',";
 								}
-								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";}
-								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_edition"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";}
+								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_long"])."',";}
+								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_edition"])."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."' WHERE mef_code='".$mefs[$i]["code"]."';";
 								//echo "$sql<br />";
 								$update_mef=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -501,14 +501,14 @@
 								$sql="INSERT INTO mef SET ";
 								//if(isset($mefs[$i]["libelle_court"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";} elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								if(isset($mefs[$i]["libelle_court"])) {
-									$sql.=" libelle_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_court"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";
+									$sql.=" libelle_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_court"])."',";
 								}
 								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
 								else {
 									$sql.=" libelle_court='',";
 								}
-								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_long"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";}
-								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_edition"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',";}
+								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_long"])."',";}
+								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".mysqli_real_escape_string($GLOBALS["mysqli"], $mefs[$i]["libelle_edition"])."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."';";
 								//echo "$sql<br />";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);

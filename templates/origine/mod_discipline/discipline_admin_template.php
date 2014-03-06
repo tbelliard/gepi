@@ -107,6 +107,8 @@ $mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
 if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 ?>
 	  <legend class="invisible">Activation</legend>
 	  <input type="radio"
@@ -143,6 +145,14 @@ if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 			 name="mod_disc_terme_sanction"
 			 id='mod_disc_terme_sanction'
 			 value="<?php echo $mod_disc_terme_sanction; ?>" />
+	  <br />
+
+	  Terme à utiliser à la place du terme '<strong>avertissement de fin de période</strong>' dans le module Discipline&nbsp;: 
+	  <input type="text"
+			 name="mod_disc_terme_avertissement_fin_periode"
+			 id='mod_disc_terme_avertissement_fin_periode'
+			 size='30'
+			 value="<?php echo $mod_disc_terme_avertissement_fin_periode; ?>" />
 	  <br />
 
 	</fieldset>

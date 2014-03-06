@@ -5,6 +5,27 @@
 
 Gepi-master (Version de développement)
 ===========================
+EDT: 
+- Facilités de navigation Classe/Prof/Salle en cliquant dans le créneau affiché.
+
+Absences2:
+- Tableau des appels: Possibilité d'afficher l'EDT de la classe en infobulle.
+
+Gestion:
+- Gestion des classes/enseignements: Ajout de liens d'affichage de l'EDT prof en infobulle.
+- Consultation élève: Ajout de l'affichage de MEF.
+- Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
+- Possibilité de conserver des mots de passe dans la base Gepi en mode SSO pour mettre en place un accès de secours quand l'authentification SSO fait des siennes.
+
+Discipline:
+- Possibilité de définir des avertissements de fin de période,
+  de les saisir depuis les pages de saisie de l'avis du conseil de classe,
+  et de les imprimer au format OOo.
+
+Divers:
+- Statistiques de connexion:
+   . Possibilité de cumuler les connexions élèves et parents.
+   . Export CSV des dates/effectifs de connexion.
 
 Gepi-1.6.4 (01/02/2014)
 ===========================
@@ -99,7 +120,7 @@ Divers:
 - Ajout d'une page pour que les parents puissent contrôler les informations élève/resp.
 - Possibilité d'afficher le mot de passe lors de la saisie (pour ceux qui s'empêtrent dans les majuscules/minuscules, clavier avec ou sans pavé numérique).
 - Possibilité de donner l'accès aux grilles PDF et listes CSV aux statuts autres.
-- Affichage des trombinoscopes des AID
+- Affichage des trombinoscopes des AID.
 
 Gepi-1.6.3 (17/06/2013)
 ===========================

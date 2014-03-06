@@ -250,14 +250,14 @@ function VerifierTablesDelestage()
                 id_groupe INT(11),
                 periode INT(11)
                 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 	// ======= table pour optimiser les requêtes sql
     $sql = "CREATE TABLE IF NOT EXISTS j_eleves_groupes_delestage2 (
                 login VARCHAR(50),
                 id_groupe INT(11),
                 periode INT(11)
                 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci";
-    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_creation = mysqli_query($GLOBALS["mysqli"], $sql) or die(mysqli_error($GLOBALS["mysqli"]));
 }	
 
 // ======================================================
@@ -464,7 +464,7 @@ function ConstruireEnteteEDT()
 {
     $table_data = array();
 
-    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $req_jours = mysqli_query($GLOBALS["mysqli"], "SELECT jour_horaire_etablissement FROM horaires_etablissement WHERE ouvert_horaire_etablissement = 1") or die(mysqli_error($GLOBALS["mysqli"]));
     $jour_sem_tab = array();
     while($data_sem_tab = mysqli_fetch_array($req_jours)) {
 	    $jour_sem_tab[] = $data_sem_tab["jour_horaire_etablissement"];
@@ -481,7 +481,7 @@ function ConstruireCreneauxEDT()
 {
     $table_data = array();
     $req_id_creneaux = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM edt_creneaux
-							    WHERE type_creneaux != 'pause'") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+							    WHERE type_creneaux != 'pause'") or die(mysqli_error($GLOBALS["mysqli"]));
     $nbre_lignes = mysqli_num_rows($req_id_creneaux);
     if ($nbre_lignes == 0) {
         $nbre_lignes = 1;
@@ -591,7 +591,7 @@ function RemplirBox($elapse_time, &$tab_data_jour, &$index_box, $type, $id_crene
     if (($type == "vide") AND ($couleur == "cadre")) {
         $sql_request = "SELECT type_creneaux FROM edt_creneaux
 							        WHERE id_definie_periode  = '".$id_creneaux."'";
-        $req_type_creneaux = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $req_type_creneaux = mysqli_query($GLOBALS["mysqli"], $sql_request) or die(mysqli_error($GLOBALS["mysqli"]));
         if ($req_type_creneaux) {
             if ($rep_type_creneau = mysqli_fetch_array($req_type_creneaux)) {
                 if ($rep_type_creneau['type_creneaux'] == "repas") {
@@ -735,18 +735,28 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	}
     else if ($enseignement != "") 
     {
+		$acces_edt_classe=acces_edt_classe();
+
 		//$info_alt.="\nEnseignement $enseignement\n";
 		// on récupère le nom court des groupes en question
 		$req_id_classe = mysqli_query($GLOBALS["mysqli"], "SELECT id_classe FROM j_groupes_classes WHERE id_groupe ='".$enseignement."'");
-        $res="";
-        while ($rep_id_classe = mysqli_fetch_array($req_id_classe)) {
-    		$req_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
-            $rep_classe = mysqli_fetch_array($req_classe);
-		    $res = $res." ".$rep_classe['classe'];
-        }
-        $rep_classe['classe'] = $res;
+		$res="";
+		$rep_classe_pour_id_div_et_title = "";
+		while ($rep_id_classe = mysqli_fetch_array($req_id_classe)) {
+			$req_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id ='".$rep_id_classe['id_classe']."'");
+			$rep_classe = mysqli_fetch_array($req_classe);
 
-		$info_alt.=" en $res";
+			if($acces_edt_classe) {
+				$res = $res." <a href='../edt_organisation/index_edt.php?login_edt=".$rep_id_classe['id_classe']."&amp;type_edt_2=classe&amp;visioedt=classe1' title=\"Consulter l'emploi du temps de la classe de ".$rep_classe['classe']."\" style='color:black;'>".$rep_classe['classe']."</a>";
+			}
+			else {
+				$res = $res." ".$rep_classe['classe'];
+			}
+			$rep_classe_pour_id_div_et_title .= " ".$rep_classe['classe'];
+		}
+		$rep_classe['classe'] = $res;
+
+		$info_alt.=" en $rep_classe_pour_id_div_et_title";
 
 		// On récupère la période active en passant d'abord par le calendrier
 		$query_cal = mysqli_query($GLOBALS["mysqli"], "SELECT numero_periode FROM edt_calendrier WHERE
@@ -786,11 +796,12 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$info_alt.=" ($aff_nbre_eleve élèves)";
 
 			//$classe_js = aff_popup($rep_classe['classe'], "edt", $titre_listeleve, $contenu);
-			$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
+			//$id_div_p = $jour_semaine.$rep_classe['classe'].$id_creneaux.rand();
+			$id_div_p = $jour_semaine.$rep_classe_pour_id_div_et_title.$id_creneaux.rand();
 			$id_div = strtr($id_div_p, " -|/'&;", "wwwwwww");
 			//$classe_js = "<a href=\"#\" onclick=\"afficher_div('".$id_div."','Y',10,10);return false;\">".$rep_classe['classe']."</a>
 			//	".creer_div_infobulle($id_div, $titre_listeleve, "#330033", $contenu, "#FFFFFF", 20,0,"y","y","n","n");
-            $classe_js = $rep_classe['classe'];
+			$classe_js = $rep_classe['classe'];
 		}
 		// On récupère le nom et la civilite du prof en question
         if ($id_semaine == "") {
@@ -927,6 +938,21 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		$ChaineComplete.="<span title=\"$info_alt\">";
 	}
 
+
+	if(($login_prof_contenu_creneaux_courant!="")&&(acces_edt_prof())) {
+		$ChaineNomProf="<a href='../edt_organisation/index_edt.php?login_edt=".$login_prof_contenu_creneaux_courant."&amp;type_edt_2=prof' title=\"Consulter l'emploi du temps de ".$rep_nom_prof['nom']."\" style='color:black;'>".$rep_nom_prof['nom']."</a>";
+	}
+	else {
+		$ChaineNomProf=$rep_nom_prof['nom'];
+	}
+
+	if((acces_edt_prof())&&(acces_edt_classe())) {
+		$ChaineSalle="<a href='../edt_organisation/index_edt.php?visioedt=salle1&amp;login_edt=".$rep_id_salle['id_salle']."&amp;type_edt_2=salle' title=\"Consulter l'emploi du temps de la salle ".$rep_salle."\" style='color:black;'>".$rep_salle."</a>";
+	}
+	else {
+		$ChaineSalle=$rep_salle;
+	}
+
 	if ($type_edt == "prof"){
 		if ($id_aid == "") 
 		{
@@ -937,7 +963,9 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$ChaineComplete.=$aff_matiere."<br />\n";
 		} 
 
-		$ChaineComplete.=$aff_sem." <i>".$rep_salle."</i>";
+		$ChaineComplete.=$aff_sem." <i>";
+		$ChaineComplete.=$ChaineSalle;
+		$ChaineComplete.="</i>";
 
 		if ($aff_nbre_eleve != 0)
 		{
@@ -946,17 +974,19 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 		//echo "$ChaineComplete<br />";
 	} elseif (($type_edt == "classe") OR ($type_edt == "eleve")) {
 
-		$ChaineComplete.=$aff_matiere."<br />".$rep_nom_prof['nom']."<br /><i>".$rep_salle."</i> ".$aff_sem."";
+		$ChaineComplete.=$aff_matiere."<br />".$ChaineNomProf."<br /><i>";
+		$ChaineComplete.=$ChaineSalle;
+		$ChaineComplete.="</i> ".$aff_sem."";
 
 	} elseif ($type_edt == "salle"){
 
 		if ($id_aid == "") 
 		{
-			$ChaineComplete.=$aff_matiere."<br/>".$rep_nom_prof['nom']." ".$classe_js."<br />\n";
+			$ChaineComplete.=$aff_matiere."<br/>".$ChaineNomProf." ".$classe_js."<br />\n";
 		}
 		else
 		{
-			$ChaineComplete.=$aff_matiere."<br/>".$rep_nom_prof['nom']."<br/>\n";
+			$ChaineComplete.=$aff_matiere."<br/>".$ChaineNomProf."<br/>\n";
 		} 
 
 		$ChaineComplete.= $aff_sem;
@@ -1268,7 +1298,7 @@ function renvoie_liste_a($type, $alpha){
 // Fonction qui renvoie la liste des élèves d'une classe
 
 function renvoie_liste_classe($id_classe_post){
-	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'.');
+	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysqli_error($GLOBALS["mysqli"]).'.');
 	$nb_eleves = mysqli_num_rows($req_liste_login);
 
 	$rep_liste_eleves = array();
@@ -1397,7 +1427,7 @@ function renvoieAid($statut, $nom){
 	}
 	// On envoie la requête
 	if ($sql) {
-		$requete = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$requete = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
 		$nbre = mysqli_num_rows($requete);
 		// Et on retourne le tableau
 			$resultat = array();

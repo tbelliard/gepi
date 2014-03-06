@@ -201,7 +201,7 @@ if(!$tempdir) {
 					$temp=fgets($fp,4096);
 					$en_tete=explode(";",$temp);
 
-					$sql="INSERT INTO tempo2 SET col1='en_tete', col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $temp) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$sql="INSERT INTO tempo2 SET col1='en_tete', col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $temp)."';";
 					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					// On range dans tabindice les indices des champs retenus
@@ -331,7 +331,7 @@ if(!$tempdir) {
 									}
 								}
 
-								$sql="INSERT INTO tempo2 SET col1='$i', col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $ligne[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+								$sql="INSERT INTO tempo2 SET col1='$i', col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $ligne[$i])."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 								echo "

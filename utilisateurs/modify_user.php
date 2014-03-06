@@ -261,14 +261,22 @@ check_token();
 			if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 				// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
 				$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
-				mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
+				// 20140301
+				if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+					mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
+				}
 				$msg = "Passage à un mode d'authentification externe : ";
 				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 				if ($gepiSettings['ldap_write_access'] == "yes") {
 					$create_ldap_user = true;
 					$msg .= "le mot de passe de l'utilisateur est inchangé.<br/>";
 				} else {
-					$msg .= "le mot de passe de l'utilisateur a été effacé.<br/>";
+					if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+						$msg .= "le mot de passe de l'utilisateur a été effacé.<br/>";
+					}
+					else {
+						$msg .= "le mot de passe de l'utilisateur a été conservé.<br/>";
+					}
 				}
 			} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
 				// On passe d'un mode externe à un mode Gepi. On prévient l'admin qu'il faut modifier le mot de passe.

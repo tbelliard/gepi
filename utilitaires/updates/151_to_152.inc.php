@@ -13,7 +13,7 @@
  * @see msj_present()
  */
 
-		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.2" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.2" . " :</h3>";
 
 		$req_test=mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = 'sso_display_portail'");
 		$res_test=mysqli_num_rows($req_test);
@@ -973,11 +973,11 @@ description_item VARCHAR( 255 ) NOT NULL
 			    $result .= msj_present("Suppression effectuée");
 			} else {
 			    $result .= msj_erreur();
-			    $result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			    $result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . mysqli_error($GLOBALS["mysqli"]) . "< br/>";
 			}
 		} else {
 			$result .= msj_erreur();
-			$result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "< br/>";
+			$result .= "Error: (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . ") " . mysqli_error($GLOBALS["mysqli"]) . "< br/>";
 		}
 
 

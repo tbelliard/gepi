@@ -8,7 +8,7 @@
  */
 
 // Pour enlever les E_DEPRECATED de la liste des erreurs affichées:
-error_reporting(error_reporting() & (-1 ^ E_DEPRECATED)); 
+if (version_compare(PHP_VERSION, '5.3.0', '>=')) error_reporting(error_reporting() & (-1 ^ E_DEPRECATED)); 
 
 global $mysqli;
 
@@ -75,22 +75,6 @@ $GLOBALS['multisite'] = $multisite;
  * @name $gepiVersion
  */
 $GLOBALS['gepiVersion'] = NULL;
-
-/**
- * Version de GEPI release candidate
- * 
- * @global mixed $GLOBALS['gepiRcVersion']
- * @name $gepiRcVersion
- */
-$GLOBALS['gepiRcVersion'] = NULL;
-
-/**
- * Version de GEPI Beta
- * 
- * @global mixed $GLOBALS['gepiBetaVersion']
- * @name $gepiBetaVersion
- */
-$GLOBALS['gepiBetaVersion'] = NULL;
 
 /**
  * Les informations du groupes obtenues à partir de get_group()

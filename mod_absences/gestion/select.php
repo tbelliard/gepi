@@ -63,7 +63,7 @@ if ($type == "") {exit(); }
 
 // On ajoute un paramètre sur les élèves de ce CPE en particulier
 $sql_eleves_cpe = "SELECT e_login FROM j_eleves_cpe WHERE cpe_login = '".$_SESSION['login']."'";
-$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query_eleves_cpe = mysqli_query($GLOBALS["mysqli"], $sql_eleves_cpe) OR die('Erreur SQL ! <br />' . $sql_eleves_cpe . ' <br /> ' . mysqli_error($GLOBALS["mysqli"]));
 $test_cpe = array();
 
 $test_nbre_eleves_cpe = mysqli_num_rows($query_eleves_cpe);
@@ -127,7 +127,7 @@ if ($_SESSION["statut"] == 'autre') {
             <select name="classe_choix" onchange="javascript:document.form1.submit();"> <?php /* correction pour ie didier  */ ?>
             	<option value="tous" selected="selected" onclick="javascript:document.form1.submit()">Toutes les classes</option>
 			<?php
-			$resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			while($data_liste_classe = mysqli_fetch_array($resultat_liste_classe))
 			{
             	if ($classe_choix==$data_liste_classe['id']) {
@@ -159,7 +159,7 @@ if ($_SESSION["statut"] == 'autre') {
 			?>
             <select name="eleve_absent[]" size="10" <?php if ($type == "D" or $type == "I") {} else {?>multiple="multiple"<?php } ?> style="width: 350px;">
             <?php
-			$resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
             while($data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve))
 			{
 				//if (in_array($data_liste_eleve['login'], $test_cpe) OR $test_nbre_eleves_cpe === 0) {

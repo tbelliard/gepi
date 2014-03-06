@@ -83,7 +83,7 @@ die();
 if ( $etiquette_action === 'test' ) {
 //importation des informations de présentation de la lettre type
            $requete_structure ="SELECT * FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$etiquette_format."'";
-           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysqli_error($GLOBALS["mysqli"]));
            while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 		$xcote = $donne_structure['xcote_etiquette_format'];
@@ -110,7 +110,7 @@ $etiquette_agencement = '3';
 	if($classe === 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
 	if($classe != 'tous') { $requete_persone ="SELECT * FROM ".$prefix_base."classes c, ".$prefix_base."j_eleves_classes ec, ".$prefix_base."eleves e WHERE c.id = '".$classe."' AND ec.id_classe = c.id AND ec.login = e.login GROUP BY e.login ".$trie.""; }
         
-        $execution_persone = mysqli_query($GLOBALS["mysqli"], $requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $execution_persone = mysqli_query($GLOBALS["mysqli"], $requete_persone) or die('Erreur SQL !'.$requete_persone.'<br />'.mysqli_error($GLOBALS["mysqli"]));
         while ( $donne_persone = mysqli_fetch_array($execution_persone))
 	 {
 
@@ -166,7 +166,7 @@ $etiquette_agencement = '3';
 
 
            $requete_structure ="SELECT * FROM ".$prefix_base."etiquettes_formats WHERE id_etiquette_format = '".$etiquette_format."'";
-           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+           $execution_structure = mysqli_query($GLOBALS["mysqli"], $requete_structure) or die('Erreur SQL !'.$requete_structure.'<br />'.mysqli_error($GLOBALS["mysqli"]));
            while ( $donne_structure = mysqli_fetch_array($execution_structure))
 	    {
 		$xcote = $donne_structure['xcote_etiquette_format'];

@@ -520,7 +520,7 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 				$tab_clas=array();
 				for($i=0;$i<count($clas_ou_grp);$i++) {
 					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($clas_ou_grp[$i])."', col2='".$type[$i]."';";
-					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $clas_ou_grp[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='".$type[$i]."';";
+					$sql="INSERT INTO tempo5 SET texte='".mysqli_real_escape_string($GLOBALS["mysqli"], $clas_ou_grp[$i])."', info='".$type[$i]."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($type[$i]=='groupe') {$tab_grp[]=$clas_ou_grp[$i];}
 					else {
@@ -538,7 +538,7 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 				$tab_sem=isset($_POST['tab_sem']) ? $_POST['tab_sem'] : array();
 				for($i=0;$i<count($tab_sem);$i++) {
-					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_sem[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='type_edt_semaine';";
+					$sql="INSERT INTO tempo5 SET texte='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_sem[$i])."', info='type_edt_semaine';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
@@ -740,7 +740,7 @@ Voir <a href='http://www.sylogix.org/projects/gepi/wiki/Edt_indexedu_udt'>http:/
 
 					for($j=0;$j<count($tab_clas);$j++) {
 						//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($grp[$i])."', col2='".mysql_real_escape_string($tab_clas[$j])."';";
-						$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $grp[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', info='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_clas[$j]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$sql="INSERT INTO tempo5 SET texte='".mysqli_real_escape_string($GLOBALS["mysqli"], $grp[$i])."', info='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_clas[$j])."';";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						$tab_clas_grp[$grp[$i]][]=$tab_clas[$j];
 					}

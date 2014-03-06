@@ -272,8 +272,8 @@ if (!isset($is_posted)) {
 							if ($result_test == 0) {
 								// On tente ensuite une reconnaissance sur nom/prénom, si le test NUMIND a échoué
 								$sql="select login from utilisateurs where (
-								nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-								prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+								nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0])."' and
+								prenom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."' and
 								statut='professeur')";
 								// Pour debug:
 								//echo "$sql<br />";
@@ -283,8 +283,8 @@ if (!isset($is_posted)) {
 									if ($prenom_compose != '') {
 										$test_exist2 = mysqli_query($GLOBALS["mysqli"], "select login from utilisateurs
 										where (
-										nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
-										prenom = '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_compose) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' and
+										nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0])."' and
+										prenom = '".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_compose)."' and
 										statut='professeur'
 										)");
 										$result_test2 = mysqli_num_rows($test_exist2);
@@ -388,7 +388,7 @@ if (!isset($is_posted)) {
 	
 								// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
+								$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $affiche[0])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='y', numind='$affiche[3]'";
 								$res = mysqli_query($GLOBALS["mysqli"], $sql);
 								// Pour debug:
 								//echo "<tr><td colspan='4'>$sql</td></tr>";

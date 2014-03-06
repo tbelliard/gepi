@@ -84,7 +84,20 @@ if(isset($_POST['action'])) {
 	}
 	elseif(($_POST['action']=="auth_mode")&&(isset($_POST['auth_mode']))&&(in_array($_POST['auth_mode'], $tab_auth_mode))) {
 		for($loop=0;$loop<count($u_login);$loop++) {
-			$sql="UPDATE utilisateurs SET auth_mode='".$_POST['auth_mode']."' WHERE login='".$u_login[$loop]."';";
+			$chaine_vidage_mdp="";
+			if((($_POST['auth_mode']=="ldap")||($_POST['auth_mode']=="sso"))&&
+			(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi'))) {
+				$sql="SELECT auth_mode FROM utilisateurs WHERE login='".$u_login[$loop]."';";
+				$res_old_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_old_auth_mode)>0) {
+					$lig_old_auth_mode=mysqli_fetch_object($res_old_auth_mode);
+					if($lig_old_auth_mode->auth_mode=="gepi") {
+						$chaine_vidage_mdp=", password='', salt='', change_mdp='n' ";
+					}
+				}
+			}
+			$sql="UPDATE utilisateurs SET auth_mode='".$_POST['auth_mode']."' $chaine_vidage_mdp WHERE login='".$u_login[$loop]."';";
+			//echo "$sql<br />";
 			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($update) {
 				$cpt_reg++;

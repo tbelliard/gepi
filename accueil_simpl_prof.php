@@ -190,6 +190,11 @@ echo "</div>\n";
 // Liste des Accès ouverts en consultation à vos CDT
 affiche_acces_cdt();
 
+if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite'))) {
+	//echo "<div align='center'>".afficher_les_evenements()."</div>";
+	$liste_evenements=afficher_les_evenements();
+}
+
 echo "<center>\n";
 
 //Affichage des messages

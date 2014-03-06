@@ -47,7 +47,7 @@ if ($_GET['error'] == '2') {
 # Auth externe réussie, mais inconsistence dans le mode d'authentification
 } elseif ($_GET['error'] == '5') {
 	$message = 'Vous avez bien été identifié mais votre compte utilisateur est paramétré pour utiliser un autre mode d\'authentification. Si vous pensez qu\'il s\'agit d\'une erreur, veuillez signaler ce problème à l\'administrateur du site.';
-    if ($_GET['mode'] == "sso" && ($session_gepi->auth_locale || $block_sso)) {
+    if (isset($_GET['mode']) && $_GET['mode'] == "sso" && ($session_gepi->auth_locale || $block_sso)) {
 		$message .= "<br /><br />Si vous possédez un compte local d'accès à GEPI, vous pouvez néanmoins <b><a href='./login.php'>accéder à la page de connexion de GEPI</a></b>.";
     }
 # Auth externe réussie, mais compte inexistant en local et import impossible

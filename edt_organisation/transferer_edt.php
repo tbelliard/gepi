@@ -124,7 +124,7 @@ if (isset($coller) AND isset($login) AND isset($_SESSION["couper_edt"])) {
             if (mysqli_num_rows($req_compare_groupes) == 0) {
                 $req_edt_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE 
                                                             login_prof = '".$login."'
-                                                            ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
+                                                            ") or die(mysqli_error($GLOBALS["mysqli"]));  
                 if (mysqli_num_rows($req_edt_prof) == 0) {
                         $remplacement = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_cours SET login_prof = '".$login."' WHERE login_prof = '".$_SESSION["couper_edt"]."' ");
                         $message = "<div class=\"cadreInformation\">transfert réalisé. Les cours ont été déplacés avec succès</div>";

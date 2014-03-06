@@ -90,13 +90,12 @@ function statutAutreSetting(){
 <!-- On affiche le menu edt -->
 
 	<div id="agauche">
-
 <?php
 
 if (getSettingValue("use_only_cdt") != 'y' OR $_SESSION["statut"] != 'professeur') 
 { ?>
         <div class="dates_header"></div>
-        <div class="dates">
+        <div class="dates" title="Semaine courante">
   		<p>
 		<?php echo (WEEK_NUMBER.date("W")); ?>
 		</p>
@@ -112,6 +111,7 @@ if (getSettingValue("use_only_cdt") != 'y' OR $_SESSION["statut"] != 'professeur
 		<p>
 		<?php 
 			$semActu = typeSemaineActu();
+			//echo "\$semActu=$semActu<br />";
 			if ($semActu != NULL) {
 				echo "Semaine ".typeSemaineActu();
 			}

@@ -42,7 +42,7 @@ $resultat_session = $session_gepi->security_check();
 //$debug="yes";
 
 // Désactiver le mode deflate afin que les ob_flush() et flush() fonctionnent
-apache_setenv("no-gzip","1");
+if (function_exists('apache_setenv')) apache_setenv("no-gzip","1");
 //apache_setenv("dont-vary","1");
 
 if (!isset($action) or ($action != "restaure")) {
@@ -282,8 +282,8 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $tables[$numtab]=$t[0];
         $numtab++;
     }
-    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
+    if (mysqli_error($GLOBALS["mysqli"])) {
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysqli_error($GLOBALS["mysqli"])."<hr/>\n";
        return false;
        die();
     }
@@ -445,8 +445,8 @@ function restoreMySqlDump($duree) {
 			echo "$cpt_insert enregistrement(s) restauré(s).";
 		}
 
-		if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-			echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)." <br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+		if (mysqli_error($GLOBALS["mysqli"])) {
+			echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)." <br />".mysqli_error($GLOBALS["mysqli"])."<hr />\n";
 			$erreur_mysql=TRUE;
 		}
 		gzclose($fileHandle);
@@ -572,8 +572,8 @@ function restoreMySqlDump($duree) {
 						//echo "</div>\n";
 					}
 	
-					if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-						echo "<hr />\nERREUR à partir de <br />".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+					if (mysqli_error($GLOBALS["mysqli"])) {
+						echo "<hr />\nERREUR à partir de <br />".nl2br($formattedQuery)."<br />".mysqli_error($GLOBALS["mysqli"])."<hr />\n";
 						$erreur_mysql=TRUE;
 					}
 	
@@ -783,8 +783,8 @@ function restoreMySqlDump_old($dumpFile,$duree) {
         }
     }
 
-    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-        echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)."<br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr />\n";
+    if (mysqli_error($GLOBALS["mysqli"])) {
+        echo "<hr />\nERREUR à partir de ".nl2br($formattedQuery)."<br />".mysqli_error($GLOBALS["mysqli"])."<hr />\n";
 		$erreur_mysql=TRUE;
     }
 

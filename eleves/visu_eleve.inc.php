@@ -997,7 +997,7 @@ Patientez pendant l'extraction des données... merci.
 			$texte_infobulle="";
 			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
 
-			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'>EDT</a></div>
+			echo "<div style='float:right; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$tab_ele['prenom']." ".$tab_ele['nom']."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
 
 <style type='text/css'>
 	.lecorps {
@@ -1330,6 +1330,8 @@ Patientez pendant l'extraction des données... merci.
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
+
+			echo "<tr class='lig$alt'><th style='text-align: left;'>MEF&nbsp;:</th><td>".$tab_ele['mef']."</td></tr>\n";
 
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>";
@@ -1737,6 +1739,36 @@ Patientez pendant l'extraction des données... merci.
 			echo "'>";
 			echo "<h2>Enseignements suivis par l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
+			$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
+
+			$acces_eleve_options=acces("/classes/eleve_options.php", $_SESSION['statut']);
+			if($acces_eleve_options) {
+				for($j=0;$j<count($tab_ele['periodes']);$j++) {
+					$tab_classe_acces_eleve_options[$j]=true;
+
+					if($_SESSION['statut']=="scolarite") {
+						// Tester si le compte scolarité a accès à cette classe...
+						// Si ce n'est pas le cas -> intrusion...
+
+						$sql="SELECT 1=1 FROM j_scol_classes jsc WHERE jsc.id_classe='".$tab_ele['periodes'][$j]['id_classe']."' AND jsc.login='".$_SESSION['login']."';";
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if ($test == "0") {
+							$tab_classe_acces_eleve_options[$j]=false;
+						}
+					}
+				}
+			}
+
+			$acces_edit_eleves=acces("/groupes/edit_eleves.php", $_SESSION['statut']);
+			if($acces_edit_eleves) {
+				if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('CpeEditElevesGroupes'))) {
+					$acces_edit_eleves=false;
+				}
+				elseif(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('ScolEditElevesGroupes'))) {
+					$acces_edit_eleves=false;
+				}
+			}
+
 			if((!isset($tab_ele['periodes']))||(!isset($tab_ele['groupes']))) {
 				echo "<p>Aucune période ou aucun enseignement n'a été trouvé pour cet ".$gepiSettings['denomination_eleve'].".</p>\n";
 			}
@@ -1747,7 +1779,14 @@ Patientez pendant l'extraction des données... merci.
 				echo "<th>Professeur(s)</th>\n";
 				for($j=0;$j<count($tab_ele['periodes']);$j++) {
 					echo "<th>\n";
-					echo $tab_ele['periodes'][$j]['nom_periode'];
+
+					if(($acces_eleve_options)&&($tab_classe_acces_eleve_options[$j])) {
+						echo "<a href='../classes/eleve_options.php?login_eleve=".$ele_login."&amp;id_classe=".$tab_ele['periodes'][$j]['id_classe']."' title=\"Modifier la liste des enseignements suivis par cet élève.\">".$tab_ele['periodes'][$j]['nom_periode']."</a>";
+					}
+					else {
+						echo $tab_ele['periodes'][$j]['nom_periode'];
+					}
+
 					echo "</th>\n";
 				}
 				echo "</tr>\n";
@@ -1756,9 +1795,14 @@ Patientez pendant l'extraction des données... merci.
 				for($i=0;$i<count($tab_ele['groupes']);$i++) {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
-					echo "<th>".htmlspecialchars($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_ele['groupes'][$i]['description'])."</span></th>\n";
+					if($acces_edit_group) {
+						echo "<th><a href='../groupes/edit_group.php?id_groupe=".$tab_ele['groupes'][$i]['id_groupe']."&amp;mode=groupe' title=\"Modifier cet enseignement.\">".htmlspecialchars($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_ele['groupes'][$i]['description'])."</span></a></th>\n";
+					}
+					else {
+						echo "<th>".htmlspecialchars($tab_ele['groupes'][$i]['name'])."<br /><span style='font-size: x-small;'>".htmlspecialchars($tab_ele['groupes'][$i]['description'])."</span></th>\n";
+					}
 					echo "<td>\n";
-                                        $nbre_professeurs = isset($tab_ele['groupes'][$i]['prof']) ? count($tab_ele['groupes'][$i]['prof']) : 0;
+					$nbre_professeurs = isset($tab_ele['groupes'][$i]['prof']) ? count($tab_ele['groupes'][$i]['prof']) : 0;
 					for($j=0;$j<$nbre_professeurs;$j++) {
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
 							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
@@ -1783,7 +1827,13 @@ Patientez pendant l'extraction des données... merci.
 						if(in_array($tab_ele['periodes'][$j]['num_periode'],$tab_ele['groupes'][$i]['periodes'])) {
 							echo ">\n";
 							//echo "X";
-							echo $tab_ele['periodes'][$j]['classe'];
+
+							if($acces_edit_eleves) {
+								echo "<a href='../groupes/edit_eleves.php?id_groupe=".$tab_ele['groupes'][$i]['id_groupe']."' title=\"Modifier la liste des élèves inscrits dans cet enseignement.\">".$tab_ele['periodes'][$j]['classe']."</a>";
+							}
+							else {
+								echo $tab_ele['periodes'][$j]['classe'];
+							}
 						}
 						else {
 							echo " style='background-color: gray;";

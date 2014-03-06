@@ -81,6 +81,17 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 			$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_terme_sanction\" !<br />";
 		}
 	}
+
+	$mod_disc_terme_avertissement_fin_periode=isset($_POST['mod_disc_terme_avertissement_fin_periode']) ? $_POST['mod_disc_terme_avertissement_fin_periode'] : "sanction";
+	$mod_disc_terme_avertissement_fin_periode=preg_replace("/[^A-Za-z".$liste_caracteres_accentues."' -]/","",$mod_disc_terme_avertissement_fin_periode);
+	if($mod_disc_terme_avertissement_fin_periode=="") {
+		$msg.="Le terme choisi pour 'avertissement de fin de période' est invalide.<br />";
+	}
+	else {
+		if (!saveSetting("mod_disc_terme_avertissement_fin_periode", $mod_disc_terme_avertissement_fin_periode)) {
+			$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_terme_avertissement_fin_periode\" !<br />";
+		}
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
@@ -123,25 +134,4 @@ $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_discipline/discip
 $tbs_last_connection=""; // On n'affiche pas les dernières connexions
 include($nom_gabarit);
 
-
-/*
-?>
-<p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-<h2>Configuration générale</h2>
-<i>La désactivation du module Discipline n'entraîne aucune suppression des données. Lorsque le module est désactivé, les utilisateurs n'ont pas accès au module.</i>
-<br />
-<form action="discipline_admin.php" name="form1" method="post">
-<p>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_mod_discipline")=='y') echo " checked"; ?> />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer le module Discipline</label><br />
-<input type="radio" name="activer" id='activer_n' value="n" <?php if (getSettingValue("active_mod_discipline")=='n') echo " checked"; ?> />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver le module Discipline</label>
-</p>
-
-<input type="hidden" name="is_posted" value="1" />
-<center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
-</form>
-<?php
-	echo "<p><br /></p>\n";
-	require("../lib/footer.inc.php");
- *
- */
 ?>

@@ -56,7 +56,7 @@ include "gestion_absences_liste.php";?>
 
          $cpt_liste = 0;
          $requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.nom  LIKE '".$fiche_eleve."%' GROUP BY login ORDER BY nom, prenom";
-         $execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+         $execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysqli_error($GLOBALS["mysqli"]));
          while ( $data_liste_fiche = mysqli_fetch_array($execution_liste_fiche))
           {
               $login_liste[$cpt_liste] = $data_liste_fiche['login'];
@@ -88,7 +88,7 @@ include "gestion_absences_liste.php";?>
 if ( $select_fiche_eleve != '' ) {
 
 	$requete_liste_fiche = "SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$select_fiche_eleve."'";
-	$execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_liste_fiche = mysqli_query($GLOBALS["mysqli"], $requete_liste_fiche) or die('Erreur SQL !'.$requete_liste_fiche.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $data_liste_fiche = mysqli_fetch_array($execution_liste_fiche))
 	{
 
@@ -251,7 +251,7 @@ Pour éviter un centrage bizarre:
 					<select name="action_suivi" style="width: 218px;">
  	        		        <?php
 					      $requete_liste_action = "SELECT init_absence_action, def_absence_action FROM ".$prefix_base."absences_actions ORDER BY init_absence_action ASC";
-		        	              $resultat_liste_action = mysqli_query($GLOBALS["mysqli"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		        	              $resultat_liste_action = mysqli_query($GLOBALS["mysqli"], $requete_liste_action) or die('Erreur SQL !'.$requete_liste_action.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			                      while ( $data_liste_action = mysqli_fetch_array($resultat_liste_action)) { ?>
 		                                     <option value="<?php echo $data_liste_action['init_absence_action']; ?>" <?php if(!empty($data_modif_fiche['action_suivi_eleve_cpe']) and $data_modif_fiche['action_suivi_eleve_cpe'] === $data_liste_action['init_absence_action']) { ?>selected="selected"<?php } ?>><?php echo $data_liste_action['init_absence_action']." - ".$data_liste_action['def_absence_action']; ?></option>
 		                              <?php } ?>
@@ -271,7 +271,7 @@ Pour éviter un centrage bizarre:
 						<optgroup label="Type de lettre">
 					        <?php
 						$requete_lettre ="SELECT * FROM ".$prefix_base."lettres_types ORDER BY categorie_lettre_type ASC, titre_lettre_type ASC";
-					        $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					        $execution_lettre = mysqli_query($GLOBALS["mysqli"], $requete_lettre) or die('Erreur SQL !'.$requete_lettre.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 				  		while ($donner_lettre = mysqli_fetch_array($execution_lettre))
 		  				{
 						   ?><option value="<?php echo $donner_lettre['id_lettre_type']; ?>" <?php if (isset($lettre_type) and $lettre_type === $donner_lettre['id_lettre_type']) { ?>selected="selected"<?php } ?>><?php echo ucfirst($donner_lettre['titre_lettre_type']); ?></option><?php echo "\n";
@@ -309,7 +309,7 @@ Pour éviter un centrage bizarre:
 	</div>
            <?php
 	     $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.eleve_suivi_eleve_cpe = '".$login_eleve."' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC LIMIT ".$debut_selection_suivi.", 2";
-             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysqli_error($GLOBALS["mysqli"]));
               while ( $data_komenti = mysqli_fetch_array($execution_komenti))
                 {
 			$action_pour_eleve = '';
@@ -332,7 +332,7 @@ Pour éviter un centrage bizarre:
 	        if ($courrier_existance != '0') { ?>
 			<?php
 	               $requete_1 ="SELECT * FROM ".$prefix_base."lettres_suivis, ".$prefix_base."lettres_types WHERE partdenum_lettre_suivi = '".$data_komenti['id_suivi_eleve_cpe']."' AND partde_lettre_suivi = 'suivi_eleve_cpe' AND type_lettre_suivi = id_lettre_type";
-	               $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	               $execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	               while ( $data_1 = mysqli_fetch_array($execution_1)) {
 			       $datation = ''; ?>
 			    <div class="info_eleve_courrier" style="background: <?php echo $couleur3; ?>;"><?php if(empty($data_1['envoye_date_lettre_suivi']) or $data_1['envoye_date_lettre_suivi'] === '0000-00-00') { ?><div style="float: right; margin: 0;"><a href="gestion_absences.php?select_fiche_eleve=<?php echo $select_fiche_eleve; ?>&amp;id_suivi_eleve_cpe=<?php echo $data_komenti['id_suivi_eleve_cpe']; ?>&amp;id_lettre_suivi=<?php echo $data_1['id_lettre_suivi']; ?>&amp;debut_selection_suivi=<?php echo $debut_selection_suivi; ?>&amp;action_sql=detacher_courrier">Supprimer</a></div><?php } ?><strong>Courrier attaché:</strong><br />
@@ -382,7 +382,7 @@ Pour éviter un centrage bizarre:
 		   <ul>
         	   <?php // modification du critère pour compter aussi les non justifs par telephone didier	
 			   $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-                	 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                	 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	                 while ($data_absences_nr = mysqli_fetch_array($execution_absences_nr))
         	         {
                 	      ?><li><?php
@@ -418,7 +418,7 @@ Pour éviter un centrage bizarre:
 		   <ul>
 	           <?php // modification du critère pour compter aussi les non justifs par telephone didier	
 			   $requete_retards_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' AND justify_absence_eleve != 'O' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-        	         $execution_retards_nr = mysqli_query($GLOBALS["mysqli"], $requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        	         $execution_retards_nr = mysqli_query($GLOBALS["mysqli"], $requete_retards_nr) or die('Erreur SQL !'.$requete_retards_nr.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	                 while ($data_retards_nr = mysqli_fetch_array($execution_retards_nr))
 	                 {
          	            //suppression d'un <li> inutile didier ?>
@@ -440,7 +440,7 @@ Pour éviter un centrage bizarre:
 	           Liste des dispenses non justifiée(s)<br />
 		   <ul>
 	           <?php $requete_dispences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='D' AND justify_absence_eleve = 'N' ORDER BY d_date_absence_eleve DESC, d_heure_absence_eleve ASC";
-        	         $execution_dispences_nr = mysqli_query($GLOBALS["mysqli"], $requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        	         $execution_dispences_nr = mysqli_query($GLOBALS["mysqli"], $requete_dispences_nr) or die('Erreur SQL !'.$requete_dispences_nr.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	                 while ($data_dispences_nr = mysqli_fetch_array($execution_dispences_nr))
         	         {
                 	      //suppression d'un <li> inutile didier?>
@@ -647,7 +647,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 
 //	     $requete_comptage = old_mysql_result(mysql_query("SELECT count(*) FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A'"),0);
              $requete_komenti = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve = '".$select_fiche_eleve."'  AND type_absence_eleve = 'A' ORDER BY d_date_absence_eleve ASC, d_heure_absence_eleve DESC";
-             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysqli_error($GLOBALS["mysqli"]));
               while ( $donnee_base = mysqli_fetch_array($execution_komenti))
                 {
 			$tableau[$i]['id'] = $i;
@@ -667,7 +667,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 
 	$i = '0';
 	$requete_periode = 'SELECT * FROM '.$prefix_base.'edt_creneaux WHERE suivi_definie_periode = "1" ORDER BY heuredebut_definie_periode ASC';
-        $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee_periode = mysqli_fetch_array( $execution_periode ) ) {
 		$Horaire[$i] = heure_texte_court($donnee_periode['heuredebut_definie_periode']).'-'.heure_texte_court($donnee_periode['heurefin_definie_periode']);
 		$HorDeb[$i] = $donnee_periode['heuredebut_definie_periode'];
@@ -745,7 +745,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			<div style="background: transparent url(../images/grid_10.png)"><br />
 		<?php
 		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='A' ORDER BY d_date_absence_eleve DESC";
-                 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                  while ($data_absences_nr = mysqli_fetch_array($execution_absences_nr))
                    {
 			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
@@ -763,7 +763,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
 			}
                    }
 		 $requete_absences_nr = "SELECT * FROM ".$prefix_base."absences_eleves WHERE eleve_absence_eleve='".$select_fiche_eleve."' AND type_absence_eleve='R' ORDER BY d_date_absence_eleve DESC";
-                 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                 $execution_absences_nr = mysqli_query($GLOBALS["mysqli"], $requete_absences_nr) or die('Erreur SQL !'.$requete_absences_nr.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                  while ($data_absences_nr = mysqli_fetch_array($execution_absences_nr))
                    {
 			$date_debut = date_fr($data_absences_nr['d_date_absence_eleve']);
@@ -812,7 +812,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
            <td class="norme_absence_min" valign="top">
 	   <?php
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."' AND niveau_message_suivi_eleve_cpe='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
-             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysqli_error($GLOBALS["mysqli"]));
               while ( $data_komenti = mysqli_fetch_array($execution_komenti))
                 {
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {
@@ -826,7 +826,7 @@ $mois[$i]['mois_court'] = 'aou. 2006'; $mois[$i]['mois'] = 'juil. 2007'; $mois[$
            <td class="norme_absence_min" valign="top">
            <?php
              $requete_komenti = "SELECT * FROM ".$prefix_base."suivi_eleve_cpe WHERE ".$prefix_base."suivi_eleve_cpe.date_suivi_eleve_cpe = '".$date_ce_jour."'  AND niveau_message_suivi_eleve_cpe!='3' ORDER BY date_suivi_eleve_cpe DESC, heure_suivi_eleve_cpe DESC";
-             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+             $execution_komenti = mysqli_query($GLOBALS["mysqli"], $requete_komenti) or die('Erreur SQL !'.$requete_komenti.'<br />'.mysqli_error($GLOBALS["mysqli"]));
               while ( $data_komenti = mysqli_fetch_array($execution_komenti))
                 {
 		   if(!empty($data_komenti['niveau_message_suivi_eleve_cpe'])) {

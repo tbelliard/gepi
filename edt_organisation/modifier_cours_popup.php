@@ -119,7 +119,7 @@ if (isset($modifier_cours) AND $modifier_cours == "ok") {
 	                id_semaine = '$choix_semaine',
 	                id_calendrier = '$periode_calendrier'
 	                WHERE id_cours = '".$id_cours."'")
-	                or die('Erreur dans la mofication du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)).'');
+	                or die('Erreur dans la mofication du cours : '.mysqli_error($GLOBALS["mysqli"]).'');
                     $_SESSION['edt_prof_enseignement'] = $enseignement;
                     $_SESSION['edt_prof_salle'] = $login_salle;
 	        }
@@ -140,7 +140,7 @@ elseif (isset($modifier_cours) AND $modifier_cours == "non") {
 					 id_semaine = '$choix_semaine',
 					 id_calendrier = '$periode_calendrier',
 					 login_prof = '".$identite."'")
-				OR DIE('Erreur dans la création du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				OR DIE('Erreur dans la création du cours : '.mysqli_error($GLOBALS["mysqli"]));
                 $_SESSION['edt_prof_enseignement'] = $enseignement;
                 $_SESSION['edt_prof_salle'] = $login_salle;
 			}

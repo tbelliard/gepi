@@ -130,7 +130,7 @@ function renvoiIdCreneau($heure_brute, $jour){
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_definie_periode FROM ".$table." WHERE
 					heuredebut_definie_periode <= '".$heuredebut."' AND
 					heurefin_definie_periode > '".$heuredebut."'")
-						OR DIE('Erreur renvoiIdCreneau : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						OR DIE('Erreur renvoiIdCreneau : '.mysqli_error($GLOBALS["mysqli"]));
 	if ($query) {
 		$nbre = mysqli_num_rows($query);
 		if ($nbre >= 1) {
@@ -397,7 +397,7 @@ function renvoiIdGroupe($prof, $classe_txt, $matiere_txt, $grp_txt, $partie_txt,
 function testerSalleCsv2($numero){
 	// On teste la table
 	$query = mysqli_query($GLOBALS["mysqli"], "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'")
-				OR trigger_error('Erreur dans la requête '.$query.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				OR trigger_error('Erreur dans la requête '.$query.' : '.mysqli_error($GLOBALS["mysqli"]));
 	$rep = @old_mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
 		// On renvoie "ok"
@@ -419,7 +419,7 @@ function salleifexists($numero){
 	// On teste la table
 	$sql = "SELECT id_salle FROM salle_cours WHERE numero_salle = '".$numero."'";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql)
-				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+				OR trigger_error('Impossible de vérifier l\'existence de cette salle : la requête '.$sql.' a échoué : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 	// On force tout de même le résultat
 	$rep = @old_mysql_result($query, 0,"id_salle");
 	if ($rep != '' AND $rep != NULL AND $rep != FALSE) {
@@ -631,7 +631,7 @@ function enregistreCoursCsv2($jour, $creneau, $classe, $matiere, $prof, $salle, 
 		}
 		//echo "Test ifexists : $sql<br />";
 		$ifexists = mysqli_query($GLOBALS["mysqli"], $sql)
-							OR DIE('erreur dans la requête '.$ifexists.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+							OR DIE('erreur dans la requête '.$ifexists.' : '.mysqli_error($GLOBALS["mysqli"]));
 
 		$erreur_report = mysqli_fetch_array($ifexists);
 		$retour["msg_erreur"] .= 'Ce cours existe déjà ('.$erreur_report["id_cours"].').';

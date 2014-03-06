@@ -57,12 +57,12 @@ if ($mode == "classe") {
 		$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(jec.login) login, u.auth_mode " .
 				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
 				"jec.id_classe = c.id and u.login = jec.login)");
-		if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} elseif (is_numeric($_POST['classe'])) {
 		$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(jec.login), u.auth_mode " .
 				"FROM classes c, j_eleves_classes jec, utilisateurs u WHERE (" .
 				"jec.id_classe = '" . $_POST['classe']."' and u.login = jec.login)");
-		if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} else {
 		$error = true;
 		$msg .= "Vous devez sélectionner au moins une classe !<br/>";
@@ -252,7 +252,10 @@ if (!$error) {
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
 							$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_eleve->login."'"), 0);
-							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_eleve->login."'");
+							// 20140301
+							if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+								mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_eleve->login."'");
+							}
 							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 							if ($ldap_write_access) {
 								$create_ldap_user = true;

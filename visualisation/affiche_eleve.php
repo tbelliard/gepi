@@ -323,7 +323,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)) {
-	if(mb_strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
+	if(preg_match("/^[0-9]{1,}$/",$num_periode_saisie)) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1743,7 +1743,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//========================
 			// AJOUT boireaus 20090115
-			if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+			if(($_SESSION['statut']=="administrateur")||
+				($_SESSION['statut']=="scolarite")||
+				(($_SESSION['statut']=='professeur')&&(isset($id_classe))&&(is_pp($_SESSION['login'],$id_classe))&&(getSettingAOui('GepiRubConseilProf')))) {
 				echo "<tr>\n";
 				echo "<td valign='top'>Permettre la saisie de l'avis du conseil:</td>\n";
 				echo "<td>\n";
@@ -4778,6 +4780,62 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		echo $texte_saisie_avis_fixe;
 		//=========================
 
+		// 20140226
+		if(getSettingAOui('active_mod_discipline')) {
+			echo "<div align='center'>\n";
+			$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+			if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+			echo necessaire_saisie_avertissement_fin_periode();
+
+			if($choix_periode=='toutes_periodes') {
+				echo "<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Période</th>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>
+	</tr>";
+				for($i=1;$i<$nb_periode;$i++) {
+					echo "
+	<tr>
+		<td>".$nom_periode[$i]."</td>
+		<td>";
+					if((acces_saisie_avertissement_fin_periode($eleve1, $i))&&($ver_periode[$i]!='O')) {
+
+						echo "
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+				<span class='bold' id='liste_avertissements_fin_periode_$i'>".liste_avertissements_fin_periode($eleve1, $i)."</span>
+			</a>";
+					}
+					else {
+						echo "
+		<span class='bold'>".liste_avertissements_fin_periode($eleve1, $i)."</span>";
+					}
+					echo "
+		</td>
+	</tr>";
+				}
+				echo "
+</table>";
+			}
+			elseif((isset($num_periode_choisie))&&(preg_match("/^[0-9]{1,}$/", $num_periode_choisie))) {
+				if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+					echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
+	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode');return false;\" style='color:black;' target='_blank'>
+		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+		<span class='bold' id='liste_avertissements_fin_periode'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
+	</a>
+</div>";
+				}
+				else {
+					echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
+		<span class='bold'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
+</div>";
+				}
+			}
+			echo "</div>\n";
+		}
 	}
 	else{
 		if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
@@ -4847,7 +4905,7 @@ function div_cmnt_type() {
 
 			$retour_lignes_cmnt_type.=" <a href='#' onClick=\"afficher_div('commentaire_type','y',30,20);";
 			if($graphe_champ_saisie_avis_fixe!='y') {$retour_lignes_cmnt_type.="ajuste_pos('commentaire_type');";}
-			$retour_lignes_cmnt_type.="return false;\">CT</a>\n";
+			$retour_lignes_cmnt_type.="return false;\" title=\"Insérer un commentaire-type.\">CT</a>\n";
 
 			$retour_lignes_cmnt_type.="<div id='commentaire_type' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
 			$retour_lignes_cmnt_type.="<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px;'  onmousedown=\"dragStart(event, 'commentaire_type')\">\n";

@@ -901,3 +901,45 @@ INDEX parent_racine (parent,id_racine),
 INDEX racine_bulletin (id_racine,display_bulletin)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS d_dates_evenements;
+CREATE TABLE d_dates_evenements (
+id_ev int(11) NOT NULL AUTO_INCREMENT, 
+type varchar(50) NOT NULL default '', 
+texte_avant TEXT NOT NULL default '', 
+texte_apres TEXT NOT NULL default '', 
+date_debut TIMESTAMP NOT NULL, 
+PRIMARY KEY  (id_ev)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS d_dates_evenements_classes;
+CREATE TABLE d_dates_evenements_classes (
+id_ev_classe int(11) NOT NULL AUTO_INCREMENT, 
+id_ev int(11) NOT NULL, 
+id_classe int(11) NOT NULL default '0', 
+date_evenement TIMESTAMP NOT NULL, 
+PRIMARY KEY  (id_ev_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS d_dates_evenements_utilisateurs;
+CREATE TABLE d_dates_evenements_utilisateurs (
+id_ev int(11) NOT NULL, 
+statut varchar(20) NOT NULL, 
+KEY id_ev_u (id_ev,statut)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS s_avertissements;
+CREATE TABLE IF NOT EXISTS s_avertissements (
+id_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+login_ele VARCHAR( 50 ) NOT NULL ,
+id_type_avertissement INT(11),
+periode INT(11),
+date_avertissement DATETIME NOT NULL ,
+declarant VARCHAR( 50 ) NOT NULL ,
+commentaire TEXT NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS s_types_avertissements;
+CREATE TABLE IF NOT EXISTS s_types_avertissements (
+id_type_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+nom_court VARCHAR( 50 ) NOT NULL ,
+nom_complet VARCHAR( 255 ) NOT NULL,
+description TEXT NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

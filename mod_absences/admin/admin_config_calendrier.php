@@ -180,7 +180,7 @@ if ($action_sql == "ajouter" or $action_sql == "modifier")
 						     WHERE id_calendrier = '".$id_calendrier_ins."'";
                                   }
                                 // Execution de cette requete dans la base cartouche
-                                  mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                                  mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                                   $verification[$total] = 1;
                               } else {
                                         // vérification = 2 - Ce créneaux horaires existe déjas
@@ -229,13 +229,13 @@ if ($action_sql == "supprimer")
      //Requete de supprersion MYSQL
      $requete = "DELETE FROM ".$prefix_base."edt_calendrier WHERE id_calendrier ='$id_calendrier'";
      // Execution de cette requete
-     mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+     mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
  }
 
 if ($action == "modifier")
  {
       $requete_modif_calendrier = 'SELECT * FROM '.$prefix_base.'edt_calendrier WHERE id_calendrier = "'.$id_calendrier.'"';
-      $resultat_modif_calendrier = mysqli_query($GLOBALS["mysqli"], $requete_modif_calendrier) or die('Erreur SQL !'.$requete_modif_calendrier.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_modif_calendrier = mysqli_query($GLOBALS["mysqli"], $requete_modif_calendrier) or die('Erreur SQL !'.$requete_modif_calendrier.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       $data_modif_calendrier = mysqli_fetch_array($resultat_modif_calendrier);
 
 	$id_calendrier['0'] = $data_modif_calendrier['id_calendrier'];
@@ -313,7 +313,7 @@ echo "</p>";
       </tr>
     <?php
     $requete_periode = 'SELECT * FROM '.$prefix_base.'edt_calendrier ORDER BY debut_calendrier_ts ASC';
-    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     $i=1;
     while ( $data_periode = mysqli_fetch_array( $execution_periode ) ) {
        if ($i === '1') { $i = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
@@ -417,7 +417,7 @@ echo "</p>";
 		<?php
 			$requete_classe = ('SELECT * FROM '.$prefix_base.'classes c
 						 ORDER BY c.classe ASC');
-	                $resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	                $resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
                 ?><option value="" <?php if ( $tab_classe['0'] === '' ) { ?>selected="selected"<?php } ?>>toute les classe</option>
                         <?php while ( $donnee_classe = mysqli_fetch_array($resultat_classe)) { ?>
