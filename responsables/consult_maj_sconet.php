@@ -89,13 +89,14 @@ echo "<form action='".$_SERVER['PHP_SELF']."' method='post' />
 	<table class='boireaus' summary=\"Tableau des Mises à jour d'après Sconet\">
 		<thead>
 			<tr>
-				<th colspan='2'>Date de</th>
-				<th rowspan='2'>Effectuée<br />par</th>
-				<th rowspan='2'>Compte-rendu</th>
 				<th rowspan='2'>
 					<input type='submit' value='Supprimer' /><br />
 					<a href='javascript:CocheColonne();changement();'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href='javascript:DecocheColonne();changement();'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>
 				</th>
+				<th rowspan='2' title=\"Identifiant de l'enregistrement.\">Id</th>
+				<th colspan='2'>Date de</th>
+				<th rowspan='2'>Effectuée<br />par</th>
+				<th rowspan='2'>Compte-rendu</th>
 			</tr>
 			<tr>
 				<th>début</th>
@@ -109,11 +110,12 @@ while($lig=mysqli_fetch_object($res)) {
 	$alt=$alt*(-1);
 	echo "
 			<tr class='lig$alt white_hover'>
+				<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig->id."' /></td>
+				<td>".$lig->id."</td>
 				<td>".formate_date($lig->date_debut, 'y')."</td>
 				<td>".(($lig->date_fin!="0000-00-00 00:00:00") ? formate_date($lig->date_fin, 'y') : "")."</td>
 				<td>".civ_nom_prenom($lig->login)."</td>
 				<td>".$lig->texte."</td>
-				<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig->id."' /></td>
 			</tr>";
 	$cpt++;
 }
