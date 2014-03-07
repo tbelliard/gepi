@@ -1090,6 +1090,9 @@ elseif(($mode==2)||($mode==3)||($mode==6)) {
 
 	if($id_classe!='') {
 
+		$_SESSION['display_date_debut']=$display_date_debut;
+		$_SESSION['display_date_fin']=$display_date_fin;
+
 		$mode_2=$mode;
 
 		$AccesStatConnexionEle=false;
