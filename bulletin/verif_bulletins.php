@@ -448,7 +448,8 @@ if (!(isset($id_classe))) {
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
-	echo "<p>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</p>";
+	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
+(<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
 
 	//
 	// Vérification de paramètres généraux
@@ -515,8 +516,8 @@ if (!(isset($id_classe))) {
 	$temoin_avis=0;
 	$temoin_aid=0;
 	$temoin_abs=0;
-    $temoin_ects=0;
-    $temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
+	$temoin_ects=0;
+	$temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
 	while($j < $nb_eleves) {
 
 		//affichage 2 colonnes
