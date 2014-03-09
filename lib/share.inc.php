@@ -5266,6 +5266,35 @@ function get_tab_prof_suivi($id_classe, $login_user="") {
 	return $tab;
 }
 
+
+/**
+ * Retourne la liste des profs principaux d'une classe sous la forme d'une chaine séparée par des virgules
+ *
+ * @param string $id_classe id de la classe
+ * @return string Liste des profs principaux d'une classe sous la forme d'une chaine séparée par des virgules
+ */
+function liste_prof_suivi($id_classe, $pour_qui="") {
+	global $mysqli;
+	$retour="";
+
+	$tab=get_tab_prof_suivi($id_classe);
+	//$retour=implode(", ", $tab);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {
+			$retour.=", ";
+		}
+
+		if($pour_qui=="profs") {
+			$retour.=civ_nom_prenom($tab[$loop]);
+		}
+		else {
+			$retour.=affiche_utilisateur($tab[$loop], $id_classe);
+		}
+	}
+
+	return $retour;
+}
+
 /**
  * Enregistre pour Affichage un message sur la page d'accueil du destinataire (ML 5/2011)
  * 
