@@ -291,8 +291,8 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture 
                     if($lig_pers->statut=='responsable') {
                         $sql="SELECT pers_id FROM resp_pers WHERE login='$lig_pers->login';";
                         $res_resp = mysqli_query($mysqli, $sql);
-                        if(sqli_count($res_pers) == 0) {
-                            $lig_resp = $res_pers->fetch_object();
+                        if(sqli_count($res_resp)>0) {
+                            $lig_resp = $res_resp->fetch_object();
                             $afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"pers_id"=>$lig_resp->pers_id,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
                         } else {
                             $afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>my_strtoupper($lig_pers->nom)." ".casse_mot($lig_pers->prenom,'majf2'),"statut"=>$lig_pers->statut,"login"=>$lig_pers->login,"end"=>$lig_log->END,"start"=>$lig_log->START,"remote_addr"=>$lig_log->REMOTE_ADDR);
