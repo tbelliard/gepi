@@ -9973,4 +9973,21 @@ function etat_verrouillage_eleve_periode($login_ele, $periode) {
 
 	return $retour;
 }
+
+function get_infos_classe_periode($id_classe) {
+	$tab=array();
+
+	$sql="SELECT * FROM periodes p WHERE id_classe='$id_classe';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->num_periode]['nom_periode']=$lig->nom_periode;
+			$tab[$lig->num_periode]['verouiller']=$lig->verouiller;
+			$tab[$lig->num_periode]['date_verrouillage']=$lig->date_verrouillage;
+			$tab[$lig->num_periode]['date_fin']=$lig->date_fin;
+		}
+	}
+
+	return $tab;
+}
 ?>
