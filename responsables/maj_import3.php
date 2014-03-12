@@ -4383,21 +4383,9 @@ else{
 								$tmp_prenom=remplace_accents($lig->ELEPRE);
 		
 								// Générer un login...
-								/*
-								$temp1 = my_strtoupper($tmp_nom);
-								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-								$temp1 = my_strtr($temp1, " '-", "___");
-								$temp1 = mb_substr($temp1,0,7);
-								$temp2 = my_strtoupper($tmp_prenom);
-								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-								$temp2 = my_strtr($temp2, " '-", "___");
-								$temp2 = mb_substr($temp2,0,1);
-								$login_eleve = $temp1.'_'.$temp2;
-								*/
-								$login_ele_gen_type=getSettingValue('login_ele_gen_type');
-								//if($login_ele_gen_type=='') {$login_ele_gen_type='nnnnnnnnn_p';}
-								if(!check_format_login($login_ele_gen_type)) {
-									$login_ele_gen_type='nnnnnnnnn_p';
+								$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
+								if(!check_format_login($mode_generation_login_eleve)) {
+									$mode_generation_login_eleve='nnnnnnnnn_p';
 
 									$sql="SELECT * FROM infos_actions WHERE titre='Format des logins générés';";
 									$test_ia=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4405,7 +4393,7 @@ else{
 										enregistre_infos_actions("Format des logins générés","Le format des logins générés par Gepi pour les différentes catégories d'utilisateurs doit être contrôlé et revalidé dans la page <a href='./gestion/param_gen.php#format_login_pers'>Configuration générale</a>",array("administrateur"),'statut');
 									}
 								}
-								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $login_ele_gen_type, 'maj');
+								$login_eleve=generate_unique_login($tmp_nom, $tmp_prenom, $mode_generation_login_eleve, 'maj');
 
 								if(($login_eleve)&&($login_eleve!='')) {
 									// On teste l'unicité du login que l'on vient de créer
