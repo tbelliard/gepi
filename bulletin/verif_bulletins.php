@@ -443,13 +443,15 @@ if (!(isset($id_classe))) {
 	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
 
-
+	$traduction_verrouillage_periode['O']="close";
+	$traduction_verrouillage_periode['P']="partiellement close";
+	$traduction_verrouillage_periode['N']="ouverte en saisie";
 
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
-(<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
+(<em>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
 
 	//
 	// Vérification de paramètres généraux
