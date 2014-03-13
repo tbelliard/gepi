@@ -247,7 +247,7 @@ if (!(isset($id_classe))) {
 	$nom_classe=old_mysql_result($call_classe,0,"classe");
 
 	//echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période&nbsp;: </b></p><br />\n";
-	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier: </b></p><br />\n";
+	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier&nbsp;: </b></p><br />\n";
 	include "../lib/periodes.inc.php";
 
 
@@ -268,11 +268,17 @@ if (!(isset($id_classe))) {
 		echo "<th>";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			$texte_courant="Période partiellement close.
+Seule la saisie des avis du conseil de classe est possible.";
+			echo " <span style='color:darkorange; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			$texte_courant="Période entièrement close.
+Plus aucune saisie/modification n'est possible.";
+			echo " <span style='color:red; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			$texte_courant="Période ouverte.
+Les saisies/modifications sont possibles.";
+			echo " <span style='color:green; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		}
 		echo "</span>\n";
 		echo "</th>\n";
