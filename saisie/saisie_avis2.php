@@ -635,7 +635,13 @@ echo "</form>\n";
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
-		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span></td>\n";
+
+		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span>";
+		if($ver_periode[$periode_num]!="O") {
+			echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
+		}
+		echo "</td>\n";
+
 		if($avec_mentions=="y") {
 			// *** AJOUT POUR LES MENTIONS
 			echo "<td><span class=\"medium\">";
