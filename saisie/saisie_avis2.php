@@ -285,6 +285,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// Pour éviter dans bulletin() d'afficher le lien vers saisie_avis2.php
+$temoin_page_courante="saisie_avis2";
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';

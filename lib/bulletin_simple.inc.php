@@ -34,6 +34,8 @@ if($periode1!=$periode2) {
 	$utilisation_tablekit="no";
 }
 //=========================
+// Pour éviter dans bulletin() d'afficher le lien vers saisie_avis2.php depuis la page saisie_avis2.php
+global $temoin_page_courante;
 
 $alt=1;
 
@@ -1184,6 +1186,7 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 		echo "</table>\n";
 	}
 
+	$tab_classe_periode=get_infos_classe_periode($id_classe);
 
 	// Maintenant, on met l'avis du conseil de classe :
 	
@@ -1227,7 +1230,17 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 		
 		echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
 		
-		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell' title=\"Avis du conseil de classe en période n°$nb pour ".$current_eleve_prenom." ".$current_eleve_nom."\">$current_eleve_avis[$nb]";
+		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell' title=\"Avis du conseil de classe en période n°$nb pour ".$current_eleve_prenom." ".$current_eleve_nom."\">";
+
+		if(($temoin_page_courante!="saisie_avis2")&&($tab_classe_periode[$nb]['verouiller']!="O")) {
+			if(($_SESSION['statut']=='scolarite')||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
+				echo "<div style='float:right; width:16px;' title=\"Saisir/Modifier l'avis du conseil de classe.\"><a href = '../saisie/saisie_avis2.php?periode_num=$nb&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login#app'><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+				//&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv
+			}
+		}
+
+		echo $current_eleve_avis[$nb];
 
 		// Ajouter par la suite une option pour faire apparaître les mentions même si c'est "-"
 		//if(($current_eleve_mention[$nb]=="F")||($current_eleve_mention[$nb]=="M")||($current_eleve_mention[$nb]=="E")) {
