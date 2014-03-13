@@ -381,14 +381,13 @@ Les saisies/modifications sont possibles.";
 		$mode="tout";
 	}
 
-	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
-	echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<div class='bold' style='float:left;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> </div>\n";
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 
+	$tab_id_classe=array();
 	$chaine_options_classes="";
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0) {
@@ -396,6 +395,8 @@ Les saisies/modifications sont possibles.";
 		$id_class_suiv=0;
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+			$tab_id_classe[]=$lig_class_tmp->id;
+
 			$info_conseil_classe="";
 			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
 				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
@@ -426,36 +427,87 @@ Les saisies/modifications sont possibles.";
 			}
 		}
 	}
+
+	echo "<div style='float:left;' class='bold'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	// =================================
 	if(isset($id_class_prec)) {
-		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode'>Classe précédente</a>\n";}
+		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode' title=\"Classe précédente\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
 	}
 	if($chaine_options_classes!="") {
-		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo " <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 		echo $chaine_options_classes;
 		echo "</select>\n";
 		echo "<input type='hidden' name='per' value='$per' />\n";
 		echo "<input type='hidden' name='mode' value='$mode' />\n";
 	}
 	if(isset($id_class_suiv)) {
-		if($id_class_suiv!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode'>Classe suivante</a>\n";}
+		if($id_class_suiv!=0) {echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode' title=\"Classe suivante\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
+	}
+	echo "
+	</form>
+</div>";
+
+	$classe_courante_trouvee="n";
+	$temoin_une_date_de_conseil_de_classe=0;
+	$chaine_changement_classe_date_conseil="";
+	foreach($tab_date_conseil as $current_id_classe => $value) {
+		if(in_array($current_id_classe, $tab_id_classe)) {
+			if($temoin_une_date_de_conseil_de_classe==0) {
+				$chaine_changement_classe_date_conseil.="
+<div style='float:left;' class='bold'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>
+	 | 
+		<input type='hidden' name='per' value='$per' />
+		<input type='hidden' name='mode' value='$mode' />
+		<select name='id_classe' onchange=\"document.forms['form2'].submit();\" title=\"Classes triées par date du prochain conseil.\">
+			<option value=''>---</option>";
+			}
+
+			$chaine_changement_classe_date_conseil.="
+			<option value='$current_id_classe'";
+			if($current_id_classe==$id_classe) {
+				$chaine_changement_classe_date_conseil.=" selected='selected'";
+				$classe_courante_trouvee="y";
+			}
+			$chaine_changement_classe_date_conseil.=">".$tab_date_conseil[$current_id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$current_id_classe]['date'], "n", "").")</option>";
+
+			$temoin_une_date_de_conseil_de_classe++;
+		}
+	}
+	if($temoin_une_date_de_conseil_de_classe>0) {
+		$chaine_changement_classe_date_conseil.="
+		</select>
+	</form>
+</div>";
+
+		if($classe_courante_trouvee=="y") {
+			echo $chaine_changement_classe_date_conseil;
+		}
+
 	}
 
 	if($_SESSION['statut']=='scolarite') {
-		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='bull_index.php'>Visualisation et impression des bulletins </a>
+</div>";
 	}
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
-		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='param_bull.php'>Paramétrage des bulletins </a>
+</div>";
 	}
 
 	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
-		echo " | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies </a>
+</div>";
 	}
 
-	echo "</form>\n";
-	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
+
+	echo "<div style='clear:both;'></div>\n";
 
 	$traduction_verrouillage_periode['O']="close";
 	$traduction_verrouillage_periode['P']="partiellement close";
