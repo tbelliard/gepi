@@ -174,6 +174,7 @@ include("menu_plugins.inc.php");
 		$menus .= '                </li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php" '.insert_confirm_abandon().' title="Consulter les équipes pédagogiques">Equipes pédago</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().'>MEF</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
@@ -274,6 +275,7 @@ include("menu_plugins.inc.php");
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_annees_anterieures/index.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
 		}
 		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
+		$menus .= '  <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
 		if(getSettingAOui('active_mod_discipline')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
