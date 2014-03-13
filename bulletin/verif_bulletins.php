@@ -376,6 +376,16 @@ Les saisies/modifications sont possibles.";
 
 } else {
 
+	$traduction_verrouillage_periode['O']="close";
+	$traduction_verrouillage_periode['P']="partiellement close";
+	$traduction_verrouillage_periode['N']="ouverte en saisie";
+
+	$couleur_verrouillage_periode['O']="red";
+	$couleur_verrouillage_periode['P']="darkorange";
+	$couleur_verrouillage_periode['N']="green";
+
+	$tab_verrouillage_periodes=get_verrouillage_classes_periodes();
+
 	$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
 	if( $mode!='note_app' && $mode!='abs' && $mode!='avis' && $mode != 'ects' && $mode!='tout_sauf_avis') {
 		$mode="tout";
@@ -397,13 +407,20 @@ Les saisies/modifications sont possibles.";
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
 			$tab_id_classe[]=$lig_class_tmp->id;
 
+			if(isset($tab_verrouillage_periodes[$lig_class_tmp->id][$per])) {
+				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."\"";
+			}
+			else {
+				$style_option_courante="";
+			}
+
 			$info_conseil_classe="";
 			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
 				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
 			}
 
 			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
 					$info_conseil_classe="";
@@ -411,7 +428,7 @@ Les saisies/modifications sont possibles.";
 						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
 					}
 
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
@@ -419,7 +436,7 @@ Les saisies/modifications sont possibles.";
 				}
 			}
 			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 			}
 
 			if($temoin_tmp==0) {
@@ -464,8 +481,16 @@ Les saisies/modifications sont possibles.";
 			<option value=''>---</option>";
 			}
 
+
+			if(isset($tab_verrouillage_periodes[$current_id_classe][$per])) {
+				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."\"";
+			}
+			else {
+				$style_option_courante="";
+			}
+
 			$chaine_changement_classe_date_conseil.="
-			<option value='$current_id_classe'";
+			<option value='$current_id_classe'".$style_option_courante;
 			if($current_id_classe==$id_classe) {
 				$chaine_changement_classe_date_conseil.=" selected='selected'";
 				$classe_courante_trouvee="y";
@@ -509,15 +534,11 @@ Les saisies/modifications sont possibles.";
 
 	echo "<div style='clear:both;'></div>\n";
 
-	$traduction_verrouillage_periode['O']="close";
-	$traduction_verrouillage_periode['P']="partiellement close";
-	$traduction_verrouillage_periode['N']="ouverte en saisie";
-
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
-(<em>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
+(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
 
 	//
 	// Vérification de paramètres généraux

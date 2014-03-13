@@ -10020,4 +10020,18 @@ function html_etat_verrouillage_periode_classe($id_classe) {
 
 	return $retour;
 }
+
+function get_verrouillage_classes_periodes() {
+	$tab=array();
+
+	$sql="SELECT * FROM periodes;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->id_classe][$lig->num_periode]=$lig->verouiller;
+		}
+	}
+
+	return $tab;
+}
 ?>
