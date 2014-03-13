@@ -113,6 +113,8 @@ if (!(isset($id_classe))) {
 		// Tableau des identifiants de classes à retenir:
 		$tab_id_classe=array();
 
+		$tab_etat_periodes=array();
+
 		while($lig_classe=mysqli_fetch_object($appel_donnees)) {
 			$tab_id_classe[]=$lig_classe->id;
 
@@ -120,8 +122,10 @@ if (!(isset($id_classe))) {
 
 			$chaine_classe="<strong>".ucfirst($lig_classe->classe)."</strong>";
 			if(isset($tab_date_conseil[$lig_classe->id])) {
-				$chaine_classe.=" <span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date']).")</span>";
+				$chaine_classe.=" <span style='font-variant:italic; font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date']).")</span>";
 			}
+			$tab_etat_periodes[$lig_classe->id]=html_etat_verrouillage_periode_classe($lig_classe->id);
+			$chaine_classe.=" <span style='font-size:small;'>(".$tab_etat_periodes[$lig_classe->id].")</span>";
 			$txt_classe[]=$chaine_classe;
 		}
 
@@ -135,7 +139,11 @@ if (!(isset($id_classe))) {
 			foreach($tab_date_conseil as $id_classe => $value) {
 				if(in_array($id_classe, $tab_id_classe)) {
 					echo "
-	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a><br />";
+	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a>";
+					if(isset($tab_etat_periodes[$id_classe])) {
+						echo " <span style='font-size:small;'>(".$tab_etat_periodes[$id_classe].")</span>";
+					}
+					echo "<br />";
 				}
 			}
 			echo "<div>\n";

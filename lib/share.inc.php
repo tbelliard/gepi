@@ -9995,4 +9995,29 @@ function get_infos_classe_periode($id_classe) {
 
 	return $tab;
 }
+
+function html_etat_verrouillage_periode_classe($id_classe) {
+	$retour="";
+
+	$couleur_ver['O']="red";
+	$couleur_ver['P']="darkorange";
+	$couleur_ver['N']="green";
+
+	$texte_ver['O']="close";
+	$texte_ver['P']="partiellement close";
+	$texte_ver['N']="ouverte";
+
+	$sql="SELECT * FROM periodes p WHERE id_classe='$id_classe' ORDER BY num_periode;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if($retour!="") {
+				$retour.="-";
+			}
+			$retour.="<span style='color:".$couleur_ver[$lig->verouiller]."' title=\"$lig->nom_periode : Période ".$texte_ver[$lig->verouiller]." \">$lig->num_periode</span>";
+		}
+	}
+
+	return $retour;
+}
 ?>
