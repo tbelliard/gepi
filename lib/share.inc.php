@@ -9258,6 +9258,11 @@ function afficher_les_evenements($afficher_obsolete="n") {
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour.="<div style='border: 1px solid grey; background-image: url(\"$gepiPath/images/background/opacite50.png\");padding: 3px;margin: 3px;'>";
+
+			if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+				$retour.="<div style='float:right; width:16px;'><a href='$gepiPath/classes/dates_classes.php?id_ev=".$lig->id_ev."' title=\"Modifier cet événement.\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+			}
+
 			//$retour.="$sql<br />";
 			$retour.=affiche_evenement($lig->id_ev, $afficher_obsolete);
 			$retour.="</div>";
