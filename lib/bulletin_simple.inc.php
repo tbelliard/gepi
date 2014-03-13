@@ -105,10 +105,31 @@ if($_SESSION['statut']=='professeur') {
 		}
 	}
 
+	if(getSettingAOui('visuCorrectionsAppProposeesProfs')) {
+		$sql="SELECT DISTINCT ma.* FROM matieres_app_corrections ma,j_groupes_classes jgc WHERE jgc.id_groupe=ma.id_groupe AND jgc.id_classe='$id_classe';";
+		//echo "$sql<br />";
+		$res_mad=mysqli_query($mysqli, $sql);
+		if($res_mad->num_rows>0) {
+			while($lig_mad=$res_mad->fetch_object()) {
+				$tab_modif_app_proposees[$lig_mad->id_groupe][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+			}
+		}
+	}
+
 	if((!isset($necessaire_corriger_appreciation_insere))||($necessaire_corriger_appreciation_insere=="n")) {
 		lib_corriger_appreciation();
 	}
 	global $corriger_app_id_groupe;
+}
+elseif($_SESSION['statut']=='scolarite') {
+	$sql="SELECT DISTINCT ma.* FROM matieres_app_corrections ma,j_groupes_classes jgc WHERE jgc.id_groupe=ma.id_groupe AND jgc.id_classe='$id_classe';";
+	//echo "$sql<br />";
+	$res_mad=mysqli_query($mysqli, $sql);
+	if($res_mad->num_rows>0) {
+		while($lig_mad=$res_mad->fetch_object()) {
+			$tab_modif_app_proposees[$lig_mad->id_groupe][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+		}
+	}
 }
 
 // données requise :
@@ -688,7 +709,7 @@ if ($on_continue == 'yes') {
 						echo "</div>\n";
 
 						// 20131207
-						echo "<div id='proposition_app_".$current_id_eleve."_".$current_group['id']."_$nb'>";
+						echo "<div id='proposition_app_".$current_id_eleve."_".$current_group['id']."_$nb' class='noprint'>";
 						if(isset($tab_modif_app_proposees[$current_group['id']][$nb][$current_eleve_login])) {
 							echo "<div style='border:1px solid red; color: green'><strong>Proposition de correction en attente&nbsp;:</strong><br />".$tab_modif_app_proposees[$current_group['id']][$nb][$current_eleve_login]."</div>";
 						}

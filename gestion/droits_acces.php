@@ -174,6 +174,11 @@ $texteItem="peut signaler, en période ouverte ou partiellement close, (<em>aux 
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='visuCorrectionsAppProposeesProfs';
+$texteItem="peut voir, sur les bulletins simplifiés, les propositions de correction d'appréciation soumises et non encore validées.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
