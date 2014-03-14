@@ -741,16 +741,16 @@ if ($on_continue == 'yes') {
 						if(($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
 							if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N') {
 								echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
-Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 							}
 							elseif(isset($tab_afficher_liens_modif_app[$current_group['id']][$nb])) {
 								if($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='y') {
 									echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'proposer') ;return false;\" title=\"Proposer une correction de l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
-Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez simplement modifier votre appréciation, ce lien est là pour ça.\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez simplement modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 								}
 								elseif($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='yy') {
 									echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
-Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\"><img src='../images/edit16.png' width='16' height='16' /></a> ";
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 								}
 								//echo "plop";
 							}
@@ -1235,7 +1235,7 @@ Ce lien est là pour ça.\"><img src='../images/icons/mail.png' width='16' heigh
 		if(($temoin_page_courante!="saisie_avis2")&&($tab_classe_periode[$nb]['verouiller']!="O")) {
 			if(($_SESSION['statut']=='scolarite')||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
-				echo "<div style='float:right; width:16px;' title=\"Saisir/Modifier l'avis du conseil de classe.\"><a href = '../saisie/saisie_avis2.php?periode_num=$nb&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login#app'><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+				echo "<div style='float:right; width:16px;' title=\"Saisir/Modifier l'avis du conseil de classe.\" class='noprint'><a href = '../saisie/saisie_avis2.php?periode_num=$nb&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login#app'><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></div>";
 				//&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv
 			}
 		}
