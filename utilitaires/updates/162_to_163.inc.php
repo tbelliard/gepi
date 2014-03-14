@@ -344,4 +344,20 @@ if (mysql_num_rows($test1) != 0 && mysql_num_rows($test2) != 0) {
 	$result .= msj_erreur("Un des champs n'existe pas<br />");
 }
 
+$result .= "<br />Test du type du champ 'texte' de la table 'log_maj_sconet'<br />";
+$sql="show columns from log_maj_sconet where type like 'LONGTEXT' and field='texte';";
+$res_sa=mysql_query($sql);
+if(mysql_num_rows($res_sa)>0) {
+	$result .= msj_present("Le champ a le bon type (LONGTEXT)");
+}
+else {
+	$result .= "&nbsp;->Extension du champ 'texte' de la table 'log_maj_sconet' de TEXT en LONGTEXT : ";
+	$query = mysql_query("ALTER TABLE log_maj_sconet CHANGE texte texte LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+}
+
 ?>
