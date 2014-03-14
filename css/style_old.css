@@ -995,3 +995,7 @@ div.info_abs {
 
 /*================================================*/
 
+#menu_barre li:first-letter {
+	font-weight:bold;
+}
+
