@@ -533,6 +533,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
 	}
 
+	$gepi_denom_boite=getSettingValue('gepi_denom_boite');
+	$gepi_denom_boite_genre=getSettingValue('gepi_denom_boite_genre');
+
 	//echo "\$releve_largeurtableau=$releve_largeurtableau<br />";
 	//if(!isset($releve_largeurtableau)) {
 	//	$releve_largeurtableau="100%";
@@ -1363,7 +1366,10 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 											if($temoin_conteneur>0) {echo "<br />\n";}
 											echo "<u><b>".casse_mot($tab_id_cn['conteneurs'][$k]['nom_complet'],'maj');
-											if($tab_id_cn['conteneurs'][$k]['display_parents']=='1') {echo " (<i>".$tab_id_cn['conteneurs'][$k]['moy']."</i>)";}
+											if(($tab_rel['rn_toutcoefdev']=="y")||($tab_id_cn['temoin_coef_differents_conteneurs']=="y")) {
+												echo " <span style='font-weight:normal' title=\"Coefficient ".($gepi_denom_boite_genre=="f" ? "de la" : "du")." $gepi_denom_boite\">(coef.:".$tab_id_cn['conteneurs'][$k]['coef'].")</span>";
+											}
+											if($tab_id_cn['conteneurs'][$k]['display_parents']=='1') {echo " (<em title=\"Moyenne sur ".($gepi_denom_boite_genre=="f" ? "cette" : "ce")." $gepi_denom_boite\">".$tab_id_cn['conteneurs'][$k]['moy']."</em>)";}
 											echo "&nbsp;:</b></u> \n";
 											echo $retour_liste_notes_html;
 											$temoin_affichage_de_conteneur="y";
@@ -2935,6 +2941,19 @@ function releve_pdf($tab_rel,$i) {
 											if($use_cell_ajustee!="n") {$chaine_notes.="<u><b>";}
 											$chaine_notes.=casse_mot($tab_id_cn['conteneurs'][$k]['nom_complet'],'maj');
 											if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
+
+
+
+
+											if(($tab_rel['rn_toutcoefdev']=="y")||($tab_id_cn['temoin_coef_differents_conteneurs']=="y")) {
+												if($use_cell_ajustee!="n") {$chaine_notes.=" <i>";}
+												$chaine_notes.="(coef.:".$tab_id_cn['conteneurs'][$k]['coef'].")";
+												if($use_cell_ajustee!="n") {$chaine_notes.="</i>";}
+											}
+
+
+
+
 											if($tab_id_cn['conteneurs'][$k]['display_parents']=='1') {
 												$chaine_notes.="(";
 												if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}

@@ -606,13 +606,14 @@
 								}
 
 								// Recherche des enfants de niveau 1
-								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
+								$sql="SELECT id, nom_court, nom_complet, display_parents, coef FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
 								if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 									echo "$sql<br />\n";
 								}
 								$res_conteneurs_niv1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_conteneurs_niv1)>0) {
 									$cpt=0;
+									$tab_coef_boites=array();
 									while($lig_cnt=mysqli_fetch_object($res_conteneurs_niv1)) {
 										unset($tab_conteneurs_enfants);
 										$tab_conteneurs_enfants=array();
@@ -623,6 +624,10 @@
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_court']=$lig_cnt->nom_court;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_complet']=$lig_cnt->nom_complet;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['display_parents']=$lig_cnt->display_parents;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['coef']=$lig_cnt->coef;
+										if(!in_array($lig_cnt->coef, $tab_coef_boites)) {
+											$tab_coef_boites[]=$lig_cnt->coef;
+										}
 
 										recherche_conteneurs_enfants($lig_cnt->id);
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['conteneurs_enfants']=$tab_conteneurs_enfants;
@@ -657,6 +662,12 @@
 										}
 
 										$cpt++;
+									}
+									if(count($tab_coef_boites)>1) {
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['temoin_coef_differents_conteneurs']="y";
+									}
+									else {
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['temoin_coef_differents_conteneurs']="n";
 									}
 
 								}
