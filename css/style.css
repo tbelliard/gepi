@@ -363,3 +363,7 @@ table.boireaus {
 	background-image: url("../images/background/opacite50.png");
 }
 
+#menu_barre li:first-letter {
+	font-weight:bold;
+}
+
