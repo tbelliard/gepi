@@ -1074,7 +1074,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$res_profs=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_groupes)>0) {
-				echo "<div style='float:right; width:15em; border: 1px solid black;'>\n";
+				echo "<div style='float:right; width:15em; border: 1px solid black;' class='fieldset_opacite50'>\n";
 
 				echo "<ol>\n";
 				echo "<li>\n";
