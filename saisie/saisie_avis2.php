@@ -641,7 +641,7 @@ echo "</form>\n";
 
 		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span>";
 		if($ver_periode[$periode_num]!="O") {
-			echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
+			echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
 		}
 		echo "</td>\n";
 
