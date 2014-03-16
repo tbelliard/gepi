@@ -1376,7 +1376,7 @@ foreach ($liste_eleves as $eleve_login) {
 						ccn.periode='$k' AND 
 						cnd.statut='' AND
 						cc.id=cd.id_conteneur
-					ORDER BY cc.nom_court, cd.date;";
+					ORDER BY cc.parent, cc.nom_court, cd.date;";
 
 				//echo "\n<!--sql=$sql-->\n";
 				$result_nbct=mysqli_query($GLOBALS["mysqli"], $sql);
