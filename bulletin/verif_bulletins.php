@@ -538,7 +538,7 @@ Les saisies/modifications sont possibles.";
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
 	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
-(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe)."</em>)</p>";
+(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
 
 	//
 	// Vérification de paramètres généraux
