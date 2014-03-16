@@ -434,6 +434,10 @@ echo "</p>\n";
 
 echo "</form>\n";
 
+// 20140226
+if(getSettingAOui('active_mod_discipline')) {
+	echo necessaire_saisie_avertissement_fin_periode();
+}
 
 echo "<form enctype='multipart/form-data' action='saisie_avis1.php' method='post'>\n";
 echo add_token_field(true);
@@ -737,11 +741,6 @@ if ($insert_mass_appreciation_type=="y") {
 	$num_id++;
 	//$i++;
 	echo "</table>\n<br />\n<br />\n";
-
-	// 20140226
-	if(getSettingAOui('active_mod_discipline')) {
-		echo necessaire_saisie_avertissement_fin_periode();
-	}
 
 	$chaine_test_vocabulaire="";
 
