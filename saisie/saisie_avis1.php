@@ -454,7 +454,10 @@ echo add_token_field(true);
 if ($id_classe) {
 	$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 	?>
-	<p class= 'grand'>Avis du conseil de classe. Classe : <?php echo $classe; ?></p>
+	<p class= 'grand'>Avis du conseil de classe. Classe : <?php echo $classe; 
+	echo " - <em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+	?>
+	</p>
 	<?php
 	$test_periode_ouverte = 'no';
 	$i = "1";

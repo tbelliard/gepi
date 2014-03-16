@@ -333,13 +333,14 @@ if (isset($id_classe)) {
 			$msg_acces_app_ele_resp="???";
 		}
 	}
+
+	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 }
 
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
 	$acces_avis_pdf=acces('/impression/avis_pdf.php', $_SESSION['statut']);
 
-	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 	echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a>";
 	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
 	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
@@ -347,7 +348,8 @@ if (isset($id_classe) and (!isset($periode_num))) {
 		echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
 	}
 	echo "</p>\n";
-	echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
+	echo "<p><b>".$classe_suivi.", choisissez la période : </b><br />
+<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em></p>\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
 	echo "<ul>\n";
@@ -525,7 +527,12 @@ echo "</form>\n";
 
 	?>
 
-	<p class='grand'>Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong></p>
+	<p class='grand'>
+		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
+		<?php
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+		?>
+	</p>
 
 	<p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
 	<table class='boireaus' border="1" cellspacing="2" cellpadding="5" width="100%" summary="Choix de l'élève">
@@ -716,26 +723,16 @@ if (isset($fiche)) {
 	(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
 		echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
 	}
+	echo " | <a href='saisie_avis1.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis seul</a>";
 	echo "</p>\n";
-
-
-/*
-	// 20130722
-	// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
-	if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
-	(getSettingAOui('GepiAccesGraphParent'))||
-	(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
-	(getSettingAOui('GepiAccesGraphEleve'))) {
-		if($tab_acces_app_classe[$id_classe][$k]=="y") {
-			echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
-		}
-		else {
-			echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-	$msg_acces_app_ele_resp\" />";
-		}
-
-*/
-
+?>
+	<p class='grand'>
+		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
+		<?php
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+		?>
+	</p>
+<?php
 	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
