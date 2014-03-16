@@ -388,7 +388,7 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 
 	<form enctype="multipart/form-data" action="saisie_avis2.php" name="form1" method='post'>
 
-	<p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
+	<p class="bold"><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
 
 	<?php
 
@@ -710,7 +710,7 @@ echo "</form>\n";
 
 if (isset($fiche)) {
 
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
+	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
 	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
 	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
 	(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
