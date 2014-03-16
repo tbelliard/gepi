@@ -430,6 +430,15 @@ if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP'))
 	echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
 }
 
+if(isset($id_classe)) {
+	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND (verouiller='N' OR verouiller='P');";
+	//echo "$sql<br />";
+	$test_periode_ouverte=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_periode_ouverte)==1) {
+		$lig_tmp_per=mysqli_fetch_object($test_periode_ouverte);
+		echo " | <a href='saisie_avis2.php?id_classe=$id_classe&amp;periode_num=".$lig_tmp_per->num_periode."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis avec affichage bulletin simplifié</a>";
+	}
+}
 echo "</p>\n";
 
 echo "</form>\n";

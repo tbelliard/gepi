@@ -515,6 +515,10 @@ if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP'))
 	echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
 }
 
+if(isset($id_classe)) {
+	echo " | <a href='saisie_avis1.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis seul</a>";
+}
+
 echo "</p>\n";
 
 echo "</form>\n";
