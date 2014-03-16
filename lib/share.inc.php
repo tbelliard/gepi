@@ -5273,7 +5273,7 @@ function get_tab_prof_suivi($id_classe, $login_user="") {
  * @param string $id_classe id de la classe
  * @return string Liste des profs principaux d'une classe sous la forme d'une chaine séparée par des virgules
  */
-function liste_prof_suivi($id_classe, $pour_qui="") {
+function liste_prof_suivi($id_classe, $pour_qui="", $avec_lien_mail="") {
 	global $mysqli;
 	$retour="";
 
@@ -5284,11 +5284,26 @@ function liste_prof_suivi($id_classe, $pour_qui="") {
 			$retour.=", ";
 		}
 
-		if($pour_qui=="profs") {
-			$retour.=civ_nom_prenom($tab[$loop]);
+		$mail_user="";
+		if($avec_lien_mail=="y") {
+			$mail_user=get_mail_user($tab[$loop]);
+		}
+
+		if($mail_user!="") {
+			if($pour_qui=="profs") {
+				$retour.="<a href='mailto:$mail_user?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail'))."[GEPI]: ...' title=\"Envoyer un mail.\">".civ_nom_prenom($tab[$loop])."</a>";
+			}
+			else {
+				$retour.="<a href='mailto:$mail_user?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail'))."[GEPI]: ...' title=\"Envoyer un mail.\">".affiche_utilisateur($tab[$loop], $id_classe)."</a>";
+			}
 		}
 		else {
-			$retour.=affiche_utilisateur($tab[$loop], $id_classe);
+			if($pour_qui=="profs") {
+				$retour.=civ_nom_prenom($tab[$loop]);
+			}
+			else {
+				$retour.=affiche_utilisateur($tab[$loop], $id_classe);
+			}
 		}
 	}
 
