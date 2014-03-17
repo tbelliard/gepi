@@ -334,6 +334,14 @@ if (isset($id_classe)) {
 		}
 	}
 
+	$traduction_verrouillage_periode['O']="close";
+	$traduction_verrouillage_periode['P']="partiellement close";
+	$traduction_verrouillage_periode['N']="ouverte en saisie";
+
+	$couleur_verrouillage_periode['O']="red";
+	$couleur_verrouillage_periode['P']="darkorange";
+	$couleur_verrouillage_periode['N']="green";
+
 	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 }
 
@@ -530,7 +538,8 @@ echo "</form>\n";
 	<p class='grand'>
 		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
 		<?php
-			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
 		?>
 	</p>
 
@@ -729,7 +738,8 @@ if (isset($fiche)) {
 	<p class='grand'>
 		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
 		<?php
-			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
 		?>
 	</p>
 <?php
