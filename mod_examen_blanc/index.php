@@ -288,6 +288,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					if(isset($bonus[$i])) {
 						$sql.=", bonus='y'";
 					}
+					else {
+						$sql.=", bonus='n'";
+					}
 		
 					$sql.=" WHERE id_exam='$id_exam' AND matiere='$tab_matiere[$i]';";
 					//echo "$sql<br />\n";
