@@ -9372,6 +9372,11 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 		}
 		elseif($lig->type=='conseil_de_classe') {
 
+			$tab_classe_pp=array("id_classe");
+			if($_SESSION['statut']=="professeur") {
+				$tab_classe_pp=get_tab_ele_clas_pp($_SESSION['login']);
+			}
+
 			$retour.=$lig->texte_avant;
 			//$retour.="<br />";
 
@@ -9433,6 +9438,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					}
 					sort($tab_heures);
 
+					/*
 					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
 						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
 							$tab_cellules[$tmp_jour][$tmp_heure]="";
@@ -9444,15 +9450,70 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 ".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
 					}
 					else {
+					*/
 						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
 							$tab_cellules[$tmp_jour][$tmp_heure]="";
 						}
 						else {
 							$tab_cellules[$tmp_jour][$tmp_heure].=" - ";
 						}
-						$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
-					}
+
+						if($_SESSION["statut"]=="professeur") {
+							if(in_array($lig2->id_classe, $tab_classe_pp['id_classe'])) {
+								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+								}
+								else {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir l'avis du conseil de classe.\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+								}
+								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+								$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+							}
+							else {
+								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+								}
+								else {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+								}
+								// Problème: Un prof peut avoir plusieurs groupes dans une classe
+								//$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=' style='color:black'>";
+								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+								//$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+							}
+						}
+						elseif($_SESSION["statut"]=="scolarite") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
+							$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir l'avis du conseil de classe.\">";
+								$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+					//}
 				}
 
 				$retour.="<table class='boireaus boireaus_alt' summary='Dates de conseils de classe'>
@@ -9787,6 +9848,9 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
 	return false;
 }
 
+
+// Attention à ne pas coller un appel à cette fonction dans une 
+// section <form></form> parce qu'on insère aussi un formulaire.
 function necessaire_saisie_avertissement_fin_periode() {
 	global $mod_disc_terme_avertissement_fin_periode;
 
