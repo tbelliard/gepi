@@ -127,7 +127,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[110][0]='DEUXIEME LANGUE VIVANTE';
 			$tabmatieres[110][0]='DEUXIEME LANGUE VIVANTE';
 			//$tabmatieres[110][0]='DEUXIEME LANGUE VIVANTE OU DECOUVERTE PROFESSIONNELLE (module de 6 heures)';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 			//$tabmatieres[113][0]='OPTION FACULTATIVE (1)';
 			$tabmatieres[113][0]='OPTION FACULTATIVE';
 
@@ -185,7 +185,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 
 			// Colonnes pour les fiches brevet:
@@ -270,7 +270,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[110][0]='DECOUVERTE PROFESSIONNELLE (module de 6 heures)';
 			$tabmatieres[110][0]='DÉCOUVERTE PROFESSIONNELLE 6 heures';
 			$tabmatieres[111][0]='';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 			//$tabmatieres[113][0]='OPTION FACULTATIVE (1)';
 			$tabmatieres[113][0]='OPTION FACULTATIVE';
 
@@ -329,7 +329,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -545,7 +545,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
 			$tabmatieres[108][0]='SCIENCES ET TECHNOLOGIE';
 			$tabmatieres[110][0]='DECOUVERTE PROFESSIONNELLE';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
@@ -607,7 +607,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 
 			// Colonnes pour les fiches brevet:
@@ -691,7 +691,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][0]='TECHNOLOGIE';
 			// DP6 A PLACER....
 			$tabmatieres[111][0]='DÉCOUVERTE PROFESSIONNELLE (module 6 heures)';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
@@ -756,7 +756,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -823,7 +823,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			//$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
-			$tabmatieres[107][0]='EDUCATION SOCIO-CULTURELLE';
+			$tabmatieres[107][0]='EDUCATION SOCIOCULTURELLE';
 			// CES TROIS Là DEVRAIENT ETRE SUR UNE MEME LIGNE POUR LES FICHES BREVET
 			//$tabmatieres[108][0]='TECHNOLOGIE';
 			//$tabmatieres[109][0]='SCIENCES BIOLOGIQUES';
@@ -831,7 +831,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[109][0]='TECHNOLOGIE: SCIENCES BILOGIQUES ET SCIENCES PHYSIQUES';
 			$tabmatieres[109][0]='TECHNOLOGIE, SCIENCES ET DECOUVERTE DE LA VIE PROFESSIONNELLE ET DES METIERS';
 
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
@@ -892,7 +892,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 
 			$tabmatieres["num_fb_col"]=1;
@@ -976,7 +976,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
 			$tabmatieres[108][0]='TECHNOLOGIE';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
@@ -1035,7 +1035,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -1101,7 +1101,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][0]='TECHNOLOGIE';
 			$tabmatieres[109][0]='';
 			$tabmatieres[110][0]='DÉCOUVERTE PROFESSIONNELLE (module 6 heures)';
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
@@ -1160,7 +1160,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 
 			// Colonnes pour les fiches brevet:
@@ -1227,7 +1227,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[108][0]='SCIENCES BIOLOGIQUES';
 			$tabmatieres[109][0]='TECHNOLOGIE: SECTEUR SCIENCES BIOLOGIQUES, TECHNIQUES AGRICOLES ET AGROALIMENTAIRES, ACTIVITES TERTIAIRES';
 
-			$tabmatieres[112][0]='VIE SCOLAIRE';
+			//$tabmatieres[112][0]='VIE SCOLAIRE';
 
 			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
@@ -1281,7 +1281,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			// Il n'y a qu'une seule colonne pour les fiches brevet en agricole
