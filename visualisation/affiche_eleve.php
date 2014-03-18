@@ -2456,7 +2456,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 								$texte.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
-			
+
+							// Voir ligne 4784 ce qui est fait pour les avertissements
+							// $texte.="<div style='float:right;'></div>\n";
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
@@ -3974,10 +3976,22 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 					//if($tab_acces_app[$lig_avis->periode]=="y") {
 					if(($tab_acces_app[$lig_avis->periode]=="y")&&($lig_avis->avis!="")) {
 					//==========================================================
-						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlspecialchars($lig_avis->avis)."</td></tr>\n";
-					//==========================================================
-					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlspecialchars($lig_avis->avis);
+
+						if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+							$tableau_des_mentions_sur_le_bulletin=get_mentions();
+						}
+
+						if(isset($tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention])) {
+							$texte_bulle.="<br />\n";
+							$texte_bulle.="<b>".ucfirst($gepi_denom_mention)."</b> : ";
+							$texte_bulle.=$tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention]."\n";
+						}
+
+						$texte_bulle.="</td></tr>\n";
+						//==========================================================
+						// AJOUT: boireaus 20080218
+						//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 						$temoin_avis_present="y";
 					}
 					//==========================================================
