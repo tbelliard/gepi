@@ -1134,6 +1134,18 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										echo_debug_itop("$sql<br />");
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($update) {
+
+											// Ménage:
+											$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($pers_id)';";
+											//if($debug_create_resp=="y") {echo "$sql<br />\n";}
+											$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_actions)>0) {
+												while($lig_action=mysqli_fetch_object($res_actions)) {
+													$menage=del_info_action($lig_action->id);
+													if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de ".$tab_tempo4[$id_col1]['login']."<br />";}
+												}
+											}
+
 											$nb_comptes_remplaces++;
 										}
 										else {
@@ -1166,6 +1178,18 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 									echo_debug_itop("$sql<br />");
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
+
+										// Ménage:
+										$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($pers_id)';";
+										//if($debug_create_resp=="y") {echo "$sql<br />\n";}
+										$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_actions)>0) {
+											while($lig_action=mysqli_fetch_object($res_actions)) {
+												$menage=del_info_action($lig_action->id);
+												if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de ".$tab_tempo4[$id_col1]['login']."<br />";}
+											}
+										}
+
 										$nb_nouveaux_comptes++;
 									}
 									else {
@@ -1197,6 +1221,18 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 								echo_debug_itop("$sql<br />");
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
+
+									// Ménage:
+									$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($pers_id)';";
+									//if($debug_create_resp=="y") {echo "$sql<br />\n";}
+									$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_actions)>0) {
+										while($lig_action=mysqli_fetch_object($res_actions)) {
+											$menage=del_info_action($lig_action->id);
+											if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de ".$tab_tempo4[$id_col1]['login']."<br />";}
+										}
+									}
+
 									$nb_nouveaux_comptes++;
 								}
 								else {
@@ -2321,6 +2357,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 ","",32,0,"y","y","n","n");
 
+		$tab_lignes_sans_eleve_associe=array();
+
 		echo "
 <h2>Rapprochement des comptes responsables ENT ITOP/GEPI</h2>
 
@@ -2329,6 +2367,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 <input type='hidden' name='mode' value='import_responsables' />
 <input type='hidden' name='enregistrement_responsables' value='y' />
 <input type='hidden' name='temoin_suhosin_1' value='responsable' />
+
+<p id='p_masquer_lignes_sans_eleve_associe' style='display:none;'><a href='javascript:masquer_lignes_sans_eleve_associe()'>Masquer les lignes sans élève associé.</a></p>
 
 <table class='boireaus'>
 	<tr>
@@ -2442,7 +2482,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 
 						$alt=$alt*(-1);
 						echo "
-	<tr class='lig$alt white_hover'$style_css>
+	<tr id='tr_$cpt' class='lig$alt white_hover'$style_css>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
 		<td><label for='ligne_$cpt'>".$guid_courant."</label></td>
 		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$nom_courant."</span></label></td>
@@ -2524,6 +2564,14 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									}
 									$cpt_ele++;
 								}
+								/*
+								if($cpt_ele==0) {
+									$tab_lignes_sans_eleve_associe[]=$cpt;
+								}
+								*/
+							}
+							else {
+								$tab_lignes_sans_eleve_associe[]=$cpt;
 							}
 						}
 						echo "</label></td>\n";
@@ -2641,6 +2689,9 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 		echo "
 </table>
 <input type='hidden' name='temoin_suhosin_2' value='responsable' />
+
+<p id='p_masquer_lignes_sans_eleve_associe2' style='display:none;'><a href='javascript:masquer_lignes_sans_eleve_associe()'>Masquer les lignes sans élève associé.</a></p>
+
 <input type='submit' id='bouton_submit_import' value='Enregistrer' />
 <input type='button' id='bouton_button_import' value='Enregistrer' style='display:none;' onclick='verif_puis_submit()' />
 
@@ -2739,8 +2790,24 @@ Ajouter une variable en fin de formulaire pour détecter les pb de transmission 
 		else {
 			alert('Vous n avez rien coché!?');
 		}
-	}
+	}";
 
+		if(count($tab_lignes_sans_eleve_associe)>0) {
+			echo "
+	document.getElementById('p_masquer_lignes_sans_eleve_associe').style.display='';
+	document.getElementById('p_masquer_lignes_sans_eleve_associe2').style.display='';
+
+	function masquer_lignes_sans_eleve_associe() {";
+			for($loop=0;$loop<count($tab_lignes_sans_eleve_associe);$loop++) {
+			echo "
+				document.getElementById('tr_".$tab_lignes_sans_eleve_associe[$loop]."').style.display='none';
+		";
+			}
+			echo "
+	}";
+		}
+
+		echo "
 </script>
 ";
 		// En fin d'enregistrement, renvoyer vers consult_eleves pour afficher les associations
@@ -4253,7 +4320,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		// 20131106
 		//﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
 		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+		//$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Classe", "Etat", "Date de désactivation");
 
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$temp=fgets($fp,4096);
@@ -4293,6 +4361,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				$ligne=substr($ligne,3);
 			}
 
+			// DEBUG:
+			//echo "$ligne<br />";
+
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
 
@@ -4311,6 +4382,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					// On exclut l'année précédente
 					$ligne_a_prendre_en_compte="n";
 				}
+				elseif((isset($tabindice['Classe']))&&(preg_match("/^BASE20/",$tab[$tabindice['Classe']]))) {
+					// On exclut l'année précédente
+					$ligne_a_prendre_en_compte="n";
+				}
 				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
 					// On exclut les comptes "Désactivé"
 					$ligne_a_prendre_en_compte="n";
@@ -4319,11 +4394,14 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 				if($ligne_a_prendre_en_compte=="y") {
 
-					if(!isset($tabindice['Classe enfant 1'])) {
+					if((!isset($tabindice['Classe enfant 1']))&&(!isset($tabindice['Classe']))) {
 						$classe_courante="classe_inconnue";
 					}
-					else {
+					elseif(isset($tabindice['Classe enfant 1'])) {
 						$classe_courante=$tab[$tabindice['Classe enfant 1']];
+					}
+					else {
+						$classe_courante=$tab[$tabindice['Classe']];
 					}
 
 					/*
@@ -4368,6 +4446,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$tab_classe_parent[$classe_courante][$cpt]['cpt_tempo4']=$cpt2;
 
 					$sql="INSERT INTO tempo4 SET col1='$cpt2', col2='".$tab[$tabindice['Login']]."', col3=MD5('".$tab[$tabindice['Mot de passe']]."');";
+					// DEBUG:
+					//echo "$sql<br />";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$cpt2++;
@@ -4385,7 +4465,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 <table class='boireaus boireaus_alt' summary='Tableau des responsables'>
 	<tr>
 		<th colspan='6'>Informations ENT</th>
-		<th colspan='4'>Informations Gepi</th>
+		<th colspan='5'>Informations Gepi</th>
 	</tr>
 	<tr>
 		<th>Nom prénom</th>
