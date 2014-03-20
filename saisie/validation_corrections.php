@@ -413,6 +413,7 @@ else {
 	echo add_token_field();
 	echo "<input type='hidden' name='action_corrections' value='y' />\n";
 
+	$nb_app_proposees_en_attente=0;
 	$tab_cpt_classe=array();
 	$classe_prec="";
 	for($i=0;$i<count($tab_id_classe);$i++) {
@@ -515,6 +516,8 @@ else {
 					echo "</tr>\n";
 
 					$compteur++;
+
+					$nb_app_proposees_en_attente++;
 				}
 
 				$sql="SELECT DISTINCT mac.* FROM matieres_app_corrections mac, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' ORDER BY mac.login;";
@@ -564,6 +567,8 @@ else {
 					echo "</tr>\n";
 					$cpt++;
 					$compteur++;
+
+					$nb_app_proposees_en_attente++;
 				}
 			}
 			echo "</table>\n";
@@ -586,19 +591,20 @@ else {
 </script>";
 */
 
-	//$chaine_js="var tab_classe_indice=new Array();\n";
-	$chaine_js="";
-	foreach($tab_cpt_classe as $id_classe => $indice) {
-		//$chaine_js.="var tab_classe_indice[$id_classe][0]=".$indice[0].";\n";
-		//$chaine_js.="var tab_classe_indice[$id_classe][1]=".$indice[1].";\n";
-		$chaine_js.="var tab_classe_indice_$id_classe=new Array(".$indice[0].",".$indice[1].");\n";
-	}
+	if($nb_app_proposees_en_attente>0) {
+		//$chaine_js="var tab_classe_indice=new Array();\n";
+		$chaine_js="";
+		foreach($tab_cpt_classe as $id_classe => $indice) {
+			//$chaine_js.="var tab_classe_indice[$id_classe][0]=".$indice[0].";\n";
+			//$chaine_js.="var tab_classe_indice[$id_classe][1]=".$indice[1].";\n";
+			$chaine_js.="var tab_classe_indice_$id_classe=new Array(".$indice[0].",".$indice[1].");\n";
+		}
 
-	echo "<p><a href='#' onClick=\"ToutCocher('action_valider_'); return false;\">Tout valider</a> / <a href='#' onClick=\"ToutCocher('action_supprimer_'); return false;\">Tout supprimer</a> / <a href='#' onClick=\"ToutCocher('action_attente_'); return false;\">Tout remettre en attente</a></p>\n";
-	echo "<p><input type='submit' value='Enregistrer' /></p>\n";
-	echo "</form>\n";
+		echo "<p><a href='#' onClick=\"ToutCocher('action_valider_'); return false;\">Tout valider</a> / <a href='#' onClick=\"ToutCocher('action_supprimer_'); return false;\">Tout supprimer</a> / <a href='#' onClick=\"ToutCocher('action_attente_'); return false;\">Tout remettre en attente</a></p>\n";
+		echo "<p><input type='submit' value='Enregistrer' /></p>\n";
+		echo "</form>\n";
 
-	echo "<script type='text/javascript'>
+		echo "<script type='text/javascript'>
 	function ToutCocher(prefixe) {
 		for (var k=0;k<$compteur;k++) {
 			if(document.getElementById(prefixe+k)){
@@ -625,7 +631,7 @@ else {
 		changement();
 	}
 </script>\n";
-
+	}
 }
 
 echo "<p><br /></p>\n";
