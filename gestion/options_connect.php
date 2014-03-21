@@ -63,6 +63,18 @@ if (isset($_POST['duree'])) {
     }
 }
 
+if(isset($_POST['afficher_liaison_ent'])) {
+	check_token();
+	saveSetting('afficher_liaison_ent', $_POST['afficher_liaison_ent']);
+	if($_POST['afficher_liaison_ent']=="") {
+		saveSetting('use_ent', "n");
+	}
+	else {
+		saveSetting('use_ent', "y");
+	}
+}
+
+$afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
 
 if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1") {
 	check_token();
@@ -763,7 +775,46 @@ echo "
 
 <hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
 
+//===========================================================
 
+//
+// ENT
+//
+
+$checked_argos_bordeaux="";
+$checked_netcollege="";
+$checked_aucun="";
+
+if($afficher_liaison_ent=="argos_bordeaux") {
+	$checked_argos_bordeaux=" checked";
+}
+elseif($afficher_liaison_ent=="netcollege") {
+	$checked_netcollege=" checked";
+}
+if($afficher_liaison_ent=="") {
+	$checked_aucun=" checked";
+}
+
+echo "<h3 class='gepi'>ENT</h3>\n";
+echo "<p>Cette section concerne des dispositifs spécifiques à deux Espaces Numériques de Travail.<br />
+L'ENT Argos dans une mouture spécifique à l'académie de Bordeaux d'une part,<br />
+Et l'ENT NetCollege.</p>\n";
+echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
+	<fieldset id='fieldset_ent' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<legend style='border: 1px solid grey; background-color: white;'>ENT</legend>
+		".add_token_field()."
+		<p>Faire apparaitre le menu <strong>Liaison ENT</strong> dans la page d'accueil administrateur&nbsp;:<br />
+		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_argos_bordeaux\" value=\"argos_bordeaux\"$checked_argos_bordeaux /><label for='afficher_liaison_ent_argos_bordeaux'>Liaison ENT pour l'ENT Argos de Bordeaux</label><br />
+		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_netcollege\" value=\"netcollege\"$checked_netcollege /><label for='afficher_liaison_ent_netcollege'>Liaison ENT pour l'ENT Netcollege</label><br />
+		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_aucun\" value=\"\"$checked_aucun /><label for='afficher_liaison_ent_aucun'>Ne pas afficher le menu <strong>Liaison ENT</strong></label><br />
+		<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />
+		<input type=hidden name=mode_navig value='$mode_navig' />
+	</fieldset>
+</form>
+
+<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
+
+//===========================================================
 
 //
 // Durée de conservation des logs
