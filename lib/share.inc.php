@@ -9409,6 +9409,8 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
 				}
 			}
+			// DEBUG:
+			//$retour.="$sql<br />";
 			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
 				// On va remplir un tableau et repérer les jours et heures.
@@ -9511,6 +9513,30 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 							}
 							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 							$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+						elseif($_SESSION["statut"]=="cpe") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+						elseif($_SESSION["statut"]=="administrateur") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
 						}
 					//}
