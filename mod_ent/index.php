@@ -47,9 +47,19 @@ if (getSettingValue("use_ent") != 'y') {
 	die('Fichier interdit.');
 }
 
-if((preg_match("/^027/", getSettingValue('gepiSchoolRne')))||(preg_match("/^076/", getSettingValue('gepiSchoolRne')))) {
-	header("Location:./index_itop.php");
-	die();
+$afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
+if($afficher_liaison_ent=="") {
+	if((preg_match("/^027/", getSettingValue('gepiSchoolRne')))||(preg_match("/^076/", getSettingValue('gepiSchoolRne')))) {
+		header("Location:./index_itop.php");
+		die();
+	}
+}
+else {
+	// On tient compte du paramétrage
+	if($afficher_liaison_ent=="netcollege") {
+		header("Location:./index_itop.php");
+		die();
+	}
 }
 
 // ======================= Initialisation des variables ==========================
