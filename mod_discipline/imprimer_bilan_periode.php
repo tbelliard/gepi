@@ -375,7 +375,7 @@ echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a> | <a 
 		<p class='bold'>Choix des élèves&nbsp;:</p>";
 for($loop=0;$loop<count($id_classe);$loop++) {
 	echo "
-		<div style='margin-left:3em; width:25em; float:left;'>
+		<div style='margin-left:3em; margin-bottom:0.5em; width:25em; padding: 0.2em;float:left;' class='fieldset_opacite50'>
 			<p>Classe de ".get_nom_classe($id_classe[$loop])."</p>
 			<input type='hidden' name='id_classe[]' value='".$id_classe[$loop]."' />";
 
