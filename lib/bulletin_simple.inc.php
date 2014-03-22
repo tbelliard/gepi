@@ -257,7 +257,10 @@ if ($on_continue == 'yes') {
 	//
 	//-------------------------------
 	// Fin de l'en-tête
-	
+
+	// Initialisation de variable pour le cas où un élève n'est dans aucun enseignement sur une période
+	$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+
 	// On initialise le tableau :
 	
 	$larg_tab = 680;
@@ -266,6 +269,7 @@ if ($on_continue == 'yes') {
 	$larg_col3 = 38;
 	$larg_col4 = 20;
 	$larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
+
 	//=========================
 	// MODIF: boireaus 20080315
 	//echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
