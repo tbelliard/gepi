@@ -254,7 +254,18 @@ if(!isset($periode)) {
 </form>
 
 <p><br /></p>
-<p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le fichier modèle OOo utilisé utilise une police particulière pour les cases à cocher (<a href='http://www.sylogix.org/attachments/download/243/gepi.ttf'>gepi.ttf</a>)<br />
+<p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le fichier modèle OOo utilisé utilise une police particulière pour les cases à cocher (<a href='http://www.sylogix.org/attachments/download/243/gepi.ttf' title=\"Télécharger le fichier de police de caractère.
+
+Vous devrez le mettre en place sur la machine utilisée pour imprimer les Avertissements.
+
+Sous Micro\$oft Window$, il faut copier le fichier gepi.ttf dans le dossier
+      C:\\Windows\\Fonts
+
+Sous Linux, copier le fichier dans
+      /usr/share/fonts/truetype/
+et lancer la commande:
+      fc-cache -f -v
+pour prendre en compte la nouvelle police.\">gepi.ttf</a>)<br />
 Il faut mettre en place cette police sur votre machine pour obtenir les cases correctement cochées.<br />
 A défaut, vous pouvez opter pour un autre mode d'affichage en créant votre propre modèle.<br />
 Quelques ressources&nbsp;:
