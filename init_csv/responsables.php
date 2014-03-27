@@ -225,11 +225,11 @@ if (!isset($_POST["action"])) {
 
 							$sql="INSERT INTO responsables SET " .
 								"ereno = '" . $reg_id_eleve . "', " .
-								"nom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-								"prenom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-								"adr1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-								"adr1_comp = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-								"commune1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+								"nom1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) . "', " .
+								"prenom1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) . "', " .
+								"adr1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) . "', " .
+								"adr1_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
+								"commune1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
 								"cp1 = '" . $reg_code_postal . "'";
 							$insert = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -238,11 +238,11 @@ if (!isset($_POST["action"])) {
 							// On regarde si le responsable 1 a déjà été saisi
 							if (old_mysql_result($test, 0, "nom1") == "") {
 								$sql="UPDATE responsables SET " .
-									"nom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"prenom1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"adr1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"adr1_comp = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"commune1 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+									"nom1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) . "', " .
+									"prenom1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) . "', " .
+									"adr1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) . "', " .
+									"adr1_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
+									"commune1 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
 									"cp1 = '" . $reg_code_postal . "' " .
 									"WHERE " .
 									"ereno = '" . $reg_id_eleve . "'";
@@ -250,11 +250,11 @@ if (!isset($_POST["action"])) {
 
 							} else if (old_mysql_result($test, 0, "nom2") == "") {
 								$sql="UPDATE responsables SET " .
-									"nom2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"prenom2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"adr2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"adr2_comp = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-									"commune2 = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+									"nom2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_nom) . "', " .
+									"prenom2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_prenom) . "', " .
+									"adr2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse1) . "', " .
+									"adr2_comp = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_adresse2) . "', " .
+									"commune2 = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_commune) . "', " .
 									"cp2 = '" . $reg_code_postal . "' " .
 									"WHERE " .
 									"ereno = '" . $reg_id_eleve . "'";
@@ -268,7 +268,7 @@ if (!isset($_POST["action"])) {
 
 						if ($insert == false) {
 							$error++;
-							$erreur_mysql=((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+							$erreur_mysql=mysqli_error($GLOBALS["mysqli"]);
 							if($erreur_mysql!=""){echo "<p style='color:red'>".$erreur_mysql."</p>\n";}
 							//echo "<p>$sql</p>\n";
 						} else {
@@ -330,6 +330,8 @@ if (!isset($_POST["action"])) {
 					$ligne = fgets($fp, 4096);
 					if(trim($ligne)!="") {
 
+						//echo $ligne."<br />";
+
 						$tabligne=explode(";",$ligne);
 
 						// 0 : Identifiant interne élève
@@ -341,7 +343,7 @@ if (!isset($_POST["action"])) {
 						// 6 : Code postal
 						// 7 : Commune
 
-							// On nettoie et on vérifie :
+						// On nettoie et on vérifie :
 						$tabligne[0] = preg_replace("/[^0-9]/","",trim($tabligne[0]));
 
 						$tabligne[1]=my_strtoupper(nettoyer_caracteres_nom($tabligne[1], "a", " _-",""));
@@ -352,7 +354,7 @@ if (!isset($_POST["action"])) {
 						$tabligne[2]=preg_replace("/'/"," ",$tabligne[2]);
 						if (mb_strlen($tabligne[2]) > 50) $tabligne[2] = mb_substr($tabligne[2], 0, 50);
 
-						if ($tabligne[3] != "M." AND $tabligne[3] != "MME" AND $tabligne[3] != "MLLE") { $tabligne[3] = "";}
+						if (casse_mot($tabligne[3],"maj") != "M." AND casse_mot($tabligne[3],"maj") != "MME" AND casse_mot($tabligne[3],"maj") != "MLLE") { $tabligne[3] = "";}
 
 						$tabligne[4]=nettoyer_caracteres_nom($tabligne[4], "an", " ,'_-","");
 						$tabligne[4]=preg_replace("/'/",' ',$tabligne[4]);
@@ -378,6 +380,12 @@ if (!isset($_POST["action"])) {
 						$data_tab[$k]["adresse2"] = $tabligne[5];
 						$data_tab[$k]["code_postal"] = $tabligne[6];
 						$data_tab[$k]["commune"] = $tabligne[7];
+
+						/*
+						echo "<pre>";
+						print_r($data_tab[$k]);
+						echo "</pre>";
+						*/
 
 						$k++;
 					}
@@ -405,6 +413,11 @@ if (!isset($_POST["action"])) {
 				$sql="TRUNCATE TABLE temp_responsables;";
 				$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
+				/*
+				echo "\$data_tab<pre>";
+				print_r($data_tab);
+				echo "</pre>";
+				*/
 
 				$nb_error=0;
 
@@ -415,60 +428,64 @@ if (!isset($_POST["action"])) {
 				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th></tr>\n";
 
 				$alt=1;
-				for ($i=0;$i<$k-1;$i++) {
-					$alt=$alt*(-1);
-                    echo "<tr class='lig$alt'>\n";
-					echo "<td";
-					if($data_tab[$i]["id_eleve"]==""){
-						echo " style='color:red;'";
-					}
-					echo ">\n";
+				//for ($i=0;$i<$k-1;$i++) {
+				for ($i=0;$i<$k;$i++) {
+					if(isset($data_tab[$i])) {
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td";
+						if($data_tab[$i]["id_eleve"]==""){
+							echo " style='color:red;'";
+						}
+						echo ">\n";
 
-					$sql="INSERT INTO temp_responsables SET elenoet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_eleve"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					civilite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["civilite"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					adresse1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse1"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					adresse2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse2"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["commune"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-					code_postal='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["code_postal"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
-					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(!$insert) {
-						echo "<span style='color:red'>";
-						echo $data_tab[$i]["id_eleve"];
- 						echo "</span>";
-						$nb_error++;
+						$sql="INSERT INTO temp_responsables SET elenoet='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["id_eleve"])."',
+						nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["nom"])."',
+						prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["prenom"])."',
+						civilite='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["civilite"])."',
+						adresse1='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse1"])."',
+						adresse2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["adresse2"])."',
+						commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["commune"])."',
+						code_postal='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["code_postal"])."';";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							echo "<span style='color:red'>";
+							echo $data_tab[$i]["id_eleve"];
+	 						echo "</span>";
+							$nb_error++;
+						}
+						else {
+							echo $data_tab[$i]["id_eleve"];
+						}
+						echo "</td>\n";
+						echo "<td";
+						if($data_tab[$i]["id_eleve"]==""){
+							echo " style='color:red;'";
+						}
+						echo ">\n";
+						echo $data_tab[$i]["nom"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["prenom"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["civilite"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["adresse1"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["adresse2"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["code_postal"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["commune"];
+						echo "</td>\n";
+						echo "</tr>\n";
 					}
-					else {
-						echo $data_tab[$i]["id_eleve"];
-					}
-					echo "</td>\n";
-					echo "<td";
-					if($data_tab[$i]["id_eleve"]==""){
-						echo " style='color:red;'";
-					}
-					echo ">\n";
-					echo $data_tab[$i]["nom"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["prenom"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["civilite"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["adresse1"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["adresse2"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["code_postal"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["commune"];
-					echo "</td>\n";
-					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
