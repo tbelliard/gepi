@@ -1272,10 +1272,93 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 	$msg.="Vous devrez activer ces comptes dans Gestion des bases/Gestion des comptes d'utilisateurs/Responsables.<br />";
 
 	// Ménage:
-	//$sql="TRUNCATE tempo4;";
+	$sql="TRUNCATE tempo4;";
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	//unset($mode);
+	$mode="";
+}
+
+if($mode=='valider_forcer_mdp_eleves') {
+	check_token();
+
+	$nb_reg=0;
+	$nb_erreur=0;
+	$ligne=isset($_POST['ligne']) ? $_POST['ligne'] : array();
+
+	$tab_tempo4=array();
+	$sql="SELECT * FROM tempo4;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_tempo4[$lig->col1]['login']=$lig->col2;
+			$tab_tempo4[$lig->col1]['md5_password']=$lig->col3;
+		}
+	}
+
+	foreach($ligne as $id_col1 => $login_gepi) {
+		if($login_gepi!="") {
+			$sql="SELECT * FROM eleves WHERE login='$login_gepi';";
+			echo_debug_itop("$sql<br />");
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
+				$msg.="ERREUR : In n'existe pas d'élève dans la table 'eleves' qui soit associé au login $login_gepi.<br />";
+				$nb_erreur++;
+			}
+			else {
+				$lig=mysqli_fetch_object($res);
+
+				if(!isset($tab_tempo4[$id_col1])) {
+					$msg.="ERREUR : Le numéro $id_col1 de l'enregistrement 'tempo4' que vous souhaitez associer à l'élève $login_gepi (<em>$lig->nom $lig->prenom</em>) n'existe pas dans la table 'tempo4'.<br />";
+					$nb_erreur++;
+				}
+				else {
+					$sql="SELECT * FROM utilisateurs WHERE login='".$tab_tempo4[$id_col1]['login']."';";
+					echo_debug_itop("$sql<br />");
+					$test_u=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_u)==0) {
+						$msg.="ERREUR : L'élève $login_gepi (<em>$lig->nom $lig->prenom</em>) n'a pas de compte dans la table 'utilisateurs'.<br />";
+						$nb_erreur++;
+					}
+					else {
+						//$lig_u=mysqli_fetch_object($test_u);
+
+						$sql="UPDATE utilisateurs SET password='".$tab_tempo4[$id_col1]['md5_password']."', 
+											salt='', 
+											change_mdp='n' 
+										WHERE login='".$tab_tempo4[$id_col1]['login']."';";
+						echo_debug_itop("$sql<br />");
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($update) {
+							$nb_reg++;
+						}
+						else {
+							$msg.="ERREUR : Le remplacement du mot de passe dans 'utilisateurs' pour ".$tab_tempo4[$id_col1]['login']." (<em>$lig->nom $lig->prenom</em>) a échoué.<br />";
+							$nb_erreur++;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Les comptes créés sont pour le moment inactifs.
+	if($nb_erreur>0) {
+		$msg.="<br />";
+		$msg.="$nb_erreur erreurs se sont produites.<br />";
+	}
+
+	if($nb_reg>0) {
+		$msg.="<br />";
+		$msg.="$nb_reg mots de passe ont été définis/remplacés.<br />";
+	}
+
+	// Ménage:
+	$sql="TRUNCATE tempo4;";
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	unset($mode);
 	$mode="";
 }
 
@@ -1654,7 +1737,47 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 	En revanche, que les comptes parents soient en authentification locale ou en authentification SSO (<em>CAS</em>) importe peu.</p>
 
 </div>
-\n";
+
+
+
+<h2>Forcer les mots de passe élèves (<em>expérimental</em>)</h2>
+
+<div style='margin-left:4em;'>
+	<p>Si l'accès SSO de l'ENT vers Gepi pose parfois des problèmes, il est possible d'activer une fonctionnalité dans <a href='../gestion/options_connexct.php'>Options de connexion</a> pour conserver des mots de passe dans la base Gepi bien que les comptes soient en mode d'authentification SSO.<br />
+	(<em>par défaut, en mode SSO, il n'y a plus de mot de passe dans la base Gepi pour l'utilisateur; l'authentification est effectuée côté ENT</em>)</p>
+	<p>Vous disposez alors d'un accès de secours pour ces utilisateurs.</p>
+	<p>Si vous conservez tout de même des mots de passe dans Gepi pour les élèves, vous pouvez forcer ici les mots de passe d'après un fichier CSV au format&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;LOGIN_GEPI;MOT_DE_PASSE_GEPI<br />
+	A vous de faire en sorte de disposer d'un tel CSV, mais vous aurez intérêt à mettre les mêmes mots de passe que pour l'accès à l'ENT<br />
+	(<em>ATTENTION&nbsp;: en cas de changement de mot de passe dans Gepi ou dans l'ENT, il n'y aura pas de synchronisation automatique des mots de passe</em>).</p>
+
+	<p><br /></p>
+
+	<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+		<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+			".add_token_field()."
+			<p>Fournir le fichier CSV des comptes et mots de passe Gepi.<br />
+			</p>
+			<input type='hidden' name='mode' value='forcer_mdp_eleves' />
+			<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+			<input type='submit' value='Envoyer' />
+		</fieldset>
+	</form>
+
+	<p><br /></p>
+
+	<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>Le CSV attendu doit avoir une ligne d'entête comportant les champs suivants&nbsp;:<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;LOGIN_GEPI;MOT_DE_PASSE_GEPI</li>
+		<li>Une fois le fichier CSV envoyé, vous devrez choisir les élèves pour lesquels vous souhaitez imposer les mots de passe.<br />
+		Les élèves qui ont déjà un mot de passe dans Gepi seront signalés (<em>en revanche, le mot de passe en lui-même ne sera pas affiché</em>).</li>
+		<li>Seuls les élèves qui disposent d'un compte utilisateur seront affichés.</li>
+	</ul>
+
+	<p><br /></p>
+
+</div>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -4460,7 +4583,6 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 	".add_token_field()."
 	<input type='hidden' name='temoin_suhosin_1' value='forcer_logins_mdp_responsables' />
 	<input type='hidden' name='mode' value='valider_forcer_logins_mdp_responsables' />
-	<input type='hidden' name='temoin_suhosin_1' value='forcer_logins_mdp_responsables' />
 
 <table class='boireaus boireaus_alt' summary='Tableau des responsables'>
 	<tr>
@@ -4654,7 +4776,6 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		Ce serait préférable, mais si l'accès via l'ENT est mis en place par la suite avec les comptes et mots de passe présentement mis en place, ne pas changer de mot de passe peut simplifier des choses.</li>
 	</ul>
 
-	<input type='hidden' name='temoin_suhosin_2' value='forcer_logins_mdp_responsables' />
 </form>
 
 <script type='text/javascript'>
@@ -4669,6 +4790,265 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('ligne_'+i)) {
 				if(document.getElementById('ligne_'+i).getAttribute('type')=='checkbox') {
+					document.getElementById('ligne_'+i).checked=true;
+					change_graisse(i);
+				}
+			}
+		}
+	}
+
+	function tout_decocher() {
+		var i;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=false;
+				change_graisse(i);
+			}
+		}
+	}
+
+	function change_graisse(num) {
+		if((document.getElementById('ligne_'+num))&&(document.getElementById('nom_prenom_'+num))) {
+			//alert(num);
+			if(document.getElementById('ligne_'+num).checked==true) {
+				document.getElementById('nom_prenom_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('nom_prenom_'+num).style.fontWeight='';
+			}
+		}
+	}
+</script>
+\n";
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+//==================================================================================
+if($mode=="forcer_mdp_eleves") {
+	echo "
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+</p>";
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+	echo "
+<h2>Imposer les mots de passe élèves</h2>";
+
+	if((!isset($csv_file))||($csv_file['tmp_name']=='')) {
+		echo "<p>Aucun fichier n'a été fourni.</p>";
+	}
+	else {
+		check_token(false);
+		$fp=fopen($csv_file['tmp_name'],"r");
+
+		$impression=getSettingValue('ImpressionFicheEleve');
+
+		if(!$fp){
+			echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		$tabchamps = array("LOGIN_GEPI", "MOT_DE_PASSE_GEPI");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+		$en_tete=explode(";", trim($temp));
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['LOGIN_GEPI']))||(!isset($tabindice['MOT_DE_PASSE_GEPI']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>LOGIN_GEPI, MOT_DE_PASSE_GEPI</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+
+		$sql="TRUNCATE tempo4;";
+		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		$cpt=0;
+		$cpt2=0;
+		$tab_eleve=array();
+		while (!feof($fp)) {
+			$ligne = trim(fgets($fp, 4096));
+			if((substr($ligne,0,3) == "\xEF\xBB\xBF")) {
+				$ligne=substr($ligne,3);
+			}
+
+			// DEBUG:
+			//echo "$ligne<br />";
+
+			if($ligne!='') {
+				$tab=explode(";", ensure_utf8($ligne));
+
+				$ligne_a_prendre_en_compte="y";
+				if(preg_match("/LOGIN_GEPI/i", trim($ligne))) {
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif(preg_match("/MOT_DE_PASSE_GEPI/i", trim($ligne))) {
+					$ligne_a_prendre_en_compte="n";
+				}
+
+				if($ligne_a_prendre_en_compte=="y") {
+					$tab_eleve[$cpt2]["LOGIN_GEPI"]=$tab[$tabindice['LOGIN_GEPI']];
+					$tab_eleve[$cpt2]["MOT_DE_PASSE_GEPI"]=$tab[$tabindice['MOT_DE_PASSE_GEPI']];
+
+					$tab_eleve[$cpt2]["nom"]="";
+					$tab_eleve[$cpt2]["prenom"]="";
+					$tab_eleve[$cpt2]["classe"]="";
+					$tab_eleve[$cpt2]["password"]="";
+					$tab_eleve[$cpt2]["auth_mode"]="";
+
+					// Récupérer les infos élève
+					$sql="SELECT e.nom, e.prenom, u.password, u.auth_mode FROM eleves e, utilisateurs u WHERE e.login=u.login AND u.login='".$tab[$tabindice['LOGIN_GEPI']]."';";
+					// DEBUG:
+					//echo "$sql<br />";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+
+						$lig=mysqli_fetch_object($res);
+						$tab_eleve[$cpt2]["nom"]=$lig->nom;
+						$tab_eleve[$cpt2]["prenom"]=$lig->prenom;
+						if($lig->password!="") {
+							$tab_eleve[$cpt2]["password"]="<span title=\"Le mot de passe dans la base Gepi n'est pas vide.\">XXXXXXXXXX</span>";
+						}
+						$tab_eleve[$cpt2]["auth_mode"]=$lig->auth_mode;
+
+						$tmp_tab_classe=get_class_from_ele_login($tab[$tabindice['LOGIN_GEPI']]);
+						if(isset($tmp_tab_classe['liste_nbsp'])) {
+							$tab_eleve[$cpt2]["classe"]=$tmp_tab_classe['liste_nbsp'];
+						}
+					}
+
+					$sql="INSERT INTO tempo4 SET col1='$cpt2', col2='".$tab[$tabindice['LOGIN_GEPI']]."', col3=MD5('".$tab[$tabindice['MOT_DE_PASSE_GEPI']]."');";
+					// DEBUG:
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$cpt2++;
+				}
+			}
+		}
+
+		echo "
+<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+	".add_token_field()."
+	<input type='hidden' name='temoin_suhosin_1' value='forcer_mdp_eleves' />
+	<input type='hidden' name='mode' value='valider_forcer_mdp_eleves' />
+
+	<div id=\"fixe\"><p><input type='submit' value='Valider' /></p></div>
+
+<table class='boireaus boireaus_alt' summary='Tableau des élèves'>
+	<tr>
+		<th rowspan='2'>
+			Cocher
+			<span id='tout_cocher_decocher' style='display:none;'>
+				<br />
+				<a href=\"javascript:tout_cocher()\" title='Cocher tous les élèves.'><img src='../images/enabled.png' width='20' height='20' /></a>
+				/
+				<a href=\"javascript:tout_cocher_si_mdp_vide()\" title='Cocher tous les élèves pour lesquels le mot de passe est vide.'><img src='../images/icons/wizard.png' width='20' height='20' /></a>
+				/
+				<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
+			</span>
+		</th>
+
+		<th colspan='4'>Informations Gepi</th>
+		<th colspan='2'>Informations CSV</th>
+	</tr>
+	<tr>
+		<th>Nom prénom</th>
+		<th>Classe</th>
+		<th>Password</th>
+		<th>auth_mode</th>
+
+		<th>Login</th>
+		<th>Mot de passe</th>
+	</tr>";
+		$cpt=0;
+		$ancre_doublon_ou_pas="";
+		$style_css="";
+		$nb_comptes_login_deja_ok=0;
+		foreach($tab_eleve as $key => $eleve_courant) {
+			/*
+			echo "<pre>";
+			print_r($eleve_courant);
+			echo "</pre>";
+			*/
+
+			//==============================================================
+			echo "
+<tr class='white_hover'".$style_css.">
+	<td><input type='checkbox' name='ligne[".$key."]' id='ligne_$cpt' value='".$eleve_courant['LOGIN_GEPI']."' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
+	<td id='nom_prenom_$cpt'><label for='ligne_$cpt'>".$eleve_courant['nom']." ".$eleve_courant['prenom']."</label></td>
+	<td>".$eleve_courant['classe']."</td>
+	<td id='td_password_actuel_$cpt'>".$eleve_courant['password']."</td>
+	<td>".$eleve_courant['auth_mode']."</td>
+
+	<td><label for='ligne_$cpt'>".$eleve_courant['LOGIN_GEPI']."</label></td>
+	<td>".$eleve_courant['MOT_DE_PASSE_GEPI']."</td>";
+
+				echo "
+</tr>";
+				flush();
+				$cpt++;
+			//==============================================================
+			flush();
+		}
+		echo "
+</table>
+
+	<p><input type='submit' value='Valider' /></p>
+	<input type='hidden' name='temoin_suhosin_2' value='forcer_mdp_eleves' />
+	<p><br /></p>
+
+	<!--p><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li>...</li>
+	</ul-->
+
+</form>
+
+<script type='text/javascript'>
+	document.getElementById('tout_cocher_decocher').style.display='';
+	/*
+	document.getElementById('bouton_button_import').style.display='';
+	document.getElementById('bouton_submit_import').style.display='none';
+	*/
+
+	function tout_cocher() {
+		var i;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				if(document.getElementById('ligne_'+i).getAttribute('type')=='checkbox') {
+					document.getElementById('ligne_'+i).checked=true;
+					change_graisse(i);
+				}
+			}
+		}
+	}
+
+	function tout_cocher_si_mdp_vide() {
+		var i;
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('td_password_actuel_'+i)) {
+				if(document.getElementById('td_password_actuel_'+i).innerHTML=='') {
 					document.getElementById('ligne_'+i).checked=true;
 					change_graisse(i);
 				}
