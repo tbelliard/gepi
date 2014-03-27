@@ -415,60 +415,63 @@ if (!isset($_POST["action"])) {
 				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th></tr>\n";
 
 				$alt=1;
-				for ($i=0;$i<$k-1;$i++) {
-					$alt=$alt*(-1);
-                    echo "<tr class='lig$alt'>\n";
-					echo "<td";
-					if($data_tab[$i]["id_eleve"]==""){
-						echo " style='color:red;'";
-					}
-					echo ">\n";
+				//for ($i=0;$i<$k-1;$i++) {
+				for ($i=0;$i<$k;$i++) {
+					if(isset($data_tab[$i])) {
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td";
+						if($data_tab[$i]["id_eleve"]==""){
+							echo " style='color:red;'";
+						}
+						echo ">\n";
 
-					$sql="INSERT INTO temp_responsables SET elenoet='".mysql_real_escape_string($data_tab[$i]["id_eleve"])."',
-					nom='".mysql_real_escape_string($data_tab[$i]["nom"])."',
-					prenom='".mysql_real_escape_string($data_tab[$i]["prenom"])."',
-					civilite='".mysql_real_escape_string($data_tab[$i]["civilite"])."',
-					adresse1='".mysql_real_escape_string($data_tab[$i]["adresse1"])."',
-					adresse2='".mysql_real_escape_string($data_tab[$i]["adresse2"])."',
-					commune='".mysql_real_escape_string($data_tab[$i]["commune"])."',
-					code_postal='".mysql_real_escape_string($data_tab[$i]["code_postal"])."';";
-					$insert=mysql_query($sql);
-					if(!$insert) {
-						echo "<span style='color:red'>";
-						echo $data_tab[$i]["id_eleve"];
- 						echo "</span>";
-						$nb_error++;
+						$sql="INSERT INTO temp_responsables SET elenoet='".mysql_real_escape_string($data_tab[$i]["id_eleve"])."',
+						nom='".mysql_real_escape_string($data_tab[$i]["nom"])."',
+						prenom='".mysql_real_escape_string($data_tab[$i]["prenom"])."',
+						civilite='".mysql_real_escape_string($data_tab[$i]["civilite"])."',
+						adresse1='".mysql_real_escape_string($data_tab[$i]["adresse1"])."',
+						adresse2='".mysql_real_escape_string($data_tab[$i]["adresse2"])."',
+						commune='".mysql_real_escape_string($data_tab[$i]["commune"])."',
+						code_postal='".mysql_real_escape_string($data_tab[$i]["code_postal"])."';";
+						$insert=mysql_query($sql);
+						if(!$insert) {
+							echo "<span style='color:red'>";
+							echo $data_tab[$i]["id_eleve"];
+	 						echo "</span>";
+							$nb_error++;
+						}
+						else {
+							echo $data_tab[$i]["id_eleve"];
+						}
+						echo "</td>\n";
+						echo "<td";
+						if($data_tab[$i]["id_eleve"]==""){
+							echo " style='color:red;'";
+						}
+						echo ">\n";
+						echo $data_tab[$i]["nom"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["prenom"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["civilite"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["adresse1"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["adresse2"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["code_postal"];
+						echo "</td>\n";
+						echo "<td>\n";
+						echo $data_tab[$i]["commune"];
+						echo "</td>\n";
+						echo "</tr>\n";
 					}
-					else {
-						echo $data_tab[$i]["id_eleve"];
-					}
-					echo "</td>\n";
-					echo "<td";
-					if($data_tab[$i]["id_eleve"]==""){
-						echo " style='color:red;'";
-					}
-					echo ">\n";
-					echo $data_tab[$i]["nom"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["prenom"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["civilite"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["adresse1"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["adresse2"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["code_postal"];
-					echo "</td>\n";
-					echo "<td>\n";
-					echo $data_tab[$i]["commune"];
-					echo "</td>\n";
-					echo "</tr>\n";
 				}
 
 				echo "</table>\n";
