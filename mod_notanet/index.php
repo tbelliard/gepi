@@ -192,6 +192,24 @@ statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
 
+/* Ajout des droits pour saisie_notes.php dans la table droits */
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_notes.php';";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/saisie_notes.php',
+administrateur='V',
+professeur='V',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Notanet: Saisie de notes',
+statut='';";
+$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+}
+
 
 
 if(!isset($msg)) {$msg="";}
@@ -213,6 +231,29 @@ if(!$query) {
 }
 //===========================================================
 
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM notanet_corresp LIKE 'mode';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE notanet_corresp ADD mode varchar(20) NOT NULL default 'extract_moy';");
+if(!$query) {
+	$msg.="Erreur lors de l'ajout du champ 'mode' à la table 'notanet_corresp'.<br />";
+	}
+}
+
+$query = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+//===========================================================
+
+if((isset($_GET['ouvrir_saisie']))&&
+(($_GET['ouvrir_saisie']=='y')||($_GET['ouvrir_saisie']=='n'))&&
+(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))) {
+	check_token();
+
+	if(saveSetting('notanet_saisie_note_ouverte', $_GET['ouvrir_saisie'])) {
+		$msg="Modification effectuée.<br />";
+	}
+	else {
+		$msg="Erreur.<br />";
+	}
+}
 
 
 //**************** EN-TETE *****************
@@ -370,6 +411,19 @@ if($_SESSION['statut']=="administrateur") {
 
 	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
 
+	// A FAIRE : 20140326 : Mettre un test sur le fait qu'il y a de telles notes à saisir
+
+	if(!getSettingAOui("notanet_saisie_note_ouverte")) {
+		echo "<li>La saisie de notes est actuellement fermée.<br />
+		<a href='".$_SERVER['PHP_SELF']."?ouvrir_saisie=y".add_token_in_url()."'>Ouvrir les saisies de notes</a>.<br />
+		<a href='saisie_notes.php'>Consulter les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+	}
+	else {
+		echo "<li><a href='saisie_notes.php'>Saisir les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)<br />
+		<a href='".$_SERVER['PHP_SELF']."?ouvrir_saisie=n".add_token_in_url()."'>Fermer les saisies de notes</a>.<br />
+		</li>\n";
+	}
+
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='extract_moy.php'>Effectuer une extraction des moyennes, affichage et traitement des cas particuliers</a></li>\n";
@@ -415,6 +469,20 @@ elseif($_SESSION['statut']=="scolarite") {
 	echo "<ul>\n";
 	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
 
+
+	// A FAIRE : 20140326 : Mettre un test sur le fait qu'il y a de telles notes à saisir
+
+	if(!getSettingAOui("notanet_saisie_note_ouverte")) {
+		echo "<li>La saisie de notes est actuellement fermée.<br />
+		<a href='".$_SERVER['PHP_SELF']."?ouvrir_saisie=y".add_token_in_url()."'>Ouvrir les saisies de notes</a>.<br />
+		<a href='saisie_notes.php'>Consulter les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+	}
+	else {
+		echo "<li><a href='saisie_notes.php'>Saisir les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)<br />
+		<a href='".$_SERVER['PHP_SELF']."?ouvrir_saisie=n".add_token_in_url()."'>Fermer les saisies de notes</a>.<br />
+		</li>\n";
+	}
+
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
@@ -435,6 +503,30 @@ elseif($_SESSION['statut']=="scolarite") {
 }
 else {
 	echo "<ul>\n";
+
+	// Test sur le fait qu'il y a de telles notes à saisir pour le prof connecté
+	$sql="SELECT DISTINCT jgp.id_groupe FROM notanet_ele_type net,
+				j_eleves_groupes jeg,
+				j_groupes_professeurs jgp,
+				j_groupes_matieres jgm,
+				notanet_corresp nc
+			WHERE net.login=jeg.login AND
+				jeg.id_groupe=jgp.id_groupe AND
+				jgp.login='".$_SESSION['login']."' AND
+				jeg.id_groupe=jgm.id_groupe AND
+				jgm.id_matiere=nc.matiere AND
+				nc.mode='saisie';";
+	//echo "$sql<br />";
+	$res_matiere_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_matiere_notanet)>0) {
+		if(!getSettingAOui("notanet_saisie_note_ouverte")) {
+			echo "<li>La saisie de notes est actuellement fermée.<br />
+			<a href='saisie_notes.php'>Consulter les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+		}
+		else {
+			echo "<li><a href='saisie_notes.php'>Saisir les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+		}
+	}
 	echo "<li><a href='saisie_app.php'>Saisir les appréciations pour les fiches brevet</a></li>\n";
 	echo "</ul>\n";
 }
