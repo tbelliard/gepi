@@ -558,18 +558,18 @@ $cpt=10;
 while($lig=mysqli_fetch_object($res)) {
 	echo "
 			<tr>
-				<td>
+				<td id='td_nom_$cpt'>
 					<input type='hidden' name='ele_login[$cpt]' id='ele_login_$cpt' value='".$lig->login."' />
 					".get_nom_prenom_eleve($lig->login)."
 				</td>
-				<td>";
+				<td id='td_note_$cpt'>";
 	if($notanet_saisie_note_ouverte) {
 		echo "
 					<input type='text' name='note[$cpt]' id='n$cpt' value='";
 		if(isset($tab_notes_saisies[$lig->login])) {
 			echo $tab_notes_saisies[$lig->login];
 		}
-		echo "' size='4' autocomplete='off' onKeyDown=\"clavier(this.id,event);\" />";
+		echo "' size='3' autocomplete='off' onKeyDown=\"clavier(this.id,event);\" onchange=\"verifcol($cpt);changement();\" />";
 	}
 	else {
 		if(isset($tab_notes_saisies[$lig->login])) {
@@ -592,6 +592,63 @@ echo "
 	</fieldset>
 </form>";
 
+
+// A revoir: utiliser tabmatieres pour avoir le note_sur_verif
+$note_sur_verif=20;
+$couleur_devoirs="";
+
+echo "
+<script type='text/javascript' language='JavaScript'>
+
+function verifcol(num_id){
+	document.getElementById('n'+num_id).value=document.getElementById('n'+num_id).value.toLowerCase();
+	if(document.getElementById('n'+num_id).value=='a'){
+		document.getElementById('n'+num_id).value='AB';
+	}
+	if(document.getElementById('n'+num_id).value=='ab'){
+		document.getElementById('n'+num_id).value='AB';
+	}
+	if(document.getElementById('n'+num_id).value=='d'){
+		document.getElementById('n'+num_id).value='DI';
+	}
+	if(document.getElementById('n'+num_id).value=='di'){
+		document.getElementById('n'+num_id).value='DI';
+	}
+
+	note=document.getElementById('n'+num_id).value;
+
+	if((note!='DI')&&(note!='AB')&&(note!='')){
+		note=note.replace(',','.');
+
+		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
+
+		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
+		((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
+			if((note>".$note_sur_verif.")||(note<0)){
+				couleur='red';
+			}
+			else{
+				couleur='$couleur_devoirs';
+			}
+		}
+		else{
+			couleur='red';
+		}
+	}
+	else{
+		couleur='$couleur_devoirs';
+	}
+	eval('document.getElementById(\'td_nom_'+num_id+'\').style.background=couleur');
+	eval('document.getElementById(\'td_note_'+num_id+'\').style.background=couleur');
+}
+
+for(i=0;i<$cpt;i++) {
+	if(document.getElementById('td_nom_'+i)) {
+		verifcol(i);
+	}
+}
+</script>
+";
 
 
 /*
