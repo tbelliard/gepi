@@ -650,4 +650,34 @@ else {
 	}
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'mode' à la table 'notanet_corresp'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM notanet_corresp LIKE 'mode';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE notanet_corresp ADD mode varchar(20) NOT NULL default 'extract_moy';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'notanet_saisie' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'notanet_saisie'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
 ?>

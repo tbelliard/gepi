@@ -78,6 +78,7 @@ for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 	}
 }
 $statut_matiere=isset($_POST['statut_matiere']) ? $_POST['statut_matiere'] : NULL;
+$mode_matiere=isset($_POST['mode_matiere']) ? $_POST['mode_matiere'] : NULL;
 
 $choix_matieres=isset($_POST['choix_matieres']) ? $_POST['choix_matieres'] : NULL;
 $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : NULL;
@@ -131,6 +132,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 							$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j][0]."',
 																	matiere='".$id_matiere[$j][$i]."',
 																	statut='".$statut_matiere[$j]."',
+																	mode='".$mode_matiere[$j]."',
 																	id_mat='$j',
 																	type_brevet='$type_brevet';";
 							if($debug_ajout_matiere=="y") {
@@ -175,14 +177,16 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 
 		$j_matiere=isset($_POST['j_matiere']) ? $_POST['j_matiere'] : NULL;
 		$matiere_a_ajouter=isset($_POST['matiere_a_ajouter']) ? $_POST['matiere_a_ajouter'] : NULL;
+		$mode_matiere_a_ajouter=isset($_POST['mode_matiere_a_ajouter']) ? $_POST['mode_matiere_a_ajouter'] : NULL;
 
 		//echo "\$j_matiere=$j_matiere<br />";
 		//echo "\$matiere_a_ajouter=$matiere_a_ajouter<br />";
 
-		if(($j_matiere!='')&&($matiere_a_ajouter!='')) {
+		if(($j_matiere!='')&&($matiere_a_ajouter!='')&&($mode_matiere_a_ajouter!='')) {
 			$sql="INSERT INTO notanet_corresp SET notanet_mat='".$tabmatieres[$j_matiere][0]."',
 													matiere='$matiere_a_ajouter',
 													statut='".$statut_matiere[$j_matiere]."',
+													mode='$mode_matiere_a_ajouter',
 													id_mat='$j_matiere',
 													type_brevet='$type_brevet';";
 			if($debug_ajout_matiere=="y") {
@@ -321,6 +325,11 @@ else {
 			$cpt++;
 		}
 
+		$message_saisie_ou_extract_moy="Le mode par défaut consiste à extraire les moyennes des trois trimestres et d'en faire une moyenne.
+
+Vous pouvez aussi saisir une note, ou permettre au professeur de la matière d'effectuer la saisie d'une note.
+C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne de trois APSA et non à la moyenne des trois trimestres.";
+
 		//echo "<table border='1'>\n";
 		echo "<table class='boireaus' summary='Tableau des associations matière notanet/matière gepi'>\n";
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
@@ -330,6 +339,7 @@ else {
 		echo "<th colspan='3'>Matière</th>\n";
 
 		//echo "<th>&nbsp;</th>\n";
+		echo "<th colspan='2' title=\"$message_saisie_ou_extract_moy\">Saisie ou extraction</th>\n";
 		echo "<th rowspan='2'>Matière GEPI</th>\n";
 
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
@@ -341,6 +351,9 @@ else {
 		echo "<th>Optionnelle</th>\n";
 		echo "<th>Non dispensée dans l'établissement</th>\n";
 		//echo "<th>Matière GEPI</th>\n";
+
+		echo "<th title=\"La note devra être saisie par le professeur ou par vous même.\">Saisie</th>\n";
+		echo "<th title=\"La note proposée sera obtenue par extraction des moyennes des trois trimestres.\">Extraction</th>\n";
 
 		echo "</tr>\n";
 
@@ -380,6 +393,18 @@ else {
 						echo " checked='true'";
 					}
 					echo " /></td>\n";
+
+					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
+					if($lig_notanet_corresp->mode=='saisie'){
+						echo " checked='true'";
+					}
+					echo " /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' value='extract_moy'";
+					if($lig_notanet_corresp->mode!='saisie'){
+						echo " checked='true'";
+					}
+					echo " /></td>\n";
+
 				}
 				else{
 					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
@@ -387,6 +412,13 @@ else {
 					echo " /></td>\n";
 					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='optionnelle' /></td>\n";
 					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='non dispensee dans l etablissement' /></td>\n";
+
+					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
+					echo " /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' value='extract_moy'";
+					echo " checked='true'";
+					echo " /></td>\n";
+
 				}
 
 				echo "<td>\n";
@@ -442,7 +474,9 @@ else {
 						}
 					}
 					echo "<p align='center'>";
-					echo "<a href='#' onclick=\"document.getElementById('j_matiere').value='$j';afficher_div('ajout_matiere','y',10,10);return false;\"> + </a>";
+					echo "<a href='#' onclick=\"document.getElementById('j_matiere').value='$j';
+										if(document.getElementById('mode_matiere_saisie_$j').checked) {document.getElementById('mode_matiere_a_ajouter').value='saisie';} else {document.getElementById('mode_matiere_a_ajouter').value='extract_moy';};
+										afficher_div('ajout_matiere','y',10,10);return false;\"> + </a>";
 
 				}
 				else {
@@ -459,6 +493,7 @@ else {
 		$titre="Ajout matière";
 		$texte_checkbox_matieres="";
 		$texte_checkbox_matieres.="<input type='hidden' name='j_matiere' id='j_matiere' value='' />";
+		$texte_checkbox_matieres.="<input type='hidden' name='mode_matiere_a_ajouter' id='mode_matiere_a_ajouter' value='' />";
 		$texte_checkbox_matieres.="<input type='hidden' name='matiere_a_ajouter' id='matiere_a_ajouter' value='' />";
 		$sql="SELECT matiere FROM matieres ORDER BY matiere;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -494,7 +529,12 @@ else {
 	<p><span style='color:red'><span style='text-decoration:blink;font-weight:bold;'>ATTENTION</span>&nbsp;: Nouveauté importante pour l'enseignement d'EPS pour le brevet 2013</span>.</p>
 	<p style='color:blue'>Attribution de la note d’EPS (<em>Note de service N°2012-096 du 22 juin 2012</em>).<br />
 	La note à prendre en compte est la moyenne des notes obtenues lors de l’évaluation de trois APSA (<em>Activités Physiques Sportives et Artistiques</em>) retenues pour le DNB par l’enseignant parmi la liste officielle nationale et académique, elle ne correspond pas nécessairement à la moyenne des notes trimestrielles obtenues par l’élève dans le cadre de l’enseignement d’EPS de la classe de troisième.</p>
-	<p>Pour gérer cela dans Gepi dans les meilleures conditions, voilà ce qui est préconisé&nbsp;:</p>
+
+	<p>La nouvelle démarche proposée consiste à indiquer que la note d'EPS doit être saisie (<em>cocher la colonne Saisie pour l'EPS ci-dessus</em>).<br />
+	Vous pourrez ensuite ouvrir l'accès à la saisie pour vos professeurs et saisir la moyenne des 3 APSA ou les 3 notes d'APSA.</p>
+	<p><br /></p>
+	<p>Si vous préférez conserver l'ancien mode de fonctionnement, cela reste possible.<br />
+	La démarche est la suivante&nbsp;:</p>
 	<ol>
 		<li>créer dans Gepi une matière <strong>EPS_brevet</strong> distincte de la matière <strong>EPS</strong> pour éviter des problèmes d'identification de l'enseignement à prendre en compte par le module notanet</li>
 		<li>associer à cette matière les professeurs d'EPS (<em>au moins ceux qui enseignent en 3ème</em>)</li>
