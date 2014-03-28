@@ -340,7 +340,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -778,7 +778,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -1069,7 +1069,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -1194,7 +1194,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 
 			// Colonnes pour les fiches brevet:
@@ -1315,7 +1315,7 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][-3]='MS ME AB';
 			//$tabmatieres[115][-3]='MS ME MN AB';
 
-			$tabmatieres[130][-3]='AB VA NV DI'; // 20130427
+			$tabmatieres[130][-3]='AB VA NV'; // 20140317
 
 			// Colonnes pour les fiches brevet:
 			// Il n'y a qu'une seule colonne pour les fiches brevet en agricole
@@ -1598,7 +1598,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 
 					// 20140325
 					if((isset($tabmatieres[$j]['extraction_moyenne']))&&($tabmatieres[$j]['extraction_moyenne']=="n")) {
-						$sql="SELECT round(avg(mn.note),1) as moyenne FROM notanet_saisie mn WHERE (mn.matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."')";
+						$sql="SELECT mn.note moyenne FROM notanet_saisie mn WHERE (mn.matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."')";
 					}
 					else {
 						$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn, j_groupes_matieres jgm WHERE (jgm.id_matiere='".$id_matiere[$j][$k]."' AND mn.login='".$tab_ele['login']."' AND mn.statut ='' AND mn.id_groupe=jgm.id_groupe)";
@@ -1609,15 +1609,19 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if(mysqli_num_rows($resultat_moy)>0){
 						$ligne_moy=mysqli_fetch_object($resultat_moy);
 						//echo "$ligne_moy->moyenne<br />";
+						$moyenne=$ligne_moy->moyenne;
 						if((isset($tabmatieres[$j]['extraction_moyenne']))&&($tabmatieres[$j]['extraction_moyenne']=="n")) {
-							echo "<td style='font-weight:bold; text-align:center; color:blue; font-style: italic;' title=\"Note saisie\">$ligne_moy->moyenne</td>\n";
-							$moyenne=$ligne_moy->moyenne;
+							echo "<td style='font-weight:bold; text-align:center; color:blue; font-style: italic;";
+							if($moyenne=="") {
+								echo " background-color:red;";
+							}
+							echo "' title=\"Note saisie\">$moyenne</td>\n";
 						}
 						else {
-							echo "<td style='font-weight:bold; text-align:center;' title=\"Moyenne des trois trimestres\">$ligne_moy->moyenne</td>\n";
+							echo "<td style='font-weight:bold; text-align:center;' title=\"Moyenne des trois trimestres\">$moyenne</td>\n";
 						}
 						//$cpt++;
-						if($ligne_moy->moyenne!=""){
+						if($moyenne!=""){
 							$temoin_moyenne="oui";
 						}
 					}
@@ -1634,9 +1638,29 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if((isset($tabmatieres[$j]['extraction_moyenne']))&&($tabmatieres[$j]['extraction_moyenne']=="n")) {
 						echo "<td></td><td></td><td></td>\n";
 
-						echo "<td style='font-weight:bold; text-align:center;'>$moyenne</td>\n";
+						echo "<td style='font-weight:bold; text-align:center;";
+						if($moyenne=="") {
+							echo " background-color:red;";
+						}
+						echo "'>$moyenne</td>\n";
 
-						$moyenne_arrondie=ceil($moyenne*2)/2;
+						if($moyenne=="") {
+							$moyenne_arrondie="";
+
+							if($statut_matiere[$j]=='imposee'){
+								// Si la matière est imposée, alors il y a un problème à régler...
+								$temoin_notanet_eleve="ERREUR";
+								if($info_erreur==""){
+									$info_erreur="Pas de moyenne à une matière non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+								}
+								else{
+									$info_erreur=$info_erreur."Pas de moyenne à une matière non optionnelle: <b>".$id_matiere[$j][0]."</b><br />(<i><span style='font-size:xx-small;'>valeurs non numériques autorisées: ".$tabmatieres[$j][-3]."</span></i>)<br />";
+								}
+							}
+						}
+						else {
+							$moyenne_arrondie=ceil($moyenne*2)/2;
+						}
 
 						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
 						echo "</td>\n";
