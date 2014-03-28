@@ -120,18 +120,22 @@ if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
+	//echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='".(isset($_SESSION['rech_nom']) ? $_SESSION['rech_nom'] : "")."' onchange=\"affichage_et_action('nom')\" />\n";
 	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>nom</strong> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+	//echo "<a href=\"#\" onclick=\"document.getElementById('rech_nom').value=''; return false;\" title='Vider le critère de recherche sur le nom.'><img src='../images/icons/balai.png' class='icone16' alt='Vider' /></a>";
 	echo $champ_quitter_page_ou_non;
 	echo "</p>\n";
 	echo "</form>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
+	//echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='".(isset($_SESSION['rech_prenom']) ? $_SESSION['rech_prenom'] : "")."' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <strong>prénom</strong> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
+	//echo "<a href=\"#\" onclick=\"document.getElementById('rech_prenom').value=''; return false;\" title='Vider le critère de recherche sur le prénom.'><img src='../images/icons/balai.png' class='icone16' alt='Vider' /></a>";
 	echo $champ_quitter_page_ou_non;
 	echo "</p>\n";
 	echo "</form>\n";
@@ -153,7 +157,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 		//echo "$sql<br />";
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_ele)>0) {
-			echo "<p class='bold'>".casse_mot($gepiSettings['denomination_eleves'], 'majf2')." de la classe de ".get_class_from_id($id_classe).":</p>\n";
+			echo "<a name='classe'></a><p class='bold'>".casse_mot($gepiSettings['denomination_eleves'], 'majf2')." de la classe de ".get_class_from_id($id_classe).":</p>\n";
 
 			$tab_txt=array();
 			$tab_lien=array();
@@ -205,7 +209,7 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 
 		while($lig_clas=mysqli_fetch_object($res_clas)) {
 			$tab_txt[]=$lig_clas->classe;
-			$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+			$tab_lien[]=$_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id."#classe";
 		}
 
 		echo "<blockquote>\n";
@@ -421,6 +425,21 @@ Patientez pendant l'extraction des données... merci.
 		if(getSettingAOui('active_mod_discipline')) {
 			require("../mod_discipline/mod_discipline.lib.php");
 		}
+
+
+		if((isset($_GET['envoi_bulletin_resp_legal_0']))&&(($_GET['envoi_bulletin_resp_legal_0']=='y')||($_GET['envoi_bulletin_resp_legal_0']=='n'))) {
+			check_token();
+
+			$sql="UPDATE responsables2 SET envoi_bulletin='".$_GET['envoi_bulletin_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($update) {
+				$msg="Modification de la génération ou non des bulletins pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
+			}
+			else {
+				$msg="Erreur lors de la modification de la génération ou non des bulletins pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']."<br />";
+			}
+		}
+
 
 		//================================
 		unset($day);
@@ -1602,6 +1621,35 @@ Patientez pendant l'extraction des données... merci.
 								echo $tab_ele['resp'][$i]['mel'];
 								echo "</a>";
 								echo "</td></tr>\n";
+							}
+
+							if($tab_ele['resp'][$i]['envoi_bulletin']!='') {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Envoi bulletin:</th><td>";
+								if(in_array($_SESSION['statut'], array('administrateur', 'scolarite'))) {
+									if($tab_ele['resp'][$i]['envoi_bulletin']=="y") {
+										echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=".$ele_login."&amp;onglet=responsables&amp;pers_id=".$tab_ele['resp'][$i]['pers_id']."&amp;ele_id=".$tab_ele['ele_id']."&amp;envoi_bulletin_resp_legal_0=n".add_token_in_url()."'";
+										echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+										echo "><img src='../images/icons/bulletin.png' width='16' height='16' title=\"Le responsable non légal ".$tab_ele['resp'][$i]['prenom']." ".$tab_ele['resp'][$i]['nom']." est destinataire des bulletins générés dans Gepi.
+
+Cliquez pour supprimer la génération de bulletins à destination de ce responsable.\" /></a>";
+									}
+									else {
+										echo " <a href='".$_SERVER['PHP_SELF']."?ele_login=".$ele_login."&amp;onglet=responsables&amp;pers_id=".$tab_ele['resp'][$i]['pers_id']."&amp;ele_id=".$tab_ele['ele_id']."&amp;envoi_bulletin_resp_legal_0=y".add_token_in_url()."'";
+										echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+										echo "><img src='../images/icons/bulletin_barre.png' width='16' height='16' title=\"Le responsable non légal ".$tab_ele['resp'][$i]['prenom']." ".$tab_ele['resp'][$i]['nom']." n'est pas destinataire des bulletins générés dans Gepi.
+
+Cliquez pour activer la génération des bulletins à destination de ce responsable.\" /></a>";
+									}
+								}
+								else {
+									if($tab_ele['resp'][$i]['envoi_bulletin']=="y") {
+										echo " <img src='../images/icons/bulletin.png' width='16' height='16' title=\"Le responsable non légal ".$tab_ele['resp'][$i]['prenom']." ".$tab_ele['resp'][$i]['nom']." est destinataire des bulletins générés dans Gepi.\" />";
+									}
+									else {
+										echo " <img src='../images/icons/bulletin_barre.png' width='16' height='16' title=\"Le responsable non légal ".$tab_ele['resp'][$i]['prenom']." ".$tab_ele['resp'][$i]['nom']." n'est pas destinataire des bulletins générés dans Gepi.\" />";
+									}
+								}
 							}
 
 							if(!isset($tab_ele['resp'][$i]['etat'])) {
