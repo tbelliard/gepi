@@ -242,6 +242,7 @@ else {
 	}
 }
 
+$result .= "<br /><strong>Module Notanet</strong><br />";
 $result .= "&nbsp;-> Ajout d'un champ 'mode' à la table 'notanet_corresp'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM notanet_corresp LIKE 'mode';"));
 if ($test_champ==0) {
@@ -269,6 +270,20 @@ if ($test == -1) {
 	}
 } else {
 	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br /><strong>Responsables</strong><br />";
+$result .= "&nbsp;-> Ajout d'un champ 'mode' à la table 'responsables2'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM responsables2 LIKE 'envoi_bulletin';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE responsables2 ADD envoi_bulletin char(1) NOT NULL default 'n' COMMENT 'Envoi des bulletins pour les resp_legal=0';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 
