@@ -268,6 +268,8 @@ else {
 			if(!isset($_POST['afficher_select_eleve'])) {
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
 
+				echo "<div id='fixe'><input type='submit' name='valider_select_eleve' value='Afficher les élèves sélectionnés' /></div>\n";
+
 				// A FAIRE...
 				$cpt=0;
 				$sql="SELECT DISTINCT id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE (jec.login=net.login) ORDER BY id_classe;";
@@ -318,7 +320,6 @@ else {
 				}
 				echo "<input type='hidden' name='extract_mode' value='$extract_mode' />\n";
 				echo "<input type='hidden' name='afficher_select_eleve' value='y' />\n";
-				echo "<input type='submit' name='valider_select_eleve' value='Afficher les élèves sélectionnés' />\n";
 				echo "</form>\n";
 				echo "<p><br /></p>\n";
 			}
