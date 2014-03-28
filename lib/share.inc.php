@@ -826,6 +826,11 @@ function checkAccess() {
         tentative_intrusion(2, "Tentative d'accès avec modification sauvage de gepiPath");
         return (FALSE);
     } else {
+/*
+$f=fopen("/tmp/debug_acces.txt", "a+");
+fwrite($f, strftime("%Y%m%d %H:%M:%S")." : Accès de ".$_SESSION['login']." à ".$url['path']." : $dbCheckAccess\n");
+fclose($f);
+*/
         if ($dbCheckAccess == 'V') {
             return (TRUE);
         } else {
@@ -6518,6 +6523,20 @@ function get_class_dates_from_ele_login($login_eleve) {
 	}
 
 	return $tab;
+}
+
+function get_info_grp($id_groupe, $tab_infos=array('description', 'matieres', 'classes', 'profs')) {
+	$group=get_group($id_groupe, $tab_infos);
+
+	$retour="";
+	if(isset($group['name'])) {
+		$retour=$group['name'];
+		if(in_array('description', $tab_infos)) {$retour.=" (<em>".$group['description']."</em>)";}
+		if(in_array('matieres', $tab_infos)) {$retour.=" ".$group['matiere']['matiere'];}
+		if(in_array('classes', $tab_infos)) {$retour.=" en ".$group['classlist_string'];}
+		if(in_array('profs', $tab_infos)) {$retour.=" (<em>".$group['profs']['proflist_string']."</em>)";}
+	}
+	return $retour;
 }
 
 /** Fonction destinée à tester si un utilisateur a le droit d'accéder au CDT de tel élève

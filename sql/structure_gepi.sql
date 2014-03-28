@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS notanet (login varchar(50) NOT NULL default '',ine te
 DROP TABLE IF EXISTS notanet_app;
 CREATE TABLE IF NOT EXISTS notanet_app (login varchar(50) NOT NULL,id_mat int(4) NOT NULL,matiere varchar(50) NOT NULL,appreciation text NOT NULL,id int(11) NOT NULL auto_increment,PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_corresp;
-CREATE TABLE IF NOT EXISTS notanet_corresp (id int(11) NOT NULL auto_increment,type_brevet tinyint(4) NOT NULL,id_mat int(4) NOT NULL,notanet_mat varchar(255) NOT NULL default '',matiere varchar(50) NOT NULL default '',statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS notanet_corresp (id int(11) NOT NULL auto_increment,type_brevet tinyint(4) NOT NULL,id_mat int(4) NOT NULL,notanet_mat varchar(255) NOT NULL default '',matiere varchar(50) NOT NULL default '',statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee', mode varchar(20) NOT NULL default 'extract_moy', PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_ele_type;
 CREATE TABLE IF NOT EXISTS notanet_ele_type (login varchar(50) NOT NULL,type_brevet tinyint(4) NOT NULL,PRIMARY KEY  (login)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_verrou;
@@ -794,6 +794,9 @@ statut_u VARCHAR( 50 ) NOT NULL ,
 identite_u VARCHAR( 50 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS notanet_saisie;
+CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS droits_acces_fichiers;
 CREATE TABLE IF NOT EXISTS droits_acces_fichiers (
