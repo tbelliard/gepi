@@ -376,7 +376,7 @@ if(isset($is_posted_recherche)) {
 
 					$tab_result_recherche['responsable'][$cpt_resp]['enfants']="";
 					$tab_result_recherche['responsable'][$cpt_resp]['td_enfants']="";
-					$tab_enfants=get_enfants_from_pers_id($lig->pers_id, "avec_classe");
+					$tab_enfants=get_enfants_from_pers_id($lig->pers_id, "avec_classe", "y", array("resp_legal", "envoi_bulletin"));
 					for($loop=0;$loop<count($tab_enfants);$loop+=2) {
 						if($loop>0) {
 							$tab_result_recherche['responsable'][$cpt_resp]['enfants'].=", ";
