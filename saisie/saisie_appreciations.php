@@ -64,9 +64,6 @@ if (count($current_group["classes"]["list"]) > 1) {
 $periode_cn = isset($_POST["periode_cn"]) ? $_POST["periode_cn"] :(isset($_GET["periode_cn"]) ? $_GET["periode_cn"] :NULL);
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
 
-include "../lib/periodes.inc.php";
-
-
 if ($_SESSION['statut'] != "secours") {
 	if (!(check_prof_groupe($_SESSION['login'],$current_group["id"]))) {
 		$mess=rawurlencode("Vous n'êtes pas professeur de cet enseignement !");
@@ -74,6 +71,66 @@ if ($_SESSION['statut'] != "secours") {
 		die();
 	}
 }
+
+include "../lib/periodes.inc.php";
+
+$proposer_liens_enregistrement="n";
+$i=1;
+while ($i < $nb_periode) {
+	if($_SESSION['statut']=='professeur') {
+		if($current_group["classe"]["ver_periode"]["all"][$i] > 1) {
+			// 0 : Toutes les classes sont closes
+			// 1 : Toutes les classes sont partiellement closes
+			// 2 : Au moins une classe est ouverte
+			// 3 : Toutes les classes sont ouvertes
+			$proposer_liens_enregistrement="y";
+			break;
+		}
+	}
+	elseif($_SESSION['statut']=='secours') {
+		if($current_group["classe"]["ver_periode"]["all"][$i] > 0) {
+			// 0 : Toutes les classes sont closes
+			// 1 : Toutes les classes sont partiellement closes
+			// 2 : Au moins une classe est ouverte
+			// 3 : Toutes les classes sont ouvertes
+			$proposer_liens_enregistrement="y";
+			break;
+		}
+	}
+	$i++;
+}
+
+//=========================
+if($proposer_liens_enregistrement=="y") {
+	$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+	if ($insert_mass_appreciation_type=="y") {
+		// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+
+		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create_table=mysql_query($sql);
+
+		// Pour tester:
+		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+		$res_droit=mysql_query($sql);
+		if(mysql_num_rows($res_droit)>0) {
+			$droit_insert_mass_appreciation_type="y";
+		}
+		else {
+			$droit_insert_mass_appreciation_type="n";
+		}
+
+		if($droit_insert_mass_appreciation_type=="y") {
+			echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+			echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
+			echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
+			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
+			echo "</div>\n";
+		}
+	}
+}
+//=========================
 
 $msg="";
 
@@ -222,8 +279,19 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 	$correction_login_eleve=$_POST['correction_login_eleve'];
 	$correction_periode=$_POST['correction_periode'];
 
+	$ver_periode_classe_correction_eleve="O";
+	foreach($current_group['eleves'][$correction_periode]['telle_classe'] as $tmp_id_classe => $tmp_tab_login_ele) {
+		if(in_array($correction_login_eleve, $tmp_tab_login_ele)) {
+			// On a trouvé la classe de l'élève
+			$ver_periode_classe_correction_eleve=$current_group['classe']['ver_periode'][$tmp_id_classe][$correction_periode];
+			break;
+		}
+	}
+
 	// On n'utilise le dispositif que pour des périodes partiellement closes
-	if($ver_periode[$correction_periode]=='P') {
+	// Problème: $id_classe n'est pas défini si c'un un groupe multiclasse
+	//if($ver_periode[$correction_periode]=='P') {
+	if($ver_periode_classe_correction_eleve=='P') {
 
 		$autorisation_exceptionnelle_de_saisie='n';
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
@@ -420,161 +488,178 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 	$correction_periode=$_POST['correction_periode'];
 
 	// On n'utilise le dispositif que pour des périodes partiellement closes
-	if($ver_periode[$correction_periode]=='P') {
+	//if($ver_periode[$correction_periode]=='P') {
+	if((($current_group["classe"]["ver_periode"]['all'][$correction_periode] != 3)&&($_SESSION['statut']!='secours'))||
+	(($current_group["classe"]["ver_periode"]['all'][$correction_periode]==0)&&($_SESSION['statut']=='secours'))) {
 
-		$autorisation_exceptionnelle_de_saisie='n';
-		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
-			$date_limite=$lig->date_limite;
-	
-			$date_courante=time();
-	
-			if($date_courante<$date_limite) {
-				$autorisation_exceptionnelle_de_saisie='y';
-			}
-		}
-	
-		$saisie_valide='n';
+		$app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe = '" . $current_group["id"] . "' AND periode='$correction_periode')");
+		$app_grp[$correction_periode] = mysql_result($app_query, 0, "appreciation");
 
-		if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
-			// La proposition de correction est autorisée même si aucune appréciation n'était saisie avant fermeture de la période.
-			$saisie_valide='y';
-		}
-		elseif($autorisation_exceptionnelle_de_saisie=='y') {
-			// Il y a une autorisation exceptionnelle de saisie
-			$saisie_valide='y';
-		}
-		else {
-			// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
-			$sql="SELECT 1=1 FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+		if(
+			(
+				(
+					($app_grp[$correction_periode]!='')||
+					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
+				)
+				&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
+			)||
+			($tab_autorisation_exceptionnelle_de_saisie[$correction_periode]=='y')
+		) {
+
+			$autorisation_exceptionnelle_de_saisie='n';
+			$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
-				// Il y avait une appréciation saisie
-				// Si l'autorisation de proposition de correction est donnée, c'est OK
-				// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
-				if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
-					$saisie_valide='y';
+				$lig=mysql_fetch_object($res);
+				$date_limite=$lig->date_limite;
+	
+				$date_courante=time();
+	
+				if($date_courante<$date_limite) {
+					$autorisation_exceptionnelle_de_saisie='y';
 				}
 			}
-		}
+	
+			$saisie_valide='n';
 
-		if($saisie_valide!='y') {
-			$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
-		}
-		else {
-		
-			//echo "BLABLA";
-		
-			// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrôler que le prof est bien associé à ce groupe
-		
-			if (isset($NON_PROTECT["correction_app_groupe"])) {
-				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_groupe"]));
-				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=nettoyage_retours_ligne_surnumeraires($app);
-
-				$texte_mail="";
-
-				$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-				$test_correction=mysql_query($sql);
-				$test=mysql_num_rows($test_correction);
-				if ($test!="0") {
-					if ($app!="") {
-						$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
-						else {
-							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
-						}
-					} else {
-						$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";} 
-						else {
-							$msg.="Suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectuée.<br />";
-							$texte_mail.="Suppression de la proposition de correction pour l'appréciation de groupe\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\r\n";
-						}
-					}
-		
-				}
-				else {
-					if ($app != "") {
-						$sql="INSERT INTO matieres_app_corrections SET login='', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";}
-						else {
-							$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
-						}
+			if(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y') {
+				// La proposition de correction est autorisée même si aucune appréciation n'était saisie avant fermeture de la période.
+				$saisie_valide='y';
+			}
+			elseif($autorisation_exceptionnelle_de_saisie=='y') {
+				// Il y a une autorisation exceptionnelle de saisie
+				$saisie_valide='y';
+			}
+			else {
+				// On contrôle s'il y avait une appréciation saisie avant la fermeture de période
+				$sql="SELECT 1=1 FROM matieres_appreciations_grp WHERE id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					// Il y avait une appréciation saisie
+					// Si l'autorisation de proposition de correction est donnée, c'est OK
+					// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
+					if(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y') {
+						$saisie_valide='y';
 					}
 				}
+			}
+
+			if($saisie_valide!='y') {
+				$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
+			}
+			else {
 		
-				if($texte_mail!="") {
+				//echo "BLABLA";
 		
-					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+				// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrôler que le prof est bien associé à ce groupe
+		
+				if (isset($NON_PROTECT["correction_app_groupe"])) {
+					$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_groupe"]));
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$app=nettoyage_retours_ligne_surnumeraires($app);
+
+					$texte_mail="";
+
+					$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+					$test_correction=mysql_query($sql);
+					$test=mysql_num_rows($test_correction);
+					if ($test!="0") {
+						if ($app!="") {
+							$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							$register=mysql_query($sql);
+							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+							else {
+								$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
+								$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+							}
+						} else {
+							$sql="DELETE FROM matieres_app_corrections WHERE (login='' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							$register=mysql_query($sql);
+							if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";} 
+							else {
+								$msg.="Suppression de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectuée.<br />";
+								$texte_mail.="Suppression de la proposition de correction pour l'appréciation de groupe\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\r\n";
+							}
+						}
+		
+					}
+					else {
+						if ($app != "") {
+							$sql="INSERT INTO matieres_app_corrections SET login='', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
+							$register=mysql_query($sql);
+							if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode.<br />";}
+							else {
+								$msg.="Enregistrement de la proposition de correction pour l'appréciation de groupe sur la période $correction_periode effectué.<br />";
+								$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'appréciation de groupe sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+							}
+						}
 					}
 		
-					if($envoi_mail_actif=='y') {
-						$email_destinataires="";
-						//$sql="select email from utilisateurs where statut='secours' AND email!='';";
-						$sql="(select email from utilisateurs where statut='secours' AND email!='')";
-						$sql.=" UNION (select email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='$id_groupe')";
-						//echo "$sql<br />";
-						$req=mysql_query($sql);
-						if(mysql_num_rows($req)>0) {
-							$lig_u=mysql_fetch_object($req);
-							$email_destinataires=$lig_u->email;
-							while($lig_u=mysql_fetch_object($req)) {
-								$email_destinataires=", ".$lig_u->email;
-							}
+					if($texte_mail!="") {
 		
-							$email_declarant="";
-							$nom_declarant="";
-							$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-							$req=mysql_query($sql);
-							if(mysql_num_rows($req)>0) {
-								$lig_u=mysql_fetch_object($req);
-								$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
-								$email_declarant=$lig_u->email;
-							}
+						$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+						if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+							$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+						}
 		
-							$email_autres_profs_grp="";
-							// Recherche des autres profs du groupe
-							$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+						if($envoi_mail_actif=='y') {
+							$email_destinataires="";
+							//$sql="select email from utilisateurs where statut='secours' AND email!='';";
+							$sql="(select email from utilisateurs where statut='secours' AND email!='')";
+							$sql.=" UNION (select email from utilisateurs u, j_scol_classes jsc, j_groupes_classes jgc where u.statut='scolarite' AND u.email!='' AND u.login=jsc.login AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe='$id_groupe')";
 							//echo "$sql<br />";
 							$req=mysql_query($sql);
 							if(mysql_num_rows($req)>0) {
 								$lig_u=mysql_fetch_object($req);
-								$email_autres_profs_grp.=$lig_u->email;
-								while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
-							}
-		
-							$sujet_mail="Demande de validation de correction d'appréciation";
-
-							$ajout_header="";
-							if($email_declarant!="") {
-								$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
-								if($email_autres_profs_grp!='') {
-									$ajout_header.=", $email_autres_profs_grp";
+								$email_destinataires=$lig_u->email;
+								while($lig_u=mysql_fetch_object($req)) {
+									$email_destinataires=", ".$lig_u->email;
 								}
-								$ajout_header.="\r\n";
-								$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
 		
-							}
-							elseif($email_autres_profs_grp!='') {
-								$ajout_header.="Cc: $email_autres_profs_grp\r\n";
-							}
+								$email_declarant="";
+								$nom_declarant="";
+								$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+								$req=mysql_query($sql);
+								if(mysql_num_rows($req)>0) {
+									$lig_u=mysql_fetch_object($req);
+									$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+									$email_declarant=$lig_u->email;
+								}
+		
+								$email_autres_profs_grp="";
+								// Recherche des autres profs du groupe
+								$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+								//echo "$sql<br />";
+								$req=mysql_query($sql);
+								if(mysql_num_rows($req)>0) {
+									$lig_u=mysql_fetch_object($req);
+									$email_autres_profs_grp.=$lig_u->email;
+									while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+								}
+		
+								$sujet_mail="Demande de validation de correction d'appréciation";
 
-							$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
-							$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+								$ajout_header="";
+								if($email_declarant!="") {
+									$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+									if($email_autres_profs_grp!='') {
+										$ajout_header.=", $email_autres_profs_grp";
+									}
+									$ajout_header.="\r\n";
+									$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+		
+								}
+								elseif($email_autres_profs_grp!='') {
+									$ajout_header.="Cc: $email_autres_profs_grp\r\n";
+								}
 
-							$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
-						}
-					}	
+								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+								$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+
+								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+							}
+						}	
+					}
 				}
 			}
 		}
@@ -604,34 +689,6 @@ change = 'no';
 <?php
 
 $matiere_nom = $current_group["matiere"]["nom_complet"];
-
-
-$proposer_liens_enregistrement="n";
-$i=1;
-while ($i < $nb_periode) {
-	if($_SESSION['statut']=='professeur') {
-		if($current_group["classe"]["ver_periode"]["all"][$i] > 1) {
-			// 0 : Toutes les classes sont closes
-			// 1 : Toutes les classes sont partiellement closes
-			// 2 : Au moins une classe est ouverte
-			// 3 : Toutes les classes sont ouvertes
-			$proposer_liens_enregistrement="y";
-			break;
-		}
-	}
-	elseif($_SESSION['statut']=='secours') {
-		if($current_group["classe"]["ver_periode"]["all"][$i] > 0) {
-			// 0 : Toutes les classes sont closes
-			// 1 : Toutes les classes sont partiellement closes
-			// 2 : Au moins une classe est ouverte
-			// 3 : Toutes les classes sont ouvertes
-			$proposer_liens_enregistrement="y";
-			break;
-		}
-	}
-	$i++;
-}
-
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
 
@@ -777,38 +834,6 @@ $saisie_app_nb_cols_textarea=getPref($_SESSION["login"],'saisie_app_nb_cols_text
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
 echo add_token_field(true);
-
-//=========================
-if($proposer_liens_enregistrement=="y") {
-	$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
-	if ($insert_mass_appreciation_type=="y") {
-		// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
-
-		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
-		$create_table=mysql_query($sql);
-
-		// Pour tester:
-		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
-
-		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
-		$res_droit=mysql_query($sql);
-		if(mysql_num_rows($res_droit)>0) {
-			$droit_insert_mass_appreciation_type="y";
-		}
-		else {
-			$droit_insert_mass_appreciation_type="n";
-		}
-
-		if($droit_insert_mass_appreciation_type=="y") {
-			echo "<div style='float:right; width:150px; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-			echo "Insérer l'appréciation-type suivante pour toutes les appréciations vides: ";
-			echo "<input type='text' name='ajout_a_textarea_vide' id='ajout_a_textarea_vide' value='-' size='10' /><br />\n";
-			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide()' /><br />\n";
-			echo "</div>\n";
-		}
-	}
-}
-//=========================
 
 if($proposer_liens_enregistrement=="y") {
 	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
