@@ -2250,22 +2250,22 @@ function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n") {
+function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n", $tab_infos_a_afficher=array()) {
     global $mysqli;
-	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+	$sql="(SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 				WHERE e.ele_id=r.ele_id AND
 				rp.pers_id=r.pers_id AND
 				rp.login='$resp_login' AND
 				(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
 	if($meme_en_resp_legal_0=="y") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.login='$resp_login' AND
 			r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
 	elseif($meme_en_resp_legal_0=="yy") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.login='$resp_login' AND
@@ -2273,11 +2273,38 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 			r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
 	//echo "$sql<br />";
-                  
+
 	$res_ele=mysqli_query($mysqli, $sql);
 	$tab_ele=array();
 	if($res_ele->num_rows > 0){
 		while($lig_tmp = $res_ele->fetch_object()){
+			$infos_supplementaires="";
+			if(in_array("resp_legal" , $tab_infos_a_afficher)) {
+				$infos_supplementaires.=" <span title=\"";
+				if($lig_tmp->resp_legal==0) {
+					$infos_supplementaires.="Responsable non légal";
+				}
+				else {
+					$infos_supplementaires.="Responsable légal n°".$lig_tmp->resp_legal;
+				}
+				$infos_supplementaires.="\">(<em>$lig_tmp->resp_legal</em>)</span>";
+				
+			}
+			if(in_array("envoi_bulletin" , $tab_infos_a_afficher)) {
+				if($lig_tmp->resp_legal==0) {
+					if($lig_tmp->envoi_bulletin=="y") {
+						$infos_supplementaires.=" <span title=\"Les bulletins de cet élève sont générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+					}
+					else {
+						$infos_supplementaires.=" <span title=\"Les bulletins de cet élève ne sont pas générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin_barre.png' class='icone16' /></span>";
+					}
+				}
+				else {
+					$infos_supplementaires.=" <span title=\"Les bulletins sont toujours générés à destination des responsables légaux.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+				}
+			}
+			// A faire: indiquer s'il y a un acces_sp dans le cas resp_legal=0
+
 			$tab_ele[]=$lig_tmp->login;
 			if($mode=='avec_classe') {
 				$tmp_chaine_classes="";
@@ -2287,11 +2314,11 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes.$infos_supplementaires;
 			}
 			else {
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
-			}                
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$infos_supplementaires;
+			}
 		}
 		$res_ele->close();
 	} 
@@ -2311,16 +2338,16 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n"){
-	global $mysqli;
-	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n", $tab_infos_a_afficher=array()){
+	global $mysqli, $gepiPath;
+	$sql="(SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 		WHERE e.ele_id=r.ele_id AND
 		rp.pers_id=r.pers_id AND
 		rp.pers_id='$pers_id' AND
 		(r.resp_legal='1' OR r.resp_legal='2')
 		ORDER BY e.nom,e.prenom)";
 	if($meme_en_resp_legal_0=="y") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.pers_id='$pers_id' AND
@@ -2328,7 +2355,7 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 			ORDER BY e.nom,e.prenom)";
 	}
 	elseif($meme_en_resp_legal_0=="yy") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.pers_id='$pers_id' AND
@@ -2336,7 +2363,7 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 			r.resp_legal='0'
 			ORDER BY e.nom,e.prenom)";
 	}
-         
+
 	$res_ele=mysqli_query($mysqli, $sql);
 	$tab_ele=array();
 	if($res_ele->num_rows > 0) {
@@ -2359,6 +2386,33 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 							$tmp_chaine_classes2;
 			}
 			else {
+				$infos_supplementaires="";
+				if(in_array("resp_legal" , $tab_infos_a_afficher)) {
+					$infos_supplementaires.=" <span title=\"";
+					if($lig_tmp->resp_legal==0) {
+						$infos_supplementaires.="Responsable non légal";
+					}
+					else {
+						$infos_supplementaires.="Responsable légal n°".$lig_tmp->resp_legal;
+					}
+					$infos_supplementaires.="\">(<em>$lig_tmp->resp_legal</em>)</span>";
+					
+				}
+				if(in_array("envoi_bulletin" , $tab_infos_a_afficher)) {
+					if($lig_tmp->resp_legal==0) {
+						if($lig_tmp->envoi_bulletin=="y") {
+							$infos_supplementaires.=" <span title=\"Les bulletins de cet élève sont générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+						}
+						else {
+							$infos_supplementaires.=" <span title=\"Les bulletins de cet élève ne sont pas générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin_barre.png' class='icone16' /></span>";
+						}
+					}
+					else {
+						$infos_supplementaires.=" <span title=\"Les bulletins sont toujours générés à destination des responsables légaux.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+					}
+				}
+				// A faire: indiquer s'il y a un acces_sp dans le cas resp_legal=0
+
 				$tab_ele[]=$lig_tmp->login;
 				if($mode=='avec_classe') {
 					$tmp_chaine_classes="";
@@ -2368,12 +2422,12 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 						$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 					}
 
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes.$infos_supplementaires;
 				}
 				else {
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$infos_supplementaires;
 				}
-			}                
+			}
 		}
 		$res_ele->close();
 	}
