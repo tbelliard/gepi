@@ -5,6 +5,12 @@
 
 Gepi-master (Version de développement)
 ===========================
+Cahier de notes:
+- Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+
+Bulletins:
+- Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+
 EDT: 
 - Facilités de navigation Classe/Prof/Salle en cliquant dans le créneau affiché.
 
