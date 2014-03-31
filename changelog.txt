@@ -16,6 +16,7 @@ Gestion:
 - Consultation élève: Ajout de l'affichage de MEF.
 - Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
 - Possibilité de conserver des mots de passe dans la base Gepi en mode SSO pour mettre en place un accès de secours quand l'authentification SSO fait des siennes.
+- Possibilité de générer les bulletins pour certains responsables non légaux (cas des familles d'accueil).
 
 Discipline:
 - Possibilité de définir des avertissements de fin de période,

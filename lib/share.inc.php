@@ -9812,7 +9812,50 @@ function get_tab_avertissement($login_ele, $periode="") {
 	return $tab;
 }
 
-function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet") {
+function get_tab_avertissement_classe($id_classe, $periode="") {
+	$tab=array();
+
+	$sql="SELECT jec.login, sa.* FROM s_avertissements sa, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=sa.login_ele ";
+	if(($periode!="")&&(preg_match("/^[0-9]{1,}$/",$periode))) {
+		$sql.="AND jec.periode='$periode' AND sa.periode=jec.periode ";
+	}
+	$sql.="ORDER BY date_avertissement;";
+	//echo "$sql<br />";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		//$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$cpt=0;
+			if(isset($tab['periode'][$lig->periode]['login'][$lig->login])) {
+				$cpt=count($tab['periode'][$lig->periode]['login'][$lig->login]);
+			}
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['declarant']=$lig->declarant;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['commentaire']=$lig->commentaire;
+
+			$cpt=0;
+			if(isset($tab['login'][$lig->login]['periode'][$lig->periode])) {
+				$cpt=count($tab['login'][$lig->login]['periode'][$lig->periode]);
+			}
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
+
+			if((!isset($tab['id_type_avertissement'][$lig->periode]))||(!in_array($lig->id_type_avertissement, $tab['id_type_avertissement'][$lig->periode]))) {
+				$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
+			}
+			//$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet", $html="y") {
 	global $tab_type_avertissement_fin_periode;
 	global $mod_disc_terme_avertissement_fin_periode;
 
@@ -9834,7 +9877,12 @@ function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_compl
 			for($loop=0;$loop<count($tab['id_type_avertissement'][$periode]);$loop++) {
 				if($loop>0) {$retour.=", ";}
 				if($mode=="nom_court") {
-					$retour.="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court']."</span>";
+					if($html=="y") {
+						$retour.="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court']."</span>";
+					}
+					else {
+						$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court'];
+					}
 				}
 				else {
 					//$retour.="<span style='color:red'>\$tab['id_type_avertissement'][$periode][$loop]=".$tab['id_type_avertissement'][$periode][$loop]."</span>";
@@ -9845,6 +9893,81 @@ function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_compl
 	}
 
 	return $retour;
+}
+
+function liste_avertissements_fin_periode_classe($id_classe, $periode, $mode="nom_complet", $html="y") {
+	global $tab_type_avertissement_fin_periode;
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$tab_retour=array();
+
+	$tab=get_tab_avertissement_classe($id_classe, $periode);
+	/*
+	echo "<p>get_tab_avertissement($id_classe, $periode)<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+
+
+	/*
+		// Champs du tableau récupéré de get_tab_avertissement_classe($id_classe, $periode)
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['declarant']=$lig->declarant;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['commentaire']=$lig->commentaire;
+
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
+
+			$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
+	*/
+
+	if(!is_array($tab_type_avertissement_fin_periode)) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	}
+
+	//$tab_ele=array();
+
+	if(isset($tab_type_avertissement_fin_periode['id_type_avertissement'])) {
+		if(isset($tab['id_type_avertissement'][$periode])) {
+			foreach($tab['periode'][$periode]['login'] as $current_login => $tab_avt_ele) {
+				//echo "\$current_login=".$current_login."<br />";
+				for($loop=0;$loop<count($tab_avt_ele);$loop++) {
+					if(isset($tab_retour[$current_login])) {
+						$tab_retour[$current_login].=", ";
+					}
+					else {
+						$tab_retour[$current_login]="";
+					}
+
+					$id_type_avertissement_courant=$tab_avt_ele[$loop]['id_type_avertissement'];
+					//echo "\$tab_avt_ele[$loop]=".$id_type_avertissement_courant."<br />";
+
+					if($mode=="nom_court") {
+						if($html=="y") {
+							$tab_retour[$current_login].="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_court']."</span>";
+						}
+						else {
+							$tab_retour[$current_login].=$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_court'];
+						}
+					}
+					else {
+						$tab_retour[$current_login].=$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_complet'];
+					}
+				}
+			}
+		}
+	}
+/*
+echo "<pre>";
+print_r($tab_retour);
+echo "</pre>";
+*/
+	return $tab_retour;
 }
 
 function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {

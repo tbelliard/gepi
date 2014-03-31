@@ -62,7 +62,9 @@ echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.pn
 if ($id_liste_periodes!=0) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a>";
 }
-echo " | <a href='../impression/parametres_impression_pdf_avis.php'>Régler les paramètres du PDF</a>";
+if((($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'])))||($_SESSION['statut']!='professeur')) {
+	echo " | <a href='../impression/parametres_impression_pdf_avis.php'>Régler les paramètres du PDF</a>";
+}
 echo "</p>\n";
 
 if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // Scolarite ou Cpe
@@ -116,7 +118,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
 		$_SESSION['id_liste_periodes']=NULL;
 		
 		if ($id_liste_periodes != 0) {
-		    $_SESSION['id_liste_periodes']=$id_liste_periodes;
+			$_SESSION['id_liste_periodes']=$id_liste_periodes;
 			$id_la_premiere_periode = $id_liste_periodes[0];
 		}
 		
@@ -244,6 +246,7 @@ if (($_SESSION['statut'] == 'scolarite')||($_SESSION['statut'] == 'cpe')) { // S
                $k++;
             }
             echo "<br />";
+		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe de $classe_suivi pour toutes les périodes.</a></p>";
             $j++;
         }
     }

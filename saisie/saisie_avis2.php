@@ -389,6 +389,10 @@ $msg_acces_app_ele_resp\" />";
 		$i++;
 	}
 	echo "</ul>\n";
+
+	if($acces_avis_pdf) {
+		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe pour toutes les périodes.</a></p>";
+	}
 }
 
 // Deuxième étape : la classe est définie, la période est définie, on affiche la liste des élèves
@@ -516,7 +520,8 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-	echo "| <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num'>Impression PDF des avis</a>";
+	echo "| Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\">P$periode_num</a>";
+	echo " - <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=toutes' title=\"Générer un fichier PDF des avis du conseil de classe pour toutes les périodes.\">Toutes</a>";
 }
 
 if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
@@ -659,10 +664,16 @@ echo "</form>\n";
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
 
-		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span>";
+		echo "<td>";
 		if($ver_periode[$periode_num]!="O") {
-			echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint'><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
+			if($current_eleve_avis=="") {
+				echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint' title=\"Saisir l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom en période $periode_num\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
+			}
+			else {
+				echo "<div style='float:right; width:16px;'><a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint' title=\"Saisir l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom en période $periode_num\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+			}
 		}
+		echo "<span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span>";
 		echo "</td>\n";
 
 		if($avec_mentions=="y") {
