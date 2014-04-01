@@ -513,8 +513,26 @@ $eleve_col = $query
     $compteur = 0;
     $tab_eleve_id=array();
     foreach($eleve_col as $eleve) {        
-	$compteur = $compteur + 1;
-        $regime_eleve=$eleve->getEleveRegimeDoublant();
+		$compteur = $compteur + 1;
+		//$regime_eleve=$eleve->getEleveRegimeDoublant();
+		//$regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
+		if(EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())!=null) {
+			$regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
+
+			if($regime_eleve=="") {
+				$regime_eleve="<span style='color:red; text-decoration:blink;' title=\"Le régime de cet élève enregistré dans la base pour cet élève est vide.
+Vous devriez demander à l'administrateur de revalider la fiche de l'élève dans
+   Gestion des bases/Gestion des élèves/...\">???</span>";
+			}
+		}
+		else {
+			$regime_eleve="<span style='color:red; text-decoration:blink;' title=\"Le régime de cet élève n'est pas enregistré dans la base.
+Demandez à l'administrateur de revalider la fiche de l'élève dans
+   Gestion des bases/Gestion des élèves/
+      Les élèves (affectés dans des classes) dont le régime
+      n'est pas renseigné \">???</span>";
+		}
+
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
 
