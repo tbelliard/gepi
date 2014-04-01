@@ -525,9 +525,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 	// et le passer via global
 	//================================
 
-    // Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
-    $retour_a_la_ligne="y";
-    // Passer à "n" pour désactiver le retour à la ligne.
+	// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
+	$retour_a_la_ligne="y";
+	// Passer à "n" pour désactiver le retour à la ligne.
 
 	if((isset($tab_rel['rn_retour_ligne']))&&(($tab_rel['rn_retour_ligne']=='y')||($tab_rel['rn_retour_ligne']=='n'))) {
 		$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
@@ -754,6 +754,45 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 				}
 			}
 		}
+
+
+		// Envoi du bulletin à des resp_legal=0
+		if (isset($tab_rel['eleve'][$i]['resp'][2])) {
+			//$indice_tab_adr=count($tab_adr_ligne1);
+			foreach($tab_rel['eleve'][$i]['resp'] as $key => $value) {
+				if($key>=2) {
+					//echo "DEBUG: \$key=$key<br />";
+					if($tab_rel['eleve'][$i]['resp'][$key]['civilite']!="") {
+						$tab_adr_ligne1[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['civilite']." ".$tab_rel['eleve'][$i]['resp'][$key]['nom']." ".$tab_rel['eleve'][$i]['resp'][$key]['prenom'];
+					}
+					else {
+						$tab_adr_ligne1[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['nom']." ".$tab_rel['eleve'][$i]['resp'][$key]['prenom'];
+					}
+
+					$tab_adr_ligne2[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['adr1'];
+					if($tab_rel['eleve'][$i]['resp'][$key]['adr2']!=""){
+						$tab_adr_ligne2[$nb_releves].="<br />\n".$tab_rel['eleve'][$i]['resp'][$key]['adr2'];
+					}
+					if($tab_rel['eleve'][$i]['resp'][$key]['adr3']!=""){
+						$tab_adr_ligne2[$nb_releves].="<br />\n".$tab_rel['eleve'][$i]['resp'][$key]['adr3'];
+					}
+					if($tab_rel['eleve'][$i]['resp'][$key]['adr4']!=""){
+						$tab_adr_ligne2[$nb_releves].="<br />\n".$tab_rel['eleve'][$i]['resp'][$key]['adr4'];
+					}
+					$tab_adr_ligne3[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['cp']." ".$tab_rel['eleve'][$i]['resp'][$key]['commune'];
+
+					if(($tab_rel['eleve'][$i]['resp'][$key]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][$key]['pays'])!=my_strtolower($gepiSchoolPays))) {
+						if($tab_adr_ligne3[$nb_releves]!=" "){
+							$tab_adr_ligne3[$nb_releves].="<br />";
+						}
+						$tab_adr_ligne3[$nb_releves].=$tab_rel['eleve'][$i]['resp'][$key]['pays'];
+					}
+
+					$nb_releves++;
+				}
+			}
+		}
+
 	//}
 	// Fin de la préparation des lignes adresse responsable
 
@@ -2149,6 +2188,63 @@ function releve_pdf($tab_rel,$i) {
 
 			if(($tab_rel['eleve'][$i]['resp'][0]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][0]['pays'])!=my_strtolower($gepiSchoolPays))) {
 				$tab_adr_ligne6[0]=$tab_rel['eleve'][$i]['resp'][0]['pays'];
+			}
+		}
+	}
+
+	// Envoi du bulletin à des resp_legal=0
+	if (isset($tab_rel['eleve'][$i]['resp'][2])) {
+		//$indice_tab_adr=count($tab_adr_ligne1);
+		foreach($tab_rel['eleve'][$i]['resp'] as $key => $value) {
+			if($key>=2) {
+				$tab_adr_lignes[$nb_releves]="";
+				if($tab_rel['eleve'][$i]['resp'][$key]['civilite']!="") {
+					$tab_adr_ligne1[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['civilite']." ".$tab_rel['eleve'][$i]['resp'][$key]['nom']." ".$tab_rel['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				else {
+					$tab_adr_ligne1[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['nom']." ".$tab_rel['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				$tab_adr_lignes[$nb_releves].="<b>".$tab_adr_ligne1[0]."</b>";
+
+				$tab_adr_ligne2[$nb_releves]="";
+				if($tab_rel['eleve'][$i]['resp'][$key]['adr1']!='') {
+					$tab_adr_ligne2[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['adr1'];
+					$tab_adr_lignes[$nb_releves].="\n";
+					$tab_adr_lignes[$nb_releves].=$tab_adr_ligne2[0];
+				}
+
+				if($tab_rel['eleve'][$i]['resp'][$key]['adr2']!=""){
+					$tab_adr_ligne3[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['adr2'];
+
+					$tab_adr_lignes[$nb_releves].="\n";
+					$tab_adr_lignes[$nb_releves].=$tab_adr_ligne3[0];
+				}
+
+				if($tab_rel['eleve'][$i]['resp'][$key]['adr3']!=""){
+					$tab_adr_ligne4[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['adr3'];
+
+					$tab_adr_lignes[$nb_releves].="\n";
+					$tab_adr_lignes[$nb_releves].=$tab_adr_ligne4[0];
+				}
+
+				if($tab_rel['eleve'][$i]['resp'][$key]['adr4']!=""){
+					$tab_adr_ligne5[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['adr4'];
+
+					$tab_adr_lignes[$nb_releves].="\n";
+					$tab_adr_lignes[$nb_releves].=$tab_adr_ligne5[0];
+				}
+
+				$tab_adr_ligne6[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['cp']." ".$tab_rel['eleve'][$i]['resp'][$key]['commune'];
+				$tab_adr_lignes[$nb_releves].="\n";
+				$tab_adr_lignes[$nb_releves].=$tab_adr_ligne6[0];
+
+				if(($tab_rel['eleve'][$i]['resp'][$key]['pays']!="")&&(my_strtolower($tab_rel['eleve'][$i]['resp'][$key]['pays'])!=my_strtolower($gepiSchoolPays))) {
+					$tab_adr_ligne7[$nb_releves]=$tab_rel['eleve'][$i]['resp'][$key]['pays'];
+					$tab_adr_lignes[$nb_releves].="\n";
+					$tab_adr_lignes[$nb_releves].=$tab_adr_ligne7[0];
+				}
+
+				$nb_releves++;
 			}
 		}
 	}
