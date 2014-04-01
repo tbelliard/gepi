@@ -2723,7 +2723,7 @@ else {
 							// $zz est l'indice des AID effectivement utiles pour l'élève et la période
 							$zz=0;
 							while ($z < $nb_aid_b) {
-							   $call_data_aid_b->field_seek($z);
+							   $call_data_aid_b->data_seek($z);
 							   $finfo = $call_data_aid_b->fetch_object();
 							   $display_begin = $finfo->display_begin;
 							   $display_end = $finfo->display_end;
@@ -2891,7 +2891,7 @@ else {
 							$zz=0;
 							while ($z < $nb_aid_e) {
 							   
-							   $call_data_aid_e->field_seek($z);
+							   $call_data_aid_e->data_seek($z);
 							   $finfo_aid_e = $call_data_aid_e->fetch_object();
 							   if ($finfo_aid_e) {
 								 $display_begin = $finfo_aid_e->display_begin;
@@ -3196,7 +3196,7 @@ else {
 								$n = 0;
 								while ($n < $nb_ligne_cn) {
 								   
-								   $test_cn->field_seek($n);
+								   $test_cn->data_seek($n);
 								   $test_cn_objet=$test_cn->fetch_object ();
 								   $cn_id[$n] = $test_cn_objet->id;
 								   $cn_nom[$n] = $test_cn_objet->nom_court;
