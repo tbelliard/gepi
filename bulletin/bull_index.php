@@ -2676,6 +2676,19 @@ else {
 							}
 						}
 
+						// Vérification
+						if(mysqli_num_rows($res_resp)>2) {
+							if($mode_bulletin=="html") {
+								echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
+								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
+								for ($z=0;$z<count($tab_ele['resp']);$z++) {
+									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+								}
+								echo "Seuls les deux premiers apparaitront sur des bulletins.";
+								echo "</div>\n";
+							}
+						}
+
 						// Récup infos responsables non légaux, mais pointés comme destinataires des bulletins
 						$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
 														resp_adr ra,
@@ -2716,19 +2729,6 @@ else {
 								$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 
 								$cpt++;
-							}
-						}
-
-						// Vérification
-						if(mysqli_num_rows($res_resp)>2) {
-							if($mode_bulletin=="html") {
-								echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
-								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
-								for ($z=0;$z<count($tab_ele['resp']);$z++) {
-									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
-								}
-								echo "Seuls les deux premiers apparaitront sur des bulletins.";
-								echo "</div>\n";
 							}
 						}
 
