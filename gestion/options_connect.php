@@ -861,7 +861,6 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 
 //===========================================================
 
-
 //
 // Durée de conservation des logs
 //
