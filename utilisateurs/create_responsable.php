@@ -588,6 +588,20 @@ else{
 	//===================================
 	echo "<br />\n";
 
+	// A REVOIR: Le $reg_auth_mode n'a pas l'air initialisé
+
+	$sql="SELECT DISTINCT auth_mode FROM utilisateurs WHERE statut='responsable';";
+	$test_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_auth_mode)==1) {
+		$lig_auth_mode=mysqli_fetch_object($test_auth_mode);
+		if($lig_auth_mode->auth_mode=="gepi") {
+			$reg_auth_mode="auth_locale";
+		}
+		elseif($lig_auth_mode->auth_mode=="sso") {
+			$reg_auth_mode="auth_sso";
+		}
+	}
+
 	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
 	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";
 	//=====================
