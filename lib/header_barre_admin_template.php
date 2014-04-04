@@ -127,7 +127,14 @@ include("menu_plugins.inc.php");
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
 		if(getSettingAOui('use_ent') || $gepiSettings['auth_sso'] == 'cas') {
-			$menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
+			$temp_afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
+			if($temp_afficher_liaison_ent!="netcollege") {
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_sso_table/index.php" '.insert_confirm_abandon().'>Correspondances identifiants SSO</a></li>'."\n";
+			}
+
+			if($temp_afficher_liaison_ent!="") {
+				$menus .= '                <li><a href="'.$gepiPath.'/mod_ent/index.php" '.insert_confirm_abandon().'>Liaison ENT</a></li>'."\n";
+			}
 		}
 		$menus .= '                <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches bienvenue</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=MonCompteAfficheInfo" '.insert_confirm_abandon().' title="Vous pouvez faire apparaître des informations spécifique à chaque statut dans la rubrique Gérer mon compte de l\'utilisateur.">Infos par statut</a></li>'."\n";
@@ -141,7 +148,7 @@ include("menu_plugins.inc.php");
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php" '.insert_confirm_abandon().'>Consult.fiches élèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
-		$menus .= '            </ul>'."\n";		
+		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/responsables/index.php" '.insert_confirm_abandon().'>Resp. légaux</a>'."\n";
