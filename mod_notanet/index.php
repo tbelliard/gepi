@@ -369,7 +369,7 @@ if($_SESSION['statut']=="administrateur") {
 
 		echo "<p class='bold'>Nettoyage des tables Notanet&nbsp;:</p>\n";
 
-		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type');
+		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type', 'notanet_saisie');
 
 		echo "<div style='margin-left:3em;'>\n";
 		if(!isset($_GET['confirmer'])) {
