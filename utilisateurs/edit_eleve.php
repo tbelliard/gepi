@@ -78,6 +78,24 @@ if (!$error) {
 		check_token();
 	}
 
+	if ($action == "changer_etat_user") {
+		$sql="SELECT etat FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."' AND statut = 'eleve')";
+		$res=mysqli_query($GLOBALS["mysqli"],$sql);
+		if(mysqli_num_rows($res)==0) {
+			$msg .= "Erreur : Aucun compte élève n'a été trouvé pour le login indiqué : " . $_GET['eleve_login'];
+			unset($action);
+		}
+		else {
+			$lig_etat=mysqli_fetch_object($res);
+			if($lig_etat->etat=="actif") {
+				$action="rendre_inactif";
+			}
+			else {
+				$action="rendre_actif";
+			}
+		}
+	}
+
 	if ($action == "rendre_inactif") {
 		// Désactivation d'utilisateurs actifs
 		if ($mode == "individual") {
@@ -719,22 +737,19 @@ while ($current_eleve = mysqli_fetch_object($quels_eleves)) {
 		echo "<td>\n";
 			echo $current_eleve->nom . " " . $current_eleve->prenom;
 		echo "</td>\n";
-		echo "<td align='center'>\n";
+		echo "<td align='center' title=\"Cliquez pour activer/désactiver le compte\">\n";
 			//echo $current_eleve->etat;
 			//echo "<br/>";
+			echo "<a href='edit_eleve.php?action=changer_etat_user&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"changer_etat_utilisateur('$current_eleve->login', 'etat_".$current_eleve->login."') ;return false;\" title=\"Changer l'état actif/inactif.\"><span id='etat_".$current_eleve->login."'>";
 			if ($current_eleve->etat == "actif") {
-				echo "<font color='green'>".$current_eleve->etat."</font>";
-				echo "<br />\n";
-				echo "<a href='edit_eleve.php?action=rendre_inactif&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."'>Désactiver";
+				echo "<img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' />";
 			} else {
-				echo "<font color='red'>".$current_eleve->etat."</font>";
-				echo "<br />\n";
-				echo "<a href='edit_eleve.php?action=rendre_actif&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."'>Activer";
+				echo "<img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' />";
 			}
-			echo "</a>\n";
+			echo "</span></a>\n";
 		echo "</td>\n";
 
-		echo "<td>\n";
+		echo "<td title=\"Cliquez pour modifier le mode d'authentification du compte\">\n";
 			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_eleve->login."&amp;auth_mode_user=".$current_eleve->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_eleve->login', '$current_eleve->auth_mode') ;return false;\">";
 			echo "<span id='auth_mode_$current_eleve->login'>";
 			echo $current_eleve->auth_mode;

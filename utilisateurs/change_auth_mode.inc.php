@@ -38,6 +38,7 @@ echo "<div id='div_changer_auth_mode' style='position: absolute; top: 220px; rig
 	$tab_auth_mode=array('gepi', 'ldap', 'sso');
 	echo "<form name='form_changer_auth_mode' id='form_changer_auth_mode' action ='ajax_modif_utilisateur.php' method='post' target='_blank'>\n";
 	echo "<input type='hidden' name='auth_mode_login_user' id='auth_mode_login_user' value='' />\n";
+	echo "<input type='hidden' name='auth_mode_id_retour' id='auth_mode_id_retour' value='' />\n";
 	for($loop=0;$loop<count($tab_auth_mode);$loop++) {
 		echo "<input type='radio' name='auth_mode_user' id='auth_mode_user_$loop' value='".$tab_auth_mode[$loop]."' ";
 		//if($eleve_auth_mode==$tab_auth_mode[$loop]) {}
@@ -68,10 +69,30 @@ echo "<script type='text/javascript'>
 		afficher_div('div_changer_auth_mode','y',-20,20);
 	}
 
+	function afficher_changement_auth_mode_avec_param(login_user, auth_mode, id_retour) {
+		// auth_mode est le auth_mode actuel de l'utilisateur
+		document.getElementById('titre_entete_changer_auth_mode').innerHTML='Auth_mode de '+login_user;
+		document.getElementById('auth_mode_login_user').value=login_user;
+		document.getElementById('auth_mode_id_retour').value=id_retour;
+
+		// On coche le auth_mode actuel de l'utilisateur
+		for(i=0;i<".count($tab_auth_mode).";i++) {
+			if(document.getElementById('auth_mode_user_'+i).value==auth_mode) {
+				document.getElementById('auth_mode_user_'+i).checked=true;
+			}
+		}
+
+		afficher_div('div_changer_auth_mode','y',-20,20);
+	}
 
 	function valider_changement_auth_mode() {
 		if(document.getElementById('auth_mode_login_user')) {
 			login_user=document.getElementById('auth_mode_login_user').value;
+
+			id_retour='';
+			if(document.getElementById('auth_mode_id_retour')) {
+				id_retour=document.getElementById('auth_mode_id_retour').value;
+			}
 
 			for (var i=0; i<document.forms['form_changer_auth_mode'].auth_mode_user.length;i++) {
 				if (document.forms['form_changer_auth_mode'].auth_mode_user[i].checked) {
@@ -81,7 +102,12 @@ echo "<script type='text/javascript'>
 
 			//alert(auth_mode_user);
 
-			new Ajax.Updater($('auth_mode_'+login_user),'ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode".add_token_in_url(false)."',{method: 'get'});
+			if(id_retour=='') {
+				new Ajax.Updater($('auth_mode_'+login_user),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode".add_token_in_url(false)."',{method: 'get'});
+			}
+			else {
+				new Ajax.Updater($(id_retour),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode".add_token_in_url(false)."',{method: 'get'});
+			}
 		}
 		else {
 			alert('document.getElementById(\'auth_mode_login_user\') n est pas affecté.')
@@ -91,4 +117,14 @@ echo "<script type='text/javascript'>
 
 	}
 </script>\n";
+
+echo "<script type='text/javascript'>
+
+	function changer_etat_utilisateur(login_user, id_retour) {
+		new Ajax.Updater($(id_retour),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&mode=changer_etat_user".add_token_in_url(false)."',{method: 'get'});
+	}
+
+
+</script>";
+
 ?>

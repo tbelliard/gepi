@@ -1367,6 +1367,10 @@ $titre_page = "ENT ITOP : Rapprochement";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+//========================================================
+include("../utilisateurs/change_auth_mode.inc.php");
+//========================================================
+
 if($msg!="") {
 	echo "<div style='position:absolute; top:100px; left:20px; width:18px;' class='noprint'><a href='#lien_retour'><img src='../images/down.png' width='18' height='18' title='Passer les messages' /></a></div>\n";
 }
@@ -2295,16 +2299,20 @@ if($mode=="consult_eleves") {
 Créer le compte?' target='_blank'>-</a>";
 		}
 		else {
-			echo "<label for='suppr_$cpt'>";
 			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Désactiver le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></span></a></div>\n";
 			}
 			else {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
+
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
-			echo "</label>";
+			echo "</span>";
+			echo "</a>";
+
 		}
 		echo "</td>
 			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
@@ -3019,12 +3027,17 @@ if($mode=="consult_responsables") {
 		else {
 			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_responsable.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Désactiver le compte utilisateur de ce responsable.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></span></a></div>\n";
 			}
 			else {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_responsable.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de ce responsable.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
+
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
+			echo "</span>";
+			echo "</a>";
 		}
 		echo "</label></td>
 			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</span></label></td>
@@ -3508,12 +3521,17 @@ if($mode=="consult_personnels") {
 		else {
 			$lig_u=mysqli_fetch_object($test_u);
 			if($lig_u->etat=='actif') {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Désactiver le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' /></span></a></div>\n";
 			}
 			else {
-				echo "<div style='float:right;width:16px;'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></div>\n";
+				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
+
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
+			echo "</span>";
+			echo "</a>";
 		}
 		echo "</label></td>
 			<td><label for='suppr_$cpt'><span id='nom_$cpt'>$lig->nom</label></span></td>
