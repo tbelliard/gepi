@@ -509,6 +509,10 @@ if(peut_poster_message($_SESSION['statut'])) {
 					<!-- Balises concernant JavaScript -->
 					<div id='p_ajout_dest_js' style='display:none;float:right;whidth:16px;'><a href="javascript:affiche_ajout_dest();"><img src='../images/icons/add.png'  style='width:16px; height:16px' alt='Ajouter' title='Ajouter un ou des destinataires' /></a></div>
 
+					<div id='p_ajout_dest_js_moi' style='display:none;float:right;whidth:16px;'><a href="javascript:ajouter_mon_compte();"><img src='../images/icons/buddy.png'  style='width:16px; height:16px' alt='Moi' title="Ajouter mon propre compte à la liste des destinataires.
+C'est un moyen de se poster un rappel pour telle ou telle chose.
+Par exemple, réclamer une punition à un élève." /></a></div>
+
 					<div id='div_login_dest_js'>
 						<span style='color:red' id='span_ajoutez_un_ou_des_destinataires'><a href='javascript:affiche_ajout_dest();' style='color:red'>Ajoutez un ou des destinataires --&gt;</a></span>
 						<?php
@@ -583,6 +587,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 					<!-- ======================================================= -->
 					<script type='text/javascript'>
 						if(document.getElementById('p_ajout_dest_js')) {document.getElementById('p_ajout_dest_js').style.display='';}
+						if(document.getElementById('p_ajout_dest_js_moi')) {document.getElementById('p_ajout_dest_js_moi').style.display='';}
 						if(document.getElementById('div_login_dest_js')) {document.getElementById('div_login_dest_js').style.display='';}
 						if(document.getElementById('div_select_no_js')) {document.getElementById('div_select_no_js').style.display='none';}
 
@@ -722,6 +727,14 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		echo $chaine_js_designation_u;
 		echo $chaine_prof_classe;
 	?>
+
+	function ajouter_mon_compte() {
+		i=-1;
+		document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='<?php echo $_SESSION['login'];?>' /><?php echo "Moi-même (<em>".$_SESSION['prenom']." ".$_SESSION['nom']."</em>)";?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+
+		// Masquage du texte initial d'ajout de destinataires
+		if(document.getElementById('span_ajoutez_un_ou_des_destinataires')) {document.getElementById('span_ajoutez_un_ou_des_destinataires').style.display='none';}
+	}
 
 	function ajouter_dest_choisis() {
 		if(document.getElementById('div_login_dest_js')) {
