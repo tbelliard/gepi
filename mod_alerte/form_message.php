@@ -431,6 +431,12 @@ if((isset($mode))&&($mode=='repondre')) {
 	}
 }
 
+$avec_js_et_css_edt="n";
+if((getSettingAOui('autorise_edt_tous'))||
+	((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+	$avec_js_et_css_edt="y";
+}
+
 $themessage = 'Un message est en cours de rédaction. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
 $utilisation_prototype = "ok";
@@ -489,7 +495,7 @@ if(peut_poster_message($_SESSION['statut'])) {
 
 <form action='../mod_alerte/form_message.php' method='post' name='formulaire'>
 	<fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
-		<legend style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>Formulaire de rédaction d'un message/alerte</legend>
+		<legend style='border:1px solid grey; background:white; color:black;'>Formulaire de rédaction d'un message/alerte</legend>
 		<?php
 			echo add_token_field(true);
 		?>
@@ -664,7 +670,7 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_u)>0) {
-		$texte_infobulle.="<br /><p class='bold'><a href=\"javascript:cocher_decocher_statut('$tab_statut[$loop]')\">".ucfirst($tab_statut[$loop])."</a>";
+		$texte_infobulle.="<br /><p class='bold'><a href=\"javascript:cocher_decocher_statut('$tab_statut[$loop]')\" title=\"Cocher/décocher tous les comptes de statut ".ucfirst($tab_statut[$loop])."\">".ucfirst($tab_statut[$loop])."</a>";
 
 		if($tab_statut[$loop]=='professeur') {
 			//$chaine_prof_classe="";
@@ -726,11 +732,34 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		echo $chaine_js_login_u;
 		echo $chaine_js_designation_u;
 		echo $chaine_prof_classe;
+
+		$chaine_edt_ajouter_mon_compte="";
+		$chaine_edt_ajouter_lien_prof="";
+		if($avec_js_et_css_edt=="y") {
+			if($_SESSION['statut']=='professeur') {
+				$moi=casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom'];
+				$chaine_edt_ajouter_mon_compte=" <a href='../edt_organisation/index_edt.php?login_edt=".$_SESSION['login']."&type_edt_2=prof&visioedt=prof1&no_entete=y&no_menu=y&lien_refermer=y' onclick=\\\"affiche_edt_en_infobulle('".$_SESSION['login']."', '".addslashes($moi)."');return false;\\\" title=\\\"Emploi du temps de ".$moi."\\\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+
+
+			}
+
+			if((($_SESSION['statut']=='professeur')&&(getSettingAOui('AccesProf_EdtProfs')))||
+			($_SESSION['statut']=='administrateur')||
+			($_SESSION['statut']=='scolarite')||
+			($_SESSION['statut']=='cpe')) {
+
+				// Voir aussi le cas statut 'autre' pour l'accès aux EDT
+
+				$chaine_edt_ajouter_lien_prof=" <a href='../edt_organisation/index_edt.php?login_edt=\"+login_u[i]+\"&type_edt_2=prof&visioedt=prof1&no_entete=y&no_menu=y&lien_refermer=y' onclick=\\\"affiche_edt_en_infobulle('\"+login_u[i]+\"', '\"+designation_u[i]+\"');return false;\\\" title=\\\"Emploi du temps de \"+designation_u[i]+\"\\\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+			}
+
+		}
 	?>
 
 	function ajouter_mon_compte() {
 		i=-1;
-		document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='<?php echo $_SESSION['login'];?>' /><?php echo "Moi-même (<em>".$_SESSION['prenom']." ".$_SESSION['nom']."</em>)";?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+
+		document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='<?php echo $_SESSION['login'];?>' /><?php echo "Moi-même (<em>".$_SESSION['prenom']." ".$_SESSION['nom']."</em>)".$chaine_edt_ajouter_mon_compte;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 
 		// Masquage du texte initial d'ajout de destinataires
 		if(document.getElementById('span_ajoutez_un_ou_des_destinataires')) {document.getElementById('span_ajoutez_un_ou_des_destinataires').style.display='none';}
@@ -741,7 +770,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {
 					if(document.getElementById('login_dest_'+i).checked==true) {
-						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+" <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
+						document.getElementById('div_login_dest_js').innerHTML=document.getElementById('div_login_dest_js').innerHTML+"<br /><span id='span_login_u_choisi_"+i+"'><input type='hidden' name='login_dest[]' value='"+login_u[i]+"' />"+designation_u[i]+"<?php echo $chaine_edt_ajouter_lien_prof;?> <a href=\"javascript:removeElement('span_login_u_choisi_"+i+"')\"><img src='../images/icons/delete.png' style='width:16px; height:16px' alt='Supprimer' /></a></span>";
 
 						// On décoche les cases pour que si on ajoute par la suite d'autres destinataires,
 						// ils ne soient pas pré-sélectionnés, au risque de faire apparaitre des doublons.
@@ -828,6 +857,31 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 </script>
 
 <?php
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+		$titre_infobulle="EDT de <span id='span_id_edt_nom_prof'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_prof',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+		echo "<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle(login, nom_prof) {
+		document.getElementById('span_id_edt_nom_prof').innerHTML=nom_prof;
+
+		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+login+'&type_edt_2=prof&visioedt=prof1&no_entete=y&no_menu=y&mode_infobulle=y&appel_depuis_form_message=y',{method: 'get'});
+		afficher_div('edt_prof','y',-20,20);
+	}
+</script>\n";
+	}
+
+
+
 } // Fin du test PeutPosterMessage<statut>
 ?>
 <!-- ======================================================= -->
