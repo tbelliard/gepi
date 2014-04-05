@@ -17,9 +17,6 @@ $weekstarts = 1;
 // Cette longueur est liée avec le réglage longmax_login de la table setting (voir /lib/initialisations.inc.php)
 $longmax_login = "10";
 
-// labels des périodes
-$gepiClosedPeriodLabel = "période close";
-$gepiOpenPeriodLabel = "période ouverte";
 // La fonction gethostbyaddr utilisée dans le script gestion_connect.php et mon_compte.php retourne le nom d'hôte correspondant à une IP ("résolution inverse").
 // Chez certains hébergeurs, ou dans certaines configurations de serveurs, le temps d'exécution peut être très long.
 // Une solution consiste donc à ne pas faire de gethostbyaddr sur les IP locales , c'est-à-dire qui commence par 127., 10., 192.168.
@@ -29,10 +26,28 @@ $gepiOpenPeriodLabel = "période ouverte";
 // $active_hostbyaddr = "no_local" : la résolution inverse des adresses IP locales est désactivée
 $active_hostbyaddr = "no_local";
 
-
 // labels des périodes
 $gepiClosedPeriodLabel = "période close";
 $gepiOpenPeriodLabel = "période ouverte";
+
+$traduction_verrouillage_periode['O']="close";
+$traduction_verrouillage_periode['P']="partiellement close";
+$traduction_verrouillage_periode['N']="ouverte en saisie";
+
+$couleur_verrouillage_periode['O']="red";
+$couleur_verrouillage_periode['P']="darkorange";
+$couleur_verrouillage_periode['N']="green";
+
+$explication_verrouillage_periode['O']="Lorsqu'une période est verrouillée totalement,
+le remplissage et la modification du bulletin pour la période concernée sont impossibles.
+La visualisation et l'impression sont autorisées.";
+$explication_verrouillage_periode['P']="Lorsqu'une période est verrouillée partiellement,
+seuls le remplissage et/ou la modification de l'avis du conseil de classe sont possibles.
+La visualisation et l'impression des bulletins officiels sont autorisées.";
+$explication_verrouillage_periode['N']="Lorsqu'une période est déverrouillée,
+le remplissage de toutes les rubriques (notes, appréciations, avis) est autorisé,
+la visualisation des bulletins simples est autorisée,
+mais la visualisation et l'impression des bulletins officiels sont impossibles.";
 
 // Blocage de l'authentification en Single Sign-On
 // -> repasse en authentification normale
