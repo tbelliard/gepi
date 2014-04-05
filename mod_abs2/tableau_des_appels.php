@@ -179,7 +179,9 @@ if ($choix_creneau_obj != null) {
 </style>
 
 <script type='text/javascript'>
-	function affiche_edt_en_infobulle(id_classe) {
+	function affiche_edt_en_infobulle(id_classe, classe) {
+		document.getElementById('span_id_nom_classe').innerHTML=classe;
+
 		new Ajax.Updater($('edt_classe_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+id_classe+'&type_edt_2=classe&visioedt=classe1&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
 		afficher_div('edt_classe','y',-20,20);
 	}
@@ -226,7 +228,7 @@ foreach($classe_col as $classe){
 
 	if((getSettingAOui('autorise_edt_tous'))||
 		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
-		echo "<div style='float:left; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$id_classe."&amp;type_edt_2=classe&amp;visioedt=classe1&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle($id_classe);return false;\" title=\"Emploi du temps de la classe de ".$classe->getNom()."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>\n";
+		echo "<div style='float:left; width:3em;'><a href='../edt_organisation/index_edt.php?login_edt=".$id_classe."&amp;type_edt_2=classe&amp;visioedt=classe1&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle($id_classe, '".$classe->getNom()."');return false;\" title=\"Emploi du temps de la classe de ".$classe->getNom()."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>\n";
 	}
 
 	echo '<h4>'.$classe->getNom().'</h4>';
