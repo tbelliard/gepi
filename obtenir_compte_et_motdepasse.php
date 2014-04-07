@@ -36,6 +36,7 @@ if (!getSettingAOui("GepiResp_obtenir_compte_et_motdepasse")) {
 $nom=isset($_POST["nom"]) ? $_POST["nom"] : "";
 $prenom=isset($_POST["prenom"]) ? $_POST["prenom"] : "";
 $email=isset($_POST["email"]) ? $_POST["email"] : "";
+$statut_demandeur=isset($_POST["statut_demandeur"]) ? $_POST["statut_demandeur"] : "";
 $description=isset($_POST["description"]) ? $_POST["description"] : "";
 
 $captcha=isset($_POST["captcha"]) ? $_POST["captcha"] : "";
@@ -53,11 +54,27 @@ if (isset($_POST['is_posted'])) {
 			$titre="Demande de compte et mot de passe : $nom $prenom";
 			$mode="statut";
 			if(getSettingAOui('RegBaseAdm_obtenir_compte_et_motdepasse')) {
-				$texte="La demande de compte suivante a été formulée par <a href=\"./utilisateurs/edit_responsable.php?critere_recherche_login=".preg_replace("/[^A-Za-z]/", "%", $nom)."\">$nom $prenom</a> (<a href=\"mailto:$email\">$email</a>) le ".strftime("%d/%m/%Y à %H:%M")."\nResponsable de ou description de la demande:\n".$description;
+				$texte="La demande de compte suivante a été formulée par ";
+				if($statut_demandeur=="parent") {
+					$texte.="<a href=\"./utilisateurs/edit_responsable.php?critere_recherche_login=".preg_replace("/[^A-Za-z]/", "%", $nom)."\">$nom $prenom</a>";
+				}
+				elseif($statut_demandeur=="eleve") {
+					$texte.="<a href=\"./utilisateurs/edit_eleve.php?critere_recherche_login=".preg_replace("/[^A-Za-z]/", "%", $nom)."\">$nom $prenom</a>";
+				}
+				else {
+					$texte.="$nom $prenom";
+				}
+				$texte.=" (<a href=\"mailto:$email\">$email</a>)";
+				$texte.=" (<em>statut déclaré lors de la demande&nbsp;: ".$statut_demandeur."</em>)";
+				$texte.=" le ".strftime("%d/%m/%Y à %H:%M")."\nDescription de la demande:\n".$description;
 				$destinataire="administrateur";
 				enregistre_infos_actions($titre,$texte,$destinataire,$mode);
 			}
-			$texte="La demande de compte suivante a été formulée par $nom $prenom (<a href=\"mailto:$email\">$email</a>) le ".strftime("%d/%m/%Y à %H:%M")."\nResponsable de ou description de la demande:\n".$description;
+
+			$texte="La demande de compte suivante a été formulée par $nom $prenom";
+			$texte.=" (<a href=\"mailto:$email\">$email</a>)";
+			$texte.=" (<em>statut déclaré lors de la demande&nbsp;: ".$statut_demandeur."</em>)";
+			$texte.=" le ".strftime("%d/%m/%Y à %H:%M")."\nDescription de la demande:\n".$description;
 			if(getSettingAOui('RegBaseScol_obtenir_compte_et_motdepasse')) {
 				$destinataire="scolarite";
 				enregistre_infos_actions($titre,$texte,$destinataire,$mode);
@@ -69,7 +86,7 @@ if (isset($_POST['is_posted'])) {
 
 			if(getSettingAOui('SendMail_obtenir_compte_et_motdepasse')) {
 				$titre="Demande de compte et mot de passe : $nom $prenom";
-				$texte=nl2br("La demande suivante a été formulée par $nom $prenom ($email)\nResponsable de ou description de la demande:\n".preg_replace("/[\\\]*n/","\n",$description));
+				$texte=nl2br("La demande suivante a été formulée par $nom $prenom ($email) (statut déclaré lors de la demande : ".$statut_demandeur.")\nDescription de la demande:\n".preg_replace("/[\\\]{1,}n/","\n",$description));
 				$destinataire=getSettingValue('gepiDemandeCompteMdpAdress');
 				if($destinataire=="") {
 					$destinataire=getSettingValue('gepiAdminAdress');
@@ -122,14 +139,15 @@ if(isset($suite)) {
 <div style='margin:1em;'>
 <h2>".getSettingValue('gepiSchoolName')." : Demande de compte</h2>
 
-<p>Je souhaite obtenir (<em>ou récupérer</em>) un compte et mot de passe pour accéder aux données concernant mon ou mes enfants scolarisés dans l'établissement.</p>
+<p>Je souhaite obtenir (<em>ou récupérer</em>) un compte et mot de passe pour accéder aux données me concernant ou concernant mon ou mes enfants scolarisés dans l'établissement.</p>
 
-<table class='boireaus'>
-	<tr class='lig1'><td>Nom</td><td>$nom</td></tr>
-	<tr class='lig-1'><td>Prénom</td><td>$prenom</td></tr>
-	<tr class='lig1'><td>Email</td><td>$email</td></tr>
-	<tr class='lig-1'>
-		<td valign='top'>Responsable de<br />et/ou<br />description de la demande&nbsp;:</td>
+<table class='boireaus boireaus_alt'>
+	<tr><td>Nom</td><td>$nom</td></tr>
+	<tr><td>Prénom</td><td>$prenom</td></tr>
+	<tr><td>Email</td><td>$email</td></tr>
+	<tr><td>Statut</td><td>$statut_demandeur</td></tr>
+	<tr>
+		<td valign='top'>Description de la demande&nbsp;:</td>
 		<td>
 			".preg_replace("/\\\\n/","<br />",nl2br($description))."
 		</td>
@@ -171,14 +189,25 @@ echo "<body onload=\"document.getElementById('nom').focus()\">
 	Veuillez compléter le formulaire ci-dessous.</p>
 
 	<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>
-	<table class='boireaus'>
-		<tr class='lig1'><td>Nom</td><td><input type='text' name='nom' size='40' value=\"$nom\" /></td></tr>
-		<tr class='lig-1'><td>Prénom</td><td><input type='text' name='prenom' size='40' value=\"$prenom\" /></td></tr>
-		<tr class='lig1'><td>Email</td><td><input type='text' name='email' size='40' value=\"$email\" /></td></tr>
-		<tr class='lig-1'>
-			<td valign='top'>Enfants</td>
+	<table class='boireaus boireaus_alt'>
+		<tr><td>Nom</td><td><input type='text' name='nom' size='40' value=\"$nom\" /></td></tr>
+		<tr><td>Prénom</td><td><input type='text' name='prenom' size='40' value=\"$prenom\" /></td></tr>
+		<tr><td>Email</td><td><input type='text' name='email' size='40' value=\"$email\" /></td></tr>
+		<tr>
+			<td>Statut</td>
 			<td>
-				<p>Veuillez préciser les nom, prénom et classe<br />de l'un au moins de vos enfants scolarisés dans l'établissement&nbsp;:</p>
+				<select name='statut_demandeur'>
+					<option value='parent'>parent ou responsable</option>
+					<option value='eleve'>élève</option>
+					<option value='autre'>autre</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td valign='top'>Enfants/élèves</td>
+			<td>
+				<p>Dans le cas d'une demande parent/responsable, veuillez préciser les nom, prénom et classe<br />de l'un au moins de vos enfants scolarisés dans l'établissement.<br />
+				Dans le cas d'une demande élève, veuillez préciser vos nom, prénom et classe.</p>
 				<textarea name='description' cols='50' rows='4'>".preg_replace("/\\\\n/","\n",$description)."</textarea>
 			</td>
 		</tr>
