@@ -2456,7 +2456,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 								$texte.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
-			
+
+							// Voir ligne 4784 ce qui est fait pour les avertissements
+							// $texte.="<div style='float:right;'></div>\n";
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
@@ -3966,7 +3968,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 			if(mysqli_num_rows($res_avis)>0) {
 				$titre_bulle="Avis du Conseil de classe";
 
-				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Avis'>\n";
+				$texte_bulle="<table class='boireaus boireaus_alt' style='margin:2px;' width='99%' summary='Avis'>\n";
 				while($lig_avis=mysqli_fetch_object($res_avis)) {
 					//==========================================================
 					// AJOUT: boireaus 20080218
@@ -3974,10 +3976,22 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 					//if($tab_acces_app[$lig_avis->periode]=="y") {
 					if(($tab_acces_app[$lig_avis->periode]=="y")&&($lig_avis->avis!="")) {
 					//==========================================================
-						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlspecialchars($lig_avis->avis)."</td></tr>\n";
-					//==========================================================
-					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+						$texte_bulle.="<tr><td style='font-weight:bold;'>$lig_avis->periode</td><td style='text-align:center;'>".htmlspecialchars($lig_avis->avis);
+
+						if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+							$tableau_des_mentions_sur_le_bulletin=get_mentions();
+						}
+
+						if(isset($tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention])) {
+							$texte_bulle.="<br />\n";
+							$texte_bulle.="<b>".ucfirst($gepi_denom_mention)."</b> : ";
+							$texte_bulle.=$tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention]."\n";
+						}
+
+						$texte_bulle.="</td></tr>\n";
+						//==========================================================
+						// AJOUT: boireaus 20080218
+						//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 						$temoin_avis_present="y";
 					}
 					//==========================================================
@@ -4536,17 +4550,38 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 			if($acces_bull_simp=="y") {
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+le bulletin simplifié de toutes les périodes.\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
 				else {
-					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\">";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+le bulletin simplifié de la période $num_periode_choisie.\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
+				}
+			}
+
+			if(($_SESSION['statut']=='scolarite')||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiProfImprBul'))&&(is_pp($_SESSION['login'], $id_classe)))
+			) {
+				$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
+				if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
+
+				for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+					echo " - <a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$eleve1."&tab_id_classe[0]=".$id_classe."&tab_periode_num[0]=".$loop_per."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin de la période ".$loop_per."\">P".$loop_per."</a>";
+					/*
+					A AJOUTER
+
+					&intercaler_releve_notes=y
+
+					A CREER/PRENDRE EN COMPTE:
+					&param_rn_defaut=y
+					pour récupérer les paramètres de la classe.
+					*/
 				}
 			}
 

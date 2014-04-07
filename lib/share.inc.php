@@ -2250,22 +2250,22 @@ function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n") {
+function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_legal_0="n", $tab_infos_a_afficher=array()) {
     global $mysqli;
-	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+	$sql="(SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 				WHERE e.ele_id=r.ele_id AND
 				rp.pers_id=r.pers_id AND
 				rp.login='$resp_login' AND
 				(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
 	if($meme_en_resp_legal_0=="y") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.login='$resp_login' AND
 			r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
 	elseif($meme_en_resp_legal_0=="yy") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.login='$resp_login' AND
@@ -2273,11 +2273,38 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 			r.resp_legal='0' ORDER BY e.nom,e.prenom)";
 	}
 	//echo "$sql<br />";
-                  
+
 	$res_ele=mysqli_query($mysqli, $sql);
 	$tab_ele=array();
 	if($res_ele->num_rows > 0){
 		while($lig_tmp = $res_ele->fetch_object()){
+			$infos_supplementaires="";
+			if(in_array("resp_legal" , $tab_infos_a_afficher)) {
+				$infos_supplementaires.=" <span title=\"";
+				if($lig_tmp->resp_legal==0) {
+					$infos_supplementaires.="Responsable non légal";
+				}
+				else {
+					$infos_supplementaires.="Responsable légal n°".$lig_tmp->resp_legal;
+				}
+				$infos_supplementaires.="\">(<em>$lig_tmp->resp_legal</em>)</span>";
+				
+			}
+			if(in_array("envoi_bulletin" , $tab_infos_a_afficher)) {
+				if($lig_tmp->resp_legal==0) {
+					if($lig_tmp->envoi_bulletin=="y") {
+						$infos_supplementaires.=" <span title=\"Les bulletins de cet élève sont générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+					}
+					else {
+						$infos_supplementaires.=" <span title=\"Les bulletins de cet élève ne sont pas générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin_barre.png' class='icone16' /></span>";
+					}
+				}
+				else {
+					$infos_supplementaires.=" <span title=\"Les bulletins sont toujours générés à destination des responsables légaux.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+				}
+			}
+			// A faire: indiquer s'il y a un acces_sp dans le cas resp_legal=0
+
 			$tab_ele[]=$lig_tmp->login;
 			if($mode=='avec_classe') {
 				$tmp_chaine_classes="";
@@ -2287,11 +2314,11 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
 					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 				}
 
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes.$infos_supplementaires;
 			}
 			else {
-				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
-			}                
+				$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$infos_supplementaires;
+			}
 		}
 		$res_ele->close();
 	} 
@@ -2311,16 +2338,16 @@ function get_enfants_from_resp_login($resp_login, $mode='simple', $meme_en_resp_
  * @return array 
  * @see get_class_from_ele_login()
  */
-function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n"){
-	global $mysqli;
-	$sql="(SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_0="n", $tab_infos_a_afficher=array()){
+	global $mysqli, $gepiPath;
+	$sql="(SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 		WHERE e.ele_id=r.ele_id AND
 		rp.pers_id=r.pers_id AND
 		rp.pers_id='$pers_id' AND
 		(r.resp_legal='1' OR r.resp_legal='2')
 		ORDER BY e.nom,e.prenom)";
 	if($meme_en_resp_legal_0=="y") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.pers_id='$pers_id' AND
@@ -2328,7 +2355,7 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 			ORDER BY e.nom,e.prenom)";
 	}
 	elseif($meme_en_resp_legal_0=="yy") {
-		$sql.=" UNION (SELECT e.nom,e.prenom,e.login FROM eleves e, responsables2 r, resp_pers rp
+		$sql.=" UNION (SELECT e.nom,e.prenom,e.login, r.resp_legal, r.acces_sp, r.envoi_bulletin FROM eleves e, responsables2 r, resp_pers rp
 			WHERE e.ele_id=r.ele_id AND
 			rp.pers_id=r.pers_id AND
 			rp.pers_id='$pers_id' AND
@@ -2336,7 +2363,7 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 			r.resp_legal='0'
 			ORDER BY e.nom,e.prenom)";
 	}
-         
+
 	$res_ele=mysqli_query($mysqli, $sql);
 	$tab_ele=array();
 	if($res_ele->num_rows > 0) {
@@ -2359,6 +2386,33 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 							$tmp_chaine_classes2;
 			}
 			else {
+				$infos_supplementaires="";
+				if(in_array("resp_legal" , $tab_infos_a_afficher)) {
+					$infos_supplementaires.=" <span title=\"";
+					if($lig_tmp->resp_legal==0) {
+						$infos_supplementaires.="Responsable non légal";
+					}
+					else {
+						$infos_supplementaires.="Responsable légal n°".$lig_tmp->resp_legal;
+					}
+					$infos_supplementaires.="\">(<em>$lig_tmp->resp_legal</em>)</span>";
+					
+				}
+				if(in_array("envoi_bulletin" , $tab_infos_a_afficher)) {
+					if($lig_tmp->resp_legal==0) {
+						if($lig_tmp->envoi_bulletin=="y") {
+							$infos_supplementaires.=" <span title=\"Les bulletins de cet élève sont générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+						}
+						else {
+							$infos_supplementaires.=" <span title=\"Les bulletins de cet élève ne sont pas générés à destination de ce responsable non légal.\"><img src='$gepiPath/images/icons/bulletin_barre.png' class='icone16' /></span>";
+						}
+					}
+					else {
+						$infos_supplementaires.=" <span title=\"Les bulletins sont toujours générés à destination des responsables légaux.\"><img src='$gepiPath/images/icons/bulletin.png' class='icone16' /></span>";
+					}
+				}
+				// A faire: indiquer s'il y a un acces_sp dans le cas resp_legal=0
+
 				$tab_ele[]=$lig_tmp->login;
 				if($mode=='avec_classe') {
 					$tmp_chaine_classes="";
@@ -2368,12 +2422,12 @@ function get_enfants_from_pers_id($pers_id, $mode='simple', $meme_en_resp_legal_
 						$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
 					}
 
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$tmp_chaine_classes.$infos_supplementaires;
 				}
 				else {
-					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom);
+					$tab_ele[]=ucfirst(mb_strtolower($lig_tmp->prenom))." ".mb_strtoupper($lig_tmp->nom).$infos_supplementaires;
 				}
-			}                
+			}
 		}
 		$res_ele->close();
 	}
@@ -5264,6 +5318,50 @@ function get_tab_prof_suivi($id_classe, $login_user="") {
 	}
 
 	return $tab;
+}
+
+
+/**
+ * Retourne la liste des profs principaux d'une classe sous la forme d'une chaine séparée par des virgules
+ *
+ * @param string $id_classe id de la classe
+ * @return string Liste des profs principaux d'une classe sous la forme d'une chaine séparée par des virgules
+ */
+function liste_prof_suivi($id_classe, $pour_qui="", $avec_lien_mail="") {
+	global $mysqli;
+	$retour="";
+
+	$tab=get_tab_prof_suivi($id_classe);
+	//$retour=implode(", ", $tab);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {
+			$retour.=", ";
+		}
+
+		$mail_user="";
+		if($avec_lien_mail=="y") {
+			$mail_user=get_mail_user($tab[$loop]);
+		}
+
+		if($mail_user!="") {
+			if($pour_qui=="profs") {
+				$retour.="<a href='mailto:$mail_user?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail'))."[GEPI]: ...' title=\"Envoyer un mail.\">".civ_nom_prenom($tab[$loop])."</a>";
+			}
+			else {
+				$retour.="<a href='mailto:$mail_user?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail'))."[GEPI]: ...' title=\"Envoyer un mail.\">".affiche_utilisateur($tab[$loop], $id_classe)."</a>";
+			}
+		}
+		else {
+			if($pour_qui=="profs") {
+				$retour.=civ_nom_prenom($tab[$loop]);
+			}
+			else {
+				$retour.=affiche_utilisateur($tab[$loop], $id_classe);
+			}
+		}
+	}
+
+	return $retour;
 }
 
 /**
@@ -9229,6 +9327,11 @@ function afficher_les_evenements($afficher_obsolete="n") {
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$retour.="<div style='border: 1px solid grey; background-image: url(\"$gepiPath/images/background/opacite50.png\");padding: 3px;margin: 3px;'>";
+
+			if(in_array($_SESSION['statut'], array("administrateur", "scolarite"))) {
+				$retour.="<div style='float:right; width:16px;'><a href='$gepiPath/classes/dates_classes.php?id_ev=".$lig->id_ev."' title=\"Modifier cet événement.\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+			}
+
 			//$retour.="$sql<br />";
 			$retour.=affiche_evenement($lig->id_ev, $afficher_obsolete);
 			$retour.="</div>";
@@ -9323,6 +9426,11 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 		}
 		elseif($lig->type=='conseil_de_classe') {
 
+			$tab_classe_pp=array("id_classe");
+			if($_SESSION['statut']=="professeur") {
+				$tab_classe_pp=get_tab_ele_clas_pp($_SESSION['login']);
+			}
+
 			$retour.=$lig->texte_avant;
 			//$retour.="<br />";
 
@@ -9355,6 +9463,8 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
 				}
 			}
+			// DEBUG:
+			//$retour.="$sql<br />";
 			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
 				// On va remplir un tableau et repérer les jours et heures.
@@ -9384,6 +9494,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					}
 					sort($tab_heures);
 
+					/*
 					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
 						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
 							$tab_cellules[$tmp_jour][$tmp_heure]="";
@@ -9395,15 +9506,94 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 ".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
 					}
 					else {
+					*/
 						if(!isset($tab_cellules[$tmp_jour][$tmp_heure])) {
 							$tab_cellules[$tmp_jour][$tmp_heure]="";
 						}
 						else {
 							$tab_cellules[$tmp_jour][$tmp_heure].=" - ";
 						}
-						$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">".$lig2->classe."</span>";
-					}
+
+						if($_SESSION["statut"]=="professeur") {
+							if(in_array($lig2->id_classe, $tab_classe_pp['id_classe'])) {
+								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+								}
+								else {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir l'avis du conseil de classe.\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+								}
+								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+								$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+							}
+							else {
+								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+								}
+								else {
+									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+								}
+								// Problème: Un prof peut avoir plusieurs groupes dans une classe
+								//$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=' style='color:black'>";
+								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+								//$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+							}
+						}
+						elseif($_SESSION["statut"]=="scolarite") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
+							$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp
+
+Cliquer pour saisir l'avis du conseil de classe.\">";
+								$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+						elseif($_SESSION["statut"]=="cpe") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+						elseif($_SESSION["statut"]=="administrateur") {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
+					//}
 				}
 
 				$retour.="<table class='boireaus boireaus_alt' summary='Dates de conseils de classe'>
@@ -9622,7 +9812,50 @@ function get_tab_avertissement($login_ele, $periode="") {
 	return $tab;
 }
 
-function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet") {
+function get_tab_avertissement_classe($id_classe, $periode="") {
+	$tab=array();
+
+	$sql="SELECT jec.login, sa.* FROM s_avertissements sa, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=sa.login_ele ";
+	if(($periode!="")&&(preg_match("/^[0-9]{1,}$/",$periode))) {
+		$sql.="AND jec.periode='$periode' AND sa.periode=jec.periode ";
+	}
+	$sql.="ORDER BY date_avertissement;";
+	//echo "$sql<br />";
+	$res = mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		//$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$cpt=0;
+			if(isset($tab['periode'][$lig->periode]['login'][$lig->login])) {
+				$cpt=count($tab['periode'][$lig->periode]['login'][$lig->login]);
+			}
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['declarant']=$lig->declarant;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['commentaire']=$lig->commentaire;
+
+			$cpt=0;
+			if(isset($tab['login'][$lig->login]['periode'][$lig->periode])) {
+				$cpt=count($tab['login'][$lig->login]['periode'][$lig->periode]);
+			}
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
+
+			if((!isset($tab['id_type_avertissement'][$lig->periode]))||(!in_array($lig->id_type_avertissement, $tab['id_type_avertissement'][$lig->periode]))) {
+				$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
+			}
+			//$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet", $html="y") {
 	global $tab_type_avertissement_fin_periode;
 	global $mod_disc_terme_avertissement_fin_periode;
 
@@ -9644,7 +9877,12 @@ function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_compl
 			for($loop=0;$loop<count($tab['id_type_avertissement'][$periode]);$loop++) {
 				if($loop>0) {$retour.=", ";}
 				if($mode=="nom_court") {
-					$retour.="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court']."</span>";
+					if($html=="y") {
+						$retour.="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court']."</span>";
+					}
+					else {
+						$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_court'];
+					}
 				}
 				else {
 					//$retour.="<span style='color:red'>\$tab['id_type_avertissement'][$periode][$loop]=".$tab['id_type_avertissement'][$periode][$loop]."</span>";
@@ -9655,6 +9893,81 @@ function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_compl
 	}
 
 	return $retour;
+}
+
+function liste_avertissements_fin_periode_classe($id_classe, $periode, $mode="nom_complet", $html="y") {
+	global $tab_type_avertissement_fin_periode;
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	$tab_retour=array();
+
+	$tab=get_tab_avertissement_classe($id_classe, $periode);
+	/*
+	echo "<p>get_tab_avertissement($id_classe, $periode)<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+
+
+	/*
+		// Champs du tableau récupéré de get_tab_avertissement_classe($id_classe, $periode)
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['declarant']=$lig->declarant;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['commentaire']=$lig->commentaire;
+
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
+			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
+
+			$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
+	*/
+
+	if(!is_array($tab_type_avertissement_fin_periode)) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	}
+
+	//$tab_ele=array();
+
+	if(isset($tab_type_avertissement_fin_periode['id_type_avertissement'])) {
+		if(isset($tab['id_type_avertissement'][$periode])) {
+			foreach($tab['periode'][$periode]['login'] as $current_login => $tab_avt_ele) {
+				//echo "\$current_login=".$current_login."<br />";
+				for($loop=0;$loop<count($tab_avt_ele);$loop++) {
+					if(isset($tab_retour[$current_login])) {
+						$tab_retour[$current_login].=", ";
+					}
+					else {
+						$tab_retour[$current_login]="";
+					}
+
+					$id_type_avertissement_courant=$tab_avt_ele[$loop]['id_type_avertissement'];
+					//echo "\$tab_avt_ele[$loop]=".$id_type_avertissement_courant."<br />";
+
+					if($mode=="nom_court") {
+						if($html=="y") {
+							$tab_retour[$current_login].="<span title=\"".$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_complet']."\">".$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_court']."</span>";
+						}
+						else {
+							$tab_retour[$current_login].=$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_court'];
+						}
+					}
+					else {
+						$tab_retour[$current_login].=$tab_type_avertissement_fin_periode['id_type_avertissement'][$id_type_avertissement_courant]['nom_complet'];
+					}
+				}
+			}
+		}
+	}
+/*
+echo "<pre>";
+print_r($tab_retour);
+echo "</pre>";
+*/
+	return $tab_retour;
 }
 
 function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
@@ -9738,6 +10051,9 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
 	return false;
 }
 
+
+// Attention à ne pas coller un appel à cette fonction dans une 
+// section <form></form> parce qu'on insère aussi un formulaire.
 function necessaire_saisie_avertissement_fin_periode() {
 	global $mod_disc_terme_avertissement_fin_periode;
 
@@ -9943,5 +10259,61 @@ function etat_verrouillage_eleve_periode($login_ele, $periode) {
 	}
 
 	return $retour;
+}
+
+function get_infos_classe_periode($id_classe) {
+	$tab=array();
+
+	$sql="SELECT * FROM periodes p WHERE id_classe='$id_classe';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->num_periode]['nom_periode']=$lig->nom_periode;
+			$tab[$lig->num_periode]['verouiller']=$lig->verouiller;
+			$tab[$lig->num_periode]['date_verrouillage']=$lig->date_verrouillage;
+			$tab[$lig->num_periode]['date_fin']=$lig->date_fin;
+		}
+	}
+
+	return $tab;
+}
+
+function html_etat_verrouillage_periode_classe($id_classe) {
+	$retour="";
+
+	$couleur_ver['O']="red";
+	$couleur_ver['P']="darkorange";
+	$couleur_ver['N']="green";
+
+	$texte_ver['O']="close";
+	$texte_ver['P']="partiellement close";
+	$texte_ver['N']="ouverte";
+
+	$sql="SELECT * FROM periodes p WHERE id_classe='$id_classe' ORDER BY num_periode;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if($retour!="") {
+				$retour.="-";
+			}
+			$retour.="<span style='color:".$couleur_ver[$lig->verouiller]."' title=\"$lig->nom_periode : Période ".$texte_ver[$lig->verouiller]." \">$lig->num_periode</span>";
+		}
+	}
+
+	return $retour;
+}
+
+function get_verrouillage_classes_periodes() {
+	$tab=array();
+
+	$sql="SELECT * FROM periodes;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->id_classe][$lig->num_periode]=$lig->verouiller;
+		}
+	}
+
+	return $tab;
 }
 ?>

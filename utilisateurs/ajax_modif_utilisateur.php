@@ -180,5 +180,104 @@ $sql\">ERREUR</span>";
 		die();
 	}
 }
+elseif($mode=="rendre_actif_ou_inactif") {
+	//**************** EN-TETE *****************
+	$titre_page = "Changer l'activation d'un compte";
+	require_once("../lib/header.inc.php");
+	//**************** FIN EN-TETE *****************
+
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
+	if($login_user=='') {
+		echo "<p style='color:red'>ERREUR&nbsp;: Aucun login n'a été transmis.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$sql="SELECT auth_mode, nom, prenom FROM utilisateurs WHERE login='$login_user';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p style='color:red'>ERREUR&nbsp;: Le compte $login_user n'existe pas.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$lig_user=mysqli_fetch_object($res);
+	$nom_user=$lig_user->nom;
+	$prenom_user=$lig_user->prenom;
+	$etat=$lig_user->etat;
+
+	echo "<form name='form_changer_etat' id='form_changer_etat' action ='ajax_modif_utilisateur.php' method='post'>\n";
+	echo "<p>Modifier l'état de $nom_user $prenom_user ($login_user)&nbsp;:<br />
+Le compte est actuellement <strong>$etat</strong></p>\n";
+	echo "<input type='hidden' name='modif_sans_js' value='y' />\n";
+	echo "<input type='hidden' name='mode' value='changer_etat_user' />\n";
+	if($etat=="actif") {
+		echo "<input type='submit' name='rendre_inactif' value='Rendre inactif' />\n";
+	}
+	else {
+		echo "<input type='submit' name='rendre_inactif' value='Rendre actif' />\n";
+	}
+	echo add_token_field();
+	echo "</form>\n";
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif($mode == "changer_etat_user") {
+	if(isset($_POST['modif_sans_js'])) {
+		//**************** EN-TETE *****************
+		$titre_page = "Changer l'état d'un compte";
+		require_once("../lib/header.inc.php");
+		//**************** FIN EN-TETE *****************
+
+		echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
+		echo "<p>Modification de l'état de $login_user&nbsp;: ";
+	}
+
+	if($login_user==$_SESSION['login']) {
+		echo "<span style='color:red' title='Changement auth_mode pour votre compte non autorisé.'> KO</span>";
+		return false;
+		die();
+	}
+
+	$sql="SELECT etat FROM utilisateurs WHERE login='$login_user';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		echo "<span style='color:red' title='$login_user non présent dans la table utilisateurs.'> KO</span>";
+		return false;
+		die();
+	}
+
+	$lig=mysqli_fetch_object($test);
+	if($lig->etat == "actif") {
+		$etat="inactif";
+	}
+	else {
+		$etat="actif";
+	}
+	$sql="UPDATE utilisateurs SET etat='$etat' WHERE login='$login_user';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($res) {
+		//echo "<span style='color:green;'>$etat</span>";
+		if($etat=='actif') {
+			echo "<img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' />";
+		}
+		else {
+			echo "<img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' />";
+		}
+	}
+	else {
+		echo "<span style='color:red;' title=\"Erreur lors de l'état vers $etat :
+$sql\">ERREUR</span>";
+	}
+
+	if(isset($_POST['modif_sans_js'])) {
+		echo "</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+}
 
 ?>

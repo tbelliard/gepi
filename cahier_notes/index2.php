@@ -530,6 +530,14 @@ if (isset($id_classe)) {
 	}
 	echo "</script>\n";
 //}
+
+	// 20140331
+	echo "<br /><p><strong>Paramètres de l'export PDF&nbsp;:</strong><br /><input type='checkbox' id='forcer_hauteur_ligne_pdf' name='forcer_hauteur_ligne_pdf' value='y' ";
+	if(getPref($_SESSION["login"], "visu_toutes_notes_forcer_h_cell_pdf", "n")=="y") {
+		echo "checked ";
+	}
+	echo "/><label for='forcer_hauteur_ligne_pdf'> Forcer la hauteur des lignes du tableau PDF à </label><input type='text' name='visu_toutes_notes_h_cell_pdf' size='2' value='".getPref($_SESSION["login"], "visu_toutes_notes_h_cell_pdf", 10)."' onkeydown=\"clavier_2(this.id,event,1,20);\" autocomplete=\"off\" /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<em>sinon Gepi calcule au mieux la hauteur de ligne</em>)</p>\n";
+
 	echo "<p><br /></p>\n";
 	echo "</div>\n";
 

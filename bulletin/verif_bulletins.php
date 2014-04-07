@@ -113,6 +113,8 @@ if (!(isset($id_classe))) {
 		// Tableau des identifiants de classes à retenir:
 		$tab_id_classe=array();
 
+		$tab_etat_periodes=array();
+
 		while($lig_classe=mysqli_fetch_object($appel_donnees)) {
 			$tab_id_classe[]=$lig_classe->id;
 
@@ -120,8 +122,10 @@ if (!(isset($id_classe))) {
 
 			$chaine_classe="<strong>".ucfirst($lig_classe->classe)."</strong>";
 			if(isset($tab_date_conseil[$lig_classe->id])) {
-				$chaine_classe.=" <span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date']).")</span>";
+				$chaine_classe.=" <span style='font-variant:italic; font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$lig_classe->id]['date']).")</span>";
 			}
+			$tab_etat_periodes[$lig_classe->id]=html_etat_verrouillage_periode_classe($lig_classe->id);
+			$chaine_classe.=" <span style='font-size:small;'>(".$tab_etat_periodes[$lig_classe->id].")</span>";
 			$txt_classe[]=$chaine_classe;
 		}
 
@@ -135,7 +139,11 @@ if (!(isset($id_classe))) {
 			foreach($tab_date_conseil as $id_classe => $value) {
 				if(in_array($id_classe, $tab_id_classe)) {
 					echo "
-	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;' title=\"Date du conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a><br />";
+	<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe."'><strong>".$tab_date_conseil[$id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-variant:italic;font-size:small;' title=\"Date du prochain conseil de classe\">(".formate_date($tab_date_conseil[$id_classe]['date'], "y", "complet").")</span></a>";
+					if(isset($tab_etat_periodes[$id_classe])) {
+						echo " <span style='font-size:small;'>(".$tab_etat_periodes[$id_classe].")</span>";
+					}
+					echo "<br />";
 				}
 			}
 			echo "<div>\n";
@@ -247,7 +255,7 @@ if (!(isset($id_classe))) {
 	$nom_classe=old_mysql_result($call_classe,0,"classe");
 
 	//echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période&nbsp;: </b></p><br />\n";
-	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier: </b></p><br />\n";
+	echo "<p><b> Classe&nbsp;: $nom_classe - Choisissez la période et les points à vérifier&nbsp;: </b></p><br />\n";
 	include "../lib/periodes.inc.php";
 
 
@@ -268,11 +276,17 @@ if (!(isset($id_classe))) {
 		echo "<th>";
 		echo "<span style='font-size:x-small;'>";
 		if ($ver_periode[$i] == "P")  {
-			echo " (période partiellement close, seule la saisie des avis du conseil de classe est possible)\n";
+			$texte_courant="Période partiellement close.
+Seule la saisie des avis du conseil de classe est possible.";
+			echo " <span style='color:darkorange; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		} else if ($ver_periode[$i] == "O")  {
-			echo " (période entièrement close, plus aucune saisie/modification n'est possible)\n";
+			$texte_courant="Période entièrement close.
+Plus aucune saisie/modification n'est possible.";
+			echo " <span style='color:red; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		} else {
-			echo " (période ouverte, les saisies/modifications sont possibles)\n";
+			$texte_courant="Période ouverte.
+Les saisies/modifications sont possibles.";
+			echo " <span style='color:green; font-variant:italic;' title=\"$texte_courant\">$texte_courant</span>\n";
 		}
 		echo "</span>\n";
 		echo "</th>\n";
@@ -362,19 +376,20 @@ if (!(isset($id_classe))) {
 
 } else {
 
+	$tab_verrouillage_periodes=get_verrouillage_classes_periodes();
+
 	$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
 	if( $mode!='note_app' && $mode!='abs' && $mode!='avis' && $mode != 'ects' && $mode!='tout_sauf_avis') {
 		$mode="tout";
 	}
 
-	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	//echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
-	echo "<p class=bold><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+	echo "<div class='bold' style='float:left;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> </div>\n";
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 
+	$tab_id_classe=array();
 	$chaine_options_classes="";
 	$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_class_tmp)>0) {
@@ -382,13 +397,22 @@ if (!(isset($id_classe))) {
 		$id_class_suiv=0;
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+			$tab_id_classe[]=$lig_class_tmp->id;
+
+			if(isset($tab_verrouillage_periodes[$lig_class_tmp->id][$per])) {
+				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."\"";
+			}
+			else {
+				$style_option_courante="";
+			}
+
 			$info_conseil_classe="";
 			if(isset($tab_date_conseil[$lig_class_tmp->id])) {
 				$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
 			}
 
 			if($lig_class_tmp->id==$id_classe) {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
 					$info_conseil_classe="";
@@ -396,7 +420,7 @@ if (!(isset($id_classe))) {
 						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
 					}
 
-					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+					$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 					$id_class_suiv=$lig_class_tmp->id;
 				}
 				else{
@@ -404,7 +428,7 @@ if (!(isset($id_classe))) {
 				}
 			}
 			else {
-				$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
+				$chaine_options_classes.="<option value='$lig_class_tmp->id'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 			}
 
 			if($temoin_tmp==0) {
@@ -412,43 +436,111 @@ if (!(isset($id_classe))) {
 			}
 		}
 	}
+
+	echo "<div style='float:left;' class='bold'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	// =================================
 	if(isset($id_class_prec)) {
-		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode'>Classe précédente</a>\n";}
+		if($id_class_prec!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode' title=\"Classe précédente\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
 	}
 	if($chaine_options_classes!="") {
-		echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+		echo " <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
 		echo $chaine_options_classes;
 		echo "</select>\n";
 		echo "<input type='hidden' name='per' value='$per' />\n";
 		echo "<input type='hidden' name='mode' value='$mode' />\n";
 	}
 	if(isset($id_class_suiv)) {
-		if($id_class_suiv!=0) {echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode'>Classe suivante</a>\n";}
+		if($id_class_suiv!=0) {echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode' title=\"Classe suivante\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
+	}
+	echo "
+	</form>
+</div>";
+
+	$classe_courante_trouvee="n";
+	$temoin_une_date_de_conseil_de_classe=0;
+	$chaine_changement_classe_date_conseil="";
+	foreach($tab_date_conseil as $current_id_classe => $value) {
+		if(in_array($current_id_classe, $tab_id_classe)) {
+			if($temoin_une_date_de_conseil_de_classe==0) {
+				$chaine_changement_classe_date_conseil.="
+<div style='float:left;' class='bold'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>
+	 | 
+		<input type='hidden' name='per' value='$per' />
+		<input type='hidden' name='mode' value='$mode' />
+		<select name='id_classe' onchange=\"document.forms['form2'].submit();\" title=\"Classes triées par date du prochain conseil.\">
+			<option value=''>---</option>";
+			}
+
+
+			if(isset($tab_verrouillage_periodes[$current_id_classe][$per])) {
+				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."\"";
+			}
+			else {
+				$style_option_courante="";
+			}
+
+			$chaine_changement_classe_date_conseil.="
+			<option value='$current_id_classe'".$style_option_courante;
+			if($current_id_classe==$id_classe) {
+				$chaine_changement_classe_date_conseil.=" selected='selected'";
+				$classe_courante_trouvee="y";
+			}
+			$chaine_changement_classe_date_conseil.=">".$tab_date_conseil[$current_id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$current_id_classe]['date'], "n", "").")</option>";
+
+			$temoin_une_date_de_conseil_de_classe++;
+		}
+	}
+	if($temoin_une_date_de_conseil_de_classe>0) {
+		$chaine_changement_classe_date_conseil.="
+		</select>
+	</form>
+</div>";
+
+		if($classe_courante_trouvee=="y") {
+			echo $chaine_changement_classe_date_conseil;
+		}
+
 	}
 
 	if($_SESSION['statut']=='scolarite') {
-		echo " | <a href='bull_index.php'>Visualisation et impression des bulletins</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='bull_index.php'>Visualisation et impression des bulletins </a>
+</div>";
 	}
 	
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiScolImprBulSettings')=='yes')) {
-		echo " | <a href='param_bull.php'>Paramétrage des bulletins</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='param_bull.php'>Paramétrage des bulletins </a>
+</div>";
 	}
 
 	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
-		echo " | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies</a>";
+		echo "<div style='float:left;' class='bold'>
+	 | <a href='verrouillage.php' title=\"Verrouiller/déverrouiller les périodes de notes en saisie pour telle ou telle classe.\">Verrouillage des saisies </a>
+</div>";
 	}
 
-	echo "</form>\n";
-	//fin ajout lien classe précédente / classe suivante
 	// ===========================================
 
+	echo "<div style='clear:both;'></div>\n";
 
 
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
-	echo "<p>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</p>";
+	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
+(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'><span id='span_etat_verrouillage_classe'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</span> <a href='#'  onclick=\"afficher_div('div_modif_verrouillage','y',-20,20);return false;\" title=\"Verrouillez/déverrouillez la période pour cette classe.\"><img src='../images/icons/configure.png' class='icone16' alt='Modifier' /></a></em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
+
+	$titre_infobulle="Verrouillage de période";
+	$texte_infobulle="<p class='bold' style='text-align:center;'>Modifiez l'état de verrouillage ou non de la période<br />pour la classe de $classe</p>
+<p style='text-align:center;'>Passer la période à l'état&nbsp;:<br />
+<a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=N".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'N');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['N']."'>ouverte en saisie</a> - 
+<a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=P".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'P');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['P']."'>partiellement close</a> - 
+<a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=O".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'O');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['O']."'>close</a><br />
+&nbsp;</p>";
+	$tabdiv_infobulle[]=creer_div_infobulle("div_modif_verrouillage",$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 
 	//
 	// Vérification de paramètres généraux
@@ -515,8 +607,8 @@ if (!(isset($id_classe))) {
 	$temoin_avis=0;
 	$temoin_aid=0;
 	$temoin_abs=0;
-    $temoin_ects=0;
-    $temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
+	$temoin_ects=0;
+	$temoin_has_ects = false; // Ce témoin sert dans les cas où en réalité aucun élève ne suit d'enseignement ouvrant droit à ECTS.
 	while($j < $nb_eleves) {
 
 		//affichage 2 colonnes
@@ -1131,6 +1223,13 @@ if (!(isset($id_classe))) {
 		}});
 
 	}
+
+	function changer_etat_verrouillage_periode(id_classe, num_periode, etat) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		new Ajax.Updater($('span_etat_verrouillage_classe'),'verrouillage.php?mode=change_verrouillage&num_periode='+num_periode+'&id_classe='+id_classe+'&etat='+etat+'&csrf_alea='+csrf_alea,{method: 'get'});
+		cacher_div('div_modif_verrouillage');
+	}
+
 	//]]>
 </script>\n";
 

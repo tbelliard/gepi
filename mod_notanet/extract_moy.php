@@ -138,6 +138,8 @@ else {
 		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 
+		// 20140326: Ajouter un champ notanet_corresp.mode valant 'extract_moy' ou 'saisie'
+
 		unset($id_matiere);
 		unset($statut_matiere);
 
@@ -220,6 +222,8 @@ else {
 			echo add_token_field();
 
 			echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
+			echo "<div id=\"fixe\"><p><input type='submit' value='Valider' /></p></div>\n";
 
 			// Boucle élèves:
 			$num_eleve=0;
@@ -307,6 +311,8 @@ else {
 				echo add_token_field();
 
 				echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
+				echo "<div id=\"fixe\"><p><input type='submit' value='Valider' /></p></div>\n";
 
 				$max_eff_classe=0;
 
@@ -514,6 +520,8 @@ function DecocheColonneSelectEleves(i,j) {
 			echo add_token_field();
 
 			echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
+			echo "<div id=\"fixe\"><p><input type='submit' value='Valider' /></p></div>\n";
 
 			// Boucle élèves:
 			$num_eleve=0;

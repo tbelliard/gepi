@@ -136,6 +136,7 @@ if ($barre_plugin!="") {
 					$menus .= '                <li><a href="'.$gepiPath.'/saisie/commentaires_types.php"'.insert_confirm_abandon().'>Commentaires-types</a></li>'."\n";
 				}
 				$menus .= '                <li><a href="'.$gepiPath.'/saisie/impression_avis.php"'.insert_confirm_abandon().'>Impression avis PDF</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
 	
@@ -237,6 +238,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consultation elève</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+		$menus .= '       <li class="niveau3"><a href="'.$gepiPath.'/eleves/recherche.php"'.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a>'."</li>\n";
 
 		if(getSettingValue('active_module_trombinoscopes')=='y') {
 			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php"'.insert_confirm_abandon().'>Trombinoscopes</a>'."\n";
@@ -249,6 +251,11 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		}
 
 		$menus .= '            </ul>'."\n";
+		$menus .= '       <li class="plus">Classes'."\n";
+		$menus .= '           <ul class="niveau3">'."\n";
+		$menus .= '               <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
+		$menus .= '            </ul>'."\n";
+
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";
@@ -258,6 +265,7 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/statistiques/index.php"'.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";

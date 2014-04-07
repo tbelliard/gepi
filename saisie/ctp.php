@@ -85,6 +85,7 @@ function div_comm_type() {
 	//echo "onClick='document.forms[0].submit() ;return true;' ";
 	echo "onMouseover=\"div_comm_type();\"";
 	echo " target='_blank'";
+	echo " title=\"Saisir des commentaires-types.\"";
 	echo ">";
 	echo "<img src='../images/icons/saisie.png' width='16' height='16' alt='Commentaires-types' />";
 	echo "</a>\n";

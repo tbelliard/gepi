@@ -438,6 +438,20 @@ else{
 	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
 
+	// A REVOIR: Le $reg_auth_mode n'a pas l'air initialisé
+
+	$sql="SELECT DISTINCT auth_mode FROM utilisateurs WHERE statut='eleve';";
+	$test_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_auth_mode)==1) {
+		$lig_auth_mode=mysqli_fetch_object($test_auth_mode);
+		if($lig_auth_mode->auth_mode=="gepi") {
+			$reg_auth_mode="auth_locale";
+		}
+		elseif($lig_auth_mode->auth_mode=="sso") {
+			$reg_auth_mode="auth_sso";
+		}
+	}
+
 	// Sélection du mode d'authentification
 	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1' title=\"Mode d'authentification pour les comptes à créer avec les boutons ci-dessous.\">";
 	if ($session_gepi->auth_locale) {

@@ -2297,6 +2297,25 @@ if(isset($_GET['mode'])) {
 		// (cela peut servir, en mettant un $h_cell élevé, en DEBUG à forcer l'affichage sur plusieurs pages).
 		$hauteur_ligne_imposee="n";
 
+		if((isset($_GET['forcer_hauteur_ligne_pdf']))&&
+		($_GET['forcer_hauteur_ligne_pdf']=="y")&&
+		(isset($_GET['visu_toutes_notes_h_cell_pdf']))&&
+		($_GET['visu_toutes_notes_h_cell_pdf']!="")&&
+		($_GET['visu_toutes_notes_h_cell_pdf']>0)&&
+		(preg_match("/^[0-9]*$/", $_GET['visu_toutes_notes_h_cell_pdf']))) {
+			$hauteur_ligne_imposee="y";
+			$h_cell=$_GET['visu_toutes_notes_h_cell_pdf'];
+			if(getPref($_SESSION["login"], "visu_toutes_notes_forcer_h_cell_pdf", "n")!="y") {
+				savePref($_SESSION['login'], "visu_toutes_notes_forcer_h_cell_pdf", "y");
+			}
+			savePref($_SESSION['login'], "visu_toutes_notes_h_cell_pdf", $_GET['visu_toutes_notes_h_cell_pdf']);
+		}
+		else {
+			if(getPref($_SESSION["login"], "visu_toutes_notes_forcer_h_cell_pdf", "n")!="n") {
+				savePref($_SESSION['login'], "visu_toutes_notes_forcer_h_cell_pdf", "n");
+			}
+		}
+
 		// Largeur des colonnes
 		$largeur_col=array();
 		$largeur_col[1]=$largeur_col_nom_ele;
@@ -2707,6 +2726,17 @@ if($utiliser_coef_perso=='y') {
 if((isset($avec_moy_gen_periodes_precedentes))&&($avec_moy_gen_periodes_precedentes=="y")) {
 	echo "&amp;avec_moy_gen_periodes_precedentes=y";
 }
+
+if((isset($_POST['forcer_hauteur_ligne_pdf']))&&
+($_POST['forcer_hauteur_ligne_pdf']=="y")&&
+(isset($_POST['visu_toutes_notes_h_cell_pdf']))&&
+($_POST['visu_toutes_notes_h_cell_pdf']!="")&&
+($_POST['visu_toutes_notes_h_cell_pdf']>0)&&
+(preg_match("/^[0-9]*$/", $_POST['visu_toutes_notes_h_cell_pdf']))) {
+	echo "&amp;forcer_hauteur_ligne_pdf=".$_POST['forcer_hauteur_ligne_pdf'];
+	echo "&amp;visu_toutes_notes_h_cell_pdf=".$_POST['visu_toutes_notes_h_cell_pdf'];
+}
+
 echo "' target='_blank'>PDF</a>
 </div>\n";
 

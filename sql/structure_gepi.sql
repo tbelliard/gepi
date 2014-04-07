@@ -169,7 +169,7 @@ CREATE TABLE `miseajour` (`id_miseajour` int(11) NOT NULL auto_increment, `fichi
 DROP TABLE IF EXISTS absences_actions;
 CREATE TABLE `absences_actions` (`id_absence_action` int(11) NOT NULL auto_increment, `init_absence_action` char(2) NOT NULL default '', `def_absence_action` varchar(255) NOT NULL default '', PRIMARY KEY  (`id_absence_action`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `responsables2`;
-CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, `acces_sp` varchar(1) NOT NULL, INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers_id` varchar(10) NOT NULL, `resp_legal` varchar(1) NOT NULL, `pers_contact` varchar(1) NOT NULL, `acces_sp` varchar(1) NOT NULL, envoi_bulletin char(1) NOT NULL default 'n' COMMENT 'Envoi des bulletins pour les resp_legal=0', INDEX pers_id ( `pers_id` ), INDEX ele_id ( `ele_id` ), INDEX resp_legal ( `resp_legal` )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_adr`;
 CREATE TABLE IF NOT EXISTS `resp_adr` (`adr_id` varchar(10) NOT NULL,`adr1` varchar(100) NOT NULL,`adr2` varchar(100) NOT NULL,`adr3` varchar(100) NOT NULL,`adr4` varchar(100) NOT NULL,`cp` varchar(6) NOT NULL,`pays` varchar(50) NOT NULL,`commune` varchar(50) NOT NULL,PRIMARY KEY  (`adr_id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `resp_pers`;
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS notanet (login varchar(50) NOT NULL default '',ine te
 DROP TABLE IF EXISTS notanet_app;
 CREATE TABLE IF NOT EXISTS notanet_app (login varchar(50) NOT NULL,id_mat int(4) NOT NULL,matiere varchar(50) NOT NULL,appreciation text NOT NULL,id int(11) NOT NULL auto_increment,PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_corresp;
-CREATE TABLE IF NOT EXISTS notanet_corresp (id int(11) NOT NULL auto_increment,type_brevet tinyint(4) NOT NULL,id_mat int(4) NOT NULL,notanet_mat varchar(255) NOT NULL default '',matiere varchar(50) NOT NULL default '',statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee',PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS notanet_corresp (id int(11) NOT NULL auto_increment,type_brevet tinyint(4) NOT NULL,id_mat int(4) NOT NULL,notanet_mat varchar(255) NOT NULL default '',matiere varchar(50) NOT NULL default '',statut enum('imposee','optionnelle','non dispensee dans l etablissement') NOT NULL default 'imposee', mode varchar(20) NOT NULL default 'extract_moy', PRIMARY KEY  (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_ele_type;
 CREATE TABLE IF NOT EXISTS notanet_ele_type (login varchar(50) NOT NULL,type_brevet tinyint(4) NOT NULL,PRIMARY KEY  (login)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS notanet_verrou;
@@ -811,7 +811,7 @@ DROP TABLE IF EXISTS log_maj_sconet;
 CREATE TABLE log_maj_sconet (
 id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 login VARCHAR( 50 ) NOT NULL ,
-texte TEXT NOT NULL ,
+texte LONGTEXT NOT NULL ,
 date_debut DATETIME NOT NULL ,
 date_fin DATETIME NOT NULL
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -942,4 +942,7 @@ nom_court VARCHAR( 50 ) NOT NULL ,
 nom_complet VARCHAR( 255 ) NOT NULL,
 description TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS notanet_saisie;
+CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

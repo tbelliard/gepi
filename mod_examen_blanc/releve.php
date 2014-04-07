@@ -731,10 +731,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 	echo "<div style='float:right; width: 5em; text-align:center; border: 1px solid black;'>\n";
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv".add_token_in_url()."'";
-	echo ">CSV</a>\n";
+	echo " target='_blank'>CSV</a>\n";
 	echo "<br />\n";
 	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=pdf".add_token_in_url()."'";
-	echo ">PDF</a>\n";
+	echo " target='_blank'>PDF</a>\n";
 	echo "</div>\n";
 
 	//$csv="";

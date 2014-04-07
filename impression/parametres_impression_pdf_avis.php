@@ -159,7 +159,7 @@ if ($ok==0) {
 	$valeur=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
 	echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" id=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" /></td><td>&nbsp;</td></tr>\n";
 
-	$valeur=getPref($_SESSION['login'],'avis_pdf_l_mentions',40);
+	$valeur=getPref($_SESSION['login'],'avis_pdf_l_mentions',30);
 	echo "<tr>
 	<td>
 		Largeur colonne ".getSettingValue('gepi_denom_mention')."&nbsp;:<br />
@@ -167,6 +167,18 @@ if ($ok==0) {
 	</td>
 	<td>
 		<input type=\"text\" name=\"l_mentions\" id=\"l_mentions\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" />
+	</td>
+	<td>&nbsp;</td>
+</tr>\n";
+
+	$valeur=getPref($_SESSION['login'],'avis_pdf_l_avertissements',20);
+	echo "<tr>
+	<td>
+		Largeur colonne ".getSettingValue('mod_disc_terme_avertissement_fin_periode')."&nbsp;:<br />
+		(<em>sous réserve que le module Discipline soit activé et que des ".getSettingValue('mod_disc_terme_avertissement_fin_periode')." y aient été définis</em>)
+	</td>
+	<td>
+		<input type=\"text\" name=\"l_avertissements\" id=\"l_avertissements\" size=\"2\" maxlength=\"2\" value=\"$valeur\" onkeydown=\"clavier_2(this.id,event,0,100);\" autocomplete=\"off\" />
 	</td>
 	<td>&nbsp;</td>
 </tr>\n";
@@ -214,8 +226,11 @@ if ($ok==0) {
 	$_SESSION['avis_pdf_l_nomprenom']=isset($_POST['l_nomprenom']) ? $_POST["l_nomprenom"] : 40;
 	savePref($_SESSION['login'],'avis_pdf_l_nomprenom',$_SESSION['avis_pdf_l_nomprenom']);
 
-	$_SESSION['avis_pdf_l_mentions']=isset($_POST['l_mentions']) ? $_POST["l_mentions"] : 40;
+	$_SESSION['avis_pdf_l_mentions']=isset($_POST['l_mentions']) ? $_POST["l_mentions"] : 30;
 	savePref($_SESSION['login'],'avis_pdf_l_mentions',$_SESSION['avis_pdf_l_mentions']);
+
+	$_SESSION['avis_pdf_l_avertissements']=isset($_POST['l_avertissements']) ? $_POST["l_avertissements"] : 20;
+	savePref($_SESSION['login'],'avis_pdf_l_avertissements',$_SESSION['avis_pdf_l_avertissements']);
 
 	header("Location: ../saisie/impression_avis.php");
 	die();

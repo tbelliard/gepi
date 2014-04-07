@@ -47,6 +47,41 @@ $periode=isset($_GET['periode']) ? $_GET['periode'] : 0;
 $action_apres=isset($_GET['action']) ? $_GET['action'] : NULL;
 
 
+if((isset($_GET['mode']))&&($_GET['mode']="change_verrouillage")&&
+(isset($_GET['id_classe']))&&(preg_match("/[0-9]{1,}/", $_GET['id_classe']))&&
+(isset($_GET['num_periode']))&&(preg_match("/[0-9]{1,}/", $_GET['num_periode']))&&
+(isset($_GET['etat']))&&(in_array($_GET['etat'], array("O", "P", "N")))) {
+	check_token();
+
+	$sql="SELECT verouiller, date_fin FROM periodes p, 
+						j_scol_classes jsc 
+					WHERE jsc.login='".$_SESSION['login']."' AND 
+						jsc.id_classe=p.id_classe AND 
+						p.id_classe='".$_GET['id_classe']."' AND 
+						p.num_periode='".$_GET['num_periode']."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		if ($lig->date_fin==0) {//la date de fin n'est pas renseignee, on la renseigne
+			$sql="UPDATE periodes SET verouiller='".$_GET['etat']."', date_verrouillage=NOW(), date_fin=NOW() WHERE (num_periode='".$_GET['num_periode']."' and id_classe='".$_GET['id_classe']."')";
+		} else {
+			$sql="UPDATE periodes SET verouiller='".$_GET['etat']."', date_verrouillage=NOW() WHERE (num_periode='".$_GET['num_periode']."' and id_classe='".$_GET['id_classe']."')";
+		}
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if (!$res) {
+			echo "<span style='color:red'>KO</a>";
+		}
+		else {
+			echo "<span style='color:".$couleur_verrouillage_periode[$_GET['etat']]."' title=\"Période ".$traduction_verrouillage_periode[$_GET['etat']].".
+".$explication_verrouillage_periode[$_GET['etat']]."\">Période ".$traduction_verrouillage_periode[$_GET['etat']]."</a>";
+		}
+	}
+	else {
+		echo "<span style='color:red'>KO</a>";
+	}
+	die();
+}
+
 if (isset($_POST['deverouillage_auto_periode_suivante'])) {
 	check_token();
 	if (!saveSetting("deverouillage_auto_periode_suivante", $_POST['deverouillage_auto_periode_suivante'])) {
@@ -230,8 +265,8 @@ echo "<ul>
 bulletins simples est autorisée mais la visualisation et l'impression des bulletins officiels sont impossibles.<br /><br /></li>
 <li>Lorsqu'une période est <b>verrouillée partiellement</b>, seuls le remplissage et/ou la modification
 de l'avis du conseil de classe";
-if ($gepiSettings['active_mod_ects'] == 'y') echo "et des crédits ECTS ";
-echo "sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
+if ($gepiSettings['active_mod_ects'] == 'y') echo " et des crédits ECTS ";
+echo " sont possibles. La visualisation et l'impression des bulletins officiels sont autorisées.<br /><br /></li>
 <li>Lorsqu'une période est <b>verrouillée totalement</b>, le remplissage et la modification du bulletin pour la période concernée
 sont impossibles. la visualisation et l'impression sont autorisées.</li>\n";
 echo "</ul>\n";

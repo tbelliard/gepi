@@ -1759,10 +1759,17 @@ if (isset($eleve_login)) {
 	else {$avec_lien="n";}
 	$lien_image_compte_utilisateur=lien_image_compte_utilisateur($eleve_login, "eleve", "_blank", $avec_lien);
 
-	if(($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
-		echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom' title=\"Accéder au compte de l'utilisateur.\">".$eleve_login;
-		if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
-		echo "</a>";
+	if($_SESSION['statut']=="administrateur") {
+		if($compte_eleve_existe=="y") {
+			echo "<a href='../utilisateurs/edit_eleve.php?critere_recherche=$eleve_nom' title=\"Accéder au compte de l'utilisateur.\">".$eleve_login;
+			if($lien_image_compte_utilisateur!="") {echo " ".$lien_image_compte_utilisateur;}
+			echo "</a>";
+		}
+		elseif(isset($eleve_nom)) {
+			echo " <a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $eleve_nom)."'";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo " title=\"Ajouter un compte d'utilisateur pour cet élève.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+		}
 	}
 	else {
 		echo $eleve_login;

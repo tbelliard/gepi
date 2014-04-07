@@ -823,8 +823,10 @@ var tab_per_cn=new Array();\n";
 				}
 				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
 			}
+
+			echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> En fin de période, il convient de provoquer une recopie des moyennes du carnet de notes vers le bulletin.<br />Cela permet de signaler à la personne éditant les bulletins que l'on a fini ses saisies.<br />Cela permet également de moifier les moyennes apparaissant.<br />Par exemple, vous pouvez décider de ne pas mettre de moyenne sur le bulletin pour un élève qui n'aurait été présent qu'à une évaluation<br />(<em>si vous estimez que la note n'est pas représentative du niveau de l'élève</em>).</p>";
 		}
-    }
+	}
 
 	if((isset($id_racine))&&(getPref($_SESSION['login'], 'cnBoitesModeMoy', '')=="")) {
 		$sql="SELECT 1=1 FROM cn_conteneurs WHERE id_racine='$id_racine';";
