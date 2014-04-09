@@ -98,8 +98,13 @@ if(isset($imprime)) {
 					//$csv.="Epreuve:;$intitule_epreuve ($date_epreuve);\n";
 					$csv.="Epreuve:;$intitule_epreuve;\n";
 					$csv.="Date:;$date_epreuve;\n";
-					$csv.="Liste d'émargement;Salle $salle[$i];\n";
-					
+					if(!preg_match("/^Salle /i", $salle[$i])) {
+						$csv.="Liste d'émargement;Salle $salle[$i];\n";
+					}
+					else {
+						$csv.="Liste d'émargement;$salle[$i];\n";
+					}
+
 					switch ($imprime) {
 						case "sans_num_anonymat":
 							$csv.="Nom;Prénom;Signature;\n";
@@ -224,7 +229,12 @@ if(isset($imprime)) {
 					$y2=$this->GetY();
 
 					$this->SetFont('DejaVu','B',12);
-					$texte="Salle $salle[$i]";
+					if(!preg_match("/^Salle /i", $salle[$i])) {
+						$texte="Salle $salle[$i]";
+					}
+					else {
+						$texte="$salle[$i]";
+					}
 					$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
 					$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
 					$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',1,'C');
