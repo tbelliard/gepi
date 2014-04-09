@@ -29,6 +29,10 @@ Discipline:
   de les saisir depuis les pages de saisie de l'avis du conseil de classe,
   et de les imprimer au format OOo.
 
+Panneau d'affichage:
+- Possibilité de déposer un message pour les élèves ou parents de telle classe.
+- Possibilité de donner aux CPE l'accès à la saisie des message.
+
 Divers:
 - Statistiques de connexion:
    . Possibilité de cumuler les connexions élèves et parents.

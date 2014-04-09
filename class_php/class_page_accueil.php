@@ -274,9 +274,13 @@ if(getSettingAOui('active_bulletins')) {
 	$this->chargeAutreNom('bloc_annees_antérieures');
 
 /***** Gestion des messages *****/
-	$this->verif_exist_ordre_menu('bloc_panneau_affichage');
-	if ($this->messages())
-	$this->chargeAutreNom('bloc_panneau_affichage');
+	if(($_SESSION['statut']=='administrateur')||
+	($_SESSION['statut']=='scolarite')||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesPanneauAffichageCpe')))) {
+		$this->verif_exist_ordre_menu('bloc_panneau_affichage');
+		if ($this->messages())
+		$this->chargeAutreNom('bloc_panneau_affichage');
+	}
 
 /***** Module inscription *****/
 	$this->verif_exist_ordre_menu('bloc_module_inscriptions');
