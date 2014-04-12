@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1049,6 +1049,11 @@ if(!getSettingAOui('active_module_trombinoscopes')) {
 	$texteItem.="in";
 }
 $texteItem.="actif</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesPanneauAffichageCpe';
+$texteItem="a accès à la saisie de message dans le Panneau d'affichage";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

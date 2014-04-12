@@ -51,6 +51,12 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('GepiAccesPanneauAffichageCpe'))) {
+	header("Location: ../accueil.php?msg=Acces non autorisé");
+	die();
+}
+
 //Configuration du calendrier
 /*
 include("../lib/calendrier/calendrier.class.php");
@@ -180,7 +186,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
 	if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
 
-	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="") {
+	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="") {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(message non enregitré)";
 		$record = 'no';
 	}
@@ -256,6 +262,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		// un destinataire
 		if ($_POST['login_destinataire']<>"") 
 			{$t_login_destinataires[]=$_POST['login_destinataire'];$login_destinataire=$_POST['login_destinataire'];}
+
 		// les professeurs d'une classe
 		if ($_POST['id_classe']<>"")
 			{
@@ -267,6 +274,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 					$t_login_destinataires[]=$un_professeur['login'];
 				}
 			}
+
 		// les professeurs d'une matière
 		if ($_POST['matiere_destinataire']<>"")
 			{
@@ -277,6 +285,42 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			while ($un_professeur=mysqli_fetch_assoc($R_professeurs))
 				if(!in_array($un_professeur['login'], $t_login_destinataires)) {
 					$t_login_destinataires[]=$un_professeur['login'];
+				}
+			}
+
+		// les élèves d'une classe
+		if ($_POST['eleves_id_classe']<>"")
+			{
+			$eleves_id_classe=$_POST['eleves_id_classe'];
+			$r_sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, 
+									utilisateurs u 
+								WHERE jec.id_classe='".$eleves_id_classe."' AND 
+								jec.login=u.login";
+			$R_eleves=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_eleve=mysqli_fetch_assoc($R_eleves))
+				if(!in_array($un_eleve['login'], $t_login_destinataires)) {
+					$t_login_destinataires[]=$un_eleve['login'];
+				}
+			}
+
+		// les responsables élèves d'une classe
+		if ($_POST['parents_id_classe']<>"")
+			{
+			$parents_id_classe=$_POST['parents_id_classe'];
+			$r_sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, 
+									eleves e,
+									responsables2 r,
+									resp_pers rp,
+									utilisateurs u 
+								WHERE jec.id_classe='".$parents_id_classe."' AND 
+								jec.login=e.login AND
+								e.ele_id=r.ele_id AND
+								r.pers_id=rp.pers_id AND
+								rp.login=u.login";
+			$R_parents=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_parent=mysqli_fetch_assoc($R_parents))
+				if(!in_array($un_parent['login'], $t_login_destinataires)) {
+					$t_login_destinataires[]=$un_parent['login'];
 				}
 			}
 
@@ -317,6 +361,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			unset($login_destinataire);
 			//unset($matiere_destinataire);
 			unset($id_classe);
+			unset($eleves_id_classe);
+			unset($parents_id_classe);
 		} else {
 			$msg_erreur = "Erreur lors de l'enregistrement du message&nbsp;: <br  />".mysqli_error($GLOBALS["mysqli"]);
 		}
@@ -381,7 +427,8 @@ $appel_messages = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM messages WHERE
 $nb_messages = mysqli_num_rows($appel_messages);
 
 if ($nb_messages>0) {
-	echo "<span class='grand'>Messages pouvant être modifiés&nbsp;:</span><br />\n";
+	echo "<span class='grand' title=\"Seuls les messages destinés à tel ou tel statut peuvent être modifiés.
+Les messages destinés à une classe, une matière ou un individu ne peuvent pas être modifiés après coup.\">Messages pouvant être modifiés&nbsp;:</span><br />\n";
 	echo "<span class='small'>Classer par : ";
 	echo "<a href='index.php?order_by=date_debut' onclick=\"return confirm_abandon (this, change, '$themessage')\">date début</a> | <a href='index.php?order_by=date_fin' onclick=\"return confirm_abandon (this, change, '$themessage')\">date fin</a> | <a href='index.php?order_by=id' onclick=\"return confirm_abandon (this, change, '$themessage')\">date création</a>\n";
 	echo "</span><br /><br />\n";
@@ -607,7 +654,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		<optgroup>
 		<option></option>
 	<?php
-	$r_sql="SELECT login,nom,prenom,etat FROM utilisateurs WHERE statut IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY nom,prenom";
+	$r_sql="SELECT login,nom,prenom,etat, statut FROM utilisateurs WHERE statut IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY nom,prenom";
 	$R_utilisateurs=mysqli_query($GLOBALS["mysqli"], $r_sql);
 	$initiale_courante=0;
 	while($utilisateur=mysqli_fetch_array($R_utilisateurs))
@@ -620,7 +667,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 			echo "\t</optgroup><optgroup label=\"".chr($initiale)."\">";
 			}
 		?>
-		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($login_destinataire)) {if ($utilisateur['login']==$login_destinataire) {echo "selected";}} if($utilisateur['etat']=="inactif") { echo " style='background-color:grey;'";} ?>><?php echo $nom." (".$utilisateur['login'].")"; ?></option>
+		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($login_destinataire)) {if ($utilisateur['login']==$login_destinataire) {echo "selected";}} if($utilisateur['etat']=="inactif") { echo " style='background-color:grey;'";} ?> title="<?php echo $utilisateur['statut'];?>"><?php echo $nom." (".$utilisateur['login'].")"; ?></option>
 		<?php
 		}
 	?>
@@ -694,6 +741,64 @@ echo "</td></tr>\n";
 
 echo "<tr><td  colspan=\"4\" >\n";
 ?>
+<i>Élèves de la classe de&nbsp;:&nbsp;</i><br />
+	<select name="eleves_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
+		<optgroup>
+		<option></option>
+	<?php
+	$r_sql="SELECT id,nom_complet,classe FROM classes ORDER BY classe";
+	$R_classes=mysqli_query($GLOBALS["mysqli"], $r_sql);
+	while($classe=mysqli_fetch_array($R_classes))
+		{
+		?>
+		<option value="<?php echo $classe['id']; ?>" <?php if (isset($eleves_id_classe)) if ($classe['id']==$eleves_id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
+pour tous les élèves de la classe de <?php echo $classe['classe'];?>.
+Pour information, le <?php echo getSettingValue('gepi_prof_suivi')?> de la classe est :
+<?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
+			echo $classe['nom_complet'];
+			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
+		?></option>
+		<?php
+		}
+	?>
+		</optgroup>
+	</select>
+<br><br>
+
+<?php
+echo "</td></tr>\n";
+
+echo "<tr><td  colspan=\"4\" >\n";
+?>
+<i>Responsables (parents,...) d'élèves de la classe de&nbsp;:&nbsp;</i><br />
+	<select name="parents_id_classe" style="margin-left: 20px; max-width: 500px; width: 300px;">
+		<optgroup>
+		<option></option>
+	<?php
+	$r_sql="SELECT id,nom_complet,classe FROM classes ORDER BY classe";
+	$R_classes=mysqli_query($GLOBALS["mysqli"], $r_sql);
+	while($classe=mysqli_fetch_array($R_classes))
+		{
+		?>
+		<option value="<?php echo $classe['id']; ?>" <?php if (isset($parents_id_classe)) if ($classe['id']==$parents_id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
+pour tous les responsables (parents,...) d'élèves de la classe de <?php echo $classe['classe'];?>.
+Pour information, le <?php echo getSettingValue('gepi_prof_suivi')?> de la classe est :
+<?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
+			echo $classe['nom_complet'];
+			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
+		?></option>
+		<?php
+		}
+	?>
+		</optgroup>
+	</select>
+<br><br>
+
+<?php
+echo "</td></tr>\n";
+
+echo "<tr><td  colspan=\"4\" >\n";
+?>
 
 <i>Le destinataire peut supprimer ce message&nbsp;:&nbsp;</i>
 <label for='suppression_possible_oui'>Oui </label><input type="radio" name="suppression_possible" id="suppression_possible_oui" value="oui" />
@@ -701,7 +806,11 @@ echo "<tr><td  colspan=\"4\" >\n";
 
 <?php
 $titre_infobulle="SUPPRESSION\n";
-$texte_infobulle="Après lecture un utilisateur ne peut pas supprimer un message si celui-ci est destiné à un ou plusieurs statuts.<br />\n";
+$texte_infobulle="Après lecture, un utilisateur ne peut pas supprimer un message si celui-ci est destiné à un ou plusieurs statuts.<br />
+Seuls les messages destinés à des individus, matière précise ou classe précise peuvent être supprimés par leur destinataire.<br />
+<br />
+Lors de la définition d'un message destiné à un ou plusieurs statuts, un seul message est enregistré (<em>il peut ainsi être modifié par la suite</em>)<br />
+En revanche, lors de la saisie d'un message destiné à des individus, classe, matière, il y a autant de messages générés que d'individus (<em>après leur enregistrement, ils ne peuvent plus être modifiés et ils n'apparaissent pas dans la liste sur la gauche</em>).\n";
 //$texte_infobulle.="\n";
 $tabdiv_infobulle[]=creer_div_infobulle('SUPPRESSION',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
 
