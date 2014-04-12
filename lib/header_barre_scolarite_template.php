@@ -190,7 +190,7 @@ if ($barre_plugin!="") {
 				$menus .= '</li>'."\n";
 			}
 			//=======================================================
-	
+
 			//=======================================================
 			// Carnets de notes
 			$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Carnets de notes</a>'."\n";
@@ -203,6 +203,21 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 			//=======================================================
+		}
+
+		if((getSettingAOui("active_mod_examen_blanc"))&&(getSettingAOui("active_mod_epreuve_blanche"))) {
+			$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Ex/Ep.blancs</a>'."\n";
+			$menus .= '   <ul class="niveau2">'."\n";
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_epreuve_blanche/index.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/index.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
+			$menus .= '   </ul>'."\n";
+			$menus .= '</li>'."\n";
+		}
+		elseif(getSettingAOui("active_mod_examen_blanc")) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_examen_blanc/index.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
+		}
+		elseif(getSettingAOui("active_mod_epreuve_blanche")) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_examen_blanc/index.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
 		}
 
 		//=======================================================

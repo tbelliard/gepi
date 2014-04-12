@@ -1192,7 +1192,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 			//if(mysql_num_rows($res_groupes)>0) {
 
-				echo "<div style='float:right; width:15em; border: 1px solid black;'>\n";
+				echo "<div class='fieldset_opacite50' style='float:right; width:15em; border: 1px solid black;'>\n";
 
 				echo "<ul>\n";
 
@@ -1255,6 +1255,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				echo "<li>\n";
 				echo "<p><a href='releve.php?id_exam=$id_exam'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo " title=\"L'édition des relevés de notes permet aussi des exports CSV et PDF.\"";
 				echo ">Editer des relevés de notes et moyennes</a></p>\n";
 				echo "</li>\n";
 
