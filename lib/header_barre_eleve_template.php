@@ -116,7 +116,9 @@ if ($barre_plugin!="") {
 		}
 
 		// Equipe pédagogique
-		$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/groupes/visu_profs_eleve.php"'.insert_confirm_abandon().' title="Permet de consulter l\'équipe pédagogique de votre classe.">&nbsp;Éq.pédago</a></li>'."\n";
+		if(getSettingAOui("GepiAccesEquipePedaEleve")) {
+		   $menus .= '<li class="li_inline"><a href="'.$gepiPath.'/groupes/visu_profs_eleve.php"'.insert_confirm_abandon().' title="Permet de consulter l\'équipe pédagogique de votre classe.">&nbsp;Éq.pédago</a></li>'."\n";
+		}
 
 		// Discipline
 		if((getSettingAOui("active_mod_discipline"))&&(getSettingAOui("visuEleDisc"))) {
