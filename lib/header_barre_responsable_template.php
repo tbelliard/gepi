@@ -118,8 +118,9 @@ if ($barre_plugin!="") {
 		}
 
 		// Equipe pédagogique
-		$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/groupes/visu_profs_eleve.php"'.insert_confirm_abandon().' title="Permet de consulter l\'équipe pédagogique des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Éq.pédago</a></li>'."\n";
-
+		if(getSettingAOui("GepiAccesEquipePedaParent")) {
+		   $menus .= '<li class="li_inline"><a href="'.$gepiPath.'/groupes/visu_profs_eleve.php"'.insert_confirm_abandon().' title="Permet de consulter l\'équipe pédagogique des '.getSettingValue('denomination_eleves').' dont vous êtes le '.getSettingValue('denomination_responsable').'.">&nbsp;Éq.pédago</a></li>'."\n";
+		}
 
 		// Absences
 		if((getSettingValue("active_module_absence") == '2')&&(getSettingAOui("active_absences_parents"))) {
