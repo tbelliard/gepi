@@ -61,44 +61,49 @@ function RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_el
         $calendrier = "1=1";
     }
 
-    $req_creneau = LessonsFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
-    $j = 0;
-    while ($rep_creneau = mysqli_fetch_array($req_creneau))
-    {
-        $tab_enseignement_final['id_groupe'][$j] = $rep_creneau['id_groupe'];
-        $tab_enseignement_final['id_aid'][$j] = 0;
-        $tab_enseignement_final['duree'][$j] = $rep_creneau['duree'];
-        $tab_enseignement_final['heuredeb_dec'][$j] = $rep_creneau['heuredeb_dec'];
-        $tab_enseignement_final['id_semaine'][$j] = $rep_creneau['id_semaine'];
-        $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
-        $tab_enseignement_final['aid'][$j] = 0;
-        if (GetSettingEdt("edt_aff_couleur") == "coul") {
-            $req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
-            $rep_matiere = mysqli_fetch_array($req_matiere);
-            $matiere = $rep_matiere['id_matiere'];
-	        $recher_couleur = "M_".$matiere;
-	        $color = GetSettingEdt($recher_couleur);
-            $tab_enseignement_final['couleur'][$j] = "cadreCouleur".$color;
-        }
-        else {
-            $tab_enseignement_final['couleur'][$j] = "cadreCouleur";
-        }
-        $j++;
-    }
+	//echo "<p>RecupereEnseignementsIDEleve($creneau_courant, $jour_semaine, $login_eleve, &$tab_enseignement_final, $period)</p>";
 
-    $req_creneau = AidFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
-    while ($rep_creneau = mysqli_fetch_array($req_creneau))
-    {
-        $tab_enseignement_final['id_aid'][$j] = $rep_creneau['id_aid'];
-        $tab_enseignement_final['id_groupe'][$j] = 0;
-        $tab_enseignement_final['duree'][$j] = $rep_creneau['duree'];
-        $tab_enseignement_final['heuredeb_dec'][$j] = $rep_creneau['heuredeb_dec'];
-        $tab_enseignement_final['id_semaine'][$j] = $rep_creneau['id_semaine'];
-        $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
-        $tab_enseignement_final['aid'][$j] = 1;
-        $tab_enseignement_final['couleur'][$j] = "cadreCouleur";
-        $j++;
-    }
+    $j = 0;
+    if(isset($tab_id_creneaux[$creneau_courant])) {
+	    $req_creneau = LessonsFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
+	    $j = 0;
+	    while ($rep_creneau = mysqli_fetch_array($req_creneau))
+	    {
+		  $tab_enseignement_final['id_groupe'][$j] = $rep_creneau['id_groupe'];
+		  $tab_enseignement_final['id_aid'][$j] = 0;
+		  $tab_enseignement_final['duree'][$j] = $rep_creneau['duree'];
+		  $tab_enseignement_final['heuredeb_dec'][$j] = $rep_creneau['heuredeb_dec'];
+		  $tab_enseignement_final['id_semaine'][$j] = $rep_creneau['id_semaine'];
+		  $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
+		  $tab_enseignement_final['aid'][$j] = 0;
+		  if (GetSettingEdt("edt_aff_couleur") == "coul") {
+		      $req_matiere = mysqli_query($GLOBALS["mysqli"], "SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$rep_creneau['id_groupe']."'");
+		      $rep_matiere = mysqli_fetch_array($req_matiere);
+		      $matiere = $rep_matiere['id_matiere'];
+			  $recher_couleur = "M_".$matiere;
+			  $color = GetSettingEdt($recher_couleur);
+		      $tab_enseignement_final['couleur'][$j] = "cadreCouleur".$color;
+		  }
+		  else {
+		      $tab_enseignement_final['couleur'][$j] = "cadreCouleur";
+		  }
+		  $j++;
+	    }
+
+	    $req_creneau = AidFromStudentDaySlotPeriod($login_eleve, $jour_semaine, $tab_id_creneaux[$creneau_courant], $calendrier);
+	    while ($rep_creneau = mysqli_fetch_array($req_creneau))
+	    {
+		  $tab_enseignement_final['id_aid'][$j] = $rep_creneau['id_aid'];
+		  $tab_enseignement_final['id_groupe'][$j] = 0;
+		  $tab_enseignement_final['duree'][$j] = $rep_creneau['duree'];
+		  $tab_enseignement_final['heuredeb_dec'][$j] = $rep_creneau['heuredeb_dec'];
+		  $tab_enseignement_final['id_semaine'][$j] = $rep_creneau['id_semaine'];
+		  $tab_enseignement_final['id_cours'][$j] = $rep_creneau['id_cours'];
+		  $tab_enseignement_final['aid'][$j] = 1;
+		  $tab_enseignement_final['couleur'][$j] = "cadreCouleur";
+		  $j++;
+	    }
+	}
        
     $tab_enseignement_final['id_groupe'][$j] = '';
     $tab_enseignement_final['id_aid'][$j] = '';
