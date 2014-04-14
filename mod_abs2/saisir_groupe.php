@@ -765,78 +765,31 @@ if(count($tab_regimes)>0) {
 }
 
 //==============================================
-$style_specifique[] = "templates/origine/css/bandeau";
+$style_specifique[] = "templates/DefaultEDT/css/style_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $style_specifique[] = "mod_abs2/lib/saisie_smart_large";
 $CSS_smartphone = "mod_abs2/lib/saisie_smart_mini";
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
+
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
-$tbs_last_connection = "";
-
-//**************** EN-TETE *****************
-require_once("../lib/header_template.inc.php");
-//include("../templates/origine/bandeau_template.php");
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-
-<head>
-<!-- on inclut l'entête -->
-<?php 
-$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
-include('../templates/origine/header_template.php');
-//include("../templates/origine/bandeau_template.php");
-?>
-
-<!-- corrections internet Exploreur -->
-	<!--[if lte IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie.css' media='screen' />
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/bandeau_ie.css' media='screen' />
-	<![endif]-->
-	<!--[if lte IE 6]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie6.css' media='screen' />
-	<![endif]-->
-	<!--[if IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie7.css' media='screen' />
-	<![endif]-->
-
-<!-- Fin des styles -->
-
-
-</head>
-
-<!-- ******************************************** -->
-<!-- Appelle les sous-modèles                     -->
-<!-- templates/origine/header_template.php        -->
-<!-- templates/origine/accueil_menu_template.php  -->
-<!-- templates/origine/bandeau_template.php      -->
-<!-- ******************************************** -->
-
-<!-- ************************* -->
-<!-- Début du corps de la page -->
-<!-- ************************* -->
-
-<body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
-
-
-<!-- on inclut le bandeau -->
-	<?php
-		include('../templates/origine/bandeau_template.php');
-		//debug_var();
-	?>
-
-<div id='container'>
-
-<?php 
+require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-
+//debug_var();
 include('menu_abs2.inc.php');
+//===========================
+   
+   
+   
+   
+
+
+
 //===========================
 //debug_var();
 ?>
