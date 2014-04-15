@@ -1558,7 +1558,7 @@ if(getSettingAOui('active_bulletins')) {
 	  }
 	}
 
-	if ((getSettingValue("active_notanet")=='y')&&($affiche=='yes')) {
+	if ((getSettingValue("active_notanet")=='y')&&(($affiche=='yes')||(getSettingAOui("notanet_saisie_note_ouverte")))) {
 	  if($this->statutUtilisateur=='professeur') {
 		$this->creeNouveauItem("/mod_notanet/index.php",
 				"Notanet/Fiches Brevet",
