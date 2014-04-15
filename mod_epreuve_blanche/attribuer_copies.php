@@ -193,11 +193,15 @@ else {
 echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;tri=groupe'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">groupe/enseignement</a></li>\n";
+echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;tri=n_anonymat'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo ">numéro anonymat</a></li>\n";
 echo "</ul>\n";
 
 if($etat!='clos') {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 	echo add_token_field();
+	echo "<input type='hidden' name='tri' value='$tri' />\n";
 }
 
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
@@ -404,7 +408,7 @@ if($tri=='groupe') {
 			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
 		}
 		$chaine_cpt1_eleves.=",'$cpt'";
-	
+
 		echo "<script type='text/javascript'>
 
 function calcule_effectif() {
@@ -427,6 +431,253 @@ function calcule_effectif() {
 			if(document.getElementById('eff_prof_'+tab_groupes[j]+'_'+i)) {
 				document.getElementById('eff_prof_'+tab_groupes[j]+'_'+i).innerHTML=eff;
 				//alert('eff_prof_'+tab_groupes[j]+'_'+i+' eff='+eff);
+			}
+		}
+	}
+}
+
+calcule_effectif();
+
+function coche(colonne,rang_groupe,mode) {
+	var tab_cpt0_ele=new Array($chaine_cpt0_eleves);
+	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
+
+	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
+	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
+		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
+			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
+		}
+	}
+
+	calcule_effectif();
+
+	changement();
+}
+
+</script>\n";
+	}
+}
+elseif($tri=='n_anonymat') {
+
+	$tab_ele_prof_habituel=array();
+	for($i=0;$i<count($login_prof);$i++) {
+	
+		$sql="SELECT DISTINCT jeg.login FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id AND jgp.id_groupe=jeg.id_groupe AND jeg.id_groupe=g.id AND jgp.login='".$login_prof[$i]."';";
+		$res_ele_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ele_prof)>0) {
+			while($lig=mysqli_fetch_object($res_ele_prof)) {
+				$tab_ele_prof_habituel[$lig->login]=$login_prof[$i];
+			}
+		}
+	}
+
+	$sql="SELECT ec.*, e.nom, e.prenom FROM eb_copies ec,eleves e WHERE ec.id_epreuve='$id_epreuve' AND ec.login_ele=e.login ORDER BY ec.n_anonymat;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p>Aucun élève n'est encore associé à l'épreuve.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$cpt=0;
+	$tab_eleves=array();
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_eleves[$cpt]['login_prof']=$lig->login_prof;
+		$tab_eleves[$cpt]['login_ele']=$lig->login_ele;
+		$tab_eleves[$cpt]['nom']=$lig->nom;
+		$tab_eleves[$cpt]['prenom']=$lig->prenom;
+		$tab_eleves[$cpt]['n_anonymat']=$lig->n_anonymat;
+		$cpt++;
+	}
+
+	$largeur_tranche=10;
+	$nb_tranches=ceil(count($tab_eleves)/$largeur_tranche);
+
+	$cpt_tranche=0;
+	$compteur_eleves_du_prof=array();
+	$cpt=0;
+	$compteur_tranche=0;
+
+	
+	if($etat!='clos') {
+		echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves$cpt_tranche' value='Valider' /></p>\n";
+	}
+
+	for($loop=0;$loop<count($tab_eleves);$loop++) {
+
+		if(($loop==0)||($loop%$largeur_tranche==0)) {
+			if($loop>0) {
+				echo "</blockquote>\n";
+			}
+
+			$tab_cpt_eleve[]=$loop;
+
+			$cpt_tranche++;
+
+			$compteur_eleves_dans_la_tranche=1;
+
+			echo "<p class='bold' style='margin-top:1em;'>Tranche $cpt_tranche/$nb_tranches&nbsp;:</p>\n";
+			echo "<blockquote>\n";
+			echo "<table class='boireaus boireaus_alt' summary='Elèves de la tranche $cpt_tranche'>\n";
+			echo "<tr>\n";
+			echo "<th title=\"Numéro anonymat\">Numéro</th>\n";
+			echo "<th>Elèves</th>\n";
+			echo "<th>Classes</th>\n";
+			for($i=0;$i<count($info_prof);$i++) {
+				$compteur_eleves_du_prof[$i]=0;
+				echo "<th>\n";
+				if($etat!='clos') {
+					echo "<a href='javascript:coche($i,$compteur_tranche,true)'>\n";
+					echo "$info_prof[$i]\n";
+					echo "</a>\n";
+				}
+				else {
+					echo "$info_prof[$i]\n";
+				}
+				echo "</th>\n";
+			}
+			echo "<th>\n";
+			if($etat!='clos') {
+				echo "<a href='javascript:coche($i,$compteur_tranche,true)'>\n";
+				echo "Non affecté";
+				echo "</a>\n";
+			}
+			else {
+				echo "Non affecté";
+			}
+			echo "</th>\n";
+			echo "</tr>\n";
+	
+			if($etat!='clos') {
+				echo "<tr>\n";
+				echo "<th></th>\n";
+				echo "<th>Effectifs</th>\n";
+				echo "<th>&nbsp;</th>\n";
+				for($i=0;$i<count($info_prof);$i++) {
+					echo "<th title=\"Nombre de copies attribuées à ce professeur par rapport au nombre d'élèves qu'il a en cours.\">\n";
+					//echo "<span id='eff_prof_".$lig->id."_$i'>Effectif</span>";
+					echo "<span id='eff_prof_".$compteur_tranche."_$i'>Effectif</span>";
+					echo "/".$eff_habituel_prof[$i]."\n";
+					echo "</th>\n";
+				}
+				echo "<th>\n";
+				//$i++;
+				echo "<span id='eff_prof_".$compteur_tranche."_$i'>Effectif</span>";
+				echo "</th>\n";
+				echo "</tr>\n";
+			}
+		}
+
+		echo "<tr class='white_hover'>\n";
+		echo "<td>".$tab_eleves[$loop]['n_anonymat']."</td>\n";
+		echo "<td style='text-align:left;'>\n";
+		$login_ele=$tab_eleves[$loop]['login_ele'];
+		echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
+		//echo get_nom_prenom_eleve($login_ele);
+		echo casse_mot($tab_eleves[$loop]['nom'])." ".casse_mot($tab_eleves[$loop]['prenom'],'majf2');
+		echo "</td>\n";
+
+		echo "<td>\n";
+		$tmp_tab_classe=get_class_from_ele_login($login_ele);
+		echo $tmp_tab_classe['liste'];
+		echo "</td>\n";
+
+		$affect="n";
+		for($i=0;$i<count($info_prof);$i++) {
+			echo "<td>\n";
+
+			if((isset($tab_ele_prof_habituel[$login_ele]))&&($tab_ele_prof_habituel[$login_ele]==$login_prof[$i])) {
+				echo "<div style='float:right; width:17px;'><img src='../images/icons/flag.png' width='17' height='18' title='Professeur habituel de cet élève' alt='Professeur habituel de cet élève' /></div>\n";
+				$compteur_eleves_du_prof[$i]++;
+			}
+
+			if($etat!='clos') {
+				echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='$login_prof[$i]' ";
+				echo "onchange='calcule_effectif();changement();' ";
+				// On risque une blague si pour une raison ou une autre, on n'a pas une copie dans eb_copies pour tous les élèves du groupe (toutes périodes confondues)... à améliorer
+				if($tab_eleves[$loop]['login_prof']==$login_prof[$i]) {echo "checked ";$affect="y";}
+				echo "/>\n";
+			}
+			else {
+				if($tab_eleves[$loop]['login_prof']==$login_prof[$i]) {echo "X";$affect="y";}
+			}
+
+			echo "</td>\n";
+		}
+		echo "<td>\n";
+		if($etat!='clos') {
+			echo "<input type='radio' name='id_prof_ele[$cpt]' id='id_prof_ele_".$i."_$cpt' value='' ";
+			echo "onchange='calcule_effectif();changement();' ";
+			if($affect=="n") {echo "checked ";}
+			echo "/>\n";
+		}
+		else {
+			if($affect=="n") {echo "X";}
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		if((($loop>0)&&(($loop+1)%$largeur_tranche==0))||($loop==count($tab_eleves)-1)) {
+			echo "<tr>\n";
+			echo "<th></th>\n";
+			echo "<th></th>\n";
+			echo "<th></th>\n";
+			for($i=0;$i<count($info_prof);$i++) {
+				echo "<th title=\"Le professeur a ".$compteur_eleves_du_prof[$i]." élève(s) en cours parmi les $compteur_eleves_dans_la_tranche de cette tranche\">".$compteur_eleves_du_prof[$i]."/".$compteur_eleves_dans_la_tranche."</th>\n";
+			}
+			echo "<th></th>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
+		}
+
+		$cpt++;
+
+		$compteur_eleves_dans_la_tranche++;
+
+	}
+	echo "</blockquote>\n";
+
+
+
+	if($etat!='clos') {
+		echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />\n";
+		echo "<input type='hidden' name='mode' value='affect_eleves' />\n";
+		echo "<input type='hidden' name='valide_affect_eleves' value='y' />\n";
+		echo "</form>\n";
+
+		$chaine_cpt0_eleves="";
+		$chaine_cpt1_eleves="";
+		for($i=0;$i<count($tab_cpt_eleve);$i++) {
+			if($i>1) {$chaine_cpt1_eleves.=",";}
+			if($i>0) {
+				$chaine_cpt0_eleves.=",";
+				$chaine_cpt1_eleves.="'$tab_cpt_eleve[$i]'";
+			}
+			$chaine_cpt0_eleves.="'$tab_cpt_eleve[$i]'";
+		}
+		$chaine_cpt1_eleves.=",'$cpt'";
+
+		echo "<script type='text/javascript'>
+
+function calcule_effectif() {
+	var eff;
+
+	for(i=0;i<".count($login_prof)."+1;i++) {
+		eff=0;
+
+		for(j=0;j<$cpt;j++) {
+			if(document.getElementById('id_prof_ele_'+i+'_'+j)) {
+				if(document.getElementById('id_prof_ele_'+i+'_'+j).checked) {
+					eff++;
+				}
+			}
+		}
+
+		//alert('Salle i='+i+' eff='+eff)
+		for(j=0;j<$cpt_tranche;j++) {
+			if(document.getElementById('eff_prof_'+j+'_'+i)) {
+				document.getElementById('eff_prof_'+j+'_'+i).innerHTML=eff;
+				//alert('eff_prof_'+j+'_'+i+' eff='+eff);
 			}
 		}
 	}
