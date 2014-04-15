@@ -265,7 +265,7 @@ if($gepi_prof_suivi==""){
 	}
 
 	if((isset($id_groupe_suivant))&&($id_groupe_suivant!="")) {
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant' title=\"Passer au groupe précédent: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant' title=\"Passer au groupe suivant: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
 	}
 
 	echo "</h2>\n";
