@@ -561,7 +561,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 						LIMIT 1;";
 		//echo "$sql<br />";
 		$res_test_notanet=mysql_query($sql);
-		if(mysql_num_rows($res_test_notanet)>0) {
+		if((mysql_num_rows($res_test_notanet)>0)||(getSettingAOui("notanet_saisie_note_ouverte"))) {
 			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
 			$compteur_menu++;
 		}
