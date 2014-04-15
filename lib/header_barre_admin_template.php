@@ -118,14 +118,15 @@ include("menu_plugins.inc.php");
 
 		$menus .= '        <li><a href="'.$gepiPath.'/eleves/recherche.php" '.insert_confirm_abandon().' title="Effectuer une recherche sur une personne (élève, responsable ou personnel)">Rechercher</a></li>'."\n";
 		$menus .= '        <li><a href="'.$gepiPath.'/matieres/index.php" '.insert_confirm_abandon().'>Matières</a></li>'."\n";
+
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php" '.insert_confirm_abandon().' title="Les comptes d\'utilisateurs permettent de se connecter dans Gepi">Utilisateurs</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels" '.insert_confirm_abandon().'>Comptes Personnels</a></li>'."\n";
 		if (getSettingValue("statuts_prives") == "y") {
 			$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/creer_statut.php" '.insert_confirm_abandon().'>Statuts personnalisés</a></li>'."\n";
 		}
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs responsables/parents.">Comptes Resp.légaux</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs élèves.">Comptes Elèves</a></li>'."\n";
 		if(getSettingAOui('use_ent') || $gepiSettings['auth_sso'] == 'cas') {
 			$temp_afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
 			if($temp_afficher_liaison_ent!="netcollege") {
@@ -141,24 +142,32 @@ include("menu_plugins.inc.php");
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
+		// Elèves
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/eleves/index.php" '.insert_confirm_abandon().'>Elèves</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php" '.insert_confirm_abandon().'>Gestion des élèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php" '.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php" '.insert_confirm_abandon().'>Consult.fiches élèves</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().'>Comptes Elèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Listes élèves</a></li>'."\n";
+		// Les administrateurs n'ont pas ce droit:
+		//$menus .= '                <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
+
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs élèves.">Comptes Elèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
+		// Responsables
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/responsables/index.php" '.insert_confirm_abandon().'>Resp. légaux</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/index.php" '.insert_confirm_abandon().'>Gestion resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php" '.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().'>Comptes Resp.légaux</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs responsables/parents.">Comptes Resp.légaux</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
+		// Classes
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Classes</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Gestion des classes</a>'."\n";
@@ -176,12 +185,18 @@ include("menu_plugins.inc.php");
 			$menus .= '                        <li><a href="'.$gepiPath.'/cahier_notes_admin/creation_conteneurs_par_lots.php" '.insert_confirm_abandon().' title="Création de '.getSettingValue("gepi_denom_boite").' par lots dans les carnets de notes de certains enseignements (par exemple pour Oral/Ecrit, Travaux en classe/Travaux à la maison,...).">Création de '.getSettingValue("gepi_denom_boite").'</a></li>'."\n";
 		}
 
-
 		$menus .= '                    </ul>'."\n";
 		$menus .= '                </li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php" '.insert_confirm_abandon().' title="Consulter les équipes pédagogiques">Equipes pédago</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php" '.insert_confirm_abandon().' title="Consulter les équipes pédagogiques.
+Les listes de professeurs associés à telle classe,
+pour tel enseignement, avec les effectifs par période
+seront affichés (et exportables en CSV).">Equipes pédago</a></li>'."\n";
+
+		$menus .= '                <li><a href="'.$gepiPath.'/statistiques/classes_effectifs.php"'.insert_confirm_abandon().' title="Effectifs par classe et périodes.">Effectifs</a></li>'."\n";
+
 		$menus .= '                <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().'>MEF</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
+Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
@@ -282,7 +297,8 @@ include("menu_plugins.inc.php");
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_annees_anterieures/index.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
 		}
 		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().'>Date événements</a></li>'."\n";
+		$menus .= '  <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
+Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
 		if(getSettingAOui('active_mod_discipline')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
