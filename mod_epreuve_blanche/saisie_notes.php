@@ -231,7 +231,7 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 		}
 	}
 	else {
-		$sql="SELECT * FROM eb_epreuves ee WHERE ee.etat!='clos' AND ep.id_epreuve='$id_epreuve';";
+		$sql="SELECT * FROM eb_epreuves ee WHERE ee.etat!='clos' AND ee.id='$id_epreuve';";
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
