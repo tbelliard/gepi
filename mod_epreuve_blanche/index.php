@@ -441,7 +441,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				//$sql="SELECT ec.id FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
 
 				$nb_err_suppr=0;
-				$sql="SELECT ec.login_ele FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes eg WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
+				$sql="SELECT DISTINCT ec.login_ele FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes eg WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
 				//echo "<p>$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
