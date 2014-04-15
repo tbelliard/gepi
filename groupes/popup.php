@@ -81,6 +81,10 @@ if(isset($periode_num)) {
 //	unset($id_classe);
 //}
 
+if(!isset($id_groupe)) {
+	$id_groupe="VIE_SCOLAIRE";
+}
+
 if(isset($id_groupe)) {
 
 	// A FAIRE: TESTER LE CARACTERE NUMERIQUE DE $id_groupe
@@ -124,6 +128,8 @@ if(isset($id_groupe)) {
 	}
 }
 else {
+	// On ne devrait plus arriver là
+
 	//header("Location: ../logout.php?auto=1");
 	header("Location: ../accueil.php?msg=Aucun_groupe_choisi");
 	die();
@@ -224,11 +230,47 @@ if($gepi_prof_suivi==""){
 			$id_groupe_boucle_precedent=$current_group['id'];
 		}
 	}
+	elseif((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+		$groups=get_groups_for_class($id_classe);
+
+		// Groupe précédent/suivant à trouver
+		$id_groupe_boucle_precedent="";
+		$id_groupe_precedent="";
+		$infos_groupe_precedent="";
+		$id_groupe_suivant="";
+		$infos_groupe_suivant="";
+		$id_groupe_courant_trouve="";
+		foreach($groups as $current_group) {
+			if($id_groupe=='VIE_SCOLAIRE') {
+				$id_groupe_suivant=$current_group['id'];
+				$infos_groupe_suivant=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+				break;
+			}
+			else {
+				if(($id_groupe_courant_trouve=="y")&&($id_groupe_suivant=="")) {
+					$id_groupe_suivant=$current_group['id'];
+					$infos_groupe_suivant=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+				}
+				if($current_group['id']==$id_groupe) {
+					$id_groupe_courant_trouve="y";
+					if($id_groupe_boucle_precedent!="") {
+						$id_groupe_precedent=$id_groupe_boucle_precedent;
+						$infos_groupe_precedent=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+					}
+				}
+				$id_groupe_boucle_precedent=$current_group['id'];
+			}
+		}
+	}
 
 	echo "<h2>";
 
 	if((isset($id_groupe_precedent))&&($id_groupe_precedent!="")) {
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_precedent' title=\"Passer au groupe précédent: ".$infos_groupe_precedent."\" class='noprint'><img src='../images/arrow_left.png' class='icone16' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_precedent";
+		if((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+			echo "&amp;id_classe=$id_classe";
+		}
+		echo "' title=\"Passer au groupe précédent: ".$infos_groupe_precedent."\" class='noprint'><img src='../images/arrow_left.png' class='icone16' /></a> ";
 	}
 
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
@@ -265,7 +307,11 @@ if($gepi_prof_suivi==""){
 	}
 
 	if((isset($id_groupe_suivant))&&($id_groupe_suivant!="")) {
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant' title=\"Passer au groupe suivant: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant";
+		if((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+			echo "&amp;id_classe=$id_classe";
+		}
+		echo "' title=\"Passer au groupe suivant: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
 	}
 
 	echo "</h2>\n";
