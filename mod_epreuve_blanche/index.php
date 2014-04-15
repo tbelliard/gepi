@@ -447,11 +447,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						// Pour ne pas supprimer un élève passé d'un groupe à un autre lors d'un changement de classe
-						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
+						//$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
+						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE eg.id_groupe!='$id_groupe' AND eg.id_groupe=jeg.id_groupe AND jeg.login='$lig->login_ele' AND eg.id_epreuve='$id_epreuve';";
 						//echo "$sql<br />";
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						//echo "mysql_num_rows(\$test)=".mysql_num_rows($test)."<br />";
-						if(mysqli_num_rows($test)==1) {
+						if(mysqli_num_rows($test)==0) {
 							$sql="DELETE FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_ele='$lig->login_ele';";
 							//echo "$sql<br />";
 							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
