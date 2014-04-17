@@ -238,6 +238,8 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+$avec_js_et_css_edt="y";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 $titre_page = "Gestion des groupes";
@@ -587,8 +589,82 @@ echo "<div style='clear:both;'></div>\n";
 ?>
 
 <?php
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+
+		$titre_infobulle="EDT de <span id='id_ligne_titre_infobulle_edt'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_prof',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+//https://127.0.0.1/steph/gepi_git_trunk/edt_organisation/index_edt.php?login_edt=boireaus&type_edt_2=prof&no_entete=y&no_menu=y&lien_refermer=y
+
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return " <a href='../edt_organisation/index_edt.php?login_edt=".$login_prof."&amp;type_edt_2=prof&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_prof_en_infobulle('$login_prof', '".addslashes($info_prof)."');return false;\" title=\"Emploi du temps de ".$info_prof."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+		}
+
+		$titre_infobulle="EDT de la classe de <span id='span_id_nom_classe'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_classe',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+		echo "
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_classe_en_infobulle(id_classe, classe) {
+		document.getElementById('span_id_nom_classe').innerHTML=classe;
+
+		new Ajax.Updater($('edt_classe_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+id_classe+'&type_edt_2=classe&visioedt=classe1&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_classe','y',-20,20);
+	}
+
+	function affiche_edt_prof_en_infobulle(login_prof, info_prof) {
+		document.getElementById('id_ligne_titre_infobulle_edt').innerHTML=info_prof;
+
+		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+login_prof+'&type_edt_2=prof&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_prof','y',-20,20);
+	}
+</script>\n";
+	}
+	else {
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return "";
+		}
+	}
+
+	//============================================================================================================
+	function affiche_lien_mailto_prof($mail_prof, $info_prof) {
+		$retour=" <a href='mailto:".$mail_prof."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+		$tmp_date=getdate();
+		if($tmp_date['hours']>=18) {$retour.="Bonsoir";} else {$retour.="Bonjour";}
+		$retour.=",%0d%0aCordialement.' title=\"Envoyer un mail à $info_prof\">";
+		$retour.="<img src='../images/icons/mail.png' class='icone16' alt='mail' />";
+		$retour.="</a>";
+		return $retour;
+	}
+	//============================================================================================================
+
+
 	echo "<h3>Gérer les élèves de l'enseignement : ";
-	echo htmlspecialchars($current_group["description"]) . " (<i>" . $current_group["classlist_string"] . "</i>)";
+	echo htmlspecialchars($current_group["description"]) . " (<i>";
+	if((getSettingAOui('autorise_edt_tous'))||
+	((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+		foreach($current_group["classes"]["classes"] as $current_id_classe => $tab_classe) {
+			echo $tab_classe["classe"]." ";
+
+
+		echo "<a href='../edt_organisation/index_edt.php?login_edt=".$current_id_classe."&amp;type_edt_2=classe&amp;visioedt=classe1&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_classe_en_infobulle($current_id_classe, '".$tab_classe['classe']."');return false;\" title=\"Emploi du temps de la classe de ".$tab_classe['classe']."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>\n";
+
+		}
+	}
+	else {
+		echo $current_group["classlist_string"];
+	}
+	echo "</i>)";
 	echo "</h3>\n";
 	//$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
 	if(count($current_group["profs"]["users"])>0){
@@ -597,6 +673,14 @@ echo "<div style='clear:both;'></div>\n";
 		foreach($current_group["profs"]["users"] as $tab_prof){
 			if($cpt_prof>0){echo ", ";}
 			echo casse_mot($tab_prof['prenom'],'majf2')." ".my_strtoupper($tab_prof['nom']);
+
+			echo affiche_lien_edt_prof($tab_prof["login"], $tab_prof["prenom"]." ".$tab_prof["nom"]);
+
+			$mail_prof=get_mail_user($tab_prof["login"]);
+			if(check_mail($mail_prof)) {
+				echo affiche_lien_mailto_prof($mail_prof, $tab_prof["prenom"]." ".$tab_prof["nom"]);
+			}
+
 			$cpt_prof++;
 		}
 		echo ".</p>\n";
