@@ -533,7 +533,7 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 
 						echo "<div style='float:right;width:10px'><a href='#' onclick=\"document.getElementById('date_visibilite').value='$tmp_chaine_date';".$chaine_heure_visibilite."return false;\" target='_blank' title=\"Fixer la date et l'heure du message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/sound.png' width='10' height='10' /></a></div>";
 					}
-					else {
+					elseif(isset($tab_data[$jour]['login_prof'][$index_box])) {
 						// Récupérer le jour suivant
 						echo "<div style='float:right;width:10px'><a href='../mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
 						$tmp_jour_suivant=get_next_tel_jour($jour+1);
