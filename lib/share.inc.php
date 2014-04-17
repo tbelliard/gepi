@@ -10241,6 +10241,85 @@ function get_info_eleve($login_ele, $periode) {
 	return $tab;
 }
 
+function get_info_responsable($login_resp, $pers_id="") {
+	$tab=array();
+
+	if(($login_resp!="")||($pers_id!="")) {
+		if($login_resp!="") {
+			$sql="SELECT * FROM resp_pers WHERE login='$login_resp';";
+		}
+		elseif($pers_id!="") {
+			$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id';";
+		}
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tab['login']=$lig->login;
+			$tab['pers_id']=$lig->pers_id;
+
+			$tab['civilite']=$lig->civilite;
+			$tab['nom']=$lig->nom;
+			$tab['prenom']=$lig->prenom;
+			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+
+			$tab['tel_pers']=$lig->tel_pers;
+			$tab['tel_port']=$lig->tel_port;
+			$tab['tel_prof']=$lig->tel_prof;
+			$tab['mel']=$lig->mel;
+
+			$tab['adr_id']=$lig->adr_id;
+
+			$tab['adresse']=get_adresse_responsable($lig->pers_id);
+			$tab['enfants']=get_enfants_from_pers_id($lig->pers_id);
+		}
+	}
+
+	return $tab;
+}
+
+function get_info_user($login_user, $tab_champs=array()) {
+	$tab=array();
+
+	$sql="SELECT * FROM utilisateurs WHERE login='$login_user';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		if($lig->statut=='eleve') {
+			$tab=get_info_eleve($login_user, 1);
+		}
+		elseif($lig->statut=='responsable') {
+			$tab=get_info_responsable($login_user);
+		}
+		elseif($lig->statut=='professeur') {
+			$tab['login']=$lig->login;
+			$tab['civilite']=$lig->civilite;
+			$tab['nom']=$lig->nom;
+			$tab['prenom']=$lig->prenom;
+			$tab['statut']=$lig->statut;
+			$tab['etat']=$lig->etat;
+			$tab['auth_mode']=$lig->auth_mode;
+			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+
+			$tab['classes']=get_classes_from_prof($login_user);
+			$tab['matieres']=get_matieres_from_prof($login_user);
+			$tab['groupes']=get_groups_for_prof($login_user);
+		}
+		else {
+			$tab['login']=$lig->login;
+			$tab['civilite']=$lig->civilite;
+			$tab['nom']=$lig->nom;
+			$tab['prenom']=$lig->prenom;
+			$tab['statut']=$lig->statut;
+			$tab['etat']=$lig->etat;
+			$tab['auth_mode']=$lig->auth_mode;
+			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+		}
+	}
+
+	return $tab;
+}
+
 /** Fonction destinée tester si la période est est ouverte/partiellement/close pour un élève sans devoir préciser la classe de l'élève sur la période en question
  *
  * @param string $login_ele identifiant de l'élève
@@ -10315,5 +10394,96 @@ function get_verrouillage_classes_periodes() {
 	}
 
 	return $tab;
+}
+
+function check_heure($heure, $format="") {
+	if(preg_match("/[0-9]{1,2}:[0-9]{2}:[0-9]{2}/", $heure)) {
+		$tmp_tab=explode(":", $heure);
+		$h=$tmp_tab[0];
+		$m=$tmp_tab[1];
+		$s=$tmp_tab[2];
+
+		if(($h>=0)&&($h<=23)&&
+		($m>=0)&&($m<=59)&&
+		($s>=0)&&($s<=59)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif(preg_match("/[0-9]{1,2}:[0-9]{2}/", $heure)) {
+		$tmp_tab=explode(":", $heure);
+		$h=$tmp_tab[0];
+		$m=$tmp_tab[1];
+
+		if(($h>=0)&&($h<=23)&&
+		($m>=0)&&($m<=59)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		// Tester les créneaux M1, M2,...
+		$sql="SELECT * FROM edt_creneaux WHERE nom_definie_periode='$heure';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+function get_mysql_heure($heure, $debut_ou_fin="debut") {
+	if(preg_match("/[0-9]{1,2}:[0-9]{2}:[0-9]{2}/", $heure)) {
+		$tmp_tab=explode(":", $heure);
+		$h=$tmp_tab[0];
+		$m=$tmp_tab[1];
+		$s=$tmp_tab[2];
+
+		if(($h>=0)&&($h<=23)&&
+		($m>=0)&&($m<=59)&&
+		($s>=0)&&($s<=59)) {
+			return $h.":".$m.":".$s;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif(preg_match("/[0-9]{1,2}:[0-9]{2}/", $heure)) {
+		$tmp_tab=explode(":", $heure);
+		$h=$tmp_tab[0];
+		$m=$tmp_tab[1];
+
+		if(($h>=0)&&($h<=23)&&
+		($m>=0)&&($m<=59)) {
+			return $h.":".$m.":00";
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		// Tester les créneaux M1, M2,...
+		$sql="SELECT * FROM edt_creneaux WHERE nom_definie_periode='$heure';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+
+			if($debut_ou_fin=="debut") {
+				return $lig->heuredebut_definie_periode;
+			}
+			else {
+				return $lig->heurefin_definie_periode;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 }
 ?>
