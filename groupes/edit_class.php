@@ -1068,9 +1068,9 @@ for($i=0;$i<10;$i++){
 		echo "<td class='norme' style='text-align:left;'>";
 		echo "<strong>";
 		if ($total == "1") {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement de ".$group['matiere']['matiere']."\">";
 		} else {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement de ".$group['matiere']['matiere']."\">";
 		}
 		echo $group["description"] . "</a></strong>";
 		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
