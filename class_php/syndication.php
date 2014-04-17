@@ -156,52 +156,55 @@ if ($items["cdt_dev"]["count"] != 0) {
 				$url_doc_courant="https://".$_SERVER["SERVER_NAME"].$gepiPath."/".preg_replace("|^../|","",$items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']);
 				$contenu_courant.=$items["cdt_dev"][$a]["doc_joint"][$loop]['titre']." ($url_doc_courant)";
 
-				$mimeType=finfo_file($finfo, $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']);
-				if($mimeType=="") {
-					if(preg_match("/.jpg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="image/jpeg";
-					}
-					elseif(preg_match("/.jpeg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="image/jpeg";
-					}
-					elseif(preg_match("/.png$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="image/png";
-					}
-					elseif(preg_match("/.gif$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="image/gif";
-					}
-					elseif(preg_match("/.mp3$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="audio/mpeg";
-					}
-					elseif(preg_match("/.wav$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="audio/x-wav";
-					}
-					elseif(preg_match("/.zip$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/zip";
-					}
-					elseif(preg_match("/.ggb$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/zip";
-					}
-					elseif(preg_match("/.txt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="text/plain";
-					}
-					elseif(preg_match("/.doc$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/msword";
-					}
-					elseif(preg_match("/.pdf$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/pdf";
-					}
-					elseif(preg_match("/.xls$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/vnd.ms-excel";
-					}
-					elseif(preg_match("/.pps$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/vnd.ms-powerpoint";
-					}
-					elseif(preg_match("/.odt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/vnd.oasis.opendocument.text";
-					}
-					elseif(preg_match("/.ods$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
-						$mimeType="application/vnd.oasis.opendocument.spreadsheet";
+				$mimeType="";
+				if(file_exists($items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+					$mimeType=finfo_file($finfo, $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement']);
+					if($mimeType=="") {
+						if(preg_match("/.jpg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="image/jpeg";
+						}
+						elseif(preg_match("/.jpeg$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="image/jpeg";
+						}
+						elseif(preg_match("/.png$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="image/png";
+						}
+						elseif(preg_match("/.gif$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="image/gif";
+						}
+						elseif(preg_match("/.mp3$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="audio/mpeg";
+						}
+						elseif(preg_match("/.wav$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="audio/x-wav";
+						}
+						elseif(preg_match("/.zip$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/zip";
+						}
+						elseif(preg_match("/.ggb$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/zip";
+						}
+						elseif(preg_match("/.txt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="text/plain";
+						}
+						elseif(preg_match("/.doc$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/msword";
+						}
+						elseif(preg_match("/.pdf$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/pdf";
+						}
+						elseif(preg_match("/.xls$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/vnd.ms-excel";
+						}
+						elseif(preg_match("/.pps$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/vnd.ms-powerpoint";
+						}
+						elseif(preg_match("/.odt$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/vnd.oasis.opendocument.text";
+						}
+						elseif(preg_match("/.ods$/i", $items["cdt_dev"][$a]["doc_joint"][$loop]['emplacement'])) {
+							$mimeType="application/vnd.oasis.opendocument.spreadsheet";
+						}
 					}
 				}
 
