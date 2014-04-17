@@ -344,6 +344,9 @@ elseif((isset($id_epreuve))&&(isset($mode))&&($mode=='upload_csv')&&(in_array($_
 
 include('lib_eb.php');
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -587,15 +590,15 @@ if($etat!='clos') {
 	echo add_token_field();
 }
 
-echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";
+echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus boireaus_alt sortable resizable' summary='Saisie'>\n";
 echo "<tr>\n";
-echo "<th>Numéro anonymat</th>\n";
+echo "<th class='number'>Numéro anonymat</th>\n";
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 	$title_col_sp=" title='Colonne non affichée pour un professeur'";
-	echo "<th$title_col_sp>Nom Prénom</th>\n";
+	echo "<th$title_col_sp class='text'>Nom Prénom</th>\n";
 }
 //echo "<th width='100px'>Note</th>\n";
-echo "<th style='width:5em;'>Note sur $note_sur</th>\n";
+echo "<th style='width:5em;' class='none'>Note sur $note_sur</th>\n";
 echo "</tr>\n";
 
 $cpt=0;
