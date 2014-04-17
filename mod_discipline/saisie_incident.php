@@ -52,43 +52,6 @@ require('sanctions_func_lib.php');
 // Paramètre pour autoriser ou non une zone de saisie de commentaires pour un incident
 $autorise_commentaires_mod_disc = getSettingValue("autorise_commentaires_mod_disc");
 
-function choix_heure($champ_heure,$div_choix_heure) {
-	global $tabdiv_infobulle;
-
-	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
-	$res_abs_cren=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_abs_cren)>0) {
-		echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
-
-		$texte="<table class='boireaus' style='margin: auto;border:1px;'><caption class='invisible'>Choix d'une heure</caption>\n";
-		while($lig_ac=mysqli_fetch_object($res_abs_cren)) {
-			$td_style="";
-			$tmp_bgcolor="";
-			if($lig_ac->type_creneaux=='cours') {
-				$td_style=" style='background-color: lightgreen;'";
-				$tmp_bgcolor="lightgreen";
-			}
-			elseif($lig_ac->type_creneaux=='pause') {
-				$td_style=" style='background-color: lightgrey;'";
-				$tmp_bgcolor="lightgrey";
-			}
-			elseif($lig_ac->type_creneaux=='repas') {
-				$td_style=" style='background-color: lightgrey;'";
-				$tmp_bgcolor="lightgrey";
-			}
-
-			$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->nom_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>\n";
-			$texte.="</tr>\n";
-		}
-		$texte.="</table>\n";
-
-		$tabdiv_infobulle[]=creer_div_infobulle("$div_choix_heure","Choix d'une heure","",$texte,"",12,0,'y','y','n','n');
-	}
-}
-
 function recherche_protagoniste($rech_nom,$page) {
 	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸]/","",$rech_nom);
 
