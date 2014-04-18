@@ -3021,4 +3021,74 @@ function choix_heure($champ_heure,$div_choix_heure, $mode_retour="echo") {
 
 }
 
+function affiche_tableau_pp($tab_classe=array()) {
+	if(count($tab_classe)==0) {
+		if($_SESSION['statut']=='scolarite'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		}
+		if($_SESSION['statut']=='professeur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		}
+		if($_SESSION['statut']=='cpe'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		}
+		if($_SESSION['statut']=='administrateur'){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+
+		if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+		if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+		if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+
+		if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
+			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		}
+
+		$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_classes = mysqli_num_rows($result_classes);
+		$tab_classe=array();
+		if(mysqli_num_rows($result_classes)>0){
+			$nb_classes=mysqli_num_rows($result_classes);
+			while($lig_class=mysqli_fetch_object($result_classes)){
+				$tab_classe[$lig_class->id]=$lig_class->classe;
+			}
+		}
+	}
+
+	$retour="
+	<table class='boireaus boireaus_alt'>
+		<tr>
+			<th>Classe</th>
+			<th>
+				".ucfirst(getSettingValue('gepi_prof_suivi'))."
+			</th>
+		</tr>";
+	$tab_pp=get_tab_prof_suivi();
+	foreach($tab_classe as $current_id_classe => $current_classe) {
+		$retour.="
+		<tr>
+			<td>$current_classe</td>
+			<td>";
+		if(isset($tab_pp[$current_id_classe])) {
+			for($loop=0;$loop<count($tab_pp[$current_id_classe]);$loop++) {
+				if($loop>0) {$retour.="<br />";}
+				$designation_user=civ_nom_prenom($tab_pp[$current_id_classe][$loop]);
+				$retour.="<div style='float:right; width:16px'>".affiche_lien_mailto_si_mail_valide($tab_pp[$current_id_classe][$loop], $designation_user)."</div>";
+				$retour.=$designation_user;
+			}
+		}
+			$retour.="</td>
+		</tr>";
+	}
+	$retour.="
+	</table>";
+
+	return $retour;
+}
 ?>

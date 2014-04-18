@@ -5283,7 +5283,7 @@ function mysql_date_to_unix_timestamp($mysql_date) {
  * @param string $login_user si l'id_classe est vide, on recherche les classes dont $login_user est PP
  * @return array Tableau des logins des profs principaux
  */
-function get_tab_prof_suivi($id_classe, $login_user="") {
+function get_tab_prof_suivi($id_classe="", $login_user="") {
 	global $mysqli;
 	$tab = array();
 
@@ -5312,6 +5312,20 @@ function get_tab_prof_suivi($id_classe, $login_user="") {
 		if($res->num_rows > 0) {
 			while($lig = $res->fetch_object()) {
 				$tab[] = $lig->id_classe;
+			}
+			$res->close();
+		}
+	}
+	else {
+		$sql = "SELECT DISTINCT jep.professeur, jec.id_classe 
+			FROM j_eleves_professeurs jep, j_eleves_classes jec 
+			WHERE jec.login=jep.login
+			AND jec.id_classe=jep.id_classe
+			ORDER BY professeur;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			while($lig = $res->fetch_object()) {
+				$tab[$lig->id_classe][] = $lig->professeur;
 			}
 			$res->close();
 		}
@@ -9087,8 +9101,29 @@ function get_mail_user($login_user) {
 	if($res->num_rows > 0) {
 		$obj = $res->fetch_object();
 		$retour = $obj->email;
+		$res->close();
 	}
-	$res->close();
+	else {
+		// Cas d'un parent dont le compte utilisateur aurait été supprimé
+		$sql="SELECT mel FROM resp_pers WHERE login='$login_user';";
+		//echo "$sql<br />";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$obj = $res->fetch_object();
+			$retour = $obj->mel;
+			$res->close();
+		}
+		else {
+			$sql="SELECT email FROM eleves WHERE login='$login_user';";
+			//echo "$sql<br />";
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$obj = $res->fetch_object();
+				$retour = $obj->email;
+				$res->close();
+			}
+		}
+	}
 	return $retour;
 }
 
@@ -10536,5 +10571,33 @@ function get_premiere_et_derniere_date_cn_devoirs_classe_periode($id_classe, $pe
 	}
 
 	return $tab_date;
+}
+
+function affiche_lien_mailto($mail_user, $info_user) {
+	$retour=" <a href='mailto:".$mail_user."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+	$tmp_date=getdate();
+	if($tmp_date['hours']>=18) {$retour.="Bonsoir";} else {$retour.="Bonjour";}
+	$retour.=",%0d%0aCordialement.' title=\"Envoyer un mail à $info_user\">";
+	$retour.="<img src='../images/icons/mail.png' class='icone16' alt='mail' />";
+	$retour.="</a>";
+	return $retour;
+}
+
+function affiche_lien_mailto_si_mail_valide($login_user, $designation_user="", $mail_user="") {
+	$retour="";
+
+	if($designation_user=="") {
+		$designation_user=civ_nom_prenom($designation_user);
+	}
+
+	if($mail_user=="") {
+		$mail_user=get_mail_user($login_user);
+	}
+
+	if(check_mail($mail_user)) {
+		$retour=affiche_lien_mailto($mail_user, $designation_user);
+	}
+
+	return $retour;
 }
 ?>
