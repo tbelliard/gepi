@@ -9688,6 +9688,37 @@ function get_info_id_cours($id_cours) {
 	return $retour;
 }
 
+function get_tab_id_cours($id_cours) {
+	$tab=array();
+
+	$sql="SELECT * FROM edt_cours WHERE id_cours='$id_cours';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$tab_h=get_info_id_definie_periode($lig->id_definie_periode);
+
+		$tab['jour']=$lig->jour_semaine;
+		$tab['id_definie_periode']=$lig->id_definie_periode;
+		$tab['nom_definie_periode']=$tab_h['nom_definie_periode'];
+		$tab['id_semaine']=$lig->id_semaine;
+		$tab['id_groupe']=$lig->id_groupe;
+	}
+	return $tab;
+}
+
+function get_type_semaine($num_semaine) {
+	$sql="SELECT type_edt_semaine FROM edt_semaines WHERE num_edt_semaine='$num_semaine';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		return $lig->type_edt_semaine;
+	}
+	else {
+		return "";
+	}
+}
+
 function formate_info_id_definie_periode($id_definie_periode) {
 	$retour="";
 
@@ -10485,5 +10516,25 @@ function get_mysql_heure($heure, $debut_ou_fin="debut") {
 			return false;
 		}
 	}
+}
+
+function get_premiere_et_derniere_date_cn_devoirs_classe_periode($id_classe, $periode) {
+	$tab_date=array();
+
+	$sql="select cd.date from classes c,j_groupes_classes jgc,cn_cahier_notes ccn,cn_conteneurs cc, cn_devoirs cd where c.id=jgc.id_classe and jgc.id_groupe=ccn.id_groupe and ccn.id_cahier_notes=cc.id and cd.id_racine=cc.id and jgc.id_classe='$id_classe' and periode='$periode' order by date asc limit 1;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab_date[0]=$lig->date;
+	}
+
+	$sql="select cd.date from classes c,j_groupes_classes jgc,cn_cahier_notes ccn,cn_conteneurs cc, cn_devoirs cd where c.id=jgc.id_classe and jgc.id_groupe=ccn.id_groupe and ccn.id_cahier_notes=cc.id and cd.id_racine=cc.id and jgc.id_classe='$id_classe' and periode='$periode' order by date desc limit 1;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab_date[1]=$lig->date;
+	}
+
+	return $tab_date;
 }
 ?>

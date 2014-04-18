@@ -665,6 +665,8 @@ elseif(!isset($choix_periode)) {
 		echo "<th>Classe</th>\n";
 		for($j=1;$j<=$max_per;$j++) {
 			echo "<th>Période $j</th>\n";
+			$date_1ere_evaluation[$j]="9999-12-31 00:00:00";
+			$date_derniere_evaluation[$j]="0000-00-00 00:00:00";
 		}
 		echo "</tr>\n";
 		$alt=1;
@@ -687,14 +689,23 @@ elseif(!isset($choix_periode)) {
 					$lig_per=mysqli_fetch_object($res_per);
 					if(!in_array($lig_per->nom_periode,$tab_nom_periode[$j])) {$tab_nom_periode[$j][]=$lig_per->nom_periode;}
 					echo "<td>";
+					$dates_notes_first_last=get_premiere_et_derniere_date_cn_devoirs_classe_periode($tab_id_classe[$i], $j);
+					if(isset($dates_notes_first_last[0])) {
+						echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour la classe.\">".formate_date($dates_notes_first_last[0])."</span><br />";
+						if($dates_notes_first_last[0]<$date_1ere_evaluation[$j]) {$date_1ere_evaluation[$j]=$dates_notes_first_last[0];}
+					}
 					if($lig_per->verouiller=="O") {
-						echo "Close";
+						echo "<span style='color:".$couleur_verrouillage_periode['O']."' title=\"".$explication_verrouillage_periode['O']."\">Close.</span>";
 					}
 					elseif($lig_per->verouiller=="N") {
-						echo "Non close";
+						echo "<span style='color:".$couleur_verrouillage_periode['N']."' title=\"".$explication_verrouillage_periode['N']."\">Non close.</span>";
 					}
 					else {
-						echo "Partiellement close";
+						echo "<span style='color:".$couleur_verrouillage_periode['P']."' title=\"".$explication_verrouillage_periode['P']."\">Partiellement close.</span>";
+					}
+					if(isset($dates_notes_first_last[1])) {
+						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour la classe.\">".formate_date($dates_notes_first_last[1])."</span>";
+						if($dates_notes_first_last[1]>$date_derniere_evaluation[$j]) {$date_derniere_evaluation[$j]=$dates_notes_first_last[1];}
 					}
 					echo "</td>\n";
 				}
@@ -710,6 +721,9 @@ elseif(!isset($choix_periode)) {
 				//echo "<td style='background-color:lightgreen;' onclick=\"alterne_coche('tab_periode_num_$j')\">";
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
+				if($date_derniere_evaluation[$j]!="9999-12-31 00:00:00") {
+					echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour les classes sélectionnées.\">".formate_date($date_1ere_evaluation[$j])."</span><br />";
+				}
 				echo "<span style='cursor: pointer;'>
 				<label for=\"tab_periode_num_$j\" style=\"display:none;\">Période $j</label>
 				<input type=\"checkbox\" name=\"tab_periode_num[]\" id=\"tab_periode_num_$j\" value='$j' ";
@@ -719,6 +733,9 @@ elseif(!isset($choix_periode)) {
 				}
 				echo "onchange=\"document.getElementById('choix_periode').checked=true\" ";
 				echo "/></span>\n";
+				if($date_derniere_evaluation[$j]!="0000-00-00 00:00:00") {
+						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour les classes sélectionnées.\">".formate_date($date_derniere_evaluation[$j])."</span>";
+				}
 			}
 			else {
 				echo "<td style='background-color:red;'>&nbsp;";
