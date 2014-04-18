@@ -39,11 +39,12 @@ $couleur_verrouillage_periode['P']="darkorange";
 $couleur_verrouillage_periode['N']="green";
 
 $explication_verrouillage_periode['O']="Lorsqu'une période est verrouillée totalement,
-le remplissage et la modification du bulletin pour la période concernée sont impossibles.
+le remplissage et la modification du carnet de notes et du bulletin
+pour la période concernée sont impossibles.
 La visualisation et l'impression sont autorisées.";
 $explication_verrouillage_periode['P']="Lorsqu'une période est verrouillée partiellement,
 seuls le remplissage et/ou la modification de l'avis du conseil de classe sont possibles.
-La visualisation et l'impression des bulletins officiels sont autorisées.";
+La visualisation et l'impression des bulletins officiels et relevés de notes sont autorisées.";
 $explication_verrouillage_periode['N']="Lorsqu'une période est déverrouillée,
 le remplissage de toutes les rubriques (notes, appréciations, avis) est autorisé,
 la visualisation des bulletins simples est autorisée,
