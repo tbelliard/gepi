@@ -133,7 +133,31 @@ $titre_page = $nom_cc;
  } elseif ('responsable' == $utilisateur->getStatut()) {
      $enfants = $utilisateur->getEleves();
 
+	/*
+	echo "<pre>";
+	print_r($enfants);
+	echo "</pre>";
+	*/
+
      $login = isset($_POST['choixEleve']) ? $_POST['choixEleve'] : (isset($_SESSION['enfant']) ? $_SESSION['enfant'] : $enfants[0]->getLogin());
+
+	$tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
+	if(!in_array($login, $tab_ele_resp)) {
+		unset($login);
+
+		for($loop=0;$loop<count($enfants);$loop++) {
+			if(in_array($enfants[$loop]->getLogin(), $tab_ele_resp)) {
+				$login=$enfants[$loop]->getLogin();
+				break;
+			}
+		}
+
+		if(!isset($login)) {
+			header("../accueil.php?msg=Aucun élève trouvé.");
+			die();
+		}
+	}
+
      $_SESSION['enfant'] = $login;
      $eleve = ElevePeer::retrieveByLOGIN($login);
      
@@ -227,13 +251,21 @@ ob_start();
                 name="choixEleve"
                 onchange="submit();"
                 >
-            <?php foreach ($enfants as $enfant) { ?>
+            <?php 
+                $tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
+
+                foreach ($enfants as $enfant) { 
+                    if(in_array($enfant->getLogin(), $tab_ele_resp)) {
+            ?>
             <option value="<?php echo $enfant->getLogin();?>"
                     <?php if($enfant->getLogin() == $_SESSION['enfant']) echo "selected = 'selected'"; ?>
                     >
                 <?php echo $enfant->getNom();?> <?php echo $enfant->getPrenom() ;?>
             </option>
-            <?php } ?>
+            <?php 
+                    }
+                }
+             ?>
         </select>
         <input type="submit" id="valide" name="valide" value="choisir" />
     </p>

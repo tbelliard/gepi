@@ -1893,7 +1893,7 @@ if(getSettingAOui('active_bulletins')) {
 										<br />
 										<em style='font-size:small'>Avec cette URL, vous pourrez consulter les travaux à faire sans devoir vous connecter dans Gepi.<br />Firefox, Internet Explorer,... savent lire les flux RSS.<br />Il existe également des lecteurs de flux RSS pour les SmartPhone,...</em>");
 
-				$tab_ele_resp=get_enfants_from_resp_login($this->loginUtilisateur, 'avec_classe', "y");
+				$tab_ele_resp=get_enfants_from_resp_login($this->loginUtilisateur, 'avec_classe', "yy");
 				if(count($tab_ele_resp)>2) {
 					$cpt_ele_rss=0;
 					$this->canal_rss_plus="";
