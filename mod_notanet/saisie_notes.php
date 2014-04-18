@@ -551,8 +551,17 @@ echo "
 
 		<table class='boireaus boireaus_alt'>
 			<tr>
-				<th>Élève</th>
-				<th>Note</th>
+				<th rowspan='2'>Élève</th>
+				<th colspan='3'>Périodes</th>
+				<th rowspan='2' title=\"Moyenne des trois périodes\">Moyenne</th>
+				<th rowspan='2'>Note</th>
+			</tr>
+			<tr>";
+echo "
+				<th>P.1</th>
+				<th>P.2</th>
+				<th>P.3</th>";
+echo "
 			</tr>";
 $cpt=10;
 while($lig=mysql_fetch_object($res)) {
@@ -561,7 +570,36 @@ while($lig=mysql_fetch_object($res)) {
 				<td id='td_nom_$cpt'>
 					<input type='hidden' name='ele_login[$cpt]' id='ele_login_$cpt' value='".$lig->login."' />
 					".get_nom_prenom_eleve($lig->login)."
-				</td>
+				</td>";
+
+	for($i=1;$i<=3;$i++) {
+		$note="-";
+
+		$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn WHERE (mn.id_groupe='".$id_groupe."' AND mn.login='".$lig->login."' AND mn.statut ='' AND periode='$i');";
+		$res_note=mysql_query($sql);
+		if(mysql_num_rows($res_note)>0) {
+			$lig_note=mysql_fetch_object($res_note);
+			$note=$lig_note->moyenne;
+		}
+		echo "
+				<td>
+					$note
+				</td>";
+	}
+
+	$note="-";
+	$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn WHERE (mn.id_groupe='".$id_groupe."' AND mn.login='".$lig->login."' AND mn.statut ='');";
+	$res_note=mysql_query($sql);
+	if(mysql_num_rows($res_note)>0) {
+		$lig_note=mysql_fetch_object($res_note);
+		$note=$lig_note->moyenne;
+	}
+	echo "
+				<td>
+					$note
+				</td>";
+
+	echo "
 				<td id='td_note_$cpt'>";
 	if($notanet_saisie_note_ouverte) {
 		echo "
