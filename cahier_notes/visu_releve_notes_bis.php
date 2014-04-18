@@ -691,7 +691,11 @@ elseif(!isset($choix_periode)) {
 					echo "<td>";
 					$dates_notes_first_last=get_premiere_et_derniere_date_cn_devoirs_classe_periode($tab_id_classe[$i], $j);
 					if(isset($dates_notes_first_last[0])) {
-						echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour la classe.\">".formate_date($dates_notes_first_last[0])."</span><br />";
+						$tmp_date=formate_date($dates_notes_first_last[0]);
+						echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour la classe.
+
+Cliquez pour prendre cette date comme date de début
+dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementById('display_date_debut').value='$tmp_date';return false;\" style='color:black;text-decoration:none;'>".$tmp_date."</a></span><br />";
 						if($dates_notes_first_last[0]<$date_1ere_evaluation[$j]) {$date_1ere_evaluation[$j]=$dates_notes_first_last[0];}
 					}
 					if($lig_per->verouiller=="O") {
@@ -704,7 +708,11 @@ elseif(!isset($choix_periode)) {
 						echo "<span style='color:".$couleur_verrouillage_periode['P']."' title=\"".$explication_verrouillage_periode['P']."\">Partiellement close.</span>";
 					}
 					if(isset($dates_notes_first_last[1])) {
-						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour la classe.\">".formate_date($dates_notes_first_last[1])."</span>";
+						$tmp_date=formate_date($dates_notes_first_last[1]);
+						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour la classe.
+
+Cliquez pour prendre cette date comme date de fin
+dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementById('display_date_fin').value='$tmp_date';return false;\" style='color:black;text-decoration:none;'>".$tmp_date."</a></span>";
 						if($dates_notes_first_last[1]>$date_derniere_evaluation[$j]) {$date_derniere_evaluation[$j]=$dates_notes_first_last[1];}
 					}
 					echo "</td>\n";
@@ -722,7 +730,11 @@ elseif(!isset($choix_periode)) {
 				echo "<td style='background-color:lightgreen;'>";
 				//echo "<label for='choix_periode' style='cursor: pointer;'><input type=\"radio\" name=\"periode\" value='$j' /></label>\n";
 				if($date_derniere_evaluation[$j]!="9999-12-31 00:00:00") {
-					echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour les classes sélectionnées.\">".formate_date($date_1ere_evaluation[$j])."</span><br />";
+					$tmp_date=formate_date($date_1ere_evaluation[$j]);
+					echo "<span style='font-size:x-small' title=\"Date de la première évaluation de la période $j pour les classes sélectionnées.
+
+Cliquez pour prendre cette date comme date de début
+dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementById('display_date_debut').value='$tmp_date';return false;\" style='color:black;text-decoration:none;'>".$tmp_date."</a></span><br />";
 				}
 				echo "<span style='cursor: pointer;'>
 				<label for=\"tab_periode_num_$j\" style=\"display:none;\">Période $j</label>
@@ -734,7 +746,11 @@ elseif(!isset($choix_periode)) {
 				echo "onchange=\"document.getElementById('choix_periode').checked=true\" ";
 				echo "/></span>\n";
 				if($date_derniere_evaluation[$j]!="0000-00-00 00:00:00") {
-						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour les classes sélectionnées.\">".formate_date($date_derniere_evaluation[$j])."</span>";
+					$tmp_date=formate_date($date_derniere_evaluation[$j]);
+						echo "<br /><span style='font-size:x-small' title=\"Date de la dernière évaluation de la période $j pour les classes sélectionnées.
+
+Cliquez pour prendre cette date comme date de fin
+dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementById('display_date_fin').value='$tmp_date';return false;\" style='color:black;text-decoration:none;'>".$tmp_date."</a></span>";
 				}
 			}
 			else {
