@@ -1056,8 +1056,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</p>\n";
 			echo "</form>\n";
 
-			echo "<p><b>Modification d'une épreuve blanche&nbsp;:</b> Epreuve n°$id_epreuve</p>\n";
-
 			$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
@@ -1067,6 +1065,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			}
 			$lig=mysqli_fetch_object($res);
 			$etat=$lig->etat;
+
+			echo "<p><b>".(($etat!="clos") ? "Modification" : "Consultation")." d'une épreuve blanche&nbsp;:</b> Epreuve n°$id_epreuve</p>\n";
 
 			//==============================================
 			// Requêtes exploitées plus bas
@@ -1298,9 +1298,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</tr>\n";
 
 			echo "<tr>\n";
-			echo "<td>Note sur&nbsp;:</td>\n";
+			echo "<td style='font-weight:bold; vertical-align:top;'>Note sur&nbsp;:</td>\n";
 			echo "<td>\n";
-			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+			if($etat!='clos') {
+				echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+			}
+			else {
+				echo $note_sur;
+			}
 			echo "</td>\n";
 			echo "</tr>\n";
 
