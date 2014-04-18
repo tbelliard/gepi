@@ -440,6 +440,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				//$sql="SELECT ec.id FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
 
+				// Vérifier qu'il n'y a pas plusieurs groupes avec un même élève
 				$nb_err_suppr=0;
 				$sql="SELECT DISTINCT ec.login_ele FROM eb_copies ec, j_eleves_groupes jeg, eb_groupes eg WHERE ec.login_ele=jeg.login AND jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND ec.id_epreuve='$id_epreuve' AND eg.id_epreuve=ec.id_epreuve;";
 				//echo "<p>$sql<br />";
@@ -448,6 +449,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					while($lig=mysqli_fetch_object($res)) {
 						// Pour ne pas supprimer un élève passé d'un groupe à un autre lors d'un changement de classe
 						//$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE jeg.id_groupe=eg.id_groupe AND eg.id_groupe='$id_groupe' AND jeg.login='$lig->login_ele';";
+
 						$sql="SELECT DISTINCT eg.id_groupe FROM eb_groupes eg, j_eleves_groupes jeg WHERE eg.id_groupe!='$id_groupe' AND eg.id_groupe=jeg.id_groupe AND jeg.login='$lig->login_ele' AND eg.id_epreuve='$id_epreuve';";
 						//echo "$sql<br />";
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -460,6 +462,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						}
 					}
 				}
+				// DEBUG: Décommenter pour bloquer les suppressions de groupes:
+				//$nb_err_suppr++;
 
 				//echo "$sql<br />";
 				//$suppr=mysql_query($sql);
@@ -1213,6 +1217,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "<li>Clore l'épreuve</li>\n";
 						echo "</ul>\n";
 					}
+				}
+				else {
+					echo "<li>\n";
+					echo "<a href='bilan.php?id_epreuve=$id_epreuve'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Bilan de l'épreuve</a><br />\n";
+					echo "</li>\n";
 				}
 				echo "</ol>\n";
 
