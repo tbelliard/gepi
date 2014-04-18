@@ -1262,14 +1262,14 @@ echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit êt
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&
+if((isset($pers_id))&&($compte_resp_existe=="y")&&(isset($journal_connexions))&&($journal_connexions=='n')&&
 		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
 }
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&
+if((isset($pers_id))&&($compte_resp_existe=="y")&&(isset($journal_connexions))&&($journal_connexions=='y')&&
 		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";
