@@ -2964,18 +2964,40 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			echo "background-color: ".$tab_couleur['discipline']."; ";
 			echo "'>";
 
+			$div_en_haut_a_droite="";
 			if(acces('/mod_discipline/saisie_incident.php', $_SESSION['statut'])) {
-				echo "<div style='float:right; width:4em;'>\n";
+				//echo "<div style='float:right; width:4em;'>\n";
 				//echo "<a href='../mod_discipline/saisie_incident.php?ele_login[0]=".$ele_login."&amp;Ajouter=Ajouter".add_token_in_url()."' title='Saisir un incident'><img src='../images/icons/saisie.png' width='16' height='16' /></a>";
-				echo "<form action='../mod_discipline/saisie_incident.php' name='form_saisie_disc' method='post' />\n";
-				echo add_token_field();
-				echo "<input type='hidden' name='ele_login[0]' value=\"$ele_login\" />\n";
-				echo "<input type='hidden' name='is_posted' value=\"y\" />\n";
-				echo "<input type='hidden' name='Ajouter' value=\"Ajouter\" />\n";
-				echo "<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel $mod_disc_terme_incident dans le module Discipline\" />\n";
-				echo "</form>\n";
-				echo "</div>\n";
+				$div_en_haut_a_droite.="<form action='../mod_discipline/saisie_incident.php' name='form_saisie_disc' method='post' />\n";
+				$div_en_haut_a_droite.=add_token_field();
+				$div_en_haut_a_droite.="<input type='hidden' name='ele_login[0]' value=\"$ele_login\" />\n";
+				$div_en_haut_a_droite.="<input type='hidden' name='is_posted' value=\"y\" />\n";
+				$div_en_haut_a_droite.="<input type='hidden' name='Ajouter' value=\"Ajouter\" />\n";
+				$div_en_haut_a_droite.="<input type='submit' name='Saisir' value=\"Saisir\" title=\"Saisir un nouvel $mod_disc_terme_incident dans le module Discipline\" />\n";
+				$div_en_haut_a_droite.="</form>\n";
+				//$div_en_haut_a_droite.="</div>\n";
 			}
+
+			// A FAIRE: 20140418
+			$div_en_haut_a_droite.="<div style='float:right; width:4em; color:red; text-align:center;'>
+	<a href='../mod_discipline/mod_discipline_extraction_ooo.php?protagoniste_incident=$ele_login' title=\"Exporter les ".$mod_disc_terme_incident."s au format ODT.\">ODT</a><br />
+	<a href='../mod_discipline/afficher_incidents_eleve.php?login_ele=$ele_login' title=\"Afficher cette page avec/sans les informations concernant les autres protagonistes des ".$mod_disc_terme_incident."s.\">HTML</a><br />
+</div>\n";
+
+			if((acces('/mod_discipline/saisie_avertissement_fin_periode.php', $_SESSION['statut']))&&(acces_saisie_avertissement_fin_periode($ele_login))) {
+				$div_en_haut_a_droite.="<div style='float:right; width:4em; text-align:center;'><a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$ele_login' title=\"Saisir un ".getSettingValue('mod_disc_terme_avertissement_fin_periode')."\">Saisie AVT</a></div>\n";
+			}
+
+			if($div_en_haut_a_droite!="") {
+				echo "<div style='float:right; width:4em;'>$div_en_haut_a_droite</div>";
+			}
+
+			//if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+				$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_avertissements_de_fin_de_periode_eleve($ele_login);
+				if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
+					echo "<div style='float:right; width:25em; margin-bottom:0.5em; margin-left:0.5em;'>".$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve."</div>\n";
+				}
+			//}
 
 			echo "<h2>".ucfirst($mod_disc_terme_incident)."s \"concernant\" l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
