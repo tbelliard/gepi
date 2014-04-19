@@ -49,6 +49,42 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 
 $eleve=isset($_POST['eleve']) ? $_POST['eleve'] : (isset($_GET['eleve']) ? $_GET['eleve'] : NULL);
 
+//debug_var();
+
+if($_SESSION['statut']=='professeur') {
+	if(getSettingAOui('imprDiscProfAvtOOo')) {
+		$tab_restriction_classes=get_classes_from_prof($_SESSION['login']);
+	}
+	elseif(getSettingAOui('imprDiscProfPAvtOOo')) {
+		$tmp_tab=get_tab_ele_clas_pp($_SESSION['login']);
+		$tab_restriction_classes=array();
+		for($loop2=0;$loop2<count($tmp_tab['id_classe']);$loop2++) {
+			$tab_restriction_classes[$tmp_tab['id_classe'][$loop2]]=$tmp_tab['classe'][$loop2];
+		}
+	}
+	else {
+		$mess=rawurlencode("Vous n'êtes pas autorisé à imprimer les ".$mod_disc_terme_avertissement_fin_periode."s !");
+		tentative_intrusion(1, "Tentative d'accès à l'impression de $mod_disc_terme_avertissement_fin_periode.");
+		header("Location: ../accueil.php?msg=$mess");
+		die();
+	}
+
+
+	if(count($tab_restriction_classes)==0) {
+		$mess=rawurlencode("Il n'y a aucune classe pour laquelle vous seriez autorisé à imprimer les ".$mod_disc_terme_avertissement_fin_periode."s !");
+		//tentative_intrusion(1, "Tentative d'accès à l'impression de $mod_disc_terme_avertissement_fin_periode.");
+		header("Location: ../accueil.php?msg=$mess");
+		die();
+	}
+}
+elseif(($_SESSION['statut']=='cpe')&&(!getSettingAOui('imprDiscCpeAvtOOo'))) {
+	$mess=rawurlencode("Vous n'êtes pas autorisé à imprimer les ".$mod_disc_terme_avertissement_fin_periode."s !");
+	tentative_intrusion(1, "Tentative d'accès à l'impression de $mod_disc_terme_avertissement_fin_periode.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+
 if (isset($eleve)) {
 	$tab_eleves_OOo=array();
 	$nb_eleve=0;
@@ -325,8 +361,14 @@ if(!isset($id_classe)) {
 		echo "
 		<p>";
 		while($lig=mysqli_fetch_object($res)) {
-			echo "
+			$afficher_ligne="y";
+			if(($_SESSION['statut']=='professeur')&&(!array_key_exists($lig->id_classe, $tab_restriction_classes))) {
+				$afficher_ligne="n";
+			}
+			if($afficher_ligne=="y") {
+				echo "
 			<input type='checkbox' name='id_classe[]' id='id_classe_".$lig->id_classe."' value='$lig->id_classe' /><label for='id_classe_".$lig->id_classe."'> ".$lig->classe."</label><br />\n";
+			}
 		}
 		echo "
 		</p>";

@@ -74,8 +74,8 @@ if((!isset($periode))||(!isset($login_ele))) {
 
 if((isset($periode))&&(isset($login_ele))) {
 	if($_SESSION['statut']=='professeur') {
-		if((!getSettingAOui('GepiRubConseilProf'))||(!is_pp($_SESSION['login'], "", $login_ele))) {
-			$mess=rawurlencode("Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir l'avis du bulletin !");
+		if((!getSettingAOui('saisieDiscProfPAvt'))||(!is_pp($_SESSION['login'], "", $login_ele))) {
+			$mess=rawurlencode("Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir les ".$mod_disc_terme_avertissement_fin_periode."s !");
 			tentative_intrusion(1, "Tentative d'accès à la saisie de $mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
@@ -91,14 +91,14 @@ if((isset($periode))&&(isset($login_ele))) {
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		$acces_suite="n";
-		if(getSettingAOui('GepiRubConseilCpeTous')) {
+		if(getSettingAOui('saisieDiscCpeAvtTous')) {
 			$acces_suite="y";
 		}
-		elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+		elseif((!getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
 			$acces_suite="y";
 		}
 		else {
-			$mess=rawurlencode("Vous n'êtes pas CPE de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir l'avis du bulletin !");
+			$mess=rawurlencode("Vous n'êtes pas CPE de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir les ".$mod_disc_terme_avertissement_fin_periode."s !");
 			tentative_intrusion(1, "Tentative d'accès à la saisie de $mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
@@ -168,6 +168,13 @@ if((isset($periode))&&(isset($login_ele))) {
 
 			if($nb_err==0) {
 				$msg.="Enregistrement effectué.<br />";
+				if(acces("/mod_discipline/imprimer_bilan_periode.php", $_SESSION['statut'])) {
+					$tmp_tab_clas=get_class_periode_from_ele_login($login_ele);
+					if(isset($tmp_tab_clas['periode'][$periode]['id_classe'])) {
+						$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
+						$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele'>Imprimer l'".$mod_disc_terme_avertissement_fin_periode."</a><br />";
+					}
+				}
 			}
 
 			if($mode_js=="y") {
@@ -205,7 +212,11 @@ if((isset($periode))&&(isset($login_ele))) {
 			echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
 		}
 		else {
-			echo "<p class='bold'><a href=\"index.php\" onclick=\"confirm_abandon (this, change, '$themessage');\">Retour</a>\n";
+			echo "<p class='bold'><a href=\"index.php\" onclick=\"confirm_abandon (this, change, '$themessage');\" title=\"Retour à la page d'accueil du module Discipline\">Retour</a>\n";
+
+			if((isset($periode))&&(isset($login_ele))) {
+				echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a> | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période</a>";
+			}
 
 			if((isset($periode))&&(isset($id_classe))) {
 				echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$periode'>Choisir un autre élève</a>";
@@ -219,7 +230,7 @@ if((isset($periode))&&(isset($login_ele))) {
 		//$tab_avertissement_fin_periode=get_tab_avertissement($login_ele, $periode);
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
-	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+	<fieldset class='fieldset_opacite50'>
 		<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
@@ -272,12 +283,39 @@ else {
 	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
-	echo "<p class='bold'><a href=\"index.php\" onclick=\"confirm_abandon (this, change, '$themessage');\">Retour</a>\n";
+	echo "<p class='bold'><a href=\"index.php\" onclick=\"confirm_abandon (this, change, '$themessage');\" title=\"Retour à la page d'accueil du module Discipline\">Retour</a>\n";
 
 	if(!acces_saisie_avertissement_fin_periode("")) {
 		echo "</p>
 
 <p style='color:red'>Vous n'avez pas accès à la saisie d'".$mod_disc_terme_avertissement_fin_periode.".</p>";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	// Le login élève est choisi.
+	if(isset($login_ele)) {
+		$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
+
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
+		echo "</p>
+
+		<p class='bold'>Saisie d'".$mod_disc_terme_avertissement_fin_periode." pour ".get_nom_prenom_eleve($login_ele)."</p>
+
+		<p style='margin-left:4em; text-indent:-2em;'>Choix de la période&nbsp;:<br />";
+
+		foreach($tab_classes_ele['periode'] as $current_num_per => $current_tab_classe) {
+			$id_classe=$current_tab_classe['id_classe'];
+			include("../lib/periodes.inc.php");
+
+			if($ver_periode[$current_num_per]!="O") {
+				echo "<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per'>".$current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]."</a><br />";
+			}
+			else {
+				echo $current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]." (<em style='color:".$couleur_verrouillage_periode['O']."'>période close</em>)<br />";
+			}
+		}
 
 		require("../lib/footer.inc.php");
 		die();
@@ -299,7 +337,7 @@ else {
 			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
 		elseif($_SESSION['statut']=='professeur') {
-			$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
+			$sql="SELECT DISTINCT jec.id_classe AS id, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
 		}
 		elseif($_SESSION['statut']=='cpe') {
 			$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
@@ -317,6 +355,7 @@ else {
 			die();
 		}
 
+		//echo "$sql<br />";
 		//$tab=array();
 		$txt_classe=array();
 		$lien_classe=array();
@@ -350,23 +389,55 @@ else {
 	// Choix de la période
 
 	if(!isset($periode)) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a></p>
-		
-		<p class='bold'>Classe de ".get_nom_classe($id_classe)."</p>
-		<p>Choix de la période&nbsp;:<br />";
+		/*
+		if(isset($login_ele)) {
+			$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
 
-		include("../lib/periodes.inc.php");
+			echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
+			echo "</p>
 
-		$i = "1";
-		while ($i < $nb_periode) {
-			if($ver_periode[$i]!="O") {
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i'>".$nom_periode[$i]."</a><br />";
+			<p class='bold'>Saisie d'".$mod_disc_terme_avertissement_fin_periode." pour ".get_nom_prenom_eleve($login_ele)."</p>
+
+			<p style='margin-left:4em; text-indent:-2em;'>Choix de la période&nbsp;:<br />";
+
+			foreach($tab_classes_ele['periode'] as $current_num_per => $current_tab_classe) {
+				$id_classe=$current_tab_classe['id_classe'];
+				include("../lib/periodes.inc.php");
+
+				if($ver_periode[$current_num_per]!="O") {
+					echo "<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per'>".$current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]."</a><br />";
+				}
+				else {
+					echo $current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]." (<em style='color:".$couleur_verrouillage_periode['O']."'>période close</em>)<br />";
+				}
 			}
-			else {
-				echo $nom_periode[$i]." (<em>période close</em>)<br />";
-			}
-			$i++;
 		}
+		else {
+		*/
+			echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
+
+			$nom_classe=get_nom_classe($id_classe);
+
+			echo "</p>
+
+			<p class='bold'>Saisie d'".$mod_disc_terme_avertissement_fin_periode." pour la classe de ".$nom_classe;
+
+			echo "</p>
+			<p style='margin-left:4em; text-indent:-2em;'>Choix de la période&nbsp;:<br />";
+
+			include("../lib/periodes.inc.php");
+
+			$i = "1";
+			while ($i < $nb_periode) {
+				if($ver_periode[$i]!="O") {
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i'>".$nom_periode[$i]."</a><br />";
+				}
+				else {
+					echo $nom_periode[$i]." (<em style='color:".$couleur_verrouillage_periode['O']."'>période close</em>)<br />";
+				}
+				$i++;
+			}
+		//}
 
 		require("../lib/footer.inc.php");
 		die();

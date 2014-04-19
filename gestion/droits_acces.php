@@ -301,6 +301,8 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 //+++++++++++++++++++++++++++
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+
 if(getSettingValue('active_mod_discipline')=='y') {
 
   $titreItem='';
@@ -323,6 +325,11 @@ if(getSettingValue('active_mod_discipline')=='y') {
 	if(getSettingValue('active_mod_ooo')=='y') {
 		$titreItem='imprDiscProfRetenueOOo';
 		$texteItem="peut imprimer dans le module Discipline une demande de Retenue au format OpenOffice pour un élève pour lequel le professeur saisit un incident";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+		$titreItem='imprDiscProfAvtOOo';
+		$texteItem="peut imprimer dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves de ses classes.";
 		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 	}
@@ -410,6 +417,26 @@ $texteItem="a accès au paramétrage de l'impression des relevés de notes HTML"
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+//+++++++++++++++++++++++++++
+
+if(getSettingAOui('active_mod_discipline')) {
+	if(getSettingAOui('active_mod_ooo')) {
+		$titreItem='';
+		$texteItem="";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+		$titreItem='imprDiscProfPAvtOOo';
+		$texteItem="peut imprimer dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves des classes dont il est ".getSettingValue("gepi_prof_suivi").".";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+		$titreItem='saisieDiscProfPAvt';
+		$texteItem="peut saisir dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves des classes dont il est ".getSettingValue("gepi_prof_suivi").".";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	}
+}
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -1128,6 +1155,23 @@ if(getSettingValue('active_mod_discipline')=='y') {
 	$texteItem="a, par défaut, le droit de changer le déclarant d'un incident<br />(<em>pour saisir des incidents à la place des professeurs qui ont autorisé/délégué la saisie de leurs incidents par un CPE<br />et pour ceux n'ont pas explicitement interdit la saisie par un CPE à leur place</em>)";
 	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 		  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	$titreItem='saisieDiscCpeAvt';
+	$texteItem="peut saisir dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves des classes dont il est CPE responsable.";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	$titreItem='saisieDiscCpeAvtTous';
+	$texteItem="peut saisir dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves de toutes classes.";
+	if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+		$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+	if(getSettingAOui('active_mod_ooo')) {
+		$titreItem='imprDiscCpeAvtOOo';
+		$texteItem="peut imprimer dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour tous les élèves de toutes les classes.";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	}
 }
 
 // OOo
