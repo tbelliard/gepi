@@ -2157,15 +2157,39 @@ function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_a
 
 
 /**
+ * fonction qui renvoie la liste des classes d'un élève par période
+ *
+ * @param string $ele_login login de l'élève
+ * @return array Tableau des classes en fonction des périodes
+ */
+function get_class_periode_from_ele_login($ele_login){
+	global $mysqli;
+
+	$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$res_class=mysqli_query($mysqli, $sql);
+	$tab_classe=array();
+	if($res_class->num_rows > 0) {
+		while($lig_tmp=$res_class->fetch_object()) {
+			$tab_classe['periode'][$lig_tmp->periode]['id_classe']=$lig_tmp->id_classe;
+			$tab_classe['periode'][$lig_tmp->periode]['classe']=$lig_tmp->classe;
+
+			$tab_classe['classe'][$lig_tmp->id_classe]['periode'][]=$lig_tmp->periode;
+		}
+		$res_class->close();
+	}
+	return $tab_classe;
+}
+
+/**
  * fonction qui renvoie le nom de la classe d'un élève pour chaque période
  *
  * @param string $ele_login login de l'élève
  * @return array Tableau des classes en fonction des périodes
  */
 function get_class_from_ele_login($ele_login){
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-                 
+
 	$res_class=mysqli_query($mysqli, $sql);
 	$a = 0;
 	$tab_classe=array();
@@ -2187,7 +2211,7 @@ function get_class_from_ele_login($ele_login){
 			$a++;
 
 		}
-		$res_class->close()	;
+		$res_class->close();
 	}
 	
 	return $tab_classe;
@@ -2202,7 +2226,7 @@ function get_class_from_ele_login($ele_login){
 function get_noms_classes_from_ele_login($ele_login){
 	global $mysqli;
 	$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
-      
+
 	$res_class=mysqli_query($mysqli, $sql);
 	$tab_classe=array();
 	if($res_class->num_rows > 0){
@@ -8496,6 +8520,26 @@ function is_prof_ele($login_prof, $login_ele="", $login_resp="", $id_classe="") 
 	return $is_prof_ele;
 }
 
+function is_prof_classe_ele($login_prof, $login_ele) {
+	global $mysqli;
+	$is_prof_ele=false;
+
+	$sql="SELECT 1=1 FROM j_groupes_classes jgc, 
+						j_groupes_professeurs jgp
+						j_eleves_classes jec
+					WHERE jgp.login='".$login_prof."' AND 
+						jgp.id_groupe=jgc.id_groupe AND 
+						jec.id_classe=jgc.id_classe AND 
+						jec.login='$login_ele' LIMIT 1;";
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$is_prof_ele=true;
+		$res->close();
+	}
+
+	return $is_prof_ele;
+}
+
 function is_prof_classe($login_prof, $id_classe) {
 	global $mysqli;
 
@@ -9968,29 +10012,6 @@ function liste_avertissements_fin_periode_classe($id_classe, $periode, $mode="no
 	$tab_retour=array();
 
 	$tab=get_tab_avertissement_classe($id_classe, $periode);
-	/*
-	echo "<p>get_tab_avertissement($id_classe, $periode)<pre>";
-	print_r($tab);
-	echo "</pre>";
-	*/
-
-
-	/*
-		// Champs du tableau récupéré de get_tab_avertissement_classe($id_classe, $periode)
-			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_avertissement']=$lig->id_avertissement;
-			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
-			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['declarant']=$lig->declarant;
-			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['date_avertissement']=$lig->date_avertissement;
-			$tab['periode'][$lig->periode]['login'][$lig->login][$cpt]['commentaire']=$lig->commentaire;
-
-			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_avertissement']=$lig->id_avertissement;
-			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['id_type_avertissement']=$lig->id_type_avertissement;
-			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['declarant']=$lig->declarant;
-			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['date_avertissement']=$lig->date_avertissement;
-			$tab['login'][$lig->login]['periode'][$lig->periode][$cpt]['commentaire']=$lig->commentaire;
-
-			$tab['id_type_avertissement'][$lig->periode][]=$lig->id_type_avertissement;
-	*/
 
 	if(!is_array($tab_type_avertissement_fin_periode)) {
 		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
@@ -10028,11 +10049,7 @@ function liste_avertissements_fin_periode_classe($id_classe, $periode, $mode="no
 			}
 		}
 	}
-/*
-echo "<pre>";
-print_r($tab_retour);
-echo "</pre>";
-*/
+
 	return $tab_retour;
 }
 
@@ -10087,7 +10104,7 @@ function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
 function acces_saisie_avertissement_fin_periode($login_ele) {
 
 	if($_SESSION['statut']=='professeur') {
-		if((getSettingAOui('GepiRubConseilProf'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+		if((getSettingAOui('saisieDiscProfPAvt'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
 			return true;
 		}
 	}
@@ -10097,10 +10114,10 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
 		}
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		if(getSettingAOui('GepiRubConseilCpeTous')) {
+		if(getSettingAOui('saisieDiscCpeAvtTous')) {
 			return true;
 		}
-		elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+		elseif((!getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
 			return true;
 		}
 		else {
@@ -10112,6 +10129,52 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
 	}
 	elseif($_SESSION['statut']=='administrateur') {
 		return true;
+	}
+
+	return false;
+}
+
+/** Fonction destinée tester si l'utilisateur courant est autorisé à imprimer les avertissements de fin de période pour l'élève choisi
+ *
+ * @param string $login_ele identifiant de l'élève
+ *
+ * @return boolean Accès ou non
+ */
+function acces_impression_avertissement_fin_periode($login_ele) {
+	if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+		if($_SESSION['statut']=='professeur') {
+			if(getSettingAOui('imprDiscProfAvtOOo')) {
+				return true;
+			}
+
+			if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+				return true;
+			}
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			if(getSettingAOui('GepiRubConseilScol')) {
+				return true;
+			}
+		}
+		elseif($_SESSION['statut']=='cpe') {
+			if(getSettingAOui('imprDiscCpeAvtOOo')) {
+				return true;
+			}
+			/*
+			elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+				return true;
+			}
+			*/
+			else {
+				return false;
+			}
+		}
+		elseif($_SESSION['statut']=='secours') {
+			return true;
+		}
+		elseif($_SESSION['statut']=='administrateur') {
+			return true;
+		}
 	}
 
 	return false;
@@ -10269,6 +10332,78 @@ function insere_avertissement_fin_periode_par_defaut() {
 
 	return $retour;
 }
+
+
+function tableau_des_avertissements_de_fin_de_periode_eleve($login_ele) {
+	global $tab_type_avertissement_fin_periode;
+	global $mod_disc_terme_avertissement_fin_periode;
+
+	if(count($tab_type_avertissement_fin_periode)==0) {
+		$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	}
+
+	if($mod_disc_terme_avertissement_fin_periode=="") {
+		$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+	}
+
+	$retour="";
+
+	$tab_avt_ele=get_tab_avertissement($login_ele);
+	if(count($tab_avt_ele)>0) {
+		$retour="<table class='boireaus boireaus_alt boireaus_white_hover'>
+	<tr>
+		<th title='Période'>Période</th>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>";
+
+		$acces_imprimer_bilan_periode="n";
+		//if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+		if(acces_impression_avertissement_fin_periode($login_ele)) {
+			$acces_imprimer_bilan_periode="y";
+			$retour.="
+		<th title=\"Imprimer.\">Impr.</th>";
+		}
+
+		$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
+
+		$retour.="
+	</tr>";
+		foreach($tab_avt_ele['id_type_avertissement'] as $current_num_periode => $current_tab_avt) {
+			$retour.="
+	<tr>
+		<td>".$current_num_periode."</td>
+		<td>";
+			for($loop=0;$loop<count($current_tab_avt);$loop++) {
+				if($loop>0) {$retour.="<br />";}
+				//$retour.=$current_tab_avt[$loop];
+				$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt[$loop]]['nom_complet'];
+			}
+			$retour.="</td>";
+			if($acces_imprimer_bilan_periode=="y") {
+				$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
+				$retour.="
+		<td><a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$current_num_periode&eleve[0]=$current_id_classe|$current_num_periode|$login_ele' title=\"Imprimer l'".$mod_disc_terme_avertissement_fin_periode."\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>";
+			}
+			$retour.="
+	</tr>";
+		}
+		$retour.="
+</table>";
+	}
+
+/*
+	$tab_avertissement_fin_periode=get_tab_avertissement($current_eleve_login, $periode_num);
+
+			echo "<div>
+		<img src='../images/icons/balance_justice.png' class='icone20' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" style='float:left;' />
+		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
+		<div>
+			".champs_checkbox_avertissements_fin_periode($current_eleve_login, $periode_num)."
+		</div>
+</div>";
+*/
+	return $retour;
+}
+
 
 function get_info_eleve($login_ele, $periode) {
 	$tab=array();
