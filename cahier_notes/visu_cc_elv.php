@@ -239,7 +239,7 @@ if ($result = $mysqli->query($query)) {
 //$mysqli->close();
 /***************************************************************/
 
-// tamporisation de sortie
+// temporisation de sortie
 ob_start(); 
 ?>
 <?php if ('responsable' == $utilisateur->getStatut() && (count($enfants)>1)) { ?>
@@ -252,7 +252,7 @@ ob_start();
                 onchange="submit();"
                 >
             <?php 
-                $tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
+                //$tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], '', "yy");
 
                 foreach ($enfants as $enfant) { 
                     if(in_array($enfant->getLogin(), $tab_ele_resp)) {
