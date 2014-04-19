@@ -807,7 +807,8 @@ else {
 	}
 
 	// Tableau des PP
-	echo "<div align='center'>
+	echo "<a name='liste_pp'></a>
+<div align='center'>
 	<table class='boireaus boireaus_alt'>
 		<tr>
 			<th>Classe</th>

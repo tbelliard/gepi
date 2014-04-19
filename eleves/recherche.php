@@ -1204,6 +1204,14 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 	</fieldset>
 </form>
 
+<?php
+	if(acces("/groupes/visu_profs_class.php", $_SESSION['statut'])) {
+		echo "<div style='width:16em; float:left; text-align:center; padding 0.5em; margin:-top:0.5em;' class='fieldset_opacite50'>
+	<a href='../groupes/visu_profs_class.php#liste_pp'>Liste des '".getSettingValue('gepi_prof_suivi')."'</a>
+</div>";
+	}
+?>
+
 <div style='clear:both'></div>
 <p style='color:red'>A FAIRE :<br />
 - Permettre le fonctionnement en ajax en plaçant une partie de la page en include...<br />
