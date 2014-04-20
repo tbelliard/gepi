@@ -7,6 +7,7 @@ Gepi-master (Version de développement)
 ===========================
 Cahier de notes:
 - Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+- Relevés de notes: Dans le choix dates/périodes, affichage des dates de 1ère et dernière évaluation dans chaque période pour chacune des classes sélectionnées.
 
 Bulletins:
 - Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
@@ -28,10 +29,16 @@ Discipline:
 - Possibilité de définir des avertissements de fin de période,
   de les saisir depuis les pages de saisie de l'avis du conseil de classe,
   et de les imprimer au format OOo.
+- Possibilité d'afficher les incidents sans référence aux autres protagonistes
+  (cette page imprimée peut être communiquée aux responsables sans soucis de confidentialité vis à vis d'autres protagonistes des incidents).
 
 Panneau d'affichage:
 - Possibilité de déposer un message pour les élèves ou parents de telle classe.
 - Possibilité de donner aux CPE l'accès à la saisie des message.
+
+Épreuves blanches:
+- A la saisie (pour l'admin), possibilité de trier les copies par numéro anonymat.
+- Possibilité d'accéder au bilan pdf/csv une fois l'épreuve close.
 
 Divers:
 - Statistiques de connexion:
