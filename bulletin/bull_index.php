@@ -1181,6 +1181,9 @@ display_param_b_adr_pg();
 	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
 	echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	require("../lib/footer.inc.php");
+	die();
 }
 //=======================================================
 //==EXTRACTION DES DONNEES PUIS AFFICHAGE DES BULLETINS==

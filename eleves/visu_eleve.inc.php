@@ -1952,6 +1952,39 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
 
+			if(acces_impression_bulletin($ele_login)) {
+				echo "<div style='float:right; width:9em; text-align:center;' class='fieldset_opacite50' title=\"Imprimer les bulletins\">";
+
+				$type_bulletin_par_defaut="pdf";
+
+				$chaine_periodes="";
+				$current_id_classe=$tab_ele['periodes'][0]['id_classe'];
+				$chaine_preselection_eleve="";
+				for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+					$chaine_periodes.="&amp;tab_periode_num[$loop_per]=".$tab_ele['periodes'][$loop_per]['num_periode'];
+					$chaine_preselection_eleve.="&amp;preselection_eleves[".$tab_ele['periodes'][$loop_per]['num_periode']."]=|".$ele_login."|";
+				}
+				//valide_select_eleves=y&
+				echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe.$chaine_periodes.$chaine_preselection_eleve."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins de cet élève.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+
+				for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+					$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+					$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+					echo " - <a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
+					/*
+					A AJOUTER
+
+					&intercaler_releve_notes=y
+
+					A CREER/PRENDRE EN COMPTE:
+					&param_rn_defaut=y
+					pour récupérer les paramètres de la classe.
+					*/
+				}
+
+				echo "</div>";
+			}
+
 			echo "<h2>Bulletins de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			$sql="SELECT MIN(periode) AS min_per, MAX(periode) AS max_per FROM matieres_notes WHERE login='".$ele_login."';";

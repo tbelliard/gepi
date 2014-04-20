@@ -10735,4 +10735,46 @@ function affiche_lien_mailto_si_mail_valide($login_user, $designation_user="", $
 
 	return $retour;
 }
+
+function acces_impression_bulletin($login_eleve, $id_classe="") {
+
+	$retour="false";
+
+	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiProfImprBul'))) {
+		if($login_ele!="") {
+			// PP: Le test est fait sur l'association avec la classe (même si l'élève a changé de classe en cours d'année)
+			//     On ne se contente pas de is_pp(is_pp($_SESSION['login'], '', $login_ele)
+			$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='$login_ele';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					if(is_pp($_SESSION['login'], $lig->id_classe)) {
+						$retour=true;
+						break;
+					}
+				}
+			}
+		}
+		elseif(is_pp($_SESSION['login'], $id_classe)) {
+			$retour=true;
+		}
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiCpeImprBul'))) {
+		if(is_cpe($_SESSION['login'], "", $login_eleve)) {
+			$retour=true;
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour="true";
+	}
+	elseif($_SESSION['statut']=='secours') {
+		$retour="true";
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		$retour="true";
+	}
+
+	return $retour;
+}
+
 ?>
