@@ -588,7 +588,9 @@ elseif($tri=='n_anonymat') {
 		}
 
 		echo "<tr class='white_hover'>\n";
-		echo "<td>".$tab_eleves[$loop]['n_anonymat']."</td>\n";
+		echo "<td>";
+		//echo $loop." "; //DEBUG
+		echo $tab_eleves[$loop]['n_anonymat']."</td>\n";
 		echo "<td style='text-align:left;'>\n";
 		$login_ele=$tab_eleves[$loop]['login_ele'];
 		echo "<input type='hidden' name='login_ele[$cpt]' value='$login_ele' />\n";
@@ -687,6 +689,9 @@ elseif($tri=='n_anonymat') {
 		}
 		$chaine_cpt1_eleves.=",'$cpt'";
 
+		//echo "\$chaine_cpt0_eleves=$chaine_cpt0_eleves<br />";
+		//echo "\$chaine_cpt1_eleves=$chaine_cpt1_eleves<br />";
+
 		echo "<script type='text/javascript'>
 
 function calcule_effectif() {
@@ -720,8 +725,11 @@ function coche(colonne,rang_groupe,mode) {
 	var tab_cpt1_ele=new Array($chaine_cpt1_eleves);
 
 	//for(k=tab_cpt0_ele[rang_groupe];k<tab_cpt1_ele[rang_groupe];k++) {
-	for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
+	//alert(tab_cpt0_ele[rang_groupe]+' '+tab_cpt1_ele[rang_groupe]);
+	//for(k=eval(tab_cpt0_ele[rang_groupe]);k<eval(tab_cpt1_ele[rang_groupe]);k++) {
+	for(k=tab_cpt0_ele[rang_groupe-1];k<tab_cpt1_ele[rang_groupe-1];k++) {
 		if(document.getElementById('id_prof_ele_'+colonne+'_'+k)) {
+			//alert('id_prof_ele_'+colonne+'_'+k);
 			document.getElementById('id_prof_ele_'+colonne+'_'+k).checked=mode;
 		}
 	}
