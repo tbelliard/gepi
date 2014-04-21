@@ -134,6 +134,8 @@ if(mysqli_num_rows($res)==0) {
 $lig=mysqli_fetch_object($res);
 $etat=$lig->etat;
 
+$note_sur=$lig->note_sur;
+
 echo "<blockquote>\n";
 echo "<p><b>".$lig->intitule."</b> (<i>".formate_date($lig->date)."</i>)<br />\n";
 if($lig->description!='') {
@@ -487,6 +489,20 @@ elseif($tri=='n_anonymat') {
 		$tab_eleves[$cpt]['nom']=$lig->nom;
 		$tab_eleves[$cpt]['prenom']=$lig->prenom;
 		$tab_eleves[$cpt]['n_anonymat']=$lig->n_anonymat;
+
+		$tab_eleves[$cpt]['note']=$lig->note;
+		$tab_eleves[$cpt]['statut']=$lig->statut;
+
+		$tab_eleves[$cpt]['note_ou_statut']="";
+		if($lig->statut!="v") {
+			if($lig->statut!="") {
+				$tab_eleves[$cpt]['note_ou_statut']=$lig->statut;
+			}
+			else {
+				$tab_eleves[$cpt]['note_ou_statut']=$lig->note."/".$note_sur;
+			}
+		}
+
 		$cpt++;
 	}
 
@@ -513,6 +529,7 @@ elseif($tri=='n_anonymat') {
 			$tab_cpt_eleve[]=$loop;
 
 			$cpt_tranche++;
+			$compteur_tranche++;
 
 			$compteur_eleves_dans_la_tranche=1;
 
@@ -523,6 +540,7 @@ elseif($tri=='n_anonymat') {
 			echo "<th title=\"Numéro anonymat\">Numéro</th>\n";
 			echo "<th>Elèves</th>\n";
 			echo "<th>Classes</th>\n";
+			echo "<th title=\"La copie est-elle corrigée ou non\">État</th>\n";
 			for($i=0;$i<count($info_prof);$i++) {
 				$compteur_eleves_du_prof[$i]=0;
 				echo "<th>\n";
@@ -550,6 +568,7 @@ elseif($tri=='n_anonymat') {
 	
 			if($etat!='clos') {
 				echo "<tr>\n";
+				echo "<th></th>\n";
 				echo "<th></th>\n";
 				echo "<th>Effectifs</th>\n";
 				echo "<th>&nbsp;</th>\n";
@@ -581,6 +600,16 @@ elseif($tri=='n_anonymat') {
 		$tmp_tab_classe=get_class_from_ele_login($login_ele);
 		echo $tmp_tab_classe['liste'];
 		echo "</td>\n";
+
+		if($tab_eleves[$loop]['statut']=="v") {
+			echo "<td title=\"La copie n'est pas encore corrigée.\">\n";
+			echo "</td>\n";
+		}
+		else {
+			echo "<td title=\"La copie est corrigée : ".$tab_eleves[$loop]['note_ou_statut']."\">\n";
+			echo "<img src='../images/edit16b.png' class='icone16' />\n";
+			echo "</td>\n";
+		}
 
 		$affect="n";
 		for($i=0;$i<count($info_prof);$i++) {
@@ -619,6 +648,7 @@ elseif($tri=='n_anonymat') {
 
 		if((($loop>0)&&(($loop+1)%$largeur_tranche==0))||($loop==count($tab_eleves)-1)) {
 			echo "<tr>\n";
+			echo "<th></th>\n";
 			echo "<th></th>\n";
 			echo "<th></th>\n";
 			echo "<th></th>\n";
@@ -674,7 +704,7 @@ function calcule_effectif() {
 		}
 
 		//alert('Salle i='+i+' eff='+eff)
-		for(j=0;j<$cpt_tranche;j++) {
+		for(j=0;j<=$cpt_tranche;j++) {
 			if(document.getElementById('eff_prof_'+j+'_'+i)) {
 				document.getElementById('eff_prof_'+j+'_'+i).innerHTML=eff;
 				//alert('eff_prof_'+j+'_'+i+' eff='+eff);
