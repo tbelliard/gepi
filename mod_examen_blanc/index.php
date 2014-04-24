@@ -147,6 +147,7 @@ else {
 //=========================================================
 */
 
+//debug_var();
 
 //=========================================================
 
@@ -631,6 +632,21 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					$sql="UPDATE ex_groupes SET id_dev='0', type='moy_bull', valeur='$tmp_per' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
 					//echo "$sql<br />";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				elseif(mb_substr($id_dev,0,4)=='epb_') {
+					$tmp_id_epreuve=mb_substr($id_dev,4);
+					// On vérifie que l'épreuve existe:
+					$sql="SELECT 1=1 FROM eb_epreuves ee, eb_groupes eg WHERE ee.id=eg.id_epreuve AND eg.id_groupe='$id_groupe[$i]';";
+					//echo "$sql<br />";
+					$test_epreuve=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_epreuve)>0) {
+						$sql="UPDATE ex_groupes SET id_dev='0', type='epreuve_blanche', valeur='$tmp_id_epreuve' WHERE id_exam='$id_exam' AND id_groupe='$id_groupe[$i]' AND matiere='$matiere';";
+						//echo "$sql<br />";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					}
+					else {
+						$msg.="L'épreuve n°$tmp_id_epreuve n'est pas associée au groupe $id_groupe[$i].<br />";
+					}
 				}
 				else {
 					// Vérifier que c'est un devoir valide.
@@ -1488,6 +1504,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 				$tab_dev=array();
 				$tab_bull=array();
 				$tab_moy_plusieurs_periodes=array();
+				$tab_epb=array();
 				$alt=1;
 				for($j=0;$j<count($tab_matiere);$j++) {
 					$alt=$alt*(-1);
@@ -1739,6 +1756,96 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 									echo "</span>\n";
 
 
+								}
+								elseif($lig->type=='epreuve_blanche') {
+									echo "<br />\n";
+									echo "<span style='font-size:small;'>\n";
+
+									echo "<a href='#' onmouseover=\"delais_afficher_div('div_moy_epb_".$lig->id."_".$lig->valeur."','y',10,-10,1000,20,20)\" onmouseout=\"cacher_div('div_moy_epb_".$lig->id."_".$lig->valeur."')\" onclick='return false;'>";
+									echo "EpB ".$lig->valeur;
+									echo "</a>\n";
+
+									if(!in_array("moy_epb_".$lig->id."_".$lig->valeur,$tab_epb)) {
+										$tab_epb[]="moy_epb_".$lig->id."_".$lig->valeur;
+
+										$info_epb="";
+										$sql="SELECT ee.* FROM eb_epreuves ee, eb_groupes eg WHERE ee.id=eg.id_epreuve AND eg.id_groupe='$lig->id' AND ee.id='$lig->valeur';";
+										//echo "$sql<br />\n";
+										$res_epreuve=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res)>0) {
+											$lig_epb=mysqli_fetch_object($res_epreuve);
+
+											$info_epb="<b>".$lig_epb->intitule."</b> (<em>".formate_date($lig_epb->date)."</em>)<br />".$lig_epb->description."<br />Notée sur ".$lig_epb->note_sur;
+
+											/*
+											$sql="SELECT nom_periode FROM periodes WHERE num_periode='$lig->valeur' AND id_classe='$tab_id_classe[$i]';";
+											$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+											$lig_per=mysqli_fetch_object($res_per);
+											*/
+										}
+
+										$titre="Épreuve blanche (<i>$lig->valeur</i>)";
+										$texte="<p><b>Notes obtenues par les élèves à l'épreuve blanche</b><br />";
+										$texte.=$info_epb;
+
+										// Effectif du groupe sur la période... on n'a pas le numéro de période
+										$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$lig->id';";
+										//echo "$sql<br />\n";
+										$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+										$eff_grp=mysqli_num_rows($res_grp);
+
+										// Nombre de notes saisies
+										//$sql="SELECT * FROM matieres_notes WHERE id_groupe='$lig->id' AND periode='$lig->valeur';";
+										$sql="SELECT DISTINCT ec.* FROM eb_copies ec, 
+													eb_groupes eg,
+													j_eleves_groupes jeg
+												WHERE eg.id_groupe='$lig->id' AND 
+													eg.id_groupe=jeg.id_groupe AND 
+													jeg.login=ec.login_ele AND 
+													eg.id_epreuve=ec.id_epreuve AND 
+													eg.id_epreuve='$lig->valeur' AND 
+													ec.statut!='v';";
+										//echo "$sql<br />\n";
+										$res_notes_epb=mysqli_query($GLOBALS["mysqli"], $sql);
+										$eff_notes_epb=mysqli_num_rows($res_notes_epb);
+
+										if($eff_notes_epb>0) {
+											$texte.="<br />\n";
+											$eff_non_note=0;
+											$eff_abs=0;
+											$eff_disp=0;
+
+											while($lig_nb=mysqli_fetch_object($res_notes_epb)) {
+												if($lig_nb->statut=='-') {$eff_non_note++;}
+												elseif($lig_nb->statut=='abs') {$eff_abs++;}
+												elseif($lig_nb->statut=='disp') {$eff_disp++;}
+											}
+
+											if($eff_grp==$eff_notes_epb) {
+												$texte.="<span style='color:green;'>$eff_notes_epb/$eff_grp</span>";
+											}
+											else {
+												//$texte.="<span style='color:red;'>$eff_non_vide/$eff_tot</span>";
+												$texte.="<span style='color:red;'>$eff_notes_epb/$eff_grp</span>";
+											}
+
+											$texte.="<br />\n";
+											if($eff_abs>0) {$texte.="$eff_abs absent(s)<br />\n";}
+											if($eff_disp>0) {$texte.="$eff_disp dispensé(s)<br />\n";}
+											if($eff_non_note>0) {$texte.="$eff_non_note non noté(s)<br />\n";}
+
+											$texte.="<br /><p style='color:red'>ATTENTION&nbsp;: L'effectif indiqué pour le groupe peut être erroné si la liste des élèves a changé au cours des périodes<br />
+(<em>on récupère ici la liste de tous les élèves associés au groupe quelle que soit la période</em>).<br />
+A améliorer en affichant au moins les effectifs du groupe par période.";
+										}
+										else {
+											$texte.="<span style='color:red;'>Aucune moyenne saisie</span>";
+										}
+
+										$tabdiv_infobulle[]=creer_div_infobulle("div_moy_epb_".$lig->id."_".$lig->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
+									}
+
+									echo "</span>\n";
 								}
 								/*
 								elseif($lig->id_dev==-1) {
@@ -2279,6 +2386,7 @@ function cocher_decocher(mode) {
 			$tab_moy_bull_inscrits=array();
 			$tab_moy_pp_inscrits=array();
 			$tab_dev_inscrits=array();
+			$tab_moy_epb_inscrits=array();
 			//$sql="SELECT eg.id_dev FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
 			$sql="SELECT eg.id_dev,eg.id_groupe,eg.type,eg.valeur FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere';";
 			//echo "$sql<br />";
@@ -2296,6 +2404,9 @@ function cocher_decocher(mode) {
 								$tab_moy_pp_inscrits[$lig->id_groupe][]=$tab_tmp[$loop];
 							}
 						}
+					}
+					elseif($lig->type=='epreuve_blanche') {
+						$tab_moy_epb_inscrits[$lig->id_groupe]=$lig->valeur;
 					}
 					elseif($lig->type=='') {
 						$tab_dev_inscrits[]=$lig->id_dev;
@@ -2458,7 +2569,7 @@ function cocher_decocher(mode) {
 
 							if(isset($tab_periodes[$cpt_grp])) {
 								//echo "<hr />\n";
-								echo "<b>Ou</b><br />\n";
+								echo "<b>Ou moyenne(s) de période(s)</b><br />\n";
 								//echo "<b>Moyenne de plusieurs périodes:</b>\n";
 								echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='Plusieurs_periodes' ";
 								echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
@@ -2474,6 +2585,31 @@ function cocher_decocher(mode) {
 									echo "/><label for='id_dev_".$cpt_grp."_periodes_$j'>Période ".$tab_periodes[$cpt_grp][$j]."</label></span><br />\n";
 								}
 								$cpt++;
+							}
+
+							// Choisir une épreuve blanche
+							$sql="SELECT ee.* FROM eb_epreuves ee, eb_groupes eg WHERE ee.id=eg.id_epreuve AND eg.id_groupe='$lig->id';";
+							//echo "$sql<br />\n";
+							$res_epreuve=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res)>0) {
+								echo "<b>Ou épreuve blanche</b>&nbsp;:<br />";
+								while($lig_epreuve=mysqli_fetch_object($res_epreuve)) {
+									echo "<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='epb_".$lig_epreuve->id."' ";
+									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+
+									if((isset($tab_moy_epb_inscrits[$lig->id]))&&($tab_moy_epb_inscrits[$lig->id]==$lig_epreuve->id)) {
+										echo "checked ";
+										$temp_style="style='font-weight:bold;'";
+									}
+									else {
+										$temp_style="";
+									}
+
+									echo "/><label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;'><span id='texte_id_dev_".$cpt_grp."_$cpt' $temp_style title=\"$lig_epreuve->description
+Date     : ".formate_date($lig_epreuve->date)."
+Note sur : $lig_epreuve->note_sur\">$lig_epreuve->intitule</span></label><br />\n";
+									$cpt++;
+								}
 							}
 						}
 

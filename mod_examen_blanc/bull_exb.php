@@ -153,9 +153,19 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$tab_bonus[]=$lig->bonus;
 					}
 					//===========================
-				
+
+					// Tableau des notes des élèves
 					$tab_note=array();
+
+					// Tableau des devoirs dont les infos ont déjà été extraites
 					$tab_dev=array();
+					// Tableau des épreuves blanches dont les infos ont déjà été extraites
+					$tab_moy_epb=array();
+
+					// Tableau des paramètres des évaluations et épreuves blanches (pour ramener sur 20)
+					$tab_dev_param=array();
+					$tab_epb_param=array();
+
 					$tab_info_dev=array();
 					$tab_prof=array();
 					for($i=0;$i<$nb_classes;$i++) {
@@ -166,20 +176,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							$res_groupe=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_groupe)>0) {
 								while($lig_groupe=mysqli_fetch_object($res_groupe)) {
-
-									/*
-									// Liste des profs du groupe
-									if(!isset($tab_prof[$lig_groupe->id_dev])) {
-										$sql="SELECT DISTINCT u.nom,u.prenom,u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$lig_groupe->id_groupe';";
-										$res_prof=mysql_query($sql);
-										$tab_prof[$lig_groupe->id_dev]=array();
-										if(mysql_num_rows($res_prof)) {
-											while($lig_prof=mysql_fetch_object($res_prof)) {
-												$tab_prof[$lig_groupe->id_dev][]=$lig_prof->login;
-											}
-										}
-									}
-									*/
 
 									if($lig_groupe->type=='moy_bull') {
 										$moy_min_bull_grp=1000;
@@ -218,13 +214,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												//$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
 
-												/*
-												if(!isset($tab_info_dev['bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur])) {
-													$tab_info_dev['bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur]="";
-												}
-												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]=$tab_info_dev['bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur];
-												*/
-
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Moyenne de l'élève pour la période $lig_groupe->valeur";
 	
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
@@ -234,18 +223,6 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 	
 												$tab_note["$lig_bull->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
 											}
-
-											/*
-											if(!in_array('bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$tab_bull)) {
-												$tab_bull[]='bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur;
-
-												$titre="Moyenne du bulletin (<i>$lig_per->nom_periode</i>)";
-												$texte="<p><b>Moyenne du bulletin sur la période $lig_per->nom_periode</b>";
-												$texte.="<br />";
-
-												$reserve_header_tabdiv_infobulle[]=creer_div_infobulle('div_bull_'.$lig_groupe->id_groupe.'_'.$lig_groupe->valeur,$titre,"",$texte,"",30,0,'y','y','n','n');
-											}
-											*/
 										}
 
 /*
@@ -267,6 +244,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 */
 									}
 									elseif($lig_groupe->type=='') {
+
+										$note_sur=20;
+										if(!array_key_exists($lig_groupe->id_dev, $tab_dev_param)) {
+											$tab_dev_param[$lig_groupe->id_dev]=get_tab_infos_cn_devoir($lig_groupe->id_dev);
+											if(isset($tab_dev_param[$lig_groupe->id_dev]['note_sur'])) {
+												$note_sur=$tab_dev_param[$lig_groupe->id_dev]['note_sur'];
+											}
+										}
 
 										// Liste des profs du groupe
 										if(!isset($tab_prof[$lig_groupe->id_dev])) {
@@ -305,7 +290,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 												//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
 												//$tab_note["$lig_dev->login"]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
 												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_dev->statut;
-												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note;
+												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_dev->note*20/$note_sur;
 												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_dev"]=$lig_groupe->id_dev;
 												$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]=$tab_info_dev[$lig_groupe->id_dev];
 	
@@ -367,6 +352,58 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 
 											$tab_note["$lig_dev->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_groupe"]=$lig_groupe->id_groupe;
 										}
+									}
+
+									elseif($lig_groupe->type=='epreuve_blanche') {
+
+										// Liste des profs du groupe
+										if(!isset($tab_prof_grp[$lig_groupe->id_groupe])) {
+											$sql="SELECT DISTINCT u.nom,u.prenom,u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$lig_groupe->id_groupe';";
+											$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+											$tab_prof_grp[$lig_groupe->id_groupe]=array();
+											if(mysqli_num_rows($res_prof)) {
+												while($lig_prof=mysqli_fetch_object($res_prof)) {
+													$tab_prof_grp[$lig_groupe->id_groupe][]=$lig_prof->login;
+												}
+											}
+										}
+
+										$note_sur=20;
+										if(!array_key_exists($lig_groupe->valeur, $tab_epb_param)) {
+											$tab_epb_param[$lig_groupe->valeur]=get_tab_infos_epreuve_blanche($lig_groupe->valeur);
+											if(isset($tab_epb_param[$lig_groupe->valeur]['note_sur'])) {
+												$note_sur=$tab_epb_param[$lig_groupe->valeur]['note_sur'];
+											}
+										}
+
+										$sql="SELECT DISTINCT ec.* FROM eb_copies ec, 
+													eb_groupes eg,
+													j_eleves_groupes jeg
+												WHERE eg.id_groupe='".$lig_groupe->id_groupe."' AND 
+													eg.id_groupe=jeg.id_groupe AND 
+													jeg.login=ec.login_ele AND 
+													eg.id_epreuve=ec.id_epreuve AND 
+													eg.id_epreuve='".$lig_groupe->valeur."' AND 
+													ec.statut!='v';";
+										//echo "$sql<br />\n";
+										$res_notes_epb=mysqli_query($GLOBALS["mysqli"], $sql);
+										$eff_notes_epb=mysqli_num_rows($res_notes_epb);
+										if($eff_notes_epb>0) {
+											while($lig_note=mysqli_fetch_object($res_notes_epb)) {
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["statut"]=$lig_note->statut;
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["note"]=$lig_note->note*20/$note_sur;
+
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["coef"]=$tab_coef[$j];
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["bonus"]=$tab_bonus[$j];
+			
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["nom_complet"]=$tab_matiere_nom_complet[$j];
+			
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["info_dev"]="Épreuve blanche n°$lig_groupe->valeur : <b>".$tab_epb_param[$lig_groupe->valeur]['intitule']."</b> (<i>".formate_date($tab_epb_param[$lig_groupe->valeur]['date'])."</i>).\n".$tab_epb_param[$lig_groupe->valeur]['description'];
+
+												$tab_note["$lig_note->login_ele"][$tab_id_classe[$i]]["$tab_matiere[$j]"]["id_groupe"]=$lig_groupe->id_groupe;
+											}
+										}
+
 									}
 
 

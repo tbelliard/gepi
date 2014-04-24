@@ -10915,4 +10915,30 @@ function renseigner_tab_rn($tab_id_classe) {
 		}
 	}
 }
+
+function get_tab_infos_cn_devoir($id_dev) {
+	$tab=array();
+
+	$sql="SELECT * FROM cn_devoirs WHERE id='$id_dev';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0){
+		$tab=mysqli_fetch_assoc($res);
+	}
+
+	return $tab;
+}
+
+function get_tab_infos_epreuve_blanche($id_epreuve) {
+	$tab=array();
+
+	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0){
+		$tab=mysqli_fetch_assoc($res);
+	}
+
+	return $tab;
+}
 ?>
