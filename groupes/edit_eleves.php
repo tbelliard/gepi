@@ -440,7 +440,7 @@ if(mysqli_num_rows($res_grp)>1) {
 
 }
 
-echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."'";
+echo " | <a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."' title=\"Éditer l'enseignement (modifier la liste des classes, le coefficient, la visibilité,...)\"";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Éditer l'enseignement</a> ";
 
@@ -650,7 +650,8 @@ echo "<div style='clear:both;'></div>\n";
 
 
 	echo "<h3>Gérer les élèves de l'enseignement : ";
-	echo htmlspecialchars($current_group["description"]) . " (<i>";
+	echo "<a href='edit_group.php?id_groupe=$id_groupe&amp;id_classe=".$current_group["classes"]["list"][0]."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Éditer l'enseignement (modifier la liste des classes, le coefficient, la visibilité,...)\">";
+	echo htmlspecialchars($current_group["description"]) . "</a> (<i>";
 	if((getSettingAOui('autorise_edt_tous'))||
 	((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
 		foreach($current_group["classes"]["classes"] as $current_id_classe => $tab_classe) {
