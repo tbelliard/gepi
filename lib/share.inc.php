@@ -10738,13 +10738,14 @@ function affiche_lien_mailto_si_mail_valide($login_user, $designation_user="", $
 
 function acces_impression_bulletin($login_eleve, $id_classe="") {
 
-	$retour="false";
+	$retour=false;
 
-	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiProfImprBul'))) {
-		if($login_ele!="") {
+	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiProfImprBul'))&&(is_pp($_SESSION['login']))) {
+		if($login_eleve!="") {
 			// PP: Le test est fait sur l'association avec la classe (même si l'élève a changé de classe en cours d'année)
 			//     On ne se contente pas de is_pp(is_pp($_SESSION['login'], '', $login_ele)
-			$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='$login_ele';";
+			$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='$login_eleve';";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
@@ -10755,7 +10756,7 @@ function acces_impression_bulletin($login_eleve, $id_classe="") {
 				}
 			}
 		}
-		elseif(is_pp($_SESSION['login'], $id_classe)) {
+		elseif(($id_classe!="")&&(is_pp($_SESSION['login'], $id_classe))) {
 			$retour=true;
 		}
 	}
@@ -10765,16 +10766,153 @@ function acces_impression_bulletin($login_eleve, $id_classe="") {
 		}
 	}
 	elseif($_SESSION['statut']=='scolarite') {
-		$retour="true";
+		$retour=true;
 	}
 	elseif($_SESSION['statut']=='secours') {
-		$retour="true";
+		$retour=true;
 	}
 	elseif($_SESSION['statut']=='administrateur') {
-		$retour="true";
+		$retour=true;
 	}
 
 	return $retour;
 }
 
+function acces_impression_releve_notes($login_eleve, $id_classe="") {
+	$retour=false;
+
+	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiAccesReleveProfToutesClasses'))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='professeur')&&($login_eleve!="")&&(getSettingAOui('GepiAccesReleveProf'))&&(is_prof_ele($_SESSION['login'], $login_eleve, "", $id_classe))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='professeur')&&($login_eleve!="")&&(getSettingAOui('GepiAccesReleveProfTousEleves'))&&(is_prof_classe_ele($_SESSION['login'], $login_eleve))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='professeur')&&($id_classe!="")&&(getSettingAOui('GepiAccesReleveProfTousEleves'))&&(is_prof_classe($_SESSION['login'], $id_classe))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='professeur')&&($id_classe!="")&&(getSettingAOui('GepiAccesReleveProfP'))&&(is_pp($_SESSION['login'], $id_classe))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='professeur')&&($login_eleve!="")&&(getSettingAOui('GepiAccesReleveProfP'))&&(is_pp($_SESSION['login']))) {
+		// PP: Le test est fait sur l'association avec la classe (même si l'élève a changé de classe en cours d'année)
+		//     On ne se contente pas de is_pp(is_pp($_SESSION['login'], '', $login_ele)
+		$sql="SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='$login_eleve';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				if(is_pp($_SESSION['login'], $lig->id_classe)) {
+					$retour=true;
+					break;
+				}
+			}
+		}
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesReleveCpeTousEleves'))) {
+		$retour=true;
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesReleveCpe'))) {
+		if(is_cpe($_SESSION['login'], "", $login_eleve)) {
+			$retour=true;
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='secours') {
+		$retour=true;
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		$retour=false;
+	}
+
+	return $retour;
+}
+
+function renseigner_tab_rn($tab_id_classe) {
+	global $tab_rn_nomdev,
+	$tab_rn_toutcoefdev,
+	$tab_rn_coefdev_si_diff,
+	$tab_rn_col_moy,
+	$tab_rn_datedev,
+	$tab_rn_app,
+	$tab_rn_sign_chefetab,
+	$tab_rn_sign_pp,
+	$tab_rn_sign_resp,
+	$tab_rn_sign_nblig,
+	$tab_rn_formule,
+	$tab_rn_adr_resp,
+	$tab_rn_bloc_obs,
+	$tab_rn_bloc_abs2,
+	$tab_rn_aff_classe_nom,
+	$tab_rn_moy_min_max_classe,
+	$tab_rn_moy_classe,
+	$tab_rn_retour_ligne,
+	$tab_rn_rapport_standard_min_font;
+
+	$tab_param_table_classes_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy');
+
+	//$tab_item=array();
+	$tab_item=$tab_param_table_classes_param;
+	$tab_item[]='rn_nomdev';
+	$tab_item[]='rn_toutcoefdev';
+	$tab_item[]='rn_coefdev_si_diff';
+	$tab_item[]='rn_datedev';
+
+	// SELON LE STATUT: Accès ou pas
+	if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+		(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesColMoyReleveEleve')))||
+		(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesColMoyReleveParent')))
+		) {
+		$tab_item[]='rn_col_moy';
+	}
+
+	$tab_item[]='rn_sign_chefetab';
+	$tab_item[]='rn_sign_pp';
+	$tab_item[]='rn_sign_resp';
+
+	if(getSettingValue("active_module_absence")=='2') {
+		$tab_item[]='rn_abs_2';
+	}
+
+	$chaine_coef="coef.: ";
+
+	for($k=0;$k<count($tab_item);$k++) {
+		$champ_courant=$tab_item[$k];
+		$chaine_tab="tab_".$champ_courant;
+		//echo "<p style='text-indent:-3em;margin-left:3em;'>Récupération de la valeur de ".$tab_item[$k]."<br />";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			if(!in_array($tab_item[$k], $tab_param_table_classes_param)) {
+				$sql="SELECT * FROM classes WHERE id='".$tab_id_classe[$i]."';";
+				//echo "$sql<br />";
+				$res_class_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_class_tmp)>0){
+					$lig_class_tmp=mysqli_fetch_object($res_class_tmp);
+
+					if($lig_class_tmp->$tab_item[$k]=="y") {
+						${$chaine_tab}[$i]="y";
+
+						//echo "\${".$chaine_tab."}[$i]=".${$chaine_tab}[$i]."<br />";
+
+					}
+					/*
+					else {
+						${$chaine_tab}[$i]="n";
+					}
+					*/
+				}
+			}
+			elseif(getParamClasse($tab_id_classe[$i],$tab_item[$k],'')=="y") {
+				${$chaine_tab}[$i]="y";
+
+				//echo "\${".$chaine_tab."}[$i]=".${$chaine_tab}[$i]."<br />";
+			}
+			else {
+				//echo "getParamClasse(".$tab_id_classe[$i].",".$tab_item[$k].",'')=".getParamClasse($tab_id_classe[$i],$tab_item[$k],'')."<br />";
+			}
+		}
+	}
+}
 ?>

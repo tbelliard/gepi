@@ -52,6 +52,8 @@ if(($_SESSION['statut']=='autre')&&(!acces("/cahier_notes/visu_releve_notes_bis.
 	die();
 }
 
+//debug_var();
+
 //================================
 
 //+++++++++++++++++++++++++
@@ -63,9 +65,12 @@ $contexte_document_produit="releve_notes";
 
 $releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug'] : "n";
 
+$choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres'] : (isset($_GET['choix_parametres']) ? $_GET['choix_parametres'] : NULL);
+$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : NULL);
+
 //====================================================
 //=============== ENTETE STANDARD ====================
-if(!isset($_POST['choix_parametres'])) {
+if(!isset($choix_parametres)) {
 	$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 	$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 	$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -79,14 +84,14 @@ if(!isset($_POST['choix_parametres'])) {
 //============== FIN ENTETE STANDARD =================
 //====================================================
 //============== ENTETE BULLETIN HTML ================
-elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
+elseif ((isset($mode_bulletin))&&($mode_bulletin=='html')) {
 	include("header_releve_html.php");
 	//debug_var();
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
 //============== ENTETE BULLETIN PDF ================
-elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
+elseif ((isset($mode_bulletin))&&($mode_bulletin=='pdf')) {
 	if($releve_pdf_debug=='y') {
 		echo "<p style='color:red'>DEBUG:<br />
 La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
@@ -109,19 +114,21 @@ include("visu_releve_notes_func.lib.php");
 
 //=========================
 // Classes sélectionnées:
-$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : NULL;
+$tab_id_classe=isset($_POST['tab_id_classe']) ? $_POST['tab_id_classe'] : (isset($_GET['tab_id_classe']) ? $_GET['tab_id_classe'] : NULL);
 
 // Période:
 // $choix_periode='periode' ou 'intervalle'
-$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
+$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : NULL);
 // Si $choix_periode='periode'
 //$periode=isset($_POST['periode']) ? $_POST['periode'] : NULL;
-$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : NULL;
+$tab_periode_num=isset($_POST['tab_periode_num']) ? $_POST['tab_periode_num'] : (isset($_GET['tab_periode_num']) ? $_GET['tab_periode_num'] : NULL);
 // Si $choix_periode='intervalle'
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : NULL;
 $display_date_fin=isset($_POST['display_date_fin']) ? $_POST['display_date_fin'] : NULL;
 
-$choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres'] : NULL;
+$valide_select_eleves=isset($_POST['valide_select_eleves']) ? $_POST['valide_select_eleves'] : (isset($_GET['valide_select_eleves']) ? $_GET['valide_select_eleves'] : NULL);
+
+//$choix_parametres=isset($_POST['choix_parametres']) ? $_POST['choix_parametres'] : NULL;
 
 // Un prof peut choisir un groupe plutôt qu'une liste de classes
 $id_groupe=($_SESSION['statut']=='professeur') ? (isset($_POST['id_groupe']) ? $_POST['id_groupe'] : NULL) : NULL;
@@ -849,7 +856,9 @@ dans l'extraction DATE à DATE.\"><a href=\"#\" onclick=\"document.getElementByI
 }
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
-elseif(!isset($_POST['valide_select_eleves'])) {
+elseif(!isset($valide_select_eleves)) {
+
+	//$preselection_eleves=isset($_POST['preselection_eleves']) ? $_POST['preselection_eleves'] : (isset($_GET['preselection_eleves']) ? $_GET['preselection_eleves'] : NULL);
 
 	if(isset($display_date_debut)) {$_SESSION['display_date_debut']=$display_date_debut;}
 	if(isset($display_date_fin)) {$_SESSION['display_date_fin']=$display_date_fin;}
@@ -920,7 +929,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	//debug_var();
 
-	if((isset($_POST['choix_periode']))&&($_POST['choix_periode']=='periode')&&(!isset($_POST['tab_periode_num']))) {
+	//if((isset($_POST['choix_periode']))&&($_POST['choix_periode']=='periode')&&(!isset($_POST['tab_periode_num']))) {
+	if((isset($choix_periode))&&($choix_periode=='periode')&&(!isset($tab_periode_num))) {
 		echo "<p style='color:red'>Vous avez choisi un relevé de période, mais omis de choisir la période.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
@@ -1325,6 +1335,8 @@ echo "</script>\n";
 		}
 		//echo "$sql<br />";
 
+		$temoin_preselection_eleve_faite="n";
+
 		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 		$alt=1;
 		$cpt=0;
@@ -1361,10 +1373,13 @@ echo "</script>\n";
 									<label for='tab_selection_ele_".$i."_".$j."[]'_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$j."</label>
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
 								// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-								$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
-								if(in_array($lig_ele->login,$tab_selection_eleves)) {
+								$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : (isset($_GET['tab_selection_ele_'.$i.'_'.$j]) ? $_GET['tab_selection_ele_'.$i.'_'.$j] : array());
+
+								if(in_array($lig_ele->login, $tab_selection_eleves)) {
 									echo "checked='checked' ";
+									$temoin_preselection_eleve_faite="y";
 								}
+
 								echo "/></td>\n";
 							}
 							else {
@@ -1393,9 +1408,10 @@ echo "</script>\n";
 									<label for='tab_selection_ele_".$i."_".$j."_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$j."</label>
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
 									// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
+									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : (isset($_GET['tab_selection_ele_'.$i.'_'.$j]) ? $_GET['tab_selection_ele_'.$i.'_'.$j] : array());
 									if(in_array($lig_ele->login,$tab_selection_eleves)) {
 										echo "checked='checked' ";
+										$temoin_preselection_eleve_faite="y";
 									}
 									echo "/></td>\n";
 								}
@@ -1430,11 +1446,12 @@ echo "</script>\n";
 										<label for='tab_selection_ele_".$i."_".$j."_".$cpt."' class='invisible'>".$lig_ele->nom." ".$lig_ele->prenom." periode ".$j."</label>
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
 									// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : array();
+									$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$j]) ? $_POST['tab_selection_ele_'.$i.'_'.$j] : (isset($_GET['tab_selection_ele_'.$i.'_'.$j]) ? $_GET['tab_selection_ele_'.$i.'_'.$j] : array());
 									if(in_array($lig_ele->login,$tab_selection_eleves)) {
 										echo "checked='checked' ";
+										$temoin_preselection_eleve_faite="y";
 									}
-									echo "/></td>\n";
+									echo "/>";
 								}
 							}
 						}
@@ -1456,9 +1473,10 @@ echo "</script>\n";
 									<input type='checkbox' name='tab_selection_ele_".$i."_".$periode."[]' id='tab_selection_ele_".$i."_".$periode."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 						// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
+						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : (isset($_GET['tab_selection_ele_'.$i.'_'.$periode]) ? $_GET['tab_selection_ele_'.$i.'_'.$periode] : array());
 						if(in_array($lig_ele->login,$tab_selection_eleves)) {
 							echo "checked='checked' ";
+							$temoin_preselection_eleve_faite="y";
 						}
 						echo "/></td>\n";
 					}
@@ -1486,9 +1504,10 @@ echo "</script>\n";
 								<input type='checkbox' name='tab_selection_ele_".$i."_".$periode."[]' id='tab_selection_ele_".$i."_".$periode."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 							// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-							$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
+							$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : (isset($_GET['tab_selection_ele_'.$i.'_'.$periode]) ? $_GET['tab_selection_ele_'.$i.'_'.$periode] : array());
 							if(in_array($lig_ele->login,$tab_selection_eleves)) {
 								echo "checked='checked' ";
+								$temoin_preselection_eleve_faite="y";
 							}
 							echo "/></td>\n";
 						}
@@ -1498,9 +1517,10 @@ echo "</script>\n";
 								<input type='checkbox' name='tab_selection_ele_".$i."_".$periode."[]' id='tab_selection_ele_".$i."_".$periode."_".$cpt."' value=\"".$lig_ele->login."\" ";
 
 						// Dans le cas d'un retour en arrière, des cases peuvent avoir été cochées
-						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : array();
+						$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$i.'_'.$periode]) ? $_POST['tab_selection_ele_'.$i.'_'.$periode] : (isset($_GET['tab_selection_ele_'.$i.'_'.$periode]) ? $_GET['tab_selection_ele_'.$i.'_'.$periode] : array());
 						if(in_array($lig_ele->login,$tab_selection_eleves)) {
 							echo "checked='checked' ";
+							$temoin_preselection_eleve_faite="y";
 						}
 						echo "/></td>\n";
 					}
@@ -1609,8 +1629,12 @@ function decocher_tous_eleves() {
 	document.getElementById('formulaire').submit();
 }\n";
 	}
-	echo "// On coche tous les élèves par défaut:
-cocher_tous_eleves();
+
+	if($temoin_preselection_eleve_faite=="n") {
+		echo "// On coche tous les élèves par défaut:
+cocher_tous_eleves();";
+	}
+	echo "
 ////]]>
 </script>\n";
 
@@ -1642,7 +1666,8 @@ cocher_tous_eleves();
 //=======================================================
 //===EXTRACTION DES DONNEES PUIS AFFICHAGE DES RELEVES===
 else {
-	$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
+	//$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
+
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
 	$deux_releves_par_page=isset($_POST['deux_releves_par_page']) ? $_POST['deux_releves_par_page'] : "non";
 
@@ -1824,10 +1849,14 @@ else {
 	
 					echo "</div>\n";
 				}
-
+/*
+echo "DEBUG : 1837
+<pre>";
+print_r($tab_releve);
+echo "</pre>";
+*/
 				//$compteur_releve=0;
 				if(isset($tab_releve[$id_classe][$periode_num]['eleve'])) {
-
 					unset($tmp_tab);
 					unset($rg);
 					//$tri_par_etab_orig="y";

@@ -93,8 +93,16 @@
 
 	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : (isset($chaine_coef) ? $chaine_coef : "");
 
-	$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
-	savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
+	if((isset($_GET['rn_param_auto']))&&($_GET['rn_param_auto']=="y")&&(isset($tab_id_classe))) {
+
+		renseigner_tab_rn($tab_id_classe);
+
+		$rn_couleurs_alternees=getPref($_SESSION['login'], "rn_couleurs_alternees", "n");
+	}
+	else {
+		$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
+		savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
+	}
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -263,10 +271,10 @@
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			if($choix_periode=="intervalle") {
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : array();
+				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : (isset($_GET['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_GET['tab_selection_ele_'.$loop_classe.'_intervalle'] : array());
 			}
 			else {
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
+				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : (isset($_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array());
 			}
 
 			if((count($tab_selection_eleves)==0)&&(isset($ele_login))&&($ele_login!='')) {

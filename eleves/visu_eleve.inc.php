@@ -1941,6 +1941,10 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 		}
 		//===================================================
 
+		if(($acces_releves=="y")||($acces_bulletins=="y")) {
+			$acces_impression_releve_notes=acces_impression_releve_notes($ele_login);
+		}
+
 		//===================
 		// Onglet BULLETINS
 		//===================
@@ -1957,6 +1961,11 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 
 				$type_bulletin_par_defaut="pdf";
 
+				$chaine_intercaler_releve_notes="";
+				if($acces_impression_releve_notes) {
+					$chaine_intercaler_releve_notes="&intercaler_releve_notes=y&rn_param_auto=y";
+				}
+
 				$chaine_periodes="";
 				$current_id_classe=$tab_ele['periodes'][0]['id_classe'];
 				$chaine_preselection_eleve="";
@@ -1965,12 +1974,12 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 					$chaine_preselection_eleve.="&amp;preselection_eleves[".$tab_ele['periodes'][$loop_per]['num_periode']."]=|".$ele_login."|";
 				}
 				//valide_select_eleves=y&
-				echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe.$chaine_periodes.$chaine_preselection_eleve."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins de cet élève.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+				echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe.$chaine_periodes.$chaine_preselection_eleve."' target='_blank' title=\"Voir dans un nouvel onglet les bulletins de cet élève.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
 
 				for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
 					$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
 					$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
-					echo " - <a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
+					echo " - <a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
 					/*
 					A AJOUTER
 
@@ -2342,6 +2351,32 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 			}
 			else {
 				// Il ne faut pas proposer de relevé de notes?
+			}
+
+			if($acces_impression_releve_notes) {
+				echo "<div style='float:right; width:9em; text-align:center;' class='fieldset_opacite50' title=\"Imprimer les relevés de notes\">";
+
+				$type_bulletin_par_defaut="pdf";
+
+				$chaine_periodes="";
+				$current_id_classe=$tab_ele['periodes'][0]['id_classe'];
+				$chaine_preselection_eleve="";
+				for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+					$chaine_periodes.="&amp;tab_periode_num[$loop_per]=".$tab_ele['periodes'][$loop_per]['num_periode'];
+					//$chaine_preselection_eleve.="&amp;preselection_eleves[".$tab_ele['periodes'][$loop_per]['num_periode']."]=|".$ele_login."|";
+					$chaine_preselection_eleve.="&amp;tab_selection_ele_0_".$loop_per."[]=".$ele_login."";
+				}
+
+				echo "<a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=".$current_id_classe.$chaine_periodes.$chaine_preselection_eleve."&choix_periode=periode' target='_blank' title=\"Voir dans un nouvel onglet les relevés de notes de cet élève.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+				//&valide_select_eleves=y&mode_bulletin=pdf&choix_parametres=effectue&tab_selection_ele_0_0[0]=chandelc&rn_param_auto=y
+
+				for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+					$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+					$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+					echo " - <a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=$current_id_classe&choix_periode=periode&tab_periode_num[0]=$current_num_periode&mode_bulletin=$type_bulletin_par_defaut&valide_select_eleves=y&choix_parametres=effectue&tab_selection_ele_0_0[0]=$ele_login&rn_param_auto=y' target='_blank' title=\"Voir dans un nouvel onglet le relevé de notes ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
+				}
+
+				echo "</div>";
 			}
 
 			echo "<h2>Relevés de notes de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
