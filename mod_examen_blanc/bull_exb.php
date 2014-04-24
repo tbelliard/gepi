@@ -336,7 +336,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										}
 									}
 
-									elseif($lig_groupe->type='moy_plusieurs_periodes') {
+									elseif($lig_groupe->type=='moy_plusieurs_periodes') {
 
 										// Liste des profs du groupe
 										if(!isset($tab_prof_grp[$lig_groupe->id_groupe])) {
