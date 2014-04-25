@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1700,9 +1700,9 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
     echo "<p >\n";
 	echo add_token_field();
     echo "</p >\n";
-    echo "<table><tr><td><label for='login_backup'>Nouvel identifiant : </label></td><td><input type=\"text\" id=\"login_backup\" value=\"\" size=\"20\" /></td></tr>\n";
-    echo "<tr><td><label for='pwd1_backup'>Nouveau mot de passe : </label></td><td><input type=\"password\" id=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>\n";
-    echo "<tr><td><label for='pwd2_backup'>Confirmation du mot de passe : </label></td><td><input type=\"password\" id=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>\n";
+    echo "<table><tr><td><label for='login_backup'>Nouvel identifiant : </label></td><td><input type=\"text\" id=\"login_backup\" name=\"login_backup\" value=\"\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td><label for='pwd1_backup'>Nouveau mot de passe : </label></td><td><input type=\"password\" id=\"pwd1_backup\" name=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>\n";
+    echo "<tr><td><label for='pwd2_backup'>Confirmation du mot de passe : </label></td><td><input type=\"password\" id=\"pwd2_backup\" name=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>\n";
 
     echo "<p class=\"center\"><input type=\"submit\" value=\"Envoyer\" /></p>\n";
     echo "<p >\n";
