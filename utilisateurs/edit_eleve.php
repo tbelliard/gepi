@@ -666,7 +666,7 @@ if($critere_id_classe!='') {
 }
 
 if(($critere_etat!="")&&(in_array($critere_etat, array('actif', 'inactif')))) {
-	$sql.=" AND u.etat='".$_POST['critere_etat']."'";
+	$sql.=" AND u.etat='".$critere_etat."'";
 }
 
 if(count($critere_auth_mode)>0) {
