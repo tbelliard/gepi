@@ -24,6 +24,7 @@ Gestion:
 - Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
 - Possibilité de conserver des mots de passe dans la base Gepi en mode SSO pour mettre en place un accès de secours quand l'authentification SSO fait des siennes.
 - Possibilité de générer les bulletins pour certains responsables non légaux (cas des familles d'accueil).
+- Possibilité de créer des groupes de groupes dont la liste des élèves peut être administrée par des comptes professeurs, cpe, scolarité.
 
 Discipline:
 - Possibilité de définir des avertissements de fin de période,
