@@ -153,6 +153,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 		if($get_groups_for_class_avec_proflist=="y") {
 			$tmp_grp=get_profs_for_group($temp[$i]["id"]);
 			$temp[$i]["proflist_string"]=$tmp_grp['proflist_string'];
+			$temp[$i]['profs']["proflist_string"]=$tmp_grp['proflist_string'];
 		}
 
 		if($get_groups_for_class_avec_visibilite=="y") {

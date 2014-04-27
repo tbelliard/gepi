@@ -287,4 +287,94 @@ if ($test_champ==0) {
 }
 
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'grp_groupes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'grp_groupes'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS grp_groupes (
+id int(11) NOT NULL AUTO_INCREMENT,
+nom_court varchar(20) NOT NULL,
+nom_complet varchar(100) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'grp_groupes_admin' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'grp_groupes_admin'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS grp_groupes_admin (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_grp_groupe int(11) NOT NULL,
+login varchar(50) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'grp_groupes_groupes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'grp_groupes_groupes'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS grp_groupes_groupes (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_grp_groupe int(11) NOT NULL,
+id_groupe int(11) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Initialisation du terme 'groupe de groupes' : ";
+$groupe_de_groupes=getSettingValue('groupe_de_groupes');
+if ($groupe_de_groupes=="") {
+	if (!saveSetting("groupe_de_groupes", 'groupe de groupes')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
+
+$result .= "&nbsp;-> Initialisation du terme 'groupes de groupes' : ";
+$groupes_de_groupes=getSettingValue('groupes_de_groupes');
+if ($groupes_de_groupes=="") {
+	if (!saveSetting("groupes_de_groupes", 'groupes de groupes')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
+
 ?>

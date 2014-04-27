@@ -7303,7 +7303,7 @@ function fwrite_debug($fichier, $mode, $texte) {
  *
  * @return integer Numéro de la période
  */
-function cherche_periode_courante($id_classe, $ts, $valeur_par_defaut="", $pour_bulletins="n") {
+function cherche_periode_courante($id_classe, $ts="", $valeur_par_defaut="", $pour_bulletins="n") {
 	global $mysqli;
 	//echo "<pre>\$ts=$ts</pre>";
 	$retour=$valeur_par_defaut;
@@ -10940,5 +10940,73 @@ function get_tab_infos_epreuve_blanche($id_epreuve) {
 	}
 
 	return $tab;
+}
+
+
+function get_tab_grp_groupes($id_grp_groupe, $champs_groupes=array('classes', 'matieres')) {
+	$tab=array();
+
+	$sql="SELECT * FROM grp_groupes WHERE id='$id_grp_groupe';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab=mysqli_fetch_assoc($res);
+		$tab['id_grp_groupe']=$tab['id'];
+
+		// Récupérer les groupes associés
+		$tab['groupes']=array();
+		$sql="SELECT * FROM grp_groupes_groupes WHERE id_grp_groupe='$id_grp_groupe';";
+		$res_groupes=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_groupes)>0) {
+			$cpt=0;
+
+			while($lig=mysqli_fetch_object($res_groupes)) {
+				$tab['groupes'][$cpt]=get_group($lig->id_groupe, $champs_groupes);
+				$tab['groupes'][$cpt]['id_groupe']=$lig->id_groupe;
+				$cpt++;
+			}
+		}
+
+		// Récupérer les utilisateurs associés
+		$tab['admin']=array();
+		$sql="SELECT u.login, u.civilite, u.nom, u.prenom, u.statut FROM grp_groupes_admin gga, utilisateurs u WHERE id_grp_groupe='$id_grp_groupe' AND u.login=gga.login ORDER BY statut, nom, prenom;";
+		$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_u)>0) {
+			$cpt=0;
+
+			while($lig=mysqli_fetch_object($res_u)) {
+				$tab['admin'][$cpt]['login']=$lig->login;
+				$tab['admin'][$cpt]['nom']=casse_mot($lig->nom, 'maj');
+				$tab['admin'][$cpt]['prenom']=casse_mot($lig->prenom, 'majf2');
+				$tab['admin'][$cpt]['civilite']=$lig->civilite;
+				$tab['admin'][$cpt]['statut']=$lig->statut;
+
+				$tab['admin'][$cpt]['denomination']=$lig->civilite." ".$tab['admin'][$cpt]['nom']." ".$tab['admin'][$cpt]['prenom'];
+
+				$cpt++;
+			}
+		}
+
+	}
+	return $tab;
+}
+
+function acces_modif_liste_eleves_grp_groupes($id_groupe="", $id_grp_groupe="") {
+	if(($id_groupe=="")&&($id_grp_groupe=="")) {
+		$sql="SELECT 1=1 FROM grp_groupes_admin WHERE login='".$_SESSION['login']."';";
+	}
+	elseif($id_groupe!="") {
+		$sql="SELECT 1=1 FROM grp_groupes_admin gga, grp_groupes_groupes ggg WHERE gga.login='".$_SESSION['login']."' AND gga.id_grp_groupe=ggg.id_grp_groupe AND ggg.id_groupe='$id_groupe';";
+	}
+	elseif($id_grp_groupe!="") {
+		$sql="SELECT 1=1 FROM grp_groupes_admin gga WHERE gga.login='".$_SESSION['login']."' AND gga.id_grp_groupe='$id_grp_groupe';";
+	}
+	//echo "$sql<br />";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 ?>

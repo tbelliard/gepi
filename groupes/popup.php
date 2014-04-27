@@ -317,11 +317,17 @@ if($gepi_prof_suivi==""){
 	echo "</h2>\n";
 
 	if(($_SESSION['statut']=='professeur')&&(isset($id_groupe))&&($id_groupe!="VIE_SCOLAIRE")) {
-		echo "<div class='noprint' style='float:right; width: 20px; height: 20px'>
+
+		if(acces_modif_liste_eleves_grp_groupes($id_groupe)) {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' target=\"_blank\" title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\"><img src='../images/icons/edit_user.png' class='icone16' title=\"Modifier.\" /></a></div>";
+		}
+		else {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'>
 	<a href='signalement_eleves.php?id_groupe=$id_groupe' title=\"Signaler des erreurs d'affectation.\">
 		<img src='../images/icons/ico_attention.png' width='22' height='19' alt='Erreur_grp' />
 	</a>
 </div>\n";
+		}
 	}
 
 	echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='";

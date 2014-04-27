@@ -946,3 +946,28 @@ description TEXT NOT NULL
 DROP TABLE IF EXISTS notanet_saisie;
 CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS grp_groupes;
+CREATE TABLE IF NOT EXISTS grp_groupes (
+id int(11) NOT NULL AUTO_INCREMENT,
+nom_court varchar(20) NOT NULL,
+nom_complet varchar(100) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS grp_groupes_admin;
+CREATE TABLE IF NOT EXISTS grp_groupes_admin (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_grp_groupe int(11) NOT NULL,
+login varchar(50) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS grp_groupes_groupes;
+CREATE TABLE IF NOT EXISTS grp_groupes_groupes (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_grp_groupe int(11) NOT NULL,
+id_groupe int(11) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

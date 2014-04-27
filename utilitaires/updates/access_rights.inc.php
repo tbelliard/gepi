@@ -1080,6 +1080,29 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_avertissement_
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/afficher_incidents_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Affichage des incidents pour un élève.', '');";
 
+$tab_req[] = "INSERT INTO droits SET id='/groupes/grp_groupes_edit_eleves.php',
+administrateur='F',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Edition des élèves des groupes de groupes',
+statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/groupes/modify_grp_group.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Gestion des groupes de groupes',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

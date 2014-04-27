@@ -1365,6 +1365,15 @@ if(getSettingAOui('active_bulletins')) {
 			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
+	if((acces_modif_liste_eleves_grp_groupes())&&
+		(($this->statutUtilisateur=='scolarite')||
+			($this->statutUtilisateur=='professeur')||
+			($this->statutUtilisateur=='cpe'))) {
+		$this->creeNouveauItem("/groupes/grp_groupes_edit_eleves.php",
+			"Correction des listes d'".$this->gepiSettings['denomination_eleves']."",
+			"Ce menu permet de vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
+	}
+
 	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
 	) {

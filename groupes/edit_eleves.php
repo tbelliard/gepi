@@ -840,12 +840,10 @@ if ($order_by == "classe") {
 }
 
 //=============================
-// AJOUT: boireaus
 echo "<tr><th>";
 //=============================
 
 //=========================
-// AJOUT: boireaus 20071010
 unset($login_eleve);
 //=========================
 
@@ -896,9 +894,7 @@ foreach ($current_group["periodes"] as $period) {
 }
 
 //=============================
-// MODIF: boireaus
-//echo "<tr><td>&nbsp;</td>";
-echo "&nbsp;</td>\n";
+echo "&nbsp;</th>\n";
 //=============================
 
 if ($multiclasses) { echo "<td>&nbsp;</td>\n"; }
@@ -1075,7 +1071,7 @@ if(count($total_eleves)>0) {
 						//echo "<input type='checkbox' name='eleve_".$period["num_periode"] . "_" . $e_login."' ";
 						echo "<input type='checkbox' name='eleve_".$period["num_periode"]."_".$num_eleve."' id='case_".$period["num_periode"]."_".$num_eleve."' ";
 						//=========================
-						echo " onchange='changement();'";
+						echo " onchange='modif_grisage_case(".$period["num_periode"].", $num_eleve), changement();'";
 						if (in_array($e_login, (array)$current_group["eleves"][$period["num_periode"]]["list"])) {
 							echo " checked />";
 						} else {
@@ -1232,6 +1228,30 @@ if(count($total_eleves)>0) {
 	}
 
 	griser_degriser('griser');
+
+	function modif_grisage_case(num_per, num_ligne) {
+		temoin='n';
+		if(document.getElementById('case_'+num_per+'_'+num_ligne)) {
+			for(i=0;i<=".count($current_group["periodes"]).";i++) {
+				if(document.getElementById('case_'+i+'_'+num_ligne)){
+					if(document.getElementById('case_'+i+'_'+num_ligne).checked == true) {
+						temoin='y';
+					}
+				}
+			}
+
+			if(temoin=='y') {
+				if(document.getElementById('tr_'+num_ligne)) {
+					document.getElementById('tr_'+num_ligne).style.backgroundColor='';
+				}
+			}
+			else {
+				if(document.getElementById('tr_'+num_ligne)) {
+					document.getElementById('tr_'+num_ligne).style.backgroundColor='grey';
+				}
+			}
+		}
+	}
 
 	function CocheColonne(i) {
 		for (var ki=0;ki<$nb_eleves;ki++) {

@@ -2507,7 +2507,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 			else {
 				$temp_style="";
 			}
-			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite $lig->nom $lig->prenom</span></label><br />\n";
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label><br />\n";
 
 			$cpt++;
 		}
@@ -2754,9 +2754,10 @@ function img_calendrier_js($id_champ, $id_img) {
  * @param type $tab_id_champ tableau des id des champs checkbox
  * @param type $tab_valeur_champ tableau des valeurs des champs checkbox
  * @param int $nbcol Nombre de colonnes
+ * @param type $tab_valeurs_preselectionnees tableau des valeurs présélectionnées
  * @param type $extra_options Options supplémentaires
  */
-function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "", $nom_func_tout_cocher="modif_coche", $nbcol=3) {
+function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur_champ, $nom_js_func = "", $nom_func_tout_cocher="modif_coche", $nbcol=3, $tab_valeurs_preselectionnees=array()) {
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -2791,7 +2792,14 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 		if($nom_js_func!="") {
 			echo " onchange=\"$nom_js_func('$tab_id_champ[$i]')\"";
 		}
-		echo "/><label for='".$tab_id_champ[$i]."' id='label_".$tab_id_champ[$i]."'>".$tab_txt[$i]."</label>";
+		if(in_array($tab_valeur_champ[$i] , $tab_valeurs_preselectionnees)) {
+			echo " checked";
+		}
+		echo " /><label for='".$tab_id_champ[$i]."' id='label_".$tab_id_champ[$i]."'";
+		if(in_array($tab_valeur_champ[$i] , $tab_valeurs_preselectionnees)) {
+			echo " style='font-weight:bold;'";
+		}
+		echo ">".$tab_txt[$i]."</label>";
 		echo "<br />\n";
 		$i++;
 	}
