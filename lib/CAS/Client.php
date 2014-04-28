@@ -780,10 +780,13 @@ class CAS_Client
         $server_hostname,
         $server_port,
         $server_uri,
-        $changeSessionID = true
+        $changeSessionID = true,
+        $service_address = null
     ) {
 
         phpCAS::traceBegin();
+        
+        $this->_server_base_url = $service_address;
 
         $this->_setChangeSessionID($changeSessionID); // true : allow to change the session_id(), false session_id won't be change and logout won't be handle because of that
 
@@ -3051,11 +3054,17 @@ class CAS_Client
         // the URL is built when needed only
         if ( empty($this->_url) ) {
             $final_uri = '';
-            // remove the ticket if present in the URL
-            $final_uri = ($this->_isHttps()) ? 'https' : 'http';
-            $final_uri .= '://';
+            
+            if ($this->_server_base_url != null) {
+              $final_uri .= $this->_server_base_url;
+            } else {
+              $final_uri = ($this->_isHttps()) ? 'https' : 'http';
+              $final_uri .= '://';
 
-            $final_uri .= $this->_getServerUrl();
+              $final_uri .= $this->_getServerUrl();
+            }
+            
+            // remove the ticket if present in the URL
             $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
             $final_uri		.= $request_uri[0];
 
