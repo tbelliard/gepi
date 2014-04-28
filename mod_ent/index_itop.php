@@ -5019,7 +5019,21 @@ if($mode=="forcer_mdp_eleves") {
 	<td id='td_password_actuel_$cpt'>".$eleve_courant['password']."</td>
 	<td>".$eleve_courant['auth_mode']."</td>
 
-	<td><label for='ligne_$cpt'>".$eleve_courant['LOGIN_GEPI']."</label></td>
+	<td><label for='ligne_$cpt'>".$eleve_courant['LOGIN_GEPI']."</label>";
+			if($eleve_courant['nom']=="") {
+				$sql="SELECT nom, prenom FROM eleves WHERE login='".$eleve_courant['LOGIN_GEPI']."';";
+				$res_ele_nom=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_ele_nom)==0) {
+					echo " <img src='../images/icons/flag.png' class='icone16' alt='Non trouvé' title=\"Aucun élève n'a été trouvé pour le login indiqué.\" />";
+				}
+				else {
+					$lig_ele_nom=mysqli_fetch_object($res_ele_nom);
+					echo " <a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig_ele_nom->nom)."' title=\"L'élève $lig_ele_nom->nom $lig_ele_nom->prenom existe dans Gepi, mais il n'a pas de compte d'utilisateur.
+
+Suivez ce lien pour contrôler et créer un compte pour cet élève.\"><img src='../images/icons/buddy_plus.png' class='icone16' alt='Créer' /></a>";
+				}
+			}
+			echo "</td>
 	<td>".$eleve_courant['MOT_DE_PASSE_GEPI']."</td>";
 
 				echo "
