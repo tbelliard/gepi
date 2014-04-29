@@ -106,7 +106,16 @@ if ( isset($_POST["creation_traitement"]) && $_POST["creation_traitement"] == 'y
 	    $message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
 	} else {
 	    $traitement->save();
-            $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
+            if((isset($_POST['retour_absences_du_jour']))&&($_POST['retour_absences_du_jour']=="yes")) {
+                $url='./absences_du_jour.php';
+                $id_eleve=isset($_POST['id_eleve']) ? $_POST['id_eleve'] : (isset($_GET['id_eleve']) ? $_GET['id_eleve'] : NULL);
+                if(isset($id_eleve)) {
+                    $url.="#ancre_id_eleve_$id_eleve";
+                }
+            }
+            else {
+                $url='./visu_traitement.php?id_traitement='.$traitement->getId().'';
+            }
             if($menu){
                 $url.='&menu=false';
             }

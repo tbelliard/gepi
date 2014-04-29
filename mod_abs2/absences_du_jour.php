@@ -69,6 +69,17 @@ if ((isset($_POST["creation_lot_traitements"]))&&($_POST["creation_lot_traitemen
     die();
 }
 
+/*
+if ((isset($_POST["chercher_traitements_a_rattacher"]))&&($_POST["chercher_traitements_a_rattacher"]=="yes")) {
+    // On reçoit:
+    // id_traitement=XXXXX
+    // filter_recherche_saisie_a_rattacher=oui
+    // rattachement_preselection=y
+    include('liste_saisies_selection_traitement.php');
+    die();
+}
+*/
+
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
@@ -76,6 +87,9 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
 if (isset($_POST["creation_notification"])) {
     include('creation_notification.php');
 }
+
+$photo_redim_taille_max_largeur=45;
+$photo_redim_taille_max_hauteur=45;
 
 //récupération des paramètres de la requète
 //contrairement aux autres pages, on ne recupere pas les parametres dans la session
@@ -519,6 +533,11 @@ Cela devrait permettre de contourner le problème.\">
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<input type="hidden" id="creation_lot_traitements" name="creation_lot_traitements" value="no"/>
+
+			<!--input type="hidden" id="chercher_traitements_a_rattacher" name="chercher_traitements_a_rattacher" value="no"/>
+			<input type="hidden" id="filter_recherche_saisie_a_rattacher" name="filter_recherche_saisie_a_rattacher" value=""/>
+			<input type="hidden" id="rattachement_preselection" name="rattachement_preselection" value=""/-->
+
 			<p>
 			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 				<span>Ajouter au traitement</span>
@@ -663,6 +682,9 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 			$ligne_courante.="<td".$color_hier.">".$aff_compter_hier."</td>\n";
 			$ligne_courante.="<td>";
 
+			$ligne_courante.="<a name='ancre_login_eleve_".$eleve->getLogin()."'></a>";
+			$ligne_courante.="<a name='ancre_id_eleve_".$eleve->getId()."'></a>";
+
 			$ligne_courante.=strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
 			$ligne_courante.=' ';
 			$ligne_courante.=$eleve->getClasseNom($dt_date_absence_eleve);
@@ -694,20 +716,32 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 				$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 				$violet = false;
 				$style = '';
-				foreach ($absences_du_creneau as $absence) {                      
+				$chaine_conflits="";
+				foreach ($absences_du_creneau as $absence) {
 					$traitement_col->addCollection($absence->getAbsenceEleveTraitements());
 					if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $absence->isSaisiesContradictoiresManquementObligation()) {
 						//if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
 						$violet = true;
 						break;
 					} else {
-						$style = 'style="background-color :'.$absence->getColor().'"';   
+						$style = 'style="background-color :'.$absence->getColor().'"';
 					}
 				}
 				if ($violet) {
 					$style = 'style="background-color : purple"';
 				} 
 				$ligne_courante.='<td '.$style.'>';
+
+				/*
+				if($violet) {
+					echo "<div style='float:left; width:30em; height:30em; font-size:x-small; overflow:auto;'>";
+					echo "<p>".strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())." en ".$edt_creneau->getNomDefiniePeriode()." (".$absence->getId().")</p>";
+					echo "<pre>";
+					print_r($absence->getSaisiesContradictoiresManquementObligation(false));
+					echo "</pre>";
+					echo "</div>";
+				}
+				*/
 
 				//si il y a des absences de l'utilisateurs on va proposer de les modifier
 				$nb_checkbox_eleve_courant_sur_ce_creneau=0;
@@ -803,6 +837,26 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 						$ligne_courante.=$saisie_justifiee_ou_pas;
 						$ligne_courante.="</span>";
 
+						// 20140429
+						if($violet) {
+							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+								/*
+								$ligne_courante.="<a href=\"#\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\" onclick=\"document.getElementById('id_traitement').value = '".$traitement->getId()."'; 
+								document.getElementById('creation_traitement').value='no'; 
+								document.getElementById('ajout_traitement').value='no'; 
+								document.getElementById('creation_lot_traitements').value = 'no'; 
+								document.getElementById('chercher_traitements_a_rattacher').value='yes'; 
+								document.getElementById('filter_recherche_saisie_a_rattacher').value='oui'; 
+								document.getElementById('rattachement_preselection').value='y'; 
+								pop_it(document.creer_traitement);
+								return false;\" target=\"_blank\">";
+								*/
+								$ligne_courante.="<a href=\"liste_saisies_selection_traitement.php?id_traitement=".$traitement->getId()."&amp;filter_recherche_saisie_a_rattacher=oui&amp;rattachement_preselection=y&amp;id_eleve=".$eleve->getId()."\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\"\"><img src='../images/icons/chercher.png' class='icone16' alt='Chercher' /></a>";
+								// target=\"_blank\"
+
+							}
+						}
+
 						/*
 						$ligne_courante.="<br />";
 						$tab_traitements_deja_affiches=array();
@@ -839,7 +893,7 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 			$ligne_courante.='<div add_select_shorcuts_button="true" eleve_id="'.$eleve->getPrimaryKey().'"></div>';
 			$ligne_courante.='<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
 				<span>Ajouter au traitement</span>
-				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';              		
+				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';
 			foreach ($traitement_col as $traitement) {
 				$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
 				if($nb_checkbox_eleve_courant==1) {
@@ -863,7 +917,7 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 
 			$ligne_courante.='<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
 				<span>Ajouter (fenêtre)</span>
-				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';				
+				<div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">';
 			foreach ($traitement_col as $traitement) {
 				$ligne_courante.='<button dojoType="dijit.MenuItem" onClick="';
 				if($nb_checkbox_eleve_courant==1) {
@@ -1082,27 +1136,4 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 
 require_once("../lib/footer.inc.php");
 
-//fonction redimensionne les photos petit format
-function redimensionne_image_petit($photo) {
-    // prendre les informations sur l'image
-    $info_image = getimagesize($photo);
-    // largeur et hauteur de l'image d'origine
-    $largeur = $info_image[0];
-    $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
-             $taille_max_largeur = 45;
-             $taille_max_hauteur = 45;
-
-    // calcule le ratio de redimensionnement
-     $ratio_l = $largeur / $taille_max_largeur;
-     $ratio_h = $hauteur / $taille_max_hauteur;
-     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-    // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
-
-   // on renvoit la largeur et la hauteur
-    return array($nouvelle_largeur, $nouvelle_hauteur);
- }
 ?>
