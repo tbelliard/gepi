@@ -1230,7 +1230,6 @@ INSERT INTO droits VALUES ( '/mod_discipline/saisie_avertissement_fin_periode.ph
 INSERT INTO droits VALUES ( '/mod_discipline/afficher_incidents_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Affichage des incidents pour un élève.', '');
 INSERT INTO setting SET name='imprDiscProfAvtOOo', value='n';
 INSERT INTO droits SET id='/groupes/grp_groupes_edit_eleves.php',administrateur='F',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Edition des élèves des groupes de groupes',statut='';
-INSERT INTO droits SET id='/groupes/modify_grp_group.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',
-description='Gestion des groupes de groupes',statut='';
+INSERT INTO droits SET id='/groupes/modify_grp_group.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion des groupes de groupes',statut='';
 INSERT INTO setting SET name='groupe_de_groupes', value='groupe de groupes';
 INSERT INTO setting SET name='groupes_de_groupes', value='groupes de groupes';
