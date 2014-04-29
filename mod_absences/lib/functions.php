@@ -672,6 +672,9 @@ function redimensionne_image($photo)
     return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
+$photo_redim_taille_max_largeur=60;
+$photo_redim_taille_max_hauteur=60;
+/*
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
  {
@@ -696,6 +699,7 @@ function redimensionne_image_petit($photo)
    // on renvoit la largeur et la hauteur
     return array($nouvelle_largeur, $nouvelle_hauteur);
  }
+*/
 
 function qui($login_perso)
 {
