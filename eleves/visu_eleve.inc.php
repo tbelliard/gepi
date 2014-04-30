@@ -2967,7 +2967,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			    require_once("../lib/initialisationsPropel.inc.php");
 			    $eleve = EleveQuery::create()->findOneByLogin($ele_login);
 
-			    echo "<table class='boireaus'>\n";
+			    echo "<table class='boireaus boireaus_alt'>\n";
 				echo "<caption>Bilan des absences</caption>\n";
 			    echo "<tr>\n";
 			    echo "<th title=\"Les dates de fin de période correspondent à ce qui est paramétré en colonne 'Date de fin' de la page de Verrouillage des périodes de notes (page accessible en compte scolarité).\">Période</th>\n";
@@ -2976,14 +2976,12 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			    echo "<th>Nombre de retards</th>\n";
 			    echo "<th>Appréciation</th>\n";
 			    echo "</tr>\n";
-			    $alt=1;
 			    foreach($eleve->getPeriodeNotes() as $periode_note) {
 				    if ($periode_note->getDateDebut() == null) {
 					//periode non commencee
 					continue;
 				    }
-				    $alt=$alt*(-1);
-				    echo "<tr class='lig$alt'>\n";
+				    echo "<tr>\n";
 				    echo "<td>".$periode_note->getNomPeriode();
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
 				    echo " au ";
