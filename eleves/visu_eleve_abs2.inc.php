@@ -402,7 +402,7 @@ foreach ($donnees as $id => $eleve) {
 		<?php echo $ligne;?>
 	  </td>
 	  <td  align="center" class="<?php echo $style; ?>">
-		<?php echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ; ?>
+		<?php echo getDateDescription($value['dates']['debut'], $value['dates']['fin'], 'y') ; ?>
 	  </td>
 	  
 	  <td align="center" class="<?php echo $style; ?>">

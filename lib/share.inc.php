@@ -6202,19 +6202,56 @@ function nettoyage_retours_ligne_surnumeraires($texte) {
  * @param date $date_fin
  * @return string Les dates formatées 
  */
-function getDateDescription($date_debut,$date_fin) {
+function getDateDescription($date_debut,$date_fin, $avec_temoin_pb="n") {
+	global $mysqli;
+
+	$flag="";
+	if($avec_temoin_pb=="y") {
+		global $tab_heure_ouverture;
+
+		$num_jour=strftime("%u", $date_debut);
+		//echo "num_jour=$num_jour<br />";
+		if(!isset($tab_heure_ouverture_etablissement[$num_jour])) {
+
+			$tab_sem[1] = 'lundi';
+			$tab_sem[2] = 'mardi';
+			$tab_sem[3] = 'mercredi';
+			$tab_sem[4] = 'jeudi';
+			$tab_sem[5] = 'vendredi';
+			$tab_sem[6] = 'samedi';
+			$tab_sem[7] = 'dimanche';
+
+			$sql="SELECT ouverture_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tab_sem[$num_jour]."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$lig=mysqli_fetch_object($res);
+				$tab_heure_ouverture_etablissement[strftime("%u", $date_debut)]=$lig->ouverture_horaire_etablissement;
+			}
+		}
+
+		if(isset($tab_heure_ouverture_etablissement[$num_jour])) {
+			//echo "strftime('%I:%M:%S', $date_debut)=".strftime("%I:%M:%S", $date_debut)."<br />";
+			//echo "\$tab_heure_ouverture_etablissement[$num_jour]=".$tab_heure_ouverture_etablissement[$num_jour]."<br />";
+			if(strftime("%H:%M:%S", $date_debut)<$tab_heure_ouverture_etablissement[$num_jour]) {
+				$flag=" <img src='../images/icons/flag.png' class='icone16' alt='Anomalie' title=\"L'heure de début est antérieure à l'heure d'ouverture de l'établissement.
+Dans le cas d'une absence ou d'un retard, il se peut qu'il ne soit pas pris en compte dans le décompte.\" />";
+			}
+		}
+	}
+
 	$message = '';
 	if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
 	$message .= 'le ';
 	$message .= (strftime("%a %d/%m/%Y", $date_debut));
 	$message .= ' entre  ';
-	$message .= (strftime("%H:%M", $date_debut));
+	$message .= (strftime("%H:%M", $date_debut)).$flag;
 	$message .= ' et ';
 	$message .= (strftime("%H:%M", $date_fin));
 
 	} else {
 	$message .= ' entre le ';
-	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_debut));
+	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_debut)).$flag;
 	$message .= ' et le ';
 	$message .= (strftime("%a %d/%m/%Y %H:%M", $date_fin));
 	}
