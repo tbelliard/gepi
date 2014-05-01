@@ -764,7 +764,21 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 					if(!in_array($eleve_id_courant, $tab_eleve_id)) {$tab_eleve_id[]=$eleve_id_courant;}
 
 					$chaine_contenu_td.='/>';
-					$chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'"/>';
+/*
+echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
+echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+
+if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
+    echo 'Modifiée le : ';
+    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
+    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
+    if ($modifie_par_utilisateur != null) {
+		echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.mb_substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
+    }
+}
+*/
+					$chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'
+Du '.get_date_heure_from_mysql_date($saisie->getDebutAbs()).' au '.get_date_heure_from_mysql_date($saisie->getFinAbs()).'"/>';
 
 					$nb_checkbox_eleve_courant++;
 					$nb_checkbox_eleve_courant_sur_ce_creneau++;
