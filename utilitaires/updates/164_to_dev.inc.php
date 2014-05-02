@@ -377,4 +377,29 @@ if ($groupes_de_groupes=="") {
 	$result .= msj_present("déjà faite");
 }
 
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'groupes_param' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'groupes_param'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS groupes_param (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_groupe int(11) NOT NULL,
+name varchar(100) NOT NULL,
+value varchar(100) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
+
 ?>

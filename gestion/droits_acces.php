@@ -179,6 +179,11 @@ $texteItem="peut voir, sur les bulletins simplifiés, les propositions de correc
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='PeutAutoriserPPaCorrigerSesApp';
+$texteItem="peut autoriser le ".getSettingValue('gepi_prof_suivi')." à corriger les fautes de frappe;) dans ses appréciations.<br />(<em>l'autorisation se fait enseignement par enseignement, par le professeur lui-même dans 'Gérer mon compte'.<br />Le professeur concerné reçoit un mail l'informant d'une modification par le ".getSettingValue('gepi_prof_suivi').".</em>).<br />";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -559,6 +564,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='PeutDonnerAccesBullNotePeriodeCloseScol';
 $texteItem="a accès à l'ouverture exceptionnelle de saisie/correction de notes du bulletin d'un enseignement particulier en période partiellement close<br />(<em>typiquement pour corriger une erreur sans devoir rouvrir complètement la période en saisie pour tous les professeurs, ni devoir passer par un compte secours pour faire la modification à la place du professeur.</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='AccesModifAppreciationScol';
+$texteItem="peut corriger les appréciations des professeurs en période non close.<br />(<em>cela permet de corriger des fautes pendant le conseil de classe.<br />Le professeur concerné reçoit un mail l'informant de la modification.</em>).";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

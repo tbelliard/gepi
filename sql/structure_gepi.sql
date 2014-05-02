@@ -971,3 +971,11 @@ id_groupe int(11) NOT NULL,
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS groupes_param;
+CREATE TABLE IF NOT EXISTS groupes_param (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_groupe int(11) NOT NULL,
+name varchar(100) NOT NULL,
+value varchar(100) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

@@ -11082,4 +11082,16 @@ function redimensionne_image_petit($photo)
 	return array($nouvelle_largeur, $nouvelle_hauteur);
 }
 
+// Le prof de $id_groupe a-t-il autorisé le PP à corriger ses appréciations
+// On teste aussi getSettingAOui('PeutAutoriserPPaCorrigerSesApp')
+function acces_correction_app_pp($id_groupe) {
+	$sql="SELECT 1=1 FROM groupes_param WHERE id_groupe='$id_groupe' AND name='AutoriserCorrectionAppreciationParPP' AND value='y';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 ?>

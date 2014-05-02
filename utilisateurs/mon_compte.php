@@ -852,6 +852,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	check_token();
 
+	$message_bulletins="";
+
 	$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 	$insert=savePref($_SESSION['login'], 'aff_photo_saisie_app', $aff_photo_saisie_app);
 	if($insert) {
@@ -859,22 +861,65 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	}
 	else {
 		$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />\n";
-		$message_cn.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />";
+		$message_bulletins.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />";
 	}
 
 	$saisie_app_nb_cols_textarea=isset($_POST['saisie_app_nb_cols_textarea']) ? $_POST['saisie_app_nb_cols_textarea'] : 100;
 	if((!is_numeric($saisie_app_nb_cols_textarea))||($saisie_app_nb_cols_textarea<=0)) {
 		$msg.="Valeur invalide sur saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	elseif(!savePref($_SESSION['login'], 'saisie_app_nb_cols_textarea', $saisie_app_nb_cols_textarea)) {
 		$msg.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	else {
 		$msg.="Enregistrement de saisie_app_nb_cols_textarea effectué.<br />\n";
-		$message_bulletins="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
+
+
+
+	$id_groupe_AppPP=isset($_POST['id_groupe_AppPP']) ? $_POST['id_groupe_AppPP'] : array();
+	$id_groupe_PP_correction_autorisee=isset($_POST['id_groupe_PP_correction_autorisee']) ? $_POST['id_groupe_PP_correction_autorisee'] : array();
+
+	$cpt_modif=0;
+	$cpt_err=0;
+	for($loop=0;$loop<count($id_groupe_AppPP);$loop++) {
+		if(acces_correction_app_pp($id_groupe_AppPP[$loop])) {
+			if(isset($id_groupe_PP_correction_autorisee[$loop])) {
+				// Pas de changement.
+			}
+			else {
+				$sql="DELETE FROM groupes_param WHERE id_groupe='".$id_groupe_AppPP[$loop]."' AND name='AutoriserCorrectionAppreciationParPP';";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$del) {
+					$cpt_err++;
+				}
+				else {
+					$cpt_modif++;
+				}
+			}
+		}
+		else {
+			if(isset($id_groupe_PP_correction_autorisee[$loop])) {
+				$sql="INSERT INTO groupes_param SET id_groupe='".$id_groupe_AppPP[$loop]."', name='AutoriserCorrectionAppreciationParPP', value='y';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$cpt_err++;
+				}
+				else {
+					$cpt_modif++;
+				}
+			}
+		}
+	}
+
+	$msg.="$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."<br />";
+	$msg.="$cpt_err erreur(s) lors de l'opération.<br />";
+
+	$message_bulletins.="<span style='color:green'>$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."</span><br />";
+	$message_bulletins.="<span style='color:red'>$cpt_err erreur(s) lors de l'opération.</span><br />";
 }
 
 
@@ -2393,6 +2438,51 @@ if($_SESSION["statut"] == "professeur") {
 	echo " tabindex='$tabindex' ";
 	$tabindex++;
 	echo " />";
+
+	// 20140502
+	if((getSettingAOui('PeutAutoriserPPaCorrigerSesApp'))&&(count($groups)>0)) {
+		echo "<p style='margin-top:1em;'>Vous pouvez autoriser le ".getSettingValue('gepi_prof_suivi')." à corriger vos appréciations sur les bulletins.<br />
+(<em>vous recevrez un mail lors des modifications de vos appréciations</em>).</p>
+<p>Autoriser la modification/correction pour le ou les enseignements suivants&nbsp;:</p>
+<ul>";
+		$cpt_grp_pp=0;
+		foreach($groups as $group) {
+			/*
+			echo "<li><pre>";
+			print_r($group);
+			echo "</pre></li>";
+			*/
+
+			//if($group['visibilite']['bulletins']=="y") {
+			$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='".$group['id']."' AND domaine='bulletins' AND visible='n';";
+			$res_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_vis)==0) {
+				echo "
+	<li>
+		<input type='hidden' name='id_groupe_AppPP[$cpt_grp_pp]' value='".$group['id']."' />
+		<input type='checkbox' name='id_groupe_PP_correction_autorisee[$cpt_grp_pp]' id='id_groupe_PP_correction_autorisee_$cpt_grp_pp' value='y' onchange=\"checkbox_change('id_groupe_PP_correction_autorisee_$cpt_grp_pp');changement()\" ";
+				if(acces_correction_app_pp($group['id'])) {
+					echo "checked ";
+				}
+				echo "/><label for='id_groupe_PP_correction_autorisee_$cpt_grp_pp' id='texte_id_groupe_PP_correction_autorisee_$cpt_grp_pp'";
+				if(acces_correction_app_pp($group['id'])) {
+					echo "style='font-weight:bold;' ";
+				}
+				echo ">".$group['name']." (<em style='font-size:small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['profs']['proflist_string']."</em>)&nbsp;: ";
+				$cpt_class_grp=0;
+				foreach($group['classes']['classes'] as $current_id_classe => $current_classe) {
+					if($cpt_class_grp>0) {echo ", ";}
+					echo "<strong>".$current_classe['classe']."</strong> (<em title=\"".ucfirst(getSettingValue('gepi_prof_suivi'))."\">".liste_des_prof_suivi_de_telle_classe($current_id_classe)."</em>)";
+					$cpt_class_grp++;
+				}
+				echo "</label>
+	</li>";
+				$cpt_grp_pp++;
+			}
+		}
+		echo "
+</ul>";
+	}
 
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";

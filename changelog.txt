@@ -11,6 +11,10 @@ Cahier de notes:
 
 Bulletins:
 - Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+- Possibilité de donner le droit aux comptes scolarité de corriger des appréciations
+  (avec envoi de mail de compte-rendu de modification).
+- Possibilité de donner le droit aux professeurs d'autoriser (via Gérer mon compte) tel ou tel professeur principal à corriger leurs appréciations
+  (avec envoi de mail de compte-rendu de modification).
 
 EDT: 
 - Facilités de navigation Classe/Prof/Salle en cliquant dans le créneau affiché.

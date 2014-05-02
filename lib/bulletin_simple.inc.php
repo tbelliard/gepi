@@ -88,8 +88,9 @@ if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) 
 
 global $mysqli;
 $tab_modif_app_proposees=array();
+$tab_mes_groupes=array();
 if($_SESSION['statut']=='professeur') {
-	$tab_mes_groupes=array();
+	//$tab_mes_groupes=array();
 	$sql = "SELECT jgp.id_groupe FROM j_groupes_professeurs jgp WHERE login = '" . $_SESSION['login'] . "';" ;
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -122,6 +123,12 @@ if($_SESSION['statut']=='professeur') {
 		lib_corriger_appreciation();
 	}
 	global $corriger_app_id_groupe;
+	//global $tab_mes_groupes;
+/*
+echo "tab_mes_groupes:<pre>";
+print_r($tab_mes_groupes);
+echo "</pre>";
+*/
 }
 elseif($_SESSION['statut']=='scolarite') {
 	$sql="SELECT DISTINCT ma.* FROM matieres_app_corrections ma,j_groupes_classes jgc WHERE jgc.id_groupe=ma.id_groupe AND jgc.id_classe='$id_classe';";
@@ -130,6 +137,12 @@ elseif($_SESSION['statut']=='scolarite') {
 	if($res_mad->num_rows>0) {
 		while($lig_mad=$res_mad->fetch_object()) {
 			$tab_modif_app_proposees[$lig_mad->id_groupe][$lig_mad->periode][$lig_mad->login]=$lig_mad->appreciation;
+		}
+	}
+
+	if(getSettingAOui('AccesModifAppreciationScol')) {
+		if((!isset($necessaire_corriger_appreciation_insere))||($necessaire_corriger_appreciation_insere=="n")) {
+			lib_corriger_appreciation();
 		}
 	}
 }
@@ -742,6 +755,8 @@ if ($on_continue == 'yes') {
 					}
 					else {
 						// 20120409
+						echo affiche_lien_proposition_ou_correction_appreciation($current_eleve_login, $current_id_eleve, $current_eleve_prenom, $current_eleve_nom, $current_group, $id_classe, $nb, $liste_profs_du_groupe, $tab_mes_groupes, $tab_afficher_liens_modif_app);
+						/*
 						if(($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
 							if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N') {
 								echo "<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
@@ -759,6 +774,7 @@ Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhai
 								//echo "plop";
 							}
 						}
+						*/
 
 						// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
 						// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
@@ -1806,6 +1822,56 @@ function afficher_liens_modif_app($id_classe, $periode1, $periode2) {
 	}
 
 	return array($tab_afficher_liens_modif_app, $tab_afficher_liens_valider_modif_app);
+}
+
+
+function affiche_lien_proposition_ou_correction_appreciation($current_eleve_login, $current_id_eleve, $current_eleve_prenom, $current_eleve_nom, $current_group, $id_classe, $nb, $liste_profs_du_groupe, $tab_mes_groupes, $tab_afficher_liens_modif_app) {
+	//global $tab_mes_groupes;
+	//global $tab_afficher_liens_modif_app;
+
+	$retour="";
+
+	if(($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
+		if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N') {
+			$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+		}
+		elseif(isset($tab_afficher_liens_modif_app[$current_group['id']][$nb])) {
+			if($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='y') {
+				$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'proposer') ;return false;\" title=\"Proposer une correction de l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez simplement modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+			}
+			elseif($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='yy') {
+				$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+			}
+			//echo "plop";
+		}
+	}
+	elseif(($_SESSION['statut']=='professeur')&&
+		(((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe)))||
+		(is_pp($_SESSION['login'], $id_classe, $current_eleve_login)))) {
+
+		if(getSettingAOui('PeutAutoriserPPaCorrigerSesApp')) {
+			if(acces_correction_app_pp($current_group['id'])) {
+				if($current_group["classe"]["ver_periode"][$id_classe][$nb]!='O') {
+					$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
+Le professeur recevra un mail l'informant de la modification.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+				}
+			}
+		}
+
+	}
+	elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))) {
+		if($current_group["classe"]["ver_periode"][$id_classe][$nb]!='O') {
+			$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
+Le professeur recevra un mail l'informant de la modification.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
+		}
+	}
+
+	return $retour;
 }
 
 ?>
