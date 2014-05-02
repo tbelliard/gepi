@@ -71,7 +71,7 @@ if ($res_test==0){
 }
 
 $result .= "&nbsp;-> Ajout d'un champ 'mode' à la table 'notanet_corresp'<br />";
-$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM notanet_corresp LIKE 'mode';"));
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM notanet_corresp LIKE 'mode';"));
 if ($test_champ==0) {
 	$query = mysql_query("ALTER TABLE notanet_corresp ADD mode varchar(20) NOT NULL default 'extract_moy';");
 	if ($query) {
