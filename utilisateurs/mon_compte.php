@@ -640,6 +640,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 
 
 if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_prof']))) {
+	check_token();
+
 	$i=0;
 	$prof[$i]=$_SESSION['login'];
 
@@ -676,6 +678,7 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 
 // 20121128
 if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_nom_ou_description_groupe']))) {
+	check_token();
 
 	$nb_reg=0;
 	$message_nom_ou_description_groupe="";
@@ -700,6 +703,8 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_nom_ou_descript
 }
 
 if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_form_cn']))) {
+	check_token();
+
 	$i=0;
 	$prof[$i]=$_SESSION['login'];
 
@@ -758,19 +763,6 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	else {
 		$msg.="Erreur lors de l'enregistrement de aff_photo_cn à $aff_photo_cn.<br />\n";
 		$message_cn.="Erreur lors de l'enregistrement de aff_photo_cn à $aff_photo_cn.<br />";
-	}
-
-	$saisie_app_nb_cols_textarea=isset($_POST['saisie_app_nb_cols_textarea']) ? $_POST['saisie_app_nb_cols_textarea'] : 100;
-	if((!is_numeric($saisie_app_nb_cols_textarea))||($saisie_app_nb_cols_textarea<=0)) {
-		$msg.="Valeur invalide sur saisie_app_nb_cols_textarea.<br />\n";
-		$message_cn.="Valeur invalide sur saisie_app_nb_cols_textarea.<br />";
-	}
-	elseif(!savePref($_SESSION['login'], 'saisie_app_nb_cols_textarea', $saisie_app_nb_cols_textarea)) {
-		$msg.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea.<br />\n";
-		$message_cn.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea.<br />";
-	}
-	else {
-		$nb_reg++;
 	}
 
 	$cn_avec_min_max=isset($_POST['cn_avec_min_max']) ? $_POST['cn_avec_min_max'] : "n";
@@ -857,7 +849,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 }
 
 
-if(($_SESSION['statut']=='professeur')&&(isset($_POST['saisie_app_nb_cols_textarea']))) {
+if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
+	check_token();
 
 	$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 	$insert=savePref($_SESSION['login'], 'aff_photo_saisie_app', $aff_photo_saisie_app);
@@ -1039,6 +1032,8 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 $tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur');
 $modifier_barre=isset($_POST['modifier_barre']) ? $_POST['modifier_barre'] : NULL;
 if((isset($modifier_barre))&&(in_array($_SESSION['statut'], $tab_statuts_barre))) {
+	check_token();
+
 	$afficher_menu=isset($_POST['afficher_menu']) ? $_POST['afficher_menu'] : NULL;
 	if(!savePref($_SESSION['login'], 'utiliserMenuBarre', $afficher_menu)) {
 		$msg.="Erreur lors de la sauvegarde de la préférence d'affichage de la barre de menu.<br />\n";
@@ -1053,6 +1048,8 @@ if((isset($modifier_barre))&&(in_array($_SESSION['statut'], $tab_statuts_barre))
 
 
 if(isset($_POST['choix_encodage_csv'])) {
+	check_token();
+
 	if(in_array($_POST['choix_encodage_csv'],array("ascii", "utf-8", "windows-1252"))) {
 		if(!savePref($_SESSION['login'], 'choix_encodage_csv', $_POST['choix_encodage_csv'])) {
 			$msg.="Erreur lors de la sauvegarde de la préférence d'encodage des fichiers CSV.<br />\n";
@@ -1066,6 +1063,8 @@ if(isset($_POST['choix_encodage_csv'])) {
 }
 
 if(isset($_POST['output_mode_pdf'])) {
+	check_token();
+
 	if(in_array($_POST['output_mode_pdf'],array("D", "I"))) {
 		if(!savePref($_SESSION['login'], 'output_mode_pdf', $_POST['output_mode_pdf'])) {
 			$msg.="Erreur lors de la sauvegarde de la préférence d'export PDF.<br />\n";
@@ -1129,6 +1128,8 @@ if ($niveau_arbo == "0") {
 $tab_sound=get_tab_file($chemin_sound);
 
 if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(((in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound'])))|| $_POST['footer_sound']=='')) {
+	check_token();
+
 	if(!savePref($_SESSION['login'],'footer_sound',$_POST['footer_sound'])) {
 		$msg.="Erreur lors de l'enregistrement de l'alerte sonore de fin de session.<br />";
 		$message_footer_sound = "<p style='color: red;'>Impossible d'enregistrer la modification&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S')."</p>";
@@ -2368,6 +2369,8 @@ if($_SESSION["statut"] == "professeur") {
 	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
 	echo "background-color: white; ";
 	echo "'>Bulletins</legend>\n";
+
+	echo "<input type='hidden' name='valide_form_bull' value='y' />\n";
 
 	$aff_photo_saisie_app=getPref($_SESSION['login'], 'aff_photo_saisie_app', 'n');
 	
