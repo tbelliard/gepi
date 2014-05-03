@@ -52,6 +52,7 @@ Divers:
 - Statistiques de connexion:
    . Possibilité de cumuler les connexions élèves et parents.
    . Export CSV des dates/effectifs de connexion.
+- Possibilité de choisir les groupes à faire apparaitre en page d'accueil simplifiée (et leur ordre).
 
 Gepi-1.6.4 (01/02/2014)
 ===========================

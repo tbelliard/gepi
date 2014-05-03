@@ -146,6 +146,17 @@ if(mysqli_num_rows($res_notanet)>0) {
 		// mod_notanet/saisie_app.php?id_groupe=2253
 	}
 }
+
+//=================================================
+$accueil_afficher_tous_les_groupes=isset($_POST['accueil_afficher_tous_les_groupes']) ? $_POST['accueil_afficher_tous_les_groupes'] : (isset($_GET['accueil_afficher_tous_les_groupes']) ? $_GET['accueil_afficher_tous_les_groupes'] : (isset($_SESSION['accueil_afficher_tous_les_groupes']) ? $_SESSION['accueil_afficher_tous_les_groupes'] : NULL));
+
+if(!isset($accueil_afficher_tous_les_groupes)) {
+	$accueil_afficher_tous_les_groupes="n";
+}
+
+$_SESSION['accueil_afficher_tous_les_groupes']=$accueil_afficher_tous_les_groupes;
+//=================================================
+
 /*
 echo "<pre>";
 print_r($tab_groupes_notanet);
@@ -184,6 +195,18 @@ echo "<a href=\"./accueil.php?accueil_simpl=n\">Accès au menu d'accueil</a>";
 echo " | \n";
 //echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
 echo "<a href='./utilisateurs/mon_compte.php#accueil_simpl_prof'> Paramétrer mon interface </a>\n";
+
+if($accueil_afficher_tous_les_groupes=="n") {
+	echo "| <a href='".$_SERVER['PHP_SELF']."?accueil_afficher_tous_les_groupes=y'>Afficher tous les groupes sans tri</a>\n";
+}
+else {
+	echo "| <a href='".$_SERVER['PHP_SELF']."?accueil_afficher_tous_les_groupes=n' title=\"Vous pouvez choisir les groupes à afficher en page d'accueil simplifiée.
+Pour cela consultez la rubrique
+    Page d'accueil simplifiée
+de la page
+    Gérer mon compte.\">Trier mes groupes</a>\n";
+}
+
 echo "</p>\n";
 echo "</div>\n";
 
@@ -212,11 +235,54 @@ if(mysqli_num_rows($res_jgv)>0) {
 		$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
 	}
 }
+
+//================================
+if($accueil_afficher_tous_les_groupes=="n") {
+	$tab_grp_order=array();
+	$tab_grp_hidden=array();
+	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+	$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp_order)>0) {
+		while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+			$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+			if($lig_grp_order->value=='-1') {
+				$tab_grp_hidden[]=$tmp_id_groupe;
+			}
+			else {
+				$tab_grp_order[]=$tmp_id_groupe;
+			}
+		}
+	}
+
+	// On passe en revue les groupes qui ont été triés dans Mon compte
+	$groups=array();
+	$tmp_groups=get_groups_for_prof($_SESSION["login"]);
+	for($loop=0;$loop<count($tab_grp_order);$loop++) {
+		for($i=0;$i<count($tmp_groups);$i++) {
+			if($tmp_groups[$i]['id']==$tab_grp_order[$loop]) {
+				$groups[]=$tmp_groups[$i];
+				break;
+			}
+		}
+	}
+
+	// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
+	for($i=0;$i<count($tmp_groups);$i++) {
+		if((!in_array($tmp_groups[$i]['id'], $tab_grp_order))&&(!in_array($tmp_groups[$i]['id'], $tab_grp_hidden))) {
+			$groups[]=$tmp_groups[$i];
+		}
+	}
+
+}
+else {
+	$groups=get_groups_for_prof($_SESSION["login"]);
+}
 //================================
 
 
+//================================
+
 // Récupérer le nombre max de périodes
-$groups=get_groups_for_prof($_SESSION["login"]);
 $maxper=0;
 $tab_noms_periodes=array();
 $tab_num_periodes_ouvertes=array();

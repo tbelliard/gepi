@@ -638,7 +638,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	}
 }
 
-
+//debug_var();
 if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_prof']))) {
 	check_token();
 
@@ -672,6 +672,48 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 
 	$msg.="$nb_reg enregistrement(s) effectué(s).<br />";
 	$message_accueil_simpl_prof.="<p style='color:green'>$nb_reg enregistrement(s) effectué(s).</p>";
+
+
+		$tab_grp_order=array();
+		$tab_grp_hidden=array();
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+		$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp_order)>0) {
+			while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+				$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+				if($lig_grp_order->value=='-1') {
+					$tab_grp_hidden[]=$tmp_id_groupe;
+				}
+				else {
+					$tab_grp_order[]=$tmp_id_groupe;
+				}
+			}
+		}
+
+	$accueil_simpl_afficher_grp=isset($_POST['accueil_simpl_afficher_grp']) ? $_POST['accueil_simpl_afficher_grp'] : array();
+	if(count($accueil_simpl_afficher_grp)>0) {
+		$accueil_simpl_afficher_grp_rang=isset($_POST['accueil_simpl_afficher_grp_rang']) ? $_POST['accueil_simpl_afficher_grp_rang'] : array();
+
+		$nb_reg=0;
+		$nb_err=0;
+
+		for($loop=1;$loop<count($accueil_simpl_afficher_grp)+1;$loop++) {
+			if(isset($accueil_simpl_afficher_grp_rang[$loop])) {
+				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$loop], $accueil_simpl_afficher_grp_rang[$loop])) {
+					$nb_reg++;
+				}
+				else{
+					$nb_err++;
+				}
+			}
+		}
+		$msg.="Enregistrement de l'ordre des groupes pour $nb_reg groupe(s) avec $nb_err erreur(s)<br />";
+		$message_accueil_simpl_prof.="<p style='color:green'>Enregistrement de l'ordre des groupes pour $nb_reg groupe(s).";
+		if($nb_err>0) {
+			$message_accueil_simpl_prof.="<br />$nb_err erreur(s) lors de l'enregistrement.";
+		}
+		$message_accueil_simpl_prof.="</p>";
+	}
 }
 
 //================================================================================
@@ -2118,6 +2160,124 @@ if($_SESSION['statut']=='professeur') {
 	echo "</tr>\n";
 
 	echo "</table>\n";
+
+
+	echo "<p class='bold' style='margin-top:1em;'>Vous pouvez trier/masquer des enseignements en page d'accueil simplifiée&nbsp;:</p>";
+	$tab_grp_order=array();
+	$tab_grp_hidden=array();
+	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+	$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp_order)>0) {
+		while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+			$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+			if($lig_grp_order->value=='-1') {
+				$tab_grp_hidden[]=$tmp_id_groupe;
+			}
+			else {
+				$tab_grp_order[]=$tmp_id_groupe;
+			}
+		}
+	}
+
+	// On passe en revue les groupes qui ont été triés dans Mon compte
+	$cpt=1;
+	if(count($tab_grp_order)>0) {
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_grp_order);$loop++) {
+			for($i=0;$i<count($groups);$i++) {
+				if($groups[$i]['id']==$tab_grp_order[$loop]) {
+
+					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					if(count($groups[$i]['profs']['list'])>1) {
+						echo " avec ".$groups[$i]['profs']['proflist_string'];
+					}
+					echo "</em>)"."</span>
+					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+						<option value='-1'>Ne pas afficher ce groupe</option>";
+					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+						if($loop2==$cpt) {
+							$selected=" selected";
+						}
+						else {
+							$selected="";
+						}
+						echo "
+						<option value='$loop2'$selected>$loop2</option>";
+					}
+					echo "
+					</select></br />";
+					break;
+				}
+			}
+			$cpt++;
+		}
+		echo "</p>";
+	}
+
+	// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
+	$temoin_grp_non_encore_trie="n";
+	for($i=0;$i<count($groups);$i++) {
+		if((!in_array($groups[$i]['id'], $tab_grp_order))&&(!in_array($groups[$i]['id'], $tab_grp_hidden))) {
+			if($temoin_grp_non_encore_trie=="n") {
+				echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:<br />";
+				$temoin_grp_non_encore_trie="y";
+			}
+			echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+			if(count($groups[$i]['profs']['list'])>1) {
+				echo " avec ".$groups[$i]['profs']['proflist_string'];
+			}
+			echo "</em>)"."</span>
+			<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+			<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+				<option value='-1' selected>Ne pas afficher ce groupe</option>";
+			for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+					if($loop2==$cpt) {
+					$selected=" selected";
+				}
+				else {
+					$selected="";
+				}
+				echo "
+				<option value='$loop2'$selected>$loop2</option>";
+			}
+			echo "
+			</select><br />";
+			$cpt++;
+		}
+	}
+	if($temoin_grp_non_encore_trie=="y") {
+		echo "</p>";
+	}
+
+	// Les groupes cachés
+	if(count($tab_grp_hidden)>0) {
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_grp_hidden);$loop++) {
+			for($i=0;$i<count($groups);$i++) {
+				if($groups[$i]['id']==$tab_grp_hidden[$loop]) {
+
+					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					if(count($groups[$i]['profs']['list'])>1) {
+						echo " avec ".$groups[$i]['profs']['proflist_string'];
+					}
+					echo "</em>)"."</span>
+					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+						<option value='-1' selected>Ne pas afficher ce groupe</option>";
+					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+						echo "
+						<option value='$loop2'>$loop2</option>";
+					}
+					echo "
+					</select><br />";
+					break;
+				}
+			}
+			$cpt++;
+		}
+		echo "</p>";
+	}
 
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
