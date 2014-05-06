@@ -301,9 +301,19 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 					$display_parents=old_mysql_result($appel_dev, $j, 'display_parents');
 					$coef=old_mysql_result($appel_dev, $j, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
-					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
-Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
-					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+					echo "<span id='span_visibilite_$id_dev'>";
+					if($display_parents==1) {
+						echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev($id_dev,'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.
+
+Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='Evaluation visible sur le relevé de notes' /></a>";
+					}
+					else {
+						echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev($id_dev,'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+					
+Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
+					}
+					echo "</span>";
 					echo "</i>)";
 
 					$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev';";
@@ -439,9 +449,24 @@ Cliquez pour contrôler la liste.\"><img src='../images/icons/flag.png' width='1
 							$display_parents=old_mysql_result($appel_dev, $j, 'display_parents');
 							$coef=old_mysql_result($appel_dev, $j, 'coef');
 							echo " (<i><span title='Coefficient $coef'>$coef</span> ";
+							/*
 							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />";}
 							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+							*/
+							echo "<span id='span_visibilite_$id_dev'>";
+							if($display_parents==1) {
+								echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev($id_dev,'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.
+
+Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='Evaluation visible sur le relevé de notes' /></a>";
+							}
+							else {
+								echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev($id_dev,'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+					
+Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
+							}
+							echo "</span>";
 							echo "</i>)";
 
 							$sql="SELECT * FROM cc_dev WHERE id_cn_dev='$id_dev';";

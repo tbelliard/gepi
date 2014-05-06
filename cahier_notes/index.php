@@ -117,6 +117,77 @@ if ((isset($_POST['id_racine'])) or (isset($_GET['id_racine']))) {
     }
 }
 
+if(
+	(isset($id_groupe))&&
+	(isset($current_group))&&
+	(isset($id_racine))&&
+	(isset($_GET['id_dev']))&&
+	(preg_match("/^[0-9]{1,}$/", $_GET['id_dev']))&&
+	(isset($_GET['mode']))&&
+	($_GET['mode']=='change_visibilite_dev')&&
+	(isset($_GET['visible']))&&
+	(($_GET['visible']=='y')||($_GET['visible']=='n'))
+) {
+	check_token();
+
+	$sql="SELECT periode FROM cn_cahier_notes WHERE id_cahier_notes='$id_racine';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tmp_periode_num=$lig->periode;
+
+		$acces_exceptionnel_saisie=false;
+		if((isset($periode_num))&&($_SESSION['statut']=='professeur')) {
+			$acces_exceptionnel_saisie=acces_exceptionnel_saisie_cn_groupe_periode($id_groupe, $tmp_periode_num);
+		}
+
+		if (($current_group["classe"]["ver_periode"]["all"][$tmp_periode_num] >= 2)||($acces_exceptionnel_saisie)) {
+			$sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_racine' AND id='".$_GET['id_dev']."';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+				$date_dev=$lig->date;
+				$date_ele_resp_dev=$lig->date_ele_resp;
+
+				$sql="UPDATE cn_devoirs SET display_parents='".(($_GET['visible']=='y') ? 1 : 0)."' WHERE id_racine='$id_racine' AND id='".$_GET['id_dev']."';";
+				//echo "$sql<br />";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if((isset($_GET['mode_js']))&&
+				($_GET['mode_js']=='y')) {
+					if(!$update) {
+						echo "<span style='color:red'>ERREUR</span>";
+					}
+					else {
+						if($_GET['visible']=='y') {
+							echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$_GET['id_dev']."&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev(".$_GET['id_dev'].",'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".formate_date($date_dev)." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_ele_resp_dev)." pour les parents et élèves.
+
+Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='Evaluation visible sur le relevé de notes' /></a>";
+						}
+						else {
+							echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$_GET['id_dev']."&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$_GET['id_dev'].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+					
+Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
+						}
+					}
+
+					die();
+				}
+				else {
+					// On va poursuivre et afficher le $msg
+					if(!$update) {
+						$msg="Erreur lors de la modification de la visbilité du devoir n°".$_GET['id_dev']."<br />";
+					}
+					else {
+						$msg="Visbilité du devoir n°".$_GET['id_dev']." modifiée.<br />";
+					}
+				}
+			}
+		}
+	}
+}
+
 if(isset($_GET['clean_anomalie_cn'])) {
 	check_token();
 
@@ -763,11 +834,23 @@ var tab_per_cn=new Array();\n";
 	}
 
 
-    echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
-    $empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
-    //echo "</ul>\n";
+	echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
+	$empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
+	//echo "</ul>\n";
 
-    if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
+	if ($empty == 'yes') {
+		echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
+	}
+	else {
+		echo "
+<script type='text/javascript'>
+	function change_visibilite_dev(id_dev, visible) {
+
+		new Ajax.Updater($('span_visibilite_'+id_dev),'".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&id_racine=$id_racine&id_dev='+id_dev+'&mode=change_visibilite_dev&visible='+visible+'&mode_js=y&".add_token_in_url(false)."',{method: 'get'});
+
+	}
+</script>";
+	}
 
 	if($periode_num>=2) {
 		echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";

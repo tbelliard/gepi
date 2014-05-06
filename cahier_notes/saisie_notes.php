@@ -1349,13 +1349,28 @@ while ($i < $nb_dev) {
 		$w_pdf[] = $w2;
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
+			echo "<span id='span_visibilite_".$id_dev[$i]."'>";
 			if($display_parents[$i]!=0) {
+				/*
 				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />\n";
+				*/
+
+				echo "<a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$id_dev[$i]."&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".$display_date[$i]." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.
+
+Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='Evaluation visible sur le relevé de notes' /></a>";
+
 			}
 			else {
+				/*
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+				*/
+				echo " <a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+					
+Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
 			}
+			echo "</span>";
 			echo "</center></td>\n";
 		}
 		else {
@@ -2161,6 +2176,15 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 </script>\n";
 }
 //===================================
+
+echo "
+<script type='text/javascript'>
+	function change_visibilite_dev(id_dev, visible) {
+
+		new Ajax.Updater($('span_visibilite_'+id_dev),'index.php?id_groupe=$id_groupe&id_racine=$id_racine&id_dev='+id_dev+'&mode=change_visibilite_dev&visible='+visible+'&mode_js=y&".add_token_in_url(false)."',{method: 'get'});
+
+	}
+</script>";
 
 // Préparation du pdf
 $header_pdf=serialize($header_pdf);
