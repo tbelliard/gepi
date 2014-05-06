@@ -764,7 +764,8 @@ if($interface_simplifiee=="y"){
 	$aff_date=getPref($_SESSION['login'],'add_modif_dev_date','y');
 	$aff_date_ele_resp=getPref($_SESSION['login'],'add_modif_dev_date_ele_resp','y');
 	$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
-
+	$aff_display_parents=getPref($_SESSION['login'],'add_modif_dev_display_parents','n');
+	$aff_display_parents_app=getPref($_SESSION['login'],'add_modif_dev_display_parents_app','n');
 
 	echo "<div align='center'>\n";
 	echo "<table class='boireaus' border='1' summary='Parametres du devoir'>\n";
@@ -947,11 +948,39 @@ if($interface_simplifiee=="y"){
 		echo "</tr>\n";
 	}
 
+
+	if($aff_display_parents=='y'){
+		echo "<tr>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>L'évaluation apparaît sur le relevé de notes :</td>\n";
+		echo "<td><input type='checkbox' name='display_parents' value='1' onchange=\"changement();\" "; if ($display_parents == '1') {echo " checked";} echo " /></td>\n";
+		echo "</tr>\n";
+	} else {
+		echo "<tr style='display:none;'>\n";
+		echo "<td>L'évaluation apparaît sur le relevé de notes :</td>\n";
+		echo "<td>\n";
+		echo "<input type='hidden' name='display_parents' value='$display_parents' />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	if($aff_display_parents_app=='y'){
+		echo "<tr>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;' title=\"Sous réserve que l'évaluation soit affichée sur le relevé de notes.\">L'appréciation de l'évaluation apparaît sur le relevé de notes :</td>\n";
+		echo "<td><input type='checkbox' name='display_parents_app' value='1' onchange=\"changement();\" "; if ($display_parents_app == '1') {echo " checked";} echo " /></td>\n";
+		echo "</tr>\n";
+	} else {
+		echo "<tr style='display:none;'>\n";
+		echo "<td>L'appréciation de l'évaluation apparaît sur le relevé de notes :</td>\n";
+		echo "<td>\n";
+		echo "<input type='hidden' name='display_parents_app' value='$display_parents_app' />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+
 	echo "</table>\n";
 	echo "</div>\n";
 	echo "<input type='hidden' name='facultatif' value='$facultatif' />\n";
-	echo "<input type='hidden' name='display_parents' value='$display_parents' />\n";
-	echo "<input type='hidden' name='display_parents_app' value='$display_parents_app' />\n";
 	echo "<input type='hidden' name='interface_simplifiee' value='$interface_simplifiee' />\n";
 
 	if($aff_nom_court=='y'){

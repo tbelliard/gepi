@@ -753,7 +753,7 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$nb_reg=0;
 	$message_cn="";
 
-	$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');
+	$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	for($j=0;$j<count($tab);$j++){
 		unset($valeur);
 		//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
@@ -2412,9 +2412,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<p>Paramétrage de la page de <b>création d'évaluation</b></p>\n";
 	echo "<div style='margin-left:3em;'>\n";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');
+		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	} else {
-		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');	
+		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	}
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
@@ -2424,9 +2424,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 	$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-		$lignes_entete.="<th colspan='8'>Afficher les champs</th>\n";
+		$lignes_entete.="<th colspan='10'>Afficher les champs</th>\n";
 	} else {
-		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
+		$lignes_entete.="<th colspan='9'>Afficher les champs</th>\n";
 	}
 	$lignes_entete.="</tr>\n";
 
@@ -2443,6 +2443,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$lignes_entete.="<th>Date</th>\n";
 	$lignes_entete.="<th>Date ele/resp</th>\n";
 	$lignes_entete.="<th>".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</th>\n";
+	$lignes_entete.="<th title=\"Visibilité ou non de l'évaluation sur le relevé de notes\">Vis.CN</th>\n";
+	$lignes_entete.="<th title=\"Visibilité ou non du commentaire/appréciation sur le relevé de notes\">Vis.App.CN</th>\n";
 	$lignes_entete.="</tr>\n";
 
 	echo $lignes_entete;
