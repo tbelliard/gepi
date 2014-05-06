@@ -1910,7 +1910,20 @@ A améliorer en affichant au moins les effectifs du groupe par période.";
 
 			}
 
-			echo "<p><i>A FAIRE&nbsp;:</i> Pouvoir régler l'ordre des matières (*), éditer des bulletins.<br />Présenter aussi le tableau ci-dessus et celui de sélection des devoirs par tranche de 5 ou 6 classes au plus.<br />Ne mettre les coef que sur le premier tableau.<br />(*) L'ordre actuel est alphabétique en faisant passer à la fin les matières à bonus.</p>\n";
+			echo "<p><i>NOTES&nbsp;:</i><p>
+			<ul>
+				<li>
+					<p>Les 'bonus' consistent à ne compter que les points supérieurs à 10.<br />
+					Ex.: Pour 12 (coef 3), 14 (coef 1) et 13 (coef 2 et bonus), le calcul est (12*3+14*1+(13-10)*2)/(3+1)</p>
+				</li>
+				<li>
+					<p><span style='color:red'>A FAIRE&nbsp;:</span> Pouvoir régler l'ordre des matières.<br />
+					L'ordre actuel est alphabétique en faisant passer à la fin les matières à bonus.</p>
+				</li>
+				<li>
+					<p><span style='color:red'>A FAIRE&nbsp;:</span> Présenter le tableau ci-dessus et celui de sélection des devoirs par tranche de 5 ou 6 classes au plus.<br />Ne mettre les coef que sur le premier tableau.<br /></p>
+				</li>
+			</ul>\n";
 
 			unset($tab_matiere);
 			unset($tab_classe);
