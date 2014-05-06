@@ -1530,8 +1530,9 @@ if((!isset($mode))||($mode=="")) {
 	if($nb_scories>0) {
 		echo "
 <br />
-<p><strong style='color:red'>SCORIES&nbsp;:</strong> ".$nb_scories." association(s) existent dans la table 'sso_table_correspondance' pour des login qui n'existent plus dans Gepi.<br />
+<p><strong style='color:red;'>SCORIES&nbsp;:</strong> ".$nb_scories." association(s) existent dans la table 'sso_table_correspondance' pour des login qui n'existent plus dans Gepi.<br />
 Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
+Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT est enregistrée pour un ancien login, il ne vous sera plus proposé lors des importations, ni même pour la consultation.<br />
 <a href='".$_SERVER['PHP_SELF']."?mode=suppr_scories".add_token_in_url()."' >Supprimer ces scories</a></p>";
 	}
 
@@ -1962,6 +1963,44 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
+
+						$lig_test=mysqli_fetch_object($test);
+						$current_login_gepi=$lig_test->login_gepi;
+						// On vérifie si le login correspond bien à un compte responsable
+						$sql="SELECT * FROM utilisateurs WHERE login='$current_login_gepi';";
+						$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_u)>0) {
+							$lig_u=mysqli_fetch_object($res_u);
+							if($lig_u->statut!='eleve') {
+								// ANOMALIE
+								// Ce devrait être un compte de élève.
+							}
+						}
+						else {
+							// ANOMALIE
+
+							$naissance=(isset($tab[5])) ? $tab[5] : "";
+							if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
+
+							echo "
+	<tr class='white_hover' style='background-color:red' title=\"ANOMALIE : Le login actuellement enregistré $current_login_gepi 
+           ne correspond à personne.
+           Vous devriez supprimer les enregistrements associés à l'aide
+           du lien
+                 SCORIES : Supprimer ces scories.
+           en page d'index, et refaire ensuite une importation.\">
+		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
+		<td>".$tab[0]."</td>
+		<td>".$tab[1]."</td>
+		<td>".$tab[2]."</td>
+		<td>".$tab[3]."</td>
+		<td>".preg_replace("/".getSettingValue('gepiSchoolRne')."\\$/", "", $tab[4])."</td>
+		<td>".$naissance."</td>
+		<td></td>
+	</tr>";
+
+						}
+
 					}
 					elseif((!isset($_POST['exclure_classes_anormales']))||(!preg_match("/BASE20/", $tab[4]))) {
 						$naissance=(isset($tab[5])) ? $tab[5] : "";
@@ -2563,6 +2602,65 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
+
+						$lig_test=mysqli_fetch_object($test);
+						$current_login_gepi=$lig_test->login_gepi;
+						// On vérifie si le login correspond bien à un compte responsable
+						$sql="SELECT * FROM utilisateurs WHERE login='$current_login_gepi';";
+						$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_u)>0) {
+							$lig_u=mysqli_fetch_object($res_u);
+							if($lig_u->statut!='responsable') {
+								// ANOMALIE
+								// Ce devrait être un compte responsable.
+							}
+						}
+						else {
+							// ANOMALIE
+
+							$guid_courant=$tab[$tabindice['Guid']];
+							$nom_courant=$tab[$tabindice['Nom']];
+							$prenom_courant=$tab[$tabindice['Prénom']];
+							$profil_courant=$tab[$tabindice['Profil']];
+
+							$groupe_courant="";
+							if(isset($tab[$tabindice['Groupe']])) {
+								$groupe_courant=$tab[$tabindice['Groupe']];
+							}
+
+							$guid_enfant1="";
+							$guid_enfant2="";
+							$guid_enfant3="";
+							if(isset($tab[$tabindice['Guid_Enfant1']])) {
+								$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
+							}
+							if(isset($tab[$tabindice['Guid_Enfant2']])) {
+								$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
+							}
+							if(isset($tab[$tabindice['Guid_Enfant3']])) {
+								$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
+							}
+
+							echo "
+	<tr class='white_hover' style='background-color:red' title=\"ANOMALIE : Le login actuellement enregistré $current_login_gepi 
+           ne correspond à personne.
+           Vous devriez supprimer les enregistrements associés à l'aide
+           du lien
+                 SCORIES : Supprimer ces scories.
+           en page d'index, et refaire ensuite une importation.\">
+		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
+		<td>".$guid_courant."</td>
+		<td>".$nom_courant."</td>
+		<td>".$prenom_courant."</td>
+		<td>".$profil_courant."</td>
+		<td>".$groupe_courant."</td>
+		<td></td>
+		<td></td>
+	</tr>";
+
+
+						}
+
 					}
 					else {
 /*
@@ -3226,6 +3324,39 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
+
+						$lig_test=mysqli_fetch_object($test);
+						$current_login_gepi=$lig_test->login_gepi;
+						// On vérifie si le login correspond bien à un compte responsable
+						$sql="SELECT * FROM utilisateurs WHERE login='$current_login_gepi';";
+						$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_u)>0) {
+							$lig_u=mysqli_fetch_object($res_u);
+							if(($lig_u->statut=='responsable')||($lig_u->statut=='eleve')) {
+								// ANOMALIE
+								// Ce devrait être un compte de personnel.
+							}
+						}
+						else {
+							// ANOMALIE
+
+							echo "
+	<tr class='white_hover' style='background-color:red' title=\"ANOMALIE : Le login actuellement enregistré $current_login_gepi 
+           ne correspond à personne.
+           Vous devriez supprimer les enregistrements associés à l'aide
+           du lien
+                 SCORIES : Supprimer ces scories.
+           en page d'index, et refaire ensuite une importation.\">
+		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
+		<td>".$tab[0]."</td>
+		<td>".$tab[1]."</td>
+		<td>".$tab[2]."</td>
+		<td>".$tab[3]."</td>
+		<td></td>
+	</tr>";
+
+						}
+
 					}
 					else {
 
