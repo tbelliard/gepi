@@ -4849,9 +4849,16 @@ function acces($id,$statut) {
 		$tab_id = explode("?",$id);
 		$sql = "SELECT ".$statut." as droit FROM droits WHERE id='$tab_id[0]'";
 		$query_droits = mysqli_query($mysqli, $sql);
-		$obj = $query_droits->fetch_object();
-		$droit = $obj->droit;
-		$query_droits->close();
+
+		if(mysqli_num_rows($query_droits)==0) {
+			$droit="F";
+		}
+		else {
+			$obj = $query_droits->fetch_object();
+			$droit = $obj->droit;
+			$query_droits->close();
+		}
+
 		if ($droit == "V") {
 			return "1";
 		} else {
