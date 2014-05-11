@@ -644,9 +644,9 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	echo "<p>\n";
 	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service qui va se connecter si possible en https (<em>exemple : https://localhost/mon-appli</em>) </label>\n";
 	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
-	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (<em>laisser vide si votre instalation de sacoche est mono établissement</em>)</label>\n";
+	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (<em>laisser vide si votre installation de sacoche est mono établissement</em>)</label>\n";
 	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";
-	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
+	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadata/saml20-sp-remote.php';
         try {
             require_once('../lib/simplesaml/lib/_autoload.php');
             $config = SimpleSAML_Configuration::getConfig();
@@ -860,6 +860,7 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 <hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
 
 //===========================================================
+
 
 //
 // Durée de conservation des logs
