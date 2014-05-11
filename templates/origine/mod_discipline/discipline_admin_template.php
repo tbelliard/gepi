@@ -187,7 +187,11 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	</p>
   </form>
   
-
+	<?php
+		if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/index.php", $_SESSION['statut']))) {
+			echo "<p style='margin-top:1em;'><a href='index.php'>Accéder au module Discipline</a></p>";
+		}
+	?>
 
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
