@@ -67,7 +67,9 @@ if (!isset($id_classe)) {
 	if($nombreligne>1){echo "s";}
 	echo " - ";
 	echo "Cliquez sur la classe pour laquelle vous souhaitez saisir les absences :</p>\n";
-	echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
+	if (!getSettingAOui('GepiAccesAbsTouteClasseCpe')) {
+		echo "<p>Remarque : s'affichent toutes les classes pour lesquelles vous êtes responsable du suivi d'au moins un ".$gepiSettings['denomination_eleve']." de la classe.</p>\n";
+	}
 
 	/*
 	$i = 0;
