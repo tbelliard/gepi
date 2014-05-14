@@ -1714,7 +1714,8 @@ while($i < $nombre_lignes) {
 	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
 		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
 
-		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' target='_blank' title='Consulter la fiche élève'>$eleve_nom[$i] $eleve_prenom[$i]</a>\n";
+
 		$tab_ele_notes[$i][]="";
 		echo "</td>";
 		if ($multiclasses) {
@@ -1737,7 +1738,7 @@ while($i < $nombre_lignes) {
 			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
 		}
 
-		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' target='_blank' title='Consulter la fiche élève'>$eleve_nom[$i] $eleve_prenom[$i]</a>\n";
 		$tab_ele_notes[$i][]="";
 		echo "</td>";
 		if ($multiclasses) {
