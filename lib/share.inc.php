@@ -3967,9 +3967,9 @@ function my_strtoupper($mot) {
  * @see casse_mot()
  */
 function get_nom_prenom_eleve($login_ele,$mode='simple') {
-    global $mysqli;
+	global $mysqli;
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
-            
+
 	$res=mysqli_query($mysqli, $sql);
 	if($res->num_rows == 0) {		
 		// Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
@@ -3993,7 +3993,7 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 		$res->close();
 		return casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').$ajout;
 	}
-        
+
 }
 
 /**
@@ -10576,6 +10576,25 @@ function etat_verrouillage_eleve_periode($login_ele, $periode) {
 	$retour="";
 
 	$sql="SELECT verouiller FROM periodes p, j_eleves_classes jec WHERE jec.id_classe=p.id_classe AND jec.periode=p.num_periode AND jec.login='$login_ele' AND jec.periode='$periode';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if (mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$retour=$lig->verouiller;
+	}
+
+	return $retour;
+}
+/** Fonction destinée tester si la période est est ouverte/partiellement/close pour une classe
+ *
+ * @param string $id_classe identifiant de la classe
+ * @param integer $periode numéro de la période
+ *
+ * @return string Etat du champ periodes.verouiller
+ */
+function etat_verrouillage_classe_periode($id_classe, $periode) {
+	$retour="";
+
+	$sql="SELECT verouiller FROM periodes p WHERE p.id_classe='$id_classe' AND p.num_periode='$periode';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if (mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);

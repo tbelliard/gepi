@@ -1233,3 +1233,4 @@ INSERT INTO droits SET id='/groupes/grp_groupes_edit_eleves.php',administrateur=
 INSERT INTO droits SET id='/groupes/modify_grp_group.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion des groupes de groupes',statut='';
 INSERT INTO setting SET name='groupe_de_groupes', value='groupe de groupes';
 INSERT INTO setting SET name='groupes_de_groupes', value='groupes de groupes';
+INSERT INTO droits SET id='/mod_abs2/saisie_bulletin.php',administrateur='F',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie des absences et appréciations sur les bulletins',statut='';

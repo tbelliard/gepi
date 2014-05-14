@@ -90,6 +90,19 @@ if(($_SESSION['statut']=='cpe')||
         echo 'title="Calcul de scores d\'absences">Scores</a></li>'."\n";
     }
 
+    if(getSettingAOui('active_bulletins')) {
+        if(acces('/mod_abs2/saisie_bulletin.php', $_SESSION['statut'])) {
+            echo "<li><a href='saisie_bulletin.php' ";
+            if($onglet_abs=='saisie_bulletin.php') {echo "class='current' ";}
+            if (getSettingAOui("abs2_import_manuel_bulletin")) {
+                echo 'title="Saisie (ou import) des absences, retards, appréciations sur les bulletins">Bulletins</a></li>'."\n";
+            }
+            else {
+                echo 'title="Saisie des appréciations sur les bulletins">Bulletins</a></li>'."\n";
+            }
+        }
+    }
+
     echo "</ul>\n";
 
 }
