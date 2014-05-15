@@ -2178,8 +2178,9 @@ if(getSettingAOui('active_bulletins')) {
     
             $resultat = mysqli_query($mysqli, $sql);
             $nb_lignes = $resultat->num_rows;
-            if ($nb_lignes > 0){
-                $this->titre_Menu[$this->a]->texte = $resultat->fetch_object();
+            if ($nb_lignes > 0) {
+                $tmp_obj_nouveau_nom=$resultat->fetch_object();
+                $this->titre_Menu[$this->a]->texte = $tmp_obj_nouveau_nom->nouveau_nom;
             }
 	}
   }
