@@ -603,6 +603,8 @@ if (isset($user_login) and ($user_login!='')) {
 	}
 }
 
+$avec_js_et_css_edt="y";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $themessage2 = "Êtes-vous sûr de vouloir effectuer cette opération ?\\n Actuellement cet utilisateur se connecte à GEPI en s\'authentifiant auprès d\'un SSO.\\n En attribuant un mot de passe, vous lancerez la procédure, qui génèrera un mot de passe local. Cet utilisateur ne pourra donc plus se connecter à GEPI via le SSO mais uniquement localement.";
 //**************** EN-TETE *****************
@@ -630,6 +632,46 @@ require_once("../lib/header.inc.php");
 
 //echo "\$login_user_prec=$login_user_prec<br />";
 //echo "\$login_user_suiv=$login_user_suiv<br />";
+
+	//============================================================================================================
+	// Div pour l'affichage de l'EDT
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+
+		$titre_infobulle="EDT de <span id='id_ligne_titre_infobulle_edt'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_prof',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+//https://127.0.0.1/steph/gepi_git_trunk/edt_organisation/index_edt.php?login_edt=boireaus&type_edt_2=prof&no_entete=y&no_menu=y&lien_refermer=y
+
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return " <a href='../edt_organisation/index_edt.php?login_edt=".$login_prof."&amp;type_edt_2=prof&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle('$login_prof', '".addslashes($info_prof)."');return false;\" title=\"Emploi du temps de ".$info_prof."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+		}
+
+		echo "
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle(login_prof, info_prof) {
+		document.getElementById('id_ligne_titre_infobulle_edt').innerHTML=info_prof;
+
+		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+login_prof+'&type_edt_2=prof&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_prof','y',-20,20);
+	}
+</script>\n";
+	}
+	else {
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return "";
+		}
+	}
+
+	//============================================================================================================
 
 echo "<form enctype='multipart/form-data' name='form_choix_user' action='modify_user.php' method='post'>\n";
 
@@ -673,7 +715,7 @@ if ($ldap_write_access) {
 
 <form enctype="multipart/form-data" action="modify_user.php" method="post">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-		<legend style='border: 1px solid grey; background-color: white;'>Informations utilisateur</legend>
+		<legend style='border: 1px solid grey; background-color: white; color: black; font-weight:normal;'>Informations utilisateur</legend>
 <?php
 echo add_token_field();
 if (isset($user_login)) {
@@ -921,6 +963,10 @@ if (getSettingValue("statuts_prives") == "y") {
 
 </select>
 <?php
+if(($user_statut == "professeur")&&(isset($user_nom))&&(isset($user_prenom))) {
+	echo affiche_lien_edt_prof($user_login, $user_prenom." ".$user_nom);
+}
+
 if (getSettingValue("statuts_prives") == "y") {
 	if ($user_statut == "autre") {
 		echo "<a href='creer_statut.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Préciser le statut 'autre'</a>";
@@ -1012,7 +1058,7 @@ echo "<input type='hidden' name='max_mat' value='$nb_mat' />\n";
 			echo "<p>&nbsp;</p>\n";
 			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";
 			echo "<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
-	<legend style='border: 1px solid grey; background-color: white;'>Enseignements du professeur</legend>";
+	<legend style='border: 1px solid grey; background-color: white; color: black; font-weight:normal;'>Enseignements du professeur</legend>";
 			echo add_token_field();
 			echo "<p>Le professeur est associé aux enseignements suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains enseignements&nbsp;:</p>";
 			$k = 0;
