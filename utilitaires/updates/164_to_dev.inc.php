@@ -401,5 +401,163 @@ PRIMARY KEY (id)
 }
 
 
+$result .= "&nbsp;-> Ajout d'un champ 'code_matiere' à la table 'matieres'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM matieres LIKE 'code_matiere';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE matieres ADD code_matiere varchar(255) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'nomenclatures' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'nomenclatures'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS nomenclatures (
+	id INT(11) unsigned NOT NULL auto_increment,
+	type VARCHAR( 255 ) NOT NULL,
+	code VARCHAR( 255 ) NOT NULL,
+	PRIMARY KEY ( id )
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'nomenclatures_valeurs' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'nomenclatures_valeurs'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS nomenclatures_valeurs (
+	id INT(11) unsigned NOT NULL auto_increment,
+	type VARCHAR( 255 ) NOT NULL,
+	code VARCHAR( 255 ) NOT NULL,
+	nom VARCHAR( 255 ) NOT NULL,
+	valeur VARCHAR( 255 ) NOT NULL,
+	PRIMARY KEY ( id )
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'code_matiere' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'code_matiere';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD code_matiere VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER matiere ;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'mef_code' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'mef_code';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD mef_code VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER classe;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'repar_moins_8' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'repar_moins_8';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD repar_moins_8 FLOAT( 4, 2 ) NOT NULL AFTER moyclasse;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'repar_8_12' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'repar_8_12';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD repar_8_12 FLOAT( 4, 2 ) NOT NULL AFTER repar_moins_8;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'repar_plus_12' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'repar_plus_12';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD repar_plus_12 FLOAT( 4, 2 ) NOT NULL AFTER repar_8_12;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'effectif' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'effectif';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD effectif SMALLINT NOT NULL AFTER code_matiere;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'nom_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'nom_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD nom_prof VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'prenom_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'prenom_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD prenom_prof VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER nom_prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 ?>

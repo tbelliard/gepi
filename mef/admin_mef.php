@@ -105,7 +105,7 @@ require_once("../lib/header.inc.php");
 echo "<p class='bold'>";
 echo "<a href=\"../accueil_admin.php\">";
 echo "<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
-echo "<a href=\"associer_eleve_mef.php\">associer les élèves au mef</a>";
+echo "<a href=\"associer_eleve_mef.php\">associer les élèves aux MEFs</a>";
 echo "</p>";
 ?>
 

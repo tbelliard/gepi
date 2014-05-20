@@ -382,13 +382,21 @@
 						$nb_reg_no=0;
 						//$stat=0;
 
+						$tab_champs_matiere=array("CODE_MATIERE",
+						"CODE_GESTION",
+						"LIBELLE_COURT",
+						"LIBELLE_LONG",
+						"LIBELLE_EDITION",
+						"MATIERE_ETP"
+						);
+
 						$alt=1;
 						while($i<count($matiere)){
 							$sql="select matiere, nom_complet from matieres where matiere='".$matiere[$i]['code_gestion']."';";
 							$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 							$resverif = mysqli_num_rows($verif);
 							if($resverif==0) {
-								$sql="insert into matieres set matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['code_gestion'])."', nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['libelle_court'])."', priority='0',matiere_aid='n',matiere_atelier='n';";
+								$sql="insert into matieres set matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['code_gestion'])."', nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i]['libelle_court'])."', priority='0',matiere_aid='n',matiere_atelier='n', code_matiere='".$matiere[$i]["code"]."';";
 								$req=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$req) {
 									$nb_reg_no++;
@@ -398,6 +406,28 @@
 									$alt=$alt*(-1);
 									echo "<tr class='lig$alt'>\n";
 									echo "<td><p><font color='red'>".$matiere[$i]['code_gestion']."</font></p></td><td><p>".htmlspecialchars($matiere[$i]['libelle_court'])."</p></td></tr>\n";
+
+									$sql="SELECT 1=1 FROM nomenclatures WHERE type='matiere' AND code='".$matiere[$i]['code']."';";
+									$test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($test)==0) {
+
+										$sql="INSERT INTO nomenclatures SET code='".$matiere[$i]['code']."',
+																	type='matiere';";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if($insert) {
+											foreach($tab_champs_matiere as $key => $value) {
+												$tmp_value=strtolower($value);
+												if(isset($matiere[$i][$tmp_value])) {
+													$sql="INSERT INTO nomenclatures_valeurs SET type='matiere',
+																	code='".$matiere[$i]['code']."',
+																	nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tmp_value)."',
+																	valeur='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere[$i][$tmp_value])."';";
+													$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+												}
+											}
+										}
+
+									}
 								}
 							} else {
 								$nom_complet = old_mysql_result($verif,0,'nom_complet');

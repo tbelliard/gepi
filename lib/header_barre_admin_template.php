@@ -195,6 +195,7 @@ seront affichés (et exportables en CSV).">Equipes pédago</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/statistiques/classes_effectifs.php"'.insert_confirm_abandon().' title="Effectifs par classe et périodes.">Effectifs</a></li>'."\n";
 
 		$menus .= '                <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().'>MEF</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/gestion/admin_nomenclatures.php" '.insert_confirm_abandon().'>Nomenclatures</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
 		$menus .= '            </ul>'."\n";

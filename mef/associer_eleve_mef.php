@@ -86,6 +86,10 @@ $titre_page = "MEF";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $javascript_specifique[] = "mod_abs2/lib/include";
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -184,15 +188,15 @@ if (!$eleve_col->isEmpty()) {
 <!-- Fin de la legende -->
 <p><input type="hidden" name="total_eleves" value="<?php echo $eleve_col->count()?>" /></p>
 <table><tr><td style="vertical-align : top;">
-	<table style="width:750px;" >
+	<table style="width:750px;" class='sortable resizable'>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;">Liste des &eacute;l&egrave;ves.
+				<th style="text-align : center;" class='text' title='Cliquer pour trier'>Liste des &eacute;l&egrave;ves.
 				Sélectionner :
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', true); return false;">Tous</a>
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', false); return false;">Aucun</a>
 				</th>
-				<th style="text-align : center;">MEF actuel</th>
+				<th style="text-align : center;" class='text' title='Cliquer pour trier'>MEF actuel</th>
 				<th style="text-align : center;">modifier</th>
 				<th> </th>
 			</tr>

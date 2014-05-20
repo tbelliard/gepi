@@ -129,7 +129,6 @@ if(!isset($annee_scolaire)){
 
 	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
 	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
-	//if(){
 	if(mysqli_num_rows($res_annee)==0){
 		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
 	}
@@ -174,8 +173,21 @@ if(!isset($annee_scolaire)){
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 
+	$sql="SELECT DISTINCT e.* FROM eleves e,j_eleves_classes jec WHERE jec.login=e.login AND e.mef_code='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." élève(s) ont leur CODE_MEF non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association élève/MEF avant d'archiver l'année.<br /><a href='../mef/associer_eleve_mef.php'>Associer élèves et MEF</a></p>";
+	}
+
+	$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere AND m.code_matiere='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
+	}
+
+	echo "<p style='margin-top:1em; color:red'>A FAIRE : Signaler les élèves sans CODE_MEF renseigné, les matières sans CODE_MATIERE renseigné.<br />Cela peut poser des problèmes pour la remontée Livret Scolaire Lycée (<em>en cours de développement</em>).</p>";
 }
-else{
+else {
 	echo "<div class='norme'><p class=bold><a href='";
 	if(isset($_SESSION['chgt_annee'])) {
 		echo "../gestion/changement_d_annee.php";
@@ -396,6 +408,7 @@ else{
 					$tab_eleve[$cpt]['naissance']=$lig_ele->naissance;
 					$tab_eleve[$cpt]['naissance2']=formate_date($lig_ele->naissance);
 					$tab_eleve[$cpt]['login_eleve']=$lig_ele->login;
+					$tab_eleve[$cpt]['mef_code']=$lig_ele->mef_code;
 
 					$tab_eleve[$cpt]['ine']=$lig_ele->no_gep;
 
@@ -423,18 +436,25 @@ else{
 
 
 					// CPE associé(s) à l'élève
-					$sql="SELECT jec.cpe_login FROM j_eleves_cpe jec WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."';";
+					$sql="SELECT jec.cpe_login, u.nom, u.prenom FROM j_eleves_cpe jec, utilisateurs u WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."' AND jec.cpe_login=u.login;";
 					$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_cpe)==0){
 						$tab_eleve[$cpt]['cpe']="";
+						$tab_eleve[$cpt]['nom_cpe']="";
+						$tab_eleve[$cpt]['prenom_cpe']="";
 					}
 					else{
 						$lig_cpe=mysqli_fetch_object($res_cpe);
 						$tab_eleve[$cpt]['cpe']=affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
+						$tab_eleve[$cpt]['nom_cpe']=$lig_cpe->nom;
+						$tab_eleve[$cpt]['prenom_cpe']=$lig_cpe->prenom;
 
+						// Normalement, il n'y a qu'un CPE associé
 						while($lig_cpe=mysqli_fetch_object($res_cpe)){
 							$tab_eleve[$cpt]['cpe'].=", ".affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
+							$tab_eleve[$cpt]['nom_cpe'].="|".$lig_cpe->nom;
+							$tab_eleve[$cpt]['prenom_cpe'].="|".$lig_cpe->prenom;
 						}
 					}
 
@@ -508,12 +528,18 @@ else{
 					// Calculer les moyennes de classe, rechercher min et max pour tous les groupes associés à la classe sur la période.
 					//$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
 					$sql="SELECT DISTINCT id_groupe, priorite FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
+					//$sql="SELECT DISTINCT jgc.id_groupe, jgc.priorite, m.code_matiere FROM j_groupes_classes jgc, j_groupes_matieres jgp, matieres m WHERE jgc.id_classe='".$id_classe[0]."', jgc.id_groupe=jgm.id_groupe AND jgm.id_matiere=m.matiere;";
 					$res_groupes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					$moymin=array();
 					$moymax=array();
 					$moyclasse=array();
 					$ordre_matiere=array();
+
+					$eff_groupe=array();
+					$repar_moins_8=array();
+					$repar_8_12=array();
+					$repar_plus_12=array();
 
 					if(mysqli_num_rows($res_groupes)==0){
 						// Dans ce cas, il ne doit pas y avoir de note,... pour les élèves
@@ -523,6 +549,32 @@ else{
 							$id_groupe=$lig_groupes->id_groupe;
 
 							$ordre_matiere[$id_groupe]=$lig_groupes->priorite;
+
+							$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$i'";
+							//echo "$sql<br />\n";
+							$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+							$eff_groupe[$id_groupe]=mysqli_num_rows($res_eff);
+
+							$repar_moins_8[$id_groupe]="";
+							$repar_8_12[$id_groupe]="";
+							$repar_plus_12[$id_groupe]="";
+
+							if($eff_groupe[$id_groupe]>0) {
+								$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND note<'8' AND periode='$i'";
+								//echo "$sql<br />\n";
+								$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+								$repar_moins_8[$id_groupe]=mysqli_num_rows($res_eff)/$eff_groupe[$id_groupe];
+
+								$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND note>='8' AND note<'12' AND periode='$i'";
+								//echo "$sql<br />\n";
+								$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+								$repar_8_12[$id_groupe]=mysqli_num_rows($res_eff)/$eff_groupe[$id_groupe];
+
+								$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND note>='12' AND periode='$i'";
+								//echo "$sql<br />\n";
+								$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+								$repar_plus_12[$id_groupe]=mysqli_num_rows($res_eff)/$eff_groupe[$id_groupe];
+							}
 
 							$sql="SELECT AVG(note) moyenne FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND periode='$i'";
 							//echo "$sql<br />\n";
@@ -574,8 +626,12 @@ else{
 </script>\n";
 						}
 
+						$mef_code=$tab_eleve[$j]['mef_code'];
 
 
+						$sql="SELECT * FROM j_eleves_classes WHERE id_classe='".$id_classe[0]."' AND periode='$i'";
+						$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+						$eff_classe=mysqli_num_rows($res_eff);
 
 						// Absences, retards,... de l'élève
 						$sql="SELECT * FROM absences WHERE login='".$login_eleve."' AND periode='$i'";
@@ -599,20 +655,28 @@ else{
 											annee='$annee_scolaire',
 											ine='$ine',
 											classe='".addslashes($classe)."',
+											effectif='$eff_classe',
+											mef_code='$mef_code',
 											num_periode='$num_periode',
 											nom_periode='".addslashes($nom_periode)."',
 											special='ABSENCES',
 											matiere='',
+											code_matiere='',
 											prof='".addslashes($cpe)."',
+											nom_prof='".addslashes($tab_eleve[$j]['nom_cpe'])."',
+											prenom_prof='".addslashes($tab_eleve[$j]['prenom_cpe'])."',
 											note='',
 											moymin='',
 											moymax='',
 											moyclasse='',
+											repar_moins_8='',
+											repar_8_12='',
+											repar_plus_12='',
 											appreciation='".addslashes($appreciation)."',
 											nb_absences='$nb_absences',
 											non_justifie='$non_justifie',
 											nb_retards='$nb_retards'
-											";
+											;";
 						echo "<!-- $sql -->\n";
 						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -647,15 +711,23 @@ else{
 											annee='$annee_scolaire',
 											ine='$ine',
 											classe='".addslashes($classe)."',
+											effectif='$eff_classe',
+											mef_code='$mef_code',
 											num_periode='$num_periode',
 											nom_periode='".addslashes($nom_periode)."',
 											special='AVIS_CONSEIL',
 											matiere='',
+											code_matiere='',
 											prof='".addslashes($suivi_par)."',
+											nom_prof='',
+											prenom_prof='',
 											note='',
 											moymin='',
 											moymax='',
 											moyclasse='',
+											repar_moins_8='',
+											repar_8_12='',
+											repar_plus_12='',
 											appreciation='".addslashes($avis)."',
 											nb_absences='',
 											non_justifie='',
@@ -690,7 +762,7 @@ else{
 																jgm.id_groupe=mn.id_groupe AND
 																jgm.id_matiere=m.matiere;";
 						*/
-						$sql="SELECT jeg.id_groupe, m.nom_complet FROM j_groupes_matieres jgm,matieres m,j_eleves_groupes jeg
+						$sql="SELECT jeg.id_groupe, m.nom_complet, m.code_matiere FROM j_groupes_matieres jgm,matieres m,j_eleves_groupes jeg
 														WHERE jeg.login='$login_eleve' AND
 																jeg.periode='$num_periode' AND
 																jgm.id_groupe=jeg.id_groupe AND
@@ -712,6 +784,7 @@ else{
 
 								$id_groupe=$lig_grp->id_groupe;
 								$matiere=$lig_grp->nom_complet;
+								$code_matiere=$lig_grp->code_matiere;
 
 								$sql="SELECT mn.* FROM matieres_notes mn
 														WHERE mn.login='$login_eleve' AND
@@ -752,18 +825,25 @@ else{
 
 								if(($note!='')||($appreciation!='-')) {
 									// Récupération des professeurs associés
-									$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
+									$sql="SELECT u.login, u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login ORDER BY login";
 									echo "<!-- $sql -->\n";
+									//echo "$sql<br />";
 									$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 	
+									$nom_prof="";
+									$prenom_prof="";
 									if(mysqli_num_rows($res_prof)==0){
 										$prof="";
 									}
 									else{
 										$lig_prof=mysqli_fetch_object($res_prof);
 										$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
+										$nom_prof=$lig_prof->nom;
+										$prenom_prof=$lig_prof->prenom;
 										while($lig_prof=mysqli_fetch_object($res_prof)){
 											$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
+											$nom_prof.="|".$lig_prof->nom;
+											$prenom_prof.="|".$lig_prof->prenom;
 										}
 									}
 	
@@ -776,15 +856,23 @@ else{
 														annee='$annee_scolaire',
 														ine='$ine',
 														classe='".addslashes($classe)."',
+														mef_code='$mef_code',
+														effectif='".$eff_groupe[$id_groupe]."',
 														num_periode='$num_periode',
 														nom_periode='".addslashes($nom_periode)."',
 														matiere='".addslashes($matiere)."',
+														code_matiere='".addslashes($code_matiere)."',
 														special='',
 														prof='".addslashes($prof)."',
+														nom_prof='".addslashes($nom_prof)."',
+														prenom_prof='".addslashes($prenom_prof)."',
 														note='$note',
 														moymin='".$moymin[$id_groupe]."',
 														moymax='".$moymax[$id_groupe]."',
 														moyclasse='".$moyclasse[$id_groupe]."',
+														repar_moins_8='".$repar_moins_8[$id_groupe]."',
+														repar_8_12='".$repar_8_12[$id_groupe]."',
+														repar_plus_12='".$repar_plus_12[$id_groupe]."',
 														rang='".$rang."',
 														appreciation='".addslashes($appreciation)."',
 														nb_absences='',

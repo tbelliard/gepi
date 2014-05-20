@@ -43,10 +43,11 @@ if (isset($_POST['is_posted'])) {
     // Les données ont été postées, on met à jour
     check_token();
 
-    $get_all_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, priority, categorie_id FROM matieres");
+    $get_all_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT matiere, priority, categorie_id, code_matiere FROM matieres");
     while ($row = mysqli_fetch_object($get_all_matieres)) {
         // On passe les matières une par une et on met à jour
         $varname_p = my_strtolower($row->matiere)."_priorite";
+        $varname_cm = my_strtolower($row->matiere)."_code_matiere";
 		//echo "<p>Test \$varname_p=$varname_p<br />";
         if (isset($_POST[$varname_p])) {
 			//echo "isset(\$_POST[$varname_p]) oui<br />";
@@ -74,6 +75,19 @@ if (isset($_POST['is_posted'])) {
                 }
             }
         }
+
+	if (isset($_POST[$varname_cm])) {
+		if (is_numeric($_POST[$varname_cm])) {
+			if ($_POST[$varname_cm] != $row->code_matiere) {
+				// On a une valeur différente. On met à jour.
+				$res = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres SET code_matiere = '".$_POST[$varname_cm] . "' WHERE matiere = '" . $row->matiere . "'");
+				if (!$res) {
+					$msg .= "<br/>Erreur lors de la mise à jour du code_matiere de la matière ".$row->matiere.".";
+					$error = true;
+				}
+			}
+		}
+	}
 
         // La même chose pour la catégorie de matière
         $varname_c = my_strtolower($row->matiere)."_categorie";
@@ -122,6 +136,7 @@ require_once("../lib/header.inc.php");
  | <a href='matieres_param.php'<?php echo insert_confirm_abandon();?>>Paramétrage de plusieurs matières par lots</a>
  | <a href='matieres_categories.php'<?php echo insert_confirm_abandon();?>>Editer les catégories de matières</a>
  | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matières</a>
+ | <a href='../gestion/admin_nomenclatures.php'<?php echo insert_confirm_abandon();?>>Gérer les nomenclatures</a>
 </p>
 
 <?php
@@ -161,6 +176,7 @@ echo add_token_field();
     <th><p class='bold'><a href='./index.php?orderby=m.nom_complet'<?php echo insert_confirm_abandon();?>>Nom complet</a></p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par défaut</a></p></th>
     <th><p class='bold'>Catégorie par défaut</p></th>
+    <th><p class='bold' title="Le renseignement des codes matières est nécessaire pour le Livret Scolaire Lycée">Code matière</p></th>
     <th><p class='bold'>Supprimer</p></th>
 </tr>
 <?php
@@ -172,10 +188,22 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 // On va chercher les classes déjà existantes, et on les affiche.
 
 $categories=array();
-$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id FROM matieres m ORDER BY $orderby");
+$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT m.matiere, m.nom_complet, m.priority, m.categorie_id, m.code_matiere FROM matieres m ORDER BY $orderby");
 $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id, nom_court FROM matieres_categories");
 while ($row = mysqli_fetch_array($get_cat,  MYSQLI_ASSOC)) {
     $categories[] = $row;
+}
+
+$cpt=0;
+$tab_code_matiere=array();
+$sql="SELECT * FROM nomenclatures_valeurs WHERE type='matiere' AND nom='libelle_court' ORDER BY valeur;";
+$res_nomenclature=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_nomenclature)>0) {
+	while($lig_nomenclature=mysqli_fetch_object($res_nomenclature)) {
+		$tab_code_matiere[$cpt]['code_matiere']=$lig_nomenclature->code;
+		$tab_code_matiere[$cpt]['libelle_court']=$lig_nomenclature->valeur;
+		$cpt++;
+	}
 }
 
 $nombre_lignes = mysqli_num_rows($call_data);
@@ -186,8 +214,9 @@ while ($i < $nombre_lignes){
 
 	$current_matiere = old_mysql_result($call_data, $i, "matiere");
 	$current_matiere_nom = old_mysql_result($call_data, $i, "nom_complet");
-    $current_matiere_priorite = old_mysql_result($call_data, $i, "priority");
-    $current_matiere_categorie_id = old_mysql_result($call_data, $i, "categorie_id");
+	$current_matiere_priorite = old_mysql_result($call_data, $i, "priority");
+	$current_matiere_categorie_id = old_mysql_result($call_data, $i, "categorie_id");
+	$current_code_matiere = old_mysql_result($call_data, $i, "code_matiere");
 
     if ($current_matiere_priorite > 1) {$current_matiere_priorite -= 10;}
 
@@ -235,6 +264,23 @@ while ($i < $nombre_lignes){
     }
     echo "</select>\n";
     echo "</td>\n";
+
+
+	echo "<td>\n";
+	echo "<select size=1 name='" . my_strtolower($current_matiere)."_code_matiere' onchange='changement()'>
+	<option value=''>---</option>";
+	for($loop=0;$loop<count($tab_code_matiere);$loop++) {
+		$selected="";
+		if($current_code_matiere==$tab_code_matiere[$loop]['code_matiere']) {
+			$selected=" selected";
+		}
+		echo "
+			<option value='".$tab_code_matiere[$loop]['code_matiere']."'$selected>".$tab_code_matiere[$loop]['libelle_court']."</option>";
+	}
+	echo "</select>\n";
+	echo "</td>\n";
+
+
     //echo "<td><a href=\"../lib/confirm_query.php?liste_cible=$current_matiere&amp;action=del_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
     echo "<td><a href=\"suppr_matiere.php?matiere=$current_matiere\" onclick=\"return confirmlink(this, 'La suppression d\'une matière est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a></td></tr>\n";
 	$i++;

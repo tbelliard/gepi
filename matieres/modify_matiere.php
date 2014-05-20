@@ -44,6 +44,7 @@ if (isset($_POST['isposted'])) {
 	check_token();
     $ok = 'yes';
     $ok_categorie = 'yes';
+    $code_matiere=isset($_POST['code_matiere']) ? $_POST['code_matiere'] : "";
     if (isset($_POST['reg_current_matiere'])) {
         // On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
         $matiere_name = $_POST['reg_current_matiere'];
@@ -56,6 +57,7 @@ if (isset($_POST['isposted'])) {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
         //if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
+        // Le POINT est interdit dans le nom court de matière (problème avec des noms de champs PHP sinon notamment dans matieres/index.php)
         if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_-]{1,19}$/", $matiere_name)) {
             $verify_query = mysqli_query($GLOBALS["mysqli"], "SELECT * from matieres WHERE matiere='$matiere_name'");
             $verify = mysqli_num_rows($verify_query);
@@ -69,7 +71,7 @@ if (isset($_POST['isposted'])) {
 				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
-                $sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
+                $sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n', code_matiere='$code_matiere';";
 				//echo "$sql<br />\n";
                 $register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
                 if (!$register_matiere) {
@@ -99,7 +101,7 @@ if (isset($_POST['isposted'])) {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
 
-        $sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "' WHERE matiere='".$matiere_name."';";
+        $sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "', code_matiere='$code_matiere' WHERE matiere='".$matiere_name."';";
 		//echo "$sql<br />\n";
         $register_matiere = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -228,16 +230,19 @@ require_once("../lib/header.inc.php");
 echo add_token_field();
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
-    $matiere_nom_complet = old_mysql_result($call_data, 0, "nom_complet");
-    $matiere_priorite = old_mysql_result($call_data, 0, "priority");
-    $matiere_cat_id = old_mysql_result($call_data, 0, "categorie_id");
+    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$_GET['current_matiere']."'");
+    $lig_matiere=mysqli_fetch_object($call_data);
+    $matiere_nom_complet = $lig_matiere->nom_complet;
+    $matiere_priorite = $lig_matiere->priority;
+    $matiere_cat_id = $lig_matiere->categorie_id;
+    $code_matiere = $lig_matiere->code_matiere;
     $current_matiere = $_GET['current_matiere'];
 } else {
     $matiere_nom_complet = "";
     $matiere_priorite = "0";
     $current_matiere = "";
     $matiere_cat_id = "0";
+    $code_matiere="";
 }
 ?>
 
@@ -308,9 +313,9 @@ function checkbox_change(cpt) {
 ?>
 </div>
 
-<table>
+<table class='boireaus boireaus_alt'>
 <tr>
-<td>Nom de matière : </td>
+<th>Nom de matière : </th>
 <td>
 <?php
 if (!isset($_GET['current_matiere'])) {
@@ -321,11 +326,11 @@ if (!isset($_GET['current_matiere'])) {
 ?>
 </td></tr>
 <tr>
-<td>Nom complet : </td>
+<th>Nom complet : </th>
 <td><input type='text' name='matiere_nom_complet' value="<?php echo $matiere_nom_complet;?>" onchange='changement()' /></td>
 </tr>
 <tr>
-<td>Priorité d'affichage par défaut</td>
+<th>Priorité d'affichage par défaut</th>
 <td>
 <?php
 echo "<select size='1' name='matiere_priorite' onchange='changement()' >\n";
@@ -339,10 +344,44 @@ while ($k < 110){
     $k++;
     $j = $k - 10;
 }
-echo "</select></td>";
+echo "</select></td></tr>";
+
+$sql="SELECT * FROM nomenclatures_valeurs WHERE type='matiere' AND nom='libelle_edition' ORDER BY valeur;";
+$res_nomenclature=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_nomenclature)==0) {
+	echo "
+<tr>
+	<th>Nomenclature</th>
+	<td><a href='../gestion/admin_nomenclatures.php' ".insert_confirm_abandon()." title=\"Aucune nomenclature n'est enregistrée dans Gepi.
+L'import des nomenclatures est nécessaire pour le Livret Scolaire Lycée.\">Aucune nomenclature</a></td>
+</tr>";
+}
+else {
+	echo "
+<tr>
+	<th title=\"La saisie des nomenclatures est nécessaire pour le Livret Scolaire Lycée.\">Nomenclature</th>
+	<td>
+		<select name='code_matiere'>
+			<option value=''>---</option>";
+
+	while($lig_nomenclature=mysqli_fetch_object($res_nomenclature)) {
+		$selected="";
+		if($code_matiere==$lig_nomenclature->code) {
+			$selected=" selected";
+		}
+		echo "
+			<option value='".$lig_nomenclature->code."'$selected>".$lig_nomenclature->valeur."</option>";
+	}
+
+	echo "
+		</select>
+	</td>
+</tr>";
+}
+
 ?>
 <tr>
-<td>Catégorie par défaut</td>
+<th>Catégorie par défaut</th>
 <td>
 <?php
 echo "<select size='1' name='matiere_categorie' onchange='changement()' >\n";
