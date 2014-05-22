@@ -877,6 +877,12 @@ function checkAccess() {
 				fclose($f);
 			}
 
+			$ping_host=getSettingValue('ping_host');
+			if($ping_host=="") {
+				//$ping_host="www.google.fr";
+				$ping_host="173.194.40.183";
+			}
+
 			$redir_saisie_mail_requise="n";
 			//if((!isset($_SESSION['email']))||(!check_mail($_SESSION['email']))) {
 			if(!isset($_SESSION['email'])) {
@@ -887,7 +893,7 @@ function checkAccess() {
 					fclose($f);
 				}
 			}
-			elseif(getSettingAOui('MailValideRequisCheckDNS')) {
+			elseif((getSettingAOui('MailValideRequisCheckDNS'))&&(ping($ping_host, 80, 3)!="down")) {
 				if($debug_test_mail=="y") {
 					$f=fopen("/tmp/debug_check_mail.txt", "a+");
 					fwrite($f, strftime("%Y-%m-%d %H:%M:%S")." Avant le test checkdnsrr...\n");
@@ -9417,6 +9423,24 @@ function get_nom_statut_autre($id_statut, $login_user="") {
 	}
 }
 
+/** Fonction destinée à tester si le serveur accède à internet.
+ *  Cas d'un serveur en DMZ: On peut accéder au serveur en interne même si l'accès internet est coupé.
+ *  Dans ce cas, les tests DNS (par exemple) échoueront.
+ *  Un test ping peut rendre des services pour désactiver certains tests nécessitant un accès internet.
+ *
+ * @param string $host IP ou nom DNS
+ * @param integer $port le port à atteindre
+ * @param integer $timeout le temps max d'attente
+ *
+ * @return $string 'down' s'il n'y a pas d'accès et une durée en ms sinon.
+*/
+function ping($host, $port, $timeout) {
+	$tB = microtime(true); 
+	$fP = @fSockOpen($host, $port, $errno, $errstr, $timeout); 
+	if (!$fP) { return "down"; } 
+	$tA = microtime(true); 
+	return round((($tA - $tB) * 1000), 0)." ms"; 
+}
 
 function afficher_les_evenements($afficher_obsolete="n") {
 	global $gepiPath;
