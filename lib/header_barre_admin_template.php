@@ -202,6 +202,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '        </li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/mef/admin_mef.php" '.insert_confirm_abandon().' title="Gestion des Modules élémentaires de formation">MEF</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/gestion/admin_nomenclatures.php" '.insert_confirm_abandon().'>Nomenclatures</a></li>'."\n";
 
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php" '.insert_confirm_abandon().'>AID</a></li>'."\n";
 
