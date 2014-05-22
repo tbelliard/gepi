@@ -976,6 +976,14 @@ Patientez pendant l'extraction des données... merci.
 		// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
 		$tab_ele=info_eleve($ele_login);
 
+		// 20140522
+		$acces_impression_bulletin=false;
+		$acces_impression_releve_notes=false;
+		if(($acces_releves=="y")||($acces_bulletins=="y")) {
+			$acces_impression_bulletin=acces_impression_bulletin($ele_login);
+			$acces_impression_releve_notes=acces_impression_releve_notes($ele_login);
+		}
+
 		$date_debut_log=get_date_debut_log();
 		/*
 		echo "<pre>";
@@ -1563,6 +1571,55 @@ Patientez pendant l'extraction des données... merci.
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
 						}
 
+						// 20140522
+						if($acces_bulletins=="y") {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Bulletins:</th><td>";
+							// Imprimer le bulletin avec l'adresse de ce parent en particulier.
+
+
+							if($acces_impression_bulletin) {
+								$type_bulletin_par_defaut="pdf";
+
+								$chaine_intercaler_releve_notes="";
+								if($acces_impression_releve_notes) {
+									$chaine_intercaler_releve_notes="&intercaler_releve_notes=y&rn_param_auto=y";
+								}
+
+								for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+									$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+									$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+									if($loop_per>0) {
+										echo " - ";
+									}
+									echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."&pers_id=".$tab_ele['resp'][$i]['pers_id']."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode.".
+
+Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['resp'][$i]['civilite']." ".$tab_ele['resp'][$i]['nom']." ".$tab_ele['resp'][$i]['prenom']."\">P".$current_num_periode."</a>";
+
+								}
+							}
+
+							echo "</td></tr>\n";
+						}
+
+						if(($acces_releves=="y")&&($acces_impression_releve_notes)) {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Relevés:</th><td>";
+
+							$type_bulletin_par_defaut="pdf";
+
+							for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+								$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+								$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+								if($loop_per>0) {
+									echo " - ";
+								}
+								echo "<a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=$current_id_classe&choix_periode=periode&tab_periode_num[0]=$current_num_periode&mode_bulletin=$type_bulletin_par_defaut&valide_select_eleves=y&choix_parametres=effectue&tab_selection_ele_0_0[0]=$ele_login&rn_adr_resp[0]=y&pers_id=".$tab_ele['resp'][$i]['pers_id']."&rn_param_auto=y' target='_blank' title=\"Voir dans un nouvel onglet le relevé de notes ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
+							}
+
+							echo "</td></tr>\n";
+						}
+
 						echo "</table>\n";
 						echo "</td>\n";
 					}
@@ -1763,6 +1820,54 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 								echo "<tr class='lig$alt'><th style='text-align: left;'>Pays:</th><td>".$tab_ele['resp'][$i]['pays']."</td></tr>\n";
 							}
 
+
+							// 20140522
+							if(($acces_bulletins=="y")&&($acces_impression_bulletin)) {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Bulletins:</th><td>";
+
+								// Imprimer le bulletin avec l'adresse de ce parent en particulier.
+
+								$type_bulletin_par_defaut="pdf";
+
+								$chaine_intercaler_releve_notes="";
+								if($acces_impression_releve_notes) {
+									$chaine_intercaler_releve_notes="&intercaler_releve_notes=y&rn_param_auto=y";
+								}
+
+								for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+									$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+									$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+									if($loop_per>0) {
+										echo " - ";
+									}
+									echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."&pers_id=".$tab_ele['resp'][$i]['pers_id']."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode.".
+
+Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['resp'][$i]['civilite']." ".$tab_ele['resp'][$i]['nom']." ".$tab_ele['resp'][$i]['prenom']."\">P".$current_num_periode."</a>";
+
+								}
+
+								echo "</td></tr>\n";
+							}
+
+							if(($acces_releves=="y")&&($acces_impression_releve_notes)) {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Relevés:</th><td>";
+
+								$type_bulletin_par_defaut="pdf";
+
+								for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+									$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+									$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+									if($loop_per>0) {
+										echo " - ";
+									}
+									echo "<a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=$current_id_classe&choix_periode=periode&tab_periode_num[0]=$current_num_periode&mode_bulletin=$type_bulletin_par_defaut&valide_select_eleves=y&choix_parametres=effectue&tab_selection_ele_0_0[0]=$ele_login&rn_adr_resp[0]=y&pers_id=".$tab_ele['resp'][$i]['pers_id']."&rn_param_auto=y' target='_blank' title=\"Voir dans un nouvel onglet le relevé de notes ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode."\">P".$current_num_periode."</a>";
+								}
+
+								echo "</td></tr>\n";
+							}
+
 							echo "</table>\n";
 							echo "</td>\n";
 						}
@@ -1941,10 +2046,6 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 		}
 		//===================================================
 
-		if(($acces_releves=="y")||($acces_bulletins=="y")) {
-			$acces_impression_releve_notes=acces_impression_releve_notes($ele_login);
-		}
-
 		//===================
 		// Onglet BULLETINS
 		//===================
@@ -1956,7 +2057,7 @@ Cliquez pour activer la génération des bulletins à destination de ce responsa
 			echo "background-color: ".$tab_couleur['bulletins']."; ";
 			echo "'>";
 
-			if(acces_impression_bulletin($ele_login)) {
+			if($acces_impression_bulletin) {
 				echo "<div style='float:right; width:9em; text-align:center;' class='fieldset_opacite50' title=\"Imprimer les bulletins\">";
 
 				$type_bulletin_par_defaut="pdf";
@@ -3047,7 +3148,8 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			// A FAIRE: 20140418
 			$div_en_haut_a_droite.="<div style='float:right; width:4em; color:red; text-align:center;'>
 	<a href='../mod_discipline/mod_discipline_extraction_ooo.php?protagoniste_incident=$ele_login' title=\"Exporter les ".$mod_disc_terme_incident."s au format ODT.\">ODT</a><br />
-	<a href='../mod_discipline/afficher_incidents_eleve.php?login_ele=$ele_login' title=\"Afficher cette page avec/sans les informations concernant les autres protagonistes des ".$mod_disc_terme_incident."s.\">HTML</a><br />
+	<a href='../mod_discipline/afficher_incidents_eleve.php?login_ele=$ele_login' title=\"Afficher cette page avec/sans les informations concernant les autres protagonistes des ".$mod_disc_terme_incident."s.
+Vous pourrez choisir d'afficher ou non les informations concernant les éventuels autres protagonistes.\">HTML</a><br />
 </div>\n";
 
 			if((acces('/mod_discipline/saisie_avertissement_fin_periode.php', $_SESSION['statut']))&&(acces_saisie_avertissement_fin_periode($ele_login))) {
