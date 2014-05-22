@@ -1230,4 +1230,5 @@ INSERT INTO droits SET id='/mod_abs2/traitements_par_lots.php',administrateur='V
 INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='V',autre='V',description='Discipline : Aide',statut='';
 INSERT INTO droits SET id='/eleves/recherche.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='V',description='Effectuer une recherche sur une personne',statut='';
 INSERT INTO setting SET name='active_bulletins', value='y';
+INSERT INTO setting SET name='ping_host', value='173.194.40.183';
 

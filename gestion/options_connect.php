@@ -44,7 +44,7 @@ if (!checkAccess()) {
 
 $msg="";
 
-//debug_var();
+debug_var();
 
 // Mettre administrateur, c'est risquer de bloquer l'admin.
 //$tab_statuts_MailValideRequis=array("Administrateur", "Scolarite", "Cpe", "Professeur", "Secours", "Eleve", "Responsable");
@@ -515,13 +515,17 @@ echo "<form action=\"options_connect.php\" name=\"form_saisie_mail\" method=\"po
 	if(function_exists('checkdnsrr')) {
 		echo "</p>
 	<br />
-	<p><input type='checkbox' name='MailValideRequisCheckDNS' id='MailValideRequisCheckDNS' value='y' /><label for='MailValideRequisCheckDNS'> Tester si le domaine DNS saisi par l'utilisateur est valide.</label></p>";
+	<p><input type='checkbox' name='MailValideRequisCheckDNS' id='MailValideRequisCheckDNS' value='y' ".((getSettingAOui('MailValideRequisCheckDNS')) ? "checked " : "")."/><label for='MailValideRequisCheckDNS'> Tester si le domaine DNS saisi par l'utilisateur est valide.</label></p>";
 	}
 	echo "
 	<p><input type=\"submit\" name=\"valid_choix_saisie_mail\" value=\"Valider\" /></p>
 	<input type=hidden name=mode_navig value='$mode_navig' />
 	<p><br /></p>
-	<p>(*) Cela n'empêchera pas un utilisateur de saisir une adresse \"bidon\".</p>
+	<p style='text-indent: -2em;margin-left:2em;'>(*) Cela n'empêchera pas un utilisateur de saisir une adresse \"bidon\".<br />
+	Le test DNS n'empêchera pas non plus un utilisateur de fournir une adresse du type 'tu.membetes@gmail.com' dont le domaine est valide.</p>
+	<p style='text-indent: -7em;margin-left:7em; color:red; margin-top:1em;'><em>ATTENTION&nbsp;:</em> Si votre Gepi est installé en DMZ de votre établissement et que l'accès internet est temporairement coupé (**), le test DNS risque de ralentir l'affichage des pages pour les statuts cochés ci-dessus.<br />
+	En cas de coupure de l'accès internet, désactivez le test DNS pour éviter ce problème.<br />
+	(**) Les machines de l'établissement conservent un accès à Gepi en DMZ, mais seul l'accès de l'intérieur de l'établissement fonctionne alors, sans communication avec l'extérieur.</p>
 	</fieldset>
 </form>\n";
 

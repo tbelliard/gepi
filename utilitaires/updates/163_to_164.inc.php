@@ -679,5 +679,17 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Initialisation de 'ping_host' à la valeur '173.194.40.183' : ";
+$ping_host=getSettingValue('ping_host');
+if ($mod_disc_terme_sanction=="") {
+	if (!saveSetting("ping_host", '173.194.40.183')) {
+		$result .= msj_erreur("ECHEC !");
+	}
+	else {
+		$result .= msj_ok("Ok !");
+	}
+} else {
+	$result .= msj_present("déjà faite");
+}
 
 ?>
