@@ -48,6 +48,9 @@ Panneau d'affichage:
 Examens blancs:
 - Possibilité de sélectionner une épreuve blanche en guise de note pour un groupe.
 
+Années antérieures:
+- Conservation d'informations supplémentaires dans l'archivage des années en prévision de l'extraction demandée dans le Livret Scolaire Lycée.
+
 Divers:
 - Statistiques de connexion:
    . Possibilité de cumuler les connexions élèves et parents.
