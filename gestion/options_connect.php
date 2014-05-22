@@ -44,7 +44,7 @@ if (!checkAccess()) {
 
 $msg="";
 
-debug_var();
+//debug_var();
 
 // Mettre administrateur, c'est risquer de bloquer l'admin.
 //$tab_statuts_MailValideRequis=array("Administrateur", "Scolarite", "Cpe", "Professeur", "Secours", "Eleve", "Responsable");
