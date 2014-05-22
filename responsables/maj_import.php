@@ -129,7 +129,7 @@ else{
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>".$lig->ele_id."</td>\n";
 			echo "<td>".$lig->elenoet."</td>\n";
-			echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig->login'>".$lig->login."</a></td>\n";
+			echo "<td><a href='../eleves/modify_eleve.php?eleve_login=$lig->login' title=\"Consulter ou modifier la fiche de l'élève.\">".$lig->login."</a></td>\n";
 			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
 			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";
@@ -189,7 +189,7 @@ else{
 		while($lig=mysqli_fetch_object($res_pers)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td>".$lig->pers_id."</td>\n";
+			echo "<td><a href='../responsables/modify_resp.php?pers_id=".$lig->pers_id."&amp;quitter_la_page=y' target='_blank' title=\"Consulter ou modifier la fiche du responsable.\">".$lig->pers_id."</a></td>\n";
 			echo "<td>".mb_strtoupper($lig->nom)."</td>\n";
 			echo "<td>".ucfirst(mb_strtolower($lig->prenom))."</td>\n";
 			echo "<td>\n";
