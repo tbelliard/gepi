@@ -1033,6 +1033,7 @@ foreach ($liste_eleves as $eleve) {
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
 	$eleve_prenom[$i] = $eleve["prenom"];
+	$eleve_sexe[$i] = $eleve["sexe"];
 	$eleve_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["classe"];
 	$eleve_id_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["id"];
 	$somme_coef = 0;
@@ -1366,7 +1367,7 @@ Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='
 				/*
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
 				*/
-				echo " <a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=$id_dev&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+				echo " <a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$id_dev[$i]."&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
 					
 Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
 			}
@@ -1735,7 +1736,7 @@ while($i < $nombre_lignes) {
 			else {
 				echo "affiche_div_photo();";
 			}
-			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
+			echo "\"><img src='../mod_trombinoscopes/images/".(($eleve_sexe[$i]=="F") ? "photo_f" : "photo_g").".png' class='icone16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
 		}
 
 		echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' target='_blank' title='Consulter la fiche élève'>$eleve_nom[$i] $eleve_prenom[$i]</a>\n";
