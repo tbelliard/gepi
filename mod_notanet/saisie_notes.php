@@ -554,7 +554,10 @@ echo "
 				<th rowspan='2'>Élève</th>
 				<th colspan='3'>Périodes</th>
 				<th rowspan='2' title=\"Moyenne des trois périodes\">Moyenne</th>
-				<th rowspan='2'>Note</th>
+				<th rowspan='2'>
+					Note<br />
+					<a href='javascript:copier_coller_moy()' title=\"Copier la moyenne des moyennes de périodes vers les champs de saisie.\"><img src='../images/icons/copy-16.png' class='icone16' alt='Coller' /></a>
+				</th>
 			</tr>
 			<tr>";
 echo "
@@ -595,9 +598,7 @@ while($lig=mysqli_fetch_object($res)) {
 		$note=$lig_note->moyenne;
 	}
 	echo "
-				<td>
-					$note
-				</td>";
+				<td id='td_moy_annee_$cpt'>$note</td>";
 
 	echo "
 				<td id='td_note_$cpt'>";
@@ -637,6 +638,16 @@ $couleur_devoirs="";
 
 echo "
 <script type='text/javascript' language='JavaScript'>
+
+function copier_coller_moy() {
+	for(i=10;i<$cpt;i++) {
+		if(document.getElementById('n'+i)) {
+			if(document.getElementById('td_moy_annee_'+i)) {
+				document.getElementById('n'+i).value=document.getElementById('td_moy_annee_'+i).innerHTML;
+			}
+		}
+	}
+}
 
 function verifcol(num_id){
 	document.getElementById('n'+num_id).value=document.getElementById('n'+num_id).value.toLowerCase();
