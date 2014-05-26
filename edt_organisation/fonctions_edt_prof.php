@@ -221,7 +221,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
 
                     RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], "", "cellule1", "cadre", "");
                     $duree1++;
-                    $elapse_time1++;
+                    //$elapse_time1++;
                     $k = (int)($elapse_time1 / 2);
                 }
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'],$id_semaine, $period);
@@ -550,30 +550,27 @@ if ($type_edt=="prof") {
                     else 
 
                     {
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule2", "", "");
+                        $cell_height = 2;
+                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 != 0)) {
+                            $cell_height = 1;
+                        }
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule" . $cell_height, "", "");
 
-                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0)) {
- 
-
+                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 == 0)) {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                             $elapse_time++;
                         }
-
-
-
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], $rep_creneau['id_semaine'], $period);
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, GetColor($rep_creneau['id_groupe']), $contenu);
 
                         $elapse_time+=$duree_max;
                         if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] == 0)) {
-
-
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                             $elapse_time++;
                         }
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule2", "", "");
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule2", "cadre", "");
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule" . $cell_height, "", "");
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule" . $cell_height, "cadre", "");
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
                     }
            
@@ -1324,30 +1321,27 @@ if ($type_edt=="prof") {
                     else 
 
                     {
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule2", "", "");
+                        $cell_height = 2;
+                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 != 0)) {
+                            $cell_height = 1;
+                        }                    	
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule" . $cell_height, "", "");
 
-                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0)) {
- 
-
+                        if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] != 0) AND ($elapse_time%2 == 0)) {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                             $elapse_time++;
                         }
-
-
-
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], $rep_creneau['id_semaine'], $period);
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, GetColor($rep_creneau['id_groupe']), $contenu);
 
                         $elapse_time+=$duree_max;
                         if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] == 0)) {
-
-
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule1", "cadre", "");
                             $elapse_time++;
                         }
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule2", "", "");
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule2", "cadre", "");
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule" . $cell_height, "", "");
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "vide", $tab_id_creneaux[$j], "", "", "cellule" . $cell_height, "cadre", "");
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
                     }
            
