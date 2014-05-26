@@ -377,6 +377,11 @@ Les saisies/modifications sont possibles.";
 } else {
 
 	$tab_verrouillage_periodes=get_verrouillage_classes_periodes();
+	/*
+	echo "<pre>";
+	print_r($tab_verrouillage_periodes);
+	echo "</pre>";
+	*/
 
 	$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
 	if( $mode!='note_app' && $mode!='abs' && $mode!='avis' && $mode != 'ects' && $mode!='tout_sauf_avis') {
@@ -388,6 +393,7 @@ Les saisies/modifications sont possibles.";
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
 	$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	//echo "$sql<br />";
 
 	$tab_id_classe=array();
 	$chaine_options_classes="";
@@ -398,6 +404,7 @@ Les saisies/modifications sont possibles.";
 		$temoin_tmp=0;
 		while($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
 			$tab_id_classe[]=$lig_class_tmp->id;
+			//echo "\$tab_id_classe[]=$lig_class_tmp->id<br />";
 
 			if(isset($tab_verrouillage_periodes[$lig_class_tmp->id][$per])) {
 				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$lig_class_tmp->id][$per]]."\"";
@@ -415,6 +422,8 @@ Les saisies/modifications sont possibles.";
 				$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'$style_option_courante>$lig_class_tmp->classe".$info_conseil_classe."</option>\n";
 				$temoin_tmp=1;
 				if($lig_class_tmp=mysqli_fetch_object($res_class_tmp)) {
+					$tab_id_classe[]=$lig_class_tmp->id;
+					//echo "\$tab_id_classe[]=$lig_class_tmp->id<br />";
 					$info_conseil_classe="";
 					if(isset($tab_date_conseil[$lig_class_tmp->id])) {
 						$info_conseil_classe="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$lig_class_tmp->id]['date']).")";
@@ -457,6 +466,16 @@ Les saisies/modifications sont possibles.";
 	</form>
 </div>";
 
+	/*
+	echo "<pre>";
+	print_r($tab_id_classe);
+	echo "</pre>";
+
+	echo "<pre>";
+	print_r($tab_date_conseil);
+	echo "</pre>";
+	*/
+
 	$classe_courante_trouvee="n";
 	$temoin_une_date_de_conseil_de_classe=0;
 	$chaine_changement_classe_date_conseil="";
@@ -491,6 +510,12 @@ Les saisies/modifications sont possibles.";
 
 			$temoin_une_date_de_conseil_de_classe++;
 		}
+		/*
+		// DEBUG:
+		else {
+			$chaine_changement_classe_date_conseil.="<option value=''>$current_id_classe</option>";
+		}
+		*/
 	}
 	if($temoin_une_date_de_conseil_de_classe>0) {
 		$chaine_changement_classe_date_conseil.="
