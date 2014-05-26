@@ -689,7 +689,9 @@ if((isset($mode_signalement))&&($mode_signalement=="2")) {
 							if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
 								$bull_non_vide="y";
 								if($_SESSION['statut']=='professeur') {
-									echo "<a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=".$period["num_periode"]."#saisie_app_".$e_login."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le bulletin de cet élève.\"><img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' /></a>";
+									echo "<a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=".$period["num_periode"]."#saisie_app_".$e_login."' target='_blank' title=\"Voir, dans une nouvelle fenêtre, mes saisies dans le bulletin de cet élève.\"><img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title=\"Bulletin non vide.
+
+Si vous souhaitez désinscrire cet élève, il ne faut rien saisir dans ses bulletins, pas même un tiret.\" alt='Bulletin non vide' /></a>";
 								}
 								else {
 									echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
