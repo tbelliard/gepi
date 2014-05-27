@@ -1425,6 +1425,29 @@ echo "</p>";
 
 //if ($ligne_supl == 1) {
 if ($ligne_supl >= 1) {
+
+	unset($num_p1);
+	unset($num_p2);
+	if($referent=='une_periode') {
+		if(!isset($avec_moy_gen_periodes_precedentes)) {
+			$num_p1=$num_periode;
+			$num_p2=$num_p1+1;
+		}
+		else {
+			$num_p1=1;
+			$num_p2=$num_periode+1;
+		}
+	}
+	else {
+		if(isset($avec_moy_gen_periodes_precedentes)) {
+			$num_p1=1;
+			$num_p2=$nb_periode;
+		}
+
+		$num_p1bis=1;
+		$num_p2bis=$nb_periode;
+	}
+
 	// Les moyennes pour chaque catégorie
 	if ($affiche_categories) {
 		foreach($displayed_categories as $cat_id) {
@@ -1495,41 +1518,137 @@ if ($ligne_supl >= 1) {
 			}
 			else {
 				// Mode Année entière
-				$j = '0';
-				while($j < $nb_lignes_tableau) {
-					if ($total_cat_coef_eleve[$j+$ligne_supl][$cat_id] > 0) {
-						$col[$nb_col][$j+$ligne_supl] = number_format($total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id],1, ',', ' ');
+				// Moyennes de catégories en mode année entière: 20140527: Il faudrait un autre mode de calcul
+				if($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes") {
 
-						if($current_eleve_login[$j]==$ele_login_debug) {
-							$lignes_debug.="Moyenne de la catégorie $cat_id=".$total_cat_points_eleve[$j+$ligne_supl][$cat_id]."/".$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
-						}
-
-						//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-						// A REVOIR... calcul des moyennes min/max/classe de catégories,...
-						//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-						//$moy_cat_classe_point[$cat_id] +=$total_cat_points_classe[$j+$ligne_supl][$cat_id]/$total_cat_coef_classe[$j+$ligne_supl][$cat_id];
-						$moy_cat_classe_point[$cat_id] +=$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id];
-
-						$moy_cat_classe_effectif[$cat_id]++;
-
-						$moy_cat_classe_min[$cat_id] = min($moy_cat_classe_min[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
-
-						$moy_cat_classe_max[$cat_id] = max($moy_cat_classe_max[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
-					} else {
-						$col[$nb_col][$j+$ligne_supl] = '/';
+					$moy_annee_somme_moy_ele_categorie_courante=array();
+					$moy_annee_nb_moy_ele_categorie_courante=array();
+					$moy_annee_moy_ele_categorie_courante=array();
+					$j=0;
+					while($j < $nb_lignes_tableau) {
+						$moy_annee_somme_moy_ele_categorie_courante[$j]=0;
+						$moy_annee_nb_moy_ele_categorie_courante[$j]=0;
+						$j++;
 					}
-					$j++;
-				}
 
-				$col[$nb_col][0] = "-";
-				if ($moy_cat_classe_point[$cat_id] == 0) {
-					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
-					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
-					$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
-				} else {
-					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_cat_classe_point[$cat_id]/$moy_cat_classe_effectif[$cat_id],1, ',', ' ');
-					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_cat_classe_min[$cat_id],1, ',', ' ');
-					$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_cat_classe_max[$cat_id],1, ',', ' ');
+					for($loop=$num_p1bis;$loop<$num_p2bis;$loop++) {
+						$j=0;
+						//echo "\$loop=$loop<br />";
+						while($j < $nb_lignes_tableau) {
+							if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
+								//echo $current_eleve_login[$j]."<br />";
+								$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
+								$tmp_moy_cat_ele=$tab_moy['periodes'][$loop]['moy_cat_eleve'][$indice_j_ele][$cat_id];
+								if(($tmp_moy_cat_ele!='')&&($tmp_moy_cat_ele!='-')) {
+									$moy_annee_somme_moy_ele_categorie_courante[$j]+=$tmp_moy_cat_ele;
+									$moy_annee_nb_moy_ele_categorie_courante[$j]++;
+								}
+							}
+							$j++;
+						}
+					}
+
+					$moy_annee_somme_toutes_moy_ele_categorie_courante=0;
+					$moy_annee_nb_toutes_moy_ele_categorie_courante=0;
+					$moy_annee_moy_max_moy_ele_categorie_courante=-1;
+					$moy_annee_moy_min_moy_ele_categorie_courante=100;
+					$j=0;
+					while($j < $nb_lignes_tableau) {
+						if($moy_annee_nb_moy_ele_categorie_courante[$j]==0) {
+							$moy_annee_moy_ele_categorie_courante[$j]="/";
+						}
+						else {
+							$moy_tmp=$moy_annee_somme_moy_ele_categorie_courante[$j]/$moy_annee_nb_moy_ele_categorie_courante[$j];
+							$moy_annee_moy_ele_categorie_courante[$j]=number_format($moy_tmp,1, ',', ' ');;
+
+							$moy_annee_somme_toutes_moy_ele_categorie_courante+=$moy_tmp;
+							$moy_annee_nb_toutes_moy_ele_categorie_courante++;
+
+							if($moy_tmp>$moy_annee_moy_max_moy_ele_categorie_courante) {
+								$moy_annee_moy_max_moy_ele_categorie_courante=$moy_tmp;
+							}
+							if($moy_tmp<$moy_annee_moy_min_moy_ele_categorie_courante) {
+								$moy_annee_moy_min_moy_ele_categorie_courante=$moy_tmp;
+							}
+						}
+						$j++;
+					}
+					$moy_annee_moy_classe_categorie_courante="-";
+					if($moy_annee_nb_toutes_moy_ele_categorie_courante>0) {
+						$moy_annee_moy_classe_categorie_courante=number_format($moy_annee_somme_toutes_moy_ele_categorie_courante/$moy_annee_nb_toutes_moy_ele_categorie_courante,1, ',', ' ');;
+					}
+
+					if($moy_annee_moy_max_moy_ele_categorie_courante==-1) {
+						$moy_annee_moy_max_moy_ele_categorie_courante="-";
+					}
+					else {
+						$moy_annee_moy_max_moy_ele_categorie_courante=number_format($moy_annee_moy_max_moy_ele_categorie_courante,1, ',', ' ');;
+					}
+
+					if($moy_annee_moy_min_moy_ele_categorie_courante==100) {
+						$moy_annee_moy_min_moy_ele_categorie_courante="-";
+					}
+					else {
+						$moy_annee_moy_min_moy_ele_categorie_courante=number_format($moy_annee_moy_min_moy_ele_categorie_courante,1, ',', ' ');;
+					}
+
+
+
+
+
+
+					$j = '0';
+					while($j < $nb_lignes_tableau) {
+						$col[$nb_col][$j+$ligne_supl]=$moy_annee_moy_ele_categorie_courante[$j];
+						$j++;
+					}
+
+					$col[$nb_col][0] = "-";
+
+					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = $moy_annee_moy_classe_categorie_courante;
+					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = $moy_annee_moy_min_moy_ele_categorie_courante;
+					$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = $moy_annee_moy_max_moy_ele_categorie_courante;
+
+
+
+				}
+				else {
+					$j = '0';
+					while($j < $nb_lignes_tableau) {
+						if ($total_cat_coef_eleve[$j+$ligne_supl][$cat_id] > 0) {
+							$col[$nb_col][$j+$ligne_supl] = number_format($total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id],1, ',', ' ');
+
+							if($current_eleve_login[$j]==$ele_login_debug) {
+								$lignes_debug.="Moyenne de la catégorie $cat_id=".$total_cat_points_eleve[$j+$ligne_supl][$cat_id]."/".$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
+							}
+
+							//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							// A REVOIR... calcul des moyennes min/max/classe de catégories,...
+							//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							//$moy_cat_classe_point[$cat_id] +=$total_cat_points_classe[$j+$ligne_supl][$cat_id]/$total_cat_coef_classe[$j+$ligne_supl][$cat_id];
+							$moy_cat_classe_point[$cat_id] +=$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id];
+
+							$moy_cat_classe_effectif[$cat_id]++;
+
+							$moy_cat_classe_min[$cat_id] = min($moy_cat_classe_min[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
+
+							$moy_cat_classe_max[$cat_id] = max($moy_cat_classe_max[$cat_id],$total_cat_points_eleve[$j+$ligne_supl][$cat_id]/$total_cat_coef_eleve[$j+$ligne_supl][$cat_id]);
+						} else {
+							$col[$nb_col][$j+$ligne_supl] = '/';
+						}
+						$j++;
+					}
+
+					$col[$nb_col][0] = "-";
+					if ($moy_cat_classe_point[$cat_id] == 0) {
+						$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
+						$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
+						$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
+					} else {
+						$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_cat_classe_point[$cat_id]/$moy_cat_classe_effectif[$cat_id],1, ',', ' ');
+						$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_cat_classe_min[$cat_id],1, ',', ' ');
+						$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_cat_classe_max[$cat_id],1, ',', ' ');
+					}
 				}
 			}
 		}
@@ -1540,27 +1659,6 @@ if ($ligne_supl >= 1) {
 	// La moyenne générale des élèves (dernière colonne... ou avant-dernière dans le cas année_entière)
 	$nb_col++;
 
-	unset($num_p1);
-	unset($num_p2);
-	if($referent=='une_periode') {
-		if(!isset($avec_moy_gen_periodes_precedentes)) {
-			$num_p1=$num_periode;
-			$num_p2=$num_p1+1;
-		}
-		else {
-			$num_p1=1;
-			$num_p2=$num_periode+1;
-		}
-	}
-	else {
-		if(isset($avec_moy_gen_periodes_precedentes)) {
-			$num_p1=1;
-			$num_p2=$nb_periode;
-		}
-
-		$num_p1bis=1;
-		$num_p2bis=$nb_periode;
-	}
 
 	if((isset($num_p1))&&(isset($num_p2))) {
 		for($loop=$num_p1;$loop<$num_p2;$loop++) {
