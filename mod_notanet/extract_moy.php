@@ -583,7 +583,8 @@ function DecocheColonneSelectEleves(i,j) {
 		echo "<input type='hidden' name='extract_mode' value='$extract_mode' />\n";
 		echo "<input type='hidden' name='nb_tot_eleves' value='$num_eleve' />\n";
 		//echo "<input type='submit' name='choix_corrections' value='Valider les corrections' />\n";
-		echo "<input type='submit' name='enregistrer_extract_moy' id='enregistrer_extract_moy' value='Enregistrer' />\n";
+		echo "<input type='hidden' name='enregistrer_extract_moy' value='y' />\n";
+		echo "<input type='submit' name='bouton_enregistrer_extract_moy' id='bouton_enregistrer_extract_moy' value='Enregistrer' />\n";
 		//echo "<p>Valider les corrections ci-dessus permet de générer un nouveau fichier d'export tenant compte de vos modifications.</p>";
 		echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 		echo "</form>\n";
