@@ -322,7 +322,7 @@ else {
 					echo "<td>";
 					if(file_exists($photo)) {
 						echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(mb_strtoupper($lig_ele->nom)." ".ucfirst(mb_strtolower($lig_ele->prenom)))."');return false;\">";
-						echo "<img src='../images/icons/buddy.png' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
+						echo "<img src='../mod_trombinoscopes/images/".(($lig_ele->sexe=="F") ? "photo_f.png" : "photo_g.png")."' class='icone16' alt=\"$lig_ele->nom $lig_ele->prenom\" />";
 						echo "</a>";
 					}
 				}
