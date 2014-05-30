@@ -257,7 +257,6 @@ change = 'no';
 echo " | <a href='index.php'>Accueil Notanet</a>";
 
 // On verra s'il y a des possibilité d'importation:
-https://127.0.0.1/steph/gepi-1.6.3/mod_notanet/saisie_notes.php?type_brevet=0&id_classe=33&id_groupe=2639&matiere=EPS
 if((isset($type_brevet))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($matiere))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?mode=import_csv&amp;type_brevet=$type_brevet&amp;id_classe=$id_classe&amp;id_groupe=$id_groupe&amp;matiere=$matiere'>Importer un CSV</a>\n";
 }
