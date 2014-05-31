@@ -388,11 +388,27 @@ if (isset($_POST['ok'])) {
 		$msg.="Le référentiel proposé $note_sur est invalide. Mise à ".getSettingValue("referentiel_note")." du référentiel.<br />";
 		$note_sur=getSettingValue("referentiel_note");
 	}
-	if(($temoin_log=="y")&&($lig_old->note_sur!=$note_sur)) {
-		$chaine_log.=". Modification du référentiel de note (note_sur) du devoir : $lig_old->note_sur -> ".$note_sur."\n";
+
+	// 20140531
+	$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_devoir' AND note>'$note_sur' AND statut='';";
+	$test_note=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_note_sup=mysqli_num_rows($test_note);
+	if($nb_note_sup>0) {
+		if(($temoin_log=="y")&&($lig_old->note_sur!=$note_sur)) {
+			$chaine_log.=". ERREUR : Modification impossible du référentiel de note (note_sur) du devoir : $lig_old->note_sur -> ".$note_sur." (".$nb_note_sup." note(s) supérieures à $note_sur)\n";
+		}
+		$msg.="ERREUR : Modification impossible du référentiel de note (note_sur) : ".$nb_note_sup." note(s) supérieures à $note_sur.<br />";
+		$reg_ok = "no";
 	}
-	$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
-	if (!$reg)  $reg_ok = "no";
+	else {
+		if(($temoin_log=="y")&&($lig_old->note_sur!=$note_sur)) {
+			$chaine_log.=". Modification du référentiel de note (note_sur) du devoir : $lig_old->note_sur -> ".$note_sur."\n";
+		}
+		$reg = mysqli_query($GLOBALS["mysqli"], "UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='$id_devoir'");
+		if (!$reg)  $reg_ok = "no";
+	}
+
+	// Création d'autres devoirs avec les mêmes paramètres... donc pas encore de note
 	for($i=0;$i<count($tab_group);$i++) {
 		$sql="UPDATE cn_devoirs SET note_sur='".$note_sur."' WHERE id='".$tab_group[$i]['id_devoir']."';";
 		//echo "$sql<br />\n";
