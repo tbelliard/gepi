@@ -296,7 +296,7 @@ if(mysql_num_rows($res)==0) {
 
 if(mysql_num_rows($res)==1) {
 	$lig=mysql_fetch_object($res);
-	$typ_brevet=$lig->type_brevet;
+	$type_brevet=$lig->type_brevet;
 }
 elseif(!isset($type_brevet)) {
 	echo "</p>\n";
