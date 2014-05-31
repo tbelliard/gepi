@@ -1464,7 +1464,7 @@ foreach ($liste_eleves as $eleve_login) {
 				if($liste_notes_detaillees!='') {
 
 					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
-					$texte="";
+					$texte="<div style='float:right; width:16px' title=\"Visualiser les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
 					$texte.=$liste_notes_detaillees;
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
