@@ -4829,7 +4829,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 		<th>Période</th>
 		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>
 	</tr>";
-				for($i=1;$i<$nb_periode;$i++) {
+				for($i=1;$i<=$nb_periode;$i++) {
 					echo "
 	<tr>
 		<td>".$nom_periode[$i]."</td>
