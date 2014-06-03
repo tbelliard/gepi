@@ -11144,4 +11144,35 @@ function acces_correction_app_pp($id_groupe) {
 		return true;
 	}
 }
+
+
+/** Fonction destinée à corriger des chemins du type https://NOM_SERVEUR/CHEMIN_GEPI/documents/cl1234/XXX en ../documents/cl1234/XXX
+ *
+ * @param string $texte Le texte à traiter
+ * @return string La chaine corrigée
+ */
+function cdt_changer_chemin_absolu_en_relatif($texte) {
+	global $multisite;
+
+	$contenu_cor=$texte;
+
+	$url_absolues_gepi=getSettingValue("url_absolues_gepi");
+	if($url_absolues_gepi!="") {
+		$tab_url=explode("|", $url_absolues_gepi);
+		for($loop=0;$loop<count($tab_url);$loop++) {
+			if(preg_match('| src="'.$tab_url[$loop].'/documents/|', $contenu_cor)) {
+				$contenu_cor=preg_replace('| src="'.$tab_url[$loop].'/documents/|', ' src="../documents/', $contenu_cor);
+			}
+			if(preg_match('| href="'.$tab_url[$loop].'/documents/|', $contenu_cor)) {
+				$contenu_cor=preg_replace('| href="'.$tab_url[$loop].'/documents/|', ' href="../documents/', $contenu_cor);
+			}
+
+			if(preg_match('| href="'.$tab_url[$loop].'/cahier_texte_2/visionneur_geogebra.php|', $contenu_cor)) {
+				$contenu_cor=preg_replace('| href="'.$tab_url[$loop].'/cahier_texte_2/visionneur_geogebra.php|', ' href="../cahier_texte_2/visionneur_geogebra.php', $contenu_cor);
+			}
+		}
+	}
+
+	return $contenu_cor;
+}
 ?>

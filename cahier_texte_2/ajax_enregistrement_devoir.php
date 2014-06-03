@@ -156,6 +156,15 @@ if ($contenu_cor == "" or $contenu_cor == "<br>") $contenu_cor = "...";
 	$contenu_cor=get_img_formules_math($contenu_cor, $id_groupe, "t");
 //}
 
+//=============================
+// Corriger en chemins relatifs les chemins absolus débutant par getSettingValue('url_racine_gepi')...
+// pas seulement: on peut avoir le nom DNS et l'IP dans le cas d'un gepi en DMZ ou plus généralement atteint en IP ou en nom DNS.
+$url_absolues_gepi=getSettingValue("url_absolues_gepi");
+if($url_absolues_gepi!="") {
+	$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
+}
+//=============================
+
 // 20130727
 if($ctTravailAFaire->getContenu()!=$contenu_cor) {
 	$date_modif=strftime("%Y-%m-%d %H:%M:%S");

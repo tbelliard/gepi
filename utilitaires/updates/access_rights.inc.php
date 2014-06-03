@@ -1107,6 +1107,18 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_abs2/saisie_bulletin.php',administ
 
 $tab_req[] = "INSERT INTO droits SET id='/gestion/admin_nomenclatures.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Import des nomenclatures',statut='';";
 
+$tab_req[]="INSERT INTO droits SET id='/cahier_texte_2/correction_notices_url_absolues_docs_joints.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Correction des notices CDT',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

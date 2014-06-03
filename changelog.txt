@@ -5,6 +5,9 @@
 
 Gepi-master (Version de développement)
 ===========================
+Cahier de textes:
+- Possibilité de définir en administrateur des URL absolues à corriger en URL relatives pour les documents joints aux cahiers de textes.
+
 Cahier de notes:
 - Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
 - Relevés de notes: Dans le choix dates/périodes, affichage des dates de 1ère et dernière évaluation dans chaque période pour chacune des classes sélectionnées.
