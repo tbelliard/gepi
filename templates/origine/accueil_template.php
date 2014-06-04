@@ -215,7 +215,7 @@
 
 <!-- messagerie -->
 <?php
-	if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite'))) {
+	if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite', 'responsable', 'eleve'))) {
 		//echo "<div align='center'>".afficher_les_evenements()."</div>";
 		$liste_evenements=afficher_les_evenements();
 	}

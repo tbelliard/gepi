@@ -87,6 +87,8 @@ $id_ev = isset($_POST["id_ev"]) ? $_POST["id_ev"] :(isset($_GET["id_ev"]) ? $_GE
 $destinataire_prof=isset($_POST['destinataire_prof']) ? $_POST['destinataire_prof'] : "n";
 $destinataire_cpe=isset($_POST['destinataire_cpe']) ? $_POST['destinataire_cpe'] : "n";
 $destinataire_scol=isset($_POST['destinataire_scol']) ? $_POST['destinataire_scol'] : "n";
+$destinataire_resp=isset($_POST['destinataire_resp']) ? $_POST['destinataire_resp'] : "n";
+$destinataire_ele=isset($_POST['destinataire_ele']) ? $_POST['destinataire_ele'] : "n";
 $type=isset($_POST['type']) ? $_POST['type'] : "autre";
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : "";
 $texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
@@ -146,7 +148,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 	$contenu_cor=html_entity_decode($texte_avant);
 	$contenu_cor2=html_entity_decode($texte_apres);
 
-	if ($destinataire_prof=="" && $destinataire_cpe=="" && $destinataire_scol=="") {
+	if ($destinataire_prof=="" && $destinataire_cpe=="" && $destinataire_scol=="" && $destinataire_resp=="" && $destinataire_ele=="") {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(événement non enregitré)<br />";
 		$record = 'no';
 	}
@@ -236,18 +238,47 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 					}
 				}
 
+				if(($destinataire_ele=="y")&&(!in_array("eleve", $tab_u))) {
+					$sql="INSERT INTO d_dates_evenements_utilisateurs SET id_ev='$id_ev', statut='eleve';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg_erreur="Erreur lors de l'enregistrement pour les élèves de la classe.<br />";
+						$record="no";
+					}
+				}
+
+				if(($destinataire_resp=="y")&&(!in_array("responsable", $tab_u))) {
+					$sql="INSERT INTO d_dates_evenements_utilisateurs SET id_ev='$id_ev', statut='responsable';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg_erreur="Erreur lors de l'enregistrement pour les responsables d'élèves de la classe.<br />";
+						$record="no";
+					}
+				}
+
+
 				if(($destinataire_prof=="n")&&(in_array("professeur", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='professeur';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='professeur';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(($destinataire_cpe=="n")&&(in_array("cpe", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='cpe';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='cpe';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(($destinataire_scol=="n")&&(in_array("scolarite", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='scolarite';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='scolarite';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				if(($destinataire_ele=="n")&&(in_array("eleve", $tab_u))) {
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='eleve';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				if(($destinataire_resp=="n")&&(in_array("responsable", $tab_u))) {
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='responsable';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
@@ -306,18 +337,49 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 					}
 				}
 
+				if(($destinataire_ele=="y")&&(!in_array("eleve", $tab_u))) {
+					$sql="INSERT INTO d_dates_evenements_utilisateurs SET id_ev='$id_ev', statut='eleve';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg_erreur="Erreur lors de l'enregistrement pour les élèves de la classe.<br />";
+						$record="no";
+					}
+				}
+
+				if(($destinataire_resp=="y")&&(!in_array("responsable", $tab_u))) {
+					$sql="INSERT INTO d_dates_evenements_utilisateurs SET id_ev='$id_ev', statut='responsable';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg_erreur="Erreur lors de l'enregistrement pour les responsables d'élèves de la classe.<br />";
+						$record="no";
+					}
+				}
+
+
 				if(($destinataire_prof=="n")&&(in_array("professeur", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='professeur';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='professeur';";
+					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(($destinataire_cpe=="n")&&(in_array("cpe", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='cpe';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='cpe';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 
 				if(($destinataire_scol=="n")&&(in_array("scolarite", $tab_u))) {
-					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev', statut='scolarite';";
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='scolarite';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				if(($destinataire_ele=="n")&&(in_array("eleve", $tab_u))) {
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='eleve';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				if(($destinataire_resp=="n")&&(in_array("responsable", $tab_u))) {
+					$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev' AND statut='responsable';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 			}
@@ -418,14 +480,22 @@ if ((isset($action)) and ($action == 'sup_entry')) {
 	//echo "$sql<br />";
 	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($del) {
-		$sql="DELETE FROM d_dates_evenements WHERE id_ev='".$_GET['id_del']."';";
+		$sql="DELETE FROM d_dates_evenements_utilisateurs WHERE id_ev='".$_GET['id_del']."';";
 		//echo "$sql<br />";
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
-		if ($del) {
-			$msg_OK = "Suppression réussie";
+		if($del) {
+			$sql="DELETE FROM d_dates_evenements WHERE id_ev='".$_GET['id_del']."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if ($del) {
+				$msg_OK = "Suppression réussie";
+			}
+			else {
+				$msg_erreur="Erreur lors de la suppression de l'événement.";
+			}
 		}
 		else {
-			$msg_erreur="Erreur lors de la suppression de l'événement.";
+			$msg_erreur="Erreur lors de la suppression des statuts associés à l'événement.";
 		}
 	}
 	else {
@@ -543,6 +613,12 @@ if ($nb_messages>0) {
 		if(in_array("scolarite", $tab_u)) {
 			echo " comptes scolarité associés à la classe<br />";
 		}
+		if(in_array("responsable", $tab_u)) {
+			echo " responsables d'élèves de la classe<br />";
+		}
+		if(in_array("eleve", $tab_u)) {
+			echo " élèves de la classe<br />";
+		}
 		echo "</p>\n";
 
 		echo "<p>";
@@ -639,6 +715,20 @@ if (isset($id_ev)) {
 			$destinataire_scol="n";
 		}
 
+		if(in_array("responsable", $tab_u)) {
+			$destinataire_resp="y";
+		}
+		else {
+			$destinataire_resp="n";
+		}
+
+		if(in_array("eleve", $tab_u)) {
+			$destinataire_ele="y";
+		}
+		else {
+			$destinataire_ele="n";
+		}
+
 		$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE d.id_ev='$id_ev' AND d.id_classe=c.id ORDER BY date_evenement, classe;";
 		//echo "$sql<br />";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -703,7 +793,7 @@ echo "
 								<i>Statut(s) des destinataires de l'événement&nbsp;:</i>
 							</td>
 						</tr>
-						<tr>
+						<tr style='vertical-align:top'>
 							<td>
 								<input type=\"checkbox\" id=\"destinataire_prof\" name=\"destinataire_prof\" value=\"y\" ".(($destinataire_prof=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_prof');changement();\" /><label for='destinataire_prof' id='texte_destinataire_prof' style='cursor: pointer;'>Professeurs de la classe</label>
 							</td>
@@ -712,6 +802,12 @@ echo "
 							</td>
 							<td>
 								<input type=\"checkbox\" id=\"destinataire_scol\" name=\"destinataire_scol\" value=\"y\" ".(($destinataire_scol=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_scol');changement();\" /><label for='destinataire_scol' id='texte_destinataire_scol' style='cursor: pointer;'>Comptes scolarité associés à la classe</label>
+							</td>
+							<td>
+								<input type=\"checkbox\" id=\"destinataire_resp\" name=\"destinataire_resp\" value=\"y\" ".(($destinataire_resp=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_resp');changement();\" /><label for='destinataire_resp' id='texte_destinataire_resp' style='cursor: pointer;'>Responsables d'élèves de la classe</label>
+							</td>
+							<td>
+								<input type=\"checkbox\" id=\"destinataire_ele\" name=\"destinataire_ele\" value=\"y\" ".(($destinataire_ele=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_ele');changement();\" /><label for='destinataire_ele' id='texte_destinataire_ele' style='cursor: pointer;'>Élèves de la classe</label>
 							</td>
 						</tr>
 						<tr>
@@ -896,6 +992,8 @@ echo "
 	checkbox_change('destinataire_prof');
 	checkbox_change('destinataire_cpe');
 	checkbox_change('destinataire_scol');
+	checkbox_change('destinataire_resp');
+	checkbox_change('destinataire_ele');
 
 	function modif_affichage_ligne_classe(id_classe) {
 		checkbox_change('id_classe_'+id_classe);

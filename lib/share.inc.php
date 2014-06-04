@@ -9456,6 +9456,34 @@ function afficher_les_evenements($afficher_obsolete="n") {
 		elseif($_SESSION['statut']=='scolarite') {
 			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
 		}
+		elseif($_SESSION['statut']=='responsable') {
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
+									d_dates_evenements_classes ddec, 
+									d_dates_evenements_utilisateurs ddeu 
+								WHERE ddeu.statut='responsable' AND 
+									ddeu.id_ev=dde.id_ev AND 
+									dde.id_ev=ddec.id_ev AND 
+									id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y'));";
+		}
+		elseif($_SESSION['statut']=='eleve') {
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
+									d_dates_evenements_classes ddec, 
+									d_dates_evenements_utilisateurs ddeu,
+									j_eleves_classes jec 
+								WHERE ddeu.statut='eleve' AND 
+									ddeu.id_ev=dde.id_ev AND 
+									dde.id_ev=ddec.id_ev AND 
+									ddec.id_classe=jec.id_classe AND 
+									jec.login='".$_SESSION['login']."';";
+		}
 	}
 	else {
 		if($_SESSION['statut']=='professeur') {
@@ -9466,6 +9494,36 @@ function afficher_les_evenements($afficher_obsolete="n") {
 		}
 		elseif($_SESSION['statut']=='scolarite') {
 			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
+		}
+		elseif($_SESSION['statut']=='responsable') {
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
+									d_dates_evenements_classes ddec, 
+									d_dates_evenements_utilisateurs ddeu 
+								WHERE ddeu.statut='responsable' AND 
+									ddeu.id_ev=dde.id_ev AND 
+									dde.id_ev=ddec.id_ev AND 
+									ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND 
+									id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y'));";
+		}
+		elseif($_SESSION['statut']=='eleve') {
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
+									d_dates_evenements_classes ddec, 
+									d_dates_evenements_utilisateurs ddeu,
+									j_eleves_classes jec 
+								WHERE ddeu.statut='eleve' AND 
+									ddeu.id_ev=dde.id_ev AND 
+									dde.id_ev=ddec.id_ev AND 
+									ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND 
+									ddec.id_classe=jec.id_classe AND 
+									jec.login='".$_SESSION['login']."';";
 		}
 	}
 
@@ -9527,6 +9585,12 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			if(in_array("scolarite", $tab_u)) {
 				$retour.=" <img src='$gepiPath/images/icons/scolarite.png' class='icone16' alt='Scol' title=\"Comptes scolarité associés à la classe.\" />";
 			}
+			if(in_array("responsable", $tab_u)) {
+				$retour.=" <img src='$gepiPath/images/icons/responsable.png' class='icone16' alt='Resp' title=\"Comptes responsables associés à la classe.\" />";
+			}
+			if(in_array("eleve", $tab_u)) {
+				$retour.=" <img src='$gepiPath/images/icons/eleve.png' class='icone16' alt='Resp' title=\"Élèves associés à la classe.\" />";
+			}
 			$retour.="<br />";
 
 			if($afficher_obsolete=="y") {
@@ -9542,6 +9606,21 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				elseif($_SESSION['statut']=='administrateur') {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id ORDER BY date_evenement, classe;";
 				}
+				elseif($_SESSION['statut']=='responsable') {
+					$sql="SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+																) ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='eleve') {
+					$sql="SELECT DISTINCT d.*, c.* FROM d_dates_evenements_classes d, classes c, j_eleves_classes jec WHERE id_ev='$id_ev' AND d.id_classe=c.id AND d.id_classe=jec.id_classe AND jec.login='".$_SESSION['login']."' ORDER BY date_evenement, classe;";
+				}
 			}
 			else {
 				// 12h après
@@ -9556,6 +9635,21 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				}
 				elseif($_SESSION['statut']=='administrateur') {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='responsable') {
+					$sql="SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+																) ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='eleve') {
+					$sql="SELECT DISTINCT d.*, c.* FROM d_dates_evenements_classes d, classes c, j_eleves_classes jec WHERE id_ev='$id_ev' AND d.id_classe=c.id AND d.id_classe=jec.id_classe AND jec.login='".$_SESSION['login']."' AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
 				}
 			}
 			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -9594,6 +9688,21 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				elseif($_SESSION['statut']=='administrateur') {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id ORDER BY date_evenement, classe;";
 				}
+				elseif($_SESSION['statut']=='responsable') {
+					$sql="SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+																) ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='eleve') {
+					$sql="SELECT DISTINCT d.*, c.* FROM d_dates_evenements_classes d, classes c, j_eleves_classes jec WHERE id_ev='$id_ev' AND d.id_classe=c.id AND d.id_classe=jec.id_classe AND jec.login='".$_SESSION['login']."' ORDER BY date_evenement, classe;";
+				}
 			}
 			else {
 				// 12h après
@@ -9608,6 +9717,21 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				}
 				elseif($_SESSION['statut']=='administrateur') {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='responsable') {
+					$sql="SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+																) ORDER BY date_evenement, classe;";
+				}
+				elseif($_SESSION['statut']=='eleve') {
+					$sql="SELECT DISTINCT d.*, c.* FROM d_dates_evenements_classes d, classes c, j_eleves_classes jec WHERE id_ev='$id_ev' AND d.id_classe=c.id AND d.id_classe=jec.id_classe AND jec.login='".$_SESSION['login']."' AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
 				}
 			}
 			// DEBUG:
@@ -9740,6 +9864,18 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
 						}
+						elseif(($_SESSION["statut"]=="responsable")||($_SESSION["statut"]=="eleve")) {
+							if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
+".ucfirst(getSettingValue('gepi_prof_suivi'))." : $liste_pp\">";
+							}
+							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
+							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+						}
 					//}
 				}
 
@@ -9757,6 +9893,12 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 				}
 				if(in_array("scolarite", $tab_u)) {
 					$retour.=" <img src='$gepiPath/images/icons/scolarite.png' class='icone16' alt='Scol' title=\"Comptes scolarité associés à la classe.\" />";
+				}
+				if(in_array("responsable", $tab_u)) {
+					$retour.=" <img src='$gepiPath/images/icons/responsable.png' class='icone16' alt='Resp' title=\"Comptes responsables associés à la classe.\" />";
+				}
+				if(in_array("eleve", $tab_u)) {
+					$retour.=" <img src='$gepiPath/images/icons/eleve.png' class='icone16' alt='Resp' title=\"Élèves de la classe.\" />";
 				}
 				//$retour.="<br />";
 
