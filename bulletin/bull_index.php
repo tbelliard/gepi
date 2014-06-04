@@ -3068,11 +3068,19 @@ else {
 						if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 							$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
 							$current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], $sql);
-							$current_eleve_absences_objet = $current_eleve_absences_query->fetch_object();
-							$current_eleve_absences = $current_eleve_absences_objet->nb_absences;
-							$current_eleve_nj = $current_eleve_absences_objet->non_justifie;
-							$current_eleve_retards = $current_eleve_absences_objet->nb_retards;
-							$current_eleve_appreciation_absences = $current_eleve_absences_objet->appreciation;
+							if(mysqli_num_rows($current_eleve_absences_query)==0) {
+								$current_eleve_absences = "";
+								$current_eleve_nj = "";
+								$current_eleve_retards = "";
+								$current_eleve_appreciation_absences = "";
+							}
+							else {
+								$current_eleve_absences_objet = $current_eleve_absences_query->fetch_object();
+								$current_eleve_absences = $current_eleve_absences_objet->nb_absences;
+								$current_eleve_nj = $current_eleve_absences_objet->non_justifie;
+								$current_eleve_retards = $current_eleve_absences_objet->nb_retards;
+								$current_eleve_appreciation_absences = $current_eleve_absences_objet->appreciation;
+							}
 						} else {
 							// Initialisations files
 							require_once("../lib/initialisationsPropel.inc.php");
