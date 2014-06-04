@@ -1410,9 +1410,10 @@ else {
 				$lig_per=mysql_fetch_object($res_per);
 				$recalcul_rang="";
 				for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
+				// 20140222
 				//$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
 				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, j_eleves_groupes jeg WHERE jgc.id_classe='".$tab_id_classe[$loop_classe]."' AND jgc.id_groupe=jeg.id_groupe);";
-				//echo "$sql<br />";
+				//echo "bull_index.php<br />$sql<br />";
 				$res=mysql_query($sql);
 				if(!$res) {
 					$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($tab_id_classe[$loop_classe]).".";
@@ -1985,6 +1986,7 @@ else {
 			//$affiche_rang="y";
 			if (($affiche_rang == 'y')||
 			((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y'))) {
+				// 20140222
 				// Mise en réserve, même si en principe, c'est le même test aux différentes étapes
 				$test_coef_prec = $test_coef;
 
@@ -2222,11 +2224,23 @@ else {
 				// Variables récupérées de calcul_moy_gen.inc.php
 				// $current_group est un tableau obtenu par get_group()
 				$tab_bulletin[$id_classe][$periode_num]['groupe']=$current_group;
-
+				/*
+				echo "\$tab_bulletin[$id_classe][$periode_num]['groupe']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['groupe']);
+				echo "</pre><hr />";
+				*/
 				// Variables récupérées de calcul_moy_gen.inc.php
 				// Tableaux d'indices [$j][$i] (groupe, élève)
 				// A VéRIFIER: Tableaux d'indices [$i][$j] (élève, groupe)
+				// Pour $current_eleve_note, c'est [$j][$i] (groupe, élève)
 				if(isset($current_eleve_note)) {$tab_bulletin[$id_classe][$periode_num]['note']=$current_eleve_note;}
+				/*
+				echo "DEBUG: bull_index.php<br />
+				\$tab_bulletin[$id_classe][$periode_num]['note']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['note']);
+				echo "</pre><hr />";
+				*/
+
 				if(isset($current_eleve_statut)) {$tab_bulletin[$id_classe][$periode_num]['statut']=$current_eleve_statut;}
 				/*
 				for($j=0;$j<count($current_eleve_statut);$j++) {
@@ -2238,7 +2252,11 @@ else {
 
 				if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
 				$tab_bulletin[$id_classe][$periode_num]['coef_eleve']=$current_coef_eleve;
-
+				/*
+				echo "\$tab_bulletin[$id_classe][$periode_num]['coef_eleve']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['coef_eleve']);
+				echo "</pre><hr />";
+				*/
 				// Tableaux d'indice $i (correspondant à l'élève)
 				$tab_bulletin[$id_classe][$periode_num]['tot_points_eleve']=$tot_points_eleve;
 				$tab_bulletin[$id_classe][$periode_num]['total_coef_eleve']=$total_coef_eleve;
@@ -3007,10 +3025,18 @@ else {
 						if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 							$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
 							$current_eleve_absences_query = mysql_query($sql);
-							$current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-							$current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-							$current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-							$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+							if(mysql_num_rows($current_eleve_absences_query)==0) {
+								$current_eleve_absences = "";
+								$current_eleve_nj = "";
+								$current_eleve_retards = "";
+								$current_eleve_appreciation_absences = "";
+							}
+							else {
+								$current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+								$current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+								$current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+								$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+							}
 						} else {
 							// Initialisations files
 							require_once("../lib/initialisationsPropel.inc.php");
