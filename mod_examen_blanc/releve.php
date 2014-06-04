@@ -479,7 +479,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$h_ligne_titre=10;
 						$h_ligne_titre_tableau=10;
 						$h_cell=10;
-						$h_min_cell=7;
+						$h_min_cell=6;
 						$h_max_cell=10;
 
 						$x0=$marge_gauche;
@@ -510,7 +510,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 							}
 						}
 						if($nb_max_eleves_par_classe>0) {
-							$h_cell=floor(($hauteur_page-$h_ligne_titre-$h_ligne_titre_tableau-$marge_haute-$marge_basse)/$nb_max_eleves_par_classe);
+							// On ajoute les 6 lignes de stat en bas de tableau
+							$h_cell=floor(($hauteur_page-$h_ligne_titre-$h_ligne_titre_tableau-$marge_haute-$marge_basse)/($nb_max_eleves_par_classe+6));
 
 							if($h_cell>$h_max_cell) {$h_cell=$h_max_cell;}
 
@@ -534,6 +535,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 						$fonte='DejaVu';
 
 						for($i=0;$i<$nb_classes;$i++) {
+							$tab_notes=array();
+							$tab_moy=array();
+
 							$pdf->AddPage();
 							//========================================
 							// Titre
@@ -656,6 +660,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 													$tot_ele+=max(0,($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note']-10)*$tab_coef[$j]);
 												}
 												$texte=strtr($tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'],".",",");
+
+												$tab_notes[$j][]=$tab_note["$lig_ele->login"][$tab_id_classe[$i]]["$tab_matiere[$j]"]['note'];
 											}
 										}
 										else {
@@ -672,6 +678,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 										$moyenne=round(10*$tot_ele/$tot_coef)/10;
 
 										$texte=strtr($moyenne,".",",");
+
+										$tab_moy[]=$moyenne;
 									}
 									else {
 										$texte="";
@@ -685,13 +693,187 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 								}
 							}
 
+							// 20140603
+							$graisse='B';
+							//=============================================
+							for($j=0;$j<$nb_matieres;$j++) {
+								$tab_stat[$j]=calcul_moy_med($tab_notes[$j]);
+							}
+							$tab_stat2=calcul_moy_med($tab_moy);
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="Moyenne";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['moyenne'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['moyenne'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="1er quartile";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['q1'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['q1'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="Médiane";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['mediane'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['mediane'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="3è quartile";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['q3'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['q3'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="Min";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['min'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['min'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+							if($y2+$h_ligne>$hauteur_page-$marge_basse) {
+								$pdf->AddPage();
+								$y2=$y0;
+							}
+
+							$x2=$x0;
+							$pdf->SetXY($x2, $y2);
+							$largeur_dispo=$largeur_col_nom_ele;
+							$texte="Max";
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+
+							$largeur_dispo=$largeur_col_note;
+							for($j=0;$j<$nb_matieres;$j++) {
+								$pdf->SetXY($x2, $y2);
+								$texte=strtr($tab_stat[$j]['max'],".",",");
+								cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+								$x2+=$largeur_dispo;
+							}
+
+							$pdf->SetXY($x2, $y2);
+							$texte=strtr($tab_stat2['max'],".",",");
+							cell_ajustee_une_ligne(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_ligne,$taille_max_police,$fonte,$graisse,$alignement,$bordure);
+							$x2+=$largeur_dispo;
+							$y2+=$h_cell;
+							//=============================================
+
+
 							//========================================
 
 						}
 
+						$pref_output_mode_pdf=get_output_mode_pdf();
+
 						$nom_fic="releve_examen_num_".$id_exam.".pdf";
 						send_file_download_headers('application/pdf',$nom_fic);
-						$pdf->Output($nom_fic,'I');
+						$pdf->Output($nom_fic,$pref_output_mode_pdf);
 						die();
 					}
 				}
