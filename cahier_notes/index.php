@@ -912,7 +912,19 @@ var tab_per_cn=new Array();\n";
 				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
 			}
 
-			echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> En fin de période, il convient de provoquer une recopie des moyennes du carnet de notes vers le bulletin.<br />Cela permet de signaler à la personne éditant les bulletins que l'on a fini ses saisies.<br />Cela permet également de moifier les moyennes apparaissant.<br />Par exemple, vous pouvez décider de ne pas mettre de moyenne sur le bulletin pour un élève qui n'aurait été présent qu'à une évaluation<br />(<em>si vous estimez que la note n'est pas représentative du niveau de l'élève</em>).</p>";
+			echo "
+<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Lorsque la période est close, seule la consultation des notes saisies est possible.</li>
+	<li>Lorsque la période est ouverte en saisie, vous pouvez créér/modifier des évaluations, des ".getSettingValue("gepi_denom_boite")."s,...</li>
+	<li>
+		En fin de période, il convient de provoquer une recopie des moyennes du carnet de notes vers le bulletin.<br />
+		Cela permet de signaler à la personne éditant les bulletins que l'on a fini ses saisies.<br />
+		Cela permet également de modifier les moyennes apparaissant.<br />
+		Par exemple, vous pouvez décider de ne pas mettre de moyenne sur le bulletin pour un élève qui n'aurait été présent qu'à une évaluation<br />
+		(<em>si vous estimez que la note n'est pas représentative du niveau de l'élève</em>).
+	</li>
+</ul>";
 		}
 	}
 
@@ -946,7 +958,8 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
     echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a></p>\n";
     echo "<p class='bold'>Enseignement : ".htmlspecialchars($current_group["description"])." (" . $current_group["classlist_string"] .")</p>\n";
 
-    echo "<h3>Visualisation/modification - Choisissez la période : </h3>\n";
+    echo "<h3>Visualisation/modification - Choisissez la période : </h3>
+<div style='margin-left:3em;'>\n";
     $i="1";
     while ($i < ($current_group["nb_periode"])) {
         echo "<p><a href='index.php?id_groupe=$id_groupe&amp;periode_num=$i'>".ucfirst($current_group["periodes"][$i]["nom_periode"])."</a>";
@@ -965,9 +978,19 @@ if (isset($_GET['id_groupe']) and !(isset($_GET['periode_num'])) and !(isset($id
 	echo "</p>\n";
     $i++;
     }
-    echo "<h3>Visualisation uniquement : </h3>\n";
-    echo "<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>\n";
+    echo "
+</div>
 
+<h3>Visualisation uniquement : </h3>
+<div style='margin-left:3em;'>
+	<p><a href='toutes_notes.php?id_groupe=$id_groupe'>Voir toutes les évaluations de l'année</a></p>
+</div>
+
+<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Lorsqu'une période est close, seule la consultation des notes saisies est possible.</li>
+	<li>Lorsqu'une période est ouverte en saisie, vous pouvez créér/modifier des évaluations, des ".getSettingValue("gepi_denom_boite")."s,...</li>
+</ul>\n";
 }
 
 if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset($id_racine))) {
