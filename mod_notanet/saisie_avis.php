@@ -381,10 +381,18 @@ else {
 
 	echo "<center><div id='fixe'>";
 
-	if(getSettingValue('notanet_dfsp')=='y') {
+	//if(getSettingValue('notanet_dfsp')=='y') {
 		// INSERT INTO setting SET name='notanet_dfsp', value='y';
-		echo "<a href=\"#\" onClick=\"document.getElementById('n'+document.getElementById('focus_courant').value).value=document.getElementById('n'+document.getElementById('focus_courant').value).value+'Doit faire ses preuves';document.getElementById('n'+document.getElementById('focus_courant').value).focus();return false;\">Dfsp</a><br />\n";
-	}
+		echo "<a href=\"#\" onClick=\"document.getElementById('n'+document.getElementById('focus_courant').value).value=document.getElementById('n'+document.getElementById('focus_courant').value).value+'Avis très favorable.';document.getElementById('n'+document.getElementById('focus_courant').value).focus();return false;\" title=\"Insérer dans le champ de saisie la chaine suivante:
+
+Avis très favorable.\">ATF</a><br />\n";
+		echo "<a href=\"#\" onClick=\"document.getElementById('n'+document.getElementById('focus_courant').value).value=document.getElementById('n'+document.getElementById('focus_courant').value).value+'Avis favorable.';document.getElementById('n'+document.getElementById('focus_courant').value).focus();return false;\" title=\"Insérer dans le champ de saisie la chaine suivante:
+
+Avis favorable.\">AF</a><br />\n";
+		echo "<a href=\"#\" onClick=\"document.getElementById('n'+document.getElementById('focus_courant').value).value=document.getElementById('n'+document.getElementById('focus_courant').value).value+'Doit faire ses preuves.';document.getElementById('n'+document.getElementById('focus_courant').value).focus();return false;\" title=\"Insérer dans le champ de saisie la chaine suivante:
+
+Doit faire ses preuves.\">Dfsp</a><br />\n";
+	//}
 	echo "<input type='submit' value='Enregistrer' /><br />
 
 <!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
