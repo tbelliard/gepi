@@ -224,6 +224,63 @@ $titre_page = "Notanet | Saisie notes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+if(isset($id_groupe)) {
+	// Récupérer le type_brevet, id_classe et la matière.
+
+	if(!isset($type_brevet)) {
+		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets AND mode='saisie' ORDER BY type_brevet";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==1) {
+			$lig=mysqli_fetch_object($res);
+			$type_brevet=$lig->type_brevet;
+		}
+
+		//echo "type_brevet=$type_brevet<br />";
+	}
+
+	if(isset($type_brevet)) {
+		if(!isset($id_classe)) {
+			$tmp_group=get_group($id_groupe,array('classes'));
+			/*
+			echo "<pre>";
+			print_r($tmp_group);
+			echo "</pre>";
+			*/
+			if(isset($tmp_group['classes']['list'][0])) {
+				$id_classe=$tmp_group['classes']['list'][0];
+			}
+
+			//echo "id_classe=$id_classe<br />";
+		}
+
+
+		if(isset($id_classe)) {
+			if(!isset($matiere)) {
+				$sql="SELECT DISTINCT nc.matiere FROM j_eleves_classes jec, 
+							j_eleves_groupes jeg,
+							j_groupes_professeurs jgp,
+							j_groupes_matieres jgm,
+							notanet_corresp nc
+						WHERE jec.login=jeg.login AND
+							jec.id_classe='$id_classe' AND
+							jeg.id_groupe=jgp.id_groupe AND
+							jgp.login='".$_SESSION['login']."' AND
+							jeg.id_groupe=jgm.id_groupe AND
+							jgm.id_matiere=nc.matiere AND
+							nc.type_brevet='$type_brevet' AND
+							nc.mode='saisie';";
+				//echo "$sql<br />";
+				$res_matiere_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_matiere_notanet)==1) {
+					$lig=mysqli_fetch_object($res_matiere_notanet);
+					$matiere=$lig->matiere;
+				}
+			}
+		}
+	}
+}
+
 /*
 
 $notanet_saisie_note_ouverte=getSettingValue("notanet_saisie_note_ouverte");
