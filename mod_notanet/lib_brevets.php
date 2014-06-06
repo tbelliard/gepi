@@ -1439,18 +1439,23 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	echo "<p>\n";
 	echo "<a name='tableau_des_moyennes_eleve_$num_eleve'></a>";
 	if($tab_ele['no_gep']==""){
-		echo "<b style='color:red;'>ERREUR:</b> Numéro INE non attribué: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
+		echo "<b style='color:red;'>ERREUR:</b> Numéro INE non attribué: ".$tab_ele['nom']." ".$tab_ele['prenom'];
+		echo " <a href='../eleves/visu_eleve.php?ele_login=".$tab_ele['login']."&amp;onglet=bulletins&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche élève et notamment les bulletins\"><img src='../images/icons/bulletin.png' class='icone16' alt='Bulletins' /></a>";
+		echo "<br />";
 		$temoin_notanet_eleve="ERREUR";
 		$info_erreur="Pas de numéro INE";
 		echo "INE: <input type='text' name='INE[$num_eleve]' value='' onchange='changement()' />\n";
 	}
 	else{
-		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']."</b> ".$tab_ele['no_gep']."<br />\n";
+		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']."</b> ".$tab_ele['no_gep'];
+		echo " <a href='../eleves/visu_eleve.php?ele_login=".$tab_ele['login']."&amp;onglet=bulletins&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche élève et notamment les bulletins.\"><img src='../images/icons/bulletin.png' class='icone16' alt='Bulletins' /></a>";
+		echo "<br />\n";
 		$INE=$tab_ele['no_gep'];
 		echo "INE: <input type='text' name='INE[$num_eleve]' value='$INE' onchange='changement()' />\n";
 	}
 	// Guillemets sur la valeur à cause des apostrophes dans des noms...
 	echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
+		echo " <a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele['login']."&amp;quitter_la_page=y' target='_blank' title=\"Modifier les informations élève.\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a>";
 	echo "</p>\n";
 
 
