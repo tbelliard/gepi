@@ -610,7 +610,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <p><b>Formatage de l'identité des élèves pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_elformat" id='reg_elformat_np' value="<?php echo "np"; ?>" <?php if ($format_nom_eleve=="np") echo " checked='checked ' "; ?> onchange='changement()' />
-<label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>
+<label for='reg_elformat_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>
 <br />
 <input type="radio" name="reg_elformat" id='reg_elformat_pn' value="<?php echo "pn"; ?>" <?php if ($format_nom_eleve=="pn") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_elformat_pn' style='cursor: pointer;'>Prénom Nom (<em>Albert Durand</em>)</label>
