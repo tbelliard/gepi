@@ -108,42 +108,64 @@ if($pref_accueil_liste_pdf=="y"){$colspan++;}
 
 
 $afficher_col_notanet="n";
-/*
-$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, 
-					j_groupes_classes jgc, 
-					j_groupes_professeurs jgp
-				WHERE nv.verrouillage='N' AND 
-						nv.id_classe=jgc.id_classe AND 
-						jgc.id_groupe=jgp.id_groupe AND 
-						jgp.login='".$_SESSION['login']."';";
-*/
-$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, 
-					j_groupes_classes jgc, 
-					j_groupes_professeurs jgp
-				WHERE nv.id_classe=jgc.id_classe AND 
-						jgc.id_groupe=jgp.id_groupe AND 
-						jgp.login='".$_SESSION['login']."';";
-//echo "$sql<br />";
-$res_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
-if(mysqli_num_rows($res_notanet)>0) {
-	//$afficher_col_notanet="y";
+if (getSettingValue("active_notanet") == "y") {
 	$tab_groupes_notanet=array();
-	while($lig_notanet=mysqli_fetch_object($res_notanet)) {
-		// On peut avoir plusieurs lignes retournées, s'il y a plusieurs types_brevet dans une classe/groupe
-		if(isset($tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage'])) {
-			if($lig_notanet->verrouillage=="N") {
+	$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, 
+						j_groupes_classes jgc, 
+						j_groupes_professeurs jgp
+					WHERE nv.id_classe=jgc.id_classe AND 
+							jgc.id_groupe=jgp.id_groupe AND 
+							jgp.login='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$res_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_notanet)>0) {
+		//$afficher_col_notanet="y";
+		while($lig_notanet=mysqli_fetch_object($res_notanet)) {
+			// On peut avoir plusieurs lignes retournées, s'il y a plusieurs types_brevet dans une classe/groupe
+			if(isset($tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage'])) {
+				if($lig_notanet->verrouillage=="N") {
+					$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=$lig_notanet->verrouillage;
+				}
+			}
+			else {
 				$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=$lig_notanet->verrouillage;
 			}
-		}
-		else {
-			$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=$lig_notanet->verrouillage;
-		}
-		//echo "\$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=".$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']."<br />";
+			//echo "\$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']=".$tab_groupes_notanet[$lig_notanet->id_groupe]['verrouillage']."<br />";
 
-		if($lig_notanet->verrouillage=="N") {
-			$afficher_col_notanet="y";
+			if($lig_notanet->verrouillage=="N") {
+				$afficher_col_notanet="y";
+			}
+			// mod_notanet/saisie_app.php?id_groupe=2253
 		}
-		// mod_notanet/saisie_app.php?id_groupe=2253
+	}
+
+
+	$tab_groupes_notanet_saisie_note=array();
+	// Test sur le fait qu'il y a de telles notes à saisir pour le prof connecté
+	$sql="SELECT DISTINCT jgp.id_groupe FROM notanet_ele_type net,
+				j_eleves_groupes jeg,
+				j_groupes_professeurs jgp,
+				j_groupes_matieres jgm,
+				notanet_corresp nc
+			WHERE net.login=jeg.login AND
+				jeg.id_groupe=jgp.id_groupe AND
+				jgp.login='".$_SESSION['login']."' AND
+				jeg.id_groupe=jgm.id_groupe AND
+				jgm.id_matiere=nc.matiere AND
+				nc.mode='saisie';";
+	//echo "$sql<br />";
+	$res_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_notanet)>0) {
+		while($lig_notanet=mysqli_fetch_object($res_notanet)) {
+			if(!getSettingAOui("notanet_saisie_note_ouverte")) {
+				$tab_groupes_notanet_saisie_note[$lig_notanet->id_groupe]['verrouillage']="O";
+				//echo $lig_notanet->id_groupe."<br />";
+			}
+			else {
+				$tab_groupes_notanet_saisie_note[$lig_notanet->id_groupe]['verrouillage']="N";
+				$afficher_col_notanet="y";
+			}
+		}
 	}
 }
 
@@ -650,7 +672,9 @@ if($afficher_col_notanet=="y") {
 	echo "<th";
 	if(($active_carnets_notes=="y")&&($pref_accueil_cn=="y")&&($colspan>0)){echo " rowspan='3'";}
 	echo ">\n";
-	echo "Notanet\n";
+	echo "<span title=\"Remplissage des appréciations pour le brevet des collèges (DNB).
+
+Saisie ou import des notes d'EPS.\">Brevet</span>\n";
 	echo "</th>\n";
 }
 echo "</tr>\n";
@@ -1130,14 +1154,44 @@ for($i=0;$i<count($groups);$i++){
 	}
 
 	if($afficher_col_notanet=="y") {
-		if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
-			if($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N") {
-				//style='background-color:green'
-				echo "<td class='deverrouille'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les appréciations pour les Fiches Brevet\" /></a></td>\n";
+		if((isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']))||(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']))) {
+
+			if(((isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']))&&($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N"))||((isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']))&&($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']=="N"))) {
+				echo "<td class='deverrouille'>";
+
+				if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
+					if($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N") {
+						echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les appréciations pour les Fiches Brevet\" /></a>";
+					}
+					else {
+						echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n";
+					}
+				}
+
+				if(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage'])) {
+					if($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']=="N") {
+						echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les notes pour les Notanet et les Fiches Brevet\" /></a>";
+					}
+					else {
+						echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n";
+					}
+				}
+
+				echo "</td>\n";
 			}
 			else {
-				//style='background-color:orange'
-				echo "<td class='verrouillagepart'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a></td>\n";
+				echo "<td class='verrouillagepart'>";
+				//echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>";
+
+				if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
+					echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n";
+				}
+
+				if(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage'])) {
+					echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n";
+				}
+
+				echo "</td>\n";
 			}
 		}
 		else {
