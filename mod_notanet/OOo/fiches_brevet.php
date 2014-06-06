@@ -496,6 +496,9 @@ if (!isset($id_classe)) {
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
+	echo "<p style='margin-top:2em; text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Si une ou des classes n'apparaissent pas, c'est très probablement que l'extraction n'a pas été faite pour ces classes.<br />
+	Cela peut arriver par exemple quand les notes d'EPS n'ont pas été saisies.</p>";
+
 	// Fermeture du DIV container initialisé dans le header.inc.php
 	echo "</div>\n";
 	require("../../lib/footer.inc.php");
