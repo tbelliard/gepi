@@ -130,7 +130,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 						$msg.="Enregistrement de l'autorisation effectué.<br />";
 
 						$complement_texte_mail="";
-						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol')))) {
+						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 							if((isset($_POST['donner_acces_modif_bull_note']))&&($_POST['donner_acces_modif_bull_note']=='y')) {
 								$sql="INSERT INTO acces_exceptionnel_matieres_notes SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
 								$res=mysqli_query($GLOBALS["mysqli"], $sql);
