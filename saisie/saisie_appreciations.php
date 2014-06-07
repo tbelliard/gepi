@@ -151,6 +151,8 @@ print_r($current_group);
 echo "</pre>";
 */
 
+$prefixe_debug=strftime("%Y%m%d %H%M%S")." : ".$_SESSION['login'];
+
 if (isset($_POST['is_posted'])) {
 	check_token();
 
@@ -406,24 +408,35 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 						}
 						else {
 							$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 							$test_correction=mysqli_query($GLOBALS["mysqli"], $sql);
 							$test=mysqli_num_rows($test_correction);
 							if ($test!="0") {
 								if ($app!="") {
 									$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";} 
+									if (!$register) {
+										$msg = $msg."Erreur lors de l'enregistrement des corrections pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
 										$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								} else {
 									$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";} 
+									if (!$register) {
+										$msg = $msg."Erreur lors de la suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de la suppression de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectuée.<br />";
 										$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Suppression de la proposition de correction.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								}
 				
@@ -431,11 +444,16 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							else {
 								if ($app != "") {
 									$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";}
+									if (!$register) {
+										$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
 										$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								}
 							}

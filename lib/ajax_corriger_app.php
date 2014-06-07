@@ -139,6 +139,8 @@ else {
 }
 */
 
+$prefixe_debug=strftime("%Y%m%d %H%M%S")." : ".$_SESSION['login'];
+
 $current_group=get_group($corriger_app_id_groupe);
 
 // La période est-elle ouverte?
@@ -389,22 +391,28 @@ Cordialement.
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$app=suppression_sauts_de_lignes_surnumeraires($app);
 
-		$test_eleve_app_query = mysqli_query($mysqli, "SELECT * FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+		$sql="SELECT * FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode');";
+		fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
+		$test_eleve_app_query = mysqli_query($mysqli, $sql);
 		$test = mysqli_num_rows($test_eleve_app_query);
 		if ($test != "0") {
 			if ($app != "") {
-				$register = mysqli_query($mysqli, "UPDATE matieres_app_corrections SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$sql="UPDATE matieres_app_corrections SET appreciation='" . $app . "' WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode');";
 			} else {
-				$register = mysqli_query($mysqli, "DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode')");
+				$sql="DELETE FROM matieres_app_corrections WHERE (login='$corriger_app_login_eleve' AND id_groupe='" . $current_group["id"]."' AND periode='$corriger_app_num_periode');";
 			}
+			fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
+			$register = mysqli_query($mysqli, $sql);
 
 			if (!$register) {
+				fich_debug_proposition_correction_app($prefixe_debug." : Echec de l'enregistrement de la proposition de correction.\n");
 				echo "<span style='color:red' title=\"Echec de l'enregistrement de la proposition de correction\"> KO</span>";
 				return false;
 				die();
 			}
 			else {
 				echo "<div style='border:1px solid red; color: green' title=\"Proposition de correction soumise.\nElle doit encore être validée.\"><strong>Proposition de correction en attente&nbsp;:</strong><br />".stripslashes(nl2br($app))."</div>";
+				fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\n");
 
 				if ($test != "0") {
 					$texte_mail="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".civ_nom_prenom($corriger_app_login_eleve)." sur la période $corriger_app_num_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
@@ -412,23 +420,29 @@ Cordialement.
 				else {
 					$texte_mail="Suppression de la proposition de correction pour l'élève ".civ_nom_prenom($corriger_app_login_eleve)."\r\nsur la période $corriger_app_num_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
 				}
+				fich_debug_proposition_correction_app($prefixe_debug." : Texte du mail:\n$texte_mail\n");
 				envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_app_id_groupe, $corriger_app_num_periode, $texte_mail);
 				die();
 			}
 
 		} else {
 			if ($app != "") {
-				$register = mysqli_query($mysqli, "INSERT INTO matieres_app_corrections SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "'");
+				$sql="INSERT INTO matieres_app_corrections SET login='$corriger_app_login_eleve',id_groupe='" . $current_group["id"]."',periode='$corriger_app_num_periode',appreciation='" . $app . "';";
+				fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
+				$register = mysqli_query($mysqli, $sql);
 
 				if (!$register) {
+					fich_debug_proposition_correction_app($prefixe_debug." : Echec de l'enregistrement de la proposition de correction.\n");
 					echo "<span style='color:red' title=\"Echec de l'enregistrement de la proposition de correction\"> KO</span>";
 					return false;
 					die();
 				}
 				else {
 					echo "<div style='border:1px solid red; color: green' title=\"Proposition de correction soumise.\nElle doit encore être validée.\"><strong>Proposition de correction en attente&nbsp;:</strong><br />".stripslashes(nl2br($app))."</div>";
+					fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\n");
 
 					$texte_mail="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".civ_nom_prenom($corriger_app_login_eleve)." sur la période $corriger_app_num_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+					fich_debug_proposition_correction_app($prefixe_debug." : Texte du mail:\n$texte_mail\n");
 					envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_app_id_groupe, $corriger_app_num_periode, $texte_mail);
 					die();
 				}

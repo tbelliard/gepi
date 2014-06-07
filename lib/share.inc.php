@@ -9313,6 +9313,11 @@ function verif_prof_groupe($login,$id_groupe) {
  */
 function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_app_id_groupe, $corriger_app_num_periode, $texte_mail) {
 	global $mysqli;
+	global $prefixe_debug;
+	if($prefixe_debug=="") {
+		$prefixe_debug=strftime("%Y%m%d %H%M%S")." : ".$_SESSION['login'];
+	}
+
 	$msg="";
 
 	if($texte_mail!="") {
@@ -9339,6 +9344,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
 			}
 			//echo "$sql<br />";
+			fich_debug_proposition_correction_app($prefixe_debug." : Texte du mail:\n$texte_mail\n");
 			$req=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($req)>0) {
 				$lig_u=mysqli_fetch_object($req);
@@ -9391,10 +9397,22 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 			}
 			else {
 				$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
+				fich_debug_proposition_correction_app($prefixe_debug." : Aucun compte secours ni scol associé à la classe.\n");
 			}
 		}
 	}
 	return $msg;
+}
+
+function fich_debug_proposition_correction_app($texte) {
+	$debug="n";
+	if($debug=="y") {
+		$dirname=getSettingValue('backup_directory');
+		$chaine_jour=strftime("%Y%m%d");
+		$f=fopen("../backup/".$dirname."/debug_proposition_correction_app_".$chaine_jour.".txt", "a+");
+		fwrite($f, $texte);
+		fclose($f);
+	}
 }
 
 /** Fonction destinée à renvoyer le nom du statut personnalisé d'après l'id du statut ou à défaut d'après le login de l'utilisateur
