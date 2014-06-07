@@ -10492,9 +10492,6 @@ function necessaire_saisie_avertissement_fin_periode() {
 				<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode</p>
 				".champs_checkbox_avertissements_fin_periode("", 1)."
 
-
-<div id='div_signalement_message'></div>
-
 				<input type='button' onclick='valider_saisie_avertissement_fin_periode()' name='Valider' value='Valider' />
 				".add_token_field()."
 
