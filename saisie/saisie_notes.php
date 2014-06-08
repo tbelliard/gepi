@@ -427,11 +427,10 @@ $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer</a>";
 
 //=========================
-echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
+echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a> | ";
 //=========================
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
-	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
 	$login_prof_groupe_courant="";
 	$tab_groups=array();
@@ -447,51 +446,47 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 
 	if($login_prof_groupe_courant!='') {
-		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
 		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
-		//$tab_groups = get_groups_for_prof($_SESSION["login"]);
 	}
 
 	if(!empty($tab_groups)) {
 
 		$chaine_options_classes="";
 
-		$num_groupe=-1;
-		$nb_groupes_suivies=count($tab_groups);
+		$tmp_groups=array();
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				$tmp_groups[]=$tab_groups[$loop];
+			}
+		}
 
-		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tmp_groups);
 
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
-		//foreach($tab_groups as $tmp_group) {
-		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
-				if($tab_groups[$loop]['id']==$id_groupe){
+		for($loop=0;$loop<count($tmp_groups);$loop++) {
+			if((!isset($tmp_groups[$loop]["visibilite"]["bulletins"]))||($tmp_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				if($tmp_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
-	
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='true'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
 	
 					$temoin_tmp=1;
-					if(isset($tab_groups[$loop+1])){
-						$id_grp_suiv=$tab_groups[$loop+1]['id'];
-	
-						//$chaine_options_classes.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					if(isset($tmp_groups[$loop+1])){
+						$id_grp_suiv=$tmp_groups[$loop+1]['id'];
 					}
 					else{
 						$id_grp_suiv=0;
 					}
 				}
 				else {
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
 				}
 	
 				if($temoin_tmp==0){
-					$id_grp_prec=$tab_groups[$loop]['id'];
-	
-					//$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$id_grp_prec=$tmp_groups[$loop]['id'];
 				}
 			}
 		}
@@ -499,8 +494,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Enseignement précédent'><img src='../images/icons/back.png' class='icone16' alt='Enseignement précédent' /></a>\n";
 			}
 		}
 
@@ -528,17 +523,16 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 </script>\n";
 
-			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
-			echo " | <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo " <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select>\n";
 		}
 
 		if(isset($id_grp_suiv)){
 			if($id_grp_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
-				}
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Enseignement suivant'><img src='../images/icons/forward.png' class='icone16' alt='Enseignement suivant' /></a>";
+			}
 		}
 	}
 	// =================================
@@ -560,6 +554,11 @@ echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</h2>\n";
 echo "<script type=\"text/javascript\" language=\"javascript\">\n";
 if (($affiche_bascule == 'yes') and ($is_posted == 'bascule')) {echo "change = 'yes';";} else {echo "change = 'no';";}
 echo "</script>\n";
+
+
+if((isset($current_group["visibilite"]["bulletins"]))&&($current_group["visibilite"]["bulletins"]!='y')) {
+	echo "<p style='color:red; text-indent:-7em;margin-left:7em;'><strong>ANOMALIE&nbsp;:</strong> Vous ne devriez pas saisir de notes pour les bulletins.<br />L'enseignement courant est marqué comme n'apparaissant pas sur les bulletins.<br />Si vous y saisissez des notes, elles seront inexploitables.</p>";
+}
 
 //echo "<table  border=\"0\">\n";
 if ($affiche_bascule == 'yes') {

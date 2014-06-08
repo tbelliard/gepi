@@ -560,46 +560,67 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 	//if(isset($current_group)) { echo "DEBUG 2 : ".$current_group['classlist_string']."<br />";}
 
+	$debug_group_prec_suiv="n";
 	if(!empty($tab_groups)) {
 
 		$chaine_options_classes="";
 
 		$num_groupe=-1;
-		$nb_groupes_suivies=count($tab_groups);
-        
-		$id_grp_prec=0;
-		$id_grp_suiv=0;
-		$temoin_tmp=0;
+
+		$tmp_groups=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
-				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
-				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
-					if($tab_groups[$loop]['id']==$id_groupe){
-						$num_groupe=$loop;
-	
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tab_groups[$loop]['description'])." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-	
-						$temoin_tmp=1;
-						if(isset($tab_groups[$loop+1])){
-							$id_grp_suiv=$tab_groups[$loop+1]['id'];
-						}
-						else{
-							$id_grp_suiv=0;
-						}
-					}
-					else {
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".htmlspecialchars($tab_groups[$loop]['description'])." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					}
-	
-					if($temoin_tmp==0){
-						$id_grp_prec=$tab_groups[$loop]['id'];
-					}
-				}
+				$tmp_groups[]=$tab_groups[$loop];
 			}
 			elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
 				$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
 			}
 		}
+
+		$nb_groupes_suivies=count($tmp_groups);
+
+		if($debug_group_prec_suiv=="y") {echo "<p>Groupe actuellement affiché : $id_groupe<br />";}
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		$chaine_info_debug_id_groupe="";
+		for($loop=0;$loop<count($tmp_groups);$loop++) {
+
+			if($debug_group_prec_suiv=="y") {echo "Groupe n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";$chaine_info_debug_id_groupe=" (id_groupe : ".$tmp_groups[$loop]['id'].")";}
+
+			if((!isset($tmp_groups[$loop]["visibilite"]["cahier_notes"]))||($tmp_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				if($tmp_groups[$loop]["nb_periode"]>=$periode_num) {
+					if($tmp_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
+
+						if($debug_group_prec_suiv=="y") {echo "Le groupe n°$loop dans la boucle est le groupe courant : ".$tmp_groups[$loop]['id']."<br />";}
+
+						$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+
+						$temoin_tmp=1;
+						if($debug_group_prec_suiv=="y") {echo "On teste \$tmp_groups[$loop+1]<br />";}
+						if(isset($tmp_groups[$loop+1])){
+							$id_grp_suiv=$tmp_groups[$loop+1]['id'];
+							if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=".$tmp_groups[$loop+1]['id']."<br />";}
+						}
+						else{
+							$id_grp_suiv=0;
+							if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=0<br />";}
+						}
+					}
+					else {
+						$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+					}
+	
+					if($temoin_tmp==0){
+						$id_grp_prec=$tmp_groups[$loop]['id'];
+						if($debug_group_prec_suiv=="y") {echo "Le groupe précédent est temporairement le n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";}
+					}
+				}
+			}
+		}
+
 		// =================================
 
 		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
@@ -792,6 +813,10 @@ var tab_per_cn=new Array();\n";
     }
     echo "</p>\n";
 
+	if((isset($current_group["visibilite"]["cahier_notes"]))&&($current_group["visibilite"]["cahier_notes"]!='y')) {
+		echo "<p style='color:red; text-indent:-7em;margin-left:7em;'><strong>ANOMALIE&nbsp;:</strong> Vous ne devriez pas saisir de notes dans ce carnet de notes.<br />L'enseignement courant est marqué comme ne devant pas avoir de carnet de notes.<br />Si vous y saisissez des notes, elles seront inexploitables.</p>";
+	}
+
 	if((isset($tab_anomalie_cn_pour_groupe_hors_cn))&&(count($tab_anomalie_cn_pour_groupe_hors_cn)>0)) {
 		$info_anomalie="";
 		foreach($tab_anomalie_cn_pour_groupe_hors_cn as $tmp_id_groupe => $tmp_cn) {
@@ -833,7 +858,6 @@ var tab_per_cn=new Array();\n";
 		echo $info_anomalie;
 	}
 
-
 	echo "<h3 class='gepi'>Liste des évaluations du carnet de notes</h3>\n";
 	$empty = affiche_devoirs_conteneurs($id_racine,$periode_num, $empty, $current_group["classe"]["ver_periode"]["all"][$periode_num]);
 	//echo "</ul>\n";
@@ -845,9 +869,7 @@ var tab_per_cn=new Array();\n";
 		echo "
 <script type='text/javascript'>
 	function change_visibilite_dev(id_dev, visible) {
-
 		new Ajax.Updater($('span_visibilite_'+id_dev),'".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&id_racine=$id_racine&id_dev='+id_dev+'&mode=change_visibilite_dev&visible='+visible+'&mode_js=y&".add_token_in_url(false)."',{method: 'get'});
-
 	}
 </script>";
 	}
