@@ -9080,7 +9080,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$lig_u=mysqli_fetch_object($req);
 				$email_destinataires=$lig_u->email;
 				while($lig_u=mysqli_fetch_object($req)) {
-					$email_destinataires=", ".$lig_u->email;
+					$email_destinataires.=", ".$lig_u->email;
 				}
 
 				$email_declarant="";
