@@ -9344,7 +9344,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$sql="select email from utilisateurs where (statut='secours' OR statut='scolarite') AND email!='';";
 			}
 			//echo "$sql<br />";
-			fich_debug_proposition_correction_app($prefixe_debug." : Texte du mail:\n$texte_mail\n");
+			fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 			$req=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($req)>0) {
 				$lig_u=mysqli_fetch_object($req);
@@ -9356,6 +9356,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$email_declarant="";
 				$nom_declarant="";
 				$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+				fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 				$req=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($req)>0) {
 					$lig_u=mysqli_fetch_object($req);
@@ -9366,6 +9367,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$email_autres_profs_grp="";
 				// Recherche des autres profs du groupe
 				$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$corriger_app_id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+				fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 				//echo "$sql<br />";
 				$req=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($req)>0) {
@@ -9393,7 +9395,9 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 				$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 
+				fich_debug_proposition_correction_app($prefixe_debug." : envoi_mail($sujet_mail, \n$texte_mail, \n$email_destinataires, \n$ajout_header)\n");
 				$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+				if(!$envoi) {fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l envoi du mail.\n\n");}
 			}
 			else {
 				$msg.="Aucun compte scolarité avec adresse mail n'est associé à cet(te) élève.<br />Pas de compte secours avec adresse mail non plus.<br />La correction a été soumise, mais elle n'a pas fait l'objet d'un envoi de mail.<br />";
