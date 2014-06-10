@@ -2118,7 +2118,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
-		echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		if($choix_periode=='periode') {
+			echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		}
+		else {
+			echo "<b><i><center>Appréciations - Toutes périodes</center></i></b>";
+		}
 		echo "<div id='appreciations_deroulantes'";
 		if((isset($graphe_app_deroulantes_taille_police))&&(preg_match("/^[0-9]*$/", $graphe_app_deroulantes_taille_police))&&($graphe_app_deroulantes_taille_police>0)) {
 			echo " style='font-size: ".$graphe_app_deroulantes_taille_police."pt'";
@@ -2565,7 +2570,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte.=">";
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
@@ -2625,7 +2635,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte_saisie_avis_fixe.=">";
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
