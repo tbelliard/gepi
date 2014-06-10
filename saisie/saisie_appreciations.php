@@ -678,7 +678,7 @@ else {
 echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
 
 //=========================
-echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a>";
+echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a> |";
 //=========================
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
@@ -706,38 +706,40 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		$chaine_options_classes="";
 
+		$tmp_groups=array();
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				$tmp_groups[]=$tab_groups[$loop];
+			}
+		}
+
 		$num_groupe=-1;
-		$nb_groupes_suivies=count($tab_groups);
+		$nb_groupes_suivies=count($tmp_groups);
 
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
-		for($loop=0;$loop<count($tab_groups);$loop++) {
-			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
-				// Pour s'assurer de ne pas avoir deux fois le même groupe...
-				if(!in_array($tab_groups[$loop]['id'],$tmp_group)) {
-					$tmp_group[]=$tab_groups[$loop]['id'];
+		for($loop=0;$loop<count($tmp_groups);$loop++) {
+			if((!isset($tmp_groups[$loop]["visibilite"]["bulletins"]))||($tmp_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				if($tmp_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
+
+					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='true'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
 	
-					if($tab_groups[$loop]['id']==$id_groupe){
-						$num_groupe=$loop;
-	
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-	
-						$temoin_tmp=1;
-						if(isset($tab_groups[$loop+1])){
-							$id_grp_suiv=$tab_groups[$loop+1]['id'];
-						}
-						else{
-							$id_grp_suiv=0;
-						}
+					$temoin_tmp=1;
+					if(isset($tmp_groups[$loop+1])){
+						$id_grp_suiv=$tmp_groups[$loop+1]['id'];
 					}
-					else {
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					else{
+						$id_grp_suiv=0;
 					}
+				}
+				else {
+					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
+				}
 	
-					if($temoin_tmp==0){
-						$id_grp_prec=$tab_groups[$loop]['id'];
-					}
+				if($temoin_tmp==0){
+					$id_grp_prec=$tmp_groups[$loop]['id'];
 				}
 			}
 		}
@@ -745,8 +747,8 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 
 		if(isset($id_grp_prec)){
 			if($id_grp_prec!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_cn=$periode_cn";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Enseignement précédent'><img src='../images/icons/back.png' class='icone16' alt='Enseignement précédent' /></a>";
 			}
 		}
 
@@ -774,15 +776,15 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	}
 </script>\n";
 
-			echo " | <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo " <select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 			echo $chaine_options_classes;
 			echo "</select>\n";
 		}
 
 		if(isset($id_grp_suiv)){
 			if($id_grp_suiv!=0){
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
-				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_cn=$periode_cn";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Enseignement suivant'><img src='../images/icons/forward.png' class='icone16' alt='Enseignement suivant' /></a>";
 				}
 		}
 	}
