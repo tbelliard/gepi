@@ -70,6 +70,24 @@ function affiche_debug($texte) {
 	}
 }
 
+
+function nb_cols_textarea_sous_graphe($font_size) {
+	// C'est un pis aller.
+	// La largeur du textarea ne suit pas une fonction affine de la taille de la police.
+	// Entre 10 et 20pt de taille de police, ça va à peu-près.
+	if(($font_size=="")||(!preg_match("/^[0-9]{1,}$/", $font_size))||($font_size<10)) {
+		return 60;
+	}
+	elseif($font_size<=20) {
+		$nb_cols=72-2*$font_size;
+		return $nb_cols;
+	}
+	else {
+		return 32;
+	}
+}
+
+
 $delais_apres_cloture=getSettingValue("delais_apres_cloture");
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
@@ -784,6 +802,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<div class='noprint'>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+		if(isset($_POST['choix_periode'])) {
+			echo "<input type='hidden' name='choix_periode' value='".$_POST['choix_periode']."' />\n";
+		}
+		if(isset($_POST['periode'])) {
+			echo "<input type='hidden' name='periode' value='".$_POST['periode']."' />\n";
+		}
 
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 		// La classe est choisie.
@@ -1893,6 +1918,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
+	$nb_cols_textarea_sous_graphe=60;
+	if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+		$nb_cols_textarea_sous_graphe=nb_cols_textarea_sous_graphe($textarea_font_size);
+	}
+	//echo "\$nb_cols_textarea_sous_graphe=$nb_cols_textarea_sous_graphe<br />";
+
+
 
 	// Nom de la classe:
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe';");
@@ -2425,7 +2457,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2435,9 +2467,23 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
 
+							$retour_ligne_sous_textarea="y";
+							if(getSettingAOui('active_mod_discipline')) {
+								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									//$retour_ligne_sous_textarea="n";
+									$retour_ligne_sous_textarea="y";
+								}
+							}
+
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
-								$texte.="<br/>\n";
+								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
@@ -2494,7 +2540,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil</p>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2622,7 +2668,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2632,9 +2678,24 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
 
+
+							$retour_ligne_sous_textarea="y";
+							if(getSettingAOui('active_mod_discipline')) {
+								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									//$retour_ligne_sous_textarea="n";
+									$retour_ligne_sous_textarea="y";
+								}
+							}
+
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
-								$texte.="<br/>\n";
+								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								$texte.="<br/>\n";
@@ -2670,7 +2731,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\">";
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
@@ -5092,6 +5153,7 @@ if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
 			$inclusion_depuis_graphes="y";
 			include "../lib/bulletin_simple.inc.php";
 			include("../saisie/edit_limite.inc.php");
+
 		}
 		echo "</div>\n";
 
