@@ -2181,7 +2181,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
-		echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		if($choix_periode=='periode') {
+			echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		}
+		else {
+			echo "<b><i><center>Appréciations - Toutes périodes</center></i></b>";
+		}
 		echo "<div id='appreciations_deroulantes'";
 		if((isset($graphe_app_deroulantes_taille_police))&&(preg_match("/^[0-9]*$/", $graphe_app_deroulantes_taille_police))&&($graphe_app_deroulantes_taille_police>0)) {
 			echo " style='font-size: ".$graphe_app_deroulantes_taille_police."pt'";
