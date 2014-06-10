@@ -2615,7 +2615,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte.=">";
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
