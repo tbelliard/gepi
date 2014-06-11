@@ -7392,7 +7392,37 @@ function cherche_periode_courante($id_classe, $ts="", $valeur_par_defaut="", $po
 		fwrite_debug($fich_debug, "a+", "\$periode_trouvee=".$periode_trouvee."\n");
 
 		if($periode_trouvee=="n") {
+			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode DESC;";
+			fwrite_debug($fich_debug, "a+", $sql."\n");
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				while($lig = $res->fetch_object()) {
+					$num_per_temp=$lig->num_periode;
+					if($lig->verouiller=='P') {
+						$retour=$num_per_temp;
+						$periode_trouvee="y";
+						break;
+					}
+				}
+				$res->close();
+			}
+		}
+
+		if($periode_trouvee=="n") {
+			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND date_fin>FROM_UNIXTIME($ts) ORDER BY num_periode ASC LIMIT 1;";
+			fwrite_debug($fich_debug, "a+", $sql."\n");
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows > 0) {
+				$obj = $res->fetch_object();
+				$retour = $obj->num_periode;
+				$periode_trouvee="y";
+				$res->close();
+			}
+		}
+
+		if($periode_trouvee=="n") {
 			//$sql="select * from periodes where id_classe='$id_classe' and date_fin>CURRENT_TIMESTAMP order by num_periode ASC LIMIT 1;";
+			//$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND date_fin<FROM_UNIXTIME($ts) ORDER BY num_periode DESC LIMIT 1;";
 			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND date_fin<FROM_UNIXTIME($ts) ORDER BY num_periode DESC LIMIT 1;";
 			fwrite_debug($fich_debug, "a+", $sql."\n");
 			$res = mysqli_query($mysqli, $sql);
