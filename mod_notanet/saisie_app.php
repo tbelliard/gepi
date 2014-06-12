@@ -348,43 +348,49 @@ else {
 			if(mysqli_num_rows($test_notanet)>0) {
 				echo "<input type='hidden' name='log_eleve[$i]' value=\"".$eleve_login."\" />\n";
 
-
-
-				// AJOUTER UN TEST SUR UNE TABLE notanet_verrou pour proposer un TEXTAREA ou juste un affichage
-				$sql="SELECT verrouillage FROM notanet_verrou nv,
-										notanet n,
-										notanet_ele_type net
-									WHERE nv.id_classe=n.id_classe AND
-										n.id_classe='$eleve_id_classe' AND
-										n.login='$eleve_login' AND
-										net.login=n.login AND
-										nv.type_brevet=net.type_brevet
-										;";
+				$sql="SELECT 1=1 FROM notanet_ele_type net
+									WHERE net.login='$eleve_login';";
 				//echo "$sql<br />";
-				$test_verrouillage=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($test_verrouillage)==0) {
-					$verrou="O";
+				$test_type_brevet=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($test_type_brevet)==0) {
+						echo $eleve_app." <span style='color:red; font-size:xx-small;'>(élève non associé à un type brevet)</span>\n";
 				}
 				else {
-					$lig_verrou=mysqli_fetch_object($test_verrouillage);
-					$verrou=$lig_verrou->verrouillage;
-				}
+					$sql="SELECT verrouillage FROM notanet_verrou nv,
+											notanet n,
+											notanet_ele_type net
+										WHERE nv.id_classe=n.id_classe AND
+											n.id_classe='$eleve_id_classe' AND
+											n.login='$eleve_login' AND
+											net.login=n.login AND
+											nv.type_brevet=net.type_brevet
+											;";
+					//echo "$sql<br />";
+					$test_verrouillage=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_verrouillage)==0) {
+						$verrou="O";
+					}
+					else {
+						$lig_verrou=mysqli_fetch_object($test_verrouillage);
+						$verrou=$lig_verrou->verrouillage;
+					}
 
-				if($verrou=="N") {
-					echo "<textarea id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$i."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
+					if($verrou=="N") {
+						echo "<textarea id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$i."\" rows='2' cols='80' wrap='virtual' onchange=\"changement()\"";
 
-					//==================================
-					// Rétablissement: boireaus 20080219
-					// Pour revenir au champ suivant après validation/enregistrement:
-					//echo " onfocus=\"focus_suivant(".$i.");\"";
-					echo " onfocus=\"change_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."');focus_suivant(".$num_id.");\"";
-					//==================================
+						//==================================
+						// Rétablissement: boireaus 20080219
+						// Pour revenir au champ suivant après validation/enregistrement:
+						//echo " onfocus=\"focus_suivant(".$i.");\"";
+						echo " onfocus=\"change_photo('".$photo."','".addslashes(mb_strtoupper($eleve_nom)." ".ucfirst(mb_strtolower($eleve_prenom)))."');focus_suivant(".$num_id.");\"";
+						//==================================
 
-					echo ">".$eleve_app."</textarea>\n";
-					$num_id++;
-				}
-				else {
-					echo $eleve_app." <span style='color:gray; font-size:xx-small;'>(saisie verrouillée)</span>\n";
+						echo ">".$eleve_app."</textarea>\n";
+						$num_id++;
+					}
+					else {
+						echo $eleve_app." <span style='color:gray; font-size:xx-small;'>(saisie verrouillée)</span>\n";
+					}
 				}
 			}
 			else {
