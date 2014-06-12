@@ -237,7 +237,7 @@ else {
 		echo "</p>\n";
 		echo "</div>\n";
 
-		echo "<h3>Choix des classes pour le brevet série $tab_type_brevet[$type_brevet]</h3>\n";
+		echo "<h3>Choix des classes pour le brevet série ".$tab_type_brevet[$type_brevet]."</h3>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
 
@@ -301,6 +301,10 @@ else {
 		echo "</blockquote>\n";
 		//echo "</p>\n";
 		echo "</form>\n";
+
+		echo "<p style='text-indent:-4.5em; margin-left:4.5em;'><em>NOTES&nbsp;:</em> Vous devez sélectionner ici les classes dans lesquelles des élèves passent le brevet série ".$tab_type_brevet[$type_brevet].".<br />Une fois ce paramétrage fait, inutile d'y revenir.<br />Vous pourrez procéder à des extractions classe par classe (<em>à l'étape 6</em>)<br />et les impressions de fiches brevet également (<em>à l'étape 13</em>)<br />si vous le souhaitez ou si vos paramètres serveur l'imposent,<br />mais vous n'avez pas à modifier ici la liste des élèves susceptibles de passer tel DNB.</p>\n";
+
+
 	}
 	else {
 		echo " | <a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet'>Choisir d'autres classes</a>";
