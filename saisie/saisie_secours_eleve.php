@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -571,6 +571,11 @@ else {
 			echo "<em style='font-size:small'>".$current_group["profs"]["proflist_string"]."</em>";
 
 			echo "<input type='hidden' name='id_groupe[$cpt]' value='$id_groupe' />\n";
+
+			if($_SESSION['statut']=='secours') {
+				echo " <a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe' title=\"Corriger les appréciations pour cet enseignement.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='' /></a>";
+			}
+
 			echo "</td>\n";
 
 			$num_id=2*$cpt;

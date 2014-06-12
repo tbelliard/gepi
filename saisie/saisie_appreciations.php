@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -810,7 +810,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 }
 
 if($_SESSION['statut']=='professeur') {
-	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
 }
 
 echo "</p>\n";
@@ -898,8 +898,8 @@ echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe'>Regrouper les élèves par classe</a>";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Afficher la liste par ordre alphabétique</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Regrouper les élèves par classe</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher la liste par ordre alphabétique</a>";
 	echo "</p>\n";
 }
 
@@ -1753,8 +1753,13 @@ $msg_acces_app_ele_resp\" />";
 					}
 				}
 
+				if(($_SESSION['statut']=='secours')&&($id_premiere_classe!='')) {
+					echo " <a href='../saisie/saisie_secours_eleve.php?id_classe=$id_premiere_classe&periode_num=$k&ele_login=$eleve_login' title=\"Corriger les appréciations et notes de cet élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='' /></a>";
+				}
+
 				echo "</td>\n";
 			}
+
 			echo $mess[$k];
 			$k++;
 		}
