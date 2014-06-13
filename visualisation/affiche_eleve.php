@@ -2668,7 +2668,12 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							// 20130319
+							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
+							}
+							$texte_saisie_avis_fixe.=">";
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
