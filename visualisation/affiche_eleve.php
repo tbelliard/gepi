@@ -4913,7 +4913,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 					if((acces_saisie_avertissement_fin_periode($eleve1, $i))&&($ver_periode[$i]!='O')) {
 
 						echo "
-			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $i\">
 				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 				<span class='bold' id='liste_avertissements_fin_periode_$i'>".liste_avertissements_fin_periode($eleve1, $i)."</span>
 			</a>";
