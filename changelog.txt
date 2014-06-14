@@ -3,6 +3,9 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-master (Version de développement)
+===========================
+
 Gepi-1.6.5 (14/06/2014)
 ===========================
 Cahier de textes:
