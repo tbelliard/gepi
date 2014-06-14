@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.6.5 (14/06/2014)
 ===========================
 Cahier de textes:
 - Possibilité de définir en administrateur des URL absolues à corriger en URL relatives pour les documents joints aux cahiers de textes.
