@@ -1236,3 +1236,4 @@ INSERT INTO setting SET name='groupe_de_groupes', value='groupe de groupes';
 INSERT INTO setting SET name='groupes_de_groupes', value='groupes de groupes';
 INSERT INTO droits SET id='/mod_abs2/saisie_bulletin.php',administrateur='F',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie des absences et appréciations sur les bulletins',statut='';
 INSERT INTO droits SET id='/cahier_texte_2/correction_notices_url_absolues_docs_joints.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Correction des notices CDT',statut='';
+INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');

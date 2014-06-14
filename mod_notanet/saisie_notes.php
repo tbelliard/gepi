@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// INSERT INTO droits VALUES('/mod_notanet/saisie_socle_commun.php','V','F','F','V','F','F','F','F','Notanet: Saisie socle commun','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();

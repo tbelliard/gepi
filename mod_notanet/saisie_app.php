@@ -67,6 +67,13 @@ if (isset($id_groupe)) {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	if($_SESSION['statut']=='professeur') {
+		if(!verif_groupe_appartient_prof($id_groupe)) {
+			header("Location: ../accueil.php?msg=Accès non autorisé.");
+			die();
+		}
+	}
+
 	$pb_record="no";
 
 	for($i=0;$i<$nb_tot_eleves;$i++) {
@@ -156,7 +163,21 @@ if(!isset($id_groupe)) {
 						jgm.id_matiere=n.mat
 					ORDER BY jgc.id_classe;";
 	*/
-	$sql="SELECT DISTINCT g.*,c.classe FROM groupes g,
+	if($_SESSION['statut']=='secours') {
+		$sql="SELECT DISTINCT g.*,c.classe FROM groupes g,
+						j_groupes_classes jgc,
+						j_groupes_matieres jgm,
+						classes c,
+						notanet n
+					WHERE g.id=jgc.id_groupe AND
+						jgc.id_classe=n.id_classe AND
+						jgc.id_classe=c.id AND
+						jgm.id_groupe=g.id AND
+						jgm.id_matiere=n.matiere
+					ORDER BY jgc.id_classe;";
+	}
+	else {
+		$sql="SELECT DISTINCT g.*,c.classe FROM groupes g,
 						j_groupes_classes jgc,
 						j_groupes_professeurs jgp,
 						j_groupes_matieres jgm,
@@ -170,6 +191,7 @@ if(!isset($id_groupe)) {
 						jgm.id_groupe=g.id AND
 						jgm.id_matiere=n.matiere
 					ORDER BY jgc.id_classe;";
+	}
 	//echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
