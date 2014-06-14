@@ -1,4 +1,4 @@
-Gepi-1.6.5master -- Procédure d'installation
+Gepi-master -- Procédure d'installation
 ==========================================
 
 Version de développement: NE PAS INSTALLER EN PRODUCTION !
