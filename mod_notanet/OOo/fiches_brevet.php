@@ -406,6 +406,10 @@ if(!isset($type_brevet)) {
 		}
 	echo "</ul>\n";
 
+
+	echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Si vous avez mis en place des modèles personnels dans la rubrique <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong> accessible depuis la page d'accueil, vous devez encore préciser ci-dessus dans <strong>Paramétrer</strong> si vous souhaitez utiliser des <strong>Gabarits personnels</strong> ou si vous préférez utiliser les <strong>Gabarits Gepi</strong>.</p>";
+
+
 	require("../../lib/footer.inc.php");
 	die();
 }

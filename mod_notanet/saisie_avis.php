@@ -171,7 +171,9 @@ if(!isset($id_classe)) {
 	}
 	else{
 		// Choix de la classe...
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
+	<fieldset class='fieldset_opacite50'>
+		<p class='bold'>Choisissez les classes pour lesquelles vous souhaitez saisir l'avis du chef d'établissement&nbsp;:</p>\n";
 
 		// Affichage sur 3 colonnes
 		$nb_classes_par_colonne=round($nb_classes/2);
@@ -204,7 +206,7 @@ if(!isset($id_classe)) {
 		echo "</table>\n";
 
 		echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
-		echo "</form>\n";
+		echo "</fieldset></form>\n";
 	}
 }
 else {
@@ -220,7 +222,8 @@ else {
 	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 
-	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">
+	<fieldset class='fieldset_opacite50'>\n";
 	echo add_token_field();
 
 	/*
@@ -251,7 +254,12 @@ else {
 
 			//===========================
 			echo "<tr>\n";
-			echo "<th rowspan='3' colspan='2'>Elève</th>\n";
+			echo "<th rowspan='4' colspan='2'>Elève</th>\n";
+			echo "<th colspan='3'>Avis du chef d'établissement</th>\n";
+			echo "<th colspan='3'>Avis du conseil de classe</th>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
 			echo "<th colspan='2'>Avis favorable</th>\n";
 			echo "<th rowspan='2'>Avis mitigé<br />ou<br />non saisi</th>\n";
 			//echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
@@ -406,7 +414,23 @@ Doit faire ses preuves.\">Dfsp</a><br />\n";
 <input type='hidden' id='focus_courant' name='focus_courant' value='' size='3' />
 ";
 
-	echo "</form>\n";
+	echo "
+	</fieldset>
+</form>
+
+<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
+<ul style='margin-right:15em;'>
+	<li>Sur les fiches brevet, le champ correspondant à l'<strong>avis du chef d'établissement</strong> est désigné par <strong>[eleves.decision]</strong> et peut contenir&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;<em>Avis favorable</em><br />
+	ou<br />
+	&nbsp;&nbsp;&nbsp;<em>Doit faire ses preuves</em></li>
+	<li>Sur les fiches brevet, le champ correspondant à l'<strong>avis du conseil de classe</strong> est désigné par <strong>[eleves.appreciation]</strong> et contiendra ce que vous mettrez dans les champs ci-dessus.</li>
+	<li>Si vous préférez faire apparaître, sur les Fiches Brevet, l'avis du conseil dans les deux cases (<em>conseil et chefetab</em>), vous pouvez modifier le modèle OpenOffice proposé en page d'accueil dans <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong>, puis dans le module Notanet, à la rubrique&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;<strong>Générer les fiches brevet selon le modèle de:<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modèle au format OpenOffice aide construction gabarit</strong><br />
+	en y choisissant dans <strong>Paramétrer</strong> d'utiliser des <strong>Gabarits personnels</strong>.
+	</li>
+</ul>\n";
 
 
 	echo "<script type='text/javascript'>
