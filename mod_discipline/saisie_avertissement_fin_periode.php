@@ -72,6 +72,8 @@ if((!isset($periode))||(!isset($login_ele))) {
 }
 */
 
+//debug_var();
+
 if((isset($periode))&&(isset($login_ele))) {
 	if($_SESSION['statut']=='professeur') {
 		if((!getSettingAOui('saisieDiscProfPAvt'))||(!is_pp($_SESSION['login'], "", $login_ele))) {
@@ -106,6 +108,19 @@ if((isset($periode))&&(isset($login_ele))) {
 	}
 
 	$msg="";
+
+	// 20140616
+	if(isset($_POST['get_avertissement_fin_periode'])) {
+		check_token();
+
+		//$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+
+		//$tab_av_ele=get_tab_avertissement($login_ele, $periode);
+
+		echo champs_checkbox_avertissements_fin_periode($login_ele, $periode);
+
+		die();
+	}
 
 	if(isset($_POST['saisie_avertissement_fin_periode'])) {
 		check_token();
