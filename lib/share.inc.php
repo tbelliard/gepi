@@ -10516,6 +10516,16 @@ function necessaire_saisie_avertissement_fin_periode() {
 
 		document.getElementById('titre_entete_saisie_avertissement_fin_periode').innerHTML='Saisie pour '+login_ele+' en période '+periode;
 
+		// 20140616
+		new Ajax.Updater($('div_champs_checkbox_avertissements_fin_periode'),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			login_ele: login_ele,
+			periode: periode,
+			get_avertissement_fin_periode: 'y',
+			mode_js: 'y',
+			lien_refermer: 'y',
+		}});
+
 		afficher_div('div_saisie_avertissement_fin_periode','y',100,100);
 	}
 
@@ -10542,7 +10552,9 @@ function necessaire_saisie_avertissement_fin_periode() {
 				<input type='hidden' name='saisie_avertissement_fin_periode_periode' id='saisie_avertissement_fin_periode_periode' value='' />
 				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
 				<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode</p>
-				".champs_checkbox_avertissements_fin_periode("", 1)."
+				<div id='div_champs_checkbox_avertissements_fin_periode'>
+					".champs_checkbox_avertissements_fin_periode("", 1)."
+				</div>
 
 				<input type='button' onclick='valider_saisie_avertissement_fin_periode()' name='Valider' value='Valider' />
 				".add_token_field()."
