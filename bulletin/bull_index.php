@@ -404,7 +404,14 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 			echo "<td style='background-color:lightgreen; text-align:center;'><input type='checkbox' name='tab_periode_num[]' value='$i' /></td>\n";
 		}
 		else {
-			echo "<td style='background-color:red; text-align:center;'>Période non close<br />pour une classe au moins";
+			echo "<td style='background-color:red; text-align:center;'><span title=\"Un compte scolarité doit clore (au moins partiellement) la période pour éviter que vous n'imprimiez les bulletins alors que les notes et/ou appréciations des professeurs peuvent encore changer.
+
+En compte scolarité, la clôture peut se faire en page d'accueil dans la rubrique
+     Bulletins scolaires
+          Verrouillage/Déverrouillage des périodes
+
+L'accès est également possible dans le menu horizontal sous l'entête si la barre est activée:
+     Bulletins/Vérif.et accès/Verrouillage périodes\">Période non close<br />pour une classe au moins</span>";
 			// 20120713
 			echo "<br /><input type='checkbox' name='tab_periode_num[]' value='$i' title=\"ATTENTION: Les notes et appréciations des bulletins peuvent encore évoluer\" />\n";
 			if($_SESSION['statut']=='scolarite') {
