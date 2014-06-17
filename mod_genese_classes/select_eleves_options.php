@@ -204,6 +204,14 @@ require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<p style='color:red; font-weight:bold; text-align:center;'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre trop de variables.<br />Vous devriez opter pour un autre mode d'extraction.</p>\n";
+	echo "<div style='margin-left:3em; background-image: url(\"../images/background/opacite50.png\");'>";
+	echo alerte_config_suhosin();
+	echo "</div>\n";
+	echo "<p><br /></p>\n";
+}
+
 if((!isset($projet))||($projet=="")) {
 	echo "<p style='color:red'>ERREUR: Le projet n'est pas choisi.</p>\n";
 	require("../lib/footer.inc.php");
@@ -336,6 +344,8 @@ necessaire_bull_simple();
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_eleves_options'>\n";
 
 echo add_token_field();
+
+echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
 
 // Colorisation
 echo "<p>Colorisation&nbsp;: ";
@@ -966,10 +976,11 @@ document.getElementById('eff_tot_classe_sexe_".$id_classe_actuelle[$j]."').inner
 	echo "<hr width='200'/>\n";
 }
 echo "<input type='hidden' name='projet' value='$projet' />\n";
+echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 echo "</form>\n";
 
 echo "<p><br /></p>
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>\n";
+<p style='text-indent:-4em; margin-left:4em; margin-bottom: 2em;'><em>NOTES&nbsp;:</em> Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>\n";
 
 if((isset($temoin_erreur_eleves_en_doublon))&&($temoin_erreur_eleves_en_doublon!="")) {
 	echo "<script type='text/javascript'>
