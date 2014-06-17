@@ -427,7 +427,7 @@ Doit faire ses preuves.\">Dfsp</a><br />\n";
 	<li>Sur les fiches brevet, le champ correspondant à l'<strong>avis du conseil de classe</strong> est désigné par <strong>[eleves.appreciation]</strong> et contiendra ce que vous mettrez dans les champs ci-dessus.</li>
 	<li>Si vous préférez faire apparaître, sur les Fiches Brevet, l'avis du conseil dans les deux cases (<em>conseil et chefetab</em>), vous pouvez modifier le modèle OpenOffice proposé en page d'accueil dans <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong>, puis dans le module Notanet, à la rubrique&nbsp;:<br />
 	&nbsp;&nbsp;&nbsp;<strong>Générer les fiches brevet selon le modèle de:<br />
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modèle au format OpenOffice aide construction gabarit</strong><br />
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modèle au format OpenOffice</strong><br />
 	en y choisissant dans <strong>Paramétrer</strong> d'utiliser des <strong>Gabarits personnels</strong>.
 	</li>
 </ul>\n";
