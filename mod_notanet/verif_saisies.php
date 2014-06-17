@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -75,6 +75,8 @@ $style_specifique="mod_notanet/mod_notanet";
 $titre_page = "Fiches brevet | Vérification des saisies";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
@@ -389,14 +391,17 @@ for($i=0;$i<count($id_classe);$i++) {
 			}
 		}
 
-		// Test avis
-		$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$lig_ele->login."' AND (favorable!='' OR avis!='');";
-		$test_avis=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($test_avis)==0) {
-			if(!isset($tab_ele_manques[$lig_ele->login]['nom_prenom'])) {
-				$tab_ele_manques[$lig_ele->login]['nom_prenom']=casse_mot($lig_ele->nom,'maj')." ".casse_mot($lig_ele->prenom,'majf2');
+		// Test avis du chef d'établissement
+		if($check_avis=='y') {
+			// Test avis
+			$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$lig_ele->login."' AND (favorable!='' OR avis!='');";
+			$test_avis=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_avis)==0) {
+				if(!isset($tab_ele_manques[$lig_ele->login]['nom_prenom'])) {
+					$tab_ele_manques[$lig_ele->login]['nom_prenom']=casse_mot($lig_ele->nom,'maj')." ".casse_mot($lig_ele->prenom,'majf2');
+				}
+				$tab_ele_manques[$lig_ele->login]['avis']='';
 			}
-			$tab_ele_manques[$lig_ele->login]['avis']='';
 		}
 	}
 
