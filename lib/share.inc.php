@@ -10230,6 +10230,7 @@ function get_tab_avertissement_classe($id_classe, $periode="") {
 function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_complet", $html="y") {
 	global $tab_type_avertissement_fin_periode;
 	global $mod_disc_terme_avertissement_fin_periode;
+	global $tab_totaux_avertissement_fin_periode;
 
 	$tab=get_tab_avertissement($login_ele, $periode);
 	/*
@@ -10259,6 +10260,20 @@ function liste_avertissements_fin_periode($login_ele, $periode, $mode="nom_compl
 				else {
 					//$retour.="<span style='color:red'>\$tab['id_type_avertissement'][$periode][$loop]=".$tab['id_type_avertissement'][$periode][$loop]."</span>";
 					$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$tab['id_type_avertissement'][$periode][$loop]]['nom_complet'];
+				}
+
+				if(!isset($tab_totaux_avertissement_fin_periode['periodes']['toutes'][$tab['id_type_avertissement'][$periode][$loop]])) {
+					$tab_totaux_avertissement_fin_periode['periodes']['toutes'][$tab['id_type_avertissement'][$periode][$loop]]=1;
+				}
+				else {
+					$tab_totaux_avertissement_fin_periode['periodes']['toutes'][$tab['id_type_avertissement'][$periode][$loop]]++;
+				}
+
+				if(!isset($tab_totaux_avertissement_fin_periode['periodes'][$periode][$tab['id_type_avertissement'][$periode][$loop]])) {
+					$tab_totaux_avertissement_fin_periode['periodes'][$periode][$tab['id_type_avertissement'][$periode][$loop]]=1;
+				}
+				else {
+					$tab_totaux_avertissement_fin_periode['periodes'][$periode][$tab['id_type_avertissement'][$periode][$loop]]++;
 				}
 			}
 		}
@@ -10399,18 +10414,26 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
 /** Fonction destinée tester si l'utilisateur courant est autorisé à imprimer les avertissements de fin de période pour l'élève choisi
  *
  * @param string $login_ele identifiant de l'élève
+ * @param string $id_classe identifiant de la classe
  *
  * @return boolean Accès ou non
  */
-function acces_impression_avertissement_fin_periode($login_ele) {
+function acces_impression_avertissement_fin_periode($login_ele, $id_classe="") {
 	if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
 		if($_SESSION['statut']=='professeur') {
 			if(getSettingAOui('imprDiscProfAvtOOo')) {
 				return true;
 			}
 
-			if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
-				return true;
+			if($login_ele!="") {
+				if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+					return true;
+				}
+			}
+			else {
+				if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], $id_classe, ""))) {
+					return true;
+				}
 			}
 		}
 		elseif($_SESSION['statut']=='scolarite') {
