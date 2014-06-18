@@ -484,6 +484,22 @@ elseif(!isset($valide_select_eleves)) {
 		echo "<br /><p style='text-indent:-7em; margin-left:7em;'><strong style='color:red; text-decoration:blink;'>ATTENTION&nbsp;:</strong> Les saisies ne sont pas closes (<em>période encore ouverte en saisie</em>).<br />Cela signifie que les notes et appréciations peuvent encore changer.<br />Les bulletins vont être marqués d'une indication comme quoi la période n'est pas close.<br />Vous ne devriez pas imprimer ces bulletins.<br />Vous pouvez tester l'affichage pour ajuster les paramètres d'impression, mais vous devriez verrouiller la période avec un compte 'scolarité' avant d'imprimer les bulletins.</p><br />\n";
 	}
 
+	if(acces_impression_avertissement_fin_periode("", "")) {
+
+		$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+
+		echo "<div style='float:right; width:12em; text-align:center;' class='fieldset_opacite50'><a href='../mod_discipline/imprimer_bilan_periode.php?";
+		for($j=0;$j<count($tab_periode_num);$j++) {
+			if($j>0) {echo "&amp;";}
+			echo "periode[]=".$tab_periode_num[$j];
+		}
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "&amp;id_classe[]=".$tab_id_classe[$i];
+		}
+		echo "' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'</a></div>";
+	}
+
+
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
 	echo "<p class='bold'>Sélection des élèves et paramètres:</p>\n";
 
