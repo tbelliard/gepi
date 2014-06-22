@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -88,6 +88,9 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 		}
 	}
 }
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: affichage de listes";
@@ -920,7 +923,7 @@ else {
 
 		echo "<hr />\n";
 
-		echo "<div id='div_ods' style='text-align:center; border:1px solid black;'>\n";
+		echo "<div id='div_ods' style='text-align:center; border:1px solid black;' class='fieldset_opacite50'>\n";
 		echo "</div>\n";
 	
 		echo "<hr />\n";
@@ -1445,27 +1448,32 @@ else {
 
 		// Début du tableau des élèves pour la requête courante
 
-		$contenu_affichage_requete_courante.="<table class='boireaus' border='1' summary='Tableau des options'>\n";
-	
+		$contenu_affichage_requete_courante.="<table class='boireaus sortable resizable' border='1' summary='Tableau des options'>\n";
+		//$contenu_affichage_requete_courante.="<thead>\n";
 		//==========================================
 		$contenu_affichage_requete_courante.="<tr>\n";
 
 		//$contenu_affichage_requete_courante.="<th style='width:15em;'>Elève</th>\n";
-		$contenu_affichage_requete_courante.="<th>Elève</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par nom d'élève.\">Elève";
+		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select_sexe$loop'></span>";
+		$contenu_affichage_requete_courante.="</th>\n";
 
-		$contenu_affichage_requete_courante.="<th>Profil</th>\n";
-		$contenu_affichage_requete_courante.="<th>Niveau</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text'>Profil";
+		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select$loop'></span>";
+		$contenu_affichage_requete_courante.="</th>\n";
+		$contenu_affichage_requete_courante.="<th class='number' title=\"Cliquez pour trier par niveau scolaire.\">Niveau</th>\n";
 		$contenu_affichage_requete_courante.="<th>Absences</th>\n";
-		$contenu_affichage_requete_courante.="<th>Classe<br />actuelle</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par classe.\">Classe<br />actuelle</th>\n";
 		//$fich_csv.="Elève;Classe actuelle;";
 		$fich_csv.="Elève;Clas.act;";
 
-		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>LV1</th>\n";$fich_csv.="LV1;";}
-		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>LV2</th>\n";$fich_csv.="LV2;";}
-		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>LV3</th>\n";$fich_csv.="LV3;";}
-		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>Options</th>\n";$fich_csv.="Options;";}
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV1.\">LV1</th>\n";$fich_csv.="LV1;";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV2.\">LV2</th>\n";$fich_csv.="LV2;";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV3.\">LV3</th>\n";$fich_csv.="LV3;";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par Options.\">Options</th>\n";$fich_csv.="Options;";}
 
-		$contenu_affichage_requete_courante.="<th rowspan='2'>Observations</th>\n";
+		//$contenu_affichage_requete_courante.="<th rowspan='2'>Observations</th>\n";
+		$contenu_affichage_requete_courante.="<th>Observations</th>\n";
 
 		$contenu_affichage_requete_courante.="</tr>\n";
 		$fich_csv.="\n";
@@ -1485,7 +1493,13 @@ else {
 		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+
+		$contenu_affichage_requete_courante.="<th></th>\n";
+
 		$contenu_affichage_requete_courante.="</tr>\n";
+
+		//$contenu_affichage_requete_courante.="</thead>\n";
+		//$contenu_affichage_requete_courante.="<tbody>\n";
 
 		//==========================================
 		$lignes_tab="";
@@ -1756,7 +1770,7 @@ else {
 						$texte_chgt_classe.="</form>\n";
 						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n');
 
-						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\"><img src='../images/icons/wizard.png' /></a>";
+						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\" title=\"Cliquez pour choisir/modifier la classe future de l'élève.\"><img src='../images/icons/wizard.png' /></a>";
 
 						$contenu_affichage_requete_courante.="</td>\n";
 
@@ -1767,6 +1781,7 @@ else {
 				}
 			}
 		}
+		//$contenu_affichage_requete_courante.="</tbody>\n";
 		$contenu_affichage_requete_courante.="</table>\n";
 		if(count($tab_moy_eleves)>0) {
 			$contenu_affichage_requete_courante.="&nbsp;<br />";
