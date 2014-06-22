@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -412,7 +412,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	echo "<th rowspan='2'>Classe<br />actuelle</th>\n";
 	echo "<th rowspan='2'>Profil</th>\n";
 	echo "<th rowspan='2'>Niveau</th>\n";
-	echo "<th rowspan='2'>Absences Non.Just Retards</th>\n";
+	echo "<th rowspan='2'>Absences<br />Non.Just<br />Retards</th>\n";
 
 	//if(count($classe_fut)>0) {echo "<th colspan='".(count($classe_fut)+2)."'>Classes futures</th>\n";}
 	if(count($classe_fut)>0) {echo "<th colspan='".count($classe_fut)."'>Classes futures</th>\n";}
