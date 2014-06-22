@@ -839,6 +839,9 @@ function ToutDeCocher() {
 </script>\n";
 
 	}
+	else {
+		echo "<p><img src='../images/icons/ico_ampoule.png' width='15' height='20' alt='Indication' /> Avec un compte de statut <strong>scolarité</strong> <span style='color:red'>vous pourriez</span> <strong>intercaler les relevés de notes</strong> pour une impression recto-verso.</p>";
+	}
 
 	$tab_signature=get_tab_signature_bull();
 	if(count($tab_signature)>0) {
