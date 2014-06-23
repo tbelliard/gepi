@@ -95,7 +95,7 @@ if(isset($_POST['enregistrer_choix_utilisateurs'])) {
 	$nb_suppr=0;
 	for($loop=0;$loop<count($tab_droits_existants);$loop++) {
 		if(!in_array($tab_droits_existants[$loop], $login_user)) {
-			$sql="DELETE FROM droits_signature WHERE login='".$tab_droits_existants[$loop]."';";
+			$sql="DELETE FROM signature_droits WHERE login='".$tab_droits_existants[$loop]."';";
 			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($menage) {
 				$nb_suppr++;
