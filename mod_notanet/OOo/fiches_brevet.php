@@ -640,6 +640,17 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
 
 			//echo "<p>$lig1->nom $lig1->prenom<br />";
+			
+			$tab_eleves_OOo[$nb_eleve]['mefcode']=$lig1->mef_code;
+			
+			$tab_eleves_OOo[$nb_eleve]['mef']="";
+			$sql_mef="SELECT libelle_edition FROM mef WHERE mef_code='".$lig1->mef_code."';";
+			$res_mef=mysqli_query($GLOBALS["mysqli"], $sql_mef);
+			if(mysqli_num_rows($res_mef)>0) {
+			   $lig_mef=mysqli_fetch_object($res_mef);
+			   $tab_eleves_OOo[$nb_eleve]['mef']=$lig_mef->libelle_edition;
+			}			
+			
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
