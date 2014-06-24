@@ -164,6 +164,14 @@ if ($res_test<2){
   }
 }
 
+$sql="CREATE TABLE IF NOT EXISTS gc_noms_affichages (
+id int(11) NOT NULL,
+nom varchar(100) NOT NULL,
+description tinytext NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+//echo "$sql<br />";
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 //=========================================================
 

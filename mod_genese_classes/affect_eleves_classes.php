@@ -118,6 +118,28 @@ if(isset($_POST['is_posted'])) {
 	$msg.=$complement_msg;
 }
 
+function get_infos_gc_affichage($id_aff) {
+	$tab=array();
+
+	$sql="SELECT * FROM gc_noms_affichages WHERE id='$id_aff';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab["id"]=$lig->id;
+		$tab["nom"]=$lig->nom;
+		$tab["description"]=$lig->description;
+		$tab["nomme"]=true;
+	}
+	else {
+		$tab["id"]=$id_aff;
+		$tab["nom"]="Affichage n°".$id_aff;
+		$tab["description"]="";
+		$tab["nomme"]=false;
+	}
+
+	return $tab;
+}
+
 $style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -438,7 +460,10 @@ function change_display(id) {
 		echo "<div style='float:right;'>\n";
 		echo "<p class='bold'>Listes des affichages définis</p>\n";
 		while($lig_req_aff=mysqli_fetch_object($res_req_aff)) {
-			echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">Affichage n°$lig_req_aff->id_aff</a>";
+			// 20140624
+			$tab_aff_courant=get_infos_gc_affichage($lig_req_aff->id_aff);
+			//echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">Affichage n°$lig_req_aff->id_aff</a>";
+			echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">".$tab_aff_courant['nom']."</a>";
 			echo "</p>\n";
 
 			echo "<div id='id_aff_$lig_req_aff->id_aff' style='display:none;'>\n";
@@ -624,7 +649,6 @@ function change_display(id) {
 	$nb_autre=mysqli_num_rows($res_autre);
 	
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
-
 	echo "<table class='boireaus' border='1' summary='Choix des paramètres'>\n";
 	echo "<tr>\n";
 	echo "<th>Classe actuelle</th>\n";
