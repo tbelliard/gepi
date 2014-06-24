@@ -385,6 +385,9 @@ $nombreligne = mysqli_num_rows($call_eleves);
 if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans la base.</p>\n";
 } else {
+
+	echo "<p align='center' id='p_enregistrer_haut' style='display:none'><input type='submit' value='Enregistrer' /></p>\n";
+
 	$eleves_non_affectes = 'no';
 	echo "<table class='boireaus' cellpadding='5'>\n";
 	echo "<tr>\n";
@@ -529,7 +532,10 @@ if ($nombreligne == '0') {
 	if ($eleves_non_affectes == 'no') {
 		echo "<p>Il n'y a aucun élève de disponible à ajouter !";
 	} else {
-		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>
+<script type='text/javascript'>
+	document.getElementById('p_enregistrer_haut').style.display='';
+</script>\n";
 	}
 }
 

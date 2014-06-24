@@ -219,7 +219,7 @@ $fb_gab_perso=getSettingValue("fb_gab_perso");
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi (construits à partir des fiches brevets de Nantes) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
+	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi<br />(<em>construits à partir des fiches brevets de Rouen</em>) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
 	echo "<td>";
 	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_1' value='1' ";
 	if($fb_gab_perso=="1"){
@@ -296,6 +296,15 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 
 	echo "<p style='text-align: center;'><input type='submit' name='enregistrer_param' value='Enregistrer' /></p>\n";
 	echo "</form>\n";
+
+
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Si, lors de la génération des fiches brevet, vous obtenez une erreur mentionnant <strong>TinyButStrong</strong>, il est probable que vous utilisez un modèle OOo défecteux ou obsolète.</p></li>
+	<li><p>Le choix <strong>Gabarit personnel</strong> nécessite que vous ayez envoyé un modèle personnel dans <a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_NOTANET'>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</a></p>
+	<p style='text-indent:-4em;margin-left:4em;'><em>Remarque&nbsp;:</em> Si vous obtenez une erreur, avec un <strong>Gabarit personnel</strong>, commencez par tester si le modèle officiel Gepi permet de régler le problème.</p></li>
+</ul>";
+
 
 	require("../../lib/footer.inc.php");
 	die();
@@ -406,6 +415,10 @@ if(!isset($type_brevet)) {
 		}
 	echo "</ul>\n";
 
+
+	echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Si vous avez mis en place des modèles personnels dans la rubrique <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong> accessible depuis la page d'accueil, vous devez encore préciser ci-dessus dans <strong>Paramétrer</strong> si vous souhaitez utiliser des <strong>Gabarits personnels</strong> ou si vous préférez utiliser les <strong>Gabarits Gepi</strong>.</p>";
+
+
 	require("../../lib/footer.inc.php");
 	die();
 }
@@ -496,8 +509,18 @@ if (!isset($id_classe)) {
 	echo "</blockquote>\n";
 	echo "</form>\n";
 
-	echo "<p style='margin-top:2em; text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Si une ou des classes n'apparaissent pas, c'est très probablement que l'extraction n'a pas été faite pour ces classes.<br />
-	Cela peut arriver par exemple quand les notes d'EPS n'ont pas été saisies.</p>";
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Si une ou des classes n'apparaissent pas dans le champ de sélection ci-dessus, c'est très probablement que l'extraction n'a pas été faite pour ces classes.<br />
+	Cela peut arriver par exemple quand les notes d'EPS n'ont pas été saisies.</p></li>
+	<li><p>Si vous obtenez une erreur mentionnant <strong>TinyButStrong</strong>, il est probable que vous utilisez un modèle OOo défecteux ou obsolète.</p></li>
+	<li><p>Si vous obtenez une page blanche, peut-être avez-vous sélectionné trop de classes d'un coup.<br />
+	Essayez de ne sélectionner dans un premier temps qu'une classe ci-dessus pour éliminer un éventuel problème avec le nombre de variables envoyées.</p></li>
+	<li><p>Le modèle OpenOffice utilisé se définit en suivant le lien <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramétrer</a>.<br />
+	Vous pouvez y choisir d'utiliser un modèle personnalisé en sélectionnant <strong>Gabarit personnel</strong> plutôt que <strong>Gabarit Gepi</strong>.<br />
+	Le choix <strong>Gabarit personnel</strong> nécessite que vous ayez envoyé un modèle personnel dans <a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_NOTANET'>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</a></p>
+	<p style='text-indent:-4em;margin-left:4em;'><em>Remarque&nbsp;:</em> Si vous obtenez une erreur, avec un <strong>Gabarit personnel</strong>, commencez par tester si le modèle officiel Gepi permet de régler le problème.</p></li>
+</ul>";
 
 	// Fermeture du DIV container initialisé dans le header.inc.php
 	echo "</div>\n";

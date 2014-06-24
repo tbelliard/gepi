@@ -312,9 +312,12 @@ else {
 
 				echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
 
+				echo "<p class='bold'>Sélectionnez les élèves pour lesquels faire l'extraction.</p><p><a href='".$_SERVER['PHP_SELF']."?extract_mode_=select' onclick='tout_cocher();return false;'>Cocher tous les élèves de toutes les classes</a><br /><a href='".$_SERVER['PHP_SELF']."?extract_mode_=select' onclick='tout_decocher();return false;'>Décocher tous les élèves de toutes les classes</a></p>\n";
+
 				echo "<div id=\"fixe\"><p><input type='submit' value='Valider' /></p></div>\n";
 
 				$max_eff_classe=0;
+				$cpt2=0;
 
 				// Boucle élèves:
 				for($i=0;$i<count($id_classe);$i++){
@@ -355,6 +358,7 @@ else {
 						echo "/></td>\n";
 
 						$k++;
+						$cpt2++;
 					}
 					echo "</table>\n";
 					echo "</blockquote>\n";
@@ -385,6 +389,25 @@ function DecocheColonneSelectEleves(i,j) {
 		}
 	}
 }
+
+function tout_cocher() {
+";
+				for($i=0;$i<count($id_classe);$i++){
+					echo "
+	CocheColonneSelectEleves($i, 0);";
+				}
+				echo "
+}
+
+function tout_decocher() {
+";
+				for($i=0;$i<count($id_classe);$i++){
+					echo "
+	DecocheColonneSelectEleves($i, 0);";
+				}
+				echo "
+}
+
 </script>\n";
 
 				require("../lib/footer.inc.php");

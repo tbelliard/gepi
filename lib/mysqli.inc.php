@@ -30,7 +30,7 @@ else {
 }
 
 if ($mysqli->connect_errno) {
-    printf("Echec lors de la connexion à MySQL : (" . $mysqli->connect_errno . ") " . $mysqli->connect_error);
+    printf("Echec lors de la connexion à MySQL : (" . mysqli_connect_errno() . ") " . mysqli_connect_error());
     exit();
 }
 

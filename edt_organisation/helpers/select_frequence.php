@@ -31,7 +31,7 @@ echo '
 
 // On récupère les différents type de semaine
 $query = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT type_edt_semaine FROM edt_semaines ORDER BY type_edt_semaine LIMIT 5")
-			OR error_reporting('Erreur dans la requête : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			OR error_reporting('Erreur dans la requête : '.mysqli_error($GLOBALS["mysqli"]));
 
 while($type_semaine = mysqli_fetch_array($query)){
 
@@ -41,7 +41,7 @@ while($type_semaine = mysqli_fetch_array($query)){
 
 // On récupère les différentes périodes du calendrier
 $query = mysqli_query($GLOBALS["mysqli"], "SELECT id_calendrier, nom_calendrier FROM edt_calendrier WHERE numero_periode = '0' AND etabvacances_calendrier = '0'")
-			OR error_reporting('Erreur dans la requête (périodes) : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			OR error_reporting('Erreur dans la requête (périodes) : '.mysqli_error($GLOBALS["mysqli"]));
 
 while($periodes = mysqli_fetch_array($query)){
 

@@ -3,6 +3,63 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.6.5 (14/06/2014)
+===========================
+Cahier de textes:
+- Possibilité de définir en administrateur des URL absolues à corriger en URL relatives pour les documents joints aux cahiers de textes.
+
+Cahier de notes:
+- Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+- Relevés de notes: Dans le choix dates/périodes, affichage des dates de 1ère et dernière évaluation dans chaque période pour chacune des classes sélectionnées.
+
+Bulletins:
+- Possibilité de choisir la hauteur de ligne dans l'export PDF de toutes les moyennes de la classe.
+- Possibilité de donner le droit aux comptes scolarité de corriger des appréciations
+  (avec envoi de mail de compte-rendu de modification).
+- Possibilité de donner le droit aux professeurs d'autoriser (via Gérer mon compte) tel ou tel professeur principal à corriger leurs appréciations
+  (avec envoi de mail de compte-rendu de modification).
+
+EDT: 
+- Facilités de navigation Classe/Prof/Salle en cliquant dans le créneau affiché.
+
+Absences2:
+- Tableau des appels: Possibilité d'afficher l'EDT de la classe en infobulle.
+
+Gestion:
+- Gestion des classes/enseignements: Ajout de liens d'affichage de l'EDT prof en infobulle.
+- Consultation élève: Ajout de l'affichage de MEF.
+- Possibilité de définir des événements à telles dates pour telles classes avec affichage en Panneau d'affichage.
+- Possibilité de conserver des mots de passe dans la base Gepi en mode SSO pour mettre en place un accès de secours quand l'authentification SSO fait des siennes.
+- Possibilité de générer les bulletins pour certains responsables non légaux (cas des familles d'accueil).
+- Possibilité de créer des groupes de groupes dont la liste des élèves peut être administrée par des comptes professeurs, cpe, scolarité.
+
+Discipline:
+- Possibilité de définir des avertissements de fin de période,
+  de les saisir depuis les pages de saisie de l'avis du conseil de classe,
+  et de les imprimer au format OOo.
+- Possibilité d'afficher les incidents sans référence aux autres protagonistes
+  (cette page imprimée peut être communiquée aux responsables sans soucis de confidentialité vis à vis d'autres protagonistes des incidents).
+
+Panneau d'affichage:
+- Possibilité de déposer un message pour les élèves ou parents de telle classe.
+- Possibilité de donner aux CPE l'accès à la saisie des message.
+
+Épreuves blanches:
+- A la saisie (pour l'admin), possibilité de trier les copies par numéro anonymat.
+- Possibilité d'accéder au bilan pdf/csv une fois l'épreuve close.
+
+Examens blancs:
+- Possibilité de sélectionner une épreuve blanche en guise de note pour un groupe.
+
+Années antérieures:
+- Conservation d'informations supplémentaires dans l'archivage des années en prévision de l'extraction demandée dans le Livret Scolaire Lycée.
+
+Divers:
+- Statistiques de connexion:
+   . Possibilité de cumuler les connexions élèves et parents.
+   . Export CSV des dates/effectifs de connexion.
+- Possibilité de choisir les groupes à faire apparaitre en page d'accueil simplifiée (et leur ordre).
+
 Gepi-1.6.4 (01/02/2014)
 ===========================
 

@@ -813,7 +813,12 @@ echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_group
 if((isset($id_devoir))&&($id_devoir!=0)) {echo "title=\"Impression des notes de l'évaluation au format PDF\"";} else {echo "title=\"Impression du Carnet de Notes au format PDF\"";}
 echo "> Imprimer au format PDF </a>|";
 
-echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/saisie_notes.php?id_conteneur=$id_conteneur\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+if(acces_modif_liste_eleves_grp_groupes($id_groupe)) {
+	echo "<a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\">Modifier le groupe <img src='../images/icons/edit_user.png' class='icone16' title=\"Modifier.\" /></a></div>";
+}
+else {
+	echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/saisie_notes.php?id_conteneur=$id_conteneur\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+}
 
 echo "|<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
 
@@ -1028,6 +1033,7 @@ foreach ($liste_eleves as $eleve) {
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
 	$eleve_prenom[$i] = $eleve["prenom"];
+	$eleve_sexe[$i] = $eleve["sexe"];
 	$eleve_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["classe"];
 	$eleve_id_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["id"];
 	$somme_coef = 0;
@@ -1344,13 +1350,28 @@ while ($i < $nb_dev) {
 		$w_pdf[] = $w2;
 		if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
 			echo "<td class=cn".$tmp." valign='top'><center><b><a href=\"./add_modif_dev.php?mode_navig=retour_saisie&amp;id_retour=$id_conteneur&amp;id_devoir=$id_dev[$i]\"  onclick=\"return confirm_abandon (this, change,'$themessage')\" title=\"Modifier les paramètres de cette évaluation (nom, coefficient, date, date de visibilité,...)\">$nom_dev[$i]</a></b><br /><font size=-2>(<em title=\"Date de l'évaluation\">$display_date[$i]</em>)</font>\n";
+			echo "<span id='span_visibilite_".$id_dev[$i]."'>";
 			if($display_parents[$i]!=0) {
+				/*
 				echo " <img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes.
 Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.' alt='Evaluation visible sur le relevé de notes' />\n";
+				*/
+
+				echo "<a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$id_dev[$i]."&amp;mode=change_visibilite_dev&amp;visible=n".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'n');return false;\"><img src='../images/icons/visible.png' width='19' height='16' title='Evaluation du ".$display_date[$i]." visible sur le relevé de notes.
+Visible à compter du ".formate_date($date_visibilite_ele_resp[$i])." pour les parents et élèves.
+
+Cliquez pour ne pas faire apparaître cette note sur le relevé de notes.' alt='Evaluation visible sur le relevé de notes' /></a>";
+
 			}
 			else {
+				/*
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";
+				*/
+				echo " <a href='index.php?id_groupe=$id_groupe&amp;id_racine=$id_racine&amp;id_dev=".$id_dev[$i]."&amp;mode=change_visibilite_dev&amp;visible=y".add_token_in_url()."' onclick=\"change_visibilite_dev(".$id_dev[$i].",'y');return false;\"><img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes.
+					
+Cliquez pour faire apparaître cette note sur le relevé de notes.' alt='Evaluation non visible sur le relevé de notes' /></a>\n";
 			}
+			echo "</span>";
 			echo "</center></td>\n";
 		}
 		else {
@@ -1694,7 +1715,8 @@ while($i < $nombre_lignes) {
 	if ($eleve_classe[$i] != $prev_classe && $prev_classe != null && $order_by == "classe") {
 		echo "<td class=cn style='border-top: 2px solid blue; text-align:left;'>\n";
 
-		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' target='_blank' title='Consulter la fiche élève'>$eleve_nom[$i] $eleve_prenom[$i]</a>\n";
+
 		$tab_ele_notes[$i][]="";
 		echo "</td>";
 		if ($multiclasses) {
@@ -1714,10 +1736,10 @@ while($i < $nombre_lignes) {
 			else {
 				echo "affiche_div_photo();";
 			}
-			echo "\"><img src='../images/icons/buddy.png' width='16' height='16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
+			echo "\"><img src='../mod_trombinoscopes/images/".(($eleve_sexe[$i]=="F") ? "photo_f" : "photo_g").".png' class='icone16' alt='Afficher la photo élève' title='Afficher la photo élève' /></a></div>\n";
 		}
 
-		echo "$eleve_nom[$i] $eleve_prenom[$i]\n";
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' target='_blank' title='Consulter la fiche élève'>$eleve_nom[$i] $eleve_prenom[$i]</a>\n";
 		$tab_ele_notes[$i][]="";
 		echo "</td>";
 		if ($multiclasses) {
@@ -2156,6 +2178,15 @@ if((isset($id_devoir))&&($id_devoir!=0)) {
 </script>\n";
 }
 //===================================
+
+echo "
+<script type='text/javascript'>
+	function change_visibilite_dev(id_dev, visible) {
+
+		new Ajax.Updater($('span_visibilite_'+id_dev),'index.php?id_groupe=$id_groupe&id_racine=$id_racine&id_dev='+id_dev+'&mode=change_visibilite_dev&visible='+visible+'&mode_js=y&".add_token_in_url(false)."',{method: 'get'});
+
+	}
+</script>";
 
 // Préparation du pdf
 $header_pdf=serialize($header_pdf);

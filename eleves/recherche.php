@@ -376,7 +376,7 @@ if(isset($is_posted_recherche)) {
 
 					$tab_result_recherche['responsable'][$cpt_resp]['enfants']="";
 					$tab_result_recherche['responsable'][$cpt_resp]['td_enfants']="";
-					$tab_enfants=get_enfants_from_pers_id($lig->pers_id, "avec_classe");
+					$tab_enfants=get_enfants_from_pers_id($lig->pers_id, "avec_classe", "y", array("resp_legal", "envoi_bulletin"));
 					for($loop=0;$loop<count($tab_enfants);$loop+=2) {
 						if($loop>0) {
 							$tab_result_recherche['responsable'][$cpt_resp]['enfants'].=", ";
@@ -1203,6 +1203,14 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 		<input type='submit' id='submit_chercher3' value='Chercher' />
 	</fieldset>
 </form>
+
+<?php
+	if(acces("/groupes/visu_profs_class.php", $_SESSION['statut'])) {
+		echo "<div style='width:16em; float:left; text-align:center; padding 0.5em; margin:-top:0.5em;' class='fieldset_opacite50'>
+	<a href='../groupes/visu_profs_class.php#liste_pp'>Liste des '".getSettingValue('gepi_prof_suivi')."'</a>
+</div>";
+	}
+?>
 
 <div style='clear:both'></div>
 <p style='color:red'>A FAIRE :<br />

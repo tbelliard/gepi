@@ -283,7 +283,7 @@ if (!isset($suite)) {
 		$sql="SELECT * from matieres WHERE matiere='$matiere_name';";
 		$verif=mysqli_query($GLOBALS["mysqli"], $sql);;
 		if(mysqli_num_rows($verif)==0) {
-			$sql="INSERT INTO matieres SET matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
+			$sql="INSERT INTO matieres SET matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_name)."', nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom_complet)."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
 			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
@@ -552,7 +552,7 @@ if (!isset($suite)) {
 					echo "Association des élèves:<br />";
 					echo "<blockquote>\n";
 
-					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe)."';";
 					$get_login_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($get_login_ele)==0) {
 						// On va mettre tous les élèves dans le groupe
@@ -676,7 +676,7 @@ if (!isset($suite)) {
 						echo "Association des élèves:<br />";
 						echo "<blockquote>\n";
 
-						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						$sql="SELECT login FROM eleves e, temp_grp t WHERE e.ele_id=t.ELE_ID AND t.NOM_GRP='".mysqli_real_escape_string($GLOBALS["mysqli"], $code_groupe)."';";
 						$get_login_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($get_login_ele)==0) {
 							// On va mettre tous les élèves dans le groupe
@@ -1096,8 +1096,8 @@ else {
 
 										$matiere_nom = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $affiche[0] . "'"), 0);
 										if($temoin_groupe_deja_cree=="non"){
-											$res = mysqli_query($GLOBALS["mysqli"], "insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'");
-											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', recalcul_rang = 'y'<br />\n");
+											$res = mysqli_query($GLOBALS["mysqli"], "insert into groupes set name = '" . $affiche[0] . "', description = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) . "', recalcul_rang = 'y'");
+											affiche_debug("insert into groupes set name = '" . $affiche[0] . "', description = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $matiere_nom) . "', recalcul_rang = 'y'<br />\n");
 											$group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 											$temoin_groupe_deja_cree=$group_id;
 

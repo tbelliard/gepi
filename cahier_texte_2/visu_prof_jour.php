@@ -71,7 +71,7 @@ $sql = "SELECT * FROM ct_entry WHERE id_login = '".$_SESSION['login']."'
 								BETWEEN '".($ts_semaine_avant - 86400)."' AND '".$ts_semaine_avant."'
 								ORDER BY heure_entry";
 
-$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('ERREUR SQL : ' . $sql . '<br />&nbsp;--> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('ERREUR SQL : ' . $sql . '<br />&nbsp;--> ' . mysqli_error($GLOBALS["mysqli"]));
 
 $a = 0;
 while($rep = mysqli_fetch_array($query)){

@@ -142,10 +142,15 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
-	else{
+	elseif($_SESSION['statut']=='scolarite') {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	else{
+		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
+		//$sql="SELECT id,classe FROM classes ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe;";
 	}
 	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);

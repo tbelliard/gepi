@@ -54,7 +54,7 @@ $query = mysqli_query($GLOBALS["mysqli"], "DROP TABLE IF EXISTS a_agregation_dec
 if ($query) {
 		$result .= msj_ok();
 } else {
-		$result .= msj_erreur(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$result .= msj_erreur(mysqli_error($GLOBALS["mysqli"]));
 }
 
 $query = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE a_agregation_decompte
@@ -79,7 +79,7 @@ $query = mysqli_query($GLOBALS["mysqli"], "CREATE TABLE a_agregation_decompte
 if ($query) {
 		$result .= msj_ok();
 } else {
-		$result .= msj_erreur(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$result .= msj_erreur(mysqli_error($GLOBALS["mysqli"]));
 }
 
 

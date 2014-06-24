@@ -811,28 +811,4 @@ echo "</div>\n";
 
 require_once("../lib/footer.inc.php");
 
-//fonction redimensionne les photos petit format
-function redimensionne_image_petit($photo)
- {
-    // prendre les informations sur l'image
-    $info_image = getimagesize($photo);
-    // largeur et hauteur de l'image d'origine
-    $largeur = $info_image[0];
-    $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
-             $taille_max_largeur = 35;
-             $taille_max_hauteur = 35;
-
-    // calcule le ratio de redimensionnement
-     $ratio_l = $largeur / $taille_max_largeur;
-     $ratio_h = $hauteur / $taille_max_hauteur;
-     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-    // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
-
-   // on renvoit la largeur et la hauteur
-    return array($nouvelle_largeur, $nouvelle_hauteur);
- }
 ?>

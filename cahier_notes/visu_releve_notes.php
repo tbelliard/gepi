@@ -483,7 +483,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 					// On récupère le nom de la période.
 					$requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`=".$id_classe." AND `num_periode`=".$choix_periode."";
 					//echo $requete_periode;
-					$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 					$data_periode = mysqli_fetch_array($resultat_periode);
 					echo "<p class='bull_simpl_g'>\n";
 						echo "<strong>".$data_periode['nom_periode']."</strong> : Relevé de notes";
@@ -1807,7 +1807,7 @@ function aff_lig_adresse_parent(mode){
 	if ($id_groupe != NULL) { // on recherche la classe à partir de id_groupe
 		$requete_classe = "SELECT * FROM `j_groupes_classes` WHERE `id_groupe`='".$id_groupe."'";
 		//echo $requete_classe;
-		$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_classe = mysqli_query($GLOBALS["mysqli"], $requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		$data_classe = mysqli_fetch_array($resultat_classe);
 		$id_classe = $data_classe['id_classe'];
 	  //echo $id_classe;
@@ -1815,7 +1815,7 @@ function aff_lig_adresse_parent(mode){
 	if ($id_classe != NULL)  { // on recherche les périodes pour la classe
 		$requete_periode = "SELECT * FROM `periodes` WHERE `id_classe`='".$id_classe."'";
 		//echo $requete_periode;
-		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		while ($data_periode = mysqli_fetch_array($resultat_periode)) {
 			echo "<input type=\"radio\" name=\"choix_periode\" id='choix_periode_".$data_periode['num_periode']."' value='".$data_periode['num_periode']."'  />\n";
 			echo "<label for='choix_periode_".$data_periode['num_periode']."' class='curseur_pointeur'> ".$data_periode['nom_periode']." </label>\n";

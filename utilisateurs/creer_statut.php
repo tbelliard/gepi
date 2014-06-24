@@ -136,7 +136,7 @@ if ($action == 'ajouter') {
 			}
 
  			$autorise_b = mysqli_query($GLOBALS["mysqli"], "INSERT INTO droits_speciaux (id, id_statut, nom_fichier, autorisation) VALUES ".$values_b."")
-			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+			 										OR trigger_error('Impossible d\'enregistrer : '.$values_b.' : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 
 			if ($autorise_b) {
 				$msg .= '<h4 style="color: green;">Ce statut est enregistr&eacute !</h4>';
@@ -194,14 +194,14 @@ if ($action == 'modifier') {
 		if ($test[$a][0] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
 			// Il faut aussi effacer toutes les références à ce statut dans les autres tables
 			$sql_d = "DELETE FROM droits_utilisateurs WHERE id_statut = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
 			$sql_d = "DELETE FROM droits_speciaux WHERE id_statut = '".$b."'";
-			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_NOTICE);
+			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
 		}else{
                   // On va vérifier les droits un par un
@@ -323,7 +323,7 @@ if ($query) {
 			$sql_d = "INSERT INTO droits_utilisateurs (id, id_statut, login_user) VALUES ('', '".$statut_user."', '".$login_user."')";
 		}
 
-		$query_statut = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+		$query_statut = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible d\'enregistrer dans la base.'.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 
 		if ($query_statut) {
 			$msg2 .= '<h4 style="color: green;">Modification enregistrée.</h4>';

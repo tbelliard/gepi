@@ -81,6 +81,10 @@ if(isset($periode_num)) {
 //	unset($id_classe);
 //}
 
+if(!isset($id_groupe)) {
+	$id_groupe="VIE_SCOLAIRE";
+}
+
 if(isset($id_groupe)) {
 
 	// A FAIRE: TESTER LE CARACTERE NUMERIQUE DE $id_groupe
@@ -124,6 +128,8 @@ if(isset($id_groupe)) {
 	}
 }
 else {
+	// On ne devrait plus arriver là
+
 	//header("Location: ../logout.php?auto=1");
 	header("Location: ../accueil.php?msg=Aucun_groupe_choisi");
 	die();
@@ -224,11 +230,47 @@ if($gepi_prof_suivi==""){
 			$id_groupe_boucle_precedent=$current_group['id'];
 		}
 	}
+	elseif((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+		$groups=get_groups_for_class($id_classe);
+
+		// Groupe précédent/suivant à trouver
+		$id_groupe_boucle_precedent="";
+		$id_groupe_precedent="";
+		$infos_groupe_precedent="";
+		$id_groupe_suivant="";
+		$infos_groupe_suivant="";
+		$id_groupe_courant_trouve="";
+		foreach($groups as $current_group) {
+			if($id_groupe=='VIE_SCOLAIRE') {
+				$id_groupe_suivant=$current_group['id'];
+				$infos_groupe_suivant=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+				break;
+			}
+			else {
+				if(($id_groupe_courant_trouve=="y")&&($id_groupe_suivant=="")) {
+					$id_groupe_suivant=$current_group['id'];
+					$infos_groupe_suivant=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+				}
+				if($current_group['id']==$id_groupe) {
+					$id_groupe_courant_trouve="y";
+					if($id_groupe_boucle_precedent!="") {
+						$id_groupe_precedent=$id_groupe_boucle_precedent;
+						$infos_groupe_precedent=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string'];
+					}
+				}
+				$id_groupe_boucle_precedent=$current_group['id'];
+			}
+		}
+	}
 
 	echo "<h2>";
 
 	if((isset($id_groupe_precedent))&&($id_groupe_precedent!="")) {
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_precedent' title=\"Passer au groupe précédent: ".$infos_groupe_precedent."\" class='noprint'><img src='../images/arrow_left.png' class='icone16' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_precedent";
+		if((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+			echo "&amp;id_classe=$id_classe";
+		}
+		echo "' title=\"Passer au groupe précédent: ".$infos_groupe_precedent."\" class='noprint'><img src='../images/arrow_left.png' class='icone16' /></a> ";
 	}
 
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
@@ -265,17 +307,27 @@ if($gepi_prof_suivi==""){
 	}
 
 	if((isset($id_groupe_suivant))&&($id_groupe_suivant!="")) {
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant' title=\"Passer au groupe suivant: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe_suivant";
+		if((isset($id_classe))&&(in_array($_SESSION['statut'], array('administrateur', 'cpe', 'scolarite')))) {
+			echo "&amp;id_classe=$id_classe";
+		}
+		echo "' title=\"Passer au groupe suivant: ".$infos_groupe_suivant."\" class='noprint'><img src='../images/arrow_right.png' class='icone16' /></a> ";
 	}
 
 	echo "</h2>\n";
 
 	if(($_SESSION['statut']=='professeur')&&(isset($id_groupe))&&($id_groupe!="VIE_SCOLAIRE")) {
-		echo "<div class='noprint' style='float:right; width: 20px; height: 20px'>
+
+		if(acces_modif_liste_eleves_grp_groupes($id_groupe)) {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' target=\"_blank\" title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\"><img src='../images/icons/edit_user.png' class='icone16' title=\"Modifier.\" /></a></div>";
+		}
+		else {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'>
 	<a href='signalement_eleves.php?id_groupe=$id_groupe' title=\"Signaler des erreurs d'affectation.\">
 		<img src='../images/icons/ico_attention.png' width='22' height='19' alt='Erreur_grp' />
 	</a>
 </div>\n";
+		}
 	}
 
 	echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='";
@@ -343,15 +395,24 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
+
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:left; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
 				echo "</td>\n";
 
 				if($avec_details=='y') {
@@ -368,7 +429,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -442,14 +503,22 @@ if($gepi_prof_suivi==""){
                 echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:right; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.' style='text-decoration:none; color:black;'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
 				echo "</td>\n";
 
 				if($avec_details=='y') {
@@ -466,7 +535,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);
@@ -546,17 +615,29 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'><td>";
 				if($lig_eleve->email!=""){
-					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."'>";
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
-					echo "</a>";
+					echo "
+	<div style='float:right; width:16px' class='noprint'>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>
+	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
-				else{
-					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lien_visu_eleve=="y") {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.' style='text-decoration:none; color:black;'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+					echo "</a>";
 				}
+				else {
+					echo "$lig_eleve->nom $lig_eleve->prenom";
+				}
+				//echo "<br />\n";
+
 				echo "</td>\n";
 				echo "<td>$lig_eleve->classe</td>\n";
+/*
 
+				echo "</td>\n";
+*/
 				if($avec_details=='y') {
 					if(getSettingValue('active_module_trombinoscopes')=='y') {
 						echo "<td>\n";
@@ -571,7 +652,7 @@ if($gepi_prof_suivi==""){
 					}
 					echo "<td>\n";
 					if($lien_visu_eleve=="y") {
-						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève' style='text-decoration:none; color:black;'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
 					}
 					else {
 						echo affiche_date_naissance($lig_eleve->naissance);

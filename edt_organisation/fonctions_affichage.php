@@ -517,19 +517,37 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
                 }
 
 				if($peut_poster_message) {
-					// Récupérer le jour suivant
-					echo "<div style='float:right;width:10px'><a href='../mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
-					$tmp_jour_suivant=get_next_tel_jour($jour+1);
-					if(($tmp_jour_suivant!="")&&(is_numeric($tmp_jour_suivant))) {
-						echo "&date_visibilite=".strftime("%d/%m/%Y", time()+24*3600*$tmp_jour_suivant);
+					if((isset($_GET['appel_depuis_form_message']))&&($_GET['appel_depuis_form_message']=="y")) {
+						$tmp_jour_suivant=get_next_tel_jour($jour+1);
+						if(($tmp_jour_suivant!="")&&(is_numeric($tmp_jour_suivant))) {
+							$tmp_chaine_date=strftime("%d/%m/%Y", time()+24*3600*$tmp_jour_suivant);
+						}
+						else {
+							$tmp_chaine_date=strftime("%d/%m/%Y");
+						}
+
+						$chaine_heure_visibilite="";
+						if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
+							$chaine_heure_visibilite="document.getElementById('heure_visibilite').value='".$tab_data[$jour]['heuredebut'][$index_box]."';";
+						}
+
+						echo "<div style='float:right;width:10px'><a href='#' onclick=\"document.getElementById('date_visibilite').value='$tmp_chaine_date';".$chaine_heure_visibilite."return false;\" target='_blank' title=\"Fixer la date et l'heure du message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/sound.png' width='10' height='10' /></a></div>";
 					}
-					else {
-						echo "&date_visibilite=".strftime("%d/%m/%Y");
+					elseif(isset($tab_data[$jour]['login_prof'][$index_box])) {
+						// Récupérer le jour suivant
+						echo "<div style='float:right;width:10px'><a href='../mod_alerte/form_message.php?message_envoye=y&amp;login_dest=".$tab_data[$jour]['login_prof'][$index_box];
+						$tmp_jour_suivant=get_next_tel_jour($jour+1);
+						if(($tmp_jour_suivant!="")&&(is_numeric($tmp_jour_suivant))) {
+							echo "&date_visibilite=".strftime("%d/%m/%Y", time()+24*3600*$tmp_jour_suivant);
+						}
+						else {
+							echo "&date_visibilite=".strftime("%d/%m/%Y");
+						}
+						if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
+							echo "&amp;heure_visibilite=".$tab_data[$jour]['heuredebut'][$index_box];
+						}
+						echo add_token_in_url()."' target='_blank' title=\"Déposer pour ce professeur un message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/mail.png' width='10' height='10' /></a></div>";
 					}
-					if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
-						echo "&amp;heure_visibilite=".$tab_data[$jour]['heuredebut'][$index_box];
-					}
-					echo add_token_in_url()."' target='_blank' title=\"Déposer pour ce professeur un message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/mail.png' width='10' height='10' /></a></div>";
 				}
                 echo ("</div>\n");
                 echo ("</div></div>\n");   

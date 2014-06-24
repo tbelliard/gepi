@@ -34,7 +34,7 @@ echo '
 ';
 // On appele la liste des créneaux
 $query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM horaires_etablissement LIMIT 0, 7")
-			OR error_reporting('Erreur dans la recherche des jours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			OR error_reporting('Erreur dans la recherche des jours : '.mysqli_error($GLOBALS["mysqli"]));
 
 while($jours = mysqli_fetch_array($query)){
 	// le selected

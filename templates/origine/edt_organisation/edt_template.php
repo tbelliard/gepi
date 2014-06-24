@@ -283,6 +283,12 @@ echo add_token_field();
 	
 	
 	
+	<?php
+		if(((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin')))&&
+		(acces("/edt_organisation/index_edt.php", $_SESSION['statut']))) {
+			echo "<hr /><p style='margin-top:1em;'><a href='index_edt.php'>Accéder au module EDT</a></p>";
+		}
+	?>
 
 
 <!-- Début du pied -->

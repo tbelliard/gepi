@@ -3,7 +3,7 @@
 function classe_de($id_classe_eleve) {
     global $prefix_base;
     $requete_classe_eleve ="SELECT ".$prefix_base."eleves.login, ".$prefix_base."eleves.nom, ".$prefix_base."eleves.prenom, ".$prefix_base."j_eleves_classes.login, ".$prefix_base."j_eleves_classes.id_classe, ".$prefix_base."j_eleves_classes.periode, ".$prefix_base."classes.classe, ".$prefix_base."classes.id, ".$prefix_base."classes.nom_complet FROM ".$prefix_base."eleves, ".$prefix_base."j_eleves_classes, ".$prefix_base."classes WHERE ".$prefix_base."eleves.login=".$prefix_base."j_eleves_classes.login AND ".$prefix_base."eleves.login='".$id_classe_eleve."' AND ".$prefix_base."j_eleves_classes.id_classe=".$prefix_base."classes.id";
-    $execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_classe_eleve = mysqli_query($GLOBALS["mysqli"], $requete_classe_eleve) or die('Erreur SQL !'.$requete_classe_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     $data_classe_eleve = mysqli_fetch_array($execution_classe_eleve);
     $id_classe_eleve = $data_classe_eleve['nom_complet'];
     return($id_classe_eleve);
@@ -13,7 +13,7 @@ function classe_de($id_classe_eleve) {
 function motif_de($nc_motif) {
     global $prefix_base;
     $requete_motif ="SELECT * FROM ".$prefix_base."absences_motifs WHERE ".$prefix_base."absences_motifs.init_motif_absence='".$nc_motif."'";
-    $execution_motif = mysqli_query($GLOBALS["mysqli"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $execution_motif = mysqli_query($GLOBALS["mysqli"], $requete_motif) or die('Erreur SQL !'.$requete_motif.'<br />'.mysqli_error($GLOBALS["mysqli"]));
     $data_motif = mysqli_fetch_array($execution_motif);
     $nc_motif = $data_motif['def_motif_absence'];
     return($nc_motif);
@@ -432,6 +432,9 @@ function redimensionne_image($photo)
     return array($nouvelle_largeur, $nouvelle_hauteur);
  }
 
+$photo_redim_taille_max_largeur=60;
+$photo_redim_taille_max_hauteur=60;
+/*
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
  {
@@ -455,13 +458,13 @@ function redimensionne_image_petit($photo)
 
    // on renvoit la largeur et la hauteur
     return array($nouvelle_largeur, $nouvelle_hauteur);
- }
-
+}
+*/
 function qui($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."utilisateurs WHERE ".$prefix_base."utilisateurs.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = $data_login_perso['civilite']." ".strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
@@ -471,7 +474,7 @@ function qui_eleve($login_perso)
 {
       global $prefix_base;
       $requete_login_perso ="SELECT * FROM ".$prefix_base."eleves WHERE ".$prefix_base."eleves.login = '".$login_perso."'";
-      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $execution_login_perso = mysqli_query($GLOBALS["mysqli"], $requete_login_perso) or die('Erreur SQL !'.$requete_login_perso.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       $data_login_perso = mysqli_fetch_array($execution_login_perso);
       if($login_perso != "") { $qui_est_ce = strtoupper($data_login_perso['nom'])." ".ucfirst($data_login_perso['prenom']); } else { $qui_est_ce=""; }
       return $qui_est_ce;
@@ -637,7 +640,7 @@ function edt_active_prof($login_prof, $heure, $jour, $semaine)
 {
 	  // requête qui permet de savoir quelle cours à un professeur par rapport à un jour et une heure donnée ainsi que la semaine paire et impaire
           $requete = ('SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$login_prof.'" AND jour_edt_classe = "'.$jour.'" AND semaine_edt_classe = "'.$semaine.'"');
-      	  $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      	  $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	  while($donner = mysqli_fetch_array($resultat))
 	  {
 		$id_groupe_edt = $donner['groupe_edt_classe'];
@@ -656,7 +659,7 @@ function periode_actuel($heure_choix)
       $num_periode="";
       //on liste dans un tableau les périodes existante
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE heuredebut_definie_periode <= "'.$heure_choix .'" AND heurefin_definie_periode >= "'.$heure_choix.'" ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
-      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       while($data_periode = mysqli_fetch_array($resultat_periode)) {
           $debut=$data_periode['heuredebut_definie_periode'];
           $num_periode=$data_periode['id_definie_periode'];
@@ -670,7 +673,7 @@ function periode_heure($periode)
 {
       // on recherche les informations sur la périodes sélectionné
       $requete_periode = ('SELECT * FROM edt_creneaux WHERE id_definie_periode = "'.$periode.'"');
-      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       while($data_periode = mysqli_fetch_array($resultat_periode)) {
           $debut = $data_periode['heuredebut_definie_periode'];
           $fin   = $data_periode['heurefin_definie_periode'];
@@ -711,7 +714,7 @@ function date_explose($date_parametre)
 function matiere_du_groupe($groupe_parametre)
 {
       $requete = ('SELECT * FROM j_groupes_matieres, matieres WHERE id_groupe = "'.$groupe_parametre.'" AND matiere=id_matiere');
-      $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
       while($donnee = mysqli_fetch_array($resultat)) {
           $nomcomplet = $donnee['nom_complet'];
           $nomcourt   = $donnee['matiere'];

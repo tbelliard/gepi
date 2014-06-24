@@ -21,7 +21,7 @@
  * @see msj_present()
  */
 
-$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.3" . $rc . $beta . " :</h3>";
+$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.3" . " :</h3>";
 
 
 $result .= "&nbsp;->Extension à 255 caractères du champ 'SESSION_ID' de la table 'log'<br />";

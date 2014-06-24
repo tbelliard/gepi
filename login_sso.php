@@ -90,7 +90,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		// Le dernier argument a été ajouté par patchage manuel de phpCAS.
 		settype($cas_port, "integer");
 		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
-		phpCAS::setLang('french');
+		phpCAS::setLang(PHPCAS_LANG_FRENCH);
 
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 		// été trouvé par le client CAS.

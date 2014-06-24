@@ -725,6 +725,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {echo " | <a href='synchro_mail.php'>Synchroniser les adresses mail élèves</a>\n";}
 
+if($_SESSION['statut']=="administrateur") {echo " | <a href='../utilisateurs/edit_eleve.php'>Comptes d'utilisateurs élèves</a>\n";}
+
 if(($_SESSION['statut']=="administrateur")&&(getSettingValue('exp_imp_chgt_etab')=='yes')) {
 	// Pour activer le dispositif:
 	// DELETE FROM setting WHERE name='exp_imp_chgt_etab';INSERT INTO setting SET name='exp_imp_chgt_etab', value='yes';

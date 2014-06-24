@@ -57,7 +57,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1062" :
 				// Présence d'un doublon : création de la cléf impossible
-				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
+				$retour = msj_erreur("Erreur (<strong>non critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . mysqli_error($GLOBALS["mysqli"]) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1068" :
@@ -66,7 +66,7 @@ function traite_requete($requete = "") {
 				break;
 			case "1069" :
 				// trop d'index existent déjà pour cette table
-				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
+				$retour = msj_erreur("Erreur (<strong>critique</strong>) sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . mysqli_error($GLOBALS["mysqli"]) . ")");
 				$pb_maj = 'yes';
 				break;
 			case "1091" :
@@ -74,7 +74,7 @@ function traite_requete($requete = "") {
 				$retour = "";
 				break;
 			default :
-				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ")");
+				$retour = msj_erreur("Erreur sur la requête : <i>" . $requete . "</i> (" . ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) . " : " . mysqli_error($GLOBALS["mysqli"]) . ")");
 				$pb_maj = 'yes';
 				break;
 		}
@@ -284,8 +284,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/stats_classe.php', 'F',
 $tab_req[] = "INSERT INTO droits VALUES ('/classes/classes_param.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/fpdf/imprime_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', '', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/etablissements/import_etab_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des établissements', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_app_cons.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Importation csv des avis du conseil de classe', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/messagerie/index.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Gestion de la messagerie', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/import_app_cons.php', 'F', 'V', 'F', 'V', 'F', 'F', 'V', 'F', 'Importation csv des avis du conseil de classe', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/messagerie/index.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion de la messagerie', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/absences/import_absences_gep.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/absences/seq_gep_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/utilitaires/clean_tables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Maintenance', '');";
@@ -330,8 +330,6 @@ $tab_req[] = "INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'V', 
 $tab_req[] = "INSERT INTO droits VALUES ('/utilitaires/recalcul_moy_conteneurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Recalcul des moyennes des conteneurs', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/classes/scol_resp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Affectation des comptes scolarité aux classes', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/lib/fiche_eleve.php', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Fiche du suivie de l''élève', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_miseajour/utilisateur/fenetre.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des mises à jour', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_miseajour/admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module de mise à jour', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/referencement.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Référencement de Gepi sur la base centralisée des utilisateurs de Gepi', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_absences/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des actions absences', '');";
 // Pour un module non présent ni actif par défaut:
@@ -520,12 +518,12 @@ $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/poitiers/fiches_brevet.php
 
 
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/notanet_admin.php','V','F','F','F','F','F','F','F', 'Gestion du module NOTANET','');";
-$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','V','F','F','F','F', 'Notanet: Accueil','');";
+$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/index.php','V','V','F','V','F','F','V','F', 'Notanet: Accueil','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/extract_moy.php','V','F','F','F','F','F','F','F', 'Notanet: Extraction des moyennes','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/corrige_extract_moy.php','V','F','F','F','F','F','F','F', 'Notanet: Extraction des moyennes','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/select_eleves.php','V','F','F','F','F','F','F','F', 'Notanet: Associations élèves/type de brevet','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/select_matieres.php','V','F','F','F','F','F','F','F', 'Notanet: Associations matières/type de brevet','');";
-$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','F','V','F','F','F','F','F','F', 'Notanet: Saisie des appréciations','');";
+$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_app.php','F','V','F','F','F','F','V','F', 'Notanet: Saisie des appréciations','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/generer_csv.php','V','F','F','F','F','F','F','F', 'Notanet: Génération de CSV','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','F', 'Notanet: Génération de CSV','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F', 'Notanet: (Dé)Verrouillage des saisies','');";
@@ -873,7 +871,7 @@ autre='F',
 description='Controle des enseignements',
 statut='';";
 
-$tab_req[] = "INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');";
 
@@ -1063,6 +1061,65 @@ secours='V',
 autre='V',
 description='Effectuer une recherche sur une personne',
 statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/classes/dates_classes.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Définition de dates pour les classes',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_bilan_periode.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les sanctions/avertissements de fin de période', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/imprimer_bilan_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Imprimer les avertissements de fin de période', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_avertissement_fin_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Saisie des sanctions/avertissements de fin de période', '');";
+
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/afficher_incidents_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Affichage des incidents pour un élève.', '');";
+
+$tab_req[] = "INSERT INTO droits SET id='/groupes/grp_groupes_edit_eleves.php',
+administrateur='F',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Edition des élèves des groupes de groupes',
+statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/groupes/modify_grp_group.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Gestion des groupes de groupes',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs2/saisie_bulletin.php',administrateur='F',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie des absences et appréciations sur les bulletins',statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/gestion/admin_nomenclatures.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Import des nomenclatures',statut='';";
+
+$tab_req[]="INSERT INTO droits SET id='/cahier_texte_2/correction_notices_url_absolues_docs_joints.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Correction des notices CDT',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');";
 
 //$tab_req[] = "";
 

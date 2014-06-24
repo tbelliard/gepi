@@ -1,4 +1,4 @@
-GEPI-1.6.4 (01/02/2014)
+GEPI-1.6.5 (14/06/2014)
 ==============
 
 Eric ABGRALL <eric.abgrall@free.fr>

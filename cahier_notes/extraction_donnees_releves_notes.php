@@ -93,8 +93,20 @@
 
 	$chaine_coef=isset($_POST['chaine_coef']) ? $_POST['chaine_coef'] : (isset($chaine_coef) ? $chaine_coef : "");
 
-	$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
-	savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
+	if((isset($_GET['rn_param_auto']))&&($_GET['rn_param_auto']=="y")&&(isset($tab_id_classe))) {
+
+		renseigner_tab_rn($tab_id_classe);
+
+		if(isset($_GET['rn_adr_resp'])) {
+			$tab_rn_adr_resp=$_GET['rn_adr_resp'];
+		}
+
+		$rn_couleurs_alternees=getPref($_SESSION['login'], "rn_couleurs_alternees", "n");
+	}
+	else {
+		$rn_couleurs_alternees=isset($_POST['rn_couleurs_alternees']) ? $_POST['rn_couleurs_alternees'] : (isset($rn_couleurs_alternees) ? $rn_couleurs_alternees : "n");
+		savePref($_SESSION['login'], "rn_couleurs_alternees", $rn_couleurs_alternees);
+	}
 
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
@@ -263,10 +275,10 @@
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			if($choix_periode=="intervalle") {
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : array();
+				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_POST['tab_selection_ele_'.$loop_classe.'_intervalle'] : (isset($_GET['tab_selection_ele_'.$loop_classe.'_intervalle']) ? $_GET['tab_selection_ele_'.$loop_classe.'_intervalle'] : array());
 			}
 			else {
-				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
+				$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : (isset($_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array());
 			}
 
 			if((count($tab_selection_eleves)==0)&&(isset($ele_login))&&($ele_login!='')) {
@@ -606,13 +618,14 @@
 								}
 
 								// Recherche des enfants de niveau 1
-								$sql="SELECT id, nom_court, nom_complet, display_parents FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
+								$sql="SELECT id, nom_court, nom_complet, display_parents, coef FROM cn_conteneurs where id_racine='$lig_grp_id_cn->id_cahier_notes' AND parent=id_racine;";
 								if(($debug_extract=='y')&&($tab_ele['groupe'][$j]['id_groupe']==$debug_id_groupe)&&($current_eleve_login[$i]==$debug_ele_login)) {
 									echo "$sql<br />\n";
 								}
 								$res_conteneurs_niv1=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_conteneurs_niv1)>0) {
 									$cpt=0;
+									$tab_coef_boites=array();
 									while($lig_cnt=mysqli_fetch_object($res_conteneurs_niv1)) {
 										unset($tab_conteneurs_enfants);
 										$tab_conteneurs_enfants=array();
@@ -623,6 +636,10 @@
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_court']=$lig_cnt->nom_court;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['nom_complet']=$lig_cnt->nom_complet;
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['display_parents']=$lig_cnt->display_parents;
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['coef']=$lig_cnt->coef;
+										if(!in_array($lig_cnt->coef, $tab_coef_boites)) {
+											$tab_coef_boites[]=$lig_cnt->coef;
+										}
 
 										recherche_conteneurs_enfants($lig_cnt->id);
 										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['conteneurs_enfants']=$tab_conteneurs_enfants;
@@ -657,6 +674,12 @@
 										}
 
 										$cpt++;
+									}
+									if(count($tab_coef_boites)>1) {
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['temoin_coef_differents_conteneurs']="y";
+									}
+									else {
+										$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['temoin_coef_differents_conteneurs']="n";
 									}
 
 								}
@@ -887,57 +910,145 @@
 						}
 
 						// Récup infos responsables
-						$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
-														resp_adr ra,
-														responsables2 r
-									WHERE r.ele_id='".$tab_ele['ele_id']."' AND
-											r.resp_legal!='0' AND
-											r.pers_id=rp.pers_id AND
-											rp.adr_id=ra.adr_id
-									ORDER BY resp_legal;";
-						$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
-						//echo "$sql<br />\n";
-						if(mysqli_num_rows($res_resp)>0) {
-							$cpt=0;
-							while($lig_resp=mysqli_fetch_object($res_resp)) {
-								$tab_ele['resp'][$cpt]=array();
+						if((isset($_GET['pers_id']))&&(preg_match("/^[0-9p]{1,}$/", $_GET['pers_id']))) {
+							// Récup infos responsables
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id AND 
+												rp.pers_id='".$_GET['pers_id']."'
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=0;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
 
-								$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
 
-								$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
-								$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
-								$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
-								$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
-								$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
-								$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
-								$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
 
-								$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
-								$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
-								$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
-								$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
-								$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
-								$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
-								$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
 
-								$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
-								$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 
-								$cpt++;
+									$cpt++;
+								}
 							}
 						}
+						else {
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.resp_legal!='0' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />\n";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=0;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
 
-						// Vérification
-						if(mysqli_num_rows($res_resp)>2) {
-							if($mode_bulletin=="html") {
-								echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
-								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
-								for ($z=0;$z<count($tab_ele['resp']);$z++) {
-									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+
+									$cpt++;
 								}
-								echo "Seuls les deux premiers apparaîtront sur des bulletins.";
-								echo "</div>\n";
+							}
+
+							// Vérification
+							if(mysqli_num_rows($res_resp)>2) {
+								if($mode_bulletin=="html") {
+									echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
+									echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
+									for ($z=0;$z<count($tab_ele['resp']);$z++) {
+										echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+									}
+									echo "Seuls les deux premiers apparaîtront sur des bulletins.";
+									echo "</div>\n";
+								}
+							}
+
+							// Récup infos responsables non légaux, mais pointés comme destinataires des bulletins
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.resp_legal='0' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id AND
+												r.envoi_bulletin='y'
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=2;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
+
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+
+									$cpt++;
+								}
 							}
 						}
 

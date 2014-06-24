@@ -61,32 +61,10 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 
 //**************** FONCTIONS *****************
-//fonction redimensionne les photos petit format
-function redimensionne_image_petit($photo)
- {
-    // prendre les informations sur l'image
-    $info_image = getimagesize($photo);
-    // largeur et hauteur de l'image d'origine
-    $largeur = $info_image[0];
-    $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
-             $taille_max_largeur = 45;
-             $taille_max_hauteur = 45;
+$photo_redim_taille_max_largeur=45;
+$photo_redim_taille_max_hauteur=45;
 
-    // calcule le ratio de redimensionnement
-     $ratio_l = $largeur / $taille_max_largeur;
-     $ratio_h = $hauteur / $taille_max_hauteur;
-     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-    // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
-
-   // on renvoit la largeur et la hauteur
-    return array($nouvelle_largeur, $nouvelle_hauteur);
- }
-
- function format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve, $id_box) {
+function format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve, $id_box) {
      	if ($utilisateur->getStatut() != 'professeur' || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
 ?>
 <label class="invisible" for="<?php echo $id_box; ?>">heure</label>
@@ -797,9 +775,13 @@ include('menu_abs2.inc.php');
 <div class='css-panes' id='containDiv'>
 
 	<?php
-		if((acces("/groupes/signalement_eleves.php", $_SESSION['statut']))&&(isset($id_groupe))) {
+		if((isset($id_groupe))&&(acces_modif_liste_eleves_grp_groupes($id_groupe))) {
 	?>
-	<!--div style='float:right; width:19px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')"><img src='../images/icons/ico_question.png' width='19' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div-->
+	<div style='float:right; width:22px;'><a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank" title="Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste."><img src='../images/icons/edit_user.png' class='icone16' title="Modifier." /></a></div>
+	<?php
+		}
+		elseif((acces("/groupes/signalement_eleves.php", $_SESSION['statut']))&&(isset($id_groupe))) {
+	?>
 	<div style='float:right; width:22px;'><a href='../groupes/signalement_eleves.php?id_groupe=<?php echo $id_groupe;?>' target="_blank" title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur."><img src='../images/icons/ico_attention.png' width='22' height='19' title="Si la liste des élèves du groupe affiché n'est pas correcte, vous pouvez signaler ici les erreurs à l'administrateur." /></a></div>
 	<?php
 		}

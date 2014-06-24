@@ -168,7 +168,7 @@ if((isset($_GET['creer_dev']))||(isset($_GET['ecraser_contenu_dev']))) {
 			if (!$reg) {$reg_ok = "no";}
 	
 			if($description_cc_dev!='')  {
-				$sql="UPDATE cn_devoirs SET nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $description_cc_dev) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE id='$id_devoir_cn'";
+				$sql="UPDATE cn_devoirs SET nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $description_cc_dev)."' WHERE id='$id_devoir_cn'";
 				$reg=mysqli_query($GLOBALS["mysqli"], $sql);
 				if (!$reg) {$reg_ok = "no";}
 			}

@@ -70,6 +70,24 @@ function affiche_debug($texte) {
 	}
 }
 
+
+function nb_cols_textarea_sous_graphe($font_size) {
+	// C'est un pis aller.
+	// La largeur du textarea ne suit pas une fonction affine de la taille de la police.
+	// Entre 10 et 20pt de taille de police, ça va à peu-près.
+	if(($font_size=="")||(!preg_match("/^[0-9]{1,}$/", $font_size))||($font_size<10)) {
+		return 60;
+	}
+	elseif($font_size<=20) {
+		$nb_cols=72-2*$font_size;
+		return $nb_cols;
+	}
+	else {
+		return 32;
+	}
+}
+
+
 $delais_apres_cloture=getSettingValue("delais_apres_cloture");
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
@@ -323,7 +341,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)) {
-	if(mb_strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
+	if(preg_match("/^[0-9]{1,}$/",$num_periode_saisie)) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -784,6 +802,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<div class='noprint'>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+
+		if(isset($_POST['choix_periode'])) {
+			echo "<input type='hidden' name='choix_periode' value='".$_POST['choix_periode']."' />\n";
+		}
+		if(isset($_POST['periode'])) {
+			echo "<input type='hidden' name='periode' value='".$_POST['periode']."' />\n";
+		}
 
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
 		// La classe est choisie.
@@ -1893,6 +1918,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
+	$nb_cols_textarea_sous_graphe=60;
+	if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
+		$nb_cols_textarea_sous_graphe=nb_cols_textarea_sous_graphe($textarea_font_size);
+	}
+	//echo "\$nb_cols_textarea_sous_graphe=$nb_cols_textarea_sous_graphe<br />";
+
+
 
 	// Nom de la classe:
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '$id_classe';");
@@ -2425,7 +2457,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2435,9 +2467,23 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
 
+							$retour_ligne_sous_textarea="y";
+							if(getSettingAOui('active_mod_discipline')) {
+								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									//$retour_ligne_sous_textarea="n";
+									$retour_ligne_sous_textarea="y";
+								}
+							}
+
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
-								$texte.="<br/>\n";
+								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
@@ -2461,7 +2507,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 								$texte.="<br/>\n";
 							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
-			
+
+							// Voir ligne 4784 ce qui est fait pour les avertissements
+							// $texte.="<div style='float:right;'></div>\n";
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
@@ -2492,7 +2540,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil</p>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2620,7 +2668,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
-							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte.=" style='font-size:".$textarea_font_size."pt;'";
@@ -2630,9 +2678,24 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
 
+
+							$retour_ligne_sous_textarea="y";
+							if(getSettingAOui('active_mod_discipline')) {
+								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									//$retour_ligne_sous_textarea="n";
+									$retour_ligne_sous_textarea="y";
+								}
+							}
+
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
-								$texte.="<br/>\n";
+								if($retour_ligne_sous_textarea=="y") {$texte.="<br/>\n";}
 								$texte.=ucfirst($gepi_denom_mention)." : ";
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								$texte.="<br/>\n";
@@ -2668,7 +2731,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
 							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
-							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\"";
+							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='$nb_cols_textarea_sous_graphe' wrap='virtual' onchange=\"changement()\"";
 							// 20130319
 							if((isset($textarea_font_size))&&(is_numeric($textarea_font_size))) {
 								$texte_saisie_avis_fixe.=" style='font-size:".$textarea_font_size."pt;'";
@@ -3981,7 +4044,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 			if(mysqli_num_rows($res_avis)>0) {
 				$titre_bulle="Avis du Conseil de classe";
 
-				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Avis'>\n";
+				$texte_bulle="<table class='boireaus boireaus_alt' style='margin:2px;' width='99%' summary='Avis'>\n";
 				while($lig_avis=mysqli_fetch_object($res_avis)) {
 					//==========================================================
 					// AJOUT: boireaus 20080218
@@ -4002,9 +4065,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 						}
 
 						$texte_bulle.="</td></tr>\n";
-					//==========================================================
-					// AJOUT: boireaus 20080218
-					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
+						//==========================================================
+						// AJOUT: boireaus 20080218
+						//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
 						$temoin_avis_present="y";
 					}
 					//==========================================================
@@ -4563,17 +4626,38 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 			if($acces_bull_simp=="y") {
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+le bulletin simplifié de toutes les périodes.\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
 				else {
-					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\">";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+le bulletin simplifié de la période $num_periode_choisie.\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
+				}
+			}
+
+			if(($_SESSION['statut']=='scolarite')||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('GepiProfImprBul'))&&(is_pp($_SESSION['login'], $id_classe)))
+			) {
+				$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
+				if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
+
+				for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+					echo " - <a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$eleve1."&tab_id_classe[0]=".$id_classe."&tab_periode_num[0]=".$loop_per."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin de la période ".$loop_per."\">P".$loop_per."</a>";
+					/*
+					A AJOUTER
+
+					&intercaler_releve_notes=y
+
+					A CREER/PRENDRE EN COMPTE:
+					&param_rn_defaut=y
+					pour récupérer les paramètres de la classe.
+					*/
 				}
 			}
 
@@ -4807,6 +4891,62 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		echo $texte_saisie_avis_fixe;
 		//=========================
 
+		// 20140226
+		if(getSettingAOui('active_mod_discipline')) {
+			echo "<div align='center'>\n";
+			$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+			if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+			echo necessaire_saisie_avertissement_fin_periode();
+
+			if($choix_periode=='toutes_periodes') {
+				echo "<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Période</th>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>
+	</tr>";
+				for($i=1;$i<=$nb_periode;$i++) {
+					echo "
+	<tr>
+		<td>".$nom_periode[$i]."</td>
+		<td>";
+					if((acces_saisie_avertissement_fin_periode($eleve1, $i))&&($ver_periode[$i]!='O')) {
+
+						echo "
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $i\">
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+				<span class='bold' id='liste_avertissements_fin_periode_$i'>".liste_avertissements_fin_periode($eleve1, $i)."</span>
+			</a>";
+					}
+					else {
+						echo "
+		<span class='bold'>".liste_avertissements_fin_periode($eleve1, $i)."</span>";
+					}
+					echo "
+		</td>
+	</tr>";
+				}
+				echo "
+</table>";
+			}
+			elseif((isset($num_periode_choisie))&&(preg_match("/^[0-9]{1,}$/", $num_periode_choisie))) {
+				if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
+
+					echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
+	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode');return false;\" style='color:black;' target='_blank'>
+		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+		<span class='bold' id='liste_avertissements_fin_periode'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
+	</a>
+</div>";
+				}
+				else {
+					echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
+		<span class='bold'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
+</div>";
+				}
+			}
+			echo "</div>\n";
+		}
 	}
 	else{
 		if ($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
@@ -5018,6 +5158,7 @@ if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
 			$inclusion_depuis_graphes="y";
 			include "../lib/bulletin_simple.inc.php";
 			include("../saisie/edit_limite.inc.php");
+
 		}
 		echo "</div>\n";
 

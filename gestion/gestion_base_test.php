@@ -236,8 +236,8 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $tables[$numtab]=$t[0];
         $numtab++;
     }
-    if (((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))) {
-       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."<hr/>\n";
+    if (mysqli_error($GLOBALS["mysqli"])) {
+       echo "<hr />\n<font color='red'>ERREUR lors de la sauvegarde du à un problème dans la la base.</font><br />".mysqli_error($GLOBALS["mysqli"])."<hr/>\n";
        return false;
        die();
     }
@@ -307,7 +307,7 @@ function extractMySqlDump($dumpFile,$duree,$force) {
 		    $reg = mysqli_query($GLOBALS["mysqli"], $query);
 		    echo "<p>$query</p>\n";
 		    if (!$reg) {
-			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</p>\n";
+			echo "<p><font color=red>ERROR</font> : '$query' Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."</p>\n";
 			$result_ok = 'no';
 		    }
 	    }

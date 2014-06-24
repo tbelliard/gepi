@@ -96,7 +96,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysqli_query($GLOBALS["mysqli"], $sql);
-			if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} elseif (is_numeric($_POST['classe'])) {
 			/*
 			$quels_parents = mysql_query("SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
@@ -117,7 +117,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"(re.resp_legal='1' OR re.resp_legal='2'))";
 			if($debug_create_resp=="y") {echo "$sql<br />\n";}
 			$quels_parents = mysqli_query($GLOBALS["mysqli"], $sql);
-			if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -587,6 +587,20 @@ else{
 	//echo "</div>\n";
 	//===================================
 	echo "<br />\n";
+
+	// A REVOIR: Le $reg_auth_mode n'a pas l'air initialisé
+
+	$sql="SELECT DISTINCT auth_mode FROM utilisateurs WHERE statut='responsable';";
+	$test_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_auth_mode)==1) {
+		$lig_auth_mode=mysqli_fetch_object($test_auth_mode);
+		if($lig_auth_mode->auth_mode=="gepi") {
+			$reg_auth_mode="auth_locale";
+		}
+		elseif($lig_auth_mode->auth_mode=="sso") {
+			$reg_auth_mode="auth_sso";
+		}
+	}
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
 	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px;'>\n";

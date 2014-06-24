@@ -323,7 +323,7 @@ $pdf->SetY(120);
             $pdf->Cell(22, 5, 'Type', 1, 0, 'C', '');
             $pdf->Cell(54, 5, 'Merci d\'indiquer le motif', 1, 1, 'C', '');
 $requete_1 ="SELECT * FROM ".$prefix_base."absences_eleves, ".$prefix_base."eleves WHERE (d_date_absence_eleve = '".date_sql($du)."' OR (d_date_absence_eleve <= '".date_sql($du)."' AND a_date_absence_eleve >= '".date_sql($du)."')) AND justify_absence_eleve != 'O' AND eleve_absence_eleve=login AND login='".$id[$i]."'";
-$execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$execution_1 = mysqli_query($GLOBALS["mysqli"], $requete_1) or die('Erreur SQL !'.$requete_1.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 while ( $data_1 = mysqli_fetch_array($execution_1))
       {
       //tableau des absences

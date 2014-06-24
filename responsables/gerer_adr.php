@@ -144,7 +144,7 @@ if(!getSettingValue('conv_new_resp_table')){
 }
 
 ?>
-<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php">Dédoublonner les adresses</a>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href="dedoublonnage_adresses.php" title="Il arrive que pour deux parents habitant à la même adresse, deux enregistrements soient effectués dans Sconet (et donc importés dans Gepi) avec des identitiants adresses différents. Vous pouvez effectuer un dédoublonnage côté Sconet (recommandé), mais vous pouvez aussi le faire dans Gepi.">Dédoublonner les adresses</a>
 <?php
 	$sql="select 1=1 from resp_adr where adr_id not in (select distinct adr_id from resp_pers);";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);

@@ -43,7 +43,7 @@ else {
 $tab_mat_ligne=array();
 if(isset($tab_matiere[$valeur])) {
 	//$sql="SELECT DISTINCT id_groupe FROM j_groupes_matieres WHERE id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."';";
-	$sql="SELECT DISTINCT jgm.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe;";
+	$sql="SELECT DISTINCT jgm.id_groupe FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe;";
 	//echo "$sql<br />";
 	$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_mat)>0) {
@@ -87,7 +87,7 @@ echo '
 		echo '
 			<optgroup label="Les groupes de la matière">';
 		//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
-		$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe, g.description";
+		$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe, g.description";
 		$query = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nbre_groupes = mysqli_num_rows($query);
 		for($a = 0; $a < $nbre_groupes; $a++){
@@ -144,7 +144,7 @@ echo '
 			<optgroup label="Les groupes">';
 	//$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
 	//$sql="SELECT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysql_real_escape_string($tab_matiere[$valeur])."' ORDER BY description";
-	$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY g.name, g.description, c.classe";
+	$sql="SELECT DISTINCT g.id, g.description, g.name FROM groupes g, j_groupes_matieres jgm, j_groupes_classes jgc, classes c WHERE jgm.id_groupe=g.id AND jgm.id_matiere!='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_matiere[$valeur])."' AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY g.name, g.description, c.classe";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
 	$nbre_groupes = mysqli_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){

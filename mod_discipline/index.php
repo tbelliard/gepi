@@ -70,6 +70,9 @@ if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 //debug_var();
 /*
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -498,6 +501,23 @@ if(($_SESSION['statut']=='administrateur')||
 	}
 	unset($nouveauItem);
 
+
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/definir_bilan_periode.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$acces_ok="n";
+		if($_SESSION['statut']=='administrateur') {
+			$acces_ok="y";
+
+			$nouveauItem->titre="Définition des types d'".$mod_disc_terme_avertissement_fin_periode."s" ;
+			$nouveauItem->expli="Définir les types d'".$mod_disc_terme_avertissement_fin_periode."s." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+	}
+	unset($nouveauItem);
+
 /*
 	
 
@@ -555,6 +575,8 @@ if(($_SESSION['statut']=='administrateur')||
 	}
 }
 //fin de la table configuration
+
+
 
 //echo strftime("%Y-%m-%d %H:%M:%S")."<br />\n";
 
@@ -924,6 +946,60 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		unset($nouveauItem);
 	}
 }
+
+
+/* ===== Titre du menu ===== */
+
+$acces_saisie_avertissement_fin_periode=acces_saisie_avertissement_fin_periode("");
+if($_SESSION['statut']=='professeur') {
+	$is_pp=is_pp($_SESSION['login']);
+}
+
+if(($acces_saisie_avertissement_fin_periode)||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('imprDiscProfAvtOOo')))||
+(($_SESSION['statut']=='professeur')&&($is_pp))&&(getSettingAOui('imprDiscProfPAvtOOo'))) {
+	$menuTitre[]=new menuGeneral;
+	end($menuTitre);
+	$a = key($menuTitre);
+	$menuTitre[$a]->classe='accueil';
+	$menuTitre[$a]->icone['chemin']='../images/icons/chercher.png';
+	$menuTitre[$a]->icone['titre']='';
+	$menuTitre[$a]->icone['alt']="";
+	$menuTitre[$a]->texte=$mod_disc_terme_avertissement_fin_periode;
+	$menuTitre[$a]->indexMenu=$a;
+
+	/* ===== Item du menu ===== */
+	if($acces_saisie_avertissement_fin_periode) {
+		$nouveauItem = new itemGeneral();
+		$nouveauItem->chemin='/mod_discipline/saisie_avertissement_fin_periode.php';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Saisie ".$mod_disc_terme_avertissement_fin_periode ;
+			$nouveauItem->expli="Saisir un ou des ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+		unset($nouveauItem);
+	}
+
+	/* ===== Item du menu ===== */
+	if(($acces_saisie_avertissement_fin_periode)||
+	(($_SESSION['statut']=='professeur')&&(getSettingAOui('imprDiscProfAvtOOo')))||
+	(($_SESSION['statut']=='professeur')&&($is_pp))&&(getSettingAOui('imprDiscProfPAvtOOo'))) {
+		$nouveauItem = new itemGeneral();
+		$nouveauItem->chemin='/mod_discipline/imprimer_bilan_periode.php';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Imprimer les ".$mod_disc_terme_avertissement_fin_periode ;
+			$nouveauItem->expli="Imprimer les ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+		unset($nouveauItem);
+	}
+}
+
+
 /*
 echo "</table>\n";
 //Fin table afficher

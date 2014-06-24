@@ -61,6 +61,19 @@ if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($
 	}
 }
 
+if((isset($_GET['envoi_bulletin_resp_legal_0']))&&(($_GET['envoi_bulletin_resp_legal_0']=='y')||($_GET['envoi_bulletin_resp_legal_0']=='n'))) {
+	check_token();
+
+	$sql="UPDATE responsables2 SET envoi_bulletin='".$_GET['envoi_bulletin_resp_legal_0']."' WHERE pers_id='".$_GET['pers_id']."' AND ele_id='".$_GET['ele_id']."';";
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($update) {
+		$msg="Modification de la génération ou non des bulletins pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']." effectuée.<br />";
+	}
+	else {
+		$msg="Erreur lors de la modification de la génération ou non des bulletins pour pers_id=".$_GET['pers_id']." et ele_id=".$_GET['ele_id']."<br />";
+	}
+}
+
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 
@@ -960,7 +973,7 @@ if(isset($pers_id)){
 	//$sql="SELECT DISTINCT ele_id FROM responsables2 WHERE pers_id='$pers_id'";
 	//$sql="SELECT e.nom,e.prenom,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.pers_id='$pers_id' ORDER BY e.nom,e.prenom;";
 	//$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id' AND (r.resp_legal='1' OR r.resp_legal='2')) ORDER BY e.nom,e.prenom;";
-	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
+	$sql="SELECT e.nom,e.prenom,e.login,e.ele_id,r.resp_legal, r.acces_sp, r.envoi_bulletin FROM responsables2 r, eleves e WHERE (e.ele_id=r.ele_id AND r.pers_id='$pers_id') ORDER BY e.nom,e.prenom;";
 	//echo "$sql<br />\n";
 	$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res1)==0){
@@ -986,7 +999,12 @@ if(isset($pers_id)){
 		while($lig_ele=mysqli_fetch_object($res1)){
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
-			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."' title=\"Éditer/Modifier la fiche élève.\">".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom)."</a></td>\n";
+			echo "<td style='text-align:center;'><input type='hidden' name='ele_id[$cpt]' value='$lig_ele->ele_id' /><a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."' title=\"Éditer/Modifier la fiche élève.\">".ucfirst(mb_strtolower($lig_ele->prenom))." ".mb_strtoupper($lig_ele->nom);
+			$tmp_clas=get_class_from_ele_login($lig_ele->login);
+			if(isset($tmp_clas['liste_nbsp'])) {
+				echo " <span style='font-size:small'>(<em>".$tmp_clas['liste_nbsp']."</em>)</span>";
+			}
+			echo "</a></td>\n";
 
 			$resp_legal1=$lig_ele->resp_legal;
 
@@ -1029,13 +1047,32 @@ if(isset($pers_id)){
 						if($lig_ele->acces_sp=='y') {
 							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;acces_resp_legal_0=n".add_token_in_url()."'";
 							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+							echo "><img src='../images/vert.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom a accès aux données notes, CDT,... de l'élève (si ces modules sont actifs).
+
+Cliquez pour supprimer l'accès.\" /></a>";
 						}
 						else {
 							echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;acces_resp_legal_0=y".add_token_in_url()."'";
 							echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)\" /></a>";
+							echo "><img src='../images/rouge.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom n'a pas accès aux données notes, CDT,... de l'élève (si ces modules sont actifs)
+
+Cliquez pour donner l'accès.\" /></a>";
 						}
+					}
+
+					if($lig_ele->envoi_bulletin=='y') {
+						echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;envoi_bulletin_resp_legal_0=n".add_token_in_url()."'";
+						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+						echo "><img src='../images/icons/bulletin.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom est destinataire des bulletins générés dans Gepi.
+
+Cliquez pour supprimer la génération de bulletins à destination de ce responsable.\" /></a>";
+					}
+					else {
+						echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;ele_id=".$lig_ele->ele_id."&amp;envoi_bulletin_resp_legal_0=y".add_token_in_url()."'";
+						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+						echo "><img src='../images/icons/bulletin_barre.png' width='16' height='16' title=\"Le responsable non légal $resp_prenom $resp_nom n'est pas destinataire des bulletins générés dans Gepi.
+
+Cliquez pour activer la génération des bulletins à destination de ce responsable.\" /></a>";
 					}
 				}
 			}
@@ -1225,14 +1262,14 @@ echo "<p>(*): saisie obligatoire<br />(**): un des deux champs au moins doit êt
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&
+if((isset($pers_id))&&($compte_resp_existe=="y")&&(isset($journal_connexions))&&($journal_connexions=='n')&&
 		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
 }
 
-if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&
+if((isset($pers_id))&&($compte_resp_existe=="y")&&(isset($journal_connexions))&&($journal_connexions=='y')&&
 		($AccesDetailConnexionResp)
 	) {
 	echo "<hr />\n";

@@ -75,13 +75,13 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id)");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} elseif (is_numeric($_POST['classe'])) {
 			$quels_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
 					"FROM classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."')");
-			if (!$quels_eleves) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			if (!$quels_eleves) $msg .= mysqli_error($GLOBALS["mysqli"]);
 		} else {
 			$error = true;
 			$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -437,6 +437,20 @@ else{
 	echo "<input id='eleve_login' type='hidden' name='eleve_login' value='' />\n";
 	echo "<input type='hidden' name='critere_recherche' value='$critere_recherche' />\n";
 	echo "<input type='hidden' name='afficher_tous_les_eleves' value='$afficher_tous_les_eleves' />\n";
+
+	// A REVOIR: Le $reg_auth_mode n'a pas l'air initialisé
+
+	$sql="SELECT DISTINCT auth_mode FROM utilisateurs WHERE statut='eleve';";
+	$test_auth_mode=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_auth_mode)==1) {
+		$lig_auth_mode=mysqli_fetch_object($test_auth_mode);
+		if($lig_auth_mode->auth_mode=="gepi") {
+			$reg_auth_mode="auth_locale";
+		}
+		elseif($lig_auth_mode->auth_mode=="sso") {
+			$reg_auth_mode="auth_sso";
+		}
+	}
 
 	// Sélection du mode d'authentification
 	echo "<p>Mode d'authentification : <select name='reg_auth_mode' size='1' title=\"Mode d'authentification pour les comptes à créer avec les boutons ci-dessous.\">";

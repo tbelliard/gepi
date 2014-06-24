@@ -128,7 +128,7 @@ if ($action == "ajouter_gr") {
 		if ($auto == 'oui') {
 			$sql_e = "INSERT INTO edt_gr_nom (id, nom, nom_long, subdivision_type, subdivision)
 									VALUES ('', '".$nom_gr."', '".$nom_long_gr."', '".$type."', '".$choix_classe."')";
-			$query_e = mysqli_query($GLOBALS["mysqli"], $sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+			$query_e = mysqli_query($GLOBALS["mysqli"], $sql_e) OR trigger_error('Impossible d\'enregistrer dans la base '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
 			//$id_gr_nom = mysql_insert_id($query_e);
 			// Avec une connexion permanente à la base, impossible de récupérer l'id
 			$select_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM edt_gr_nom WHERE nom = '".$nom_gr."' LIMIT 1");
@@ -159,7 +159,7 @@ if ($action == "ajouter_gr") {
 
 // On affiche la liste des groupes qui existent
 $sql_g = "SELECT * FROM edt_gr_nom ORDER BY nom";
-$query_g = mysqli_query($GLOBALS["mysqli"], $sql_g) OR trigger_error('Impossible de lire les tables de la BDD : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+$query_g = mysqli_query($GLOBALS["mysqli"], $sql_g) OR trigger_error('Impossible de lire les tables de la BDD : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 
 // on recherche la liste des classes
 //	$query = mysql_query("SELECT id, classe FROM classes ORDER BY classe");

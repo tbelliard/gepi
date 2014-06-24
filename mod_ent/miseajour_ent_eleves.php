@@ -99,7 +99,7 @@ if ($enregistrer == "Ajouter ces élèves") {
 													naissance = '" . $_naissance[$i] . "',
 													elenoet = '" . $_elenoet[$i] . "'";
 
-			$query_eleves = mysqli_query($GLOBALS["mysqli"], $sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet élève <br />' . $sql_eleves . '<br /> --> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$query_eleves = mysqli_query($GLOBALS["mysqli"], $sql_eleves) OR DIE('<br />Impossible d\'enregistrer cet élève <br />' . $sql_eleves . '<br /> --> ' . mysqli_error($GLOBALS["mysqli"]));
 
 
 			if ($query_eleves) {
@@ -162,7 +162,7 @@ if ($test_new >= 1) {
 	// On récupère les nom_u, prenom_u et identite_u
 	$complement_req = mb_substr($requete_c, 0, -4);
 	$sql_c = "SELECT * FROM ldap_bx WHERE (" . $complement_req . ")";
-	$query_c = mysqli_query($GLOBALS["mysqli"], $sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$query_c = mysqli_query($GLOBALS["mysqli"], $sql_c) OR DIE('<br />Erreur dans la requête SQL <br /> --> ' . $sql_c . '<br />' . mysqli_error($GLOBALS["mysqli"]));
 
 	unset($tab_new_eleves); // pour repartir de zéro
 	$a = 0;

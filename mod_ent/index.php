@@ -138,8 +138,8 @@ if ($etape == 2) {
 		$sql = "INSERT INTO ldap_bx (id, login_u, nom_u, prenom_u, statut_u, identite_u)
 					VALUES ('',
 							'".$info[$a][$ldap_login][0]."',
-							'".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $info[$a][$ldap_nom][0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
-							'".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $info[$a][$ldap_prenom][0]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."',
+							'".mysqli_real_escape_string($GLOBALS["mysqli"], $info[$a][$ldap_nom][0])."',
+							'".mysqli_real_escape_string($GLOBALS["mysqli"], $info[$a][$ldap_prenom][0])."',
 							'".$info[$a][$ldap_statut][0]."',
 							'".$ident."')";
 		$query = mysqli_query($GLOBALS["mysqli"], $sql);

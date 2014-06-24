@@ -274,9 +274,13 @@ if(getSettingAOui('active_bulletins')) {
 	$this->chargeAutreNom('bloc_annees_antérieures');
 
 /***** Gestion des messages *****/
-	$this->verif_exist_ordre_menu('bloc_panneau_affichage');
-	if ($this->messages())
-	$this->chargeAutreNom('bloc_panneau_affichage');
+	if(($_SESSION['statut']=='administrateur')||
+	($_SESSION['statut']=='scolarite')||
+	(($_SESSION['statut']=='cpe')&&(getSettingAOui('GepiAccesPanneauAffichageCpe')))) {
+		$this->verif_exist_ordre_menu('bloc_panneau_affichage');
+		if ($this->messages())
+		$this->chargeAutreNom('bloc_panneau_affichage');
+	}
 
 /***** Module inscription *****/
 	$this->verif_exist_ordre_menu('bloc_module_inscriptions');
@@ -1361,6 +1365,15 @@ if(getSettingAOui('active_bulletins')) {
 			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
+	if((acces_modif_liste_eleves_grp_groupes())&&
+		(($this->statutUtilisateur=='scolarite')||
+			($this->statutUtilisateur=='professeur')||
+			($this->statutUtilisateur=='cpe'))) {
+		$this->creeNouveauItem("/groupes/grp_groupes_edit_eleves.php",
+			"Correction des listes d'".$this->gepiSettings['denomination_eleves']."",
+			"Ce menu permet de vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
+	}
+
 	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
 		(($this->statutUtilisateur=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))
 	) {
@@ -1938,7 +1951,7 @@ if(getSettingAOui('active_bulletins')) {
 				  AND nom_fichier = '".$autorise[$a][0]."'
 				  ORDER BY id";
         
-            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_WARNING);
+            $query_f = mysqli_query($mysqli, $sql_f) OR trigger_error('Impossible de trouver le droit : '.mysqli_error($GLOBALS["mysqli"]), E_USER_WARNING);
             $nbre = $query_f->num_rows;
 		
 		if ($nbre >= 1) {

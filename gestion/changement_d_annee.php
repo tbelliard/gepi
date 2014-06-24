@@ -67,17 +67,28 @@ if (isset($_POST['is_posted'])) {
 			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
+			else {
+				$msg .= "Enregistrement de l'année scolaire effectué.<br />";
+			}
 		}
 
 		if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
 			$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
-			if (!saveSetting("begin_bookings", $begin_bookings))
-					$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
+			if (!saveSetting("begin_bookings", $begin_bookings)) {
+				$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
+			}
+			else {
+				$msg .= "Enregistrement de begin_bookings effectué.<br />";
+			}
 		}
 		if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
 			$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
-			if (!saveSetting("end_bookings", $end_bookings))
+			if (!saveSetting("end_bookings", $end_bookings)) {
 					$msg .= "Erreur lors de l'enregistrement de end_bookings !";
+			}
+			else {
+				$msg .= "Enregistrement de end_bookings effectué.<br />";
+			}
 		}
 
 		if((isset($_POST['reserve_comptes_eleves']))&&($_POST['reserve_comptes_eleves']=='y')) {
@@ -111,6 +122,21 @@ if (isset($_POST['is_posted'])) {
 				$msg.="Erreur lors de la mise en réserve des comptes responsables.<br />";
 			}
 		}
+
+
+		$sql="SELECT 1=1 FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				$msg.="La suppression des préférences d'affichage ou non des enseignements en page d'accueil simplifiée est effectuée.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la suppression des préférences d'affichage ou non des enseignements en page d'accueil simplifiée.<br />";
+			}
+		}
+
 	}
 	elseif ($_POST['is_posted']=='2') {
 		check_token();
@@ -365,6 +391,13 @@ echo "/><label for='reserve_comptes_responsables'>Mettre en réserve une copie d
 echo "<p><em>NOTE&nbsp;:</em> En cochant les cases ci-dessus, on commence par vider les comptes précédemment mis en réserve avant d'insérer les comptes actuellement présents dans la table 'utilisateurs'.</p>\n";
 echo "</li>\n";
 echo "</ol>\n";
+
+$sql="SELECT 1=1 FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	echo "<p style='margin-bottom:1em;'>Un ou des professeurs ont paramétré l'ordre d'affichage de leurs enseignements ou le non affichage de certains enseignements en page d'accueil simplifiée.<br />
+	Les nouveaux enseignements créés avec l'année qui va commencer ne devraient pas avoir les mêmes identifiants (<em>id_groupe</em>), mais par précaution, ces préférences seront supprimées lors de la validation de ce formulaire.</p>";
+}
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "<input type='submit' name='Valider' value='Valider' />\n";

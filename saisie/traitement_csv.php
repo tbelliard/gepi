@@ -219,7 +219,7 @@ for ($row=1; $row<$nb_row; $row++) {
 						$reg_data2 = mysqli_query($GLOBALS["mysqli"], "UPDATE matieres_appreciations SET appreciation='" . $reg_app . "' WHERE (login='$reg_login' AND id_groupe='" . $current_group["id"] . "' AND periode='$periode_num')");
 					} else {
 						$reg_data2 = mysqli_query($GLOBALS["mysqli"], "INSERT INTO matieres_appreciations set login = '" . $reg_login . "', id_groupe = '" . $id_groupe . "', periode = '" . $periode_num . "', appreciation = '" . $reg_app . "'");
-						echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+						echo mysqli_error($GLOBALS["mysqli"]);
 					}
 				} else {
 					$reg_data2 = 'ok';

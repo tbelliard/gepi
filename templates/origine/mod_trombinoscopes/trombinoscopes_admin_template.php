@@ -762,6 +762,11 @@ if (isset ($personnel_sans_photo)){
 ?>
 
 
+	<?php
+		if((getSettingAOui('active_module_trombinoscopes'))&&(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut']))) {
+			echo "<p style='margin-top:1em;'><a href='trombinoscopes.php'>Accéder au module Trombinoscopes</a></p>";
+		}
+	?>
 
 
 

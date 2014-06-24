@@ -427,11 +427,51 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 				}
 			}
 		}
+
+		// Envoi du bulletin à des resp_legal=0
+		if (isset($tab_bull['eleve'][$i]['resp'][2])) {
+			//$indice_tab_adr=count($tab_adr_ligne1);
+			foreach($tab_bull['eleve'][$i]['resp'] as $key => $value) {
+				if($key>=2) {
+					//echo "DEBUG: \$key=$key<br />";
+					if($tab_bull['eleve'][$i]['resp'][$key]['civilite']!="") {
+						$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['civilite']." ".$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+					}
+					else {
+						$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+					}
+
+					$tab_adr_ligne2[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr1'];
+					if($tab_bull['eleve'][$i]['resp'][$key]['adr2']!=""){
+						$tab_adr_ligne2[$nb_bulletins].="<br />\n".$tab_bull['eleve'][$i]['resp'][$key]['adr2'];
+					}
+					if($tab_bull['eleve'][$i]['resp'][$key]['adr3']!=""){
+						$tab_adr_ligne2[$nb_bulletins].="<br />\n".$tab_bull['eleve'][$i]['resp'][$key]['adr3'];
+					}
+					if($tab_bull['eleve'][$i]['resp'][$key]['adr4']!=""){
+						$tab_adr_ligne2[$nb_bulletins].="<br />\n".$tab_bull['eleve'][$i]['resp'][$key]['adr4'];
+					}
+					$tab_adr_ligne3[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['cp']." ".$tab_bull['eleve'][$i]['resp'][$key]['commune'];
+
+					if(($tab_bull['eleve'][$i]['resp'][$key]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$key]['pays'])!=my_strtolower($gepiSchoolPays))) {
+						if($tab_adr_ligne3[$nb_bulletins]!=" "){
+							$tab_adr_ligne3[$nb_bulletins].="<br />";
+						}
+						$tab_adr_ligne3[$nb_bulletins].=$tab_bull['eleve'][$i]['resp'][$key]['pays'];
+					}
+
+					$nb_bulletins++;
+				}
+			}
+		}
+
 	}
 	// Fin de la préparation des lignes adresse responsable
 
 	// Pour afficher deux moyennes générales: avec les coeff de Gestion des bases/<Classe> Enseignements et avec des coef à 1
 	$affiche_deux_moy_gen=$tab_bull['affiche_moyenne_general_coef_1'];
+
+	//echo "DEBUG : \$nb_bulletins=$nb_bulletins<br />";
 
 	// Début des bulletins
 	for ($bulletin=0; $bulletin<$nb_bulletins; $bulletin++) {
@@ -1565,6 +1605,63 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$tab_adr_ligne7[0]=$tab_bull['eleve'][$i]['resp'][0]['pays'];
 				$tab_adr_lignes[0].="\n";
 				$tab_adr_lignes[0].=$tab_adr_ligne7[0];
+			}
+		}
+	}
+
+	// Envoi du bulletin à des resp_legal=0
+	if (isset($tab_bull['eleve'][$i]['resp'][2])) {
+		//$indice_tab_adr=count($tab_adr_ligne1);
+		foreach($tab_bull['eleve'][$i]['resp'] as $key => $value) {
+			if($key>=2) {
+				$tab_adr_lignes[$nb_bulletins]="";
+				if($tab_bull['eleve'][$i]['resp'][$key]['civilite']!="") {
+					$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['civilite']." ".$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				else {
+					$tab_adr_ligne1[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['nom']." ".$tab_bull['eleve'][$i]['resp'][$key]['prenom'];
+				}
+				$tab_adr_lignes[$nb_bulletins].="<b>".$tab_adr_ligne1[0]."</b>";
+
+				$tab_adr_ligne2[$nb_bulletins]="";
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr1']!='') {
+					$tab_adr_ligne2[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr1'];
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne2[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr2']!=""){
+					$tab_adr_ligne3[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr2'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne3[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr3']!=""){
+					$tab_adr_ligne4[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr3'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne4[0];
+				}
+
+				if($tab_bull['eleve'][$i]['resp'][$key]['adr4']!=""){
+					$tab_adr_ligne5[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['adr4'];
+
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne5[0];
+				}
+
+				$tab_adr_ligne6[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['cp']." ".$tab_bull['eleve'][$i]['resp'][$key]['commune'];
+				$tab_adr_lignes[$nb_bulletins].="\n";
+				$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne6[0];
+
+				if(($tab_bull['eleve'][$i]['resp'][$key]['pays']!="")&&(my_strtolower($tab_bull['eleve'][$i]['resp'][$key]['pays'])!=my_strtolower($gepiSchoolPays))) {
+					$tab_adr_ligne7[$nb_bulletins]=$tab_bull['eleve'][$i]['resp'][$key]['pays'];
+					$tab_adr_lignes[$nb_bulletins].="\n";
+					$tab_adr_lignes[$nb_bulletins].=$tab_adr_ligne7[0];
+				}
+
+				$nb_bulletins++;
 			}
 		}
 	}

@@ -77,22 +77,6 @@ $GLOBALS['multisite'] = $multisite;
 $GLOBALS['gepiVersion'] = NULL;
 
 /**
- * Version de GEPI release candidate
- * 
- * @global mixed $GLOBALS['gepiRcVersion']
- * @name $gepiRcVersion
- */
-$GLOBALS['gepiRcVersion'] = NULL;
-
-/**
- * Version de GEPI Beta
- * 
- * @global mixed $GLOBALS['gepiBetaVersion']
- * @name $gepiBetaVersion
- */
-$GLOBALS['gepiBetaVersion'] = NULL;
-
-/**
  * Les informations du groupes obtenues à partir de get_group()
  * 
  * @global array $GLOBALS['current_group']

@@ -132,6 +132,12 @@ $mode="";
 $date_debut="";
 $date_fin="";
 //echo "<p>Tableau des incidents</p>\n";
+
+$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_avertissements_de_fin_de_periode_eleve($ele_login);
+if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
+	echo "<div style='float:right; width:25em; margin-bottom:0.5em; margin-left:0.5em;'>".$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve."</div>\n";
+}
+
 echo tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
 
 require("../lib/footer.inc.php");

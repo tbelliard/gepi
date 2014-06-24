@@ -155,7 +155,7 @@ if (!isset($_POST["action"])) {
 
 					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
-					$sql="SELECT id FROM classes WHERE classe = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
+					$sql="SELECT id FROM classes WHERE classe = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) . "'";
 					//echo "$sql<br />";
 					$test = mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -163,8 +163,8 @@ if (!isset($_POST["action"])) {
 						// Test négatif : aucune classe avec ce nom court... on créé !
 
 						$sql="INSERT INTO classes SET " .
-							"classe = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
-							"nom_complet = '" . ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', " .
+							"classe = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) . "', " .
+							"nom_complet = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_classe) . "', " .
 							"format_nom = 'np', " .
 							"format_nom_eleve = 'np', " .
 							"display_rang = 'n', " .
@@ -208,7 +208,7 @@ if (!isset($_POST["action"])) {
 
 					if (!$insert) {
 						$error++;
-						echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+						echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 					} else {
 						$total++;
 					}
@@ -323,7 +323,7 @@ if (!isset($_POST["action"])) {
 						echo "<tr class='lig$alt'>\n";
 						echo "<td>\n";
 						$sql="INSERT INTO tempo2 SET col1='".$data_tab[$i]["id_int"]."',
-						col2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["classe"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+						col2='".mysqli_real_escape_string($GLOBALS["mysqli"], $data_tab[$i]["classe"])."';";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$insert) {
 							echo "<span style='color:red'>";

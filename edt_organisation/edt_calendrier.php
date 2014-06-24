@@ -123,7 +123,7 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
             if ($data['coller_edt'] != $_SESSION['copier_periode_edt']) {
                 $req_edt_periode = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_cours WHERE 
                                                             id_calendrier = '".$_SESSION['copier_periode_edt']."'
-                                                            ") or die(((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));  
+                                                            ") or die(mysqli_error($GLOBALS["mysqli"]));  
                 $i = 0;
                 while ($rep_edt_periode = mysqli_fetch_array($req_edt_periode)) {
                     $sql = "SELECT id_cours FROM edt_cours WHERE 
@@ -137,7 +137,7 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_calendrier = '".$data['coller_edt']."' AND
 					         login_prof = '".$rep_edt_periode['login_prof']."'
                             ";
-                    $verif_existence = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la vérification du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    $verif_existence = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la vérification du cours : '.mysqli_error($GLOBALS["mysqli"]));
                     if (mysqli_num_rows($verif_existence) == 0) {
 				        $nouveau_cours = mysqli_query($GLOBALS["mysqli"], "INSERT INTO edt_cours SET 
                              id_groupe = '".$rep_edt_periode['id_groupe']."',
@@ -149,7 +149,7 @@ if (isset($data['calendrier']) AND isset($data['coller_edt']) AND isset($_SESSIO
 					         id_semaine = '".$rep_edt_periode['id_semaine']."',
 					         id_calendrier = '".$data['coller_edt']."',
 					         login_prof = '".$rep_edt_periode['login_prof']."'")
-				        OR DIE('Erreur dans la création du cours : '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				        OR DIE('Erreur dans la création du cours : '.mysqli_error($GLOBALS["mysqli"]));
                         $i++;
                     }
                 }

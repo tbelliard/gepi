@@ -1,7 +1,5 @@
 INSERT INTO utilisateurs SET login = 'ADMIN', nom = 'GEPI', prenom = 'Administrateur', civilite = 'M.', password = 'ab4f63f9ac65152575886860dde480a1', statut = 'administrateur', etat = 'actif', change_mdp = 'y', auth_mode = 'gepi';
-INSERT INTO setting VALUES ('version', '1.6.4');
-INSERT INTO setting VALUES ('versionRc', '');
-INSERT INTO setting VALUES ('versionBeta', '');
+INSERT INTO setting VALUES ('version', '1.6.5');
 INSERT INTO setting VALUES ('sessionMaxLength', '30');
 INSERT INTO setting VALUES ('Impression','<center><p class = \"grand\">Gestion des Elèves Par Internet</p></center>\r\n<br />\r\n<p class = \"grand\">Qu\'est-ce que GEPI ?</p>\r\n\r\n<p>Afin d\'étudier les modalités d\'informatisation des bulletins scolaires : notes et appréciations via Internet, une expérimentation (baptisée Gestion des Elèves Par Internet)a été mise en place. Cette expérimentation concerne les classes suivantes : \r\n<br />* ....\r\n<br />* ....\r\n<br />\r\n<br />\r\nCeci vous concerne car vous êtes professeur enseignant dans l\'une ou l\'autre de ces classes.\r\n<br />\r\n<br />\r\nA partir de la réception de ce document, vous pourrez remplir les bulletins informatisés :\r\n<span class = \"norme\">\r\n<UL><li>soit au lycée à partir de n\'importe quel poste connecté à Internet,\r\n<li>soit chez vous si vous disposez d\'une connexion Internet.\r\n</ul>\r\n</span>\r\n<p class = \"grand\">Comment accéder au module de saisie (notes etappréciations) :</p>\r\n<span class = \"norme\">\r\n<UL>\r\n    <LI>Se connecter à Internet\r\n    <LI>Lancer un navigateur (FireFox de préférence, Opera, Internet Explorer, ...)\r\n    <LI>Se connecter au site : https://adresse_du_site/gepi\r\n    <LI>Après quelques instants une page apparaît vous invitant à entrer un nom d\'identifiant et un mot de passe (cesinformations figurent en haut de cette page).\r\n    <br />ATTENTION : votre mot de passe est strictement confidentiel.\r\n    <br />\r\n    <br />Une fois ces informations fournies, cliquez sur le bouton \"Ok\".\r\n    <LI> Après quelques instants une page d\'accueil apparaît.<br />\r\nLa première fois, Gepi vous demande de changer votre mot de passe.\r\nChoisissez-en un facile à retenir, mais non trivial (évitez toute date\r\nde naissance, nom d\'animal familier, prénom, etc.), et contenant\r\nlettre(s), chiffre(s), et caractère(s) non alphanumérique(s).<br />\r\nLes fois suivantes, vous arriverez directement au menu général de\r\nl\'application. Pour bien prendre connaissance des possibilités de\r\nl\'application, n\'hésitez pas à essayer tous les liens disponibles !\r\n</ul></span>\r\n<p class = \"grand\">Remarque :</p>\r\n<p>GEPI est prévu pour que chaque professeur ne puisse modifier les notes ou les appréciations que dans les rubriques qui le concernent et uniquement pour ses élèves.\r\n<br />\r\nJe reste à votre disposition pour tout renseignement complémentaire.\r\n    <br />\r\n    Le proviseur adjoint\r\n</p>');
 INSERT INTO setting VALUES ('gepiYear', '2013/2014');
@@ -78,11 +76,6 @@ INSERT INTO setting VALUES ('l_max_aff_trombinoscopes', '120');
 INSERT INTO setting VALUES ('h_max_aff_trombinoscopes','160');
 INSERT INTO setting VALUES ('l_max_imp_trombinoscopes', '70');
 INSERT INTO setting VALUES ('h_max_imp_trombinoscopes','100');
-INSERT INTO setting VALUES ('active_module_msj', 'n');
-INSERT INTO setting VALUES ('site_msj_gepi', 'http://gepi.sylogix.net/releases/');
-INSERT INTO setting VALUES ('rc_module_msj', 'n');
-INSERT INTO setting VALUES ('beta_module_msj', 'n');
-INSERT INTO setting VALUES ('dossier_ftp_gepi', 'gepi');
 INSERT INTO setting VALUES ('bull_affiche_tel', 'n');
 INSERT INTO setting VALUES ('bull_affiche_fax', 'n');
 INSERT INTO setting VALUES ('note_autre_que_sur_20', 'F');
@@ -215,8 +208,8 @@ INSERT INTO droits VALUES ('/visualisation/stats_classe.php', 'F', 'V', 'V', 'V'
 INSERT INTO droits VALUES ('/classes/classes_param.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des classes', '');
 INSERT INTO droits VALUES ('/fpdf/imprime_pdf.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', '', '');
 INSERT INTO droits VALUES ('/etablissements/import_etab_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration et gestion des établissements', '');
-INSERT INTO droits VALUES ('/saisie/import_app_cons.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Importation csv des avis du conseil de classe', '');
-INSERT INTO droits VALUES ('/messagerie/index.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Gestion de la messagerie', '');
+INSERT INTO droits VALUES ('/saisie/import_app_cons.php', 'F', 'V', 'F', 'V', 'F', 'F', 'V', 'F', 'Importation csv des avis du conseil de classe', '');
+INSERT INTO droits VALUES ('/messagerie/index.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion de la messagerie', '');
 INSERT INTO droits VALUES ('/absences/import_absences_gep.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 INSERT INTO droits VALUES ('/absences/seq_gep_absences.php', 'F', 'F', 'V', 'F', 'F', 'F', 'V', 'F', 'Saisie des absences', '');
 INSERT INTO droits VALUES ('/utilitaires/clean_tables.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Maintenance', '');
@@ -962,7 +955,7 @@ INSERT INTO droits VALUES ('/absences/import_absences_csv.php', 'F', 'F', 'V', '
 INSERT INTO droits SET id='/statistiques/stat_connexions.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques de connexion',statut='';
 INSERT INTO droits SET id='/groupes/check_enseignements.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Controle des enseignements',statut='';
 INSERT INTO droits VALUES ('/bulletin/index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
-INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';
+INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrateur='F',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Correction appreciation',statut='';
 INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');
 INSERT INTO setting VALUES ('encodage_nom_photo', 'yes');
 INSERT INTO setting VALUES ('alea_nom_photo', MD5(UNIX_TIMESTAMP()));
@@ -1231,4 +1224,16 @@ INSERT INTO droits SET id='/mod_discipline/aide.php',administrateur='V',professe
 INSERT INTO droits SET id='/eleves/recherche.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='V',autre='V',description='Effectuer une recherche sur une personne',statut='';
 INSERT INTO setting SET name='active_bulletins', value='y';
 INSERT INTO setting SET name='ping_host', value='173.194.40.183';
-
+INSERT INTO droits SET id='/classes/dates_classes.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Définition de dates pour les classes',statut='';
+INSERT INTO droits VALUES ( '/mod_discipline/definir_bilan_periode.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les sanctions/avertissements de fin de période', '');
+INSERT INTO droits VALUES ( '/mod_discipline/imprimer_bilan_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Imprimer les avertissements de fin de période', '');
+INSERT INTO droits VALUES ( '/mod_discipline/saisie_avertissement_fin_periode.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Saisie des sanctions/avertissements de fin de période', '');
+INSERT INTO droits VALUES ( '/mod_discipline/afficher_incidents_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Discipline: Affichage des incidents pour un élève.', '');
+INSERT INTO setting SET name='imprDiscProfAvtOOo', value='n';
+INSERT INTO droits SET id='/groupes/grp_groupes_edit_eleves.php',administrateur='F',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Edition des élèves des groupes de groupes',statut='';
+INSERT INTO droits SET id='/groupes/modify_grp_group.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Gestion des groupes de groupes',statut='';
+INSERT INTO setting SET name='groupe_de_groupes', value='groupe de groupes';
+INSERT INTO setting SET name='groupes_de_groupes', value='groupes de groupes';
+INSERT INTO droits SET id='/mod_abs2/saisie_bulletin.php',administrateur='F',professeur='F',cpe='V',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie des absences et appréciations sur les bulletins',statut='';
+INSERT INTO droits SET id='/cahier_texte_2/correction_notices_url_absolues_docs_joints.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Correction des notices CDT',statut='';
+INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');

@@ -16,7 +16,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 	$cpt_lettre_suivi = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'"),0);
 	if( $cpt_lettre_suivi == 1 ) {
 		$requete = "DELETE FROM ".$prefix_base."lettres_suivis WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi = ',".$id_absence_eleve.",'";
-		mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	}
 	// deuxième option il existe une lettre qui fait référence à cette id mais à d'autre aussi donc modification
 	$cpt_lettre_suivi = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM ".$prefix_base."lettres_suivis WHERE quirecois_lettre_suivi = '".$eleve_absence_eleve."' AND partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'"),0);
@@ -26,7 +26,7 @@ function modif_suivi_du_courrier($id_absence_eleve, $eleve_absence_eleve) {
 		$remplace_sa = ','.$id_absence_eleve.',';
 		$modifier_par = my_ereg_replace($remplace_sa,',',$donnee['partdenum_lettre_suivi']);
 		$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$modifier_par."', envoye_date_lettre_suivi = '', envoye_heure_lettre_suivi = '', quienvoi_lettre_suivi = '' WHERE partde_lettre_suivi = 'absences_eleves' AND type_lettre_suivi = '6' AND partdenum_lettre_suivi LIKE '%,".$id_absence_eleve.",%'";
-			mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	}
 }
 
@@ -93,7 +93,7 @@ function periode_actuel_jourdifferent($heure_choix) {
 					heurefin_definie_periode >= "'.$heure_choix.'"
 						ORDER BY heuredebut_definie_periode, nom_definie_periode ASC');
 	$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode)
-					or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while($data_periode = mysqli_fetch_array($resultat_periode)) {
 		$debut = $data_periode['heuredebut_definie_periode'];
 		$num_periode = $data_periode['id_definie_periode'];
@@ -112,7 +112,7 @@ function periode_heure_jourdifferent($periode){
 	// on recherche les informations sur la périodes sélectionné
 	$requete_periode = ('SELECT * FROM edt_creneaux_bis WHERE id_definie_periode = "'.$periode.'"');
 	$resultat_periode = mysqli_query($GLOBALS["mysqli"], $requete_periode)
-						or die('Erreur SQL !'.$requete_periode.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						or die('Erreur SQL !'.$requete_periode.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while($data_periode = mysqli_fetch_array($resultat_periode)) {
 		$debut = $data_periode['heuredebut_definie_periode'];
 		$fin = $data_periode['heurefin_definie_periode'];

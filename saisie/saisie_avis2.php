@@ -87,6 +87,9 @@ if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
 }
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 //*******************************************************************************************************
 $msg = '';
 
@@ -182,9 +185,60 @@ if (isset($_POST['is_posted'])) {
 				if (!$register) {
 					$msg = "Erreur lors de l'enregistrement des données.";
 				} else {
-					$affiche_message = 'yes';             }
+					$affiche_message = 'yes';
 				}
 			}
+		}
+
+		// A FAIRE: 20140226: Pouvoir restreindre la liste des personnes pouvant saisir un avertissement de fin de période.
+		if(isset($_POST['saisie_avertissement_fin_periode'])) {
+			$id_type_avertissement=isset($_POST['id_type_avertissement']) ? $_POST['id_type_avertissement'] : array();
+			/*
+			if(
+				($_SESSION['statut']=='scolarite')||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('saisieDiscCpeAvtTous')))||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], $current_eleve_login)))||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('saisieDiscProfPAvt'))&&(is_pp($_SESSION['login'], "", $current_eleve_login)))||
+				($_SESSION['statut']=='secours')
+			) {
+			*/
+			if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
+
+				$tab_av_ele=get_tab_avertissement($current_eleve_login, $periode_num);
+				if(isset($tab_av_ele['id_type_avertissement'][$periode_num])) {
+					for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode_num]);$loop++) {
+						if(!in_array($tab_av_ele['id_type_avertissement'][$periode_num][$loop], $id_type_avertissement)) {
+							$sql="DELETE FROM s_avertissements WHERE login_ele='$current_eleve_login' AND periode='$periode_num' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode_num][$loop]."';";
+							//$msg.="$sql<br />";
+							$del=mysqli_query($GLOBALS["mysqli"], $sql);
+							if (!$del) {
+								$msg.="Erreur lors de la suppression de l'avertissement.";
+							}
+						}
+					}
+				}
+
+				for($loop=0;$loop<count($id_type_avertissement);$loop++) {
+					if((!isset($tab_av_ele['id_type_avertissement'][$periode_num]))||(!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode_num]))) {
+						$sql="INSERT INTO s_avertissements SET login_ele='$current_eleve_login', 
+												periode='$periode_num', 
+												id_type_avertissement='".$id_type_avertissement[$loop]."',
+												declarant='".$_SESSION['login']."',
+												date_avertissement='".strftime("%Y-%m-%d %H:%M:%S")."';";
+						//$msg.="$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (!$insert) {
+							$msg.="Erreur lors de l'enregistrement de l'avertissement.";
+						}
+					}
+				}
+			}
+			else {
+				$msg="Saisie d'".$mod_disc_terme_avertissement_fin_periode." non autorisée.<br />";
+				//tentative_intrusion()?
+			}
+		}
+
 	} else {
 		$msg = "La période sur laquelle vous voulez enregistrer est verrouillée";
 	}
@@ -246,6 +300,9 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+// Pour éviter dans bulletin() d'afficher le lien vers saisie_avis2.php
+$temoin_page_courante="saisie_avis2";
+
 ?>
 <script type="text/javascript" language="javascript">
 change = 'no';
@@ -291,13 +348,22 @@ if (isset($id_classe)) {
 			$msg_acces_app_ele_resp="???";
 		}
 	}
+
+	$traduction_verrouillage_periode['O']="close";
+	$traduction_verrouillage_periode['P']="partiellement close";
+	$traduction_verrouillage_periode['N']="ouverte en saisie";
+
+	$couleur_verrouillage_periode['O']="red";
+	$couleur_verrouillage_periode['P']="darkorange";
+	$couleur_verrouillage_periode['N']="green";
+
+	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 }
 
 // Première étape : la classe est définie, on definit la période
 if (isset($id_classe) and (!isset($periode_num))) {
 	$acces_avis_pdf=acces('/impression/avis_pdf.php', $_SESSION['statut']);
 
-	$classe_suivi = sql_query1("SELECT nom_complet FROM classes WHERE id = '".$id_classe."'");
 	echo "<p class=bold><a href=\"saisie_avis.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Mes classes</a>";
 	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
 	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
@@ -305,7 +371,8 @@ if (isset($id_classe) and (!isset($periode_num))) {
 		echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
 	}
 	echo "</p>\n";
-	echo "<p><b>".$classe_suivi.", choisissez la période : </b></p>\n";
+	echo "<p><b>".$classe_suivi.", choisissez la période : </b><br />
+<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em></p>\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
 	echo "<ul>\n";
@@ -337,6 +404,10 @@ $msg_acces_app_ele_resp\" />";
 		$i++;
 	}
 	echo "</ul>\n";
+
+	if($acces_avis_pdf) {
+		echo "<p><a href='../impression/avis_pdf.php?id_classe=$id_classe&periode_num=toutes' title=\"Imprimer les avis au format PDF de la classe de $classe_suivi pour l'ensemble des périodes.\"><img src='../images/icons/pdf.png' class='icone16' alt='PDF' /> Imprimer les avis du conseil de classe pour toutes les périodes.</a></p>";
+	}
 }
 
 // Deuxième étape : la classe est définie, la période est définie, on affiche la liste des élèves
@@ -346,7 +417,7 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 
 	<form enctype="multipart/form-data" action="saisie_avis2.php" name="form1" method='post'>
 
-	<p class=bold><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
+	<p class="bold"><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
 
 	<?php
 
@@ -464,7 +535,8 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-	echo "| <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num'>Impression PDF des avis</a>";
+	echo "| Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\">P$periode_num</a>";
+	echo " - <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=toutes' title=\"Générer un fichier PDF des avis du conseil de classe pour toutes les périodes.\">Toutes</a>";
 }
 
 if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
@@ -473,13 +545,23 @@ if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP'))
 	echo " | <a href='commentaires_types.php'>Saisie de commentaires-types</a>";
 }
 
+if(isset($id_classe)) {
+	echo " | <a href='saisie_avis1.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis seul</a>";
+}
+
 echo "</p>\n";
 
 echo "</form>\n";
 
 	?>
 
-	<p class='grand'>Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong></p>
+	<p class='grand'>
+		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
+		<?php
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
+		?>
+	</p>
 
 	<p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
 	<table class='boireaus' border="1" cellspacing="2" cellpadding="5" width="100%" summary="Choix de l'élève">
@@ -527,6 +609,17 @@ echo "</form>\n";
 		<?php
 			if($avec_mentions=="y") {
 				echo "<th><b>".ucfirst($gepi_denom_mention)."</b></th>\n";
+			}
+			$avec_avertissements_fin_periode="n";
+			if(getSettingAOui('active_mod_discipline')) {
+				$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+				if(count($tab_type_avertissement_fin_periode)>0) {
+					$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+					if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+					echo "<th><img src='../images/icons/balance_justice.png' class='icone20' alt=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" /></th>\n";
+					$avec_avertissements_fin_periode="y";
+				}
 			}
 		?>
 	</tr>
@@ -580,12 +673,24 @@ echo "</form>\n";
 		$current_eleve_avis_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 		$current_eleve_avis = @old_mysql_result($current_eleve_avis_query, 0, "avis");
 		// ***** AJOUT POUR LES MENTIONS *****
-        $current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
+		$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
-		echo "<td><span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span></td>\n";
+
+		echo "<td>";
+		if($ver_periode[$periode_num]!="O") {
+			if($current_eleve_avis=="") {
+				echo "<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint' title=\"Saisir l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom en période $periode_num\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a>";
+			}
+			else {
+				echo "<div style='float:right; width:16px;'><a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' class='noprint' title=\"Saisir l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom en période $periode_num\"><img src='$gepiPath/images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+			}
+		}
+		echo "<span class=\"medium\">".nl2br($current_eleve_avis)."&nbsp;</span>";
+		echo "</td>\n";
+
 		if($avec_mentions=="y") {
 			// *** AJOUT POUR LES MENTIONS
 			echo "<td><span class=\"medium\">";
@@ -599,6 +704,9 @@ echo "</form>\n";
 			}
 			echo "</span></td>\n";
 			// *** FIN D'AJOUT POUR LES MENTIONS ****
+		}
+		if($avec_avertissements_fin_periode=="y") {
+			echo "<td>".liste_avertissements_fin_periode($current_eleve_login, $periode_num, "nom_court")."</td>";
 		}
 		echo "</tr>\n";
 		$i++;
@@ -644,32 +752,23 @@ echo "</form>\n";
 
 if (isset($fiche)) {
 
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
+	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode_num=$periode_num' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
 	if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP')))||
 	(($_SESSION['statut']=='scolarite')&&(getSettingAOui('CommentairesTypesScol')))||
 	(($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesCpe')))) {
 		echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
 	}
+	echo " | <a href='saisie_avis1.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis seul</a>";
 	echo "</p>\n";
-
-
-/*
-	// 20130722
-	// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
-	if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
-	(getSettingAOui('GepiAccesGraphParent'))||
-	(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
-	(getSettingAOui('GepiAccesGraphEleve'))) {
-		if($tab_acces_app_classe[$id_classe][$k]=="y") {
-			echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
-		}
-		else {
-			echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-	$msg_acces_app_ele_resp\" />";
-		}
-
-*/
-
+?>
+	<p class='grand'>
+		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
+		<?php
+			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
+		?>
+	</p>
+<?php
 	// On teste la présence d'au moins un coeff pour afficher la colonne des coef
 	$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
 
@@ -1124,6 +1223,39 @@ if (isset($fiche)) {
 		}
 	?>
 	<input type="submit" NAME="ok2" value="Enregistrer et revenir à la liste" />
+
+	<?php
+		// 20140226
+		// Liste des avertissements
+		if(getSettingAOui('active_mod_discipline')) {
+			$tab_avertissement_fin_periode=get_tab_avertissement($current_eleve_login, $periode_num);
+			/*
+			if(
+				($_SESSION['statut']=='scolarite')||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('saisieDiscCpeAvtTous')))||
+				(($_SESSION['statut']=='cpe')&&(getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], $current_eleve_login)))||
+				(($_SESSION['statut']=='professeur')&&(getSettingAOui('saisieDiscProfPAvt'))&&(is_pp($_SESSION['login'], "", $current_eleve_login)))||
+				($_SESSION['statut']=='secours')
+			) {
+			*/
+			if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
+
+				echo "<div>
+		<img src='../images/icons/balance_justice.png' class='icone20' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" style='float:left;' />
+		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
+		<div>
+			".champs_checkbox_avertissements_fin_periode($current_eleve_login, $periode_num)."
+		</div>
+</div>";
+
+				echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
+			}
+			else {
+				echo tableau_des_avertissements_de_fin_de_periode_eleve($current_eleve_login);
+			}
+		}
+	?>
+
 	<br /><br />&nbsp;
 
 	<div id="debug_fixe" style="position: fixed; bottom: 20%; right: 5%;"></div>

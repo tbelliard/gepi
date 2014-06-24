@@ -15,7 +15,7 @@ if ($argc != 2) {
     $script_error = true;
 } else {
     // Premier argument (obligatoire, pour éviter les accidents)
-    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','1.6.2','1.6.3','defaut','forcer'))) {
+    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','1.5.5','1.6.0','1.6.1','1.6.2','1.6.3','1.6.4','defaut','forcer'))) {
         if ($argv[1] == 'forcer') {
             $force = true;
         } elseif($argv[1] == 'defaut'){
@@ -71,32 +71,6 @@ Exemples d'utilisation :
 } else {
 // Si on arrive ici, c'est qu'on a les bons arguments, et qu'on peut appliquer
 // la mise à jour.
-
-    // Numéro de version effective
-    $version_old = $gepiSettings['version'];
-    // Numéro de version RC effective
-    $versionRc_old = $gepiSettings['versionRc'];
-    // Numéro de version Beta effective
-    $versionBeta_old = $gepiSettings['versionBeta'];
-
-    $rc_old = '';
-    if ($versionRc_old != '') {
-            $rc_old = "-RC" . $versionRc_old;
-    }
-    $rc = '';
-    if ($gepiRcVersion != '') {
-            $rc = "-RC" . $gepiRcVersion;
-    }
-
-    $beta_old = '';
-    if ($versionBeta_old != '') {
-            $beta_old = "-beta" . $versionBeta_old;
-    }
-    $beta = '';
-    if ($gepiBetaVersion != '') {
-            $beta = "-beta" . $gepiBetaVersion;
-    }
-
 
     $pb_maj = '';
     $result = '';
@@ -157,6 +131,10 @@ Exemples d'utilisation :
         require './updates/163_to_164.inc.php';
     }
 
+    if ($force || $start_from == '1.6.4') {
+        require './updates/164_to_165.inc.php';
+    }
+
 // Test sur la version des plugins (installés ou pas)
 require_once("../mod_plugins/verif_version_plugins.php");
 $verif_version_plugins=verif_version_plugins(1,"\n");
@@ -179,8 +157,6 @@ if ($verif_version_plugins!="") {
 
     // Mise à jour du numéro de version
     saveSetting("version", $gepiVersion);
-    saveSetting("versionRc", $gepiRcVersion);
-    saveSetting("versionBeta", $gepiBetaVersion);
     saveSetting("pb_maj", $pb_maj);
 
 }

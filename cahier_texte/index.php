@@ -422,8 +422,20 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         } else {
             $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
 		}
-        $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        //$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
+        $contenu_cor = $_POST['notes'];
         if ($contenu_cor == '') {$contenu_cor="...";}
+
+		//=============================
+		// Corriger en chemins relatifs les chemins absolus débutant par getSettingValue('url_racine_gepi')...
+		// pas seulement: on peut avoir le nom DNS et l'IP dans le cas d'un gepi en DMZ ou plus généralement atteint en IP ou en nom DNS.
+		$url_absolues_gepi=getSettingValue("url_absolues_gepi");
+		if($url_absolues_gepi!="") {
+			$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
+		}
+		//=============================
+
+        $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
 
         if (!isset($msg_error_date)) {
           if (isset($id_ct)) {
@@ -465,10 +477,40 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
         // Cas d'une notice
         isset($_POST['info']) ? $temp = '' : $temp = $today;
         //$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
-        $contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
+        //$contenu_cor = traitement_magic_quotes(($_POST['notes']),'');
+        $contenu_cor = $_POST['notes'];
         if ($contenu_cor == '') $contenu_cor="...";
+
+		/*
+		$f=fopen("/tmp/debug_cdt_contenu_cor.txt", "a+");
+		fwrite($f, "=========================================\n");
+		fwrite($f, "=========================================\n");
+		fwrite($f, "=========================================\n");
+		fwrite($f, "$contenu_cor\n");
+		*/
+		//=============================
+		// Corriger en chemins relatifs les chemins absolus débutant par getSettingValue('url_racine_gepi')...
+		// pas seulement: on peut avoir le nom DNS et l'IP dans le cas d'un gepi en DMZ ou plus généralement atteint en IP ou en nom DNS.
+		$url_absolues_gepi=getSettingValue("url_absolues_gepi");
+		if($url_absolues_gepi!="") {
+			$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
+		}
+		//=============================
+		/*
+		fwrite($f, "=========================================\n");
+		fwrite($f, "$contenu_cor\n");
+		fwrite($f, "=========================================\n");
+		fwrite($f, "=========================================\n");
+		fwrite($f, "=========================================\n");
+		fclose($f);
+		*/
+
+        $contenu_cor = traitement_magic_quotes(($contenu_cor),'');
+
         if (isset($id_ct)) {
-            $req = mysqli_query($GLOBALS["mysqli"], "UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
+            $sql="UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'";
+		//echo "$sql<br />";
+            $req = mysqli_query($GLOBALS["mysqli"], $sql);
         } else {
             $req = mysqli_query($GLOBALS["mysqli"], "INSERT INTO ct_entry SET id_ct='0', contenu = '$contenu_cor', heure_entry='$heure_entry', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$temp'");
             $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);

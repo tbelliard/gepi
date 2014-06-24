@@ -91,6 +91,13 @@ function info_eleve($ele_login) {
 		$tab_ele['lieu_naissance']="";
 	}
 
+	$tab_ele['mef']="";
+	$tmp_tab=get_tab_mef_from_mef_code($lig_ele->mef_code);
+	if(isset($tmp_tab['designation_courte'])) {
+		$tab_ele['mef']=$tmp_tab['designation_courte'];
+	}
+	unset($tmp_tab);
+
 	if($_SESSION['statut']=="professeur") {
 		$is_pp=is_pp($_SESSION['login'], "", $ele_login);
 	}
@@ -599,7 +606,7 @@ function info_eleve($ele_login) {
 		}
 
 		// Récup infos responsables resp_legal=0
-		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.acces_sp FROM resp_pers rp,
+		$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal, r.acces_sp, r.envoi_bulletin FROM resp_pers rp,
 										resp_adr ra,
 										responsables2 r
 					WHERE r.ele_id='".$tab_ele['ele_id']."' AND
@@ -637,6 +644,7 @@ function info_eleve($ele_login) {
 
 				$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 				$tab_ele['resp'][$cpt]['acces_sp']=$lig_resp->acces_sp;
+				$tab_ele['resp'][$cpt]['envoi_bulletin']=$lig_resp->envoi_bulletin;
 
 				//echo "\$lig_resp->login=".$lig_resp->login."<br />";
 				if($lig_resp->login!="") {

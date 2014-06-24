@@ -13,7 +13,7 @@
  * @see msj_present()
  */
 
-		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.1" . $rc . $beta . " :</h3>";
+		$result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.5.1" . " :</h3>";
 
 		$result .= "&nbsp;->Ajout du champ rn_nomdev à la table classes<br />";
 		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM classes LIKE 'rn_nomdev'"));

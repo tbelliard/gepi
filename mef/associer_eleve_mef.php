@@ -52,6 +52,9 @@ if ($utilisateur == null) {
 	die();
 }
 
+$photo_redim_taille_max_largeur=45;
+$photo_redim_taille_max_hauteur=45;
+
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] :(isset($_GET["id_eleve"]) ? $_GET["id_eleve"] :(isset($_SESSION["id_eleve"]) ? $_SESSION["id_eleve"] : NULL));
@@ -83,6 +86,10 @@ $titre_page = "MEF";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $javascript_specifique[] = "mod_abs2/lib/include";
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -181,15 +188,15 @@ if (!$eleve_col->isEmpty()) {
 <!-- Fin de la legende -->
 <p><input type="hidden" name="total_eleves" value="<?php echo $eleve_col->count()?>" /></p>
 <table><tr><td style="vertical-align : top;">
-	<table style="width:750px;" >
+	<table style="width:750px;" class='sortable resizable'>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;">Liste des &eacute;l&egrave;ves.
+				<th style="text-align : center;" class='text' title='Cliquer pour trier'>Liste des &eacute;l&egrave;ves.
 				Sélectionner :
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', true); return false;">Tous</a>
 				<a href="#" onclick="SetAllCheckBoxes('liste_mef_eleve', 'active_mef_eleve[]', '', false); return false;">Aucun</a>
 				</th>
-				<th style="text-align : center;">MEF actuel</th>
+				<th style="text-align : center;" class='text' title='Cliquer pour trier'>MEF actuel</th>
 				<th style="text-align : center;">modifier</th>
 				<th> </th>
 			</tr>
@@ -272,28 +279,4 @@ echo "</div>\n";
 
 require_once("../lib/footer.inc.php");
 
-//fonction redimensionne les photos petit format
-function redimensionne_image_petit($photo)
- {
-    // prendre les informations sur l'image
-    $info_image = getimagesize($photo);
-    // largeur et hauteur de l'image d'origine
-    $largeur = $info_image[0];
-    $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
-             $taille_max_largeur = 45;
-             $taille_max_hauteur = 45;
-
-    // calcule le ratio de redimensionnement
-     $ratio_l = $largeur / $taille_max_largeur;
-     $ratio_h = $hauteur / $taille_max_hauteur;
-     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-    // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
-
-   // on renvoit la largeur et la hauteur
-    return array($nouvelle_largeur, $nouvelle_hauteur);
- }
 ?>

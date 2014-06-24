@@ -75,6 +75,9 @@ if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
 }
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 $date_du_jour=strftime("%d/%m/%Y");
 $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 //$acces_classes_acces_appreciations=acces("/classes/acces_appreciations.php", $_SESSION['statut']);
@@ -293,6 +296,22 @@ $titre_page = "Saisie des avis | Saisie";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+//=================================
+$acces_bull_simp='n';
+if(($_SESSION['statut']=="professeur") AND 
+((getSettingValue("GepiAccesBulletinSimpleProf")=="yes")||
+(getSettingValue("GepiAccesBulletinSimpleProfToutesClasses")=="yes")||
+(getSettingValue("GepiAccesBulletinSimpleProfTousEleves")=="yes")
+)) {
+	$acces_bull_simp='y';
+}
+elseif($_SESSION['statut']=="scolarite") {
+	$acces_bull_simp='y';
+}
+elseif($_SESSION['statut']=="cpe") {
+	$acces_bull_simp='y';
+}
+
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
 ?>
@@ -427,10 +446,23 @@ if((($_SESSION['statut']=='professeur')&&(getSettingAOui('CommentairesTypesPP'))
 	echo " | <a href='commentaires_types.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie de commentaires-types</a>";
 }
 
+if(isset($id_classe)) {
+	$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND (verouiller='N' OR verouiller='P');";
+	//echo "$sql<br />";
+	$test_periode_ouverte=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_periode_ouverte)==1) {
+		$lig_tmp_per=mysqli_fetch_object($test_periode_ouverte);
+		echo " | <a href='saisie_avis2.php?id_classe=$id_classe&amp;periode_num=".$lig_tmp_per->num_periode."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie avis avec affichage bulletin simplifié</a>";
+	}
+}
 echo "</p>\n";
 
 echo "</form>\n";
 
+// 20140226
+if(getSettingAOui('active_mod_discipline')) {
+	echo necessaire_saisie_avertissement_fin_periode();
+}
 
 echo "<form enctype='multipart/form-data' action='saisie_avis1.php' method='post'>\n";
 echo add_token_field(true);
@@ -438,7 +470,10 @@ echo add_token_field(true);
 if ($id_classe) {
 	$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 	?>
-	<p class= 'grand'>Avis du conseil de classe. Classe : <?php echo $classe; ?></p>
+	<p class= 'grand'>Avis du conseil de classe. Classe : <?php echo $classe; 
+	echo " - <em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+	?>
+	</p>
 	<?php
 	$test_periode_ouverte = 'no';
 	$i = "1";
@@ -529,9 +564,32 @@ else{
 }
 //=================================
 
+//===========================================================
+echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+
+	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+		echo "</a>\n";
+		echo "</div>\n";
+
+		echo "<div id='titre_entete_bull_simp'></div>\n";
+	echo "</div>\n";
+	
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "</div>\n";
+
+echo "</div>\n";
+//===========================================================
 
 	// Fonction de renseignement du champ qui doit obtenir le focus après validation
 	echo "<script type='text/javascript'>
+
+function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
+	document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+	new Ajax.Updater($('corps_bull_simp'),'ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+}
 
 function focus_suivant(num){
 	temoin='';
@@ -735,7 +793,6 @@ if ($insert_mass_appreciation_type=="y") {
 	//$i++;
 	echo "</table>\n<br />\n<br />\n";
 
-
 	$chaine_test_vocabulaire="";
 
 	$i = "0";
@@ -782,7 +839,34 @@ if ($insert_mass_appreciation_type=="y") {
 		echo "<table width=\"750\" class='boireaus' border='1' cellspacing='2' cellpadding='5' summary=\"Elève $current_eleve_nom $current_eleve_prenom\">\n";
 		echo "<tr>\n";
 		echo "<th width=\"200\"><div align=\"center\"><b>&nbsp;</b></div></th>\n";
-		echo "<th><div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$current_eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$current_eleve_nom $current_eleve_prenom</a></b>\n";
+		echo "<th>";
+
+		$num_per1=0;
+		$id_premiere_classe="";
+		$current_id_classe=array();
+		$sql="SELECT id_classe,periode FROM j_eleves_classes WHERE login='$current_eleve_login' ORDER BY periode;";
+		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_classe)>0) {
+			$lig_classe=mysqli_fetch_object($res_classe);
+			$id_premiere_classe=$lig_classe->id_classe;
+			$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
+			$num_per1=$lig_classe->periode;
+			$num_per2=$num_per1;
+			while($lig_classe=mysqli_fetch_object($res_classe)) {
+				$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
+				$num_per2=$lig_classe->periode;
+			}
+		}
+
+		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
+			echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
+			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$current_eleve_login','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
+			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+			echo "</a>";
+			echo "</div>\n";
+		}
+
+		echo "<div align=\"center\"><b><a href='../eleves/visu_eleve.php?ele_login=$current_eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">$current_eleve_nom $current_eleve_prenom</a></b>\n";
 
 		//==========================
 		// AJOUT: boireaus 20071115
@@ -817,6 +901,14 @@ if ($insert_mass_appreciation_type=="y") {
 			$current_eleve_login_t[$k] = $current_eleve_login."_t".$k;
 			$k++;
 		}
+
+		// 20140226
+		// Liste des avertissements
+		/*
+		if(getSettingAOui('active_mod_discipline')) {
+			$tab_avertissement_fin_periode=get_tab_avertissement($current_eleve_login);
+		}
+		*/
 
 		$k='1';
 		$alt=1;
@@ -858,8 +950,6 @@ $msg_acces_app_ele_resp\" />";
 						echo " </a>";
 					}
 				}
-
-				echo "</td>\n";
 			} elseif(($ver_periode[$k] != "O")&&($result_test>0)) {
 				echo "<tr class='lig$alt'>\n<td>";
 				echo "<a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."&ind_eleve_login_suiv=$i#app' title=\"$nom_periode[$k] : Saisir l'avis du conseil de classe avec affichage du bulletin simplifié de $current_eleve_nom $current_eleve_prenom.\" onclick=\"return confirm_abandon(this, change, '$themessage')\">";
@@ -880,7 +970,6 @@ $msg_acces_app_ele_resp\" />";
 $msg_acces_app_ele_resp\" />";
 					}
 				}
-				echo "</td>\n";
 			} else {
 				echo "<tr class='lig$alt'>\n<td>";
 				echo $nom_periode[$k];
@@ -899,8 +988,15 @@ $msg_acces_app_ele_resp\" />";
 $msg_acces_app_ele_resp\" />";
 					}
 				}
-				echo "</td>\n";
 			}
+
+			if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
+				echo " <a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$current_eleve_login','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
+				echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
+				echo "</a>";
+			}
+			echo "</td>\n";
+
 
 			if ($ver_periode[$k] != "O") {
 				//$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
@@ -943,6 +1039,25 @@ $msg_acces_app_ele_resp\" />";
 					}
 					// **** FIN DE L'AJOUT POUR LES MENTIONS ****
 
+					// 20140226
+					if(getSettingAOui('active_mod_discipline')) {
+						if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
+							echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$current_eleve_login&amp;periode=$k&amp;lien_refermer=y'";
+						echo " onclick=\"afficher_saisie_avertissement_fin_periode('$current_eleve_login', $k, 'liste_avertissements_fin_periode_".$i."_$k');return false;\"";
+						echo " style='color:black;' target='_blank'>
+		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+		<span class='bold' id='liste_avertissements_fin_periode_".$i."_$k'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+	</a>
+</div>";
+						}
+						else {
+							echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+		<span class='bold'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+</div>";
+						}
+					}
+
 					//echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='no_anti_inject_".$current_eleve_login_t[$k]."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajout CC</a>";
 
 					if((file_exists('saisie_commentaires_types.php'))
@@ -977,6 +1092,13 @@ $msg_acces_app_ele_resp\" />";
 					echo "</b></p>\n";
 				}
 				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
+				// 20140226
+				if(getSettingAOui('active_mod_discipline')) {
+					echo "<div title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
+		<span class='bold'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>
+</div>";
+				}
 				echo "</td>\n";
 			}
 			echo "</tr>\n";

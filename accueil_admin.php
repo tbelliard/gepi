@@ -115,6 +115,7 @@ $chemin = array(
 "/aid/index.php",
 "/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers",
 "/mef/admin_mef.php",
+"/gestion/admin_nomenclatures.php",
 "/mod_sso_table/index.php"    
 );
 
@@ -129,6 +130,7 @@ $titre = array(
 "Gestion des AID",
 "Gestion du trombinoscope",
 "Gestion des mef (niveaux)",
+"Gestion des nomenclatures",
 "Gestion de la table SSO "    
 );
 
@@ -151,6 +153,7 @@ $expli = array(
 "Repérer les personnels/".$gepiSettings['denomination_eleves']." n'ayant pas de photo.
 <br />Vider le dossier des photos,...",
 "Gestion des mef (niveaux)",
+"Gestion des nomenclatures (codes et autres informations requises notamment pour le Livret Scolaire Lycée)",
 "Gestion de la table de correspondance des identifiants pour le SSO "     
 );
 

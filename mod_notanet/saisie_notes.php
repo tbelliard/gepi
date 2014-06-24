@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 }
 
 
-// INSERT INTO droits VALUES('/mod_notanet/saisie_socle_commun.php','V','F','F','V','F','F','F','F','Notanet: Saisie socle commun','');
+// INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -223,6 +223,63 @@ $message_enregistrement = "Les modifications ont été enregistrées !";
 $titre_page = "Notanet | Saisie notes";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+if(isset($id_groupe)) {
+	// Récupérer le type_brevet, id_classe et la matière.
+
+	if(!isset($type_brevet)) {
+		$sql="SELECT DISTINCT type_brevet FROM notanet_corresp WHERE $sql_indices_types_brevets AND mode='saisie' ORDER BY type_brevet";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==1) {
+			$lig=mysqli_fetch_object($res);
+			$type_brevet=$lig->type_brevet;
+		}
+
+		//echo "type_brevet=$type_brevet<br />";
+	}
+
+	if(isset($type_brevet)) {
+		if(!isset($id_classe)) {
+			$tmp_group=get_group($id_groupe,array('classes'));
+			/*
+			echo "<pre>";
+			print_r($tmp_group);
+			echo "</pre>";
+			*/
+			if(isset($tmp_group['classes']['list'][0])) {
+				$id_classe=$tmp_group['classes']['list'][0];
+			}
+
+			//echo "id_classe=$id_classe<br />";
+		}
+
+
+		if(isset($id_classe)) {
+			if(!isset($matiere)) {
+				$sql="SELECT DISTINCT nc.matiere FROM j_eleves_classes jec, 
+							j_eleves_groupes jeg,
+							j_groupes_professeurs jgp,
+							j_groupes_matieres jgm,
+							notanet_corresp nc
+						WHERE jec.login=jeg.login AND
+							jec.id_classe='$id_classe' AND
+							jeg.id_groupe=jgp.id_groupe AND
+							jgp.login='".$_SESSION['login']."' AND
+							jeg.id_groupe=jgm.id_groupe AND
+							jgm.id_matiere=nc.matiere AND
+							nc.type_brevet='$type_brevet' AND
+							nc.mode='saisie';";
+				//echo "$sql<br />";
+				$res_matiere_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_matiere_notanet)==1) {
+					$lig=mysqli_fetch_object($res_matiere_notanet);
+					$matiere=$lig->matiere;
+				}
+			}
+		}
+	}
+}
 
 /*
 
@@ -587,8 +644,20 @@ echo "
 
 		<table class='boireaus boireaus_alt'>
 			<tr>
-				<th>Élève</th>
-				<th>Note</th>
+				<th rowspan='2'>Élève</th>
+				<th colspan='3'>Périodes</th>
+				<th rowspan='2' title=\"Moyenne des trois périodes\">Moyenne</th>
+				<th rowspan='2'>
+					Note<br />
+					<a href='javascript:copier_coller_moy()' title=\"Copier la moyenne des moyennes de périodes vers les champs de saisie.\"><img src='../images/icons/copy-16.png' class='icone16' alt='Coller' /></a>
+				</th>
+			</tr>
+			<tr>";
+echo "
+				<th>P.1</th>
+				<th>P.2</th>
+				<th>P.3</th>";
+echo "
 			</tr>";
 $cpt=10;
 while($lig=mysqli_fetch_object($res)) {
@@ -597,7 +666,34 @@ while($lig=mysqli_fetch_object($res)) {
 				<td id='td_nom_$cpt'>
 					<input type='hidden' name='ele_login[$cpt]' id='ele_login_$cpt' value='".$lig->login."' />
 					".get_nom_prenom_eleve($lig->login)."
-				</td>
+				</td>";
+
+	for($i=1;$i<=3;$i++) {
+		$note="-";
+
+		$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn WHERE (mn.id_groupe='".$id_groupe."' AND mn.login='".$lig->login."' AND mn.statut ='' AND periode='$i');";
+		$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_note)>0) {
+			$lig_note=mysqli_fetch_object($res_note);
+			$note=$lig_note->moyenne;
+		}
+		echo "
+				<td>
+					$note
+				</td>";
+	}
+
+	$note="-";
+	$sql="SELECT round(avg(mn.note),1) as moyenne FROM matieres_notes mn WHERE (mn.id_groupe='".$id_groupe."' AND mn.login='".$lig->login."' AND mn.statut ='');";
+	$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_note)>0) {
+		$lig_note=mysqli_fetch_object($res_note);
+		$note=$lig_note->moyenne;
+	}
+	echo "
+				<td id='td_moy_annee_$cpt'>$note</td>";
+
+	echo "
 				<td id='td_note_$cpt'>";
 	if($notanet_saisie_note_ouverte) {
 		echo "
@@ -635,6 +731,16 @@ $couleur_devoirs="";
 
 echo "
 <script type='text/javascript' language='JavaScript'>
+
+function copier_coller_moy() {
+	for(i=10;i<$cpt;i++) {
+		if(document.getElementById('n'+i)) {
+			if(document.getElementById('td_moy_annee_'+i)) {
+				document.getElementById('n'+i).value=document.getElementById('td_moy_annee_'+i).innerHTML;
+			}
+		}
+	}
+}
 
 function verifcol(num_id){
 	document.getElementById('n'+num_id).value=document.getElementById('n'+num_id).value.toLowerCase();

@@ -95,7 +95,11 @@ function Header()
         // $date : tableau 2 dimensions des données autres que la 1ère ligne
         // $align_header : si égal v la première ligne est affichée verticalement
         // $align_cell_note : 
-
+/*
+echo "w1<pre>";
+print_r($w1);
+echo "</pre><hr />";
+*/
         //Couleurs, épaisseur du trait et police grasse de la première ligne
         $this->SetFillColor(255,255,255);
         $this->SetTextColor(0);
@@ -140,6 +144,7 @@ function Header()
            // on calcule la largeur totale du tableau
            $total_largeur += $wi[$w1[$i]];
         }
+
         // largeur disponible
         $largeur = LargeurPage - LeftMargin - LeftMargin;
         if ($total_largeur > $largeur) {
@@ -154,10 +159,11 @@ function Header()
                 $x_c = $rapport*$x_n;
             }
         }
+
         // On attribue les largeurs dans le tableau $w
         $w[0] = $wi["i"];
         if (count($w1) == 4) $w[1] = $wi["d"];
-        for($i=1;$i<count($w1);$i++)
+        for($i=1;$i<count($w1);$i++) {
             switch($w1[$i]) {
             case "c" :
             $w[$i] = $x_c;
@@ -166,14 +172,27 @@ function Header()
             $w[$i] = $x_n;
             break;
             }
+         }
 
+/*
+echo "w<pre>";
+print_r($w1);
+echo "</pre><hr />";
+
+echo "header<pre>";
+print_r($header);
+echo "</pre><hr />";
+*/
         // Affichage de la première ligne
-        for($i=0;$i<count($header);$i++)
+        for($i=0;$i<count($header);$i++) {
+            if(!isset($w[$i])) {$w[$i]=$x_n;}
+//echo "\$w[$i]=".$w[$i]."<br />";
             if (($align_header == "v") and ($i != 0)) {
                 $this->Vcell($w[$i],$max,$header[$i],1,0,'C',1);
             } else {
                 $this->cell($w[$i],$max,$header[$i],1,0,'C',1);
             }
+        }
         $this->Ln();
         //Restauration des couleurs et de la police
         $this->SetFillColor(200,200,200);
@@ -584,6 +603,13 @@ function NbLines($w,$txt)
 {
     //Calcule le nombre de lignes qu'occupe un MultiCell de largeur w
     $cw=&$this->CurrentFont['cw'];
+/*
+echo "\$w=$w<br />";
+echo "\$txt=$txt<br />";
+echo "\$cw<br /><pre>";
+print_r($cw);
+echo "</pre>";
+*/
     if($w==0)
         $w=$this->w-$this->rMargin-$this->x;
     $wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
@@ -610,7 +636,18 @@ function NbLines($w,$txt)
         }
         if($c==' ')
             $sep=$i;
-        $l+=$cw[$c];
+        //echo "\$c=$c<br />\n\$cw[$c]=".$cw[$c]."<br />\n";
+        /*
+        if(preg_match("#^[A-za-z0-9 ]$#", $c)) {
+            $l+=$cw[$c];
+        }
+        else {
+            $l+=$cw["a"];
+        }
+        */
+        if(isset($cw[$c])) {
+            $l+=$cw[$c];
+        }
         if($l>$wmax)
         {
             if($sep==-1)

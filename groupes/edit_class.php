@@ -214,10 +214,10 @@ if (isset($_GET['ajouter_suffixes_noms_groupes'])) {
 					$suffixe="_".$suffixe;
 				}
 
-				$sql="UPDATE groupes SET description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tab_grp_descr_homonyme[$i].$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+				$sql="UPDATE groupes SET description='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_grp_descr_homonyme[$i].$suffixe)."'";
 				if($corriger_noms=="y") {
 					$nom_groupe_courant=$tab_grp_name[$id_groupe_courant];
-					$sql.=", name= '".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_courant.$suffixe) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
+					$sql.=", name= '".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_courant.$suffixe)."'";
 				}
 				$sql.=" WHERE id='".$id_groupe_courant."';";
 				$update=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -425,6 +425,8 @@ if (isset($_GET['action'])) {
         }
     }
 }
+
+$avec_js_et_css_edt="y";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
@@ -657,6 +659,10 @@ echo " | <a href='../classes/classes_param.php' onclick=\"return confirm_abandon
 
 if(acces("/groupes/visu_profs_class.php", $_SESSION['statut'])) {
 	echo " | <a href='../groupes/visu_profs_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Voir l'équipe pédagogique\">Équipe</a>";
+}
+
+if(acces("/groupes/modify_grp_groupe.php", $_SESSION['statut'])) {
+	echo " | <a href='../groupes/modify_grp_group.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Groupes de groupes\">Groupes de groupes</a>";
 }
 
 echo "</p>\n";
@@ -906,6 +912,58 @@ for($i=0;$i<10;$i++){
 	}
 
 	//============================================================================================================
+	// Div pour l'affichage de l'EDT
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+
+		$titre_infobulle="EDT de <span id='id_ligne_titre_infobulle_edt'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_prof',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+//https://127.0.0.1/steph/gepi_git_trunk/edt_organisation/index_edt.php?login_edt=boireaus&type_edt_2=prof&no_entete=y&no_menu=y&lien_refermer=y
+
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return " <a href='../edt_organisation/index_edt.php?login_edt=".$login_prof."&amp;type_edt_2=prof&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle('$login_prof', '".addslashes($info_prof)."');return false;\" title=\"Emploi du temps de ".$info_prof."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>";
+		}
+
+		echo "
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle(login_prof, info_prof) {
+		document.getElementById('id_ligne_titre_infobulle_edt').innerHTML=info_prof;
+
+		new Ajax.Updater($('edt_prof_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+login_prof+'&type_edt_2=prof&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_prof','y',-20,20);
+	}
+</script>\n";
+	}
+	else {
+		function affiche_lien_edt_prof($login_prof, $info_prof) {
+			return "";
+		}
+	}
+
+	//============================================================================================================
+	function affiche_lien_mailto_prof($mail_prof, $info_prof) {
+		$retour=" <a href='mailto:".$mail_prof."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+		$tmp_date=getdate();
+		if($tmp_date['hours']>=18) {$retour.="Bonsoir";} else {$retour.="Bonjour";}
+		$retour.=",%0d%0aCordialement.' title=\"Envoyer un mail à $info_prof\">";
+		$retour.="<img src='../images/icons/mail.png' class='icone16' alt='mail' />";
+		$retour.="</a>";
+		return $retour;
+	}
+	//============================================================================================================
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// Début du tableau des enseignements existants dans la classe
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	$afficher_champs_modif_nom_groupe=isset($_POST['afficher_champs_modif_nom_groupe']) ? $_POST['afficher_champs_modif_nom_groupe'] : (isset($_GET['afficher_champs_modif_nom_groupe']) ? $_GET['afficher_champs_modif_nom_groupe'] : "n");
 
@@ -1014,9 +1072,9 @@ for($i=0;$i<10;$i++){
 		echo "<td class='norme' style='text-align:left;'>";
 		echo "<strong>";
 		if ($total == "1") {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement de ".$group['matiere']['matiere']."\">";
 		} else {
-			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement\">";
+			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=regroupement' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement de ".$group['matiere']['matiere']."\">";
 		}
 		echo $group["description"] . "</a></strong>";
 		echo "<input type='hidden' name='enseignement_".$cpt_grp."' id='enseignement_".$cpt_grp."' value=\"".$group["description"]."\" />\n";
@@ -1066,6 +1124,14 @@ for($i=0;$i<10;$i++){
 				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('gepi_prof_suivi')." est ".$liste_prof_suivi.".";}
 				echo "\" />\n";
 			}
+
+			echo affiche_lien_edt_prof($current_group["profs"]["users"][$prof]["login"], $current_group["profs"]["users"][$prof]["prenom"]." ".$current_group["profs"]["users"][$prof]["nom"]);
+
+			$mail_prof=get_mail_user($current_group["profs"]["users"][$prof]["login"]);
+			if(check_mail($mail_prof)) {
+				echo affiche_lien_mailto_prof($mail_prof, $current_group["profs"]["users"][$prof]["prenom"]." ".$current_group["profs"]["users"][$prof]["nom"]);
+			}
+
 			$first = false;
 		}
 

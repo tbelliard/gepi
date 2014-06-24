@@ -227,7 +227,7 @@ if ($recherche == "afficher")
               <select name="classe_choix" id="classe_choix">
                  <option value="tous" <?php if (empty($classe_choix)) {?>selected<?php } ?>>tous</option>
                     <?php
-                    $resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    $resultat_liste_classe = mysqli_query($GLOBALS["mysqli"], $requete_liste_classe) or die('Erreur SQL !'.$requete_liste_classe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                     While ( $data_liste_classe = mysqli_fetch_array($resultat_liste_classe)) {
                            if ($classe_choix==$data_liste_classe['id']) {$selected = "selected"; } else {$selected = ""; }?>
                           <option value="<?php echo $data_liste_classe['id']; ?>" <?php echo $selected; ?>><?php echo $data_liste_classe['nom_complet']; ?></option>
@@ -238,7 +238,7 @@ if ($recherche == "afficher")
             <select name="eleve_choix" id="eleve_choix">
                 <option value="tous" <?php if (empty($eleve_choix)) {?>selected<?php } ?>>tous</option>
                     <?php
-                    $resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                    $resultat_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
                     While ( $data_liste_eleve = mysqli_fetch_array($resultat_liste_eleve)) {
                           if ($eleve_choix==$data_liste_eleve['login']) {$selected = "selected"; } else {$selected = ""; }?>
                           <option value="<?php echo $data_liste_eleve['login']; ?>" <?php echo $selected; ?>><?php echo strtoupper($data_liste_eleve['nom'])." ".ucfirst($data_liste_eleve['prenom']); ?></option>

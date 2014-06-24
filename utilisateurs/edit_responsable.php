@@ -39,6 +39,8 @@ if (!checkAccess()) {
     die();
 }
 
+//debug_var();
+
 // Initialisation des variables
 $mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : false);
 $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : false);
@@ -71,7 +73,7 @@ if ($mode == "classe") {
 				"re.ele_id = e.ele_id AND " .
 				"e.login = jec.login AND " .
 				"jec.id_classe = c.id)");
-		if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} elseif (is_numeric($_POST['classe'])) {
 		$quels_parents = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(r.login), u.auth_mode " .
 				"FROM utilisateurs u, resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
@@ -79,7 +81,7 @@ if ($mode == "classe") {
 				"re.ele_id = e.ele_id AND " .
 				"e.login = jec.login AND " .
 				"jec.id_classe = '" . $_POST['classe']."')");
-		if (!$quels_parents) $msg .= ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		if (!$quels_parents) $msg .= mysqli_error($GLOBALS["mysqli"]);
 	} else {
 		$error = true;
 		$msg .= "Vous devez sélectionner au moins une classe !<br />";
@@ -106,6 +108,24 @@ if((isset($_GET['acces_resp_legal_0']))&&(($_GET['acces_resp_legal_0']=='y')||($
 if (!$error) {
 	if($action) {
 		check_token();
+	}
+
+	if ($action == "changer_etat_user") {
+		$sql="SELECT etat FROM utilisateurs WHERE (login = '" . $_GET['parent_login']."' AND statut = 'responsable')";
+		$res=mysqli_query($GLOBALS["mysqli"],$sql);
+		if(mysqli_num_rows($res)==0) {
+			$msg .= "Erreur : Aucun compte responsable n'a été trouvé pour le login indiqué : " . $_GET['parent_login'];
+			unset($action);
+		}
+		else {
+			$lig_etat=mysqli_fetch_object($res);
+			if($lig_etat->etat=="actif") {
+				$action="rendre_inactif";
+			}
+			else {
+				$action="rendre_actif";
+			}
+		}
 	}
 
 	if ($action == "rendre_inactif") {
@@ -252,7 +272,10 @@ if (!$error) {
 						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
 							$oldmd5password = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT password FROM utilisateurs WHERE login = '".$current_parent->login."'"), 0);
-							mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
+							// 20140301
+							if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
+								mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$current_parent->login."'");
+							}
 							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 							if ($ldap_write_access) {
 								$create_ldap_user = true;
@@ -912,24 +935,17 @@ Cliquer pour donner l'accès.\" /></a>";
 			}
 		}
 		echo "</td>\n";
-		echo "<td align='center'>";
+		echo "<td align='center' title=\"Cliquez pour activer/désactiver le compte\">";
+			echo "<a href='edit_responsable.php?action=changer_etat_user&amp;mode=individual&amp;parent_login=".$current_parent->login.add_token_in_url()."' onclick=\"changer_etat_utilisateur('$current_parent->login', 'etat_".$current_parent->login."') ;return false;\" title=\"Changer l'état actif/inactif.\"><span id='etat_".$current_parent->login."'>";
 			if ($current_parent->etat == "actif") {
-				echo "<font color='green'>".$current_parent->etat."</font>";
-				if($current_parent->login!='') {
-					echo "<br />";
-					echo "<a href='edit_responsable.php?action=rendre_inactif&amp;mode=individual&amp;parent_login=".$current_parent->login."&amp;test_recup_critere=y".add_token_in_url()."'>Désactiver";
-				}
+				echo "<img src='../images/icons/buddy.png' width='16' height='16' title='Compte actif' />";
 			} else {
-				echo "<font color='red'>".$current_parent->etat."</font>";
-				if($current_parent->login!='') {
-					echo "<br />";
-					echo "<a href='edit_responsable.php?action=rendre_actif&amp;mode=individual&amp;parent_login=".$current_parent->login."&amp;test_recup_critere=y".add_token_in_url()."'>Activer";
-				}
+				echo "<img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' />";
 			}
-			echo "</a>";
+			echo "</span></a>\n";
 		echo "</td>\n";
 
-		echo "<td>";
+		echo "<td title=\"Cliquez pour modifier le mode d'authentification du compte\">";
 			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_parent->login."&amp;auth_mode_user=".$current_parent->auth_mode."&amp;test_recup_critere=y".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_parent->login', '$current_parent->auth_mode') ;return false;\">";
 			echo "<span id='auth_mode_$current_parent->login'>";
 			echo $current_parent->auth_mode;

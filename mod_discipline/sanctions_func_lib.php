@@ -9,6 +9,9 @@ if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 
+$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
 // Paramètres concernant le délai avant affichage d'une infobulle via delais_afficher_div()
 // Hauteur de la bande testée pour la position de la souris:
 $hauteur_survol_infobulle=20;
@@ -609,7 +612,7 @@ function tab_lignes_adresse($ele_login) {
 	}
 }
 
-function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
+function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre_affichage_a_eleve_seul="n") {
 	global $mod_disc_terme_incident, $mod_disc_terme_sanction;
 
 	$retour="";
@@ -666,15 +669,19 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		}
 	}
 
+	$info_dates="";
 	$restriction_date="";
 	if(($date_debut!="")&&($date_fin!="")) {
 		$restriction_date.=" AND (si.date>='$date_debut' AND si.date<='$date_fin') ";
+		$info_dates=" (<em>".formate_date($date_debut)."-&gt;".formate_date($date_fin)."</em>)";
 	}
 	elseif($date_debut!="") {
 		$restriction_date.=" AND (si.date>='$date_debut') ";
+		$info_dates=" (<em>depuis le ".formate_date($date_debut)."</em>)";
 	}
 	elseif($date_fin!="") {
 		$restriction_date.=" AND (si.date<='$date_fin') ";
+		$info_dates=" (<em>jusqu'au ".formate_date($date_fin)."</em>)";
 	}
 
 	$tab_incident=array();
@@ -685,7 +692,9 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	//echo "$sql<br />\n";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		$retour="<p>Tableau des ".$mod_disc_terme_incident."s concernant ".p_nom($ele_login)."</p>\n";
+		$retour="<p class='bold'>Tableau des ".$mod_disc_terme_incident."s concernant ".p_nom($ele_login);
+		$retour.=$info_dates;
+		$retour.="</p>\n";
 		$retour.="<table class='boireaus' border='1' summary=\"Tableau des ".$mod_disc_terme_incident."s concernant $ele_login\">\n";
 		$retour.="<tr>\n";
 		$retour.="<th>Num</th>\n";
@@ -742,18 +751,27 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 				$alt_2=1;
 				while($lig_prot=mysqli_fetch_object($res_prot)) {
-					if($_SESSION['statut']=='eleve') {
-						if($_SESSION['login']==$lig_prot->login) {
-							$ligne_visible="y";
+					$ligne_visible="y";
+					if($lig_prot->statut=='eleve') {
+						if($_SESSION['statut']=='eleve') {
+							if($_SESSION['login']==$lig_prot->login) {
+								$ligne_visible="y";
+							}
+							else {
+								$ligne_visible="n";
+							}
 						}
-						else {
+						elseif($_SESSION['statut']=='responsable') {
 							$ligne_visible="n";
+							if(is_responsable($lig_prot->login, $_SESSION['login'])) {
+								$ligne_visible="y";
+							}
 						}
-					}
-					elseif($_SESSION['statut']=='responsable') {
-						$ligne_visible="n";
-						if(is_responsable($lig_prot->login, $_SESSION['login'])) {
-							$ligne_visible="y";
+						elseif($restreindre_affichage_a_eleve_seul=="y") {
+							$ligne_visible="n";
+							if($lig_prot->login==$ele_login) {
+								$ligne_visible="y";
+							}
 						}
 					}
 
@@ -761,7 +779,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 					$retour.="<tr class='lig$alt_2'>\n";
 					$retour.="<td>";
 					if($lig_prot->statut=='eleve') {
-						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						//if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						if($ligne_visible!="y") {
 							$retour.="XXX";
 						}
 						else {
@@ -775,7 +794,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 					$retour.="<td>";
 					if($lig_prot->statut=='eleve') {
-						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						//if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						if($ligne_visible!="y") {
 							$retour.="XXX";
 						}
 						else {
@@ -789,7 +809,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 					$retour.="<td style='padding: 3px;'>\n";
 					if($lig_prot->statut=='eleve') {
-						if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						//if((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&($ligne_visible!="y")) {
+						if($ligne_visible!="y") {
 							$retour.="XXX";
 						}
 						else {
@@ -801,11 +822,14 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 					}
 
 
+					/*
 					if((($_SESSION['statut']!='responsable')&&($_SESSION['statut']!='eleve'))||
 					($lig_prot->statut!='eleve')||
 					(($_SESSION['statut']=='responsable')&&($ligne_visible=="y"))||
 					(($_SESSION['statut']=='eleve')&&($ligne_visible=="y"))
 					) {
+					*/
+					if($ligne_visible=="y") {
 						$alt=1;
 						$sql="SELECT * FROM s_traitement_incident sti, s_mesures sm WHERE sti.id_incident='$lig->id_incident' AND sti.login_ele='$lig_prot->login' AND sm.id=sti.id_mesure ORDER BY mesure;";
 						$res_suivi=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1025,7 +1049,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
 
 	$id_nature="";
 	if($nature!="") {
-		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $nature) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="SELECT sn.id FROM s_natures sn WHERE sn.nature='".mysqli_real_escape_string($GLOBALS["mysqli"], $nature)."';";
 		$res_nature=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_nature)) {
 			$id_nature=old_mysql_result($res_nature, 0, "id");

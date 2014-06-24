@@ -62,7 +62,7 @@ if ($action == "modifier") {
 
 		// On met à jour la base
 		$sql_u = "UPDATE tempo2 SET col2 = '".$login_a_modifier."' WHERE col1 = '".$id_col1."'";
-		$query_u = mysqli_query($GLOBALS["mysqli"], $sql_u) OR DIE('Erreur dans '.$sql_u.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$query_u = mysqli_query($GLOBALS["mysqli"], $sql_u) OR DIE('Erreur dans '.$sql_u.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 		$aff_logins_m .= '<p>'.$login_a_modifier.' -> '.$id_col1.'</p>';
 
@@ -73,7 +73,7 @@ if ($action == "modifier") {
 	$sql = "SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP
 									FROM temp_gep_import2
 									ORDER BY DIVCOD,ELENOM,ELEPRE";
-	$call_data = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête '.$sql.' '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$call_data = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête '.$sql.' '.mysqli_error($GLOBALS["mysqli"]));
 
     $nb = mysqli_num_rows($call_data);
     $i = "0";

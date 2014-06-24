@@ -201,8 +201,8 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 					id_absence_eleve <> '".$id."' AND justify_absence_eleve= 'N'";
 			}
 
-			$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-			$resultat_retard = mysqli_query($GLOBALS["mysqli"], $requete_retard) or die('Erreur SQL !'.$requete_retard.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
+			$resultat_retard = mysqli_query($GLOBALS["mysqli"], $requete_retard) or die('Erreur SQL !'.$requete_retard.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			$heuredebut_definie_periode_ins = $d_heure_absence_eleve;
 			$heurefin_definie_periode_ins = $a_heure_absence_eleve;
 
@@ -283,11 +283,11 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 					if($miseajour==='fin') {
 						$requete="UPDATE ".$prefix_base."absences_eleves SET a_heure_absence_eleve = '$a_heure_absence_eleve_ins' WHERE id_absence_eleve = '".$id_abs."'";
 					}
-					$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 				}
 				if($miseajour!='debut' and $miseajour!='fin') {
 					$requete="INSERT INTO ".$prefix_base."absences_eleves (type_absence_eleve,eleve_absence_eleve,justify_absence_eleve,motif_absence_eleve,d_date_absence_eleve,a_date_absence_eleve,d_heure_absence_eleve,a_heure_absence_eleve,saisie_absence_eleve) values ('$type_absence_eleve','$eleve_absent_ins','$justify_absence_eleve','$motif_absence_eleve','$d_date_absence_eleve_format_sql','$a_date_absence_eleve_format_sql','$d_heure_absence_eleve_ins','$a_heure_absence_eleve_ins','$saisie_absence_eleve')";
-					$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 				}
 
 				if ( $type_absence_eleve === 'A' ) {
@@ -306,12 +306,12 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 					if( $cpt_lettre_suivi == 0 ) {
 						//si aucune lettre n'a encore été demandé alors on en créer une
 						$requete = "INSERT INTO ".$prefix_base."lettres_suivis (quirecois_lettre_suivi, partde_lettre_suivi, partdenum_lettre_suivi, quiemet_lettre_suivi, emis_date_lettre_suivi, emis_heure_lettre_suivi, type_lettre_suivi, statu_lettre_suivi) VALUES ('".$eleve_absent_ins."', 'absences_eleves', ',".$num_id.",', '".$_SESSION['login']."', '".$date_emis."', '".$heure_emis."', '6', 'en attente')";
-						mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 					} else {
 						//si une lettre a déjas été demandé alors on la modifi
 						// on cherche la lettre concerné et on prend les id déjas disponible puis on y ajout le nouvelle id
 						$requete_info ="SELECT * FROM ".$prefix_base."lettres_suivis  WHERE emis_date_lettre_suivi = '".$date_emis."' AND partde_lettre_suivi = 'absences_eleves'";
-						$execution_info = mysqli_query($GLOBALS["mysqli"], $requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						$execution_info = mysqli_query($GLOBALS["mysqli"], $requete_info) or die('Erreur SQL !'.$requete_info.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 						while ( $donne_info = mysqli_fetch_array($execution_info)) {
 							$id_lettre_suivi = $donne_info['id_lettre_suivi'];
 							$id_deja_present = $donne_info['partdenum_lettre_suivi'];
@@ -323,7 +323,7 @@ if(($action_sql == "ajouter" or $action_sql == "modifier") and $valide_form==='y
 							$id_ajout = $id_deja_present.$num_id.',';
 						}
 						$requete = "UPDATE ".$prefix_base."lettres_suivis SET partdenum_lettre_suivi = '".$id_ajout."', quiemet_lettre_suivi = '".$_SESSION['login']."', type_lettre_suivi = '6' WHERE id_lettre_suivi = '".$id_lettre_suivi."'";
-						mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 					}
 				}
 			}
@@ -374,7 +374,7 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 				if ($nbr_cherche == 0) {
 					// On insère alors l'absence dans la base
 					$saisie_sql = "INSERT INTO absences_rb (eleve_id, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('".$eleve_absent[$a]."', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')";
-					$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+					$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
 					$echo .= '<p class="enregistre_bon">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistrée !</p>';
 				}else {
 					$echo .='<p class="enregistre_deja">L\'absence de '.$noms["prenom"].' '.$noms["nom"].' a déjà été saisie ! </p>';
@@ -395,7 +395,7 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 					// On insère alors le retard dans la base
 					$saisie_sql = "INSERT INTO absences_rb (eleve_id, retard_absence, groupe_id, edt_id, jour_semaine, creneau_id, debut_ts, fin_ts, date_saisie, login_saisie) VALUES ('".$eleve_absent[$a]."', 'R', '".$classe."', '0', '".$jour_semaine[0]."', '".$rep_creneau["id_definie_periode"]."', '".$ts_debut."', '".$ts_fin."', '".$ts_actu."', '".$_SESSION["login"]."')";
 
-					$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+					$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
 					$echo .= '<p class="enregistre_bon">Le retard de '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</p>';
 				}else {
 					// On modifie l'absence pour un retard
@@ -420,7 +420,7 @@ if ($etape == 2 AND $classe != "toutes" AND $classe != "" AND $action_sql == "aj
 				// On insère alors le retard dans la base
 				$saisie_sql = "INSERT INTO absences_repas (date_repas, id_groupe,eleve_id, pers_id ) VALUES ('".$date_du_jour."', '".$classe."', '".$eleve_absent[$a]."','".$_SESSION["login"]."')";
 				//echo $saisie_sql;
-				$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
+				$insere_abs = mysqli_query($GLOBALS["mysqli"], $saisie_sql) OR DIE ('Erreur SQL !'.$saisie_sql.'<br />'.mysqli_error($GLOBALS["mysqli"]));//('Impossible d\'enregistrer l\'absence de '.$eleve_absent[$a]);
 				$echo .= '<p class="enregistre_bon">Le repas pour '.$noms["prenom"].' '.$noms["nom"].' est bien enregistré !</p>';
 			}
 		}
@@ -467,11 +467,11 @@ if($edt_enregistrement==='1') {
 	$test_existance_groupe = old_mysql_result(mysqli_query($GLOBALS["mysqli"], 'SELECT count(*) FROM edt_classes WHERE groupe_edt_classe = "'.$classe.'" AND prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_semaine['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <= "'.$d_heure_absence_eleve.'" AND heurefin_edt_classe >= "'.$a_heure_absence_eleve.'"'),0);
 	if ($test_existance === '0') {
 		$requete="INSERT INTO ".$prefix_base."edt_classes (groupe_edt_classe,prof_edt_classe,matiere_edt_classe,semaine_edt_classe,jour_edt_classe,datedebut_edt_classe,datefin_edt_classe,heuredebut_edt_classe,heurefin_edt_classe,salle_edt_classe) values ('".$classe."','".$_SESSION["login"]."','".$matiere_du_groupe['nomcourt']."','".semaine_type($d_date_absence_eleve)."','".$jour_semaine['chiffre']."','','','".$d_heure_absence_eleve."','".$a_heure_absence_eleve."','')";
-		$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	}
 	if ( $test_existance === '1' and $test_existance_groupe === '0' ) {
 		$requete = 'UPDATE '.$prefix_base.'edt_classes SET groupe_edt_classe = "'.$classe.'" WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_semaine['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <= "'.$d_heure_absence_eleve.'" AND heurefin_edt_classe >= "'.$a_heure_absence_eleve.'"';
-		$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$resultat = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	}
 }
 
@@ -484,7 +484,7 @@ $i = 0;
 
 
 	$requete_modif = "SELECT * FROM absences_eleves WHERE id_absence_eleve ='$id_absence_eleve'";
-	$resultat_modif = mysqli_query($GLOBALS["mysqli"], $requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_modif = mysqli_query($GLOBALS["mysqli"], $requete_modif) or die('Erreur SQL !'.$requete_modif.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ($data_modif = mysqli_fetch_array($resultat_modif)) {
 		$type_absence_eleve[$i] = $data_modif['type_absence_eleve'];
 		$eleve_absent[$i] = $data_modif['eleve_absence_eleve'];
@@ -553,7 +553,7 @@ if (isset($echo)) {
 		}else{
 			// on vérifie si un emploi du temps pour ce prof n'est pas disponible (ancienne version)
 			$sql = 'SELECT * FROM edt_classes WHERE prof_edt_classe = "'.$_SESSION["login"].'" AND jour_edt_classe = "'.$jour_aujourdhui['chiffre'].'" AND semaine_edt_classe = "'.$type_de_semaine.'" AND heuredebut_edt_classe <="'.date('H:i:s').'" AND heurefin_edt_classe >="'.date('H:i:s').'"';
-			$req = mysqli_query($GLOBALS["mysqli"], $sql) or die('Erreur SQL !<br>'.$sql.'<br>'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$req = mysqli_query($GLOBALS["mysqli"], $sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error($GLOBALS["mysqli"]));
 			$nbre = mysqli_num_rows($req);
 			if ($nbre >= 1) {
 				// on fait une boucle qui va faire un tour pour chaque enregistrement
@@ -642,7 +642,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 	}
 	// et on récupère les créneaux
-	$resultat_pe = mysqli_query($GLOBALS["mysqli"], $requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_pe = mysqli_query($GLOBALS["mysqli"], $requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	// On détermine l'affichage du selected
 	if(isset($dp_absence_eleve_erreur) and $dp_absence_eleve_erreur[$i] == "") {
 		$selected = ' selected="selected"';
@@ -685,7 +685,7 @@ if( ( $classe == 'toutes'  or ( $classe == '' and $eleve_initial == '' ) and $et
 		$requete_pe = ('SELECT * FROM edt_creneaux WHERE type_creneaux != "pause" ORDER BY heuredebut_definie_periode ASC');
 	}
 
-	$resultat_pe = mysqli_query($GLOBALS["mysqli"], $requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$resultat_pe = mysqli_query($GLOBALS["mysqli"], $requete_pe) or die('Erreur SQL !'.$requete_pe.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	// on détermine l'affichage du selected
 	if(isset($dp_absence_eleve_erreur[$i]) and $dp_absence_eleve_erreur[$i] == "") {
 		$selected = ' selected="selected"';
@@ -824,7 +824,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 	    $sql = "SELECT DISTINCT num_periode FROM periodes WHERE verouiller = 'N' ORDER BY num_periode";
 	}
 	//echo "$sql<br />";
-    $periode_active = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $periode_active = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Impossible de récupérer le numéro de la période active' . $sql . '<br />--> ' . mysqli_error($GLOBALS["mysqli"]));
     $periode = mysqli_fetch_array($periode_active);
     //echo '<pre>'; print_r($periode); echo'</pre>'; exit();
     $nbre_per = count($periode);
@@ -1004,7 +1004,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		if ($test[0] == "AID") {
 				// On a besoin du login, nom, prenom et sexe de l'élève
 			$requete_liste_eleve = "SELECT eleves.* FROM eleves, aid, j_aid_eleves WHERE eleves.login = j_aid_eleves.login AND j_aid_eleves.id_aid = aid.id AND id = '".$test[1]."' AND (eleves.date_sortie IS NULL OR eleves.date_sortie='' OR eleves.date_sortie='0000-00-00 00:00:00' OR eleves.date_sortie>'".strftime("%Y-%m-%d %H:%M:%S")."') GROUP BY eleves.login ORDER BY nom, prenom";
-			$execution_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL AID !'.$requete_liste_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		}
 		else {
 
@@ -1017,7 +1017,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 		                        GROUP BY eleves.login
 		                        ORDER BY nom, prenom";
 
-		    $execution_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		    $execution_liste_eleve = mysqli_query($GLOBALS["mysqli"], $requete_liste_eleve) or die('Erreur SQL !'.$requete_liste_eleve.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		}
 		//=====================================================================
 		$nbre_eleves=mysqli_num_rows($execution_liste_eleve);
@@ -1219,7 +1219,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 												AND fin_ts < '" . $hier_23h59 . "'
 												AND retard_absence = 'A'
 												ORDER BY debut_ts";
-		$query_hier = mysqli_query($GLOBALS["mysqli"], $sql_hier) OR DIE('ERREUR dans la requête SQL ' . $sql_hier . '<br />&nbsp;&nbsp;--> ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$query_hier = mysqli_query($GLOBALS["mysqli"], $sql_hier) OR DIE('ERREUR dans la requête SQL ' . $sql_hier . '<br />&nbsp;&nbsp;--> ' . mysqli_error($GLOBALS["mysqli"]));
 		$compter_hier = mysqli_num_rows($query_hier);
 
 		$color_hier = ($compter_hier >= 2) ? ' style="background-color: blue; text-align: center; color: white; font-weight: bold;"' : '';

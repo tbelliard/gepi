@@ -284,7 +284,7 @@ class bilan_PDF extends FPDF
 		$cpt = 0;
 
 		$requete = "SELECT " . $select_requete . " FROM " . $from_requete . " WHERE " . $where_requete . " GROUP BY " . $groupby_requete . " ORDER BY " . $orderby_requete;
-		$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 		while($donnee = mysqli_fetch_array($execution))
 		{
 

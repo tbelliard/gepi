@@ -61,6 +61,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+//debug_var();
+
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
@@ -84,6 +86,10 @@ if (isset($_POST["suppression_saisies"])) {
 include('include_requetes_filtre_de_recherche.php');
 
 include('include_pagination.php');
+
+
+$rattachement_preselection=isset($_POST['rattachement_preselection']) ? $_POST['rattachement_preselection'] : (isset($_GET['rattachement_preselection']) ? $_GET['rattachement_preselection'] : NULL);
+$id_eleve=isset($_POST['id_eleve']) ? $_POST['id_eleve'] : (isset($_GET['id_eleve']) ? $_GET['id_eleve'] : NULL);
 
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 //==============================================
@@ -303,6 +309,10 @@ $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isse
 if (isset($id_traitement) && $id_traitement != null) $_SESSION['id_traitement'] = $id_traitement;
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
+
+    // 20140429
+    $traitement_recherche_saisie_a_rattacher=$traitement;
+
     $date_debut = null;
     $date_fin = null;
     $id_eleve_array = null;
@@ -1109,6 +1119,7 @@ if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
 }
 $hier='';
 $numero_couleur=1;
+$chaine_id_checkbox="";
 foreach ($results as $saisie) {
     $aujourdhui=strftime("%d/%m/%Y", $saisie->getDebutAbs('U'));    
     if (!isFiltreRechercheParam('filter_eleve')) {
@@ -1131,7 +1142,15 @@ foreach ($results as $saisie) {
     } else {
 	$prop = 'saisie_vierge';
     }
-    echo '<td><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_'.$results->getPosition().'"/></td>';
+    $id_champ_checkbox_courant=$prop.'_'.$results->getPosition();
+    echo '<td><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$id_champ_checkbox_courant.'" ';
+    if((isset($rattachement_preselection))&&($rattachement_preselection=="y")) { echo "checked ";}
+    echo '/></td>';
+
+	if($chaine_id_checkbox!="") {
+		$chaine_id_checkbox.=", ";
+	}
+	$chaine_id_checkbox.="'$id_champ_checkbox_courant'";
 
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
@@ -1362,12 +1381,93 @@ echo '</tbody>';
 //echo '</tbody>';
 
 echo '</table>';
+
+/*
+if((isset($rattachement_preselection))&&($rattachement_preselection=="y")&&(isset($traitement_recherche_saisie_a_rattacher))) {
+	echo "<button type='submit' name='creation_traitement' value='yes' dojoType='dijit.MenuItem' onClick=\"
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'ajout_traitement');
+		element.setAttribute('value', 'yes');
+		document.liste_saisies.appendChild(element);
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'id_traitement');
+		element.setAttribute('value', '".$traitement_recherche_saisie_a_rattacher->getId()."');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				\">
+		Ajouter les saisies au traitement ";
+	$desc = $traitement_recherche_saisie_a_rattacher->getDescription();
+	if (mb_strlen($desc)>300) {
+		echo mb_substr($desc,0,300).' ... ';
+	} else {
+		echo $desc;
+	}
+	echo "</button>";
+}
+*/
+
 echo '<p>';
 if (isset($message_erreur_traitement)) {
     echo $message_erreur_traitement;
 }
 echo '</p>';
 echo '</form>';
+
+//if((isset($rattachement_preselection))&&($rattachement_preselection=="y")&&(isset($traitement_recherche_saisie_a_rattacher))) {
+if(isset($traitement_recherche_saisie_a_rattacher)) {
+	$texte_bouton="Ajouter les saisies sélectionnées au traitement ";
+	$desc = $traitement_recherche_saisie_a_rattacher->getDescription();
+	if (mb_strlen($desc)>300) {
+		$texte_bouton.=mb_substr($desc,0,300).' ... ';
+	} else {
+		$texte_bouton.=$desc;
+	}
+	$texte_bouton.="<br />Et retourner aux Absences du jour";
+
+	echo "<form action=\"".$_SERVER['PHP_SELF']."\" method='post' name='liste_saisies2' id='liste_saisies2'>
+
+	<!--input type='hidden' name='creation_traitement' value='yes'-->
+	<input type='hidden' name='ajout_traitement' value='yes'>
+	<input type='hidden' name='retour_absences_du_jour' value='yes'>
+	<input type='hidden' name='id_traitement' value='".$traitement_recherche_saisie_a_rattacher->getId()."'>
+	<input type='hidden' name='id_eleve' value='$id_eleve'>
+
+	<p style='text-align:center;'>
+		<button type='button' dojoType='dijit.form.Button' name='valider_rattachement_saisies_au_traitement' onClick=\"copier_selection_et_valider_rattachement()\" 
+			value=\"$texte_bouton\" 
+			title=\"$texte_bouton\" >
+			$texte_bouton
+		</button>
+	</p>
+</form>
+
+<script type='text/javascript'>
+	var tab_checkbox=new Array($chaine_id_checkbox);
+
+	function copier_selection_et_valider_rattachement() {
+		for(i=0;i<tab_checkbox.length;i++) {
+			if(document.getElementById(tab_checkbox[i])) {
+				if(document.getElementById(tab_checkbox[i]).checked==true) {
+					var element = document.createElement('input');
+					element.setAttribute('type', 'hidden');
+					element.setAttribute('name', 'select_saisie[]');
+					element.setAttribute('value', document.getElementById(tab_checkbox[i]).value);
+					document.liste_saisies2.appendChild(element);
+				}
+			}
+		}
+		document.liste_saisies2.submit();
+	}
+</script>
+";
+
+}
+
+
+
 echo '</div>';
 
 $javascript_footer_texte_specifique = '<script type="text/javascript">
@@ -1430,28 +1530,4 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 
 require_once("../lib/footer.inc.php");
 
-//fonction redimensionne les photos petit format
-function redimensionne_image_petit($photo)
- {
-    // prendre les informations sur l'image
-    $info_image = getimagesize($photo);
-    // largeur et hauteur de l'image d'origine
-    $largeur = $info_image[0];
-    $hauteur = $info_image[1];
-    // largeur et/ou hauteur maximum à afficher
-             $taille_max_largeur = 35;
-             $taille_max_hauteur = 35;
-
-    // calcule le ratio de redimensionnement
-     $ratio_l = $largeur / $taille_max_largeur;
-     $ratio_h = $hauteur / $taille_max_hauteur;
-     $ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
-
-    // définit largeur et hauteur pour la nouvelle image
-     $nouvelle_largeur = $largeur / $ratio;
-     $nouvelle_hauteur = $hauteur / $ratio;
-
-   // on renvoit la largeur et la hauteur
-    return array($nouvelle_largeur, $nouvelle_hauteur);
- }
 ?>

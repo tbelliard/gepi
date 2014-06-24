@@ -60,7 +60,7 @@ if(!in_array($champ, $tab_champs)) {
 	die();
 }
 
-$sql="SELECT $champ AS champ FROM matieres WHERE matiere='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $matiere) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+$sql="SELECT $champ AS champ FROM matieres WHERE matiere='".mysqli_real_escape_string($GLOBALS["mysqli"], $matiere)."';";
 //echo "$sql";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)>0) {

@@ -91,14 +91,14 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 elseif((isset($action))&&($action=="renommer_annee")&&(isset($annee))&&($annee!="")&&(isset($annee_nouveau_nom))&&($annee_nouveau_nom!="")) {
 	check_token();
 
-	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee)."';";
 	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_annee)==0) {
 		$msg="L'année <strong>$annee</strong> n'est pas enregistrée comme année antérieure.<br />\n";
 		unset($action);
 	}
 	else {
-		$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom)."';";
 		$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_annee)>0) {
 			$msg="Le nom <strong>$annee_nouveau_nom</strong> est déjà pris pour une autre année antérieure.<br />\n";
@@ -107,7 +107,7 @@ elseif((isset($action))&&($action=="renommer_annee")&&(isset($annee))&&($annee!=
 			$msg="";
 			$table=array('archivage_aids', 'archivage_appreciations_aid', 'archivage_disciplines', 'archivage_ects', 'archivage_eleves2', 'archivage_types_aid');
 			for($i=0;$i<count($table);$i++) {
-				$sql="UPDATE $table[$i] SET annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$sql="UPDATE $table[$i] SET annee='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee_nouveau_nom)."' WHERE annee='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee)."';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
 					$msg.="Erreur lors du renommage dans la table $table.<br />\n";
@@ -174,7 +174,7 @@ else {
 
 	$annee=isset($_POST['annee']) ? $_POST['annee'] : (isset($_GET['annee']) ? $_GET['annee'] : NULL);
 
-	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+	$sql="SELECT 1=1 FROM archivage_disciplines WHERE annee='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee)."';";
 	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_annee)==0) {
 		echo "<p style='color:red'>L'année <strong>$annee</strong> n'est pas enregistrée comme année antérieure.</p>\n";
@@ -182,7 +182,7 @@ else {
 		die();
 	}
 
-	$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE annee!='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $annee) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' ORDER BY annee";
+	$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE annee!='".mysqli_real_escape_string($GLOBALS["mysqli"], $annee)."' ORDER BY annee";
 	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_annee)>0) {
 		echo "<p>Vous souhaitez renommer l'année <strong>$annee</strong>.</p>\n";

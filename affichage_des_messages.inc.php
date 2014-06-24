@@ -40,7 +40,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
         if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
             if ($affiche_messages == 'yes') {
                 $autre_message = "hr";
-                $texte_messages_simpl_prof .= "<hr />";
+                //$texte_messages_simpl_prof .= "<hr />";
             }
             $affiche_messages = 'yes';
             $content = $obj->texte;
@@ -88,7 +88,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             // dans accueil.php
             if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content);
             // dans accueil_simpl_prof.php
-            $texte_messages_simpl_prof .= $content;
+            $texte_messages_simpl_prof .= "<div class='postit'>".$content."</div>";
         }
         $ind++;
     }
@@ -97,6 +97,9 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
 // pour accueil_simpl_prof.php
 if ((basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") && ($affiche_messages == 'yes')) {
 	echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
+	if((isset($liste_evenements))&&($liste_evenements!="")) {
+		echo "<tr><td>".$liste_evenements."</td></tr>";
+	}
 	echo "<tr><td>".$texte_messages_simpl_prof;
 	echo "</td></tr></table>\n";
 	}

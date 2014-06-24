@@ -988,4 +988,14 @@ div.info_abs {
 	display: inline;
 }
 
+.fieldset_opacite50 {
+	border: 1px solid grey;
+	background-image: url("../images/background/opacite50.png");
+}
+
 /*================================================*/
+
+#menu_barre li:first-letter {
+	font-weight:bold;
+}
+

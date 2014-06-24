@@ -149,7 +149,7 @@ function sql_insert_id($table, $field)
  */
 function sql_error()
 {
-    return ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+    return mysqli_error($GLOBALS["mysqli"]);
 }
 
 /**

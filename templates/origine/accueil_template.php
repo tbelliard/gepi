@@ -215,7 +215,12 @@
 
 <!-- messagerie -->
 <?php
-	if (count($afficheAccueil->message)) :
+	if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite', 'responsable', 'eleve'))) {
+		//echo "<div align='center'>".afficher_les_evenements()."</div>";
+		$liste_evenements=afficher_les_evenements();
+	}
+
+	if ((count($afficheAccueil->message))||((isset($liste_evenements))&&($liste_evenements!=""))) :
 ?>
 
 	<div class="panneau_affichage">
@@ -234,14 +239,24 @@
 			<div class="panneau_coindb"></div>
 			<div class="panneau_bas"></div>
 			<div class="panneau_centre">
-				<?php foreach ($afficheAccueil->message as $value) : ?>
+				<?php 
+				if(isset($liste_evenements)) {
+					echo "<div class='postit' title=\"Événements à venir (définis) pour vos classes.\">".$liste_evenements."</div>";
+				}
+
+				if (count($afficheAccueil->message)) :
+					foreach ($afficheAccueil->message as $value) : 
+				?>
 				<div class="postit"><?php
 					if(acces("/messagerie/index.php", $_SESSION['statut'])) {
 						echo "<div style='float:right; width:16' title=\"Éditer/modifier le message.\"><a href='$gepiPath/messagerie/index.php?id_mess=".$value['id']."'><img src='images/edit16.png' class='icone16' /></a></div>";
 					}
 					echo $value['message'];
 				?></div>
-				<?php endforeach; ?>
+				<?php
+				endforeach;
+				endif;
+				?>
 				<?php unset ($value); ?>
 			</div>
 		</div>

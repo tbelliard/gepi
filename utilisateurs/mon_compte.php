@@ -638,7 +638,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	}
 }
 
-
+//debug_var();
 if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_prof']))) {
 	check_token();
 
@@ -672,6 +672,48 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 
 	$msg.="$nb_reg enregistrement(s) effectué(s).<br />";
 	$message_accueil_simpl_prof.="<p style='color:green'>$nb_reg enregistrement(s) effectué(s).</p>";
+
+
+		$tab_grp_order=array();
+		$tab_grp_hidden=array();
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+		$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp_order)>0) {
+			while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+				$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+				if($lig_grp_order->value=='-1') {
+					$tab_grp_hidden[]=$tmp_id_groupe;
+				}
+				else {
+					$tab_grp_order[]=$tmp_id_groupe;
+				}
+			}
+		}
+
+	$accueil_simpl_afficher_grp=isset($_POST['accueil_simpl_afficher_grp']) ? $_POST['accueil_simpl_afficher_grp'] : array();
+	if(count($accueil_simpl_afficher_grp)>0) {
+		$accueil_simpl_afficher_grp_rang=isset($_POST['accueil_simpl_afficher_grp_rang']) ? $_POST['accueil_simpl_afficher_grp_rang'] : array();
+
+		$nb_reg=0;
+		$nb_err=0;
+
+		for($loop=1;$loop<count($accueil_simpl_afficher_grp)+1;$loop++) {
+			if(isset($accueil_simpl_afficher_grp_rang[$loop])) {
+				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$loop], $accueil_simpl_afficher_grp_rang[$loop])) {
+					$nb_reg++;
+				}
+				else{
+					$nb_err++;
+				}
+			}
+		}
+		$msg.="Enregistrement de l'ordre des groupes pour $nb_reg groupe(s) avec $nb_err erreur(s)<br />";
+		$message_accueil_simpl_prof.="<p style='color:green'>Enregistrement de l'ordre des groupes pour $nb_reg groupe(s).";
+		if($nb_err>0) {
+			$message_accueil_simpl_prof.="<br />$nb_err erreur(s) lors de l'enregistrement.";
+		}
+		$message_accueil_simpl_prof.="</p>";
+	}
 }
 
 //================================================================================
@@ -711,7 +753,7 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$nb_reg=0;
 	$message_cn="";
 
-	$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');
+	$tab=array('add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	for($j=0;$j<count($tab);$j++){
 		unset($valeur);
 		//$valeur=isset($_POST[$tab[$j]]) ? $_POST[$tab[$j]] : NULL;
@@ -852,6 +894,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	check_token();
 
+	$message_bulletins="";
+
 	$aff_photo_saisie_app=isset($_POST['aff_photo_saisie_app']) ? $_POST['aff_photo_saisie_app'] : "n";
 	$insert=savePref($_SESSION['login'], 'aff_photo_saisie_app', $aff_photo_saisie_app);
 	if($insert) {
@@ -859,22 +903,65 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['valide_form_bull']))) {
 	}
 	else {
 		$msg.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />\n";
-		$message_cn.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />";
+		$message_bulletins.="Erreur lors de l'enregistrement de aff_photo_saisie_app à $aff_photo_saisie_app.<br />";
 	}
 
 	$saisie_app_nb_cols_textarea=isset($_POST['saisie_app_nb_cols_textarea']) ? $_POST['saisie_app_nb_cols_textarea'] : 100;
 	if((!is_numeric($saisie_app_nb_cols_textarea))||($saisie_app_nb_cols_textarea<=0)) {
 		$msg.="Valeur invalide sur saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	elseif(!savePref($_SESSION['login'], 'saisie_app_nb_cols_textarea', $saisie_app_nb_cols_textarea)) {
 		$msg.="Erreur lors de l'enregistrement de saisie_app_nb_cols_textarea pour ".$_SESSION['login']."<br />\n";
-		$message_bulletins="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	else {
 		$msg.="Enregistrement de saisie_app_nb_cols_textarea effectué.<br />\n";
-		$message_bulletins="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$message_bulletins.="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
+
+
+
+	$id_groupe_AppPP=isset($_POST['id_groupe_AppPP']) ? $_POST['id_groupe_AppPP'] : array();
+	$id_groupe_PP_correction_autorisee=isset($_POST['id_groupe_PP_correction_autorisee']) ? $_POST['id_groupe_PP_correction_autorisee'] : array();
+
+	$cpt_modif=0;
+	$cpt_err=0;
+	for($loop=0;$loop<count($id_groupe_AppPP);$loop++) {
+		if(acces_correction_app_pp($id_groupe_AppPP[$loop])) {
+			if(isset($id_groupe_PP_correction_autorisee[$loop])) {
+				// Pas de changement.
+			}
+			else {
+				$sql="DELETE FROM groupes_param WHERE id_groupe='".$id_groupe_AppPP[$loop]."' AND name='AutoriserCorrectionAppreciationParPP';";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$del) {
+					$cpt_err++;
+				}
+				else {
+					$cpt_modif++;
+				}
+			}
+		}
+		else {
+			if(isset($id_groupe_PP_correction_autorisee[$loop])) {
+				$sql="INSERT INTO groupes_param SET id_groupe='".$id_groupe_AppPP[$loop]."', name='AutoriserCorrectionAppreciationParPP', value='y';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$cpt_err++;
+				}
+				else {
+					$cpt_modif++;
+				}
+			}
+		}
+	}
+
+	$msg.="$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."<br />";
+	$msg.="$cpt_err erreur(s) lors de l'opération.<br />";
+
+	$message_bulletins.="<span style='color:green'>$cpt_modif modification(s) d'autorisation de correction d'appréciation par le ".getSettingValue('gepi_prof_suivi')."</span><br />";
+	$message_bulletins.="<span style='color:red'>$cpt_err erreur(s) lors de l'opération.</span><br />";
 }
 
 
@@ -1213,7 +1300,7 @@ if (isset($_POST['ajout_fichier_signature'])) {
 							} else {
 								if (file_exists($dirname."/".$sign_file['name'])) {
 									@unlink($dirname."/".$sign_file['name']);
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."' AND login='".$_SESSION['login']."';";
 									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 									$msg_tmp.= "Un fichier de même nom existait pour cet utilisateur.<br />Le fichier précédent a été supprimé.<br />";
 								}
@@ -1227,10 +1314,10 @@ if (isset($_POST['ajout_fichier_signature'])) {
 									$msg_tmp.= "Le fichier a été transféré.<br />";
 
 									// Par précaution, pour éviter des blagues avec des scories...
-									$sql="DELETE FROM signature_fichiers WHERE fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."' AND login='".$_SESSION['login']."';";
+									$sql="DELETE FROM signature_fichiers WHERE fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."' AND login='".$_SESSION['login']."';";
 									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+									$sql="INSERT INTO signature_fichiers SET login='".$_SESSION['login']."', fichier='".mysqli_real_escape_string($GLOBALS["mysqli"], $sign_file['name'])."';";
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$insert) {
 										$msg_tmp.="Erreur lors de l'enregistrement dans la table 'signature_fichiers'.<br />";
@@ -2074,6 +2161,124 @@ if($_SESSION['statut']=='professeur') {
 
 	echo "</table>\n";
 
+
+	echo "<p class='bold' style='margin-top:1em;'>Vous pouvez trier/masquer des enseignements en page d'accueil simplifiée&nbsp;:</p>";
+	$tab_grp_order=array();
+	$tab_grp_hidden=array();
+	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+	$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp_order)>0) {
+		while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+			$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+			if($lig_grp_order->value=='-1') {
+				$tab_grp_hidden[]=$tmp_id_groupe;
+			}
+			else {
+				$tab_grp_order[]=$tmp_id_groupe;
+			}
+		}
+	}
+
+	// On passe en revue les groupes qui ont été triés dans Mon compte
+	$cpt=1;
+	if(count($tab_grp_order)>0) {
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_grp_order);$loop++) {
+			for($i=0;$i<count($groups);$i++) {
+				if($groups[$i]['id']==$tab_grp_order[$loop]) {
+
+					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					if(count($groups[$i]['profs']['list'])>1) {
+						echo " avec ".$groups[$i]['profs']['proflist_string'];
+					}
+					echo "</em>)"."</span>
+					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+						<option value='-1'>Ne pas afficher ce groupe</option>";
+					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+						if($loop2==$cpt) {
+							$selected=" selected";
+						}
+						else {
+							$selected="";
+						}
+						echo "
+						<option value='$loop2'$selected>$loop2</option>";
+					}
+					echo "
+					</select></br />";
+					break;
+				}
+			}
+			$cpt++;
+		}
+		echo "</p>";
+	}
+
+	// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
+	$temoin_grp_non_encore_trie="n";
+	for($i=0;$i<count($groups);$i++) {
+		if((!in_array($groups[$i]['id'], $tab_grp_order))&&(!in_array($groups[$i]['id'], $tab_grp_hidden))) {
+			if($temoin_grp_non_encore_trie=="n") {
+				echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:<br />";
+				$temoin_grp_non_encore_trie="y";
+			}
+			echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+			if(count($groups[$i]['profs']['list'])>1) {
+				echo " avec ".$groups[$i]['profs']['proflist_string'];
+			}
+			echo "</em>)"."</span>
+			<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+			<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+				<option value='-1' selected>Ne pas afficher ce groupe</option>";
+			for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+					if($loop2==$cpt) {
+					$selected=" selected";
+				}
+				else {
+					$selected="";
+				}
+				echo "
+				<option value='$loop2'$selected>$loop2</option>";
+			}
+			echo "
+			</select><br />";
+			$cpt++;
+		}
+	}
+	if($temoin_grp_non_encore_trie=="y") {
+		echo "</p>";
+	}
+
+	// Les groupes cachés
+	if(count($tab_grp_hidden)>0) {
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_grp_hidden);$loop++) {
+			for($i=0;$i<count($groups);$i++) {
+				if($groups[$i]['id']==$tab_grp_hidden[$loop]) {
+
+					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					if(count($groups[$i]['profs']['list'])>1) {
+						echo " avec ".$groups[$i]['profs']['proflist_string'];
+					}
+					echo "</em>)"."</span>
+					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
+						<option value='-1' selected>Ne pas afficher ce groupe</option>";
+					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+						echo "
+						<option value='$loop2'>$loop2</option>";
+					}
+					echo "
+					</select><br />";
+					break;
+				}
+			}
+			$cpt++;
+		}
+		echo "</p>";
+	}
+
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
 	$tabindex++;
@@ -2207,9 +2412,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo "<p>Paramétrage de la page de <b>création d'évaluation</b></p>\n";
 	echo "<div style='margin-left:3em;'>\n";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');
+		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	} else {
-		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');	
+		$tabchamps=array( 'add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite', 'add_modif_dev_display_parents', 'add_modif_dev_display_parents_app');
 	}
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
@@ -2219,9 +2424,9 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
 	$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-		$lignes_entete.="<th colspan='8'>Afficher les champs</th>\n";
+		$lignes_entete.="<th colspan='10'>Afficher les champs</th>\n";
 	} else {
-		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
+		$lignes_entete.="<th colspan='9'>Afficher les champs</th>\n";
 	}
 	$lignes_entete.="</tr>\n";
 
@@ -2238,6 +2443,8 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	$lignes_entete.="<th>Date</th>\n";
 	$lignes_entete.="<th>Date ele/resp</th>\n";
 	$lignes_entete.="<th>".casse_mot(getSettingValue("gepi_denom_boite"),'majf2')."</th>\n";
+	$lignes_entete.="<th title=\"Visibilité ou non de l'évaluation sur le relevé de notes\">Vis.CN</th>\n";
+	$lignes_entete.="<th title=\"Visibilité ou non du commentaire/appréciation sur le relevé de notes\">Vis.App.CN</th>\n";
 	$lignes_entete.="</tr>\n";
 
 	echo $lignes_entete;
@@ -2393,6 +2600,51 @@ if($_SESSION["statut"] == "professeur") {
 	echo " tabindex='$tabindex' ";
 	$tabindex++;
 	echo " />";
+
+	// 20140502
+	if((getSettingAOui('PeutAutoriserPPaCorrigerSesApp'))&&(count($groups)>0)) {
+		echo "<p style='margin-top:1em;'>Vous pouvez autoriser le ".getSettingValue('gepi_prof_suivi')." à corriger vos appréciations sur les bulletins.<br />
+(<em>vous recevrez un mail lors des modifications de vos appréciations</em>).</p>
+<p>Autoriser la modification/correction pour le ou les enseignements suivants&nbsp;:</p>
+<ul>";
+		$cpt_grp_pp=0;
+		foreach($groups as $group) {
+			/*
+			echo "<li><pre>";
+			print_r($group);
+			echo "</pre></li>";
+			*/
+
+			//if($group['visibilite']['bulletins']=="y") {
+			$sql="SELECT * FROM j_groupes_visibilite WHERE id_groupe='".$group['id']."' AND domaine='bulletins' AND visible='n';";
+			$res_vis=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_vis)==0) {
+				echo "
+	<li>
+		<input type='hidden' name='id_groupe_AppPP[$cpt_grp_pp]' value='".$group['id']."' />
+		<input type='checkbox' name='id_groupe_PP_correction_autorisee[$cpt_grp_pp]' id='id_groupe_PP_correction_autorisee_$cpt_grp_pp' value='y' onchange=\"checkbox_change('id_groupe_PP_correction_autorisee_$cpt_grp_pp');changement()\" ";
+				if(acces_correction_app_pp($group['id'])) {
+					echo "checked ";
+				}
+				echo "/><label for='id_groupe_PP_correction_autorisee_$cpt_grp_pp' id='texte_id_groupe_PP_correction_autorisee_$cpt_grp_pp'";
+				if(acces_correction_app_pp($group['id'])) {
+					echo "style='font-weight:bold;' ";
+				}
+				echo ">".$group['name']." (<em style='font-size:small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['profs']['proflist_string']."</em>)&nbsp;: ";
+				$cpt_class_grp=0;
+				foreach($group['classes']['classes'] as $current_id_classe => $current_classe) {
+					if($cpt_class_grp>0) {echo ", ";}
+					echo "<strong>".$current_classe['classe']."</strong> (<em title=\"".ucfirst(getSettingValue('gepi_prof_suivi'))."\">".liste_des_prof_suivi_de_telle_classe($current_id_classe)."</em>)";
+					$cpt_class_grp++;
+				}
+				echo "</label>
+	</li>";
+				$cpt_grp_pp++;
+			}
+		}
+		echo "
+</ul>";
+	}
 
 	echo "<p style='text-align:center;'>\n";
 	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";

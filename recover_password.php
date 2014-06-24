@@ -114,7 +114,7 @@ if (isset($_POST['login'])) {
 	        		$message = "Erreur lors de l'envoi du courriel.";
 	        	}
 	        } else {
-	        	echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+	        	echo mysqli_error($GLOBALS["mysqli"]);
 	        }
 		} // Fin: statut autorisé
 	} else {

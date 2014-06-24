@@ -285,7 +285,7 @@ else {
 						}
 						else {
 							// Création d'un cahier de notes 
-							$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='". ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
+							$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"])."', nom_complet='". mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"])."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
 							$creation_cnc=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($creation_cnc) {
 								$id_cahier_notes_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
@@ -318,9 +318,9 @@ else {
 									echo "Création de $lig_dev_src->nom_court ($lig_dev_src->date)&nbsp;: ";
 									$sql="INSERT INTO cn_devoirs SET id_racine='$id_cahier_notes_dest', 
 										id_conteneur='$id_cahier_notes_dest', 
-										nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
-										nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
-										description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+										nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court)."', 
+										nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet)."', 
+										description='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description)."', 
 										facultatif='".$lig_dev_src->facultatif."', 
 										date='".$lig_dev_src->date."', 
 										coef='".$lig_dev_src->coef."', 
@@ -430,7 +430,7 @@ else {
 					$sql="SELECT * FROM ct_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
 					$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig_cte=mysqli_fetch_object($res_cte)) {
-						$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
+						$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
@@ -455,7 +455,7 @@ else {
 					$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
 					$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig_cte=mysqli_fetch_object($res_cte)) {
-						$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
+						$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
@@ -544,7 +544,7 @@ else {
 							}
 							else {
 								// Création d'un cahier de notes
-								$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', nom_complet='". ((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
+								$sql="INSERT INTO cn_conteneurs SET id_racine='', nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["description"])."', nom_complet='". mysqli_real_escape_string($GLOBALS["mysqli"], $current_group_dest["matiere"]["nom_complet"])."', description = '', mode = '2', coef = '1.0', arrondir = 's1', ponderation = '0.0', display_parents = '0', display_bulletin = '1', parent = '0'";
 								$creation_cnc=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($creation_cnc) {
 									$id_cahier_notes_dest=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
@@ -569,9 +569,9 @@ else {
 										echo "Création de $lig_dev_src->nom_court ($lig_dev_src->date)&nbsp;: ";
 										$sql="INSERT INTO cn_devoirs SET id_racine='$id_cahier_notes_dest', 
 											id_conteneur='$id_cahier_notes_dest', 
-											nom_court='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
-											nom_complet='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
-											description='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', 
+											nom_court='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_court)."', 
+											nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->nom_complet)."', 
+											description='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_dev_src->description)."', 
 											facultatif='".$lig_dev_src->facultatif."', 
 											date='".$lig_dev_src->date."', 
 											coef='".$lig_dev_src->coef."', 
@@ -685,7 +685,7 @@ else {
 						$sql="SELECT * FROM ct_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
 						$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_cte=mysqli_fetch_object($res_cte)) {
-							$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
+							$sql="INSERT INTO ct_entry SET id_groupe='".$id_groupe_dest[$i]."', heure_entry='".$lig_cte->heure_entry."', date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', visa='".$lig_cte->visa."';";
 							//echo "$sql<br />";
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
@@ -711,7 +711,7 @@ else {
 						$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='".$id_groupe_src[$i]."' ORDER BY date_ct;";
 						$res_cte=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_cte=mysqli_fetch_object($res_cte)) {
-							$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
+							$sql="INSERT INTO ct_devoirs_entry SET id_groupe='".$id_groupe_dest[$i]."',date_ct='".$lig_cte->date_ct."', id_login='".$lig_cte->id_login."', contenu='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_cte->contenu)."', vise='".$lig_cte->vise."', id_sequence='".$lig_cte->id_sequence."', date_visibilite_eleve='".$lig_cte->date_visibilite_eleve."';";
 							//echo "$sql<br />";
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {

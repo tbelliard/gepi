@@ -465,7 +465,7 @@ if(!empty($model_bulletin)) {
 		$requete_periode_select ="SELECT * FROM ".$prefix_base."periodes p, ".$prefix_base."j_eleves_classes jec WHERE ( (".$prepa_requete.") AND jec.id_classe = p.id_classe ) GROUP BY p.num_periode, p.id_classe ORDER BY p.nom_periode";
 	}
 
-	$execution_periode_select = mysqli_query($GLOBALS["mysqli"], $requete_periode_select) or die('Erreur SQL !'.$requete_periode_select.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_periode_select = mysqli_query($GLOBALS["mysqli"], $requete_periode_select) or die('Erreur SQL !'.$requete_periode_select.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee_periode_select = mysqli_fetch_array($execution_periode_select) )
 	{
 		// nom de la période ex: 1er trimestre
@@ -703,7 +703,7 @@ if(!empty($model_bulletin)) {
 		if($cpt_etab_origine != 0) {
 			//$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$ident_eleve_sel1."' AND jee.id_etablissement = etab.id";
 			$requete_etablissement_origine = "SELECT * FROM ".$prefix_base."j_eleves_etablissements jee, ".$prefix_base."etablissements etab WHERE jee.id_eleve = '".$elenoet_eleve[$cpt_i]."' AND jee.id_etablissement = etab.id";
-			$execution_etablissement_origine = mysqli_query($GLOBALS["mysqli"], $requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$execution_etablissement_origine = mysqli_query($GLOBALS["mysqli"], $requete_etablissement_origine) or die('Erreur SQL !'.$requete_etablissement_origine.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 			while ($donnee_etablissement_origine = mysqli_fetch_array($execution_etablissement_origine))
 			{
 				$current_eleve_etab_id = $donnee_etablissement_origine['id'];

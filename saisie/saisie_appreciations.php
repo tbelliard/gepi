@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -150,6 +150,8 @@ echo "<pre>";
 print_r($current_group);
 echo "</pre>";
 */
+
+$prefixe_debug=strftime("%Y%m%d %H%M%S")." : ".$_SESSION['login'];
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -406,24 +408,35 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 						}
 						else {
 							$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+							fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 							$test_correction=mysqli_query($GLOBALS["mysqli"], $sql);
 							$test=mysqli_num_rows($test_correction);
 							if ($test!="0") {
 								if ($app!="") {
 									$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";} 
+									if (!$register) {
+										$msg = $msg."Erreur lors de l'enregistrement des corrections pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
 										$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								} else {
 									$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";} 
+									if (!$register) {
+										$msg = $msg."Erreur lors de la suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de la suppression de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Suppression de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectuée.<br />";
 										$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Suppression de la proposition de correction.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								}
 				
@@ -431,11 +444,16 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							else {
 								if ($app != "") {
 									$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
+									fich_debug_proposition_correction_app($prefixe_debug." : $sql\n");
 									$register=mysqli_query($GLOBALS["mysqli"], $sql);
-									if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";}
+									if (!$register) {
+										$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode.<br />";
+										fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l'enregistrement de la proposition de correction pour $correction_login_eleve\n");
+									}
 									else {
 										$msg.="Enregistrement de la proposition de correction pour <a href='".$_SERVER['PHP_SELF']."#saisie_app_".$correction_login_eleve."' title=\"Aller à l'appréciation proposée pour élève.\">$correction_nom_prenom_eleve</a> sur la période $correction_periode effectué.<br />";
 										$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\r\n\r\nVous pouvez valider ou rejeter la proposition en vous connectant avec un compte de statut scolarité ou secours.\r\nVous trouverez en page d'accueil, dans la rubrique Saisie, un message en rouge concernant la Correction de bulletins.\r\n";
+										fich_debug_proposition_correction_app($prefixe_debug." : Proposition de correction soumise.\nTexte du mail : \n".$texte_mail."\n");
 									}
 								}
 							}
@@ -792,7 +810,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 }
 
 if($_SESSION['statut']=='professeur') {
-	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
+	echo " | <a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\" title=\"Si certains élèves sont affectés à tort dans cet enseignement, ou si il vous manque certains élèves, vous pouvez dans cette page signaler l'erreur à l'administrateur Gepi.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Signaler des erreurs d'affectation <img src='../images/icons/ico_attention.png' class='icone16' alt='Erreur' /></a>";
 }
 
 echo "</p>\n";
@@ -880,8 +898,8 @@ echo "<p><b>Groupe : " . htmlspecialchars($current_group["description"]) ." (".$
 
 if ($multiclasses) {
 	echo "<p>Affichage :";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe'>Regrouper les élèves par classe</a>";
-	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom'>Afficher la liste par ordre alphabétique</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Regrouper les élèves par classe</a>";
+	echo "<br/>-> <a href='saisie_appreciations.php?id_groupe=$id_groupe&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Afficher la liste par ordre alphabétique</a>";
 	echo "</p>\n";
 }
 
@@ -1466,7 +1484,7 @@ foreach ($liste_eleves as $eleve_login) {
 				if($liste_notes_detaillees!='') {
 
 					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
-					$texte="";
+					$texte="<div style='float:right; width:16px' title=\"Visualiser les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
 					$texte.=$liste_notes_detaillees;
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
@@ -1735,8 +1753,13 @@ $msg_acces_app_ele_resp\" />";
 					}
 				}
 
+				if(($_SESSION['statut']=='secours')&&($id_premiere_classe!='')) {
+					echo " <a href='../saisie/saisie_secours_eleve.php?id_classe=$id_premiere_classe&periode_num=$k&ele_login=$eleve_login' title=\"Corriger les appréciations et notes de cet élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='' /></a>";
+				}
+
 				echo "</td>\n";
 			}
+
 			echo $mess[$k];
 			$k++;
 		}

@@ -76,6 +76,8 @@ $titre_page = "Fiches brevet | Vérification des saisies";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
 // Bibliothèque pour Notanet et Fiches brevet

@@ -429,8 +429,8 @@
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-							$sql.="nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
-							$sql.="prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+							$sql.="nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"])."', ";
+							$sql.="prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"])."', ";
 							if(isset($personnes[$i]["lc_civilite"])){
 								$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 							}
@@ -444,7 +444,7 @@
 								$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
 							}
 							if(isset($personnes[$i]["mel"])){
-								$sql.="mel='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["mel"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+								$sql.="mel='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["mel"])."', ";
 							}
 							if(isset($personnes[$i]["adresse_id"])){
 								$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
@@ -480,11 +480,11 @@
 										}
 									}
 									else {
-										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', prenom='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"])."', ";
 										if(isset($personnes[$i]["lc_civilite"])){
 											$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
 										}
-										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
 										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 										$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert_u) {
@@ -793,27 +793,27 @@
 					$sql="INSERT INTO resp_adr SET ";
 					$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
 					if(isset($adresses[$i]["ligne1_adresse"])){
-						$sql.="adr1='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne1_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr1='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne1_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne2_adresse"])){
-						$sql.="adr2='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne2_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr2='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne2_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne3_adresse"])){
-						$sql.="adr3='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne3_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr3='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne3_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["ligne4_adresse"])){
-						$sql.="adr4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne4_adresse"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="adr4='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ligne4_adresse"])."', ";
 					}
 					if(isset($adresses[$i]["code_postal"])){
 						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
 					}
 					if(isset($adresses[$i]["ll_pays"])){
-						$sql.="pays='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ll_pays"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="pays='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["ll_pays"])."', ";
 					}
 					if(isset($adresses[$i]["libelle_postal"])){
-						$sql.="commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["libelle_postal"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["libelle_postal"])."', ";
 					} elseif(isset($adresses[$i]["commune_etrangere"])) {
-						$sql.="commune='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["commune_etrangere"]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."', ";
+						$sql.="commune='".mysqli_real_escape_string($GLOBALS["mysqli"], $adresses[$i]["commune_etrangere"])."', ";
 					}
 					$sql=mb_substr($sql,0,mb_strlen($sql)-2);
 					$sql.=";";

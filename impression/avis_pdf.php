@@ -61,7 +61,7 @@ if (!checkAccess()) {
 	die();
 }
 
-
+//debug_var();
 
 // LES OPTIONS DEBUT
 //if (!isset($_SESSION['avis_pdf_marge_haut'])) { $MargeHaut = 10 ; } else {$MargeHaut =  $_SESSION['avis_pdf_marge_haut'];}
@@ -110,7 +110,9 @@ $h_cell=getPref($_SESSION['login'],'avis_pdf_h_ligne',8);
 //if (!isset($_SESSION['avis_pdf_l_nomprenom'])) { $l_cell_nom = 40 ; } else {$l_cell_nom =  $_SESSION['avis_pdf_l_nomprenom'];} // la largeur de la colonne nom - prénom
 $l_cell_nom=getPref($_SESSION['login'],'avis_pdf_l_nomprenom',40);
 
-$l_cell_mentions=getPref($_SESSION['login'],'avis_pdf_l_mentions',40);
+$l_cell_mentions=getPref($_SESSION['login'],'avis_pdf_l_mentions',30);
+
+$l_cell_avertissements=getPref($_SESSION['login'],'avis_pdf_l_avertissements',20);
 
 //if (!isset($_SESSION['avis_pdf_affiche_pp'])) { $option_affiche_pp = 1 ; } else {$option_affiche_pp =  $_SESSION['avis_pdf_affiche_pp'];}// 0 On n'affiche pas le PP 1 on l'affiche
 $option_affiche_pp=getPref($_SESSION['login'],'avis_pdf_affiche_pp',1);
@@ -146,11 +148,15 @@ $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"]
 
 
 //if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;} 
-if (!(is_numeric($id_periode))) {
-	$id_periode=1;
-	$nb_periodes=1;
+if((isset($id_classe))&&(is_numeric($id_classe))&&(isset($id_periode))&&($id_periode=="toutes")) {
+	// Récupérer la liste des périodes et la mettre en $_SESSION (fait plus bas)
 }
-
+else {
+	if (!(is_numeric($id_periode))) {
+		$id_periode=1;
+		$nb_periodes=1;
+	}
+}
 $nb_pages = 0;
 $nb_eleves = 0;
 
@@ -182,18 +188,47 @@ if (!isset($_GET['periode_num'])) {
 	//On récupère dans la session
 	if ($_SESSION['id_liste_periodes']!=NULL) {
 		$id_liste_periodes=$_SESSION['id_liste_periodes'];
-	//unset($_SESSION['id_liste_periodes']);
+		//unset($_SESSION['id_liste_periodes']);
 		$id_periode=$id_liste_periodes[0];
 		//debug_var();
 	}
 
 	if ($id_liste_periodes!=NULL) {
 		//print_r($id_liste_periodes);
-	    $nb_periodes = sizeof($id_liste_periodes);
-		//echo $nb_periodes;		
-	} 
+		$nb_periodes = sizeof($id_liste_periodes);
+		$_SESSION['id_liste_periodes']=$id_liste_periodes;
+		//echo $nb_periodes;
+	}
+} elseif(($_GET['periode_num']=='toutes')&&(isset($id_classe))&&(is_numeric($id_classe))) {
+	$nb_periodes=1;
+
+	// Récupérer la liste des périodes et la mettre en $_SESSION
+	$sql="SELECT MAX(num_periode) AS max_per FROM periodes p, 
+									avis_conseil_classe acc, 
+									j_eleves_classes jec 
+								WHERE p.id_classe='$id_classe' AND 
+									p.id_classe=jec.id_classe AND 
+									p.num_periode=jec.periode AND 
+									p.num_periode=acc.periode AND 
+									jec.login=acc.login;";
+	$res_max=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_max)>0) {
+		$lig_max=mysqli_fetch_object($res_max);
+		$nb_periodes=$lig_max->max_per;
+
+		unset($_SESSION['id_liste_periodes']);
+		for($i=1;$i<=$nb_periodes;$i++) {
+			$_SESSION['id_liste_periodes'][]=$i;
+		}
+
+		$id_liste_periodes=$_SESSION['id_liste_periodes'];
+		$id_periode=$id_liste_periodes[0];
+	}
+
 } else {
-   $nb_periodes=1;
+	unset($_SESSION['id_liste_periodes']);
+	$_SESSION['id_liste_periodes'][0]=$id_periode;
+	$nb_periodes=1;
 }
 
 //echo " ".$nb_pages;
@@ -206,6 +241,28 @@ if ($affiche=='y') {
 	print_r($tab_mentions);
 	echo "</pre>";
 	//die();
+}
+
+if(getSettingAOui('active_mod_discipline')) {
+	$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	/*
+	// Récupérer les avertissements des élèves de la classe pour la période en cours.
+	if(count($tab_type_avertissement_fin_periode)>0) {
+		//get_tab_avertissement_classe();
+		//liste_avertissements_fin_periode_classe()
+
+		// A FAIRE : 20140330
+		//echo "\$donnees_eleves[0]['id_periode']=".$donnees_eleves[0]['id_periode']."<br />";
+		for($loop=0;$loop<count($_SESSION['id_liste_periodes']);$loop++) {
+			$tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]]=liste_avertissements_fin_periode_classe($id_classe, $_SESSION['id_liste_periodes'][$loop], "nom_court", "n");
+		}
+
+		if(count($tab_avt_ele)>0) {
+			$avec_col_avertissements="y";
+			$l_cell_avis-=$l_cell_avertissements;
+		}
+	}
+	*/
 }
 
 // Cette boucle crée les différentes pages du PDF (page = un entête et des lignes par élèves.
@@ -223,10 +280,10 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	} //fin c'est une classe
 		
 	//IMPRESSION A LA CHAINE
-	if ($id_liste_groupes!=NULL) {	     
+	if ($id_liste_groupes!=NULL) {
 		$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_liste_periodes,$nb_eleves);
 		$id_groupe=$id_liste_groupes[$i_pdf];
-		//$id_classe=$donnees_eleves[0]['id_classe'];		
+		//$id_classe=$donnees_eleves[0]['id_classe'];
 	}
 
 	if ($id_liste_classes!=NULL) {
@@ -236,7 +293,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	}
 
 
-	//Info pour le debug.	
+	//Info pour le debug.
 	$affiche='n';
 	if ($affiche=='y') {
 		echo "<pre>";
@@ -308,6 +365,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 		$current_classe = old_mysql_result($calldata, 0, "classe");
 	} else {
+		// BIZARRE
 		$sql = "SELECT * FROM classes WHERE id = '$id_classe'";
 		$calldata = mysqli_query($GLOBALS["mysqli"], $sql);
 		$current_classe = old_mysql_result($calldata, 0, "classe");
@@ -361,7 +419,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			}
 			else{
 				$lig_tmp=mysqli_fetch_object($res_per);
-				$periode=$lig_tmp->nom_periode;			
+				$periode=$lig_tmp->nom_periode;
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
 			}
@@ -400,9 +458,48 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		}
 	}
 
+	$avec_col_avertissements="n";
+	if(getSettingAOui('active_mod_discipline')) {
+		// Récupérer les avertissements des élèves de la classe pour la période en cours.
+		if(count($tab_type_avertissement_fin_periode)>0) {
+			//get_tab_avertissement_classe();
+			//liste_avertissements_fin_periode_classe()
+
+			// A FAIRE : 20140330
+			//echo "\$donnees_eleves[0]['id_periode']=".$donnees_eleves[0]['id_periode']."<br />";
+
+			unset($tab_avt_ele);
+			for($loop=0;$loop<count($_SESSION['id_liste_periodes']);$loop++) {
+				$tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]]=liste_avertissements_fin_periode_classe($id_classe, $_SESSION['id_liste_periodes'][$loop], "nom_court", "n");
+
+				if(count($tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]])>0) {
+					$avec_col_avertissements="y";
+				}
+			}
+			/*
+			$tab_avt_ele=liste_avertissements_fin_periode_classe($id_classe, $donnees_eleves[0]['id_periode'], "nom_court", "n");
+			if(count($tab_avt_ele)>0) {
+				$avec_col_avertissements="y";
+				$l_cell_avis-=$l_cell_avertissements;
+			}
+			*/
+			if($avec_col_avertissements=="y") {
+				$l_cell_avis-=$l_cell_avertissements;
+			}
+		}
+	}
+
+	$X_nom_prenom=$X_tableau;
+	$X_avis_conseil=$X_tableau+$l_cell_nom;
+	$X_mention=$X_tableau+$l_cell_nom+$l_cell_avis;
+	$X_avertissement=$X_tableau+$l_cell_nom+$l_cell_avis;
+	if($avec_col_mention=="y") {
+		$X_avertissement+=$l_cell_mentions;
+	}
+
 	// Boucle sur les eleves de la classe courante:
 	$compteur_eleves_page=0;
-	while($nb_eleves_i < $nb_eleves) {	
+	while($nb_eleves_i < $nb_eleves) {
 		$login_elv = $donnees_eleves[$nb_eleves_i]['login'];
 		$sql_current_eleve_avis = "SELECT avis,id_mention FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 		//echo "$sql_current_eleve_avis<br />\n";
@@ -445,7 +542,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 
 		// Colonne Nom_Prenom
-		$pdf->SetXY($X_tableau,$y_tmp);
+		$pdf->SetXY($X_nom_prenom,$y_tmp);
 		$pdf->SetFont('DejaVu','B',9);		
 		$texte = my_strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".casse_mot($donnees_eleves[$nb_eleves_i]['prenom'],'majf2');
 
@@ -455,7 +552,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		//$info_debug=$y_tmp;
 		$info_debug="";
 		//cell_ajustee("<b>".$texte."</b>".$info_debug,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
-		cell_ajustee("<b>".$texte."</b>".$info_debug,$X_tableau,$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+		cell_ajustee("<b>".$texte."</b>".$info_debug,$X_nom_prenom,$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 
 		//================================
 		// Colonne Avis du conseil de classe:
@@ -463,7 +560,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		// On reforce l'ordonnee pour la colonne Avis du conseil de classe
 		$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 
-		$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp);
+		$pdf->Setxy($X_avis_conseil,$y_tmp);
 
 		if ($nb_periodes==1) {
 			if ($current_eleve_avis != '') {
@@ -504,7 +601,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 				}
 			}
 
-			$pdf->Setxy($X_tableau+$l_cell_nom+$l_cell_avis,$y_tmp);
+			$pdf->Setxy($X_mention,$y_tmp);
 
 			$pdf->SetFont('DejaVu','',7.5);
 
@@ -513,6 +610,37 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			$taille_min_police=ceil($taille_max_police/3);
 			$largeur_dispo=$l_cell_mentions;
 			cell_ajustee($current_eleve_mention,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+		}
+
+		//================================
+		// Colonne avertissements
+		//$avec_col_avertissements="n";
+		if($avec_col_avertissements=="y") {
+			$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
+
+			$current_avertissement="";
+			if(isset($tab_avt_ele[$donnees_eleves[$nb_eleves_i]['id_periode']][$login_elv])) {
+				$current_avertissement=$tab_avt_ele[$donnees_eleves[$nb_eleves_i]['id_periode']][$login_elv];
+			}
+
+			if ($nb_periodes>1) {
+				$texte = "P".$donnees_eleves[$nb_eleves_i]['id_periode']." : ";
+				if ($current_avertissement != '') {
+					$current_avertissement = $texte." ".$current_avertissement;
+				} else {
+					$current_avertissement =$texte." ";
+				}
+			}
+
+			$pdf->Setxy($X_avertissement,$y_tmp);
+
+			$pdf->SetFont('DejaVu','',7.5);
+
+			$hauteur_caractere_appreciation=9;
+			$taille_max_police=$hauteur_caractere_appreciation;
+			$taille_min_police=ceil($taille_max_police/3);
+			$largeur_dispo=$l_cell_avertissements;
+			cell_ajustee($current_avertissement,$pdf->GetX(),$y_tmp,$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
 
 		}
 

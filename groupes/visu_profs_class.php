@@ -57,6 +57,7 @@ else {
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
 $export=isset($_GET['export']) ? $_GET["export"] : (isset($_POST['export']) ? $_POST["export"] : NULL);
 
+$acces_classe="n";
 // Remplissage d'un tableau pour la classe choisie
 if((isset($id_classe))&&(is_numeric($id_classe))) {
 	$acces_classe="y";
@@ -259,7 +260,67 @@ if((isset($id_classe))&&(is_numeric($id_classe))&&(isset($export))&&($export=='c
 	send_file_download_headers('text/x-csv',$nom_fic);
 	echo echo_csv_encoded($csv);
 	die();
+}
 
+if((isset($_GET['export_prof_suivi']))&&(isset($export))&&($export=='csv')) {
+	$msg="";
+
+	if($_SESSION['statut']=='scolarite'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	if($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='cpe'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+	}
+	if($_SESSION['statut']=='administrateur'){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
+		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+	}
+
+	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_classes = mysqli_num_rows($result_classes);
+	$tab_classe=array();
+	if(mysqli_num_rows($result_classes)==0){
+		$msg="<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+	}
+	else {
+		$nb_classes=mysqli_num_rows($result_classes);
+		while($lig_class=mysqli_fetch_object($result_classes)){
+			$tab_classe[$lig_class->id]=$lig_class->classe;
+		}
+
+		$pp=ucfirst(getSettingValue('gepi_prof_suivi'));
+		$csv="Classe;".$pp.";Mails;\r\n";
+
+		$tab_pp=get_tab_prof_suivi();
+		foreach($tab_classe as $current_id_classe => $current_classe) {
+			if(isset($tab_pp[$current_id_classe])) {
+				for($loop=0;$loop<count($tab_pp[$current_id_classe]);$loop++) {
+					$csv.=$current_classe.";".civ_nom_prenom($tab_pp[$current_id_classe][$loop]).";".get_mail_user($tab_pp[$current_id_classe][$loop]).";\r\n";
+				}
+			}
+		}
+
+		$nom_fic=remplace_accents($pp, "all").".csv";
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
+	}
 }
 
 //**************** EN-TETE **************************************
@@ -717,6 +778,7 @@ else {
 		echo "<option value='$id_classe'>" . htmlspecialchars($classe) . "</option>\n";
 	}
 	*/
+	$tab_classe=array();
 	if(mysqli_num_rows($result_classes)==0){
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
@@ -736,17 +798,46 @@ else {
 			}
 			//echo "<option value='$lig_class->id'>" . htmlspecialchars("$lig_class->classe") . "</option>\n";
 			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id".$ajout_href_2."'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
+			$tab_classe[$lig_class->id]=$lig_class->classe;
 			$cpt++;
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 	}
-	/*
-	echo "</select>\n";
-	echo "<input type='submit' value='Valider' />\n";
-	echo "</form>\n";
-	*/
+
+	// Tableau des PP
+	echo "<a name='liste_pp'></a>
+<div align='center'>
+	<table class='boireaus boireaus_alt'>
+		<tr>
+			<th>Classe</th>
+			<th>
+				<div style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>
+				".ucfirst(getSettingValue('gepi_prof_suivi'))."
+			</th>
+		</tr>";
+	$tab_pp=get_tab_prof_suivi();
+	foreach($tab_classe as $current_id_classe => $current_classe) {
+		echo "
+		<tr>
+			<td>$current_classe</td>
+			<td>";
+		if(isset($tab_pp[$current_id_classe])) {
+			for($loop=0;$loop<count($tab_pp[$current_id_classe]);$loop++) {
+				if($loop>0) {echo "<br />";}
+				$designation_user=civ_nom_prenom($tab_pp[$current_id_classe][$loop]);
+				echo "<div style='float:right; width:16px'>".affiche_lien_mailto_si_mail_valide($tab_pp[$current_id_classe][$loop], $designation_user)."</div>";
+				echo $designation_user;
+			}
+		}
+			echo "</td>
+		</tr>";
+	}
+	echo "
+	</table>
+</div>";
+
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");

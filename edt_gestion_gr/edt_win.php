@@ -153,7 +153,7 @@ if ($var2 == "changer_nom") {
 // On traite la modification si elle est demandée (liste d'élèves : obsolète)
 if ($action == "modifier_gr") {
 	$sql_m = "UPDATE edt_gr_nom SET nom = '".$nom_gr."', nom_long = '".$nom_long_gr."' WHERE id = '".$var."'";
-	$query_m = mysqli_query($GLOBALS["mysqli"], $sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+	$query_m = mysqli_query($GLOBALS["mysqli"], $sql_m) OR trigger_error('Impossible de mettre à jour ce groupe '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 	if ($query_m) {
 		// On ferme la fenêtre
 		echo '<html><body><p>La modification a bien été enregistrée, vous pouvez fermer cette fenêtre et rafraichir votre navigateur.</p></body></html>';

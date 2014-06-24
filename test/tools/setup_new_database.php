@@ -22,7 +22,7 @@ while (!feof($fd)) {
 		$reg = mysqli_query($GLOBALS["mysqli"], $query);
 		if (!$reg) {
 			echo "ERROR : '$query' : \n";
-			echo "Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
+			echo "Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."\n";
 			$result_ok = 'no';
 		}
 	}
@@ -42,7 +42,7 @@ if ($result_ok == 'yes') {
 			$reg = mysqli_query($GLOBALS["mysqli"], $query);
 			if (!$reg) {
 				echo "ERROR : '$query' \n";
-				echo "Erreur retournée : ".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."\n";
+				echo "Erreur retournée : ".mysqli_error($GLOBALS["mysqli"])."\n";
 				$result_ok = 'no';
 			}
 		}

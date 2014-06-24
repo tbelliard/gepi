@@ -208,15 +208,33 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		saveSetting("login_sso_url", $_POST['login_sso_url']);
 	}
 
-  if (isset($_POST['cas_attribut_prenom'])) {
+	if (isset($_POST['cas_attribut_prenom'])) {
 	    saveSetting("cas_attribut_prenom", $_POST['cas_attribut_prenom']);
 	}
-  if (isset($_POST['cas_attribut_nom'])) {
+	if (isset($_POST['cas_attribut_nom'])) {
 	    saveSetting("cas_attribut_nom", $_POST['cas_attribut_nom']);
 	}
-  if (isset($_POST['cas_attribut_email'])) {
+	if (isset($_POST['cas_attribut_email'])) {
 	    saveSetting("cas_attribut_email", $_POST['cas_attribut_email']);
 	}
+
+	// 20140301
+	if (isset($_POST['auth_sso_ne_pas_vider_MDP_gepi'])) {
+		$auth_sso_ne_pas_vider_MDP_gepi="y";
+	} else {
+		$auth_sso_ne_pas_vider_MDP_gepi="n";
+	}
+	saveSetting("auth_sso_ne_pas_vider_MDP_gepi", $auth_sso_ne_pas_vider_MDP_gepi);
+
+	if (isset($_POST['autoriser_sso_password_auth'])) {
+		$autoriser_sso_password_auth="y";
+	} else {
+		$autoriser_sso_password_auth="n";
+	}
+	saveSetting("autoriser_sso_password_auth", $autoriser_sso_password_auth);
+
+	saveSetting("auth_sso_secours_msg", $_POST['auth_sso_secours_msg']);
+
 }
 
 if (isset($_POST['valid_choix_saisie_mail'])) {
@@ -630,9 +648,9 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 	echo "<p>\n";
 	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service qui va se connecter si possible en https (<em>exemple : https://localhost/mon-appli</em>) </label>\n";
 	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
-	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (<em>laisser vide si votre instalation de sacoche est mono établissement</em>)</label>\n";
+	echo "<label for='sacoche_base' style='cursor: pointer;'>Numéro de base sacoche (<em>laisser vide si votre installation de sacoche est mono établissement</em>)</label>\n";
 	echo "<input type='text' size='5' name='sacoche_base' value='".getSettingValue("sacoche_base")."' id='sacoche_base' />\n<br/>";
-	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
+	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadata/saml20-sp-remote.php';
         try {
             require_once('../lib/simplesaml/lib/_autoload.php');
             $config = SimpleSAML_Configuration::getConfig();
@@ -766,6 +784,34 @@ echo " /> <label for='sso_cas_table' style='cursor: pointer;'>Sessions SSO CAS u
 echo "</label>\n";
 echo "</p>\n";
 
+
+// 20140301
+$auth_sso_secours_msg=getSettingValue('auth_sso_secours_msg');
+if($auth_sso_secours_msg=="") {
+	$auth_sso_secours_msg="<h1 style='color:red; text-align:center'>L'authentification SSO-CAS de l'Espace Numerique de Travail fait encore des siennes.<br />Cet accès de secours vous est proposé.</h1>";
+	saveSetting('auth_sso_secours_msg', $auth_sso_secours_msg);
+}
+echo "<h4>Accès de secours</h4>
+<p>Il peut arriver que l'authentification CAS ait des défaillances.<br />
+Dans ce cas, il peut être commode de conserver des mots de passe dans la base Gepi pour vos utilisateurs<br />
+(<em>il n'est cependant pas possible d'assurer une synchronisation des mots de passe entre le SSO (ENT ou autre) et la base Gepi</em>).<br />
+<input type='checkbox' name='auth_sso_ne_pas_vider_MDP_gepi' value='y' id='auth_sso_ne_pas_vider_MDP_gepi'".(getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi') ? " checked='checked' " : "")." /><label for='auth_sso_ne_pas_vider_MDP_gepi' style='cursor: pointer;'> Ne pas vider les mots de passe dans la base Gepi lorsque l'on passe du mode d'authentification 'gepi' au mode 'sso'.</label></p>
+
+<br />
+
+<p>Pour permettre l'authentification par compte/mot de passe pour des utilisateurs dont le mode d'authentification est 'sso', il faut en activer la possibilité ci-dessous&nbsp;:<br />
+<input type='checkbox' name='autoriser_sso_password_auth' value='y' id='autoriser_sso_password_auth'".(getSettingAOui('autoriser_sso_password_auth') ? " checked='checked' " : "")." /><label for='autoriser_sso_password_auth' style='cursor: pointer;'> Autoriser l'authentification par (compte;mot de passe) sur la base Gepi pour des comptes dont le mode d'authentification est 'sso'.</label><br />
+Cette option ne devrait être activée que lorsque l'authentification SSO fait des siennes.<br />
+La page de login à utiliser/proposer est alors '<strong>https://SERVEUR/CHEMIN/login.php?auth_sso_secours=y</strong>'<br />
+A vous de créer un lien vers cette URL depuis la page de votre choix.</p>
+
+<br />
+
+<p>Message à afficher en page de login pour cet accès de secours&nbsp;:<br />
+<textarea name='auth_sso_secours_msg' id='auth_sso_secours_msg' cols='60' onchange='changement();'>".stripslashes(getSettingValue('auth_sso_secours_msg'))."</textarea>
+</p>\n";
+
+
 echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>\n";
 
 echo "<input type='hidden' name='auth_options_posted' value='1' />\n";
@@ -774,7 +820,6 @@ echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "
 	</fieldset>
 </form>
-
 
 
 <hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
@@ -819,6 +864,7 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 <hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
 
 //===========================================================
+
 
 //
 // Durée de conservation des logs

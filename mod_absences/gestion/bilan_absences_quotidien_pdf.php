@@ -275,7 +275,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	// compteur de classe temporaire
 	$cpt_classe = 0;
 
-	$execution_classes = mysqli_query($GLOBALS["mysqli"], $requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution_classes = mysqli_query($GLOBALS["mysqli"], $requete_classes) or die('Erreur SQL !'.$requete_classes.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 	while ( $donnee_classes = mysqli_fetch_array($execution_classes) )
 	{
 
@@ -297,7 +297,7 @@ function redimensionne_image_logo($photo, $L_max, $H_max)
 	$eleve_precedent = '';
 	$classe_precedent = '';
 
-	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$execution = mysqli_query($GLOBALS["mysqli"], $requete) or die('Erreur SQL !'.$requete.'<br />'.mysqli_error($GLOBALS["mysqli"]));
 
 	while ( $donnee = mysqli_fetch_array($execution))
 	{

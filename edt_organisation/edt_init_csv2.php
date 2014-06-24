@@ -165,9 +165,9 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
     }
 
     $supprimer = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_init WHERE ident_export >= '" . $recommencer . "' AND ident_export != 'fichierTexte2'")
-    OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+    OR trigger_error('Erreur, La table edt_init n\'a pas été mise à jour : ' . mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
     $modifier = mysqli_query($GLOBALS["mysqli"], "UPDATE edt_init SET nom_export = '" . $recommencer . "' WHERE ident_export = 'fichierTexte2'")
-    OR trigger_error('Erreur dans le retour en arrière : ' . ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)), E_USER_ERROR);
+    OR trigger_error('Erreur dans le retour en arrière : ' . mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 
 	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
 	if ($truncate_cours == "oui") {
@@ -430,7 +430,7 @@ if ($action == "upload_file") {
 
                     //echo '					<input type="hidden" name="ligne_' . $b . '" value="' . $toutelaligne . '" />';
 					//$sql="INSERT INTO tempo2 SET col1='".mysql_real_escape_string($toutelaligne)."';";
-					$sql="INSERT INTO tempo5 SET texte='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $toutelaligne) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+					$sql="INSERT INTO tempo5 SET texte='".mysqli_real_escape_string($GLOBALS["mysqli"], $toutelaligne)."';";
 					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
                     $b++; // on incrémente le compteur pour le name

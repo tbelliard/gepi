@@ -2147,4 +2147,58 @@ function is_pp_proprio_exb($id_exam, $mode='') {
 
 	return $retour;
 }
+
+function calcul_moy_med($tableau) {
+	$eff_utile=0;
+	$total=0;
+	$tab_valeur=array();
+	$j=0;
+	$n=0;
+	$rang=0;
+
+	$tab_retour=array();
+	$tab_retour['moyenne']='-';
+	$tab_retour['mediane']='-';
+	$tab_retour['min']='-';
+	$tab_retour['max']='-';
+	$tab_retour['q1']='-';
+	$tab_retour['q3']='-';
+
+	for($i=0;$i<count($tableau);$i++) {
+		$valeur=$tableau[$i];
+		if(($valeur!='abs')&&($valeur!='disp')&&($valeur!='-')&&($valeur!='')) {
+			$tab_valeur[$j]=$valeur;
+			$total+=$valeur;
+			$eff_utile++;
+			$j++;
+		}
+	}
+	if($eff_utile>0) {
+		$tab_retour['moyenne']=round(10*$total/$eff_utile)/10;
+
+		$tab_valeur2=sort($tab_valeur);
+		$n=count($tab_valeur);
+		if($n/2==round($n/2)) {
+			// Les indices commencent à zéro
+			$tab_retour['mediane']=((100*$tab_valeur[$n/2-1]+100*$tab_valeur[$n/2])/100)/2;
+		}
+		else {
+			$tab_retour['mediane']=$tab_valeur[($n-1)/2];
+		}
+
+		if($eff_utile>=4) {
+			$rang=ceil($eff_utile/4);
+			$tab_retour['q1']=$tab_valeur[$rang-1];
+
+			$rang=ceil(3*$eff_utile/4);
+			$tab_retour['q3']=$tab_valeur[$rang-1];
+		}
+
+		$tab_retour['min']=$tab_valeur[0];
+		$tab_retour['max']=$tab_valeur[$n-1];
+	}
+
+	return $tab_retour;
+}
+
 ?>

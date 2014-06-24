@@ -2063,9 +2063,9 @@ else{
 					if(!$test=mysqli_query($GLOBALS["mysqli"], $sql)) {
 						echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 						//Illegal mix of collations
-						if(preg_match("/Illegal mix of collations/i",((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)))) {
+						if(preg_match("/Illegal mix of collations/i",mysqli_error($GLOBALS["mysqli"]))) {
 							echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_gep_import2.ele_id'&nbsp;:<br />\n";
-							echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 							/*
 							echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 							echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
@@ -4383,19 +4383,7 @@ else{
 								$tmp_prenom=remplace_accents($lig->ELEPRE);
 		
 								// Générer un login...
-								/*
-								$temp1 = my_strtoupper($tmp_nom);
-								$temp1 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp1);
-								$temp1 = my_strtr($temp1, " '-", "___");
-								$temp1 = mb_substr($temp1,0,7);
-								$temp2 = my_strtoupper($tmp_prenom);
-								$temp2 = preg_replace('/[^0-9a-zA-Z_]/',"", $temp2);
-								$temp2 = my_strtr($temp2, " '-", "___");
-								$temp2 = mb_substr($temp2,0,1);
-								$login_eleve = $temp1.'_'.$temp2;
-								*/
 								$mode_generation_login_eleve=getSettingValue('mode_generation_login_eleve');
-								//if($mode_generation_login_eleve=='') {$mode_generation_login_eleve='nnnnnnnnn_p';}
 								if(!check_format_login($mode_generation_login_eleve)) {
 									$mode_generation_login_eleve='nnnnnnnnn_p';
 
@@ -6977,9 +6965,9 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						if(!$test=mysqli_query($GLOBALS["mysqli"], $sql)) {
 							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 							//Illegal mix of collations
-							if(preg_match("/Illegal mix of collations/i",((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)))) {
+							if(preg_match("/Illegal mix of collations/i",mysqli_error($GLOBALS["mysqli"]))) {
 								echo "Il semble qu'il y ait un problème de 'collation' entre les champs 'eleves.ele_id' et 'temp_responsables2_import.ele_id'&nbsp;:<br />\n";
-								echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 								/*
 								echo "Il faudrait supprimer la table 'temp_responsables2_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
 								echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
@@ -7089,9 +7077,9 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 						if(!$test=mysqli_query($GLOBALS["mysqli"], $sql)) {
 							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
 							//Illegal mix of collations
-							if(preg_match("/Illegal mix of collations/i",((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)))) {
+							if(preg_match("/Illegal mix of collations/i",mysqli_error($GLOBALS["mysqli"]))) {
 								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
-								echo "<span style='color:red'>".((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."</span><br />\n";
+								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
 								/*
 								echo "Il faudrait supprimer la table 'temp_resp_pers_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour vos champs 'resp_pers'.<br />\n";
 								echo "Si par exemple, les champs de 'temp_resp_pers_import' ont pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
@@ -8785,7 +8773,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 	
 														//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 														$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a> ";
-	
+
 														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))." ($lig_pers2->pers_id)";
 														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
 														$info_action_destinataire=array("administrateur","scolarite");
@@ -8800,7 +8788,7 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 	
 															//$ligne_parent.="<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 															$ligne_parent.="<a href='#' onmouseover=\"delais_afficher_div('chgt_email_non_pris_en_compte','y',-20,20,1000,20,20);\" onclick=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a> ";
-	
+
 															$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')." ($lig_pers2->pers_id)";
 															$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)." ".stripslashes($lig_pers2->prenom),'all')."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).<br />Vous pouvez également effectuer la <a href='responsables/synchro_mail.php'>synchronisation globalement</a>.";
 															$info_action_destinataire=array("administrateur","scolarite");

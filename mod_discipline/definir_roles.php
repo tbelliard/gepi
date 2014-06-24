@@ -108,7 +108,7 @@ if((isset($qualite))&&($qualite!='')) {
 
 		$qualite=suppression_sauts_de_lignes_surnumeraires($qualite);
 
-		$sql="INSERT INTO s_qualites SET qualite='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $qualite) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+		$sql="INSERT INTO s_qualites SET qualite='".mysqli_real_escape_string($GLOBALS["mysqli"], $qualite)."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$res) {
 			$msg.="ERREUR lors de l'enregistrement de ".$qualite."<br />\n";

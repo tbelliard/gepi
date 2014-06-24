@@ -72,9 +72,10 @@ if($gepi_denom_mention=="") {
 
 $generer_fichiers_pdf_archivage=isset($_POST['generer_fichiers_pdf_archivage']) ? $_POST['generer_fichiers_pdf_archivage'] : (isset($_GET['generer_fichiers_pdf_archivage']) ? $_GET['generer_fichiers_pdf_archivage'] : "n");
 
-$intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : NULL;
+$intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : (isset($_GET['intercaler_releve_notes']) ? $_GET['intercaler_releve_notes'] : NULL);
 
-$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
+//$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
+$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : NULL);
 
 // Variable non encore utilisée:
 $contexte_document_produit="bulletin";
@@ -88,10 +89,11 @@ $type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
 if(($type_bulletin_par_defaut!='html')&&($type_bulletin_par_defaut!='pdf')) {$type_bulletin_par_defaut='html';}
 
 //debug_var();
+$valide_select_eleves=isset($_POST['valide_select_eleves']) ? $_POST['valide_select_eleves'] : (isset($_GET['valide_select_eleves']) ? $_GET['valide_select_eleves'] : NULL);
 
 //====================================================
 //=============== ENTETE STANDARD ====================
-if (!isset($_POST['valide_select_eleves'])) {
+if (!isset($valide_select_eleves)) {
 	//**************** EN-TETE *********************
 	$titre_page = "Edition des bulletins";
 	require_once("../lib/header.inc.php");
@@ -100,7 +102,7 @@ if (!isset($_POST['valide_select_eleves'])) {
 //============== FIN ENTETE STANDARD =================
 //====================================================
 //============== ENTETE BULLETIN HTML ================
-elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
+elseif ((isset($mode_bulletin))&&($mode_bulletin=='html')) {
 	//=============================================
 	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
 	//$intercaler_releve_notes="y";
@@ -115,7 +117,7 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
 //============== ENTETE BULLETIN HTML ================
-elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
+elseif ((isset($mode_bulletin))&&($mode_bulletin=='pdf')) {
 
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
 	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
@@ -151,7 +153,7 @@ $debug="n";
 $tab_instant=array();
 include("bull_func.lib.php");
 
-if((!isset($_POST['mode_bulletin']))||($_POST['mode_bulletin']!='pdf')) {
+if((!isset($mode_bulletin))||($mode_bulletin!='pdf')) {
 	//==============================
 	$motif="Duree_totale";
 	//decompte_debug($motif,"Témoin de $motif initialisation");
@@ -423,7 +425,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 }
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
-elseif(!isset($_POST['valide_select_eleves'])) {
+elseif(!isset($valide_select_eleves)) {
 
 	//debug_var();
 
@@ -1179,6 +1181,9 @@ display_param_b_adr_pg();
 	echo "<input type='hidden' name='valide_select_eleves' value='y' />\n";
 	echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
 	echo "</form>\n";
+
+	require("../lib/footer.inc.php");
+	die();
 }
 //=======================================================
 //==EXTRACTION DES DONNEES PUIS AFFICHAGE DES BULLETINS==
@@ -1193,7 +1198,7 @@ else {
 
 	//debug_var();
 
-	$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
+	//$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : "html";
 	$un_seul_bull_par_famille=isset($_POST['un_seul_bull_par_famille']) ? $_POST['un_seul_bull_par_famille'] : "non";
 	$coefficients_a_1=isset($_POST['coefficients_a_1']) ? $_POST['coefficients_a_1'] : "non";
 
@@ -1510,7 +1515,7 @@ else {
 			}
 
 			// Modèle de bulletin PDF
-			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : 1;
+			$type_bulletin=isset($_POST['type_bulletin']) ? $_POST['type_bulletin'] : (isset($_GET['type_bulletin']) ? $_GET['type_bulletin'] : 1);
 			// CONTROLER SI type_bulletin EST BIEN UN ENTIER éventuellement -1
 			if(isset($type_bulletin)) {
 
@@ -1810,7 +1815,7 @@ else {
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			// tab_ele_".$i."_".$j.
 			//$tab_bulletin[$id_classe][$periode_num]['selection_eleves']=array();
-			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array();
+			$tab_selection_eleves=isset($_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_POST['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : (isset($_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num]) ? $_GET['tab_selection_ele_'.$loop_classe.'_'.$loop_periode_num] : array());
 			if((isset($_POST['tous_les_eleves']))&&($_POST['tous_les_eleves']=='y')) {
 				$sql="SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='".$periode_num."' ORDER BY login;";
 				$res_liste_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2632,61 +2637,148 @@ else {
 							}
 						}
 
-						// Récup infos responsables
-						$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
-														resp_adr ra,
-														responsables2 r
-									WHERE r.ele_id='".$tab_ele['ele_id']."' AND
-											r.resp_legal!='0' AND
-											r.pers_id=rp.pers_id AND
-											rp.adr_id=ra.adr_id
-									ORDER BY resp_legal;";
-						$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
-						//echo "$sql<br />";
-						if(mysqli_num_rows($res_resp)>0) {
-							$cpt=0;
-							while($lig_resp=mysqli_fetch_object($res_resp)) {
-								$tab_ele['resp'][$cpt]=array();
+						if((isset($_GET['pers_id']))&&(preg_match("/^[0-9p]{1,}$/", $_GET['pers_id']))) {
+							// Récup infos responsables
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id AND 
+												rp.pers_id='".$_GET['pers_id']."'
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=0;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
 
-								$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
 
-								$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
-								$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
-								$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
-								$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
-								$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
-								$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
-								$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
 
-								$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
-								$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
-								$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
-								$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
-								$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
-								$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
-								$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
 
-								$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
 
-								$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
 
-								$cpt++;
-							}
-						}
-
-						// Vérification
-						if(mysqli_num_rows($res_resp)>2) {
-							if($mode_bulletin=="html") {
-								echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
-								echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
-								for ($z=0;$z<count($tab_ele['resp']);$z++) {
-									echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+									$cpt++;
 								}
-								echo "Seuls les deux premiers apparaitront sur des bulletins.";
-								echo "</div>\n";
 							}
 						}
+						else {
+							// Récup infos responsables
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.resp_legal!='0' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=0;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
 
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+
+									$cpt++;
+								}
+							}
+
+							// Vérification
+							if(mysqli_num_rows($res_resp)>2) {
+								if($mode_bulletin=="html") {
+									echo "<div class='alerte_erreur'><b style='color:red;'>Erreur:</b>";
+									echo $tab_ele['nom']." ".$tab_ele['prenom']." a plus de deux responsables légaux 1 et 2.<br />C'est une anomalie.<br />";
+									for ($z=0;$z<count($tab_ele['resp']);$z++) {
+										echo $tab_ele['resp'][$z]['nom']." ".$tab_ele['resp'][$z]['prenom']." (<i>responsable légal ".$tab_ele['resp'][$z]['resp_legal']."</i>)<br />";
+									}
+									echo "Seuls les deux premiers apparaitront sur des bulletins.";
+									echo "</div>\n";
+								}
+							}
+
+							// Récup infos responsables non légaux, mais pointés comme destinataires des bulletins
+							$sql="SELECT rp.*,ra.adr1,ra.adr2,ra.adr3,ra.adr3,ra.adr4,ra.cp,ra.pays,ra.commune,r.resp_legal FROM resp_pers rp,
+															resp_adr ra,
+															responsables2 r
+										WHERE r.ele_id='".$tab_ele['ele_id']."' AND
+												r.resp_legal='0' AND
+												r.pers_id=rp.pers_id AND
+												rp.adr_id=ra.adr_id AND
+												r.envoi_bulletin='y'
+										ORDER BY resp_legal;";
+							$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+							//echo "$sql<br />";
+							if(mysqli_num_rows($res_resp)>0) {
+								$cpt=2;
+								while($lig_resp=mysqli_fetch_object($res_resp)) {
+									$tab_ele['resp'][$cpt]=array();
+
+									$tab_ele['resp'][$cpt]['pers_id']=$lig_resp->pers_id;
+
+									$tab_ele['resp'][$cpt]['login']=$lig_resp->login;
+									$tab_ele['resp'][$cpt]['nom']=$lig_resp->nom;
+									$tab_ele['resp'][$cpt]['prenom']=$lig_resp->prenom;
+									$tab_ele['resp'][$cpt]['civilite']=$lig_resp->civilite;
+									$tab_ele['resp'][$cpt]['tel_pers']=$lig_resp->tel_pers;
+									$tab_ele['resp'][$cpt]['tel_port']=$lig_resp->tel_port;
+									$tab_ele['resp'][$cpt]['tel_prof']=$lig_resp->tel_prof;
+
+									$tab_ele['resp'][$cpt]['adr1']=$lig_resp->adr1;
+									$tab_ele['resp'][$cpt]['adr2']=$lig_resp->adr2;
+									$tab_ele['resp'][$cpt]['adr3']=$lig_resp->adr3;
+									$tab_ele['resp'][$cpt]['adr4']=$lig_resp->adr4;
+									$tab_ele['resp'][$cpt]['cp']=$lig_resp->cp;
+									$tab_ele['resp'][$cpt]['pays']=$lig_resp->pays;
+									$tab_ele['resp'][$cpt]['commune']=$lig_resp->commune;
+
+									$tab_ele['resp'][$cpt]['adr_id']=$lig_resp->adr_id;
+
+									$tab_ele['resp'][$cpt]['resp_legal']=$lig_resp->resp_legal;
+
+									$cpt++;
+								}
+							}
+						}
 
 						// Rang
 						if ($affiche_rang == 'y'){
@@ -3436,7 +3528,7 @@ else {
 				$id_classe=$tab_id_classe[$loop_classe];
 				$classe=get_class_from_id($id_classe);
 
-				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".((isset($GLOBALS["mysqli"]) && is_object($GLOBALS["mysqli"])) ? mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."';";
+				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
 				$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
@@ -3563,162 +3655,209 @@ else {
 		$responsable_place = 0;
 	}
 
-	// Compteur pour insérer un saut dans les bulletins HTML
-	$compteur_bulletins=0;
-	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
-		$id_classe=$tab_id_classe[$loop_classe];
-		$classe=get_class_from_id($id_classe);
-
-		if($mode_bulletin=="html") {
-			echo "<script type='text/javascript'>
-	document.getElementById('td_classe').innerHTML='".$classe."';
-</script>\n";
-		}
-
-		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
-
-			$periode_num=$tab_periode_num[$loop_periode_num];
-
-			//==============================
-			if($mode_bulletin=="html") {
-				$motif="Classe_".$id_classe."_".$periode_num;
-				decompte_debug($motif,"$motif avant");
-				flush();
-				echo "<script type='text/javascript'>
-	document.getElementById('td_periode').innerHTML='".$periode_num."';
-</script>\n";
-			}
-			//==============================
-
-			if($mode_bulletin=="html") {
-				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
-				echo "<h2>Classe de ".$classe."</h2>\n";
-				echo "<p><b>Période $periode_num</b></p>\n";
-
-				echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
-				echo "</div>\n";
-			}
-
-			//======================================
-			// Pour le tri par établissement d'origine
-			unset($tmp_tab);
-			unset($rg);
-			//$tri_par_etab_orig="y";
-			if($tri_par_etab_orig=='y') {
-				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eleve'])=".count($tab_bulletin[$id_classe][$periode_num]['eleve'])."<br />\n";
-				//echo "count(\$tab_bulletin[$id_classe][$periode_num]['eff_classe'])=".count($tab_bulletin[$id_classe][$periode_num]['eff_classe'])."<br />\n";
-				//for($k=0;$k<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$k++) {
-				for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
-					$rg[$k]=$k;
-					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['nom']."<br />\n";
-					//echo "\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']=".$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']."<br />\n";
-					if(!isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
-						$tmp_tab[$k]="";
-					}
-					else {
-						$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
-					}
-				}
-				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
-			}
-			//======================================
-
-			//$compteur=0;
-			//for($i=0;$i<count($tab_bulletin[$id_classe][$periode_num]['eleve']);$i++) {
-			for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
-				if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
-
+	if($tri_par_etab_orig=='y') {
+		$tab_indices_etab=array();
+		for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+			$id_classe=$tab_id_classe[$loop_classe];
+			for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+				$periode_num=$tab_periode_num[$loop_periode_num];
 				if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-					//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
-					if((isset($rg[$i]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
-					//if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
-
-						//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-						if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
-
-							// ++++++++++++++++++++++++++++++++++++++
-							// ++++++++++++++++++++++++++++++++++++++
-							// AJOUTER UN TEST: L'élève fait-il bien partie de la classe?
-							//                  Inutile: la liste $current_eleve_login est obtenue de calcul_moy_gen.inc.php
-							//                  Pas d'injection/intervention possible.
-							//                  Le test sur l'accès à la classe plus haut (*) doit suffire.
-							//                  On pourrait injecter un login dans la sélection d'élève, mais pas dans $current_eleve_login
-							//                  Et on test seulement si $current_eleve_login[$i] est bien dans la sélection (pas le contraire)
-							//                  (*) dans cette section tout de même.
-							// ++++++++++++++++++++++++++++++++++++++
-							// ++++++++++++++++++++++++++++++++++++++
-
-							if($mode_bulletin=="html") {
-								echo "<script type='text/javascript'>
-	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
-</script>\n";
-							}
-
-
-							if($mode_bulletin=="html") {
-								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								//decompte_debug($motif,"$motif élève $i avant");
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-								decompte_debug($motif,"$motif élève $rg[$i] avant");
-								flush();
-
-								// Saut de page si jamais ce n'est pas le premier bulletin
-								if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
-
-								// Génération du bulletin de l'élève
-								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
-								//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-								bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
-
-								//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
-								//decompte_debug($motif,"$motif élève $i après");
-								$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
-								decompte_debug($motif,"$motif élève $rg[$i] après");
-								flush();
-							}
-							else {
-								//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
-								bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
-							}
-
-/*
-echo "Tableau de la classe $id_classe en période $periode_num<br />
-<pre>";
-print_r($tab_bulletin[$id_classe][$periode_num]);
-echo "</pre>";
-
-echo "Tableau du modèle PDF<br />
-<pre>";
-print_r($tab_modele_pdf);
-echo "</pre>";
-*/
-
-							//==============================================================================================
-							// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
-							//==============================================================================================
-
-							if($mode_bulletin=="html") {
-								echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
-							}
-
-							$compteur_bulletins++;
-
-							if($mode_bulletin=="html") {
-								flush();
-							}
+					for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
+						if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
+							$etab_id_courant=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+							//echo "\$etab_id_courant=\$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id']=$etab_id_courant<br />";
+							$tab_indices_etab[$etab_id_courant][]=$id_classe."|".$periode_num."|".$k;
+							//echo "\$tab_indices_etab[$etab_id_courant][]=$id_classe|$periode_num|$k<br />";
 						}
 					}
 				}
 			}
+		}
 
-			//==============================
-			if($mode_bulletin=="html") {
-				$motif="Classe_".$id_classe."_".$periode_num;
-				decompte_debug($motif,"$motif après");
-				flush();
+		$compteur_bulletins=0;
+		foreach($tab_indices_etab as $etab_id_courant => $tab_id_classe_per_k) {
+			for($loop=0;$loop<count($tab_id_classe_per_k);$loop++) {
+				$tmp_tab=explode("|", $tab_id_classe_per_k[$loop]);
+				$id_classe=$tmp_tab[0];
+				$periode_num=$tmp_tab[1];
+				$k=$tmp_tab[2];
+
+				if($mode_bulletin=="html") {
+					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+					decompte_debug($motif,"$motif élève $k avant");
+					flush();
+
+					// Saut de page si jamais ce n'est pas le premier bulletin
+					if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+					// Génération du bulletin de l'élève
+					bulletin_html($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+
+					$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$k;
+					decompte_debug($motif,"$motif élève $k après");
+					flush();
+				}
+				else {
+					bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$k,$tab_releve[$id_classe][$periode_num]);
+				}
+				$compteur_bulletins++;
 			}
-			//==============================
+		}
 
+	}
+	else {
+		// Compteur pour insérer un saut dans les bulletins HTML
+		$compteur_bulletins=0;
+		for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+			$id_classe=$tab_id_classe[$loop_classe];
+			$classe=get_class_from_id($id_classe);
+
+			if($mode_bulletin=="html") {
+				echo "<script type='text/javascript'>
+	document.getElementById('td_classe').innerHTML='".$classe."';
+</script>\n";
+			}
+
+			for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+
+				$periode_num=$tab_periode_num[$loop_periode_num];
+
+				//==============================
+				if($mode_bulletin=="html") {
+					$motif="Classe_".$id_classe."_".$periode_num;
+					decompte_debug($motif,"$motif avant");
+					flush();
+					echo "<script type='text/javascript'>
+	document.getElementById('td_periode').innerHTML='".$periode_num."';
+</script>\n";
+				}
+				//==============================
+
+				if($mode_bulletin=="html") {
+					echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+					echo "<h2>Classe de ".$classe."</h2>\n";
+					echo "<p><b>Période $periode_num</b></p>\n";
+
+					echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
+					echo "</div>\n";
+				}
+
+				//======================================
+				// Pour le tri par établissement d'origine
+				unset($tmp_tab);
+				unset($rg);
+				/*
+				if($tri_par_etab_orig=='y') {
+					for($k=0;$k<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$k++) {
+						$rg[$k]=$k;
+						if(!isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$k])) {
+							$tmp_tab[$k]="";
+						}
+						else {
+							$tmp_tab[$k]=$tab_bulletin[$id_classe][$periode_num]['eleve'][$k]['etab_id'];
+						}
+					}
+					array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
+				}
+				*/
+				//======================================
+
+				//$compteur=0;
+				for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
+					if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
+
+					if(isset($tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+						//if(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'])) {
+						if((isset($rg[$i]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
+						//if((isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]))&&(isset($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']))) {
+
+							//if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$i]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+							if (in_array($tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login'],$tab_bulletin[$id_classe][$periode_num]['selection_eleves'])) {
+
+								// ++++++++++++++++++++++++++++++++++++++
+								// ++++++++++++++++++++++++++++++++++++++
+								// AJOUTER UN TEST: L'élève fait-il bien partie de la classe?
+								//                  Inutile: la liste $current_eleve_login est obtenue de calcul_moy_gen.inc.php
+								//                  Pas d'injection/intervention possible.
+								//                  Le test sur l'accès à la classe plus haut (*) doit suffire.
+								//                  On pourrait injecter un login dans la sélection d'élève, mais pas dans $current_eleve_login
+								//                  Et on test seulement si $current_eleve_login[$i] est bien dans la sélection (pas le contraire)
+								//                  (*) dans cette section tout de même.
+								// ++++++++++++++++++++++++++++++++++++++
+								// ++++++++++++++++++++++++++++++++++++++
+
+								if($mode_bulletin=="html") {
+									echo "<script type='text/javascript'>
+	document.getElementById('td_ele').innerHTML='".$tab_bulletin[$id_classe][$periode_num]['eleve'][$rg[$i]]['login']."';
+</script>\n";
+								}
+
+
+								if($mode_bulletin=="html") {
+									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+									//decompte_debug($motif,"$motif élève $i avant");
+									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+									decompte_debug($motif,"$motif élève $rg[$i] avant");
+									flush();
+
+									// Saut de page si jamais ce n'est pas le premier bulletin
+									if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+									// Génération du bulletin de l'élève
+									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i);
+									//bulletin_html($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+									bulletin_html($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+
+									//$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$i;
+									//decompte_debug($motif,"$motif élève $i après");
+									$motif="Bulletin_eleve".$id_classe."_".$periode_num."_".$rg[$i];
+									decompte_debug($motif,"$motif élève $rg[$i] après");
+									flush();
+								}
+								else {
+									//bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$i,$tab_releve[$id_classe][$periode_num]);
+									bulletin_pdf($tab_bulletin[$id_classe][$periode_num],$rg[$i],$tab_releve[$id_classe][$periode_num]);
+								}
+
+		/*
+		echo "Tableau de la classe $id_classe en période $periode_num<br />
+		<pre>";
+		print_r($tab_bulletin[$id_classe][$periode_num]);
+		echo "</pre>";
+
+		echo "Tableau du modèle PDF<br />
+		<pre>";
+		print_r($tab_modele_pdf);
+		echo "</pre>";
+		*/
+
+								//==============================================================================================
+								// PAR LA SUITE, ON POURRA INSERER ICI, SI L'OPTION EST COCHEE, LE RELEVE DE NOTES DE LA PERIODE
+								//==============================================================================================
+
+								if($mode_bulletin=="html") {
+									echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+								}
+
+								$compteur_bulletins++;
+
+								if($mode_bulletin=="html") {
+									flush();
+								}
+							}
+						}
+					}
+				}
+
+				//==============================
+				if($mode_bulletin=="html") {
+					$motif="Classe_".$id_classe."_".$periode_num;
+					decompte_debug($motif,"$motif après");
+					flush();
+				}
+				//==============================
+
+			}
 		}
 	}
 

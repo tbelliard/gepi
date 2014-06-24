@@ -162,7 +162,7 @@ if (!isset($_POST["action"])) {
 										$reg = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET id_groupe = '" . $group_id . "', login = '" . $login_eleve . "', periode = '" . $p . "'");
 										if (!$reg) {
 											$error++;
-											echo ((is_object($GLOBALS["mysqli"])) ? mysqli_error($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+											echo mysqli_error($GLOBALS["mysqli"]);
 										} else {
 											if ($p == 1) $total++;
 										}

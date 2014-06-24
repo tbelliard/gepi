@@ -50,12 +50,17 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 | <a href='classes_param.php'>Paramétrage de plusieurs classes par lots</a>
 | <a href='../init_xml2/init_alternatif.php?cat=classes' title="Création d'enseignements par lots">Créations par lots</a>
 | <a href='cpe_resp.php'>Paramétrage rapide CPE Responsable</a>
-| <a href='scol_resp.php'>Paramétrage scolarité</a>
+| <a href='scol_resp.php' title="Définir les comptes scolarité associés à telles et telles classes.
+Ce choix permet de limiter la liste des classes proposées aux différents comptes scolarité quand le suivi est réparti entre plusieurs personnes.">Paramétrage scolarité</a>
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
 | <a href='../groupes/check_enseignements.php'>Vérifications</a>
 <?php
 	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
+
+	if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
+		echo "| <a href='dates_classes.php' title=\"Définir des événements particuliers pour les classes (conseils de classe, arrêt des notes,...).\">Événements classe</a>";
+	}
 ?>
 </p>
 <p style='margin-top: 10px;'>

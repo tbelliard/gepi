@@ -369,7 +369,7 @@ if($_SESSION['statut']=="administrateur") {
 
 		echo "<p class='bold'>Nettoyage des tables Notanet&nbsp;:</p>\n";
 
-		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type');
+		$table_a_vider=array('notanet', 'notanet_avis', 'notanet_app', 'notanet_verrou', 'notanet_socles', 'notanet_ele_type', 'notanet_saisie');
 
 		echo "<div style='margin-left:3em;'>\n";
 		if(!isset($_GET['confirmer'])) {
@@ -500,6 +500,32 @@ elseif($_SESSION['statut']=="scolarite") {
 	echo "</ul>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, plusieurs opérations doivent auparavant être réalisées en statut administrateur.</p>\n";
+}
+elseif($_SESSION['statut']=="secours") {
+	echo "<ul>\n";
+
+	// Test sur le fait qu'il y a de telles notes à saisir pour le prof connecté
+	$sql="SELECT DISTINCT jeg.id_groupe FROM notanet_ele_type net,
+				j_eleves_groupes jeg,
+				j_groupes_matieres jgm,
+				notanet_corresp nc
+			WHERE net.login=jeg.login AND
+				jeg.id_groupe=jgm.id_groupe AND
+				jgm.id_matiere=nc.matiere AND
+				nc.mode='saisie';";
+	//echo "$sql<br />";
+	$res_matiere_notanet=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_matiere_notanet)>0) {
+		if(!getSettingAOui("notanet_saisie_note_ouverte")) {
+			echo "<li>La saisie de notes est actuellement fermée.<br />
+			<a href='saisie_notes.php'>Consulter les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+		}
+		else {
+			echo "<li><a href='saisie_notes.php'>Saisir les 'notes' dans les enseignements dont la note n'est pas la moyenne des 3 trimestres (<i>APSA en EPS</i>)</li>\n";
+		}
+	}
+	echo "<li><a href='saisie_app.php'>Saisir les appréciations pour les fiches brevet</a></li>\n";
+	echo "</ul>\n";
 }
 else {
 	echo "<ul>\n";
