@@ -95,12 +95,19 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     $appel_messages->close();
 
 // pour accueil_simpl_prof.php
-if ((basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") && ($affiche_messages == 'yes')) {
-	echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
-	if((isset($liste_evenements))&&($liste_evenements!="")) {
-		echo "<tr><td>".$liste_evenements."</td></tr>";
+if (basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") {
+	if($affiche_messages == 'yes') {
+		echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
+		if((isset($liste_evenements))&&($liste_evenements!="")) {
+			echo "<tr><td>".$liste_evenements."</td></tr>";
+		}
+		echo "<tr><td>".$texte_messages_simpl_prof;
+		echo "</td></tr></table>\n";
 	}
-	echo "<tr><td>".$texte_messages_simpl_prof;
-	echo "</td></tr></table>\n";
+	elseif((isset($liste_evenements))&&($liste_evenements!="")) {
+		echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">
+	<tr><td>".$liste_evenements."</td></tr>
+</table>\n";
 	}
+}
 ?>

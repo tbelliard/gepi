@@ -290,7 +290,7 @@ if(!isset($periode)) {
 </form>
 
 <p><br /></p>
-<p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le fichier modèle OOo utilisé utilise une police particulière pour les cases à cocher (<a href='http://www.sylogix.org/attachments/download/243/gepi.ttf' title=\"Télécharger le fichier de police de caractère.
+<p style='margin-left:4em;text-indent:-4em;'><em>NOTES&nbsp;:</em> Le fichier modèle OOo proposé par défaut utilise une police particulière pour les cases à cocher (<a href='http://www.sylogix.org/attachments/download/243/gepi.ttf' title=\"Télécharger le fichier de police de caractère.
 
 Vous devrez le mettre en place sur la machine utilisée pour imprimer les Avertissements.
 
