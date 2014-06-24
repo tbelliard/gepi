@@ -1658,6 +1658,9 @@ function tab_extract_moy($tab_ele,$id_clas) {
 								}
 							}
 						}
+						elseif(($moyenne=="DI")||($moyenne=="AB")) {
+							$moyenne_arrondie=$moyenne;
+						}
 						else {
 							$moyenne_arrondie=ceil($moyenne*2)/2;
 						}
