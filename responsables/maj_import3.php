@@ -936,7 +936,9 @@ else{
 
 			$texte_maj_sconet="<br /><p><strong>Fichier XML élève</strong>";
 			if($xml_uaj!="") {$texte_maj_sconet.=" ($xml_uaj)";}
-			if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage</p>";}
+			if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage";}
+			$texte_maj_sconet.="</p>";
+			echo $texte_maj_sconet;
 			enregistre_log_maj_sconet($texte_maj_sconet);
 
 			echo "<p>\n";
@@ -5711,7 +5713,9 @@ else{
 
 					$texte_maj_sconet="<br /><p><strong>Fichier XML responsables</strong>";
 					if($xml_uaj!="") {$texte_maj_sconet.=" ($xml_uaj)";}
-					if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage</p>";}
+					if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage";}
+					$texte_maj_sconet.="</p>";
+					echo $texte_maj_sconet;
 					enregistre_log_maj_sconet($texte_maj_sconet);
 
 					// PARTIE <PERSONNES>

@@ -1035,6 +1035,14 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 	$nb_comptes_remplaces=0;
 	$nb_erreur=0;
 	$ligne=isset($_POST['ligne']) ? $_POST['ligne'] : array();
+	$activer_comptes=isset($_POST['activer_comptes']) ? $_POST['activer_comptes'] : "n";
+
+	if($activer_comptes=="y") {
+		$etat_compte_force="actif";
+	}
+	else {
+		$etat_compte_force="inactif";
+	}
 
 	/*
 		echo "<pre>";
@@ -1097,10 +1105,44 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 					echo_debug_itop("$sql<br />");
 					$test_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_u)>0) {
-						$lig_u=mysqli_fetch_object($test_u);
 
-						$msg.="ERREUR : Le login ".$tab_tempo4[$id_col1]['login']." que vous souhaitez associer au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) est déjà associé à un utilisateur de statut '$lig_u->statut' nommé $lig_u->nom $lig_u->prenom.<br />";
-						$nb_erreur++;
+						// 20140623
+						if($lig->login==$tab_tempo4[$id_col1]['login']) {
+							// Le login ne change pas... on va juste mettre à jour le mot de passe
+
+							$sql="UPDATE utilisateurs SET password='".$tab_tempo4[$id_col1]['md5_password']."', 
+										salt='', 
+										etat='$etat_compte_force'
+										WHERE  login='".$tab_tempo4[$id_col1]['login']."';";
+							echo_debug_itop("$sql<br />");
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($update) {
+								// Ménage:
+								$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($pers_id)';";
+								//if($debug_create_resp=="y") {echo "$sql<br />\n";}
+								$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_actions)>0) {
+									while($lig_action=mysqli_fetch_object($res_actions)) {
+										$menage=del_info_action($lig_action->id);
+										if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de ".$tab_tempo4[$id_col1]['login']."<br />";}
+									}
+								}
+
+								$nb_comptes_remplaces++;
+							}
+							else {
+								$msg.="ERREUR : Le remplacement du login dans 'resp_pers' par ".$tab_tempo4[$id_col1]['login']." pour le responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) a échoué.<br />";
+								$nb_erreur++;
+							}
+
+						}
+						else {
+							$lig_u=mysqli_fetch_object($test_u);
+
+							$msg.="ERREUR : Le login ".$tab_tempo4[$id_col1]['login']." que vous souhaitez associer au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) est déjà associé à un utilisateur de statut '$lig_u->statut' nommé $lig_u->nom $lig_u->prenom.<br />";
+							$nb_erreur++;
+						}
 					}
 					else {
 						if($lig->login!="") {
@@ -1126,7 +1168,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 												email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."', 
 												auth_mode='gepi', 
 												statut='responsable', 
-												etat='inactif';";
+												etat='$etat_compte_force';";
 									echo_debug_itop("$sql<br />");
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
@@ -1170,7 +1212,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 											email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."', 
 											auth_mode='gepi', 
 											statut='responsable', 
-											etat='inactif';";
+											etat='$etat_compte_force';";
 								echo_debug_itop("$sql<br />");
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
@@ -1213,7 +1255,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->mel)."', 
 										auth_mode='gepi', 
 										statut='responsable', 
-										etat='inactif';";
+										etat='$etat_compte_force';";
 							echo_debug_itop("$sql<br />");
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
@@ -1721,6 +1763,7 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 			<p>Veuillez fournir le fichier <strong>".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Parent_JJ_MM_AAAA_HH_MM_SS.csv</strong> généré par l'ENT.</p>
 			<input type='hidden' name='mode' value='forcer_logins_mdp_responsables' />
 			<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
+			<input type=\"checkbox\" name=\"pouvoir_forcer_mdp_pour_login_deja_ok\" id=\"pouvoir_forcer_mdp_pour_login_deja_ok\" value='y' /><label for='pouvoir_forcer_mdp_pour_login_deja_ok'> Afficher les responsables dont le login est déjà correct pour pouvoir forcer à nouveau le mot de passe (<em>utile par exemple s'ils ont changé et oublié le mot de passe</em>)</label><br />
 			<input type='submit' value='Envoyer' />
 		</fieldset>
 	</form>
@@ -4558,6 +4601,7 @@ if($mode=="forcer_logins_mdp_responsables") {
 </p>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+	$pouvoir_forcer_mdp_pour_login_deja_ok=isset($_POST['pouvoir_forcer_mdp_pour_login_deja_ok']) ? $_POST['pouvoir_forcer_mdp_pour_login_deja_ok'] : "n";
 
 	echo "
 <h2>Création des comptes responsables</h2>";
@@ -4802,17 +4846,25 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					// Un seul nom prénom identique trouvé
 					$lig_resp=mysqli_fetch_object($res_resp);
 
-					if($lig_resp->login==$tab_parent[$loop]['login_ent']) {
+					if(($pouvoir_forcer_mdp_pour_login_deja_ok=="n")&&($lig_resp->login==$tab_parent[$loop]['login_ent'])) {
 						$nb_comptes_login_deja_ok++;
 					}
 					else {
+						if($lig_resp->login==$tab_parent[$loop]['login_ent']) {
+							$temoin_login_ok=" <img src='../images/icons/ico_attention.png' class='icone16' title=\"Le login du parent est déjà ".$lig_resp->login."\nVous pouvez cependant forcer le mot de passe.\" alt='Login déja correct' />";
+							$nb_comptes_login_deja_ok++;
+						}
+						else {
+							$temoin_login_ok="";
+						}
+
 						echo "
 	<tr class='white_hover'".$style_css.">
 		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['nom_prenom']."</label></td>
 		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['adresse']."</label></td>
 		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['enfant']."</label></td>
 		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['classe']."</label></td>
-		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['login_ent']."</label></td>
+		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['login_ent'].$temoin_login_ok."</label></td>
 		<td$rowspan><label for='ligne_$cpt'>".$tab_parent[$loop]['mdp_ent']."</label></td>";
 
 						$tab_ele=get_enfants_from_pers_id($lig_resp->pers_id, 'avec_classe');
@@ -4911,6 +4963,14 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "
 </table>
+
+	<p>
+		<input type='checkbox' name='activer_comptes' id='activer_comptes' value='y' /><label for='activer_comptes'>Activer les comptes forcés dans la foulée.</label><br />
+		(<em>dans le cas contraire, les comptes seront inactifs et vous devrez les activer lorsque vous souhaiterez effectivement ouvrir l'accès</em>)
+		<!--
+		<input type='checkbox' name='' value='' /><label for=''></label>
+		-->
+	</p>
 
 	<p><input type='submit' value='Valider' /></p>
 	<input type='hidden' name='temoin_suhosin_2' value='forcer_logins_mdp_responsables' />

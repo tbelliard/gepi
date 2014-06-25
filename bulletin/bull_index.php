@@ -404,7 +404,14 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 			echo "<td style='background-color:lightgreen; text-align:center;'><input type='checkbox' name='tab_periode_num[]' value='$i' /></td>\n";
 		}
 		else {
-			echo "<td style='background-color:red; text-align:center;'>Période non close<br />pour une classe au moins";
+			echo "<td style='background-color:red; text-align:center;'><span title=\"Un compte scolarité doit clore (au moins partiellement) la période pour éviter que vous n'imprimiez les bulletins alors que les notes et/ou appréciations des professeurs peuvent encore changer.
+
+En compte scolarité, la clôture peut se faire en page d'accueil dans la rubrique
+     Bulletins scolaires
+          Verrouillage/Déverrouillage des périodes
+
+L'accès est également possible dans le menu horizontal sous l'entête si la barre est activée:
+     Bulletins/Vérif.et accès/Verrouillage périodes\">Période non close<br />pour une classe au moins</span>";
 			// 20120713
 			echo "<br /><input type='checkbox' name='tab_periode_num[]' value='$i' title=\"ATTENTION: Les notes et appréciations des bulletins peuvent encore évoluer\" />\n";
 			if($_SESSION['statut']=='scolarite') {
@@ -476,6 +483,22 @@ elseif(!isset($valide_select_eleves)) {
 	if($temoin_periode_non_close=="y") {
 		echo "<br /><p style='text-indent:-7em; margin-left:7em;'><strong style='color:red; text-decoration:blink;'>ATTENTION&nbsp;:</strong> Les saisies ne sont pas closes (<em>période encore ouverte en saisie</em>).<br />Cela signifie que les notes et appréciations peuvent encore changer.<br />Les bulletins vont être marqués d'une indication comme quoi la période n'est pas close.<br />Vous ne devriez pas imprimer ces bulletins.<br />Vous pouvez tester l'affichage pour ajuster les paramètres d'impression, mais vous devriez verrouiller la période avec un compte 'scolarité' avant d'imprimer les bulletins.</p><br />\n";
 	}
+
+	if(acces_impression_avertissement_fin_periode("", "")) {
+
+		$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+
+		echo "<div style='float:right; width:12em; text-align:center;' class='fieldset_opacite50'><a href='../mod_discipline/imprimer_bilan_periode.php?";
+		for($j=0;$j<count($tab_periode_num);$j++) {
+			if($j>0) {echo "&amp;";}
+			echo "periode[]=".$tab_periode_num[$j];
+		}
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			echo "&amp;id_classe[]=".$tab_id_classe[$i];
+		}
+		echo "' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'</a></div>";
+	}
+
 
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
 	echo "<p class='bold'>Sélection des élèves et paramètres:</p>\n";
@@ -815,6 +838,9 @@ function ToutDeCocher() {
 
 </script>\n";
 
+	}
+	else {
+		echo "<p><img src='../images/icons/ico_ampoule.png' width='15' height='20' alt='Indication' /> Avec un compte de statut <strong>scolarité</strong> <span style='color:red'>vous pourriez</span> <strong>intercaler les relevés de notes</strong> pour une impression recto-verso.</p>";
 	}
 
 	$tab_signature=get_tab_signature_bull();

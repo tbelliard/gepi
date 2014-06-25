@@ -277,6 +277,9 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
 //$titre_page = "Gestion des groupes";
@@ -406,18 +409,19 @@ echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name
 echo add_token_field();
 echo "<input type='hidden' name='tri_matiere' value='$tri_matiere' />\n";
 
-echo "<table border='0' class='boireaus' summary='Tableau des matières'>\n";
+echo "<table border='0' class='boireaus resizable sortable' summary='Tableau des matières'>\n";
 echo "<tr valign='top'>";
 echo "<th>&nbsp;</th>\n";
-echo "<th style='font-weight: bold;'>Matière</th>\n";
+echo "<th style='font-weight: bold;' class='text' title=\"Trier dans l'ordre alphabétique\">Matière</th>\n";
+echo "<th style='font-weight: bold;' class='number' title=\"Trier dans l'ordre de priorité défini dans la page de Gestion des matières\">Priorité</th>\n";
 echo "<th style='font-weight: bold;'>Professeur</th>\n";
 echo "</tr>\n";
 if($tri_matiere=='alpha') {
 	//$result_matiere=mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
-	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY nom_complet, matiere");
+	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet, priority FROM matieres ORDER BY nom_complet, matiere");
 }
 else {
-	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet FROM matieres ORDER BY priority");
+	$result_matiere=mysqli_query($GLOBALS["mysqli"], "SELECT matiere, nom_complet, priority FROM matieres ORDER BY priority");
 }
 $nb_mat=mysqli_num_rows($result_matiere);
 $cpt=0;
@@ -499,10 +503,12 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 	//echo "<td><input type='checkbox' name='checkmat[$cpt]' id='checkmat_".$cpt."' value='coche' /></td>\n";
 	if($groupe_existant!="trop" and $display_current) {
 		echo "<td style='text-align:left;'>\n";
+		echo "<span style='display:none'>".htmlspecialchars($ligne_matiere->nom_complet)."</span>";
 		echo "<label for='checkmat_".$cpt."' style='cursor:pointer;'>";
 		echo htmlspecialchars($ligne_matiere->nom_complet);
 		echo "</label>\n";
 		echo "</td>\n";
+		echo "<td>$ligne_matiere->priority</td>\n";
 		//$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur ORDER BY jpm.id_professeur";
 		$sql="SELECT jpm.id_professeur,u.nom,u.prenom,u.civilite FROM j_professeurs_matieres jpm, matieres m, utilisateurs u WHERE jpm.id_matiere=m.matiere AND m.matiere='$ligne_matiere->matiere' AND u.login=jpm.id_professeur AND u.etat='actif' ORDER BY jpm.id_professeur";
 		$result_prof=mysqli_query($GLOBALS["mysqli"], $sql);

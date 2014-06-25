@@ -366,6 +366,44 @@
 							die();
 						}
 
+						/*
+						<PARAMETRES>
+							<UAJ>TEL_RNE</UAJ>
+							<ANNEE_SCOLAIRE>2011</ANNEE_SCOLAIRE>
+							<DATE_EXPORT>22/05/2012</DATE_EXPORT>
+							<HORODATAGE>22/05/2012 08:09:38</HORODATAGE>
+						</PARAMETRES>
+						<DONNEES>
+							...
+						*/
+						$xml_uaj="";
+						$xml_horodatage="";
+						$objet_parametres=($ele_xml->PARAMETRES);
+						foreach ($objet_parametres->children() as $key => $value) {
+							if($key=='ANNEE_SCOLAIRE') {
+								//$annee_scolaire=$value;
+								if(!preg_match("/^$value/", getSettingValue('gepiYear'))) {
+									echo "<br /><p style='text-indent: -7.5em; margin-left: 7.5em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> L'année scolaire du fichier XML (<em>$value</em>) ne semble pas correspondre à l'année scolaire paramétrée dans Gepi (<em>".getSettingValue('gepiYear')."</em>).<br />Auriez-vous récupéré un XML de l'année précédente ou de l'année prochaine (<em>il arrive que l'on bascule dans Sconet en juin ou courant septembre</em>)&nbsp;?</p><br />\n";
+									//$nb_err++;
+								}
+							}
+							elseif($key=='HORODATAGE') {
+								$xml_horodatage=$value;
+							}
+							elseif($key=='UAJ') {
+								$xml_uaj=$value;
+							}
+						}
+
+						//saveSetting('ts_maj_sconet', strftime("%Y-%m-%d %H:%M:%S"));
+						$texte_maj_sconet="<br /><p><strong>Fichier XML élève</strong>";
+						if($xml_uaj!="") {$texte_maj_sconet.=" ($xml_uaj)";}
+						if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage";}
+						$texte_maj_sconet.="</p>";
+						echo $texte_maj_sconet;
+						//enregistre_log_maj_sconet($texte_maj_sconet);
+
+
 						echo "<p>\n";
 						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
 
@@ -1178,6 +1216,46 @@
 							require("../lib/footer.inc.php");
 							die();
 						}
+
+
+
+						/*
+						<PARAMETRES>
+							<UAJ>TEL_RNE</UAJ>
+							<ANNEE_SCOLAIRE>2011</ANNEE_SCOLAIRE>
+							<DATE_EXPORT>22/05/2012</DATE_EXPORT>
+							<HORODATAGE>22/05/2012 08:09:38</HORODATAGE>
+						</PARAMETRES>
+						<DONNEES>
+							...
+						*/
+						$xml_uaj="";
+						$xml_horodatage="";
+						$objet_parametres=($nomenclature_xml->PARAMETRES);
+						foreach ($objet_parametres->children() as $key => $value) {
+							if($key=='ANNEE_SCOLAIRE') {
+								//$annee_scolaire=$value;
+								if(!preg_match("/^$value/", getSettingValue('gepiYear'))) {
+									echo "<br /><p style='text-indent: -7.5em; margin-left: 7.5em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> L'année scolaire du fichier XML (<em>$value</em>) ne semble pas correspondre à l'année scolaire paramétrée dans Gepi (<em>".getSettingValue('gepiYear')."</em>).<br />Auriez-vous récupéré un XML de l'année précédente ou de l'année prochaine (<em>il arrive que l'on bascule dans Sconet en juin ou courant septembre</em>)&nbsp;?</p><br />\n";
+									//$nb_err++;
+								}
+							}
+							elseif($key=='HORODATAGE') {
+								$xml_horodatage=$value;
+							}
+							elseif($key=='UAJ') {
+								$xml_uaj=$value;
+							}
+						}
+
+						//saveSetting('ts_maj_sconet', strftime("%Y-%m-%d %H:%M:%S"));
+						$texte_maj_sconet="<br /><p><strong>Fichier XML élève</strong>";
+						if($xml_uaj!="") {$texte_maj_sconet.=" ($xml_uaj)";}
+						if($xml_horodatage!="") {$texte_maj_sconet.=" du $xml_horodatage";}
+						$texte_maj_sconet.="</p>";
+						echo $texte_maj_sconet;
+						//enregistre_log_maj_sconet($texte_maj_sconet);
+
 
 						$tab_champs_matiere=array("CODE_GESTION",
 						"LIBELLE_COURT",

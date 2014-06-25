@@ -184,12 +184,10 @@ echo "<p class=cn><b>Classe : $nom_classe | Enseignement : " . $current_group["d
 
 
 // Couleurs utilisées
-/*
 $couleur_devoirs = '#AAE6AA';
 $couleur_moy_cont = '#96C8F0';
 $couleur_moy_sous_cont = '#FAFABE';
 $couleur_calcul_moy = '#AAAAE6';
-*/
 
 // Calcul du nombre de periodes à afficher : $nb_cahier_note
 $appel_cahier_notes = mysqli_query($GLOBALS["mysqli"], "SELECT periode, id_cahier_notes FROM cn_cahier_notes WHERE (id_groupe='$id_groupe') ORDER BY periode");
@@ -717,6 +715,26 @@ while($i < $nombre_lignes) {
     $i++;
 }
 
+// 20140616
+/*
+echo "<pre>";
+print_r($data_pdf);
+echo "</pre>";
+*/
+$indice_premiere_col_note=1;
+// On n'a pas implémenté le multiclasses dans cette page
+//if ($multiclasses) {$indice_premiere_col_note=2;}
+$tab_col_note=array();
+for($i=1;$i<count($data_pdf);$i++) {
+	for($j=0;$j<count($data_pdf[$i]);$j++) {
+		$tab_col_note[$j][$i]=$data_pdf[$i][$j];
+	}
+}
+
+for($i=0;$i<count($tab_col_note);$i++) {
+	$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i]);
+}
+
 //
 // Dernière ligne
 //
@@ -848,7 +866,55 @@ if($avec_moy_bull=="y") {
 	$data_pdf[$tot_data_pdf][] = $moy_annee_bull;
 }
 
-echo "</tr></table>\n";
+echo "</tr>\n";
+
+// 20140616
+$tot_data_pdf++;
+echo "<tr><td class=cn><b>Min :</b></td>\n";
+$data_pdf[$tot_data_pdf][] = "Min";
+for($i=1;$i<count($tab_col_note);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['min']."</td>";
+	$data_pdf[$tot_data_pdf][] = $tab_m[$i]['min'];
+}
+echo "</tr>\n";
+
+$tot_data_pdf++;
+echo "<tr><td class=cn><b>Max :</b></td>\n";
+$data_pdf[$tot_data_pdf][] = "Max";
+for($i=1;$i<count($tab_col_note);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['max']."</td>";
+	$data_pdf[$tot_data_pdf][] = $tab_m[$i]['max'];
+}
+echo "</tr>\n";
+
+$tot_data_pdf++;
+echo "<tr><td class=cn><b>Médianes :</b></td>\n";
+$data_pdf[$tot_data_pdf][] = "Médianes :";
+for($i=1;$i<count($tab_col_note);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['mediane']."</td>";
+	$data_pdf[$tot_data_pdf][] = $tab_m[$i]['mediane'];
+}
+echo "</tr>\n";
+
+$tot_data_pdf++;
+echo "<tr><td class=cn><b>1er quartile :</b></td>\n";
+$data_pdf[$tot_data_pdf][] = "1er quartile :";
+for($i=1;$i<count($tab_col_note);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['q1']."</td>";
+	$data_pdf[$tot_data_pdf][] = $tab_m[$i]['q1'];
+}
+echo "</tr>\n";
+
+$tot_data_pdf++;
+echo "<tr><td class=cn><b>3è quartile :</b></td>\n";
+$data_pdf[$tot_data_pdf][] = "3è quartile :";
+for($i=1;$i<count($tab_col_note);$i++) {
+	echo "<td class='cn bold'>".$tab_m[$i]['q3']."</td>";
+	$data_pdf[$tot_data_pdf][] = $tab_m[$i]['q3'];
+}
+echo "</tr>\n";
+
+echo"</table>\n";
 
 // Préparation du pdf
 $header_pdf=serialize($header_pdf);
