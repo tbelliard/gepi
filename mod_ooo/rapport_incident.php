@@ -43,9 +43,10 @@ if (!checkAccess()) {
 include_once('./lib/lib_mod_ooo.php');
 
 include_once('../tbs/tbs_class.php');
-include_once('./lib/tbsooo_class.php');
-define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
-include_once('../lib/pclzip.lib.php');
+include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+// include_once('./lib/tbsooo_class.php');
+// define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
+// include_once('../lib/pclzip.lib.php');
 
 include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fonction du module discipline pour la fonction p_nom , u_p_nom
 
@@ -376,6 +377,34 @@ if ($mode=='module_discipline') {
 // Fin zone de traitement Les données qui seront fusionnées au modèle
 //
 
+
+$TBS = new clsTinyButStrong; // new instance of TBS
+$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+
+// Load the template
+$nom_fichier_modele_ooo ='rapport_incident.odt';
+
+//Procédure du traitement à effectuer
+//les chemins contenant les données
+include_once ("./lib/chemin.inc.php");
+
+$nom_fichier = $nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
+
+$TBS->LoadTemplate($nom_fichier, OPENTBS_ALREADY_UTF8);
+
+//Génération du nom du fichier
+$now = gmdate('d_M_Y_H:i:s');
+$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
+$nom_fic = remplace_accents($nom_fichier_modele[0]."_N°_".$num_incident."_généré_le_".$now.".".$nom_fichier_modele[1]);
+
+$TBS->MergeBlock('blk1',$donnee_tab_protagonistes) ; 
+
+$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fic);
+
+
+
+/*
+
 //
 //Les variables à modifier pour le traitement  du modèle ooo
 //
@@ -434,4 +463,6 @@ header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
 $OOo->FlushDoc(); //envoi du fichier traité
 $OOo->RemoveDoc(); //suppression des fichiers de travail
 // Fin de traitement des tableaux
+ * 
+ */
 ?>
