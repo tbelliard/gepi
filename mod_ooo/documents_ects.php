@@ -25,19 +25,8 @@
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
-// Remplacement des anciennes versions vers la nouvelle lib TinyDoc
-//include_once('./lib/lib_mod_ooo.php');
-//include_once('./lib/tbs_class.php');
-//include_once('./lib/tbsooo_class.php');
-
-//include_once('./lib/tinyButStrong.class.php');
-//include_once('./lib/tinyDoc.class.php');
-
 include_once('../tbs/tbs_class.php');
 include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-
-//~ define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
-//~ include_once('../lib/pclzip.lib.php');
 
 
 // Resume session
