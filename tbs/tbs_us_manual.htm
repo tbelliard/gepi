@@ -192,13 +192,13 @@ a.opt-name:hover {
       </tr>
       <tr>
         <td>Date:</td>
-        <td>2013-04-20</td>
+        <td>2014-01-26</td>
       </tr>
     </table>
   </div>
   <div style="margin:auto; width:500px; text-align:center;">
     <h1>TinyButStrong Documentation</h1>
-    <div class="txt-tiny">version 3.8</div>
+    <div class="txt-tiny">version 3.9</div>
     <div style="margin-top:10px;">Template Engine for Pro and Beginners<br>
       for PHP 5</div>
   </div>
@@ -346,6 +346,10 @@ a.opt-name:hover {
         <td>&nbsp;</td>
       </tr>
       <tr>
+        <td>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <a href="#html_block_parallel">Parallel merge (dynamic columns) </a></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
         <td>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <a href="#html_block_serial">Serial display (in columns) </a></td>
         <td>&nbsp;</td>
       </tr>
@@ -410,7 +414,7 @@ a.opt-name:hover {
         <td>&nbsp;</td>
       </tr>
     </table>
-  </div>
+</div>
   <h2 id="introduction" class="pagebreak">Introduction:</h2>
   <p><strong>TinyButStrong</strong> (TBS) is a PHP class useful to develop an application in a clean way, separating PHP scripts and XML/HTML/Text files. With TBS, the files  are generated dynamically by merging a template with data. It is called a Template Engine. </p>
   <p> The name TBS comes from the fact that this tool contains only 8 functions and yet, it is very powerful. It allows you to merge templates with your PHP variables or your MySQL, PostgreSQL, or SQLite.</p>
@@ -836,7 +840,7 @@ include_once(<span class="opt-value">'tbs_class.php'</span>);
           The block is merged like it was a <span class="opt-name"> <a href="#html_conditional_section">conditional blocks</a> onload</span> and <span class="opt-name">onshow</span>. The block is not merged with data, and so it must have no linked TBS field. Each block section needs a parameter <span class="opt-name">when</span> or a parameter <span class="opt-name">default</span>. See <a href="#html_conditional_section">conditional blocks</a> for more details. </p>
         <p> Example: <span class="txt-code"><span class="opt-name">$TBS</span>-&gt;MergeBlock(<span class="opt-value">'bz'</span>,<span class="opt-value">'cond'</span>);</span></p>
       </div>
-      <h5>&bull; Array</h5>
+      <h5><a name="php_mergeblock_array" id="php_mergeblock_mergeseveral2"></a>&bull; Array</h5>
       <div class="decal">
         <p>The argument <span class="opt-name">Source</span> has to be a PHP Array or the keyword <span class="opt-value">'array'</span>. If you use the keyword <span class="opt-value">'array'</span>, then the argument <span class="opt-name">Query</span> has to be a Php Array or a string that represents an array contained or nested in a global variable.</p>
         <p> String syntax: <span class="opt-value">'globvar[item1][item2]...'</span></p>
@@ -1143,7 +1147,13 @@ Some of the TBS options are a new way of setting <a href="#php_options_compatibi
       <tr>
         <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="php_setoption_methods_allowed" id="php_setoption19"></a>methods_allowed</span></td>
         <td align="left" valign="top" class="border-sep"><p>Allow methods in <a href="#html_field_auto">automatic fields</a>. The default value is <span class="opt-value">false</span>. If you set this option to <span class="opt-value">true</span>, then and automatic fields can call methods of its sub items. It is a security point to not allow methods by default on automatic fields because all global variables can be called by automatic fields until <a href="#php_varref">VarRef</a> is redefined.</p>
-        <p> Example of automatic field calling a method: [onshow.my_objet.my_method]</p></td>
+        <p> Example of automatic field calling a method: [onshow.my_objet.my_method]</p>
+        <p class="versioning">Versioning: option 'methods_allowed' is supported since TBS version 3.8.2. </p></td>
+      </tr>
+      <tr>
+        <td align="left" valign="top" class="opt-name"><a name="php_setoption_methods_old_subtemplate" id="php_setoption20"></a>old_subtemplate</td>
+        <td align="left" valign="top" class="border-sep"><p>Use the old  sub-template technic of TinyButStrong 3.8.2 or lower. Since version 3.9.0 there  is a more robust technic. The old technic consists in calling PHP output  buffering. Use this option if you encounter strange behaviors with your old  code when using parameter <a href="#html_field_prm_script" class="opt-name">script</a> and <a href="#html_field_prm_subtpl" class="opt-name">subtpl</a>. This may happen only if you called  the PHP command echo() in the sub-template script, which is quite rare.</p>          
+        <p class="versioning">Versioning: option 'old_subtemplate' is supported since TBS version 3.9.0. </p></td>
       </tr>
     </table>
     <h4><span class="opt-name"><a name="php_options_compatibility" id="php_setoption16"></a></span>Compatibility with previous TBS versions:</h4>
@@ -2098,7 +2108,7 @@ Parameter <span class="opt-name">storename</span> changes the name of the store.
               <tr>
                 <td>&nbsp;</td>
                 <td>[<span class="opt-value"><span class="opt-name">fld</span></span>;<span class="opt-name">frm</span>='<span class="opt-value">$ 0,000.</span>']</td>
-                <td class="opt-html">2,456</td>
+                <td class="opt-html">$ 2,456</td>
               </tr>
               <tr>
                 <td>&nbsp;</td>
@@ -2550,6 +2560,12 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
           <p class="versioning">Versioning: parameter bmagnet is supported since   TBS version 3.0.</p></td>
       </tr>
       <tr>
+        <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="html_block_prm_parallel" id="html_block_prm_parallel"></a>parallel</span>=<span class="opt-value">configuration_id</span></td>
+        <td align="left" valign="top" class="border-sep"><p>Merge a block with a parallel process for sub-blocks. This can typically   merges a table block in columns.<br>
+        By default, TinyButStrong supports the configuration id named &quot;<span class="opt-value">tbs:table</span>&quot; for merging HTML tables. But you can define your own configuration.<br>
+        See <a href="#html_block_parallel">Parallel merge</a> for examples and how to add a custom configuration.</p><p class="versioning">Versioning: parameter parallel is supported since   TBS version 3.9.0.</p></td>
+      </tr>
+      <tr>
         <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="html_block_prm_headergrp" id="html_block_prm_headergrp"></a>headergrp</span>=<span class="opt-value">colname</span></td>
         <td align="left" valign="top" class="border-sep">Indicates a header section that is displayed each time the value of column <span class="opt-value">colname</span> changes.<span class="opt-value"><br>
           colname</span> must be a valid column name returned by the data source.<br>
@@ -2559,11 +2575,11 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
       </tr>
       <tr>
         <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="html_block_prm_footergrp" id="html_block_prm_footergrp"></a>footergrp</span>=<span class="opt-value">colname</span></td>
-        <td align="left" valign="top" class="border-sep">Indicates a footer section that is displayed each time the value of column <span class="opt-value">colname</span> changes. See <span class="opt-name">headergrp</span>. </td>
+        <td align="left" valign="top" class="border-sep">Indicates a footer section that is displayed each time the value of column <span class="opt-value">colname</span> changes. See <a href="#html_block_prm_headergrp" class="opt-name">headergrp</a>. </td>
       </tr>
       <tr>
         <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="html_block_prm_splittergrp" id="html_block_prm_splittergrp"></a>splittergrp</span>=<span class="opt-value">colname</span></td>
-        <td align="left" valign="top" class="border-sep">Indicates a splitter section that is displayed each time the value of column <span class="opt-value">colname</span> changes. See <span class="opt-name">headergrp</span>. </td>
+        <td align="left" valign="top" class="border-sep">Indicates a splitter section that is displayed each time the value of column <span class="opt-value">colname</span> changes. See <a href="#html_block_prm_headergrp" class="opt-name">headergrp</a>. </td>
       </tr>
       <tr id="v202_parentgrp">
         <td align="left" valign="top" class="border-sep"><span class="opt-name"><a name="html_block_prm_parentgrp" id="html_block_prm_parentgrp"></a>parentgrp</span>=<span class="opt-value">colname</span></td>
@@ -2689,8 +2705,8 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
     </ul>
 <h4>Normal sections:</h4>
     <p> When you define several normal sections, they will be used alternatively for each record. </p>
-    <div class="decal">Example:<br>
-      <br>
+    <div class="decal">
+      <p>Example:</p>
       <table width="200" cellpadding="2" cellspacing="0" class="border-1">
         <tr>
           <td bgcolor="#F0FCFF" class="border-1">[<span class="opt-name">b1</span>.caption;<span class="opt-name">block</span>=tr]</td>
@@ -2699,8 +2715,8 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
           <td bgcolor="#D2FFE9" class="border-1">[<span class="opt-name">b1</span>.caption;<span class="opt-name">block</span>=tr]</td>
         </tr>
       </table>
-      <br>
-      <span class="txt-small">In this example, the block named 'b1' contains two normal sections. Records will be displayed alternatively with a green background and with a blue background.</span></div>
+      <p class="txt-small">In this example, the block named 'b1' contains two normal sections. Records will be displayed alternatively with a green background and with a blue background.</p>
+    </div>
     <h4>NoData section:</h4>
     <p> The NoData section is a section displayed only if the data source has no records. There can be only one NoData section in a block. The NoData section is defined by adding the parameter <span class="opt-name">nodata</span>. </p>
 <p>Example:</p>
@@ -2738,11 +2754,104 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
       </tr>
     </table>
   </div>
+  <h3><a name="html_block_parallel" id="html_block_parallel"></a>Parallel merge (dynamic columns):</h3>
+  <div class="norm">
+    <p class="versioning">The parallel merge is supported since TBS version 3.9.0.</p>
+    <p>The parameter <span class="opt-name"><a href="#html_block_prm_parallel">parrallel</a></span> enables you to merge a block with a parallel process for sub-blocks. This can typically   merges a table block in columns.</p>
+<p> By default, TinyButStrong supports the configuration id named &quot;<span class="opt-value">tbs:table</span>&quot; for merging HTML tables. But you can define your own configuration.</p>
+    <div class="decal">
+      <h4>Example:</h4>
+      <p>Template:</p>
+      <table cellpadding="3" cellspacing="0" class="border-1 decal">
+        <tr>
+    <td bgcolor="#DDDDDD" class="border-1">Category</td>
+    <td bgcolor="#DDDDDD" class="border-1">[b.date]</td>
+    </tr>
+  <tr>
+    <td class="border-1">Thin</td>
+    <td align="right" class="border-1">[b.thin;block=td;parallel=tbs:table]</td>
+    </tr>
+  <tr>
+    <td class="border-1">Heavy</td>
+    <td align="right" class="border-1">[b.heavy]</td>
+    </tr>
+  <tr>
+    <td class="border-1"><strong>Total</strong></td>
+    <td align="right" class="border-1"><strong>[b.total]</strong></td>
+    </tr>
+</table>
+      <p>PHP:</p>
+      <pre class="txt-code decal">
+<span class="opt-name">$data</span> = array(
+ array('<span class="opt-value">date</span>' =&gt; '2013-10-13', '<span class="opt-value">thin</span>' =&gt; 156, '<span class="opt-value">heavy</span>' =&gt; 128, '<span class="opt-value">total</span>' =&gt; 284),
+ array('<span class="opt-value">date</span>' =&gt; '2013-10-14', '<span class="opt-value">thin</span>' =&gt; 233, '<span class="opt-value">heavy</span>' =&gt;  25, '<span class="opt-value">total</span>' =&gt; 284),
+ array('<span class="opt-value">date</span>' =&gt; '2013-10-15', '<span class="opt-value">thin</span>' =&gt; 110, '<span class="opt-value">heavy</span>' =&gt; 412, '<span class="opt-value">total</span>' =&gt; 130),
+ array('<span class="opt-value">date</span>' =&gt; '2013-10-16', '<span class="opt-value">thin</span>' =&gt; 258, '<span class="opt-value">heavy</span>' =&gt; 522, '<span class="opt-value">total</span>' =&gt; 258),
+);
+<span class="opt-name">$TBS</span>-&gt;MergeBlock('<span class="opt-value">b</span>', <span class="opt-name">$data</span>);
+</pre>
+      <p>Result:</p>
+<table cellpadding="3" cellspacing="0" class="border-1 decal">
+  <tr>
+    <td bgcolor="#DDDDDD" class="border-1">Category</td>
+    <td bgcolor="#DDDDDD" class="border-1">2013-10-13</td>
+    <td bgcolor="#DDDDDD" class="border-1">2013-10-14</td>
+    <td bgcolor="#DDDDDD" class="border-1">2013-10-15</td>
+    <td bgcolor="#DDDDDD" class="border-1">2013-10-16</td>
+  </tr>
+  <tr>
+    <td class="border-1">Thin</td>
+    <td align="right" class="border-1">156</td>
+    <td align="right" class="border-1">233</td>
+    <td align="right" class="border-1">110</td>
+    <td align="right" class="border-1">128</td>
+  </tr>
+  <tr>
+    <td class="border-1">Heavy</td>
+    <td align="right" class="border-1">128</td>
+    <td align="right" class="border-1">25</td>
+    <td align="right" class="border-1">412</td>
+    <td align="right" class="border-1">130</td>
+  </tr>
+  <tr>
+    <td class="border-1"><strong>Total</strong></td>
+    <td align="right" class="border-1"><strong>284</strong></td>
+    <td align="right" class="border-1"><strong>258</strong></td>
+    <td align="right" class="border-1"><strong>522</strong></td>
+    <td align="right" class="border-1"><strong>258</strong></td>
+  </tr>
+</table>
+    </div>
+    <p>Remark:
+      The parallel merge doesn't work with <a href="#html_block_section">headergrp and  serial mode</a><a href="#html_block_subblock"></a>.</p>
+    <h4>Define a new configuration: </h4>
+    <pre class="txt-code">
+<span class="opt-name">$configuration</span> = array(
+ <span class="opt-html">// Name of the parent entity. The process will be limited to this element and its childs.</span>
+ '<span class="opt-value">parent</span>' => '<span class="opt-value">table</span>',
+ <span class="opt-html">// Names of tags that must be simply ignored. Such start and ending tags are ignored but childs are not ignored.
+ // For elements that must be completely ignored including childs, you just have to not mentioned it in the configuration.</span>
+ '<span class="opt-value">ignore</span>' => array('<span class="opt-value">!--</span>', '<span class="opt-value">caption</span>', '<span class="opt-value">thead</span>', '<span class="opt-value">thbody</span>', '<span class="opt-value">thfoot</span>'),
+ <span class="opt-html">// Names of entities recognized as column's definitions, and their span attributes</span><span class="opt-html"> ('' for no span attribute)</span>.
+ <span class="opt-html">// Such entities must always be placed before the row entities.</span>
+ '<span class="opt-value">cols</span>'   => array(),
+ <span class="opt-html">// Names of entities recognized as rows.</span>
+ '<span class="opt-value">rows</span>'   => array('<span class="opt-value">tr</span>'),
+ <span class="opt-html">// Names of entities recognized as cells, and their span attibute ('' for no span attribute).</span>
+ '<span class="opt-value">cells</span>'  => array(
+   '<span class="opt-value">td</span>' => '<span class="opt-value">colspan</span>',
+   '<span class="opt-value">th</span>' => '<span class="opt-value">colspan</span>',
+  ),
+);
+<span class="opt-html">// Save the new configuratin with its ID.</span>
+<span class="opt-name">$TBS</span>-&gt;SetOption('<span class="opt-value">parallel_conf</span>', '<span class="opt-value">tbs:table</span>',  <span class="opt-name">$configuration</span>);
+    </pre>
+  </div>
   <h3><a name="html_block_serial" id="html_block_serial"></a>Serial display (in columns):</h3>
   <div class="norm">
     <p>The serial display enables you to display several records inside a block. For this, you have to use a main block and secondary blocks. </p>
-    <div class="decal">Example:<br>
-      <br>
+    <div class="decal">
+      <p>Example:      </p>
       <table width="200" cellpadding="4" cellspacing="0" class="border-2">
         <tr>
           <td class="border-2"><table width="100%" cellpadding="0" cellspacing="0" class="border-1">
@@ -2775,12 +2884,12 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
             </table></td>
         </tr>
       </table>
-      <br>
-      <span class="txt-small">In this example, main blocks are the blue lines of the table, the secondary blocks are the pink cells.</span></div>
+      <p class="txt-small">In this example, main blocks are the blue lines of the table, the secondary blocks are the pink cells.</p>
+    </div>
     <h4>Syntax:</h4>
     <p>The main block and its secondary blocks are merged using only one call to the MergeBock() method. The main block must be defined using the parameter <span class="opt-name">serial</span>. The secondary blocks must be nested into the main block. The secondary block's names must be the name of the main block followed by &quot;_&quot; and a number indicating display order. </p>
-    <div class="decal">Example:<br>
-      <br>
+    <div class="decal">
+      <p>Example:      </p>
       <table width="200" cellpadding="4" cellspacing="0" class="border-2">
         <tr>
           <td class="border-2"><table width="100%" cellpadding="2" cellspacing="0" class="border-1">
@@ -2793,13 +2902,11 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
             </table></td>
         </tr>
       </table>
-      <br>
-      <span class="txt-small">The corresponding PHP is:</span><br>
-      <span class="txt-code"> &nbsp;$TBS-&gt;MergeBlock('<span style="color:#000099">bx</span>',$cnx_id,'<span style="color:#000099">SELECT txt FROM t_info ORDER BY txt</span>')</span></div>
-    <h4> Empty secondary block: </h4>
+    </div>
+<h4>Empty secondary block: </h4>
     <p>You can specify a special secondary block that will be used to replace unused secondary blocks (without records). This &quot;Empty&quot; secondary block must have the index 0. It can either be placed inside the main block with the normal secondary block, or alone inside another <span class="opt-name">serial</span> block. The &quot;empty&quot; secondary block is optional. </p>
-    <div class="decal">Example:<br>
-      <br>
+    <div class="decal">
+      <p>Example:      </p>
       <table width="200" cellpadding="4" cellspacing="0" class="border-2">
         <tr>
           <td class="border-2"><table width="100%" cellpadding="2" cellspacing="0" class="border-1">
@@ -2827,12 +2934,13 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
       The serial display also works with <a href="#html_block_section">sections of block</a> and <a href="#html_block_subblock">dynamic queries</a>.</p>
   </div>
   <h3><a name="html_block_subblock" id="html_block_subblock"></a>Subblocks:</h3>
-  <div class="norm"> A subblock is a TBS block nested into another TBS block and that  should be displayed as a separated block for each record of its parent block. <br>
-    <div class="decal"> Example:<br>
-      <br>
+  <div class="norm"> 
+    <p>A subblock is a TBS block nested into another TBS block and that  should be displayed as a separated block for each record of its parent block. </p>
+    <div class="decal"> 
+      <p>Example:</p>
       <table cellpadding="2" cellspacing="0" class="border-2">
         <tr>
-          <td class="border-2">Parent block record #1<br>
+          <td class="border-2">Parent block record #1
             <div class="decal">
               <table cellpadding="1" cellspacing="0" class="border-1">
                 <tr>
@@ -2842,10 +2950,10 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
                   <td class="border-1">Subblock record #1.2</td>
                 </tr>
               </table>
-            </div></td>
+          </div></td>
         </tr>
         <tr>
-          <td class="border-2">Parent block record #2<br>
+          <td class="border-2">Parent block record #2
             <div class="decal">
               <table cellpadding="1" cellspacing="0" class="border-1">
                 <tr>
@@ -2858,29 +2966,26 @@ It is the same feature as option <a href="#php_setoption_tpl_frms" class="opt-na
                   <td class="border-1">Subblock record #2.3</td>
                 </tr>
               </table>
-            </div></td>
+          </div></td>
         </tr>
         <tr>
-          <td class="border-2">Parent block record #3<br>
+          <td class="border-2">Parent block record #3
             <div class="decal">
               <table cellpadding="1" cellspacing="0" class="border-1">
                 <tr>
                   <td class="border-1">Subblock record #3.1</td>
                 </tr>
               </table>
-            </div></td>
+          </div></td>
         </tr>
       </table>
     </div>
-    <br>
-    They are two different  ways to perform subblocks with TBS:<br>
-    <br>
-    - Automatic subblock: (<span class="versioning">since TBS 3.5.0</span>) it is when the data of the parent block has a column which contains the ready-to-merge data for the subblock. Automatic subblocks are activated using parameter <span class="opt-name">sub1</span> in the parent block, and they are merged automatically during the merge of the parent block. No extra MergeBlock() are needed.<br>
-    See <a href="#html_block_subauto">Automatic subblocks</a> for more details.<br>
-    <br>
-    - Subblock with dynamic query: it is when the data of the subblocks are retrieved using a query which can change for each record of the parent block. Subblocks with dynamic queries need an extra MergeBlock() to perform the merging with their dynamic query. Parameter <span class="opt-name">p1</span> is also needed in the subblock definition in order to set the values to inject in the dynamic query.<br>
-    See <a href="#html_block_dynsb">Subblocks with dynamic queries</a> for more details. <br>
-  </div>
+    <p>They are two different  ways to perform subblocks with TBS:</p>
+    <ul>
+      <li>       Automatic subblock: (<span class="versioning">since TBS 3.5.0</span>) it is when the data of the parent block has a column which contains the ready-to-merge data for the subblock. Automatic subblocks are activated using parameter <span class="opt-name">sub1</span> in the parent block, and they are merged automatically during the merge of the parent block. No extra MergeBlock() are needed. See <a href="#html_block_subauto">Automatic subblocks</a> for more details.</li>
+      <li> Subblock with dynamic query: it is when the data of the subblocks are retrieved using a query which can change for each record of the parent block. Subblocks with dynamic queries need an extra MergeBlock() to perform the merging with their dynamic query. Parameter <span class="opt-name">p1</span> is also needed in the subblock definition in order to set the values to inject in the dynamic query.  See <a href="#html_block_dynsb">Subblocks with dynamic queries</a> for more details.    </li>
+    </ul>
+</div>
   <h3><a name="html_block_subauto" id="html_block_subauto"></a>Automatic subblocks:</h3>
   <div class="norm">
     <p class="versioning">Automatic subblock are supported since TBS version 3.5.0.</p>
@@ -2995,31 +3100,37 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
     <h4>Principles of the dynamic queries:</h4>
     <p>It is possible to use the MergeBlock() method with a dynamic query.
       In your template, you have to define a block by adding the parameters <span class="opt-name">p1</span>, <span class="opt-name">p2</span>, <span class="opt-name">p3</span>,... with their values.
-      The query given to the MergeBlock() method has to contain marks such as <span class="opt-value">%p1%</span>, <span class="opt-value">%p2%</span>, <span class="opt-value">%p3%</span>, ... in order to welcome the values of the parameters <span class="opt-name">p1</span>, <span class="opt-name">p2</span>, <span class="opt-name">p3</span>,... </p>
+      The parameter $query given to the <a href="#php_mergeblock" class="opt-name">MergeBlock()</a> method must be a string and has to contain marks such as <span class="opt-value">%p1%</span>, <span class="opt-value">%p2%</span>, <span class="opt-value">%p3%</span>, ... in order to welcome the values of the parameters <span class="opt-name">p1</span>, <span class="opt-name">p2</span>, <span class="opt-name">p3</span>,... </p>
+    <p>Note that you can also use a dynamic query with a PHP Array using a string that refers to a PHP Array stored in a global variable. See<a href="#php_mergeblock_array" class="opt-name"> Php data sources</a>.</p>
     <p> Each section of the block to be merged that contains a parameter <span class="opt-name">p1</span> will be computed as a separate block for which the dynamic query is re-executed. The sections of the block that have no parameter <span class="opt-name">p1</span> are combined with the previous section with a parameter <span class="opt-name">p1</span>. </p>
-    <div class="decal">Example: <br>
-      Country: France <br>
+    <div class="decal">
+      <p>Example: </p>
+      <div class="decal">
+      <p> Country: France</p>
       <table cellpadding="2" cellspacing="0" class="border-1">
         <tr>
           <td width="200" class="border-1">[blk.town;block=tr;p1='france']</td>
           <td width="100" class="border-1">[blk.country]</td>
         </tr>
       </table>
-      <br>
-      Country: USA <br>
+      <p>Country: USA</p>
       <table cellpadding="2" cellspacing="0" class="border-1">
         <tr>
           <td width="200" class="border-1">[blk.town;block=tr;p1='us']</td>
           <td width="100" class="border-1">[blk.country]</td>
         </tr>
       </table>
-      <br>
-      <span class="txt-small">Corresponding PHP code:</span><br>
-      <span class="txt-code">&nbsp;$TBS-&gt;MergeBlock('<span class="opt-value">blk</span>',$cnx_id,&quot;<span class="opt-value">SELECT town,country FROM t_geo WHERE (country='%p1%')</span>&quot;)<br>
-      <br>
-      </span><span class="txt-small">Result of the merge:<br>
-      </span><br>
-      Country: France <br>
+      </div>
+      <p>Corresponding PHP code:</p>
+      <pre class="decal">$TBS-&gt;MergeBlock('<span class="opt-value">blk</span>', $cnx_id, &quot;<span class="opt-value">SELECT town,country FROM t_geo WHERE (country='%p1%')</span>&quot;);</pre>
+      <p>Or using an Array:</p>
+<pre class="decal">global $data_town; <span class="opt-html">// the coutry code is the main key of the array</span>
+$TBS-&gt;MergeBlock('<span class="opt-value">blk</span>', '<span class="opt-value">array</span>', '<span class="opt-value">data_town[%p1%]</span>');</pre>
+      </span>
+      <p>Result of the merge:</p>
+      </p>
+      <div class="decal">
+      <p>        Country: France
       <table cellpadding="2" cellspacing="0" class="border-1">
         <tr>
           <td width="200" class="border-1">Paris</td>
@@ -3030,8 +3141,7 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
           <td class="border-1">france</td>
         </tr>
       </table>
-      <br>
-      Country: USA<br>
+      <p>Country: USA      </p>
       <table cellpadding="2" cellspacing="0" class="border-1">
         <tr>
           <td width="200" class="border-1">Washington</td>
@@ -3042,6 +3152,7 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
           <td class="border-1">us</td>
         </tr>
       </table>
+      </div>
     </div>
     <h4>Use with subblocks:</h4>
     <p>Dynamic queries enable you to easily build a system of a main-block with subblocks. Here is how you can do it:</p>
@@ -3050,9 +3161,11 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
       <li> Link them by adding to the subblock a parameter <span class="opt-name">p1</span> whose value is a field from the main block.</li>
       <li> At the PHP side, merge the main block first, and then the subblock.</li>
     </ol>
-    <div class="decal">Example:<br>
-      <br>
-      <table width="400" cellpadding="2" cellspacing="0" class="border-2">
+    <div class="decal">
+      <p>Example:
+ </p>
+      <div class="decal">
+        <table width="400" cellpadding="2" cellspacing="0" class="border-2">
         <tr>
           <td class="border-2"><span style="color:#336699">Country:</span> [main.country;block=tr]<br>
             <table cellpadding="1" cellspacing="0" class="border-1">
@@ -3062,14 +3175,17 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
             </table></td>
         </tr>
       </table>
-      <br>
-      <span class="txt-small">Corresponding PHP code:</span><br>
-      <span class="txt-code">&nbsp;$TBS-&gt;MergeBlock('<span class="opt-value">main</span>',$cnx_id,'<span class="opt-value">SELECT country,cntr_id FROM t_country</span>')</span><br>
-      <span class="txt-code">&nbsp;$TBS-&gt;MergeBlock('<span class="opt-value">sub</span>',$cnx_id,'<span class="opt-value">SELECT town FROM t_town WHERE (cntr_id=%p1%)</span>') </span><br>
-      <br>
-      <span class="txt-small">Result of the merge:</span><br>
-      <br>
-      <table width="400" cellpadding="2" cellspacing="0" class="border-2">
+    </div>
+      <p>Corresponding PHP code:</p>
+      <pre class="decal">$TBS-&gt;MergeBlock('<span class="opt-value">main</span>', $cnx_id, '<span class="opt-value">SELECT country,cntr_id FROM t_country</span>');
+$TBS-&gt;MergeBlock('<span class="opt-value">sub</span>', $cnx_id, '<span class="opt-value">SELECT town FROM t_town WHERE (cntr_id=%p1%)</span>';</pre>
+      <p> Or using an Array:</p>
+      <pre class="decal">$TBS-&gt;MergeBlock('<span class="opt-value">main</span>', $data_county);
+global $data_town; <span class="opt-html">// the coutry code is the main key of the array</span>
+$TBS-&gt;MergeBlock('<span class="opt-value">blk</span>', '<span class="opt-value">array</span>', '<span class="opt-value">data_town[%p1%]</span>');</pre>
+      <p>Result of the merge: </p>
+      <div class="decal">
+        <table width="400" cellpadding="2" cellspacing="0" class="border-2">
         <tr>
           <td class="border-2"><span style="color:#336699">Country:</span> France<br>
             <table cellpadding="1" cellspacing="0" class="border-1">
@@ -3104,6 +3220,7 @@ $data['group2'][] = array('id'=&gt;4, 'name'=&gt;'jim');</pre>
             </table></td>
         </tr>
       </table>
+</div>
     </div>
     <p>Remarks:</p>
     <ul>
@@ -3407,7 +3524,7 @@ it whill run :<br>
         <td valign="top">If <span class="opt-name">$Source</span> is something else then the MergeBlock process  is trying to found the plug-in made by user functions that correspond to the type of <span class="opt-name">$Source</span>. (See more details below)</td>
       </tr>
     </table>
-    <h4>Database plug-in based un user functions: </h4>
+    <h4>Database plug-in based on user functions: </h4>
     <p> When the MergeBlock process meet a type of value for <span class="opt-name">$Source</span> which is not supported in native, it determines the TBS Id corresponding to that type. Then it looks for the user functions corresponding to that TBS Id.</p>
     <h5>&bull; How to determine the TBS Id:</h5>
     <p> The TBS Id is a string identifier determined  by the argument <span class="opt-name">$Source</span>.<br>
@@ -3732,6 +3849,10 @@ class clsTbsPlugin {
       <tr id="v202_parentgrp_sum">
         <td align="left" valign="top"><a href="#html_block_prm_parentgrp" class="opt-name">parentgrp</a></td>
         <td align="left" valign="top">Indicates a parent section that is displayed when the value of a column changes.</td>
+      </tr>
+      <tr>
+        <td align="left" valign="top" class="opt-name"><a href="#html_block_prm_parallel" class="opt-name">parallel</a></td>
+        <td align="left" valign="top">Indicates a configuration for merging data in columns or with any custom parallel method.</td>
       </tr>
       <tr>
         <td align="left" valign="top"><a href="#html_block_prm_serial" class="opt-name">serial</a></td>
