@@ -221,7 +221,7 @@ if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 					Nom&nbsp;:
 				</th>
 				<td>
-					<input type='text' name='nom_aff' value=\"".$tab_aff_courant['nom']."\" />
+					<input type='text' name='nom_aff' id='nom_aff' value=\"".$tab_aff_courant['nom']."\" onfocus=\"javascript:this.select()\" />
 				</td>
 			</tr>
 			<tr>
@@ -235,7 +235,11 @@ if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 		</table>
 		<input type='submit' name='valider_nommage_affichage' value='Valider' />
 	</fieldset>
-</form>\n";
+</form>
+
+<script type='text/javascript'>
+	document.getElementById('nom_aff').focus();
+</script>\n";
 
 
 	require("../lib/footer.inc.php");
@@ -269,6 +273,7 @@ if(!isset($afficher_listes)) {
 			}
 
 			// Si plus aucune requête ne reste, il faudrait peut-être supprimer le $id_aff... non... il sera réutilisé si on rajoute une requête et il sera perdu et absent de la base si on quitte la page sans ajouter de requête
+			// Mais alors une nouvelle requête va être placée avec le même id_aff et le même nom_aff
 		}
 	}
 
@@ -418,6 +423,15 @@ if(!isset($afficher_listes)) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
+		}
+
+		// Si aucune requête n'existe pour $id_aff, on supprime le nom aussi:
+		$sql="SELECT 1=1 FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
+		$test_aff=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_aff)==0) {
+			$sql="DELETE FROM gc_noms_affichages WHERE id='$id_aff';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			unset($id_aff);
 		}
 
 	} // FIN DE L'AJOUT D'UNE REQUETE (ajout ou modif)
