@@ -183,7 +183,7 @@ if(!isset($choix_affich)) {
 	echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affectation d'élèves dans des classes</h2>\n";
 
 	$sql="SELECT DISTINCT id_classe, classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
 	$res_clas_act=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -475,7 +475,7 @@ function change_display(id) {
 				$txt_requete="<ul>\n";
 				while($lig=mysqli_fetch_object($res)) {
 					$txt_requete.="<li>\n";
-					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'>";
+					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title=\"Affecter les élèves dans des classes.\">";
 					if($lig->nom_requete!="") {
 						$txt_requete.="$lig->nom_requete (<em>Req.n°$lig->id_req</em>)";
 					}
@@ -548,6 +548,10 @@ function change_display(id) {
 					//$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 					//$txt_requete.=" - <a href='#' onmouseover=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\" onmouseout=\"cacher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."')\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 					$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
+
+					$txt_requete.=" <a href='affiche_listes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;afficher_listes=y#requete_".$lig->id_req."' title=\"Afficher les élèves.\"><img src ='../images/icons/chercher.png'
+width='16' height='16' alt='Afficher' /></a>";
+
 					$txt_requete.="<br />";
 
 					$titre_i="Affichage n°$lig_req_aff->id_aff - Requête n°$lig->id_req";
@@ -969,7 +973,7 @@ else {
 	}
 </script>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affectation d'élèves dans des classes</h2>\n";
 
 	if(($requete_definie=='y')&&(isset($id_aff))&&(isset($id_req))) {
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
@@ -1183,7 +1187,7 @@ else {
 	// Rappel de la requête:
 
 	echo "<p>";
-	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete'>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete' title=\"Modifier la requête.\">";
 	if($chaine_classes_actuelles!="") {echo "Classes actuelles $chaine_classes_actuelles<br />\n";}
 	if($chaine_classes_futures!="") {echo "Classes futures $chaine_classes_futures<br />\n";}
 	if($chaine_avec_opt!="") {echo "Avec $chaine_avec_opt<br />\n";}
