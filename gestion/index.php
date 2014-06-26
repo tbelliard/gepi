@@ -212,7 +212,7 @@ if(!getSettingAOui('gepi_en_production')) {
   
   $chemin = "gestion_temp_dir.php";
   $titre = "Gestion des dossiers temporaires";
-  $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<em>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</em>), de supprimer ces dossiers,...";
+  $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<em>utilisés notamment pour générer les fichiers tableur openDocument (ODS), lorsque la fonction est activée dans le module carnet de notes</em>), de supprimer ces dossiers,...";
   $ancre="gestion_temp_dir";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli, 'ancre'=>$ancre);
   

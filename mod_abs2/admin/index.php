@@ -419,7 +419,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 </p>
 
 <p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
-	<em>NOTE&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles OpenOffice.org générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
+	<em>NOTE&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
 </p>
 
 <h2>Configuration des saisies</h2>

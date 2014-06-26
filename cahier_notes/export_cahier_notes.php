@@ -367,7 +367,7 @@ if($type_export=="CSV") {
 	$ligne_info_dev[]="INFOS;Login;Nom;Prénom;Classe;Moyennes:";
 
 	// Pour mettre dans un tableur et améliorer... voir http://christianwtd.free.fr/index.php?rubrique=LecNotesClasse
-	// On peut faire plus simple: La fonction MOYENNE de OpenOffice Calc tient compte des valeurs non numériques.
+	// On peut faire plus simple: La fonction MOYENNE de openDocument Calc tient compte des valeurs non numériques.
 
 	$cpt=0;
 	while($lig_dev=mysqli_fetch_object($appel_dev)) {
@@ -691,7 +691,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$tabcol[$i]="A".mb_substr($alphabet,$i-mb_strlen($alphabet),1);
 	}
 
-	// OpenOffice recalcule les valeurs lors de l'ouverture du document...
+	// libreOffice recalcule les valeurs lors de l'ouverture du document...
 	$valeur_defaut=0;
 	// On pourrait ne pas mettre de valeur...
 
@@ -758,7 +758,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell office:value-type="string"><text:p>'.$eleve_login[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_nom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_prenom[$i].'</text:p></table:table-cell><table:table-cell office:value-type="string"><text:p>'.$eleve_classe[$i].'</text:p></table:table-cell>');
 
-		// OpenOffice recalcule les valeurs lors de l'ouverture du document...
+		// libreOffice recalcule les valeurs lors de l'ouverture du document...
 		$valeur_defaut=0;
 
 		$ecriture=fwrite($fichier_tmp_xml,'<table:table-cell table:formula="oooc:=IF([.B'.$num_lig.']=&quot;&quot;;&quot;&quot;;IF(ISERROR(ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1));&quot;-&quot;;ROUND(20*SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.'];[.G$3:.AZ$3])/(SUMPRODUCT([.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;abs&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;disp&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;-&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4])-SUMPRODUCT([.G'.$num_lig.':.AZ'.$num_lig.']=&quot;v&quot;;[.G$3:.AZ$3];[.G$4:.AZ$4]));1)))" office:value-type="float" office:value="'.$valeur_defaut.'"><text:p>'.$valeur_defaut.'</text:p></table:table-cell>');
@@ -836,7 +836,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 		$zip->add_file("$tmp_fich",'content.xml');
 
 		// On n'ajoute pas les dossiers, ni les fichiers vides... ss_zip ne le supporte pas...
-		// ... et OpenOffice a l'air de supporter l'absence de ces dossiers/fichiers.
+		// ... et libreOffice a l'air de supporter l'absence de ces dossiers/fichiers.
 
 		$zip->add_file($chemin_modele_ods.'/Basic/script-lc.xml', 'Basic/script-lc.xml');
 		$zip->add_file($chemin_modele_ods.'/Basic/Standard/script-lb.xml', 'Basic/Standard/script-lb.xml');

@@ -214,7 +214,7 @@ if(!isset($num_fich)) {
 						if(!file_exists($path_user)) {
 							$creation=mkdir($path_user);
 							if(!$creation) {
-								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
 								$temoin_erreur="y";
 							}
 						}
@@ -222,7 +222,7 @@ if(!isset($num_fich)) {
 						if($temoin_erreur=="n") {
 							if(!file_exists($path_user."/index.html")) {
 								if(!creation_index_redir_login($path_user,1)) {
-									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
 								}
 							}
 
@@ -292,7 +292,7 @@ if(!isset($num_fich)) {
 	else {
 		$creation=mkdir($path);
 		if(!$creation) {
-			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle openDocument</p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
@@ -300,7 +300,7 @@ if(!isset($num_fich)) {
 	
 	if(!file_exists($path."/index.html")) {
 		if(!creation_index_redir_login($path,1)) {
-			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument</p>\n";
 		}
 	}
 

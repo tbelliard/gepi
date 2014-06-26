@@ -12,7 +12,7 @@ h2. Quelques principes pour le développement
 * Le module portera le nom de mod_abs2 dont la structure est déjà présente sur le [browser:trunk/mod_abs2 trunk].
 * Il faudra que le code respecte quelques principes (conventions de nommage, DRY, POO).
 * Ce module devra être lié avec le nouveau module Disciplines de Stéphane Boireau ainsi qu'avec le module emploi du temps. Pour la saisie des absences, on utilisera les AID pour constituer des groupes d'élèves-professeurs-activité. Le module AID devra donc également être lié au module absences.
-* Les documents produits par Gepi devront être possibles sous plusieurs formats (html, openoffice, pdf, csv).
+* Les documents produits par Gepi devront être possibles sous plusieurs formats (html, openDocument, pdf, csv).
 * 3 méthodes d'envoi devront être possibles (papier, courriel et sms).
 
 h2. Les fonctionnalités
