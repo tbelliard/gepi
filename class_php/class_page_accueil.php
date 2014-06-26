@@ -1362,7 +1362,7 @@ if(getSettingAOui('active_bulletins')) {
 			($this->statutUtilisateur=='cpe')) {
 		$this->creeNouveauItem("/groupes/visu_mes_listes.php",
 			"Visualisation de mes élèves",
-			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+			"Ce menu vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
 	if((acces_modif_liste_eleves_grp_groupes())&&
@@ -1371,7 +1371,7 @@ if(getSettingAOui('active_bulletins')) {
 			($this->statutUtilisateur=='cpe'))) {
 		$this->creeNouveauItem("/groupes/grp_groupes_edit_eleves.php",
 			"Correction des listes d'".$this->gepiSettings['denomination_eleves']."",
-			"Ce menu permet de vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
+			"Ce menu vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
 	}
 
 	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
@@ -1393,7 +1393,7 @@ if(getSettingAOui('active_bulletins')) {
 				($this->statutUtilisateur=='cpe')){
 		$this->creeNouveauItem("/mod_ooo/publipostage_ooo.php",
 				"Publipostage OOo",
-				"Ce menu permet de vous permet d'effectuer des publipostages OpenOffice.org à l'aide des données des tables 'eleves' et 'classes'.");
+				"Ce menu vous permet d'effectuer des publipostages openDocument à l'aide des données des tables 'eleves' et 'classes'.");
 		}
 	}
 
