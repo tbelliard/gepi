@@ -204,7 +204,7 @@ $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $
 if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Affichage n°$id_aff</a></p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 	$tab_aff_courant=get_infos_gc_affichage($id_aff);
 
@@ -255,7 +255,7 @@ $afficher_listes=isset($_POST['afficher_listes']) ? $_POST['afficher_listes'] : 
 if(!isset($afficher_listes)) {
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 	// Affichage déjà choisi ou non
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
@@ -515,7 +515,7 @@ if(!isset($afficher_listes)) {
 
 	if(isset($id_aff)) {
 		//echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>\n";
-		echo "<p class='bold'>Liste de requêtes pour l'".casse_mot($tab_affichages[$id_aff]['nom'], "min")." <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff&amp;mode=nommer_aff' title=\"Nommer/décrire l'affichage.\"><img src='../images/icons/wizard.png' class='icone16' alt='Modifier' /></a></p>\n";
+		echo "<p class='bold'>Liste de requêtes pour l'affichage ".casse_mot($tab_affichages[$id_aff]['nom'], "min")." <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff&amp;mode=nommer_aff' title=\"Nommer/décrire l'affichage.\"><img src='../images/icons/wizard.png' class='icone16' alt='Modifier' /></a></p>\n";
 	}
 
 	//================================
@@ -850,8 +850,11 @@ if(!isset($afficher_listes)) {
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					$txt_requete.=" (<em>".$lig_tmp->nom_requete."</em>)";
 				}
-				$txt_requete.="</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
-width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
+				$txt_requete.="</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Editer les paramètres de la requête'><img src ='../images/edit16.png'
+width='16' height='16' alt='Editer' /></a></b>";
+
+				$txt_requete.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Affecter les élèves dans des classes'><img src ='../images/icons/tableau_couleur.png'
+width='16' height='16' alt='Affecter' /></a></b>";
 
 				//===========================================
 				$id_req=$lig->id_req;
@@ -1043,7 +1046,7 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requêtes pour l'".casse_mot($tab_aff_courant['nom'], "min")."</a>";
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 
 	//=========================================================
@@ -1388,10 +1391,18 @@ else {
 		while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 			$chaine_nom_requete=" (<em>".$lig_tmp->nom_requete."</em>)";
 		}
+//				$txt_requete.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Affecter les élèves dans des classes'><img src ='../images/icons/tableau_couleur.png' width='16' height='16' alt='Affecter' /></a></b>";
 
-		$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
-		$fin_lien_affect="' target='_blank' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b>".$chaine_nom_requete."</a>";
+//https://127.0.0.1/steph/gepi_git_trunk/mod_genese_classes/affiche_listes.php?editer_requete=y&id_aff=7&id_req=1&projet=futures_5emes
+
+		//$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
+		$lien_affect="<p><a name='requete_$id_req'></a><a href='affiche_listes.php?editer_requete=y&amp;projet=$projet&amp;id_aff=$id_aff&amp;id_req=$id_req";
+		//$fin_lien_affect="' target='_blank'";
+		$fin_lien_affect="' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b>".$chaine_nom_requete."</a>";
 		$fin_lien_affect.=" - <a href='#' onclick=\"afficher_div('div_requete_$id_req','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher la requête n°$id_req en infobulle' /></a>";
+
+		$fin_lien_affect.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;projet=$projet&amp;id_aff=$id_aff&amp;id_req=$id_req' title=\"Affecter les élèves de cette requête dans des classes.\"><img src='../images/icons/tableau_couleur.png' class='icone16' alt='Affecter' /></a>";
+
 		$fin_lien_affect.="<br />";
 
 
@@ -1646,10 +1657,23 @@ else {
 		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 
+		$tab_lv_et_opt_requete[$loop]=array();
+		/*
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th id='th_lv1_$loop'>&nbsp;</th>\n";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th id='th_lv2_$loop'>&nbsp;</th>\n";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th id='th_lv3_$loop'>&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th id='th_autre_opt_$loop'>&nbsp;</th>\n";}
+		*/
+		/*
 		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
-		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th id='th_autre_opt_$loop'>&nbsp;</th>\n";}
+		*/
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th name='th_lv1_$loop' title=\"Liste des LV1 dans cette requête\">&nbsp;</th>\n";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th name='th_lv2_$loop' title=\"Liste des LV2 dans cette requête\">&nbsp;</th>\n";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th name='th_lv3_$loop' title=\"Liste des LV3 dans cette requête\">&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th name='th_autre_opt_$loop' title=\"Liste des options dans cette requête\">&nbsp;</th>\n";}
 
 		$contenu_affichage_requete_courante.="<th></th>\n";
 
@@ -1711,9 +1735,18 @@ else {
 						$tab_ele_toutes_requetes[]=$lig->login;
 
 						$eff_tot_select++;
-						if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_select_F++;} else {$eff_tot_select_M++;}
+						if(mb_strtoupper($lig->sexe)=='F') {
+							$eff_tot_select_F++;
+							$icone_photo="../mod_trombinoscopes/images/photo_f.png";
+						}
+						else {
+							$eff_tot_select_M++;
+							$icone_photo="../mod_trombinoscopes/images/photo_g.png";
+						}
 
 						//$num_eleve2_id_classe_actuelle[$j]=$cpt;
+
+						$designation_eleve=casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2');
 
 						//$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 						$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
@@ -1721,17 +1754,19 @@ else {
 						$contenu_affichage_requete_courante.="<td>\n";
 						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
 						if(nom_photo($lig->elenoet)) {
-							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							$contenu_affichage_requete_courante.="<div style='float:right;width:16px;'><a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\"><img src='$icone_photo' class='icone16' alt='Photo' /></a></div>";
 
-							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\">";
+
+							$contenu_affichage_requete_courante.=$designation_eleve;
 							$contenu_affichage_requete_courante.="</a>\n";
 						}
 						else {
-							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.=$designation_eleve;
 						}
 						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 						$contenu_affichage_requete_courante.="</td>\n";
-						$lignes_tab.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)).";";
+						$lignes_tab.=$designation_eleve.";";
 
 						//===================================
 						// Initialisations
@@ -1808,10 +1843,10 @@ else {
 								$contenu_affichage_requete_courante.="<span style='color:blue;'>";
 							}
 							$contenu_affichage_requete_courante.="$moy\n";
+							$contenu_affichage_requete_courante.="</span>";
 							if($num_per2>0) {
 								$contenu_affichage_requete_courante.="</a>\n";
 							}
-							$contenu_affichage_requete_courante.="</span>";
 							$contenu_affichage_requete_courante.="<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='$moy' />\n";
 
 							$tab_moy_eleves[]=$moy;
@@ -1844,11 +1879,13 @@ else {
 							for($i=0;$i<count($lv1);$i++) {
 								if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {
 									$contenu_affichage_requete_courante.=$lv1[$i];
-
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv1[$cpt]' id='lv1_".$cpt."' value='$lv1[$i]' />\n";
 
 									$lignes_tab.=$lv1[$i].";";
 
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv1']))||(!in_array($lv1[$i], $tab_lv_et_opt_requete[$loop]['lv1']))) {
+										$tab_lv_et_opt_requete[$loop]['lv1'][]=$lv1[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1863,6 +1900,10 @@ else {
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv2[$cpt]' id='lv2_".$cpt."' value='$lv2[$i]' />\n";
 
 									$lignes_tab.=$lv2[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv2']))||(!in_array($lv2[$i], $tab_lv_et_opt_requete[$loop]['lv2']))) {
+										$tab_lv_et_opt_requete[$loop]['lv2'][]=$lv2[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1876,6 +1917,10 @@ else {
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv3[$cpt]' id='lv3_".$cpt."' value='$lv3[$i]' />\n";
 
 									$lignes_tab.=$lv3[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv3']))||(!in_array($lv3[$i], $tab_lv_et_opt_requete[$loop]['lv3']))) {
+										$tab_lv_et_opt_requete[$loop]['lv3'][]=$lv3[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1891,6 +1936,11 @@ else {
 									$contenu_affichage_requete_courante.=$autre_opt[$i];
 
 									$lignes_tab.=$autre_opt[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['autre_opt']))||(!in_array($autre_opt[$i], $tab_lv_et_opt_requete[$loop]['autre_opt']))) {
+										$tab_lv_et_opt_requete[$loop]['autre_opt'][]=$autre_opt[$i];
+									}
+
 									$cpt_autre_opt++;
 								}
 							}
@@ -1968,7 +2018,7 @@ else {
 
 
 			if(count($tab_classes_fut_de_cette_requete)>0) {
-				$contenu_affichage_requete_courante.="<div style='float:left; width:20em;'>\n";
+				$contenu_affichage_requete_courante.="<div style='float:left; width:20em;' title=\"Liste des contraintes imposées sur des classes.\">\n";
 				$contenu_affichage_requete_courante.=afficher_contraintes($tab_classes_fut_de_cette_requete);
 				$contenu_affichage_requete_courante.="</div>\n";
 			}
@@ -2028,6 +2078,74 @@ else {
 		$fich_csv.="\n";
 
 		$fich_csv.=$lignes_tab;
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv1'])) {
+			$chaine_liste_lv1="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv1'] as $key => $value) {
+				$chaine_liste_lv1.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv1_".$loop."')) {
+		document.getElementById('th_lv1_".$loop."').innerHTML='".$chaine_liste_lv1."';
+	}
+	*/
+	if(document.getElementsByName('th_lv1_".$loop."')) {
+		document.getElementsByName('th_lv1_".$loop."')[0].innerHTML='".$chaine_liste_lv1."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv2'])) {
+			$chaine_liste_lv2="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv2'] as $key => $value) {
+				$chaine_liste_lv2.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv2_".$loop."')) {
+		document.getElementById('th_lv2_".$loop."').innerHTML='".$chaine_liste_lv2."';
+	}
+	*/
+	if(document.getElementsByName('th_lv2_".$loop."')) {
+		document.getElementsByName('th_lv2_".$loop."')[0].innerHTML='".$chaine_liste_lv2."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv3'])) {
+			$chaine_liste_lv3="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv3'] as $key => $value) {
+				$chaine_liste_lv3.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv3_".$loop."')) {
+		document.getElementById('th_lv3_".$loop."').innerHTML='".$chaine_liste_lv3."';
+	}
+	*/
+	if(document.getElementsByName('th_lv3_".$loop."')) {
+		document.getElementsByName('th_lv3_".$loop."')[0].innerHTML='".$chaine_liste_lv3."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['autre_opt'])) {
+			$chaine_liste_autre_opt="";
+			foreach($tab_lv_et_opt_requete[$loop]['autre_opt'] as $key => $value) {
+				$chaine_liste_autre_opt.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_autre_opt_".$loop."')) {
+		document.getElementById('th_autre_opt_".$loop."').innerHTML='".$chaine_liste_autre_opt."';
+	}
+	*/
+	if(document.getElementsByName('th_autre_opt_".$loop."')) {
+		document.getElementsByName('th_autre_opt_".$loop."')[0].innerHTML='".$chaine_liste_autre_opt."';
+	}
+</script>";
+		}
 	}
 
 	echo "</form>\n";

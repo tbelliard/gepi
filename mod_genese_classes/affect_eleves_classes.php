@@ -140,6 +140,9 @@ function get_infos_gc_affichage($id_aff) {
 	return $tab;
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 $style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -183,7 +186,7 @@ if(!isset($choix_affich)) {
 	echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affectation d'élèves dans des classes</h2>\n";
 
 	$sql="SELECT DISTINCT id_classe, classe FROM gc_divisions WHERE projet='$projet' AND statut='actuelle' ORDER BY classe;";
 	$res_clas_act=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -475,7 +478,7 @@ function change_display(id) {
 				$txt_requete="<ul>\n";
 				while($lig=mysqli_fetch_object($res)) {
 					$txt_requete.="<li>\n";
-					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'>";
+					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title=\"Affecter les élèves dans des classes.\">";
 					if($lig->nom_requete!="") {
 						$txt_requete.="$lig->nom_requete (<em>Req.n°$lig->id_req</em>)";
 					}
@@ -548,6 +551,10 @@ function change_display(id) {
 					//$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 					//$txt_requete.=" - <a href='#' onmouseover=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\" onmouseout=\"cacher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."')\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 					$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
+
+					$txt_requete.=" <a href='affiche_listes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;afficher_listes=y#requete_".$lig->id_req."' title=\"Afficher les élèves.\"><img src ='../images/icons/chercher.png'
+width='16' height='16' alt='Afficher' /></a>";
+
 					$txt_requete.="<br />";
 
 					$titre_i="Affichage n°$lig_req_aff->id_aff - Requête n°$lig->id_req";
@@ -937,7 +944,9 @@ else {
 	//echo "$sql<br />";
 	$res_na=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_na)>0) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=Valider&amp;clas_fut[0]='>Non affectés (<em>".mysqli_num_rows($res_na)."</em>)</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=Valider&amp;clas_fut[0]='";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Non affectés (<em>".mysqli_num_rows($res_na)."</em>)</a>";
 	}
 
 	echo "</p>\n";
@@ -969,7 +978,7 @@ else {
 	}
 </script>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affectation d'élèves dans des classes</h2>\n";
 
 	if(($requete_definie=='y')&&(isset($id_aff))&&(isset($id_req))) {
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
@@ -1183,7 +1192,7 @@ else {
 	// Rappel de la requête:
 
 	echo "<p>";
-	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete'>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete' title=\"Modifier la requête.\">";
 	if($chaine_classes_actuelles!="") {echo "Classes actuelles $chaine_classes_actuelles<br />\n";}
 	if($chaine_classes_futures!="") {echo "Classes futures $chaine_classes_futures<br />\n";}
 	if($chaine_avec_opt!="") {echo "Avec $chaine_avec_opt<br />\n";}
@@ -1390,7 +1399,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 	echo "</div>\n"; // Fin de l'entête à ne pas imprimer
 
-	echo "<table class='boireaus' border='1' summary='Tableau des options'>\n";
+	echo "<table class='boireaus resizable sortable' border='1' summary='Tableau des options'>\n";
 
 	//==========================================
 	echo "<thead>\n";
@@ -1538,14 +1547,14 @@ $_POST['projet']=	4eme_vers_3eme
 	echo "</tr>\n";
 	//==========================================
 	echo "<tr>\n";
-	echo "<th>Coches</th>\n";
+	echo "<th class='text' title=\"Trier par nom d'élève.\">Eleves</th>\n";
 
 	// Mettre là les effectifs de la sélection
 	echo "<th id='eff_selection'>&nbsp;</th>\n";
 
-	echo "<th>&nbsp;</th>\n";
-	echo "<th>&nbsp;</th>\n";
-	echo "<th>&nbsp;</th>\n";
+	echo "<th class='text' title=\"Trier par classe d'origine de l'élève.\">Clas.act</th>\n";
+	echo "<th class='text' title=\"Trier par profil de l'élève.\">Profil</th>\n";
+	echo "<th class='number' title=\"Trier par moyenne générale de l'élève.\">Niveau</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	for($i=0;$i<count($classe_fut);$i++) {
 		echo "<th>\n";
