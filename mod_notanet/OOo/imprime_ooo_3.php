@@ -102,7 +102,6 @@ else{
 
 // Création d'une classe  TBS OOo class
 
-
 $OOo = new clsTinyButStrong;
 $OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 
@@ -117,16 +116,8 @@ $nom_fic = $nom_fichier_modele[0]."_".$now.".".$nom_fichier_modele[1];
 
 $OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
 
-//send_file_download_headers($OOo->GetMimetypeDoc(), $nom_fic, 'attachment');
-//header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-
-
-//$OOo->FlushDoc(); //envoi du fichier traité
-//$OOo->RemoveDoc(); //suppression des fichiers de travail
-
-//$OOo->sendResponse(); //envoi du fichier traité
 $OOo->remove(); //suppression des fichiers de travail
-// Fin de traitement des tableaux
+
 $OOo->close();
 
 //=======================================
