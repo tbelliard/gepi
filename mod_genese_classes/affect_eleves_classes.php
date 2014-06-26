@@ -140,6 +140,9 @@ function get_infos_gc_affichage($id_aff) {
 	return $tab;
 }
 
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
 $style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -941,7 +944,9 @@ else {
 	//echo "$sql<br />";
 	$res_na=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_na)>0) {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=Valider&amp;clas_fut[0]='>Non affectés (<em>".mysqli_num_rows($res_na)."</em>)</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;choix_affich=Valider&amp;clas_fut[0]='";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Non affectés (<em>".mysqli_num_rows($res_na)."</em>)</a>";
 	}
 
 	echo "</p>\n";
@@ -1394,7 +1399,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 	echo "</div>\n"; // Fin de l'entête à ne pas imprimer
 
-	echo "<table class='boireaus' border='1' summary='Tableau des options'>\n";
+	echo "<table class='boireaus resizable sortable' border='1' summary='Tableau des options'>\n";
 
 	//==========================================
 	echo "<thead>\n";
@@ -1542,14 +1547,14 @@ $_POST['projet']=	4eme_vers_3eme
 	echo "</tr>\n";
 	//==========================================
 	echo "<tr>\n";
-	echo "<th>Coches</th>\n";
+	echo "<th class='text' title=\"Trier par nom d'élève.\">Eleves</th>\n";
 
 	// Mettre là les effectifs de la sélection
 	echo "<th id='eff_selection'>&nbsp;</th>\n";
 
-	echo "<th>&nbsp;</th>\n";
-	echo "<th>&nbsp;</th>\n";
-	echo "<th>&nbsp;</th>\n";
+	echo "<th class='text' title=\"Trier par classe d'origine de l'élève.\">Clas.act</th>\n";
+	echo "<th class='text' title=\"Trier par profil de l'élève.\">Profil</th>\n";
+	echo "<th class='number' title=\"Trier par moyenne générale de l'élève.\">Niveau</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	for($i=0;$i<count($classe_fut);$i++) {
 		echo "<th>\n";
