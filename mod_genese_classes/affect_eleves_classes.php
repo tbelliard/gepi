@@ -63,6 +63,12 @@ if (!checkAccess()) {
 
 $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $_GET['projet'] : NULL);
 
+function echo_debug_affect($texte) {
+	$debug_affect="n";
+	if($debug_affect=="y") {
+		echo $texte;
+	}
+}
 
 //if((isset($_POST['is_posted']))&&(isset($_POST['valide_aff_classe_fut']))) {
 if(isset($_POST['is_posted'])) {
@@ -76,6 +82,7 @@ if(isset($_POST['is_posted'])) {
 	$nb_err=0;
 
 	$complement_msg="";
+	echo_debug_affect("count(\$eleve)=".count($eleve)."<br />");
 	if(count($eleve)>0) {
 		//$sql="DELETE FROM gc_eleve_fut_classe WHERE projet='$projet';";
 		//$del=mysql_query($sql);
@@ -83,6 +90,7 @@ if(isset($_POST['is_posted'])) {
 		$nom_requete=isset($_POST['nom_requete']) ? $_POST['nom_requete'] : '';
 		$sql="UPDATE gc_affichages SET nom_requete='".addslashes($_POST['nom_requete'])."' WHERE id_aff='".$_POST['id_aff']."' AND id_req='".$_POST['id_req']."' AND projet='$projet';";
 		//echo "$sql<br />";
+		echo_debug_affect("$sql<br />");
 		$res_nom_req=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$profil=isset($_POST['profil']) ? $_POST['profil'] : array();
@@ -104,6 +112,7 @@ if(isset($_POST['is_posted'])) {
 			}
 			else {
 				$sql="UPDATE gc_eleves_options SET classe_future='$classe_fut[$i]', profil='$profil[$i]' WHERE login='$eleve[$i]' AND projet='$projet';";
+				echo_debug_affect("$sql<br />");
 				if($update=mysqli_query($GLOBALS["mysqli"], $sql)) {$nb_reg++;} else {$nb_err++;}
 			}
 		}
@@ -140,8 +149,13 @@ function get_infos_gc_affichage($id_aff) {
 	return $tab;
 }
 
+/*
+// PROBLEME: Si on clique sur une colonne pour trier, ce qui est validé ne contient plus du tout d'élèves
+//           $eleves, $profil,... ne sont pas transmis.
+//           Tout ce qui est dans le tableau est perdu???
 $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
+*/
 
 $style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -460,7 +474,8 @@ function change_display(id) {
 }
 </script>\n";
 
-		echo "<div style='float:right;'>\n";
+		//echo "<div style='float:right; width:20em;' class='fieldset_opacite50'>\n";
+		echo "<div style='float:right; width:20em; background-color:white; padding:2px; border:1px solid black;'>\n";
 		echo "<p class='bold'>Listes des affichages définis</p>\n";
 		while($lig_req_aff=mysqli_fetch_object($res_req_aff)) {
 			// 20140624
@@ -1781,10 +1796,10 @@ $_POST['projet']=	4eme_vers_3eme
 							echo "<span style='color:blue;'>";
 						}
 						echo "$moy";
+						echo "</span>\n";
 						if($num_per2>0) {
 							echo "</a>\n";
 						}
-						echo "</span>\n";
 					}
 					else {
 						echo "-\n";
