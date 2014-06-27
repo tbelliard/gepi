@@ -550,7 +550,7 @@ if(!isset($afficher_listes)) {
 		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
 	}
 
-	echo "<p>Nommer la requête&nbsp;: <input type='text' name='nom_requete' value=\"$nom_requete\" />";
+	echo "<p>Nommer la requête&nbsp;: <input type='text' name='nom_requete' id='nom_requete' value=\"$nom_requete\" />";
 	if($nom_requete=="") {echo " (<em title=\"Le nommage permet d'identifier plus rapidement une requête.\">optionnel</em>)";}
 	echo "</p>\n";
 
@@ -1011,8 +1011,13 @@ width='16' height='16' alt='Affecter' /></a></b>";
 	if(!isset($txt_requete)) {
 		echo "<script type='text/javascript'>
 	if(document.getElementById('div_affich_listes')) {document.getElementById('div_affich_listes').style.display='none';}
+	if(document.getElementById('nom_requete')) {document.getElementById('nom_requete').focus();}
 </script>\n";
 	}
+
+	echo "<script type='text/javascript'>
+	if(document.getElementById('nom_requete')) {document.getElementById('nom_requete').focus();}
+</script>\n";
 
 	echo "<p><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
