@@ -753,7 +753,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 				*/
 			}
-			echo "<td>\n";
+			echo "<td title=\"Absences/Non justifiées/Retards\">\n";
 			//echo "<span style='font-size:small;'>".colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards)."</span>";
 			echo colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards);
 			echo "<input type='hidden' name='nb_absences[$cpt]' value='$current_eleve_absences' />\n";
