@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2014 Josselin Jacquard - Bouguin Régis
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -93,6 +93,22 @@ if (isFiltreRechercheParam('filter_eleve')) {
 	    ->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))
 	    ->endUse()->endUse()->endUse();
 }
+
+// filtre classe
+// $classe = ClasseQuery::create()->filterByNom("6 D")->findOne();
+//$id_classe = 14;
+//$classe = ClasseQuery::create()->findPk($id_classe);
+if (isFiltreRechercheParam('filter_classe')) {
+    if (getFiltreRechercheParam('filter_classe') == 'SANS') {
+    } else {
+	  $classe = ClasseQuery::create()->findPk(getFiltreRechercheParam('filter_classe'));
+	  $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
+		 ->filterByClasse($classe)
+		 ->endUse()->endUse()->endUse();
+    }
+}
+
+
 if (isFiltreRechercheParam('filter_type')) {
     if (getFiltreRechercheParam('filter_type') == 'SANS') {
 	$query->filterByATypeId(null);
@@ -282,6 +298,10 @@ if ($affichage == 'tableur') {
 	
 }
 
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+//debug_var();
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -370,6 +390,47 @@ echo 'border-width:1px;" alt="" name="order" value="des_eleve" onclick="this.for
 //echo '</nobr>';
 echo '</span>';
 echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="8"/>';
+
+
+
+	//on affiche une boite de selection avec les classe
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+		$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+	} else {
+		$classe_col = $utilisateur->getClasses();
+	}
+	if (!$classe_col->isEmpty()) {
+		echo '<br />';
+		echo '<input type="hidden" name="type_selection" value="id_classe"/>';
+		echo ("<select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_classe\" onchange='submit()' class=\"small\">");
+		echo "<option value='SANS'>choisissez une classe</option>\n";
+		echo "<option value='SANS'>Toutes les classes</option>\n";
+		foreach ($classe_col as $classe) {
+			echo "<option value='".$classe->getId()."'";
+			
+			if (isFiltreRechercheParam('filter_classe') && getFiltreRechercheParam('filter_classe') == $classe->getId()) {
+			    echo " selected='selected' ";
+			}
+			
+			//if ($id_classe == $classe->getId()) ";
+			echo ">";
+			echo $classe->getNom();
+			echo "</option>\n";
+		}
+		echo "</select>&nbsp;";
+	} else {
+		echo 'Aucune classe avec élève affecté n\'a été trouvée';
+	}
+
+
+
+
+
+
+
+
+
+
 echo '</th>';
 
 //en tete filtre saisies
@@ -414,13 +475,13 @@ echo '</th>';
 echo '<th>';
 echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
 echo "<option value=''";
-if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo "selected='selected'";}
+if (!isFiltreRechercheParam('filter_manqement_obligation')) {echo " selected='selected'";}
 echo "></option>\n";
 echo "<option value='y' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected='selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo " selected='selected'";}
 echo ">oui</option>\n";
 echo "<option value='n' ";
-if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected='selected'";}
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo " selected='selected'";}
 echo ">non</option>\n";
 echo "</select>";
 echo '<br/>Manquement obligation scolaire (bulletin)';
@@ -634,7 +695,7 @@ foreach ($results as $traitement) {
     echo $traitement->getId();
     echo "</a>";
     echo '</td>';
-
+	
     //donnees utilisateur
     echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
@@ -657,8 +718,11 @@ foreach ($results as $traitement) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de ".$eleve->getNom().' '.$eleve->getPrenom()."'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
+	echo "</a>";
+	echo "<a href='liste_traitements.php?filter_classe=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
+	echo ($eleve->getClasse()->getNom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
