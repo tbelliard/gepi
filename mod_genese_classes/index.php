@@ -238,24 +238,30 @@ if(isset($projet)) {
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)==0) {
 					$sql="INSERT INTO gc_projets SET projet='$projet', commentaire='';";
+					//echo "$sql<br />";
 					if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 						$msg="Le projet $projet a été créé.";
-
-						//,'gc_projets'
-						//$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleve_fut_classe','gc_eleves_options','gc_options');
 						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes');
 						for($j=0;$j<count($tab_table);$j++) {
 							$sql="SELECT * FROM ".$tab_table[$j]." WHERE projet='$projet_original';";
+							//echo "$sql<br />";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							unset($nom_champ);
-							for($i=0;$i<(($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);$i++){
-								$nom_champ[$i]=((($___mysqli_tmp = mysqli_fetch_field_direct($res, 0)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false);
+							//echo "mysqli_num_fields(\$res)=".mysqli_num_fields($res)."<br />";
+							//for($i=0;$i<(($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);$i++){
+								//$nom_champ[$i]=((($___mysqli_tmp = mysqli_fetch_field_direct($res, 0)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false);
+							for($i=0;$i<mysqli_num_fields($res);$i++){
+								$___mysqli_tmp=mysqli_fetch_field_direct($res, $i);
+								$nom_champ[$i]=$___mysqli_tmp->name;
+								//echo "\$nom_champ[$i]=".$___mysqli_tmp->name."<br />";
 							}
 							while($tab=mysqli_fetch_array($res)) {
 								$sql="INSERT INTO ".$tab_table[$j]." SET projet='$projet'";
 								for($i=0;$i<count($nom_champ);$i++) {
+									//echo "<br />"."\$nom_champ[$i]=".$nom_champ[$i]."<br />";
 									// Pour la recopie, on exclut les champs nom initial du projet et id (auto_increment)
 									if(($nom_champ[$i]!='projet')&&($nom_champ[$i]!='id')) {$sql.=",".$nom_champ[$i]."='".$tab[$i]."'";}
+									//echo "$sql<br />";
 								}
 								$sql.=";";
 								//echo "$sql<br />\n";
