@@ -1782,7 +1782,7 @@ if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
             </select>
         <p>
             <label for='description_sauvegarde'>Description (<em>facultative</em>) de la sauvegarde&nbsp;:</label><br />
-            <textarea id='description_sauvegarde' cols='30' rows='2'></textarea>
+            <textarea id='description_sauvegarde' name='description_sauvegarde' cols='30' rows='2'></textarea>
         </p>
     </div>
 </form>
