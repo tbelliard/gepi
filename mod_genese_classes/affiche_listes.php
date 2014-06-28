@@ -103,11 +103,10 @@ if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($
 		$msg="ERREUR : Aucun nom d'affichage ou aucune description proposée.<br />";
 	}
 	else {
-		$sql="SELECT 1=1 FROM gc_noms_affichages WHERE id='".$_POST['id_aff']."';";
+		$sql="SELECT 1=1 FROM gc_noms_affichages WHERE id_aff='".$_POST['id_aff']."' AND projet='$projet';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
-			//$sql="INSERT INTO gc_noms_affichages SET id='".$_POST['id_aff']."', nom='".remplace_accents($nom_aff, "all")."', description='".mysqli_real_escape_string($GLOBALS["mysqli"], $description_aff)."';";
-			$sql="INSERT INTO gc_noms_affichages SET id='".$_POST['id_aff']."', nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."';";
+			$sql="INSERT INTO gc_noms_affichages SET projet='$projet', id_aff='".$_POST['id_aff']."', nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."';";
 			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$insert) {
 				$msg="Erreur lors du nommage de l'affichage.<br />";
@@ -117,8 +116,7 @@ if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($
 			}
 		}
 		else {
-			//$sql="UPDATE gc_noms_affichages SET nom='".remplace_accents($nom_aff, "all")."', description='".mysqli_real_escape_string($GLOBALS["mysqli"], $description_aff)."' WHERE id='".$_POST['id_aff']."';";
-			$sql="UPDATE gc_noms_affichages SET nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."' WHERE id='".$_POST['id_aff']."';";
+			$sql="UPDATE gc_noms_affichages SET nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."' WHERE id_aff='".$_POST['id_aff']."' AND projet='$projet';";
 			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {
 				$msg="Erreur lors du nommage de l'affichage.<br />";
@@ -131,19 +129,21 @@ if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($
 }
 
 function get_infos_gc_affichage($id_aff) {
+	global $projet;
 	$tab=array();
 
-	$sql="SELECT * FROM gc_noms_affichages WHERE id='$id_aff';";
+	$sql="SELECT * FROM gc_noms_affichages WHERE id_aff='$id_aff' AND projet='$projet';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
-		$tab["id"]=$lig->id;
+		//$tab["id"]=$lig->id;
+		$tab["id_aff"]=$lig->id_aff;
 		$tab["nom"]=$lig->nom;
 		$tab["description"]=$lig->description;
 		$tab["nomme"]=true;
 	}
 	else {
-		$tab["id"]=$id_aff;
+		$tab["id_aff"]=$id_aff;
 		$tab["nom"]="Affichage n°".$id_aff;
 		$tab["description"]="";
 		$tab["nomme"]=false;
@@ -154,6 +154,8 @@ function get_infos_gc_affichage($id_aff) {
 
 $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
+
+$charger_js_dragresize="y";
 
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: affichage de listes";
@@ -429,7 +431,7 @@ if(!isset($afficher_listes)) {
 		$sql="SELECT 1=1 FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
 		$test_aff=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_aff)==0) {
-			$sql="DELETE FROM gc_noms_affichages WHERE id='$id_aff';";
+			$sql="DELETE FROM gc_noms_affichages WHERE id_aff='$id_aff' AND projet='$projet';";
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 			unset($id_aff);
 		}
@@ -833,6 +835,7 @@ if(!isset($afficher_listes)) {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			echo "<p>Cochez les requêtes à supprimer, ou cliquez sur les images <img src='../images/edit16.png' class='icone16' alt='Modifier' /> pour modifier/corriger des requêtes.</p>";
+			//echo "<table>\n";
 			while($lig=mysqli_fetch_object($res)) {
 				//$txt_requete="<div style='display:inline; width:20em; margin: 2px; border: 1px solid black;'>\n";
 				$txt_requete="";
@@ -924,13 +927,43 @@ width='16' height='16' alt='Affecter' /></a></b>";
 				if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
 				if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
 				if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
-		
+
+				$tab_req_eff_fut=array();
+				for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+					if(($classe_fut[$loop_fut]!="Dep")&&($classe_fut[$loop_fut]!="Red")) {
+						$sql_tmp_eff=$sql_ele." AND classe_future='".$classe_fut[$loop_fut]."';";
+						//echo $sql_tmp_eff."<br />";
+						$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+						$tab_req_eff_fut[$loop_fut]=mysqli_num_rows($res_tmp_eff);
+					}
+				}
+				/*
+				$sql_tmp_eff=$sql_ele." AND classe_future=''";
+				$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+				$tab_req_eff_fut[]=mysqli_num_rows($res_tmp_eff);
+				*/
+
 				$sql_ele.=";";
 				//echo "$sql_ele<br />\n";
 				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 
-				$txt_requete.=" <span style='font-size:small;font-style:italic;'>(".mysqli_num_rows($res_ele).")</span><br />";
+				$txt_requete.=" <span style='font-size:small;font-style:italic; font-weight:bold;".((mysqli_num_rows($res_ele)==0) ? "color:red;" : "")."' title=\"Effectif de la requête.\">(".mysqli_num_rows($res_ele).")</span> - ";
 
+				//===========================================
+				foreach($tab_req_eff_fut as $loop_fut => $current_eff_req_fut) {
+					if($loop_fut>0) {
+						$txt_requete.="|";
+					}
+					if($classe_fut[$loop_fut]!="") {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]."\">".$classe_fut[$loop_fut].": ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]." : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+					else {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté.\">...: ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+				}
+				$txt_requete.="<br />";
 				//===========================================
 
 
@@ -992,12 +1025,45 @@ width='16' height='16' alt='Affecter' /></a></b>";
 				}
 
 				$txt_requete.="</td>\n";
+/*
+echo "<pre>";
+print_r($classe_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_req_eff_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_couleur_classe_fut);
+echo "</pre>";
+
+				$txt_requete.="<td style='vertical-align:top'>\n";
+				foreach($tab_req_eff_fut as $loop_fut => $current_eff_req_fut) {
+					if($loop_fut>0) {
+						$txt_requete.="|";
+					}
+					if($classe_fut[$loop_fut]!="") {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]."\">".$classe_fut[$loop_fut].": ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]." : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+					else {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté.\">...: ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+				}
+				$txt_requete.="</td>\n";
+*/
+				//===========================================
+
+
 				$txt_requete.="</tr>\n";
 				$txt_requete.="</table>\n";
 				//$txt_requete.="</div>\n";
 
 				echo $txt_requete;
 			}
+			//echo "</table>\n";
 
 			// Ajouter un bouton pour supprimer
 			echo "<p>Cochez les requêtes à supprimer.</p>\n";
@@ -1019,7 +1085,7 @@ width='16' height='16' alt='Affecter' /></a></b>";
 	if(document.getElementById('nom_requete')) {document.getElementById('nom_requete').focus();}
 </script>\n";
 
-	echo "<p><i>NOTES&nbsp;:</i></p>\n";
+	echo "<p style='margin-top:2em;'><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
 	echo "<li>Les colonnes Classe actuelle et Classe future sont traitées suivant le mode OU<br />
 	Si vous cochez deux classes, les élèves pris en compte seront '<i>membre de Classe 1 OU membre de Classe 2</i>'</li>\n";
@@ -1729,7 +1795,7 @@ else {
 			}
 			//$contenu_affichage_requete_courante.="<tr><td colspan='5'>$sql</tr></tr>\n";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			//$eff_tot_classe=mysql_num_rows($res);
+			//$eff_tot_classe=mysqli_num_rows($res);
 			//$eff_tot+=$eff_tot_classe;
 			//==========================================
 		
@@ -1863,7 +1929,7 @@ else {
 						$contenu_affichage_requete_courante.="</td>\n";
 
 						//===================================
-						$contenu_affichage_requete_courante.="<td>\n";
+						$contenu_affichage_requete_courante.="<td title=\"Absences/Non justifiées/Retards\">\n";
 						$contenu_affichage_requete_courante.=colorise_abs($nb_absences,$non_justifie,$nb_retards,'return');
 						$contenu_affichage_requete_courante.="<input type='hidden' name='nb_absences[$cpt]' id='nb_absences_$cpt' value='$nb_absences' />\n";
 						$contenu_affichage_requete_courante.="<input type='hidden' name='non_justifie[$cpt]' id='non_justifie_$cpt' value='$non_justifie' />\n";
@@ -1980,7 +2046,7 @@ else {
 						$texte_chgt_classe.="<input type='submit' value='Valider' />\n";
 						$texte_chgt_classe.="</div>\n";
 						$texte_chgt_classe.="</form>\n";
-						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n',1000);
 
 						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\" title=\"Cliquez pour choisir/modifier la classe future de l'élève.\"><img src='../images/icons/wizard.png' /></a>";
 
@@ -2047,7 +2113,8 @@ else {
 		$contenu_affichage_requete_courante=preg_replace("/profil_/","profil_bis_",$contenu_affichage_requete_courante);
 		$contenu_affichage_requete_courante=preg_replace("/moy_/","moy_bis_",$contenu_affichage_requete_courante);
 		$texte=$contenu_affichage_requete_courante;
-		$tabdiv_infobulle[]=creer_div_infobulle('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','n');
+		//$tabdiv_infobulle[]=creer_div_infobulle('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle2('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','y');
 		//=============================
 
 		echo "&nbsp;";

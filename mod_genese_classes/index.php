@@ -165,7 +165,9 @@ if ($res_test<2){
 }
 
 $sql="CREATE TABLE IF NOT EXISTS gc_noms_affichages (
-id int(11) NOT NULL,
+id int(11) unsigned NOT NULL auto_increment,
+id_aff int(11) NOT NULL,
+projet VARCHAR( 255 ) NOT NULL ,
 nom varchar(100) NOT NULL,
 description tinytext NOT NULL,
 PRIMARY KEY (id)
@@ -173,7 +175,41 @@ PRIMARY KEY (id)
 //echo "$sql<br />";
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
+// Le champ id contenait id_aff dans une première version, mais cela pose un problème pour la copie de projet.
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM gc_noms_affichages LIKE 'id_aff';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE gc_noms_affichages ADD id_aff INT(11) NOT NULL AFTER id;");
+
+	$query = mysqli_query($mysqli, "ALTER TABLE `gc_noms_affichages` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT;");
+
+	$sql="SELECT * FROM gc_noms_affichages;";
+	$res = mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="UPDATE gc_noms_affichages SET id_aff='$lig->id' WHERE id='$lig->id';";
+		$update = mysqli_query($mysqli, $sql);
+	}
+}
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM gc_noms_affichages LIKE 'projet';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE gc_noms_affichages ADD projet VARCHAR( 255 ) NOT NULL AFTER id_aff;");
+
+	$sql="SELECT * FROM gc_noms_affichages;";
+	$res = mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="SELECT projet FROM gc_affichages WHERE id_aff='$lig->id';";
+		$res2 = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res2)>0) {
+			$lig2=mysqli_fetch_object($res2);
+
+			$sql="UPDATE gc_noms_affichages SET projet='$lig2->projet' WHERE id='$lig->id';";
+			$update = mysqli_query($mysqli, $sql);
+		}
+	}
+}
+
 //=========================================================
+
+//debug_var();
 
 // Partie Projets
 
@@ -241,7 +277,11 @@ if(isset($projet)) {
 					//echo "$sql<br />";
 					if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 						$msg="Le projet $projet a été créé.";
-						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes');
+
+						// On ne peut pas copier 'gc_noms_affichages' sur le même principe.
+						// Les champs sont (id,nom,description) avec gc_noms_affichages.id=gc.affichage.id_aff
+
+						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes', 'gc_noms_affichages');
 						for($j=0;$j<count($tab_table);$j++) {
 							$sql="SELECT * FROM ".$tab_table[$j]." WHERE projet='$projet_original';";
 							//echo "$sql<br />";

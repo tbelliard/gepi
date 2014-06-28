@@ -130,17 +130,17 @@ if(isset($_POST['is_posted'])) {
 function get_infos_gc_affichage($id_aff) {
 	$tab=array();
 
-	$sql="SELECT * FROM gc_noms_affichages WHERE id='$id_aff';";
+	$sql="SELECT * FROM gc_noms_affichages WHERE id_aff='$id_aff';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
-		$tab["id"]=$lig->id;
+		$tab["id_aff"]=$lig->id_aff;
 		$tab["nom"]=$lig->nom;
 		$tab["description"]=$lig->description;
 		$tab["nomme"]=true;
 	}
 	else {
-		$tab["id"]=$id_aff;
+		$tab["id_aff"]=$id_aff;
 		$tab["nom"]="Affichage n°".$id_aff;
 		$tab["description"]="";
 		$tab["nomme"]=false;
@@ -926,8 +926,15 @@ else {
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo ">Autre sélection</a>";
 
+	if(isset($id_aff)) {
+		$tab_gc_aff=get_infos_gc_affichage($id_aff);
+		echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'";
+		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		echo ">Choisir une autre requête de : ".$tab_gc_aff["nom"]."</a>";
+	}
+
 	$num_requete=0;
-	$indice_requete=0;
+	$indice_requete=-1;
 	if(isset($id_aff)) {
 		$sql="SELECT DISTINCT id_req, nom_requete FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND nom_requete!='' ORDER BY nom_requete;";
 		$res_req_nommees=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -942,8 +949,13 @@ else {
 					echo " selected='selected'";
 					$indice_requete=$num_requete;
 				}
-				echo ">".$lig_req_nommee->nom_requete."</option>\n";
+				echo ">".$lig_req_nommee->nom_requete." (req.n°".$lig_req_nommee->id_req.")</option>\n";
 				$num_requete++;
+			}
+			// Il arrive que l'on perde le nom de la requête courante... je n'ai pas trouvé pourquoi...
+			if($indice_requete==-1) {
+				echo "<option select value='' selected='selected'>---</option>";
+				$indice_requete=$num_requete;
 			}
 			echo "</select>\n";
 
@@ -1187,8 +1199,6 @@ else {
 		$sql_ele.=" AND ($sql_ele_profil)";
 	}
 
-
-
 	$tab_ele=array();
 	$sql_ele.=";";
 	//echo "$sql_ele<br />\n";
@@ -1196,6 +1206,28 @@ else {
 	while ($lig_ele=mysqli_fetch_object($res_ele)) {
 		$tab_ele[]=$lig_ele->login;
 	}
+
+	/*
+	// Le tri par nom élève fonctionnerait, mais par la suite on parcourt les id_classe_actuelle
+	$order_by="nom";
+	if(isset($order_by)) {
+		$tmp_tab=array();
+		if($order_by=="nom") {
+			for($loop_ele=0;$loop_ele<count($tab_ele);$loop_ele++) {
+				$tmp_tab[get_nom_prenom_eleve($tab_ele[$loop_ele])]=$tab_ele[$loop_ele];
+			}
+
+			$tab_ele=array();
+			foreach($tmp_tab as $key => $value) {
+				$tab_ele[]=$value;
+			}
+		}
+		else{
+			// Tri par classe
+			echo "";
+		}
+	}
+	*/
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_affect_eleves_classes'>\n";
 
@@ -1418,6 +1450,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 	//==========================================
 	echo "<thead>\n";
+/*
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Elève</th>\n";
 	echo "<th rowspan='2'>Sexe</th>\n";
@@ -1433,6 +1466,7 @@ $_POST['projet']=	4eme_vers_3eme
 	if(count($lv3)>0) {echo "<th colspan='".count($lv3)."'>LV3</th>\n";}
 	if(count($autre_opt)>0) {echo "<th colspan='".count($autre_opt)."'>Autres options</th>\n";}
 	echo "</tr>\n";
+*/
 	//==========================================
 	echo "<tr>\n";
 	for($i=0;$i<count($classe_fut);$i++) {
@@ -1808,7 +1842,7 @@ $_POST['projet']=	4eme_vers_3eme
 					//===================================
 
 					//===================================
-					echo "<td>\n";
+					echo "<td title=\"Absences/Non justifiées/Retards\">\n";
 					echo colorise_abs($nb_absences,$non_justifie,$nb_retards);
 					echo "</td>\n";
 					//===================================

@@ -65,5 +65,26 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'gc_noms_affichages' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'gc_noms_affichages'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS gc_noms_affichages (
+	id int(11) unsigned NOT NULL auto_increment,
+	id_aff int(11) NOT NULL,
+	nom varchar(100) NOT NULL,
+	description tinytext NOT NULL,
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>
