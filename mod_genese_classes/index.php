@@ -323,6 +323,30 @@ if(isset($projet)) {
 		}
 		unset($projet);
 	}
+	elseif(isset($_GET['csv_eleves_classes'])) {
+		$csv="";
+		if($_GET['csv_eleves_classes']==1) {
+			$sql="SELECT elenoet,classe_future FROM gc_eleves_options geo, eleves e WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet' AND e.login=geo.login AND e.elenoet!='';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				$csv.="$lig->elenoet;$lig->classe_future;\r\n";
+			}
+
+			$nom_fic=remplace_accents("g_eleves_classes_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+		}
+		else {
+			$sql="SELECT login,classe_future FROM gc_eleves_options WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				$csv.="$lig->login;$lig->classe_future;\r\n";
+			}
+
+			$nom_fic=remplace_accents("login_ele_classe_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+		}
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
+	}
 }
 
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
@@ -462,6 +486,13 @@ else {
 	echo "<li>";
 	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a>";
 	echo "</li>\n";
+	echo "<li>Exporter les associations élèves/classes en CSV&nbsp;:<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;CLASSE (*)<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=2'>Export au format LOGIN;CLASSE</a><br />
+	&nbsp;<br />
+	(*) Si vous faites un projet par niveau, il faudra concaténer les exports des différents projets pour effectuer une initialisation CSV.<br />
+	De plus, seul les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).
+</li>\n";
 	echo "</ol>\n";
 
 	echo "</blockquote>\n";
