@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2014 Josselin Jacquard - Bouguin Régis
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
