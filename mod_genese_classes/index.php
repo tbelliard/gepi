@@ -347,6 +347,23 @@ if(isset($projet)) {
 		echo echo_csv_encoded($csv);
 		die();
 	}
+	elseif(isset($_GET['csv_eleves_options'])) {
+		$csv="";
+
+		$sql="SELECT elenoet,classe_future, liste_opt FROM gc_eleves_options geo, eleves e WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet' AND e.login=geo.login AND e.elenoet!='';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.="$lig->elenoet;";
+			$csv.=preg_replace("/\|/","!",preg_replace("/^\|/","",preg_replace("/\|$/","",$lig->liste_opt)));
+			$csv.=";\r\n";
+		}
+
+		$nom_fic=remplace_accents("g_eleves_options_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
+	}
 }
 
 $truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
@@ -484,14 +501,20 @@ else {
 	echo "<a href='affect_eleves_classes.php?projet=$projet'>Affecter les élèves dans les classes</a>\n";
 	echo "</li>\n";
 	echo "<li>";
-	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a>";
+	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a><br />&nbsp;";
 	echo "</li>\n";
 	echo "<li>Exporter les associations élèves/classes en CSV&nbsp;:<br />
 	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;CLASSE (*)<br />
 	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=2'>Export au format LOGIN;CLASSE</a><br />
 	&nbsp;<br />
 	(*) Si vous faites un projet par niveau, il faudra concaténer les exports des différents projets pour effectuer une initialisation CSV.<br />
-	De plus, seul les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).
+	De plus, seul les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).<br />&nbsp;
+</li>\n";
+	echo "<li><p>Exporter les associations élèves/options en CSV&nbsp;:<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_options=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;OPTION_1!OPTION_2!OPTION_3<br /></p>
+	<p style='text-indent:-6em; margin-left:6em;'><em>Attention&nbsp;:</em> Pour le moment, seules les options définies dans le module Genèse des classes sont prises en compte dans le CSV.<br />
+	Il faudrait le compléter avec les enseignements communs (<em>FRANC, MATHS, HIGEO, A-PLA,...</em>) pour ne pas supprimer l'inscription dans les enseignements communs lors de l'initialisation CSV.<br />
+	Par ailleurs, là-aussi, les g_eleves_options.csv sont à concaténer si vous faites des projets par niveau.</p>
 </li>\n";
 	echo "</ol>\n";
 
