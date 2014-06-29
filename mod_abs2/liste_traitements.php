@@ -402,7 +402,7 @@ echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRecherchePa
 	if (!$classe_col->isEmpty()) {
 		echo '<br />';
 		echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-		echo ("<select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_classe\" onchange='submit()' class=\"small\">");
+		echo ("<select name=\"filter_classe\" onchange='submit()' class=\"small\">");
 		echo "<option value='SANS'>choisissez une classe</option>\n";
 		echo "<option value='SANS'>Toutes les classes</option>\n";
 		foreach ($classe_col as $classe) {
