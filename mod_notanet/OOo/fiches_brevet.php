@@ -663,6 +663,34 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
 
 			//echo "<p>$lig1->nom $lig1->prenom<br />";
+			
+			$tab_eleves_OOo[$nb_eleve]['mefcode']=$lig1->mef_code;
+			
+			/***** MEF *****/
+			$tab_eleves_OOo[$nb_eleve]['mef']="";
+			$sql_mef="SELECT libelle_edition FROM mef WHERE mef_code='".$lig1->mef_code."';";
+			$res_mef=mysqli_query($GLOBALS["mysqli"], $sql_mef);
+			if(mysqli_num_rows($res_mef)>0) {
+			   $lig_mef=mysqli_fetch_object($res_mef);
+			   $tab_eleves_OOo[$nb_eleve]['mef']=$lig_mef->libelle_edition;
+			}	
+			
+			/***** Langue régionale	*****/
+			$tab_eleves_OOo[$nb_eleve]['lvr']="";
+			$tab_eleves_OOo[$nb_eleve]['lvrNom']="";
+			$sql_lvr="SELECT * FROM `notanet_lvr_ele` WHERE `login` LIKE '".$lig1->login."';";
+			$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql_lvr);
+			if(mysqli_num_rows($res_lvr)>0) {
+			   $lig_lvr=mysqli_fetch_object($res_lvr);
+			   $tab_eleves_OOo[$nb_eleve]['lvr']=$lig_lvr->note;
+			   $sql_lvrNom="SELECT * FROM `notanet_lvr` WHERE `id` = ".$lig_lvr->id_lvr.";";
+			   $res_lvrNom=mysqli_query($GLOBALS["mysqli"], $sql_lvrNom);
+			   if(mysqli_num_rows($res_lvrNom)>0) {
+				  $lig_lvrNom=mysqli_fetch_object($res_lvrNom);
+				  $tab_eleves_OOo[$nb_eleve]['lvrNom']=$lig_lvrNom->intitule;
+			   }
+			}
+			
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
