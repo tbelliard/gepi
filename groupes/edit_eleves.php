@@ -745,7 +745,10 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 			}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
-			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")";
+			//Pour faciliter le debug:
+			//echo " (".$tmp_grp["id"].")";
+			echo "</option>\n";
 			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
 
 			$cpt_ele_grp++;
@@ -755,6 +758,10 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
 		echo "<br />\n";
 		echo "<input type='button' name='Copie' value='Copie INVERSE des élèves associés' onclick=\"recopie_inverse_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Ajouter les élèves du groupe ci-dessus' onclick=\"ajouter_coche_d_apres_grp_modele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Décocher les élèves du groupe ci-dessus' onclick=\"enlever_coche_d_apres_grp_modele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
 		echo "</p>\n";
 
 		echo "<script type='text/javascript'>\n";
@@ -1192,7 +1199,7 @@ if(count($total_eleves)>0) {
 	
 	
 	$nb_eleves=count($total_eleves);
-	
+	//echo $nb_eleves;
 	echo "<script type='text/javascript'>
 	var etat_grisage='griser';
 
@@ -1314,6 +1321,36 @@ if(count($total_eleves)>0) {
 		for(j=0;j<$nb_eleves;j++) {
 			CocheLigne(j);
 		}
+
+		for(i=0;i<tab.length;i++) {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+					DecocheLigne(j);
+				}
+			}
+		}
+	}
+
+	function ajouter_coche_d_apres_grp_modele(num) {
+		tab=eval('tab_grp_ele_'+num);
+		//alert('tab[0]='+tab[0]);
+
+		document.getElementById('id_groupe_reference').value=eval('id_groupe_js_'+num);
+
+		for(i=0;i<tab.length;i++) {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+					CocheLigne(j);
+				}
+			}
+		}
+	}
+
+	function enlever_coche_d_apres_grp_modele(num) {
+		tab=eval('tab_grp_ele_'+num);
+		//alert('tab[0]='+tab[0]);
+
+		document.getElementById('id_groupe_reference').value=eval('id_groupe_js_'+num);
 
 		for(i=0;i<tab.length;i++) {
 			for(j=0;j<$nb_eleves;j++) {
