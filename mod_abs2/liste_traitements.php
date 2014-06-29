@@ -100,7 +100,7 @@ if (isFiltreRechercheParam('filter_eleve')) {
 //$classe = ClasseQuery::create()->findPk($id_classe);
 if (isFiltreRechercheParam('filter_classe')) {
     if (in_array('SANS',getFiltreRechercheParam('filter_classe'))) {
-	   $_SESSION[filtre_recherche]['filter_classe']=array('SANS');
+	   $_SESSION['filtre_recherche']['filter_classe']=array('SANS');
     } else {
 	  $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
 		 ->useJEleveClasseQuery()->filterByIdClasse(getFiltreRechercheParam('filter_classe'))->endUse()

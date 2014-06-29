@@ -105,15 +105,17 @@ if (isFiltreRechercheParam('filter_eleve')) {
     ->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse()->endUse()->endUse()->endUse();
 }
 
-
 // filtre classe
+// $classe = ClasseQuery::create()->filterByNom("6 D")->findOne();
+//$id_classe = 14;
+//$classe = ClasseQuery::create()->findPk($id_classe);
 if (isFiltreRechercheParam('filter_classe')) {
-    if (getFiltreRechercheParam('filter_classe') == 'SANS') {
+    if (in_array('SANS',getFiltreRechercheParam('filter_classe'))) {
+	   $_SESSION['filtre_recherche']['filter_classe']=array('SANS');
     } else {
-	  $classe = ClasseQuery::create()->findPk(getFiltreRechercheParam('filter_classe'));
-	  $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
-		 ->filterByClasse($classe)
-		 ->endUse()->endUse()->endUse();
+	  $query->useAbsenceEleveTraitementQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
+		 ->useJEleveClasseQuery()->filterByIdClasse(getFiltreRechercheParam('filter_classe'))->endUse()
+		 ->endUse()->endUse()->endUse()->endUse();		 
     }
 }
 
@@ -301,18 +303,16 @@ echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRecherchePa
 	}
 	if (!$classe_col->isEmpty()) {
 		echo '<br />';
-		echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-		echo ("<select name=\"filter_classe\" onchange='submit()' class=\"small\">");
-		echo "<option value='SANS'>choisissez une classe</option>\n";
+		echo ("<select multiple name='filter_classe[]' onchange='submit()' style='width:100%' title='Sélectionnez une ou plusieurs classes'>");
 		echo "<option value='SANS'>Toutes les classes</option>\n";
 		foreach ($classe_col as $classe) {
 			echo "<option value='".$classe->getId()."'";
-			
-			if (isFiltreRechercheParam('filter_classe') && getFiltreRechercheParam('filter_classe') == $classe->getId()) {
-			    echo " selected='selected' ";
+			if (isFiltreRechercheParam('filter_classe') && (getFiltreRechercheParam('filter_classe') != "SANS")) {
+			   if (in_array($classe->getId(), getFiltreRechercheParam('filter_classe'))) {
+				  echo " selected='selected' ";
+			   }
 			}
 			
-			//if ($id_classe == $classe->getId()) ";
 			echo ">";
 			echo $classe->getNom();
 			echo "</option>\n";
