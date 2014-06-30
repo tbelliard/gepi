@@ -1184,7 +1184,7 @@ else {
 			$profil_checked_ou_pas=" selected";
 		}
 		elseif($colorisation_courante=='aucune') {
-			$aucune_fut_checked_ou_pas=" selected";
+			$aucune_checked_ou_pas=" selected";
 		}
 	}
 	echo "<p>Colorisation&nbsp;: ";
@@ -2084,6 +2084,8 @@ echo "
 			colorise(cat,0);
 		}
 	}
+
+	lance_colorisation();
 
 	function update_champs_colorisation_chgt_classe() {
 		colorisation_courante=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
