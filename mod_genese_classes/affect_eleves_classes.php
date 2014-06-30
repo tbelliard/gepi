@@ -1450,7 +1450,7 @@ $_POST['projet']=	4eme_vers_3eme
 
 	//==========================================
 	echo "<thead>\n";
-/*
+
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Elève</th>\n";
 	echo "<th rowspan='2'>Sexe</th>\n";
@@ -1466,7 +1466,7 @@ $_POST['projet']=	4eme_vers_3eme
 	if(count($lv3)>0) {echo "<th colspan='".count($lv3)."'>LV3</th>\n";}
 	if(count($autre_opt)>0) {echo "<th colspan='".count($autre_opt)."'>Autres options</th>\n";}
 	echo "</tr>\n";
-*/
+
 	//==========================================
 	echo "<tr>\n";
 	for($i=0;$i<count($classe_fut);$i++) {
