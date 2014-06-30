@@ -203,6 +203,10 @@ echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 
 $id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 
+if(isset($id_aff)) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Créer un nouvel affichage</a>\n";
+}
+
 if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Affichage n°$id_aff</a></p>\n";
 
