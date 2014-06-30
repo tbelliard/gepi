@@ -37,6 +37,9 @@ for($i=1;$i<count($classe_fut)-3;$i++) {
 	}
 }
 $chaine_couleur_classe_fut.=",'lightgray','gray','white'";
+
+//echo "\$chaine_couleur_classe_fut=$chaine_couleur_classe_fut<br />";
+$tab_couleur_classe_fut=explode(",", preg_replace("/[^A-Za-z0-9,]/", "", $chaine_couleur_classe_fut));
 //=====================================
 
 //=====================================
@@ -131,34 +134,6 @@ function colorise_abs($abs,$nj,$ret,$mode="echo") {
 	else {
 		return $retour;
 	}
-}
-
-function necessaire_bull_simple() {
-	echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
-	
-		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
-			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
-			echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
-			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
-			echo "</a>\n";
-			echo "</div>\n";
-	
-			echo "<div id='titre_entete_bull_simp'></div>\n";
-		echo "</div>\n";
-		
-		echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
-		echo "</div>\n";
-	
-	echo "</div>\n";
-
-	echo "<script type='text/javascript'>
-	// <![CDATA[
-	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
-		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
-		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
-	}
-	//]]>
-</script>\n";
 }
 
 function image_sexe($sexe) {
@@ -513,4 +488,5 @@ function ligne_choix_classe_future($ele_login) {
 
 	return $retour;
 }
+
 ?>

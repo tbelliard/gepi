@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -745,7 +745,10 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 			}
 			if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$lig_grp_avec_eleves->id_groupe)) {echo " selected='true'";}
-			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+			echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")";
+			//Pour faciliter le debug:
+			//echo " (".$tmp_grp["id"].")";
+			echo "</option>\n";
 			//echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].") ".count($tmp_grp["eleves"][1]["list"])." élèves</option>\n";
 
 			$cpt_ele_grp++;
@@ -755,6 +758,10 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
 		echo "<br />\n";
 		echo "<input type='button' name='Copie' value='Copie INVERSE des élèves associés' onclick=\"recopie_inverse_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Ajouter les élèves du groupe ci-dessus' onclick=\"ajouter_coche_d_apres_grp_modele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Décocher les élèves du groupe ci-dessus' onclick=\"enlever_coche_d_apres_grp_modele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
 		echo "</p>\n";
 
 		echo "<script type='text/javascript'>\n";
@@ -785,8 +792,10 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 
 <?php
 	echo "</div>\n";
+
 ?>
 
+<div id='fixe'></div>
 
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
@@ -800,7 +809,12 @@ echo "<p>Cochez les élèves qui suivent cet enseignement, pour chaque période 
 
 echo "<table border='1' class='boireaus' summary='Suivi de cet enseignement par les élèves en fonction des périodes'>\n";
 echo "<tr>\n";
-echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom/Prénom</a></th>\n";
+echo "<th>
+	<div style='float:right; width:16px;'>
+		<a href='javascript:affichage_des_photos_ou_non()' id='temoin_photo'><img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\nCliquer pour masquer les photos.' /></a>
+	</div>
+	<a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=nom' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nom/Prénom</a>
+</th>\n";
 if ($multiclasses) {
 	echo "<th><a href='edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;order_by=classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe</a></th>\n";
 }
@@ -847,7 +861,7 @@ echo "<tr><th>";
 unset($login_eleve);
 //=========================
 
-$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(j.login), j.id_classe, c.classe, e.nom, e.prenom FROM eleves e, j_eleves_classes j, classes c WHERE (" . $conditions . ") ORDER BY ".$order_conditions);
+$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(j.login), j.id_classe, c.classe, e.nom, e.prenom, e.elenoet FROM eleves e, j_eleves_classes j, classes c WHERE (" . $conditions . ") ORDER BY ".$order_conditions);
 $nb = mysqli_num_rows($calldata);
 $eleves_list = array();
 $eleves_list["list"]=array();
@@ -864,10 +878,11 @@ for ($i=0;$i<$nb;$i++) {
 	//================================
 	$e_nom = old_mysql_result($calldata, $i, "nom");
 	$e_prenom = old_mysql_result($calldata, $i, "prenom");
+	$e_elenoet = old_mysql_result($calldata, $i, "elenoet");
 	$e_id_classe = old_mysql_result($calldata, $i, "id_classe");
 	$classe = old_mysql_result($calldata, $i, "classe");
 	$eleves_list["list"][] = $e_login;
-	$eleves_list["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $classe, "id_classe" => $e_id_classe);
+	$eleves_list["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $classe, "id_classe" => $e_id_classe, "elenoet" => $e_elenoet);
 }
 //echo "count(\$eleves_list)=".count($eleves_list)."<br />";
 $total_eleves = $eleves_list["list"];
@@ -890,7 +905,7 @@ foreach ($current_group["periodes"] as $period) {
 	foreach($total_eleves as $e_login) {
 		$elements[$period["num_periode"]] .= "'eleve_" . $period["num_periode"] . "_"  . $e_login  . "',";
 	}
-    $elements[$period["num_periode"]] = mb_substr($elements[$period["num_periode"]], 0, -1);
+	$elements[$period["num_periode"]] = mb_substr($elements[$period["num_periode"]], 0, -1);
 }
 
 //=============================
@@ -1007,7 +1022,11 @@ if(count($total_eleves)>0) {
 			}
 
 			$alt=$alt*(-1);
-			echo "<tr id='tr_$num_eleve' class='lig$alt white_hover'>\n";
+			echo "<tr id='tr_$num_eleve' class='lig$alt white_hover'";
+			if(isset($eleves_list["users"][$e_login]['elenoet'])) {
+				echo " onmouseover=\"affiche_photo_courante('".nom_photo($eleves_list["users"][$e_login]['elenoet'])."')\" onmouseout=\"vide_photo_courante();\"";
+			}
+			echo ">\n";
 			if (array_key_exists($e_login, $eleves_list["users"])) {
 				/*
 				echo "<td>" . $eleves_list["users"][$e_login]["prenom"] . " " .
@@ -1192,9 +1211,28 @@ if(count($total_eleves)>0) {
 	
 	
 	$nb_eleves=count($total_eleves);
-	
+	//echo $nb_eleves;
 	echo "<script type='text/javascript'>
 	var etat_grisage='griser';
+
+	function affiche_photo_courante(photo) {
+		document.getElementById('fixe').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
+	}
+
+	function vide_photo_courante() {
+		document.getElementById('fixe').innerHTML='';
+	}
+
+	function affichage_des_photos_ou_non() {
+		if(document.getElementById('fixe').style.display=='') {
+			document.getElementById('fixe').style.display='none';
+			document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo-barre.png' class='icone16' alt='Photo masquée' title='Photo masquée.\\nCliquer pour afficher les photos.' />\";
+		}
+		else {
+			document.getElementById('fixe').style.display='';
+			document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\\nCliquer pour masquer les photos.' />\";
+		}
+	}
 
 	function griser_degriser(mode) {
 		if(mode=='griser') {
@@ -1314,6 +1352,36 @@ if(count($total_eleves)>0) {
 		for(j=0;j<$nb_eleves;j++) {
 			CocheLigne(j);
 		}
+
+		for(i=0;i<tab.length;i++) {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+					DecocheLigne(j);
+				}
+			}
+		}
+	}
+
+	function ajouter_coche_d_apres_grp_modele(num) {
+		tab=eval('tab_grp_ele_'+num);
+		//alert('tab[0]='+tab[0]);
+
+		document.getElementById('id_groupe_reference').value=eval('id_groupe_js_'+num);
+
+		for(i=0;i<tab.length;i++) {
+			for(j=0;j<$nb_eleves;j++) {
+				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
+					CocheLigne(j);
+				}
+			}
+		}
+	}
+
+	function enlever_coche_d_apres_grp_modele(num) {
+		tab=eval('tab_grp_ele_'+num);
+		//alert('tab[0]='+tab[0]);
+
+		document.getElementById('id_groupe_reference').value=eval('id_groupe_js_'+num);
 
 		for(i=0;i<tab.length;i++) {
 			for(j=0;j<$nb_eleves;j++) {
