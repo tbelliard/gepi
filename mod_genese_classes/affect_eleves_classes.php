@@ -1866,7 +1866,7 @@ $_POST['projet']=	4eme_vers_3eme
 							echo ">\n";
 
 							echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-							if($fut_classe==mb_strtoupper($classe_fut[$i])) {
+							if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {
 								echo "checked ";
 	
 								$eff_selection_classe_fut[$i]++;
