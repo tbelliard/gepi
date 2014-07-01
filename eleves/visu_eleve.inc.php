@@ -982,9 +982,13 @@ Patientez pendant l'extraction des données... merci.
 		if(!isset($tab_ele['cpe'])) {
 			echo "<p style='color:red;'>Aucun ".$gepi_cpe_suivi." n'est associé à cet(te) élève.";
 			if(isset($tab_ele['classe'][$indice_derniere_classe]['id_classe'])) {
-				echo " <a href='../classes/classes_const.php?id_classe=".$tab_ele['classe'][$indice_derniere_classe]['id_classe']."#".$tab_ele['login']."'>Associer</a>.";
+			   if(acces("/classes/classes_const.php", $_SESSION['statut'])) {
+				   echo " <a href='../classes/classes_const.php?id_classe=".$tab_ele['classe'][$indice_derniere_classe]['id_classe']."#".$tab_ele['login']."'>Associer</a>.";
+			   }
+			
 			}
 			echo "</p>\n";
+			
 		}
 
 		if((getSettingAOui('autorise_edt_tous'))||
