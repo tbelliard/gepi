@@ -980,7 +980,17 @@ echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 echo "</form>\n";
 
 echo "<p><br /></p>
-<p style='text-indent:-4em; margin-left:4em; margin-bottom: 2em;'><em>NOTES&nbsp;:</em> Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>\n";
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>
+	</li>
+	<li>
+		<p>Les boutons Valider dans cette page valident l'ensemble du formulaire (<em>toutes les classes d'un coup</em>).<br />
+		Si vous travaillez avec plusieurs fenêtre ouvertes, une validation dans cette page risque d'écraser des modifications faites dans d'autres pages (<em>d'affectation dans des classes par exemple</em>) depuis le chargement de la présente page.<br />
+		Dans le doute, avant toute saisie dans la présente page, commencez par rafraichir l'affichage à l'aide du lien idoine en haut de la page.</p>
+	</li>
+</ul>\n";
 
 if((isset($temoin_erreur_eleves_en_doublon))&&($temoin_erreur_eleves_en_doublon!="")) {
 	echo "<script type='text/javascript'>
