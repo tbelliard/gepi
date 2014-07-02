@@ -107,7 +107,7 @@ echo "
 </form>\n";
 
 
-echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post' target='_blank'>
+echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post' target='_blank'>
 	<fieldset class='fieldset_opacite50' style='margin-top:1em; '>
 		<legend style='border: 1px solid grey; background-color: white; '>Autre mode d'extraction</legend>
 
@@ -142,7 +142,8 @@ while($lig=mysqli_fetch_object($res)) {
 echo "
 		</select><br />
 		<input type='checkbox' name='avec_bloc_adresse_resp' id='avec_bloc_adresse_resp' value='y' /><label for='avec_bloc_adresse_resp' id='texte_avec_bloc_adresse_resp'> Avec le bloc adresse responsable/parent <span style='color:red'>Ca ne fonctionne pas...</span>.</label><br />
-		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer/cacher ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
+		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
+		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves' value='y' /><label for='cacher_autres_protagonistes_eleves' id='texte_cacher_autres_protagonistes_eleves'> Cacher ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
 
 		<input type='checkbox' name='debug' id='debug' value='y' /><label for='debug' id='texte_mode_test' style='color:red'> Debug pour contrôler les indices du tableau produit</label><br />
 
@@ -169,6 +170,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	// A FAIRE : Ajouter un test sur l'accès aux infos parents pour la personne connectée.
 	$avec_bloc_adresse_resp=isset($_POST['avec_bloc_adresse_resp']) ? $_POST['avec_bloc_adresse_resp'] : (isset($_GET['avec_bloc_adresse_resp']) ? $_GET['avec_bloc_adresse_resp'] : "n");
 	$anonymer_autres_protagonistes_eleves=isset($_POST['anonymer_autres_protagonistes_eleves']) ? $_POST['anonymer_autres_protagonistes_eleves'] : (isset($_GET['anonymer_autres_protagonistes_eleves']) ? $_GET['anonymer_autres_protagonistes_eleves'] : "n");
+	$cacher_autres_protagonistes_eleves=isset($_POST['cacher_autres_protagonistes_eleves']) ? $_POST['cacher_autres_protagonistes_eleves'] : (isset($_GET['cacher_autres_protagonistes_eleves']) ? $_GET['cacher_autres_protagonistes_eleves'] : "n");
 
 
 	$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
@@ -302,22 +304,28 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 		else {
 			$liste_protagonistes="";
 			while($lig2=mysqli_fetch_object($res2)) {
-				if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
-				if($lig2->statut=='eleve') {
-					if(($anonymer_autres_protagonistes_eleves=="y")&&($lig2->login!=$protagoniste_incident)) {
-						$liste_protagonistes.="XXX";
-					}
-					else {
-						$liste_protagonistes.=get_nom_prenom_eleve($lig2->login,'avec_classe');
-					}
-					$tab_protagonistes_eleves[]=$lig2->login;
+
+				if(($lig2->statut=='eleve')&&($cacher_autres_protagonistes_eleves=="y")&&($lig2->login!=$protagoniste_incident)) {
+					// On n'affiche pas du tout l'info.
 				}
 				else {
-					$liste_protagonistes.=civ_nom_prenom($lig2->login,'',"y");
-				}
+					if($liste_protagonistes!="") {$liste_protagonistes.=", ";}
+					if($lig2->statut=='eleve') {
+						if(($anonymer_autres_protagonistes_eleves=="y")&&($lig2->login!=$protagoniste_incident)) {
+							$liste_protagonistes.="XXX";
+						}
+						else {
+							$liste_protagonistes.=get_nom_prenom_eleve($lig2->login,'avec_classe');
+						}
+						$tab_protagonistes_eleves[]=$lig2->login;
+					}
+					else {
+						$liste_protagonistes.=civ_nom_prenom($lig2->login,'',"y");
+					}
 
-				if($lig2->qualite!='') {
-					$liste_protagonistes.=" $lig2->qualite";
+					if($lig2->qualite!='') {
+						$liste_protagonistes.=" $lig2->qualite";
+					}
 				}
 			}
 		}
@@ -334,20 +342,25 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 		if($nb_login_ele_mesure_prise>0) {
 			while($lig_t_incident=mysqli_fetch_object($res_t_incident)) {
-				$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident_courant' AND sti.id_mesure=s.id AND s.type='prise' AND login_ele='$lig_t_incident->login_ele' ORDER BY s.mesure;";
-				$res_mes_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-				$nb_mes_ele=mysqli_num_rows($res_mes_ele);
-
-				if(($anonymer_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
-					$texte.="XXX :";
+				if(($cacher_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
+					// On n'affiche pas du tout l'info.
 				}
 				else {
-					$texte.=civ_nom_prenom($lig_t_incident->login_ele,'')." :";
+					$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident_courant' AND sti.id_mesure=s.id AND s.type='prise' AND login_ele='$lig_t_incident->login_ele' ORDER BY s.mesure;";
+					$res_mes_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_mes_ele=mysqli_num_rows($res_mes_ele);
+
+					if(($anonymer_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
+						$texte.="XXX :";
+					}
+					else {
+						$texte.=civ_nom_prenom($lig_t_incident->login_ele,'')." :";
+					}
+					while($lig_mes_ele=mysqli_fetch_object($res_mes_ele)) {
+						$texte.=" ".$lig_mes_ele->mesure;
+					}
+					$texte.="\n";
 				}
-				while($lig_mes_ele=mysqli_fetch_object($res_mes_ele)) {
-					$texte.=" ".$lig_mes_ele->mesure;
-				}
-				$texte.="\n";
 			}
 		}
 		$tab_lignes_OOo[$nb_ligne]['mesures_prises']=$texte;
@@ -361,20 +374,25 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 		if($nb_login_ele_mesure_demandee>0) {
 			while($lig_t_incident=mysqli_fetch_object($res_t_incident2)) {
-				$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident_courant' AND sti.id_mesure=s.id AND s.type='demandee' AND login_ele='$lig_t_incident->login_ele' ORDER BY s.mesure;";
-				$res_mes_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-				$nb_mes_ele=mysqli_num_rows($res_mes_ele);
-
-				if(($anonymer_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
-					$texte.="XXX :";
+				if(($cacher_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
+					// On n'affiche pas du tout l'info.
 				}
 				else {
-					$texte.=civ_nom_prenom($lig_t_incident->login_ele,'')." :";
+					$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident_courant' AND sti.id_mesure=s.id AND s.type='demandee' AND login_ele='$lig_t_incident->login_ele' ORDER BY s.mesure;";
+					$res_mes_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+					$nb_mes_ele=mysqli_num_rows($res_mes_ele);
+
+					if(($anonymer_autres_protagonistes_eleves=="y")&&($lig_t_incident->login_ele!=$protagoniste_incident)) {
+						$texte.="XXX :";
+					}
+					else {
+						$texte.=civ_nom_prenom($lig_t_incident->login_ele,'')." :";
+					}
+					while($lig_mes_ele=mysqli_fetch_object($res_mes_ele)) {
+						$texte.=" ".$lig_mes_ele->mesure;
+					}
+					$texte.="\n";
 				}
-				while($lig_mes_ele=mysqli_fetch_object($res_mes_ele)) {
-					$texte.=" ".$lig_mes_ele->mesure;
-				}
-				$texte.="\n";
 			}
 		}
 		$tab_lignes_OOo[$nb_ligne]['mesures_demandees']=$texte;
@@ -385,123 +403,129 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 		for($i=0;$i<count($tab_protagonistes_eleves);$i++) {
 			$ele_login=$tab_protagonistes_eleves[$i];
 
-			if(($anonymer_autres_protagonistes_eleves=="y")&&($ele_login!=$protagoniste_incident)) {
-				$designation_eleve="XXX";
+			if(($cacher_autres_protagonistes_eleves=="y")&&($ele_login!=$protagoniste_incident)) {
+				// On n'affiche pas du tout l'info.
 			}
 			else {
-				$designation_eleve=civ_nom_prenom($ele_login,'');
-			}
 
-			// Retenues
-			$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
-			//echo "$sql<br />\n";
-			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_sanction)>0) {
-				$texte_sanctions.=$designation_eleve;
-
-				while($lig_sanction=mysqli_fetch_object($res_sanction)) {
-					//$texte_sanctions.=" : Retenue ";
-					$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
-
-					$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
-					if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
-
-					$texte_sanctions.=formate_date($lig_sanction->date);
-					$texte_sanctions.=" $lig_sanction->heure_debut";
-					$texte_sanctions.=" (".$lig_sanction->duree."H)";
-					$texte_sanctions.=" $lig_sanction->lieu";
-					//$texte_sanctions.="<td>".nl2br($lig_sanction->travail)."</td>\n";
-	
-					$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-					if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-						$texte="Aucun travail";
-					}
-					else {
-						$texte=$lig_sanction->travail;
-						if($tmp_doc_joints!="") {
-							if($texte!="") {$texte.="\n";}
-							$texte.=$tmp_doc_joints;
-						}
-					}
-
-					$texte_sanctions.=" : ".$texte."\n";
+				if(($anonymer_autres_protagonistes_eleves=="y")&&($ele_login!=$protagoniste_incident)) {
+					$designation_eleve="XXX";
 				}
-			}
-	
-			// Exclusions
-			$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND se.id_sanction=s.id_sanction ORDER BY se.date_debut, se.heure_debut;";
-			//$retour.="$sql<br />\n";
-			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_sanction)>0) {
-				$texte_sanctions.=$designation_eleve;
-
-				while($lig_sanction=mysqli_fetch_object($res_sanction)) {
-					//$texte_sanctions.=" : Exclusion ";
-					$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
-
-					$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
-					$texte_sanctions.=" ".$lig_sanction->heure_debut;
-					$texte_sanctions.=" - ".formate_date($lig_sanction->date_fin);
-					$texte_sanctions.=" ".$lig_sanction->heure_fin;
-					$texte_sanctions.=" (".$lig_sanction->lieu.")";
-	
-					$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-					if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-						$texte="Aucun travail";
-					}
-					else {
-						$texte=$lig_sanction->travail;
-						if($tmp_doc_joints!="") {
-							if($texte!="") {$texte.="\n";}
-							$texte.=$tmp_doc_joints;
-						}
-					}
-					$texte_sanctions.=" : ".$texte;
+				else {
+					$designation_eleve=civ_nom_prenom($ele_login,'');
 				}
-			}
-	
-			// Simple travail
-			$sql="SELECT * FROM s_sanctions s, s_travail st WHERE s.id_incident=$id_incident_courant AND s.login='".$ele_login."' AND st.id_sanction=s.id_sanction ORDER BY st.date_retour;";
-			//$retour.="$sql<br />\n";
-			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_sanction)>0) {
-				$texte_sanctions.=$designation_eleve;
 
-				while($lig_sanction=mysqli_fetch_object($res_sanction)) {
-					//$texte_sanctions.=" : Travail pour le ";
-					$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." pour le ";
-					$texte_sanctions.=formate_date($lig_sanction->date_retour);
+				// Retenues
+				$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
+				//echo "$sql<br />\n";
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sanction)>0) {
+					$texte_sanctions.=$designation_eleve;
+
+					while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+						//$texte_sanctions.=" : Retenue ";
+						$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
+
+						$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
+						if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
+
+						$texte_sanctions.=formate_date($lig_sanction->date);
+						$texte_sanctions.=" $lig_sanction->heure_debut";
+						$texte_sanctions.=" (".$lig_sanction->duree."H)";
+						$texte_sanctions.=" $lig_sanction->lieu";
+						//$texte_sanctions.="<td>".nl2br($lig_sanction->travail)."</td>\n";
 	
-					$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-					if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-						$texte="Aucun travail";
-					}
-					else {
-						$texte=$lig_sanction->travail;
-						if($tmp_doc_joints!="") {
-							if($texte!="") {$texte.="\n";}
-							$texte.=$tmp_doc_joints;
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+							$texte="Aucun travail";
 						}
+						else {
+							$texte=$lig_sanction->travail;
+							if($tmp_doc_joints!="") {
+								if($texte!="") {$texte.="\n";}
+								$texte.=$tmp_doc_joints;
+							}
+						}
+
+						$texte_sanctions.=" : ".$texte."\n";
 					}
-					$texte_sanctions.=" : ".$texte;
 				}
-			}
 	
-			// Autres sanctions
-			$sql="SELECT * FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions2 sts WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature ORDER BY sts.nature;";
-			//echo "$sql<br />\n";
-			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_sanction)>0) {
-				$texte_sanctions.=$designation_eleve;
+				// Exclusions
+				$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND se.id_sanction=s.id_sanction ORDER BY se.date_debut, se.heure_debut;";
+				//$retour.="$sql<br />\n";
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sanction)>0) {
+					$texte_sanctions.=$designation_eleve;
 
-				while($lig_sanction=mysqli_fetch_object($res_sanction)) {
-					$texte_sanctions.=" : $lig_sanction->description ";
+					while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+						//$texte_sanctions.=" : Exclusion ";
+						$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." ";
 
-					$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-					if($tmp_doc_joints!="") {
-						$texte_sanctions.=$tmp_doc_joints;
+						$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
+						$texte_sanctions.=" ".$lig_sanction->heure_debut;
+						$texte_sanctions.=" - ".formate_date($lig_sanction->date_fin);
+						$texte_sanctions.=" ".$lig_sanction->heure_fin;
+						$texte_sanctions.=" (".$lig_sanction->lieu.")";
+	
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+							$texte="Aucun travail";
+						}
+						else {
+							$texte=$lig_sanction->travail;
+							if($tmp_doc_joints!="") {
+								if($texte!="") {$texte.="\n";}
+								$texte.=$tmp_doc_joints;
+							}
+						}
+						$texte_sanctions.=" : ".$texte;
 					}
-					$texte_sanctions.="\n";
+				}
+	
+				// Simple travail
+				$sql="SELECT * FROM s_sanctions s, s_travail st WHERE s.id_incident=$id_incident_courant AND s.login='".$ele_login."' AND st.id_sanction=s.id_sanction ORDER BY st.date_retour;";
+				//$retour.="$sql<br />\n";
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sanction)>0) {
+					$texte_sanctions.=$designation_eleve;
+
+					while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+						//$texte_sanctions.=" : Travail pour le ";
+						$texte_sanctions.=" : ".ucfirst($lig_sanction->nature)." pour le ";
+						$texte_sanctions.=formate_date($lig_sanction->date_retour);
+	
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+							$texte="Aucun travail";
+						}
+						else {
+							$texte=$lig_sanction->travail;
+							if($tmp_doc_joints!="") {
+								if($texte!="") {$texte.="\n";}
+								$texte.=$tmp_doc_joints;
+							}
+						}
+						$texte_sanctions.=" : ".$texte;
+					}
+				}
+	
+				// Autres sanctions
+				$sql="SELECT * FROM s_sanctions s, s_autres_sanctions sa, s_types_sanctions2 sts WHERE s.id_incident='$id_incident_courant' AND s.login='".$ele_login."' AND sa.id_sanction=s.id_sanction AND sa.id_nature=sts.id_nature ORDER BY sts.nature;";
+				//echo "$sql<br />\n";
+				$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sanction)>0) {
+					$texte_sanctions.=$designation_eleve;
+
+					while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+						$texte_sanctions.=" : $lig_sanction->description ";
+
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if($tmp_doc_joints!="") {
+							$texte_sanctions.=$tmp_doc_joints;
+						}
+						$texte_sanctions.="\n";
+					}
 				}
 			}
 		}
