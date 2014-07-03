@@ -97,6 +97,7 @@ foreach ($current_group["periodes"] as $period) {
 		//$msg.="\$reg_eleves[\$period[\"num_periode\"]]=\$reg_eleves[".$period["num_periode"]."]=".$reg_eleves[$period["num_periode"]]."<br />";
 	}
 }
+
 $msg = null;
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -238,6 +239,127 @@ if (isset($_POST['is_posted'])) {
 	}
 }
 
+if(isset($_POST['upload_et_import_csv'])) {
+	check_token();
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+	$msg="";
+
+	$fp=fopen($csv_file['tmp_name'],"r");
+	if(!$fp) {
+		$msg="Erreur à l'ouverture du fichier.<br />";
+	}
+	else {
+		$nb_periode=$current_group['nb_periode'];
+
+		$tab_nb_per_classe=array();
+
+		$nb_inscriptions_eleve=0;
+		$nb_inscriptions_eleve_toutes_periodes=0;
+
+		if($_POST['ajouter_ou_remplacer']=="ajouter") {
+			while (!feof($fp)) {
+				$ligne = ensure_utf8(fgets($fp, 4096));
+				if(trim($ligne)!="") {
+					$tab=explode(";", trim($ligne));
+					if($tab[0]!="") {
+						$temoin_inscription="n";
+						$current_eleve=$tab[0];
+						$sql="SELECT DISTINCT id_classe FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND e.login='$current_eleve';";
+						//echo "$sql<br />\n";
+						$res_clas = mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_clas)==0) {
+							$msg .= "L'élève ".$current_eleve." n'existe pas.<br />";
+						}
+						else {
+							while($lig_clas=mysqli_fetch_object($res_clas)) {
+								$poursuivre="y";
+								if(!in_array($lig_clas->id_classe, $current_group["classes"]["list"])) {
+									// La classe n'est pas encore associée à ce groupe
+									if(!isset($tab_nb_per_classe[$lig_clas->id_classe])) {
+										// Récupération du nombre de périodes de la classe
+										$sql="SELECT num_periode FROM periodes p WHERE p.id_classe='$lig_clas->id_classe' ORDER BY num_periode DESC LIMIT 1;";
+										//echo "$sql<br />\n";
+										$res_per = mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_per)==0) {
+											$msg.="Classe n°$lig_clas->id_classe sans période?<br />";
+											$tab_nb_per_classe[$lig_clas->id_classe]=0;
+											$poursuivre="n";
+										}
+										else {
+											$lig_per=mysqli_fetch_object($res_per);
+											$tab_nb_per_classe[$lig_clas->id_classe]=$lig_per->num_periode;
+										}
+									}
+
+									// Vérification du nombre de périodes
+									if($tab_nb_per_classe[$lig_clas->id_classe]!=$nb_periode-1) {
+										$msg.="$current_eleve est inscrit dans une classe n°$lig_clas->id_classe dont le nombre de période diffère de celui de la ou des classes du groupe n°$id_groupe.<br />";
+										// A AMELIORER: Permettre s'il a changé de classe de l'inscrire sur les périodes qui conviennent.
+										$poursuivre="n";
+									}
+									else {
+										if(!in_array($lig_clas->id_classe, $reg_clazz)) {
+											$reg_clazz[]=$lig_clas->id_classe;
+										}
+									}
+								}
+
+								if($poursuivre=="y") {
+									// L'élève est-il déjà inscrit?
+
+									foreach ($current_group["periodes"] as $period) {
+										if($period["num_periode"]!=""){
+											if(!in_array($current_eleve, $reg_eleves[$period["num_periode"]])) {
+												$reg_eleves[$period["num_periode"]][]=$current_eleve;
+												$nb_inscriptions_eleve_toutes_periodes++;
+												$temoin_inscription="y";
+											}
+										}
+									}
+								}
+							}
+
+							if($temoin_inscription=="y") {
+								$nb_inscriptions_eleve++;
+							}
+						}
+					}
+				}
+			}
+		}
+		else {
+			// Il faut contrôler en plus si la désinscription est possible.
+
+		}
+
+		if($nb_inscriptions_eleve>0) {
+			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+			debug_edit_eleves("update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, \$reg_clazz, \$reg_professeurs, \$reg_eleves);");
+			if (!$create) {
+				$msg .= "Erreur lors de la mise à jour du groupe.";
+			} else {
+				$msg .= "Le groupe a bien été mis à jour.<br />";
+				$msg .= "$nb_inscriptions_eleve élève(s) nouvellement inscrits pour $nb_inscriptions_eleve_toutes_periodes enregistrements en cumulant les périodes (<em>toutes les cases</em>).<br />";
+			}
+		}
+
+
+		debug_edit_eleves("id_groupe=$id_groupe");
+		$current_group = get_group($id_groupe);
+		// On réinitialise $reg_eleves
+		$reg_eleves = array();
+		foreach ($current_group["periodes"] as $period) {
+			if($period["num_periode"]!=""){
+				debug_edit_eleves("\$period[\"num_periode\"]=".$period["num_periode"]);
+				$reg_eleves[$period["num_periode"]] = $current_group["eleves"][$period["num_periode"]]["list"];
+				debug_edit_eleves("\$reg_eleves[".$period["num_periode"]."] = \$current_group[\"eleves\"][".$period["num_periode"]."][\"list\"]");
+			}
+		}
+	}
+}
+
+
 $avec_js_et_css_edt="y";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -249,8 +371,49 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 //=========================
-// AJOUT: boireaus 20071010
 $nb_periode=$current_group['nb_periode'];
+//=========================
+//echo "\$nb_periode=$nb_periode<br />";
+
+//=========================
+// AJOUT: boireaus 20140702
+if(isset($_GET['import_csv'])) {
+	echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+
+<h2>Import de la liste des élèves dans ".$current_group['name']." (<em>".$current_group['description']." en ".$current_group['classlist_string']."</em>)</h2>
+
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form_passage_a_un_autre_groupe2' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='hidden' name='upload_et_import_csv' value='y' />
+
+		<p>Veuillez fournir le fichier CSV&nbsp;: <input type='file' name='csv_file' value='' class='fieldset_opacite50' /></p>
+
+		<p><input type='radio' name='ajouter_ou_remplacer' id='ajouter_ou_remplacer_ajouter' value='ajouter' checked /><label for='ajouter_ou_remplacer_ajouter' id='texte_ajouter_ou_remplacer_ajouter'> ajouter les élèves du CSV aux élèves déjà inscrits</label><br />
+
+		<!--input type='radio' name='ajouter_ou_remplacer' id='ajouter_ou_remplacer_remplacer' value='ajouter' /><label for='ajouter_ou_remplacer_remplacer' id='texte_ajouter_ou_remplacer_remplacer'> remplacer les élèves actuellement inscrits par les élèves du CSV (*)</label><br /-->
+		</p>
+
+		<p><span style='color:red'>ATTENTION&nbsp;:</span> Aucune confirmation ne vous sera demandée.</p>
+
+		<p><input type='submit' name='' value='Envoyer le fichier et procéder aux inscriptions' /></p>
+	</fieldset>
+</form>
+
+<p style='margin-top:2em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Vous pouvez importer la liste des élèves du groupe/enseignement courant d'après un CSV contenant un LOGIN_ELEVE par ligne.</li>
+	<li>Vous pouvez proposer des élèves d'autres classes que celles actuellement associées au groupe, mais seuls les élèves inscrits dans des classes de même nombre de périodes que la ou les classes actuellement associées à ce groupe pourront être inscrits dans le groupe.</li>
+	<li style='color:red'>MODE ENCORE A DEVELOPPER... (*) Si vous désinscrivez des élèves du groupe, la désinscription sera refusée si l'élève a des notes, appréciations, avis sur les bulletins ou des notes dans le carnet de notes.</li>
+	<li style='color:red'>A FAIRE : Mettre des cases à cocher pour choisir/restreindre sur quelle période importer la liste.</li>
+</ul>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
 //=========================
 
 $tab_autres_sig=array();
@@ -449,6 +612,11 @@ if(acces('/groupes/repartition_ele_grp.php', $_SESSION['statut'])) {
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo " title=\"Répartir des élèves entre plusieurs groupes\">Répartir</a> ";
 }
+
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;import_csv=y'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo " title=\"Inmporter d'après un CSV la liste des élèves de l'enseignement courant.\">Import CSV</a> ";
+
 echo "</p>";
 echo "</form>\n";
 echo "</div>\n";
