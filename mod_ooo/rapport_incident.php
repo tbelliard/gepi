@@ -43,9 +43,7 @@ if (!checkAccess()) {
 include_once('./lib/lib_mod_ooo.php');
 
 include_once('../tbs/tbs_class.php');
-include_once('./lib/tbsooo_class.php');
-define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
-include_once('../lib/pclzip.lib.php');
+include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 
 include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fonction du module discipline pour la fonction p_nom , u_p_nom
 
@@ -376,62 +374,30 @@ if ($mode=='module_discipline') {
 // Fin zone de traitement Les données qui seront fusionnées au modèle
 //
 
-//
-//Les variables à modifier pour le traitement  du modèle ooo
-//
-//Le chemin et le nom du fichier ooo à traiter (le modèle de document)
-$nom_fichier_modele_ooo ='rapport_incident.odt';
-// Par defaut tmp
-$nom_dossier_temporaire ='tmp';
-//par defaut content.xml
-$nom_fichier_xml_a_traiter ='content.xml';
 
+$TBS = new clsTinyButStrong; // new instance of TBS
+$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+
+// Load the template
+$nom_fichier_modele_ooo ='rapport_incident.odt';
 
 //Procédure du traitement à effectuer
 //les chemins contenant les données
 include_once ("./lib/chemin.inc.php");
 
+$nom_fichier = $nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
 
-// instantiate a TBS OOo class
-$OOo = new clsTinyButStrongOOo;
-$OOo->SetDataCharset('UTF-8');
-// setting the object
-$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-// create a new openoffice document from the template with an unique id 
-$OOo->NewDocFromTpl($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-// merge data with openoffice file named 'content.xml'
-$OOo->LoadXmlFromDoc($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
-
-// Traitement des tableaux
-// On insère ici les lignes concernant la gestion des tableaux
-$OOo->MergeBlock('blk1',$donnee_tab_protagonistes) ; 
-// Fin de traitement des tableaux
-
-
-$OOo->SaveXmlToDoc(); //traitement du fichier extrait
-
+$TBS->LoadTemplate($nom_fichier, OPENTBS_ALREADY_UTF8);
 
 //Génération du nom du fichier
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
-//$nom_fic = $nom_fichier_modele[0]."_N°_".$num_incident."_généré_le_".$now.".".$nom_fichier_modele[1];
-$nom_fic = $nom_fichier_modele[0]."_N_".$num_incident."_genere_le_".$now.".".$nom_fichier_modele[1];
-header('Expires: ' . $now);
-// lem9 & loic1: IE need specific headers
+$nom_fic = remplace_accents($nom_fichier_modele[0]."_N°_".$num_incident."_généré_le_".$now.".".$nom_fichier_modele[1]);
 
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-    header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: public');
-} else {
-    header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-    header('Pragma: no-cache');
-}
+$TBS->MergeBlock('blk1',$donnee_tab_protagonistes) ; 
 
-// display
-header('Content-type: '.$OOo->GetMimetypeDoc());
-header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
-$OOo->FlushDoc(); //envoi du fichier traité
-$OOo->RemoveDoc(); //suppression des fichiers de travail
-// Fin de traitement des tableaux
+$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fic);
+
+
+
 ?>

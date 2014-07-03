@@ -63,7 +63,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Fiches brevet OpenOffice',
+description='Fiches brevet openDocument',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
@@ -81,7 +81,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Imprime fiches brevet OpenOffice',
+description='Imprime fiches brevet openDocument',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
@@ -492,7 +492,7 @@ elseif($_SESSION['statut']=="scolarite") {
 	if(acces('/mod_notanet/OOo/imprime_ooo.php', 'scolarite')) {
 		echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
 	<ul>\n";
-		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
+		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format openDocument</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
 	//}
 	echo "	</ul>
 </li>\n";

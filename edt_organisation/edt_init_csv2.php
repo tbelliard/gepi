@@ -468,7 +468,7 @@ if (isset($_SESSION["explications"]) AND $_SESSION["explications"] == "non") {
 (en laissant l'option "cours" cochée par défaut, et en laissant
 a priori toutes les divisions/professeurs/matières/salles/...,
 sauf si on ne veut extraire qu'une partie de l'EdT)</p>
-<p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice.org car M$Excel fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
+<p class="red">Attention, il faut sauvegarder le fichier avec un tableur comme Calc d'OpenOffice/libreOffice car M$Excel fournit un csv qui pose des probl&egrave;mes &agrave; l'utilisation.</p>
 <p>Il faut aussi enlever la ligne d'ent&ecirc;te.<br />
 Si l'export généré est au format TXT (<i>séparateur tabulation</i>), se rendre dans le menu Outils/Préférences pour choisir CSV plutôt que TXT pour l'export.</p>
 <br />

@@ -875,8 +875,8 @@ $tab_req[] = "INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrat
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');";
 
-$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet OpenOffice',statut='';";
-$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet OpenOffice',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet openDocument',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet openDocument',statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/eleves/modif_sexe.php',
 administrateur='V',

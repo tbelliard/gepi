@@ -25,19 +25,8 @@
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
-// Remplacement des anciennes versions vers la nouvelle lib TinyDoc
-//include_once('./lib/lib_mod_ooo.php');
-//include_once('./lib/tbs_class.php');
-//include_once('./lib/tbsooo_class.php');
-
-//include_once('./lib/tinyButStrong.class.php');
-//include_once('./lib/tinyDoc.class.php');
-
 include_once('../tbs/tbs_class.php');
 include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-
-//~ define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
-//~ include_once('../lib/pclzip.lib.php');
 
 
 // Resume session
@@ -428,9 +417,9 @@ include_once ("./lib/chemin.inc.php");
 //~ 
 //~ // setting the object
 //~ $OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-//~ // create a new openoffice document from the template with an unique id
+//~ // create a new openDocument document from the template with an unique id
 //~ $OOo->createFrom($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-//~ // merge data with openoffice file named 'content.xml'
+//~ // merge data with openDocument file named 'content.xml'
 //~ $OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
 
 $OOo = new clsTinyButStrong; // new instance of TBS

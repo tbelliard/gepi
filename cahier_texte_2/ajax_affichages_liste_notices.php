@@ -335,7 +335,7 @@ echo "<p>\n";
 echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format CSV</a>";
 echo "</p>\n";
 echo "<p style='margin-left:1em'>\n";
-echo "<em>Note&nbsp;:</em> pour ouvrir ce fichier CSV avec OpenOffice, garder les réglages par défaut lors de l'ouverture du fichier.";
+echo "<em>Note&nbsp;:</em> pour ouvrir ce fichier CSV avec libreOffice, garder les réglages par défaut lors de l'ouverture du fichier.";
 echo "</p>\n";
 echo "<p>\n";
 echo "<a href='./export_cdt.php?id_groupe=".$current_group->getId()."' target=\"_blank\">Export au format HTML</a>.\n";

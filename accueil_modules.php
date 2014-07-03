@@ -184,7 +184,7 @@ $key_setting[]='active_mod_discipline';
 
 //Module modèle Open_Office
 $chemin[] = "/mod_ooo/ooo_admin.php";
-$titre[] = "Modèle OpenOffice";
+$titre[] = "Modèle openDocument";
 $expli[] = "Pour gérer les modèles Open Office de Gepi.";
 $key_setting[]='active_mod_ooo';
 
@@ -459,8 +459,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_ooo') ;	
-		$nouveauItem->titre="Modèle OpenOffice" ;
-		$nouveauItem->expli="Pour gérer les modèles Open Office de Gepi." ;
+		$nouveauItem->titre="Modèle openDocument" ;
+		$nouveauItem->expli="Pour gérer les modèles openDocument (libreOffice/openOffice) de Gepi." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);

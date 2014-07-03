@@ -52,7 +52,7 @@ echo "<p style='margin-bottom:1em;'>Cette page est destinée à fournir quelques
 <p style='margin-bottom:1em;'>Un lien sur le site officiel pour commencer (*)&nbsp;: 
 <a href='http://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur#Gestion-des-sanctions-et-punitions-module-Discipline' target=\"_blank\">Documentation en ligne</a></p>
 
-<p style='margin-bottom:1em;'>Si vous avez activé le module OpenOffice, vous pouvez produire des documents au format OpenOffice.org dans Gepi.<br />
+<p style='margin-bottom:1em;'>Si vous avez activé le module OpenOffice/libreOffice, vous pouvez produire des documents au format openDocument dans Gepi.<br />
 Pour la production de rapports d'incidents, la documentation est <a href='http://www.sylogix.org/projects/gepi/wiki/Mod_discipline_OOo_rapport_incident' class='bold'>Ici</a></p>
 
 <p><em>NOTES&nbsp;:</em></p>
