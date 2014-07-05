@@ -123,7 +123,7 @@ else {
 	echo "<a href=\"".$_SERVER['PHP_SELF']."\">";
 }
 echo "<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
- | <a href=\"associer_nomenclatures_matieres.php\">associer les nomenclatures aux matières</a>
+ | <a href=\"../matieres/index.php\">associer les nomenclatures aux matières</a>
  | <a href=\"../mef/associer_eleve_mef.php\">associer les MEF aux élèves</a>
 </p>";
 // | <a href=\"associer_nomenclatures_classes.php\">associer les nomenclatures aux classes</a>
