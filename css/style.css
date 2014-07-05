@@ -304,6 +304,12 @@ table.boireaus {
 	background-color: #FFE6AA;
 }
 
+.joss_alt tr:nth-child(even) {
+	background-color: #E8F1F4;
+}
+.joss_alt tr:nth-child(odd) {
+	background-color: #C6DCE3;
+}
 
 /* =======================================*
 * Affichage de div sous forme de tableau
