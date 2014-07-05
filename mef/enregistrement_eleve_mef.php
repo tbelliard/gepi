@@ -94,7 +94,8 @@ for($i=0; $i<$total_eleves; $i++) {
 	$eleve->setMef($mef);
 	$eleve->save();
 	*/
-	$sql="UPDATE eleves SET mef_code='".$id_mef."' WHERE id_eleve='".$_POST['id_eleve_mef'][$i]."';";
+	$sql="UPDATE eleves SET mef_code='".$id_mef."' WHERE id_eleve='".$_POST['active_mef_eleve'][$i]."';";
+	//echo "$sql<br />";
 	$update=mysqli_query($GLOBALS["mysqli"], $sql);
 	$message_enregistrement .= "Mef enregistré pour l'eleve : ".$eleve->getNom()."<br/>";
 }
