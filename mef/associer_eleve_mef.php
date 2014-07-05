@@ -74,7 +74,7 @@ if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection
 $motif_filtrage_classe=isset($_POST['motif_filtrage_classe']) ? preg_replace("/^[^A-Za-z0-9 _]*$/", "%", $_POST['motif_filtrage_classe']) : "";
 $type_filtrage_classe=isset($_POST['type_filtrage_classe']) ? $_POST['type_filtrage_classe'] : "%";
 if($type_filtrage_classe!="") {
-	$type_filtrage_classe=preg_replace("/^[^A-Za-z0-9 _%]*$/", "%", $_POST['type_filtrage_classe']);
+	$type_filtrage_classe=preg_replace("/^[^A-Za-z0-9 _%]*$/", "%", $type_filtrage_classe);
 }
 $afficher_tous_eleves=isset($_POST['afficher_tous_eleves']) ? $_POST['afficher_tous_eleves'] : "y";
 
@@ -238,14 +238,21 @@ if (!$eleve_col->isEmpty()) {
 		<!-- Legende du tableau-->
 		<p>';
 
-	$mef_collection = MefQuery::create()->find();
+	//$mef_collection = MefQuery::create()->find();
+	$tab_mef=get_tab_mef();
 	echo "
 			<label for=\"id_mef\">MEF</label> : 
 			<select id=\"id_mef\" name=\"id_mef\" class=\"small\">
 				<option value='-1'></option>";
+	/*
 	foreach ($mef_collection as $mef) {
 		echo "
 				<option value='".$mef->getId()."'>".$mef->getLibelleEdition()." (".$mef->getMefCode().")</option>";
+	}
+	*/
+	foreach($tab_mef as $mef_code => $current_mef) {
+		echo "
+				<option value='".$mef_code."'>".$current_mef['designation_courte']." (".$mef_code.")</option>";
 	}
 	echo "
 			</select>
@@ -271,8 +278,9 @@ if (!$eleve_col->isEmpty()) {
 							</tr>";
 
 	foreach($eleve_col as $eleve) {
-
-		if(($afficher_tous_eleves!="n")||($eleve->getMEF() == null)) {
+		$tab_current_eleve=get_info_eleve($eleve->getLogin(), 1);
+		//if(($afficher_tous_eleves!="n")||($eleve->getMEF() == null)) {
+		if(($afficher_tous_eleves!="n")||($tab_current_eleve['mef_code'] == "")||(!isset($tab_mef[$tab_current_eleve['mef_code']]))) {
 
 			if ($eleve_col->getPosition() %2 == '1') {
 				$background_couleur="#E8F1F4";
@@ -299,8 +307,13 @@ if (!$eleve_col->isEmpty()) {
 								</td>
 								<td style=\"vertical-align: top;\">
 									<p>";
+			/*
 			if ($eleve->getMEF() != null) {
 				echo $eleve->getMEF()->getLibelleEdition();
+			}
+			*/
+			if(isset($tab_mef[$tab_current_eleve['mef_code']])) {
+				echo $tab_mef[$tab_current_eleve['mef_code']]['designation_courte'];
 			}
 			echo '</p>
 								</td>

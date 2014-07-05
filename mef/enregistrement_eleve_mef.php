@@ -52,37 +52,51 @@ if ($utilisateur == null) {
 	die();
 }
 
+//debug_var();
+
 //récupération des paramètres de la requète
 $id_mef = isset($_POST["id_mef"]) ? $_POST["id_mef"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
 
 $message_enregistrement = "";
 
+$tab_mef=get_tab_mef();
+
 $mef = null;
 if ($id_mef != null && $id_mef != -1) {
-    $mef = MefQuery::create()->findPk($id_mef);
-    if ($mef == null) {
-	$message_enregistrement .= "Probleme avec l'id du mef : ".$_POST['$id_mef']."<br/>";
-    }
+	/*
+	$mef = MefQuery::create()->findPk($id_mef);
+	if ($mef == null) {
+		$message_enregistrement .= "Probleme avec l'id du mef : ".$_POST['id_mef']."<br/>";
+	}
+	*/
+
+	if(!array_key_exists($id_mef, $tab_mef)) {
+		$message_enregistrement .= "Probleme avec l'id du mef : ".$_POST['id_mef']."<br/>";
+	}
 }
 
 for($i=0; $i<$total_eleves; $i++) {
 
-    //$id_eleve = $_POST['id_eleve_absent'][$i];
+	//$id_eleve = $_POST['id_eleve_absent'][$i];
 
-    //on test si l'eleve est enregistré absent
-    if (!isset($_POST['active_mef_eleve'][$i])) {
-	continue;
-    }
-    
-    $eleve = EleveQuery::create()->findPk($_POST['active_mef_eleve'][$i]);
-    if ($eleve == null) {
-	$message_enregistrement .= "Probleme avec l'id eleve : ".$_POST['id_eleve_mef'][$i]."<br/>";
-	continue;
-    }
-    $eleve->setMef($mef);
-    $eleve->save();
-    $message_enregistrement .= "Mef enregistré pour l'eleve : ".$eleve->getNom()."<br/>";
+	//on test si l'eleve est enregistré absent
+	if (!isset($_POST['active_mef_eleve'][$i])) {
+		continue;
+	}
+
+	$eleve = EleveQuery::create()->findPk($_POST['active_mef_eleve'][$i]);
+	if ($eleve == null) {
+		$message_enregistrement .= "Probleme avec l'id eleve : ".$_POST['id_eleve_mef'][$i]."<br/>";
+		continue;
+	}
+	/*
+	$eleve->setMef($mef);
+	$eleve->save();
+	*/
+	$sql="UPDATE eleves SET mef_code='".$id_mef."' WHERE id_eleve='".$_POST['id_eleve_mef'][$i]."';";
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	$message_enregistrement .= "Mef enregistré pour l'eleve : ".$eleve->getNom()."<br/>";
 }
 
 include("associer_eleve_mef.php");
