@@ -1800,22 +1800,45 @@ $handle=opendir('../backup/' . $dirname);
 $tab_file = array();
 $n=0;
 while ($file = readdir($handle)) {
-    if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-    //=================================
-    // AJOUT: boireaus
-    and ($file != 'csv')
-    and ($file != 'bulletins')
+	if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+	//=================================
+	and ($file != 'csv')
+	and ($file != 'bulletins')
+	and ($file != 'absences') //ne pas afficher le dossier export des absences en fin d'année
 	and ($file != 'notanet') //ne pas afficher le dossier notanet
-    //=================================
-    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
-    and(!preg_match('/sql.gz.txt$/i', $file))) {
-        $tab_file[] = $file;
-        $n++;
-    }
+	//=================================
+	and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
+	and(!preg_match('/sql.gz.txt$/i', $file))) {
+		$tab_file[] = $file;
+		$n++;
+	}
 }
 closedir($handle);
 arsort($tab_file);
+/*
+echo "<table>
+<tr>
+<td>";
 
+echo "<pre>";
+print_r($tab_file);
+echo "</pre>";
+
+echo "</td>
+<td>";
+
+for($loop=0;$loop<100;$loop++) {
+	if(isset($tab_file[$loop])) {
+		echo "\$tab_file[$loop]=".$tab_file[$loop]."<br />";
+	}
+	else {
+		echo "\$tab_file[$loop]=<br />";
+	}
+}
+echo "</td>
+</tr>
+</table>";
+*/
 if ($n > 0) {
     echo "<h3>Fichiers de restauration</h3>\n";
     echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
@@ -1841,7 +1864,7 @@ if ($n > 0) {
 			echo "<a href='#' onmouseover=\"delais_afficher_div('div_description_svg_$m','y',-20,20,1000,20,20);\" onclick=\"afficher_div('div_description_svg_$m','y',-20,20); return false\" onmouseout=\"cacher_div('div_description_svg_$m')\">";
 			echo $value;
 			echo "</a>";
-			$m++;
+			//$m++;
 		}
 		else {
 			echo $value;
