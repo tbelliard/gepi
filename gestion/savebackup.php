@@ -45,7 +45,7 @@ $dirname = getSettingValue("backup_directory");
 //$fileid=isset($_POST['fileid']) ? $_POST['fileid'] : (isset($_GET['fileid']) ? $_GET['fileid'] : NULL);
 $fileid=isset($_GET['fileid']) ? $_GET['fileid'] : NULL;
 
-
+/*
 $handle=opendir('../backup/' . $dirname);
 $tab_file = array();
 $n=0;
@@ -59,6 +59,26 @@ while ($file = readdir($handle)) {
         $tab_file[] = $file;
         $n++;
     }
+}
+closedir($handle);
+arsort($tab_file);
+*/
+$handle=opendir('../backup/' . $dirname);
+$tab_file = array();
+$n=0;
+while ($file = readdir($handle)) {
+	if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+	//=================================
+	and ($file != 'csv')
+	and ($file != 'bulletins')
+	and ($file != 'absences') //ne pas afficher le dossier export des absences en fin d'année
+	and ($file != 'notanet') //ne pas afficher le dossier notanet
+	//=================================
+	and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
+	and(!preg_match('/sql.gz.txt$/i', $file))) {
+		$tab_file[] = $file;
+		$n++;
+	}
 }
 closedir($handle);
 arsort($tab_file);
@@ -78,7 +98,8 @@ if ($n > 0) {
     }
     clearstatcache();
 }
-
+//echo "\$filepath=$filepath<br />";
+//die();
 send_file_download_headers('text/x-sql',$filename);
 readfile($filepath);
 ?>
