@@ -370,12 +370,22 @@ if ($affichage == 'html') {
 } else if ($affichage == 'csv' && $utilisateur->getStatut() == "administrateur") {
 	if ($traitement_csv_en_cours == 'false') {
 		//le traitement viens de se finir, on propose le fichier au téléchargement
-		echo '<br/><a href="'.'../backup/'.getSettingValue("backup_directory").'/absences/'.$_REQUEST['filename'].'">Télécharger le résultat</a>';
+		echo '<br/><a href="'.'../backup/'.getSettingValue("backup_directory").'/absences/'.$_REQUEST['filename'].'" target="_blank">Télécharger le résultat</a>';
 		if ($page == 1) {
 			//on s'est arreter à la page 0, il n'y a pas de résultat
 			echo ' (extraction vide)';
 		}
 		echo '<br/>';
+
+		echo "<p style='text-indent:-4em;margin-left:4em;margin-top:3em;'><em>NOTE&nbsp;:</em> Le fichier CSV est généré dans le sous-dossier 'absences' de votre dossier de sauvegarde (<em>sauvegardes de la base, des photos, des documents joints aux CDT, des archives de bulletins PDF,...</em>).<br />
+		Si votre dossier de sauvegarde est protégé par un mot de passe, ce mot de passe va vous être réclamé lors du téléchargement de l'export des absences.<br />
+		Si vous avez oublié ce mot de passe, vous pouvez le remplacer/mettre à jour en administrateur via la page de ";
+		if ($utilisateur->getStatut()=="administrateur" ) {
+			echo "<a href='../gestion/accueil_sauve.php' target='_blank'>Gestion des sauvegardes</a>.</p>";
+		}
+		else {
+			echo "Gestion des sauvegardes.</p>";
+		}
 	} else {
 		//print_r($page);die;
 	    // titre des colonnes
