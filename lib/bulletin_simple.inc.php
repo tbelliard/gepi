@@ -1530,7 +1530,6 @@ echo "</form>\n";
 		echo "
 		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
-
 		//alert('message='+message);
 
 		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'11\'></textarea>';
@@ -1675,7 +1674,8 @@ echo "</form>\n";
 ";
 
 		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
-			echo "		afficher_div('div_corriger_app','n',0,0);\n";
+			echo "
+		afficher_div('div_corriger_app','n',0,0);\n";
 		}
 		else {
 			echo "		afficher_div('div_corriger_app','y',100,100);\n";
@@ -1829,20 +1829,27 @@ function affiche_lien_proposition_ou_correction_appreciation($current_eleve_logi
 	//global $tab_mes_groupes;
 	//global $tab_afficher_liens_modif_app;
 
+	global $inclusion_depuis_graphes;
+
+	$ajout="";
+	if($inclusion_depuis_graphes=="y") {
+		$ajout="afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$current_eleve_login','$id_classe','$nb','$nb');";
+	}
+
 	$retour="";
 
 	if(($_SESSION['statut']=='professeur')&&(in_array($current_group['id'],$tab_mes_groupes))) {
 		if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='N') {
-			$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+			$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 		}
 		elseif(isset($tab_afficher_liens_modif_app[$current_group['id']][$nb])) {
 			if($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='y') {
-				$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'proposer') ;return false;\" title=\"Proposer une correction de l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+				$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'proposer') ;return false;\" title=\"Proposer une correction de l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez simplement modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 			}
 			elseif($tab_afficher_liens_modif_app[$current_group['id']][$nb]=='yy') {
-				$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+				$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhaitez modifier votre appréciation, ce lien est là pour ça.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 			}
 			//echo "plop";
@@ -1855,7 +1862,7 @@ Si vous vous apercevez que vous avez fait une faute de frappe, ou si vous souhai
 		if(getSettingAOui('PeutAutoriserPPaCorrigerSesApp')) {
 			if(acces_correction_app_pp($current_group['id'])) {
 				if($current_group["classe"]["ver_periode"][$id_classe][$nb]!='O') {
-					$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+					$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
 Le professeur recevra un mail l'informant de la modification.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 				}
@@ -1865,7 +1872,7 @@ Le professeur recevra un mail l'informant de la modification.\" class='noprint'>
 	}
 	elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('AccesModifAppreciationScol'))) {
 		if($current_group["classe"]["ver_periode"][$id_classe][$nb]!='O') {
-			$retour.="<a href='#' onclick=\"modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
+			$retour.="<a href='#' onclick=\"".$ajout."modifier_une_appreciation('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb', 'corriger') ;return false;\" title=\"Modifier l'appréciation en période $nb pour $current_eleve_prenom $current_eleve_nom.
 Si vous vous apercevez d'une faute de frappe, ou si vous souhaitez modifier l'appréciation, ce lien est là pour ça.
 Le professeur recevra un mail l'informant de la modification.\" class='noprint'><img src='../images/edit16.png' width='16' height='16' /></a> ";
 		}
