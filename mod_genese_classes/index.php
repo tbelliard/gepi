@@ -535,7 +535,15 @@ On complète.<br />
 On répartit les cas restants.<br />
 Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
 <p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
+</li>";
+
+if((getSettingValue("active_module_absence")=='2')&&(getSettingValue("abs2_import_manuel_bulletin")!='y')&&(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut']))) {
+	echo "
+<li>
+<p>Pour que les totaux d'absences, retards,... soient correctement affichés, il convient de <a href='../mod_abs2/admin/admin_table_totaux_absences.php'>remplir la table des totaux d'absences</a>.</p>
 </li>\n";
+}
+
 if(test_alerte_config_suhosin()) {
 	$alerte_config_suhosin=alerte_config_suhosin();
 	echo "<li>$alerte_config_suhosin</li>\n";
