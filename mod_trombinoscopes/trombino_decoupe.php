@@ -384,13 +384,14 @@ if(isset($generer_pdf)) {
 		{
 			function Header() {
 				global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
-		
+				//global $id_grille;
+
 				$this->SetXY($MargeGauche,5);
 				$this->SetFont('DejaVu','',7.5);
 				$texte=getSettingValue("gepiSchoolName")."  ";
 				$this->Cell($largeur_utile_page,5,$texte,0,0,'L');
-		
-				
+
+				//$texte=strftime("Grille ".$id_grille." - %d/%m/%Y - %H:%M:%S");
 				$texte=strftime("%d/%m/%Y - %H:%M:%S");
 				$lg_text=$this->GetStringWidth($texte);
 				$this->SetXY($MargeGauche,5);
@@ -402,8 +403,15 @@ if(isset($generer_pdf)) {
 				global $no_footer;
 				global $hauteur_page;
 				global $MargeHaut, $MargeBas, $MargeGauche, $MargeDroite, $largeur_utile_page;
-		
+				global $id_grille;
+
 				if($no_footer=='n') {
+
+					$this->SetXY($MargeGauche,$hauteur_page-$MargeBas);
+					$this->SetFont('DejaVu','',7.5);
+					$texte="Grille n°".$id_grille;
+					$this->Cell($largeur_utile_page,5,$texte,0,0,'L');
+
 					$this->SetFont('DejaVu','',7.5);
 					$this->SetXY($MargeGauche, $hauteur_page-$MargeBas);
 					$this->Cell($largeur_utile_page, 5, 'Page '.$this->PageNo(), "0", 1, 'R');
@@ -616,8 +624,8 @@ elseif($mode=='parametrer') {
 	if($trombino_pdf_nb_lig=="") {$trombino_pdf_nb_lig=5;}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
 	echo add_token_field();
-	echo "<fieldset>\n";
 	echo "<p>Paramétrage&nbsp;:</p>\n";
 	echo "<table style='margin-left:2em;' class='boireaus' summary='Paramètres du trombinoscope'>\n";
 	echo "<tr class='lig1'>\n";
@@ -681,8 +689,8 @@ elseif($mode=='generer_grille') {
 	}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
+	echo "<fieldset class='fieldset_opacite50'>\n";
 	echo add_token_field();
-	echo "<fieldset>\n";
 	echo "<p>Générer les grilles PDF pour&nbsp;:</p>\n";
 
 	// Affichage sur 3 colonnes
@@ -813,8 +821,8 @@ elseif($mode=='uploader') {
 	else {
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo "<fieldset class='fieldset_opacite50'>\n";
 		echo add_token_field();
-		echo "<fieldset>\n";
 		echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
 		echo "<input type='hidden' name='upload_scan' value='yes' />\n";
 		//echo "<p>Une grille a été éditée.<br />Vous avez la possibilité de d'uploader les pages scannées.</p>\n";
@@ -896,8 +904,8 @@ elseif($mode=='suppr_grille') {
 	}
 	else {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo "<fieldset class='fieldset_opacite50'>\n";
 		echo add_token_field();
-		echo "<fieldset>\n";
 		echo "<p>Quelles grilles souhaitez-vous supprimer?</p>\n";
 		while($lig=mysqli_fetch_object($test)) {
 			echo "<input type='checkbox' name='suppr_grille[]' id='suppr_$lig->id_grille' value='$lig->id_grille' /><label for='suppr_$lig->id_grille'> Grille n°$lig->id_grille";
