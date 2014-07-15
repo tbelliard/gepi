@@ -465,6 +465,9 @@ if (isset($id_classe)) {
 	$formule = old_mysql_result($call_nom_class, 0, 'formule');
 	$format_nom = old_mysql_result($call_nom_class, 0, 'format_nom');
 	$format_nom_eleve = old_mysql_result($call_nom_class, 0, 'format_nom_eleve');
+	if(!in_array($format_nom_eleve, array('np', 'pn'))) {
+		$format_nom_eleve="np";
+	}
 	$display_rang = old_mysql_result($call_nom_class, 0, 'display_rang');
 	$display_address = old_mysql_result($call_nom_class, 0, 'display_address');
 	$display_coef = old_mysql_result($call_nom_class, 0, 'display_coef');
