@@ -514,7 +514,7 @@ if (isset($id_classe)) {
 	$formule = '';
 	//$format_nom = 'np';
 	$format_nom = 'cni';
-	$format_nom = 'np';
+	$format_nom_eleve = 'np';
 	$display_rang = 'n';
 	$display_address = 'n';
 	$display_coef = 'n';
