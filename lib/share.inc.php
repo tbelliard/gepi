@@ -11401,4 +11401,53 @@ function cdt_changer_chemin_absolu_en_relatif($texte) {
 
 	return $contenu_cor;
 }
+
+/** Fonction destinée à retourner un tableau des fichiers présents dans le dossier de sauvegarde de Gepi (backup\$backup_directory)
+ *
+ * @param string $path Le chemin (optionnel): s'il n'est pas fourni, on cherche dans backup\$backup_directory
+ * @return array Le tableau des fichiers de sauvegarde (de la base, des bulletins PDF, des photos,...)
+ */
+function get_tab_fichiers_du_dossier_de_sauvegarde($path="", $sous_dossier="n") {
+	global $temoin_dossier_backup_absences;
+
+	if($path=="") {
+		$dirname = getSettingValue("backup_directory");
+		$path='../backup/' . $dirname;
+	}
+	$handle=opendir($path);
+	$tab_file = array();
+	$n=0;
+	while ($file = readdir($handle)) {
+		if($sous_dossier=="n") {
+			if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+			//=================================
+			and ($file != 'csv')
+			and ($file != 'bulletins')
+			and ($file != 'absences') //ne pas afficher le dossier export des absences en fin d'année
+			and ($file != 'notanet') //ne pas afficher le dossier notanet
+			//=================================
+			and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
+			and(!preg_match('/sql.gz.txt$/i', $file))) {
+				$tab_file[] = $file;
+				$n++;
+			}
+
+			if($file == 'absences') {
+				$temoin_dossier_backup_absences="y";
+			}
+		}
+		else {
+			if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
+			and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')) {
+				$tab_file[] = $file;
+				$n++;
+			}
+		}
+	}
+	closedir($handle);
+	arsort($tab_file);
+
+	return $tab_file;
+}
+
 ?>

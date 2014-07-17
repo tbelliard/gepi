@@ -105,18 +105,28 @@ if (isset($action) and ($action == 'upload'))  {
 if (isset($action) and ($action == 'sup'))  {
 	check_token();
 
-    if (isset($_GET['file']) && ($_GET['file']!='')) {
-        if (@unlink("../backup/".$dirname."/".$_GET['file'])) {
-            $msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
-
-			if(file_exists("../backup/".$dirname."/".$_GET['file'].".txt")) {
-				@unlink("../backup/".$dirname."/".$_GET['file'].".txt");
+	if (isset($_GET['file']) && ($_GET['file']!='')) {
+		if((isset($_GET['sous_dossier']))&&($_GET['sous_dossier']=='absences')) {
+			if (@unlink("../backup/".$dirname."/absences/".$_GET['file'])) {
+				$msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
+			} else {
+				$msg = "Un problème est survenu lors de la tentative de suppression du fichier <b>".$_GET['file']."</b>.<br />
+					Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
 			}
-        } else {
-            $msg = "Un problème est survenu lors de la tentative de suppression du fichier <b>".$_GET['file']."</b>.<br />
-            Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
-        }
-    }
+		}
+		else {
+			if (@unlink("../backup/".$dirname."/".$_GET['file'])) {
+				$msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
+
+				if(file_exists("../backup/".$dirname."/".$_GET['file'].".txt")) {
+					@unlink("../backup/".$dirname."/".$_GET['file'].".txt");
+				}
+			} else {
+				$msg = "Un problème est survenu lors de la tentative de suppression du fichier <b>".$_GET['file']."</b>.<br />
+					Il s'agit peut-être un problème de droits sur le répertoire backup.<br />\n";
+			}
+		}
+	}
 }
 
 // Protection du répertoire backup
@@ -868,6 +878,7 @@ if (!isset($_SESSION['defaulttimeout'])) {
 // Lors d'une sauvegarde, nombre de lignes traitées dans la base entre chaque vérification du temps restant
 $defaultrowlimit=10;
 
+
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Sauvegardes/Restauration";
 require_once("../lib/header.inc.php");
@@ -1444,6 +1455,7 @@ if (isset($action) and ($action == 'dump'))  {
 			echo "<div class=\"center\"><p>Sauvegarde terminée en ".$h." h ".$m." min ".$s." s.<br />\n";
 
 			//$nomsql.$filetype
+			/*
 			$handle=opendir($path);
 			$tab_file = array();
 			$n=0;
@@ -1461,7 +1473,10 @@ if (isset($action) and ($action == 'dump'))  {
 			}
 			closedir($handle);
 			rsort($tab_file);
-                        
+			*/
+			$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde($path);
+			$n=count($tab_file);
+
 			$nom_fichier=str_replace($path,'',$fichier);
 			$nom_fichier=str_replace('.sql','',$nom_fichier);
 			$fileid=null;
@@ -1796,49 +1811,9 @@ if ((substr(PHP_OS,0,3) == 'WIN' && file_exists("mysqldump.exe"))||
 
 <?php
 
-$handle=opendir('../backup/' . $dirname);
-$tab_file = array();
-$n=0;
-while ($file = readdir($handle)) {
-	if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-	//=================================
-	and ($file != 'csv')
-	and ($file != 'bulletins')
-	and ($file != 'absences') //ne pas afficher le dossier export des absences en fin d'année
-	and ($file != 'notanet') //ne pas afficher le dossier notanet
-	//=================================
-	and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
-	and(!preg_match('/sql.gz.txt$/i', $file))) {
-		$tab_file[] = $file;
-		$n++;
-	}
-}
-closedir($handle);
-arsort($tab_file);
-/*
-echo "<table>
-<tr>
-<td>";
+$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde('../backup/' . $dirname);
+$n=count($tab_file);
 
-echo "<pre>";
-print_r($tab_file);
-echo "</pre>";
-
-echo "</td>
-<td>";
-
-for($loop=0;$loop<100;$loop++) {
-	if(isset($tab_file[$loop])) {
-		echo "\$tab_file[$loop]=".$tab_file[$loop]."<br />";
-	}
-	else {
-		echo "\$tab_file[$loop]=<br />";
-	}
-}
-echo "</td>
-</tr>
-</table>";
-*/
 if ($n > 0) {
     echo "<h3>Fichiers de restauration</h3>\n";
     echo "<p>Le tableau ci-dessous indique la liste des fichiers de restauration actuellement stockés dans le répertoire \"backup\" à la racine de GEPI.</p>\n";
@@ -1894,6 +1869,47 @@ if ($n > 0) {
     }
     clearstatcache();
     echo "</table>\n<hr />\n";
+}
+
+if($temoin_dossier_backup_absences=="y") {
+	$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde('../backup/' . $dirname."/absences", "y");
+	$n=count($tab_file);
+
+	if($n>0) {
+		echo "<h3>Fichiers export des absences</h3>\n";
+		echo "<p>Les fichiers d'export des absences en fin d'année sont générés dans le sous-dossier 'absences' du dossier de stockage des sauvegardes.</p>";
+		echo "<table class='boireaus boireaus_alt centre' style='margin:auto;' >
+	<tr>
+		<th>Nom du fichier d'export</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+	</tr>";
+		$m = 0;
+		foreach($tab_file as $value) {
+			$alt=$alt*(-1);
+			echo "
+	<tr>
+		<td style='padding:5px;'>
+			<em>".$value."</em>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/absences/".$value)/1024),0)." Ko)
+		</td>
+		<td style='padding:5px;'>
+			<a href='accueil_sauve.php?action=sup&amp;sous_dossier=absences&amp;file=$value".add_token_in_url()."'>Supprimer</a>
+		</td>
+		<td style='padding:5px;'>
+			<a href='savebackup.php?fileid=$m&amp;sous_dossier=absences'>Télécharger</a>
+		</td>
+		<td style='padding:5px;'>
+			<a href='../backup/".$dirname."/absences/".$value."'>Téléch. direct</a>
+		</td>
+	</tr>\n";
+			$m++;
+		}
+		clearstatcache();
+		echo "
+</table>
+<hr />\n";
+	}
 }
 
 echo "<h3>Uploader un fichier (de restauration) vers le répertoire backup</h3>\n";
