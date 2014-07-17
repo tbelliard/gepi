@@ -8,6 +8,13 @@ Gepi-master (Version de développement)
 Abs2
 - Sélection des traitements sur la classe dans liste_traitements.php et liste_notifications.php
 
+Edt:
+- Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi
+  (dispositif alternatif, non lié à l'EDT classique de Gepi).
+
+Gestion:
+- Accès au dossier d'export des absences de mod_abs2 en fin d'année (dans Sauvegarde et restauration).
+
 Gepi-1.6.5 (14/06/2014)
 ===========================
 Cahier de textes:
