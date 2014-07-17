@@ -411,7 +411,7 @@ if ($affichage == 'html') {
 				    continue;
 				}
 				$output .= $saisie->getEleve()->getNom().','.$saisie->getEleve()->getPrenom().','.$saisie->getEleve()->getClasseNom().',';
-				$output .= $saisie->getDebutAbs('d/m/Y - h:i').','.$saisie->getFinAbs('d/m/Y - h:i').',';
+				$output .= $saisie->getDebutAbs('d/m/Y - H:i').','.$saisie->getFinAbs('d/m/Y - H:i').',';
 				
 				$traitement_col = $saisie->getAbsenceEleveTraitements();
 				foreach ($traitement_col as $traitement) {
