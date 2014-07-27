@@ -172,8 +172,6 @@ if(!isset($mode)) {
 		proposez le préfixe suivant&nbsp;:<br />
 		&nbsp;&nbsp;&nbsp;<strong>https://NOM_SERVEUR/CHEMIN_GEPI</strong></p>
 
-		<p style='text-indent:-4em; margin-left:4em; color:red'><em>A FAIRE&nbsp;:</em> Proposer de corriger les enregistrements de notices effectués avant les saisies dans la présente page.</p>
-
 	</fieldset>
 </form>";
 }
