@@ -564,7 +564,10 @@ ___NUM_SEMAINE___ sera remplacé par le numéro de la semaine pour que le lien p
 	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
+	if(mysqli_num_rows($res)==0) {
+		echo "<p>Aucun emploi du temps de classe n'est encore importé.</p>";
+	}
+	else {
 		echo "
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_choix_classe' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -1453,7 +1456,14 @@ elseif($mode=="afficher_edt") {
 			$num_semaine_annee=$lig->num_semaine."|".$lig->annee;
 		}
 		else {
-		echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+			if(($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='scolarite')&&(getSettingAOui('EdtIcalUploadScolarite')))|| 
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('EdtIcalUploadCpe')))) {
+				echo "<p class='bold'><a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+			}
+			else {
+				echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+			}
 			echo "<p style='color:red'>Aucun enregistrement trouvé.</p>";
 			require("../lib/footer.inc.php");
 			die();
