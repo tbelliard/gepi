@@ -89,7 +89,7 @@ interface discipline_admin {
 
   <div id='container'>
   <!-- Fin haut de page -->
-  
+  <div class='fieldset_opacite50'>
   <h2>Configuration générale</h2>
   <p>
 	<em>
@@ -186,8 +186,33 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	  <input type="submit" value="Enregistrer"/>
 	</p>
   </form>
-  
+  </div>
+
+<?php
+if($nombre_de_dossiers_de_documents_discipline>0) {
+?>
+  <div class='fieldset_opacite50' style='margin-top:1em;'>
+  <form action="discipline_admin.php" id="form1" method="post">
+<?php
+echo add_token_field();
+?>
+	<h2>Suppression des documents joints aux <?php echo $mod_disc_terme_sanction;?>s</h2>
+	  <legend class="invisible">Suppression des documents joints aux <?php echo $mod_disc_terme_sanction;?>s</legend>
+	  <?php
+	  	echo "<p>$nombre_de_dossiers_de_documents_discipline dossier(s) de documents joints à des ".$mod_disc_terme_sanction."s est(sont) présent(s).<br />
+	  	Une fois la $mod_disc_terme_sanction effectuée, ces dossiers n'ont plus d'utilité.</p>";
+	  ?>
+
+	<p class="center">
+	  <input type="hidden" name="suppr_doc_joints" value="y" />
+	  <input type="submit" value="Supprimer ces dossiers"/>
+	</p>
+  </form>
+  </div>
+
 	<?php
+}
+
 		if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/index.php", $_SESSION['statut']))) {
 			echo "<p style='margin-top:1em;'><a href='index.php'>Accéder au module Discipline</a></p>";
 		}
