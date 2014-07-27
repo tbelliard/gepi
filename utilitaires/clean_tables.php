@@ -3674,6 +3674,7 @@ else {
 <ul>
 <li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
 <li>Les documents (<em>travaux, punitions,...</em>) joints au incidents et sanctions seront aussi supprimés.</li>
+<li>Vous pouvez aussi <a href='../mod_discipline/discipline_admin.php#suppr_docs_joints'>supprimer tous les documents joints à des sanctions</a> sans nécessairement vider les tables du module Discipline s'il y en a.</li>
 </ul>\n";
 		echo "</form>\n";
 

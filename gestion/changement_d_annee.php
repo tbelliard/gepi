@@ -247,6 +247,9 @@ else {
 if(file_exists("../mod_plugins/archivageAPB/index.php")) {
 	echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
 }
+if((getSettingAOui('active_mod_discipline'))&&(nombre_de_dossiers_docs_joints_a_des_sanctions()>0)) {
+	echo "<li><a href='../mod_discipline/discipline_admin.php?chgt_annee=y#suppr_docs_joints'>Supprimer les dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s</a>.</li>\n";
+}
 echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";

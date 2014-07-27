@@ -11462,4 +11462,29 @@ function get_tab_jour_ouverture_etab() {
 	}
 	return $tab_jour;
 }
+
+function nombre_de_dossiers_docs_joints_a_des_sanctions() {
+	global $multisite;
+
+	$dossier_documents_discipline="../documents/discipline";
+	if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+		if(isset($_COOKIE['RNE'])) {
+			$dossier_documents_discipline.="_".$_COOKIE['RNE'];
+			if(!file_exists("../$dossier_documents_discipline")) {
+				@mkdir("../$dossier_documents_discipline",0770);
+			}
+		}
+	}
+
+	$handle=opendir($dossier_documents_discipline);
+	$nombre_de_dossiers_de_documents_discipline=0;
+	while ($file = readdir($handle)) {
+		if(preg_match("/^incident_[0-9]*$/", $file)) {
+			$nombre_de_dossiers_de_documents_discipline++;
+		}
+	}
+	closedir($handle);
+
+	return $nombre_de_dossiers_de_documents_discipline;
+}
 ?>
