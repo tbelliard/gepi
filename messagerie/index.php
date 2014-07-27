@@ -341,7 +341,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 				$erreur=!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,"");
 		else
 			{
-			// pour éviter qu'un utilisateur de satut donné voit n fois le message adressé aux profs d'une classe 
+			// pour éviter qu'un utilisateur de statut donné voit n fois le message adressé aux profs d'une classe 
 			if (count($t_login_destinataires)>1) $statuts_destinataires="_";
 			foreach($t_login_destinataires as $login_destinataire)
 				if (isset($_POST['id_mess']))
