@@ -239,6 +239,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php" '.insert_confirm_abandon().'>Absences 2</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/edt/index_admin.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_notanet/notanet_admin.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_inscription/inscription_admin.php" '.insert_confirm_abandon().'>Inscription</a></li>'."\n";
@@ -270,6 +271,10 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 
 		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))||(getSettingAOui('autorise_edt_eleve'))) {
 			$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		}
+
+		if(getSettingAOui('active_edt_ical')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		}
 
 		$menus .= '  <li class="plus"><a href="#">Bulletins</a>'."\n";

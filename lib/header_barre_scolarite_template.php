@@ -234,6 +234,10 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 		}
+
+		if(getSettingAOui('active_edt_ical')) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
+		}
 		//=======================================================
 
 		//=======================================================

@@ -77,6 +77,10 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/edt_eleve.php?login_edt='.$_SESSION['login'].'"'.insert_confirm_abandon().' title="Cet outil permet la consultation de votre emploi du temps.">&nbsp;EDT</a></li>'."\n";
 		}
 
+		if((getSettingAOui('active_edt_ical'))&&(getSettingAOui('EdtIcalEleve'))) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
+		}
+
 		// Cahiers de textes
 		if((getSettingAOui("active_cahiers_texte"))&&(getSettingAOui("GepiAccesCahierTexteEleve"))) {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/cahier_texte/consultation.php"'.insert_confirm_abandon().' title="Permet de consulter les compte-rendus de séance et vos devoirs à faire.">&nbsp;Cahier de textes</a></li>'."\n";
