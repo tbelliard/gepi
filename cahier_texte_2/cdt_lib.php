@@ -461,6 +461,23 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $dossier;
 	}
 
+	function get_dossier_docs_joints_cdt() {
+		global $multisite;
+
+		$dossier="";
+
+		if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+			if(isset($_COOKIE['RNE'])) {
+				$dossier="../documents/".$_COOKIE['RNE'];
+			}
+		}
+		else {
+			$dossier="../documents";
+		}
+
+		return $dossier;
+	}
+
 	/*
 	//=======================================================
 	// Fonction récupérée dans /mod_ooo/lib/lib_mod_ooo.php

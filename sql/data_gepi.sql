@@ -1239,3 +1239,4 @@ INSERT INTO droits SET id='/cahier_texte_2/correction_notices_url_absolues_docs_
 INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');
 INSERT INTO droits SET id='/edt/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='V',responsable='V',secours='F',autre='F',description='EDT ICAL : Index',statut='';
 INSERT INTO droits SET id='/edt/index_admin.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='EDT ICAL : Administration',statut='';
+INSERT INTO droits SET id='/cahier_texte_admin/suppr_docs_joints_cdt.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Suppression des documents joints aux CDT',statut='';

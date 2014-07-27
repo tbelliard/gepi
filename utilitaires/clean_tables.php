@@ -3689,6 +3689,7 @@ else {
 		echo "<p><i>NOTES&nbsp;:</i></p>
 <ul>
 <li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
+<li>Si l'archivage des CDT est fait, vous pouvez aussi <a href='../cahier_texte_admin/suppr_docs_joints_cdt.php'>supprimer les documents joints aux cahiers de textes</a> de l'année qui se termine.</li>
 </ul>\n";
 		echo "</form>\n";
 
