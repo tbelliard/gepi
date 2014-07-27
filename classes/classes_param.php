@@ -1166,7 +1166,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td id='td_prof_nouvel_enseignement'>\n";
 			echo "<span id='span_prof_nouvel_enseignement'>";
 			// Pour fonctionner sans JavaScript:
-			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs WHERE u.statut='professeur' AND u.etat='actif';";
+			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif';";
 			$res_prof=mysql_query($sql);
 			if(mysql_num_rows($res_prof)==0) {
 				echo "&nbsp;";
