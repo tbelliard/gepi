@@ -11450,4 +11450,16 @@ function get_tab_fichiers_du_dossier_de_sauvegarde($path="", $sous_dossier="n") 
 	return $tab_file;
 }
 
+function get_tab_jour_ouverture_etab() {
+	$tab_jour=array();
+	$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+	for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
+		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."';";
+		$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_jour)>0) {
+			$tab_jour[]=$tmp_tab_jour[$loop];
+		}
+	}
+	return $tab_jour;
+}
 ?>

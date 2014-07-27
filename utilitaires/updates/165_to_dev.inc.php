@@ -87,4 +87,77 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'edt_ics' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_ics'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS edt_ics (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	id_classe INT(11) NOT NULL,
+	classe_ics varchar(100) NOT NULL DEFAULT '',
+	prof_ics varchar(200) NOT NULL DEFAULT '',
+	matiere_ics varchar(100) NOT NULL DEFAULT '',
+	salle_ics varchar(100) NOT NULL DEFAULT '',
+	jour_semaine varchar(10) NOT NULL DEFAULT '',
+	num_semaine varchar(10) NOT NULL DEFAULT '',
+	annee char(4) NOT NULL DEFAULT '',
+	date_debut DATETIME NOT NULL default '0000-00-00 00:00:00',
+	date_fin DATETIME NOT NULL default '0000-00-00 00:00:00',
+	description TEXT NOT NULL DEFAULT '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'edt_ics_prof' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_ics_prof'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS edt_ics_prof (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	login_prof varchar(100) NOT NULL DEFAULT '',
+	prof_ics varchar(200) NOT NULL DEFAULT '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'edt_ics_matiere' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_ics_matiere'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS edt_ics_matiere (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	matiere varchar(100) NOT NULL DEFAULT '',
+	matiere_ics varchar(100) NOT NULL DEFAULT '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
 ?>

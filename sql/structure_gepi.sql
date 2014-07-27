@@ -998,3 +998,45 @@ valeur VARCHAR( 255 ) NOT NULL,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS gc_noms_affichages;
+CREATE TABLE IF NOT EXISTS gc_noms_affichages (
+id int(11) unsigned NOT NULL auto_increment,
+id_aff int(11) NOT NULL,
+nom varchar(100) NOT NULL,
+description tinytext NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_ics;
+CREATE TABLE IF NOT EXISTS edt_ics (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_classe INT(11) NOT NULL,
+classe_ics varchar(100) NOT NULL DEFAULT '',
+prof_ics varchar(200) NOT NULL DEFAULT '',
+matiere_ics varchar(100) NOT NULL DEFAULT '',
+salle_ics varchar(100) NOT NULL DEFAULT '',
+jour_semaine varchar(10) NOT NULL DEFAULT '',
+num_semaine varchar(10) NOT NULL DEFAULT '',
+annee char(4) NOT NULL DEFAULT '',
+date_debut DATETIME NOT NULL default '0000-00-00 00:00:00',
+date_fin DATETIME NOT NULL default '0000-00-00 00:00:00',
+description TEXT NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_ics_prof;
+CREATE TABLE IF NOT EXISTS edt_ics_prof (
+id int(11) NOT NULL AUTO_INCREMENT,
+login_prof varchar(100) NOT NULL DEFAULT '',
+prof_ics varchar(200) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_ics_matiere;
+CREATE TABLE IF NOT EXISTS edt_ics_matiere (
+id int(11) NOT NULL AUTO_INCREMENT,
+matiere varchar(100) NOT NULL DEFAULT '',
+matiere_ics varchar(100) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

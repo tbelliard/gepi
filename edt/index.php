@@ -1,6 +1,12 @@
 <?php
 @set_time_limit(0);
 
+/*
+if((isset($_POST['deposer_message']))&&
+(isset($_POST['message']))) {
+	$traite_anti_inject = 'no';
+}
+*/
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -14,7 +20,6 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-// Pour le moment, seul l'admin a accès:
 $sql="SELECT 1=1 FROM droits WHERE id='/edt/index.php';";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
@@ -27,7 +32,7 @@ eleve='V',
 responsable='V',
 secours='F',
 autre='F',
-description='EDT ICS : Index',
+description='EDT ICAL : Index',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
@@ -77,17 +82,29 @@ PRIMARY KEY (id)
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
 require("edt_ics_lib.php");
+/*
+if((isset($_POST['deposer_message']))&&(acces_depos_message())) {
+	check_token();
+	$traite_anti_inject = 'no';
+}
+*/
+//debug_var();
+
+if((($_SESSION['statut']=="professeur")&&(!getSettingAOui('EdtIcalProf')))||
+(($_SESSION['statut']=="eleve")&&(!getSettingAOui('EdtIcalEleve')))||
+(($_SESSION['statut']=="responsable")&&(!getSettingAOui('EdtIcalResponsable')))) {
+	header("Location: ../accueil.php?msg=Accès non autorisé.");
+	die();
+}
 
 //================================================================
 // Rapprochements
 if((isset($_POST['rapprochements']))&&
 (
 	($_SESSION['statut']=="administrateur")||
-	(getSettingAOui("accesUploadIcsEdt".$_SESSION['statut']))
+	(getSettingAOui("EdtIcalUpload".casse_mot($_SESSION['statut'],"majf")))
 )) {
 	check_token();
-
-	//debug_var();
 
 	$prof_ics=isset($_POST['prof_ics']) ? $_POST['prof_ics'] : array();
 	$prof_gepi=isset($_POST['prof_gepi']) ? $_POST['prof_gepi'] : array();
@@ -213,25 +230,39 @@ elseif($_SESSION['statut']=="responsable") {
 		}
 	}
 }
+
+if(($_SESSION['statut']=="professeur")&&(!getSettingAOui('EdtIcalProfTous'))&&(isset($mode))&&(($mode=="afficher_edt")||($mode=="afficher_edt_js"))) {
+	if($id_classe!="") {
+		$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			// Loguer les tentatives d'accès à un autre EDT?
+			$sql="SELECT id_classe FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.login='".$_SESSION['login']."' AND jgp.id_groupe=jgc.id_groupe;";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$msg="Accès non autorisé.<br />Aucune classe ne vous est associée.<br />";
+				unset($mode);
+			}
+			else {
+				$msg="Accès non autorisé.<br />Voici une classe qui vous est associée.<br />";
+				$lig=mysqli_fetch_object($test);
+				$id_classe=$lig->id_classe;
+			}
+		}
+	}
+	elseif($login_prof!="") {
+		// Loguer les tentatives d'accès à un autre EDT?
+		$login_prof=$_SESSION['login'];
+	}
+	else {
+		// Afficher l'EDT sans choix fait?
+		unset($mode);
+	}
+}
+
 //================================================================
 // Affichage de l'EDT en infobulle
 if((isset($_GET['mode']))&&($_GET['mode']=="afficher_edt_js")) {
-
-	/*
-	$type_edt=isset($_GET['type_edt']) ? $_GET['type_edt'] : NULL;
-	$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : "";
-	$login_prof=isset($_GET['login_prof']) ? $_GET['login_prof'] : "";
-	$num_semaine_annee=isset($_GET['num_semaine_annee']) ? $_GET['num_semaine_annee'] : NULL;
-	*/
-
-	// A FAIRE : Contrôler les droits d'accès
-
-
-
-
-
-
-
 
 	if((!isset($type_edt))||(!in_array($type_edt, array('classe', 'prof')))) {
 		echo "<p style='color:red'>Type d'EDT non choisi.</p>";
@@ -273,8 +304,17 @@ if((isset($_GET['mode']))&&($_GET['mode']=="afficher_edt_js")) {
 	die();
 }
 
+//include("../ckeditor/ckeditor.php") ;
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //**************** EN-TETE *****************
-$titre_page = "EDT";
+if($mode!="afficher_edt") {
+	$titre_page = "EDT";
+}
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -287,12 +327,23 @@ if(!isset($mode)) {
 		$tab_classe[$lig->id]=$lig->classe;
 	}
 
-	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+	$display_date_debut=strftime("%d/%m/%Y");
+	$display_date_fin=strftime("%d/%m/%Y");
+	//$contenu="___CLASSE___ : <a href='$gepiPath/edt/index.php?mode=afficher_edt&type_edt=classe&id_classe=___ID_CLASSE___&num_semaine=___NUM_SEMAINE___'>Emploi du temps modifié</a> pour la semaine n°___NUM_SEMAINE___";
+	$contenu="<p>___CLASSE___ : ___LIEN_EMPLOI_DU_TEMPS___ modifi&eacute; pour la semaine n°___NUM_SEMAINE___</p>";
+
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	if($_SESSION['statut']=='administrateur') {
+		echo " | <a href='./index_admin.php'>Administrer le module</a>";
+	}
+	echo "</p>
 
 <h2 class='gepi'>EDT d'après un fichier ICAL/ICS</h2>";
 
 	if(($_SESSION['statut']=="administrateur")||
-	(getSettingAOui("accesUploadIcsEdt".$_SESSION['statut']))) {
+	(getSettingAOui("EdtIcalUpload".casse_mot($_SESSION['statut'],"majf")))) {
+		include("../ckeditor/ckeditor.php") ;
+
 		echo "
 <h3 class='gepi'>Envoi de fichiers emploi du temps au format ICAL/ICS</h3>
 <div style='margin-left:3em;'>
@@ -316,16 +367,91 @@ if(!isset($mode)) {
 		}
 		echo "
 		</select><br />
-		<input type=\"file\" size=\"65\" name=\"fich_ics_file\" id='input_ics_file' class='fieldset_opacite50' /><br />
+		<input type=\"file\" size=\"65\" name=\"fich_ics_file\" id='input_ics_file' class='fieldset_opacite50' />
 		<input type='hidden' name='mode' value='upload' />
 		<input type='hidden' name='is_posted' value='yes' />
-		<p><input type='submit' id='input_submit' value='Valider' />
-		<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+		<input type='submit' id='input_submit2' value='Valider' />
+		<input type='button' id='input_button2' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>";
+
+		if(acces_depos_message()) {
+			echo "
+
+		<br />
+
+		<p><input type='checkbox' name='deposer_message' id='deposer_message' value='y' onchange=\"checkbox_change('deposer_message'); change_affichage_details_message();\" /><label for='deposer_message' id='texte_deposer_message'> Déposer un message en page d'accueil à destination des utilisateurs suivants
+		<span id='span_nbsp_destinataires'>&nbsp;:</span>
+		<span id='span_nbsp_destinataires_bis' style='display:none;'>...</span>
+		</label></p>
+		<div id='div_details_message'>
+			<ul>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_administrateur' value='administrateur' onchange=\"checkbox_change('destinataire_administrateur')\" /><label for='destinataire_administrateur' id='texte_destinataire_administrateur'> administrateurs</label></li>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_scolarite' value='scolarite' onchange=\"checkbox_change('destinataire_administrateur')\" /><label for='destinataire_scolarite' id='texte_destinataire_scolarite'> comptes scolarité suivant cette classe</label></li>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_cpe' value='cpe' onchange=\"checkbox_change('destinataire_cpe')\" /><label for='destinataire_cpe' id='texte_destinataire_cpe'> cpe</label></li>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_professeur' value='professeur' onchange=\"checkbox_change('destinataire_professeur')\" /><label for='destinataire_professeur' id='texte_destinataire_professeur'> professeurs de la classe</label></li>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_eleve' value='eleve' onchange=\"checkbox_change('destinataire_eleve')\" /><label for='destinataire_eleve' id='texte_destinataire_eleve'> élèves de la classe</label></li>
+				<li><input type='checkbox' name='destinataire[]' id='destinataire_responsable' value='responsable' onchange=\"checkbox_change('destinataire_responsable')\" /><label for='destinataire_responsable' id='texte_destinataire_responsable'> parents d'élèves de la classe</label></li>
+			</ul>
+
+			<p>Le message sera visible du <input type='text' name = 'display_date_debut' id= 'display_date_debut' size='10' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier les dates à l'aide des flèches Haut/bas du clavier.\" />".img_calendrier_js("display_date_debut", "img_bouton_display_date_debut")." au <input type='text' name = 'display_date_fin' id= 'display_date_fin' size='10' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier les dates à l'aide des flèches Haut/bas du clavier.\" />".img_calendrier_js("display_date_fin", "img_bouton_display_date_fin").".</p>
+
+			<p><i title=\"La suppression du message ne supprimera pas l'emploi du temps.
+La suppression permet seulement à l'utilisateur d'alléger
+sa page d'accueil une fois le message lu.\">Le destinataire peut supprimer ce message&nbsp;:&nbsp;</i>
+			<label for='suppression_possible_oui'>Oui </label><input type='radio' name='suppression_possible' id='suppression_possible_oui' value='oui' checked='checked' />
+			<label for='suppression_possible_non'>Non </label><input type='radio' name='suppression_possible' id='suppression_possible_non' value='non' /><br />
+			La suppression de ces messages EDT est toujours possible pour les comptes administrateur, scolarite et cpe.</p>";
+
+			$oCKeditor = new CKeditor('../ckeditor/');
+			$oCKeditor->editor('message',$contenu) ;
+
+			echo "
+			<p>Dans le cas où vous déposez un message, vous pouvez, en précisant le numéro de semaine ci-dessous, faire pointer le lien EDT du message directement sur la semaine souhaitée&nbsp;: 
+				<select name='num_semaine_annee'>
+					<option value=''></option>";
+
+			if(strftime("%m")>=8) {
+				$annee=strftime("%Y");
+			}
+			else {
+				$annee=strftime("%Y")-1;
+			}
+			for($n=36;$n<52;$n++) {
+				$tmp_tab=get_days_from_week_number($n ,$annee);
+				echo "
+					<option value='$n|$annee'>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+			}
+			$annee++;
+			for($n=1;$n<28;$n++) {
+				$m=(($n<10) ? "0".$n : $n);
+				$tmp_tab=get_days_from_week_number($m ,$annee);
+				echo "
+					<option value='".$m."|$annee'>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+			}
+
+			echo "
+				</select><br />
+				Le numéro de semaine choisi ci-dessus n'empêchera pas l'import de l'ensemble du fichier ICS fourni.
+			</p>
+
+			<p><input type='submit' id='input_submit' value='Valider' />
+			<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" /></p>
+
+		</div>";
+		}
+		echo "
+
 	</fieldset>
 
 	<script type='text/javascript'>
 		document.getElementById('input_submit').style.display='none';
 		document.getElementById('input_button').style.display='';
+		document.getElementById('input_submit2').style.display='none';
+		document.getElementById('input_button2').style.display='';
+
+		document.getElementById('span_nbsp_destinataires').style.display='none';
+		document.getElementById('span_nbsp_destinataires_bis').style.display='';
+		document.getElementById('div_details_message').style.display='none';
 
 		function check_champ_file() {
 			fichier=document.getElementById('input_ics_file').value;
@@ -337,21 +463,48 @@ if(!isset($mode)) {
 				document.getElementById('form_envoi').submit();
 			}
 		}
+
+		function change_affichage_details_message() {
+			if(document.getElementById('deposer_message').checked==true) {
+				document.getElementById('span_nbsp_destinataires').style.display='';
+				document.getElementById('span_nbsp_destinataires_bis').style.display='none';
+				document.getElementById('div_details_message').style.display='';
+			}
+			else {
+				document.getElementById('span_nbsp_destinataires').style.display='none';
+				document.getElementById('span_nbsp_destinataires_bis').style.display='';
+				document.getElementById('div_details_message').style.display='none';
+			}
+		}
+
+		".js_checkbox_change_style("checkbox_change","texte_","n",0.5)."
+
+		checkbox_change('destinataire_administrateur');
+		checkbox_change('destinataire_scolarite');
+		checkbox_change('destinataire_cpe');
+		checkbox_change('destinataire_professeur');
+		checkbox_change('destinataire_eleve');
+		checkbox_change('destinataire_responsable');
 	</script>
 </form>
 
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Pour le moment, il faut renommer le fichier à envoyer avec l'extension TXT.<br />
-L'extension ICS ne fait en effet pas actuellement partie des extensions autorisées pour les fichiers uploadés dans Gepi.<br />
-A voir: faut-il vider tout ce qui concerne la classe dont on importe l'ICS?<br />
-Est-ce qu'EDT propose des exports pour telle semaine seulement?</p>
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Certaines chaines du message (<em>si vous en déposez un</em>) seront traitées de la façon suivante&nbsp;:<br />
+___CLASSE___ sera remplacé par le nom de la classe choisie dans le champ SELECT en haut du formulaire.<br />
+___LIEN_EMPLOI_DU_TEMPS___ sera remplacé par un lien vers l'emploi du temps avec les paramètres appropriés.<br />
+___ID_CLASSE___ sera remplacé par l'identifiant de la classe choisie (<em>le lien pointera vers l'EDT de cette classe</em>).<br />
+___NUM_SEMAINE___ sera remplacé par le numéro de la semaine pour que le lien pointe directement sur l'emploi du temps de la semaine souhaitée.</p>
 
 <pre style='color:red'>A FAIRE :
 - Gérer des droits: consultation, upload,... selon les statuts.
 - Problème ACCPE: Cas de 2CO: 11 cours sur un créneau,
   c'est illisible.
+- Vérifier le bon fonctionnement du rapprochement pour un prof avec apostrophe dans son nom.
 - Pouvoir générer un EDT de salle,
   un EDT de matière (?) probablement difficile à lire sur un gros établissement
-</pre>
+- Pouvoir choisir la taille de l'EDT? 800 (1h=60px), 1024 (1h=90px?)
+- Pouvoir passer en paramètre les valeurs de x0 et y0,
+  et mettre un JS pour décaler?
+- Réduire la largeur du ckeditor</pre>
 
 </div>";
 
@@ -364,7 +517,51 @@ Est-ce qu'EDT propose des exports pour telle semaine seulement?</p>
 	//=================================================
 	// Formulaire d'affichage de l'EDT pour les classes avec EDT renseigné
 
-	$sql="SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, edt_ics ei WHERE c.id=p.id_classe AND ei.id_classe=p.id_classe ORDER BY classe";
+	if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+	(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProfTous')))) {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, edt_ics ei WHERE c.id=p.id_classe AND ei.id_classe=p.id_classe ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+									periodes p, 
+									edt_ics ei, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp 
+								WHERE c.id=p.id_classe AND 
+									ei.id_classe=p.id_classe AND 
+									jgc.id_classe=p.id_classe AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."'
+								ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+									periodes p, 
+									edt_ics ei, 
+									j_eleves_classes jec 
+								WHERE c.id=p.id_classe AND 
+									ei.id_classe=p.id_classe AND 
+									jec.id_classe=p.id_classe AND 
+									jec.login='".$_SESSION['login']."'
+								ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='responsable') {
+		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+									periodes p, 
+									edt_ics ei, 
+									j_eleves_classes jec, 
+									eleves e, 
+									responsables2 r,
+									resp_pers rp
+								WHERE c.id=p.id_classe AND 
+									ei.id_classe=p.id_classe AND 
+									jec.id_classe=p.id_classe AND 
+									jec.login=e.login AND 
+									e.ele_id=r.ele_id AND 
+									r.pers_id=rp.pers_id AND 
+									rp.login='".$_SESSION['login']."'
+								ORDER BY classe";
+	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
@@ -420,49 +617,57 @@ Est-ce qu'EDT propose des exports pour telle semaine seulement?</p>
 	echo "<br />";
 
 	// Formulaire d'affichage de l'EDT pour les profs avec EDT renseigné
+	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe', 'professeur'))) {
 
-	$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login ORDER BY u.nom, u.prenom;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
-		echo "
+		if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProfTous')))) {
+			$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login ORDER BY u.nom, u.prenom;";
+		}
+		elseif($_SESSION['statut']=='professeur') {
+			$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login AND u.login='".$_SESSION['login']."' ORDER BY u.nom, u.prenom;";
+		}
+	
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo "
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_choix_prof' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 
 		<p>Afficher l'EDT de 
 			<select name='login_prof'>";
-		while($lig=mysqli_fetch_object($res)) {
-			$selected="";
-			if((isset($_SESSION['edt_ics_login_prof']))&&($_SESSION['edt_ics_login_prof']==$lig->login)) {
-				$selected=" selected='selected'";
-			}
-
-			echo "
-				<option value='".$lig->login."'$selected>".casse_mot($lig->civilite, "majf")." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>";
-		}
-		echo "
-			</select> 
-			en semaine 
-			<select name='num_semaine_annee'>";
-		$sql="SELECT DISTINCT num_semaine, annee FROM edt_ics WHERE num_semaine!='' ORDER BY date_debut;";
-		$res=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_object($res)) {
-				$jours=get_days_from_week_number($lig->num_semaine, $lig->annee);
-
 				$selected="";
-				if((isset($_SESSION['edt_ics_num_semaine']))&&(isset($_SESSION['edt_ics_annee']))&&
-				($_SESSION['edt_ics_num_semaine']==$lig->num_semaine)&&
-				($_SESSION['edt_ics_annee']==$lig->annee)) {
+				if((isset($_SESSION['edt_ics_login_prof']))&&($_SESSION['edt_ics_login_prof']==$lig->login)) {
 					$selected=" selected='selected'";
 				}
 
 				echo "
-					<option value='".$lig->num_semaine."|".$lig->annee."'$selected>semaine ".$lig->num_semaine." (".$jours['num_jour'][1]['jjmmaaaa']." - ".$jours['num_jour'][7]['jjmmaaaa'].")</option>";
+				<option value='".$lig->login."'$selected>".casse_mot($lig->civilite, "majf")." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>";
 			}
-		}
-		echo "
+			echo "
+			</select> 
+			en semaine 
+			<select name='num_semaine_annee'>";
+			$sql="SELECT DISTINCT num_semaine, annee FROM edt_ics WHERE num_semaine!='' ORDER BY date_debut;";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$jours=get_days_from_week_number($lig->num_semaine, $lig->annee);
+
+					$selected="";
+					if((isset($_SESSION['edt_ics_num_semaine']))&&(isset($_SESSION['edt_ics_annee']))&&
+					($_SESSION['edt_ics_num_semaine']==$lig->num_semaine)&&
+					($_SESSION['edt_ics_annee']==$lig->annee)) {
+						$selected=" selected='selected'";
+					}
+
+					echo "
+					<option value='".$lig->num_semaine."|".$lig->annee."'$selected>semaine ".$lig->num_semaine." (".$jours['num_jour'][1]['jjmmaaaa']." - ".$jours['num_jour'][7]['jjmmaaaa'].")</option>";
+				}
+			}
+			echo "
 			</select> 
 			<input type='hidden' name='type_edt' value='prof' />
 			<input type='hidden' name='mode' value='afficher_edt' />
@@ -471,7 +676,7 @@ Est-ce qu'EDT propose des exports pour telle semaine seulement?</p>
 
 	</fieldset>
 </form>";
-
+		}
 	}
 	echo "
 </div>";
@@ -483,13 +688,13 @@ Est-ce qu'EDT propose des exports pour telle semaine seulement?</p>
 elseif(($mode=="upload")&&
 (
 	($_SESSION['statut']=="administrateur")||
-	(getSettingAOui("accesUploadIcsEdt".$_SESSION['statut']))
+	(getSettingAOui("EdtIcalUpload".casse_mot($_SESSION['statut'],"majf")))
 )) {
 	check_token(false);
 
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."'>Importer un autre fichier ICS/ICAL</a></p>
 
-<center><h3 class='gepi'>Test EDT</h3></center>";
+<center><h3 class='gepi'>Import d'un fichier ICAL/ICS d'emploi du temps</h3></center>";
 
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
@@ -502,6 +707,8 @@ elseif(($mode=="upload")&&
 	$memory_limit=ini_get('memory_limit');
 
 	$ics_file = isset($_FILES["fich_ics_file"]) ? $_FILES["fich_ics_file"] : NULL;
+
+	echo "<p class='bold'>Traitement du fichier ICAL/ICS&nbsp;:</p>";
 
 	if(!is_uploaded_file($ics_file['tmp_name'])) {
 		echo "<p style='color:red;'>L'upload du fichier a échoué.</p>\n";
@@ -531,7 +738,7 @@ elseif(($mode=="upload")&&
 			die();
 		}
 
-		echo "<p>Le fichier a été uploadé.</p>\n";
+		echo "<p>Le fichier ".$ics_file['name']." a été uploadé.</p>\n";
 
 		$source_file=$ics_file['tmp_name'];
 		$dest_file="../temp/".$tempdir."/fichier.ics";
@@ -565,17 +772,6 @@ elseif(($mode=="upload")&&
 
 		// Ce décalage n'est valable que sur une partie de l'année... on extrait autrement le décalage.
 		$decalage_horaire=2*3600;
-
-		function get_dernier_dimanche_du_mois($mois, $annee) {
-			// Fonction utilisée pour les mois de mars et octobre (31 jours)
-			for($i=31;$i>1;$i--) {
-				$ts=mktime(0, 0, 0, $mois , $i, $annee);
-				if(strftime("%u", $ts)==7) {
-					break;
-				}
-			}
-			return $i;
-		}
 
 		$nb_reg=0;
 		$ical2 = new ICal($dest_file);
@@ -642,16 +838,16 @@ elseif(($mode=="upload")&&
 				$salle_ics="";
 				for($loop=0;$loop<count($tab);$loop++) {
 					if(preg_match("/^ *Matière : /", $tab[$loop])) {
-						$matiere_ics=preg_replace("/^ *Matière : /", "", $tab[$loop]);
+						$matiere_ics=trim(preg_replace("/^ *Matière : /", "", $tab[$loop]));
 					}
 					elseif(preg_match("/^ *Professeur : /", $tab[$loop])) {
-						$prof_ics=preg_replace("/^ *Professeur : /", "", $tab[$loop]);
+						$prof_ics=trim(preg_replace("/^ *Professeur : /", "", $tab[$loop]));
 					}
 					elseif(preg_match("/^ *Classe : /", $tab[$loop])) {
-						$classe_ics=preg_replace("/^ *Classe : /", "", $tab[$loop]);
+						$classe_ics=trim(preg_replace("/^ *Classe : /", "", $tab[$loop]));
 					}
 					elseif(preg_match("/^ *Salle : /", $tab[$loop])) {
-						$salle_ics=preg_replace("/^ *Salle : /", "", $tab[$loop]);
+						$salle_ics=trim(preg_replace("/^ *Salle : /", "", $tab[$loop]));
 					}
 				}
 
@@ -691,7 +887,248 @@ elseif(($mode=="upload")&&
 
 		echo "<p>$nb_reg enregistrement(s) effectué(s).</p>";
 
-		echo "<p class='bold'>Rapprochements&nbsp;:</p>
+		//===============================================================
+		// Enregistrement du message associé s'il y en a un
+		//debug_var();
+
+		if(($nb_reg>0)&&
+		(acces_depos_message())&&
+		(isset($_POST['deposer_message']))&&
+		(isset($_POST['message']))&&
+		($_POST['message']!="")&&
+		(isset($_POST['num_semaine_annee']))&&
+		(isset($_POST['destinataire']))) {
+			$destinataire=$_POST['destinataire'];
+			$suppression_possible=$_POST['suppression_possible'];
+			$date_debut=$_POST['display_date_debut'];
+			$date_fin=$_POST['display_date_fin'];
+			$date_decompte=$date_fin;
+
+			echo "<br /><p class='bold'>Traitement du message&nbsp;:</p>";
+
+			$record="yes";
+			if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $date_debut)) {
+				$anneed = mb_substr($date_debut,6,4);
+				$moisd = mb_substr($date_debut,3,2);
+				$jourd = mb_substr($date_debut,0,2);
+				while ((!checkdate($moisd, $jourd, $anneed)) and ($jourd > 0)){$jourd--;}
+				$date_debut=mktime(0,0,0,$moisd,$jourd,$anneed);
+			} else {
+				echo "<span style='color:red'>ATTENTION : La date de début d'affichage n'est pas valide.<br />(message non enregitré)</span><br />";
+				$record = 'no';
+			}
+
+			if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $date_fin)) {
+				$anneef = mb_substr($date_fin,6,4);
+				$moisf = mb_substr($date_fin,3,2);
+				$jourf = mb_substr($date_fin,0,2);
+				while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)){$jourf--;}
+				$date_fin=mktime(23,59,0,$moisf,$jourf,$anneef);
+			} else {
+				echo "<span style='color:red'>ATTENTION : La date de fin d'affichage n'est pas valide.<br />(message non enregitré)</span><br />";
+				$record = 'no';
+			}
+
+			if($record!='no') {
+				//$contenu_cor = trim(traitement_magic_quotes(corriger_caracteres($_POST['message'])));
+				//$contenu_cor = trim($_POST['message']);
+				//$contenu_cor = nl2br(trim($_POST['message']));
+				//$contenu_cor=preg_replace("/<p>\n /", "", $contenu_cor);
+				// Il reste encore des \\n que je n'arrive pas à virer.
+
+				$contenu_cor = trim(preg_replace('/(\\\n)*/',"",$_POST['message']));
+
+
+				//echo "\$num_semaine_annee=$num_semaine_annee<br />";
+				$num_semaine_annee=$_POST['num_semaine_annee'];
+				if($num_semaine_annee!="") {
+					if(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee)) {
+						$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
+					}
+
+					$tab=explode("|", $num_semaine_annee);
+
+					$num_semaine=$tab[0];
+					$annee=$tab[1];
+
+					if(($num_semaine<10)&&(mb_substr($num_semaine, 0, 1)!="0")) {
+						$num_semaine="0".$num_semaine;
+					}
+
+					$num_semaine_annee=$num_semaine."|".$annee;
+				}
+				//echo "\$num_semaine_annee=$num_semaine_annee<br />";
+
+				$classe=get_nom_classe($id_classe);
+				$contenu_cor=preg_replace("/___ID_CLASSE___/", $id_classe, $contenu_cor);
+				$contenu_cor=preg_replace("/___CLASSE___/", $classe, $contenu_cor);
+				$contenu_cor=preg_replace("/___NUM_SEMAINE___/", $num_semaine, $contenu_cor);
+
+				//$contenu_cor=preg_replace("/.*$classe/", "<p>$classe", $contenu_cor);
+				// Cela fonctionne pour les \\n au début du message, mais cela nécessite qu'il y ait $classe au début du message, et cela ne règle pas le problème du \\n en fin de message.
+
+				$contenu_cor=preg_replace("/___LIEN_EMPLOI_DU_TEMPS___/", "<a href='$gepiPath/edt/index.php?mode=afficher_edt&type_edt=classe&id_classe=$id_classe&num_semaine_annee=".$num_semaine_annee."'>Emploi du temps</a>", $contenu_cor);
+
+				// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CRSF_ALEA_
+				$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
+				if($pos_crsf_alea!==false) {
+					$contenu_cor=preg_replace("/_CRSF_ALEA_/","",$contenu_cor);
+					echo "<p style='color:red'>Le message proposé contenait une chaine interdite.<br />Il n'a pas été enregistré.</p>";
+				}
+				else {
+
+					// A VOIR : Faudrait-il effectuer un traitement HTMLpurifier sur $contenu_cor après les remplacements?
+
+					$contenu_cor=mysqli_real_escape_string($GLOBALS["mysqli"], $contenu_cor);
+
+					function ajout_bouton_supprimer_message($contenu_cor,$id_message)
+					{
+						$contenu_cor='
+						<form method="POST" action="accueil.php" name="f_suppression_message">
+						<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+						<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+						</form>'.$contenu_cor;
+						$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
+						return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+					}
+
+					function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire)
+					{
+						global $suppression_possible;
+
+						$r_sql = "INSERT INTO messages
+						SET texte = '".$contenu_cor."',
+						date_debut = '".$date_debut."',
+						date_fin = '".$date_fin."',
+						date_decompte = '".$date_decompte."',
+						auteur='".$_SESSION['login']."',
+						statuts_destinataires = '".$statuts_destinataires."',
+						login_destinataire='".$login_destinataire."'";
+						//echo "$r_sql<br />";
+						$retour=mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+						if ($retour)
+						{
+							$id_message=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+
+							if ($suppression_possible=="oui" &&  $statuts_destinataires=="_") {
+								$retour=ajout_bouton_supprimer_message($contenu_cor,$id_message);
+							}
+						}
+						return $retour;
+					}
+
+					$cpt_dest=0;
+					$statuts_destinataires="_";
+					$t_login_destinataires=array();
+
+					if(in_array('professeur', $destinataire)) {
+						// les profs de la classe
+						$r_sql="SELECT DISTINCT utilisateurs.login FROM j_groupes_classes,groupes,j_groupes_professeurs,utilisateurs WHERE j_groupes_classes.id_classe='".$id_classe."' AND j_groupes_classes.id_groupe=groupes.id AND groupes.id=j_groupes_professeurs.id_groupe AND j_groupes_professeurs.login=utilisateurs.login";
+						$R_professeurs=mysqli_query($GLOBALS["mysqli"], $r_sql);
+						while ($un_professeur=mysqli_fetch_assoc($R_professeurs)) {
+							if(!in_array($un_professeur['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_professeur['login'];
+							}
+						}
+					}
+
+					if(in_array('professeur', $destinataire)) {
+						// les élèves de la classe
+						$r_sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, 
+												utilisateurs u 
+											WHERE jec.id_classe='".$id_classe."' AND 
+											jec.login=u.login";
+						$R_eleves=mysqli_query($GLOBALS["mysqli"], $r_sql);
+						while ($un_eleve=mysqli_fetch_assoc($R_eleves)) {
+							if(!in_array($un_eleve['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_eleve['login'];
+							}
+						}
+					}
+
+					if(in_array('professeur', $destinataire)) {
+						// les responsables élèves de la classe
+						$r_sql="SELECT DISTINCT u.login FROM j_eleves_classes jec, 
+												eleves e,
+												responsables2 r,
+												resp_pers rp,
+												utilisateurs u 
+											WHERE jec.id_classe='".$id_classe."' AND 
+											jec.login=e.login AND
+											e.ele_id=r.ele_id AND
+											r.pers_id=rp.pers_id AND
+											rp.login=u.login";
+						$R_parents=mysqli_query($GLOBALS["mysqli"], $r_sql);
+						while ($un_parent=mysqli_fetch_assoc($R_parents)) {
+							if(!in_array($un_parent['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_parent['login'];
+							}
+						}
+					}
+
+					foreach($t_login_destinataires as $login_destinataire) {
+						if(!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire)) {
+							echo "<span style='color:red'>Erreur lors de l'enregistrement du message à destination de ".civ_nom_prenom($login_destinataire)."</span><br />";
+						}
+						else {
+							$cpt_dest++;
+						}
+					}
+
+					$suppression_possible="oui";
+					$t_login_destinataires=array();
+					if(in_array('administrateur', $destinataire)) {
+						// les comptes administrateur
+						$r_sql="SELECT DISTINCT utilisateurs.login FROM utilisateurs WHERE statut='administrateur' AND etat='actif';";
+						$R_user=mysqli_query($GLOBALS["mysqli"], $r_sql);
+						while ($un_user=mysqli_fetch_assoc($R_user)) {
+							if(!in_array($un_user['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_user['login'];
+							}
+						}
+					}
+
+					if(in_array('scolarite', $destinataire)) {
+						// les comptes scolarité de la classe
+						$r_sql="SELECT DISTINCT u.login FROM j_scol_classes jsc, utilisateurs u WHERE jsc.login=u.login AND jsc.id_classe='$id_classe';";
+						while ($un_user=mysqli_fetch_assoc($R_user)) {
+							if(!in_array($un_user['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_user['login'];
+							}
+						}
+					}
+
+					if(in_array('cpe', $destinataire)) {
+						// les comptes cpe de la classe
+						$r_sql="SELECT DISTINCT u.login FROM j_eleves_cpe jecpe, j_eleves_classes jec, utilisateurs u WHERE jecpe.cpe_login=u.login AND jecpe.e_login=jec.login AND jec.id_classe='$id_classe';";
+						while ($un_user=mysqli_fetch_assoc($R_user)) {
+							if(!in_array($un_user['login'], $t_login_destinataires)) {
+								$t_login_destinataires[]=$un_user['login'];
+							}
+						}
+					}
+
+					foreach($t_login_destinataires as $login_destinataire) {
+						if(!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire)) {
+							echo "<span style='color:red'>Erreur lors de l'enregistrement du message à destination de ".civ_nom_prenom($login_destinataire)."</span><br />";
+						}
+						else {
+							$cpt_dest++;
+						}
+					}
+
+					if($cpt_dest>0) {
+						echo "<p>Message enregistré pour $cpt_dest destinataire(s).</p>";
+					}
+				}
+			}
+		}
+		//===============================================================
+
+		// Rapprochements profs et matières
+		echo "<br />
+
+<p class='bold'>Rapprochements&nbsp;:</p>
 
 <p>Pour obtenir un EDT plus lisible, ne pas afficher les prénoms des professeur,... il est recommandé de procéder aux rapprochements ci-dessous (<em>rapprochements entre le contenu du fichier ICAL/ICS et les matières et professeurs déclarés dans Gepi</em>).<br />
 Les rapprochements sont également utilisés dans les champs de sélection des professeurs dont ont souhaite afficher l'EDT.</p>
@@ -700,7 +1137,7 @@ Les rapprochements sont également utilisés dans les champs de sélection des p
 	<fieldset class='fieldset_opacite50'>
 	".add_token_field();
 
-		$sql="SELECT DISTINCT prof_ics FROM edt_ics WHERE prof_ics NOT IN (SELECT prof_ics FROM edt_ics_prof);";
+		$sql="SELECT DISTINCT prof_ics FROM edt_ics WHERE prof_ics!='' AND prof_ics NOT IN (SELECT prof_ics FROM edt_ics_prof);";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -718,8 +1155,8 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				die();
 			}
 
-			//$tab_prof=array();
-			//$cpt=0;
+			$tab_prof=array();
+			$cpt=0;
 			$lignes_profs="";
 			while($lig_prof=mysqli_fetch_object($res_prof)) {
 				$lignes_profs.="<option value='".$lig_prof->login."'";
@@ -728,8 +1165,10 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				}
 				$lignes_profs.=">".$lig_prof->civilite." ".$lig_prof->nom." ".$lig_prof->prenom."</option>";
 
-				//$tab_prof[$cpt]="";
-				//$cpt++;
+				$tab_prof[$cpt]['login']=$lig_prof->login;
+				$tab_prof[$cpt]['designation']=$lig_prof->civilite." ".casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
+				$tab_prof[$cpt]['etat']=$lig_prof->etat;
+				$cpt++;
 			}
 
 			echo "<table class='boireaus boireaus_alt'>";
@@ -743,8 +1182,24 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 		</td>
 		<td>
 			<select name='prof_gepi[".$cpt."]'>
-				<option value=''>---</option>
-				".$lignes_profs."
+				<option value=''>---</option>";
+				//echo $lignes_profs;
+				for($loop=0;$loop<count($tab_prof);$loop++) {
+					$selected="";
+					$chaine_debug="";
+					//$chaine_debug=" ".remplace_accents(casse_mot($lig->prof_ics, "maj"),'all')." comparé à ".remplace_accents(casse_mot($tab_prof[$loop]['designation'], "maj"),'all');
+					if(trim(casse_mot($lig->prof_ics, "maj"))==casse_mot($tab_prof[$loop]['designation'], "maj")) {
+						$selected=" selected='selected'";
+					}
+					$style_opt="";
+					if($tab_prof[$loop]['etat']=='inactif') {
+						$style_opt.=" style='color:grey' title=\"Compte utilisateur inactif.\"";
+					}
+
+					echo "
+				<option value='".$tab_prof[$loop]['login']."'".$style_opt.$selected.">".$tab_prof[$loop]['designation'].$chaine_debug."</option>";
+				}
+				echo "
 			</select>
 		</td>
 	</tr>";
@@ -776,8 +1231,8 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				die();
 			}
 
-			//$tab_mat=array();
-			//$cpt=0;
+			$tab_mat=array();
+			$cpt=0;
 			$lignes_mat="";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
 				$lignes_mat.="<option value='".$lig_mat->matiere."'";
@@ -785,8 +1240,11 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				//	$lignes_mat.=" style='color:grey' title=\"Compte utilisateur inactif.\"";
 				$lignes_mat.=">".$lig_mat->nom_complet."</option>";
 
-				//$tab_prof[$cpt]="";
-				//$cpt++;
+				$tab_mat[$cpt]="";
+				$tab_mat[$cpt]['matiere']=$lig_mat->matiere;
+				$tab_mat[$cpt]['nom_complet']=$lig_mat->nom_complet;
+				$tab_mat[$cpt]['designation_supposee_edt_ics']=casse_mot($lig_mat->matiere." ".$lig_mat->nom_complet, 'maj');
+				$cpt++;
 			}
 
 			echo "<table class='boireaus boireaus_alt'>";
@@ -801,7 +1259,19 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 		<td>
 			<select name='matiere_gepi[".$cpt."]'>
 				<option value=''>---</option>
-				".$lignes_mat."
+				";
+				//echo $lignes_mat;
+
+				for($loop=0;$loop<count($tab_mat);$loop++) {
+					$chaine_debug="";
+					$selected=" ";
+					if(trim(casse_mot($lig->matiere_ics, "maj"))==$tab_mat[$loop]['designation_supposee_edt_ics']) {
+						$selected=" selected='selected'";
+					}
+					echo "
+				<option value='".$tab_mat[$loop]['matiere']."'".$selected.">".$tab_mat[$loop]['designation_supposee_edt_ics'].$chaine_debug."</option>";
+				}
+				echo "
 			</select>
 		</td>
 	</tr>";
@@ -992,7 +1462,8 @@ elseif($mode=="afficher_edt") {
 
 	echo "<div style='float:left;width:35em; font-weight:bold'>
 	<form action='".$_SERVER['PHP_SELF']."' id='form_choix_autre_semaine' method='post'>
-		<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link' title=\"Retour au menu EDT\"/> Retour</a>";
+		<!--a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link' title=\"Retour au menu EDT\"/> Retour</a-->
+		<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>";
 
 	if($type_edt=="classe") {
 		$sql="SELECT DISTINCT num_semaine, annee FROM edt_ics WHERE id_classe='$id_classe' ORDER BY date_debut ASC;";
@@ -1029,9 +1500,57 @@ elseif($mode=="afficher_edt") {
 </div>";
 
 	// A REVOIR: FAIRE UNE FONCTION DE TEST SUR CE QUI EST ACCESSIBLE SELON LES STATUTS ET DROITS
+	/*
 	if(($_SESSION['statut']!="eleve")&&($_SESSION['statut']!="responsable")) {
 		// Choisir un EDT de classe:
 		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, edt_ics ei WHERE c.id=p.id_classe AND ei.id_classe=p.id_classe ORDER BY classe";
+	*/
+
+		if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProfTous')))) {
+			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, periodes p, edt_ics ei WHERE c.id=p.id_classe AND ei.id_classe=p.id_classe ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='professeur') {
+			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+										periodes p, 
+										edt_ics ei, 
+										j_groupes_classes jgc, 
+										j_groupes_professeurs jgp 
+									WHERE c.id=p.id_classe AND 
+										ei.id_classe=p.id_classe AND 
+										jgc.id_classe=p.id_classe AND 
+										jgc.id_groupe=jgp.id_groupe AND 
+										jgp.login='".$_SESSION['login']."'
+									ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='eleve') {
+			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+										periodes p, 
+										edt_ics ei, 
+										j_eleves_classes jec 
+									WHERE c.id=p.id_classe AND 
+										ei.id_classe=p.id_classe AND 
+										jec.id_classe=p.id_classe AND 
+										jec.login='".$_SESSION['login']."'
+									ORDER BY classe";
+		}
+		elseif($_SESSION['statut']=='responsable') {
+			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, 
+										periodes p, 
+										edt_ics ei, 
+										j_eleves_classes jec, 
+										eleves e, 
+										responsables2 r,
+										resp_pers rp
+									WHERE c.id=p.id_classe AND 
+										ei.id_classe=p.id_classe AND 
+										jec.id_classe=p.id_classe AND 
+										jec.login=e.login AND 
+										e.ele_id=r.ele_id AND 
+										r.pers_id=rp.pers_id AND 
+										rp.login='".$_SESSION['login']."'
+									ORDER BY classe";
+		}
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -1066,27 +1585,36 @@ elseif($mode=="afficher_edt") {
 		}
 
 		// Choisir un EDT de prof:
-		$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login ORDER BY u.nom, u.prenom;";
-		//echo "$sql<br />";
-		$res=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res)>0) {
-			echo "
+		//$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login ORDER BY u.nom, u.prenom;";
+		if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe', 'professeur'))) {
+
+			if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+			(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProfTous')))) {
+				$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login ORDER BY u.nom, u.prenom;";
+			}
+			elseif($_SESSION['statut']=='professeur') {
+				$sql="SELECT DISTINCT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, edt_ics ei, edt_ics_prof eip WHERE ei.prof_ics=eip.prof_ics AND eip.login_prof=u.login AND u.login='".$_SESSION['login']."' ORDER BY u.nom, u.prenom;";
+			}
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				echo "
 	<div style='float:left;width:10em; font-weight:bold'>
 		<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_choix_prof' method='post'>
 			".add_token_field()."
 
 			 | <select name='login_prof' onchange=\"document.getElementById('form_choix_prof').submit()\" title=\"Afficher l'EDT d'un professeur (même semaine)\" style='width:10em;'>
 				<option value=''>Choix du prof</option>";
-			while($lig=mysqli_fetch_object($res)) {
-				$selected="";
-				if(($type_edt=="prof")&&($login_prof==$lig->login)) {
-					$selected=" selected='selected'";
-				}
+				while($lig=mysqli_fetch_object($res)) {
+					$selected="";
+					if(($type_edt=="prof")&&($login_prof==$lig->login)) {
+						$selected=" selected='selected'";
+					}
 
-				echo "
+					echo "
 				<option value='".$lig->login."'$selected>".casse_mot($lig->civilite, "majf")." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>";
-			}
-			echo "
+				}
+				echo "
 			</select>
 			<input type='hidden' name='num_semaine_annee' value='$num_semaine_annee' />
 			<input type='hidden' name='type_edt' value='prof' />
@@ -1098,14 +1626,20 @@ elseif($mode=="afficher_edt") {
 			</script>
 		</form>
 	</div>";
+			}
 		}
-	}
+	//}
 	// ================================================
 	//    FIN DE LA LIGNE DE CHOIX SOUS L'ENTETE
 	// ================================================
 
 	echo "
 <div style='clear:both'></div>";
+
+	//echo "\$num_semaine_annee=$num_semaine_annee<br />";
+	if(($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
+		$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
+	}
 
 	$tab=explode("|", $num_semaine_annee);
 
@@ -1184,7 +1718,7 @@ elseif($mode=="afficher_edt") {
 		//include("edt_ics_lib.php");
 
 		$x0=200;
-		$y0=300;
+		$y0=200;
 
 		$largeur_edt=800;
 

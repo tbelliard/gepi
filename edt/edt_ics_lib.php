@@ -44,6 +44,17 @@ function get_days_from_week_number($num_semaine ,$annee) {
 	return $tab;
 }
 
+function get_dernier_dimanche_du_mois($mois, $annee) {
+	// Fonction utilisée pour les mois de mars et octobre (31 jours)
+	for($i=31;$i>1;$i--) {
+		$ts=mktime(0, 0, 0, $mois , $i, $annee);
+		if(strftime("%u", $ts)==7) {
+			break;
+		}
+	}
+	return $i;
+}
+
 function get_nom_matiere_gepi_pour_matiere_ics($matiere_ics) {
 	$retour=$matiere_ics;
 
@@ -61,6 +72,7 @@ function get_nom_matiere_gepi_pour_matiere_ics($matiere_ics) {
 function get_tab_matiere_gepi_pour_matiere_ics($matiere_ics) {
 	$retour['matiere']=$matiere_ics;
 	$retour['nom_complet']=$matiere_ics;
+	$retour['association_faite']="n";
 
 	$sql="SELECT m.* FROM matieres m, edt_ics_matiere eim WHERE eim.matiere_ics='$matiere_ics' AND eim.matiere=m.matiere;";
 	//$html.="$sql<br />";
@@ -69,6 +81,7 @@ function get_tab_matiere_gepi_pour_matiere_ics($matiere_ics) {
 		$lig=mysqli_fetch_object($res);
 		$retour['matiere']=$lig->matiere;
 		$retour['nom_complet']=$lig->nom_complet;
+		$retour['association_faite']="y";
 	}
 
 	return $retour;
@@ -162,6 +175,23 @@ function check_pas_de_collision($x1, $y1, $x2, $y2) {
 	}
 
 	return $retour;
+}
+
+function acces_depos_message() {
+	// A REVOIR EN GERANT PLUS FINEMENT LES DROITS (pouvoir uploader un fichier ICAL sans pouvoir déposer de message)
+	// On se contente pour le moment du filtrage préalable EdtIcalUploadScolarite, EdtIcalUploadCpe
+	if($_SESSION['statut']=="administrateur") {
+		return true;
+	}
+	elseif($_SESSION['statut']=="scolarite") {
+		return true;
+	}
+	elseif($_SESSION['statut']=="cpe") {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 //function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_prof="") {
@@ -273,17 +303,23 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 			echo "</pre>";
 		}
 
-
-		//$tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi");
-		$tab_jour=array();
-		$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
-		for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
-			$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."';";
-			$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($test_jour)>0) {
-				$tab_jour[]=$tmp_tab_jour[$loop];
+		// L'exclusion ne fonctionne que si toutes les matières des ICS ont bien été associées à des matières Gepi.
+		// Cette exclusion ne permet pas pour autant de distinguer à quel groupe de telle matière correspond une entrée dans edt_ics
+		$tab_matieres_eleve=array();
+		$tab_id_cours_exclu=array();
+		if($_SESSION['statut']=='eleve') {
+			$sql_matieres_eleve="SELECT DISTINCT jgm.id_matiere FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='".$_SESSION['login']."';";
+			//$html.="$sql_matieres_eleve<br />";
+			$res_matieres_eleve=mysqli_query($GLOBALS["mysqli"], $sql_matieres_eleve);
+			if(mysqli_num_rows($res_matieres_eleve)>0) {
+				while($lig_matieres_eleve=mysqli_fetch_object($res_matieres_eleve)) {
+					$tab_matieres_eleve[]=$lig_matieres_eleve->id_matiere;
+				}
 			}
 		}
+
+		// Récupération de la liste des jours d'ouverture de l'établissement
+		$tab_jour=get_tab_jour_ouverture_etab();
 
 		/*
 		// 60px pour 1h
@@ -421,6 +457,9 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 			}
 		}
 
+		// Pour avoir une marge en bas sous l'EDT:
+		$html.="<div style='position:absolute; top:".($y0+$hauteur_entete+$hauteur_jour+10)."px; left:".$x0."px; height:1em; width:1em;'>&nbsp;</div>";
+
 		$marge_secu=6;
 
 		$tab_cours=array();
@@ -478,6 +517,14 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 			$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['classe']=$tab_nom_classe[$lig->id_classe];
 			$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_debut']=$horaire_debut;
 			$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_fin']=$horaire_fin;
+
+			// Stockage des identifiants de cours que n'ont pas les élèves faute de suivre la matière
+			if(($_SESSION['statut']=='eleve')&&
+			($tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']['association_faite']=="y")&&
+			(!in_array($tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']['matiere'], $tab_matieres_eleve))) {
+				$tab_id_cours_exclu[]=$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_cours'];
+			}
+
 		}
 
 		if($debug_edt=="y") {
@@ -599,7 +646,9 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 								$contenu_courant_ajout.="<br />nb_reel=".$nb;
 							}
 							// Largeur du div de ce cours
-							$largeur_courante=floor($largeur_jour/($nb+1))-2*$marge_secu;
+							//$largeur_courante=floor($largeur_jour/($nb+1))-2*$marge_secu;
+							// On donne au moins 1px de large... par sécurité
+							$largeur_courante=max(floor($largeur_jour/($nb+1))-2*$marge_secu,1);
 
 
 							//$font_size="font-size:x-small;";
@@ -662,15 +711,17 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 						$contenu_courant.=$contenu_courant_ajout;
 
 						// Fond blanc pour masquer les lignes d'heures
-						$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; background-color:white; z-index:18; '></div>";
+						$html.="<div id='div_fond_masque_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; background-color:white; z-index:18; '></div>";
+
 						// Cadre de couleur avec une opacité réglable
 						if(!isset($tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']])) {
 							$tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']]=get_couleur_edt_matiere($tab2[$loop]['matiere']['matiere']);
 						}
 						$couleur_courante=$tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']];
-						$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; background-color:".$couleur_courante."; opacity:$opacity_couleur; z-index:19; text-align:center;".$text_color.$font_size."' title='$title'></div>";
+						$html.="<div id='div_fond_couleur_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; background-color:".$couleur_courante."; opacity:$opacity_couleur; z-index:19; text-align:center;".$text_color.$font_size."' title='$title'></div>";
+
 						// Cadre du contenu de la cellule
-						$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; z-index:20; text-align:center; overflow:hidden; ".$text_color.$font_size."' title='$title'>".$contenu_courant."</div>";
+						$html.="<div id='div_texte_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; z-index:20; text-align:center; overflow:hidden; ".$text_color.$font_size."' title='$title'>".$contenu_courant."</div>";
 					}
 
 				}
@@ -767,7 +818,46 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 
 		}
 
+		if(($_SESSION['statut']=='eleve')&&(count($tab_id_cours_exclu)>0)) {
+			$html.="<div id='div_affichage_masquage' title=\"Afficher/masquer les cours dans les matières
+que vous ne suivez pas.
 
+NOTE: Cela ne permet pas de masquer les groupes
+      ne vous concernant pas dans une matière
+      que vous suivez.\" style='position:absolute; top:".$y0."px; left:".($x0-20)."px; width:16px; display:none;'>
+		<a href='javascript:masquer_cours_matieres_non_suivies()' id='lien_masquer_cours_matieres_non_suivies'><img src='../images/icons/visible.png' class='icone16' /></a>
+		<a href='javascript:afficher_cours_matieres_non_suivies()' id='lien_afficher_cours_matieres_non_suivies'><img src='../images/icons/invisible.png' class='icone16' /></a>
+	</div>
+
+	<script type='text/javascript'>
+		document.getElementById('div_affichage_masquage').style.display='';
+		document.getElementById('lien_afficher_cours_matieres_non_suivies').style.display='none';
+
+		function masquer_cours_matieres_non_suivies() {
+			document.getElementById('lien_afficher_cours_matieres_non_suivies').style.display='';
+			document.getElementById('lien_masquer_cours_matieres_non_suivies').style.display='none';";
+			for($loop=0;$loop<count($tab_id_cours_exclu);$loop++) {
+				$html.="
+			document.getElementById('div_fond_masque_cours_".$tab_id_cours_exclu[$loop]."').style.display='none';
+			document.getElementById('div_fond_couleur_cours_".$tab_id_cours_exclu[$loop]."').style.display='none';
+			document.getElementById('div_texte_cours_".$tab_id_cours_exclu[$loop]."').style.display='none';";
+			}
+			$html.="
+		}
+
+		function afficher_cours_matieres_non_suivies() {
+			document.getElementById('lien_afficher_cours_matieres_non_suivies').style.display='none';
+			document.getElementById('lien_masquer_cours_matieres_non_suivies').style.display='';";
+			for($loop=0;$loop<count($tab_id_cours_exclu);$loop++) {
+				$html.="
+			document.getElementById('div_fond_masque_cours_".$tab_id_cours_exclu[$loop]."').style.display='';
+			document.getElementById('div_fond_couleur_cours_".$tab_id_cours_exclu[$loop]."').style.display='';
+			document.getElementById('div_texte_cours_".$tab_id_cours_exclu[$loop]."').style.display='';";
+			}
+			$html.="
+		}
+	</script>";
+		}
 
 
 		//=================================================================================
