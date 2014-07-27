@@ -983,7 +983,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 
 		<?php
 
-		include("../lib/calendrier/calendrier.class.php");
+		include_once("../lib/calendrier/calendrier.class.php");
 
 		$k = '1';
 		$alt=1;
@@ -1345,7 +1345,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<td id='td_prof_nouvel_enseignement'>\n";
 			echo "<span id='span_prof_nouvel_enseignement'>";
 			// Pour fonctionner sans JavaScript:
-			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs WHERE u.statut='professeur' AND u.etat='actif';";
+			$sql="SELECT u.login, u.nom, u.prenom FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif';";
 			$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_prof)==0) {
 				echo "&nbsp;";
