@@ -8155,7 +8155,9 @@ function prendre_en_compte_js_et_css_edt() {
 	else {
 		$tmp_js=$javascript_specifique;
 		$javascript_specifique=array();
-		$javascript_specifique[]=$tmp_js;
+		if($tmp_js!="") {
+			$javascript_specifique[]=$tmp_js;
+		}
 		$javascript_specifique[]="edt_organisation/script/fonctions_edt";
 	}
 
@@ -8173,7 +8175,9 @@ function prendre_en_compte_js_et_css_edt() {
 	else {
 		$tmp_css=$style_specifique;
 		$style_specifique=array();
-		$style_specifique[]=$tmp_css;
+		if($tmp_css!="") {
+			$style_specifique[]=$tmp_css;
+		}
 
 		$ua = getenv("HTTP_USER_AGENT");
 		if (strstr($ua, "MSIE 6.0")) {
