@@ -159,5 +159,82 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'abs_prof' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'abs_prof'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS abs_prof (
+id int(11) NOT NULL AUTO_INCREMENT,
+login_user varchar(50) NOT NULL,
+date_debut datetime NOT NULL,
+date_fin datetime NOT NULL,
+titre varchar(100) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'abs_prof_remplacement' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'abs_prof_remplacement'");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS abs_prof_remplacement (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_absence INT(11) NOT NULL,
+id_groupe INT(11) NOT NULL,
+id_classe INT(11) NOT NULL,
+jour CHAR(8) NOT NULL,
+id_creneau INT(11) NOT NULL,
+date_debut_r datetime NOT NULL,
+date_fin_r datetime NOT NULL,
+reponse varchar(30) NOT NULL,
+date_reponse datetime NOT NULL,
+login_user varchar(50) NOT NULL,
+commentaire_prof text NOT NULL,
+validation_remplacement varchar(30) NOT NULL,
+commentaire_validation text NOT NULL,
+salle VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'abs_prof_divers' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'abs_prof_divers'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS abs_prof_divers (
+	id INT(11) unsigned NOT NULL auto_increment,
+	name VARCHAR( 255 ) NOT NULL ,
+	value VARCHAR( 255 ) NOT NULL ,
+	PRIMARY KEY ( id )
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>

@@ -8155,7 +8155,9 @@ function prendre_en_compte_js_et_css_edt() {
 	else {
 		$tmp_js=$javascript_specifique;
 		$javascript_specifique=array();
-		$javascript_specifique[]=$tmp_js;
+		if($tmp_js!="") {
+			$javascript_specifique[]=$tmp_js;
+		}
 		$javascript_specifique[]="edt_organisation/script/fonctions_edt";
 	}
 
@@ -8173,7 +8175,9 @@ function prendre_en_compte_js_et_css_edt() {
 	else {
 		$tmp_css=$style_specifique;
 		$style_specifique=array();
-		$style_specifique[]=$tmp_css;
+		if($tmp_css!="") {
+			$style_specifique[]=$tmp_css;
+		}
 
 		$ua = getenv("HTTP_USER_AGENT");
 		if (strstr($ua, "MSIE 6.0")) {
@@ -11486,5 +11490,138 @@ function nombre_de_dossiers_docs_joints_a_des_sanctions() {
 	closedir($handle);
 
 	return $nombre_de_dossiers_de_documents_discipline;
+}
+
+function get_tab_propositions_remplacements($login_user, $mode="") {
+	$tab=array();
+
+	if($login_user=="") {
+		$login_user=$_SESSION['login'];
+	}
+
+	if($mode=="") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' ORDER BY date_debut_r;";
+	}
+	elseif($mode=="en_attente") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND reponse='' ORDER BY date_debut_r;";
+	}
+	elseif($mode=="futures_avec_reponse") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND reponse!='' ORDER BY date_debut_r;";
+	}
+	elseif($mode=="futures_validees") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+	}
+	elseif($mode=="validees_passees") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r<='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+	}
+	elseif($mode=="validees") {
+		$sql="SELECT * FROM abs_prof_remplacement WHERE login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+	}
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$cpt]['id']=$lig->id;
+			$tab[$cpt]['id_absence']=$lig->id_absence;
+			$tab[$cpt]['id_groupe']=$lig->id_groupe;
+			$tab[$cpt]['id_classe']=$lig->id_classe;
+			$tab[$cpt]['jour']=$lig->jour;
+			$tab[$cpt]['id_creneau']=$lig->id_creneau;
+			$tab[$cpt]['date_debut_r']=$lig->date_debut_r;
+			$tab[$cpt]['date_fin_r']=$lig->date_fin_r;
+			$tab[$cpt]['login_user']=$lig->login_user;
+			$tab[$cpt]['commentaire_prof']=$lig->commentaire_prof;
+			$tab[$cpt]['reponse']=$lig->reponse;
+			$tab[$cpt]['date_reponse']=$lig->date_reponse;
+			$tab[$cpt]['validation_remplacement']=$lig->validation_remplacement;
+			$tab[$cpt]['commentaire_validation']=$lig->commentaire_validation;
+			$tab[$cpt]['salle']=$lig->salle;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+function check_proposition_remplacement_validee($id_absence, $id_groupe, $id_classe, $jour, $id_creneau) {
+	$retour="";
+
+	$sql="SELECT * FROM abs_prof_remplacement WHERE id_absence='$id_absence' AND id_groupe='$id_groupe' AND id_classe='$id_classe' AND jour='$jour' AND id_creneau='$id_creneau' AND validation_remplacement='oui';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$retour=civ_nom_prenom($lig->login_user);
+	}
+
+	return $retour;
+}
+
+function check_proposition_remplacement_validee2($id_proposition) {
+	$retour="";
+
+	$sql="SELECT * FROM abs_prof_remplacement WHERE id='$id_proposition' AND validation_remplacement='oui';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+
+		$retour=civ_nom_prenom($lig->login_user);
+	}
+
+	return $retour;
+}
+
+function get_heures_debut_fin_creneaux() {
+	$tab=array();
+
+	$sql="SELECT * FROM edt_creneaux;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab[$lig->id_definie_periode]['nom_creneau']=$lig->nom_definie_periode;
+			$tab[$lig->id_definie_periode]['debut']=$lig->heuredebut_definie_periode;
+			$tab[$lig->id_definie_periode]['fin']=$lig->heurefin_definie_periode;
+			$tab[$lig->id_definie_periode]['debut_court']=substr($lig->heuredebut_definie_periode,0,5);
+			$tab[$lig->id_definie_periode]['fin_court']=substr($lig->heurefin_definie_periode,0,5);
+		}
+	}
+
+	return $tab;
+}
+
+function get_infos_creneau($id_creneau) {
+	$tab=array();
+
+	$sql="SELECT * FROM edt_creneaux WHERE id_definie_periode='$id_creneau';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$tab['nom_creneau']=$lig->nom_definie_periode;
+			$tab['type_creneaux']=$lig->type_creneaux;
+			$tab['debut']=$lig->heuredebut_definie_periode;
+			$tab['fin']=$lig->heurefin_definie_periode;
+			$tab['debut_court']=substr($lig->heuredebut_definie_periode,0,5);
+			$tab['fin_court']=substr($lig->heurefin_definie_periode,0,5);
+			$tab['info']=$lig->nom_definie_periode." (".$tab['debut_court']." - ".$tab['fin_court'].")";
+			$tab['info_html']=$lig->nom_definie_periode." (<em>".$tab['debut_court']." - ".$tab['fin_court']."</em>)";
+		}
+	}
+
+	return $tab;
+}
+
+function get_tab_profs_exclus_des_propositions_de_remplacement() {
+	$tab=array();
+
+	$sql="SELECT value FROM abs_prof_divers WHERE name='login_exclus';";
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
+			$tab[]=$lig_mae->value;
+		}
+	}
+
+	return $tab;
 }
 ?>

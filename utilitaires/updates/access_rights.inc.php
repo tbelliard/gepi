@@ -1157,6 +1157,66 @@ autre='F',
 description='Suppression des documents joints aux CDT',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/index.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='Absences et remplacements de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/saisir_absence.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie des absences de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/proposer_remplacement.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Proposer des remplacements aux professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/attribuer_remplacement.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Attribuer les remplacements de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/index_admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Absences/remplacements de professeurs : Administration',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

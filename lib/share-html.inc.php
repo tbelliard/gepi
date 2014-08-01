@@ -3154,4 +3154,62 @@ function necessaire_bull_simple() {
 </script>\n";
 }
 
+function affiche_remplacements_en_attente_de_reponse($login_user) {
+	global$gepiPath;
+
+	$retour="";
+
+	$tab=get_tab_propositions_remplacements($login_user, "en_attente");
+	if(count($tab)>0) {
+		$retour="<div class='postit' style='text-align:center;'>Vous avez ".count($tab)." remplacement(s) ponctuel(s) proposé(s) qui attendent une réponse de votre part.<br />Une réponse (<em>dans l'idéal, positive</em>) serait plus que bienvenue pour soulager la permanence et combler l'insatiable soif d'apprentissage des élèves;).<br /><a href='$gepiPath/mod_abs_prof/index.php'>Consulter les propositions pour les accepter ou les rejeter</a></div>";
+	}
+
+	return $retour;
+}
+
+function affiche_remplacements_confirmes($login_user) {
+	global$gepiPath;
+
+	$retour="";
+
+	$tab=get_tab_propositions_remplacements($login_user, "futures_validees");
+	for($loop=0;$loop<count($tab);$loop++) {
+		$tab_creneau=get_infos_creneau($tab[$loop]['id_creneau']);
+		$retour.="<div class='postit' style='text-align:center;'>Un remplacement vous est attribué&nbsp;:<br /><strong>".get_nom_classe($tab[$loop]['id_classe'])."&nbsp;:</strong> ".formate_date($tab[$loop]['date_debut_r'])." en ".$tab_creneau['info_html'];
+		if($tab[$loop]['salle']!="") {
+			$retour.=" (<em>salle ".$tab[$loop]['salle']."</em>)";
+		}
+		$retour.=".<br />(<em style='font-size:x-small'>remplacement de ".get_info_grp($tab[$loop]['id_groupe'])."</em>)";
+		if($tab[$loop]['commentaire_validation']!="") {
+			$retour.="<br />".$tab[$loop]['commentaire_validation'];
+		}
+		$retour.="</div>";
+	}
+
+	return $retour;
+}
+
+function test_reponses_favorables_propositions_remplacement() {
+	global$gepiPath;
+
+	$retour="";
+
+	$nb=0;
+	$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND reponse='oui';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+				$nb++;
+			}
+		}
+	}
+
+	if($nb>0) {
+		$retour="<div class='postit' style='text-align:center;'>$nb proposition(s) de remplacement a(ont) reçu un accueil favorable.<br />Vous pouvez choisir à qui <a href='$gepiPath/mod_abs_prof/attribuer_remplacement.php'>attribuer le(s) remplacement(s)</a>.</div>";
+	}
+
+	return $retour;
+}
+
 ?>

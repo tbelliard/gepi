@@ -1040,3 +1040,50 @@ matiere_ics varchar(100) NOT NULL DEFAULT '',
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS abs_prof;
+CREATE TABLE IF NOT EXISTS abs_prof (
+id int(11) NOT NULL AUTO_INCREMENT,
+login_user varchar(50) NOT NULL,
+date_debut datetime NOT NULL,
+date_fin datetime NOT NULL,
+titre varchar(100) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS abs_prof_remplacement;
+CREATE TABLE IF NOT EXISTS abs_prof_remplacement (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_absence INT(11) NOT NULL,
+id_groupe INT(11) NOT NULL,
+id_classe INT(11) NOT NULL,
+jour CHAR(8) NOT NULL,
+id_creneau INT(11) NOT NULL,
+date_debut_r datetime NOT NULL,
+date_fin_r datetime NOT NULL,
+reponse varchar(30) NOT NULL,
+date_reponse datetime NOT NULL,
+login_user varchar(50) NOT NULL,
+commentaire_prof text NOT NULL,
+validation_remplacement varchar(30) NOT NULL,
+commentaire_validation text NOT NULL,
+salle VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS abs_prof_divers;
+CREATE TABLE IF NOT EXISTS abs_prof_divers (
+id INT(11) unsigned NOT NULL auto_increment,
+name VARCHAR( 255 ) NOT NULL ,
+value VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS mod_alerte_divers;
+CREATE TABLE IF NOT EXISTS mod_alerte_divers (
+id INT(11) unsigned NOT NULL auto_increment,
+name VARCHAR( 255 ) NOT NULL ,
+value VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

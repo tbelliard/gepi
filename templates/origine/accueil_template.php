@@ -220,6 +220,18 @@
 		$liste_evenements=afficher_les_evenements();
 	}
 
+	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('active_mod_abs_prof'))) {
+		$message_remplacements_confirmes=affiche_remplacements_confirmes($_SESSION['login']);
+		$message_remplacements_proposes=affiche_remplacements_en_attente_de_reponse($_SESSION['login']);
+	}
+
+	if((getSettingAOui('active_mod_abs_prof'))&&
+		((($_SESSION['statut']=="administrateur")||
+		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfAttribuerRemplacementScol')))||
+		(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfAttribuerRemplacementCpe')))))) {
+		$message_remplacements_a_valider=test_reponses_favorables_propositions_remplacement();
+	}
+
 	if ((count($afficheAccueil->message))||((isset($liste_evenements))&&($liste_evenements!=""))) :
 ?>
 
@@ -242,6 +254,18 @@
 				<?php 
 				if(isset($liste_evenements)) {
 					echo "<div class='postit' title=\"Événements à venir (définis) pour vos classes.\">".$liste_evenements."</div>";
+				}
+
+				if(isset($message_remplacements_confirmes)) {
+					echo $message_remplacements_confirmes;
+				}
+
+				if(isset($message_remplacements_proposes)) {
+					echo $message_remplacements_proposes;
+				}
+
+				if(isset($message_remplacements_a_valider)) {
+					echo $message_remplacements_a_valider;
 				}
 
 				if (count($afficheAccueil->message)) :

@@ -89,6 +89,10 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php"'.insert_confirm_abandon().'>&nbsp;Absences</a></li>'."\n";
 		}
 
+		if (getSettingAOui("active_mod_abs_prof")) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs.profs</a></li>'."\n";
+		}
+
 		//=======================================================
 		// Module Cahier de textes
 		if (getSettingValue("active_cahiers_texte") == 'y') {

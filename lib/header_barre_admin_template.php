@@ -238,6 +238,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/index_admin.php" '.insert_confirm_abandon().'>Bulletins</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php" '.insert_confirm_abandon().'>Absences 2</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs_prof/index_admin.php" '.insert_confirm_abandon().'>Abs/remplacements profs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt/index_admin.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
@@ -263,6 +264,10 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 		elseif (getSettingValue("active_module_absence")=='y') {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
+		}
+
+		if (getSettingAOui("active_mod_abs_prof")) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs remplacement profs</a></li>'."\n";
 		}
 
 		if(getSettingAOui('active_module_trombinoscopes')) {

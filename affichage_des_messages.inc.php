@@ -109,5 +109,10 @@ if (basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") {
 	<tr><td>".$liste_evenements."</td></tr>
 </table>\n";
 	}
+
+	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('active_mod_abs_prof'))) {
+		echo affiche_remplacements_confirmes($_SESSION['login']);
+		echo affiche_remplacements_en_attente_de_reponse($_SESSION['login']);
+	}
 }
 ?>

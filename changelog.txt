@@ -8,6 +8,9 @@ Gepi-master (Version de développement)
 Abs2
 - Sélection des traitements sur la classe dans liste_traitements.php et liste_notifications.php
 
+Absences et remplacements de professeurs
+- Ajout d'un module de saisie d'absences de professeurs avec possibilité de proposer des remplacements aux professeurs qui n'ont pas cours sur un créneau libéré.
+
 Edt:
 - Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi
   (dispositif alternatif, non lié à l'EDT classique de Gepi).

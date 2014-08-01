@@ -420,16 +420,16 @@ if(getSettingAOui('active_bulletins')) {
 
   protected function absences_vie_scol() {
 
-			$this->b=0;
-		if (getSettingValue("active_module_absence")=='y') {
+	$this->b=0;
+	if (getSettingValue("active_module_absence")=='y') {
 
-			$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
-					"Gestion Absences, dispenses, retards et infirmeries",
-					"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
+		$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
+				"Gestion Absences, dispenses, retards et infirmeries",
+				"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
 
-			$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
-					"Visualiser les absences",
-					"Vous pouvez visualiser créneau par créneau la saisie des absences.");
+		$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
+				"Visualiser les absences",
+				"Vous pouvez visualiser créneau par créneau la saisie des absences.");
 
 
 	  } else if (getSettingValue("active_module_absence")=='2' && ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
@@ -444,36 +444,62 @@ if(getSettingAOui('active_bulletins')) {
 		}
 	  }
 
-			if ($this->b>0){
-			$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
-			return true;
-			}
+	  if ((getSettingAOui("active_mod_abs_prof"))&& ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
+		$this->creeNouveauItem("/mod_abs_prof/index.php",
+				"Absences et remplacements de professeurs",
+				"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+	  }
+
+	if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
+		return true;
+	}
 
   }
 
   protected function absences_profs(){
 
-	if (getSettingValue("active_module_absence_professeur")=='y') {
-
 	  $this->b=0;
 
-	  $nouveauItem = new itemGeneral();
-	  if (getSettingValue("active_module_absence")=='y' ) {
-		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
-		$this->creeNouveauItem("/mod_abs2/index.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  }
+	if($_SESSION['statut']=='professeur') {
+		if (getSettingValue("active_module_absence_professeur")=='y') {
+
+		//  $nouveauItem = new itemGeneral();
+		  if (getSettingValue("active_module_absence")=='y' ) {
+			$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
+					"Gestion des Absences",
+					"Cet outil vous permet de gérer les absences des élèves");
+		  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
+			$this->creeNouveauItem("/mod_abs2/index.php",
+					"Gestion des Absences",
+					"Cet outil vous permet de gérer les absences des élèves");
+		  }
+
+		  if (getSettingAOui("active_mod_abs_prof")) {
+			$this->creeNouveauItem("/mod_abs_prof/index.php",
+					"Absences et remplacements de professeurs",
+					"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+		  }
+
+	    }
+	    
+	    elseif (getSettingAOui("active_mod_abs_prof")) {
+
+		  $nouveauItem = new itemGeneral();
+
+		  $this->creeNouveauItem("/mod_abs_prof/index.php",
+				"Absences et remplacements de professeurs",
+				"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+
+	    }
+	    
+	}
 
 	  if ($this->b>0){
 		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
 		return true;
 	  }
 
-    }
   }
 
   private function saisie(){
