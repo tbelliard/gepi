@@ -267,7 +267,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 
 		if (getSettingAOui("active_mod_abs_prof")) {
-			$menus .= '  <li><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs remplacement profs</a></li>'."\n";
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs remplac profs</a></li>'."\n";
 		}
 
 		if(getSettingAOui('active_module_trombinoscopes')) {
