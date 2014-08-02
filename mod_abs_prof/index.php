@@ -276,6 +276,14 @@ if(($_SESSION['statut']=="administrateur")||
 	<li>Informer les parents/élèves</li>
 </ul>";
 
+
+echo "<p style='color:red; margin-top:1em; text-indent:-5em; margin-left:5em;'>A FAIRE : Ne pas proposer de remplacements pour des créneaux de vacances (cas d'absence chevauchant des vacances)<br />
+Pouvoir afficher tous les remplacements à effectuer pour une journée donnée de façon à proposer au mieux les remplacements aux divers professeurs (a priori) disponibles.<br />
+Revoir la présentation du listing admin pour présenter en tableau les abs, propositions, validation<br />
+Pouvoir générer un tableau/listing des remplacements par semaine.<br />
+Pouvoir afficher aux élèves/parents les remplacements décidés/validés.<br />
+</p>";
+
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -334,9 +342,13 @@ elseif($_SESSION['statut']=="professeur") {
 
 	$tab_creneaux=get_heures_debut_fin_creneaux();
 
+	// Total des propositions, remplacements et remplacements passés
+	$nb_propositions_ou_remplacements=0;
+
 	// Propositions en attente de réponse
 	$tab=get_tab_propositions_remplacements($_SESSION['login'], "en_attente");
 	if(count($tab)>0) {
+		$nb_propositions_ou_remplacements+=count($tab);
 		echo "
 <h3>Propositions de remplacement en attente d'une réponse de votre part</h3>
 
@@ -395,6 +407,7 @@ elseif($_SESSION['statut']=="professeur") {
 	// Propositions (dans le futur) ayant reçu une réponse de la part du professeur
 	$tab=get_tab_propositions_remplacements($_SESSION['login'], "futures_avec_reponse");
 	if(count($tab)>0) {
+		$nb_propositions_ou_remplacements+=count($tab);
 		echo "
 <h3>Propositions de remplacement auxquelles vous avez répondu</h3>
 
@@ -470,6 +483,7 @@ elseif($_SESSION['statut']=="professeur") {
 	// Remplacements validés
 	$tab=get_tab_propositions_remplacements($_SESSION['login'], "futures_validees");
 	if(count($tab)>0) {
+		$nb_propositions_ou_remplacements+=count($tab);
 		echo "
 <h3>Remplacements (<em>à venir</em>) validés</h3>
 
@@ -510,6 +524,7 @@ elseif($_SESSION['statut']=="professeur") {
 	// Remplacements validés/effectués dans le passé
 	$tab=get_tab_propositions_remplacements($_SESSION['login'], "validees_passees");
 	if(count($tab)>0) {
+		$nb_propositions_ou_remplacements+=count($tab);
 		echo "
 <h3>Remplacements validés/effectués dans le passé</h3>
 
@@ -547,6 +562,9 @@ elseif($_SESSION['statut']=="professeur") {
 	</div>";
 	}
 
+	if($nb_propositions_ou_remplacements==0) {
+		echo "<p>Aucune proposition de remplacement ne vous a été faite.</p>";
+	}
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -565,11 +583,6 @@ elseif($_SESSION['statut']=="responsable") {
 	echo "<p style='color:red'>L'information des responsables n'est pas encore implémentée.</p>";
 
 }
-
-echo "<p style='color:red; margin-top:1em; text-indent:-5em; margin-left:5em;'>A FAIRE : Ne pas proposer de remplacements pour des créneaux de vacances (cas d'absence chevauchant des vacances)<br />
-Pouvoir afficher tous les remplacements à effectuer pour une journée donnée de façon à proposer au mieux les remplacements aux divers professeurs (a priori) disponibles.<br />
-Revoir la présentation du listing admin pour présenter en tableau les abs, propositions, validation<br />
-</p>";
 
 require("../lib/footer.inc.php");
 ?>

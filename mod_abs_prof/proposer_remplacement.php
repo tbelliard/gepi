@@ -187,6 +187,51 @@ if(isset($_POST['is_posted'])) {
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($insert) {
 					$nb_reg++;
+					$id_proposition=mysqli_insert_id($GLOBALS["mysqli"]);
+
+					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+					}
+
+					$mail_dest=get_mail_user($login_user);
+
+					if(($envoi_mail_actif=='y')&&(check_mail($mail_dest))) {
+						$tab_info_creneau=get_infos_creneau($id_creneau);
+						$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+
+						$subject = "[GEPI]: Proposition de remplacement n°$id_proposition";
+						$texte_mail="Bonjour ".civ_nom_prenom($login_user).",
+
+En raison de l'absence d'un professeur, une ou des classes sont libérées.
+Je vous propose le remplacement suivant (pour soulager la permanence,...):
+
+".get_nom_classe($id_classe)." le ".formate_date($date_debut_r,"n","complet")." en ".$info_creneau."
+en remplacement de ".get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "").".
+
+Vous pouvez accepter ou rejeter cette proposition dans Gepi.
+Un message doit être affiché en page d'accueil pour vous permettre de répondre.
+
+D'avance merci.
+
+
+Cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login']);
+
+						$headers = "";
+						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+						}
+
+						$message_id='proposition_remplacement_'.$id_proposition."_".$jour;
+						if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+						//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+						// On envoie le mail
+						$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+					}
+
 				}
 				else {
 					$msg.="Erreur $sql<br />";
@@ -205,6 +250,7 @@ if(isset($_POST['is_posted'])) {
 				$sql="DELETE FROM abs_prof_remplacement WHERE id='$lig->id';";
 				$del=mysqli_query($GLOBALS["mysqli"], $sql);
 				if($del) {
+					//echo "$chaine suppr<br />";
 					$nb_suppr++;
 				}
 				else {
@@ -220,6 +266,245 @@ if(isset($_POST['is_posted'])) {
 
 	if($nb_suppr>0) {
 		$msg.="$nb_suppr proposition(s) supprimée(s).<br />";
+	}
+}
+
+
+if((isset($_GET['valider_proposition']))||(isset($_POST['valider_proposition']))) {
+	check_token();
+
+	$valider_proposition=isset($_POST['valider_proposition']) ? $_POST['valider_proposition'] : (isset($_GET['valider_proposition']) ? $_GET['valider_proposition'] : "");
+	$tab=explode("|", $valider_proposition);
+
+	$commentaire_validation=isset($_POST['commentaire_validation']) ? $_POST['commentaire_validation'] : "";
+	$salle=isset($_POST['salle']) ? $_POST['salle'] : "";
+
+	if(isset($tab[4])) {
+		$id_groupe=$tab[0];
+		$id_classe=$tab[1];
+		$jour=$tab[2];
+		$id_creneau=$tab[3];
+		$login_user=$tab[4];
+
+		$deja_validee=check_proposition_remplacement_validee($id_absence, $id_groupe, $id_classe, $jour, $id_creneau);
+		if($deja_validee!="") {
+			if($deja_validee==civ_nom_prenom($login_user)) {
+				// On ne devrait pas arriver là
+				$msg="Le remplacement était déjà attribué à ce professeur.<br />";
+			}
+			else {
+				// On désinscrit le professeur précédemment choisi
+				$sql="UPDATE abs_prof_remplacement SET validation_remplacement='' WHERE id_absence='".$id_absence."' AND 
+																id_groupe='".$id_groupe."' AND 
+																id_classe='".$id_classe."' AND 
+																jour='".$jour."' AND 
+																id_creneau='".$id_creneau."';";
+				//echo "$sql<br />";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($update) {
+					$chaine_commentaire_validation="";
+					$chaine_salle="";
+
+					$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui'";
+					if($commentaire_validation!="") {
+						$sql.=", commentaire_validation='$commentaire_validation'";
+						$chaine_commentaire_validation=$commentaire_validation."\n";
+					}
+					if($salle!="") {
+						$sql.=", salle='$salle'";
+						$chaine_salle="Salle $salle\n";
+					}
+					$sql.=" WHERE id_absence='".$id_absence."' AND 
+																	id_groupe='".$id_groupe."' AND 
+																	id_classe='".$id_classe."' AND 
+																	jour='".$jour."' AND 
+																	id_creneau='".$id_creneau."' AND 
+																	login_user='$login_user';";
+					//echo "$sql<br />";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($update) {
+						$msg="Remplacement attribué à ".civ_nom_prenom($login_user).".<br />";
+
+						$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+						if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+							$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+						}
+
+						$mail_dest="";
+						$references_mail="";
+						$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
+														id_groupe='".$id_groupe."' AND 
+														id_classe='".$id_classe."' AND 
+														jour='".$jour."' AND 
+														id_creneau='".$id_creneau."' AND 
+														reponse!='non';";
+						//echo "$sql<br />";
+						$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig=mysqli_fetch_object($res_mail)) {
+							if(check_mail($lig->email)) {
+								if($mail_dest!="") {
+									$mail_dest.=",";
+									$references_mail.="\r\n";
+								}
+								//$mail_dest.=$lig->email;
+								if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
+									$mail_dest.=$lig->email;
+								}
+								$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
+							}
+						}
+
+						if(($envoi_mail_actif=='y')&&($mail_dest!="")) {
+							$tab_info_creneau=get_infos_creneau($id_creneau);
+							$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+
+							$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
+
+							$designation_user=civ_nom_prenom($login_user);
+							$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
+							$texte_mail="Bonjour ".$designation_user.",
+
+Le remplacement suivant vous est attribué:
+
+".get_nom_classe($id_classe)." le ".formate_date($date_debut_r,"n","complet")." en ".$info_creneau."
+".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "").".
+
+Merci.
+
+
+Cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login']);
+
+							$headers = "";
+							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							}
+
+							$message_id='remplacement_c'.$id_creneau."_j".$jour;
+							if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+							if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+							// On envoie le mail
+							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+						}
+
+					}
+					else {
+						$msg="Erreur lors de l'attribution du remplacement à ".civ_nom_prenom($login_user).".<br />";
+					}
+				}
+				else {
+					$msg="Erreur lors de la désattribution du remplacement à un autre professeur.<br />";
+				}
+			}
+		}
+		else {
+			/*
+			$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui' WHERE id_absence='".$id_absence."' AND 
+															id_groupe='".$id_groupe."' AND 
+															id_classe='".$id_classe."' AND 
+															jour='".$jour."' AND 
+															id_creneau='".$id_creneau."' AND 
+															login_user='$login_user';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($update) {
+				$msg="Remplacement attribué à ".civ_nom_prenom($login_user).".<br />";
+			}
+			else {
+				$msg="Erreur lors de l'attribution du remplacement à ".civ_nom_prenom($login_user).".<br />";
+			}
+			*/
+			$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui'";
+			if($commentaire_validation!="") {
+				$sql.=", commentaire_validation='$commentaire_validation'";
+				$chaine_commentaire_validation=$commentaire_validation."\n";
+			}
+			if($salle!="") {
+				$sql.=", salle='$salle'";
+				$chaine_salle="Salle $salle\n";
+			}
+			$sql.=" WHERE id_absence='".$id_absence."' AND 
+								id_groupe='".$id_groupe."' AND 
+								id_classe='".$id_classe."' AND 
+								jour='".$jour."' AND 
+								id_creneau='".$id_creneau."' AND 
+								login_user='$login_user';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($update) {
+				$msg="Remplacement attribué à ".civ_nom_prenom($login_user).".<br />";
+
+				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+				}
+
+				$mail_dest="";
+				$references_mail="";
+				$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
+												id_groupe='".$id_groupe."' AND 
+												id_classe='".$id_classe."' AND 
+												jour='".$jour."' AND 
+												id_creneau='".$id_creneau."' AND 
+												reponse!='non';";
+				//echo "$sql<br />";
+				$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig=mysqli_fetch_object($res_mail)) {
+					if(check_mail($lig->email)) {
+						if($mail_dest!="") {
+							$mail_dest.=",";
+							$references_mail.="\r\n";
+						}
+						//$mail_dest.=$lig->email;
+						if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
+							$mail_dest.=$lig->email;
+						}
+						$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
+					}
+				}
+
+				if(($envoi_mail_actif=='y')&&($mail_dest!="")) {
+					$tab_info_creneau=get_infos_creneau($id_creneau);
+					$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+
+					$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
+
+					$designation_user=civ_nom_prenom($login_user);
+					$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
+					$texte_mail="Bonjour ".$designation_user.",
+
+Le remplacement suivant vous est attribué:
+
+".get_nom_classe($id_classe)." le ".formate_date($date_debut_r,"n","complet")." en ".$info_creneau."
+".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "").".
+
+Merci.
+
+
+Cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login']);
+
+					$headers = "";
+					if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+						$headers.="Reply-to:".$_SESSION['email']."\r\n";
+					}
+
+					$message_id='remplacement_c'.$id_creneau."_j".$jour;
+					if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+					//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+					// On envoie le mail
+					$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+				}
+
+			}
+			else {
+				$msg="Erreur lors de l'attribution du remplacement à ".civ_nom_prenom($login_user).".<br />";
+			}
+		}
 	}
 }
 
@@ -362,6 +647,7 @@ function affiche_lien_mailto_prof($mail_prof, $info_prof) {
 	$retour=" <a href='mailto:".$mail_prof."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 	$tmp_date=getdate();
 	if($tmp_date['hours']>=18) {$retour.="Bonsoir";} else {$retour.="Bonjour";}
+	$retour.=" ".$info_prof;
 	$retour.=",%0d%0aCordialement.' title=\"Envoyer un mail à $info_prof\">";
 	$retour.="<img src='../images/icons/mail.png' class='icone16' alt='mail' />";
 	$retour.="</a>";
@@ -369,7 +655,9 @@ function affiche_lien_mailto_prof($mail_prof, $info_prof) {
 }
 //============================================================================================================
 
-
+$tab_jours_vacances=array();
+// Commenter la ligne ci-dessous pour désactiver la prise en compte des jours de vacances:
+$tab_jours_vacances=get_tab_jours_vacances();
 
 //==================================================================
 $civ_nom_prenom_absent=civ_nom_prenom($login_user);
@@ -381,7 +669,7 @@ if(check_mail($mail_prof)) {
 
 echo "<a name=\"debut_de_page\"></a>
 <p class='bold'>
-	<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+	<a href='index.php' onclick=\"return confirm_abandon (this, change, '".$themessage."')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
 <h2>Proposition de remplacement</h2>
@@ -391,13 +679,16 @@ echo "<a name=\"debut_de_page\"></a>
 if(($_SESSION['statut']=="administrateur")||
 (($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfSaisieAbsScol')))||
 (($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfSaisieAbsCpe')))) {
-	echo "<a href='saisir_absence.php?id_absence=$id_absence' title=\"Modifier l'absence.\">$id_absence</a>";
+	echo "<a href='saisir_absence.php?id_absence=$id_absence' title=\"Modifier l'absence.\" onclick=\"return confirm_abandon (this, change, '".$themessage."')\">$id_absence</a>";
 }
 else {
 	echo $id_absence;
 }
 echo "&nbsp;:</strong> ".$civ_nom_prenom_absent." ".affiche_lien_edt_prof($login_user, $civ_nom_prenom_absent)." (<em>$lien_mailto_absent</em>) est absent(e) du ".formate_date($date_debut,"y","complet")." au ".formate_date($date_fin,"y","complet")."</p>";
 
+$chaine_js_var_user="var nom_user=new Array();\n";
+$chaine_js_var_user.="nom_user['$login_user']=\"$civ_nom_prenom_absent\";\n";
+$chaine_js_var_classe="var nom_classe=new Array();\n";
 /*
 echo "jour_debut=$jour_debut<br />";
 echo "mois_debut=$mois_debut<br />";
@@ -413,6 +704,8 @@ if(mysqli_num_rows($res_abs_cren)==0) {
 	require("../lib/footer.inc.php");
 	die();
 }
+
+$chaine_js_var_creneau="var nom_creneau=new Array();\n";
 
 // id_definie_periode | nom_definie_periode | heuredebut_definie_periode | heurefin_definie_periode | suivi_definie_periode | type_creneaux | jour_creneau
 $cpt=0;
@@ -433,6 +726,8 @@ while($lig=mysqli_fetch_object($res_abs_cren)) {
 	}
 
 	$tab_id_definie_periode[$lig->id_definie_periode]=$cpt;
+
+	$chaine_js_var_creneau.="nom_creneau[$lig->id_definie_periode]=\"$lig->nom_definie_periode\";\n";
 
 	$cpt++;
 }
@@ -627,11 +922,41 @@ echo "<pre>";
 print_r($tab_profs_exclus_des_propositions_de_remplacement);
 echo "</pre>";
 */
-echo "<form action=\"".$_SERVER['PHP_SELF']."#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_saisie_login_user\">
+
+$texte="<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"form0\">
+	".add_token_field()."
+	<input type='hidden' name='id_absence' value='$id_absence' />
+	<input type='hidden' name='valider_proposition' id='valider_proposition' value='' />
+	<p>Attribuer le remplacement en classe de <span id='valider_remplacement_classe'></span> à <span id='valider_remplacement_nom_user'></span> le <span id='valider_remplacement_jour'></span> en <span id='valider_remplacement_creneau'></span>.</p>
+	<table>
+		<tr style='vertical-align:top;'>
+			<td>
+				Salle&nbsp;: 
+			</td>
+			<td>
+				<input type='text' name='salle' value=\"\" />
+			</td>
+		</tr>
+		<tr style='vertical-align:top;'>
+			<td>
+				Commentaire&nbsp;: 
+			</td>
+			<td>
+				<textarea name='commentaire_validation' style='vertical-align:top;'></textarea>
+			</td>
+		</tr>
+	</table>
+
+	<p><input type='submit' value='Valider le remplacement' /></p>
+</form>";
+$tabdiv_infobulle[]=creer_div_infobulle("div_valider_remplacement","Validation","",$texte,"",30,0,'y','y','n','n',2);
+
+echo "<form action=\"".$_SERVER['PHP_SELF']."#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"form1\">
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<input type='hidden' name='id_absence' value='$id_absence' />";
 
+$tab_jours_remplacements=array();
 while($timestamp_courant<=$timestamp_fin) {
 	// Ne retenir que les jours ouvrés
 
@@ -646,7 +971,9 @@ while($timestamp_courant<=$timestamp_fin) {
 	*/
 
 	$date_aaaammjj=strftime("%Y%m%d", $timestamp_courant);
+	$tab_jours_remplacements[]=$date_aaaammjj;
 	echo "
+<a name='jour_".$date_aaaammjj."'></a>
 <h4>".ucfirst(strftime("%A %d/%m/%Y", $timestamp_courant))."</h4>
 
 <table class='boireaus boireaus_alt' style='margin-left:3em;'>
@@ -734,9 +1061,10 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 
 				echo "
 			</td>
-			<td style='text-align:left;'>";
+			<td style='text-align:left;'>
 
-				echo "
+				<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."'></a>
+
 				<div style='float:right; width:40px;'>
 					<a href='#' onclick=\"cocher_sans_cours(".$date_aaaammjj.",".$tab_creneau[$loop]['id_definie_periode'].");return false;\" title=\"Cocher tous les professeurs proposés pour le créneau courant.\"><img src='../images/enabled.png' class='icone16' alt='Cocher' /></a>/<a href='#' onclick=\"decocher_sans_cours(".$date_aaaammjj.",".$tab_creneau[$loop]['id_definie_periode'].");return false;\" title=\"Décocher tous les professeurs proposés pour le créneau courant.\"><img src='../images/disabled.png' class='icone16' alt='Décocher' /></a>
 				</div>";
@@ -765,8 +1093,14 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 						if(mysqli_num_rows($res_prof)>0) {
 							if(count($groups[$id_groupe_courant]['classes']['classes']>1)) {
 								echo "
+						<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."_classe_".$current_id_classe."'></a>
 						<span class='bold'>".$current_tab_classe['classe']."</span>";
 							}
+
+							if(!preg_match("/nom_classe\[$current_id_classe\]/", $chaine_js_var_classe)) {
+								$chaine_js_var_classe.="nom_classe[$current_id_classe]=\"".$current_tab_classe['classe']."\";\n";
+							}
+
 							echo "
 						<table>";
 							while($lig_prof=mysqli_fetch_object($res_prof)) {
@@ -783,13 +1117,18 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 									//if(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][$key])) {
 									if((!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][0]))&&
 									(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][1]))) {
+										$denomination_prof_courant=civ_nom_prenom($lig_prof->login);
+
+										if(!preg_match("/'$lig_prof->login'/", $chaine_js_var_user)) {
+											$chaine_js_var_user.="nom_user['$lig_prof->login']=\"$denomination_prof_courant\";\n";
+										}
+
 										$lien_mailto_courant="";
 										$mail_prof_courant=get_mail_user($lig_prof->login);
 										if(check_mail($mail_prof_courant)) {
-											$lien_mailto_courant=" ".affiche_lien_mailto_prof($mail_prof, $civ_nom_prenom_absent);
+											$lien_mailto_courant=" ".affiche_lien_mailto_prof($mail_prof_courant, $denomination_prof_courant);
 										}
 
-										$denomination_prof_courant=civ_nom_prenom($lig_prof->login);
 
 										if($temoin_num_proposition==0) {
 											$tab_num_proposition[$date_aaaammjj][$tab_creneau[$loop]['id_definie_periode']]=$cpt;
@@ -798,31 +1137,35 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 
 										$chaine=$id_groupe_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login;
 										$checked="";
-										if(in_array($chaine, $tab_propositions_deja_enregistrees['chaine'])) {
+										if((isset($tab_propositions_deja_enregistrees['chaine']))&&(in_array($chaine, $tab_propositions_deja_enregistrees['chaine']))) {
 											$checked=" checked";
 										}
 
+										$td_bg="";
 										$reponse="<img src=\"../images/case_blanche.png\" alt='Pas de réponse' title=\"Le professeur n'a pas répondu à la proposition.\" />";
 										if(isset($tab_propositions_deja_enregistrees['indice_chaine'][$chaine])) {
 											$indice_prop=$tab_propositions_deja_enregistrees['indice_chaine'][$chaine];
 											if($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='oui') {
 												// Permettre de valider le remplacement
-												$reponse="<a href='#'><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
+												$reponse="<a href='".$_SERVER['PHP_SELF']."?id_absence=$id_absence&amp;valider_proposition=".$chaine.add_token_in_url()."#jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_validation('$chaine')}; return false;\"><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
 ".(($tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop]!="") ? $tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop] : "")."
 Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_reponse'][$indice_prop], "y").".
 
 Il faut encore que vous validiez/confirmiez l'attribution.
 Si plusieurs professeurs acceptent la proposition, 
 il est même indispensable de choisir lequel assurera le remplacement.\" />";
+												$td_bg=" style='background-color:#FFF168;'";
 											}
 											elseif($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='non') {
 												$reponse="<img src=\"../images/rouge.png\" alt='Non' title=\"Le professeur ne souhaite pas effectuer ce remplacement.
 ".(($tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop]!="") ? $tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop] : "")."
 Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_reponse'][$indice_prop], "y").".\" />";
+												$td_bg=" style='background-color:grey;'";
 											}
 
 											if($tab_propositions_deja_enregistrees['validation_remplacement'][$indice_prop]=='oui') {
 												$reponse="<img src=\"../images/enabled.png\" alt='Confirmé' title=\"Le remplacement est confirmé.\" />";
+												$td_bg=" style='background-color:aquamarine;'";
 											}
 										}
 
@@ -831,10 +1174,10 @@ Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_rep
 								<td>
 									<input type='checkbox' name='proposition[]' id='proposition_$cpt' value='".$chaine."' onchange=\"checkbox_change('proposition_$cpt');changement()\"$checked />
 								</td>
-								<td>
+								<td".$td_bg.">
 									<label for='proposition_$cpt' id='texte_proposition_$cpt'>".$denomination_prof_courant."</label>
 								</td>
-								<td>
+								<td".$td_bg.">
 									$reponse
 								</td>
 								<td>
@@ -895,6 +1238,12 @@ Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_rep
 		$timestamp_courant+=3600*24;
 		$cpt_secu++;
 	}
+
+	$jour_aaaammjj_ts_courant=strftime("%Y%m%d", $timestamp_courant);
+	while((in_array($jour_aaaammjj_ts_courant, $tab_jours_vacances))&&($timestamp_courant<=$timestamp_fin)) {
+		$timestamp_courant+=3600*24;
+		$jour_aaaammjj_ts_courant=strftime("%Y%m%d", $timestamp_courant);
+	}
 }
 
 $chaine_js_var="";
@@ -924,15 +1273,32 @@ echo "</pre>";
 echo "
 		<input type='hidden' name='is_posted' value='y' />
 		<p><input type='submit' value='Valider les propositions' /></p>
-		<div id='fixe'><input type='submit' value='Valider les propositions' /></div>
+		<div id='fixe' style='width:12em;'>
+			<p style='text-indent:-2em;margin-left:2em;'><strong>Jours&nbsp;:</strong><br />";
+for($loop=0;$loop<count($tab_jours_remplacements);$loop++) {
+	$current_jour=substr($tab_jours_remplacements[$loop],6,2)."/".substr($tab_jours_remplacements[$loop],4,2)."/".substr($tab_jours_remplacements[$loop],0,4);
+	echo "
+			<a href='#jour_".$tab_jours_remplacements[$loop]."'>".$current_jour."</a><br />";
+}
+echo "
+			</p>
+			<hr />
+			<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' onchange=\"checkbox_change('envoi_mail')\" /><label for='envoi_mail' id='texte_envoi_mail' title=\"Envoyer un mail pour les nouvelles propositions faites.\">Envoyer un mail</label><br />
+			<input type='submit' value='Valider les propositions' />
+		</div>
 	</fieldset>
 </form>
 
-<p style='color:red; text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> A FAIRE: Proposer d'envoyer un mail aux professeurs pour les nouvelles propositions.<br />Proposer aussi de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.<br />
-Faire ressortir les réponses (c'est trop discret pour le moment).<br />
-Réduire/masquer les jours passés.</p>
+<p style='color:red; text-indent:-4em;margin-left:4em;'><em>A FAIRE&nbsp;:</em></p>
+<ul>
+	<li>Pouvoir envoyer la proposition à tous les professeurs de la classe (cas du professeur privé d'un cours parce qu'une sortie est organisée pour la classe).</li>
+	<li>Proposer de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.</li>
+	<li>Réduire/masquer les jours passés.</li>
+</ul>
 
 <script type='text/javascript'>
+	var change='no';
+
 	function tout_cocher_sans_cours() {
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('proposition_'+i)) {
@@ -973,6 +1339,24 @@ Réduire/masquer les jours passés.</p>
 				checkbox_change('proposition_'+i);
 			}
 		}
+	}
+
+	$chaine_js_var_user
+	$chaine_js_var_creneau
+	$chaine_js_var_classe
+	function afficher_div_validation(chaine) {
+		//alert('plip');
+		document.getElementById('valider_proposition').value=chaine;
+		tab=chaine.split('|');
+
+		jour=tab[2].substr(6,2)+'/'+tab[2].substr(4,2)+'/'+tab[2].substr(0,4);
+
+		document.getElementById('valider_remplacement_classe').innerHTML=nom_classe[tab[1]];
+		document.getElementById('valider_remplacement_jour').innerHTML=jour;
+		document.getElementById('valider_remplacement_creneau').innerHTML=nom_creneau[tab[3]];
+		document.getElementById('valider_remplacement_nom_user').innerHTML=nom_user[tab[4]];
+
+		afficher_div('div_valider_remplacement','y',10,-40);
 	}
 
 	".js_checkbox_change_style('checkbox_change', 'texte_', 'n')."

@@ -8757,16 +8757,24 @@ function get_date_debut_log() {
 	return $retour;
 }
 
-function get_info_grp($id_groupe, $tab_infos=array('description', 'matieres', 'classes', 'profs')) {
+function get_info_grp($id_groupe, $tab_infos=array('description', 'matieres', 'classes', 'profs'), $mode="html") {
 	$group=get_group($id_groupe, $tab_infos);
 
 	$retour="";
 	if(isset($group['name'])) {
 		$retour=$group['name'];
-		if(in_array('description', $tab_infos)) {$retour.=" (<em>".$group['description']."</em>)";}
-		if(in_array('matieres', $tab_infos)) {$retour.=" ".$group['matiere']['matiere'];}
-		if(in_array('classes', $tab_infos)) {$retour.=" en ".$group['classlist_string'];}
-		if(in_array('profs', $tab_infos)) {$retour.=" (<em>".$group['profs']['proflist_string']."</em>)";}
+		if($mode=="html") {
+			if(in_array('description', $tab_infos)) {$retour.=" (<em>".$group['description']."</em>)";}
+			if(in_array('matieres', $tab_infos)) {$retour.=" ".$group['matiere']['matiere'];}
+			if(in_array('classes', $tab_infos)) {$retour.=" en ".$group['classlist_string'];}
+			if(in_array('profs', $tab_infos)) {$retour.=" (<em>".$group['profs']['proflist_string']."</em>)";}
+		}
+		else {
+			if(in_array('description', $tab_infos)) {$retour.=" (".$group['description'].")";}
+			if(in_array('matieres', $tab_infos)) {$retour.=" ".$group['matiere']['matiere'];}
+			if(in_array('classes', $tab_infos)) {$retour.=" en ".$group['classlist_string'];}
+			if(in_array('profs', $tab_infos)) {$retour.=" (".$group['profs']['proflist_string'].")";}
+		}
 	}
 
 	return $retour;
@@ -11619,6 +11627,37 @@ function get_tab_profs_exclus_des_propositions_de_remplacement() {
 	if(mysqli_num_rows($res_mae)>0) {
 		while($lig_mae=mysqli_fetch_object($res_mae)) {
 			$tab[]=$lig_mae->value;
+		}
+	}
+
+	return $tab;
+}
+
+function get_tab_jours_vacances($id_classe='') {
+	$tab=array();
+
+	$sql_ajout="";
+	if($id_classe!="") {
+		$sql_ajout=" AND (classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%')";
+	}
+
+	$sql="SELECT * FROM edt_calendrier WHERE etabvacances_calendrier='1'".$sql_ajout.";";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$ts1=$lig->debut_calendrier_ts;
+			$ts2=$lig->fin_calendrier_ts;
+
+			if($ts2>$ts1) {
+				$current_ts=$ts1;
+				while($current_ts<$ts2) {
+
+					$tab[]=strftime("%Y%m%d", $current_ts);
+
+					$current_ts+=3600*24;
+				}
+			}
+
 		}
 	}
 
