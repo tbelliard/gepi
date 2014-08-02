@@ -923,9 +923,10 @@ print_r($tab_profs_exclus_des_propositions_de_remplacement);
 echo "</pre>";
 */
 
-$texte="<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"form0\">
+$texte="<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%;\" name=\"form0\" onSubmit=\"submit_div_validation_remplacement()\">
 	".add_token_field()."
 	<input type='hidden' name='id_absence' value='$id_absence' />
+	<input type='hidden' name='valider_remplacement_ancre' id='valider_remplacement_ancre' value='' />
 	<input type='hidden' name='valider_proposition' id='valider_proposition' value='' />
 	<p>Attribuer le remplacement en classe de <span id='valider_remplacement_classe'></span> à <span id='valider_remplacement_nom_user'></span> le <span id='valider_remplacement_jour'></span> en <span id='valider_remplacement_creneau'></span>.</p>
 	<table>
@@ -1147,7 +1148,7 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 											$indice_prop=$tab_propositions_deja_enregistrees['indice_chaine'][$chaine];
 											if($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='oui') {
 												// Permettre de valider le remplacement
-												$reponse="<a href='".$_SERVER['PHP_SELF']."?id_absence=$id_absence&amp;valider_proposition=".$chaine.add_token_in_url()."#jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_validation('$chaine')}; return false;\"><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
+												$reponse="<a href='".$_SERVER['PHP_SELF']."?id_absence=$id_absence&amp;valider_proposition=".$chaine.add_token_in_url()."#jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_validation('$chaine', 'jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."')}; return false;\"><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
 ".(($tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop]!="") ? $tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop] : "")."
 Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_reponse'][$indice_prop], "y").".
 
@@ -1344,9 +1345,12 @@ echo "
 	$chaine_js_var_user
 	$chaine_js_var_creneau
 	$chaine_js_var_classe
-	function afficher_div_validation(chaine) {
+	function afficher_div_validation(chaine, ancre) {
 		//alert('plip');
 		document.getElementById('valider_proposition').value=chaine;
+
+		document.getElementById('valider_remplacement_ancre').value=ancre;
+
 		tab=chaine.split('|');
 
 		jour=tab[2].substr(6,2)+'/'+tab[2].substr(4,2)+'/'+tab[2].substr(0,4);
@@ -1357,6 +1361,11 @@ echo "
 		document.getElementById('valider_remplacement_nom_user').innerHTML=nom_user[tab[4]];
 
 		afficher_div('div_valider_remplacement','y',10,-40);
+	}
+
+	function submit_div_validation_remplacement() {
+		ancre=document.getElementById('valider_remplacement_ancre').value;
+		document.form0.action='proposer_remplacement.php#'+ancre;
 	}
 
 	".js_checkbox_change_style('checkbox_change', 'texte_', 'n')."
