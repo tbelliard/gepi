@@ -1068,6 +1068,8 @@ commentaire_prof text NOT NULL,
 validation_remplacement varchar(30) NOT NULL,
 commentaire_validation text NOT NULL,
 salle VARCHAR(100) NOT NULL,
+texte_famille TEXT NOT NULL,
+info_famille VARCHAR( 10 ) NOT NULL,
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

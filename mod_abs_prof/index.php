@@ -271,17 +271,16 @@ if(($_SESSION['statut']=="administrateur")||
 	}
 
 	echo "
+	<li><p><a href='afficher_remplacements.php'>Afficher les remplacements validés</a> et informer ou non les familles.</p></li>
 	<li>Supprimer des absences saisies</li>
 	<li>Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date.</li>
-	<li>Informer les parents/élèves</li>
 </ul>";
 
 
-echo "<p style='color:red; margin-top:1em; text-indent:-5em; margin-left:5em;'>A FAIRE : Ne pas proposer de remplacements pour des créneaux de vacances (cas d'absence chevauchant des vacances)<br />
+echo "<p style='color:red; margin-top:1em; text-indent:-5em; margin-left:5em;'>A FAIRE : 
 Pouvoir afficher tous les remplacements à effectuer pour une journée donnée de façon à proposer au mieux les remplacements aux divers professeurs (a priori) disponibles.<br />
 Revoir la présentation du listing admin pour présenter en tableau les abs, propositions, validation<br />
 Pouvoir générer un tableau/listing des remplacements par semaine.<br />
-Pouvoir afficher aux élèves/parents les remplacements décidés/validés.<br />
 </p>";
 
 }

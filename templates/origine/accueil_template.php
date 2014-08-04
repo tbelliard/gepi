@@ -232,6 +232,24 @@
 		$message_remplacements_a_valider=test_reponses_favorables_propositions_remplacement();
 	}
 
+	if((getSettingAOui('active_mod_abs_prof'))&&
+		($_SESSION['statut']=="eleve")) {
+		$message_remplacements=affiche_remplacements_eleve($_SESSION['login']);
+	}
+
+	if((getSettingAOui('active_mod_abs_prof'))&&
+		($_SESSION['statut']=="responsable")) {
+
+		$message_remplacements="";
+		$tab_eleves_en_responsabilite=get_enfants_from_resp_login($_SESSION['login'], 'avec_classe', "yy");
+		for($loop=0;$loop<count($tab_eleves_en_responsabilite);$loop+=2) {
+			$tmp_remplacements=affiche_remplacements_eleve($tab_eleves_en_responsabilite[$loop]);
+			if($tmp_remplacements!="") {
+				$message_remplacements.="<p class='bold'>".$tab_eleves_en_responsabilite[$loop+1]."</p>".$tmp_remplacements;
+			}
+		}
+	}
+
 	if ((count($afficheAccueil->message))||((isset($liste_evenements))&&($liste_evenements!=""))) :
 ?>
 
@@ -266,6 +284,10 @@
 
 				if(isset($message_remplacements_a_valider)) {
 					echo $message_remplacements_a_valider;
+				}
+
+				if((isset($message_remplacements))&&($message_remplacements!="")) {
+					echo $message_remplacements;
 				}
 
 				if (count($afficheAccueil->message)) :

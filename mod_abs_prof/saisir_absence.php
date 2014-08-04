@@ -349,10 +349,11 @@ if((isset($tab_id_absence))&&(count($tab_id_absence)>1)) {
 }
 
 echo "
-".((isset($id_absence)) ? "<p><a href='proposer_remplacement.php?id_absence=$id_absence'>Faire une proposition de remplacement ou un appel à remplacement</a>.</p><p style='color:red'>A FAIRE:Indiquer le nombre de créneaux déjà remplacés sur le nombre de créneaux libérés.</p>" :"")."
-
 <form action=\"".$_SERVER['PHP_SELF']."#debut_de_page\" method=\"post\" style=\"width: 100%;\" name=\"formulaire_saisie_details\">
 	<fieldset class='fieldset_opacite50'>
+
+		".((isset($id_absence)) ? "<div style='float:right; width:10em;text-align:center;'><p><a href='proposer_remplacement.php?id_absence=$id_absence'>Faire une proposition de remplacement ou un appel à remplacement</a>.</p><p style='color:red'>A FAIRE: Indiquer le nombre de créneaux déjà remplacés sur le nombre de créneaux libérés.</p></div>" :"")."
+
 		".add_token_field()."
 		".((isset($id_absence)) ? "<input type='hidden' name='id_absence' value='".$id_absence."' />" : "")."
 

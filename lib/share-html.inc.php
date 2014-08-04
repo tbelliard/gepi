@@ -3212,4 +3212,23 @@ function test_reponses_favorables_propositions_remplacement() {
 	return $retour;
 }
 
+function affiche_remplacements_eleve($login_eleve) {
+	$retour="";
+
+	$tab=get_tab_remplacements_eleve($login_eleve);
+
+	if(count($tab)>0) {
+		$retour="<div class='postit' style='text-align:left;'><p><strong>Remplacement(s)&nbsp;:</strong></p>
+	<ul>";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$retour.="
+		<li>".$tab[$loop]['texte_famille_traduit']."</li>";
+		}
+		$retour.="
+	</ul>
+</div>";
+	}
+
+	return $retour;
+}
 ?>

@@ -11500,38 +11500,56 @@ function nombre_de_dossiers_docs_joints_a_des_sanctions() {
 	return $nombre_de_dossiers_de_documents_discipline;
 }
 
-function get_tab_propositions_remplacements($login_user, $mode="") {
+function get_tab_propositions_remplacements($login_user, $mode="", $info_famille="") {
 	$tab=array();
 
-	if($login_user=="") {
-		$login_user=$_SESSION['login'];
+	$sql_ajout="";
+	if($login_user!="") {
+		$sql_ajout.=" AND login_user='$login_user'";
+	}
+
+	if($info_famille=="oui") {
+		$sql_ajout.=" AND info_famille='$info_famille'";
+	}
+	elseif($info_famille=="non") {
+		$sql_ajout.=" AND (info_famille='$info_famille' OR info_famille='')";
 	}
 
 	if($mode=="") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' $sql_ajout ORDER BY date_debut_r;";
 	}
 	elseif($mode=="en_attente") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND reponse='' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' $sql_ajout AND reponse='' ORDER BY date_debut_r;";
 	}
 	elseif($mode=="futures_avec_reponse") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND reponse!='' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' $sql_ajout AND reponse!='' ORDER BY date_debut_r;";
 	}
 	elseif($mode=="futures_validees") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' $sql_ajout AND validation_remplacement='oui' ORDER BY date_debut_r;";
 	}
 	elseif($mode=="validees_passees") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r<='".strftime('%Y-%m-%d %H:%M:%S')."' AND login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r<='".strftime('%Y-%m-%d %H:%M:%S')."' $sql_ajout AND validation_remplacement='oui' ORDER BY date_debut_r;";
 	}
 	elseif($mode=="validees") {
-		$sql="SELECT * FROM abs_prof_remplacement WHERE login_user='".$login_user."' AND validation_remplacement='oui' ORDER BY date_debut_r;";
+		$sql="SELECT * FROM abs_prof_remplacement WHERE validation_remplacement='oui' $sql_ajout ORDER BY date_debut_r;";
 	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$cpt=0;
+		$tab_infos_absence=array();
 		while($lig=mysqli_fetch_object($res)) {
 			$tab[$cpt]['id']=$lig->id;
 			$tab[$cpt]['id_absence']=$lig->id_absence;
+
+			if(!isset($tab_infos_absence[$lig->id_absence])) {
+				$sql="SELECT * FROM abs_prof WHERE id='$lig->id_absence';";
+				$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
+				$lig_abs=mysqli_fetch_object($res_abs);
+				$tab_infos_absence[$lig->id_absence]['login_prof_abs']=$lig_abs->login_user;
+			}
+			$tab[$cpt]['login_prof_abs']=$tab_infos_absence[$lig->id_absence]['login_prof_abs'];
+
 			$tab[$cpt]['id_groupe']=$lig->id_groupe;
 			$tab[$cpt]['id_classe']=$lig->id_classe;
 			$tab[$cpt]['jour']=$lig->jour;
@@ -11545,6 +11563,8 @@ function get_tab_propositions_remplacements($login_user, $mode="") {
 			$tab[$cpt]['validation_remplacement']=$lig->validation_remplacement;
 			$tab[$cpt]['commentaire_validation']=$lig->commentaire_validation;
 			$tab[$cpt]['salle']=$lig->salle;
+			$tab[$cpt]['info_famille']=$lig->info_famille;
+			$tab[$cpt]['texte_famille']=$lig->texte_famille;
 			$cpt++;
 		}
 	}
@@ -11658,6 +11678,95 @@ function get_tab_jours_vacances($id_classe='') {
 				}
 			}
 
+		}
+	}
+
+	return $tab;
+}
+
+function get_tab_remplacements_eleve($login_eleve, $mode="") {
+	$tab=array();
+
+	$sql_ajout="";
+	if($mode=="") {
+		$sql_ajout=" AND date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."'";
+	}
+
+	$sql="SELECT DISTINCT apr.* FROM abs_prof_remplacement apr, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec 
+				WHERE jeg.login='$login_eleve' AND 
+					jeg.login=jec.login AND 
+					jec.id_classe=apr.id_classe AND 
+					jeg.id_groupe=apr.id_groupe AND 
+					apr.validation_remplacement='oui' AND 
+					apr.info_famille='oui'".$sql_ajout.";";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		$tab_infos_absence=array();
+		$nom_prof=array();
+		while($lig=mysqli_fetch_object($res)) {
+			// Il faudrait tester plus finement les dates dans le cas d'élèves qui changent de classe en cours d'année.
+
+			$tab[$cpt]['id']=$lig->id;
+			$tab[$cpt]['id_absence']=$lig->id_absence;
+
+			if(!isset($tab_infos_absence[$lig->id_absence])) {
+				$sql="SELECT * FROM abs_prof WHERE id='$lig->id_absence';";
+				$res_abs=mysqli_query($GLOBALS["mysqli"], $sql);
+				$lig_abs=mysqli_fetch_object($res_abs);
+				$tab_infos_absence[$lig->id_absence]['login_prof_abs']=$lig_abs->login_user;
+			}
+			$tab[$cpt]['login_prof_abs']=$tab_infos_absence[$lig->id_absence]['login_prof_abs'];
+
+			if(!isset($nom_prof[$tab[$cpt]['login_prof_abs']])) {
+				$nom_prof[$tab[$cpt]['login_prof_abs']]=affiche_utilisateur($tab[$cpt]['login_prof_abs'], $lig->id_classe);
+			}
+
+			$tab[$cpt]['id_groupe']=$lig->id_groupe;
+			$tab[$cpt]['id_classe']=$lig->id_classe;
+			$tab[$cpt]['jour']=$lig->jour;
+			$tab[$cpt]['id_creneau']=$lig->id_creneau;
+			$tab[$cpt]['date_debut_r']=$lig->date_debut_r;
+			$tab[$cpt]['date_fin_r']=$lig->date_fin_r;
+			$tab[$cpt]['login_user']=$lig->login_user;
+
+			if(!isset($nom_prof[$tab[$cpt]['login_user']])) {
+				$nom_prof[$tab[$cpt]['login_user']]=affiche_utilisateur($tab[$cpt]['login_user'], $lig->id_classe);
+			}
+
+			$tab[$cpt]['commentaire_prof']=$lig->commentaire_prof;
+			$tab[$cpt]['reponse']=$lig->reponse;
+			$tab[$cpt]['date_reponse']=$lig->date_reponse;
+			$tab[$cpt]['validation_remplacement']=$lig->validation_remplacement;
+			$tab[$cpt]['commentaire_validation']=$lig->commentaire_validation;
+			$tab[$cpt]['salle']=$lig->salle;
+			$tab[$cpt]['info_famille']=$lig->info_famille;
+			$tab[$cpt]['texte_famille']=$lig->texte_famille;
+
+			// Effectuer des preg_replace() sur des chaines 
+			//__PROF_ABSENT__, __COURS__, __DATE_HEURE__, __PROF_REMPLACANT__ et __SALLE__
+			$chaine_a_traduire=$lig->texte_famille;
+			$chaine_a_traduire=preg_replace("/__SALLE__/", $lig->salle, $chaine_a_traduire);
+			$chaine_a_traduire=preg_replace("/__PROF_ABSENT__/", $nom_prof[$tab[$cpt]['login_prof_abs']], $chaine_a_traduire);
+			$chaine_a_traduire=preg_replace("/__PROF_REMPLACANT__/", $nom_prof[$tab[$cpt]['login_user']], $chaine_a_traduire);
+
+			$ts=mysql_date_to_unix_timestamp($tab[$cpt]['date_debut_r']);
+			$date_heure=strftime("%A %d/%m/%Y de %H:%M", $ts);
+			$ts=mysql_date_to_unix_timestamp($tab[$cpt]['date_fin_r']);
+			$date_heure.=strftime(" à %H:%M", $ts);
+			$chaine_a_traduire=preg_replace("/__DATE_HEURE__/", $date_heure, $chaine_a_traduire);
+
+			$info_grp=get_info_grp($lig->id_groupe, array('description', 'matieres'));
+			$chaine_a_traduire=preg_replace("/__COURS__/", $info_grp, $chaine_a_traduire);
+
+			// A FAIRE : PRENDRE EN COMPTE AUSSI UNE CHAINE __LIEN_EDT_ICS__
+
+			$tab[$cpt]['texte_famille_traduit']=$chaine_a_traduire;
+
+			$cpt++;
 		}
 	}
 

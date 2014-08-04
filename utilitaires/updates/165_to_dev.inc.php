@@ -237,4 +237,29 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'texte_famille' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'texte_famille';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE abs_prof_remplacement ADD texte_famille TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'info_famille' à la table 'abs_prof_remplacement'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'info_famille';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE abs_prof_remplacement ADD info_famille VARCHAR( 10 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 ?>
