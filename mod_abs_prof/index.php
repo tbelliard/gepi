@@ -194,6 +194,12 @@ if(($_SESSION['statut']=="administrateur")||
 		$nom_classe=array();
 		$nom_prof=array();
 		while($lig=mysqli_fetch_object($res)) {
+			$ts1=mysql_date_to_unix_timestamp($lig->date_debut);
+			$date_heure=strftime("Du %A %d/%m/%Y %H:%M", $ts1);
+			$ts2=mysql_date_to_unix_timestamp($lig->date_fin);
+			$date_heure.="<br />".strftime(" au %A %d/%m/%Y %H:%M", $ts2);
+			//formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")
+
 			echo "
 				<tr>";
 			if(($_SESSION['statut']=="administrateur")||
@@ -202,13 +208,13 @@ if(($_SESSION['statut']=="administrateur")||
 				echo "
 					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".$lig->id."</a></td>
 					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".civ_nom_prenom($lig->login_user)."</a></td>
-					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")."</a></td>";
+					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".$date_heure."</a></td>";
 			}
 			else {
 				echo "
 				<td>".$lig->id."</td>
 				<td>".civ_nom_prenom($lig->login_user)."</td>
-				<td>".formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")."</td>";
+				<td>".$date_heure."</td>";
 			}
 
 			$sql="SELECT DISTINCT jour, id_creneau FROM abs_prof_remplacement WHERE id_absence='$lig->id';";
@@ -456,8 +462,8 @@ if(($_SESSION['statut']=="administrateur")||
 
 	echo "
 	<li><p><a href='afficher_remplacements.php'>Afficher les remplacements validés</a> et informer ou non les familles.</p></li>
-	<li>Supprimer des absences saisies</li>
-	<li>Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date.</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Supprimer des absences saisies</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date.</li>
 </ul>";
 
 
