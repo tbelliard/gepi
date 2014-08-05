@@ -317,16 +317,24 @@ else {
 				</tr>";
 	}
 	$nb_lignes=$loop;
+
+		$lien_edt_ical="";
+		$commentaire_edt_ical="";
+		if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalEleve'))||(getSettingAOui('EdtIcalResponsable')))) {
+			$lien_edt_ical="\n__LIEN_EDT_ICAL__";
+			$commentaire_edt_ical="<br />La chaine __LIEN_EDT_ICAL__ sera remplacée par un lien vers l'Emploi du temps importé depuis un fichier ICAL/ICS.<br />Cela ne présente d'intérêt que si vous envoyez un fichier ICAL/ICS avec le remplacement pris en compte.";
+		}
+
 	echo "
 			</tbody>
 		</table>
 
 		<p>Texte affiché aux élèves et parents dans le cas où les familles sont informées&nbsp;:</p>
-		<textarea name='texte_famille' cols='60' rows='5'>En raison de l'absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.</textarea>
+		<textarea name='texte_famille' cols='60' rows='5'>En raison de l'absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.$lien_edt_ical</textarea>
 
 		<p><input type='submit' value='Valider' /></p>
 
-		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Les chaines __PROF_ABSENT__, __COURS__, __DATE_HEURE__, __PROF_REMPLACANT__ et __SALLE__ seront remplacées par les valeurs/textes appropriés.</p>
+		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Les chaines __PROF_ABSENT__, __COURS__, __DATE_HEURE__, __PROF_REMPLACANT__ et __SALLE__ seront remplacées par les valeurs/textes appropriés.".$commentaire_edt_ical."</p>
 
 	</fieldset>
 </form>

@@ -11685,6 +11685,8 @@ function get_tab_jours_vacances($id_classe='') {
 }
 
 function get_tab_remplacements_eleve($login_eleve, $mode="") {
+	global $gepiPath;
+
 	$tab=array();
 
 	$sql_ajout="";
@@ -11753,16 +11755,24 @@ function get_tab_remplacements_eleve($login_eleve, $mode="") {
 			$chaine_a_traduire=preg_replace("/__PROF_ABSENT__/", $nom_prof[$tab[$cpt]['login_prof_abs']], $chaine_a_traduire);
 			$chaine_a_traduire=preg_replace("/__PROF_REMPLACANT__/", $nom_prof[$tab[$cpt]['login_user']], $chaine_a_traduire);
 
-			$ts=mysql_date_to_unix_timestamp($tab[$cpt]['date_debut_r']);
-			$date_heure=strftime("%A %d/%m/%Y de %H:%M", $ts);
-			$ts=mysql_date_to_unix_timestamp($tab[$cpt]['date_fin_r']);
-			$date_heure.=strftime(" à %H:%M", $ts);
+			$ts1=mysql_date_to_unix_timestamp($tab[$cpt]['date_debut_r']);
+			$date_heure=strftime("%A %d/%m/%Y de %H:%M", $ts1);
+			$ts2=mysql_date_to_unix_timestamp($tab[$cpt]['date_fin_r']);
+			$date_heure.=strftime(" à %H:%M", $ts2);
 			$chaine_a_traduire=preg_replace("/__DATE_HEURE__/", $date_heure, $chaine_a_traduire);
 
 			$info_grp=get_info_grp($lig->id_groupe, array('description', 'matieres'));
 			$chaine_a_traduire=preg_replace("/__COURS__/", $info_grp, $chaine_a_traduire);
 
-			// A FAIRE : PRENDRE EN COMPTE AUSSI UNE CHAINE __LIEN_EDT_ICS__
+			// A FAIRE : PRENDRE EN COMPTE AUSSI UNE CHAINE __LIEN_EDT_ICAL__
+			if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalEleve'))||(getSettingAOui('EdtIcalResponsable')))) {
+				if(preg_match("/__LIEN_EDT_ICAL__/", $chaine_a_traduire)) {
+					$num_semaine_annee=sprintf("%02d", strftime("%V", $ts1))."|".strftime("%Y", $ts1);
+					//$num_semaine_annee=strftime("%V", $ts1)."|".strftime("%Y", $ts1);
+					$chaine_a_traduire=preg_replace("/__LIEN_EDT_ICAL__/", "<a href='$gepiPath/edt/index.php?mode=afficher_edt&type_edt=classe&id_classe=".$lig->id_classe."&num_semaine_annee=".$num_semaine_annee."'>Emploi du temps</a>", $chaine_a_traduire);
+
+				}
+			}
 
 			$tab[$cpt]['texte_famille_traduit']=$chaine_a_traduire;
 

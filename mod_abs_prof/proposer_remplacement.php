@@ -124,10 +124,16 @@ function get_heures_debut_fin_creneau($id_creneau) {
 }
 */
 
+$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+	$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+}
+
 if(isset($_POST['is_posted'])) {
 	check_token();
 
 	$proposition=isset($_POST['proposition']) ? $_POST['proposition'] : array();
+	$envoi_mail=isset($_POST['envoi_mail']) ? $_POST['envoi_mail'] : "n";
 
 	$msg="";
 
@@ -189,19 +195,16 @@ if(isset($_POST['is_posted'])) {
 					$nb_reg++;
 					$id_proposition=mysqli_insert_id($GLOBALS["mysqli"]);
 
-					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-					}
+					if(($envoi_mail_actif=='y')&&($envoi_mail=="y")) {
 
-					$mail_dest=get_mail_user($login_user);
+						$mail_dest=get_mail_user($login_user);
 
-					if(($envoi_mail_actif=='y')&&(check_mail($mail_dest))) {
-						$tab_info_creneau=get_infos_creneau($id_creneau);
-						$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+						if(check_mail($mail_dest)) {
+							$tab_info_creneau=get_infos_creneau($id_creneau);
+							$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
 
-						$subject = "[GEPI]: Proposition de remplacement n°$id_proposition";
-						$texte_mail="Bonjour ".civ_nom_prenom($login_user).",
+							$subject = "[GEPI]: Proposition de remplacement n°$id_proposition";
+							$texte_mail="Bonjour ".civ_nom_prenom($login_user).",
 
 En raison de l'absence d'un professeur, une ou des classes sont libérées.
 Je vous propose le remplacement suivant (pour soulager la permanence,...):
@@ -219,19 +222,19 @@ Cordialement.
 -- 
 ".civ_nom_prenom($_SESSION['login']);
 
-						$headers = "";
-						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
-							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							$headers = "";
+							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							}
+
+							$message_id='proposition_remplacement_'.$id_proposition."_".$jour;
+							if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+							//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+							// On envoie le mail
+							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 						}
-
-						$message_id='proposition_remplacement_'.$id_proposition."_".$jour;
-						if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
-						//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
-
-						// On envoie le mail
-						$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 					}
-
 				}
 				else {
 					$msg.="Erreur $sql<br />";
@@ -324,45 +327,42 @@ if((isset($_GET['valider_proposition']))||(isset($_POST['valider_proposition']))
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($update) {
 						$msg="Remplacement attribué à ".civ_nom_prenom($login_user).".<br />";
+						$msg.="N'oubliez pas d'<a href='$gepiPath/mod_abs_prof/afficher_remplacements.php?mode=familles_non_informees'>informer les familles</a>.<br />";
 
-						$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-						if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-							$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-						}
-
-						$mail_dest="";
-						$references_mail="";
-						$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
-														id_groupe='".$id_groupe."' AND 
-														id_classe='".$id_classe."' AND 
-														jour='".$jour."' AND 
-														id_creneau='".$id_creneau."' AND 
-														reponse!='non';";
-						//echo "$sql<br />";
-						$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
-						while($lig=mysqli_fetch_object($res_mail)) {
-							if(check_mail($lig->email)) {
-								if($mail_dest!="") {
-									$mail_dest.=",";
-									$references_mail.="\r\n";
+						if($envoi_mail_actif=='y') {
+							$mail_dest="";
+							$references_mail="";
+							$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
+															id_groupe='".$id_groupe."' AND 
+															id_classe='".$id_classe."' AND 
+															jour='".$jour."' AND 
+															id_creneau='".$id_creneau."' AND 
+															reponse!='non';";
+							//echo "$sql<br />";
+							$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+							while($lig=mysqli_fetch_object($res_mail)) {
+								if(check_mail($lig->email)) {
+									if($mail_dest!="") {
+										$mail_dest.=",";
+										$references_mail.="\r\n";
+									}
+									//$mail_dest.=$lig->email;
+									if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
+										$mail_dest.=$lig->email;
+									}
+									$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 								}
-								//$mail_dest.=$lig->email;
-								if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
-									$mail_dest.=$lig->email;
-								}
-								$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 							}
-						}
 
-						if(($envoi_mail_actif=='y')&&($mail_dest!="")) {
-							$tab_info_creneau=get_infos_creneau($id_creneau);
-							$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+							if($mail_dest!="") {
+								$tab_info_creneau=get_infos_creneau($id_creneau);
+								$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
 
-							$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
+								$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
 
-							$designation_user=civ_nom_prenom($login_user);
-							$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
-							$texte_mail="Bonjour ".$designation_user.",
+								$designation_user=civ_nom_prenom($login_user);
+								$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
+								$texte_mail="Bonjour ".$designation_user.",
 
 Le remplacement suivant vous est attribué:
 
@@ -376,17 +376,18 @@ Cordialement.
 -- 
 ".civ_nom_prenom($_SESSION['login']);
 
-							$headers = "";
-							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
-								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								$headers = "";
+								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								}
+
+								$message_id='remplacement_c'.$id_creneau."_j".$jour;
+								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+								// On envoie le mail
+								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 							}
-
-							$message_id='remplacement_c'.$id_creneau."_j".$jour;
-							if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
-							if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
-
-							// On envoie le mail
-							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 						}
 
 					}
@@ -435,45 +436,41 @@ Cordialement.
 			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($update) {
 				$msg="Remplacement attribué à ".civ_nom_prenom($login_user).".<br />";
-
-				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-				}
-
-				$mail_dest="";
-				$references_mail="";
-				$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
-												id_groupe='".$id_groupe."' AND 
-												id_classe='".$id_classe."' AND 
-												jour='".$jour."' AND 
-												id_creneau='".$id_creneau."' AND 
-												reponse!='non';";
-				//echo "$sql<br />";
-				$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
-				while($lig=mysqli_fetch_object($res_mail)) {
-					if(check_mail($lig->email)) {
-						if($mail_dest!="") {
-							$mail_dest.=",";
-							$references_mail.="\r\n";
+				$msg.="N'oubliez pas d'<a href='$gepiPath/mod_abs_prof/afficher_remplacements.php?mode=familles_non_informees'>informer les familles</a>.<br />";
+				if($envoi_mail_actif=='y') {
+					$mail_dest="";
+					$references_mail="";
+					$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
+													id_groupe='".$id_groupe."' AND 
+													id_classe='".$id_classe."' AND 
+													jour='".$jour."' AND 
+													id_creneau='".$id_creneau."' AND 
+													reponse!='non';";
+					//echo "$sql<br />";
+					$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($lig=mysqli_fetch_object($res_mail)) {
+						if(check_mail($lig->email)) {
+							if($mail_dest!="") {
+								$mail_dest.=",";
+								$references_mail.="\r\n";
+							}
+							//$mail_dest.=$lig->email;
+							if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
+								$mail_dest.=$lig->email;
+							}
+							$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 						}
-						//$mail_dest.=$lig->email;
-						if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
-							$mail_dest.=$lig->email;
-						}
-						$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 					}
-				}
 
-				if(($envoi_mail_actif=='y')&&($mail_dest!="")) {
-					$tab_info_creneau=get_infos_creneau($id_creneau);
-					$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
+					if($mail_dest!="") {
+						$tab_info_creneau=get_infos_creneau($id_creneau);
+						$info_creneau=$tab_info_creneau['nom_creneau']." (".$tab_info_creneau['debut_court']."-".$tab_info_creneau['fin_court'].")";
 
-					$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
+						$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
 
-					$designation_user=civ_nom_prenom($login_user);
-					$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
-					$texte_mail="Bonjour ".$designation_user.",
+						$designation_user=civ_nom_prenom($login_user);
+						$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
+						$texte_mail="Bonjour ".$designation_user.",
 
 Le remplacement suivant vous est attribué:
 
@@ -487,17 +484,18 @@ Cordialement.
 -- 
 ".civ_nom_prenom($_SESSION['login']);
 
-					$headers = "";
-					if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
-						$headers.="Reply-to:".$_SESSION['email']."\r\n";
+						$headers = "";
+						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+						}
+
+						$message_id='remplacement_c'.$id_creneau."_j".$jour;
+						if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+						//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+
+						// On envoie le mail
+						$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 					}
-
-					$message_id='remplacement_c'.$id_creneau."_j".$jour;
-					if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
-					//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
-
-					// On envoie le mail
-					$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
 				}
 
 			}

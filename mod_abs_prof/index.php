@@ -140,11 +140,187 @@ echo "<a name=\"debut_de_page\"></a>
 	<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
-<h2>Absences de professeurs</h2>";
+<h2>Absences de professeurs</h2>
+<ul>";
 
 if(($_SESSION['statut']=="administrateur")||
 ($_SESSION['statut']=="scolarite")||
 ($_SESSION['statut']=="cpe")) {
+
+
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfSaisieAbsScol')))||
+	(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfSaisieAbsCpe')))) {
+		echo "
+	<li>
+		<p><a href='saisir_absence.php'>Saisir une absence</a></p>
+	</li>";
+	}
+
+	$sql="SELECT * FROM abs_prof WHERE date_fin>='".strftime('%Y-%m-%d %H:%M:%S')."' ORDER BY date_debut;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "
+	<li>
+		<p><span style='color:red'>Aucune absence à venir ou en cours n'est saisie.</span></p>
+	</li>";
+	}
+	else {
+		echo "
+	<li>
+		<p><strong>Suivre les propositions de remplacements&nbsp;:</strong></p>
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th colspan='3'>Absences</th>
+					<th colspan='4'>Propositions de remplacements</th>
+					<th rowspan='2'>Remplacements</th>
+					<th rowspan='2'>Afficher<br />Informer les familles</th>
+				</tr>
+				<tr>
+					<th>Id</th>
+					<th>Prof</th>
+					<th>Dates</th>
+
+					<th>Créneaux proposés</th>
+					<th>Accepté</th>
+					<th>Rejeté</th>
+					<th>Validé</th>
+				</tr>
+			</thead>
+			<tbody>";
+
+		$nom_classe=array();
+		$nom_prof=array();
+		while($lig=mysqli_fetch_object($res)) {
+			echo "
+				<tr>";
+			if(($_SESSION['statut']=="administrateur")||
+			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfSaisieAbsScol')))||
+			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfSaisieAbsCpe')))) {
+				echo "
+					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".$lig->id."</a></td>
+					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".civ_nom_prenom($lig->login_user)."</a></td>
+					<td><a href='saisir_absence.php?id_absence=$lig->id' title=\"Consulter/Modifier l'absence\">".formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")."</a></td>";
+			}
+			else {
+				echo "
+				<td>".$lig->id."</td>
+				<td>".civ_nom_prenom($lig->login_user)."</td>
+				<td>".formate_date($lig->date_debut,"y")."<br />au ".formate_date($lig->date_fin,"y")."</td>";
+			}
+
+			$sql="SELECT DISTINCT jour, id_creneau FROM abs_prof_remplacement WHERE id_absence='$lig->id';";
+			$res_rempl=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res_rempl);
+			if(($_SESSION['statut']=="administrateur")||
+			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfProposerRemplacementScol')))||
+			(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfProposerRemplacementCpe')))) {
+				echo "
+					<td title='$nb créneaux avec remplacement proposé.\n\nCliquer pour consulter/modifier/ effectuer des propositions.'><a href='proposer_remplacement.php?id_absence=$lig->id'>$nb</a></td>";
+			}
+			else {
+			echo "
+					<td title='$nb créneaux avec remplacement proposé.'>";
+				echo $nb;
+			echo "</td>";
+			}
+
+			$sql="SELECT 1=1 FROM abs_prof_remplacement WHERE id_absence='$lig->id' AND reponse='oui';";
+			$res_rempl=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res_rempl);
+			if(($nb>0)&&
+				(($_SESSION['statut']=="administrateur")||
+				(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfAttribuerRemplacementScol')))||
+				(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfAttribuerRemplacementCpe'))))) {
+				echo "
+					<td><a href='attribuer_remplacement.php'>".$nb."</a></td>";
+			}
+			else {
+				echo "
+						<td title='$nb réponses positives.'>".$nb."</td>";
+			}
+
+			$sql="SELECT 1=1 FROM abs_prof_remplacement WHERE id_absence='$lig->id' AND reponse='non';";
+			$res_rempl=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res_rempl);
+			echo "
+					<td title='$nb réponses négatives.'>".$nb."</td>";
+
+			$sql="SELECT * FROM abs_prof_remplacement WHERE id_absence='$lig->id' AND validation_remplacement='oui' ORDER BY date_debut_r, id_classe;";
+			$res_rempl=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res_rempl);
+			echo "
+					<td title='$nb remplacements validés.'>".$nb."</td>";
+
+			// Liste des remplacements
+			echo "
+					<td>
+						<table class='boireaus boireaus_alt'>";
+			while($lig_rempl=mysqli_fetch_object($res_rempl)) {
+				$ts1=mysql_date_to_unix_timestamp($lig_rempl->date_debut_r);
+				$date_heure=strftime("%A %d/%m/%Y de %H:%M", $ts1);
+				$ts2=mysql_date_to_unix_timestamp($lig_rempl->date_fin_r);
+				$date_heure.=strftime(" à %H:%M", $ts2);
+
+
+				$style="";
+				if($ts2<time()) {
+					$style=" style='background-color:grey;'";
+				}
+
+				echo "
+							<tr$style>
+								<td>";
+				if(!isset($nom_classe[$lig_rempl->id_classe])) {
+					$nom_classe[$lig_rempl->id_classe]=get_nom_classe($lig_rempl->id_classe);
+				}
+				echo $nom_classe[$lig_rempl->id_classe];
+
+				echo "
+								</td>
+								<td>";
+				echo $date_heure;
+				echo "
+								</td>
+								<td>";
+
+				if(!isset($nom_prof[$lig_rempl->login_user])) {
+					$nom_prof[$lig_rempl->login_user]=affiche_utilisateur($lig_rempl->login_user, $lig_rempl->id_classe);
+				}
+				echo $nom_prof[$lig_rempl->login_user];
+				echo "
+								</td>
+							</tr>";
+			}
+			echo "
+						</table>
+					</td>";
+
+			// Familles informées
+			$sql="SELECT 1=1 FROM abs_prof_remplacement WHERE id_absence='$lig->id' AND validation_remplacement='oui' AND info_famille='oui';";
+			$res_rempl=mysqli_query($GLOBALS["mysqli"], $sql);
+			$nb=mysqli_num_rows($res_rempl);
+			echo "
+					<td><a href='afficher_remplacements.php?mode=tous'>".$nb."</a></td>";
+
+
+			echo "
+				</tr>";
+		}
+
+		echo "
+			</tbody>
+		</table>
+	</li>";
+
+	}
+
+	// Conserver des liens pour valider après coup,...
+	// Le tableau ne donne que l'en-cours
+
+	/*
 	echo "
 <p>Choix&nbsp;:</p>
 <ul>";
@@ -225,6 +401,7 @@ if(($_SESSION['statut']=="administrateur")||
 		echo "
 	</li>";
 	}
+	*/
 
 	if(($_SESSION['statut']=="administrateur")||
 	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfAttribuerRemplacementScol')))||
@@ -243,27 +420,34 @@ if(($_SESSION['statut']=="administrateur")||
 		if(count($tab_propositions_avec_reponse_positive)>0) {
 			echo "
 	<li>
-		<p>".count($tab_propositions_avec_reponse_positive)." proposition(s) a(ont) reçu une réponse favorable (<em>pour des cours/créneaux dont le remplacement n'est pas encore attribué</em>).<br />
+		<p><strong>Remplacements à venir&nbsp;:</strong><br />".count($tab_propositions_avec_reponse_positive)." proposition(s) a(ont) reçu une réponse favorable (<em>pour des cours/créneaux dont le remplacement n'est pas encore attribué</em>).<br />
 		<a href='attribuer_remplacement.php'>Valider/attribuer le(s) remplacement(s)</a></p>
 	</li>";
 		}
 
 
-		$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
+		//$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
+		$sql="SELECT DISTINCT id_absence, id_classe, id_groupe, jour, id_creneau FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$tab_remplacements=array();
+			$tab_remplacements_creneaux_testes=array();
 			while($lig=mysqli_fetch_object($res)) {
-				if(check_proposition_remplacement_validee2($lig->id)=="") {
-					// Créneau sans remplacement programmé
-					$tab_remplacements[]=$lig->id;
+				//if(check_proposition_remplacement_validee2($lig->id)=="") {
+				if(!in_array($lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau ,$tab_remplacements_creneaux_testes)) {
+					if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+						// Créneau sans remplacement programmé
+						//$tab_remplacements[]=$lig->id;
+						$tab_remplacements[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
+					}
+					$tab_remplacements_creneaux_testes[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
 				}
 			}
 		}
 		if(count($tab_remplacements)>0) {
 			echo "
 	<li>
-		<p>".count($tab_remplacements)." remplacement(s) de cours (<em>dans le passé</em>) n'a(ont) pas été enregistré(s).<br />
+		<p><strong>Éventuels remplacements passés non validés&nbsp;:</strong><br />".count($tab_remplacements)." remplacement(s) de cours (<em>dans le passé</em>) n'a(ont) pas été enregistré(s).<br />
 		S'il(s) a(ont) eu lieu, vous pouvez les attribuer maintenant à des fins de statistiques/totaux dans le cas où des rémunérations de remplacements sont prévues.<br />
 		<a href='attribuer_remplacement.php?mode=anciens'>Valider/attribuer le(s) remplacement(s)</a></p>
 	</li>";
@@ -279,7 +463,6 @@ if(($_SESSION['statut']=="administrateur")||
 
 echo "<p style='color:red; margin-top:1em; text-indent:-5em; margin-left:5em;'>A FAIRE : 
 Pouvoir afficher tous les remplacements à effectuer pour une journée donnée de façon à proposer au mieux les remplacements aux divers professeurs (a priori) disponibles.<br />
-Revoir la présentation du listing admin pour présenter en tableau les abs, propositions, validation<br />
 Pouvoir générer un tableau/listing des remplacements par semaine.<br />
 </p>";
 

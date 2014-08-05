@@ -209,6 +209,7 @@ Cordialement.
 
 	if($nb_validations>0) {
 		$msg.="$nb_validations remplacement(s) validé(s).<br />";
+		$msg.="N'oubliez pas d'<a href='$gepiPath/mod_abs_prof/afficher_remplacements.php?mode=familles_non_informees'>informer les familles</a>.<br />";
 	}
 
 }
