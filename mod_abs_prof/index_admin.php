@@ -192,6 +192,24 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==4)) {
 	$msg.="$cpt_matieres_exclues_supprimees matière(s) précédemment exclue(s) des propositions de remplacements ne le sont plus.<br />";
 }
 
+if((isset($_POST['is_posted']))&&($_POST['is_posted']==5)) {
+	check_token();
+
+	$abs_prof_modele_message_eleve=isset($_POST['abs_prof_modele_message_eleve']) ? $_POST['abs_prof_modele_message_eleve'] : "";
+
+	if($abs_prof_modele_message_eleve=="") {
+		$msg="La chaine proposée ne peut pas être vide.<br />";
+	}
+	else {
+		if(!saveSetting('abs_prof_modele_message_eleve', $abs_prof_modele_message_eleve)) {
+			$msg="Erreur lors de l'enregistrement du modèle de message.<br />";
+		}
+		else {
+			$msg="Modèle de message enregistré.<br />";
+		}
+	}
+}
+
 
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées !";

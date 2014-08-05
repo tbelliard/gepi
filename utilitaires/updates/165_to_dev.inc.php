@@ -262,4 +262,20 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
+
+$result .= "&nbsp;-> Initialisation de 'abs_prof_modele_message_eleve' : ";
+$sql="SELECT value FROM setting WHERE name='abs_prof_modele_message_eleve';";
+$query = mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($query)==0) {
+	$sql="INSERT INTO setting SET name='abs_prof_modele_message_eleve', value='En raison de l''absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.';";
+	$query = mysqli_query($mysqli, $sql);
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Initialisation déjà faite");
+}
+
 ?>

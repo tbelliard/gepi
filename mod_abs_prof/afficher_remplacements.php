@@ -318,12 +318,18 @@ else {
 	}
 	$nb_lignes=$loop;
 
-		$lien_edt_ical="";
-		$commentaire_edt_ical="";
-		if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalEleve'))||(getSettingAOui('EdtIcalResponsable')))) {
-			$lien_edt_ical="\n__LIEN_EDT_ICAL__";
-			$commentaire_edt_ical="<br />La chaine __LIEN_EDT_ICAL__ sera remplacée par un lien vers l'Emploi du temps importé depuis un fichier ICAL/ICS.<br />Cela ne présente d'intérêt que si vous envoyez un fichier ICAL/ICS avec le remplacement pris en compte.";
-		}
+	$abs_prof_modele_message_eleve=getSettingValue('abs_prof_modele_message_eleve');
+	if($abs_prof_modele_message_eleve=="") {
+		$abs_prof_modele_message_eleve="En raison de l'absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.";
+		saveSetting('abs_prof_modele_message_eleve', $abs_prof_modele_message_eleve);
+	}
+
+	$lien_edt_ical="";
+	$commentaire_edt_ical="";
+	if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalEleve'))||(getSettingAOui('EdtIcalResponsable')))) {
+		$lien_edt_ical="\n__LIEN_EDT_ICAL__";
+		$commentaire_edt_ical="<br />La chaine __LIEN_EDT_ICAL__ sera remplacée par un lien vers l'Emploi du temps importé depuis un fichier ICAL/ICS.<br />Cela ne présente d'intérêt que si vous envoyez un fichier ICAL/ICS avec le remplacement pris en compte.";
+	}
 
 	echo "
 			</tbody>

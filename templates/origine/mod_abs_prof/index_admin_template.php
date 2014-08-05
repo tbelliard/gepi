@@ -275,6 +275,42 @@
 
 <!-- ================================================ -->
 
+<h2>Messages</h2>
+
+<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form5'>
+  <fieldset class='fieldset_opacite50'>
+<?php
+	echo add_token_field();
+?>
+	<legend class="invisible">Messages</legend>
+
+<?php
+	$abs_prof_modele_message_eleve=getSettingValue('abs_prof_modele_message_eleve');
+	if($abs_prof_modele_message_eleve=="") {
+		$abs_prof_modele_message_eleve="En raison de l'absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.";
+		if(getSettingAOui('active_edt_ical')) {
+			$abs_prof_modele_message_eleve.="\n__LIEN_EDT_ICAL__";
+		}
+		saveSetting('abs_prof_modele_message_eleve', $abs_prof_modele_message_eleve);
+	}
+	echo "<p>Modèle de message en page d'accueil pour informer les parents et élèves des remplacements validés&nbsp;:</p>
+	<textarea name='abs_prof_modele_message_eleve' cols='60' rows='5'>".stripslashes(preg_replace('/(\\\n)+/',"\n", $abs_prof_modele_message_eleve))."</textarea>";
+?>
+
+	<input type='hidden' name='is_posted' value='5' />
+
+	<p class="center">
+		<input type='submit' name='valider' value='Valider' />
+	</p>
+
+	<p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Les chaines __PROF_ABSENT__, __COURS__, __DATE_HEURE__, __PROF_REMPLACANT__ et __SALLE__ seront remplacées par les valeurs/textes appropriés.<br />
+	Si le module EDT ICAL/ICS, est actif, vous pouvez aussi insérer la chaine __LIEN_EDT_ICAL__ qui sera remplacée par un lien vers la semaine appropriée dans l'emploi du temps de la classe.</p>
+
+  </fieldset>
+</form>
+
+<!-- ================================================ -->
+
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
