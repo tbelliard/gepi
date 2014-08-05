@@ -131,7 +131,8 @@ if((isset($_POST['is_posted']))) {
 						// On n'envoie pas les mails pour des remplacements passés
 						if($mode=="") {
 							if($commentaire_validation[$key]!="") {
-								$chaine_commentaire_validation=$commentaire_validation[$key]."\n";
+								//$chaine_commentaire_validation=$commentaire_validation[$key]."\n";
+								$chaine_commentaire_validation=preg_replace('/(\\\n)+/',"\n", $commentaire_validation[$key])."\n";
 							}
 							if($salle[$key]!="") {
 								$chaine_salle="Salle ".$salle[$key]."\n";

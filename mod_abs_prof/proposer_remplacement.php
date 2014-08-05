@@ -311,7 +311,7 @@ if((isset($_GET['valider_proposition']))||(isset($_POST['valider_proposition']))
 					$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui'";
 					if($commentaire_validation!="") {
 						$sql.=", commentaire_validation='$commentaire_validation'";
-						$chaine_commentaire_validation=$commentaire_validation."\n";
+						$chaine_commentaire_validation=preg_replace('/(\\\n)+/',"\n", $commentaire_validation)."\n";
 					}
 					if($salle!="") {
 						$sql.=", salle='$salle'";
@@ -420,7 +420,8 @@ Cordialement.
 			$sql="UPDATE abs_prof_remplacement SET validation_remplacement='oui'";
 			if($commentaire_validation!="") {
 				$sql.=", commentaire_validation='$commentaire_validation'";
-				$chaine_commentaire_validation=$commentaire_validation."\n";
+				//$chaine_commentaire_validation=$commentaire_validation."\n";
+				$chaine_commentaire_validation=preg_replace('/(\\\n)+/',"\n", $commentaire_validation)."\n";
 			}
 			if($salle!="") {
 				$sql.=", salle='$salle'";
@@ -1288,11 +1289,13 @@ echo "
 	</fieldset>
 </form>
 
-<p style='color:red; text-indent:-4em;margin-left:4em;'><em>A FAIRE&nbsp;:</em></p>
+<p style='text-indent:-4em;margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em></p>
 <ul>
-	<li>Pouvoir envoyer la proposition à tous les professeurs de la classe (cas du professeur privé d'un cours parce qu'une sortie est organisée pour la classe).</li>
-	<li>Proposer de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.</li>
-	<li>Réduire/masquer les jours passés.</li>
+	<li>Lorsqu'une proposition est formulée, elle apparait en page d'accueil du professeur jusqu'à ce que le professeur y ait répondu.<br />
+	Lorsqu'un remplacement est validé, le professeur a également un rappel en page d'accueil (<em>jusqu'à ce que la date du remplacement soit passée</em>)</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir envoyer la proposition à tous les professeurs de la classe (cas du professeur privé d'un cours parce qu'une sortie est organisée pour la classe).</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Proposer de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Réduire/masquer les jours passés.</li>
 </ul>
 
 <script type='text/javascript'>
