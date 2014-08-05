@@ -151,6 +151,47 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==3)) {
 	$msg.="$cpt_comptes_exclus_supprimes compte(s) précédemment exclu(s) des propositions de remplacements ne le sont plus.<br />";
 }
 
+if((isset($_POST['is_posted']))&&($_POST['is_posted']==4)) {
+	check_token();
+
+	$matiere_exclue=isset($_POST['matiere_exclue']) ? $_POST['matiere_exclue'] : array();
+
+	$tab_mae=array();
+
+	$sql="SELECT value FROM abs_prof_divers WHERE name='matiere_exclue';";
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
+			$tab_mae[]=$lig_mae->value;
+		}
+	}
+
+	$cpt_matieres_exclues_ajoutees=0;
+	for($loop=0;$loop<count($matiere_exclue);$loop++) {
+		if(!in_array($matiere_exclue[$loop], $tab_mae)) {
+			$sql="INSERT INTO abs_prof_divers SET name='matiere_exclue', value='".$matiere_exclue[$loop]."';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($insert) {
+				$cpt_matieres_exclues_ajoutees++;
+			}
+		}
+	}
+	$msg="$cpt_matieres_exclues_ajoutees matière(s) exclue(s) des propositions de remplacements prises en compte.<br />";
+
+	$cpt_matieres_exclues_supprimees=0;
+	for($loop=0;$loop<count($tab_mae);$loop++) {
+		if(!in_array($tab_mae[$loop], $matiere_exclue)) {
+			$sql="DELETE FROM abs_prof_divers WHERE name='matiere_exclue' AND value='".$matiere_exclue[$loop]."';";
+			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($delete) {
+				$cpt_matieres_exclues_supprimees++;
+			}
+		}
+	}
+
+	$msg.="$cpt_matieres_exclues_supprimees matière(s) précédemment exclue(s) des propositions de remplacements ne le sont plus.<br />";
+}
+
 
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées !";

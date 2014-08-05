@@ -11653,6 +11653,20 @@ function get_tab_profs_exclus_des_propositions_de_remplacement() {
 	return $tab;
 }
 
+function get_tab_matieres_exclues_des_propositions_de_remplacement() {
+	$tab=array();
+
+	$sql="SELECT value FROM abs_prof_divers WHERE name='matiere_exclue';";
+	$res_mae=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_mae)>0) {
+		while($lig_mae=mysqli_fetch_object($res_mae)) {
+			$tab[]=$lig_mae->value;
+		}
+	}
+
+	return $tab;
+}
+
 function get_tab_jours_vacances($id_classe='') {
 	$tab=array();
 

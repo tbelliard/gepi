@@ -916,6 +916,7 @@ $tab_jour_u[6]="samedi";
 $tab_jour_u[7]="dimanche";
 
 $tab_profs_exclus_des_propositions_de_remplacement=get_tab_profs_exclus_des_propositions_de_remplacement();
+$tab_matieres_exclues_des_propositions_de_remplacement=get_tab_matieres_exclues_des_propositions_de_remplacement();
 /*
 echo "<pre>";
 print_r($tab_profs_exclus_des_propositions_de_remplacement);
@@ -1063,11 +1064,16 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 			</td>
 			<td style='text-align:left;'>
 
-				<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."'></a>
+				<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."'></a>";
 
+				if(isset($groups[$id_groupe_courant])) {
+					if(!in_array($groups[$id_groupe_courant]['matiere']['matiere'], $tab_matieres_exclues_des_propositions_de_remplacement)) {
+						echo "
 				<div style='float:right; width:40px;'>
 					<a href='#' onclick=\"cocher_sans_cours(".$date_aaaammjj.",".$tab_creneau[$loop]['id_definie_periode'].");return false;\" title=\"Cocher tous les professeurs proposés pour le créneau courant.\"><img src='../images/enabled.png' class='icone16' alt='Cocher' /></a>/<a href='#' onclick=\"decocher_sans_cours(".$date_aaaammjj.",".$tab_creneau[$loop]['id_definie_periode'].");return false;\" title=\"Décocher tous les professeurs proposés pour le créneau courant.\"><img src='../images/disabled.png' class='icone16' alt='Décocher' /></a>
 				</div>";
+					}
+				}
 
 				// +++++++++++++++++++++++
 				// A FAIRE : Tester aussi si le prof a déjà accepté un remplacement
@@ -1080,96 +1086,97 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 				// Dans le cas d'un groupe avec plusieurs classes, on peut récupérer deux fois le même prof (prof qui aurait les différentes classes)
 				//$tab_profs_deja_proposes=array();
 				if(isset($groups[$id_groupe_courant])) {
-					foreach($groups[$id_groupe_courant]['classes']['classes'] as $current_id_classe => $current_tab_classe) {
-						$sql="SELECT DISTINCT u.login, nom, prenom FROM utilisateurs u, 
-											j_groupes_classes jgc, 
-											j_groupes_professeurs jgp
-										WHERE u.login=jgp.login AND 
-											jgp.id_groupe=jgc.id_groupe AND 
-											jgc.id_classe='$current_id_classe' 
-										ORDER BY u.nom, u.prenom;";
-						//echo "$sql<br />";
-						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_prof)>0) {
-							if(count($groups[$id_groupe_courant]['classes']['classes']>1)) {
-								echo "
+					if(!in_array($groups[$id_groupe_courant]['matiere']['matiere'], $tab_matieres_exclues_des_propositions_de_remplacement)) {
+						foreach($groups[$id_groupe_courant]['classes']['classes'] as $current_id_classe => $current_tab_classe) {
+							$sql="SELECT DISTINCT u.login, nom, prenom FROM utilisateurs u, 
+												j_groupes_classes jgc, 
+												j_groupes_professeurs jgp
+											WHERE u.login=jgp.login AND 
+												jgp.id_groupe=jgc.id_groupe AND 
+												jgc.id_classe='$current_id_classe' 
+											ORDER BY u.nom, u.prenom;";
+							//echo "$sql<br />";
+							$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_prof)>0) {
+								if(count($groups[$id_groupe_courant]['classes']['classes']>1)) {
+									echo "
 						<a name='jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."_classe_".$current_id_classe."'></a>
 						<span class='bold'>".$current_tab_classe['classe']."</span>";
-							}
+								}
 
-							if(!preg_match("/nom_classe\[$current_id_classe\]/", $chaine_js_var_classe)) {
-								$chaine_js_var_classe.="nom_classe[$current_id_classe]=\"".$current_tab_classe['classe']."\";\n";
-							}
+								if(!preg_match("/nom_classe\[$current_id_classe\]/", $chaine_js_var_classe)) {
+									$chaine_js_var_classe.="nom_classe[$current_id_classe]=\"".$current_tab_classe['classe']."\";\n";
+								}
 
-							echo "
+								echo "
 						<table>";
-							while($lig_prof=mysqli_fetch_object($res_prof)) {
-								//if(!in_array($lig_prof->login, $tab_profs_deja_proposes)) {
+								while($lig_prof=mysqli_fetch_object($res_prof)) {
+									//if(!in_array($lig_prof->login, $tab_profs_deja_proposes)) {
 
-									// +++++++++++++++++++++++
-									// A FAIRE : Tester aussi si le prof a déjà accepté un remplacement
-									// +++++++++++++++++++++++
+										// +++++++++++++++++++++++
+										// A FAIRE : Tester aussi si le prof a déjà accepté un remplacement
+										// +++++++++++++++++++++++
 
-								if(!in_array($lig_prof->login, $tab_profs_exclus_des_propositions_de_remplacement)) {
+									if(!in_array($lig_prof->login, $tab_profs_exclus_des_propositions_de_remplacement)) {
 
-									$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, strftime("%A", $timestamp_courant), $timestamp_courant);
-									// Il faudrait affiner avec les longueurs de cours...
-									//if(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][$key])) {
-									if((!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][0]))&&
-									(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][1]))) {
-										$denomination_prof_courant=civ_nom_prenom($lig_prof->login);
+										$tab_cours_prof_courant=get_cours_prof2($lig_prof->login, strftime("%A", $timestamp_courant), $timestamp_courant);
+										// Il faudrait affiner avec les longueurs de cours...
+										//if(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][$key])) {
+										if((!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][0]))&&
+										(!isset($tab_cours_prof_courant[$tab_creneau[$loop]['id_definie_periode']][1]))) {
+											$denomination_prof_courant=civ_nom_prenom($lig_prof->login);
 
-										if(!preg_match("/'$lig_prof->login'/", $chaine_js_var_user)) {
-											$chaine_js_var_user.="nom_user['$lig_prof->login']=\"$denomination_prof_courant\";\n";
-										}
+											if(!preg_match("/'$lig_prof->login'/", $chaine_js_var_user)) {
+												$chaine_js_var_user.="nom_user['$lig_prof->login']=\"$denomination_prof_courant\";\n";
+											}
 
-										$lien_mailto_courant="";
-										$mail_prof_courant=get_mail_user($lig_prof->login);
-										if(check_mail($mail_prof_courant)) {
-											$lien_mailto_courant=" ".affiche_lien_mailto_prof($mail_prof_courant, $denomination_prof_courant);
-										}
+											$lien_mailto_courant="";
+											$mail_prof_courant=get_mail_user($lig_prof->login);
+											if(check_mail($mail_prof_courant)) {
+												$lien_mailto_courant=" ".affiche_lien_mailto_prof($mail_prof_courant, $denomination_prof_courant);
+											}
 
 
-										if($temoin_num_proposition==0) {
-											$tab_num_proposition[$date_aaaammjj][$tab_creneau[$loop]['id_definie_periode']]=$cpt;
-											$temoin_num_proposition++;
-										}
+											if($temoin_num_proposition==0) {
+												$tab_num_proposition[$date_aaaammjj][$tab_creneau[$loop]['id_definie_periode']]=$cpt;
+												$temoin_num_proposition++;
+											}
 
-										$chaine=$id_groupe_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login;
-										$checked="";
-										if((isset($tab_propositions_deja_enregistrees['chaine']))&&(in_array($chaine, $tab_propositions_deja_enregistrees['chaine']))) {
-											$checked=" checked";
-										}
+											$chaine=$id_groupe_courant."|".$current_id_classe."|".$date_aaaammjj."|".$id_creneau_courant."|".$lig_prof->login;
+											$checked="";
+											if((isset($tab_propositions_deja_enregistrees['chaine']))&&(in_array($chaine, $tab_propositions_deja_enregistrees['chaine']))) {
+												$checked=" checked";
+											}
 
-										$td_bg="";
-										$reponse="<img src=\"../images/case_blanche.png\" alt='Pas de réponse' title=\"Le professeur n'a pas répondu à la proposition.\" />";
-										if(isset($tab_propositions_deja_enregistrees['indice_chaine'][$chaine])) {
-											$indice_prop=$tab_propositions_deja_enregistrees['indice_chaine'][$chaine];
-											if($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='oui') {
-												// Permettre de valider le remplacement
-												$reponse="<a href='".$_SERVER['PHP_SELF']."?id_absence=$id_absence&amp;valider_proposition=".$chaine.add_token_in_url()."#jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_validation('$chaine', 'jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."')}; return false;\"><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
+											$td_bg="";
+											$reponse="<img src=\"../images/case_blanche.png\" alt='Pas de réponse' title=\"Le professeur n'a pas répondu à la proposition.\" />";
+											if(isset($tab_propositions_deja_enregistrees['indice_chaine'][$chaine])) {
+												$indice_prop=$tab_propositions_deja_enregistrees['indice_chaine'][$chaine];
+												if($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='oui') {
+													// Permettre de valider le remplacement
+													$reponse="<a href='".$_SERVER['PHP_SELF']."?id_absence=$id_absence&amp;valider_proposition=".$chaine.add_token_in_url()."#jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_validation('$chaine', 'jour_".$date_aaaammjj."_creneau_".$id_creneau_courant."')}; return false;\"><img src=\"../images/vert.png\" alt='Oui' title=\"Le professeur accepte la proposition.
 ".(($tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop]!="") ? $tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop] : "")."
 Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_reponse'][$indice_prop], "y").".
 
 Il faut encore que vous validiez/confirmiez l'attribution.
 Si plusieurs professeurs acceptent la proposition, 
 il est même indispensable de choisir lequel assurera le remplacement.\" />";
-												$td_bg=" style='background-color:#FFF168;'";
-											}
-											elseif($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='non') {
-												$reponse="<img src=\"../images/rouge.png\" alt='Non' title=\"Le professeur ne souhaite pas effectuer ce remplacement.
+													$td_bg=" style='background-color:#FFF168;'";
+												}
+												elseif($tab_propositions_deja_enregistrees['reponse'][$indice_prop]=='non') {
+													$reponse="<img src=\"../images/rouge.png\" alt='Non' title=\"Le professeur ne souhaite pas effectuer ce remplacement.
 ".(($tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop]!="") ? $tab_propositions_deja_enregistrees['commentaire_prof'][$indice_prop] : "")."
 Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_reponse'][$indice_prop], "y").".\" />";
-												$td_bg=" style='background-color:grey;'";
+													$td_bg=" style='background-color:grey;'";
+												}
+
+												if($tab_propositions_deja_enregistrees['validation_remplacement'][$indice_prop]=='oui') {
+													$reponse="<img src=\"../images/enabled.png\" alt='Confirmé' title=\"Le remplacement est confirmé.\" />";
+													$td_bg=" style='background-color:aquamarine;'";
+												}
 											}
 
-											if($tab_propositions_deja_enregistrees['validation_remplacement'][$indice_prop]=='oui') {
-												$reponse="<img src=\"../images/enabled.png\" alt='Confirmé' title=\"Le remplacement est confirmé.\" />";
-												$td_bg=" style='background-color:aquamarine;'";
-											}
-										}
-
-										echo "
+											echo "
 							<tr class='fieldset_opacite50'>
 								<td>
 									<input type='checkbox' name='proposition[]' id='proposition_$cpt' value='".$chaine."' onchange=\"checkbox_change('proposition_$cpt');changement()\"$checked />
@@ -1188,24 +1195,25 @@ Réponse donnée le ".formate_date($tab_propositions_deja_enregistrees['date_rep
 								</td>
 							</tr>";
 
-										$cpt++;
-									}
-									/*
-									else {
-										echo "<tr><td></td><td><span style='color:red'>".$lig_prof->login."</span></td></tr>";
-									}
-									*/
-									//$tab_profs_deja_proposes[]=$lig_prof->login;
+											$cpt++;
+										}
+										/*
+										else {
+											echo "<tr><td></td><td><span style='color:red'>".$lig_prof->login."</span></td></tr>";
+										}
+										*/
+										//$tab_profs_deja_proposes[]=$lig_prof->login;
 
+									}
+
+									//}
 								}
-
-								//}
-							}
-							echo "
+								echo "
 						</table>";
-						}
-						else {
-							echo "<span style='color:red'>Aucun prof trouvé.</span>";
+							}
+							else {
+								echo "<span style='color:red'>Aucun prof trouvé.</span>";
+							}
 						}
 					}
 				}

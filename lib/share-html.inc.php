@@ -2555,6 +2555,65 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	return $retour;
 }
 
+function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y") {
+
+	$retour="";
+
+	if($matieres_enseignees=="y") {
+		$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.priority, m.matiere, m.nom_complet;";
+	}
+	else {
+		$sql="SELECT * FROM matieres ORDER BY priority, matiere, nom_complet;";
+	}
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des matieres\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->matiere' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->matiere, $tab_matieres_preselectionnees)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->matiere\"><span id='texte_".$nom_champ."_$cpt'$temp_style>".$lig->nom_complet." (<em>$lig->matiere</em>)</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
 function js_cdt_modif_etat_travail() {
 	global $class_notice_dev_fait, $class_notice_dev_non_fait;
 
