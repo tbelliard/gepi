@@ -488,7 +488,7 @@ elseif(!isset($valide_select_eleves)) {
 
 		$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 
-		echo "<div style='float:right; width:12em; text-align:center;' class='fieldset_opacite50'><a href='../mod_discipline/imprimer_bilan_periode.php?";
+		echo "<div style='float:right; width:12em; text-align:center; margin:0.2em; padding:0.2em;' class='fieldset_opacite50'><a href='../mod_discipline/imprimer_bilan_periode.php?";
 		for($j=0;$j<count($tab_periode_num);$j++) {
 			if($j>0) {echo "&amp;";}
 			echo "periode[]=".$tab_periode_num[$j];
@@ -499,6 +499,19 @@ elseif(!isset($valide_select_eleves)) {
 		echo "' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'</a></div>";
 	}
 
+	if(($_SESSION['statut']=='administrateur')||
+	($_SESSION['statut']=='scolarite')||
+	($_SESSION['statut']=='cpe')||
+	(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $tab_id_classe[0])))) {
+		echo "<div style='float:right; width:12em; text-align:center; margin:0.2em; padding:0.2em;' class='fieldset_opacite50'><a href='../mod_engagements/imprimer_documents.php?";
+		for($i=0;$i<count($tab_id_classe);$i++) {
+			if($i>0) {
+				echo "&amp;";
+			}
+			echo "id_classe[]=".$tab_id_classe[$i];
+		}
+		echo "' title=\"Imprimer les documents délégués de classe,...\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer les documents destinés aux délégués de classe...</a></div>";
+	}
 
 	//echo "<p class='bold'>Sélection des élèves:</p>\n";
 	echo "<p class='bold'>Sélection des élèves et paramètres:</p>\n";

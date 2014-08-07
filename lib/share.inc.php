@@ -2560,6 +2560,10 @@ function formate_date($date, $avec_heure="n", $avec_nom_jour="") {
 	if(($avec_heure=="y")&&(isset($tmp_date[1]))&&(preg_match("/[0-9]{2}:[0-9]{2}:[0-9]{2}/", $tmp_date[1]))) {
 		$retour.=" à ".$tmp_date[1];
 	}
+	elseif(($avec_heure=="y2")&&(isset($tmp_date[1]))&&(preg_match("/[0-9]{2}:[0-9]{2}:[0-9]{2}/", $tmp_date[1]))) {
+		// Virer les secondes à 00
+		$retour.=" à ".preg_replace("/:00$/", "", $tmp_date[1]);
+	}
 
 	return $retour;
 }
@@ -10723,6 +10727,13 @@ function get_info_eleve($login_ele, $periode) {
 		$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
 		$tab['naissance']=$lig->naissance;
 		$tab['sexe']=$lig->sexe;
+		if($lig->sexe=="F") {
+			$tab['civilite']="Mlle";
+		}
+		else {
+			$tab['civilite']="M.";
+		}
+		$tab['civ_denomination']=$tab['civilite']." ".$tab['denomination'];
 		$tab['no_gep']=$lig->no_gep;
 		$tab['elenoet']=$lig->elenoet;
 		$tab['ele_id']=$lig->ele_id;
@@ -10741,8 +10752,9 @@ function get_info_eleve($login_ele, $periode) {
 			$lig2=mysqli_fetch_object($res2);
 
 			$tab['classe']=$lig2->classe;
-
 		}
+
+		$tab['statut']="eleve";
 	}
 
 	return $tab;
@@ -10768,16 +10780,20 @@ function get_info_responsable($login_resp, $pers_id="") {
 			$tab['nom']=$lig->nom;
 			$tab['prenom']=$lig->prenom;
 			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+			$tab['civ_denomination']=$tab['civilite']." ".$tab['denomination'];
 
 			$tab['tel_pers']=$lig->tel_pers;
 			$tab['tel_port']=$lig->tel_port;
 			$tab['tel_prof']=$lig->tel_prof;
 			$tab['mel']=$lig->mel;
+			$tab['email']=$lig->mel;
 
 			$tab['adr_id']=$lig->adr_id;
 
 			$tab['adresse']=get_adresse_responsable($lig->pers_id);
 			$tab['enfants']=get_enfants_from_pers_id($lig->pers_id);
+
+			$tab['statut']="responsable";
 		}
 	}
 
@@ -10804,9 +10820,11 @@ function get_info_user($login_user, $tab_champs=array()) {
 			$tab['nom']=$lig->nom;
 			$tab['prenom']=$lig->prenom;
 			$tab['statut']=$lig->statut;
+			$tab['email']=$lig->email;
 			$tab['etat']=$lig->etat;
 			$tab['auth_mode']=$lig->auth_mode;
 			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+			$tab['civ_denomination']=$tab['civilite']." ".$tab['denomination'];
 
 			$tab['classes']=get_classes_from_prof($login_user);
 			$tab['matieres']=get_matieres_from_prof($login_user);
@@ -10818,9 +10836,11 @@ function get_info_user($login_user, $tab_champs=array()) {
 			$tab['nom']=$lig->nom;
 			$tab['prenom']=$lig->prenom;
 			$tab['statut']=$lig->statut;
+			$tab['email']=$lig->email;
 			$tab['etat']=$lig->etat;
 			$tab['auth_mode']=$lig->auth_mode;
 			$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
+			$tab['civ_denomination']=$tab['civilite']." ".$tab['denomination'];
 		}
 	}
 
@@ -11796,4 +11816,96 @@ function get_tab_remplacements_eleve($login_eleve, $mode="") {
 
 	return $tab;
 }
+
+function get_tab_engagements($statut_concerne="", $statut_saisie="") {
+	$tab_engagements=array();
+	$tab_engagements['indice']=array();
+	$tab_engagements['id_engagement']=array();
+
+	$sql="SELECT * FROM engagements";
+	if(($statut_concerne!="")||($statut_saisie!="")) {
+		$sql_ajout="";
+		if($statut_saisie=="scolarite") {
+			if($sql_ajout!="") {$sql_ajout.=" AND ";}
+			$sql_ajout.="SaisieScol='yes'";
+		}
+		if($statut_saisie=="cpe") {
+			if($sql_ajout!="") {$sql_ajout.=" AND ";}
+			$sql_ajout.="SaisieCpe='yes'";
+		}
+		if($statut_concerne=="eleve") {
+			if($sql_ajout!="") {$sql_ajout.=" AND ";}
+			$sql_ajout.="ConcerneEleve='yes'";
+		}
+		if($statut_saisie=="responsable") {
+			if($sql_ajout!="") {$sql_ajout.=" AND ";}
+			$sql_ajout.="ConcerneResponsable='yes'";
+		}
+
+		if($sql_ajout!="") {
+			$sql.=" WHERE ".$sql_ajout;
+		}
+	}
+	$sql.=" ORDER BY nom;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab_engagements['indice'][$cpt]=$lig;
+
+			$tab_engagements['indice'][$cpt]['effectif']=0;
+			$sql="SELECT 1=1 FROM engagements_user WHERE id_engagement='".$lig['id']."';";
+			$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+			$tab_engagements['indice'][$cpt]['effectif']=mysqli_num_rows($res_eff);
+
+			$tab_engagements['id_engagement'][$lig['id']]=$lig;
+			$tab_engagements['id_engagement'][$lig['id']]['effectif']=mysqli_num_rows($res_eff);
+
+			$cpt++;
+		}
+		/*
+		echo "<pre>";
+		print_r($tab_engagements);
+		echo "</pre>";
+		*/
+	}
+	return $tab_engagements;
+}
+
+function get_tab_engagements_user($login_user="", $id_classe='') {
+	/*
+	global $tab_engagements;
+
+	if((!is_array($tab_engagements))||(count($tab_engagements)==0)) {
+		$tab_engagements=get_tab_engagements();
+	}
+	*/
+
+	$tab_engagements_user=array();
+	$tab_engagements_user['indice']=array();
+	$tab_engagements_user['login_user']=array();
+	$tab_engagements_user['id_engagement']=array();
+	$tab_engagements_user['id_engagement_user']=array();
+	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.conseil_de_classe FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
+	if($login_user!="") {
+		$sql.=" AND eu.login='".$login_user."'";
+	}
+	if($id_classe!="") {
+		$sql.=" AND eu.id_type='id_classe' AND valeur='".$id_classe."'";
+	}
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$cpt=0;
+	while($lig=mysqli_fetch_assoc($res)) {
+		$tab_engagements_user['indice'][$cpt]=$lig;
+		$tab_engagements_user['login_user'][$lig['login']][]=$cpt;
+		$tab_engagements_user['id_engagement'][$lig['id_engagement']][]=$cpt;
+		$tab_engagements_user['id_engagement_user'][$lig['id_engagement']][]=$lig['login'];
+		$cpt++;
+	}
+
+	return $tab_engagements_user;
+}
+
 ?>

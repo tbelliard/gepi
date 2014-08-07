@@ -222,6 +222,27 @@ if(($_SESSION['statut']=='administrateur')||
 	$special[]="";
 }
 
+if($_SESSION['statut']=='administrateur') {
+	// Module Engagements
+	$lien_wiki[]='';
+	$entete_section[]="MODULE Engagements";
+	$fich[]="convocation_conseil_classe.odt";
+	$utilisation[]="Convocation au conseil de classe";
+	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="mail_convocation_conseil_classe.txt";
+	$utilisation[]="Mail de convocation au conseil de classe";
+	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="liste_eleve_conseil_classe.odt";
+	$utilisation[]="Liste des élèves pour la prise de notes lors du conseil de classe";
+	$special[]="";
+}
+
     $nbfich=sizeof($fich);
 // Fin liste des fichiers
 

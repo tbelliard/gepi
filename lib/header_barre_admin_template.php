@@ -255,6 +255,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/admin.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php" '.insert_confirm_abandon().'>Gestionnaires AID</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_alerte/admin.php" '.insert_confirm_abandon().'>Dispositif d\'alerte</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/index_admin.php" '.insert_confirm_abandon().'>Engagements</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
 

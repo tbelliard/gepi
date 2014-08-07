@@ -1089,3 +1089,36 @@ value VARCHAR( 255 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS engagements;
+CREATE TABLE IF NOT EXISTS engagements (
+id int(11) NOT NULL AUTO_INCREMENT,
+nom VARCHAR(100) NOT NULL,
+description TEXT NOT NULL,
+conseil_de_classe VARCHAR(10) NOT NULL,
+ConcerneEleve VARCHAR(10) NOT NULL,
+ConcerneResponsable VARCHAR(10) NOT NULL,
+SaisieScol VARCHAR(10) NOT NULL,
+SaisieCpe VARCHAR(10) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS engagements_user;
+CREATE TABLE IF NOT EXISTS engagements_user (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_engagement int(11) NOT NULL,
+login VARCHAR(50) NOT NULL,
+id_type VARCHAR(20) NOT NULL,
+valeur INT(11) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS archivage_engagements;
+CREATE TABLE IF NOT EXISTS archivage_engagements (
+id int(11) NOT NULL AUTO_INCREMENT,
+annee VARCHAR(100) NOT NULL,
+ine VARCHAR(255) NOT NULL,
+nom_engagement VARCHAR(100) NOT NULL,
+description_engagement TEXT NOT NULL,
+classe VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

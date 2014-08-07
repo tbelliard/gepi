@@ -216,7 +216,6 @@ PRIMARY KEY (id)
 	$result .= msj_present("La table existe déjà");
 }
 
-
 $result .= "<br />";
 $result .= "<strong>Ajout d'une table 'abs_prof_divers' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'abs_prof_divers'");
@@ -276,6 +275,85 @@ if(mysqli_num_rows($query)==0) {
 	}
 } else {
 	$result .= msj_present("Initialisation déjà faite");
+}
+
+$result .= "<strong>Ajout d'une table 'engagements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'engagements'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS engagements (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	nom VARCHAR(100) NOT NULL,
+	description TEXT NOT NULL,
+	conseil_de_classe VARCHAR(10) NOT NULL,
+	ConcerneEleve VARCHAR(10) NOT NULL,
+	ConcerneResponsable VARCHAR(10) NOT NULL,
+	SaisieScol VARCHAR(10) NOT NULL,
+	SaisieCpe VARCHAR(10) NOT NULL,
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "Activation du module Engagements.<br />";
+		saveSetting("active_mod_engagements", "y");
+
+		$result .= "Enregistrement de l'engagement 'Délégué de classe' :<br />";
+		$sql="INSERT INTO engagements SET nom='Délégué de classe', description='Délégué de classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';";
+		$query = mysqli_query($mysqli, $sql);
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'engagements_user' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'engagements_user'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS engagements_user (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	id_engagement int(11) NOT NULL,
+	login VARCHAR(50) NOT NULL,
+	id_type VARCHAR(20) NOT NULL,
+	valeur INT(11) NOT NULL,
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'archivage_engagements' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'archivage_engagements'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS archivage_engagements (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	annee VARCHAR(100) NOT NULL,
+	ine VARCHAR(255) NOT NULL,
+	nom_engagement VARCHAR(100) NOT NULL,
+	description_engagement TEXT NOT NULL,
+	classe VARCHAR(100) NOT NULL,
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
 }
 
 ?>
