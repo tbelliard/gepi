@@ -3294,4 +3294,20 @@ function affiche_remplacements_eleve($login_eleve) {
 
 	return $retour;
 }
+
+function retourne_image_engagement($code_engagement, $nom_engagement) {
+	global $gepiPath;
+
+	$retour="";
+
+	if(in_array($code_engagement, array("C", "V", "A", "E", "S"))) {
+		$retour="<img src='$gepiPath/images/icons/engagement_".$code_engagement.".png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+	}
+	else {
+		//$retour="<img src='$gepiPath/images/vert.png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+		$retour="<img src='$gepiPath/images/icons/engagement_.png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+	}
+
+	return $retour;
+}
 ?>

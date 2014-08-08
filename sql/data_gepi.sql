@@ -1255,3 +1255,4 @@ INSERT INTO engagements SET code='V', nom='Délégué du conseil de la vie lycé
 INSERT INTO engagements SET code='A', nom='Membre du conseil d''administration', description='Membre du conseil d''administration', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';
 INSERT INTO engagements SET code='E', nom='Membre du comité d''éducation à la santé et à la citoyenneté', description='Membre du comité d''éducation à la santé et à la citoyenneté', conseil_de_classe='', ConcerneEleve='', SaisieScol='yes';
 INSERT INTO engagements SET code='S', nom='Membre de l''association sportive', description='Membre de l''association sportive', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';
+INSERT INTO droits SET id='/mod_engagements/saisie_engagements_user.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des engagements pour un utilisateur', statut='';

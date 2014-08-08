@@ -62,30 +62,49 @@ if (!checkAccess()) {
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
-// A FAIRE : Pouvoir gérer les engagements parents
-
-$tab_tous_engagements=get_tab_engagements("eleve");
-if($_SESSION['statut']=='administrateur') {
-	$tab_engagements=$tab_tous_engagements;
-}
-elseif($_SESSION['statut']=='cpe') {
-	$tab_engagements=get_tab_engagements("eleve", "cpe");
-}
-elseif($_SESSION['statut']=='scolarite') {
-	$tab_engagements=get_tab_engagements("eleve", "scolarite");
+$engagement_statut=isset($_POST['engagement_statut']) ? $_POST['engagement_statut'] : (isset($_GET['engagement_statut']) ? $_GET['engagement_statut'] : "");
+if(($engagement_statut!="eleve")&&($engagement_statut!="responsable")) {
+	$engagement_statut="";
 }
 
-if(count($tab_tous_engagements['indice'])==0) {
-	header("Location: ../accueil.php?msg=Aucun type d engagement n est actuellement défini.");
-	die();
+if($engagement_statut=="") {
+	$tab_tous_engagements=get_tab_engagements("");
+	if(count($tab_tous_engagements['indice'])==0) {
+		header("Location: ../accueil.php?msg=Aucun type d engagement n est actuellement défini.");
+		die();
+	}
+}
+else {
+	//echo "\$engagement_statut=$engagement_statut<br />";
+	$tab_tous_engagements=get_tab_engagements($engagement_statut);
+	if($_SESSION['statut']=='administrateur') {
+		$tab_engagements=$tab_tous_engagements;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$tab_engagements=get_tab_engagements($engagement_statut, "cpe");
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$tab_engagements=get_tab_engagements($engagement_statut, "scolarite");
+	}
+
+	if(count($tab_tous_engagements['indice'])==0) {
+		header("Location: ../accueil.php?msg=Aucun type d engagement n est actuellement défini.");
+		die();
+	}
 }
 
 $nb_tous_engagements=count($tab_tous_engagements['indice']);
-$nb_engagements=count($tab_engagements['indice']);
+//$nb_engagements=count($tab_engagements['indice']);
 
-//debug_var();
+/*
+echo "<pre>";
+print_r($tab_tous_engagements);
+echo "</pre>";
+*/
 
-if((isset($id_classe))&&(isset($_POST['is_posted']))) {
+debug_var();
+
+if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='eleve')) {
 	check_token();
 
 	$msg="";
@@ -109,7 +128,7 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))) {
 		$current_id_engagement=$tab[2];
 
 		if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
-			$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe);
+			$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "eleve");
 		}
 		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
 			// L'utilisateur a accès à la saisie de ce type d'engagement
@@ -138,7 +157,7 @@ echo "</pre>";
 	$nb_desinscriptions=0;
 	for($loop=0;$loop<count($id_classe);$loop++) {
 		if(!array_key_exists($id_classe[$loop], $tab_engagements_classe)) {
-			$tab_engagements_classe[$id_classe[$loop]]=get_tab_engagements_user("", $id_classe[$loop]);
+			$tab_engagements_classe[$id_classe[$loop]]=get_tab_engagements_user("", $id_classe[$loop], "eleve");
 		}
 
 		foreach($tab_engagements_classe[$id_classe[$loop]]['id_engagement_user'] as $current_id_engagement => $current_login) {
@@ -158,6 +177,93 @@ echo "</pre>";
 					}
 					else {
 						$nb_desinscriptions++;
+						$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
+					}
+				}
+			}
+		}
+	}
+
+	$msg.=$nb_desinscriptions." suppression(s) d'engagements.<br />";
+}
+
+if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='responsable')) {
+	check_token();
+
+	$msg="";
+	/*
+	$_POST['id_classe']=	Array (*)
+	$_POST[id_classe]['0']=	32
+	$_POST[id_classe]['1']=	33
+	$_POST['engagement']=	Array (*)
+	$_POST[engagement]['0']=	32|philippe.bxxxxxxx|6
+	$_POST[engagement]['1']=	32|christian.cccccccccc2|6
+	$_POST[engagement]['2']=	33|philippe.bxxxxxxxxxxxxx|6
+	$_POST[engagement]['3']=	33|cecile.bssssss|6
+	*/
+
+	$nb_inscriptions=0;
+	$tab_engagements_classe=array();
+	$engagement=isset($_POST['engagement']) ? $_POST['engagement'] : array();
+	for($loop=0;$loop<count($engagement);$loop++) {
+		$tab=explode("|", $engagement[$loop]);
+		$current_id_classe=$tab[0];
+		$current_login=$tab[1];
+		$current_id_engagement=$tab[2];
+
+		if(!array_key_exists($current_id_classe, $tab_engagements_classe)) {
+			$tab_engagements_classe[$current_id_classe]=get_tab_engagements_user("", $current_id_classe, "responsable");
+		}
+		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
+			// L'utilisateur a accès à la saisie de ce type d'engagement
+			if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
+/*
+echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
+print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
+echo "</pre>";
+*/
+				$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'inscription de l'engagement n°$current_id_engagement en classe ".get_nom_classe($current_id_classe)." pour ".civ_nom_prenom($current_login)."<br />";
+				}
+				else {
+					$nb_inscriptions++;
+				}
+			}
+
+		}
+	}
+	$msg.=$nb_inscriptions." inscription(s) d'engagements.<br />";
+
+	// Désinscriptions
+	$nb_desinscriptions=0;
+	for($loop=0;$loop<count($id_classe);$loop++) {
+		if(!array_key_exists($id_classe[$loop], $tab_engagements_classe)) {
+			$tab_engagements_classe[$id_classe[$loop]]=get_tab_engagements_user("", $id_classe[$loop], "responsable");
+		}
+
+		foreach($tab_engagements_classe[$id_classe[$loop]]['id_engagement_user'] as $current_id_engagement => $current_login) {
+/*
+echo "<pre>";
+print_r($current_login);
+echo "</pre>";
+*/
+			for($loop2=0;$loop2<count($current_login);$loop2++) {
+				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
+				//echo "$chaine<br />";
+				if(!in_array($chaine, $engagement)) {
+					// S'il s'agit d'un responsable avec engagement sans avoir d'élève dans la classe, il ne faut pas le virer ici.
+
+					$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$del) {
+						$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
+					}
+					else {
+						$nb_desinscriptions++;
+						$msg.="Désinscription de ".civ_nom_prenom($current_login[$loop2])."<br />";
 					}
 				}
 			}
@@ -180,6 +286,10 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+echo "<p style='color:red'>A FAIRE :<br />
+Faire apparaitre les engagements dans modify_eleve.php, visu_eleve.php, modify_resp.php<br />
+Archiver les engagements élèves avec les autres archivages</p>";
+
 //echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "<p class='bold'><a href='../classes/classes_const.php";
 if(isset($id_classe[0])) {
@@ -187,7 +297,7 @@ if(isset($id_classe[0])) {
 }
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
-if(!isset($id_classe)) {
+if((!isset($id_classe))||($engagement_statut=="")) {
 	echo "</p>\n";
 
 	echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
@@ -232,9 +342,14 @@ if(!isset($id_classe)) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	echo "<p><a href='#' onClick='ModifCase(true)'>Tout cocher</a> / <a href='#' onClick='ModifCase(false)'>Tout décocher</a></p>\n";
+	echo "<p><a href='#' onClick='ModifCase(true);return false;'>Tout cocher</a> / <a href='#' onClick='ModifCase(false);return false;'>Tout décocher</a></p>\n";
 
-	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "
+	<p>
+		<input type='radio' name='engagement_statut' id='engagement_statut_eleve' value='eleve' checked onchange=\"checkbox_change('engagement_statut_responsable');checkbox_change('engagement_statut_eleve')\" /><label for='engagement_statut_eleve' id='texte_engagement_statut_eleve' style='font-weight:bold'>Saisir les engagements élèves</label><br />
+		<input type='radio' name='engagement_statut' id='engagement_statut_responsable' value='responsable' onchange=\"checkbox_change('engagement_statut_responsable');checkbox_change('engagement_statut_eleve')\" /><label for='engagement_statut_responsable' id='texte_engagement_statut_responsable'>Saisir les engagements responsables</label>
+	</p>
+	<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
 	echo "<p><br /></p>
@@ -264,6 +379,7 @@ if(!isset($id_classe)) {
 		}
 	}
 
+	".js_checkbox_change_style('checkbox_change', 'texte_', "n", 0.5)."
 </script>\n";
 	require("../lib/footer.inc.php");
 	die();
@@ -271,93 +387,268 @@ if(!isset($id_classe)) {
 
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a></p>\n";
 
-echo "<p class='bold'>Choix des élèves&nbsp;:</p>\n";
+if($engagement_statut=="eleve") {
+	echo "<p class='bold'>Choix des élèves&nbsp;:</p>\n";
 
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-echo "<input type='hidden' name='is_posted' value='1' />\n";
-echo add_token_field();
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+	echo "<input type='hidden' name='is_posted' value='1' />\n";
+	echo add_token_field();
 
-$cpt=0;
-for($i=0;$i<count($id_classe);$i++) {
-	$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
-	//echo "$sql<br />";
-	$call_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
-	$nombre_ligne=mysqli_num_rows($call_eleves);
-	if($nombre_ligne==0) {
-		echo "<p style='color:red;'>Aucun élève n'est inscrit dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
-	}
-	else {
-		$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i]);
-
-		echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
-
-		$first_ele[$id_classe[$i]]=$cpt;
-		echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
-		echo "<tr>\n";
-		echo "<th>\n";
-		echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
-		echo "</th>\n";
-		echo "<th colspan='$nb_tous_engagements'>Engagements</th>\n";
-		echo "</tr>\n";
-
-		echo "<tr>\n";
-
-		/*
-		echo "<th>\n";
-		//echo "Cocher/décocher\n";
-		echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
-		echo "</th>\n";
-		*/
-
-		echo "<th>Elève</th>\n";
-		for($loop=0;$loop<$nb_tous_engagements;$loop++) {
-			echo "<th>".$tab_tous_engagements['indice'][$loop]['nom']."</th>\n";
+	$cpt=0;
+	for($i=0;$i<count($id_classe);$i++) {
+		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
+		$call_eleves=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nombre_ligne=mysqli_num_rows($call_eleves);
+		if($nombre_ligne==0) {
+			echo "<p style='color:red;'>Aucun élève n'est inscrit dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 		}
-		echo "</tr>\n";
+		else {
+			$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i], "eleve");
 
-		$alt=1;
-		while($lig_ele=mysqli_fetch_object($call_eleves)) {
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover'>\n";
+			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+
+			$first_ele[$id_classe[$i]]=$cpt;
+			echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
+			echo "<tr>\n";
+			echo "<th>\n";
+			echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
+			echo "</th>\n";
+			echo "<th colspan='$nb_tous_engagements'>Engagements</th>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+
 			/*
-			echo "<td>\n";
-			echo "<input type='checkbox' name='login_eleve_".$id_classe[$i]."[]' id='login_eleve_$cpt' value='$lig_ele->login' onchange='change_style_eleve($cpt)' checked />\n";
-			echo "</td>\n";
+			echo "<th>\n";
+			//echo "Cocher/décocher\n";
+			echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
+			echo "</th>\n";
 			*/
 
-			echo "<td style='text-align:left;'><span id='eleve_$cpt'>$lig_ele->nom $lig_ele->prenom</span></td>\n";
-
+			echo "<th>Elève</th>\n";
 			for($loop=0;$loop<$nb_tous_engagements;$loop++) {
-				echo "<td>\n";
-				if(($_SESSION['statut']=='administrateur')||
-				(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-				(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
-				) {
-					$checked="";
-					if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-						$checked=" checked";
-					}
-					echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
-				}
-				else {
-					if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
-						echo "<img src='../images/enabled.png' class='icone20' />";
-					}
-				}
-				echo "</td>\n";
+				echo "<th>".$tab_tous_engagements['indice'][$loop]['nom']."</th>\n";
 			}
-
 			echo "</tr>\n";
-			$cpt++;
+
+			$alt=1;
+			while($lig_ele=mysqli_fetch_object($call_eleves)) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				/*
+				echo "<td>\n";
+				echo "<input type='checkbox' name='login_eleve_".$id_classe[$i]."[]' id='login_eleve_$cpt' value='$lig_ele->login' onchange='change_style_eleve($cpt)' checked />\n";
+				echo "</td>\n";
+				*/
+
+				echo "<td style='text-align:left;'><span id='eleve_$cpt'>$lig_ele->nom $lig_ele->prenom</span></td>\n";
+
+				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+					echo "<td>\n";
+					if(($_SESSION['statut']=='administrateur')||
+					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					) {
+						$checked="";
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							$checked=" checked";
+						}
+						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+					}
+					else {
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							echo "<img src='../images/enabled.png' class='icone20' />";
+						}
+					}
+					echo "</td>\n";
+				}
+
+				echo "</tr>\n";
+				$cpt++;
+			}
+			echo "</table>\n";
+			$last_ele[$id_classe[$i]]=$cpt;
+
 		}
-		echo "</table>\n";
-		$last_ele[$id_classe[$i]]=$cpt;
-
 	}
-}
 
-echo "<p><input type='submit' value='Valider' /></p>\n";
-echo "</form>\n";
+	echo "
+	<input type='hidden' name='engagement_statut' value='eleve' />
+	<p><input type='submit' value='Valider' /></p>
+	<div id='fixe'><input type='submit' value='Valider' /></div>
+	</form>";
+}
+else {
+	echo "<p class='bold'>Choix des responsables&nbsp;:</p>\n";
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+	echo "<input type='hidden' name='is_posted' value='1' />\n";
+	echo add_token_field();
+
+	$cpt=0;
+	for($i=0;$i<count($id_classe);$i++) {
+		$sql="SELECT DISTINCT rp.* FROM resp_pers rp, 
+							responsables2 r, 
+							eleves e, 
+							j_eleves_classes jec 
+						WHERE (e.login=jec.login AND 
+							jec.id_classe='".$id_classe[$i]."' AND 
+							r.ele_id=e.ele_id AND 
+							r.pers_id=rp.pers_id AND 
+							(r.resp_legal='1' OR r.resp_legal='2')) 
+							ORDER BY e.nom, e.prenom, r.resp_legal;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nombre_ligne=mysqli_num_rows($res);
+		if($nombre_ligne==0) {
+			echo "<p style='color:red;'>Aucun responsable n'est associé à un élève de la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
+		}
+		else {
+			$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i],"responsable");
+			/*
+			echo "<pre>";
+			print_r($tab_engagements_classe);
+			echo "</pre>";
+			*/
+			$nom_classe=get_class_from_id($id_classe[$i]);
+			echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
+
+			//$first_ele[$id_classe[$i]]=$cpt;
+			echo "
+	<table class='boireaus boireaus_alt' summary='Classe n°$id_classe[$i]'/>
+		<tr>
+			<th colspan='2'>Classe de ".$nom_classe."</th>
+			<th colspan='$nb_tous_engagements'>Engagements</th>
+		</tr>
+		<tr>
+			<th>Responsable</th>
+			<th>Elève</th>";
+			for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+				echo "
+			<th>".$tab_tous_engagements['indice'][$loop]['nom']."</th>";
+			}
+			echo "
+		</tr>";
+
+			$tab_resp=array();
+			while($lig_resp=mysqli_fetch_object($res)) {
+				echo "
+		<tr class='white_hover'>
+			<td style='text-align:left;'><span id='resp_$cpt'>$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</span></td>
+			<td style='text-align:left;'>";
+
+				$tab_resp[]=$lig_resp->login;
+
+				$sql="SELECT DISTINCT e.* FROM eleves e, 
+								j_eleves_classes jec,
+								responsables2 r
+							WHERE e.login=jec.login AND 
+								jec.id_classe='".$id_classe[$i]."' AND 
+								r.ele_id=e.ele_id AND 
+								r.pers_id='".$lig_resp->pers_id."' AND 
+								(r.resp_legal='1' OR r.resp_legal='2');";
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				$cpt_ele=0;
+				while($lig_ele=mysqli_fetch_object($res_ele)) {
+					if($cpt_ele>0) {
+						echo "<br />";
+					}
+					echo "
+				$lig_ele->nom $lig_ele->prenom";
+					$cpt_ele++;
+				}
+				echo "
+			</td>";
+
+				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+					echo "<td>\n";
+					if(($_SESSION['statut']=='administrateur')||
+					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					) {
+						$checked="";
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							$checked=" checked";
+						}
+						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_resp->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+					}
+					else {
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							echo "<img src='../images/enabled.png' class='icone20' />";
+						}
+					}
+					echo "</td>\n";
+				}
+
+				echo "</tr>\n";
+				$cpt++;
+			}
+			echo "</table>\n";
+			//$last_ele[$id_classe[$i]]=$cpt;
+		}
+
+		$chaine_engagements_hors_classe="";
+		foreach($tab_engagements_classe['login_user'] as $current_login => $tab_id_engagement) {
+			if(!in_array($current_login, $tab_resp)) {
+				$chaine_engagements_hors_classe.="
+		<tr>
+			<td>".civ_nom_prenom($current_login)."</td>";
+
+				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+					$chaine_engagements_hors_classe.="
+			<td>\n";
+					if(($_SESSION['statut']=='administrateur')||
+					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					) {
+						$checked="";
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							$checked=" checked";
+						}
+						$chaine_engagements_hors_classe.="<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$current_login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+					}
+					else {
+						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
+							$chaine_engagements_hors_classe.="<img src='../images/enabled.png' class='icone20' />";
+						}
+					}
+					$chaine_engagements_hors_classe.="</td>\n";
+				}
+
+				$chaine_engagements_hors_classe.="
+		</tr>";
+			}
+		}
+
+		if($chaine_engagements_hors_classe!="") {
+			echo "<p>Engagements hors classe pour la classe de ".$nom_classe."</p>
+	<table class='boireaus boireaus_alt'>
+		<tr>
+			<th></th>
+		</tr>$chaine_engagements_hors_classe
+	</table>";
+		}
+	}
+
+	echo "
+	<input type='hidden' name='engagement_statut' value='responsable' />
+	<p><input type='submit' value='Valider' /></p>
+	<div id='fixe'><input type='submit' value='Valider' /></div>
+	</form>
+	
+	<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Pour saisir des engagements de responsables qui ne sont pas responsables/parents d'élèves dans la classe, effectuer la saisie des engagements depuis une recherche sur le nom du parent dans la page de ";
+	if(acces('/responsables/index.php', $_SESSION['statut'])) {
+		echo "<a href='../responsables/index.php'>Gestion des responsables</a>";
+	}
+	elseif(acces('../eleves/recherche.php', $_SESSION['statut'])) {
+		echo "<a href='../responsables/index.php'>Recherche</a>";
+	}
+	else {
+		echo "Gestion des responsables (<em>en administrateur</em>)";
+	}
+	echo "</p>\n";
+}
 
 require_once("../lib/footer.inc.php");
 ?>

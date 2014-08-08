@@ -11837,7 +11837,7 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 			if($sql_ajout!="") {$sql_ajout.=" AND ";}
 			$sql_ajout.="ConcerneEleve='yes'";
 		}
-		if($statut_saisie=="responsable") {
+		if($statut_concerne=="responsable") {
 			if($sql_ajout!="") {$sql_ajout.=" AND ";}
 			$sql_ajout.="ConcerneResponsable='yes'";
 		}
@@ -11873,7 +11873,7 @@ function get_tab_engagements($statut_concerne="", $statut_saisie="") {
 	return $tab_engagements;
 }
 
-function get_tab_engagements_user($login_user="", $id_classe='') {
+function get_tab_engagements_user($login_user="", $id_classe='', $statut_concerne="") {
 	/*
 	global $tab_engagements;
 
@@ -11887,12 +11887,18 @@ function get_tab_engagements_user($login_user="", $id_classe='') {
 	$tab_engagements_user['login_user']=array();
 	$tab_engagements_user['id_engagement']=array();
 	$tab_engagements_user['id_engagement_user']=array();
-	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.conseil_de_classe FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
+	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
 	if($login_user!="") {
 		$sql.=" AND eu.login='".$login_user."'";
 	}
 	if($id_classe!="") {
 		$sql.=" AND eu.id_type='id_classe' AND valeur='".$id_classe."'";
+	}
+	if($statut_concerne=="eleve") {
+		$sql.=" AND e.ConcerneEleve='yes'";
+	}
+	elseif($statut_concerne=="responsable") {
+		$sql.=" AND e.ConcerneResponsable='yes'";
 	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);

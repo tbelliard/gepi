@@ -849,7 +849,12 @@ echo "
 			}
 		}
 	}
-</script>\n";
+</script>
+
+<p style='color:red'>A FAIRE : Pouvoir imprimer en PP les documents à depuis le tableau des dates de conseil de classe.<br /
+Pouvoir imprimer en élève/parent les documents à partir du tableau des dates de conseil de classe.<br />
+Pouvoir définir les engagements des parents.</p>
+\n";
 
 require_once("../lib/footer.inc.php");
 ?>

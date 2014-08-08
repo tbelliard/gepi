@@ -120,7 +120,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 			}
 			else {
 				$ajout_sql="";
-				if(($nom[$tab_engagements['indice'][$loop]['id']]!="")&&($nom[$tab_engagements['indice'][$loop]['id']]!=$tab_engagements['indice'][$loop]['nom'])) {
+				if(($nom[$tab_engagements['indice'][$loop]['id']]!="")&&(stripslashes($nom[$tab_engagements['indice'][$loop]['id']])!=$tab_engagements['indice'][$loop]['nom'])) {
 					$ajout_sql.=", nom='".$nom[$tab_engagements['indice'][$loop]['id']]."'";
 				}
 				if(stripslashes(preg_replace('/(\\\n)+/',"\n", $description[$tab_engagements['indice'][$loop]['id']]))!=$tab_engagements['indice'][$loop]['description']) {
@@ -162,6 +162,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 						$msg.="Erreur lors de la modification de l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
 					}
 					else {
+						//echo "Modif sur $sql<br />";
 						$nb_modif++;
 					}
 				}
@@ -201,30 +202,38 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$AjoutEngagementSaisieCpe=isset($_POST['AjoutEngagementSaisieCpe']) ? $_POST['AjoutEngagementSaisieCpe'] : "";
 	$AjoutEngagementSaisieScol=isset($_POST['AjoutEngagementSaisieScol']) ? $_POST['AjoutEngagementSaisieScol'] : "";
 	if($AjoutEngagementNom!="") {
-		$sql="INSERT INTO engagements SET nom='".$AjoutEngagementNom."', description='".$AjoutEngagementDescription."'";
-		if($AjoutEngagementConseilClasse=='yes') {
-			$sql.=", conseil_de_classe='yes'";
-		}
-		if($AjoutEngagementEle=='yes') {
-			$sql.=", ConcerneEleve='yes'";
-		}
-		if($AjoutEngagementResp=='yes') {
-			$sql.=", ConcerneResponsable='yes'";
-		}
-		if($AjoutEngagementSaisieScol=='yes') {
-			$sql.=", SaisieScol='yes'";
-		}
-		if($AjoutEngagementSaisieCpe=='yes') {
-			$sql.=", SaisieCpe='yes'";
-		}
-		$sql.=";";
+		$sql="SELECT 1=1 FROM engagements WHERE nom='".$AjoutEngagementNom."';";
 		//echo "$sql<br />";
-		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(!$insert) {
-			$msg.="Erreur lors de l'ajout d'un engagement.<br />";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$msg.="Deux engagements ne peuvent pas avoir le même nom : ".$nom[$tab_engagements['indice'][$loop]['id']]."<br />";
 		}
 		else {
-			$msg.="Engagement ajouté.<br />";
+			$sql="INSERT INTO engagements SET nom='".$AjoutEngagementNom."', description='".$AjoutEngagementDescription."'";
+			if($AjoutEngagementConseilClasse=='yes') {
+				$sql.=", conseil_de_classe='yes'";
+			}
+			if($AjoutEngagementEle=='yes') {
+				$sql.=", ConcerneEleve='yes'";
+			}
+			if($AjoutEngagementResp=='yes') {
+				$sql.=", ConcerneResponsable='yes'";
+			}
+			if($AjoutEngagementSaisieScol=='yes') {
+				$sql.=", SaisieScol='yes'";
+			}
+			if($AjoutEngagementSaisieCpe=='yes') {
+				$sql.=", SaisieCpe='yes'";
+			}
+			$sql.=";";
+			//echo "$sql<br />";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'ajout d'un engagement.<br />";
+			}
+			else {
+				$msg.="Engagement ajouté.<br />";
+			}
 		}
 	}
 

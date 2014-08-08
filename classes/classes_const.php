@@ -740,12 +740,16 @@ au sens Absences/appartenance de l'élève
 		echo "<td>";
 		if(array_key_exists($login_eleve, $tab_engagements_user['login_user'])) {
 			$chaine_eng="";
+			$chaine_eng_img="";
 			for($loop_eng=0;$loop_eng<count($tab_engagements_user['login_user'][$login_eleve]);$loop_eng++) {
 				$cpt_eng=$tab_engagements_user['login_user'][$login_eleve][$loop_eng];
 				if($chaine_eng!="") {$chaine_eng.=",\n";}
 				$chaine_eng.=$tab_engagements_user['indice'][$cpt_eng]['nom_engagement'];
+
+				$chaine_eng_img.=retourne_image_engagement($tab_engagements_user['indice'][$cpt_eng]['code_engagement'], $tab_engagements_user['indice'][$cpt_eng]['nom_engagement']);
 			}
-			echo "<div style='float:right;width:16px;' title=\"".$chaine_eng."\"><img src='../images/vert.png' class='icone16' alt='Engagement(s)' /></div>";
+			//echo "<div style='float:right;width:16px;' title=\"".$chaine_eng."\"><img src='../images/vert.png' class='icone16' alt='Engagement(s)' /></div>";
+			echo "<div style='float:right;width:16px;' title=\"".$chaine_eng."\">$chaine_eng_img</div>";
 		}
 		echo "<p>";
 
