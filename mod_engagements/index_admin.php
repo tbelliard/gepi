@@ -110,50 +110,61 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$nb_modif=0;
 	for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
 
-		$ajout_sql="";
-		if(($nom[$tab_engagements['indice'][$loop]['id']]!="")&&($nom[$tab_engagements['indice'][$loop]['id']]!=$tab_engagements['indice'][$loop]['nom'])) {
-			$ajout_sql.=", nom='".$nom[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-		if(stripslashes(preg_replace('/(\\\n)+/',"\n", $description[$tab_engagements['indice'][$loop]['id']]))!=$tab_engagements['indice'][$loop]['description']) {
-			$ajout_sql.=", description='".$description[$tab_engagements['indice'][$loop]['id']]."'";
-		}
+		if($nom[$tab_engagements['indice'][$loop]['id']]!="") {
 
-		if(((isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']!='yes'))||
-		((!isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']=='yes'))) {
-			$ajout_sql.=", conseil_de_classe='".$conseil_de_classe[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-
-		if(((isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']!='yes'))||
-		((!isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']=='yes'))) {
-			$ajout_sql.=", ConcerneEleve='".$ConcerneEleve[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-
-		if(((isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']!='yes'))||
-		((!isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']=='yes'))) {
-			$ajout_sql.=", ConcerneResponsable='".$ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-
-		if(((isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']!='yes'))||
-		((!isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))) {
-			$ajout_sql.=", SaisieScol='".$SaisieScol[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-
-		if(((isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']!='yes'))||
-		((!isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))) {
-			$ajout_sql.=", SaisieCpe='".$SaisieCpe[$tab_engagements['indice'][$loop]['id']]."'";
-		}
-
-		if($ajout_sql!="") {
-			$sql="UPDATE engagements SET id='".$tab_engagements['indice'][$loop]['id']."'";
-			$sql.=$ajout_sql;
-			$sql.=" WHERE id='".$tab_engagements['indice'][$loop]['id']."';";
+			$sql="SELECT 1=1 FROM engagements WHERE nom='".$nom[$tab_engagements['indice'][$loop]['id']]."' AND id!='".$tab_engagements['indice'][$loop]['id']."';";
 			//echo "$sql<br />";
-			$update=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(!$update) {
-				$msg.="Erreur lors de la modification de l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				$msg.="Deux engagements ne peuvent pas avoir le même nom : ".$nom[$tab_engagements['indice'][$loop]['id']]."<br />";
 			}
 			else {
-				$nb_modif++;
+				$ajout_sql="";
+				if(($nom[$tab_engagements['indice'][$loop]['id']]!="")&&($nom[$tab_engagements['indice'][$loop]['id']]!=$tab_engagements['indice'][$loop]['nom'])) {
+					$ajout_sql.=", nom='".$nom[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+				if(stripslashes(preg_replace('/(\\\n)+/',"\n", $description[$tab_engagements['indice'][$loop]['id']]))!=$tab_engagements['indice'][$loop]['description']) {
+					$ajout_sql.=", description='".$description[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']!='yes'))||
+				((!isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']=='yes'))) {
+					$ajout_sql.=", conseil_de_classe='".$conseil_de_classe[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']!='yes'))||
+				((!isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']=='yes'))) {
+					$ajout_sql.=", ConcerneEleve='".$ConcerneEleve[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']!='yes'))||
+				((!isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']=='yes'))) {
+					$ajout_sql.=", ConcerneResponsable='".$ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']!='yes'))||
+				((!isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))) {
+					$ajout_sql.=", SaisieScol='".$SaisieScol[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']!='yes'))||
+				((!isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))) {
+					$ajout_sql.=", SaisieCpe='".$SaisieCpe[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if($ajout_sql!="") {
+					$sql="UPDATE engagements SET id='".$tab_engagements['indice'][$loop]['id']."'";
+					$sql.=$ajout_sql;
+					$sql.=" WHERE id='".$tab_engagements['indice'][$loop]['id']."';";
+					//echo "$sql<br />";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$update) {
+						$msg.="Erreur lors de la modification de l'engagement n°".$tab_engagements['indice'][$loop]['id']."<br />";
+					}
+					else {
+						$nb_modif++;
+					}
+				}
 			}
 		}
 	}

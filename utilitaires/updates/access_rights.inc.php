@@ -1231,6 +1231,8 @@ autre='F',
 description='Engagements',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/saisie_engagements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des engagements', statut='';";
+
 $tab_req[] = "INSERT INTO droits SET id='/mod_engagements/imprimer_documents.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='F', autre='F', description='Imprimer documents', statut='';";
 
 //$tab_req[] = "";

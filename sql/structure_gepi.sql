@@ -1092,6 +1092,7 @@ PRIMARY KEY ( id )
 DROP TABLE IF EXISTS engagements;
 CREATE TABLE IF NOT EXISTS engagements (
 id int(11) NOT NULL AUTO_INCREMENT,
+code VARCHAR(10) NOT NULL,
 nom VARCHAR(100) NOT NULL,
 description TEXT NOT NULL,
 conseil_de_classe VARCHAR(10) NOT NULL,
@@ -1117,6 +1118,7 @@ CREATE TABLE IF NOT EXISTS archivage_engagements (
 id int(11) NOT NULL AUTO_INCREMENT,
 annee VARCHAR(100) NOT NULL,
 ine VARCHAR(255) NOT NULL,
+code_engagement VARCHAR(10) NOT NULL,
 nom_engagement VARCHAR(100) NOT NULL,
 description_engagement TEXT NOT NULL,
 classe VARCHAR(100) NOT NULL,

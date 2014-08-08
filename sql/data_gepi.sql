@@ -1249,3 +1249,9 @@ INSERT INTO droits SET id='/mod_abs_prof/afficher_remplacements.php', administra
 INSERT INTO setting SET name='abs_prof_modele_message_eleve', value='En raison de l''absence de __PROF_ABSENT__, le cours __COURS__ du __DATE_HEURE__ sera remplacé par un cours avec __PROF_REMPLACANT__ en salle __SALLE__.';
 INSERT INTO droits SET id='/mod_engagements/index_admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Engagements', statut='';
 INSERT INTO droits SET id='/mod_engagements/imprimer_documents.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='F', autre='F', description='Imprimer documents', statut='';
+INSERT INTO droits SET id='/mod_engagements/saisie_engagements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des engagements', statut='';
+INSERT INTO engagements SET code='C', nom='Délégué de classe', description='Délégué de classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';
+INSERT INTO engagements SET code='V', nom='Délégué du conseil de la vie lycéenne', description='Délégué du conseil de la vie lycéenne', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';
+INSERT INTO engagements SET code='A', nom='Membre du conseil d''administration', description='Membre du conseil d''administration', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';
+INSERT INTO engagements SET code='E', nom='Membre du comité d''éducation à la santé et à la citoyenneté', description='Membre du comité d''éducation à la santé et à la citoyenneté', conseil_de_classe='', ConcerneEleve='', SaisieScol='yes';
+INSERT INTO engagements SET code='S', nom='Membre de l''association sportive', description='Membre de l''association sportive', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';

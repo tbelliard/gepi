@@ -282,6 +282,7 @@ $test = sql_query1("SHOW TABLES LIKE 'engagements'");
 if ($test == -1) {
 	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS engagements (
 	id int(11) NOT NULL AUTO_INCREMENT,
+	code VARCHAR(10) NOT NULL,
 	nom VARCHAR(100) NOT NULL,
 	description TEXT NOT NULL,
 	conseil_de_classe VARCHAR(10) NOT NULL,
@@ -298,7 +299,43 @@ if ($test == -1) {
 		saveSetting("active_mod_engagements", "y");
 
 		$result .= "Enregistrement de l'engagement 'Délégué de classe' :<br />";
-		$sql="INSERT INTO engagements SET nom='Délégué de classe', description='Délégué de classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='C', nom='Délégué de classe', description='Délégué de classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';";
+		$query = mysqli_query($mysqli, $sql);
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+
+		$result .= "Enregistrement de l'engagement 'Délégué du conseil de la vie lycéenne' :<br />";
+		$sql="INSERT INTO engagements SET code='V', nom='Délégué du conseil de la vie lycéenne', description='Délégué du conseil de la vie lycéenne', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
+		$query = mysqli_query($mysqli, $sql);
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+
+		$result .= "Enregistrement de l'engagement 'Membre du conseil d'administration' :<br />";
+		$sql="INSERT INTO engagements SET code='A', nom='Membre du conseil d''administration', description='Membre du conseil d''administration', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
+		$query = mysqli_query($mysqli, $sql);
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+
+		$result .= "Enregistrement de l'engagement 'Membre du comité d'éducation à la santé et à la citoyenneté' :<br />";
+		$sql="INSERT INTO engagements SET code='E', nom='Membre du comité d''éducation à la santé et à la citoyenneté', description='Membre du comité d''éducation à la santé et à la citoyenneté', conseil_de_classe='', ConcerneEleve='', SaisieScol='yes';";
+		$query = mysqli_query($mysqli, $sql);
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+
+		$result .= "Enregistrement de l'engagement 'Membre de l\'association sportive' :<br />";
+		$sql="INSERT INTO engagements SET code='S', nom='Membre de l''association sportive', description='Membre de l''association sportive', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -341,6 +378,7 @@ if ($test == -1) {
 	id int(11) NOT NULL AUTO_INCREMENT,
 	annee VARCHAR(100) NOT NULL,
 	ine VARCHAR(255) NOT NULL,
+	code_engagement VARCHAR(10) NOT NULL,
 	nom_engagement VARCHAR(100) NOT NULL,
 	description_engagement TEXT NOT NULL,
 	classe VARCHAR(100) NOT NULL,
