@@ -1353,6 +1353,12 @@ if(getSettingAOui('active_bulletins')) {
 				  "Lapsus ou fautes de frappe",
 				  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçue</em>)");
 		}
+
+		if(getSettingAOui('active_mod_engagements')) {
+			$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
+				  "Imprimer les documents concernant les engagements",
+				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+		}
 	}
 
 	if ($this->b>0){
@@ -1775,6 +1781,11 @@ if(getSettingAOui('active_bulletins')) {
 	$this->creeNouveauItem("/messagerie/index.php",
 			"Panneau d'affichage",
 			"Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+
+
+	$this->creeNouveauItem("/classes/dates_classes.php",
+			"Événements classes",
+			"Cet outil permet de saisir des événements pour telle ou telle classe et notamment les dates de conseils de classe.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Panneau d'affichage",'images/icons/mail.png');

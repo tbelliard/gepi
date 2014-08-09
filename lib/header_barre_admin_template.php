@@ -301,8 +301,12 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php" '.insert_confirm_abandon().'>'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
-		$menus .= '    </ul>'."\n";		
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+		}
+		$menus .= '    </ul>'."\n";
 		$menus .= '  </li>'."\n";
+
 		if(getSettingAOui('active_notanet')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
 		}
@@ -332,6 +336,15 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 		if(getSettingAOui('active_mod_genese_classes')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '  <li class="plus"><a href="#">Engagements</a>'."\n";
+			$menus .= '    <ul class="niveau3">'."\n";
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '    </ul>'."\n";
+			$menus .= '  </li>'."\n";
 		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";

@@ -148,6 +148,10 @@ if ($barre_plugin!="") {
 				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/classe_classe.php"'.insert_confirm_abandon().'>Classe/classe</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
+
+				if(getSettingAOui('active_mod_engagements')) {
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+				}
 	
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
@@ -208,6 +212,17 @@ if ($barre_plugin!="") {
 			$menus .= '            </ul>'."\n";
 			$menus .= '       </li>'."\n";
 		}
+
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '       <li class="plus"><a href="#">Engagements</a>'."\n";
+			$menus .= '         <ul class="niveau3">'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '         </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
