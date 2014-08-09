@@ -184,8 +184,6 @@ if(!isset($annee_scolaire)){
 	if(mysqli_num_rows($test)>0){
 		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
 	}
-
-	echo "<p style='margin-top:1em; color:red'>A FAIRE : Signaler les élèves sans CODE_MEF renseigné, les matières sans CODE_MATIERE renseigné.<br />Cela peut poser des problèmes pour la remontée Livret Scolaire Lycée (<em>en cours de développement</em>).</p>";
 }
 else {
 	echo "<div class='norme'><p class=bold><a href='";
@@ -396,6 +394,20 @@ else {
 				echo "<p>Aucun élève dans la classe $classe???</p>\n";
 			}
 			else{
+
+				if(getSettingAOui('active_mod_engagements')) {
+					$tab_engagements=get_tab_engagements("eleve");
+					$tab_engagements_classe=get_tab_engagements_user("", $id_classe[0], "eleve");
+					/*
+					echo "\$tab_engagements<pre>";
+					print_r($tab_engagements);
+					echo "</pre>";
+					echo "\$tab_engagements_classe<pre>";
+					print_r($tab_engagements_classe);
+					echo "</pre>";
+					*/
+				}
+
 				unset($tab_eleve);
 				$tab_eleve=array();
 				$cpt=0;
@@ -507,6 +519,7 @@ else {
 
 				// Début du traitement
 
+				$tab_archivage_engagements=array();
 				for($i=1;$i<=count($tab_periode);$i++){
 					// Nettoyage:
 					$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i'";
@@ -609,7 +622,6 @@ else {
 						}
 					}
 
-
 					// Boucle sur les élèves
 					for($j=0;$j<count($tab_eleve);$j++){
 						$ine=$tab_eleve[$j]['ine'];
@@ -628,6 +640,40 @@ else {
 
 						$mef_code=$tab_eleve[$j]['mef_code'];
 
+
+						if(getSettingAOui('active_mod_engagements')) {
+							if(!in_array($ine, $tab_archivage_engagements)) {
+								$sql="DELETE FROM archivage_engagements WHERE annee='$annee_scolaire' AND ine='$ine';";
+								//echo "$sql<br />";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if(array_key_exists($login_eleve, $tab_engagements_classe['login_user'])) {
+									for($loop=0;$loop<count($tab_engagements_classe['login_user'][$login_eleve]);$loop++) {
+										$compteur_courant=$tab_engagements_classe['login_user'][$login_eleve][$loop];
+										$sql="INSERT INTO archivage_engagements SET annee='$annee_scolaire',
+																	ine='$ine',
+																	code_engagement='".$tab_engagements_classe['indice'][$compteur_courant]['code_engagement']."',
+																	nom_engagement='".addslashes($tab_engagements_classe['indice'][$compteur_courant]['nom_engagement'])."',
+																	description_engagement='".addslashes($tab_engagements_classe['indice'][$compteur_courant]['engagement_description'])."'";
+										if(($tab_engagements_classe['indice'][$compteur_courant]['id_type']=='id_classe')&&($tab_engagements_classe['indice'][$compteur_courant]['valeur']!="")) {
+											$sql.=",classe='".addslashes(get_nom_classe($tab_engagements_classe['indice'][$compteur_courant]['valeur']))."'";
+										}
+										$sql.=";";
+										//echo "$sql<br />";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert){
+											$erreur++;
+
+											echo "<script type='text/javascript'>
+	document.getElementById('td_".$i."_".$j."').style.backgroundColor='red';
+</script>\n";
+										}
+									}
+								}
+
+								$tab_archivage_engagements[]=$ine;
+							}
+						}
 
 						$sql="SELECT * FROM j_eleves_classes WHERE id_classe='".$id_classe[0]."' AND periode='$i'";
 						$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
