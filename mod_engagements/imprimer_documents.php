@@ -308,20 +308,20 @@ __ADR_ETAB__
 			if(count($tmp_tab)==0) {
 				$tmp_tab['nom']="NOM_INCONNU";
 				$tmp_tab['prenom']="PRENOM_INCONNU";
-				$tmp_tab['adr1']="ADR1";
-				$tmp_tab['adr2']="";
-				$tmp_tab['adr3']="";
-				$tmp_tab['cp']="";
-				$tmp_tab['commune']="VILLE";
+				$tmp_tab['adresse']['adr1']="ADR1";
+				$tmp_tab['adresse']['adr2']="";
+				$tmp_tab['adresse']['adr3']="";
+				$tmp_tab['adresse']['cp']="";
+				$tmp_tab['adresse']['commune']="VILLE";
 			}
 			elseif($tmp_tab['statut']=='eleve') {
 				// Récupérer l'adresse du 1er parent
 
-				$tmp_tab['adr1']="ADR1_PARENT";
-				$tmp_tab['adr2']="";
+				$tmp_tab['adresse']['adr1']="ADR1_PARENT";
+				$tmp_tab['adresse']['adr2']="";
 				$tmp_tab['adr3']="";
-				$tmp_tab['cp']="";
-				$tmp_tab['commune']="VILLE_PARENT";
+				$tmp_tab['adresse']['cp']="";
+				$tmp_tab['adresse']['commune']="VILLE_PARENT";
 
 				$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp, responsables2 r WHERE ra.adr_id=rp.adr_id AND rp.pers_id=r.pers_id AND r.ele_id='".$tmp_tab['ele_id']."' AND r.resp_legal!='0' ORDER BY r.resp_legal;";
 				//echo "$sql<br />";
@@ -329,22 +329,22 @@ __ADR_ETAB__
 				if(mysqli_num_rows($res)>0) {
 					$lig=mysqli_fetch_object($res);
 
-					$tmp_tab['adr1']=$lig->adr1;
-					$tmp_tab['adr2']=$lig->adr2;
-					$tmp_tab['adr3']=$lig->adr3;
-					$tmp_tab['cp']=$lig->cp;
-					$tmp_tab['commune']=$lig->commune;
+					$tmp_tab['adresse']['adr1']=$lig->adr1;
+					$tmp_tab['adresse']['adr2']=$lig->adr2;
+					$tmp_tab['adresse']['adr3']=$lig->adr3;
+					$tmp_tab['adresse']['cp']=$lig->cp;
+					$tmp_tab['adresse']['commune']=$lig->commune;
 				}
 			}
 
 			$tab_OOo[$cpt]['dest_civilite']=$tmp_tab['civilite'];
 			$tab_OOo[$cpt]['dest_nom']=$tmp_tab['nom'];
 			$tab_OOo[$cpt]['dest_prenom']=$tmp_tab['prenom'];
-			$tab_OOo[$cpt]['dest_adr1']=$tmp_tab['adr1'];
-			$tab_OOo[$cpt]['dest_adr2']=$tmp_tab['adr2'];
-			$tab_OOo[$cpt]['dest_adr3']=$tmp_tab['adr3'];
-			$tab_OOo[$cpt]['dest_cp']=$tmp_tab['cp'];
-			$tab_OOo[$cpt]['dest_ville']=$tmp_tab['commune'];
+			$tab_OOo[$cpt]['dest_adr1']=$tmp_tab['adresse']['adr1'];
+			$tab_OOo[$cpt]['dest_adr2']=$tmp_tab['adresse']['adr2'];
+			$tab_OOo[$cpt]['dest_adr3']=$tmp_tab['adresse']['adr3'];
+			$tab_OOo[$cpt]['dest_cp']=$tmp_tab['adresse']['cp'];
+			$tab_OOo[$cpt]['dest_ville']=$tmp_tab['adresse']['commune'];
 
 			$cpt++;
 		}
@@ -631,7 +631,7 @@ if(!isset($id_classe)) {
 
 	echo "<p><br /></p>
 
-<p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> ...</p>
+<p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Pour le moment, seuls les documents concernant les conseils de classe sont proposés ici.</p>
 
 <script type='text/javascript'>
 	function ModifCase(mode) {
@@ -851,10 +851,8 @@ echo "
 	}
 </script>
 
-<p style='color:red'>A FAIRE : Pouvoir imprimer en PP les documents à depuis le tableau des dates de conseil de classe.<br /
-Pouvoir imprimer en élève/parent les documents à partir du tableau des dates de conseil de classe.<br />
-Pouvoir définir les engagements des parents.</p>
-\n";
+<p style='color:red'>A FAIRE : Pouvoir imprimer en PP les documents à depuis le tableau des dates de conseil de classe.<br />
+Pouvoir imprimer en élève/parent les documents à partir du tableau des dates de conseil de classe.<br /></p>\n";
 
 require_once("../lib/footer.inc.php");
 ?>

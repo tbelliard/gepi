@@ -9632,6 +9632,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 
 		$tab_u=array();
 		$sql="SELECT * FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev';";
+		//echo "$sql<br />";
 		$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_u)>0) {
 			while($lig_u=mysqli_fetch_object($res_u)) {

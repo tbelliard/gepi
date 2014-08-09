@@ -102,7 +102,7 @@ print_r($tab_tous_engagements);
 echo "</pre>";
 */
 
-debug_var();
+//debug_var();
 
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='eleve')) {
 	check_token();
@@ -161,11 +161,11 @@ echo "</pre>";
 		}
 
 		foreach($tab_engagements_classe[$id_classe[$loop]]['id_engagement_user'] as $current_id_engagement => $current_login) {
-/*
-echo "<pre>";
-print_r($current_login);
-echo "</pre>";
-*/
+			/*
+			echo "<pre>";
+			print_r($current_login);
+			echo "</pre>";
+			*/
 			for($loop2=0;$loop2<count($current_login);$loop2++) {
 				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
 				//echo "$chaine<br />";
@@ -217,11 +217,11 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='resp
 		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
 			// L'utilisateur a accès à la saisie de ce type d'engagement
 			if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
-/*
-echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
-print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
-echo "</pre>";
-*/
+				/*
+				echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
+				print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
+				echo "</pre>";
+				*/
 				$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
 				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -244,19 +244,27 @@ echo "</pre>";
 			$tab_engagements_classe[$id_classe[$loop]]=get_tab_engagements_user("", $id_classe[$loop], "responsable");
 		}
 
+		/*
+		echo get_nom_classe($id_classe[$loop]).":<pre>";
+		print_r($tab_engagements_classe[$id_classe[$loop]]);
+		echo "</pre>";
+		*/
+
 		foreach($tab_engagements_classe[$id_classe[$loop]]['id_engagement_user'] as $current_id_engagement => $current_login) {
-/*
-echo "<pre>";
-print_r($current_login);
-echo "</pre>";
-*/
+			/*
+			echo "<pre>";
+			print_r($current_login);
+			echo "</pre>";
+			*/
 			for($loop2=0;$loop2<count($current_login);$loop2++) {
 				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
-				//echo "$chaine<br />";
-				if(!in_array($chaine, $engagement)) {
-					// S'il s'agit d'un responsable avec engagement sans avoir d'élève dans la classe, il ne faut pas le virer ici.
 
+				//echo "$chaine<br />";
+				// Il ne faut pas désinscrire les élèves ici
+				$tmp_info_user=get_info_user($current_login[$loop2]);
+				if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='responsable')) {
 					$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
+					//echo "$sql<br />";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
 						$msg.="Erreur lors de la suppression de l'engagement n°$current_id_engagement en classe ".get_nom_classe($id_classe[$loop])." pour ".civ_nom_prenom($current_login[$loop2])."<br />";
@@ -285,10 +293,6 @@ require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
 
 //debug_var();
-
-echo "<p style='color:red'>A FAIRE :<br />
-Faire apparaitre les engagements dans modify_eleve.php, visu_eleve.php, modify_resp.php<br />
-Archiver les engagements élèves avec les autres archivages</p>";
 
 //echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "<p class='bold'><a href='../classes/classes_const.php";
@@ -355,8 +359,6 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 	echo "<p><br /></p>
 
 <p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Cette page est destinée saisir les engagements élèves pour telle ou telle classe (<em>délégué de classe,...</em>).</p>
-
-<p style='color:red'>A FAIRE : Pouvoir saisir les engagements de parents (délégués de parents,...), et prendre en compte pour la génération de convocations aux conseils de classe,... avec modèle OOo...</p>
 
 <script type='text/javascript'>
 	function ModifCase(mode) {
@@ -505,6 +507,7 @@ else {
 			echo "<p style='color:red;'>Aucun responsable n'est associé à un élève de la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
 		}
 		else {
+			// On récupère les engagements concernant les responsables, mais l'indice $tab_engagements_classe['login_user'] contient les engagements élèves et responsables
 			$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i],"responsable");
 			/*
 			echo "<pre>";
@@ -590,7 +593,8 @@ else {
 
 		$chaine_engagements_hors_classe="";
 		foreach($tab_engagements_classe['login_user'] as $current_login => $tab_id_engagement) {
-			if(!in_array($current_login, $tab_resp)) {
+			$tmp_info_user=get_info_user($current_login);
+			if((!in_array($current_login, $tab_resp))&&($tmp_info_user['statut']=='responsable')) {
 				$chaine_engagements_hors_classe.="
 		<tr>
 			<td>".civ_nom_prenom($current_login)."</td>";
@@ -618,14 +622,20 @@ else {
 
 				$chaine_engagements_hors_classe.="
 		</tr>";
+				$cpt++;
 			}
 		}
 
 		if($chaine_engagements_hors_classe!="") {
-			echo "<p>Engagements hors classe pour la classe de ".$nom_classe."</p>
+			echo "<br /><p class='bold'>Engagements hors classe pour la classe de ".$nom_classe."</p>
 	<table class='boireaus boireaus_alt'>
 		<tr>
-			<th></th>
+			<th>Identité</th>";
+			for($loop=0;$loop<$nb_tous_engagements;$loop++) {
+				echo "
+			<th>".$tab_engagements['indice'][$loop]['nom']."</th>";
+			}
+			echo "
 		</tr>$chaine_engagements_hors_classe
 	</table>";
 		}
