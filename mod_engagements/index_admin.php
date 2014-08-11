@@ -101,6 +101,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 
 	$nom=isset($_POST['nom']) ? $_POST['nom'] : array();
 	$description=isset($_POST['description']) ? $_POST['description'] : array();
+	$type=isset($_POST['type']) ? $_POST['type'] : array();
 	$conseil_de_classe=isset($_POST['conseil_de_classe']) ? $_POST['conseil_de_classe'] : array();
 	$ConcerneEleve=isset($_POST['ConcerneEleve']) ? $_POST['ConcerneEleve'] : array();
 	$ConcerneResponsable=isset($_POST['ConcerneResponsable']) ? $_POST['ConcerneResponsable'] : array();
@@ -130,6 +131,11 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 				if(((isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']!='yes'))||
 				((!isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']=='yes'))) {
 					$ajout_sql.=", conseil_de_classe='".$conseil_de_classe[$tab_engagements['indice'][$loop]['id']]."'";
+				}
+
+				if(((isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']!='id_classe'))||
+				((!isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']=='id_classe'))) {
+					$ajout_sql.=", type='".$type[$tab_engagements['indice'][$loop]['id']]."'";
 				}
 
 				if(((isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']!='yes'))||
@@ -196,6 +202,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 
 	$AjoutEngagementNom=isset($_POST['AjoutEngagementNom']) ? $_POST['AjoutEngagementNom'] : "";
 	$AjoutEngagementDescription=isset($_POST['AjoutEngagementDescription']) ? $_POST['AjoutEngagementDescription'] : "";
+	$AjoutEngagementType=isset($_POST['AjoutEngagementType']) ? $_POST['AjoutEngagementType'] : "";
 	$AjoutEngagementConseilClasse=isset($_POST['AjoutEngagementConseilClasse']) ? $_POST['AjoutEngagementConseilClasse'] : "";
 	$AjoutEngagementEle=isset($_POST['AjoutEngagementEle']) ? $_POST['AjoutEngagementEle'] : "";
 	$AjoutEngagementResp=isset($_POST['AjoutEngagementResp']) ? $_POST['AjoutEngagementResp'] : "";
@@ -210,6 +217,9 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 		}
 		else {
 			$sql="INSERT INTO engagements SET nom='".$AjoutEngagementNom."', description='".$AjoutEngagementDescription."'";
+			if($AjoutEngagementType=='id_classe') {
+				$sql.=", type='id_classe'";
+			}
 			if($AjoutEngagementConseilClasse=='yes') {
 				$sql.=", conseil_de_classe='yes'";
 			}

@@ -133,11 +133,11 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='elev
 		if(array_key_exists($current_id_engagement, $tab_engagements['id_engagement'])) {
 			// L'utilisateur a accès à la saisie de ce type d'engagement
 			if((!isset($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))||(!in_array($current_login, $tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]))) {
-/*
-echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
-print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
-echo "</pre>";
-*/
+				/*
+				echo "$current_login n'est pas dans \$tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]<pre>";
+				print_r($tab_engagements_classe[$current_id_classe]['id_engagement_user'][$current_id_engagement]);
+				echo "</pre>";
+				*/
 				$sql="INSERT INTO engagements_user SET login='$current_login', id_type='id_classe', valeur='$current_id_classe', id_engagement='$current_id_engagement';";
 				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -169,7 +169,9 @@ echo "</pre>";
 			for($loop2=0;$loop2<count($current_login);$loop2++) {
 				$chaine=$id_classe[$loop]."|".$current_login[$loop2]."|".$current_id_engagement;
 				//echo "$chaine<br />";
-				if(!in_array($chaine, $engagement)) {
+				//if(!in_array($chaine, $engagement)) {
+				$tmp_info_user=get_info_user($current_login[$loop2]);
+				if((!in_array($chaine, $engagement))&&($tmp_info_user['statut']=='eleve')) {
 					$sql="DELETE FROM engagements_user WHERE login='".$current_login[$loop2]."' AND id_type='id_classe' AND valeur='".$id_classe[$loop]."' AND id_engagement='$current_id_engagement';";
 					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$del) {
@@ -287,6 +289,7 @@ if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='resp
 //$javascript_specifique = ".js";
 //$style_specifique = ".css";
 
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 // ===================== entete Gepi ======================================//
 $titre_page = "Saisie engagements";
 require_once("../lib/header.inc.php");
@@ -444,7 +447,7 @@ if($engagement_statut=="eleve") {
 				echo "</td>\n";
 				*/
 
-				echo "<td style='text-align:left;'><span id='eleve_$cpt'>$lig_ele->nom $lig_ele->prenom</span></td>\n";
+				echo "<td style='text-align:left;'><span id='eleve_$cpt'><a href='../eleves/visu_eleve.php?ele_login=".$lig_ele->login."' title=\"Voir les fiches/onglets élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">$lig_ele->nom $lig_ele->prenom</a></span></td>\n";
 
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
 					echo "<td>\n";
@@ -456,7 +459,7 @@ if($engagement_statut=="eleve") {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
 							$checked=" checked";
 						}
-						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_ele->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
 					}
 					else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
@@ -538,7 +541,7 @@ else {
 			while($lig_resp=mysqli_fetch_object($res)) {
 				echo "
 		<tr class='white_hover'>
-			<td style='text-align:left;'><span id='resp_$cpt'>$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</span></td>
+			<td style='text-align:left;'><span id='resp_$cpt'><a href='saisie_engagements_user.php?login_user=".$lig_resp->login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">$lig_resp->civilite $lig_resp->nom $lig_resp->prenom</a></span></td>
 			<td style='text-align:left;'>";
 
 				$tab_resp[]=$lig_resp->login;
@@ -558,7 +561,7 @@ else {
 						echo "<br />";
 					}
 					echo "
-				$lig_ele->nom $lig_ele->prenom";
+				<a href='../eleves/visu_eleve.php?ele_login=".$lig_ele->login."' title=\"Voir les fiches/onglets élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">$lig_ele->nom $lig_ele->prenom</a>";
 					$cpt_ele++;
 				}
 				echo "
@@ -574,7 +577,7 @@ else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
 							$checked=" checked";
 						}
-						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_resp->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+						echo "<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$lig_resp->login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
 					}
 					else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
@@ -597,7 +600,7 @@ else {
 			if((!in_array($current_login, $tab_resp))&&($tmp_info_user['statut']=='responsable')) {
 				$chaine_engagements_hors_classe.="
 		<tr>
-			<td>".civ_nom_prenom($current_login)."</td>";
+			<td><a href='saisie_engagements_user.php?login_user=".$current_login."' title=\"Saisir les engagements de cet utilisateur, même hors de la classe.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($current_login)."</a></td>";
 
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
 					$chaine_engagements_hors_classe.="
@@ -610,7 +613,7 @@ else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
 							$checked=" checked";
 						}
-						$chaine_engagements_hors_classe.="<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$current_login."|".$tab_engagements['indice'][$loop]['id']."\"$checked />";
+						$chaine_engagements_hors_classe.="<input type='checkbox' name='engagement[]' id='engagement_".$loop."_".$cpt."' value=\"".$id_classe[$i]."|".$current_login."|".$tab_engagements['indice'][$loop]['id']."\"$checked onchange='changement()' />";
 					}
 					else {
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {

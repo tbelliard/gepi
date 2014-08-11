@@ -146,8 +146,10 @@
 		<thead>
 			<tr>
 				<th style='color:black;' rowspan='2'>Id</th>
+				<th style='color:black;' rowspan='2'>Code</th>
 				<th style='color:black;' rowspan='2'>Nom</th>
 				<th style='color:black;' rowspan='2'>Description</th>
+				<th style='color:black;' rowspan='2'>Lié à une classe</th>
 				<th style='color:black;' rowspan='2'>Conseil de classe</th>
 				<th style='color:black;' colspan='2'>Statuts visés</th>
 				<th style='color:black;' colspan='2'>Statuts saisie</th>
@@ -163,6 +165,10 @@
 		<tbody>
 			<?php
 				for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
+					$checked_type="";
+					if($tab_engagements['indice'][$loop]['type']=="id_classe") {
+						$checked_type=" checked";
+					}
 					$checked_conseil_de_classe="";
 					if($tab_engagements['indice'][$loop]['conseil_de_classe']=="yes") {
 						$checked_conseil_de_classe=" checked";
@@ -187,8 +193,10 @@
 					echo "
 			<tr>
 				<td>".$tab_engagements['indice'][$loop]['id']."</td>
+				<td>".$tab_engagements['indice'][$loop]['code']."</td>
 				<td><input type='text' name='nom[".$tab_engagements['indice'][$loop]['id']."]' value=\"".$tab_engagements['indice'][$loop]['nom']."\" /></td>
 				<td><textarea name='description[".$tab_engagements['indice'][$loop]['id']."]'>".$tab_engagements['indice'][$loop]['description']."</textarea></td>
+				<td><input type='checkbox' name='type[".$tab_engagements['indice'][$loop]['id']."]' value=\"id_classe\"$checked_type /></td>
 				<td><input type='checkbox' name='conseil_de_classe[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_conseil_de_classe /></td>
 				<td><input type='checkbox' name='ConcerneEleve[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_ConcerneEleve /></td>
 				<td><input type='checkbox' name='ConcerneResponsable[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_ConcerneResponsable /></td>
@@ -212,6 +220,10 @@
 		<tr>
 			<td>Description&nbsp;:</td>
 			<td><textarea name='AjoutEngagementDescription'></textarea></td>
+		</tr>
+		<tr>
+			<td>Lié à une classe&nbsp;:</td>
+			<td><input type='checkbox' name='AjoutEngagementType' id='AjoutEngagementType' value='id_classe' /><label for='AjoutEngagementType'>Oui</label></td>
 		</tr>
 		<tr>
 			<td>Conseil de classe&nbsp;:<br />
@@ -263,7 +275,13 @@
 	  <input type="submit" value="Ajouter/Valider" />
 	</p>
 
-	<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> En supprimant un engagement, vous supprimez aussi l'association avec les élèves, responsables éventuellement engagés.</p>
+	<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li><p>En supprimant un engagement, vous supprimez aussi l'association avec les élèves, responsables éventuellement engagés.</p></li>
+		<li><p>Les "codes" des engagements correspondent aux codes des engagements attendus dans l'application Livret Scolaire Lycée (<em>LSL</em>).<br />
+		Seuls les engagements officiels du LSL requièrent un tel code.</p></li>
+		<li><p>Vous pouvez ajouter des engagements comme "Délégué parent" pour générer les convocations aux conseils de classe qui sont associées.</p></li>
+	</ul>
 </form>
 
 <!-- ================================================ -->

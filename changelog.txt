@@ -18,6 +18,10 @@ Edt:
 Gestion:
 - Accès au dossier d'export des absences de mod_abs2 en fin d'année (dans Sauvegarde et restauration).
 
+Engagements:
+- Ajout d'un module engagements (délégué de classe, membre du C.A.,...)
+
+
 Gepi-1.6.5 (14/06/2014)
 ===========================
 Cahier de textes:

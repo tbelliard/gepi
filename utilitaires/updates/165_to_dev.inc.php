@@ -285,6 +285,7 @@ if ($test == -1) {
 	code VARCHAR(10) NOT NULL,
 	nom VARCHAR(100) NOT NULL,
 	description TEXT NOT NULL,
+	type VARCHAR(20) NOT NULL,
 	conseil_de_classe VARCHAR(10) NOT NULL,
 	ConcerneEleve VARCHAR(10) NOT NULL,
 	ConcerneResponsable VARCHAR(10) NOT NULL,
@@ -299,7 +300,7 @@ if ($test == -1) {
 		saveSetting("active_mod_engagements", "y");
 
 		$result .= "Enregistrement de l'engagement 'Délégué de classe' :<br />";
-		$sql="INSERT INTO engagements SET code='C', nom='Délégué de classe', description='Délégué de classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='C', nom='Délégué de classe', description='Délégué de classe', type='id_classe', conseil_de_classe='yes', ConcerneEleve='yes', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -308,7 +309,7 @@ if ($test == -1) {
 		}
 
 		$result .= "Enregistrement de l'engagement 'Délégué du conseil de la vie lycéenne' :<br />";
-		$sql="INSERT INTO engagements SET code='V', nom='Délégué du conseil de la vie lycéenne', description='Délégué du conseil de la vie lycéenne', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='V', nom='Délégué du conseil de la vie lycéenne', description='Délégué du conseil de la vie lycéenne', type='', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -317,7 +318,7 @@ if ($test == -1) {
 		}
 
 		$result .= "Enregistrement de l'engagement 'Membre du conseil d'administration' :<br />";
-		$sql="INSERT INTO engagements SET code='A', nom='Membre du conseil d''administration', description='Membre du conseil d''administration', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='A', nom='Membre du conseil d''administration', description='Membre du conseil d''administration', type='', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -326,7 +327,7 @@ if ($test == -1) {
 		}
 
 		$result .= "Enregistrement de l'engagement 'Membre du comité d'éducation à la santé et à la citoyenneté' :<br />";
-		$sql="INSERT INTO engagements SET code='E', nom='Membre du comité d''éducation à la santé et à la citoyenneté', description='Membre du comité d''éducation à la santé et à la citoyenneté', conseil_de_classe='', ConcerneEleve='', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='E', nom='Membre du comité d''éducation à la santé et à la citoyenneté', description='Membre du comité d''éducation à la santé et à la citoyenneté', type='', conseil_de_classe='', ConcerneEleve='', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -335,7 +336,7 @@ if ($test == -1) {
 		}
 
 		$result .= "Enregistrement de l'engagement 'Membre de l\'association sportive' :<br />";
-		$sql="INSERT INTO engagements SET code='S', nom='Membre de l''association sportive', description='Membre de l''association sportive', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
+		$sql="INSERT INTO engagements SET code='S', nom='Membre de l''association sportive', description='Membre de l''association sportive', type='', conseil_de_classe='', ConcerneEleve='yes', SaisieScol='yes';";
 		$query = mysqli_query($mysqli, $sql);
 		if ($query) {
 				$result .= msj_ok("Ok !");
@@ -392,6 +393,19 @@ if ($test == -1) {
 	}
 } else {
 	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'type' à la table 'engagements'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM engagements LIKE 'type';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE engagements ADD type varchar(20) NOT NULL default '' AFTER description;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 ?>

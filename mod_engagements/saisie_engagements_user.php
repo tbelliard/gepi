@@ -201,7 +201,7 @@ if(isset($_POST['is_posted'])) {
 				$msg.="Vous n'êtes pas autorisé à saisir les engagements de type ".$current_id_engagement."<br />";
 			}
 			else {
-				if($id_classe[$key]=="") {
+				if((!isset($id_classe[$key]))||($id_classe[$key]=="")) {
 					$sql="INSERT INTO engagements_user SET id_type='', 
 										valeur='', 
 										login='$login_user',
@@ -289,19 +289,23 @@ if(count($tab_engagements_user)>0) {
 		echo "
 		<tr>
 			<td>".$tab_engagements_user['indice'][$loop2]['nom_engagement']."</td>
-			<td>
+			<td>";
+		if($tab_engagements_user['indice'][$loop2]['type']=='id_classe') {
+			echo "
 				<select name='engagement_existant_id_classe[$current_engagement]'>
 					<option value=''>---</option>";
-		foreach($tab_classe as $id_classe => $classe) {
-			$selected="";
-			if(($tab_engagements_user['indice'][$loop2]['id_type']=='id_classe')&&($tab_engagements_user['indice'][$loop2]['valeur']==$id_classe)) {
-				$selected=" selected";
+			foreach($tab_classe as $id_classe => $classe) {
+				$selected="";
+				if(($tab_engagements_user['indice'][$loop2]['id_type']=='id_classe')&&($tab_engagements_user['indice'][$loop2]['valeur']==$id_classe)) {
+					$selected=" selected";
+				}
+				echo "
+					<option value='$id_classe'$selected>$classe</option>";
 			}
 			echo "
-					<option value='$id_classe'$selected>$classe</option>";
+				</select>";
 		}
 		echo "
-				</select>
 			</td>
 			<td><input type='checkbox' name='suppr_engagement_existant[]' value='$current_engagement' /></td>
 		</tr>";
@@ -336,15 +340,19 @@ if(count($tab_engagements['indice'])>0) {
 			<td>
 				<input type='checkbox' name='engagement[$loop]' id='engagement_".$loop."' value=\"".$current_id_engagement."\" />
 			</td>
-			<td>
+			<td>";
+			if($tab_tous_engagements['indice'][$loop]['type']=='id_classe') {
+				echo "
 				<select name='id_classe[$loop]'>
 					<option value=''>---</option>";
-			foreach($tab_classe as $id_classe => $classe) {
-				echo "
+				foreach($tab_classe as $id_classe => $classe) {
+					echo "
 					<option value='$id_classe'>$classe</option>";
+				}
+				echo "
+				</select>";
 			}
 			echo "
-				</select>
 			</td>
 		</tr>";
 		}

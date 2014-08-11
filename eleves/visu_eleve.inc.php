@@ -1321,7 +1321,8 @@ Patientez pendant l'extraction des données... merci.
 				echo "<div id='div_engagements_eleve'>";
 				for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
 					$detail_eng="";
-					if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+					//if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+					if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
 						$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
 					}
 					echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";
@@ -1677,7 +1678,8 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 								*/
 								for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
 									$detail_eng="";
-									if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+									//if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+									if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
 										$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
 									}
 									echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";

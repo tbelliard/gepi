@@ -11888,7 +11888,7 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	$tab_engagements_user['login_user']=array();
 	$tab_engagements_user['id_engagement']=array();
 	$tab_engagements_user['id_engagement_user']=array();
-	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
+	$sql="SELECT eu.*, e.nom AS nom_engagement, e.description AS engagement_description, e.type, e.conseil_de_classe, e.code AS code_engagement FROM engagements_user eu, engagements e WHERE eu.id_engagement=e.id";
 	if($login_user!="") {
 		$sql.=" AND eu.login='".$login_user."'";
 	}
