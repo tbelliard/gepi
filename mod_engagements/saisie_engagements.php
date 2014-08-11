@@ -297,12 +297,24 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-//echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
-echo "<p class='bold'><a href='../classes/classes_const.php";
-if(isset($id_classe[0])) {
-	echo "?id_classe=".$id_classe[0];
+if($_SESSION['statut']=='administrateur') {
+	echo "<p class='bold'><a href='../classes/classes_const.php";
+	if(isset($id_classe[0])) {
+		echo "?id_classe=".$id_classe[0];
+	}
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
-echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+else {
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+
+if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {
+	echo " | <a href='index_admin.php'>Définir les types d'engagements</a>";
+}
+
+if(acces("/mod_engagements/imprimer_documents.php", $_SESSION['statut'])) {
+	echo " | <a href='imprimer_documents.php'>Imprimer les documents liés aux engagements</a>";
+}
 
 if((!isset($id_classe))||($engagement_statut=="")) {
 	echo "</p>\n";
@@ -390,7 +402,7 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 	die();
 }
 
-echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a></p>\n";
+echo " | <a href='".$_SERVER['PHP_SELF']."'>Saisir les engagements pour d'autres classes</a></p>\n";
 
 if($engagement_statut=="eleve") {
 	echo "<p class='bold'>Choix des élèves&nbsp;:</p>\n";

@@ -9788,7 +9788,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					$sql="SELECT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
 				}
 				elseif($_SESSION['statut']=='responsable') {
-					$sql="SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+					$sql="(SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
 																	responsables2 r, 
 																	eleves e, 
 																	j_eleves_classes jec 
@@ -9797,7 +9797,36 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 																	r.ele_id=e.ele_id AND 
 																	e.login=jec.login AND 
 																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
-																) ORDER BY date_evenement, classe;";
+																)) ";
+
+					if(getSettingAOui('active_mod_engagements')) {
+						$sql_test="SELECT eu.valeur AS id_classe FROM engagements e, 
+											engagements_user eu
+										WHERE e.id=eu.id_engagement AND 
+											e.conseil_de_classe='yes' AND 
+											eu.login='".$_SESSION['login']."' AND 
+											e.type='id_classe' AND 
+											eu.id_type='id_classe' AND 
+											eu.valeur NOT IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+																	responsables2 r, 
+																	eleves e, 
+																	j_eleves_classes jec 
+																WHERE rp.login='".$_SESSION['login']."' AND 
+																	rp.pers_id=r.pers_id AND 
+																	r.ele_id=e.ele_id AND 
+																	e.login=jec.login AND 
+																	(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+																);";
+						//echo "$sql_test<br />";
+						$res_test=mysqli_query($GLOBALS["mysqli"], $sql_test);
+						if(mysqli_num_rows($res_test)>0) {
+							while($lig_test=mysqli_fetch_object($res_test)) {
+								$sql.=" UNION (SELECT DISTINCT * FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe='".$lig_test->id_classe."')";
+							}
+						}
+					}
+					$sql.=" ORDER BY date_evenement, classe;";
+
 				}
 				elseif($_SESSION['statut']=='eleve') {
 					$sql="SELECT DISTINCT d.*, c.* FROM d_dates_evenements_classes d, classes c, j_eleves_classes jec WHERE id_ev='$id_ev' AND d.id_classe=c.id AND d.id_classe=jec.id_classe AND jec.login='".$_SESSION['login']."' AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' ORDER BY date_evenement, classe;";
@@ -9873,6 +9902,11 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 								$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
 								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+
+								if(getSettingAOui('active_mod_engagements')) {
+									$tab_cellules[$tmp_jour][$tmp_heure].=" <a href=\"$gepiPath/mod_engagements/imprimer_documents.php\" title=\"Imprimer les documents pour les délégués\"><img src='$gepiPath/images/icons/odt.png' class='icone16' alt='Document' /></a>";
+								}
+
 							}
 							else {
 								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
@@ -9944,6 +9978,13 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 							}
 							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 							$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+
+							if((getSettingAOui('active_mod_engagements'))&&(is_delegue_conseil_classe($_SESSION['login'], $lig2->id_classe))) {
+								$tab_cellules[$tmp_jour][$tmp_heure].=" <a href=\"$gepiPath/mod_engagements/imprimer_documents.php?id_classe=".$lig2->id_classe."&imprimer=liste_eleves\" title=\"Imprimer la liste des élèves pour prendre des notes pendant le conseil de classe\" target='_blank'><img src='$gepiPath/images/icons/tableau.png' class='icone16' alt='Document' /></a>";
+
+								$tab_cellules[$tmp_jour][$tmp_heure].=" <a href=\"$gepiPath/mod_engagements/imprimer_documents.php?id_classe=".$lig2->id_classe."&imprimer=convocation\" title=\"Imprimer la convocation pour le conseil de classe\" target='_blank'><img src='$gepiPath/images/icons/saisie.png' class='icone16' alt='Document' /></a>";
+							}
+
 						}
 					//}
 				}
@@ -11915,4 +11956,22 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	return $tab_engagements_user;
 }
 
+function is_delegue_conseil_classe($login_user, $id_classe) {
+	$sql="SELECT 1=1 FROM engagements e, 
+					engagements_user eu 
+				WHERE e.id=eu.id_engagement AND 
+					e.conseil_de_classe='yes' AND 
+					eu.login='".$login_user."' AND 
+					e.type='id_classe' AND 
+					eu.id_type='id_classe' AND 
+					eu.valeur='".$id_classe."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>

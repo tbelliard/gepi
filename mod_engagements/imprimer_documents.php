@@ -72,38 +72,265 @@ if(count($tab_engagements['indice'])==0) {
 $nb_engagements=count($tab_engagements['indice']);
 
 // Restreindre a ses propres documents
-if($_SESSION['statut']=='eleve') {
-	$sql="SELECT * FROM engagements e, engagements_user eu WHERE e.id=eu.id_engagement AND e.conseil_de_classe='yes' AND eu.login='".$_SESSION['login']."' AND eu.id_type='id_classe';";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
-		// On ne devrait faire qu'un tour
-		$id_classe=array();
-		while($lig=mysqli_fetch_object($res)) {
-			$id_classe[]=$lig->valeur;
-		}
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+
+	if(!isset($id_classe)) {
+		header("Location: ../accueil.php?msg=Classe non choisie.");
+		die();
+	}
+
+	if(!is_delegue_conseil_classe($_SESSION['login'], $id_classe)) {
+		header("Location: ../accueil.php?msg=Accès non autorisé.");
+		die();
 	}
 
 
+	include_once('../mod_ooo/lib/tinyButStrong.class.php');
+	include_once('../mod_ooo/lib/tinyDoc.class.php');
+
+	$acad = $gepiSettings['gepiSchoolAcademie'];
+	$etab_anne_scol = $gepiSettings['gepiSchoolName'];
+	$etab_nom = $gepiSettings['gepiSchoolName'];
+	$etab_adr1 = $gepiSettings['gepiSchoolAdress1'];
+	$etab_adr2 = $gepiSettings['gepiSchoolAdress2'];
+	$etab_cp = $gepiSettings['gepiSchoolZipCode'];
+	$etab_ville = $gepiSettings['gepiSchoolCity'];
+	$etab_tel = $gepiSettings['gepiSchoolTel'];
+	$etab_fax = $gepiSettings['gepiSchoolFax'];
+	$etab_email = $gepiSettings['gepiSchoolEmail'];
+
+	$imprimer=isset($_POST['imprimer']) ? $_POST['imprimer'] : (isset($_GET['imprimer']) ? $_GET['imprimer'] : "");
+
+	$classe=get_nom_classe($id_classe);
+
+	if($imprimer=="liste_eleves") {
+
+		$tab_OOo=array();
+
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='".$id_classe."' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$cpt=0;
+			while($lig=mysqli_fetch_object($res)) {
+				$tab_OOo[$cpt]['designation_eleve']=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+				$cpt++;
+			}
+		}
+
+		// Load the template
+		$nom_fichier_modele_ooo ='liste_eleve_conseil_classe.odt';
+
+		//Procédure du traitement à effectuer
+		//les chemins contenant les données
+		include_once ("../mod_ooo/lib/chemin.inc.php");
+
+		$nom_fichier = "../mod_ooo/".$nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
+
+		//Génération du nom du fichier
+		$now = gmdate('d_M_Y_H:i:s');
+		$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
+		$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_"."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
+		// Je n'arrive pas à générer un fichier à ce nom.
+		// Problème de syntaxe tinyButStrong?
 
 
+		// Création d'une classe tinyDoc
+		$OOo = new tinyDoc();
+
+		// Choix du module de dézippage
+		$dezippeur=getSettingValue("fb_dezip_ooo");
+		if ($dezippeur==1){
+			$OOo->setZipMethod('shell');
+			$OOo->setZipBinary('zip');
+			$OOo->setUnzipBinary('unzip');
+		}
+		else{
+			$OOo->setZipMethod('ziparchive');
+		}
+
+		$tempdir=get_user_temp_directory();
+		$nom_dossier_temporaire = "../temp/".$tempdir;
+		$nom_fichier_xml_a_traiter ='content.xml';
+
+		$OOo->SetProcessDir($nom_dossier_temporaire);
+		$OOo->createFrom($nom_fichier);
+		//$OOo->createFrom($nom_fichier);
+		$OOo->loadXml($nom_fichier_xml_a_traiter);
+
+		// Traitement des tableaux
+		$OOo->mergeXml(
+		array(
+		'name'      => 'var',
+		'type'      => 'block',
+		'data_type' => 'array',
+		'charset'   => 'UTF-8'
+		),$tab_OOo);
+
+		$OOo->SaveXml(); //traitement du fichier extrait
 
 
+		$OOo->sendResponse(); //envoi du fichier traité
+		$OOo->remove(); //suppression des fichiers de travail
+		// Fin de traitement des tableaux
+		$OOo->close();
 
-	header("Location: ../accueil.php?msg=Fonction pas encore implémentée.");
-	die();
+		die();
+	}
+	elseif($imprimer=="convocation") {
 
+		$lieu="Salle des conseils";
+		// Lieu à mettre dans d_dates_evenements_classes
+
+		$tab_OOo=array();
+
+		$cpt=0;
+
+		$tab_OOo[$cpt]['acad']=$acad;
+		$tab_OOo[$cpt]['etab_nom']=$etab_nom;
+		$tab_OOo[$cpt]['etab_adr1']=$etab_adr1;
+		$tab_OOo[$cpt]['etab_adr2']=$etab_adr2;
+		$tab_OOo[$cpt]['etab_cp']=$etab_cp;
+		$tab_OOo[$cpt]['etab_ville']=$etab_ville;
+
+		$tab_OOo[$cpt]['classe']=$classe;
+		$tab_OOo[$cpt]['lieu']=$lieu;
+
+
+		$date_limite=strftime("%Y-%m-%d")." 00:00:00";
+		// Pour debug/devel
+		//$date_limite="2014-06-01 00:00:00";
+
+		// Chercher s'il y a des conseils de classe à venir
+		$sql="SELECT * FROM d_dates_evenements dde, 
+					d_dates_evenements_classes ddec 
+				WHERE dde.id_ev=ddec.id_ev AND 
+					ddec.id_classe='".$id_classe."' AND 
+					date_evenement>='".$date_limite."' 
+					ORDER BY ddec.date_evenement;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tmp_date_conseil=formate_date($lig->date_evenement,"y2","complet");
+		}
+		else {
+			$tmp_date_conseil="DATE INCONNUE";
+		}
+		$tab_OOo[$cpt]['date_conseil']=$tmp_date_conseil;
+
+		$tmp_tab=get_info_user($_SESSION['login']);
+		if(count($tmp_tab)==0) {
+			$tmp_tab['nom']="NOM_INCONNU";
+			$tmp_tab['prenom']="PRENOM_INCONNU";
+			$tmp_tab['adresse']['adr1']="ADR1";
+			$tmp_tab['adresse']['adr2']="";
+			$tmp_tab['adresse']['adr3']="";
+			$tmp_tab['adresse']['cp']="";
+			$tmp_tab['adresse']['commune']="VILLE";
+		}
+		elseif($tmp_tab['statut']=='eleve') {
+			// Récupérer l'adresse du 1er parent
+
+			$tmp_tab['adresse']['adr1']="ADR1_PARENT";
+			$tmp_tab['adresse']['adr2']="";
+			$tmp_tab['adr3']="";
+			$tmp_tab['adresse']['cp']="";
+			$tmp_tab['adresse']['commune']="VILLE_PARENT";
+
+			$sql="SELECT ra.* FROM resp_adr ra, resp_pers rp, responsables2 r WHERE ra.adr_id=rp.adr_id AND rp.pers_id=r.pers_id AND r.ele_id='".$tmp_tab['ele_id']."' AND r.resp_legal!='0' ORDER BY r.resp_legal;";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+
+				$tmp_tab['adresse']['adr1']=$lig->adr1;
+				$tmp_tab['adresse']['adr2']=$lig->adr2;
+				$tmp_tab['adresse']['adr3']=$lig->adr3;
+				$tmp_tab['adresse']['cp']=$lig->cp;
+				$tmp_tab['adresse']['commune']=$lig->commune;
+			}
+		}
+
+		$tab_OOo[$cpt]['dest_civilite']=$tmp_tab['civilite'];
+		$tab_OOo[$cpt]['dest_nom']=$tmp_tab['nom'];
+		$tab_OOo[$cpt]['dest_prenom']=$tmp_tab['prenom'];
+		$tab_OOo[$cpt]['dest_adr1']=$tmp_tab['adresse']['adr1'];
+		$tab_OOo[$cpt]['dest_adr2']=$tmp_tab['adresse']['adr2'];
+		$tab_OOo[$cpt]['dest_adr3']=$tmp_tab['adresse']['adr3'];
+		$tab_OOo[$cpt]['dest_cp']=$tmp_tab['adresse']['cp'];
+		$tab_OOo[$cpt]['dest_ville']=$tmp_tab['adresse']['commune'];
+
+		// Load the template
+		$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
+
+		//Procédure du traitement à effectuer
+		//les chemins contenant les données
+		include_once ("../mod_ooo/lib/chemin.inc.php");
+
+		$nom_fichier = "../mod_ooo/".$nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo;
+
+		//Génération du nom du fichier
+		$now = gmdate('d_M_Y_H:i:s');
+		$nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
+		$nom_fic = remplace_accents($nom_fichier_modele[0]."_".$classe."_"."_généré_le_".$now.".".$nom_fichier_modele[1],'all');
+		// Je n'arrive pas à générer un fichier à ce nom.
+		// Problème de syntaxe tinyButStrong?
+
+
+		// Création d'une classe tinyDoc
+		$OOo = new tinyDoc();
+
+		// Choix du module de dézippage
+		$dezippeur=getSettingValue("fb_dezip_ooo");
+		if ($dezippeur==1){
+			$OOo->setZipMethod('shell');
+			$OOo->setZipBinary('zip');
+			$OOo->setUnzipBinary('unzip');
+		}
+		else{
+			$OOo->setZipMethod('ziparchive');
+		}
+
+		$tempdir=get_user_temp_directory();
+		$nom_dossier_temporaire = "../temp/".$tempdir;
+		$nom_fichier_xml_a_traiter ='content.xml';
+
+		$OOo->SetProcessDir($nom_dossier_temporaire);
+		$OOo->createFrom($nom_fichier);
+		//$OOo->createFrom($nom_fichier);
+		$OOo->loadXml($nom_fichier_xml_a_traiter);
+
+		// Traitement des tableaux
+		$OOo->mergeXml(
+		array(
+		'name'      => 'var',
+		'type'      => 'block',
+		'data_type' => 'array',
+		'charset'   => 'UTF-8'
+		),$tab_OOo);
+
+		$OOo->SaveXml(); //traitement du fichier extrait
+
+		$OOo->sendResponse(); //envoi du fichier traité
+		$OOo->remove(); //suppression des fichiers de travail
+		// Fin de traitement des tableaux
+		$OOo->close();
+
+		/*
+		$TBS->LoadTemplate($nom_fichier, OPENTBS_ALREADY_UTF8);
+
+		$TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fic);
+		*/
+		die();
+
+	}
+	else {
+		header("Location: ../accueil.php?msg=Document non choisi.");
+		die();
+	}
 }
-elseif($_SESSION['statut']=='responsable') {
 
-
-
-
-
-
-	header("Location: ../accueil.php?msg=Fonction pas encore implémentée.");
-	die();
-}
 
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	check_token();
@@ -527,6 +754,14 @@ require_once("../lib/header.inc.php");
 echo "<p class='bold'><a href='../accueil.php";
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
+if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {
+	echo " | <a href='index_admin.php'>Définir les types d'engagements</a>";
+}
+
+if(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut'])) {
+	echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
+}
+
 if($_SESSION['statut']=='professeur') {
 	$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
 	if(count($tab_pp['id_classe'])==0) {
@@ -849,10 +1084,7 @@ echo "
 			}
 		}
 	}
-</script>
-
-<p style='color:red'>A FAIRE : Pouvoir imprimer en PP les documents à depuis le tableau des dates de conseil de classe.<br />
-Pouvoir imprimer en élève/parent les documents à partir du tableau des dates de conseil de classe.<br /></p>\n";
+</script>";
 
 require_once("../lib/footer.inc.php");
 ?>

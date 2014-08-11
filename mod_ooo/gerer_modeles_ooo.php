@@ -243,14 +243,19 @@ if($_SESSION['statut']=='administrateur') {
 	$special[]="";
 }
 
-    $nbfich=sizeof($fich);
+if(isset($fich)) {
+	$nbfich=sizeof($fich);
+}
+else {
+	$nbfich=0;
+}
 // Fin liste des fichiers
 
 $PHP_SELF=basename($_SERVER['PHP_SELF']);
 creertousrep($nom_dossier_modeles_ooo_mes_modeles.$rne);
 
 $retour_apres_upload=isset($_POST['retour_apres_upload']) ? $_POST['retour_apres_upload'] : (isset($_GET['retour_apres_upload']) ? $_GET['retour_apres_upload'] : NULL);
-if(!isset($retour_apres_upload)) {
+if((!isset($retour_apres_upload))&&(isset($_SESSION['retour']))) {
 	$retour=$_SESSION['retour'];
 	$_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 }
