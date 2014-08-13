@@ -1177,6 +1177,12 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($update) {
 
+											$sql="UPDATE sso_table_correspondance SET login_gepi='".$tab_tempo4[$id_col1]['login']."' WHERE login_gepi='$lig->login';";
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$update) {
+												$msg.="Erreur lors de la mise à jour du login dans la table de correspondances pour ".$lig->login."-&gt;".$tab_tempo4[$id_col1]['login'].".<br />Vous devrez supprimer d'éventuelles scories s'il en est signalé et refaire ensuite une importation du fichier CSV SSO.<br />";
+											}
+
 											// Ménage:
 											$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($pers_id)';";
 											//if($debug_create_resp=="y") {echo "$sql<br />\n";}
@@ -1309,9 +1315,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 		$msg.="$nb_comptes_remplaces comptes d'utilisateurs ont été remplacés.<br />";
 	}
 
-	$msg.="<br />";
-	$msg.="NOTE : Les comptes créés ou modifiés n'ont pas été activés.<br />";
-	$msg.="Vous devrez activer ces comptes dans Gestion des bases/Gestion des comptes d'utilisateurs/Responsables.<br />";
+	if((!isset($_POST['activer_comptes']))||($_POST['activer_comptes']!="y")) {
+		$msg.="<br />";
+		$msg.="NOTE : Les comptes créés ou modifiés n'ont pas été activés.<br />";
+		$msg.="Vous devrez activer ces comptes dans Gestion des bases/Gestion des comptes d'utilisateurs/Responsables.<br />";
+	}
 
 	// Ménage:
 	$sql="TRUNCATE tempo4;";
@@ -1776,6 +1784,14 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 		﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
 		DUPRE;Denis;denis.dupre1;MENESR$1234567;azerty&*;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;DUPRE;Thomas;6 A;Actif<br />
 		...</li>
+		<li>Le fichier peut porter un autre nom que celui indiqué plus haut.<br />
+		Le nom de la forme <strong>".getSettingValue("gepiSchoolRne")."_MiseaJour_Motdepasse_Parent_JJ_MM_AAAA_HH_MM_SS.csv</strong> n'est obtenu que dans le cas où vous regénérez tous les mots de passe pour tous les parents.<br />
+		Sinon, vous aurez le nom de votre choix en enregistrant en CSV (<em>avec séparateur ; sans guillemets</em>) l'onglet Parents du fichier <strong>[V2]NOM_ETABLISSEMENT-ac-ACADEMIE - [".getSettingValue("gepiSchoolRne")."] - [AAAAMMJJHH].xlsx</strong> généré dans l'espace Documents de l'ENT lorsque de nouveaux comptes sont ajoutés.<br />
+		Dans ce cas, votre fichier CSV ne comportera pas les colonnes <strong>Etat</strong>, ni <strong>Date de désactivation</strong>.<br />
+		N'ajoutez pas ces colonnes.<br />
+		Elles sont alors inutiles.<br />
+		Si ces colonnes sont présentes dans le fichier CSV, alors pour chaque ligne à pendre en compte, la ligne doit contenir <strong>Actif</strong> et un champ vide pour la date de désactivation.<br />
+		Dans le cas contraire, la ligne ne sera pas prise en compte.</li>
 	</ul>
 
 	<p><br /></p>
@@ -1821,6 +1837,7 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 		<li>Une fois le fichier CSV envoyé, vous devrez choisir les élèves pour lesquels vous souhaitez imposer les mots de passe.<br />
 		Les élèves qui ont déjà un mot de passe dans Gepi seront signalés (<em>en revanche, le mot de passe en lui-même ne sera pas affiché</em>).</li>
 		<li>Seuls les élèves qui disposent d'un compte utilisateur seront affichés.</li>
+		<li><strong>ATTENTION&nbsp;:</strong> Il est ici question d'<strong>imposer des mots de passe</strong> dans Gepi pour un accès de secours élève.<br />Les <strong>logins sont inchangés</strong> et il est peu probable que les logins Gepi et les logins ENT coïncident.<br />Cela ne sera pas modifié par le présent dispositif.</li>
 	</ul>
 
 	<p><br /></p>
@@ -1882,7 +1899,12 @@ if($mode=="import_eleves") {
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 	Guid;Nom;Prénom;Profil;Classes;Groupe;Naissance<br />
 	f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06/1987<br />
-	...</li>
+	...<br />
+	Le CSV peut être obtenu dans l'ENT de la façon suivante&nbsp;:<br />
+	Se connecter avec un compte administrateur de l'ENT.<br />
+	Menu <strong>Administration</strong> puis <strong>Gérer les utilisateurs</strong>, puis <strong>Outils</strong>, puis <strong>Traitement en masse</strong>, puis <strong>Action</strong> (<em>Choisir Exportation SSO au format CSV</em>), puis dans <strong>Profil</strong> sélectionner le profil <em>Elève</em>, puis <strong>Traiter cette action</strong> et enfin <strong>Valider</strong>.<br />
+	Après une minute ou deux, le fichier est généré dans l'espace <strong>Documents</strong>.
+</li>
 	<li>Il peut arriver que le CSV fourni contienne des élèves de l'année précédente.<br />
 	La classe est alors par exemple&nbsp;: BASE2011-2012<br />
 	Proposer d'effectuer un rapprochement pour des élèves qui ne sont plus là n'est pas souhaitable.<br />
@@ -2480,7 +2502,13 @@ if($mode=="import_responsables") {
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 	﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3<br />
 	f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8f-85f7-a58a96d95220<br />
-	...</li>
+	...<br />
+	Le CSV peut être obtenu dans l'ENT de la façon suivante&nbsp;:<br />
+	Se connecter avec un compte administrateur de l'ENT.<br />
+	Menu <strong>Administration</strong> puis <strong>Gérer les utilisateurs</strong>, puis <strong>Outils</strong>, puis <strong>Traitement en masse</strong>, puis <strong>Action</strong> (<em>Choisir Exportation SSO au format CSV</em>), puis dans <strong>Profil</strong> sélectionner le profil <em>Parent</em>, puis <strong>Traiter cette action</strong> et enfin <strong>Valider</strong>.<br />
+	Après une minute ou deux, le fichier est généré dans l'espace <strong>Documents</strong>.
+
+	</li>
 	<li>Il est recommandé d'envoyer une première fois le CSV, d'enregistrer les associations correctement détectées (<em>en contrôlant tout de même les éventuels doublons repérés</em>).<br />
 	Puis, envoyer à nouveau le même fichier pour traiter les indéterminés restants.<br />
 	Le deuxième envoi permet aussi de repérer ce qui n'a pas été enregistré au premier envoi.</li>
@@ -2991,8 +3019,7 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 
 		echo "
 <p style='color:red'>A FAIRE:<br />
-Pouvoir trier par classe<br />
-Ajouter une variable en fin de formulaire pour détecter les pb de transmission de trop de variables avec suhosin.</p>
+Pouvoir trier par classe<br /></p>
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
@@ -3559,8 +3586,6 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 		}
 
 		echo "
-<p style='color:red'>A FAIRE:<br />
-Ajouter une variable en fin de formulaire pour détecter les pb de transmission de trop de variables avec suhosin.</p>
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
@@ -3852,7 +3877,8 @@ if($mode=="publipostage_eleves") {
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
 	...</li>
-	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe;Classe</strong></li>
+	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe;Classe</strong><br />
+	Seuls ces champs sont vraiment indispensables.</li>
 	<li>Le fichier CSV attendu peut être&nbsp;:<br />
 		<ul>
 			<li>
@@ -3947,6 +3973,23 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$temp=fgets($fp,4096);
 		//echo "$temp<br />";
+
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
+
 		$en_tete=explode(";", trim($temp));
 
 		$tabindice=array();
@@ -3986,6 +4029,14 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 			}
 
 			if($ligne!='') {
+				if($correction_separateur=="separateur_virgule") {
+					$ligne=preg_replace("/,/", ";", $ligne);
+				}
+				elseif($correction_separateur=="separateur_virgule_guillemets") {
+					$ligne=preg_replace('/","/', ";", $ligne);
+					$ligne=preg_replace('/^"/', "", $ligne);
+					$ligne=preg_replace('/"$/', "", $ligne);
+				}
 				$tab=explode(";", ensure_utf8($ligne));
 
 				$ligne_a_prendre_en_compte="y";
@@ -4176,7 +4227,8 @@ if($mode=="publipostage_responsables") {
 	-->
 	</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=responsables'>Fiches Bienvenue responsables</a></li>
-	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe</strong></li>
+	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe</strong>.<br />
+	Seuls ces champs sont vraiment indispensables.</li>
 	<li>Le fichier CSV attendu peut être&nbsp;:<br />
 		<ul>
 			<li>
@@ -4276,6 +4328,21 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$temp=fgets($fp,4096);
 		//echo "$temp<br />";
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
 		$en_tete=explode(";", trim($temp));
 
 		$tabindice=array();
@@ -4310,6 +4377,14 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 			}
 
 			if($ligne!='') {
+				if($correction_separateur=="separateur_virgule") {
+					$ligne=preg_replace("/,/", ";", $ligne);
+				}
+				elseif($correction_separateur=="separateur_virgule_guillemets") {
+					$ligne=preg_replace('/","/', ";", $ligne);
+					$ligne=preg_replace('/^"/', "", $ligne);
+					$ligne=preg_replace('/"$/', "", $ligne);
+				}
 				$tab=explode(";", ensure_utf8($ligne));
 
 				$ligne_a_prendre_en_compte="y";
@@ -4516,6 +4591,31 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
+
+		if((preg_match("/;Etat;/i", trim($temp)))||(preg_match("/;État;/i", trim($temp)))||(preg_match("/;Etat$/i", trim($temp)))||(preg_match("/;État$/i", trim($temp)))) {
+			$temoin_colonne_Etat="y";
+		}
+		else {
+			$temoin_colonne_Etat="n";
+		}
+
 		$saut=1;
 		$nb_fiches=getSettingValue("ImpressionNombre");
 		while (!feof($fp)) {
@@ -4525,11 +4625,31 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			}
 
 			if($ligne!='') {
+
+				if($correction_separateur=="separateur_virgule") {
+					$ligne=preg_replace("/,/", ";", $ligne);
+				}
+				elseif($correction_separateur=="separateur_virgule_guillemets") {
+					$ligne=preg_replace('/","/', ";", $ligne);
+					$ligne=preg_replace('/^"/', "", $ligne);
+					$ligne=preg_replace('/"$/', "", $ligne);
+				}
+
 				$tab=explode(";", ensure_utf8($ligne));
 				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
 				// On exclut également les comptes "Désactivé"
-				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(preg_match("/Actif$/", $ligne))) {
+				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(preg_match("/Actif$/", $ligne))) {
+
+				$prendre_la_ligne_en_compte="y";
+				if(preg_match("/^Nom;Pr/i", trim($ligne))) {
+					$prendre_la_ligne_en_compte="n";
+				}
+				elseif(($temoin_colonne_Etat=="y")&&(!preg_match("/;Actif$/i", $ligne))&&(!preg_match("/;Actif;/i", $ligne))) {
+					$prendre_la_ligne_en_compte="n";
+				}
+
+				if($prendre_la_ligne_en_compte=="y") {
 					/*
 					$sql="SELECT e.* FROM eleves e, sso_table_correspondance stc WHERE stc.login_gepi=e.login AND ;";
 					$res_ele=mysql_query($sql);
@@ -4642,6 +4762,23 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$temp=fgets($fp,4096);
 		//echo "$temp<br />";
+
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
+
 		$en_tete=explode(";", trim($temp));
 
 		$tabindice=array();
@@ -4681,6 +4818,14 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			//echo "$ligne<br />";
 
 			if($ligne!='') {
+				if($correction_separateur=="separateur_virgule") {
+					$ligne=preg_replace("/,/", ";", $ligne);
+				}
+				elseif($correction_separateur=="separateur_virgule_guillemets") {
+					$ligne=preg_replace('/","/', ";", $ligne);
+					$ligne=preg_replace('/^"/', "", $ligne);
+					$ligne=preg_replace('/"$/', "", $ligne);
+				}
 				$tab=explode(";", ensure_utf8($ligne));
 
 				// On exclut la ligne Nom;Prénom
@@ -4703,6 +4848,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$ligne_a_prendre_en_compte="n";
 				}
 				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
+					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Date de désactivation']))&&($tab[$tabindice['Date de désactivation']]!='')) {
 					// On exclut les comptes "Désactivé"
 					$ligne_a_prendre_en_compte="n";
 				}
@@ -5453,6 +5602,26 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$temp=fgets($fp,4096);
+		//echo "$temp<br />";
+
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
+
 		echo "<br /><p class='noprint'>Les parents pour lesquels les fiches bienvenues n'auront pas pu être envoyées par mail, apparaitront dans la page (<em>pour que vous puissiez les imprimer et les remettre manuellement</em>).<br />
 		Les parents pour lesquels l'envoi aura réussi seront listés en bas de page.<br /></p><hr class='noprint'/>";
 
@@ -5466,6 +5635,16 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			}
 
 			if($ligne!='') {
+
+				if($correction_separateur=="separateur_virgule") {
+					$ligne=preg_replace("/,/", ";", $ligne);
+				}
+				elseif($correction_separateur=="separateur_virgule_guillemets") {
+					$ligne=preg_replace('/","/', ";", $ligne);
+					$ligne=preg_replace('/^"/', "", $ligne);
+					$ligne=preg_replace('/"$/', "", $ligne);
+				}
+
 				$tab=explode(";", ensure_utf8($ligne));
 				//if(!preg_match("/^Nom;Pr/i", trim($ligne))) {
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))) {
