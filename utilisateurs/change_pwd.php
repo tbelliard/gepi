@@ -145,7 +145,7 @@ echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Re
 // dans le cas de LCS, existence d'utilisateurs locaux reprérés grâce au champ password non vide.
 $testpassword = sql_query1("select password from utilisateurs where login = '".$user_login."'");
 if ($testpassword == -1) $testpassword = '';
-if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes") {
+if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] != "yes" && !getSettingAOui('autoriser_sso_password_auth')) {
     echo "Vous ne pouvez pas changer le mot de passe des utilisateurs lorsque Gepi est configuré pour utiliser une authentification extérieure et que vous n'avez pas accès à l'annuaire LDAP en écriture.";
     echo "</div>\n";
     echo "</body></html>\n";
