@@ -2499,7 +2499,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		}
 		$sql.="statut='".$tab_statuts[$loop]."'";
 	}
-	$sql.=") AND etat='actif' ORDER BY statut, login, nom, prenom;";
+	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -3310,4 +3310,132 @@ function retourne_image_engagement($code_engagement, $nom_engagement) {
 
 	return $retour;
 }
+
+
+function liste_checkbox_eleves_classe($id_classe, $num_periode="", $tab_eleves_preselectionnes=array(), $nom_champ='login_eleve', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	$retour="";
+
+	$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe'";
+	if($num_periode!="") {
+		$sql.=" AND jec.periode='$num_periode'";
+	}
+	$sql.=" ORDER BY nom, prenom, login;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des élèves\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->login, $tab_eleves_preselectionnes)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
+function liste_checkbox_eleves_classe2($id_classe, $num_periode="", $tab_eleves_preselectionnes=array(), $nom_champ='login_eleve', $id_champ='login_eleve', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	global $gepiPath;
+
+	$retour="";
+
+	$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe'";
+	if($num_periode!="") {
+		$sql.=" AND jec.periode='$num_periode'";
+	}
+	$sql.=" ORDER BY nom, prenom, login;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="
+	<table class='boireaus boireaus_alt'>
+		<thead>
+			<tr>
+				<th>Élève</th>
+				<th>
+					<a href=\"#\" onclick=\"$nom_func_js_tout_cocher_decocher(true);return false;\" title='Tout cocher'><img src='$gepiPath/images/enabled.png' class='icone20' alt='Tout cocher' /></a> - <a href=\"#\" onclick=\"$nom_func_js_tout_cocher_decocher(false);return false;\" title='Tout décocher'><img src='$gepiPath/images/disabled.png' class='icone20' alt='Tout décocher' /></a>
+				</th>
+			</tr>
+		</thead>
+		<tbody>";
+
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(in_array($lig->login, $tab_eleves_preselectionnes)) {
+				$checked="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$checked="";
+				$temp_style="";
+			}
+
+			$retour.="
+			<tr>
+				<td>
+					<label for='".$id_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$id_champ."_$cpt'$temp_style>".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label>
+				</td>
+				<td>
+					<input type='checkbox' name='".$nom_champ."[]' id='".$id_champ."_$cpt' value='$lig->login' onchange=\"checkbox_change('".$nom_champ."_$cpt')\" $checked/>
+				</td>
+			</tr>";
+
+			$cpt++;
+		}
+		$retour.="
+		</tbody>
+	</table>
+
+	<script type='text/javascript'>
+		function $nom_func_js_tout_cocher_decocher(mode) {
+			for (var k=0;k<$cpt;k++) {
+				if(document.getElementById('".$id_champ."_'+k)){
+					document.getElementById('".$id_champ."_'+k).checked=mode;
+					checkbox_change('".$id_champ."_'+k);
+				}
+			}
+		}
+		</script>\n";
+	}
+
+	return $retour;
+}
+
 ?>
