@@ -408,4 +408,17 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'id_groupe' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'id_groupe';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD id_groupe INT(11) NOT NULL DEFAULT '0' AFTER code_matiere;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
