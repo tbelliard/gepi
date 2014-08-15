@@ -107,6 +107,33 @@ if(($action == 'supprimer')&&(isset($_GET['id']))) {
 	$action="consulter";
 }
 
+if(isset($_GET['imposer_codes_matieres_vides'])) {
+	check_token();
+
+	$nb_update=0;
+
+	$sql="SELECT m.matiere, nv.code FROM matieres m,
+	nomenclatures_valeurs nv 
+	WHERE m.code_matiere='' AND 
+	m.matiere=nv.valeur AND 
+	nv.nom='code_gestion';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="UPDATE matieres SET code_matiere='".$lig->code."' WHERE matiere='".$lig->matiere."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($res2) {
+				$nb_update++;
+			}
+			else {
+				$msg="Erreur lors de $sql.<br />";
+			}
+		}
+	}
+
+	$msg=$nb_update." code_matiere imposés.<br />";
+}
+
 $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
 //====================================
@@ -213,6 +240,22 @@ if ($action=="consulter") {
 		}
 		echo "
 	</table>
+
+	<p>Dans la page d'<a href='../matieres/index.php'>association des code_matiere aux matières</a>, il se peut qu'aucune association ne soit encore faite.<br />
+	Vous pouvez, ici, pour les matières dont le code_matiere n'est pas renseigné, renseigner les codes d'un clic si le code_gestion coïncide avec le nom de matière.</p>";
+
+		$sql="SELECT m.matiere, nv.code FROM matieres m,
+		nomenclatures_valeurs nv 
+		WHERE m.code_matiere='' AND 
+		m.matiere=nv.valeur AND 
+		nv.nom='code_gestion';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		echo "
+	<p>".mysqli_num_rows($test)." matières sans code_gestion trouvent une correspondance dans le tableau ci-dessus.</p>";
+
+		echo "
+	<p><a href='".$_SERVER['PHP_SELF']."?imposer_codes_matieres_vides=y".add_token_in_url()."'>Imposer les codes matières aux matières dont le code est actuellement vide</a>.</p>
 
 	<p style='color:red'>A FAIRE&nbsp;: Pouvoir modifier une information, pouvoir associer une matière depuis ce tableau.</p>";
 	}
