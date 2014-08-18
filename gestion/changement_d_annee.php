@@ -59,6 +59,32 @@ if (!checkAccess()) {
 
 $msg = '';
 
+if(isset($_GET['suppr_comptes_resp_en_reserve_et_collision_eleve'])) {
+	check_token();
+
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM eleves);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($res) {
+		$msg.="Ménage effectué.<br />Refaites maintenant une mise en réserve des comptes élèves<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de logins responsables mis en réserve.<br />";
+	}
+}
+
+if(isset($_GET['suppr_comptes_ele_en_reserve_et_collision_resp'])) {
+	check_token();
+
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve' AND login IN (SELECT u.login FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND u.login=rp.login);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($res) {
+		$msg.="Ménage effectué.<br />Refaites maintenant une mise en réserve des comptes responsables<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de logins élèves mis en réserve.<br />";
+	}
+}
+
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 		check_token();
@@ -104,6 +130,21 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$msg.="Erreur lors de la mise en réserve des comptes élèves.<br />";
+
+				$sql="SELECT * FROM tempo_utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM eleves);";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$msg.="Anomalie&nbsp;: Un ou des comptes responsables ont été mis en réserve avec un login correspondant à un compte élève.<br />Liste des comptes&nbsp;: ";
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt>0) {$msg.=", ";}
+						$msg.=$lig->login;
+						$tmp_tab=get_info_responsable($lig->login);
+						if(count($tmp_tab)>0) {$msg.=" (<em><a href='../responsables/modify_resp.php?pers_id=".$tmp_tab['pers_id']."' target='_blank'>".$tmp_tab['nom']." ".$tmp_tab['prenom']."</a></em>)";}
+						$cpt++;
+					}
+					$msg.="Ces comptes peuvent correspondre à une mise en réserve de l'année précédente... pour des parents dont les élèves ont quitté l'établissement.<br /><a href='".$_SERVER['PHP_SELF']."?suppr_comptes_resp_en_reserve_et_collision_eleve=y".add_token_in_url()."'>Supprimer de la mise en réserve les comptes correspondants</a><br />Vous devrez par la suite refaire une mise en réserve des comptes élèves.<br /><br />Vous pouvez aussi, plus simplement supprimer les comptes mis en réserve à l'aide des liens plus bas dans la page, et ensuite refaire la mise en réserve pour ne conserver que les comptes de cette année.<br />";
+				}
 			}
 		}
 
@@ -120,6 +161,21 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$msg.="Erreur lors de la mise en réserve des comptes responsables.<br />";
+
+				$sql="SELECT * FROM tempo_utilisateurs WHERE statut='eleve' AND login IN (SELECT u.login FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND u.login=rp.login);";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$msg.="Anomalie&nbsp;: Un ou des comptes élèves ont été mis en réserve avec un login correspondant à un compte responsable.<br />Liste des comptes&nbsp;: ";
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt>0) {$msg.=", ";}
+						$msg.=$lig->login;
+						$tmp_tab=get_info_eleve($lig->login);
+						if(count($tmp_tab)>0) {$msg.=" (<em><a href='../eleves/modify_eleve.php?eleve_login=".$lig->login."' target='_blank'>".$tmp_tab['nom']." ".$tmp_tab['prenom']."</a></em>)";}
+						$cpt++;
+					}
+					$msg.="Ces comptes peuvent correspondre à une mise en réserve de l'année précédente... pour des élèves qui ont quitté l'établissement.<br /><a href='".$_SERVER['PHP_SELF']."?suppr_comptes_ele_en_reserve_et_collision_resp=y".add_token_in_url()."'>Supprimer de la mise en réserve les comptes correspondants</a><br />Vous devrez par la suite refaire une mise en réserve des comptes responsables.<br /><br />Vous pouvez aussi, plus simplement supprimer les comptes mis en réserve à l'aide des liens plus bas dans la page, et ensuite refaire la mise en réserve pour ne conserver que les comptes de cette année.<br />";
+				}
 			}
 		}
 
