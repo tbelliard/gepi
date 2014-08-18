@@ -3438,4 +3438,52 @@ function liste_checkbox_eleves_classe2($id_classe, $num_periode="", $tab_eleves_
 	return $retour;
 }
 
+function js_change_style_radio($nom_js_func="change_style_radio", $avec_balise_script="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	function $nom_js_func() {
+		item=document.getElementsByTagName('input');
+		for(i=0;i<item.length;i++) {
+			if(item[i].getAttribute('type')=='radio') {
+				checkbox_change(item[i].getAttribute('id'));
+			}
+		}
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
+function js_cocher_decocher_tous_checkbox($nom_js_func="cocher_decocher_tous_checkbox", $avec_balise_script="n", $avec_checkbox_change="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	function $nom_js_func(mode) {
+		item=document.getElementsByTagName('input');
+		for(i=0;i<item.length;i++) {
+			if(item[i].getAttribute('type')=='checkbox') {
+				item[i].checked=mode;";
+	if($avec_checkbox_change!="n") {
+		$retour.="
+				checkbox_change(item[i].getAttribute('id'));";
+	}
+	$retour.="
+			}
+		}
+	}\n";
+
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
 ?>
