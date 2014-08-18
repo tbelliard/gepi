@@ -105,6 +105,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 					}
 				}
 			} else {
+				// Dans le cas où l'accès de secours auth_sso_secours est activé, en se connectant avec l'accès secours, on a:
+				// $_SESSION['current_auth_mode']=gepi
+				// C'est ce qui doit être testé dans $session_gepi->authenticate_gepi($session_gepi->login,$NON_PROTECT['password_a'])
 
 				function unhtmlentities($chaineHtml)
 				{
