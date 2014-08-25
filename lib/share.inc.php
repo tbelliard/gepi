@@ -684,71 +684,77 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
  */
 function affiche_utilisateur($login,$id_classe) {
 	global $mysqli;
-	$sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."'";
+	$sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."';";
+	//echo "$sql<br />";
 
 	$resultat = mysqli_query($mysqli, $sql); 
-	$obj = $resultat->fetch_object();
-	$nom = $obj->nom;
-	$prenom = $obj->prenom;
-	$civilite = $obj->civilite;
-	$resultat->close();
-
-	$sql_format = "select format_nom from classes where id = '".$id_classe."'";
-	$resultat_format = mysqli_query($mysqli, $sql_format); 
-	if($resultat_format->num_rows > 0) {
-		$obj_format = $resultat_format->fetch_object();
-		$format = $obj_format->format_nom;
-		$result = "";
-		$i='';
-		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) 
-			  AND ($prenom != '')) {
-			$temp = explode("-", $prenom);
-			$i = mb_substr($temp[0], 0, 1);
-			if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-			$i .= ". ";
-		}
-		$resultat_format->close();
+	if(mysqli_num_rows($resultat)==0) {
+		$result=$login;
 	}
 	else {
-		$format="";
-	}
+		$obj = $resultat->fetch_object();
+		$nom = $obj->nom;
+		$prenom = $obj->prenom;
+		$civilite = $obj->civilite;
+		$resultat->close();
 
-	$result="";
-	switch( $format ) {
-		case 'np':
-			$result = $nom." ".$prenom;
-			break;
-		case 'pn':
-			$result = $prenom." ".$nom;
-			break;
-		case 'in':
-			$result = $i.$nom;
-			break;
-		case 'ni':
-			$result = $nom." ".$i;
-			break;
-		case 'cnp':
-			if ($civilite != '') $result = $civilite." ";
-			$result .= $nom." ".$prenom;
-			break;
-		case 'cpn':
-			if ($civilite != '') $result = $civilite." ";
-			$result .= $prenom." ".$nom;
-			break;
-		case 'cin':
-			if ($civilite != '') $result = $civilite." ";
-			$result .= $i.$nom;
-			break;
-		case 'cni':
-			if ($civilite != '') $result = $civilite." ";
-			$result .= $nom." ".$i;
-			break;
-		case 'cn':
-			if ($civilite != '') $result = $civilite." ";
-			$result .= $nom;
-			break;
-		default:
-			$result = $nom." ".$prenom;
+		$sql_format = "select format_nom from classes where id = '".$id_classe."'";
+		$resultat_format = mysqli_query($mysqli, $sql_format); 
+		if($resultat_format->num_rows > 0) {
+			$obj_format = $resultat_format->fetch_object();
+			$format = $obj_format->format_nom;
+			$result = "";
+			$i='';
+			if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) 
+				  AND ($prenom != '')) {
+				$temp = explode("-", $prenom);
+				$i = mb_substr($temp[0], 0, 1);
+				if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+				$i .= ". ";
+			}
+			$resultat_format->close();
+		}
+		else {
+			$format="";
+		}
+
+		$result="";
+		switch( $format ) {
+			case 'np':
+				$result = $nom." ".$prenom;
+				break;
+			case 'pn':
+				$result = $prenom." ".$nom;
+				break;
+			case 'in':
+				$result = $i.$nom;
+				break;
+			case 'ni':
+				$result = $nom." ".$i;
+				break;
+			case 'cnp':
+				if ($civilite != '') $result = $civilite." ";
+				$result .= $nom." ".$prenom;
+				break;
+			case 'cpn':
+				if ($civilite != '') $result = $civilite." ";
+				$result .= $prenom." ".$nom;
+				break;
+			case 'cin':
+				if ($civilite != '') $result = $civilite." ";
+				$result .= $i.$nom;
+				break;
+			case 'cni':
+				if ($civilite != '') $result = $civilite." ";
+				$result .= $nom." ".$i;
+				break;
+			case 'cn':
+				if ($civilite != '') $result = $civilite." ";
+				$result .= $nom;
+				break;
+			default:
+				$result = $nom." ".$prenom;
+		}
 	}
 
 	return $result;
