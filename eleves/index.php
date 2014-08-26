@@ -60,6 +60,8 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 
 //debug_var();
 
+$id_classe_demande=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+
 if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
 	if((isset($_GET['mode']))&&($_GET['mode']=='update_champs_periode')&&(isset($_GET['id_classe']))) {
 		check_token();
@@ -614,23 +616,74 @@ else{
 if (isset($quelles_classes)) {
 	$retour = "index.php";
 }
+
+// 20140826
+/*
+debug_var();
+echo "\$id_classe=$id_classe<br />
+\$id_classe_demande=$id_classe_demande<br />";
+*/
+
 echo "<form action='index.php' method='post' name='form_lien_sous_bandeau'>
 <p class='bold'><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+	if((!isset($id_classe_demande))&&(isset($quelles_classes))&&($quelles_classes=="certaines")) {
+		$sql_tempo="SELECT * FROM tempo WHERE num='".SESSION_ID()."';";
+		//echo "$sql_tempo<br />";
+		$res_tempo = mysqli_query($GLOBALS["mysqli"], $sql_tempo);
+		if(mysqli_num_rows($res_tempo)==1) {
+			$lig_tempo=mysqli_fetch_object($res_tempo);
+			$id_classe_demande=$lig_tempo->id_classe;
+			//echo "\$id_classe_demande=$id_classe_demande<br />";
+		}
+	}
+
+	$id_classe_prec="";
+	$nom_classe_prec="";
+	$id_classe_suiv="";
+	$nom_classe_suiv="";
+	$classe_trouvee=0;
 	$tab_classe=array();
 	$sql="SELECT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
 	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_classe)>0) {
-		echo " | <select name='id_classe' id='id_classe_form_lien_sous_bandeau' onchange='change_classe()' title=\"Afficher les élèves de telle classe\">
+		$html_chgt_classe="<select name='id_classe' id='id_classe_form_lien_sous_bandeau' onchange='change_classe()' title=\"Afficher les élèves de telle classe\">
 	<option value=''>---</option>";
 		while($lig_classe=mysqli_fetch_object($res_classe)) {
-			echo "
-	<option value='$lig_classe->id'>$lig_classe->classe</option>";
+			if((isset($id_classe_demande))&&($id_classe_demande==$lig_classe->id)) {
+				$selected=" selected";
+				$classe_trouvee++;
+			}
+			else {
+				$selected="";
+				if($classe_trouvee==0) {
+					$id_classe_prec=$lig_classe->id;
+					$nom_classe_prec=$lig_classe->classe;
+				}
+				elseif($classe_trouvee==1) {
+					$id_classe_suiv=$lig_classe->id;
+					$nom_classe_suiv=$lig_classe->classe;
+					$classe_trouvee++;
+				}
+			}
+			$html_chgt_classe.="
+	<option value='$lig_classe->id'$selected>$lig_classe->classe</option>";
 		}
 
-		echo "
-</select>
+		$html_chgt_classe.="
+</select>";
+
+		if($classe_trouvee>0) {
+			if($id_classe_prec!="") {
+				$html_chgt_classe="<a href='".$_SERVER['PHP_SELF']."?quelles_classes=certaines&amp;id_classe=".$id_classe_prec."' title=\"Classe précédente : $nom_classe_prec\"><img src='../images/icons/arrow-left.png' class='icone16' alt='Précédente' /></a>".$html_chgt_classe;
+			}
+			if($id_classe_suiv!="") {
+				$html_chgt_classe.="<a href='".$_SERVER['PHP_SELF']."?quelles_classes=certaines&amp;id_classe=".$id_classe_suiv."' title=\"Classe suivante : $nom_classe_suiv\"><img src='../images/icons/arrow-right.png' class='icone16' alt='Suivante' /></a>";
+			}
+		}
+
+		$html_chgt_classe.="
 
 <input type='hidden' name='quelles_classes' value='certaines' />
 
@@ -641,6 +694,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		}
 	}
 </script>";
+
+		echo " | ".$html_chgt_classe;
 	}
 }
 
