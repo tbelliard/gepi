@@ -379,13 +379,23 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		if ($id_groupe != NULL) {
 			$id_classe=$donnees_eleves['id_classe'][0];
 		}
+		// On récupère le PP du premier élève de la classe... si c'est un nouvel arrivant avec oubli de saisie du PP, on aura une info erronée.
+		// Si il y a plusieurs PP dans la classe, on n'aura qu'un seul des PP.
 		//$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves['login'][0]."' and id_classe='$id_classe')";
 		$sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 		//echo "$sql<br />\n";
 		$call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
-		$current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
+		if(mysqli_num_rows($call_profsuivi_eleve)==0) {
+			$current_eleve_profsuivi_login="";
+			$current_eleve_profsuivi_identite="- Aucun -";
+		}
+		else {
+			$lig_current_eleve_profsuivi=mysqli_fetch_object($call_profsuivi_eleve);
+			$current_eleve_profsuivi_login=$lig_current_eleve_profsuivi->professeur;
+			$current_eleve_profsuivi_identite=affiche_utilisateur($current_eleve_profsuivi_login,$id_classe);
+		}
 
-		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot(getSettingValue("gepi_prof_suivi"),'majf2').' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
+		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot(getSettingValue("gepi_prof_suivi"),'majf2').' : '.$current_eleve_profsuivi_identite,'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 	} else {
 
 		if ($id_groupe != NULL) {
