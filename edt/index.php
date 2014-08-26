@@ -495,7 +495,6 @@ ___ID_CLASSE___ sera remplacé par l'identifiant de la classe choisie (<em>le li
 ___NUM_SEMAINE___ sera remplacé par le numéro de la semaine pour que le lien pointe directement sur l'emploi du temps de la semaine souhaitée.</p>
 
 <pre style='color:red'>A FAIRE :
-- Gérer des droits: consultation, upload,... selon les statuts.
 - Problème ACCPE: Cas de 2CO: 11 cours sur un créneau,
   c'est illisible.
 - Vérifier le bon fonctionnement du rapprochement pour un prof avec apostrophe dans son nom.
