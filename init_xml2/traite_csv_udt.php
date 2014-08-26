@@ -797,10 +797,10 @@ $
 								//echo "$sql<br />\n";
 								$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_clas)==0) {
-									echo "<p>Aucune classe n'est associée à $lig->division dans Gepi.</p>\n";
+									echo "<p style='color:red'>Aucune classe n'est associée à $lig->division dans Gepi.</p>\n";
 								}
 								elseif(mysqli_num_rows($res_clas)>1) {
-									echo "<p>ANOMALIE: Plus d'une classe est associée à $lig->division dans Gepi.</p>\n";
+									echo "<p style='color:red'>ANOMALIE: Plus d'une classe est associée à $lig->division dans Gepi.</p>\n";
 								}
 								else {
 									$lig_clas=mysqli_fetch_object($res_clas);
@@ -816,10 +816,10 @@ $
 							//echo "$sql<br />\n";
 							$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_mat)==0) {
-								echo "<p>Aucune matière n'est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
+								echo "<p style='color:red'>Aucune matière n'est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
 							}
 							elseif(mysqli_num_rows($res_mat)>1) {
-								echo "<p>ANOMALIE: Plus d'une matière est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
+								echo "<p style='color:red'>ANOMALIE: Plus d'une matière est associée dans Gepi à la matière $lig->matiere d'UDT.</p>\n";
 							}
 							else {
 								$lig_mat=mysqli_fetch_object($res_mat);
@@ -857,7 +857,7 @@ $
 
 									if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
 										//echo "<span style='color:blue;'>Création du groupe $nom_grp ($descr_grp) avec l'id_groupe $id_groupe</span><br />\n";
-										echo "SUCCES&nbsp;: Groupe créé avec l'id_groupe $id_groupe<br />\n";
+										echo "<span style='color:green'>SUCCES</span>&nbsp;: Groupe créé avec l'id_groupe <a href='../groupes/edit_group.php?id_groupe=$id_groupe' target='_blank'>$id_groupe</a><br />\n";
 	
 										// Récupérer les profs
 										$tab_prof=array();
@@ -1046,7 +1046,9 @@ $
 					}
 				}
 
-				echo "<center><p><a href='init_pp.php?a=a".add_token_in_url()."'>Import des professeurs principaux</a><br />Il est probable que cette information n'était pas dans le fichier de STS, l'import des professeurs principaux risque de ne rien donner... mais qui ne tente rien...</p></center>\n";
+				echo "<center><p><a href='init_options.php?a=a".add_token_in_url()."'>Prise en compte des options des élèves</a></p></center>\n";
+
+				//echo "<center><p><a href='init_pp.php?a=a".add_token_in_url()."'>Import des professeurs principaux</a><br />Il est probable que cette information n'était pas dans le fichier de STS, l'import des professeurs principaux risque de ne rien donner... mais qui ne tente rien...</p></center>\n";
 
 			}
 		}
