@@ -282,6 +282,7 @@
 						$temp=fgets($fp,4096);
 						$en_tete=explode(";",$temp);
 
+						$tabindice=array();
 						// On range dans tabindice les indices des champs retenus
 						for ($k = 0; $k < count($tabchamps); $k++) {
 							for ($i = 0; $i < count($en_tete); $i++) {
@@ -289,6 +290,12 @@
 									$tabindice[] = $i;
 								}
 							}
+						}
+
+						if(count($tabindice)!=count($tabchamps)) {
+							echo "<p style='color:red'>ERREUR&nbsp;: ".count($tabindice)." champs sur un total de ".count($tabchamps)." ont été identifiés.<br />Les champs sont habituellement&nbsp;:<br />Jour;Heure;Div;Matière;Professeur;Salle;Groupe;Regroup;Eff;Mo;Freq;Aire<br />Sur ces champs, seuls Div, Matière, Professeur, Groupe, Regroup, Mo sont requis</p><p>On suppose pour la suite que les champs sont<br />Jour;Heure;Div;Matière;Professeur;Salle;Groupe;Regroup;Eff;Mo;Freq;Aire<br />Si ce n'est pas le cas, ajoutez à la main la ligne d'entête dans votre fichier et <a href='".$_SERVER['PHP_SELF']."'>refaites cette étape</a>.</p>";
+							flush();
+							$tabindice=array(2,3,4,6,7,9);
 						}
 
 						// Lire le fichier
@@ -381,6 +388,7 @@
 								echo "<option value='$tab_classe[$j]'";
 								//echo "<option value='$tab_id_classe[$j]'";
 								if(my_strtolower($tab_classe[$j])==my_strtolower($udt_div[$i])) {echo " selected='true'";}
+								elseif(preg_replace("/ /","",$tab_classe[$j])==preg_replace("/ /","",$udt_div[$i])) {echo " selected='true'";}
 								echo ">$tab_classe[$j]</option>\n";
 							}
 							echo "</select>\n";
