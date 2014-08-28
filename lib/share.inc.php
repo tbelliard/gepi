@@ -1323,14 +1323,22 @@ function check_backup_directory() {
  * @return int Nombre de periodes définies pour cette classe
  */
 function get_period_number($_id_classe) {
-    global $mysqli;
-    $sql_periode = "SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'";
-             		
-        $resultat = mysqli_query($mysqli, $sql_periode);  
-        $nb_periode = $resultat->num_rows;
-        $resultat->close();
-    
-    return $nb_periode;
+	global $mysqli;
+
+	//$sql_periode = "SELECT count(*) FROM periodes WHERE id_classe = '" . $_id_classe . "'";
+	$sql_periode = "SELECT MAX(num_periode) AS max_per FROM periodes WHERE id_classe = '" . $_id_classe . "'";
+	//echo "$sql_periode<br />";
+	$resultat = mysqli_query($mysqli, $sql_periode);
+	if(mysqli_num_rows($resultat)==0) {
+		$nb_periode=0;
+	}
+	else {
+		//$nb_periode = $resultat->num_rows;
+		$lig_per=mysqli_fetch_object($resultat);
+		$nb_periode=$lig_per->max_per;
+		$resultat->close();
+	}
+	return $nb_periode;
 }
 
 /**
