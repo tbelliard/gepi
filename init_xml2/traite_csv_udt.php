@@ -835,7 +835,10 @@ $
 								else {
 									$nom_grp=$mat."_".$lig->regroup;
 									//$descr_grp=get_nom_complet_from_matiere($mat)." ($lig->regroup ($lig->groupe))";
-									$descr_grp=get_nom_complet_from_matiere($mat)." ($lig->groupe)";
+									$descr_grp=get_nom_complet_from_matiere($mat);
+									if($lig->groupe!="") {
+										$descr_grp.=" ($lig->groupe)";
+									}
 								}
 
 								if(count($tab_clas)==0) {
@@ -858,7 +861,12 @@ $
 									if($id_groupe=create_group($nom_grp, $descr_grp, $mat, $tab_clas)) {
 										//echo "<span style='color:blue;'>Création du groupe $nom_grp ($descr_grp) avec l'id_groupe $id_groupe</span><br />\n";
 										echo "<span style='color:green'>SUCCES</span>&nbsp;: Groupe créé avec l'id_groupe <a href='../groupes/edit_group.php?id_groupe=$id_groupe' target='_blank'>$id_groupe</a><br />\n";
-	
+
+										if($debug_import=="y") {
+											echo "Nom du groupe&nbsp;: $nom_grp<br />";
+											echo "Description du groupe&nbsp;: $descr_grp<br />";
+										}
+
 										// Récupérer les profs
 										$tab_prof=array();
 										/*
