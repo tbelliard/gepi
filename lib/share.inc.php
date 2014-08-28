@@ -1330,6 +1330,12 @@ function check_backup_directory() {
 
 }
 
+/**
+ * Fonction qui retourne le nombre de périodes pour une classe
+ *
+ * @param int identifiant numérique de la classe
+ * @return int Nombre de periodes définies pour cette classe
+ */
 function get_period_number($_id_classe) {
 	global $mysqli;
 
