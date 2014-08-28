@@ -224,8 +224,8 @@ $liste_tables_del_etape_professeurs = array(
 "cn_devoirs",
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
-"udt_lignes",
-"udt_corresp"
+"udt_lignes"
+//,"udt_corresp"
 );
 
 ?>
