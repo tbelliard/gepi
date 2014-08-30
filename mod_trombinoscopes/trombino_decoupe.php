@@ -60,6 +60,7 @@ if (!checkAccess()) {
 	die();
 }
 //======================================================================================
+//debug_var();
 
 $msg="";
 
@@ -202,7 +203,9 @@ if(isset($_POST['upload_scan'])) {
 	if((isset($_POST['correctif_vertical']))&&($_POST['correctif_vertical']!='')) {
 		// A FAIRE: FILTRER...
 		$test=my_ereg_replace("[^0-9.]","",$_POST['correctif_vertical']);
-		if($test!="") {$correctif_vertical=$test;}
+		if($test!="") {$correctif_vertical=$test;}else{$correctif_vertical=1;}
+
+		$_SESSION['trombi_decoupe_correctif_vertical']=$correctif_vertical;
 	}
 
 	//echo "1";
@@ -854,8 +857,12 @@ elseif($mode=='uploader') {
 		//echo "<input type='' name='' value='' />\n";
 		//echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
 		//echo "<input type='hidden' name='upload_scan' value='yes' />\n";
+		$correctif_vertical=1;
+		if(isset($_SESSION['trombi_decoupe_correctif_vertical'])) {
+			$correctif_vertical=$_SESSION['trombi_decoupe_correctif_vertical'];
+		}
 		echo "<p> Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes.<br />Par défaut, on ne décale pas&nbsp;: 
-<input type='text' id='correctif_vertical' name='correctif_vertical' value='1' size='3' onkeydown=\"clavier_3(this.id,event,0.1,1.5,0.01);\" /><br />Si vos découpes sont un peu décalées vers le bas (<i>il manque le haut des cranes</i>), essayez de corriger avec 0.97<br />Aucun correctif n'est proposé pour la largeur.<br />Veillez à ce que vos images scannées aient les bords taillés à la largeur de la page.</p>\n";
+<input type='text' id='correctif_vertical' name='correctif_vertical' value='$correctif_vertical' size='3' onkeydown=\"clavier_3(this.id,event,0.1,1.5,0.01);\" /><br />Si vos découpes sont un peu décalées vers le bas (<i>il manque le haut des cranes</i>), essayez de corriger avec 0.97<br />Aucun correctif n'est proposé pour la largeur.<br />Veillez à ce que vos images scannées aient les bords taillés à la largeur de la page.</p>\n";
 		echo "<p><input type='submit' value='Uploader' /></p>\n";
 		echo "<input type='hidden' name='fin_form_upload_scan' value='yes' />\n";
 		echo "</fieldset>\n";
@@ -870,7 +877,6 @@ elseif($mode=='uploader') {
 		if(($max_file_uploads!="")&&(mb_strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==mb_strlen($max_file_uploads))&&($max_file_uploads>0)) {
 			echo "<li><p>L'upload des photos est limité à <strong>$max_file_uploads fichier(s)</strong> simultanément.</p></li>\n";
 		}
-		echo "<li><p>Les images uploadées doivent être de type JPEG.</p></li>\n";
 		echo "<li>\n";
 		echo "<p>Les paramètres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
 		$post_max_size=ini_get('post_max_size');
@@ -878,7 +884,16 @@ elseif($mode=='uploader') {
 		echo "&nbsp;&nbsp;&nbsp;<span style='color:blue'>\$post_max_size=$post_max_size</span><br />\n";
 		echo "&nbsp;&nbsp;&nbsp;<span style='color:blue'>\$upload_max_filesize=$upload_max_filesize</span><br />\n";
 		echo "</p>\n";
+		echo "<p>Si après avoir cliqué sur Uploader, vous revenez à la page d'accueil de découpe, c'est probablement que vous avez mis trop de photos ou pour un volume trop grand d'un coup.</p>";
 		echo "</li>\n";
+		echo "
+	<li>
+		<p>Deux conseils pour les opérations de scan&nbsp;:<br />
+		Veiller à scanner toutes les pages de la même façon, bien alignées (<em>pas en biais</em>).<br />
+		Scanner sans rabattre le couvercle pour que les bords de la page ressortent sur fond noir.<br />
+		Vous découperez ensuite les images scannées pour faire disparaitre le bord noir.<br />
+		De cette façon, les paramètres par défaut sont en principe corrects pour les découpes.</p>
+	</li>";
 		echo "</ul>\n";
 
 	}
