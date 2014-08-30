@@ -246,7 +246,7 @@ if (isset($_GET['current_matiere'])) {
 }
 ?>
 
-<div style='float:right; width: 20em; border: 1px solid black; margin-left: 1em;'>
+<div style='float:right; width: 20em; border: 1px solid black; margin-left: 1em; padding:2px;' class='fieldset_opacite50'>
 <?php
 	$tab_profs_associes=array();
 	if($current_matiere!="") {
