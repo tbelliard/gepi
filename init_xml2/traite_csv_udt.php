@@ -839,6 +839,9 @@ $
 									if($lig->groupe!="") {
 										$descr_grp.=" ($lig->groupe)";
 									}
+									elseif($lig->regroup!="") {
+										$descr_grp.=" ($lig->regroup)";
+									}
 								}
 
 								if(count($tab_clas)==0) {
