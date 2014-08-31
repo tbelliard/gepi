@@ -90,6 +90,8 @@ if(($action == 'supprimer')&&(isset($_GET['id']))) {
 		else {
 			$lig=mysqli_fetch_object($res);
 
+			// Faut-il supprimer l'association matieres.code_matiere?
+
 			$sql="DELETE FROM nomenclatures_valeurs WHERE code='$lig->code' AND type='$lig->type';";
 			$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$menage) {
@@ -132,6 +134,36 @@ if(isset($_GET['imposer_codes_matieres_vides'])) {
 	}
 
 	$msg=$nb_update." code_matiere imposés.<br />";
+}
+
+//type=matiere&amp;code=$lig->code&amp;option_sconet_saisie
+if((isset($_GET['type']))&&($_GET['type']=="matiere")&&(isset($_GET['code']))&&($_GET['option_sconet_saisie'])) {
+	check_token();
+
+	$sql="SELECT 1=1 FROM nomenclatures WHERE type='matiere' AND code='".$_GET['code']."';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="SELECT 1=1 FROM nomenclatures_valeurs WHERE type='matiere' AND code='".$_GET['code']."' AND nom='option_sconet_saisie';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$sql="UPDATE nomenclatures_valeurs SET valeur='".$_GET['option_sconet_saisie']."' WHERE type='matiere' AND code='".$_GET['code']."' AND nom='option_sconet_saisie';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				$msg="Erreur lors de la mise à jour de option_sconet_saisie pour la matière.<br />";
+			}
+		}
+		else {
+			$sql="INSERT INTO nomenclatures_valeurs SET valeur='".$_GET['option_sconet_saisie']."', type='matiere', code='".$_GET['code']."', nom='option_sconet_saisie';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$insert) {
+				$msg="Erreur lors de l'enregistrement de option_sconet_saisie pour la matière.<br />";
+			}
+		}
+	}
+	else {
+		$msg="La matière choisie est inconnue dans la table nomenclatures.<br />";
+	}
+	$action="consulter";
 }
 
 $javascript_specifique[] = "lib/tablekit";
@@ -196,7 +228,7 @@ if ($action=="consulter") {
 			<th class='text' title='Cliquez pour trier suivant cette colonne'>Libelle_long</th>
 			<th class='text' title='Cliquez pour trier suivant cette colonne'>Libelle_edition</th>
 			<th class='number' title='Cliquez pour trier suivant cette colonne'>Matiere_ETP</th>
-			<th colspan='3'>Action</th>
+			<th colspan='4'>Action</th>
 		</tr>";
 		while($lig=mysqli_fetch_object($res)) {
 			$code_gestion="";
@@ -204,6 +236,7 @@ if ($action=="consulter") {
 			$libelle_long="";
 			$libelle_edition="";
 			$matiere_etp="";
+			$option_sconet_saisie="n";
 
 			$sql="SELECT * FROM nomenclatures_valeurs WHERE type='matiere' AND code='$lig->code';";
 			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -224,6 +257,9 @@ if ($action=="consulter") {
 					elseif($lig2->nom=='matiere_etp') {
 						$matiere_etp=$lig2->valeur;
 					}
+					elseif($lig2->nom=='option_sconet_saisie') {
+						$option_sconet_saisie=$lig2->valeur;
+					}
 				}
 			}
 			echo "
@@ -235,7 +271,16 @@ if ($action=="consulter") {
 			<td>$libelle_edition</td>
 			<td>$matiere_etp</td>
 			<td><img src='../images/edit16.png' class='icone16' alt='Editer' title=\"L'édition n'est pas encore implémentée.\" /></td>
-			<td><a href='".$_SERVER['PHP_SELF']."?action=supprimer&amp;id=$lig->id".add_token_in_url()."' onclick=\"return confirm('Etes-vous sûr de vouloir supprimer cet enregistrement ?')\"><img src='../images/icons/delete.png' class='icone16' alt='Supprimer' /></a></td>
+			<td><a name='ligne_matiere_$lig->code'></a>";
+			if($option_sconet_saisie!="y") {
+				echo "<a href='".$_SERVER['PHP_SELF']."?type=matiere&amp;code=$lig->code&amp;option_sconet_saisie=y".add_token_in_url()."#ligne_matiere_$lig->code' title=\"Dans Sconet, les options ou *des* options des élèves sont pointées.\n\nActuellement, lors de la mise à jour d'après Sconet, si des élèves sont ajoutés, Gepi ne teste pas si l'élève a la matière/option $code_gestion pour affecter l'élève dans les enseignements de cette matière.\nIl sera donc inscrit par défaut.\n\nCliquez si le fait que l'élève suive cette matière est pointé dans Sconet.\nLes mises à jour d'après Sconet n'en seront que plus fiables.\"><img src='../images/icons/flag.png' width='17' height='18' alt='Non' /></a>";
+			}
+			else {
+				echo "<a href='".$_SERVER['PHP_SELF']."?type=matiere&amp;code=$lig->code&amp;option_sconet_saisie=n".add_token_in_url()."#ligne_matiere_$lig->code' title=\"Dans Sconet, les options ou *des* options des élèves sont pointées.\n\nActuellement, lors de la mise à jour d'après Sconet, si des élèves sont ajoutés, Gepi teste si l'élève a la matière/option $code_gestion pour affecter l'élève dans les enseignements de cette matière.\nIl ne sera pré-coché à l'inscription que si l'option lui est affectée dans Sconet.\n\nCliquez si le fait que l'élève suive cette matière n'est pas pointé dans Sconet.\nLes mises à jour d'après Sconet n'en seront que plus fiables.\"><img src='../images/icons/flag_green.png' width='17' height='18' alt='Oui' /></a>";
+			}
+
+			echo "</td>
+			<td><a href='".$_SERVER['PHP_SELF']."?action=supprimer&amp;id=$lig->id".add_token_in_url()."' onclick=\"return confirm('Etes-vous sûr de vouloir supprimer cet enregistrement ?')\" title=\"Supprimer\"><img src='../images/icons/delete.png' class='icone16' alt='Supprimer' /></a></td>
 		</tr>";
 		}
 		echo "
@@ -331,7 +376,7 @@ if ($action=="consulter") {
 			<td>$code_mefstat</td>
 			<td>$mef_rattachement</td>
 			<td><img src='../images/edit16.png' class='icone16' alt='Editer' title=\"L'édition n'est pas encore implémentée.\" /></td>
-			<td><a href='".$_SERVER['PHP_SELF']."?action=supprimer&amp;id=$lig->id".add_token_in_url()."' onclick=\"return confirm('Etes-vous sûr de vouloir supprimer cet enregistrement ?')\"><img src='../images/icons/delete.png' class='icone16' alt='Supprimer' /></a></td>
+			<td><a href='".$_SERVER['PHP_SELF']."?action=supprimer&amp;id=$lig->id".add_token_in_url()."' onclick=\"return confirm('Etes-vous sûr de vouloir supprimer cet enregistrement ?')\" title=\"Supprimer\"><img src='../images/icons/delete.png' class='icone16' alt='Supprimer' /></a></td>
 		</tr>";
 		}
 		echo "

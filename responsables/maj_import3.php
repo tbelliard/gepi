@@ -4655,12 +4655,10 @@ else{
 					echo "</tr>\n";
 
 
-
-
-
 					$cpt=0;
 					$alt=-1;
 					while($lig_ele=mysqli_fetch_object($res_ele)){
+
 						$alt=$alt*(-1);
 						/*
 						echo "<tr style='background-color:";
@@ -5061,6 +5059,60 @@ else{
 				}
 			}
 
+
+			// 20140831
+			// Recherche des options renseignées dans Sconet:
+			$tab_options_sconet=array();
+			$tab_options_sconet['code']=array();
+			$tab_options_sconet['matiere']=array();
+			$sql="SELECT * FROM nomenclatures_valeurs WHERE nom='option_sconet_saisie' AND valeur='y';";
+			//echo "$sql<br />";
+			$res_options_sconet=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_options_sconet)>0){
+				while($lig_options_sconet=mysqli_fetch_object($res_options_sconet)) {
+					//$sql="SELECT * FROM nomenclatures WHERE code='$lig_options_sconet->code' AND type='matiere';";
+					$sql="SELECT * FROM matieres WHERE code_matiere='$lig_options_sconet->code';";
+					$res_opt_courante=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_opt_courante)>0){
+						//$tab_options_sconet['code'][]=$lig_options_sconet->code;
+
+						while($lig_opt_courante=mysqli_fetch_object($res_opt_courante)) {
+							$tab_options_sconet['matiere'][$lig_opt_courante->matiere]['code']=$lig_options_sconet->code;
+							$tab_options_sconet['code'][$lig_options_sconet->code]['matieres'][]=$lig_opt_courante->matiere;
+						}
+					}
+				}
+			}
+			/*
+			echo "<pre>";
+			print_r($tab_options_sconet);
+			echo "</pre>";
+			*/
+
+			// 20140831
+			// Recherche des options de l'élève
+			$tab_opt_ele=array();
+			//$sql="SELECT * FROM temp_gep_import2 WHERE login='$login_eleve';";
+			$sql="SELECT t.* FROM temp_gep_import2 t, eleves e WHERE t.ELE_ID=e.ele_id AND e.login='$login_eleve';";
+			//echo "$sql<br />";
+			$res_options_sconet_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_options_sconet_ele)>0){
+				// Normalement, on ne fait qu'un tour dans la boucle qui suit
+				while($lig_options_sconet_ele=mysqli_fetch_object($res_options_sconet_ele)) {
+					for($i=1;$i<12;$i++) {
+						$champ_courant="ELEOPT".$i;
+						if($lig_options_sconet_ele->$champ_courant!="") {
+							$tab_opt_ele[]=$lig_options_sconet_ele->$champ_courant;
+						}
+					}
+				}
+			}
+			/*
+			echo "<pre>";
+			print_r($tab_opt_ele);
+			echo "</pre>";
+			*/
+
 			echo "<input type='hidden' name='opt_eleve' value='y' />\n";
 
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_classes jec
@@ -5151,8 +5203,29 @@ else{
 						$cpt++;
 					}
 
-
 					echo "<p>Affectation dans les groupes de l'élève $prenom_eleve $nom_eleve (<i>$lig_classe->classe</i>)</p>\n";
+
+					if(count($tab_opt_ele)>0) {
+						echo "<p>Option(s) saisie(s) dans Sconet&nbsp;: ";
+						$cpt_opt=0;
+						foreach($tab_opt_ele as $current_opt) {
+							if($cpt_opt>0) {echo ", ";}
+							echo $current_opt;
+							if(isset($tab_options_sconet['code'][$current_opt]['matieres'])) {
+								echo " (<em>";
+								$cpt_mat=0;
+								foreach($tab_options_sconet['code'][$current_opt]['matieres'] as $current_matiere) {
+									if($cpt_mat>0) {echo ", ";}
+									echo $current_matiere;
+									$cpt_mat++;
+								}
+								echo "</em>)";
+							}
+							$cpt_opt++;
+						}
+						echo "</p>";
+					}
+
 					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 					echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -5295,6 +5368,7 @@ else{
 
 								//=========================
 								// MODIF: boireaus
+								/*
 								if (mysqli_num_rows($test) == "0") {
 									//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." /></center></td>\n";
 									echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' /></center></td>\n";
@@ -5302,6 +5376,26 @@ else{
 									//echo "<td><center><input type=checkbox name=".$id_groupe."_".$j." CHECKED /></center></td>\n";
 									echo "<td><center><input type=checkbox id=case".$i."_".$j." name=".$id_groupe."_".$j." onchange='changement();' checked /></center></td>\n";
 								}
+								*/
+
+								echo "<td>";
+								$current_code_matiere=$tmp_group['matiere']['code_matiere'];
+								//echo "plop<br />$current_code_matiere<br />";
+								if(array_key_exists($current_code_matiere , $tab_options_sconet['code'])) {
+									//echo "a<br />";
+									//if(in_array($tab_options_sconet['matiere'][$current_code_matiere]['code'], $tab_opt_ele)) {
+									if(in_array($current_code_matiere, $tab_opt_ele)) {
+										$checked=" checked";
+									}
+									else {
+										$checked="";
+									}
+								}
+								else {
+									$checked=" checked";
+								}
+								echo "<center><input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();'$checked /></center></td>\n";
+
 								//=========================
 							}
 							$j++;
