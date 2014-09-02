@@ -2562,8 +2562,9 @@ else{
 							$test_clas2=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_clas2)>0) {
 								$lig_clas2=mysqli_fetch_object($test_clas2);
-		
-								if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig_clas2->DIVCOD)) {
+
+								//if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig_clas2->DIVCOD)) {
+								if(my_strtolower(preg_replace("/ /","",$lig_clas1->classe))!=my_strtolower(preg_replace("/ /","",$lig_clas2->DIVCOD))) {
 									if($cpt==0){
 										echo "<p>Une ou des différences ont été trouvées dans la tranche étudiée à cette phase.";
 										echo "<br />\n";
@@ -3072,7 +3073,8 @@ else{
 									if(mysqli_num_rows($test_clas1)>0) {
 										$lig_clas1=mysqli_fetch_object($test_clas1);
 
-										if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig->DIVCOD)) {
+										//if(my_strtolower($lig_clas1->classe)!=my_strtolower($lig->DIVCOD)) {
+										if(my_strtolower(preg_replace("/ /","",$lig_clas1->classe))!=my_strtolower(preg_replace("/ /","",$lig->DIVCOD))) {
 											$temoin_chgt_classe="y";
 											$temoin_modif='y';
 											$cpt_modif++;
