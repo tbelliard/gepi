@@ -164,6 +164,7 @@ if($url_absolues_gepi!="") {
 	$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
 }
 //=============================
+$contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "devoir", $id_groupe);
 
 // 20130727
 if($ctTravailAFaire->getContenu()!=$contenu_cor) {

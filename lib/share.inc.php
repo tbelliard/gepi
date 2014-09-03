@@ -11989,4 +11989,74 @@ function is_delegue_conseil_classe($login_user, $id_classe) {
 		return false;
 	}
 }
+
+/** Fonction destinée à copier les images de ../documents/archives/etablissement/cl1234/XXX vers le CDT courant quand des copier/coller sont faits depuis des archives
+ *  Sans cela, les chemins des images sont incorrects quand on archive les CDT l'année suivante, et les images risquent de disparaitre du CDT courant si l'archive dont elles viennent est supprimée.
+ *
+ * @param string $texte Le texte à traiter
+ * @return string La chaine corrigée
+ */
+function cdt_copie_fichiers_archive_vers_cdt_courant($texte, $type_notice, $id_groupe) {
+	global $multisite;
+
+	$contenu_cor=$texte;
+
+	if(preg_match_all('| src="\.\./documents/archives/[^"]*"|', $contenu_cor, $tab_match)) {
+		// Dans le cas où une même image est plusieurs fois dans la même notice:
+		$tab_deja=array();
+		for($loop=0;$loop<count($tab_match[0]);$loop++) {
+			// Récupérer le nom du fichier
+			//echo "\$tab_match[0][$loop]=".$tab_match[0][$loop]."<br />\n";
+			$tmp_tab=explode('"', $tab_match[0][$loop]);
+			$chemin_fichier_src=$tmp_tab[1];
+			$fichier_src=basename($chemin_fichier_src);
+
+			if(!in_array($chemin_fichier_src, $tab_deja)) {
+				// Créer le dossier documents du CDT courant s'il n'existe pas
+				$dossier_dest="../documents/";
+
+				$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+				if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+					@mkdir('../documents/'.$multi);
+					$dossier_dest.=$multi;
+				}
+				elseif((isset($multisite) && $multisite == 'y')){
+					$dossier_dest.=$multi;
+				}
+
+				if($type_notice=="devoir") {
+					$dossier_dest.="cl_dev".$id_groupe;
+				}
+				else {
+					$dossier_dest.="cl".$id_groupe;
+				}
+
+				if(!is_dir($dossier_dest)) {
+					@mkdir($dossier_dest);
+				}
+
+				// Recherche d'un nom de fichier non utilisé
+				$fichier_dest=$fichier_src;
+				$cpt=0;
+				$limite=100;
+				while(($cpt<$limite)&&(file_exists($dossier_dest."/".$fichier_dest))) {
+					$fichier_dest=time().$fichier_src;
+					$cpt++;
+				}
+				$chemin_fichier_dest=$dossier_dest."/".$fichier_dest;
+
+				// Copier le fichier
+				if(copy($chemin_fichier_src, $chemin_fichier_dest)) {
+					// Corriger la notice pour pointer sur le document du CDT courant
+					$contenu_cor=preg_replace('| src="'.$chemin_fichier_src.'"|', ' src="'.$chemin_fichier_dest.'"', $contenu_cor);
+				}
+
+				$tab_deja[]=$chemin_fichier_src;
+
+			}
+		}
+	}
+
+	return $contenu_cor;
+}
 ?>
