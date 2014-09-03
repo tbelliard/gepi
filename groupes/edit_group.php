@@ -1104,6 +1104,10 @@ echo "<script type='text/javascript'>
 		document.getElementById('groupe_nom_complet').value=prefixe+suffixe_nom_complet;
 	}
 	*/
+
+	if(document.getElementById('groupe_nom_court')) {
+		document.getElementById('groupe_nom_court').focus();
+	}
 </script>
 
 </div>\n";
