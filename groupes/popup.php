@@ -301,7 +301,6 @@ if($gepi_prof_suivi==""){
 		if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
 		echo "' title=\"Exporter la liste des élèves au format CSV (tableur)\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>\n";
 	}
-	https://127.0.0.1/steph/gepi_git_trunk/groupes/get_csv.php?id_groupe=2697&periode_num=1
 
 	$tabmail=array();
 
