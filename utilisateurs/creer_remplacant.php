@@ -543,7 +543,7 @@ elseif(isset($temoin_erreur_affect_compte_existant)) {
 	else {
 		echo "<p>Le compte '<b>$compte_existant</b>' a été déclaré remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
 		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))) {
-			echo "<p>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soint d'imprimer la fiche bienvenue.</p>";
+			echo "<p>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soin d'imprimer la fiche bienvenue.</p>";
 		}
 	}
 }
@@ -553,7 +553,7 @@ elseif($temoin_erreur=="y") {
 else {// fin affichage formulaire
   echo "<center><br/><br/><b>Remplaçant créé</b></center>";
   if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))) {
-    echo "<p align='center'>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soint d'imprimer la fiche bienvenue.</p>";
+    echo "<p align='center'>Pensez à <a href='../edt_organisation/transferer_edt.php' target='_blank'>transférer l'emploi du temps</a> après avoir pris soin d'imprimer la fiche bienvenue.</p>";
   }
 }
 
