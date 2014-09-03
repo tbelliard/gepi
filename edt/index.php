@@ -488,11 +488,27 @@ sa page d'accueil une fois le message lu.\">Le destinataire peut supprimer ce me
 	</script>
 </form>
 
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Certaines chaines du message (<em>si vous en déposez un</em>) seront traitées de la façon suivante&nbsp;:<br />
-___CLASSE___ sera remplacé par le nom de la classe choisie dans le champ SELECT en haut du formulaire.<br />
-___LIEN_EMPLOI_DU_TEMPS___ sera remplacé par un lien vers l'emploi du temps avec les paramètres appropriés.<br />
-___ID_CLASSE___ sera remplacé par l'identifiant de la classe choisie (<em>le lien pointera vers l'EDT de cette classe</em>).<br />
-___NUM_SEMAINE___ sera remplacé par le numéro de la semaine pour que le lien pointe directement sur l'emploi du temps de la semaine souhaitée.</p>
+<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Certaines chaines du message (<em>si vous en déposez un</em>) seront traitées de la façon suivante&nbsp;:<br />
+		___CLASSE___ sera remplacé par le nom de la classe choisie dans le champ SELECT en haut du formulaire.<br />
+		___LIEN_EMPLOI_DU_TEMPS___ sera remplacé par un lien vers l'emploi du temps avec les paramètres appropriés.<br />
+		___ID_CLASSE___ sera remplacé par l'identifiant de la classe choisie (<em>le lien pointera vers l'EDT de cette classe</em>).<br />
+		___NUM_SEMAINE___ sera remplacé par le numéro de la semaine pour que le lien pointe directement sur l'emploi du temps de la semaine souhaitée.</p>
+	</li>
+	<li style='margin-top:1em;'>
+		<p>La FAQ EDT d'IndexEducation indique&nbsp;:</p>
+		<pre>
+		Pour exporter les emplois du temps en iCal :
+		1. Rendez-vous dans le groupe de travail Gestion par semaine et absences et affichez pour les ressources souhaitées L'emploi du temps de la semaine....
+		2. Lancez la commande Fichier &gt; Imprimer.
+		3. Choisissez comme type de sortie iCal.
+		4. Définissez les paramètres et les options de sortie puis cliquez sur Générer.
+		5. EDT génère un fichier *.ics par ressource.
+		</pre>
+	</li>
+</ul>
 
 <pre style='color:red'>A FAIRE :
 - Problème ACCPE: Cas de 2CO: 11 cours sur un créneau,
