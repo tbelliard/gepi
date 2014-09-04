@@ -434,6 +434,7 @@ if((isset($_GET['maj_dates_mod_abs2']))&&($_GET['maj_dates_mod_abs2']=='y')) {
 	$nb_reg=0;
 
 	$sql="select * from edt_calendrier WHERE numero_periode>0 AND classe_concerne_calendrier!='';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -445,7 +446,9 @@ if((isset($_GET['maj_dates_mod_abs2']))&&($_GET['maj_dates_mod_abs2']=='y')) {
 			}
 
 			for($loop=0;$loop<count($tab_classe);$loop++) {
-				$register=mysqli_query($GLOBALS["mysqli"], "UPDATE periodes SET date_fin='".$lig->jourfin_calendrier."' WHERE (num_periode='".$lig->numero_periode."' and id_classe='".$tab_classe[$loop]."')");
+				$sql="UPDATE periodes SET date_fin='".$lig->jourfin_calendrier."' WHERE (num_periode='".$lig->numero_periode."' and id_classe='".$tab_classe[$loop]."')";
+				//echo "$sql<br />";
+				$register=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$register) {
 					$msg.="Erreur lors de la définition de la date de fin pour la classe ".get_class_from_id($tab_classe[$loop])." en période $lig->numero_periode.<br />";
 				}
