@@ -1355,9 +1355,14 @@ if(getSettingAOui('active_bulletins')) {
 		}
 
 		if(getSettingAOui('active_mod_engagements')) {
-			$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
+			if(($_SESSION['statut']=='cpe')||
+			($_SESSION['statut']=='scolarite')||
+			($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'])))) {
+				$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
 				  "Imprimer les documents concernant les engagements",
 				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+			}
 		}
 	}
 
