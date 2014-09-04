@@ -946,6 +946,10 @@ echo "
 					<option value='2'>2</option>
 					<option value='3'>3</option>
 					<option value='4'>4</option>
+					<option value='5'>5</option>
+					<option value='6'>6</option>
+					<option value='7'>7</option>
+					<option value='8'>8</option>
 				</select>&nbsp;groupes<br />
 				d'élèves rangés par ordre&nbsp;<select name='ordre_eleves_sous_groupe_a_creer' onchange='changement();'>
 					<option value='classe'>de classe, puis par ordre alphabétique</option>
