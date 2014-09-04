@@ -1041,8 +1041,8 @@ for($i=0;$i<count($id_classe);$i++) {
 					echo "</td>
 					<td>
 						<!-- Je ne vois pas comment générer d'un coup un fichier ODT/ODS avec les listes d'élèves à distribuer aux différents délégués -->
-						<!--input type='checkbox' name='liste_eleve_".$id_classe[$i]."[]' id='liste_eleve_$cpt2' value=\"$value\" /-->
-						<a href='".$_SERVER['PHP_SELF']."?id_classe=".$id_classe[$i]."&amp;imprimer_liste_eleve=y&amp;destinataire=$value".add_token_in_url()."' target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+						<!--input type='checkbox' name='liste_eleve_".$id_classe[$i]."' id='liste_eleve_$cpt2' value=\"$value\" /-->
+						<a href='".$_SERVER['PHP_SELF']."?id_classe[0]=".$id_classe[$i]."&amp;imprimer_liste_eleve=y&amp;destinataire=$value".add_token_in_url()."' target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
 					</td>
 				</tr>";
 					if(count($dates_conseils[$id_classe[$i]])>0) {
