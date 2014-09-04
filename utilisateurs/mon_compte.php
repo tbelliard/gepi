@@ -2185,17 +2185,23 @@ if($_SESSION['statut']=='professeur') {
 	// On passe en revue les groupes qui ont été triés dans Mon compte
 	$cpt=1;
 	if(count($tab_grp_order)>0) {
-		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:<br />";
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:</p>
+<table class='boireaus boireaus_alt'>";
 		for($loop=0;$loop<count($tab_grp_order);$loop++) {
 			for($i=0;$i<count($groups);$i++) {
 				if($groups[$i]['id']==$tab_grp_order[$loop]) {
 
-					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					echo "
+	<tr>
+		<td>
+			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
 					if(count($groups[$i]['profs']['list'])>1) {
 						echo " avec ".$groups[$i]['profs']['proflist_string'];
 					}
 					echo "</em>)"."</span>
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+		</td>
+		<td>
 					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 						<option value='-1'>Ne pas afficher ce groupe</option>";
 					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
@@ -2209,13 +2215,15 @@ if($_SESSION['statut']=='professeur') {
 						<option value='$loop2'$selected>$loop2</option>";
 					}
 					echo "
-					</select></br />";
+					</select>
+		</td>
+	</tr>";
 					break;
 				}
 			}
 			$cpt++;
 		}
-		echo "</p>";
+		echo "</table>";
 	}
 
 	// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
@@ -2223,15 +2231,21 @@ if($_SESSION['statut']=='professeur') {
 	for($i=0;$i<count($groups);$i++) {
 		if((!in_array($groups[$i]['id'], $tab_grp_order))&&(!in_array($groups[$i]['id'], $tab_grp_hidden))) {
 			if($temoin_grp_non_encore_trie=="n") {
-				echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:<br />";
+				echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:</p>
+<table class='boireaus boireaus_alt'>";
 				$temoin_grp_non_encore_trie="y";
 			}
-			echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+			echo "
+	<tr>
+		<td>
+			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
 			if(count($groups[$i]['profs']['list'])>1) {
 				echo " avec ".$groups[$i]['profs']['proflist_string'];
 			}
 			echo "</em>)"."</span>
 			<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+		</td>
+		<td>
 			<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 				<option value='-1' selected>Ne pas afficher ce groupe</option>";
 			for($loop2=1;$loop2<count($groups)+1;$loop2++) {
@@ -2245,27 +2259,35 @@ if($_SESSION['statut']=='professeur') {
 				<option value='$loop2'$selected>$loop2</option>";
 			}
 			echo "
-			</select><br />";
+			</select>
+		</td>
+	</tr>";
 			$cpt++;
 		}
 	}
 	if($temoin_grp_non_encore_trie=="y") {
-		echo "</p>";
+		echo "</table>";
 	}
 
 	// Les groupes cachés
 	if(count($tab_grp_hidden)>0) {
-		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:<br />";
+		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:</p>
+<table class='boireaus boireaus_alt'>";
 		for($loop=0;$loop<count($tab_grp_hidden);$loop++) {
 			for($i=0;$i<count($groups);$i++) {
 				if($groups[$i]['id']==$tab_grp_hidden[$loop]) {
 
-					echo "<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
+					echo "
+	<tr>
+		<td>
+			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
 					if(count($groups[$i]['profs']['list'])>1) {
 						echo " avec ".$groups[$i]['profs']['proflist_string'];
 					}
 					echo "</em>)"."</span>
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
+		</td>
+		<td>
 					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 						<option value='-1' selected>Ne pas afficher ce groupe</option>";
 					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
@@ -2273,13 +2295,15 @@ if($_SESSION['statut']=='professeur') {
 						<option value='$loop2'>$loop2</option>";
 					}
 					echo "
-					</select><br />";
+					</select>
+		</td>
+	</tr>";
 					break;
 				}
 			}
 			$cpt++;
 		}
-		echo "</p>";
+		echo "</table>";
 	}
 
 	echo "<p style='text-align:center;'>\n";
