@@ -11971,15 +11971,18 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	return $tab_engagements_user;
 }
 
-function is_delegue_conseil_classe($login_user, $id_classe) {
+function is_delegue_conseil_classe($login_user, $id_classe="") {
 	$sql="SELECT 1=1 FROM engagements e, 
 					engagements_user eu 
 				WHERE e.id=eu.id_engagement AND 
 					e.conseil_de_classe='yes' AND 
 					eu.login='".$login_user."' AND 
 					e.type='id_classe' AND 
-					eu.id_type='id_classe' AND 
-					eu.valeur='".$id_classe."';";
+					eu.id_type='id_classe'";
+	if($id_classe!="") {
+		$sql.=" AND eu.valeur='".$id_classe."'";
+	}
+	$sql.=";";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
