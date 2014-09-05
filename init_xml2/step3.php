@@ -412,8 +412,8 @@ else {
 				}
 	
 				// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
-				// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-				if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+				// A VERIFIER : Avec afficher_liaison_ent = argos_bordeaux passe-t-on par cette table ldap_bx?
+				if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
 					// On a récupéré les informations dans la table ldap_bx
 					// voir aussi les explications de la ligne 710 du fichiers professeurs.php
 					$sql_p = "SELECT login_u FROM ldap_bx
