@@ -1623,7 +1623,7 @@ col2 varchar(100) NOT NULL default ''
 		$nb_comptes=mysqli_num_rows($res0);
 		if($nb_comptes>0) {echo "<p>$nb_comptes comptes reste(nt) à contrôler.</p>\n";}
 
-		$tranche=20;
+		$tranche=100;
 		$sql="SELECT * FROM tempo2 LIMIT $tranche;";
 		//echo "$sql<br />\n";
 		$res1=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1660,7 +1660,11 @@ col2 varchar(100) NOT NULL default ''
 							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
 							//echo "$sql<br />\n";
 							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
-	
+
+							$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->col1';";
+							//echo "$sql<br />\n";
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
 							$cpt_suppr_etape++;
 	
 							$cpt_affichage_info++;
@@ -1674,6 +1678,10 @@ col2 varchar(100) NOT NULL default ''
 						if($cpt_affichage_info==0) {$texte_info_action.="<p>";}
 						$texte_info_action.="Le responsable $lig1->col1 est absent de la table 'resp_pers', son compte utilisateur doit être supprimé.<br />\n";
 						$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+						//echo "$sql<br />\n";
+						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->col1';";
 						//echo "$sql<br />\n";
 						$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -1707,6 +1715,10 @@ col2 varchar(100) NOT NULL default ''
 
 							$texte_info_action.="Suppression du responsable $lig1->col1 dans 'utilisateurs'.<br />\n";
 							$sql="DELETE FROM utilisateurs WHERE login='$lig1->col1';";
+							//echo "$sql<br />\n";
+							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='$lig1->col1';";
 							//echo "$sql<br />\n";
 							$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
 
