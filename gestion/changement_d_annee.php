@@ -510,9 +510,33 @@ if(getSettingValue("active_module_absence")=="2"){
 	echo "<p>Ces dates de verrouillage, indiquant à quelle date la période de notes a été close, n'ont rien à voir avec les dates déclarées pour les fins de périodes d'absences dans la page de Verrouillage.<br />
 	Les dates de fin de période affichées dans la page de Verrouillage concernent la liste des élèves qui seront présentés dans vos groupes/classes pour la saisie des absences (<em>tel élève arrivé au 2è trimestre ou ayant changé de classe,... doit ou ne doit pas apparaître sur telle période dans tel groupe/classe</em>).</p>\n";
 }
-echo "</li>\n";
-echo "</ul>\n";
+echo "</li>
+	<li>
+		<p class='bold'>Rappel des opérations à effectuer après l'initialisation</p>
+		<ul>
+			<li>
+				<p><a href='../edt_organisation/edt_calendrier.php'>Changer les dates dans le calendrier EDT</a> et forcer les dates pour les absences (<em>Lien Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous.</em>).<br />
+				Les dates de périodes de notes et les dates de vacances doivent être mises à jour sans quoi les compositions des groupes risquent d'être erronées lors de la saisie des absences et les totaux d'absences également.<br />
+				De plus, si vous avez de nouvelles classes, il faut qu'elles soient associées aux périodes de notes et de vacances.</p>
+			</li>
+			<li>
+				<p>Créer les comptes élèves/responsables manquants.</p>
+			</li>
+			<li>
+				<p>Activer les comptes élèves/responsables.</p>
+			</li>
+			<li>
+				<p>Effectuer l'association SSO pour les nouveaux comptes si vous êtes dans un environnement ENT.</p>
+			</li>
+			<li>
+				<p>Si vous utilisez un compte générique pour les professeurs d'EPS pour la saisie des absences<br />(<em>il arrive que tous les professeurs d'EPS fassent les saisies sur la même machine; se déconnecter/reconnecter pour ces saisies est très malcommode</em>),<br /><a href='../utilisateurs/index.php?mode=personnels'>ré-activer le compte Equipe EPS</a>,<br />créer un  enseignement par classe invisible sur B, CN, CDT via <a href='../classes/classes_param.php#creer_enseignement'>Paramétrage par lots</a>.</p>
+			</li>
+			<li>
+				<p>Si vous utilisez le module Flux RSS pour les cahiers de textes, <a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas'>Créer les flux RSS manquants</a>.</p>
+			</li>
+		</ul>
+	</li>
+</ul>\n";
 echo "<p><br /></p>\n";
-
 require("../lib/footer.inc.php");
 ?>
