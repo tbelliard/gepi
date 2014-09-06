@@ -244,6 +244,8 @@ if((isset($_GET['maj_liste_autres_groupes_meme_matiere']))&&(isset($_GET['matier
 	if($tab_autres_groupes!="") {
 		echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 		echo $tab_autres_groupes;
+
+		echo "<p><a href='repartition_ele_grp.php?id_classe[]=$id_classe&amp;preselect_id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Répartir les élèves entre plusieurs groupes</a></p>";
 	}
 	else {
 		echo "";
@@ -1122,6 +1124,12 @@ $tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_ma
 if($tab_autres_groupes!="") {
 	echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 	echo $tab_autres_groupes;
+
+	echo "<p><a href='repartition_ele_grp.php?";
+	for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
+		echo "id_classe[]=".$current_group["classes"]["list"][$loop]."&amp;";
+	}
+	echo "preselect_id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Répartir les élèves entre plusieurs groupes</a></p>";
 }
 echo "</div>\n";
 

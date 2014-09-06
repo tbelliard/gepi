@@ -419,6 +419,7 @@ if(!isset($id_groupe)) {
 	}
 	echo "</tr>\n";
 
+	$chaine_js_change_style="";
 	$cpt=0;
 	echo "<tr>\n";
 	$alt=1;
@@ -437,7 +438,12 @@ if(!isset($id_groupe)) {
 				$current_group=get_group($group["id"]);
 		
 				//echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt)' /><label id='label_id_groupe_$cpt' for='id_groupe_$cpt'>".$current_group['name'];
-			echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt);controle_doublons($cpt);' /><label id='label_id_groupe_$cpt' for='id_groupe_$cpt' title=\"Enseignement de ".$current_group['matiere']['matiere']." dispensé en ".$current_group['classlist_string']." par ".$current_group['profs']['proflist_string']."\">".$current_group['name'];
+			echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange='change_style_grp($cpt);controle_doublons($cpt);' ";
+			if((isset($_GET['preselect_id_groupe']))&&($_GET['preselect_id_groupe']==$current_group['id'])) {
+				echo "checked ";
+				$chaine_js_change_style.="change_style_grp($cpt);\n";
+			}
+			echo "/><label id='label_id_groupe_$cpt' for='id_groupe_$cpt' title=\"Enseignement de ".$current_group['matiere']['matiere']." dispensé en ".$current_group['classlist_string']." par ".$current_group['profs']['proflist_string']."\">".$current_group['name'];
 				echo "<span style='font-size:x-small;'>";
 				echo " (<i>".$current_group['description']."</i>)";
 				if(count($current_group["classes"]["list"])>1) {echo " en ".$current_group['classlist_string'];}
@@ -469,6 +475,8 @@ if(!isset($id_groupe)) {
 			}
 		}
 	}
+
+	$chaine_js_change_style
 
 	function controle_doublons(num) {
 		if(document.getElementById('id_groupe_'+num)) {
@@ -587,6 +595,29 @@ if(!isset($_POST['recopie_select'])) {
 			}
 		}
 	}
+
+	$tab_nom_classe=array();
+	$tab_id_classe=array();
+	for($i=0;$i<count($id_classe);$i++) {
+		$nom_classe=get_nom_classe($id_classe[$i]);
+		$tab_id_classe[$nom_classe]=$id_classe[$i];
+		$tab_nom_classe[]=$nom_classe;
+	}
+	/*
+	echo "<pre>";
+	print_r($tab_id_classe);
+	echo "</pre>";
+	*/
+	sort($tab_nom_classe);
+	$id_classe=array();
+	for($loop=0;$loop<count($tab_nom_classe);$loop++) {
+		$id_classe[]=$tab_id_classe[$tab_nom_classe[$loop]];
+	}
+	/*
+	echo "<pre>";
+	print_r($id_classe);
+	echo "</pre>";
+	*/
 
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 
