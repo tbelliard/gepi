@@ -272,7 +272,7 @@ if(isset($step)) {
 		) {
 //		($step==17)
 
-		echo "<div style='float: right; border: 1px solid black; width: 4em;'>
+		echo "<div style='float: right; border: 1px solid black; width: 4em;' class='fieldset_opacite50'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='checkbox' name='stop' id='stop' value='y' onchange='stop_change()' ";
 //if(isset($stop)){
