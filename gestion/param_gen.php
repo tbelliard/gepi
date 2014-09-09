@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -345,6 +345,12 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['email_dest_info_modif_mail'])) {
 			if (!saveSetting("email_dest_info_modif_mail", $_POST['email_dest_info_modif_mail'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre email_dest_info_modif_mail !";
+			}
+		}
+
+		if (isset($_POST['email_dest_info_erreur_affect_grp'])) {
+			if (!saveSetting("email_dest_info_erreur_affect_grp", $_POST['email_dest_info_erreur_affect_grp'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre email_dest_info_erreur_affect_grp !";
 			}
 		}
 
@@ -1307,6 +1313,17 @@ echo add_token_field();
 		</span>
 		<span class="cellTab plusPetit">
 		<input type="text" name="email_dest_info_modif_mail" value="<?php if(getSettingValue("email_dest_info_modif_mail")!="") {echo getSettingValue("email_dest_info_modif_mail");} else {echo getSettingValue('gepiSchoolEmail');} ?>" onchange='changement()' /><br />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='email_dest_info_erreur_affect_grp'></a>
+			Adresse mail du destinataire des signalements d'erreur d'affectation d'élèves dans des groupes<br />
+			(<em>par défaut, seul l'adresse email administrateur du site est destinataire</em>)
+		</span>
+		<span class="cellTab plusPetit">
+		<input type="text" name="email_dest_info_erreur_affect_grp" value="<?php if(getSettingValue("email_dest_info_erreur_affect_grp")!="") {echo getSettingValue("email_dest_info_erreur_affect_grp");} ?>" onchange='changement()' /><br />
 		</span>
 	</p>
 
