@@ -2252,12 +2252,20 @@ if(isset($eleve_login)){
 		}
 		else {
 			$acces_eleve_options=acces('/classes/eleve_options.php', $_SESSION['statut']);
+			$acces_class_const=acces('/classes/classes_const.php', $_SESSION['statut']);
 			while($lig_classe=mysqli_fetch_object($res_grp1)){
 				if($acces_eleve_options) {
-					echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+					echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier les enseignements suivis par cet élève.\">Enseignements suivis</a> en ";
 				}
 				else {
-					echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank' title=\"Consulter la liste des enseignements suivis par cet élève.\">Enseignements suivis</a> en ";
+				}
+
+				if($acces_class_const) {
+					echo "<a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier la liste des élèves de la classe.\nDéfinir le ".getSettingValue('gepi_prof_suivi').", le CPE,...\">".preg_replace("/ /","&nbsp;",$lig_classe->classe)."</a>\n";
+				}
+				else {
+					echo preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
 				}
 				echo "<br />\n";
 
