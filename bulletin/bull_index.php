@@ -3997,8 +3997,18 @@ elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 		$pdf->Cell(150,7, "      Gestion des classes/Paramétrage des classes par lots",0,2,'');
 	}
 
+	$ajout_nom_bulletin="";
+	if(count($tab_id_classe)==1) {
+		$ajout_nom_bulletin=remplace_accents(get_nom_classe($tab_id_classe[0]),"all");
+
+		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+			$ajout_nom_bulletin.="_P".$tab_periode_num[$loop_periode_num];
+		}
+		$ajout_nom_bulletin.="_";
+	}
+
 	//fermeture du fichier pdf et lecture dans le navigateur 'nom', 'I/D'
-	$nom_bulletin = 'bulletin_'.$nom_bulletin.'.pdf';
+	$nom_bulletin = 'bulletin_'.$ajout_nom_bulletin.$nom_bulletin.'.pdf';
 
 	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />\n";
 	if((isset($bull_pdf_debug))&&($bull_pdf_debug=='y')) {
