@@ -1316,7 +1316,9 @@ else{
 							$sql.=", elesexe='".sexeMF($eleves[$i]["code_sexe"])."'";
 						}
 						else {
-							echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".my_strtoupper($eleves[$i]['nom'])."</span><br />\n";
+							$texte_oubli="<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".my_strtoupper($eleves[$i]['nom'])."</span><br />\n";
+							enregistre_log_maj_sconet($texte_oubli);
+							echo $texte_oubli;
 							$sql.=", elesexe='M'";
 						}
 						$sql.=", eledatnais='".$eleves[$i]['date_naiss']."'";
