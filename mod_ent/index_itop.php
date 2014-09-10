@@ -4356,7 +4356,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 
 		// 20130916
 		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Profil", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Profil", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation", "Classe");
 
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$cpt_entete=0;
@@ -4447,14 +4447,19 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
 				if($ligne_a_prendre_en_compte=="y") {
 					if(($_POST['toutes_les_classes']=="y")||
-						(!isset($tabindice['Classe enfant 1']))||
-						((isset($tabindice['Classe enfant 1']))&&(in_array($tab[$tabindice['Classe enfant 1']], $_POST['classe'])))) {
+						((!isset($tabindice['Classe enfant 1']))&&(!isset($tabindice['Classe'])))||
+						((isset($tabindice['Classe enfant 1']))&&(in_array($tab[$tabindice['Classe enfant 1']], $_POST['classe'])))||
+						((isset($tabindice['Classe']))&&(in_array($tab[$tabindice['Classe']], $_POST['classe'])))) {
 
-						if(!isset($tabindice['Classe enfant 1'])) {
+						if((!isset($tabindice['Classe enfant 1']))&&(!isset($tabindice['Classe']))) {
 							$classe_courante="classe_inconnue";
 						}
-						else {
+						elseif(isset($tabindice['Classe enfant 1'])) {
 							$classe_courante=$tab[$tabindice['Classe enfant 1']];
+						}
+						else {
+							$classe_courante=preg_replace("/ \(.*/", "", $tab[$tabindice['Classe']]);
+							$eleve_courant=preg_replace("/\)/", "", preg_replace("/.*\(/", "", $tab[$tabindice['Classe']]));
 						}
 
 						if(!isset($tab_classe_parent[$classe_courante])) {
@@ -4479,6 +4484,12 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 
 						if((isset($tabindice['Nom enfant 1']))&&(isset($tabindice['Prénom enfant 1']))) {
 							$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$tab[$tabindice['Nom enfant 1']]." ".$tab[$tabindice['Prénom enfant 1']];
+							if($classe_courante!='classe_inconnue') {
+								$tab_classe_parent[$classe_courante][$cpt]['resp_de'].=" (".$classe_courante.")";
+							}
+						}
+						elseif(isset($tabindice['Classe'])) {
+							$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$eleve_courant;
 							if($classe_courante!='classe_inconnue') {
 								$tab_classe_parent[$classe_courante][$cpt]['resp_de'].=" (".$classe_courante.")";
 							}
