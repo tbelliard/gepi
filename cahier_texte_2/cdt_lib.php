@@ -123,7 +123,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				$div.="</a></div>\n";
 
 				$div.="<div style='$style_close'><a href=\"#\" onclick=\"document.getElementById('".$id."_contenu_notices').innerHTML='';return false;\">";
-					$div.="<img src='../images/trash.png' width='16' height='16' alt='Vider la sélection' title='Vider la sélection' />";
+					$div.="<img src='../images/icons/trash.png' width='16' height='16' alt='Vider la sélection' title='Vider la sélection' />";
 				$div.="</a></div>\n";
 
 				$div.="<span style='padding-left: 1px;'>Votre sélection</span>\n";

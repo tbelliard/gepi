@@ -333,10 +333,13 @@ else {
 		if(!file_exists($dossier_annee."/images")) {
 			$res=mkdir($dossier_annee."/images");
 		}
-		if(file_exists($dossier_annee."/images")) {
+		if(!file_exists($dossier_annee."/images/icons")) {
+			$res=mkdir($dossier_annee."/images/icons");
+		}
+		if(file_exists($dossier_annee."/images/icons")) {
 			$tab_img=array("add.png", "chercher.png", "close16.png","trash.png");
 			for($i=0;$i<count($tab_img);$i++) {
-				copy("../images/icons/".$tab_img[$i],$dossier_annee."/images/".$tab_img[$i]);
+				copy("../images/icons/".$tab_img[$i],$dossier_annee."/images/icons/".$tab_img[$i]);
 			}
 		}
 
@@ -370,6 +373,8 @@ else {
 
 		$display_date_debut=strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
 		$display_date_fin=strftime("%d/%m/%Y", getSettingValue("end_bookings"));
+
+		echo "<p>Les notices vont être extraites pour des dates entre le $display_date_debut et le $display_date_fin</p>";
 
 		$largeur_tranche=10;
 
