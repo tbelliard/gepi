@@ -371,6 +371,8 @@ else {
 		$display_date_debut=strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
 		$display_date_fin=strftime("%d/%m/%Y", getSettingValue("end_bookings"));
 
+		echo "<p>Les notices vont être extraites pour des dates entre le $display_date_debut et le $display_date_fin</p>";
+
 		$largeur_tranche=10;
 
 		$temoin_erreur="n";
@@ -516,7 +518,15 @@ else {
 				else {
 					array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
 				}
+/*
+echo "<pre>";
+print_r($tab_notices);
+echo "</pre>";
 
+echo "<pre>";
+print_r($tab_dev);
+echo "</pre>";
+*/
 				$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
 
 				/*
