@@ -1,5 +1,4 @@
- <?php
-
+<?php
 /**
  * Simple SQL authentication source
  *
@@ -174,7 +173,5 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
             
         return $attributes;
     }
-
 }
-
-?> 
+?>
