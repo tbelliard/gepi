@@ -1645,7 +1645,7 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 			echo "</p>";
 		}
 
-		$sql="select distinct u.login, u.nom, u.prenom, u.civilite from utilisateurs u where u.auth_mode='sso' AND u.statut!='eleve' and u.statut!='responsable' and u.login not in (select login_gepi from sso_table_correspondance);";
+		$sql="select distinct u.login, u.nom, u.prenom, u.civilite, u.statut from utilisateurs u where u.auth_mode='sso' AND u.statut!='eleve' and u.statut!='responsable' and u.login not in (select login_gepi from sso_table_correspondance);";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_assoc_manquantes_pers=mysqli_num_rows($res);
 		if($nb_assoc_manquantes_pers>0) {
@@ -1655,7 +1655,8 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
-				echo "<a href='../utilisateurs/modify_user.php?user_login=$lig->login' target='_blank'>".$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</a>";
+				$designation_user=$lig->civilite." ".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2');
+				echo "<a href='../utilisateurs/modify_user.php?user_login=$lig->login' target='_blank' title=\"Consulter/modifier la fiche de $designation_user ($lig->statut)\">".$designation_user."</a>";
 				$cpt++;
 			}
 			echo "</p>";
@@ -1738,21 +1739,21 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 			</tr>
 			<tr>
 				<td>Personnels</td>
-				<td>$nb_pers_gepi</td>
-				<td>$nb_pers_sso</td>
-				<td>$nb_pers_ldap</td>
+				<td><a href='../utilisateurs/index.php?mode=personnels&amp;afficher_auth_mode=gepi' title=\"Voir les comptes de personnels en auth_mode 'gepi'\">$nb_pers_gepi</a></td>
+				<td><a href='../utilisateurs/index.php?mode=personnels&amp;afficher_auth_mode=sso' title=\"Voir les comptes de personnels en auth_mode 'sso'\">$nb_pers_sso</a></td>
+				<td><a href='../utilisateurs/index.php?mode=personnels&amp;afficher_auth_mode=ldap' title=\"Voir les comptes de personnels en auth_mode 'ldap'\">$nb_pers_ldap</a></td>
 			</tr>
 			<tr>
 				<td>Responsables</td>
-				<td>$nb_resp_gepi</td>
-				<td>$nb_resp_sso</td>
-				<td>$nb_resp_ldap</td>
+				<td><a href='../utilisateurs/edit_responsable.php?critere_auth_mode[0]=gepi' title=\"Voir les comptes responsables en auth_mode 'gepi'\">$nb_resp_gepi</a></td>
+				<td><a href='../utilisateurs/edit_responsable.php?critere_auth_mode[0]=sso' title=\"Voir les comptes responsables en auth_mode 'sso'\">$nb_resp_sso</a></td>
+				<td><a href='../utilisateurs/edit_responsable.php?critere_auth_mode[0]=ldap' title=\"Voir les comptes responsables en auth_mode 'ldap'\">$nb_resp_ldap</a></td>
 			</tr>
 			<tr>
 				<td>Élèves</td>
-				<td>$nb_ele_gepi</td>
-				<td>$nb_ele_sso</td>
-				<td>$nb_ele_ldap</td>
+				<td><a href='../utilisateurs/edit_eleve.php?critere_auth_mode[0]=gepi' title=\"Voir les comptes élèves en auth_mode 'gepi'\">$nb_ele_gepi</a></td>
+				<td><a href='../utilisateurs/edit_eleve.php?critere_auth_mode[0]=sso' title=\"Voir les comptes élèves en auth_mode 'sso'\">$nb_ele_sso</a></td>
+				<td><a href='../utilisateurs/edit_eleve.php?critere_auth_mode[0]=ldap' title=\"Voir les comptes élèves en auth_mode 'ldap'\">$nb_ele_ldap</a></td>
 			</tr>
 		</table>
 		<p>Certains comptes peuvent être inactifs (<em style='color:red'>à détailler dans le futur</em>).</p>
