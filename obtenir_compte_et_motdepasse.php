@@ -1,7 +1,7 @@
 <?php
 /**
 *
-*  @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+*  @copyright Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -86,7 +86,10 @@ if (isset($_POST['is_posted'])) {
 
 			if(getSettingAOui('SendMail_obtenir_compte_et_motdepasse')) {
 				$titre="Demande de compte et mot de passe : $nom $prenom";
-				$texte=nl2br("La demande suivante a été formulée par $nom $prenom ($email) (statut déclaré lors de la demande : ".$statut_demandeur.")\nDescription de la demande:\n".preg_replace("/[\\\]{1,}n/","\n",$description));
+				//$texte=nl2br("La demande suivante a été formulée par $nom $prenom ($email) (statut déclaré lors de la demande : ".$statut_demandeur.")\nDescription de la demande:\n".preg_replace("/[\\\]{1,}n/","\n",$description));
+				$description_nettoyee=preg_replace('/(\\\n)+/',"\n",$description);
+				$texte="La demande suivante a été formulée par $nom $prenom ($email) (statut déclaré lors de la demande : ".$statut_demandeur.")\nDescription de la demande:\n".$description_nettoyee;
+
 				$destinataire=getSettingValue('gepiDemandeCompteMdpAdress');
 				if($destinataire=="") {
 					$destinataire=getSettingValue('gepiAdminAdress');
@@ -135,7 +138,9 @@ echo "
 ";
 
 if(isset($suite)) {
-	echo "<body>
+
+	if(getSettingAOui('Imprimer_obtenir_compte_et_motdepasse')) {
+		echo "<body>
 <div style='margin:1em;'>
 <h2>".getSettingValue('gepiSchoolName')." : Demande de compte</h2>
 
@@ -160,12 +165,19 @@ if(isset($suite)) {
 <p style='text-decoration:blink; color:red;' class='noprint'>Document à imprimer et à remettre à l'Administration.</p>
 <p class='noprint'><a href='./login.php'><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de connexion</a></p>
 
-</div>
+</div>";
+	}
+	else {
+		echo "<body>
+<div style='margin:1em;'>
+<h2>".getSettingValue('gepiSchoolName')." : Demande de compte</h2>
 
-</body>
-</html>
-";
+<p>Votre demande a été enregistrée.</p>
 
+<p class='noprint'><a href='./login.php'><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour à la page de connexion</a></p>
+
+</div>";
+	}
 
 	require("./lib/footer.inc.php");
 	die();
@@ -228,12 +240,17 @@ echo "<body onload=\"document.getElementById('nom').focus()\">
 <p><br /></p>
 
 <p><em>NOTES&nbsp;:</em></p>
-<ul>
+<ul>";
+
+if(getSettingAOui('Imprimer_obtenir_compte_et_motdepasse')) {
+	echo "
 	<li>
 		Un document va être généré.<br />
 		Vous devrez imprimer le document et votre enfant devra déposer cette demande à l'Administration de l'établissement pour finaliser la demande.<br />
 		Cette démarche est destinée à éviter des usurpations d'identité.
-	</li>
+	</li>";
+}
+echo "
 	<li>
 		En précisant votre adresse mail, vous pourrez par la suite recevoir par mail les informations demandées.<br />
 		(<em>Il est généralement plus facile de copier/coller les informations reçues que de les taper</em>)
