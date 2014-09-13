@@ -95,8 +95,13 @@ if (isset($_POST['is_posted'])) {
 					$destinataire=getSettingValue('gepiAdminAdress');
 				}
 
+				$ajout_headers="";
+				if(check_mail($email)) {
+					$ajout_headers="Reply-To: $email\r\n";
+				}
+
 				if($destinataire!="") {
-					envoi_mail($titre, $texte, $destinataire);
+					envoi_mail($titre, $texte, $destinataire, $ajout_headers);
 				}
 			}
 
