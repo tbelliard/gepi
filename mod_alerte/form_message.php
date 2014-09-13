@@ -158,9 +158,8 @@ if((isset($mode))&&($mode=='check2')) {
 	$messages_non_lus=check_messages_recus($_SESSION['login']);
 	if($messages_non_lus!="") {
 		$MessagerieLargeurImg=getSettingValue('MessagerieLargeurImg');
-		//echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/new_mail.gif' width='$MessagerieLargeurImg' height='$MessagerieLargeurImg' title='Vous avez $messages_non_lus' /></a>";
-echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' style='width:$MessagerieLargeurImg px; height:$MessagerieLargeurImg px' alt='messages non lus'  title='Vous avez $messages_non_lus' /></a>";
-}
+		echo "<a href='$gepiPath/mod_alerte/form_message.php?mode=afficher_messages_non_lus' target='_blank'><img src='$gepiPath/images/icons/temoin_message_non_lu.gif' style='width:".$MessagerieLargeurImg."px; height:".$MessagerieLargeurImg."px' alt='messages non lus'  title='Vous avez $messages_non_lus' /></a>";
+	}
 	else {
 		echo "";
 	}
