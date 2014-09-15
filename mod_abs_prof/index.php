@@ -412,10 +412,10 @@ if(($_SESSION['statut']=="administrateur")||
 	if(($_SESSION['statut']=="administrateur")||
 	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfAttribuerRemplacementScol')))||
 	(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfAttribuerRemplacementCpe')))) {
+		$tab_propositions_avec_reponse_positive=array();
 		$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND reponse='oui';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			$tab_propositions_avec_reponse_positive=array();
 			while($lig=mysqli_fetch_object($res)) {
 				if(check_proposition_remplacement_validee2($lig->id)=="") {
 					// Créneau sans remplacement programmé
@@ -432,11 +432,11 @@ if(($_SESSION['statut']=="administrateur")||
 		}
 
 
+		$tab_remplacements=array();
 		//$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
 		$sql="SELECT DISTINCT id_absence, id_classe, id_groupe, jour, id_creneau FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			$tab_remplacements=array();
 			$tab_remplacements_creneaux_testes=array();
 			while($lig=mysqli_fetch_object($res)) {
 				//if(check_proposition_remplacement_validee2($lig->id)=="") {
