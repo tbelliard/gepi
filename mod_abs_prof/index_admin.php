@@ -140,7 +140,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==3)) {
 	$cpt_comptes_exclus_supprimes=0;
 	for($loop=0;$loop<count($tab_user_mae);$loop++) {
 		if(!in_array($tab_user_mae[$loop], $login_user)) {
-			$sql="DELETE FROM abs_prof_divers WHERE name='login_exclus' AND value='".$login_user[$loop]."';";
+			$sql="DELETE FROM abs_prof_divers WHERE name='login_exclus' AND value='".$tab_user_mae[$loop]."';";
 			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($delete) {
 				$cpt_comptes_exclus_supprimes++;
@@ -181,7 +181,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==4)) {
 	$cpt_matieres_exclues_supprimees=0;
 	for($loop=0;$loop<count($tab_mae);$loop++) {
 		if(!in_array($tab_mae[$loop], $matiere_exclue)) {
-			$sql="DELETE FROM abs_prof_divers WHERE name='matiere_exclue' AND value='".$matiere_exclue[$loop]."';";
+			$sql="DELETE FROM abs_prof_divers WHERE name='matiere_exclue' AND value='".$tab_mae[$loop]."';";
 			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($delete) {
 				$cpt_matieres_exclues_supprimees++;
