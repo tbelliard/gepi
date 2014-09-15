@@ -6093,16 +6093,15 @@ function array_map_deep($callback, $array) {
  * @return string Balises audio
  */
 function joueAlarme($niveau_arbo = "0") {
-  $retour ="";
-  	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound',NULL) : NULL;
-	if($footer_sound===NULL) {
+	$retour ="";
+	$footer_sound= isset ($_SESSION['login']) ? getPref($_SESSION['login'],'footer_sound', "") : "";
+
+	if($footer_sound=='') {
 		$footer_sound=getSettingValue('footer_sound');
-		if($footer_sound==NULL) {
+		if($footer_sound=='') {
 			$footer_sound="KDE_Beep_Pop.wav";
 		}
 	}
-	
-	//if($footer_sound!=='') {
 
 	  if ($niveau_arbo == "0") {
 		  $chemin_sound="./sounds/".$footer_sound;
