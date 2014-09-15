@@ -550,7 +550,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	}else{$barre_edt = '';}
 
 
-	if((getSettingAOui('active_edt_ical'))&&(getSettingAOui('EdtIcalResponsable'))) {
+	if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalProf'))||(getSettingAOui('EdtIcalProfTous')))) {
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt/index.php' , "texte"=>"EDT Ical/Ics");
 		$compteur_menu++;
 	}
