@@ -454,6 +454,12 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 
 				// Bandes horizontales du créneau
 				$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".$x0."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; border:1px solid silver; z-index:2;".$style_fond_creneau."'></div>";
+
+				// Debug
+				if($debug_edt=="y") {
+					$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".($x0+$largeur_edt+30)."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; color:red; z-index:2;'>$y1_courant</div>";
+				}
+
 			}
 		}
 
@@ -488,12 +494,13 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 			$hauteur_courante=floor($duree_en_min*$hauteur_une_heure/60);
 			//$hauteur_courante=floor($duree_en_min*$hauteur_une_heure/60)-ceil($marge_secu/2);
 
-			$duree_depuis_debut_journee=floor(($ts_debut-$ts_debut_jour)/3600);
-
+			//$duree_depuis_debut_journee=floor(($ts_debut-$ts_debut_jour)/3600);
+			$duree_depuis_debut_journee=floor(10*($ts_debut-$ts_debut_jour)/3600)/10;
 			//$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure;
 			$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure+ceil($marge_secu/2);
 
 			if($debug_edt=="y") {
+				$html.="\$jour_debut_jour=$jour_debut_jour<br />";
 				$html.="\$ts_debut_jour=$ts_debut_jour<br />";
 				$html.="\$ts_debut=$ts_debut<br />";
 				$html.="\$duree_depuis_debut_journee=$duree_depuis_debut_journee<br />";
