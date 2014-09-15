@@ -233,6 +233,83 @@
 </form>
 
 <br />
+
+  <form action="index_admin.php" id="form4" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+<?php
+	echo add_token_field();
+?>
+	<input type="hidden" name="is_posted" value="4" />
+
+	<h2 class="colleHaut">Format des désignations professeurs et matirèes dans EDT</h2>
+
+	<p>Lors de l'import, il vous est proposé d'effectuer les correspondances NOM_EDT/NOM_GEPI non encore enregistrées.<br />
+	Le format choisi dans EDT peut varier.</p>
+
+	<p>
+	Noms des professeurs dans EDT&nbsp;:<br />
+	  <input type="radio" 
+			 name="EdtIcalFormatNomProf" 
+			 id='EdtIcalFormatNomProf' 
+			 value="civ nom prenom" 
+			<?php if (getSettingValue("EdtIcalFormatNomProf")=="civ nom prenom") echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='EdtIcalFormatNomProf' style='cursor: pointer;'>
+		Civilité Nom Prénom
+	  </label>
+	  <br />
+	  <input type="radio" 
+			 name="EdtIcalFormatNomProf" 
+			 id='EdtIcalFormatNomProf_nom' 
+			 value="nom" 
+			<?php if (getSettingValue("EdtIcalFormatNomProf")=="nom") echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='EdtIcalFormatNomProf_nom' style='cursor: pointer;'>
+		Nom
+	  </label>
+	  <br />
+	</p>
+
+	<p>
+	Noms des matières dans EDT&nbsp;:<br />
+	  <input type="radio" 
+			 name="EdtIcalFormatNomMatière" 
+			 id='EdtIcalFormatNomMatière_nom_court' 
+			 value="nom_court" 
+			<?php if (getSettingValue("EdtIcalFormatNomMatière")=="nom_court") echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='EdtIcalFormatNomMatière_nom_court' style='cursor: pointer;'>
+		Nom court de matière
+	  </label>
+	  <br />
+	  <input type="radio" 
+			 name="EdtIcalFormatNomMatière" 
+			 id='EdtIcalFormatNomMatière_nom_complet' 
+			 value="nom_complet" 
+			<?php if (getSettingValue("EdtIcalFormatNomMatière")=="nom_complet") echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='EdtIcalFormatNomMatière_nom_complet' style='cursor: pointer;'>
+		Nom complet de matière
+	  </label>
+	  <br />
+	  <input type="radio" 
+			 name="EdtIcalFormatNomMatière" 
+			 id='EdtIcalFormatNomMatière_nom_court_nom_complet' 
+			 value="nom_court nom_complet" 
+			<?php if (getSettingValue("EdtIcalFormatNomMatière")=="nom_court nom_complet") echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='EdtIcalFormatNomMatière_nom_court_nom_complet' style='cursor: pointer;'>
+		Nom court de matière, suivi d'un espace et du Nom complet de matière
+	  </label>
+	  <br />
+	</p>
+
+	<p class="center">
+	  <input type="submit" value="Enregistrer" />
+	</p>
+</form>
+
+<br />
+
 <p><a href='index.php'>Accéder au module EDT ICAL</a></p>
 
 <!-- Début du pied -->

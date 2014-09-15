@@ -164,6 +164,22 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==3)) {
 	}
 }
 
+if((isset($_POST['is_posted']))&&($_POST['is_posted']==4)) {
+	check_token();
+
+	if(isset($_POST['EdtIcalFormatNomProf'])) {
+		if (!saveSetting("EdtIcalFormatNomProf", $_POST['EdtIcalFormatNomProf'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre EdtIcalFormatNomProf !";
+		}
+	}
+
+	if(isset($_POST['EdtIcalFormatNomMatière'])) {
+		if (!saveSetting("EdtIcalFormatNomMatière", $_POST['EdtIcalFormatNomMatière'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre EdtIcalFormatNomMatière !";
+		}
+	}
+}
+
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées !";
   $post_reussi=TRUE;

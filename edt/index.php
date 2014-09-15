@@ -511,6 +511,7 @@ sa page d'accueil une fois le message lu.\">Le destinataire peut supprimer ce me
 </ul>
 
 <pre style='color:red'>A FAIRE :
+- En affichage prof, afficher des couleurs par classe plutôt que par matière
 - Problème ACCPE: Cas de 2CO: 11 cours sur un créneau,
   c'est illisible.
 - Vérifier le bon fonctionnement du rapprochement pour un prof avec apostrophe dans son nom.
@@ -1184,6 +1185,8 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				$lignes_profs.=">".$lig_prof->civilite." ".$lig_prof->nom." ".$lig_prof->prenom."</option>";
 
 				$tab_prof[$cpt]['login']=$lig_prof->login;
+				$tab_prof[$cpt]['nom']=$lig_prof->nom;
+				$tab_prof[$cpt]['prenom']=$lig_prof->prenom;
 				$tab_prof[$cpt]['designation']=$lig_prof->civilite." ".casse_mot($lig_prof->nom, "maj")." ".casse_mot($lig_prof->prenom, "majf2");
 				$tab_prof[$cpt]['etat']=$lig_prof->etat;
 				$cpt++;
@@ -1206,7 +1209,8 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 					$selected="";
 					$chaine_debug="";
 					//$chaine_debug=" ".remplace_accents(casse_mot($lig->prof_ics, "maj"),'all')." comparé à ".remplace_accents(casse_mot($tab_prof[$loop]['designation'], "maj"),'all');
-					if(trim(casse_mot($lig->prof_ics, "maj"))==casse_mot($tab_prof[$loop]['designation'], "maj")) {
+					if(((getSettingValue('EdtIcalFormatNomProf')!="nom")&&(trim(casse_mot($lig->prof_ics, "maj"))==casse_mot($tab_prof[$loop]['designation'], "maj")))||
+					((getSettingValue('EdtIcalFormatNomProf')=="nom")&&(trim(casse_mot($lig->prof_ics, "maj"))==casse_mot($tab_prof[$loop]['nom'], "maj")))) {
 						$selected=" selected='selected'";
 					}
 					$style_opt="";
@@ -1283,7 +1287,9 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 				for($loop=0;$loop<count($tab_mat);$loop++) {
 					$chaine_debug="";
 					$selected=" ";
-					if(trim(casse_mot($lig->matiere_ics, "maj"))==$tab_mat[$loop]['designation_supposee_edt_ics']) {
+					if(((getSettingValue('EdtIcalFormatNomMatière')=="nom_court")&&(trim(casse_mot($lig->matiere_ics, "maj"))==casse_mot($tab_mat[$loop]['matiere'], "maj")))||
+					((getSettingValue('EdtIcalFormatNomMatière')=="nom_complet")&&(trim(casse_mot($lig->matiere_ics, "maj"))==casse_mot($tab_mat[$loop]['nom_complet'], "maj")))||
+					((getSettingValue('EdtIcalFormatNomMatière')=="nom_court nom_complet")&&(trim(casse_mot($lig->matiere_ics, "maj"))==casse_mot($tab_mat[$loop]['designation_supposee_edt_ics'], "maj")))) {
 						$selected=" selected='selected'";
 					}
 					echo "
