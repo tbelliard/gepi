@@ -1257,15 +1257,21 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 			$cpt=0;
 			$lignes_mat="";
 			while($lig_mat=mysqli_fetch_object($res_mat)) {
+				$style_opt="";
+				$sql="SELECT 1=1 FROM j_groupes_matieres WHERE id_matiere='$lig_mat->matiere';";
+				$res_grp_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_grp_mat)==0) {
+					$style_opt.=" style='color:grey' title=\"Aucun enseignement n'est associé à la matière $lig_mat->matiere.\"";
+				}
+
 				$lignes_mat.="<option value='".$lig_mat->matiere."'";
-				// Ajouter un test sur le nombre de groupes associés
-				//	$lignes_mat.=" style='color:grey' title=\"Compte utilisateur inactif.\"";
+				$lignes_mat.=$style_opt;
 				$lignes_mat.=">".$lig_mat->nom_complet."</option>";
 
-				$tab_mat[$cpt]="";
 				$tab_mat[$cpt]['matiere']=$lig_mat->matiere;
 				$tab_mat[$cpt]['nom_complet']=$lig_mat->nom_complet;
 				$tab_mat[$cpt]['designation_supposee_edt_ics']=casse_mot($lig_mat->matiere." ".$lig_mat->nom_complet, 'maj');
+				$tab_mat[$cpt]['style_opt']=$style_opt;
 				$cpt++;
 			}
 
@@ -1293,7 +1299,7 @@ Vous pouvez effectuer le ou les rapprochements ci-dessous&nbsp;:</p>";
 						$selected=" selected='selected'";
 					}
 					echo "
-				<option value='".$tab_mat[$loop]['matiere']."'".$selected.">".$tab_mat[$loop]['designation_supposee_edt_ics'].$chaine_debug."</option>";
+				<option value='".$tab_mat[$loop]['matiere']."'".$selected.$tab_mat[$loop]['style_opt'].">".$tab_mat[$loop]['designation_supposee_edt_ics'].$chaine_debug."</option>";
 				}
 				echo "
 			</select>
