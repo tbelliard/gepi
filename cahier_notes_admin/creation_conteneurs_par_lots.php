@@ -346,10 +346,11 @@ if((isset($_POST['appliquer_le_modele']))&&(isset($id_modele))&&(is_numeric($id_
 				$id_groupe=array();
 				//$sql="SELECT g.* FROM groupes g, j_groupes_classes jgc WHERE g.id=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."' AND g.id NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
 				$sql="SELECT jgc.id_groupe FROM j_groupes_classes jgc WHERE jgc.id_classe='".$id_classe[$i]."' AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='cahier_notes' AND visible='n');";
+				
 				if($debug_appliquer_modele) {echo "$sql<br />";}
 				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_grp=mysqli_fetch_object($res_grp)) {
-					$id_groupe[]=$lig_grp->id;
+					$id_groupe[]=$lig_grp->id_groupe;
 				}
 			}
 
