@@ -866,6 +866,7 @@ NOTE: Cela ne permet pas de masquer les groupes
 	</script>";
 		}
 
+		$html.="<div style='position:absolute; top:".($y0+$hauteur_jour+50)."px; left:".$x0."px; width:".$largeur_edt."px; height:4em; border:1px solid black; z-index:1000; text-align:center; background-color:white;'>L'emploi du temps affiché concerne la semaine indiquée en entête.<br />Les indications de semaines A et B n'y sont pas affichées.<br />Passez à la semaine suivante pour voir les différences.</div>";
 
 		//=================================================================================
 		// Ancien essai, affiché plus bas pour faciliter le debug de l'affichage au-dessus
