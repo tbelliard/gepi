@@ -661,7 +661,7 @@ if(acces("/groupes/visu_profs_class.php", $_SESSION['statut'])) {
 	echo " | <a href='../groupes/visu_profs_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Voir l'équipe pédagogique\">Équipe</a>";
 }
 
-if(acces("/groupes/modify_grp_groupe.php", $_SESSION['statut'])) {
+if(acces("/groupes/modify_grp_group.php", $_SESSION['statut'])) {
 	echo " | <a href='../groupes/modify_grp_group.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Groupes de groupes\">Groupes de groupes</a>";
 }
 
