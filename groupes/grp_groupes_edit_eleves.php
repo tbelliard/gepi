@@ -61,6 +61,8 @@ if(!acces_modif_liste_eleves_grp_groupes()) {
 	die();
 }
 
+$msg="";
+
 $groupe_de_groupes=getSettingValue('denom_groupe_de_groupes');
 if($groupe_de_groupes=="") {
 	$groupe_de_groupes="groupe de groupes";
@@ -108,7 +110,7 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 	$reg_clazz = $current_group["classes"]["list"];
 	$reg_professeurs = (array)$current_group["profs"]["list"];
 
- false;
+	$old_reg_eleves=(array)$current_group["eleves"];
 
 	// On vide les signalements par un prof lors de l'enregistrement
 	$sql="DELETE FROM j_signalement WHERE id_groupe='$id_groupe' AND nature='erreur_affect';";
@@ -127,6 +129,16 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 			if(isset($_POST['eleve_'.$period["num_periode"].'_'.$i])) {
 				$id=$login_eleve[$i];
 				$reg_eleves[$period["num_periode"]][] = $id;
+			}
+		}
+
+		for($i=0;$i<count($old_reg_eleves[$period["num_periode"]]['list']);$i++) {
+			$current_eleve_login=$old_reg_eleves[$period["num_periode"]]['list'][$i];
+			if(!in_array($current_eleve_login, $reg_eleves[$period["num_periode"]])) {
+				if(!test_before_eleve_removal($current_eleve_login, $id_groupe, $period["num_periode"])) {
+					$reg_eleves[$period["num_periode"]][]=$current_eleve_login;
+					$msg.="Désinscription impossible&nbsp;: ".get_nom_prenom_eleve($current_eleve_login)." a des notes/appréciations sur le bulletin.<br />";
+				}
 			}
 		}
 	}
