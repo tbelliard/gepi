@@ -262,6 +262,8 @@ if((isset($mode))&&($mode=='valider_ajout_groupe')&&(isset($id_grp_groupe))) {
 			else {
 				$cpt++;
 			}
+			// Pour ne pas ajouter plusieurs fois les mêmes
+			$tab_groupes_deja[]=$id_groupe[$loop];
 		}
 	}
 	$msg.="$cpt groupe(s) ajouté(s).<br />";
@@ -733,7 +735,7 @@ Enseignants : ".$current_group['profs']['proflist_string']."\">".$current_group[
 			foreach($tmp_tab_grp as $current_group) {
 				echo "
 			<input type='hidden' name='tab_id_classe[]' value='$tab_id_classe[$loop]' />
-			<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange=\"checkbox_change('id_groupe_$cpt')\" ";
+			<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' onchange=\"checkbox_change('id_groupe_$cpt'); controle_doublons($cpt);\" ";
 				if(in_array($current_group['id'], $tab_valeurs_preselectionnees)) {
 					echo "checked ";
 				}
@@ -758,6 +760,45 @@ Enseignants : ".$current_group['proflist_string']."\"";
 		<p><input type='submit' value='Valider' /></p>
 
 		".js_checkbox_change_style('checkbox_change', 'texte_', "y")."
+
+		<script type='text/javascript'>
+			function change_style_grp(num) {
+				checkbox_change('id_groupe_'+num);
+			}
+
+			function controle_doublons(num) {
+				if(document.getElementById('id_groupe_'+num)) {
+					valeur_id_groupe=document.getElementById('id_groupe_'+num).value;
+					//alert('valeur_id_groupe='+valeur_id_groupe)
+					if(document.getElementById('id_groupe_'+num).checked) {
+						for(i=0;i<$cpt;i++) {
+							if(i!=num) {
+								if(document.getElementById('id_groupe_'+i)) {
+									//alert('document.getElementById(id_groupe_'+i+').value='+document.getElementById('id_groupe_'+i).value)
+									if(document.getElementById('id_groupe_'+i).value==valeur_id_groupe) {
+										document.getElementById('id_groupe_'+i).checked=true;
+										change_style_grp(i);
+									}
+								}
+							}
+						}
+					}
+					else {
+						for(i=0;i<$cpt;i++) {
+							if(i!=num) {
+								if(document.getElementById('id_groupe_'+i)) {
+									//alert('document.getElementById(id_groupe_'+i+').value='+document.getElementById('id_groupe_'+i).value)
+									if(document.getElementById('id_groupe_'+i).value==valeur_id_groupe) {
+										document.getElementById('id_groupe_'+i).checked=false;
+										change_style_grp(i);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		</script>
 	</fieldset>
 </form>";
 	}
