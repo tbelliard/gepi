@@ -54,7 +54,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 Ce choix permet de limiter la liste des classes proposées aux différents comptes scolarité quand le suivi est réparti entre plusieurs personnes.">Paramétrage scolarité</a>
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
-| <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
+| <a href='../groupes/modify_grp_group.php'>Groupes de groupes</a>
 | <a href='../groupes/correction_inscriptions_grp_csv.php'>Correction CSV</a>
 <?php
 	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
