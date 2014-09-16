@@ -77,6 +77,8 @@ if(isset($_POST["date_absence_eleve"])) {
 	$afficher_non_manquement=isset($_POST['afficher_non_manquement']) ? "y" : "n";
 }
 
+$avec_js_et_css_edt="y";
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -88,6 +90,29 @@ $titre_page = "Les absences";
 require_once("../lib/header.inc.php");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+		$titre_infobulle="EDT de la classe de <span id='span_id_nom_classe'></span>";
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_classe',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+		echo "<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle(id_classe, classe) {
+		document.getElementById('span_id_nom_classe').innerHTML=classe;
+
+		new Ajax.Updater($('edt_classe_contenu_corps'),'../edt_organisation/index_edt.php?login_edt='+id_classe+'&type_edt_2=classe&visioedt=classe1&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_classe','y',-20,20);
+	}
+</script>\n";
+	}
+
 ?>
 
 <div id="contain_div" class="css-panes">
@@ -140,7 +165,14 @@ if ($classe_col->isEmpty()) {
 foreach($classe_col as $classe) {
 	echo '
 		<tr>
-			<td>'.$classe->getNom().'</td>
+			<td>';
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))) {
+		echo "<div style='float:right; width:3em; margin-left:1em;'><a href='../edt_organisation/index_edt.php?login_edt=".$classe->getId()."&amp;type_edt_2=classe&amp;visioedt=classe1&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle(".$classe->getId().", '".$classe->getNom()."');return false;\" title=\"Emploi du temps de la classe de ".$classe->getNom()."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>\n";
+	}
+
+	echo $classe->getNom().'</td>
 			<td colspan="'.($creneau_col->count() + 1).'"></td>
 		</tr>
 		';
