@@ -975,6 +975,12 @@ echo add_token_field();
 
 echo "<p>Cochez les élèves qui suivent cet enseignement, pour chaque période : </p>\n";
 
+if(count($tab_sig)>0) {
+	echo "<p style='color:red'>Une ou des erreurs d'affectation dans cet enseignement ont été signalées par le professeur.<br />
+	Vous pouvez accepter/prendre en compte les propositions de correction signalées par les drapeaux clignotants, en cliquant sur le drapeau en haut à droite du tableau, puis Enregistrer.<br />
+	Vous pouvez également rejeter ce signalement, en enregistrant sans cliquer sur le drapeau.</p>";
+}
+
 echo "<table border='1' class='boireaus' summary='Suivi de cet enseignement par les élèves en fonction des périodes'>\n";
 echo "<tr>\n";
 echo "<th>
