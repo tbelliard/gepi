@@ -77,6 +77,7 @@ if($engagement_statut=="") {
 else {
 	//echo "\$engagement_statut=$engagement_statut<br />";
 	$tab_tous_engagements=get_tab_engagements($engagement_statut);
+	/*
 	if($_SESSION['statut']=='administrateur') {
 		$tab_engagements=$tab_tous_engagements;
 	}
@@ -86,6 +87,8 @@ else {
 	elseif($_SESSION['statut']=='scolarite') {
 		$tab_engagements=get_tab_engagements($engagement_statut, "scolarite");
 	}
+	*/
+	$tab_engagements=$tab_tous_engagements;
 
 	if(count($tab_tous_engagements['indice'])==0) {
 		header("Location: ../accueil.php?msg=Aucun type d engagement n est actuellement défini.");
@@ -411,6 +414,12 @@ if($engagement_statut=="eleve") {
 	echo "<input type='hidden' name='is_posted' value='1' />\n";
 	echo add_token_field();
 
+	/*
+	echo "<pre>";
+	print_r($tab_engagements);
+	echo "</pre>";
+	*/
+
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
 		$sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.sexe, e.naissance FROM eleves e, j_eleves_classes jec WHERE (e.login=jec.login AND jec.id_classe='".$id_classe[$i]."') ORDER BY e.nom, e.prenom;";
@@ -464,8 +473,8 @@ if($engagement_statut=="eleve") {
 				for($loop=0;$loop<$nb_tous_engagements;$loop++) {
 					echo "<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
-					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					(($_SESSION['statut']=='cpe')&&(isset($tab_engagements['indice'][$loop]['SaisieCpe']))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
+					(($_SESSION['statut']=='scolarite')&&(isset($tab_engagements['indice'][$loop]['SaisieScol']))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
