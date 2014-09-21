@@ -208,7 +208,7 @@ $nb_reg_edt_lignes=mysqli_num_rows($test);
 $titre_page = "Import EDT EDT";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-debug_var();
+//debug_var();
 
 echo "<p class='bold'><a href='index.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 if($nb_reg_edt_corresp>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=editer_corresp'>Editer les correspondances enregistrées</a> ";}
