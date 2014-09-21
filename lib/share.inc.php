@@ -11679,7 +11679,7 @@ function check_proposition_remplacement_validee2($id_proposition) {
 function get_heures_debut_fin_creneaux() {
 	$tab=array();
 
-	$sql="SELECT * FROM edt_creneaux;";
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -12061,4 +12061,62 @@ function cdt_copie_fichiers_archive_vers_cdt_courant($texte, $type_notice, $id_g
 
 	return $contenu_cor;
 }
+
+
+function get_tab_salle_cours() {
+	$tab=array();
+
+	$sql="SELECT * FROM salle_cours ORDER BY numero_salle, nom_salle;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab['indice'][$lig->id_salle]['id_salle']=$lig->id_salle;
+			$tab['indice'][$lig->id_salle]['numero_salle']=$lig->numero_salle;
+			$tab['indice'][$lig->id_salle]['nom_salle']=$lig->nom_salle;
+
+			$tab['list'][$cpt]['id_salle']=$lig->id_salle;
+			$tab['list'][$cpt]['numero_salle']=$lig->numero_salle;
+			$tab['list'][$cpt]['nom_salle']=$lig->nom_salle;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
+
+function get_tab_creneaux() {
+	$tab=array();
+
+	$sql="SELECT * FROM edt_creneaux ORDER BY jour_creneau, heuredebut_definie_periode;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab['indice'][$lig->id_definie_periode]['id_definie_periode']=$lig->id_definie_periode;
+			$tab['indice'][$lig->id_definie_periode]['nom_definie_periode']=$lig->nom_definie_periode;
+			$tab['indice'][$lig->id_definie_periode]['heuredebut_definie_periode']=$lig->heuredebut_definie_periode;
+			$tab['indice'][$lig->id_definie_periode]['heurefin_definie_periode']=$lig->heurefin_definie_periode;
+			$tab['indice'][$lig->id_definie_periode]['debut_court']=substr($lig->heuredebut_definie_periode,0,5);
+			$tab['indice'][$lig->id_definie_periode]['fin_court']=substr($lig->heurefin_definie_periode,0,5);
+			$tab['indice'][$lig->id_definie_periode]['type_creneaux']=$lig->type_creneaux;
+			$tab['indice'][$lig->id_definie_periode]['jour_creneau']=$lig->jour_creneau;
+
+			$tab['list'][$cpt]['id_definie_periode']=$lig->id_definie_periode;
+			$tab['list'][$cpt]['nom_definie_periode']=$lig->nom_definie_periode;
+			$tab['list'][$cpt]['heuredebut_definie_periode']=$lig->heuredebut_definie_periode;
+			$tab['list'][$cpt]['heurefin_definie_periode']=$lig->heurefin_definie_periode;
+			$tab['list'][$cpt]['debut_court']=substr($lig->heuredebut_definie_periode,0,5);
+			$tab['list'][$cpt]['fin_court']=substr($lig->heurefin_definie_periode,0,5);
+			$tab['list'][$cpt]['type_creneaux']=$lig->type_creneaux;
+			$tab['list'][$cpt]['jour_creneau']=$lig->jour_creneau;
+
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
 ?>
