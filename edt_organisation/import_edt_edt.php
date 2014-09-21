@@ -723,6 +723,12 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 		$cpt++;
 	}
 
+	/*
+	echo "<pre>";
+	print_r($tab_salle);
+	echo "</pre>";
+	*/
+
 	echo "<br />
 		<p>La ou les correspondances de <strong>salles</strong> EDT/GEPI suivantes ne sont pas encore enregistrées.</p>
 		<table class='boireaus boireaus_alt'>";
@@ -735,25 +741,28 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 					echo "
 			<tr>
 				<td>".$ligne[$loop]['salle']."&nbsp;: </td>
-				<td>
+				<td>";
+
+					$current_edt_salle=trim($ligne[$loop]['salle']);
+
+					echo "
 					<select name=\"corresp_salle_a_enregistrer[".$ligne[$loop]['id']."]\">
 						<option value=''>---</option>";
 					for($loop2=0;$loop2<count($tab_salle);$loop2++) {
 						if(isset($tab_salle[$loop2]['id_salle'])) {
 							$selected="";
-							/*
-							if((casse_mot($tab_classe[$loop2]['numero_salle'], "maj")==casse_mot($ligne[$loop]['salle'], "maj"))||
-							(casse_mot(preg_replace("/ /","",$tab_salle[$loop2]['numero_salle']), "maj")==casse_mot(preg_replace("/ /","",$ligne[$loop]['salle']), "maj"))||
-							(casse_mot($tab_classe[$loop2]['nom_salle'], "maj")==casse_mot($ligne[$loop]['salle'], "maj"))||
-							(casse_mot(preg_replace("/ /","",$tab_salle[$loop2]['nom_salle']), "maj")==casse_mot(preg_replace("/ /","",$ligne[$loop]['salle']), "maj"))) {
+
+							$current_numero_salle=$tab_salle[$loop2]['numero_salle'];
+							if("$current_numero_salle"=="$current_edt_salle") {
 								$selected=" selected";
 							}
-							*/
-							if(trim($tab_classe[$loop2]['numero_salle'])==trim($ligne[$loop]['salle'])) {
+							$current_nom_salle=$tab_salle[$loop2]['nom_salle'];
+							if("$current_nom_salle"=="$current_edt_salle") {
 								$selected=" selected";
 							}
+
 							echo "
-						<option value='".$tab_salle[$loop2]['id_salle']."'$selected>".$tab_salle[$loop2]['numero_salle'];
+						<option value='".$tab_salle[$loop2]['id_salle']."' $selected>".$tab_salle[$loop2]['numero_salle'];
 							/*
 							echo "
 						<option value='".$tab_salle[$loop2]['numero_salle']."'$selected>".$tab_salle[$loop2]['numero_salle'];
