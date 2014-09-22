@@ -1409,8 +1409,11 @@ echo "		}
 			// Colonne détails incident
 			echo "<td>\n";
 			$texte="";
+
+			$texte.="<div style='float:right; width:16px;'><a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$lig->id_incident".add_token_in_url()."' title=\"Imprimer le rapport d'".$mod_disc_terme_incident."\" target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a></div>";
+
 			if($lig->nature!="") {
-				$texte="<b>$lig->nature</b><br />";
+				$texte.="<b>$lig->nature</b><br />";
 			}
 
 			if($lig->description=="") {
