@@ -571,8 +571,7 @@ else {
 
 						if($_POST['login_gen_type'] == 'ent'){
 
-							// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-							if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+							if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
 								// Charge à l'organisme utilisateur de pourvoir à cette fonctionnalité
 								// le code suivant n'est qu'une méthode proposée pour relier Gepi à un ENT
 								$bx = 'oui';

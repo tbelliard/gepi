@@ -127,8 +127,12 @@
 				<select id="choixPer" name="choix_periode">
 					<option value="rien">Non</option>'."\n";
 		// Proposition de définition des périodes déjà existantes de la table periodes
-
+		$sql="SELECT DISTINCT nom_periode, num_periode FROM periodes ORDER BY num_periode;";
+		//echo "$sql<br />";
+		$req_periodes = mysqli_query($GLOBALS["mysqli"], $sql);
+		$nbre_periodes = mysqli_num_rows($req_periodes);
 			$rep_periodes[] = array();
+			/*
 			for ($i=0; $i<$nbre_periodes; $i++) {
 				$rep_periodes[$i]["num_periode"] = mysql_result($req_periodes, $i, "num_periode");
 				$rep_periodes[$i]["nom_periode"] = mysql_result($req_periodes, $i, "nom_periode");
@@ -137,6 +141,19 @@
 					}
 					else $selected = "";
 				echo '<option value="'.$rep_periodes[$i]["num_periode"].'"'.$selected.'>'.$rep_periodes[$i]["nom_periode"].'</option>'."\n";
+			}
+			}
+			*/
+			$i=0;
+			while($lig_per=mysqli_fetch_object($req_periodes)) {
+				$rep_periodes[$i]["num_periode"] = $lig_per->num_periode;
+				$rep_periodes[$i]["nom_periode"] = $lig_per->nom_periode;
+					if ($rep_modif["numero_periode"] == $rep_periodes[$i]["num_periode"]) {
+						$selected = " selected='true'";
+					}
+					else $selected = "";
+				echo '<option value="'.$rep_periodes[$i]["num_periode"].'"'.$selected.'>'.$rep_periodes[$i]["nom_periode"].'</option>'."\n";
+				$i++;
 			}
 		echo '
 				</select>
@@ -188,7 +205,7 @@
 	<p><a href="edt_calendrier.php?calendrier=ok&amp;full_calendar=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> GENERATION DES 36 SEMAINES</a></p>
 	<?php 
 		if (getSettingValue("active_module_absence")=='2') {
-			echo "<p><a href='edt_calendrier.php?maj_dates_mod_abs2=y".add_token_in_url()."'>Mettre à jour les dates de fin de période pour le module Absences, d'après les date de périodes de cours ci-dessous</a>.</p>";
+			echo "<p><a href='edt_calendrier.php?maj_dates_mod_abs2=y".add_token_in_url()."'>Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous</a>.</p>";
 		}
 
 	}
@@ -348,15 +365,28 @@ if ($modulo !== 0) {
 			<select name="choix_periode">
 				<option value="rien">Non</option>';
 	// Proposition de définition des périodes déjà existantes de la table periodes
-	$req_periodes = mysql_query("SELECT DISTINCT nom_periode, num_periode FROM periodes");
-	$nbre_periodes = mysql_num_rows($req_periodes);
+	$sql="SELECT DISTINCT nom_periode, num_periode FROM periodes ORDER BY num_periode;";
+	//echo "$sql<br />";
+	$req_periodes = mysqli_query($GLOBALS["mysqli"], $sql);
+	$nbre_periodes = mysqli_num_rows($req_periodes);
 		$rep_periodes[] = array();
+		/*
 		for ($i=0; $i<$nbre_periodes; $i++) {
 			$rep_periodes[$i]["num_periode"] = mysql_result($req_periodes, $i, "num_periode");
 			$rep_periodes[$i]["nom_periode"] = mysql_result($req_periodes, $i, "nom_periode");
 			echo '
 				<option value="'.$rep_periodes[$i]["num_periode"].'">'.$rep_periodes[$i]["nom_periode"].'</option>
 				';
+		}
+		*/
+		$i=0;
+		while($lig_per=mysqli_fetch_object($req_periodes)) {
+			$rep_periodes[$i]["num_periode"] = $lig_per->num_periode;
+			$rep_periodes[$i]["nom_periode"] = $lig_per->nom_periode;
+			echo '
+				<option value="'.$rep_periodes[$i]["num_periode"].'">'.$rep_periodes[$i]["nom_periode"].'</option>
+				';
+			$i++;
 		}
 	echo '
 			</select>

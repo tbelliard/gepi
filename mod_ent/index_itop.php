@@ -1585,7 +1585,17 @@ Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT est enregistrée pour un ancien login, il ne vous sera plus proposé lors des importations, ni même pour la consultation.<br />
 <a href='".$_SERVER['PHP_SELF']."?mode=suppr_scories".add_token_in_url()."' >Supprimer ces scories</a></p>";
 	}
-
+	else {
+		$sql="select * from sso_table_correspondance where login_gepi not in (select login from eleves union select login from resp_pers union select login from utilisateurs where statut!='eleve' and statut!='responsable');";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_scories=mysqli_num_rows($res);
+		if($nb_scories>0) {
+			echo "
+<br />
+<p><strong style='color:red;'>SCORIES encore&nbsp;:</strong> Vous avez ".$nb_scories." association(s) pour des personnes dont le login n'est pas ou plus dans les personnels de l'établissement, ni dans les tables 'eleves' ou 'resp_pers' (<em>responsables</em>).<br />
+Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage des tables</a> (<em>la partie 'Nettoyage des comptes élèves/responsables'</em>)</p>";
+		}
+	}
 	//===================================================
 	// Vider:
 	$sql="SELECT 1=1 FROM sso_table_correspondance;";
@@ -1637,11 +1647,11 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 
 		$sql="select distinct u.login, u.nom, u.prenom, u.civilite from utilisateurs u where u.auth_mode='sso' AND u.statut!='eleve' and u.statut!='responsable' and u.login not in (select login_gepi from sso_table_correspondance);";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
-		$nb_assoc_manquantes_resp=mysqli_num_rows($res);
-		if($nb_assoc_manquantes_resp>0) {
+		$nb_assoc_manquantes_pers=mysqli_num_rows($res);
+		if($nb_assoc_manquantes_pers>0) {
 			echo "
 <br />
-<p>Il manque $nb_assoc_manquantes_resp association(s) personnel(s)&nbsp;: ";
+<p>Il manque $nb_assoc_manquantes_pers association(s) personnel(s)&nbsp;: ";
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 				if($cpt>0) {echo ", ";}
@@ -1651,8 +1661,13 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 			echo "</p>";
 		}
 
-		echo "<br /><p>Ces utilisateurs disposent d'un compte dans Gepi, mais n'ont pas d'association SSO.<br />
+		if(($nb_assoc_manquantes_ele==0)&&($nb_assoc_manquantes_resp==0)&&($nb_assoc_manquantes_pers==0)) {
+			echo "<br /><p>Les utilisateurs, disposant d'un compte dans Gepi avec mode d'authentification SSO, ont tous une association dans la table 'sso_table_correspondance'.</p>";
+		}
+		else {
+			echo "<br /><p>Ces utilisateurs disposent d'un compte dans Gepi, mais n'ont pas d'association SSO.<br />
 		Vous devriez refaire un import des fichiers ExportSSO_...</p>";
+		}
 	}
 
 	//===================================================
@@ -3873,6 +3888,9 @@ if($mode=="publipostage_eleves") {
 	-->
 	</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=eleves'>Fiches Bienvenue élèves</a></li>
+	<li><span style='color:red'>ATTENTION&nbsp;:</span> Le format du fichier d'export XLS des mots de passe a changé de nom (<em>Code_ENT_JJ-MM-ANNEE-HH-MM.xls</em>) et de forme.<br />
+	Il peut contenir tous les statuts (<em>élève, responsable,...</em>).<br />
+	Dans le cas où vous avez un fichier avec plusieurs statuts, le champ/colonne <strong>Profil</strong> sera pris en compte ici (<em>seules les valeurs <strong>Elève</strong> seront ici prises en compte</em>).</li>
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation<br />
 	DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif<br />
@@ -3957,10 +3975,11 @@ if($mode=="publipostage_eleves") {
 		}
 
 		$motif_nom_fichier="Miseajour_Motdepasse_Eleve_";
+		$motif_nom_fichier2="Code_ENT_";
 		echo "<p class='noprint'>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
-		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
+		if((!preg_match("/$motif_nom_fichier/", $csv_file['name']))&&(!preg_match("/$motif_nom_fichier2/", $csv_file['name']))) {
 			echo "<br />
-<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
+<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong> ou <strong>$motif_nom_fichier2</strong>.<br />
 Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 <span style='color:blue'>Si vous n'avez fourni qu'un fichier CSV des nouveaux arrivants (<em>sans regénérer tous les mots de passe</em>), le nom de fichier sera celui de votre choix; ne tenez donc pas compte de cette alerte.</span>";
 		}
@@ -3968,11 +3987,17 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 
 		// 20130916
 		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-		$tabchamps = array("Nom", "Prénom", "Prenom", "Login", "Mot de passe", "Email", "Adresse Mail", "Classe", "Etat", "Date de désactivation");
+		$tabchamps = array("Nom", "Prénom", "Prenom", "Login", "Mot de passe", "Email", "Adresse Mail", "Profil", "Classe", "Etat", "Date de désactivation");
 
 		// Lecture de la ligne 1 et la mettre dans $temp
-		$temp=fgets($fp,4096);
-		//echo "$temp<br />";
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
 
 		$correction_separateur="";
 		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
@@ -4049,6 +4074,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 				}
 				elseif((isset($tabindice['Etat']))&&($tab[$tabindice['Etat']]!='Actif')) {
 					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Profil']))&&($tab[$tabindice['Profil']]!='Elève')) {
+					// On exclut les comptes non "Elève"
 					$ligne_a_prendre_en_compte="n";
 				}
 
@@ -4227,6 +4256,9 @@ if($mode=="publipostage_responsables") {
 	-->
 	</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=responsables'>Fiches Bienvenue responsables</a></li>
+	<li><span style='color:red'>ATTENTION&nbsp;:</span> Le format du fichier d'export XLS des mots de passe a changé de nom (<em>Code_ENT_JJ-MM-ANNEE-HH-MM.xls</em>) et de forme.<br />
+	Il peut contenir tous les statuts (<em>élève, responsable,...</em>).<br />
+	Dans le cas où vous avez un fichier avec plusieurs statuts, le champ/colonne <strong>Profil</strong> sera pris en compte ici (<em>seules les valeurs <strong>Responsable élève</strong> seront ici prises en compte</em>).</li>
 	<li>Le fichier CSV attendu doit comporter une ligne d'entête avec au moins les champs <strong>Nom;Prénom;Login;Mot de passe</strong>.<br />
 	Seuls ces champs sont vraiment indispensables.</li>
 	<li>Le fichier CSV attendu peut être&nbsp;:<br />
@@ -4312,10 +4344,11 @@ if($mode=="publipostage_responsables") {
 		}
 
 		$motif_nom_fichier="Miseajour_Motdepasse_Parent_";
+		$motif_nom_fichier2="Code_ENT_";
 		echo "<p class='noprint'>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
-		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
+		if((!preg_match("/$motif_nom_fichier/", $csv_file['name']))&&(!preg_match("/$motif_nom_fichier2/", $csv_file['name']))) {
 			echo "<br />
-<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
+<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong> ou <strong>$motif_nom_fichier2</strong>.<br />
 Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 <span style='color:blue'>Si vous n'avez fourni qu'un fichier CSV des nouveaux arrivants (<em>sans regénérer tous les mots de passe</em>), le nom de fichier sera celui de votre choix; ne tenez donc pas compte de cette alerte.</span>";
 		}
@@ -4323,11 +4356,18 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 
 		// 20130916
 		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Profil", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation", "Classe");
 
 		// Lecture de la ligne 1 et la mettre dans $temp
-		$temp=fgets($fp,4096);
-		//echo "$temp<br />";
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
+
 		$correction_separateur="";
 		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
 			// Le fichier n'a pas la structure attendue.
@@ -4399,18 +4439,27 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 					// On exclut les comptes "Désactivé"
 					$ligne_a_prendre_en_compte="n";
 				}
+				elseif((isset($tabindice['Profil']))&&($tab[$tabindice['Profil']]!='Responsable élève')) {
+					// On exclut les comptes non "Responsable élève"
+					$ligne_a_prendre_en_compte="n";
+				}
 
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
 				if($ligne_a_prendre_en_compte=="y") {
 					if(($_POST['toutes_les_classes']=="y")||
-						(!isset($tabindice['Classe enfant 1']))||
-						((isset($tabindice['Classe enfant 1']))&&(in_array($tab[$tabindice['Classe enfant 1']], $_POST['classe'])))) {
+						((!isset($tabindice['Classe enfant 1']))&&(!isset($tabindice['Classe'])))||
+						((isset($tabindice['Classe enfant 1']))&&(in_array($tab[$tabindice['Classe enfant 1']], $_POST['classe'])))||
+						((isset($tabindice['Classe']))&&(in_array($tab[$tabindice['Classe']], $_POST['classe'])))) {
 
-						if(!isset($tabindice['Classe enfant 1'])) {
+						if((!isset($tabindice['Classe enfant 1']))&&(!isset($tabindice['Classe']))) {
 							$classe_courante="classe_inconnue";
 						}
-						else {
+						elseif(isset($tabindice['Classe enfant 1'])) {
 							$classe_courante=$tab[$tabindice['Classe enfant 1']];
+						}
+						else {
+							$classe_courante=preg_replace("/ \(.*/", "", $tab[$tabindice['Classe']]);
+							$eleve_courant=preg_replace("/\)/", "", preg_replace("/.*\(/", "", $tab[$tabindice['Classe']]));
 						}
 
 						if(!isset($tab_classe_parent[$classe_courante])) {
@@ -4435,6 +4484,12 @@ Vous seriez-vous trompé de fichier&nbsp;?</span><br />
 
 						if((isset($tabindice['Nom enfant 1']))&&(isset($tabindice['Prénom enfant 1']))) {
 							$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$tab[$tabindice['Nom enfant 1']]." ".$tab[$tabindice['Prénom enfant 1']];
+							if($classe_courante!='classe_inconnue') {
+								$tab_classe_parent[$classe_courante][$cpt]['resp_de'].=" (".$classe_courante.")";
+							}
+						}
+						elseif(isset($tabindice['Classe'])) {
+							$tab_classe_parent[$classe_courante][$cpt]['resp_de']=$eleve_courant;
 							if($classe_courante!='classe_inconnue') {
 								$tab_classe_parent[$classe_courante][$cpt]['resp_de'].=" (".$classe_courante.")";
 							}
@@ -4558,6 +4613,9 @@ if($mode=="publipostage_personnels") {
 	-->
 	</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php'>Fiches Bienvenue professeurs</a></li>
+	<li><span style='color:red'>ATTENTION&nbsp;:</span> Le format du fichier d'export XLS des mots de passe a changé de nom (<em>Code_ENT_JJ-MM-ANNEE-HH-MM.xls</em>) et de forme.<br />
+	Il peut contenir tous les statuts (<em>élève, responsable,...</em>).<br />
+	Dans le cas où vous avez un fichier avec plusieurs statuts, le champ/colonne <strong>Profil</strong> sera pris en compte ici (<em>seules les valeurs autres que <strong>Elève</strong> et <strong>Responsable élève</strong> seront ici prises en compte</em>).</li>
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 	﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe(s);Etat;Date de désactivation<br />
 ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.fr;4 B, 4 D, 5 B, 6 B, 6 D;Actif
@@ -4583,16 +4641,32 @@ ZETOFREY;Melanie;melanie.zetofrey;MENESR$12345;azerty&*;Melanie.ZETOFREY@ent27.f
 		}
 
 		$motif_nom_fichier="Miseajour_Motdepasse_Professeur_";
+		$motif_nom_fichier2="Code_ENT_";
 		echo "<p class='noprint'>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
-		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
+		if((!preg_match("/$motif_nom_fichier/", $csv_file['name']))&&(!preg_match("/$motif_nom_fichier2/", $csv_file['name']))) {
 			echo "<br />
-<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
+<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong> ou <strong>$motif_nom_fichier2</strong>.<br />
 Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
-		$temp=fgets($fp,4096);
-		//echo "$temp<br />";
+
+
+
+
+		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Profil", "Classe", "Etat", "État");
+
+		// Lecture de la ligne 1 et la mettre dans $temp
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
+
 		$correction_separateur="";
 		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
 			// Le fichier n'a pas la structure attendue.
@@ -4608,6 +4682,53 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				$temp=preg_replace('/"$/', "", $temp);
 			}
 		}
+		$en_tete=explode(";", trim($temp));
+
+		$tabindice=array();
+
+		// On range dans tabindice les indices des champs retenus
+		for ($k = 0; $k < count($tabchamps); $k++) {
+			//echo "<p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
+			for ($i = 0; $i < count($en_tete); $i++) {
+				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
+				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
+					$tabindice[$tabchamps[$k]] = $i;
+					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
+				}
+			}
+		}
+		if((!isset($tabindice['Nom']))||(!isset($tabindice['Prénom']))||(!isset($tabindice['Login']))||(!isset($tabindice['Mot de passe']))) {
+			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Nom, Prénom, Login, Mot de passe</em>).</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		/*
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
+
+		$correction_separateur="";
+		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
+			// Le fichier n'a pas la structure attendue.
+			// Le séparateur n'est pas le point-virgule ou la ligne d'entête est manquante
+			if((preg_match("/^Nom,/i", $temp))||(preg_match("/,Nom,/i", $temp))||(preg_match("/,Nom$/i", $temp))) {
+				$correction_separateur="separateur_virgule";
+				$temp=preg_replace("/,/", ";", $temp);
+			}
+			elseif((preg_match('/^"Nom",/i', $temp))||(preg_match('/,"Nom",/i', $temp))||(preg_match('/,"Nom"$/i', $temp))) {
+				$correction_separateur="separateur_virgule_guillemets";
+				$temp=preg_replace('/","/', ";", $temp);
+				$temp=preg_replace('/^"/', "", $temp);
+				$temp=preg_replace('/"$/', "", $temp);
+			}
+		}
+		*/
 
 		if((preg_match("/;Etat;/i", trim($temp)))||(preg_match("/;État;/i", trim($temp)))||(preg_match("/;Etat$/i", trim($temp)))||(preg_match("/;État$/i", trim($temp)))) {
 			$temoin_colonne_Etat="y";
@@ -4648,6 +4769,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				elseif(($temoin_colonne_Etat=="y")&&(!preg_match("/;Actif$/i", $ligne))&&(!preg_match("/;Actif;/i", $ligne))) {
 					$prendre_la_ligne_en_compte="n";
 				}
+				elseif((isset($tabindice['Profil']))&&(($tab[$tabindice['Profil']]=='Elève')||($tab[$tabindice['Profil']]=='Responsable élève'))) {
+					$prendre_la_ligne_en_compte="n";
+				}
 
 				if($prendre_la_ligne_en_compte=="y") {
 					/*
@@ -4659,17 +4783,17 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 	<tr>
 		<th style='text-align:left;'>A l'attention de </th>
 		<th>: </th>
-		<td>".$tab[0]." ".$tab[1]."</td>
+		<td>".$tab[$tabindice['Nom']]." ".$tab[$tabindice['Prénom']]."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Login ENT</th>
 		<th>: </th>
-		<td>".$tab[2]."</td>
+		<td>".$tab[$tabindice['Login']]."</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Mot de passe ENT</th>
 		<th>: </th>
-		<td>".$tab[4]."</td>
+		<td>".$tab[$tabindice['Mot de passe']]."</td>
 	</tr>";
 						/*
 						echo "
@@ -4683,12 +4807,20 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 	<tr>
 		<th style='text-align:left;'>Email ENT</th>
 		<th>: </th>
-		<td>".$tab[5]."</td>
+		<td>";
+						if(isset($tabindice['Email'])) {
+							echo $tab[$tabindice['Email']];
+						}
+						echo "</td>
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Classe(s)</th>
 		<th>: </th>
-		<td>".$tab[6]."</td>
+		<td>";
+						if(isset($tabindice['Classe'])) {
+							echo $tab[$tabindice['Classe']];
+						}
+						echo "</td>
 	</tr>
 </table>
 $impression";
@@ -4744,10 +4876,11 @@ if($mode=="forcer_logins_mdp_responsables") {
 
 
 		$motif_nom_fichier="Miseajour_Motdepasse_Parent_";
+		$motif_nom_fichier2="Code_ENT_";
 		echo "<p class='noprint'>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
-		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
+		if((!preg_match("/$motif_nom_fichier/", $csv_file['name']))&&(!preg_match("/$motif_nom_fichier2/", $csv_file['name']))) {
 			echo "<br />
-<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
+<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong> ou <strong>$motif_nom_fichier2</strong>.<br />
 Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
@@ -4757,11 +4890,17 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		//﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
 		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
 		//$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Etat", "Date de désactivation");
-		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Classe", "Etat", "Date de désactivation");
+		$tabchamps = array("Nom", "Prénom", "Login", "Mot de passe", "Email", "Profil", "Adresse", "Code postal", "Ville", "Nom enfant 1", "Prénom enfant 1", "Classe enfant 1", "Classe", "Etat", "Date de désactivation");
 
 		// Lecture de la ligne 1 et la mettre dans $temp
-		$temp=fgets($fp,4096);
-		//echo "$temp<br />";
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
 
 		$correction_separateur="";
 		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {
@@ -4853,6 +4992,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				}
 				elseif((isset($tabindice['Date de désactivation']))&&($tab[$tabindice['Date de désactivation']]!='')) {
 					// On exclut les comptes "Désactivé"
+					$ligne_a_prendre_en_compte="n";
+				}
+				elseif((isset($tabindice['Profil']))&&($tab[$tabindice['Profil']]!='Responsable élève')) {
+					// On exclut les comptes non "Responsable élève"
 					$ligne_a_prendre_en_compte="n";
 				}
 
@@ -5215,6 +5358,9 @@ if($mode=="forcer_mdp_eleves") {
 
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$temp=fgets($fp,4096);
+		if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+			$temp=substr($temp,3);
+		}
 		//echo "$temp<br />";
 		$en_tete=explode(";", trim($temp));
 
@@ -5539,6 +5685,9 @@ if($mode=="envoi_mail_logins_mdp") {
 <ul>
 	<li>Cette rubrique est destinée à générer des Fiches Bienvenue avec compte et mot de passe de l'ENT et à les envoyer à l'adresse mail saisie pour le responsable dans <a href='../responsables/index.php'>Gestion des responsables</a>.</li>
 	<li>Modifier les <a href='../gestion/modify_impression.php?fiche=responsables'>Fiches Bienvenue responsables</a></li>
+	<li><span style='color:red'>ATTENTION&nbsp;:</span> Le format du fichier d'export XLS des mots de passe a changé de nom (<em>Code_ENT_JJ-MM-ANNEE-HH-MM.xls</em>) et de forme.<br />
+	L'ENT permet de générer un export avec tous les profils confondus (<em>élève, responsable,...</em>), mais la génération de fiche bienvenue Responsable avec envoi de mail ne teste pas la colonne Profil.<br />
+	Ne fournissez pas ici un fichier contenant un autre statut que <strong>Responsable élève</strong>.</li>
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
 	﻿﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Adresse;Code postal;Ville;Nom enfant 1;Prénom enfant 1;Classe enfant 1;Etat;Date de désactivation<br />
 	DUPRE;Denis;denis.dupre1;MENESR$1234567;azerty&*;Denis.DUPRE1@ent27.fr;3 RUE DES PRIMEVERES;27300;BERNAY;DUPRE;Thomas;6 A;Actif<br />
@@ -5594,17 +5743,24 @@ if($mode=="envoi_mail_logins_mdp") {
 		}
 
 		$motif_nom_fichier="Miseajour_Motdepasse_Parent_";
+		$motif_nom_fichier2="Code_ENT_";
 		echo "<p class='noprint'>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
-		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
+		if((!preg_match("/$motif_nom_fichier/", $csv_file['name']))&&(!preg_match("/$motif_nom_fichier2/", $csv_file['name']))) {
 			echo "<br />
-<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong>.<br />
+<span style='color:red'>Le nom du fichier contient habituellement la chaine <strong>$motif_nom_fichier</strong> ou <strong>$motif_nom_fichier2</strong>.<br />
 Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		}
 		echo "</p>\n";
 
 		// Lecture de la ligne 1 et la mettre dans $temp
-		$temp=fgets($fp,4096);
-		//echo "$temp<br />";
+		$cpt_entete=0;
+		while(($temp=fgets($fp,4096))&&($cpt_entete<3)&&(!preg_match("/Nom/i", $temp))) {
+			if((substr($temp,0,3) == "\xEF\xBB\xBF")) {
+				$temp=substr($temp,3);
+			}
+			//echo "Ligne $cpt_entete : $temp<br />";
+			$cpt_entete++;
+		}
 
 		$correction_separateur="";
 		if((!preg_match("/^Nom;/i", $temp))&&(!preg_match("/;Nom;/i", $temp))&&(!preg_match("/;Nom$/i", $temp))) {

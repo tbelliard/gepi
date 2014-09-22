@@ -291,11 +291,13 @@ else {
 </tr>\n";
 
 	$alt=1;
-    $max_lignes_pb = 0;
+	$max_lignes_pb = 0;
 
 	$tab_mef=array();
 
-    $ii = "0";
+	$ii = "0";
+
+	$temoin_erreur_recup_login_ent=0;
 
 	for($loop=0;$loop<count($tab_sql);$loop++) {
 		$call_data = mysqli_query($GLOBALS["mysqli"], $tab_sql[$loop]);
@@ -412,8 +414,8 @@ else {
 				}
 	
 				// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
-				// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-				if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+				// A VERIFIER : Avec afficher_liaison_ent = argos_bordeaux passe-t-on par cette table ldap_bx?
+				if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
 					// On a récupéré les informations dans la table ldap_bx
 					// voir aussi les explications de la ligne 710 du fichiers professeurs.php
 					$sql_p = "SELECT login_u FROM ldap_bx
@@ -427,6 +429,7 @@ else {
 						// Il faudra trouver une solution dans ce cas là (même s'il ne doit pas être très fréquent
 						//$login_eleve = "erreur_".$i;
 						$login_eleve = "erreur_".$id_tempo;
+						$temoin_erreur_recup_login_ent++;
 					}
 				}
 
@@ -618,24 +621,29 @@ else {
         }
     }
 
-    // A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-    if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
-    	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
-    	echo '
+	// A VERIFIER : Avec afficher_liaison_ent = argos_bordeaux passe-t-on par cette table ldap_bx?
+	if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
+		// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
+
+		if($temoin_erreur_recup_login_ent>0) {
+			echo "<p><strong style='color:red'>ATTENTION&nbsp;:</strong> ".$temoin_erreur_recup_login_ent." logins ENT n'ont pas pu être récupérés dans votre table 'ldap_bx'.<br />Vous devriez corriger et refaire cette étape.</p>";
+		}
+
+		echo '
 			<p>--&gt; Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
 			<p><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
 		';
-    } else {
-	    echo "<p>--&gt; Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
-    	echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
+	} else {
+		echo "<p>--&gt; Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
+		echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
 
-	    //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
-    	//echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
+		//echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
+		//echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
 		echo add_token_field();
-	    echo "<input type='hidden' name='is_posted' value='yes' />\n";
-    	echo "<p style='text-align: center;'><input type='submit' value='Enregistrer' /></p>\n";
-    	echo "</form>\n";
+		echo "<input type='hidden' name='is_posted' value='yes' />\n";
+		echo "<p style='text-align: center;'><input type='submit' value='Enregistrer' /></p>\n";
+		echo "</form>\n";
     }
     //echo "</div>";
     echo "<p><br /></p>\n";
