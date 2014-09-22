@@ -1561,7 +1561,7 @@ echo "		}
 			echo "<td>\n";
 				if ($lig->declarant==$_SESSION['login']) {
 					$possibilite_prof_imprime ='y';
-				} else if (isset ($peutImprimer) && $peutImprimer) {
+				} else if (getSettingAOui('imprDiscProfPRapport') && isset ($peutImprimer) && $peutImprimer) {
 					$possibilite_prof_imprime ='y';					
 				}
 				// echo $lig->declarant;
