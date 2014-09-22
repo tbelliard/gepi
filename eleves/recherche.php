@@ -91,6 +91,8 @@ function extract_utilisateurs($tab_login) {
 				else {
 					$tab_result_recherche['personnel'][$cpt_pers]['compte']="actif";
 				}
+
+				$tab_result_recherche['personnel'][$cpt_pers]['td_compte'].=temoin_compte_sso($lig->login);
 			}
 
 			$tab_result_recherche['personnel'][$cpt_pers]['statut']=$lig->statut;
@@ -196,6 +198,8 @@ function extract_eleves($tab_login) {
 					$tab_result_recherche['eleve'][$cpt_eleve]['compte']="actif";
 				}
 			}
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['td_compte'].=temoin_compte_sso($lig->login);
 
 			$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
 			if($acces_visu_eleve) {
@@ -372,6 +376,8 @@ if(isset($is_posted_recherche)) {
 						else {
 							$tab_result_recherche['responsable'][$cpt_resp]['compte']="actif";
 						}
+
+						$tab_result_recherche['responsable'][$cpt_resp]['td_compte'].=temoin_compte_sso($lig->login);
 					}
 
 					$tab_result_recherche['responsable'][$cpt_resp]['enfants']="";

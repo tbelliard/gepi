@@ -617,7 +617,7 @@ echo "</form>\n";
 					$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 					if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 
-					echo "<th><img src='../images/icons/balance_justice.png' class='icone20' alt=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" /></th>\n";
+					echo "<th title=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\"><img src='../images/icons/balance_justice.png' class='icone20' alt=\"".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" /></th>\n";
 					$avec_avertissements_fin_periode="y";
 				}
 			}
@@ -664,6 +664,7 @@ echo "</form>\n";
 	$i = "0";
 	$alt=1;
 	$tab_mentions_distribuees=array();
+	$tab_totaux_avertissement_fin_periode=array();
 	while($i < $nombre_lignes) {
 		$current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
 		$ind_eleve_login_suiv = 0;
@@ -730,6 +731,35 @@ echo "</form>\n";
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
+	}
+
+	if($avec_avertissements_fin_periode=="y") {
+		if(isset($tab_totaux_avertissement_fin_periode['periodes'][$periode_num])) {
+			if(!is_array($tab_type_avertissement_fin_periode)) {
+				$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+			}
+
+			echo "<br />
+<p class='bold'>Récapitulatif des ".$mod_disc_terme_avertissement_fin_periode." distribué(e)s&nbsp;:";
+			if(acces_impression_avertissement_fin_periode("", $id_classe)) {
+				echo " <a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$id_classe&amp;periode[0]=$periode_num' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+			}
+			echo "</p>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>
+		<th>Effectif</th>
+	</tr>";
+			foreach($tab_totaux_avertissement_fin_periode['periodes'][$periode_num] as $key => $value) {
+				echo "
+	<tr>
+		<td>".$tab_type_avertissement_fin_periode['id_type_avertissement'][$key]['nom_complet']."</td>
+		<td>".$value."</td>
+	</tr>";
+			}
+			echo "
+	</table>";
+		}
 	}
 
 	$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";

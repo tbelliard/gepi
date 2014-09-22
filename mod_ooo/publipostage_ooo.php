@@ -46,29 +46,7 @@ include_once('./lib/lib_mod_ooo.php'); //les fonctions
 $nom_fichier_modele_ooo =''; //variable à initialiser à blanc pour inclure le fichier suivant et éviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
 
-//$path=$nom_dossier_modele_a_utiliser."/".$_SESSION['login'];
 $path=$nom_dossier_modele_a_utiliser.$_SESSION['login'];
-
-/*
-function get_tab_file($path) {
-	$tab_file = array();
-
-	$handle=opendir($path);
-	$n=0;
-	while ($file = readdir($handle)) {
-		if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-		and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
-			$tab_file[] = $file;
-			$n++;
-		}
-	}
-	closedir($handle);
-	//arsort($tab_file);
-	rsort($tab_file);
-
-	return $tab_file;
-}
-*/
 
 $num_fich=isset($_POST['num_fich']) ? $_POST['num_fich'] : (isset($_GET['num_fich']) ? $_GET['num_fich'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -143,69 +121,26 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 	}
 
 	$mode_ooo="imprime";
-
-	include_once('./lib/tinyButStrong.class.php');
-	include_once('./lib/tinyDoc.class.php');
-
-	$tempdir=get_user_temp_directory();
 	
-	$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
-
-	if($fb_dezip_ooo==2) {
-		$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non traité pour le moment... désolé.<br />";
-	}
-	else {
-		$tempdirOOo="../temp/".$tempdir;
-
-		$nom_dossier_temporaire = $tempdirOOo;
-		//par defaut content.xml
-		$nom_fichier_xml_a_traiter ='content.xml';
-
-		// Création d'une classe tinyDoc
-		$OOo = new tinyDoc();
-		
-		// Choix du module de dézippage
-		$dezippeur=getSettingValue("fb_dezip_ooo");
-		if ($dezippeur==1){
-			$OOo->setZipMethod('shell');
-			$OOo->setZipBinary('zip');
-			$OOo->setUnzipBinary('unzip');
-		}
-		else{
-			$OOo->setZipMethod('ziparchive');
-		}
-
-		
-		// setting the object
-		$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-		// create a new openoffice document from the template with an unique id
-		$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-		// merge data with openoffice file named 'content.xml'
-		$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
-		
-		
-		// Traitement des tableaux
-		// On insère ici les lignes concernant la gestion des tableaux
-		
-		// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
-		
-		$OOo->mergeXml(
-			array(
-				'name'      => 'eleves',
-				'type'      => 'block',
-				'data_type' => 'array',
-				'charset'   => 'UTF-8'
-			),$tab_eleves_OOo);
-		
-		$OOo->SaveXml(); //traitement du fichier extrait
-		
-		$OOo->sendResponse(); //envoi du fichier traité
-		$OOo->remove(); //suppression des fichiers de travail
-		// Fin de traitement des tableaux
-		$OOo->close();
-		
-		die();
-	}
+	include_once('../tbs/tbs_class.php');
+	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	
+	$OOo = new clsTinyButStrong;
+	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+	
+	$nom_dossier_modele_a_utiliser = $path."/";// le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+	$nom_fichier_modele_ooo = $tab_file[$num_fich];
+	   
+	$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+	
+	$OOo->MergeBlock('eleves',$tab_eleves_OOo);
+	
+	$nom_fic = $nom_fichier_modele_ooo;
+	$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
+	$OOo->remove(); //suppression des fichiers de travail
+	$OOo->close();
+	
+	die();
 }
 elseif(isset($_GET['suppr_fich'])) {
 	check_token();
@@ -279,7 +214,7 @@ if(!isset($num_fich)) {
 						if(!file_exists($path_user)) {
 							$creation=mkdir($path_user);
 							if(!$creation) {
-								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
 								$temoin_erreur="y";
 							}
 						}
@@ -287,7 +222,7 @@ if(!isset($num_fich)) {
 						if($temoin_erreur=="n") {
 							if(!file_exists($path_user."/index.html")) {
 								if(!creation_index_redir_login($path_user,1)) {
-									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org pour ".$login_user[$i]."</p>\n";
+									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
 								}
 							}
 
@@ -357,7 +292,7 @@ if(!isset($num_fich)) {
 	else {
 		$creation=mkdir($path);
 		if(!$creation) {
-			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle openDocument</p>\n";
 			require_once("../lib/footer.inc.php");
 			die();
 		}
@@ -365,7 +300,7 @@ if(!isset($num_fich)) {
 	
 	if(!file_exists($path."/index.html")) {
 		if(!creation_index_redir_login($path,1)) {
-			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle OpenOffice.org</p>\n";
+			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument</p>\n";
 		}
 	}
 

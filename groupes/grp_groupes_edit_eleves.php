@@ -302,7 +302,7 @@ $chaine_periode_ouverte.="</p>";
 
 <h2>".ucfirst($groupe_de_groupes)." n°$id_grp_groupe</h2>
 <div style='margin-left:2em;'>
-	<h3>".$current_group['name']." (<em style='font-size:small;'>".$current_group['description']." en ".$current_group['classlist_string']."</em>)</h3>
+	<h3>".$current_group['name']." (<em style='font-size:small;'>".$current_group['description']." en ".$current_group['classlist_string']."</em>) (<em>".$current_group['profs']['proflist_string']."</em>)</h3>
 
 	<p>Vous pouvez modifier la liste des élèves inscrits dans le groupe&nbsp;:</p>
 	$chaine_periode_ouverte

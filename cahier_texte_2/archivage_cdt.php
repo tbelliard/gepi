@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -333,10 +333,13 @@ else {
 		if(!file_exists($dossier_annee."/images")) {
 			$res=mkdir($dossier_annee."/images");
 		}
-		if(file_exists($dossier_annee."/images")) {
+		if(!file_exists($dossier_annee."/images/icons")) {
+			$res=mkdir($dossier_annee."/images/icons");
+		}
+		if(file_exists($dossier_annee."/images/icons")) {
 			$tab_img=array("add.png", "chercher.png", "close16.png","trash.png");
 			for($i=0;$i<count($tab_img);$i++) {
-				copy("../images/icons/".$tab_img[$i],$dossier_annee."/images/".$tab_img[$i]);
+				copy("../images/icons/".$tab_img[$i],$dossier_annee."/images/icons/".$tab_img[$i]);
 			}
 		}
 
@@ -389,6 +392,10 @@ else {
 		$sql="SELECT * FROM tempo2 LIMIT $largeur_tranche;";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)>0) {
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+			echo "<div id='div_form_suite' style='float:right; width:5em;'><input type='submit' value='Suite' /></div>\n";
+			echo "<p>Les notices vont être extraites pour des dates entre le $display_date_debut et le $display_date_fin</p>\n";
+
 			echo "<p><b>Archivage de</b>&nbsp;:<br />\n";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$id_groupe=$lig_grp->col1;
@@ -576,7 +583,6 @@ echo "</pre>";
 
 			}
 
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 			echo add_token_field();
 			echo "<input type='hidden' name='step' value='2' />\n";
 			echo "<input type='hidden' name='mode' value='$mode' />\n";

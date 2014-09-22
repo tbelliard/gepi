@@ -280,8 +280,13 @@ echo "</pre>";
 	
 				$ajout_header="";
 				if($email_declarant!="") {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
-	
-				$envoi = envoi_mail($sujet_mail, $texte_mail, getSettingValue("gepiAdminAdress"), $ajout_header);	
+
+				$destinataire_mail=getSettingValue("gepiAdminAdress");
+				if((getSettingValue('email_dest_info_erreur_affect_grp')!="")&&(getSettingValue('email_dest_info_erreur_affect_grp')!=getSettingValue("gepiAdminAdress"))) {
+					$destinataire_mail.=",".getSettingValue("email_dest_info_erreur_affect_grp");
+				}
+
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header);
 			}
 		}
 

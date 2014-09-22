@@ -1,0 +1,28 @@
+Bonjour __DESIGNATION_DESTINATAIRE__,
+
+Le conseil de classe de __CLASSE__ doit avoir lieu le __DATE_CONSEIL__.
+Après un pré-conseil de 15 minutes, les représentants des parents et des élèves seront accueillis dans la salle du conseil de classe (__LIEU_CONSEIL__).
+Dans le cas où vous ne pourriez pas assister au conseil de classe, nous souhaiterions en être informé.
+
+
+Le Principal,
+Le Principal adjoint,
+__NOM_ETAB__
+__ADR_ETAB__
+__________________________________________________________
+
+COUPON REPONSE :
+
+Je soussigné __DESIGNATION_DESTINATAIRE__ 
+-> assisterai au conseil de la classe de __CLASSE__ du __DATE_CONSEIL__
+-> ne pourrai pas assister au conseil de la classe de __CLASSE__ du __DATE_CONSEIL__
+(rayer/supprimer la mention inutile)
+
+Commentaire éventuel :
+
+
+
+
+
+Merci de bien vouloir retourner par mail ou déposer le coupon réponse au collège au moins un jour avant la date du conseil.
+

@@ -906,7 +906,7 @@ else {
 					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
 					//$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
-					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' ORDER BY num_periode ASC";
+					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE annee='$lig_ant->annee' AND num_periode>'0' ORDER BY num_periode ASC";
 					$res_ant2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_ant2)==0){

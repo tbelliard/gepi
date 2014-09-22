@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -45,61 +45,48 @@ $dirname = getSettingValue("backup_directory");
 //$fileid=isset($_POST['fileid']) ? $_POST['fileid'] : (isset($_GET['fileid']) ? $_GET['fileid'] : NULL);
 $fileid=isset($_GET['fileid']) ? $_GET['fileid'] : NULL;
 
-/*
-$handle=opendir('../backup/' . $dirname);
-$tab_file = array();
-$n=0;
-while ($file = readdir($handle)) {
-    if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-	//=================================
-	// AJOUT: boireaus
-	and ($file != 'csv')
-	//=================================
-    and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
-        $tab_file[] = $file;
-        $n++;
-    }
-}
-closedir($handle);
-arsort($tab_file);
-*/
-$handle=opendir('../backup/' . $dirname);
-$tab_file = array();
-$n=0;
-while ($file = readdir($handle)) {
-	if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-	//=================================
-	and ($file != 'csv')
-	and ($file != 'bulletins')
-	and ($file != 'absences') //ne pas afficher le dossier export des absences en fin d'année
-	and ($file != 'notanet') //ne pas afficher le dossier notanet
-	//=================================
-	and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html') and ($file != '.test')
-	and(!preg_match('/sql.gz.txt$/i', $file))) {
-		$tab_file[] = $file;
-		$n++;
+if((isset($_GET['sous_dossier']))&&($_GET['sous_dossier']=='absences')) {
+	$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde("../backup/".$dirname."/absences", "y");
+	$n=count($tab_file);
+
+	$filepath = null;
+	$filename = null;
+
+	if ($n > 0) {
+		$m = 0;
+		foreach($tab_file as $value) {
+			if ($m == $fileid) {
+				$filepath = "../backup/".$dirname."/absences/".$value;
+				$filename = $value;
+			}
+			$m++;
+		}
+		clearstatcache();
 	}
+
+	send_file_download_headers('text/x-csv',$filename);
+	readfile($filepath);
 }
-closedir($handle);
-arsort($tab_file);
+else {
+	$tab_file=get_tab_fichiers_du_dossier_de_sauvegarde();
+	$n=count($tab_file);
 
-$filepath = null;
-$filename = null;
+	$filepath = null;
+	$filename = null;
 
-if ($n > 0) {
+	if ($n > 0) {
+		$m = 0;
+		foreach($tab_file as $value) {
+			if ($m == $fileid) {
+				$filepath = "../backup/".$dirname."/".$value;
+				$filename = $value;
+			}
+			$m++;
+		}
+		clearstatcache();
+	}
 
-    $m = 0;
-    foreach($tab_file as $value) {
-    		if ($m == $fileid) {
-    			$filepath = "../backup/".$dirname."/".$value;
-    			$filename = $value;
-    		}
-        $m++;
-    }
-    clearstatcache();
+	send_file_download_headers('text/x-sql',$filename);
+	readfile($filepath);
 }
-//echo "\$filepath=$filepath<br />";
-//die();
-send_file_download_headers('text/x-sql',$filename);
-readfile($filepath);
 ?>

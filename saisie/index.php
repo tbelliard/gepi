@@ -260,7 +260,7 @@ if ($current_group) {
 					($acces_exceptionnel_saisie)||
 					((($current_group["classe"]["ver_periode"]["all"][$i]!=0))&&($_SESSION['statut']=='secours'))) {
 
-					$tabdiv_infobulle[]=creer_div_infobulle("info_export_ods_periode_$i","","","<center>Export tableur OpenOffice.org (<i>ODS</i>) des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
+					$tabdiv_infobulle[]=creer_div_infobulle("info_export_ods_periode_$i","","","<center>Export tableur openDocument (<i>ODS</i>) des identifiants GEPI, avec les colonnes Moyennes et Appréciations de cette classe, avec ligne d'entête.</center>","",15,0,"n","n","y","n");
 
 					echo "<a href='export_class_ods.php?id_groupe=$id_groupe&amp;periode_num=$i' onmouseover=\"afficher_div('info_export_ods_periode_$i','y',10,10)\" onmouseout=\"cacher_div('info_export_ods_periode_$i')\"><img src='../images/notes_app_ods.png' width='30' height='30' alt='Export ODS' ";
 					echo "/></a>\n";

@@ -275,7 +275,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
 				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" title=\"Consulter/Modifier l'incident.\"";
 				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
@@ -324,8 +324,8 @@ if(mysqli_num_rows($res_sanction)>0) {
 					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,60,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les détails en infobulle.\"";
 					echo ">Détails</a>";
 				}
 			}
@@ -403,7 +403,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
 				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" title=\"Consulter/Modifier l'incident.\"";
 				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
@@ -457,8 +457,8 @@ if(mysqli_num_rows($res_sanction)>0) {
 					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,60,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les détails en infobulle.\"";
 					echo ">Détails</a>";
 				}
 			}
@@ -524,7 +524,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
 				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" title=\"Consulter/Modifier l'incident.\"";
 				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
@@ -572,8 +572,8 @@ if(mysqli_num_rows($res_sanction)>0) {
 					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,60,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les détails en infobulle.\"";
 					echo ">Détails</a>";
 				}
 			}
@@ -672,7 +672,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
 				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" title=\"Consulter/Modifier l'incident.\"";
 				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
@@ -687,7 +687,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 			//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
-			echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+			echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer ou modifier la sanction.'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">".formate_date($lig_sanction->date)."</a></td>\n";
 			echo "<td>$lig_sanction->heure_debut</td>\n";
@@ -725,8 +725,8 @@ if(mysqli_num_rows($res_sanction)>0) {
 					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,60,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les détails en infobulle.\"";
 					echo ">Détails</a>";
 				}
 			}
@@ -798,7 +798,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof_declarant))) {
 				echo "<a href='saisie_incident.php?id_incident=$lig_sanction->id_incident&amp;step=2'";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig_sanction->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" title=\"Consulter/Modifier l'incident.\"";
 				echo ">$lig_sanction->id_incident</a>";
 			}
 			else {
@@ -850,8 +850,8 @@ if(mysqli_num_rows($res_sanction)>0) {
 					echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 					//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 					//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
-					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,60,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Afficher les détails en infobulle.\"";
 					echo ">Détails</a>";
 				}
 			}

@@ -1631,6 +1631,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 echo "<form enctype='multipart/form-data' name='form_choix_eleve' action='modify_eleve.php' method='post'>\n";
 //echo add_token_field();
 echo "<p class=bold><a href=\"index.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+if((getSettingAOui('active_mod_engagements'))&&(acces('/mod_engagements/saisie_engagements_user.php', $_SESSION['statut']))) {
+	echo " | <a href='../mod_engagements/saisie_engagements_user.php?login_user=$eleve_login&amp;retour=modify_eleve'>Saisir des engagements</a>";
+}
 
 $num_eleve_courant=-1;
 if ((isset($order_type)) and (isset($quelles_classes))) {
@@ -2134,7 +2137,7 @@ if(isset($reg_no_gep)){
   (($_SESSION['statut']=="professeur")&&(getSettingValue("GepiAccesGestPhotoElevesProfP")=='yes')&&(isset($eleve_login))&&($is_pp)))) {
 		echo "<div align='center'>\n";
 		//echo "<span id='lien_photo' style='font-size:xx-small;'>";
-		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;'>";
+		echo "<div id='lien_photo' style='border: 1px solid black; padding: 5px; margin: 5px;' class='fieldset_opacite50'>";
 		echo "<a href='#' onClick=\"document.getElementById('div_upload_photo').style.display='';document.getElementById('lien_photo').style.display='';return false;\">";
 		if($temoin_photo=="oui"){
 			//echo "Modifier le fichier photo</a>\n";
@@ -2235,13 +2238,13 @@ if(isset($eleve_login)){
 		echo "</table>\n";
 
 		echo "<br />\n";
-		echo "<div style='border: 1px solid black; text-align:center;'>\n";
+		echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
 		echo "<a href='visu_eleve.php?ele_login=".$eleve_login."'>Consultation élève</a>";
 		echo "</div>\n";
 		echo "<br />\n";
 		//=========================
 
-		echo "<div style='border: 1px solid black; text-align:center;'>\n";
+		echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
 		$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
 		$res_grp1=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp1)==0){
@@ -2249,12 +2252,20 @@ if(isset($eleve_login)){
 		}
 		else {
 			$acces_eleve_options=acces('/classes/eleve_options.php', $_SESSION['statut']);
+			$acces_class_const=acces('/classes/classes_const.php', $_SESSION['statut']);
 			while($lig_classe=mysqli_fetch_object($res_grp1)){
 				if($acces_eleve_options) {
-					echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+					echo "<a href='../classes/eleve_options.php?login_eleve=$eleve_login&amp;id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier les enseignements suivis par cet élève.\">Enseignements suivis</a> en ";
 				}
 				else {
-					echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank'>Enseignements suivis</a> en ".preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login."&onglet=enseignements' target='_blank' title=\"Consulter la liste des enseignements suivis par cet élève.\">Enseignements suivis</a> en ";
+				}
+
+				if($acces_class_const) {
+					echo "<a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier la liste des élèves de la classe.\nDéfinir le ".getSettingValue('gepi_prof_suivi').", le CPE,...\">".preg_replace("/ /","&nbsp;",$lig_classe->classe)."</a>\n";
+				}
+				else {
+					echo preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";
 				}
 				echo "<br />\n";
 
@@ -2268,11 +2279,44 @@ if(isset($eleve_login)){
 		//$test_compte_actif=check_compte_actif($eleve_login);
 		//if($test_compte_actif!=0) {
 		if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
-			echo "<div style='margin-top: 0.5em; text-align:center; border: 1px solid black;'>\n";
+			echo "<div style='margin-top: 0.5em; text-align:center; border: 1px solid black;' class='fieldset_opacite50'>\n";
 			echo affiche_actions_compte($eleve_login);
 			echo "</div>\n";
 		}
 		//=========================
+
+
+		//==============================================
+		// Engagements
+		if(getSettingAOui('active_mod_engagements')) {
+			$tab_engagements_user=get_tab_engagements_user($eleve_login);
+			if(count($tab_engagements_user['indice'])>0) {
+				echo "<div style='float: right; width:15em; text-align: center; margin:0.5em; margin:0.2em;' class='fieldset_opacite50' title=\"Engagements du responsable\">";
+				if(acces("/mod_engagements/saisie_engagements_user.php", $_SESSION['statut'])) {
+					echo "
+			<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=$eleve_login&amp;retour=modify_eleve'><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+				}
+
+				/*
+				echo "<pre>";
+				print_r($tab_engagements_user['indice']);
+				echo "</pre>";
+				*/
+				echo "<div id='div_engagements_eleve'>";
+				for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
+					$detail_eng="";
+					//if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+					if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
+						$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
+					}
+					echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";
+				}
+				echo "</div>\n";
+
+				echo "</div>\n";
+			}
+		}
+		//==============================================
 
 	}
 	echo "</td>\n";

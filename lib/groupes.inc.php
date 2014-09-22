@@ -387,7 +387,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                 $res_vis->close();
             }            
             if($get_matieres=='y') {
-                $sql_matieres = "SELECT m.matiere, m.nom_complet, m.categorie_id FROM matieres m, j_groupes_matieres j " .
+                $sql_matieres = "SELECT m.matiere, m.nom_complet, m.categorie_id, m.code_matiere FROM matieres m, j_groupes_matieres j " .
                                                                 "WHERE (" .
                                                                 "m.matiere = j.id_matiere and " .
                                                                 "j.id_groupe = '" . $_id_groupe . "')";
@@ -396,7 +396,8 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     $obj_matieres = $matiere->fetch_object();
                     $temp["matiere"]["matiere"] = $obj_matieres->matiere;
                     $temp["matiere"]["nom_complet"] = $obj_matieres->nom_complet;
-                    $temp["matiere"]["categorie_id"] = $obj_matieres->categorie_id;                    
+                    $temp["matiere"]["categorie_id"] = $obj_matieres->categorie_id;
+                    $temp["matiere"]["code_matiere"] = $obj_matieres->code_matiere;
                 }
                 $matiere->close();
             }

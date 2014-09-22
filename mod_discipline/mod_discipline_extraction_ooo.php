@@ -58,7 +58,7 @@ if (!checkAccess()) {
 	die();
 }
 
-//debug_var();
+// debug_var();
 
 include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
 $nom_fichier_modele_ooo =''; // variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
@@ -547,112 +547,49 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 //die();
 
-/*
-Array
-(
-    [etab] => Collège Le Hameau
-    [acad] => ROUEN
-    [adr1] => 1 rue Albert Schweitzer BP 851
-    [cp] => 27308
-    [ville] => Bernay
-    [incident] => Array
-        (
-            [0] => Array
-                (
-                    [etab] => Collège Le Hameau
-                    [acad] => ROUEN
-                    [adr1] => 1 rue Albert Schweitzer BP 851
-                    [cp] => 27308
-                    [ville] => Bernay
-                    [id_incident] => 1268
-
-Avec
-Etab :[eleve.etab]
-j'obtiens
-
-Fatal error: Uncaught exception 'tinyDocException' with message 'item 'etab' is not an existing key in the array.' in /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyDoc.class.php:964 Stack trace: #0 /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyButStrong.class.php(896): tinyDoc->meth_Misc_Alert(Object(clsTbsLocator), 'item 'etab' is ...', true) #1 /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyDoc.class.php(983): clsTinyButStrong->meth_Locator_Replace('<?xml version="...', Object(clsTbsLocator), Array, 0) #2 /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyButStrong.class.php(1956): tinyDoc->meth_Locator_Replace('<?xml version="...', Object(clsTbsLocator), Array, 0) #3 /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyButStrong.class.php(1610): clsTinyButStrong->meth_Merge_FieldOutside('<?xml version="...', Object(clsTbsDataSource), Object(clsTbsLocator)) #4 /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyButStrong.class.php(602): clsTinyButStrong->meth_Merge_Block('<?xml version="...', Array, 'ar in /home/www/html/steph/gepi_git_trunk/mod_ooo/lib/tinyDoc.class.php on line 964
-*/
-
 	$mode_ooo="imprime";
-
-	include_once('../mod_ooo/lib/tinyButStrong.class.php');
-	include_once('../mod_ooo/lib/tinyDoc.class.php');
-
-	$tempdir=get_user_temp_directory();
-
-	$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
-
-	if($fb_dezip_ooo==2) {
-		$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non géré pour le moment... désolé.<br />";
-	}
-	else {
-		$tempdirOOo="../temp/".$tempdir;
-
-		$nom_dossier_temporaire = $tempdirOOo;
-		//par defaut content.xml
-		$nom_fichier_xml_a_traiter ='content.xml';
-
-		// Creation d'une classe tinyDoc
-		$OOo = new tinyDoc();
 	
-		// Choix du module de dezippage
-		$dezippeur=getSettingValue("fb_dezip_ooo");
-		if ($dezippeur==1){
-			$OOo->setZipMethod('shell');
-			$OOo->setZipBinary('zip');
-			$OOo->setUnzipBinary('unzip');
-		}
-		else{
-			$OOo->setZipMethod('ziparchive');
-		}
+	include_once('../tbs/tbs_class.php');
+	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	
+	// Création d'une classe  TBS OOo class
 
-
-		$mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
-		if(isset($mode_test)) {
-			$fichier_a_utiliser="mod_discipline_liste_incidents2b.odt";
-			$tableau_a_utiliser=$tab_lignes_OOo_eleve;
-			$nom_a_utiliser="eleve";
-		}
-		else {
-			//$fichier_a_utiliser="mod_discipline_liste_incidents2.odt";
-			$fichier_a_utiliser="mod_discipline_liste_incidents.odt";
-			$tableau_a_utiliser=$tab_lignes_OOo;
-			$nom_a_utiliser="incident";
-		}
-
-
-		// setting the object
-		$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier ou se fait le traitement (decompression / traitement / compression)
-		// create a new openoffice document from the template with an unique id
-		//$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indique a partir de l'emplacement de ce fichier
-		$OOo->createFrom($path."/".$fichier_a_utiliser); // le chemin du fichier est indique a partir de l'emplacement de ce fichier
-		// merge data with openoffice file named 'content.xml'
-		$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit etre parse (il sera extrait)
+	$OOo = new clsTinyButStrong;
+	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 	
 	
-		// Traitement des tableaux
-		// On insere ici les lignes concernant la gestion des tableaux
+	  $mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
+	  if(isset($mode_test)) {
+		  $fichier_a_utiliser="mod_discipline_liste_incidents2b.odt";
+		  $tableau_a_utiliser=$tab_lignes_OOo_eleve;
+		  $nom_a_utiliser="eleve";
+	  }
+	  else {
+		  $fichier_a_utiliser="mod_discipline_liste_incidents.odt";
+		  $tableau_a_utiliser=$tab_lignes_OOo;
+		  $nom_a_utiliser="incident";
+	  }
 	
-		// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
+	// le chemin du fichier est indique a partir de l'emplacement de ce fichier
+	$nom_dossier_modele_a_utiliser = $path."/";
+	$nom_fichier_modele_ooo = $fichier_a_utiliser;
+	$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+	
+	
+	// $OOo->MergeBlock('eleves',$tab_eleves_OOo);
+	$OOo->MergeBlock($nom_a_utiliser,$tableau_a_utiliser);
+	
+	$nom_fic = $fichier_a_utiliser;
+	
+	$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
+	
+	
+	
+	$OOo->remove(); //suppression des fichiers de travail
+	
+	$OOo->close();
 
-		$OOo->mergeXml(
-			array(
-				'name'      => "$nom_a_utiliser",
-				'type'      => 'block',
-				'data_type' => 'array',
-				'charset'   => 'UTF-8'
-			),$tableau_a_utiliser);
-	
-		$OOo->SaveXml(); //traitement du fichier extrait
-	
-		$OOo->sendResponse(); //envoi du fichier traite
-		$OOo->remove(); //suppression des fichiers de travail
-		// Fin de traitement des tableaux
-		$OOo->close();
-	
 		die();
-	}
-
 
 
 
@@ -936,69 +873,43 @@ while($lig_incident=mysqli_fetch_object($res_incident)) {
 */
 
 $mode_ooo="imprime";
+	
+include_once('../tbs/tbs_class.php');
+include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 
-include_once('../mod_ooo/lib/tinyButStrong.class.php');
-include_once('../mod_ooo/lib/tinyDoc.class.php');
+// Création d'une classe  TBS OOo class
 
-$tempdir=get_user_temp_directory();
-
-$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
-
-if($fb_dezip_ooo==2) {
-	$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non géré pour le moment... désolé.<br />";
+$OOo = new clsTinyButStrong;
+$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+	
+$mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
+if(isset($mode_test)) {
+	$fichier_a_utiliser="mod_discipline_liste_incidents2b.odt";
+	$tableau_a_utiliser=$tab_lignes_OOo_eleve;
+	$nom_a_utiliser="eleve";
 }
 else {
-	$tempdirOOo="../temp/".$tempdir;
-
-	$nom_dossier_temporaire = $tempdirOOo;
-	//par defaut content.xml
-	$nom_fichier_xml_a_traiter ='content.xml';
-
-	// Creation d'une classe tinyDoc
-	$OOo = new tinyDoc();
-	
-	// Choix du module de dezippage
-	$dezippeur=getSettingValue("fb_dezip_ooo");
-	if ($dezippeur==1){
-		$OOo->setZipMethod('shell');
-		$OOo->setZipBinary('zip');
-		$OOo->setUnzipBinary('unzip');
-	}
-	else{
-		$OOo->setZipMethod('ziparchive');
-	}
-
-	
-	// setting the object
-	$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier ou se fait le traitement (decompression / traitement / compression)
-	// create a new openoffice document from the template with an unique id
-	//$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indique a partir de l'emplacement de ce fichier
-	$OOo->createFrom($path."/mod_discipline_liste_incidents.odt"); // le chemin du fichier est indique a partir de l'emplacement de ce fichier
-	// merge data with openoffice file named 'content.xml'
-	$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit etre parse (il sera extrait)
-	
-	
-	// Traitement des tableaux
-	// On insere ici les lignes concernant la gestion des tableaux
-	
-	// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
-	
-	$OOo->mergeXml(
-		array(
-			'name'      => 'incident',
-			'type'      => 'block',
-			'data_type' => 'array',
-			'charset'   => 'UTF-8'
-		),$tab_lignes_OOo);
-	
-	$OOo->SaveXml(); //traitement du fichier extrait
-	
-	$OOo->sendResponse(); //envoi du fichier traite
-	$OOo->remove(); //suppression des fichiers de travail
-	// Fin de traitement des tableaux
-	$OOo->close();
-	
-	die();
+	$fichier_a_utiliser="mod_discipline_liste_incidents.odt";
+	$tableau_a_utiliser=$tab_lignes_OOo;
+	$nom_a_utiliser="incident";
 }
 
+// le chemin du fichier est indique a partir de l'emplacement de ce fichier
+//   $path."/".$tab_file[$num_fich]
+$nom_dossier_modele_a_utiliser = $path."/";
+$nom_fichier_modele_ooo = "mod_discipline_liste_incidents.odt";
+$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+
+$OOo->MergeBlock($nom_a_utiliser,$tableau_a_utiliser);
+
+$nom_fic = $fichier_a_utiliser;
+
+$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
+
+
+$OOo->remove(); //suppression des fichiers de travail
+
+$OOo->close();
+
+die();
 ?>

@@ -1,6 +1,7 @@
-Gepi-1.6.5 -- Procédure d'installation
+Gepi-master -- Procédure d'installation
 ==========================================
 
+Version de développement: NE PAS INSTALLER EN PRODUCTION !
 La branche stable actuelle est la 1.6.5
 
 ****************************************************
@@ -156,7 +157,7 @@ Fichier php.ini
 * /backup
 * /temp
 * /artichow/cache
-* /mod_ooo/mes_modeles et /mod_ooo/tmp (utilisation des modèles personnels OpenOffice
+* /mod_ooo/mes_modeles et /mod_ooo/tmp (utilisation des modèles personnels openDocument
 * /mod_notanet/OOo/tmp (inutile, ce répertoire n'est plus utilisé et est destiné à disparaître)
 * /lib/standalone/HTMLPurifier/DefinitionCache/Serializer
 

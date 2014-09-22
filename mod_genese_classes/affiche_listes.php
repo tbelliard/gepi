@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -19,6 +19,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -89,6 +91,72 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 	}
 }
 
+if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($_POST['id_aff']))) {
+	check_token();
+
+	$nom_aff=isset($_POST['nom_aff']) ? $_POST['nom_aff'] : NULL;
+
+	$description_aff=isset($_POST['description_aff']) ? $_POST['description_aff'] : NULL;
+	$description_aff=isset($NON_PROTECT['description_aff']) ? traitement_magic_quotes(corriger_caracteres($NON_PROTECT['description_aff'])) : NULL;
+
+	if((!isset($nom_aff))||(!isset($description_aff))) {
+		$msg="ERREUR : Aucun nom d'affichage ou aucune description proposée.<br />";
+	}
+	else {
+		$sql="SELECT 1=1 FROM gc_noms_affichages WHERE id_aff='".$_POST['id_aff']."' AND projet='$projet';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$sql="INSERT INTO gc_noms_affichages SET projet='$projet', id_aff='".$_POST['id_aff']."', nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$insert) {
+				$msg="Erreur lors du nommage de l'affichage.<br />";
+			}
+			else {
+				$msg="Nommage de l'affichage effectué.<br />";
+			}
+		}
+		else {
+			$sql="UPDATE gc_noms_affichages SET nom='".remplace_accents($nom_aff, "all")."', description='".$description_aff."' WHERE id_aff='".$_POST['id_aff']."' AND projet='$projet';";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				$msg="Erreur lors du nommage de l'affichage.<br />";
+			}
+			else {
+				$msg="Nommage de l'affichage effectué.<br />";
+			}
+		}
+	}
+}
+
+function get_infos_gc_affichage($id_aff) {
+	global $projet;
+	$tab=array();
+
+	$sql="SELECT * FROM gc_noms_affichages WHERE id_aff='$id_aff' AND projet='$projet';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		//$tab["id"]=$lig->id;
+		$tab["id_aff"]=$lig->id_aff;
+		$tab["nom"]=$lig->nom;
+		$tab["description"]=$lig->description;
+		$tab["nomme"]=true;
+	}
+	else {
+		$tab["id_aff"]=$id_aff;
+		$tab["nom"]="Affichage n°".$id_aff;
+		$tab["description"]="";
+		$tab["nomme"]=false;
+	}
+
+	return $tab;
+}
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
+
+$charger_js_dragresize="y";
+
 //**************** EN-TETE *****************
 $titre_page = "Genèse classe: affichage de listes";
 //echo "<div class='noprint'>\n";
@@ -109,16 +177,16 @@ function mediane($tab_notes) {
 		}
 	}
 	else {
-	    return "X";
+		return "X";
 	}
 }
 
 function moyenne($tab_notes) {
 	if(count($tab_notes)>0) {
-	    return round(100*(array_sum($tab_notes)/count($tab_notes)))/100;
+		return round(100*(array_sum($tab_notes)/count($tab_notes)))/100;
 	}
 	else {
-	    return "X";
+		return "X";
 	}
 }
 
@@ -133,13 +201,67 @@ if((!isset($projet))||($projet=="")) {
 echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 //echo "</div>\n";
 
+$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
+
+if(isset($id_aff)) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Créer un nouvel affichage</a>\n";
+}
+
+if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Affichage n°$id_aff</a></p>\n";
+
+	echo "<h2>Projet $projet : Affichage</h2>\n";
+
+	$tab_aff_courant=get_infos_gc_affichage($id_aff);
+
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<fieldset class='fieldset_opacite50'>
+		<p>Nommer l'affichage n°$id_aff&nbsp::</p>
+		".add_token_field()."
+		<input type='hidden' name='projet' value='$projet' />
+		<input type='hidden' name='id_aff' value='$id_aff' />
+		<input type='hidden' name='valider_enregistrement_nom_aff' value='y' />
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th>
+					Nom&nbsp;:
+				</th>
+				<td>
+					<input type='text' name='nom_aff' id='nom_aff' value=\"".$tab_aff_courant['nom']."\" onfocus=\"javascript:this.select()\" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Description&nbsp;:
+				</th>
+				<td>
+					<textarea name='no_anti_inject_description_aff'>".$tab_aff_courant['description']."</textarea>
+				</td>
+			</tr>
+		</table>
+		<input type='submit' name='valider_nommage_affichage' value='Valider' />
+	</fieldset>
+</form>
+
+<script type='text/javascript'>
+	document.getElementById('nom_aff').focus();
+</script>\n";
+
+
+	require("../lib/footer.inc.php");
+	die();
+}
+
+
+
+
 $afficher_listes=isset($_POST['afficher_listes']) ? $_POST['afficher_listes'] : (isset($_GET['afficher_listes']) ? $_GET['afficher_listes'] : NULL);
 
 // Choix des élèves à afficher:
 if(!isset($afficher_listes)) {
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 	// Affichage déjà choisi ou non
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
@@ -157,6 +279,7 @@ if(!isset($afficher_listes)) {
 			}
 
 			// Si plus aucune requête ne reste, il faudrait peut-être supprimer le $id_aff... non... il sera réutilisé si on rajoute une requête et il sera perdu et absent de la base si on quitte la page sans ajouter de requête
+			// Mais alors une nouvelle requête va être placée avec le même id_aff et le même nom_aff
 		}
 	}
 
@@ -180,6 +303,8 @@ if(!isset($afficher_listes)) {
 
 		$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : array();
 		$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : array();
+
+		$nom_requete=isset($_POST['nom_requete']) ? remplace_accents($_POST['nom_requete'], "all") : "";
 
 		//$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 		//if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
@@ -233,80 +358,89 @@ if(!isset($afficher_listes)) {
 
 		if(count($id_clas_act)>0) {
 			for($i=0;$i<count($id_clas_act);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='id_clas_act', valeur='$id_clas_act[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='id_clas_act', valeur='$id_clas_act[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($clas_fut)>0) {
 			for($i=0;$i<count($clas_fut);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='clas_fut', valeur='$clas_fut[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='clas_fut', valeur='$clas_fut[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
 		if(count($avec_lv1)>0) {
 			for($i=0;$i<count($avec_lv1);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv1', valeur='$avec_lv1[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv1', valeur='$avec_lv1[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_lv2)>0) {
 			for($i=0;$i<count($avec_lv2);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv2', valeur='$avec_lv2[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv2', valeur='$avec_lv2[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_lv3)>0) {
 			for($i=0;$i<count($avec_lv3);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv3', valeur='$avec_lv3[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv3', valeur='$avec_lv3[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_autre)>0) {
 			for($i=0;$i<count($avec_autre);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_autre', valeur='$avec_autre[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_autre', valeur='$avec_autre[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($avec_profil)>0) {
 			for($i=0;$i<count($avec_profil);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_profil', valeur='$avec_profil[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_profil', valeur='$avec_profil[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
 		if(count($sans_lv1)>0) {
 			for($i=0;$i<count($sans_lv1);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv1', valeur='$sans_lv1[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv1', valeur='$sans_lv1[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_lv2)>0) {
 			for($i=0;$i<count($sans_lv2);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv2', valeur='$sans_lv2[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv2', valeur='$sans_lv2[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_lv3)>0) {
 			for($i=0;$i<count($sans_lv3);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv3', valeur='$sans_lv3[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv3', valeur='$sans_lv3[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_autre)>0) {
 			for($i=0;$i<count($sans_autre);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_autre', valeur='$sans_autre[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_autre', valeur='$sans_autre[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 		if(count($sans_profil)>0) {
 			for($i=0;$i<count($sans_profil);$i++) {
-				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]';";
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]', nom_requete='$nom_requete';";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 		}
 
-	} // FIN DE L'AJOUT D'UNE REQUETE
+		// Si aucune requête n'existe pour $id_aff, on supprime le nom aussi:
+		$sql="SELECT 1=1 FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
+		$test_aff=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_aff)==0) {
+			$sql="DELETE FROM gc_noms_affichages WHERE id_aff='$id_aff' AND projet='$projet';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			unset($id_aff);
+		}
+
+	} // FIN DE L'AJOUT D'UNE REQUETE (ajout ou modif)
 
 
 	//========================================================================
@@ -348,6 +482,7 @@ if(!isset($afficher_listes)) {
 
 
 	//=========================================================
+	$tab_affichages=array();
 	// Liste des affichages précédemment programmés pour ce projet:
 	$sql="SELECT DISTINCT id_aff,projet FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -358,7 +493,13 @@ if(!isset($afficher_listes)) {
 		$cpt=0;
 		while($lig_tmp=mysqli_fetch_object($res)) {
 			if($cpt>0) {echo ", ";}
-			echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff'>$lig_tmp->id_aff</a>\n";
+			$tab_affichages[$lig_tmp->id_aff]=get_infos_gc_affichage($lig_tmp->id_aff);
+			if($tab_affichages[$lig_tmp->id_aff]['nomme']) {
+				echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff' title=\"Affichage n°".$lig_tmp->id_aff.":\n".$tab_affichages[$lig_tmp->id_aff]['description']."\">".$tab_affichages[$lig_tmp->id_aff]['nom']."</a>\n";
+			}
+			else {
+				echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff'>$lig_tmp->id_aff</a>\n";
+			}
 			$cpt++;
 		}
 		echo "</p>\n";
@@ -379,13 +520,15 @@ if(!isset($afficher_listes)) {
 	//=========================================================
 
 	if(isset($id_aff)) {
-		echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>\n";
+		//echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>\n";
+		echo "<p class='bold'>Liste de requêtes pour l'affichage ".casse_mot($tab_affichages[$id_aff]['nom'], "min")." <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff&amp;mode=nommer_aff' title=\"Nommer/décrire l'affichage.\"><img src='../images/icons/wizard.png' class='icone16' alt='Modifier' /></a></p>\n";
 	}
 
 	//================================
 	// Formulaire d'ajout de requêtes:
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
+	$nom_requete="";
 	if((isset($_GET['editer_requete']))&&(isset($_GET['id_req'])&&($_GET['id_req']!="")&&(mb_strlen(my_ereg_replace("[0-9]","",$_GET['id_req']))==0))) {
 		$id_req=$_GET['id_req'];
 		echo "<p class='bold'>Modification de la requête n°$id_req";
@@ -405,13 +548,17 @@ if(!isset($afficher_listes)) {
 						echo " (<em>".$lig_edit_req->nom_requete."</em>)";
 						$tmp_tab_nom_requete[]=$lig_edit_req->nom_requete;
 					}
+					$nom_requete=$lig_edit_req->nom_requete;
 				}
 			}
 		}
-
 		echo "</p>\n";
 		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
 	}
+
+	echo "<p>Nommer la requête&nbsp;: <input type='text' name='nom_requete' id='nom_requete' value=\"$nom_requete\" />";
+	if($nom_requete=="") {echo " (<em title=\"Le nommage permet d'identifier plus rapidement une requête.\">optionnel</em>)";}
+	echo "</p>\n";
 
 	if(isset($id_aff)) {
 		echo "<input type='hidden' name='id_aff' value='$id_aff' />\n";
@@ -691,13 +838,15 @@ if(!isset($afficher_listes)) {
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' ORDER BY id_req;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
+			echo "<p>Cochez les requêtes à supprimer, ou cliquez sur les images <img src='../images/edit16.png' class='icone16' alt='Modifier' /> pour modifier/corriger des requêtes.</p>";
+			//echo "<table>\n";
 			while($lig=mysqli_fetch_object($res)) {
 				//$txt_requete="<div style='display:inline; width:20em; margin: 2px; border: 1px solid black;'>\n";
 				$txt_requete="";
 				$txt_requete.="<table summary='Requête n°$lig->id_req'>\n";
 				$txt_requete.="<tr>\n";
 				$txt_requete.="<td valign='top'>\n";
-				$txt_requete.="<input type='checkbox' name='suppr[]' id='suppr_$lig->id_req' value='$lig->id_req' /> ";
+				$txt_requete.="<input type='checkbox' name='suppr[]' id='suppr_$lig->id_req' value='$lig->id_req' title=\"Cocher pour sélectionner à la suppression\net valider la suppression en cliquant sur le bouton Ajouter plus haut\n(quitte à ne rien cocher dans la requête à Ajouter).\" /> ";
 				$txt_requete.="</td>\n";
 				$txt_requete.="<td>\n";
 				//$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
@@ -708,8 +857,11 @@ if(!isset($afficher_listes)) {
 				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
 					$txt_requete.=" (<em>".$lig_tmp->nom_requete."</em>)";
 				}
-				$txt_requete.="</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
-width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
+				$txt_requete.="</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Editer les paramètres de la requête'><img src ='../images/edit16.png'
+width='16' height='16' alt='Editer' /></a></b>";
+
+				$txt_requete.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Affecter les élèves dans des classes'><img src ='../images/icons/tableau_couleur.png'
+width='16' height='16' alt='Affecter' /></a></b>";
 
 				//===========================================
 				$id_req=$lig->id_req;
@@ -779,13 +931,43 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
 				if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
 				if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
-		
+
+				$tab_req_eff_fut=array();
+				for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+					if(($classe_fut[$loop_fut]!="Dep")&&($classe_fut[$loop_fut]!="Red")) {
+						$sql_tmp_eff=$sql_ele." AND classe_future='".$classe_fut[$loop_fut]."';";
+						//echo $sql_tmp_eff."<br />";
+						$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+						$tab_req_eff_fut[$loop_fut]=mysqli_num_rows($res_tmp_eff);
+					}
+				}
+				/*
+				$sql_tmp_eff=$sql_ele." AND classe_future=''";
+				$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+				$tab_req_eff_fut[]=mysqli_num_rows($res_tmp_eff);
+				*/
+
 				$sql_ele.=";";
 				//echo "$sql_ele<br />\n";
 				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 
-				$txt_requete.=" <span style='font-size:small;font-style:italic;'>(".mysqli_num_rows($res_ele).")</span><br />";
+				$txt_requete.=" <span style='font-size:small;font-style:italic; font-weight:bold;".((mysqli_num_rows($res_ele)==0) ? "color:red;" : "")."' title=\"Effectif de la requête.\">(".mysqli_num_rows($res_ele).")</span> - ";
 
+				//===========================================
+				foreach($tab_req_eff_fut as $loop_fut => $current_eff_req_fut) {
+					if($loop_fut>0) {
+						$txt_requete.="|";
+					}
+					if($classe_fut[$loop_fut]!="") {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]."\">".$classe_fut[$loop_fut].": ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]." : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+					else {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté.\">...: ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+				}
+				$txt_requete.="<br />";
 				//===========================================
 
 
@@ -847,12 +1029,45 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				}
 
 				$txt_requete.="</td>\n";
+/*
+echo "<pre>";
+print_r($classe_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_req_eff_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_couleur_classe_fut);
+echo "</pre>";
+
+				$txt_requete.="<td style='vertical-align:top'>\n";
+				foreach($tab_req_eff_fut as $loop_fut => $current_eff_req_fut) {
+					if($loop_fut>0) {
+						$txt_requete.="|";
+					}
+					if($classe_fut[$loop_fut]!="") {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]."\">".$classe_fut[$loop_fut].": ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif affecté en ".$classe_fut[$loop_fut]." : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+					else {
+						//$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté.\">...: ".$tab_req_eff_fut[$loop_fut]."</span>";
+						$txt_requete.="<span style='background-color:".$tab_couleur_classe_fut[$loop_fut]."' title=\"Effectif non affecté : ".$tab_req_eff_fut[$loop_fut]."\">".$tab_req_eff_fut[$loop_fut]."</span>";
+					}
+				}
+				$txt_requete.="</td>\n";
+*/
+				//===========================================
+
+
 				$txt_requete.="</tr>\n";
 				$txt_requete.="</table>\n";
 				//$txt_requete.="</div>\n";
 
 				echo $txt_requete;
 			}
+			//echo "</table>\n";
 
 			// Ajouter un bouton pour supprimer
 			echo "<p>Cochez les requêtes à supprimer.</p>\n";
@@ -866,10 +1081,15 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 	if(!isset($txt_requete)) {
 		echo "<script type='text/javascript'>
 	if(document.getElementById('div_affich_listes')) {document.getElementById('div_affich_listes').style.display='none';}
+	if(document.getElementById('nom_requete')) {document.getElementById('nom_requete').focus();}
 </script>\n";
 	}
 
-	echo "<p><i>NOTES&nbsp;:</i></p>\n";
+	echo "<script type='text/javascript'>
+	if(document.getElementById('nom_requete')) {document.getElementById('nom_requete').focus();}
+</script>\n";
+
+	echo "<p style='margin-top:2em;'><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
 	echo "<li>Les colonnes Classe actuelle et Classe future sont traitées suivant le mode OU<br />
 	Si vous cochez deux classes, les élèves pris en compte seront '<i>membre de Classe 1 OU membre de Classe 2</i>'</li>\n";
@@ -896,10 +1116,12 @@ else {
 		die();
 	}
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requêtes pour l'affichage n°$id_aff</a>";
+	$tab_aff_courant=get_infos_gc_affichage($id_aff);
+
+	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requêtes pour l'".casse_mot($tab_aff_courant['nom'], "min")."</a>";
 	echo "</p>\n";
 
-	echo "<h2>Projet $projet</h2>\n";
+	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 
 	//=========================================================
@@ -909,18 +1131,25 @@ else {
 	if(mysqli_num_rows($res)>0) {
 		echo "<div id='div_autres_aff' style='width:10em; float: right; text-align:center;'>\n";
 		//echo "Autres affichages&nbsp;: ";
-		echo "Liste des affichages&nbsp;: ";
+		echo "<p>Liste des affichages&nbsp;: ";
 		$cpt=0;
 		while($lig_tmp=mysqli_fetch_object($res)) {
 			if($cpt>0) {echo ", ";}
-			echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff&amp;afficher_listes=y'>$lig_tmp->id_aff</a>\n";
+			$tab_affichages[$lig_tmp->id_aff]=get_infos_gc_affichage($lig_tmp->id_aff);
+			if($tab_affichages[$lig_tmp->id_aff]['nomme']) {
+				echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff&amp;afficher_listes=y' title=\"Affichage n°".$lig_tmp->id_aff.":\n".$tab_affichages[$lig_tmp->id_aff]['description']."\">".$tab_affichages[$lig_tmp->id_aff]['nom']."</a>\n";
+			}
+			else {
+				echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff&amp;afficher_listes=y'>$lig_tmp->id_aff</a>\n";
+			}
+			//echo "<a href='?projet=$lig_tmp->projet&amp;id_aff=$lig_tmp->id_aff&amp;afficher_listes=y'>$lig_tmp->id_aff</a>\n";
 			$cpt++;
 		}
 		echo "</p>\n";
 
 		echo "<hr />\n";
 
-		echo "<div id='div_ods' style='text-align:center; border:1px solid black;'>\n";
+		echo "<div id='div_ods' style='text-align:center; border:1px solid black;' class='fieldset_opacite50'>\n";
 		echo "</div>\n";
 	
 		echo "<hr />\n";
@@ -974,7 +1203,8 @@ else {
 
 
 
-
+// 20140623
+//necessaire_affichage_infobulle_bull_simpl();
 
 
 //============================================================
@@ -1229,9 +1459,25 @@ else {
 		//echo "<p><b>Requête n°$id_req</b><br />";
 		$fich_csv.="Requête n°$id_req\n";
 
-		$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
-		$fin_lien_affect="' target='_blank' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b></a>";
+		$chaine_nom_requete="";
+		$sql="SELECT DISTINCT nom_requete FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='".$id_req."' AND nom_requete!='';";
+		//$txt_requete.="<br />".$sql."<br />";
+		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig_tmp=mysqli_fetch_object($res_tmp)) {
+			$chaine_nom_requete=" (<em>".$lig_tmp->nom_requete."</em>)";
+		}
+//				$txt_requete.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet' title='Affecter les élèves dans des classes'><img src ='../images/icons/tableau_couleur.png' width='16' height='16' alt='Affecter' /></a></b>";
+
+//https://127.0.0.1/steph/gepi_git_trunk/mod_genese_classes/affiche_listes.php?editer_requete=y&id_aff=7&id_req=1&projet=futures_5emes
+
+		//$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
+		$lien_affect="<p><a name='requete_$id_req'></a><a href='affiche_listes.php?editer_requete=y&amp;projet=$projet&amp;id_aff=$id_aff&amp;id_req=$id_req";
+		//$fin_lien_affect="' target='_blank'";
+		$fin_lien_affect="' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b>".$chaine_nom_requete."</a>";
 		$fin_lien_affect.=" - <a href='#' onclick=\"afficher_div('div_requete_$id_req','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher la requête n°$id_req en infobulle' /></a>";
+
+		$fin_lien_affect.=" <a href='affect_eleves_classes.php?choix_affich=y&amp;requete_definie=y&amp;projet=$projet&amp;id_aff=$id_aff&amp;id_req=$id_req' title=\"Affecter les élèves de cette requête dans des classes.\"><img src='../images/icons/tableau_couleur.png' class='icone16' alt='Affecter' /></a>";
+
 		$fin_lien_affect.="<br />";
 
 
@@ -1445,27 +1691,32 @@ else {
 
 		// Début du tableau des élèves pour la requête courante
 
-		$contenu_affichage_requete_courante.="<table class='boireaus' border='1' summary='Tableau des options'>\n";
-	
+		$contenu_affichage_requete_courante.="<table class='boireaus sortable resizable' border='1' summary='Tableau des options'>\n";
+		//$contenu_affichage_requete_courante.="<thead>\n";
 		//==========================================
 		$contenu_affichage_requete_courante.="<tr>\n";
 
 		//$contenu_affichage_requete_courante.="<th style='width:15em;'>Elève</th>\n";
-		$contenu_affichage_requete_courante.="<th>Elève</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par nom d'élève.\">Elève";
+		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select_sexe$loop'></span>";
+		$contenu_affichage_requete_courante.="</th>\n";
 
-		$contenu_affichage_requete_courante.="<th>Profil</th>\n";
-		$contenu_affichage_requete_courante.="<th>Niveau</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text'>Profil";
+		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select$loop'></span>";
+		$contenu_affichage_requete_courante.="</th>\n";
+		$contenu_affichage_requete_courante.="<th class='number' title=\"Cliquez pour trier par niveau scolaire.\">Niveau</th>\n";
 		$contenu_affichage_requete_courante.="<th>Absences</th>\n";
-		$contenu_affichage_requete_courante.="<th>Classe<br />actuelle</th>\n";
+		$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par classe.\">Classe<br />actuelle</th>\n";
 		//$fich_csv.="Elève;Classe actuelle;";
 		$fich_csv.="Elève;Clas.act;";
 
-		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>LV1</th>\n";$fich_csv.="LV1;";}
-		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>LV2</th>\n";$fich_csv.="LV2;";}
-		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>LV3</th>\n";$fich_csv.="LV3;";}
-		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>Options</th>\n";$fich_csv.="Options;";}
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV1.\">LV1</th>\n";$fich_csv.="LV1;";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV2.\">LV2</th>\n";$fich_csv.="LV2;";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par LV3.\">LV3</th>\n";$fich_csv.="LV3;";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th class='text' title=\"Cliquez pour trier par Options.\">Options</th>\n";$fich_csv.="Options;";}
 
-		$contenu_affichage_requete_courante.="<th rowspan='2'>Observations</th>\n";
+		//$contenu_affichage_requete_courante.="<th rowspan='2'>Observations</th>\n";
+		$contenu_affichage_requete_courante.="<th>Observations</th>\n";
 
 		$contenu_affichage_requete_courante.="</tr>\n";
 		$fich_csv.="\n";
@@ -1481,11 +1732,30 @@ else {
 		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 
+		$tab_lv_et_opt_requete[$loop]=array();
+		/*
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th id='th_lv1_$loop'>&nbsp;</th>\n";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th id='th_lv2_$loop'>&nbsp;</th>\n";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th id='th_lv3_$loop'>&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th id='th_autre_opt_$loop'>&nbsp;</th>\n";}
+		*/
+		/*
 		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
 		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
-		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th id='th_autre_opt_$loop'>&nbsp;</th>\n";}
+		*/
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th name='th_lv1_$loop' title=\"Liste des LV1 dans cette requête\">&nbsp;</th>\n";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th name='th_lv2_$loop' title=\"Liste des LV2 dans cette requête\">&nbsp;</th>\n";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th name='th_lv3_$loop' title=\"Liste des LV3 dans cette requête\">&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th name='th_autre_opt_$loop' title=\"Liste des options dans cette requête\">&nbsp;</th>\n";}
+
+		$contenu_affichage_requete_courante.="<th></th>\n";
+
 		$contenu_affichage_requete_courante.="</tr>\n";
+
+		//$contenu_affichage_requete_courante.="</thead>\n";
+		//$contenu_affichage_requete_courante.="<tbody>\n";
 
 		//==========================================
 		$lignes_tab="";
@@ -1529,7 +1799,7 @@ else {
 			}
 			//$contenu_affichage_requete_courante.="<tr><td colspan='5'>$sql</tr></tr>\n";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			//$eff_tot_classe=mysql_num_rows($res);
+			//$eff_tot_classe=mysqli_num_rows($res);
 			//$eff_tot+=$eff_tot_classe;
 			//==========================================
 		
@@ -1540,9 +1810,18 @@ else {
 						$tab_ele_toutes_requetes[]=$lig->login;
 
 						$eff_tot_select++;
-						if(mb_strtoupper($lig->sexe)=='F') {$eff_tot_select_F++;} else {$eff_tot_select_M++;}
+						if(mb_strtoupper($lig->sexe)=='F') {
+							$eff_tot_select_F++;
+							$icone_photo="../mod_trombinoscopes/images/photo_f.png";
+						}
+						else {
+							$eff_tot_select_M++;
+							$icone_photo="../mod_trombinoscopes/images/photo_g.png";
+						}
 
 						//$num_eleve2_id_classe_actuelle[$j]=$cpt;
+
+						$designation_eleve=casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2');
 
 						//$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 						$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
@@ -1550,17 +1829,19 @@ else {
 						$contenu_affichage_requete_courante.="<td>\n";
 						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
 						if(nom_photo($lig->elenoet)) {
-							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							$contenu_affichage_requete_courante.="<div style='float:right;width:16px;'><a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\"><img src='$icone_photo' class='icone16' alt='Photo' /></a></div>";
 
-							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\">";
+
+							$contenu_affichage_requete_courante.=$designation_eleve;
 							$contenu_affichage_requete_courante.="</a>\n";
 						}
 						else {
-							$contenu_affichage_requete_courante.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.=$designation_eleve;
 						}
 						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
 						$contenu_affichage_requete_courante.="</td>\n";
-						$lignes_tab.=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)).";";
+						$lignes_tab.=$designation_eleve.";";
 
 						//===================================
 						// Initialisations
@@ -1619,7 +1900,7 @@ else {
 						$contenu_affichage_requete_courante.="<td>\n";
 						if(($moy!="")&&(mb_strlen(preg_replace("/[0-9\.,]/","",$moy))==0)) {
 							if($num_per2>0) {
-								$contenu_affichage_requete_courante.="<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+								$contenu_affichage_requete_courante.="<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;' title=\"Cliquer pour afficher les bulletins simplifiés de l'élève.\">";
 							}
 							if($moy<7) {
 								$contenu_affichage_requete_courante.="<span style='color:red;'>";
@@ -1637,10 +1918,10 @@ else {
 								$contenu_affichage_requete_courante.="<span style='color:blue;'>";
 							}
 							$contenu_affichage_requete_courante.="$moy\n";
+							$contenu_affichage_requete_courante.="</span>";
 							if($num_per2>0) {
 								$contenu_affichage_requete_courante.="</a>\n";
 							}
-							$contenu_affichage_requete_courante.="</span>";
 							$contenu_affichage_requete_courante.="<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='$moy' />\n";
 
 							$tab_moy_eleves[]=$moy;
@@ -1652,7 +1933,7 @@ else {
 						$contenu_affichage_requete_courante.="</td>\n";
 
 						//===================================
-						$contenu_affichage_requete_courante.="<td>\n";
+						$contenu_affichage_requete_courante.="<td title=\"Absences/Non justifiées/Retards\">\n";
 						$contenu_affichage_requete_courante.=colorise_abs($nb_absences,$non_justifie,$nb_retards,'return');
 						$contenu_affichage_requete_courante.="<input type='hidden' name='nb_absences[$cpt]' id='nb_absences_$cpt' value='$nb_absences' />\n";
 						$contenu_affichage_requete_courante.="<input type='hidden' name='non_justifie[$cpt]' id='non_justifie_$cpt' value='$non_justifie' />\n";
@@ -1673,11 +1954,13 @@ else {
 							for($i=0;$i<count($lv1);$i++) {
 								if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {
 									$contenu_affichage_requete_courante.=$lv1[$i];
-
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv1[$cpt]' id='lv1_".$cpt."' value='$lv1[$i]' />\n";
 
 									$lignes_tab.=$lv1[$i].";";
 
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv1']))||(!in_array($lv1[$i], $tab_lv_et_opt_requete[$loop]['lv1']))) {
+										$tab_lv_et_opt_requete[$loop]['lv1'][]=$lv1[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1692,6 +1975,10 @@ else {
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv2[$cpt]' id='lv2_".$cpt."' value='$lv2[$i]' />\n";
 
 									$lignes_tab.=$lv2[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv2']))||(!in_array($lv2[$i], $tab_lv_et_opt_requete[$loop]['lv2']))) {
+										$tab_lv_et_opt_requete[$loop]['lv2'][]=$lv2[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1705,6 +1992,10 @@ else {
 									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv3[$cpt]' id='lv3_".$cpt."' value='$lv3[$i]' />\n";
 
 									$lignes_tab.=$lv3[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['lv3']))||(!in_array($lv3[$i], $tab_lv_et_opt_requete[$loop]['lv3']))) {
+										$tab_lv_et_opt_requete[$loop]['lv3'][]=$lv3[$i];
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -1720,6 +2011,11 @@ else {
 									$contenu_affichage_requete_courante.=$autre_opt[$i];
 
 									$lignes_tab.=$autre_opt[$i].";";
+
+									if((!isset($tab_lv_et_opt_requete[$loop]['autre_opt']))||(!in_array($autre_opt[$i], $tab_lv_et_opt_requete[$loop]['autre_opt']))) {
+										$tab_lv_et_opt_requete[$loop]['autre_opt'][]=$autre_opt[$i];
+									}
+
 									$cpt_autre_opt++;
 								}
 							}
@@ -1754,9 +2050,9 @@ else {
 						$texte_chgt_classe.="<input type='submit' value='Valider' />\n";
 						$texte_chgt_classe.="</div>\n";
 						$texte_chgt_classe.="</form>\n";
-						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n',1000);
 
-						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\"><img src='../images/icons/wizard.png' /></a>";
+						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\" title=\"Cliquez pour choisir/modifier la classe future de l'élève.\"><img src='../images/icons/wizard.png' /></a>";
 
 						$contenu_affichage_requete_courante.="</td>\n";
 
@@ -1767,6 +2063,7 @@ else {
 				}
 			}
 		}
+		//$contenu_affichage_requete_courante.="</tbody>\n";
 		$contenu_affichage_requete_courante.="</table>\n";
 		if(count($tab_moy_eleves)>0) {
 			$contenu_affichage_requete_courante.="&nbsp;<br />";
@@ -1796,7 +2093,7 @@ else {
 
 
 			if(count($tab_classes_fut_de_cette_requete)>0) {
-				$contenu_affichage_requete_courante.="<div style='float:left; width:20em;'>\n";
+				$contenu_affichage_requete_courante.="<div style='float:left; width:20em;' title=\"Liste des contraintes imposées sur des classes.\">\n";
 				$contenu_affichage_requete_courante.=afficher_contraintes($tab_classes_fut_de_cette_requete);
 				$contenu_affichage_requete_courante.="</div>\n";
 			}
@@ -1820,7 +2117,8 @@ else {
 		$contenu_affichage_requete_courante=preg_replace("/profil_/","profil_bis_",$contenu_affichage_requete_courante);
 		$contenu_affichage_requete_courante=preg_replace("/moy_/","moy_bis_",$contenu_affichage_requete_courante);
 		$texte=$contenu_affichage_requete_courante;
-		$tabdiv_infobulle[]=creer_div_infobulle('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','n');
+		//$tabdiv_infobulle[]=creer_div_infobulle('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle2('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','y');
 		//=============================
 
 		echo "&nbsp;";
@@ -1856,6 +2154,74 @@ else {
 		$fich_csv.="\n";
 
 		$fich_csv.=$lignes_tab;
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv1'])) {
+			$chaine_liste_lv1="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv1'] as $key => $value) {
+				$chaine_liste_lv1.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv1_".$loop."')) {
+		document.getElementById('th_lv1_".$loop."').innerHTML='".$chaine_liste_lv1."';
+	}
+	*/
+	if(document.getElementsByName('th_lv1_".$loop."')) {
+		document.getElementsByName('th_lv1_".$loop."')[0].innerHTML='".$chaine_liste_lv1."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv2'])) {
+			$chaine_liste_lv2="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv2'] as $key => $value) {
+				$chaine_liste_lv2.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv2_".$loop."')) {
+		document.getElementById('th_lv2_".$loop."').innerHTML='".$chaine_liste_lv2."';
+	}
+	*/
+	if(document.getElementsByName('th_lv2_".$loop."')) {
+		document.getElementsByName('th_lv2_".$loop."')[0].innerHTML='".$chaine_liste_lv2."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['lv3'])) {
+			$chaine_liste_lv3="";
+			foreach($tab_lv_et_opt_requete[$loop]['lv3'] as $key => $value) {
+				$chaine_liste_lv3.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_lv3_".$loop."')) {
+		document.getElementById('th_lv3_".$loop."').innerHTML='".$chaine_liste_lv3."';
+	}
+	*/
+	if(document.getElementsByName('th_lv3_".$loop."')) {
+		document.getElementsByName('th_lv3_".$loop."')[0].innerHTML='".$chaine_liste_lv3."';
+	}
+</script>";
+		}
+
+		if(isset($tab_lv_et_opt_requete[$loop]['autre_opt'])) {
+			$chaine_liste_autre_opt="";
+			foreach($tab_lv_et_opt_requete[$loop]['autre_opt'] as $key => $value) {
+				$chaine_liste_autre_opt.=" ".$value;
+			}
+			echo "<script type='text/javascript'>
+	/*
+	if(document.getElementById('th_autre_opt_".$loop."')) {
+		document.getElementById('th_autre_opt_".$loop."').innerHTML='".$chaine_liste_autre_opt."';
+	}
+	*/
+	if(document.getElementsByName('th_autre_opt_".$loop."')) {
+		document.getElementsByName('th_autre_opt_".$loop."')[0].innerHTML='".$chaine_liste_autre_opt."';
+	}
+</script>";
+		}
 	}
 
 	echo "</form>\n";

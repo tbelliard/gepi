@@ -396,6 +396,15 @@ if(!isset($quitter_la_page)){
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'>\n";
 	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+
+	if(getSettingAOui('active_mod_engagements')) {
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&(count(get_tab_engagements("eleve", "scolarite"))>0))||
+		(($_SESSION['statut']=='cpe')&&(count(get_tab_engagements("eleve", "cpe"))>0))) {
+			echo " | <a href='../mod_engagements/saisie_engagements.php?id_classe[0]=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisie des engagements</a>\n";
+		}
+	}
+
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
 
 	if($chaine_options_classes!="") {
@@ -522,6 +531,8 @@ echo add_token_field();
 //debug_var();
 
 //=============================
+
+$tab_engagements_user=get_tab_engagements_user("", $id_classe);
 ?>
 
 
@@ -726,7 +737,21 @@ au sens Absences/appartenance de l'élève
 
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td><p>";
+		echo "<td>";
+		if(array_key_exists($login_eleve, $tab_engagements_user['login_user'])) {
+			$chaine_eng="";
+			$chaine_eng_img="";
+			for($loop_eng=0;$loop_eng<count($tab_engagements_user['login_user'][$login_eleve]);$loop_eng++) {
+				$cpt_eng=$tab_engagements_user['login_user'][$login_eleve][$loop_eng];
+				if($chaine_eng!="") {$chaine_eng.=",\n";}
+				$chaine_eng.=$tab_engagements_user['indice'][$cpt_eng]['nom_engagement'];
+
+				$chaine_eng_img.=retourne_image_engagement($tab_engagements_user['indice'][$cpt_eng]['code_engagement'], $tab_engagements_user['indice'][$cpt_eng]['nom_engagement']);
+			}
+			//echo "<div style='float:right;width:16px;' title=\"".$chaine_eng."\"><img src='../images/vert.png' class='icone16' alt='Engagement(s)' /></div>";
+			echo "<div style='float:right;width:16px;' title=\"".$chaine_eng."\">$chaine_eng_img</div>";
+		}
+		echo "<p>";
 
 		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank'>";
  		echo my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2');

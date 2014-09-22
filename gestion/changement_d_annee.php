@@ -59,6 +59,32 @@ if (!checkAccess()) {
 
 $msg = '';
 
+if(isset($_GET['suppr_comptes_resp_en_reserve_et_collision_eleve'])) {
+	check_token();
+
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM eleves);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($res) {
+		$msg.="Ménage effectué.<br />Refaites maintenant une mise en réserve des comptes élèves<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de logins responsables mis en réserve.<br />";
+	}
+}
+
+if(isset($_GET['suppr_comptes_ele_en_reserve_et_collision_resp'])) {
+	check_token();
+
+	$sql="DELETE FROM tempo_utilisateurs WHERE statut='eleve' AND login IN (SELECT u.login FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND u.login=rp.login);";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($res) {
+		$msg.="Ménage effectué.<br />Refaites maintenant une mise en réserve des comptes responsables<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de logins élèves mis en réserve.<br />";
+	}
+}
+
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 		check_token();
@@ -104,6 +130,21 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$msg.="Erreur lors de la mise en réserve des comptes élèves.<br />";
+
+				$sql="SELECT * FROM tempo_utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM eleves);";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$msg.="Anomalie&nbsp;: Un ou des comptes responsables ont été mis en réserve avec un login correspondant à un compte élève.<br />Liste des comptes&nbsp;: ";
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt>0) {$msg.=", ";}
+						$msg.=$lig->login;
+						$tmp_tab=get_info_responsable($lig->login);
+						if(count($tmp_tab)>0) {$msg.=" (<em><a href='../responsables/modify_resp.php?pers_id=".$tmp_tab['pers_id']."' target='_blank'>".$tmp_tab['nom']." ".$tmp_tab['prenom']."</a></em>)";}
+						$cpt++;
+					}
+					$msg.="Ces comptes peuvent correspondre à une mise en réserve de l'année précédente... pour des parents dont les élèves ont quitté l'établissement.<br /><a href='".$_SERVER['PHP_SELF']."?suppr_comptes_resp_en_reserve_et_collision_eleve=y".add_token_in_url()."'>Supprimer de la mise en réserve les comptes correspondants</a><br />Vous devrez par la suite refaire une mise en réserve des comptes élèves.<br /><br />Vous pouvez aussi, plus simplement supprimer les comptes mis en réserve à l'aide des liens plus bas dans la page, et ensuite refaire la mise en réserve pour ne conserver que les comptes de cette année.<br />";
+				}
 			}
 		}
 
@@ -120,6 +161,21 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$msg.="Erreur lors de la mise en réserve des comptes responsables.<br />";
+
+				$sql="SELECT * FROM tempo_utilisateurs WHERE statut='eleve' AND login IN (SELECT u.login FROM utilisateurs u, resp_pers rp WHERE u.statut='responsable' AND u.login=rp.login);";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$msg.="Anomalie&nbsp;: Un ou des comptes élèves ont été mis en réserve avec un login correspondant à un compte responsable.<br />Liste des comptes&nbsp;: ";
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)) {
+						if($cpt>0) {$msg.=", ";}
+						$msg.=$lig->login;
+						$tmp_tab=get_info_eleve($lig->login);
+						if(count($tmp_tab)>0) {$msg.=" (<em><a href='../eleves/modify_eleve.php?eleve_login=".$lig->login."' target='_blank'>".$tmp_tab['nom']." ".$tmp_tab['prenom']."</a></em>)";}
+						$cpt++;
+					}
+					$msg.="Ces comptes peuvent correspondre à une mise en réserve de l'année précédente... pour des élèves qui ont quitté l'établissement.<br /><a href='".$_SERVER['PHP_SELF']."?suppr_comptes_ele_en_reserve_et_collision_resp=y".add_token_in_url()."'>Supprimer de la mise en réserve les comptes correspondants</a><br />Vous devrez par la suite refaire une mise en réserve des comptes responsables.<br /><br />Vous pouvez aussi, plus simplement supprimer les comptes mis en réserve à l'aide des liens plus bas dans la page, et ensuite refaire la mise en réserve pour ne conserver que les comptes de cette année.<br />";
+				}
 			}
 		}
 
@@ -229,6 +285,7 @@ echo "<li><p><a href='accueil_sauve.php?chgt_annee=y'>Sauvegarder la base</a> $l
 if(my_strtolower(mb_substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
 	echo "<li><p>Eventuellement, faire un <a href='../cahier_texte_2/export_cdt.php?chgt_annee=y'>export des cahiers de textes</a><br />et une <a href='accueil_sauve.php?chgt_annee=y#zip'>sauvegarde des documents du Cahier de textes</a> $lien_svg</p></li>\n";
 	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
+	echo "<li><p>Si l'archivage des CDT est fait, vous pouvez aussi <a href='../cahier_texte_admin/suppr_docs_joints_cdt.php?chgt_annee=y'>supprimer les documents joints aux cahiers de textes</a> de l'année qui se termine.</p></li>\n";
 }
 if(getSettingValue('active_module_absence')=='2') {
 	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
@@ -245,6 +302,9 @@ else {
 }
 if(file_exists("../mod_plugins/archivageAPB/index.php")) {
 	echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
+}
+if((getSettingAOui('active_mod_discipline'))&&(nombre_de_dossiers_docs_joints_a_des_sanctions()>0)) {
+	echo "<li><a href='../mod_discipline/discipline_admin.php?chgt_annee=y#suppr_docs_joints'>Supprimer les dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s</a>.</li>\n";
 }
 echo "</ol>\n";
 
@@ -450,9 +510,33 @@ if(getSettingValue("active_module_absence")=="2"){
 	echo "<p>Ces dates de verrouillage, indiquant à quelle date la période de notes a été close, n'ont rien à voir avec les dates déclarées pour les fins de périodes d'absences dans la page de Verrouillage.<br />
 	Les dates de fin de période affichées dans la page de Verrouillage concernent la liste des élèves qui seront présentés dans vos groupes/classes pour la saisie des absences (<em>tel élève arrivé au 2è trimestre ou ayant changé de classe,... doit ou ne doit pas apparaître sur telle période dans tel groupe/classe</em>).</p>\n";
 }
-echo "</li>\n";
-echo "</ul>\n";
+echo "</li>
+	<li>
+		<p class='bold'>Rappel des opérations à effectuer après l'initialisation</p>
+		<ul>
+			<li>
+				<p><a href='../edt_organisation/edt_calendrier.php'>Changer les dates dans le calendrier EDT</a> et forcer les dates pour les absences (<em>Lien Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous.</em>).<br />
+				Les dates de périodes de notes et les dates de vacances doivent être mises à jour sans quoi les compositions des groupes risquent d'être erronées lors de la saisie des absences et les totaux d'absences également.<br />
+				De plus, si vous avez de nouvelles classes, il faut qu'elles soient associées aux périodes de notes et de vacances.</p>
+			</li>
+			<li>
+				<p>Créer les comptes élèves/responsables manquants.</p>
+			</li>
+			<li>
+				<p>Activer les comptes élèves/responsables.</p>
+			</li>
+			<li>
+				<p>Effectuer l'association SSO pour les nouveaux comptes si vous êtes dans un environnement ENT.</p>
+			</li>
+			<li>
+				<p>Si vous utilisez un compte générique pour les professeurs d'EPS pour la saisie des absences<br />(<em>il arrive que tous les professeurs d'EPS fassent les saisies sur la même machine; se déconnecter/reconnecter pour ces saisies est très malcommode</em>),<br /><a href='../utilisateurs/index.php?mode=personnels'>ré-activer le compte Equipe EPS</a>,<br />créer un  enseignement par classe invisible sur B, CN, CDT via <a href='../classes/classes_param.php#creer_enseignement'>Paramétrage par lots</a>.</p>
+			</li>
+			<li>
+				<p>Si vous utilisez le module Flux RSS pour les cahiers de textes, <a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas'>Créer les flux RSS manquants</a>.</p>
+			</li>
+		</ul>
+	</li>
+</ul>\n";
 echo "<p><br /></p>\n";
-
 require("../lib/footer.inc.php");
 ?>

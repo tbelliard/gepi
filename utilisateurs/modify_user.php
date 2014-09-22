@@ -556,32 +556,49 @@ if (isset($user_login) and ($user_login!='')) {
 	}
 
 	// Utilisateurs précédent/suivant:
+	$utilisateur_courant_trouve="n";
 	//$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' ORDER BY nom,prenom";
-	$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' AND etat='actif' ORDER BY nom,prenom";
+	//$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE statut='$user_statut' AND etat='actif' ORDER BY statut, nom,prenom";
+	$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE etat='actif' ORDER BY statut, nom,prenom";
 	$res_liste_user=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_liste_user)>0){
 		$login_user_prec="";
 		$login_user_suiv="";
 		$temoin_tmp=0;
 		$liste_options_user="";
+		$statut_prec="";
 		while($lig_user_tmp=mysqli_fetch_object($res_liste_user)){
+			if($lig_user_tmp->statut!=$statut_prec) {
+				if($statut_prec!="") {
+					$liste_options_user.="</optgroup>\n";
+				}
+				$liste_options_user.="<optgroup label='-- $lig_user_tmp->statut --'>\n";
+				$statut_prec=$lig_user_tmp->statut;
+			}
 			if("$lig_user_tmp->login"=="$user_login"){
-				$liste_options_user.="<option value='$lig_user_tmp->login' selected='true'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
+				$liste_options_user.="<option value='$lig_user_tmp->login' selected='true' title=\"$lig_user_tmp->login : Compte $lig_user_tmp->statut\">".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
+				$utilisateur_courant_trouve="y";
 				$temoin_tmp=1;
 				if($lig_user_tmp=mysqli_fetch_object($res_liste_user)){
 					$login_user_suiv=$lig_user_tmp->login;
-					$liste_options_user.="<option value='$lig_user_tmp->login'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
+					$liste_options_user.="<option value='$lig_user_tmp->login' title=\"$lig_user_tmp->login : Compte $lig_user_tmp->statut\">".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 				}
 				else{
 					$login_user_suiv="";
 				}
 			}
 			else{
-					$liste_options_user.="<option value='$lig_user_tmp->login'>".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
+					$liste_options_user.="<option value='$lig_user_tmp->login' title=\"$lig_user_tmp->login : Compte $lig_user_tmp->statut\">".mb_strtoupper($lig_user_tmp->nom)." ".ucfirst(mb_strtolower($lig_user_tmp->prenom))."</option>\n";
 			}
 			if($temoin_tmp==0){
 				$login_user_prec=$lig_user_tmp->login;
 			}
+		}
+		$liste_options_user.="</optgroup>\n";
+
+		// Si on désactive un compte, il n'est plus dans la liste SELECT
+		if($utilisateur_courant_trouve=="n") {
+			$liste_options_user="<option value=''>---</option>\n".$liste_options_user;
 		}
 	}
 
@@ -693,13 +710,22 @@ if (isset($user_login) and ($user_login!='')) {
 if(isset($liste_options_user)){
 	if("$liste_options_user"!=""){
 		if("$login_user_prec"!=""){echo " | <a href='modify_user.php?user_login=$login_user_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Précédent</a>\n";}
-		echo " | <select name='user_login' onchange=\"if(confirm_abandon (this, change, '$themessage')){document.form_choix_user.submit()}\">\n";
+		//echo " | <select name='user_login' id='user_login_form_chgt_user' onchange=\"if(confirm_abandon (this, change, '$themessage')){document.form_choix_user.submit()}\">\n";
+		echo " | <select name='user_login' id='user_login_form_chgt_user' onchange=\"valide_form_chgt_user()\">\n";
 		echo $liste_options_user;
 		echo "</select>\n";
 		if("$login_user_suiv"!=""){echo " | <a href='modify_user.php?user_login=$login_user_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Suivant</a>\n";}
 	}
 }
 echo "</p>\n";
+echo "<script type='text/javascript'>
+	function valide_form_chgt_user() {
+		valeur_user=document.getElementById('user_login_form_chgt_user').options[document.getElementById('user_login_form_chgt_user').selectedIndex].value;
+		if(valeur_user!='') {
+			if(confirm_abandon (this, change, '$themessage')){document.form_choix_user.submit()}
+		}
+	}
+</script>\n";
 echo "</form>\n";
 
 $ldap_write_access = getSettingValue("ldap_write_access") == "yes" ? true : false;

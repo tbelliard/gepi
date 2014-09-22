@@ -184,7 +184,7 @@ $key_setting[]='active_mod_discipline';
 
 //Module modèle Open_Office
 $chemin[] = "/mod_ooo/ooo_admin.php";
-$titre[] = "Modèle OpenOffice";
+$titre[] = "Modèle openDocument";
 $expli[] = "Pour gérer les modèles Open Office de Gepi.";
 $key_setting[]='active_mod_ooo';
 
@@ -344,6 +344,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	}
 	unset($nouveauItem);
 	
+// Absences/remplacements de professeurs
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_abs_prof/index_admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_module_absence',"mod_abs_prof") ;
+		$nouveauItem->titre="Absences/remplacements professeurs" ;
+		$nouveauItem->expli="Pour gérer le module des saisie des absences et remplacements ponctuels de professeurs" ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+	
 // Emploi du temps
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/edt_organisation/edt.php';	
@@ -352,6 +364,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$nouveauItem->choix_icone('autorise_edt%') ;	
 		$nouveauItem->titre="Emploi du temps" ;
 		$nouveauItem->expli="Pour gérer l'ouverture de l'emploi du temps de Gepi." ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
+// Emploi du temps ICAL/ICS
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/edt/index_admin.php';	
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('autorise_edt%') ;	
+		$nouveauItem->titre="Emploi du temps ICAL/ICS" ;
+		$nouveauItem->expli="Pour gérer l'ouverture et les paramètres des emplois du temps importés depuis des fichiers ICAL/ICS." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
@@ -459,8 +483,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->choix_icone('active_mod_ooo') ;	
-		$nouveauItem->titre="Modèle OpenOffice" ;
-		$nouveauItem->expli="Pour gérer les modèles Open Office de Gepi." ;
+		$nouveauItem->titre="Modèle openDocument" ;
+		$nouveauItem->expli="Pour gérer les modèles openDocument (libreOffice/openOffice) de Gepi." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);

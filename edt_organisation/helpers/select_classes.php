@@ -35,7 +35,7 @@ echo '
 		$nom[$i] = my_strtoupper(remplace_accents(old_mysql_result($query, $i, "classe"), 'all_nospace'));
 
 		// On détermine le selected si c'est possible
-		if (trim($nom[$i]) == $classe_selected OR $nom[$i] == $classe_selected) {
+		if (trim($nom[$i]) == $classe_selected OR $nom[$i] == $classe_selected OR preg_replace("/ /","",$nom[$i])==preg_replace("/ /","",$classe_selected)) {
 			$selected = ' selected="selected"';
 		}else{
 			$selected = '';

@@ -218,7 +218,8 @@ if($nb_lv2>0) {$cpt++;}
 if($nb_lv3>0) {$cpt++;}
 if($nb_autre>0) {$cpt++;}
 
-echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='ajout'>\n";
+echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='ajout'>
+<fieldset class='fieldset_opacite50'>\n";
 echo "<table class='boireaus' border='1' summary='Choix des contraintes'>\n";
 echo "<tr>\n";
 echo "<th rowspan='2'>Classe future</th>\n";
@@ -295,7 +296,8 @@ echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "<input type='hidden' name='projet' value='$projet' />\n";
 echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter' /></p>\n";
 
-echo "</form>\n";
+echo "</fieldset>
+</form>\n";
 
 
 //================================
@@ -304,7 +306,8 @@ echo "</form>\n";
 $sql="SELECT * FROM gc_options_classes WHERE projet='$projet' ORDER BY classe_future,opt_exclue;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)>0) {
-	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr'>\n";
+	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='suppr'>
+	<fieldset class='fieldset_opacite50'>\n";
 	echo "<p>Si vous souhaitez supprimer des contraintes préalablement définies, cochez et validez&nbsp;:</p>\n";
 	$cpt=0;
 	$classe_prec="";
@@ -326,7 +329,9 @@ if(mysqli_num_rows($res)>0) {
 	echo "<input type='hidden' name='is_posted' value='y' />\n";
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
 	echo "<p align='center'><input type='submit' name='supprimer' value='Supprimer' /></p>\n";
-	echo "</form>\n";
+	echo "
+	</fieldset>
+</form>\n";
 }
 
 echo "<p><br /></p>

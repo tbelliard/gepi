@@ -60,6 +60,9 @@ if ($test == -1) {
 } else {
 	$result .= msj_present("La table existe déjà");
 }
+
+// Merci de ne pas enlever le témoin ci-dessous de "fin de section exemple"
+// Fin SECTION EXEMPLE
 */
 
 $result .= "<br />";

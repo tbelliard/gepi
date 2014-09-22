@@ -88,8 +88,24 @@ interface discipline_admin {
 <!-- fin bandeau_template.html      -->
 
   <div id='container'>
+
+<?php
+	echo "
+  <p class='bold'><a href='";
+	if(isset($_SESSION['chgt_annee'])) {
+		echo "../gestion/changement_d_annee.php";
+	}
+	else {
+		echo "../accueil.php";
+	}
+	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/index.php", $_SESSION['statut']))) {
+		echo " | <a href='index.php'>Accéder au module Discipline</a>";
+	}
+	"</p>";
+?>
   <!-- Fin haut de page -->
-  
+  <div class='fieldset_opacite50'>
   <h2>Configuration générale</h2>
   <p>
 	<em>
@@ -186,11 +202,41 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	  <input type="submit" value="Enregistrer"/>
 	</p>
   </form>
-  
+  </div>
+
+<?php
+if($nombre_de_dossiers_de_documents_discipline>0) {
+?>
+  <div class='fieldset_opacite50' style='margin-top:1em;'>
+  <form action="discipline_admin.php" id="form1" method="post">
+<?php
+echo add_token_field();
+?>
+	<a name='suppr_docs_joints'></a>
+	<h2>Suppression des documents joints aux <?php echo $mod_disc_terme_sanction;?>s</h2>
+	  <legend class="invisible">Suppression des documents joints aux <?php echo $mod_disc_terme_sanction;?>s</legend>
+	  <?php
+	  	echo "<p>$nombre_de_dossiers_de_documents_discipline dossier(s) de documents joints à des ".$mod_disc_terme_sanction."s est(sont) présent(s).<br />
+	  	Une fois la $mod_disc_terme_sanction effectuée, ces dossiers n'ont plus d'utilité.</p>";
+	  ?>
+
+	<p class="center">
+	  <input type="hidden" name="suppr_doc_joints" value="y" />
+	  <input type="submit" value="Supprimer ces dossiers"/>
+	</p>
+  </form>
+  </div>
+
 	<?php
+}
+else {
+	echo "<p style='margin-top:1em;'>Pour information, aucun dossier de document joint à une $mod_disc_terme_sanction n'existe actuellement.</p>";
+}
+		/*
 		if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/index.php", $_SESSION['statut']))) {
 			echo "<p style='margin-top:1em;'><a href='index.php'>Accéder au module Discipline</a></p>";
 		}
+		*/
 	?>
 
 <!-- Début du pied -->

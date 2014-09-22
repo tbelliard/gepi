@@ -875,8 +875,8 @@ $tab_req[] = "INSERT INTO droits SET id='/lib/ajax_corriger_app.php',administrat
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_annees_anterieures/archivage_bull_pdf.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Génération archives bulletins PDF', '');";
 
-$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet OpenOffice',statut='';";
-$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet OpenOffice',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/imprime_ooo.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Imprime fiches brevet openDocument',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/OOo/fiches_brevet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Fiches brevet openDocument',statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/eleves/modif_sexe.php',
 administrateur='V',
@@ -1120,6 +1120,156 @@ description='Correction des notices CDT',
 statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/saisie_notes.php','V','V','F','V','F','F','V','F','Notanet: Saisie notes','');";
+
+$tab_req[] = "INSERT INTO droits SET id='/edt/index_admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='EDT ICAL : Administration',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/edt/index.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='EDT ICAL : Index',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_admin/suppr_docs_joints_cdt.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Suppression des documents joints aux CDT',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/index.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='F',
+autre='F',
+description='Absences et remplacements de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/saisir_absence.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie des absences de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/proposer_remplacement.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Proposer des remplacements aux professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/attribuer_remplacement.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Attribuer les remplacements de professeurs',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/index_admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Absences/remplacements de professeurs : Administration',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/afficher_remplacements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Afficher les remplacements de professeurs', statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/index_admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Engagements',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/saisie_engagements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des engagements', statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/imprimer_documents.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='F', autre='F', description='Imprimer documents', statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/saisie_engagements_user.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie des engagements pour un utilisateur',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_lsl/index.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Index du module LSL',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/groupes/correction_inscriptions_grp_csv.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Correction des inscriptions dans des groupes d après un CSV',
+statut='';";
 
 //$tab_req[] = "";
 

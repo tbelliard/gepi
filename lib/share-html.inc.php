@@ -2499,7 +2499,7 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		}
 		$sql.="statut='".$tab_statuts[$loop]."'";
 	}
-	$sql.=") AND etat='actif' ORDER BY statut, login, nom, prenom;";
+	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -2533,6 +2533,65 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 				$temp_style="";
 			}
 			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
+function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_champ='matiere', $nom_func_js_tout_cocher_decocher='cocher_decocher', $matieres_enseignees="y") {
+
+	$retour="";
+
+	if($matieres_enseignees=="y") {
+		$sql="SELECT DISTINCT m.* FROM matieres m, j_groupes_matieres jgm WHERE m.matiere=jgm.id_matiere ORDER BY m.priority, m.matiere, m.nom_complet;";
+	}
+	else {
+		$sql="SELECT * FROM matieres ORDER BY priority, matiere, nom_complet;";
+	}
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des matieres\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->matiere' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->matiere, $tab_matieres_preselectionnees)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->matiere\"><span id='texte_".$nom_champ."_$cpt'$temp_style>".$lig->nom_complet." (<em>$lig->matiere</em>)</span></label><br />\n";
 
 			$cpt++;
 		}
@@ -3124,4 +3183,307 @@ function affiche_tableau_pp($tab_classe=array()) {
 
 	return $retour;
 }
+
+
+function necessaire_bull_simple() {
+	echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+	
+		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
+			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+			echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
+			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+			echo "</a>\n";
+			echo "</div>\n";
+	
+			echo "<div id='titre_entete_bull_simp'></div>\n";
+		echo "</div>\n";
+		
+		echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+		echo "</div>\n";
+	
+	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+	// <![CDATA[
+	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+}
+
+function affiche_remplacements_en_attente_de_reponse($login_user) {
+	global$gepiPath;
+
+	$retour="";
+
+	$tab=get_tab_propositions_remplacements($login_user, "en_attente");
+	if(count($tab)>0) {
+		$retour="<div class='postit' style='text-align:center;'>Vous avez ".count($tab)." remplacement(s) ponctuel(s) proposé(s) qui attendent une réponse de votre part.<br />Une réponse (<em>dans l'idéal, positive</em>) serait plus que bienvenue pour soulager la permanence et combler l'insatiable soif d'apprentissage des élèves;).<br /><a href='$gepiPath/mod_abs_prof/index.php'>Consulter les propositions pour les accepter ou les rejeter</a></div>";
+	}
+
+	return $retour;
+}
+
+function affiche_remplacements_confirmes($login_user) {
+	global$gepiPath;
+
+	$retour="";
+
+	$tab=get_tab_propositions_remplacements($login_user, "futures_validees");
+	for($loop=0;$loop<count($tab);$loop++) {
+		$tab_creneau=get_infos_creneau($tab[$loop]['id_creneau']);
+		$retour.="<div class='postit' style='text-align:center;'>Un remplacement vous est attribué&nbsp;:<br /><strong>".get_nom_classe($tab[$loop]['id_classe'])."&nbsp;:</strong> ".formate_date($tab[$loop]['date_debut_r'])." en ".$tab_creneau['info_html'];
+		if($tab[$loop]['salle']!="") {
+			$retour.=" (<em>salle ".$tab[$loop]['salle']."</em>)";
+		}
+		$retour.=".<br />(<em style='font-size:x-small'>remplacement de ".get_info_grp($tab[$loop]['id_groupe'])."</em>)";
+		if($tab[$loop]['commentaire_validation']!="") {
+			$retour.="<br />".$tab[$loop]['commentaire_validation'];
+		}
+		$retour.="</div>";
+	}
+
+	return $retour;
+}
+
+function test_reponses_favorables_propositions_remplacement() {
+	global$gepiPath;
+
+	$retour="";
+
+	$nb=0;
+	$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND reponse='oui';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+				$nb++;
+			}
+		}
+	}
+
+	if($nb>0) {
+		$retour="<div class='postit' style='text-align:center;'>$nb proposition(s) de remplacement a(ont) reçu un accueil favorable.<br />Vous pouvez choisir à qui <a href='$gepiPath/mod_abs_prof/attribuer_remplacement.php'>attribuer le(s) remplacement(s)</a>.</div>";
+	}
+
+	return $retour;
+}
+
+function affiche_remplacements_eleve($login_eleve) {
+	$retour="";
+
+	$tab=get_tab_remplacements_eleve($login_eleve);
+	/*
+	echo "<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+	if(count($tab)>0) {
+		$retour="<div class='postit' style='text-align:left;'><p><strong>Remplacement(s)&nbsp;:</strong></p>
+	<ul>";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$retour.="
+		<li>".nl2br($tab[$loop]['texte_famille_traduit'])."</li>";
+		}
+		$retour.="
+	</ul>
+</div>";
+	}
+
+	return $retour;
+}
+
+function retourne_image_engagement($code_engagement, $nom_engagement) {
+	global $gepiPath;
+
+	$retour="";
+
+	if(in_array($code_engagement, array("C", "V", "A", "E", "S"))) {
+		$retour="<img src='$gepiPath/images/icons/engagement_".$code_engagement.".png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+	}
+	else {
+		//$retour="<img src='$gepiPath/images/vert.png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+		$retour="<img src='$gepiPath/images/icons/engagement_.png' class='icone16' alt=\"Engagement : $nom_engagement\" />";
+	}
+
+	return $retour;
+}
+
+
+function liste_checkbox_eleves_classe($id_classe, $num_periode="", $tab_eleves_preselectionnes=array(), $nom_champ='login_eleve', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	$retour="";
+
+	$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe'";
+	if($num_periode!="") {
+		$sql.=" AND jec.periode='$num_periode'";
+	}
+	$sql.=" ORDER BY nom, prenom, login;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des élèves\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->login, $tab_eleves_preselectionnes)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
+function liste_checkbox_eleves_classe2($id_classe, $num_periode="", $tab_eleves_preselectionnes=array(), $nom_champ='login_eleve', $id_champ='login_eleve', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+	global $gepiPath;
+
+	$retour="";
+
+	$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe'";
+	if($num_periode!="") {
+		$sql.=" AND jec.periode='$num_periode'";
+	}
+	$sql.=" ORDER BY nom, prenom, login;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="
+	<table class='boireaus boireaus_alt'>
+		<thead>
+			<tr>
+				<th>Élève</th>
+				<th>
+					<a href=\"#\" onclick=\"$nom_func_js_tout_cocher_decocher(true);return false;\" title='Tout cocher'><img src='$gepiPath/images/enabled.png' class='icone20' alt='Tout cocher' /></a> - <a href=\"#\" onclick=\"$nom_func_js_tout_cocher_decocher(false);return false;\" title='Tout décocher'><img src='$gepiPath/images/disabled.png' class='icone20' alt='Tout décocher' /></a>
+				</th>
+			</tr>
+		</thead>
+		<tbody>";
+
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(in_array($lig->login, $tab_eleves_preselectionnes)) {
+				$checked="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$checked="";
+				$temp_style="";
+			}
+
+			$retour.="
+			<tr>
+				<td>
+					<label for='".$id_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$id_champ."_$cpt'$temp_style>".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label>
+				</td>
+				<td>
+					<input type='checkbox' name='".$nom_champ."[]' id='".$id_champ."_$cpt' value='$lig->login' onchange=\"checkbox_change('".$nom_champ."_$cpt')\" $checked/>
+				</td>
+			</tr>";
+
+			$cpt++;
+		}
+		$retour.="
+		</tbody>
+	</table>
+
+	<script type='text/javascript'>
+		function $nom_func_js_tout_cocher_decocher(mode) {
+			for (var k=0;k<$cpt;k++) {
+				if(document.getElementById('".$id_champ."_'+k)){
+					document.getElementById('".$id_champ."_'+k).checked=mode;
+					checkbox_change('".$id_champ."_'+k);
+				}
+			}
+		}
+		</script>\n";
+	}
+
+	return $retour;
+}
+
+function js_change_style_radio($nom_js_func="change_style_radio", $avec_balise_script="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	function $nom_js_func() {
+		item=document.getElementsByTagName('input');
+		for(i=0;i<item.length;i++) {
+			if(item[i].getAttribute('type')=='radio') {
+				checkbox_change(item[i].getAttribute('id'));
+			}
+		}
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
+function js_cocher_decocher_tous_checkbox($nom_js_func="cocher_decocher_tous_checkbox", $avec_balise_script="n", $avec_checkbox_change="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	function $nom_js_func(mode) {
+		item=document.getElementsByTagName('input');
+		for(i=0;i<item.length;i++) {
+			if(item[i].getAttribute('type')=='checkbox') {
+				item[i].checked=mode;";
+	if($avec_checkbox_change!="n") {
+		$retour.="
+				checkbox_change(item[i].getAttribute('id'));";
+	}
+	$retour.="
+			}
+		}
+	}\n";
+
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
 ?>

@@ -244,6 +244,8 @@ if((isset($_GET['maj_liste_autres_groupes_meme_matiere']))&&(isset($_GET['matier
 	if($tab_autres_groupes!="") {
 		echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 		echo $tab_autres_groupes;
+
+		echo "<p><a href='repartition_ele_grp.php?id_classe[]=$id_classe&amp;preselect_id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Répartir les élèves entre plusieurs groupes</a></p>";
 	}
 	else {
 		echo "";
@@ -946,6 +948,10 @@ echo "
 					<option value='2'>2</option>
 					<option value='3'>3</option>
 					<option value='4'>4</option>
+					<option value='5'>5</option>
+					<option value='6'>6</option>
+					<option value='7'>7</option>
+					<option value='8'>8</option>
 				</select>&nbsp;groupes<br />
 				d'élèves rangés par ordre&nbsp;<select name='ordre_eleves_sous_groupe_a_creer' onchange='changement();'>
 					<option value='classe'>de classe, puis par ordre alphabétique</option>
@@ -1104,6 +1110,10 @@ echo "<script type='text/javascript'>
 		document.getElementById('groupe_nom_complet').value=prefixe+suffixe_nom_complet;
 	}
 	*/
+
+	if(document.getElementById('groupe_nom_court')) {
+		document.getElementById('groupe_nom_court').focus();
+	}
 </script>
 
 </div>\n";
@@ -1114,6 +1124,12 @@ $tab_autres_groupes=tableau_html_groupe_matiere_telle_classe($id_classe, $reg_ma
 if($tab_autres_groupes!="") {
 	echo "<p>Il existe d'autres enseignements dans la même matière pour cette classe&nbsp;:</p>\n";
 	echo $tab_autres_groupes;
+
+	echo "<p><a href='repartition_ele_grp.php?";
+	for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
+		echo "id_classe[]=".$current_group["classes"]["list"][$loop]."&amp;";
+	}
+	echo "preselect_id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Répartir les élèves entre plusieurs groupes</a></p>";
 }
 echo "</div>\n";
 

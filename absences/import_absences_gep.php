@@ -271,7 +271,7 @@ if ($step == 0) {
 	echo "<p class='bold'>Si vous omettez une étape, aucun message d'erreur ne vous signalera une mauvaise valeur importée.</p>\n";
 	echo "<p class='bold'>PROCEDURE</p>\n";
 	echo "<ul type='1'><li>Récupérez le fichier F_EABS.DBF depuis le répertoire de GEP et le copier dans un répertoire séparé.</li>\n";
-	echo "<li>Ouvrez le fichier ainsi copié dans un tableur (de préférence OpenOffice.org, mais Excel fonctionne également).</li>\n";
+	echo "<li>Ouvrez le fichier ainsi copié dans un tableur (de préférence libreOffice, mais OpenOffice ou Excel fonctionne également).</li>\n";
 	echo "<li>Sélectionnez l'ensemble des données (Edition->Sélectionner tout), puis effectuez un tri (Données->Trier) sur les colonnes B (ELENOET) et C (ABSDATD) dans l'ordre croissant. N'oubliez pas de mentionner dans les options de tri que la première ligne correspond aux étiquettes de colonnes.</li>\n";
 	echo "<li>Enregistrer le fichier, en gardant le format d'origine (Fichier->Enregistrer).</li>\n";
 	echo "<li>Chargez le fichier ainsi modifié (seulement dans sa structure, vous n'avez à changer aucune donnée) dans le champs ci-dessous</li>\n";

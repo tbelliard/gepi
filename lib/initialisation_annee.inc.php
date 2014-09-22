@@ -119,6 +119,9 @@ $liste_tables_del_etape_eleves = array(
 "s_traitement_incident",
 "s_travail",
 "s_travail_mesure",
+// Module remplacements/absences de professeurs
+"abs_prof",
+"abs_prof_remplacement",
 // Table optionnelle pour les fils RSS de CDT
 "rss_users",
 "log_maj_sconet"
@@ -160,6 +163,12 @@ $liste_tables_del_etape_matieres = array(
 "ct_devoirs_documents",
 "ct_private_entry",
 "ct_sequences",
+// Module EDT ICAL/ICS
+"edt_ics",
+// D'une année sur l'autre, les associations matière_EDT/matiere_GEPI et prof_EDT/prof_GEPI peuvent être conservées
+//"edt_ics_matiere",
+//"edt_ics_prof",
+// EDT?
 'edt_classes',
 'edt_cours'
 /*
@@ -215,8 +224,8 @@ $liste_tables_del_etape_professeurs = array(
 "cn_devoirs",
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
-"udt_lignes",
-"udt_corresp"
+"udt_lignes"
+//,"udt_corresp"
 );
 
 ?>

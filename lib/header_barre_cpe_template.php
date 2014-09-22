@@ -99,6 +99,10 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php"'.insert_confirm_abandon().'>&nbsp;Absences</a></li>'."\n";
 		}
 
+		if (getSettingAOui("active_mod_abs_prof")) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs.profs</a></li>'."\n";
+		}
+
 		//=======================================================
 		// Module Cahier de textes
 		if (getSettingValue("active_cahiers_texte") == 'y') {
@@ -144,6 +148,10 @@ if ($barre_plugin!="") {
 				$menus .= '                <li><a href="'.$gepiPath.'/visualisation/classe_classe.php"'.insert_confirm_abandon().'>Classe/classe</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
+
+				if(getSettingAOui('active_mod_engagements')) {
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+				}
 	
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
@@ -174,6 +182,10 @@ if ($barre_plugin!="") {
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 		}
+
+		if(getSettingAOui('active_edt_ical')) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
+		}
 		//=======================================================
 
 		//=======================================================
@@ -200,6 +212,17 @@ if ($barre_plugin!="") {
 			$menus .= '            </ul>'."\n";
 			$menus .= '       </li>'."\n";
 		}
+
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '       <li class="plus"><a href="#">Engagements</a>'."\n";
+			$menus .= '         <ul class="niveau3">'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '         </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================

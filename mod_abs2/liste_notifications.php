@@ -2,7 +2,7 @@
 /**
  *
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2014 Josselin Jacquard - Bouguin Régis
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -104,6 +104,23 @@ if (isFiltreRechercheParam('filter_eleve')) {
     $query->useAbsenceEleveTraitementQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
     ->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse()->endUse()->endUse()->endUse();
 }
+
+// filtre classe
+// $classe = ClasseQuery::create()->filterByNom("6 D")->findOne();
+//$id_classe = 14;
+//$classe = ClasseQuery::create()->findPk($id_classe);
+if (isFiltreRechercheParam('filter_classe')) {
+    if (in_array('SANS',getFiltreRechercheParam('filter_classe'))) {
+	   $_SESSION['filtre_recherche']['filter_classe']=array('SANS');
+    } else {
+	  $query->useAbsenceEleveTraitementQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
+		 ->useJEleveClasseQuery()->filterByIdClasse(getFiltreRechercheParam('filter_classe'))->endUse()
+		 ->endUse()->endUse()->endUse()->endUse();		 
+    }
+}
+
+
+
 if (isFiltreRechercheParam('filter_type_notification')) {
     $query->filterByTypeNotification(getFiltreRechercheParam('filter_type_notification'));
 }
@@ -271,6 +288,49 @@ if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} els
 echo 'border-width:1px;" alt="" name="order" value="des_eleve" onclick="this.form.order.value = this.value"/>';
 echo '</span>';
 echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="8"/>';
+
+
+
+
+
+
+
+	//on affiche une boite de selection avec les classe
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+		$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+	} else {
+		$classe_col = $utilisateur->getClasses();
+	}
+	if (!$classe_col->isEmpty()) {
+		echo '<br />';
+		echo ("<select multiple name='filter_classe[]' onchange='submit()' style='width:100%' title='Sélectionnez une ou plusieurs classes'>");
+		echo "<option value='SANS'>Toutes les classes</option>\n";
+		foreach ($classe_col as $classe) {
+			echo "<option value='".$classe->getId()."'";
+			if (isFiltreRechercheParam('filter_classe') && (getFiltreRechercheParam('filter_classe') != "SANS")) {
+			   if (in_array($classe->getId(), getFiltreRechercheParam('filter_classe'))) {
+				  echo " selected='selected' ";
+			   }
+			}
+			
+			echo ">";
+			echo $classe->getNom();
+			echo "</option>\n";
+		}
+		echo "</select>&nbsp;";
+	} else {
+		echo 'Aucune classe avec élève affecté n\'a été trouvée';
+	}
+
+
+
+
+
+
+
+
+
+
 echo '</th>';
 
 //en tete filtre saisies
@@ -498,6 +558,19 @@ foreach ($results as $notification) {
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
+	
+	
+	echo "<a href='liste_traitements.php?filter_classe=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
+	echo ($eleve->getClasse()->getNom());
+	echo "</a>";
+	if ($utilisateur->getAccesFicheEleve($eleve)) {
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+	    echo ' (voir fiche)';
+	    echo "</a>";
+	}
+	
+	
 	echo "</td>";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";

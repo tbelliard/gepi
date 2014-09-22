@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -204,6 +204,14 @@ require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
+	echo "<p style='color:red; font-weight:bold; text-align:center;'>Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre trop de variables.<br />Vous devriez opter pour un autre mode d'extraction.</p>\n";
+	echo "<div style='margin-left:3em; background-image: url(\"../images/background/opacite50.png\");'>";
+	echo alerte_config_suhosin();
+	echo "</div>\n";
+	echo "<p><br /></p>\n";
+}
+
 if((!isset($projet))||($projet=="")) {
 	echo "<p style='color:red'>ERREUR: Le projet n'est pas choisi.</p>\n";
 	require("../lib/footer.inc.php");
@@ -337,6 +345,8 @@ echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_selec
 
 echo add_token_field();
 
+echo "<input type='hidden' name='temoin_suhosin_1' value='y' />\n";
+
 // Colorisation
 echo "<p>Colorisation&nbsp;: ";
 echo "<select name='colorisation' onchange='lance_colorisation()'>
@@ -402,7 +412,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	echo "<th rowspan='2'>Classe<br />actuelle</th>\n";
 	echo "<th rowspan='2'>Profil</th>\n";
 	echo "<th rowspan='2'>Niveau</th>\n";
-	echo "<th rowspan='2'>Absences Non.Just Retards</th>\n";
+	echo "<th rowspan='2'>Absences<br />Non.Just<br />Retards</th>\n";
 
 	//if(count($classe_fut)>0) {echo "<th colspan='".(count($classe_fut)+2)."'>Classes futures</th>\n";}
 	if(count($classe_fut)>0) {echo "<th colspan='".count($classe_fut)."'>Classes futures</th>\n";}
@@ -743,7 +753,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 				}
 				*/
 			}
-			echo "<td>\n";
+			echo "<td title=\"Absences/Non justifiées/Retards\">\n";
 			//echo "<span style='font-size:small;'>".colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards)."</span>";
 			echo colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards);
 			echo "<input type='hidden' name='nb_absences[$cpt]' value='$current_eleve_absences' />\n";
@@ -966,10 +976,21 @@ document.getElementById('eff_tot_classe_sexe_".$id_classe_actuelle[$j]."').inner
 	echo "<hr width='200'/>\n";
 }
 echo "<input type='hidden' name='projet' value='$projet' />\n";
+echo "<input type='hidden' name='temoin_suhosin_2' value='y' />\n";
 echo "</form>\n";
 
 echo "<p><br /></p>
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>\n";
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Vous pouvez modifier les options choisies en cliquant dans les cellules du tableau et en n'oubliant pas de Valider les modifications ensuite.</p>
+	</li>
+	<li>
+		<p>Les boutons Valider dans cette page valident l'ensemble du formulaire (<em>toutes les classes d'un coup</em>).<br />
+		Si vous travaillez avec plusieurs fenêtre ouvertes, une validation dans cette page risque d'écraser des modifications faites dans d'autres pages (<em>d'affectation dans des classes par exemple</em>) depuis le chargement de la présente page.<br />
+		Dans le doute, avant toute saisie dans la présente page, commencez par rafraichir l'affichage à l'aide du lien idoine en haut de la page.</p>
+	</li>
+</ul>\n";
 
 if((isset($temoin_erreur_eleves_en_doublon))&&($temoin_erreur_eleves_en_doublon!="")) {
 	echo "<script type='text/javascript'>

@@ -549,6 +549,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$compteur_menu++;
 	}else{$barre_edt = '';}
 
+
+	if((getSettingAOui('active_edt_ical'))&&((getSettingAOui('EdtIcalProf'))||(getSettingAOui('EdtIcalProfTous')))) {
+		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/edt/index.php' , "texte"=>"EDT Ical/Ics");
+		$compteur_menu++;
+	}
+
 	//=======================================================
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {

@@ -180,6 +180,12 @@
 		</li>\n";
 	}
 ?>
+		<li>
+			<p><a href='../mod_engagements/index_admin.php'>Définir les engagements</a> (<em>délégués de classe, délégués de parents,...</em>)</p>
+		</li>
+		<li>
+			<p><a href='../mod_ooo/gerer_modeles_ooo.php#MODULE_Engagements'>Modifier les modèles de documents liés aux engagements</a></p>
+		</li>
 	</ul>
 	</div>
 

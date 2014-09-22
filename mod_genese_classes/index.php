@@ -164,8 +164,52 @@ if ($res_test<2){
   }
 }
 
+$sql="CREATE TABLE IF NOT EXISTS gc_noms_affichages (
+id int(11) unsigned NOT NULL auto_increment,
+id_aff int(11) NOT NULL,
+projet VARCHAR( 255 ) NOT NULL ,
+nom varchar(100) NOT NULL,
+description tinytext NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+//echo "$sql<br />";
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+// Le champ id contenait id_aff dans une première version, mais cela pose un problème pour la copie de projet.
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM gc_noms_affichages LIKE 'id_aff';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE gc_noms_affichages ADD id_aff INT(11) NOT NULL AFTER id;");
+
+	$query = mysqli_query($mysqli, "ALTER TABLE `gc_noms_affichages` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT;");
+
+	$sql="SELECT * FROM gc_noms_affichages;";
+	$res = mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="UPDATE gc_noms_affichages SET id_aff='$lig->id' WHERE id='$lig->id';";
+		$update = mysqli_query($mysqli, $sql);
+	}
+}
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM gc_noms_affichages LIKE 'projet';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE gc_noms_affichages ADD projet VARCHAR( 255 ) NOT NULL AFTER id_aff;");
+
+	$sql="SELECT * FROM gc_noms_affichages;";
+	$res = mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$sql="SELECT projet FROM gc_affichages WHERE id_aff='$lig->id';";
+		$res2 = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res2)>0) {
+			$lig2=mysqli_fetch_object($res2);
+
+			$sql="UPDATE gc_noms_affichages SET projet='$lig2->projet' WHERE id='$lig->id';";
+			$update = mysqli_query($mysqli, $sql);
+		}
+	}
+}
 
 //=========================================================
+
+//debug_var();
 
 // Partie Projets
 
@@ -233,7 +277,11 @@ if(isset($projet)) {
 					//echo "$sql<br />";
 					if($insert=mysqli_query($GLOBALS["mysqli"], $sql)) {
 						$msg="Le projet $projet a été créé.";
-						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes');
+
+						// On ne peut pas copier 'gc_noms_affichages' sur le même principe.
+						// Les champs sont (id,nom,description) avec gc_noms_affichages.id=gc.affichage.id_aff
+
+						$tab_table=array('gc_affichages','gc_divisions','gc_ele_arriv_red','gc_eleves_options','gc_options','gc_options_classes', 'gc_noms_affichages');
 						for($j=0;$j<count($tab_table);$j++) {
 							$sql="SELECT * FROM ".$tab_table[$j]." WHERE projet='$projet_original';";
 							//echo "$sql<br />";
@@ -274,6 +322,47 @@ if(isset($projet)) {
 			$msg="Les caractères du nom de projet original '$projet_original' ne sont pas valides.\n";
 		}
 		unset($projet);
+	}
+	elseif(isset($_GET['csv_eleves_classes'])) {
+		$csv="";
+		if($_GET['csv_eleves_classes']==1) {
+			$sql="SELECT elenoet,classe_future FROM gc_eleves_options geo, eleves e WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet' AND e.login=geo.login AND e.elenoet!='';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				$csv.="$lig->elenoet;$lig->classe_future;\r\n";
+			}
+
+			$nom_fic=remplace_accents("g_eleves_classes_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+		}
+		else {
+			$sql="SELECT login,classe_future FROM gc_eleves_options WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				$csv.="$lig->login;$lig->classe_future;\r\n";
+			}
+
+			$nom_fic=remplace_accents("login_ele_classe_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+		}
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
+	}
+	elseif(isset($_GET['csv_eleves_options'])) {
+		$csv="";
+
+		$sql="SELECT elenoet,classe_future, liste_opt FROM gc_eleves_options geo, eleves e WHERE classe_future!='' AND classe_future!='Dep' AND classe_future!='Red' AND projet='$projet' AND e.login=geo.login AND e.elenoet!='';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+			$csv.="$lig->elenoet;";
+			$csv.=preg_replace("/\|/","!",preg_replace("/^\|/","",preg_replace("/\|$/","",$lig->liste_opt)));
+			$csv.=";\r\n";
+		}
+
+		$nom_fic=remplace_accents("g_eleves_options_-_".$projet."_".strftime("%Y%m%d_%H%M%S"),"all").".csv";
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+		die();
 	}
 }
 
@@ -412,8 +501,21 @@ else {
 	echo "<a href='affect_eleves_classes.php?projet=$projet'>Affecter les élèves dans les classes</a>\n";
 	echo "</li>\n";
 	echo "<li>";
-	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a>";
+	echo "<a href='affiche_listes.php?projet=$projet'>Affichage de listes</a><br />&nbsp;";
 	echo "</li>\n";
+	echo "<li>Exporter les associations élèves/classes en CSV&nbsp;:<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;CLASSE (*)<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=2'>Export au format LOGIN;CLASSE</a><br />
+	&nbsp;<br />
+	(*) Si vous faites un projet par niveau, il faudra concaténer les exports des différents projets pour effectuer une initialisation CSV.<br />
+	De plus, seul les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).<br />&nbsp;
+</li>\n";
+	echo "<li><p>Exporter les associations élèves/options en CSV&nbsp;:<br />
+	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_options=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;OPTION_1!OPTION_2!OPTION_3<br /></p>
+	<p style='text-indent:-6em; margin-left:6em;'><em>Attention&nbsp;:</em> Pour le moment, seules les options définies dans le module Genèse des classes sont prises en compte dans le CSV.<br />
+	Il faudrait le compléter avec les enseignements communs (<em>FRANC, MATHS, HIGEO, A-PLA,...</em>) pour ne pas supprimer l'inscription dans les enseignements communs lors de l'initialisation CSV.<br />
+	Par ailleurs, là-aussi, les g_eleves_options.csv sont à concaténer si vous faites des projets par niveau.</p>
+</li>\n";
 	echo "</ol>\n";
 
 	echo "</blockquote>\n";
@@ -433,7 +535,15 @@ On complète.<br />
 On répartit les cas restants.<br />
 Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
 <p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
+</li>";
+
+if((getSettingValue("active_module_absence")=='2')&&(getSettingValue("abs2_import_manuel_bulletin")!='y')&&(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut']))) {
+	echo "
+<li>
+<p>Pour que les totaux d'absences, retards,... soient correctement affichés, il convient de <a href='../mod_abs2/admin/admin_table_totaux_absences.php'>remplir la table des totaux d'absences</a>.</p>
 </li>\n";
+}
+
 if(test_alerte_config_suhosin()) {
 	$alerte_config_suhosin=alerte_config_suhosin();
 	echo "<li>$alerte_config_suhosin</li>\n";

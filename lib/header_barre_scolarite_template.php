@@ -89,6 +89,10 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php"'.insert_confirm_abandon().'>&nbsp;Absences</a></li>'."\n";
 		}
 
+		if (getSettingAOui("active_mod_abs_prof")) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs.profs</a></li>'."\n";
+		}
+
 		//=======================================================
 		// Module Cahier de textes
 		if (getSettingValue("active_cahiers_texte") == 'y') {
@@ -138,6 +142,9 @@ if ($barre_plugin!="") {
 				$menus .= '                <li><a href="'.$gepiPath.'/saisie/impression_avis.php"'.insert_confirm_abandon().'>Impression avis PDF</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Dates événements</a></li>'."\n";
+				if(getSettingAOui('active_mod_engagements')) {
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+				}
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
 	
@@ -234,6 +241,10 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 			$menus .= '   </ul>'."\n";
 			$menus .= '</li>'."\n";
 		}
+
+		if(getSettingAOui('active_edt_ical')) {
+			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
+		}
 		//=======================================================
 
 		//=======================================================
@@ -284,6 +295,17 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '       <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Dates événements</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/statistiques/index.php"'.insert_confirm_abandon().'>Statistiques</a></li>'."\n";
+
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '       <li class="plus"><a href="#">Engagements</a>'."\n";
+			$menus .= '         <ul class="niveau3">'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+
+			$menus .= '           <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '         </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================
@@ -293,7 +315,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/visu_mes_listes.php"'.insert_confirm_abandon().'>Visu. mes élèves</a></li>'."\n";
-		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Publipostage au format OpenOffice.org d\'après des données élèves">Publipostage OOo</a></li>'."\n";
+		$menus .= '       <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Publipostage au format openDocument.org d\'après des données élèves">Publipostage OOo</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
 		if(getSettingValue('active_module_trombinoscopes')=='y') {

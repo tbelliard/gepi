@@ -1163,7 +1163,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo "<tr class='lig$alt_b'>\n";
 						//echo "<td>Retenue</td>\n";
 						//echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=modif&amp;valeur=retenue&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login'>".ucfirst($lig_sanction->nature_sts)."</a></td>\n";
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login'>".ucfirst($lig_sanction->nature_sts)."</a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$lig->login' title=\"Consulter/Modifier.\">".ucfirst($lig_sanction->nature_sts)."</a></td>\n";
 						echo "<td>".formate_date($lig_sanction->date)."</td>\n";
 						echo "<td>$lig_sanction->heure_debut</td>\n";
 						echo "<td>$lig_sanction->duree</td>\n";
@@ -1184,7 +1184,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
+						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\" title=\"Afficher les détails en infobulle.\">Détails</a>";
 						echo "</td>\n";
 //Eric
 						If ($passage_report) {
@@ -1217,7 +1217,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						}
 						else {
-							echo "<span title=\"Le module OpenOffice n'est pas activé. La génération de fichier ODT destiné à l'impression n'est pas possible.\">-</span>";
+							echo "<span title=\"Le module openDocument n'est pas activé. La génération de fichier ODT destiné à l'impression n'est pas possible.\">-</span>";
 						}
 						echo "</td>\n";
 //

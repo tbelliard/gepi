@@ -306,7 +306,7 @@ else {
 	}
 }
 //echo "<input type='hidden' name='lv1[]' id='lv1_ajoutee' value='' />\n";
-echo "<a href='#' onclick=\"afficher_div('ajout_autre_option','y',100,100);\">Ajouter</a>";
+echo "<a href='#' onclick=\"afficher_div('ajout_autre_option','y',100,100); document.getElementById('autre_option_$cpt').focus()\">Ajouter</a>";
 
 $titre="Ajout autre option";
 $texte_checkbox_matieres="";

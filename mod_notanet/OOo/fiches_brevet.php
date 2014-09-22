@@ -219,7 +219,7 @@ $fb_gab_perso=getSettingValue("fb_gab_perso");
 	echo "<tr";
 	if($alt==1){echo " style='background: white;'";}else{echo " style='background: silver;'";}
 	echo ">\n";
-	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi<br />(<em>construits à partir des fiches brevets de Rouen</em>) <br />ou utiliser le module OpenOffice pour enregistrer vos propres gabarits</td>\n";
+	echo "<td valign='top'>Gabarits : <br />Vous pouvez utiliser les gabarits intégrés à Gepi<br />(<em>construits à partir des fiches brevets de Rouen</em>) <br />ou utiliser le module openDocument pour enregistrer vos propres gabarits</td>\n";
 	echo "<td>";
 	echo "<input type='radio' name='fb_gab_perso' id='fb_gab_perso_1' value='1' ";
 	if($fb_gab_perso=="1"){
@@ -516,7 +516,7 @@ if (!isset($id_classe)) {
 	<li><p>Si vous obtenez une erreur mentionnant <strong>TinyButStrong</strong>, il est probable que vous utilisez un modèle OOo défecteux ou obsolète.</p></li>
 	<li><p>Si vous obtenez une page blanche, peut-être avez-vous sélectionné trop de classes d'un coup.<br />
 	Essayez de ne sélectionner dans un premier temps qu'une classe ci-dessus pour éliminer un éventuel problème avec le nombre de variables envoyées.</p></li>
-	<li><p>Le modèle OpenOffice utilisé se définit en suivant le lien <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramétrer</a>.<br />
+	<li><p>Le modèle openDocument utilisé se définit en suivant le lien <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramétrer</a>.<br />
 	Vous pouvez y choisir d'utiliser un modèle personnalisé en sélectionnant <strong>Gabarit personnel</strong> plutôt que <strong>Gabarit Gepi</strong>.<br />
 	Le choix <strong>Gabarit personnel</strong> nécessite que vous ayez envoyé un modèle personnel dans <a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_NOTANET'>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</a></p>
 	<p style='text-indent:-4em;margin-left:4em;'><em>Remarque&nbsp;:</em> Si vous obtenez une erreur, avec un <strong>Gabarit personnel</strong>, commencez par tester si le modèle officiel Gepi permet de régler le problème.</p></li>
@@ -663,6 +663,34 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
 
 			//echo "<p>$lig1->nom $lig1->prenom<br />";
+			
+			$tab_eleves_OOo[$nb_eleve]['mefcode']=$lig1->mef_code;
+			
+			/***** MEF *****/
+			$tab_eleves_OOo[$nb_eleve]['mef']="";
+			$sql_mef="SELECT libelle_edition FROM mef WHERE mef_code='".$lig1->mef_code."';";
+			$res_mef=mysqli_query($GLOBALS["mysqli"], $sql_mef);
+			if(mysqli_num_rows($res_mef)>0) {
+			   $lig_mef=mysqli_fetch_object($res_mef);
+			   $tab_eleves_OOo[$nb_eleve]['mef']=$lig_mef->libelle_edition;
+			}	
+			
+			/***** Langue régionale	*****/
+			$tab_eleves_OOo[$nb_eleve]['lvr']="";
+			$tab_eleves_OOo[$nb_eleve]['lvrNom']="";
+			$sql_lvr="SELECT * FROM `notanet_lvr_ele` WHERE `login` LIKE '".$lig1->login."';";
+			$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql_lvr);
+			if(mysqli_num_rows($res_lvr)>0) {
+			   $lig_lvr=mysqli_fetch_object($res_lvr);
+			   $tab_eleves_OOo[$nb_eleve]['lvr']=$lig_lvr->note;
+			   $sql_lvrNom="SELECT * FROM `notanet_lvr` WHERE `id` = ".$lig_lvr->id_lvr.";";
+			   $res_lvrNom=mysqli_query($GLOBALS["mysqli"], $sql_lvrNom);
+			   if(mysqli_num_rows($res_lvrNom)>0) {
+				  $lig_lvrNom=mysqli_fetch_object($res_lvrNom);
+				  $tab_eleves_OOo[$nb_eleve]['lvrNom']=$lig_lvrNom->intitule;
+			   }
+			}
+			
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
 			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;

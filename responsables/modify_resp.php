@@ -668,6 +668,8 @@ if(!isset($quitter_la_page)){
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='modify_resp.php'>Ajouter un responsable</a>";
+
+	echo "<span id='lien_saisie_engagements'></span>";
 }
 else {
 	//if($_SESSION['statut']=="administrateur"){
@@ -1152,7 +1154,7 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login)
 		(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeResetPassResp')))
 	)
 ) {
-	echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black; background-image: url(\"../images/background/opacite50.png\");'>\n";
+	echo "<div style='float: right; width:15 em; text-align: center; border: 1px solid black; margin:0.2em; background-image: url(\"../images/background/opacite50.png\");'>\n";
 	if($_SESSION['statut']=="administrateur") {
 		echo affiche_actions_compte($resp_login);
 		echo "<br />\n";
@@ -1164,6 +1166,65 @@ if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login)
 		echo affiche_reinit_password($resp_login);
 	}
 	echo "</div>\n";
+}
+//==============================================
+// Engagements
+if((isset($resp_login))&&($resp_login!="")&&(getSettingAOui('active_mod_engagements'))) {
+	if(acces('/mod_engagements/saisie_engagements_user.php', $_SESSION['statut'])) {
+		echo "<script type='text/javascript'>
+	if(document.getElementById('lien_saisie_engagements')) {
+		document.getElementById('lien_saisie_engagements').innerHTML=\" | <a href='../mod_engagements/saisie_engagements_user.php?login_user=$resp_login&amp;retour=modify_resp'>Saisir des engagements</a>\";
+	}
+</script>";
+	}
+
+	$tab_engagements_user=get_tab_engagements_user($resp_login);
+	if(count($tab_engagements_user['indice'])>0) {
+		echo "<div style='float: right; width:15em; text-align: center; margin:0.5em; margin:0.2em;' class='fieldset_opacite50' title=\"Engagements du responsable\">";
+		if(acces("/mod_engagements/saisie_engagements_user.php", $_SESSION['statut'])) {
+			/*
+			echo "
+	<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=$resp_login' onclick=\"if(confirm_abandon (this, change, '".$themessage."')) {afficher_div_saisie_engagements('$login_resp')}; return false;\"><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+
+			echo "
+	<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=$resp_login&amp;retour=modify_resp' onclick=\"afficher_div_saisie_engagements('$login_resp'); return false;\"><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+			*/
+			echo "
+	<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=$resp_login&amp;retour=modify_resp'><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+		}
+
+		/*
+		echo "<pre>";
+		print_r($tab_engagements_user['indice']);
+		echo "</pre>";
+		*/
+		echo "<div id='div_engagements_responsable'>";
+		for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
+			$detail_eng="";
+			if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
+				$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
+			}
+			echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";
+		}
+		echo "</div>\n";
+
+		/*
+		echo "<script type='text/javascript'>
+	var change='no';
+
+	function afficher_div_saisie_engagements(login_user) {
+		//alert('plip');
+		document.getElementById('valider_proposition').value=chaine;
+
+		document.getElementById('valider_remplacement_nom_user').innerHTML=nom_user[tab[4]];
+
+		afficher_div('div_saisie_engagements','y',10,-40);
+	}
+</script>";
+		*/
+
+		echo "</div>\n";
+	}
 }
 //==============================================
 

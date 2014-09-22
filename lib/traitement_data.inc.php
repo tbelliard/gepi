@@ -159,6 +159,19 @@ $config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 $purifier = new HTMLPurifier($config);
 $magic_quotes = get_magic_quotes_gpc();
 
+/*
+$config = HTMLPurifier_Config::createDefault();
+$config->set('Core.Encoding', 'utf-8'); // replace with your encoding
+//$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+$config->set('HTML.Doctype', 'HTML 4.01 Transitional');
+//$config->set('HTML.ForbiddenAttributes', array('*@style'));
+$config->set('HTML.AllowedAttributes', array('a.id', 'a.target', 'a.href'));
+$config->set('Attr.AllowedFrameTargets', array('_blank'));
+//$config->set('Attr.AllowedFrameTargets', array('_blank', '_self', '_parent', '_top'));
+$purifier = new HTMLPurifier($config);
+$magic_quotes = get_magic_quotes_gpc();
+*/
+
 foreach($_GET as $key => $value) {
 	if(!is_array($value)) {
 		if ($magic_quotes) $value = stripslashes($value);
@@ -174,10 +187,13 @@ foreach($_GET as $key => $value) {
 	}
 }
 
+//$f=fopen("/tmp/debug_nettoyage.txt", "a+");
 foreach($_POST as $key => $value) {
 	if(!is_array($value)) {
 		if ($magic_quotes) $value = stripslashes($value);
+//fwrite($f, "Avant purify \$_POST[$key]=$value\n");
 		$_POST[$key]=$purifier->purify($value);
+//fwrite($f, "Apres purify \$_POST[$key]=".$_POST[$key]."\n");
 		if ($magic_quotes) $_POST[$key] = addslashes($_POST[$key]);
 	}
 	else {
@@ -188,6 +204,7 @@ foreach($_POST as $key => $value) {
 		}
 	}
 }
+//fclose($f);
 
 if(isset($NON_PROTECT)) {
 	foreach($NON_PROTECT as $key => $value) {
@@ -322,7 +339,7 @@ else {
 	if($nb_lignes == 0) {
 		// Et on traite les fichiers uploadés
 		if (!isset($AllowedFilesExtensions)) {
-			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx");
+			$AllowedFilesExtensions = array("bmp","csv","doc","dot","epg","gif","ggb","gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","pptx","sql","swf","txt","xcf","xls","xlsx","xml","zip","pps","docx", "ics");
 		}
 		
 		if (isset($_FILES) and !empty($_FILES)) {		

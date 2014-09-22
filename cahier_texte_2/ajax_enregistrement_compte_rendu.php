@@ -176,6 +176,7 @@ if($url_absolues_gepi!="") {
 	$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
 }
 //=============================
+$contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "compte_rendu", $id_groupe);
 
 $ctCompteRendu->setContenu($contenu_cor);
 $ctCompteRendu->setDateCt($date_ct);

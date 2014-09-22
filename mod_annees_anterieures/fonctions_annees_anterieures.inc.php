@@ -67,7 +67,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			while($lig_annee=mysqli_fetch_object($res_annees)){
 				if($lig_annee->annee!=$annee_scolaire){
 					$annee_precedente=$lig_annee->annee;
-					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
+					$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' AND num_periode>'0' ORDER BY num_periode DESC";
 					$res_per_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_per_prec)>0){
 						$lig_per_prec=mysqli_fetch_object($res_per_prec);
@@ -84,7 +84,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 
 		// Liste des périodes pour l'année choisie:
-		$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_scolaire' ORDER BY num_periode";
+		$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_scolaire' AND num_periode>'0' ORDER BY num_periode";
 		$res_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_periodes)==0){
@@ -166,7 +166,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "<div style='border: 1px solid black; background-color: white; padding: 3px;'>\n";
 		}
 
-		$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire'";
+		$sql="SELECT DISTINCT nom_periode, classe FROM archivage_disciplines WHERE ine='$ine' AND num_periode='$num_periode' AND annee='$annee_scolaire' AND num_periode>'0'";
 		$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_per)==0){
@@ -568,7 +568,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 				}
 				echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
-				$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' ORDER BY num_periode ASC";
+				$sql="SELECT DISTINCT num_periode,nom_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_ant->annee' AND num_periode>'0' ORDER BY num_periode ASC";
 				$res_ant2=mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if(mysqli_num_rows($res_ant2)==0){

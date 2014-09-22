@@ -123,7 +123,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				$div.="</a></div>\n";
 
 				$div.="<div style='$style_close'><a href=\"#\" onclick=\"document.getElementById('".$id."_contenu_notices').innerHTML='';return false;\">";
-					$div.="<img src='../images/trash.png' width='16' height='16' alt='Vider la sélection' title='Vider la sélection' />";
+					$div.="<img src='../images/icons/trash.png' width='16' height='16' alt='Vider la sélection' title='Vider la sélection' />";
 				$div.="</a></div>\n";
 
 				$div.="<span style='padding-left: 1px;'>Votre sélection</span>\n";
@@ -456,6 +456,23 @@ require_once("'.$pref_arbo.'/entete.php");
 		}
 		else {
 			$dossier="etablissement";
+		}
+
+		return $dossier;
+	}
+
+	function get_dossier_docs_joints_cdt() {
+		global $multisite;
+
+		$dossier="";
+
+		if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+			if(isset($_COOKIE['RNE'])) {
+				$dossier="../documents/".$_COOKIE['RNE'];
+			}
+		}
+		else {
+			$dossier="../documents";
 		}
 
 		return $dossier;

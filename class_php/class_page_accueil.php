@@ -420,16 +420,16 @@ if(getSettingAOui('active_bulletins')) {
 
   protected function absences_vie_scol() {
 
-			$this->b=0;
-		if (getSettingValue("active_module_absence")=='y') {
+	$this->b=0;
+	if (getSettingValue("active_module_absence")=='y') {
 
-			$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
-					"Gestion Absences, dispenses, retards et infirmeries",
-					"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
+		$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
+				"Gestion Absences, dispenses, retards et infirmeries",
+				"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
 
-			$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
-					"Visualiser les absences",
-					"Vous pouvez visualiser créneau par créneau la saisie des absences.");
+		$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
+				"Visualiser les absences",
+				"Vous pouvez visualiser créneau par créneau la saisie des absences.");
 
 
 	  } else if (getSettingValue("active_module_absence")=='2' && ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
@@ -444,36 +444,62 @@ if(getSettingAOui('active_bulletins')) {
 		}
 	  }
 
-			if ($this->b>0){
-			$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
-			return true;
-			}
+	  if ((getSettingAOui("active_mod_abs_prof"))&& ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
+		$this->creeNouveauItem("/mod_abs_prof/index.php",
+				"Absences et remplacements de professeurs",
+				"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+	  }
+
+	if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
+		return true;
+	}
 
   }
 
   protected function absences_profs(){
 
-	if (getSettingValue("active_module_absence_professeur")=='y') {
-
 	  $this->b=0;
 
-	  $nouveauItem = new itemGeneral();
-	  if (getSettingValue("active_module_absence")=='y' ) {
-		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
-		$this->creeNouveauItem("/mod_abs2/index.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  }
+	if($_SESSION['statut']=='professeur') {
+		if (getSettingValue("active_module_absence_professeur")=='y') {
+
+		//  $nouveauItem = new itemGeneral();
+		  if (getSettingValue("active_module_absence")=='y' ) {
+			$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
+					"Gestion des Absences",
+					"Cet outil vous permet de gérer les absences des élèves");
+		  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
+			$this->creeNouveauItem("/mod_abs2/index.php",
+					"Gestion des Absences",
+					"Cet outil vous permet de gérer les absences des élèves");
+		  }
+
+		  if (getSettingAOui("active_mod_abs_prof")) {
+			$this->creeNouveauItem("/mod_abs_prof/index.php",
+					"Absences et remplacements de professeurs",
+					"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+		  }
+
+	    }
+	    
+	    elseif (getSettingAOui("active_mod_abs_prof")) {
+
+		  $nouveauItem = new itemGeneral();
+
+		  $this->creeNouveauItem("/mod_abs_prof/index.php",
+				"Absences et remplacements de professeurs",
+				"Cet outil vous permet de gérer les absences et remplacements ponctuels de professeurs");
+
+	    }
+	    
+	}
 
 	  if ($this->b>0){
 		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
 		return true;
 	  }
 
-    }
   }
 
   private function saisie(){
@@ -865,37 +891,57 @@ if(getSettingAOui('active_bulletins')) {
 
   private function emploiDuTemps(){
 	$this->b=0;
-  if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')){
-    $this->creeNouveauItem("/edt_organisation/index_edt.php",
+	if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')){
+		$this->creeNouveauItem("/edt_organisation/index_edt.php",
 			"Emploi du temps",
 			"Cet outil permet la consultation/gestion de l'emploi du temps.");
 
-	if ($_SESSION["statut"] == 'responsable') {
-	  if (getSettingValue("autorise_edt_eleve")=="yes"){
-		// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
-		$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur,'', 'y');
-		$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
-			  "Emploi du temps",
-			  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
-	  }
-	}else if($_SESSION["statut"] == 'eleve'){
-	  if (getSettingValue("autorise_edt_eleve")=="yes"){
-		$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-			  "Emploi du temps",
-			  "Cet outil permet la consultation de votre emploi du temps.");
-	  }
-	}else{
-	  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-			  "Emploi du temps",
-			  "Cet outil permet la consultation de votre emploi du temps.");
+		if ($_SESSION["statut"] == 'responsable') {
+			if (getSettingValue("autorise_edt_eleve")=="yes"){
+				// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+				$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur,'', 'y');
+				$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
+					  "Emploi du temps",
+					  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+			}
+		} else if($_SESSION["statut"] == 'eleve') {
+			if (getSettingValue("autorise_edt_eleve")=="yes") {
+				$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+					  "Emploi du temps",
+					  "Cet outil permet la consultation de votre emploi du temps.");
+			}
+		} else {
+			$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+				  "Emploi du temps",
+				  "Cet outil permet la consultation de votre emploi du temps.");
+		}
+
+		/*
+		if ($this->b>0) {
+			$this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
+			return true;
+		}
+		*/
 	}
 
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
-	  return true;
+	if(getSettingAOui('active_edt_ical')) {
+		if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProfTous')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('EdtIcalProf')))||
+		(($_SESSION['statut']=='eleve')&&(getSettingAOui('EdtIcalEleve')))||
+		(($_SESSION['statut']=='responsable')&&(getSettingAOui('EdtIcalResponsable')))
+		) {
+			$this->creeNouveauItem("/edt/index.php",
+				"Emploi du temps ICAL",
+				"Cet outil permet la consultation/gestion de l'emploi du temps importé depuis des fichiers ICAL/ICS.");
+		}
 	}
+
+	if ($this->b>0) {
+		$this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
+		return true;
 	}
- }
+}
 
   private function cahierTexteFamille(){
 	$this->b=0;
@@ -1307,6 +1353,17 @@ if(getSettingAOui('active_bulletins')) {
 				  "Lapsus ou fautes de frappe",
 				  "Cet outil vous permet de définir les associations de mots avec et sans faute de frappe à contrôler lors de la saisie des bulletins.<br />Il arrive qu'un professeur fasse une faute de frappe, mais que le mot obtenu existe bien (<em>Il n'est alors pas souligné par le navigateur comme erroné... et la faute passe inaperçue</em>)");
 		}
+
+		if(getSettingAOui('active_mod_engagements')) {
+			if(($_SESSION['statut']=='cpe')||
+			($_SESSION['statut']=='scolarite')||
+			($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'])))) {
+				$this->creeNouveauItem("/mod_engagements/imprimer_documents.php",
+				  "Imprimer les documents concernant les engagements",
+				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
+			}
+		}
 	}
 
 	if ($this->b>0){
@@ -1362,7 +1419,7 @@ if(getSettingAOui('active_bulletins')) {
 			($this->statutUtilisateur=='cpe')) {
 		$this->creeNouveauItem("/groupes/visu_mes_listes.php",
 			"Visualisation de mes élèves",
-			"Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+			"Ce menu vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
 	if((acces_modif_liste_eleves_grp_groupes())&&
@@ -1371,7 +1428,7 @@ if(getSettingAOui('active_bulletins')) {
 			($this->statutUtilisateur=='cpe'))) {
 		$this->creeNouveauItem("/groupes/grp_groupes_edit_eleves.php",
 			"Correction des listes d'".$this->gepiSettings['denomination_eleves']."",
-			"Ce menu permet de vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
+			"Ce menu vous permet de corriger les listes d'".$this->gepiSettings['denomination_eleves']." de certains groupes/enseignements.");
 	}
 
 	if ((($this->statutUtilisateur=='cpe')&&(getSettingAOui('GepiAccesTouteFicheEleveCpe')))||
@@ -1393,7 +1450,7 @@ if(getSettingAOui('active_bulletins')) {
 				($this->statutUtilisateur=='cpe')){
 		$this->creeNouveauItem("/mod_ooo/publipostage_ooo.php",
 				"Publipostage OOo",
-				"Ce menu permet de vous permet d'effectuer des publipostages OpenOffice.org à l'aide des données des tables 'eleves' et 'classes'.");
+				"Ce menu vous permet d'effectuer des publipostages openDocument à l'aide des données des tables 'eleves' et 'classes'.");
 		}
 	}
 
@@ -1729,6 +1786,11 @@ if(getSettingAOui('active_bulletins')) {
 	$this->creeNouveauItem("/messagerie/index.php",
 			"Panneau d'affichage",
 			"Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+
+
+	$this->creeNouveauItem("/classes/dates_classes.php",
+			"Événements classes",
+			"Cet outil permet de saisir des événements pour telle ou telle classe et notamment les dates de conseils de classe.");
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Panneau d'affichage",'images/icons/mail.png');

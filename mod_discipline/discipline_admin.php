@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -95,9 +95,53 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg = "Les modifications ont été enregistrées !";
-  $post_reussi=TRUE;
+	$msg = "Les modifications ont été enregistrées !";
+	$post_reussi=TRUE;
 }
+
+$dossier_documents_discipline="../documents/discipline";
+if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
+	if(isset($_COOKIE['RNE'])) {
+		$dossier_documents_discipline.="_".$_COOKIE['RNE'];
+		if(!file_exists("../$dossier_documents_discipline")) {
+			@mkdir("../$dossier_documents_discipline",0770);
+		}
+	}
+}
+
+if(isset($_POST['suppr_doc_joints'])) {
+	check_token();
+	$msg="";
+
+	$handle=opendir($dossier_documents_discipline);
+	$n=0;
+	while ($file = readdir($handle)) {
+		if(preg_match("/^incident_[0-9]*$/", $file)) {
+			$chemin="$dossier_documents_discipline/$file";
+			$suppr=deltree($chemin, TRUE);
+			if(!$suppr) {
+				$msg.="Erreur lors de la suppression de $chemin<br />";
+			}
+			else {
+				$n++;
+			}
+		}
+	}
+	closedir($handle);
+
+	if($n>0) {
+		$msg.="$n dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s supprimé(s).<br />";
+	}
+}
+
+$handle=opendir($dossier_documents_discipline);
+$nombre_de_dossiers_de_documents_discipline=0;
+while ($file = readdir($handle)) {
+	if(preg_match("/^incident_[0-9]*$/", $file)) {
+		$nombre_de_dossiers_de_documents_discipline++;
+	}
+}
+closedir($handle);
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc.php");
@@ -128,6 +172,7 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 // $affiche_debug=debug_var();
 
+if(isset($_GET['chgt_annee'])) {$_SESSION['chgt_annee']="y";}
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_discipline/discipline_admin_template.php';
 

@@ -200,35 +200,43 @@ echo $saisie->getPrimaryKey();
     }
 echo '</td><td>';
 
+$temoin_plus_dans_le_grp="n";
 if (($saisie->getEleve() != null)&&($saisie->getGroupe() != null)) {
 	if(!is_eleve_du_groupe($saisie->getEleve()->getLogin(), $saisie->getGroupe()->getId())) {
 		echo "<div style='float:right; width:22px;'><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' title=\"L'élève n'est plus membre du groupe ".$saisie->getGroupe()->getNameAvecClasses()." actuellement.
 Il en a peut-être été membre plus tôt dans l'année.
-Mais il n'en n'est plus membre aujourd'hui.\" /></div>";
+Mais il n'en n'est plus membre aujourd'hui.
+
+Si cette saisie est une erreur, vous devriez la traiter
+pour la marquer en 'Erreur de saisie'.\" /></div>";
+		$temoin_plus_dans_le_grp="y";
 	}
 }
 
-if ($modifiable) {   
-    echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
-    echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
-    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
-    if ($saisie->getDeletedAt() == null) {
-        echo '<img src="../images/delete16.png"/>';
-        //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
-        echo'<input type="hidden" name="action" value="suppression">';
-        echo '<button dojoType="dijit.form.Button" type="submit">Supprimer la saisie</button>';
-        //echo '</a>';
-    } else {
-        //on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
-        if ($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"
-                || ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
-            //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
-            echo'<input type="hidden" name="action" value="restauration">';
-            echo '<button dojoType="dijit.form.Button" type="submit">Restaurer la saisie</button>';
-            //echo '</a>';
-        }
-    }
-    echo'</form>';
+if ($modifiable) {
+	// Il faudrait pouvoir supprimer des saisies même si l'élève a été viré du groupe, mais on a alors une erreur au niveau des tests sur l'objet propel
+	if($temoin_plus_dans_le_grp=="n") {
+		echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
+		echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
+		echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+		if ($saisie->getDeletedAt() == null) {
+			echo '<img src="../images/delete16.png"/>';
+			//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
+			echo'<input type="hidden" name="action" value="suppression">';
+			echo '<button dojoType="dijit.form.Button" type="submit">Supprimer la saisie</button>';
+			//echo '</a>';
+		} else {
+			//on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
+			if ($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"
+			|| ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
+				//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+				echo'<input type="hidden" name="action" value="restauration">';
+				echo '<button dojoType="dijit.form.Button" type="submit">Restaurer la saisie</button>';
+				//echo '</a>';
+			}
+		}
+		echo'</form>';
+	}
 }
 echo '</td></tr>';
 echo '</tbody>';

@@ -1302,6 +1302,39 @@ Patientez pendant l'extraction des données... merci.
 			}
 		}
 
+		//==============================================
+		// Engagements
+		if(getSettingAOui('active_mod_engagements')) {
+			$tab_engagements_user=get_tab_engagements_user($ele_login);
+			if(count($tab_engagements_user['indice'])>0) {
+				echo "<div style='float: right; width:15em; text-align: center; margin:0.5em; margin:0.2em;' class='fieldset_opacite50' title=\"Engagements du responsable\">";
+				if(acces("/mod_engagements/saisie_engagements_user.php", $_SESSION['statut'])) {
+					echo "
+			<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=$ele_login&amp;retour=visu_eleve'><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+				}
+
+				/*
+				echo "<pre>";
+				print_r($tab_engagements_user['indice']);
+				echo "</pre>";
+				*/
+				echo "<div id='div_engagements_eleve'>";
+				for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
+					$detail_eng="";
+					//if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+					if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
+						$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
+					}
+					echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";
+				}
+				echo "</div>\n";
+
+				echo "</div>\n";
+			}
+		}
+		//==============================================
+
+
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
@@ -1623,6 +1656,38 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 
 							echo "</td></tr>\n";
 						}
+
+
+						//==============================================
+						// Engagements
+						if((getSettingAOui('active_mod_engagements'))&&(isset($tab_ele['resp'][$i]['login']))&&($tab_ele['resp'][$i]['login']!="")) {
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt'><th>Engagements</th><td>";
+							if(acces("/mod_engagements/saisie_engagements_user.php", $_SESSION['statut'])) {
+								echo "
+						<div style='float: right; width:20px; height:20px;' title=\"Saisir/Modifier les engagements\"><a href='../mod_engagements/saisie_engagements_user.php?login_user=".$tab_ele['resp'][$i]['login']."&amp;retour=visu_eleve&amp;retour_eleve=".$ele_login."'><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/Enlever'/></a></div>";
+							}
+
+							$tab_engagements_user=get_tab_engagements_user($tab_ele['resp'][$i]['login']);
+							if(count($tab_engagements_user['indice'])>0) {
+
+								/*
+								echo "<pre>";
+								print_r($tab_engagements_user['indice']);
+								echo "</pre>";
+								*/
+								for($loop=0;$loop<count($tab_engagements_user['indice']);$loop++) {
+									$detail_eng="";
+									//if($tab_engagements_user['indice'][$loop]['id_type']=='id_classe') {
+									if(($tab_engagements_user['indice'][$loop]['type']=='id_classe')&&($tab_engagements_user['indice'][$loop]['id_type']=='id_classe')) {
+										$detail_eng=" en ".get_nom_classe($tab_engagements_user['indice'][$loop]['valeur']);
+									}
+									echo "<span title=\"".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."\n(".$tab_engagements_user['indice'][$loop]['engagement_description'].")\">".$tab_engagements_user['indice'][$loop]['nom_engagement'].$detail_eng."</span><br />";
+								}
+							}
+							echo "</td></tr>";
+						}
+						//=========
 
 						echo "</table>\n";
 						echo "</td>\n";

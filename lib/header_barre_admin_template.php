@@ -238,7 +238,9 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/index_admin.php" '.insert_confirm_abandon().'>Bulletins</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php" '.insert_confirm_abandon().'>Absences 2</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs_prof/index_admin.php" '.insert_confirm_abandon().'>Abs/remplacements profs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/edt/index_admin.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_notanet/notanet_admin.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_inscription/inscription_admin.php" '.insert_confirm_abandon().'>Inscription</a></li>'."\n";
@@ -246,13 +248,14 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/utilisateurs/creer_statut_admin.php" '.insert_confirm_abandon().'>Statuts perso.</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_annees_anterieures/admin.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_discipline/discipline_admin.php" '.insert_confirm_abandon().'>Discipline</a></li>'."\n";
-		$menus .= '      <li><a href="'.$gepiPath.'/mod_ooo/ooo_admin.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_ooo/ooo_admin.php" '.insert_confirm_abandon().'>Modèles openDocument</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_ects/ects_admin.php" '.insert_confirm_abandon().'>Saisie ECTS</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_genese_classes/admin.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_epreuve_blanche/admin.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/admin.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php" '.insert_confirm_abandon().'>Gestionnaires AID</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_alerte/admin.php" '.insert_confirm_abandon().'>Dispositif d\'alerte</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/index_admin.php" '.insert_confirm_abandon().'>Engagements</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
 
@@ -264,12 +267,20 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_absences/gestion/voir_absences_viescolaire.php" '.insert_confirm_abandon().'>Absences</a></li>'."\n";
 		}
 
+		if (getSettingAOui("active_mod_abs_prof")) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_abs_prof/index.php" '.insert_confirm_abandon().'>Abs remplac profs</a></li>'."\n";
+		}
+
 		if(getSettingAOui('active_module_trombinoscopes')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes.php" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		}
 
 		if((getSettingAOui('autorise_edt_tous'))||(getSettingAOui('autorise_edt_admin'))||(getSettingAOui('autorise_edt_eleve'))) {
 			$menus .= '  <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php" '.insert_confirm_abandon().'>Emplois du temps</a></li>'."\n";
+		}
+
+		if(getSettingAOui('active_edt_ical')) {
+			$menus .= '  <li><a href="'.$gepiPath.'/edt/index.php" '.insert_confirm_abandon().' title="Emplois du temps importés à l\'aide de fichiers ICAL/ICS.">EDT Ical/Ics</a></li>'."\n";
 		}
 
 		$menus .= '  <li class="plus"><a href="#">Bulletins</a>'."\n";
@@ -290,8 +301,12 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
 		$menus .= '      <li><a href="'.$gepiPath.'/saisie/saisie_mentions.php" '.insert_confirm_abandon().'>'.ucfirst($gepi_denom_mention).'s</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
-		$menus .= '    </ul>'."\n";		
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+		}
+		$menus .= '    </ul>'."\n";
 		$menus .= '  </li>'."\n";
+
 		if(getSettingAOui('active_notanet')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_notanet/index.php" '.insert_confirm_abandon().'>Notanet/Brevet</a></li>'."\n";
 		}
@@ -301,7 +316,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '  <li><a href="'.$gepiPath.'/messagerie/index.php" '.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
-		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles OpenOffice</a></li>'."\n";
+		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles openDocument</a></li>'."\n";
 		if(getSettingAOui('active_mod_discipline')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
 		}
@@ -321,6 +336,15 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 		if(getSettingAOui('active_mod_genese_classes')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_genese_classes/index.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
+		}
+		if(getSettingAOui('active_mod_engagements')) {
+			$menus .= '  <li class="plus"><a href="#">Engagements</a>'."\n";
+			$menus .= '    <ul class="niveau3">'."\n";
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/saisie_engagements.php" '.insert_confirm_abandon().'>Saisie engagements</a></li>'."\n";
+
+			$menus .= '      <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
+			$menus .= '    </ul>'."\n";
+			$menus .= '  </li>'."\n";
 		}
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
