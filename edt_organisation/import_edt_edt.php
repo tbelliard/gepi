@@ -98,9 +98,15 @@ effectif varchar(255) NOT NULL default '',
 modalite varchar(255) NOT NULL default '',
 co_ens varchar(255) NOT NULL default '',
 pond varchar(255) NOT NULL default '',
+traitement varchar(100) NOT NULL default '',
+details_cours VARCHAR(255) NOT NULL DEFAULT '',
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+// ALTER TABLE edt_lignes ADD traitement VARCHAR( 100 ) NOT NULL DEFAULT '' AFTER pond;
+// ALTER TABLE edt_lignes ADD id_groupe INT( 11 ) NOT NULL DEFAULT '0' AFTER traitement;
+// ALTER TABLE edt_lignes CHANGE id_groupe details_cours VARCHAR(255) NOT NULL DEFAULT '';
 
 if(($action=="editer_corresp")&&(isset($_GET['vider']))) {
 	check_token();
@@ -111,6 +117,24 @@ if(($action=="editer_corresp")&&(isset($_GET['vider']))) {
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		$msg.="Correspondances '".$_GET['vider']."' supprimées.<br />";
 	}
+}
+
+if(($action=="editer_corresp")&&(isset($_POST['suppr']))) {
+	check_token();
+
+	$cpt_suppr=0;
+	$suppr=$_POST['suppr'];
+	for($loop=0;$loop<count($suppr);$loop++) {
+		$sql="DELETE FROM edt_corresp WHERE id='".$suppr[$loop]."';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$cpt_suppr++;
+		}
+		else {
+			$msg.="Erreur lors de la suppression de l'association n°".$suppr[$loop].".<br />";
+		}
+	}
+	$msg.=$cpt_suppr." correspondance(s) supprimée(s).<br />";
 }
 
 if((isset($_GET['rechercher_groupes_possibles']))&&(isset($_GET['num']))) {
@@ -217,8 +241,6 @@ if($nb_reg_edt_lignes>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=remp
 
 if($action!="") {echo " | <a href='".$_SERVER['PHP_SELF']."'> Autre import </a>";}
 echo "</p>
-
-<span style='color:red'>A FAIRE : Possibilité de modifier des rapprochements existants,<br />Possibilité de supprimer tous les rapprochements existants</span>
 
 <h2>Import des EDT depuis un XML d'EDT</h2>";
 
@@ -695,7 +717,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 <script type='text/javascript'>
 	function import_edt_chercher_groupe(num) {
 		new Ajax.Updater($('div_infos_groupes2'),'".$_SERVER['PHP_SELF']."?rechercher_groupes_possibles=y&num='+num,{method: 'get'});
-		afficher_div('div_infos_groupes','y',10,-40);
+		afficher_div('div_infos_groupes','y',10,10);
 	}
 
 	function import_edt_decocher_groupes() {
@@ -1413,9 +1435,54 @@ elseif($action=="enregistrer_rapprochements") {
 elseif($action=="remplir_edt_cours") {
 	check_token(false);
 
-	// A FAIRE : A décommenter quand ce sera prêt
+	$sql="SELECT * FROM edt_lignes WHERE traitement='cours_identifie_cree';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_cours_crees=mysqli_num_rows($res);
+
+	$sql="SELECT * FROM edt_lignes WHERE traitement='choix_effectue';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_cours_choix_effectue=mysqli_num_rows($res);
+
+	//if(($nb_cours_crees==0)&&($nb_cours_choix_effectue==0)) {
+	if($nb_cours_choix_effectue==0) {
+		echo "<p>Vous allez effectuer le remplissage des cours d'après les rapprochements effectués en commençant par vider la table 'edt_cours' (<em>les cours créés préalablement dans l'emploi du temps (à la main ou par import) seront supprimés&nbsp;;<br />Cela ne supprime pas les enseignements et tout ce qui y est associé&nbsp;;<br />Seul le contenu de l'emploi du temps sera d'abord vidé</em>).<br />
+Une large partie des enseignements devrait être identifiée et la création de cours effectuée sans intervention de votre part.<br />
+Les indéterminés vous seront proposés.</p>
+
+<p><a href='".$_SERVER['PHP_SELF']."?action=valider_remplir_edt_cours".add_token_in_url()."'>Vider puis remplir l'emploi du temps</a></p>";
+	}
+	else {
+
+		echo "<p>Vous allez effectuer le remplissage des cours d'après les rapprochements effectués en commençant par vider la table 'edt_cours' (<em>les cours créés préalablement dans l'emploi du temps (à la main ou par import) seront supprimés&nbsp;;<br />Cela ne supprime pas les enseignements et tout ce qui y est associé&nbsp;;<br />Seul le contenu de l'emploi du temps sera d'abord vidé</em>).<br />
+Une large partie des enseignements devrait être identifiée et la création de cours effectuée sans intervention de votre part.<br />
+Les indéterminés vous seront proposés.</p>
+
+<p>Des cours ont été créés préalablement et des choix effectués pour les indéterminés.<br />
+Vous pouvez choisir&nbsp;:</p>
+<ul>
+	<li>
+		<p>Refaire l'identification des groupes,...<br />
+		<a href='".$_SERVER['PHP_SELF']."?action=valider_remplir_edt_cours".add_token_in_url()."'>Vider puis remplir l'emploi du temps</a></p>
+	</li>
+	<li>
+		<p>Recréer les cours d'après les associations enregistrées et les choix préalablement effectués pour ne vous proposer que les choix non tranchés auparavant.<br />
+		<a href='".$_SERVER['PHP_SELF']."?action=valider_remplir_edt_cours&amp;utiliser_choix_prec=y".add_token_in_url()."'>Vider l'emploi du temps, recréer les cours déjà identifiés, puis proposer les indéterminés.</a></p>
+	</li>
+";
+
+
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif($action=="valider_remplir_edt_cours") {
+	check_token(false);
+
 	$sql="TRUNCATE TABLE edt_cours;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$utiliser_choix_prec=isset($_GET['utiliser_choix_prec']) ? "y" : "n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -1432,8 +1499,55 @@ elseif($action=="remplir_edt_cours") {
 	$cpt_non_trouve=0;
 	$cpt_indecis=0;
 	$tab_salle_cours=get_tab_salle_cours();
-	$sql="SELECT * FROM edt_lignes;";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$sql_edt_lignes="SELECT * FROM edt_lignes;";
+	if($utiliser_choix_prec=="y") {
+		// Commencer par recréer les cours identifiés
+
+		//$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
+		$sql_edt_lignes="SELECT * FROM edt_lignes WHERE traitement!='';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql_edt_lignes);
+		if(mysqli_num_rows($res)>0) {
+			while($tab=mysqli_fetch_assoc($res)) {
+				$tab2=explode("|", $tab['details_cours']);
+/*
+echo "<pre>";
+print_r($tab2);
+echo "</pre>";
+*/
+				$edt_cours_id_groupe=$tab2[0];
+				$edt_cours_id_salle=$tab2[1];
+				$edt_cours_jour_semaine=$tab2[2];
+				$edt_cours_id_definie_periode=$tab2[3];
+				$edt_cours_duree=$tab2[4];
+				$edt_cours_heuredeb_dec=$tab2[5];
+				$edt_cours_id_semaine=$tab2[6];
+				$edt_cours_login_prof=$tab2[7];
+
+				$sql="INSERT INTO edt_cours SET id_groupe='".$edt_cours_id_groupe."',
+										id_salle='".$edt_cours_id_salle."',
+										jour_semaine='".$edt_cours_jour_semaine."',
+										id_definie_periode='".$edt_cours_id_definie_periode."',
+										duree='".$edt_cours_duree."',
+										heuredeb_dec='".$edt_cours_heuredeb_dec."',
+										id_semaine='".$edt_cours_id_semaine."',
+										login_prof='".$edt_cours_login_prof."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
+				}
+				else {
+					$nb_cours_enregistres++;
+				}
+
+			}
+		}
+
+		$sql_edt_lignes="SELECT * FROM edt_lignes WHERE traitement='';";
+	}
+
+	$res=mysqli_query($GLOBALS["mysqli"], $sql_edt_lignes);
 	if(mysqli_num_rows($res)>0) {
 		while($tab=mysqli_fetch_assoc($res)) {
 
@@ -1448,13 +1562,25 @@ elseif($action=="remplir_edt_cours") {
 			$edt_cours_id_semaine="";
 			$edt_cours_login_prof="";
 
-			$lignes_ce_cours.="\$tab";
+			$lignes_ce_cours.="<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Enregistrement dans EDT</th>
+		<th>Informations trouvées d'après les rapprochements effectués</th>
+	</tr>
+	<tr>
+		<td>";
+			if($tab['classe']=='') {
+				$lignes_ce_cours.="<p>Ce cours n'est associé à aucune classe dans EDT.<br />Il se peut qu'il s'agisse de l'emploi du temps d'un(e) surveillant(e) en permanence,...<br />Ce cas n'est pas géré.</p>";
+			}
 			$lignes_ce_cours.="<pre>";
 			//print_r($tab);
 			foreach($tab as $key => $value) {
 				$lignes_ce_cours.="\$tab[$key]=$value<br />";
 			}
 			$lignes_ce_cours.="</pre>";
+			$lignes_ce_cours.="
+		</td>
+		<td>";
 			/*
 			Array
 			(
@@ -1477,6 +1603,8 @@ elseif($action=="remplir_edt_cours") {
 			    [pond] => 1
 			)
 			*/
+
+			$id_ligne=$tab['id'];
 
 			$matiere=get_corresp_edt("matiere", $tab['mat_code']);
 			$classe=get_corresp_edt("classe", $tab['classe']);
@@ -1543,6 +1671,11 @@ elseif($action=="remplir_edt_cours") {
 				$edt_cours_duree=2*$edt_cours_duree;
 			}
 			$lignes_ce_cours.=$edt_cours_duree." demi-heures<br />";
+
+			$lignes_ce_cours.="
+		</td>
+	</tr>
+</table>";
 
 /*
 
@@ -1623,6 +1756,7 @@ mysql>
 					else {
 
 // A FAIRE: Reessayer sans filtrer sur le prof
+						$lignes_ce_cours.="A FAIRE: Reessayer sans filtrer sur le prof<br />";
 
 						$lignes_ce_cours.="DEBUG : ECHEC<br />";
 						$cpt_non_trouve++;
@@ -1678,24 +1812,36 @@ mysql>
 								$edt_cours_id_groupe=$tab_grp_candidat[0];
 							}
 							elseif(count($tab_grp_candidat)>1) {
-								$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
 								$lignes_ce_cours.="<pre>";
 								//print_r($tab_grp_candidat);
 								foreach($tab_grp_candidat as $key => $value) {
 									$lignes_ce_cours.="\$tab_grp_candidat[$key]=$value<br />";
 								}
 								$lignes_ce_cours.="</pre>";
+
+								$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
 								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 								for($loop=0;$loop<count($tab_grp_candidat);$loop++) {
 									//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
-									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
+									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'";
+									if($tab['details_cours']!="") {
+										$tmp_tab=explode("|", $tab['details_cours']);
+										$tmp_id_groupe=$tmp_tab[0];
+										if($tmp_id_groupe==$tab_grp_candidat[$loop]) {
+											$lignes_ce_cours.=" selected";
+										}
+									}
+									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
 								}
 								$lignes_ce_cours.="</p>";
 								$cpt_indecis++;
 								$choix_a_faire="y";
 							}
 							else {
+
 // A FAIRE: Reessayer sans filtrer sur le prof
+// A FAIRE: ou proposer les enseignements du prof si c'est une erreur d'association matière
+
 								$lignes_ce_cours.="DEBUG : ECHEC<br />";
 								$cpt_non_trouve++;
 							}
@@ -1707,7 +1853,15 @@ mysql>
 							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 							while($lig=mysqli_fetch_object($res_grp)) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($lig->id_groupe)."</span><br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'";
+								if($tab['details_cours']!="") {
+									$tmp_tab=explode("|", $tab['details_cours']);
+									$tmp_id_groupe=$tmp_tab[0];
+									if($tmp_id_groupe==$lig->id_groupe) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label><br />";
 							}
 							$lignes_ce_cours.="</p>";
 
@@ -1717,7 +1871,23 @@ mysql>
 						}
 					}
 					else {
-// A FAIRE: Reessayer sans filtrer sur le prof
+						//$lignes_ce_cours.="A FAIRE: Reessayer sans filtrer sur le prof2<br />";
+
+						$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
+												j_groupes_matieres jgm
+											WHERE jgc.id_groupe=jgm.id_groupe AND 
+												jgc.id_classe='".$tmp_tab[0]."' AND 
+												jgm.id_matiere='$matiere';";
+						//$lignes_ce_cours.="$sql<br />";
+						$res_grp_sans_filtrage_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_grp_sans_filtrage_prof)>0) {
+							$current_classe_0=get_nom_classe($tmp_tab[0]);
+							$lignes_ce_cours.="Il existe un ou des groupes associés à la classe ".$current_classe_0.", mais pas avec le professeur ".civ_nom_prenom($prof)."<br />";
+							while($lig_grp_sans_filtrage_prof=mysqli_fetch_object($res_grp_sans_filtrage_prof)) {
+								$lignes_ce_cours.=get_info_grp($lig_grp_sans_filtrage_prof->id_groupe)."<br />";
+							}
+							$lignes_ce_cours.="Il se peut aussi que le groupe ".$tab['classe']." ait été associé par erreur à la classe de $current_classe_0.<br />Dans ce cas, vous devriez supprimer cette association et refaire une étape de rapprochements.<br />";
+						}
 						$lignes_ce_cours.="DEBUG : ECHEC<br />";
 						$cpt_non_trouve++;
 					}
@@ -1807,7 +1977,15 @@ mysql>
 								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 								for($loop=0;$loop<count($tab_grp_candidat);$loop++) {
 									//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
-									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
+									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'";
+									if($tab['details_cours']!="") {
+										$tmp_tab=explode("|", $tab['details_cours']);
+										$tmp_id_groupe=$tmp_tab[0];
+										if($tmp_id_groupe==$tab_grp_candidat[$loop]) {
+											$lignes_ce_cours.=" selected";
+										}
+									}
+									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
 								}
 								$lignes_ce_cours.="</p>";
 								$cpt_indecis++;
@@ -1825,7 +2003,15 @@ mysql>
 							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 							while($lig=mysqli_fetch_object($res_grp)) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($lig->id_groupe)."</span><br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'";
+								if($tab['details_cours']!="") {
+									$tmp_tab=explode("|", $tab['details_cours']);
+									$tmp_id_groupe=$tmp_tab[0];
+									if($tmp_id_groupe==$lig->id_groupe) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label><br />";
 							}
 							$lignes_ce_cours.="</p>";
 							$cpt_indecis++;
@@ -1862,6 +2048,10 @@ mysql>
 				else {
 					echo "<div style='color:green' id='div_cours_enregistre_".$nb_cours_enregistres."'>".$lignes_ce_cours."<hr /></div>";
 					$nb_cours_enregistres++;
+
+					$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
+					$sql="UPDATE edt_lignes SET traitement='cours_identifie_cree', details_cours='".$chaine_details_cours."' WHERE id='$id_ligne';";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 				}
 /*
 
@@ -1938,18 +2128,97 @@ mysql> select * from edt_cours where duree='1' limit 5;
 	die();
 }
 elseif($action=="editer_corresp") {
-	echo "<p style='color:red'>A FAIRE : Afficher les correspondances enregistrées, pouvoir les modifier/supprimer.</p>";
 
+	$tab_salle_cours=get_tab_salle_cours();
+	$tab_creneaux=get_tab_creneaux();
+
+	$cpt_suppr=0;
 	$tab_champs=array("matiere", "classe", "groupe", "salle", "jour", "prof", "h_debut", "frequence");
 	for($loop=0;$loop<count($tab_champs);$loop++) {
 		$sql="SELECT * FROM edt_corresp WHERE champ='".$tab_champs[$loop]."';";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_reg_edt_corresp=mysqli_num_rows($test);
-		echo "<p>".$nb_reg_edt_corresp." correspondances '".$tab_champs[$loop]."' enregistrées.<br />";
+
+		echo "
+<h3>".ucfirst($tab_champs[$loop])."</h3>
+<div style='margin-left:3em;'>
+	<p>".$nb_reg_edt_corresp." correspondances '".$tab_champs[$loop]."' enregistrées.<br />";
 		if($nb_reg_edt_corresp>0) {
-			echo "<a href='".$_SERVER['PHP_SELF']."?action=editer_corresp&amp;vider=".$tab_champs[$loop]."".add_token_in_url()."'>Supprimer les correspondances enregistrées pour le champ '".$tab_champs[$loop]."'</a>";
+			echo "
+	<a href='".$_SERVER['PHP_SELF']."?action=editer_corresp&amp;vider=".$tab_champs[$loop]."".add_token_in_url()."'>Supprimer toutes les correspondances enregistrées pour le champ '".$tab_champs[$loop]."'</a></p>
+
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
+		<fieldset class='fieldset_opacite50'>
+			".add_token_field()."
+
+			<table class='boireaus boireaus_alt'>
+				<tr>
+					<th>EDT</th>
+					<th>GEPI</th>
+					<th>Supprimer</th>
+				</tr>";
+			while($lig=mysqli_fetch_object($test)) {
+				echo "
+				<tr>
+					<td><label for='suppr_$cpt_suppr' >$lig->nom_edt</label></td>
+					<td><label for='suppr_$cpt_suppr' >";
+				if($tab_champs[$loop]=='classe') {
+					echo get_nom_classe($lig->nom_gepi);
+				}
+				elseif($tab_champs[$loop]=='groupe') {
+					//echo $lig->nom_gepi;
+					$tmp_tab=explode("|",$lig->nom_gepi);
+					for($loop2=0;$loop2<count($tmp_tab);$loop2++) {
+						if($tmp_tab[$loop2]!="") {
+							echo get_nom_classe($tmp_tab[$loop2])." - ";
+						}
+					}
+				}
+				elseif($tab_champs[$loop]=='salle') {
+					if(isset($tab_salle_cours['indice'][$lig->nom_gepi]['designation_complete'])) {
+						echo $tab_salle_cours['indice'][$lig->nom_gepi]['designation_complete'];
+					}
+					else {
+						echo "Salle d'identifiant ".$lig->nom_gepi." inconnu";
+					}
+				}
+				elseif($tab_champs[$loop]=='prof') {
+					echo civ_nom_prenom($lig->nom_gepi);
+				}
+				elseif($tab_champs[$loop]=='h_debut') {
+					$tab_h_debut=explode("|", $lig->nom_gepi);
+					if(isset($tab_h_debut[1])) {
+						$id_creneau=$tab_h_debut[0];
+						echo $tab_creneaux['indice'][$id_creneau]['debut_court'];
+						if($tab_h_debut[1]==0) {
+							echo " <span style='font-size:small'>(début du créneau ".$tab_creneaux['indice'][$id_creneau]['nom_definie_periode']." (".$tab_creneaux['indice'][$id_creneau]['debut_court']."-".$tab_creneaux['indice'][$id_creneau]['fin_court']."))</span>";
+						}
+						else {
+							echo " <span style='font-size:small'>(milieu du créneau ".$tab_creneaux['indice'][$id_creneau]['nom_definie_periode']." (".$tab_creneaux['indice'][$id_creneau]['debut_court']."-".$tab_creneaux['indice'][$id_creneau]['fin_court']."))</span>";
+						}
+					}
+					else {
+						echo "<span style='color:red'>".$lig->nom_gepi."</span>";
+					}
+				}
+				else {
+					echo $lig->nom_gepi;
+				}
+				echo "</label></td>
+					<td><input type='checkbox' name='suppr[]' id='suppr_$cpt_suppr' value='$lig->id' /></td>
+				</tr>";
+				$cpt_suppr++;
+			}
+			echo "
+			</table>
+			<p><input type='hidden' name='action' value='editer_corresp' />
+			<p><input type='submit' value='Valider' /></p>
+		</fieldset>
+	</form>";
+
 		}
-		echo "</p>";
+		echo "
+</div>";
 	}
 
 	require("../lib/footer.inc.php");
@@ -2096,6 +2365,12 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 							echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
 						}
 						else {
+							$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
+							$sql="UPDATE edt_lignes SET traitement='choix_effectue', details_cours='".$chaine_details_cours."' WHERE id='$id_ligne';";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							//$sql="SELECT * FROM edt_corresp WHERE champ='choix_id_groupe', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."'";
+
 							$nb_cours_enregistres++;
 						}
 					}

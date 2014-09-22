@@ -12075,9 +12075,26 @@ function get_tab_salle_cours() {
 			$tab['indice'][$lig->id_salle]['numero_salle']=$lig->numero_salle;
 			$tab['indice'][$lig->id_salle]['nom_salle']=$lig->nom_salle;
 
+			if($lig->numero_salle!="") {
+				$designation_courte=$lig->numero_salle;
+				$designation_complete=$lig->numero_salle;
+			}
+			else {
+				$designation_courte=$lig->nom_salle;
+			}
+
+			if($lig->nom_salle!="") {
+				$designation_complete.=" (".$lig->nom_salle.")";
+			}
+
+			$tab['indice'][$lig->id_salle]['designation_courte']=$designation_courte;
+			$tab['indice'][$lig->id_salle]['designation_complete']=$designation_complete;
+
 			$tab['list'][$cpt]['id_salle']=$lig->id_salle;
 			$tab['list'][$cpt]['numero_salle']=$lig->numero_salle;
 			$tab['list'][$cpt]['nom_salle']=$lig->nom_salle;
+			$tab['list'][$cpt]['designation_courte']=$designation_courte;
+			$tab['list'][$cpt]['designation_complete']=$designation_complete;
 			$cpt++;
 		}
 	}
