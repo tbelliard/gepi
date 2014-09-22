@@ -1215,7 +1215,10 @@ echo "		}
 	    echo "<th>Imprimer le rapport d'".$mod_disc_terme_incident."</th>\n";
 		echo "<th>Suppr</th>\n";
 	}
-	//echo "<th></th>\n";
+	if($_SESSION['statut']=='professeur') {
+		echo "<th>Imprimer</th>\n";
+	}
+	
 	echo "</tr>\n";
 
 	//=========================================================
@@ -1316,7 +1319,11 @@ echo "		}
 				$cpt=0;
 				$tab_protagonistes=array();
 				while($lig2=mysqli_fetch_object($res2)) {
+					
 					$tab_protagonistes[]=$lig2->login;
+					if (is_pp($_SESSION['login'],"",$lig2->login)) {
+						$peutImprimer = TRUE;
+					}
 					if($cpt>0) {echo "<br />";}
 					if($lig2->statut=='eleve') {
 						if(in_array($lig2->login, array_keys($tab_individu))) {
@@ -1460,6 +1467,7 @@ echo "		}
 			$texte.="<br /><span style='font-size:x-small;'>".ucfirst($mod_disc_terme_incident)." signalé par ".u_p_nom($lig->declarant)."</span>";
 
 			if(($lig->declarant==$_SESSION['login'])||($_SESSION['statut']!='professeur')) {$possibilite_prof_clore_incident='y';} else {$possibilite_prof_clore_incident='n';}
+			
 
 			$mesure_demandee_non_validee="n";
 			$texte.=affiche_mesures_incident($lig->id_incident);
@@ -1547,6 +1555,21 @@ echo "		}
 				echo "<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&id_incident=$lig->id_incident".add_token_in_url()."' title='Imprimer le rapport d'\incident'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer le Rapport d\'".addslashes($mod_disc_terme_incident)."'></a>\n";
 				echo "</td>\n";
 			}
+			
+			$possibilite_prof_imprime='n';
+			if ($_SESSION['statut']=='professeur') {
+			echo "<td>\n";
+				if ($lig->declarant==$_SESSION['login']) {
+					$possibilite_prof_imprime ='y';
+				} else if (isset ($peutImprimer) && $peutImprimer) {
+					$possibilite_prof_imprime ='y';					
+				}
+				// echo $lig->declarant;
+				if($possibilite_prof_imprime=='y') {
+					echo "<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&id_incident=$lig->id_incident".add_token_in_url()."' title='Imprimer le rapport d'\incident'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer le Rapport d\'".addslashes($mod_disc_terme_incident)."'></a>\n";
+				}
+			echo "</td>\n";
+			}
 			//===============================
 			
 			//=================================================
@@ -1561,6 +1584,7 @@ echo "		}
 				}
 				echo "</td>\n";
 			}
+			
 			echo "</tr>\n";
 			flush();
 		}
