@@ -173,13 +173,27 @@ if (($nb_test == 0) and ($id_classe != -1) and ($delai != 0)) {
     for ($i = 0; $i <= $delai; $i++) {
         $aujourhui = $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $jour = mktime(0, 0, 0, date('m',$aujourhui), (date('d',$aujourhui) + $i), date('Y',$aujourhui) );
-        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+        $jour_suivant=$jour+24*3600;
+        /*
+        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
             "ct.id_groupe = jc.id_groupe and " .
             "g.id = jc.id_groupe and " .
             "jc.id_classe = '" . $id_classe . "' and " .
             "ct.contenu != '' and " .
-            "ct.date_ct = '$jour')");
+            "ct.date_ct = '$jour')";
+        */
+        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
+            "ct.id_groupe = jc.id_groupe and " .
+            "g.id = jc.id_groupe and " .
+            "jc.id_classe = '" . $id_classe . "' and " .
+            "ct.contenu != '' and " .
+            "ct.date_ct >= '$jour' AND 
+             ct.date_ct < '$jour_suivant'
+            );";
+        //echo "DEBUG : $sql<br />";
+        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
         $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
@@ -247,14 +261,28 @@ if ($delai != 0) {
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
         $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
+        $jour_suivant=$jour+24*3600;
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
-        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+        /*
+        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
                 "ct.id_groupe = jgc.id_groupe and " .
                 "g.id = jgc.id_groupe and " .
                 "jgc.id_classe = '" . $id_classe . "' and " .
                 "ct.contenu != '' and " .
-                "ct.date_ct = '$jour')");
+                "ct.date_ct = '$jour')";
+        */
+        $sql="SELECT ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+                "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
+                "ct.id_groupe = jgc.id_groupe and " .
+                "g.id = jgc.id_groupe and " .
+                "jgc.id_classe = '" . $id_classe . "' and " .
+                "ct.contenu != '' and " .
+                "ct.date_ct >= '$jour' and 
+                ct.date_ct < '$jour_suivant'
+                );";
+        //echo "DEBUG : $sql<br />";
+        $appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
         $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
@@ -349,7 +377,7 @@ $req_notices =
     and date_ct <= '$current_time'
     and date_ct != ''
     and date_ct >= '".getSettingValue("begin_bookings")."')
-    ORDER BY date_ct DESC, heure_entry DESC limit 10";
+    ORDER BY date_ct DESC, heure_entry DESC limit 10;";
 
 $res_notices = mysqli_query($GLOBALS["mysqli"], $req_notices);
 $notice = mysqli_fetch_object($res_notices);
@@ -363,7 +391,7 @@ $req_devoirs =
     and date_ct <= '$today'
     and date_ct >= '".getSettingValue("begin_bookings")."'
     and date_ct <= '".getSettingValue("end_bookings")."'
-    ) order by date_ct DESC limit 10";
+    ) order by date_ct DESC limit 10;";
 $res_devoirs = mysqli_query($GLOBALS["mysqli"], $req_devoirs);
 $devoir = mysqli_fetch_object($res_devoirs);
 
