@@ -1064,13 +1064,19 @@ if ($eleve_col->isEmpty()) {
 				<strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
 				pour 
 				<strong>
-				<?php if (isset($current_groupe) && $current_groupe != null) {
-				    echo 'le groupe '.$current_groupe->getNameAvecClasses();
-				} else if (isset($current_aid) && $current_aid != null) {
-				    echo 'l\'aid '.$current_aid->getNom();
-				} else if (isset($current_classe) && $current_classe != null) {
-				    echo 'la classe '.$current_classe->getNom();
-				} ?>
+				<?php
+					$designation_classe_groupe_ou_aid="";
+					if (isset($current_groupe) && $current_groupe != null) {
+						$designation_classe_groupe_ou_aid=$current_groupe->getNameAvecClasses();
+						echo 'le groupe '.$designation_classe_groupe_ou_aid;
+					} else if (isset($current_aid) && $current_aid != null) {
+						$designation_classe_groupe_ou_aid=$current_aid->getNom();
+						echo 'l\'aid '.$designation_classe_groupe_ou_aid;
+					} else if (isset($current_classe) && $current_classe != null) {
+						$designation_classe_groupe_ou_aid=$current_classe->getNom();
+						echo 'la classe '.$designation_classe_groupe_ou_aid;
+					}
+				?>
 				</strong>
 				<?php if ($current_creneau != null) { ?>
 				<label for="heure_debut_appel">de</label>
@@ -1308,6 +1314,7 @@ if ($eleve_col->isEmpty()) {
 	$compteur_eleve=0;
 	foreach($afficheEleve as $eleve) {
 		$compteur_eleve++;
+		$designation_eleve="";
 ?>
 <!--tr><td>plop</td></tr-->
 					<tr class='<?php 
@@ -1329,7 +1336,10 @@ if ($eleve_col->isEmpty()) {
 								   value="<?php echo $eleve['id']; ?>" />
 							<span class="td_abs_eleves">
 								<label for='active_absence_eleve_<?php echo $eleve['position']; ?>' id='label_nom_prenom_eleve_<?php echo $eleve['position']; ?>'>
-								<?php echo casse_mot($eleve['nom'],'maj').' '.casse_mot($eleve['prenom'],'majf2').' ('.$eleve['civilite'].')'; ?>
+								<?php
+									$designation_eleve=casse_mot($eleve['nom'],'maj').' '.casse_mot($eleve['prenom'],'majf2').' ('.$eleve['civilite'].')';
+									echo $designation_eleve;
+								?>
 								<?php if (isset ($eleve['classe'])) echo $eleve['classe']; ?>
 								</label>
 							</span>
@@ -1578,6 +1588,11 @@ if ($eleve['creneau_courant'] == $i) { ?>
 	if ($current_creneau != null) {
 ?>
 						<td class="commentaire">
+							<?php
+								if((getSettingAOui("active_mod_alerte"))&&(check_mae($_SESSION['login']))) {
+									echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[".$designation_classe_groupe_ou_aid."]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/mail.png' class='icone16' alt='Alerter' /></a></div>";
+								}
+							?>
 							<label for="commentaire_absence_eleve_<?php echo $eleve['position']; ?>">Commentaire :</label>
 							<input id="commentaire_absence_eleve_<?php echo $eleve['position']; ?>"
 									name="commentaire_absence_eleve[<?php echo $eleve['position']; ?>]" 
