@@ -1271,6 +1271,18 @@ autre='F',
 description='Correction des inscriptions dans des groupes d après un CSV',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/edt_organisation/import_edt_edt.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Import des EDT depuis un XML EDT',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

@@ -1125,3 +1125,36 @@ description_engagement TEXT NOT NULL,
 classe VARCHAR(100) NOT NULL,
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_corresp;
+CREATE TABLE IF NOT EXISTS edt_corresp (
+id int(11) NOT NULL AUTO_INCREMENT,
+champ VARCHAR(100) NOT NULL DEFAULT '',
+nom_edt VARCHAR(255) NOT NULL DEFAULT '',
+nom_gepi VARCHAR(255) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_lignes;
+CREATE TABLE IF NOT EXISTS edt_lignes (
+id int(11) NOT NULL AUTO_INCREMENT,
+numero varchar(255) NOT NULL default '',
+classe varchar(255) NOT NULL default '',
+mat_code varchar(255) NOT NULL default '',
+mat_libelle varchar(255) NOT NULL default '',
+prof_nom varchar(255) NOT NULL default '',
+prof_prenom varchar(255) NOT NULL default '',
+salle varchar(255) NOT NULL default '',
+jour varchar(255) NOT NULL default '',
+h_debut varchar(255) NOT NULL default '',
+duree varchar(255) NOT NULL default '',
+frequence varchar(10) NOT NULL default '',
+alternance varchar(10) NOT NULL default '',
+effectif varchar(255) NOT NULL default '',
+modalite varchar(255) NOT NULL default '',
+co_ens varchar(255) NOT NULL default '',
+pond varchar(255) NOT NULL default '',
+traitement varchar(100) NOT NULL default '',
+details_cours VARCHAR(255) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

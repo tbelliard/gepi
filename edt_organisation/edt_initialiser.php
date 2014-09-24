@@ -145,6 +145,7 @@ if ($aff_reglages2 == "oui") {
 		<p class="edt_lien"><a href="./edt_init_csv.php">Fichiers csv construit manuellement.</a></p>
 		<p class="edt_lien"><a href="./edt_init_csv2.php">Export depuis UnDeuxTemps.</a></p>
 		<p class="edt_lien"><a href="./edt_init_texte.php">Export type Charlemagne, IndexEducation.</a></p>
+		<p class="edt_lien"><a href="./import_edt_edt.php">Export EXP_COURS.xml IndexEducation.</a></p>
 		<br />
 	</div>
  		';
@@ -153,7 +154,8 @@ if ($aff_reglages2 == "oui") {
 		echo '
  	<div id="lien" style="background: #fefefe; margin-left: 200px; width: 400px; margin-top:1em;">
  		<br />
-		<p class="edt_lien"><a href="./edt_xml.php">Générer un export de type UnDeuxTemps à partir d\'un export EXP_COURS.xml d\'IndexEducation.</a></p>
+		<p class="edt_lien"><span style="color:red" title="Un import direct depuis le EXP_COURS.xml est proposé ci-dessus
+depuis Gepi 1.6.6">Ancien dispositif pour EDT&nbsp;: </span><a href="./edt_xml.php">Générer un export de type UnDeuxTemps à partir d\'un export EXP_COURS.xml d\'IndexEducation.</a></p>
 		<br />
 	</div>
 ';
