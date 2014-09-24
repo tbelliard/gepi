@@ -70,6 +70,15 @@ function get_corresp_edt($type, $nom) {
 	return $retour;
 }
 
+function get_id_groupe_from_tab_ligne($tab) {
+	$retour="";
+
+	if((isset($tab['classe']))&&(isset($tab['prof_nom']))&&(isset($tab['prof_prenom']))&&(isset($tab['mat_code']))) {
+		$chaine_nom_edt=$tab['classe']."|".$tab['prof_nom']."|".$tab['prof_prenom']."|".$tab['mat_code'];
+		$retour=get_corresp_edt('choix_id_groupe', $chaine_nom_edt);
+	}
+	return $retour;
+}
 
 $sql="CREATE TABLE IF NOT EXISTS edt_corresp (
 id int(11) NOT NULL AUTO_INCREMENT,
@@ -1831,6 +1840,12 @@ mysql>
 											$lignes_ce_cours.=" selected";
 										}
 									}
+									else {
+										$id_groupe_choix_import_xml_precedent=get_id_groupe_from_tab_ligne($tab);
+										if(($id_groupe_choix_import_xml_precedent!="")&&($tab_grp_candidat[$loop]==$id_groupe_choix_import_xml_precedent)) {
+											$lignes_ce_cours.=" selected";
+										}
+									}
 									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
 								}
 								$lignes_ce_cours.="</p>";
@@ -1858,6 +1873,12 @@ mysql>
 									$tmp_tab=explode("|", $tab['details_cours']);
 									$tmp_id_groupe=$tmp_tab[0];
 									if($tmp_id_groupe==$lig->id_groupe) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								else {
+									$id_groupe_choix_import_xml_precedent=get_id_groupe_from_tab_ligne($tab);
+									if(($id_groupe_choix_import_xml_precedent!="")&&($lig->id_groupe==$id_groupe_choix_import_xml_precedent)) {
 										$lignes_ce_cours.=" selected";
 									}
 								}
@@ -1985,6 +2006,12 @@ mysql>
 											$lignes_ce_cours.=" selected";
 										}
 									}
+									else {
+										$id_groupe_choix_import_xml_precedent=get_id_groupe_from_tab_ligne($tab);
+										if(($id_groupe_choix_import_xml_precedent!="")&&($tab_grp_candidat[$loop]==$id_groupe_choix_import_xml_precedent)) {
+											$lignes_ce_cours.=" selected";
+										}
+									}
 									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label><br />";
 								}
 								$lignes_ce_cours.="</p>";
@@ -2008,6 +2035,12 @@ mysql>
 									$tmp_tab=explode("|", $tab['details_cours']);
 									$tmp_id_groupe=$tmp_tab[0];
 									if($tmp_id_groupe==$lig->id_groupe) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								else {
+									$id_groupe_choix_import_xml_precedent=get_id_groupe_from_tab_ligne($tab);
+									if(($id_groupe_choix_import_xml_precedent!="")&&($lig->id_groupe==$id_groupe_choix_import_xml_precedent)) {
 										$lignes_ce_cours.=" selected";
 									}
 								}
@@ -2369,7 +2402,21 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 							$sql="UPDATE edt_lignes SET traitement='choix_effectue', details_cours='".$chaine_details_cours."' WHERE id='$id_ligne';";
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
-							//$sql="SELECT * FROM edt_corresp WHERE champ='choix_id_groupe', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab['classe'])."'";
+							$chaine_nom_edt=$tab['classe']."|".$tab['prof_nom']."|".$tab['prof_prenom']."|".$tab['mat_code'];
+							$sql="SELECT * FROM edt_corresp WHERE champ='choix_id_groupe' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."'";
+							//echo "$sql<br />";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."';";
+								//echo "$sql<br />";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+							else {
+								$lig_edt_corresp=mysqli_fetch_object($test);
+								$sql="UPDATE edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."' WHERE id='".$lig->id."';";
+								//echo "$sql<br />";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
 
 							$nb_cours_enregistres++;
 						}
