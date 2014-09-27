@@ -966,7 +966,7 @@ Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
 <div id='fixe'></div>
 
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
-<p><input type='submit' value='Enregistrer' /></p>
+<p><input type='submit' id='button_submit_Enregistrer_1' value='Enregistrer' /></p>
 <?php
 
 echo add_token_field();
@@ -1381,7 +1381,7 @@ if(count($total_eleves)>0) {
 
 	echo "<input type='hidden' name='id_groupe_reference' id='id_groupe_reference' value='' />\n";
 
-	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p align='center'><input type='submit' id='button_submit_Enregistrer_2' value='Enregistrer' /></p>\n";
 	
 	
 	$nb_eleves=count($total_eleves);
@@ -1605,6 +1605,9 @@ if(count($total_eleves)>0) {
 			}
 			document.getElementById('prise_en_compte_signalement_'+num_periode).style.display='none';
 		}
+
+		document.getElementById('button_submit_Enregistrer_1').value='Enregistrer';
+		document.getElementById('button_submit_Enregistrer_2').value='Enregistrer';
 	}
 ";
 	}
@@ -1630,6 +1633,13 @@ function CocheFrac(mode, part) {
 	griser_degriser(etat_grisage);
 }
 ";
+
+	if(count($tab_sig)>0) {
+		echo "
+document.getElementById('button_submit_Enregistrer_1').value='Rejeter la proposition de correction du professeur';
+document.getElementById('button_submit_Enregistrer_2').value='Rejeter la proposition de correction du professeur';
+";
+	}
 
 	echo "</script>\n";
 
