@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -814,7 +814,15 @@ $headers);
 									$source_file=$document_joint['tmp_name'];
 									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
 									if(!file_exists($dossier_courant)) {
-										mkdir($dossier_courant, 0770, true);
+										if($discipline_droits_mkdir=="") {
+											mkdir($dossier_courant, 0770, true);
+										}
+										else {
+											@mkdir("../$dossier_documents_discipline");
+											@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
+											@mkdir("../$dossier_documents_discipline/incident_".$id_incident."/mesures");
+											@mkdir($dossier_courant);
+										}
 									}
 
 									if(strstr($document_joint['name'],".")) {
@@ -3126,7 +3134,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 ?>
                                 <table class='boireaus' width='100%'>
                                     <caption class="invisible">Fichiers</caption>
-                                    <tr>\
+                                    <tr>
                                         <th>Fichier</th>
                                         <th>Supprimer</th>
                                     </tr>
@@ -3134,9 +3142,11 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 						$alt3=1;
 						for($loop=0;$loop<count($tab_file);$loop++) {
 							$alt3=$alt3*(-1);
+							$fichier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$ele_login[$i]."/".$tab_file[$loop];
+
 ?>
                                     <tr class='lig<?php echo $alt3; ?> white_hover'>
-                                        <td><?php echo $tab_file[$loop]; ?></td>
+                                        <td><?php echo "<a href='".$fichier_courant."' target='_blank'>".$tab_file[$loop]."</a>"; ?></td>
                                         <td>
                                             <input type='checkbox' 
                                                    name='suppr_doc_joint_<?php echo $i; ?>[]' 
