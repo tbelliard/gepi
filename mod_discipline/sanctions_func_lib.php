@@ -23,12 +23,19 @@ $delais_affichage_infobulle=500;
 // Familles de sanctions:
 $types_autorises=array('exclusion', 'retenue', 'travail', 'autre');
 
+$discipline_droits_mkdir=getSettingValue('discipline_droits_mkdir');
+
 $dossier_documents_discipline="documents/discipline";
 if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
 	if(isset($_COOKIE['RNE'])) {
 		$dossier_documents_discipline.="_".$_COOKIE['RNE'];
 		if(!file_exists("../$dossier_documents_discipline")) {
-			@mkdir("../$dossier_documents_discipline",0770);
+			if($discipline_droits_mkdir=="") {
+				@mkdir("../$dossier_documents_discipline",0770);
+			}
+			else {
+				@mkdir("../$dossier_documents_discipline");
+			}
 		}
 	}
 }

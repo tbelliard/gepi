@@ -619,7 +619,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 				$fichier_src=$chemin_src."/".$ajouter_doc_joint[$loop];
 				$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
 				if(file_exists($fichier_src)) {
-					@mkdir($chemin_dest,0770,true);
+					if($discipline_droits_mkdir=="") {
+						@mkdir($chemin_dest,0770,true);
+					}
+					else {
+						@mkdir("../$dossier_documents_discipline");
+						@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
+						@mkdir($chemin_dest);
+					}
 					copy($fichier_src, $fichier_dest);
 
 					/*
@@ -634,7 +641,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 						$chemin_dest="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$tab_tmp_id_sanction[$loop2];
 						$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
 						if(file_exists($fichier_src)) {
-							@mkdir($chemin_dest,0770,true);
+							if($discipline_droits_mkdir=="") {
+								@mkdir($chemin_dest,0770,true);
+							}
+							else {
+								@mkdir("../$dossier_documents_discipline");
+								@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
+								@mkdir($chemin_dest);
+							}
 							copy($fichier_src, $fichier_dest);
 						}
 					}
@@ -660,7 +674,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$source_file=$document_joint['tmp_name'];
 					$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 					if(!file_exists($dossier_courant)) {
-						mkdir($dossier_courant, 0770, true);
+						if($discipline_droits_mkdir=="") {
+							mkdir($dossier_courant, 0770, true);
+						}
+						else {
+							@mkdir("../$dossier_documents_discipline");
+							@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
+							@mkdir($dossier_courant);
+						}
 					}
 
 					if(strstr($document_joint['name'],".")) {
