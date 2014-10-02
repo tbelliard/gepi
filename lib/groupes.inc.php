@@ -1192,5 +1192,39 @@ function get_classes_from_id_groupe($id_groupe) {
 	return $tab;
 }
 
+/** Renvoie un tableau des groupes associés à une matière
+ * 
+ * Chaque ligne contient les retours de get_group() d'un des groupes associés à la matière
+ *
+ * @param text $_matiere L'identifiant de matière
+ * @param array $tab_champs Les champs qu'on veut récupérer avec get_group()
+ * @return array Le tableau des groupes
+ * @see get_group()
+ */
+function get_groups_for_matiere($_matiere,$mode=NULL,$tab_champs=array()) {
+	global $mysqli;
+	$requete_sql = "SELECT DISTINCT jgm.id_groupe
+					FROM j_groupes_matieres jgm, j_groupes_classes jgc, classes c, groupes g
+					WHERE (" .
+					"jgm.id_matiere='".$_matiere."'
+					AND jgm.id_groupe=g.id
+					AND jgm.id_groupe=jgc.id_groupe
+					AND jgc.id_classe=c.id) ".
+					"ORDER BY c.classe, g.name, g.description;" ;
+
+	$resultat = mysqli_query($mysqli, $requete_sql);  
+	$nb = $resultat->num_rows;
+	$groups = array();
+	while ($obj = $resultat->fetch_object()) {
+		$_id_groupe = $obj->id_groupe;
+		if(count($tab_champs)>0) {
+			$groups[] = get_group($_id_groupe,$tab_champs);
+		} else {
+			$groups[] = get_group($_id_groupe);
+		}
+	}
+
+	return $groups;
+}
 
 ?>
