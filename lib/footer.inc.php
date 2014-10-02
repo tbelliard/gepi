@@ -65,6 +65,16 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			echo "</script>\n";
 		}
 	}
+
+	if(isset($tabid_infobulle_complement)){
+		if(count($tabid_infobulle_complement)>0){
+			echo "<script type='text/javascript'>\n";
+			for($i=0;$i<count($tabid_infobulle_complement);$i++){
+				echo "cacher_div('".$tabid_infobulle_complement[$i]."');\n";
+			}
+			echo "</script>\n";
+		}
+	}
 }
 
 	if(getSettingValue("gepi_pmv")!="n"){

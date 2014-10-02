@@ -304,6 +304,9 @@ $data['req_affcalendar'] = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM edt_c
 $data['nbre_affcalendar'] = mysqli_num_rows($data['req_affcalendar']);
 $a = 1;
 
+if(!isset($tabid_infobulle_complement)) {
+	$tabid_infobulle_complement=array();
+}
 for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 	$data['rep_affcalendar'][$i]["id_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "id_calendrier");
 	$data['rep_affcalendar'][$i]["classe_concerne_calendrier"] = old_mysql_result($data['req_affcalendar'], $i, "classe_concerne_calendrier");
@@ -339,6 +342,7 @@ for ($i=0; $i<$data['nbre_affcalendar']; $i++) {
 		//$aff_classe_concerne = aff_popup("Voir", "edt", "Classes concernées", $contenu_infobulle);
 		$id_div = "periode".$data['rep_affcalendar'][$i]["id_calendrier"];
 		$data['aff_classe_concerne'][$i] = "<a href=\"#\" onmouseover=\"afficher_div('".$id_div."','Y',10,10);return false;\" onmouseout=\"cacher_div('".$id_div."');\">Liste</a>\n".creer_div_infobulle($id_div, "Liste des classes", "#330033", $contenu_infobulle, "#FFFFFF", 15,0,"n","n","y","n", 1);
+		$tabid_infobulle_complement[]=$id_div;
 	} 
 
 	// On détermine si c'est une période pédagogique ou une période de vacances
