@@ -143,6 +143,7 @@ if ($barre_plugin!="") {
 				$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Dates événements</a></li>'."\n";
 				if(getSettingAOui('active_mod_engagements')) {
+					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
 					$menus .= '                <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
 				}
 				$menus .= '            </ul>'."\n";

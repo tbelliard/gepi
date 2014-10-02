@@ -150,6 +150,7 @@ if ($barre_plugin!="") {
 				$menus .= '     </li>'."\n";
 
 				if(getSettingAOui('active_mod_engagements')) {
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
 				}
 	

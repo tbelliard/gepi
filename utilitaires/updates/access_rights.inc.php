@@ -1283,6 +1283,18 @@ autre='F',
 description='Import des EDT depuis un XML EDT',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_engagements/extraction_engagements.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Extraction des engagements',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

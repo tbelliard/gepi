@@ -315,6 +315,10 @@ if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {
 	echo " | <a href='index_admin.php'>Définir les types d'engagements</a>";
 }
 
+if(acces("/mod_engagements/extraction_engagements.php", $_SESSION['statut'])) {
+	echo " | <a href='extraction_engagements.php'>Extraire des engagements</a>";
+}
+
 if(acces("/mod_engagements/imprimer_documents.php", $_SESSION['statut'])) {
 	echo " | <a href='imprimer_documents.php'>Imprimer les documents liés aux engagements</a>";
 }
