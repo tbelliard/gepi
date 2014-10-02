@@ -55,6 +55,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $ajout_headers Text à ajouter dans le header
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain") {
+	global $gepiPath;
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
@@ -74,6 +75,25 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		$subject,
 		$message,
 	  $headers);
+
+	if(getSettingAOui('log_envoi_mail')) {
+		$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
+
+		$ts=strftime("%a %d/%m/%Y %H:%M:%S");
+		$f=fopen($dirname."/debug_envoi_mail_.log");
+		fwrite($f, "==========================\n".$ts." :\r\n");
+		if(!$envoi) {
+			fwrite($f, "ECHEC de l'envoi de mail\r\n");
+		}
+		else {
+			fwrite($f, "SUCCES de l'envoi de mail\r\n");
+		}
+		fwrite($f, "Sujet : $sujet\r\n");
+		fwrite($f, "Destinataire : $destinataire\r\n");
+		fwrite($f, "Headers suppl : $ajout_headers\r\n");
+		fclose($f);
+	}
+
 	return $envoi;
 }
 
@@ -8797,7 +8817,7 @@ function get_info_grp($id_groupe, $tab_infos=array('description', 'matieres', 'c
 	return $retour;
 }
 
-function get_adresse_responsable($pers_id) {
+function get_adresse_responsable($pers_id, $login_resp="") {
 	global $mysqli;
 	$tab_adresse=array();
 
@@ -8810,45 +8830,52 @@ function get_adresse_responsable($pers_id) {
 	$tab_adresse['pays']="";
 	$tab_adresse['en_ligne']="";
 
-	$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$pers_id';";
-	$res = mysqli_query($mysqli, $sql);
-	if($res->num_rows > 0) {
-		$lig = $res->fetch_object();
-		$tab_adresse['adr_id']=$lig->adr_id;
-		$tab_adresse['adr1']=$lig->adr1;
-		$tab_adresse['adr2']=$lig->adr2;
-		$tab_adresse['adr3']=$lig->adr3;
-		$tab_adresse['cp']=$lig->cp;
-		$tab_adresse['commune']=$lig->commune;
-		$tab_adresse['pays']=$lig->pays;
-
-		$tab_adresse['en_ligne']=$lig->adr1;
-
-		if($lig->adr2!="") {
-			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
-			$tab_adresse['en_ligne'].=$lig->adr2;
+	if(($pers_id!="")||($login_resp!="")) {
+		if($pers_id!="") {
+			$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.pers_id='$pers_id';";
 		}
-
-		if($lig->adr3!="") {
-			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
-			$tab_adresse['en_ligne'].=$lig->adr3;
+		elseif($login_resp!="") {
+			$sql="SELECT * FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$login_resp';";
 		}
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$lig = $res->fetch_object();
+			$tab_adresse['adr_id']=$lig->adr_id;
+			$tab_adresse['adr1']=$lig->adr1;
+			$tab_adresse['adr2']=$lig->adr2;
+			$tab_adresse['adr3']=$lig->adr3;
+			$tab_adresse['cp']=$lig->cp;
+			$tab_adresse['commune']=$lig->commune;
+			$tab_adresse['pays']=$lig->pays;
 
-		if($lig->cp!="") {
-			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
-			$tab_adresse['en_ligne'].=$lig->cp;
-		}
+			$tab_adresse['en_ligne']=$lig->adr1;
 
-		if($lig->commune!="") {
-			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
-			$tab_adresse['en_ligne'].=$lig->commune;
-		}
+			if($lig->adr2!="") {
+				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+				$tab_adresse['en_ligne'].=$lig->adr2;
+			}
 
-		if(($tab_adresse['pays']!='')&&($tab_adresse['pays']!=getSettingValue('gepiSchoolPays'))) {
-			if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
-			$tab_adresse['en_ligne'].=$tab_adresse['pays'];
+			if($lig->adr3!="") {
+				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+				$tab_adresse['en_ligne'].=$lig->adr3;
+			}
+
+			if($lig->cp!="") {
+				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+				$tab_adresse['en_ligne'].=$lig->cp;
+			}
+
+			if($lig->commune!="") {
+				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+				$tab_adresse['en_ligne'].=$lig->commune;
+			}
+
+			if(($tab_adresse['pays']!='')&&($tab_adresse['pays']!=getSettingValue('gepiSchoolPays'))) {
+				if($tab_adresse['en_ligne']!="") {$tab_adresse['en_ligne'].=", ";}
+				$tab_adresse['en_ligne'].=$tab_adresse['pays'];
+			}
+			$res->close();
 		}
-		$res->close();
 	}
 
 	return $tab_adresse;
@@ -10777,6 +10804,7 @@ function get_info_eleve($login_ele, $periode) {
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
+		$tab['login']=$login_ele;
 		$tab['nom']=$lig->nom;
 		$tab['prenom']=$lig->prenom;
 		$tab['denomination']=casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2");
@@ -12134,6 +12162,34 @@ function get_tab_creneaux() {
 	}
 
 	return $tab;
+}
+
+function get_login_from_pers_id($pers_id) {
+	global $mysqli;
+
+	$retour="";
+	$sql="SELECT login FROM resp_pers WHERE pers_id='$pers_id';";
+	$res_user=mysqli_query($mysqli, $sql);
+	if ($res_user->num_rows > 0) {
+		$lig_user=$res_user->fetch_object();
+		$retour=$lig_user->login;
+		$res_user->close();
+	}
+	return $retour;
+}
+
+function get_pers_id_from_login($login_resp) {
+	global $mysqli;
+
+	$retour="";
+	$sql="SELECT pers_id FROM resp_pers WHERE login='$login_resp';";
+	$res_user=mysqli_query($mysqli, $sql);
+	if ($res_user->num_rows > 0) {
+		$lig_user=$res_user->fetch_object();
+		$retour=$lig_user->pers_id;
+		$res_user->close();
+	}
+	return $retour;
 }
 
 ?>
