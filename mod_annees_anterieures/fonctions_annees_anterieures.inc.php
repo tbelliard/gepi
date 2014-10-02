@@ -637,7 +637,10 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 		}
 	}
 }
+
 function insert_eleve($login,$ine,$annee,$param) {
+	global $fichier_sql;
+
 	// on insère le regime et le statut doublant
 	$sql="SELECT DISTINCT regime, doublant FROM j_eleves_regime WHERE login='".$login."'";
 	//echo "$sql<br />";
@@ -646,13 +649,23 @@ function insert_eleve($login,$ine,$annee,$param) {
 		$regime=$lig_ele->regime;
 		$doublant=$lig_ele->doublant;
 	}
-	$del = sql_query1("delete from archivage_eleve2 where ine ='".$ine."'");
+
+	$sql="delete from archivage_eleves2 where ine ='".$ine."';";
+	//echo "$sql<br />";
+	if($fichier_sql!="") {
+		enregistrer_sql_archivage($sql);
+	}
+	$del = sql_query1($sql);
+
 	$sql="INSERT INTO archivage_eleves2 SET
 	ine='".$ine."',
 	annee = '".$annee."',
 	doublant='".addslashes($doublant)."',
-	regime='".addslashes($regime)."'";
+	regime='".addslashes($regime)."';";
 	//echo "$sql<br />";
+	if($fichier_sql!="") {
+		enregistrer_sql_archivage($sql);
+	}
 	$res_insert_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 	// on traite la table archivage_eleve
 	$test = sql_query1("select count(ine) from archivage_eleves where ine= '".$ine."'");
@@ -675,11 +688,14 @@ function insert_eleve($login,$ine,$annee,$param) {
 					$ine="LOGIN_".$login;
 				$sql="INSERT INTO archivage_eleves SET
 					ine='$ine',
-				nom='".addslashes($nom)."',
-				prenom='".addslashes($prenom)."',
-				sexe='".addslashes($sexe)."',
-					naissance='$naissance'";
+					nom='".addslashes($nom)."',
+					prenom='".addslashes($prenom)."',
+					sexe='".addslashes($sexe)."',
+					naissance='$naissance';";
 				//echo "$sql<br />";
+				if($fichier_sql!="") {
+					enregistrer_sql_archivage($sql);
+				}
 				$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res_insert){
 					return "<tr><td colspan='4'><font color='red'>Erreur d'enregistrement des données pour l'élève dont l'identifiant est ".$login."</font></td></tr>";
@@ -1367,5 +1383,15 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 	//]]>
 </script>\n";
 
+}
+
+function enregistrer_sql_archivage($sql) {
+	global $fichier_sql;
+
+	if($fichier_sql!="") {
+		$f=fopen("../backup/".getSettingValue('backup_directory')."/".$fichier_sql, "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+	}
 }
 ?>

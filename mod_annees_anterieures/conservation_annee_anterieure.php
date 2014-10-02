@@ -53,6 +53,8 @@ $deja_traitee_id_classe=isset($_POST['deja_traitee_id_classe']) ? $_POST['deja_t
 $annee_scolaire=isset($_POST['annee_scolaire']) ? $_POST['annee_scolaire'] : NULL;
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 
+$generer_fichier_sql=isset($_POST['generer_fichier_sql']) ? $_POST['generer_fichier_sql'] : "";
+
 // Si le module n'est pas activé...
 if($gepiSettings['active_annees_anterieures'] !="y"){
 	// A DEGAGER
@@ -127,7 +129,7 @@ if(!isset($annee_scolaire)){
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 	echo "</p></div>\n";
 
-	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee";
+	$sql="SELECT DISTINCT annee FROM archivage_disciplines ORDER BY annee;";
 	$res_annee=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_annee)==0){
 		echo "<p>Concernant les données autres que les AIDs, aucune année n'est encore sauvegardée.</p>\n";
@@ -170,6 +172,26 @@ if(!isset($annee_scolaire)){
 	}
 
 	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
+	echo "<p style='text-indent:-2em; margin-left:2em;'><input type='checkbox' name='generer_fichier_sql' id='generer_fichier_sql' value='".strftime("%Y%m%d%H%M%S")."' onchange=\"modif_affichage_restrictions_fichier_sql()\" /><label for='generer_fichier_sql'> Générer un fichier SQL des enregistrements.<br />(<em>utile si vous faites l'archivage sur une autre machine que le GEPI en production&nbsp;: vous pourrez restaurer ce fichier sur le Gepi en production pour insérer les enregistrements de l'année archivée ici</em>)</label><br />Le fichier sera généré dans <a href='../gestion/accueil_sauve.php'>Gestion générale/Sauvegarde et restauration</a>.</p>
+<div id='restrictions_fichier_sql'>
+	<p style='text-indent:-6em; margin-left:6em;color:red;'>Limitation&nbsp;: Pour le moment, l'enregistrement dans un fichier SQL ne prend pas en compte les crédits ECTS.<br />Si vous utilisez le module ECTS, le fichier SQL généré ne sera pas complet.<br />Les AID ne sont pas non plus gérés pour le moment.</p>
+	<p style='color:red;'>Par ailleurs le fichier généré n'est pas compressé.<br />Il peut facilement occuper 20Mo ou plus.<br />Cela peut être un problème si votre hébergement ne permet pas un tel stockage.</p>
+</div>
+
+<script type='text/javascript'>
+	function modif_affichage_restrictions_fichier_sql() {
+		if(document.getElementById('restrictions_fichier_sql')) {
+			if(document.getElementById('generer_fichier_sql').checked==true) {
+				document.getElementById('restrictions_fichier_sql').style.display='';
+			}
+			else {
+				document.getElementById('restrictions_fichier_sql').style.display='none';
+			}
+		}
+	}
+
+	modif_affichage_restrictions_fichier_sql();
+</script>\n";
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 
@@ -186,6 +208,15 @@ if(!isset($annee_scolaire)){
 	}
 }
 else {
+	//==================================
+	$fichier_sql="";
+	if($generer_fichier_sql!="") {
+		$fichier_sql="_archivage_annee_".remplace_accents($annee_scolaire,"all")."_realise_le_".preg_replace("/[^0-9]/","",$generer_fichier_sql).".sql";
+	}
+
+	echo "<input type='hidden' name='generer_fichier_sql' value='$generer_fichier_sql' />\n";
+	//==================================
+
 	echo "<div class='norme'><p class=bold><a href='";
 	if(isset($_SESSION['chgt_annee'])) {
 		echo "../gestion/changement_d_annee.php";
@@ -195,7 +226,7 @@ else {
 	}
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | \n";
 
-	$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire'";
+	$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire';";
 	$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_test)>0){
@@ -529,7 +560,8 @@ else {
 				$tab_archivage_engagements=array();
 				for($i=1;$i<=count($tab_periode);$i++){
 					// Nettoyage:
-					$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i'";
+					$sql="DELETE FROM archivage_disciplines WHERE annee='$annee_scolaire' AND classe='$classe' AND num_periode='$i';";
+					enregistrer_sql_archivage($sql);
 					$res_nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(!$res_nettoyage){
@@ -666,7 +698,7 @@ else {
 						$cpe=$tab_eleve[$j]['cpe'];
 						if ($error_enregistre_eleve[$login_eleve] != '') {
 							echo "<script type='text/javascript'>
-  	document.getElementById('td_0_".$j."').style.backgroundColor='red';
+	document.getElementById('td_0_".$j."').style.backgroundColor='red';
 </script>\n";
 						}
 
@@ -676,6 +708,7 @@ else {
 						if(getSettingAOui('active_mod_engagements')) {
 							if(!in_array($ine, $tab_archivage_engagements)) {
 								$sql="DELETE FROM archivage_engagements WHERE annee='$annee_scolaire' AND ine='$ine';";
+								enregistrer_sql_archivage($sql);
 								//echo "$sql<br />";
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -691,6 +724,7 @@ else {
 											$sql.=",classe='".addslashes(get_nom_classe($tab_engagements_classe['indice'][$compteur_courant]['valeur']))."'";
 										}
 										$sql.=";";
+										enregistrer_sql_archivage($sql);
 										//echo "$sql<br />";
 										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 										if(!$insert){
@@ -755,6 +789,7 @@ else {
 											non_justifie='$non_justifie',
 											nb_retards='$nb_retards'
 											;";
+						enregistrer_sql_archivage($sql);
 						echo "<!-- $sql -->\n";
 						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -810,8 +845,9 @@ else {
 											nb_absences='',
 											non_justifie='',
 											nb_retards=''
-											";
+											;";
 						echo "<!-- $sql -->\n";
+						enregistrer_sql_archivage($sql);
 						$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(!$res_insert){
@@ -973,8 +1009,9 @@ else {
 														non_justifie='',
 														nb_retards='',
 														ordre_matiere='".$ordre_matiere[$id_groupe]."'
-														";
+														;";
 									echo "<!-- $sql -->\n";
+									enregistrer_sql_archivage($sql);
 									$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	
 									if(!$res_insert){
@@ -1093,6 +1130,7 @@ else {
 												code_matiere='".addslashes($code_mat_grp[$id_groupe])."' AND 
 												id_groupe='$id_groupe' AND 
 												special='GRP_ANNEE';";
+							enregistrer_sql_archivage($sql);
 							$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							$sql="INSERT INTO archivage_disciplines SET
@@ -1123,8 +1161,9 @@ else {
 												non_justifie='',
 												nb_retards='',
 												ordre_matiere='".$ordre_matiere[$id_groupe]."'
-												";
+												;";
 							echo "<!-- $sql -->\n";
+							enregistrer_sql_archivage($sql);
 							$res_insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 							if(!$res_insert){
