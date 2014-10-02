@@ -2202,6 +2202,13 @@ if(isset($eleve_login)){
 
 		echo "</table>\n";
 
+		if(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
+			echo "<br />\n";
+			echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
+			echo "<a href='visu_eleve.php?ele_login=".$eleve_login."'>Consultation élève</a>";
+			echo "</div>\n";
+			echo "<br />\n";
+		}
 	}
 	else{
 		//=========================
