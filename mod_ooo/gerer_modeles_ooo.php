@@ -336,11 +336,11 @@ if (!isset($btn)) { //premier passage : formulaire
 	echo add_token_field();
 	  echo "<input type=\"hidden\" name=fich_cible value=$fich[$i] >\n";
 		 $type_ext = renvoi_nom_image(extension_nom_fichier($fich[$i]));
-		 echo "<td align='center'>\n<a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\"><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
+		 echo "<td align='center'>\n<a href=\"$nom_dossier_modeles_ooo_par_defaut$fich[$i]\" target='_blank'><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le modèle par défaut\"></a>\n";
 		 echo "</td>\n";
 	  if  (file_exists($nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]))   {
 		 echo "<td align='center'><a href=\"$PHP_SELF?op=supp&fic=$fich[$i]".add_token_in_url()."\" onclick='return confirmer()'><img src=\"./images/poubelle.gif\" border=\"0\" title=\"ATTENTION, suppression immédiate !\"></a>\n";
-		 echo "&nbsp;&nbsp;<a HREF='".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]."'><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
+		 echo "&nbsp;&nbsp;<a href='".$nom_dossier_modeles_ooo_mes_modeles.$rne.$fich[$i]."' target='_blank'><img src=\"./images/$type_ext\" border=\"0\" title=\"Consulter le nouveau modèle\"></a>\n";
 		 echo "</td>\n";
 	  } else {
 		 echo "</td>\n<td>&nbsp;</td>\n";
