@@ -140,6 +140,32 @@ if($suppr_infos_actions_diff_mail=='y') {
 	}
 }
 
+if((isset($_GET['imposer_mel']))&&(isset($_GET['pers_id']))) {
+	check_token();
+	$sql="UPDATE resp_pers SET mel='".$_GET['imposer_mel']."' WHERE pers_id='".$_GET['pers_id']."';";
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($update) {
+		echo $_GET['imposer_mel'];
+	}
+	else {
+		echo "<span style='color:red'>ERREUR</span>";
+	}
+	die();
+}
+
+if((isset($_GET['imposer_email']))&&(isset($_GET['pers_id']))) {
+	check_token();
+	$sql="UPDATE utilisateurs SET email='".$_GET['imposer_email']."' WHERE login IN (SELECT login FROM resp_pers WHERE pers_id='".$_GET['pers_id']."');";
+	$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($update) {
+		echo $_GET['imposer_email'];
+	}
+	else {
+		echo "<span style='color:red'>ERREUR</span>";
+	}
+	die();
+}
+
 //**************** EN-TETE *******************************
 $titre_page = "Synchronisation des adresses mail responsables";
 require_once("../lib/header.inc.php");
@@ -199,22 +225,33 @@ if(!getSettingValue('conv_new_resp_table')){
 
 	echo "<p>".mysqli_num_rows($res)." adresses mail responsables diffèrent entre les tables 'resp_pers' et 'utilisateurs'.</p>\n";
 
-	echo "<table class='boireaus' summary='Tableau des différences'>\n";
+	echo "<table class='boireaus boireaus_alt' summary='Tableau des différences'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom</th>\n";
 	echo "<th>Prenom</th>\n";
 	echo "<th>Email utilisateur<br />(<i>Gérer mon compte</i>)</th>\n";
 	echo "<th>Email resp_pers<br />(<i>Sconet,...</i>)</th>\n";
 	echo "</tr>\n";
-	$alt=1;
+	$cpt=0;
 	while($lig=mysqli_fetch_object($res)) {
-		$alt=$alt*(-1);
-		echo "<tr class='lig$alt white_hover'>\n";
-		echo "<td><a href='modify_resp.php?pers_id=$lig->pers_id'>$lig->nom</a></td>\n";
-		echo "<td>$lig->prenom</td>\n";
-		echo "<td>$lig->email</td>\n";
-		echo "<td>$lig->mel</td>\n";
-		echo "</tr>\n";
+		echo "
+	<tr class='white_hover'>
+		<td><a href='modify_resp.php?pers_id=$lig->pers_id'>$lig->nom</a></td>
+		<td>$lig->prenom</td>
+		<td>";
+		if($lig->email!="") {
+			echo "<div style='float:right; width:16px; margin-left:2px;'><a href='#' onclick=\"transfere_email($lig->pers_id, $cpt)\"><img src='../images/icons/forward.png' class='icone16' alt='Transférer' /></a></div>";
+		}
+		echo "<span id='email_$cpt'>".$lig->email."</span>";
+		echo "</td>
+		<td>";
+		if($lig->mel!="") {
+			echo "<div style='float:left; width:16px; margin-right:2px;'><a href='#' onclick=\"transfere_mel($lig->pers_id, $cpt)\"><img src='../images/icons/back.png' class='icone16' alt='Transférer' /></a></div>";
+		}
+		echo "<span id='mel_$cpt'>".$lig->mel."</span>";
+		echo "</td>
+	</tr>";
+		$cpt++;
 	}
 	echo "</table>\n";
 
@@ -243,5 +280,23 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 
 	echo "<p><br /></p>\n";
+
+	echo "
+<script type='text/javascript'>
+	function transfere_email(pers_id, num) {
+		if(document.getElementById('email_'+num)) {
+			email=document.getElementById('email_'+num).innerHTML;
+			new Ajax.Updater($('mel_'+num),'".$_SERVER['PHP_SELF']."?pers_id='+pers_id+'&imposer_mel='+email+'".add_token_in_url(false)."',{method: 'get'});
+		}
+	}
+
+	function transfere_mel(pers_id, num) {
+		if(document.getElementById('mel_'+num)) {
+			mel=document.getElementById('mel_'+num).innerHTML;
+			new Ajax.Updater($('email_'+num),'".$_SERVER['PHP_SELF']."?pers_id='+pers_id+'&imposer_email='+mel+'".add_token_in_url(false)."',{method: 'get'});
+		}
+	}
+</script>\n";
+
 	require("../lib/footer.inc.php");
 ?>
