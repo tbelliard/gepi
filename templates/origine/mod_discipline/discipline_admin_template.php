@@ -176,6 +176,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	<h2>Autoriser l'utilisation d'une zone commentaire dans la gestion des incidents</h2>
 	  <fieldset class="no_bordure">
 		<legend class="invisible">Zone de dialogue</legend>
+		<p>
 		  <input type='radio'
 				 name='autorise_commentaires_mod_disc'
 				 id='autorise_commentaires_mod_disc_y'
@@ -183,7 +184,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 onchange='changement();'
 			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "yes") echo " checked='checked'";?> />
 		<label for='autorise_commentaires_mod_disc_y' style='cursor: pointer;'>
-		  Activer une zone de dialogue relative à chaque incident. <br/>Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
+		  Activer une zone de dialogue relative à chaque incident. <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
 		</label>
 	  <br />
 		  <input type='radio'
@@ -195,6 +196,31 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 		<label for='autorise_commentaires_mod_disc_n' style='cursor: pointer;'>
 		  Désactiver la zone de dialogue relative à chaque incident.
 		</label>
+		</p>
+	  <br />
+	  <p>
+		  Dans le cas où la zone de dialogue est activée, les parents et élèves n'ont par défaut pas accès aux échanges.<br />
+		  <input type='checkbox'
+				 name='commentaires_mod_disc_visible_parent'
+				 id='commentaires_mod_disc_visible_parent'
+				 value='y'
+			 onchange='changement();'
+			   <?php if (getSettingAOui("commentaires_mod_disc_visible_parent")) echo " checked='checked'";?> />
+		<label for='commentaires_mod_disc_visible_parent' style='cursor: pointer;'>
+		  Rendre ces échanges visibles des parents<br />(<em>sous réserve que le droit d'accès aux incidents ait été donné dans <a href='../gestion/droits_acces.php#responsable' target='_blank'>Gestion générale/Droits d'accès</a></em>).
+		</label>
+	  <br />
+		  <input type='checkbox'
+				 name='commentaires_mod_disc_visible_eleve'
+				 id='commentaires_mod_disc_visible_eleve'
+				 value='y'
+			 onchange='changement();'
+			   <?php if (getSettingAOui("commentaires_mod_disc_visible_eleve")) echo " checked='checked'";?> />
+		<label for='commentaires_mod_disc_visible_eleve' style='cursor: pointer;'>
+		  Rendre ces échanges visibles des élèves<br />(<em>sous réserve que le droit d'accès aux incidents ait été donné dans <a href='../gestion/droits_acces.php#eleve' target='_blank'>Gestion générale/Droits d'accès</a></em>).
+		</label>
+	  </p>
+
 	  </fieldset>
 	
 	<p class="center">
