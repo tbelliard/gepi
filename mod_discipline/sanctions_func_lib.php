@@ -726,7 +726,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 			$retour.="<br />\n";
 
 			$retour.="<span style='font-size:small;'>".u_p_nom($lig->declarant)."</span>";
-			
+
 			$zone_de_commentaire = $lig->commentaire;
 
 			$retour.="</td>\n";
@@ -978,8 +978,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 				
 				// Ajout Eric de la zone de commentaire
 				//affichage du commentaire
-				if ($zone_de_commentaire !="") {
-				$retour .=  "<p style='text-align:left;'><b>Commentaires sur l'".$mod_disc_terme_incident."&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";	
+				if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+					if ($zone_de_commentaire !="") {
+						$retour .= "<p style='text-align:left;'><b>Commentaires sur l'".$mod_disc_terme_incident."&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";
+					}
 				}
 			}
 
