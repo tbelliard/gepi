@@ -2846,7 +2846,7 @@ new Ajax.Autocompleter (
 			}
 		}
 		if($chaine_avertissement!="") {
-			$chaine_avertissement="<div style='float:right; color:red; width:15em; border: 1px solid red; margin: 1px;'>$chaine_avertissement</div>\n";
+			$chaine_avertissement="<div class='fieldset_opacite50' style='float:right; color:red; width:15em; border: 1px solid red; margin: 1px;'>$chaine_avertissement</div>\n";
 			echo $chaine_avertissement;
 		}
 	}
