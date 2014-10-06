@@ -12213,4 +12213,78 @@ function retourne_sql_mes_classes() {
 
 	return $sql;
 }
+
+function get_temoin_discipline_ele($ele_login, $date_depuis) {
+	global $mysqli;
+
+	$cpt=0;
+
+	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' AND date>'$date_depuis';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt+=mysqli_num_rows($res);
+	}
+	else {
+		$sql="SELECT * FROM s_retenues sr, s_sanctions ss WHERE ss.id_sanction=sr.id_sanction AND login='$ele_login' AND sr.date>'$date_depuis';";
+		//echo "$sql<br />";
+		if(mysqli_num_rows($res)>0) {
+			$cpt+=mysqli_num_rows($res);
+		}
+		else {
+			$sql="SELECT * FROM s_exclusions se, s_sanctions ss WHERE ss.id_sanction=se.id_sanction AND login='$ele_login' AND se.date_fin>='$date_depuis';;";
+			//echo "$sql<br />";
+			if(mysqli_num_rows($res)>0) {
+				$cpt+=mysqli_num_rows($res);
+			}
+			else {
+				$sql="SELECT * FROM s_travail st, s_sanctions ss WHERE ss.id_sanction=st.id_sanction AND login='$ele_login' AND st.date_retour>='$date_depuis';";
+				//echo "$sql<br />";
+				if(mysqli_num_rows($res)>0) {
+					$cpt+=mysqli_num_rows($res);
+				}
+			}
+		}
+	}
+
+	return $cpt;
+}
+
+function get_temoin_discipline($date_depuis="") {
+	global $mysqli;
+
+	$cpt=0;
+
+	if($date_depuis=="") {
+		$sql="SELECT * FROM log WHERE LOGIN='".$_SESSION['login']."' AND (AUTOCLOSE='0' OR AUTOCLOSE='1' OR AUTOCLOSE='2' OR AUTOCLOSE='3' OR AUTOCLOSE='10') AND START<'".strftime("%Y-%m-%d %H:%M:%S", (time()-3600*24))."' ORDER BY START DESC LIMIT 1;";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tmp_tab=explode(" ", $lig->START);
+			$date_depuis=$tmp_tab[0];
+		}
+		else {
+			$date_depuis="1970-01-01";
+		}
+	}
+
+	$tab_ele=array();
+	if($_SESSION['statut']=="responsable") {
+		$tmp_tab_ele=get_enfants_from_resp_login($_SESSION['login']);
+
+		for($loop=0;$loop<count($tmp_tab_ele);$loop+=2) {
+			$tab_ele[]=$tmp_tab_ele[$loop];
+		}
+	}
+	else {
+		$tab_ele[]=$_SESSION['login'];
+	}
+
+	for($loop=0;$loop<count($tab_ele);$loop++) {
+		$cpt+=get_temoin_discipline_ele($tab_ele[$loop], $date_depuis);
+	}
+
+	return $cpt;
+}
+
 ?>

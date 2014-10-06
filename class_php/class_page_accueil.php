@@ -1019,18 +1019,29 @@ if(getSettingAOui('active_bulletins')) {
   private function modDiscFamille(){
 	$this->b=0;
 
+	$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+	if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+	$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+	if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
+
+	$temoin_disc="";
+	$cpt_disc=get_temoin_discipline();
+	if($cpt_disc>0) {
+		$temoin_disc=" <img src='./images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ou ".$mod_disc_terme_sanction."s vous concernant ont été saisis.\" />";
+	}
+
 	if(($_SESSION['statut']=='eleve')) {
 		if(getSettingValue('visuEleDisc')=='yes') {
 			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
-					"Discipline",
-					"Incidents vous concernant.");
+					"Discipline".$temoin_disc,
+					ucfirst($mod_disc_terme_incident)."s vous concernant.");
 		}
 	}
 	elseif(($_SESSION['statut']=='responsable')) {
 		if(getSettingValue('visuRespDisc')=='yes') {
 			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
-					"Discipline",
-					"Incidents concernant les élèves/enfants dont vous êtes responsable.");
+					"Discipline".$temoin_disc,
+					ucfirst($mod_disc_terme_incident)."s concernant les élèves/enfants dont vous êtes responsable.");
 		}
 	}
 
