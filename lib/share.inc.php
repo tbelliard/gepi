@@ -1005,7 +1005,7 @@ function checkAccess() {
  * @param string $login_u Login de l'utilisateur
  * @return string adresse courriel de l'utilisateur
  */
-function retourne_email ($login_u) {
+function retourne_email($login_u) {
     global $mysqli;
     $sql_call = "SELECT email FROM utilisateurs WHERE login = '$login_u'";
              	
@@ -12192,4 +12192,25 @@ function get_pers_id_from_login($login_resp) {
 	return $retour;
 }
 
+function retourne_sql_mes_classes() {
+	if($_SESSION['statut']=='cpe'){
+		if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
+			$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c ORDER BY classe";
+		}
+		else {
+			$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		}
+	}
+	elseif($_SESSION['statut']=='scol'){
+		$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	elseif($_SESSION['statut']=='professeur'){
+		$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_classe=c.id AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY classe";
+	}
+	else {
+		$sql="SELECT DISTINCT c.id, c.id as id_classe, c.classe FROM classes c ORDER BY classe";
+	}
+
+	return $sql;
+}
 ?>

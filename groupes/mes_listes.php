@@ -439,6 +439,7 @@ elseif(isset($classe)) {
 else {
 	echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
 	echo "<select name='id_classe' id='id_classe' onchange='update_champs_periode()'>\n";
+	echo "<option value='toutes'>Toutes</option>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<option value='".$tab_id_classe[$i]."'>".$tab_classe[$i]."</option>\n";
 	}
