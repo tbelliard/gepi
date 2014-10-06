@@ -60,6 +60,16 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 		$msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation \"autorise_commentaires_mod_disc\" !<br />";
 	}
 
+	$commentaires_mod_disc_visible_eleve=isset($_POST['commentaires_mod_disc_visible_eleve']) ? $_POST['commentaires_mod_disc_visible_eleve'] : "no";
+	if (!saveSetting("commentaires_mod_disc_visible_eleve", $commentaires_mod_disc_visible_eleve)) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre \"commentaires_mod_disc_visible_eleve\" !<br />";
+	}
+
+	$commentaires_mod_disc_visible_parent=isset($_POST['commentaires_mod_disc_visible_parent']) ? $_POST['commentaires_mod_disc_visible_parent'] : "no";
+	if (!saveSetting("commentaires_mod_disc_visible_parent", $commentaires_mod_disc_visible_parent)) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre \"commentaires_mod_disc_visible_parent\" !<br />";
+	}
+
 	$mod_disc_terme_incident=isset($_POST['mod_disc_terme_incident']) ? $_POST['mod_disc_terme_incident'] : "incident";
 	$mod_disc_terme_incident=preg_replace("/[^A-Za-z".$liste_caracteres_accentues."' -]/","",$mod_disc_terme_incident);
 	if($mod_disc_terme_incident=="") {

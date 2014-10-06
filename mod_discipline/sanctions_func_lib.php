@@ -975,10 +975,12 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 
 				}
 				$retour.="</table>\n";
-				
+
 				// Ajout Eric de la zone de commentaire
 				//affichage du commentaire
-				if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+				(($_SESSION['statut']=='eleve')&&(getSettingAOui('commentaires_mod_disc_visible_eleve')))||
+				(($_SESSION['statut']=='responsable')&&(getSettingAOui('commentaires_mod_disc_visible_parent')))) {
 					if ($zone_de_commentaire !="") {
 						$retour .= "<p style='text-align:left;'><b>Commentaires sur l'".$mod_disc_terme_incident."&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";
 					}
