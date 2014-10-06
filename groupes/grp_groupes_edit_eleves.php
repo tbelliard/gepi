@@ -102,6 +102,8 @@ if(isset($id_groupe)) {
 if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_eleves']))) {
 	check_token();
 
+	// A FAIRE : RELEVER LES MODIFICATIONS ET ENVOYER UN MAIL AUX ADMINISTRATEURS ET A getSettingValue('email_dest_info_erreur_affect_grp')
+
 	$current_group = get_group($id_groupe);
 
 	$reg_nom_groupe = $current_group["name"];
@@ -120,6 +122,8 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 	$login_eleve=$_POST['login_eleve'];
 
 	$reg_eleves = array();
+	$ajout_eleves = array();
+	$suppr_eleves = array();
 
 	// On travaille période par période
 	foreach($current_group["periodes"] as $period) {
@@ -129,6 +133,10 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 			if(isset($_POST['eleve_'.$period["num_periode"].'_'.$i])) {
 				$id=$login_eleve[$i];
 				$reg_eleves[$period["num_periode"]][] = $id;
+
+				if(!in_array($id, $old_reg_eleves[$period["num_periode"]])) {
+					$ajout_eleves[$period["num_periode"]][]=$id;
+				}
 			}
 		}
 
@@ -139,11 +147,78 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 					$reg_eleves[$period["num_periode"]][]=$current_eleve_login;
 					$msg.="Désinscription impossible&nbsp;: ".get_nom_prenom_eleve($current_eleve_login)." a des notes/appréciations sur le bulletin.<br />";
 				}
+				else {
+					$suppr_eleves[$period["num_periode"]][]=$current_eleve_login;
+				}
 			}
 		}
 	}
 
-	if(count($reg_eleves)!=0){
+	// Test à revoir... on ne va pas pouvoir vider un groupe...
+	if(count($reg_eleves)!=0) {
+		// ==================================================
+		if((count($ajout_eleves)>0)||(count($suppr_eleves)>0)) {
+			$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+			if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+				$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+			}
+
+			if(($envoi_mail_actif=='y')&&
+			((getSettingValue('gepiAdminAdress')!="")||(getSettingValue('email_dest_info_erreur_affect_grp')!="")) {
+				$texte_mail="Bonjour,
+
+L'enseignement ".$current_group['name']." (".$current_group['description'].") en classe de ".$current_group['classlist_string']." (".$current_group['proflist_string'].") a été modifié par ".$_SESSION['prenom']." ".$_SESSION['nom']."\n\n";
+
+				if(count($ajout_eleves)>0) {
+					foreach($ajout_eleves as $current_periode => $tab_ajout) {
+						$texte_mail.="Ajout d'élèves en période $current_periode:\n";
+						for($loop=0;$loop<count($tab_ajout);$loop++) {
+							if($loop>0) {$texte_mail.=", ";}
+							$texte_mail.=get_nom_prenom_eleve($tab_ajout[$loop]);
+						}
+						$texte_mail.="\n\n";
+					}
+				}
+
+				if(count($suppr_eleves)>0) {
+					foreach($suppr_eleves as $current_periode => $tab_suppr) {
+						$texte_mail.="Suppression d'élèves en période $current_periode:\n";
+						for($loop=0;$loop<count($tab_suppr);$loop++) {
+							if($loop>0) {$texte_mail.=", ";}
+							$texte_mail.=get_nom_prenom_eleve($tab_suppr[$loop]);
+						}
+						$texte_mail.="\n\n";
+					}
+				}
+
+				if(getSettingValue('url_racine_gepi')!="") {
+					$texte_mail.="Voir la liste des élèves de l'enseignement : ".getSettingValue('url_racine_gepi')."/groupes/edit_eleves.php?id_groupe=".$current_group["id"]." \n(vous devez être connecté(e) dans GEPI avant de cliquer sur ce lien).\n";
+				}
+
+				$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+				if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+				$ajout_header="";
+				$email_declarant=retourne_email($_SESSION['login']);
+				if(($email_declarant!="")&&(check_mail($email_declarant))) {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
+
+				$destinataire_mail=getSettingValue("gepiAdminAdress");
+				$email_dest_info_erreur_affect_grp=getSettingValue('email_dest_info_erreur_affect_grp');
+				if(($email_dest_info_erreur_affect_grp!="")&&(check_mail($email_dest_info_erreur_affect_grp))&&($email_dest_info_erreur_affect_grp!=getSettingValue("gepiAdminAdress"))) {
+					if($destinataire_mail!="") {$destinataire_mail.=",";}
+					$destinataire_mail.=getSettingValue("email_dest_info_erreur_affect_grp");
+				}
+
+				$sujet_mail=$gepiPrefixeSujetMail."[GEPI]: Modification de la liste des élèves d un groupe";
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header);
+			}
+		}
+		// ==================================================
+
+
+
+
+
 		$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
 		if (!$create) {
 			$msg .= "Erreur lors de la mise à jour du groupe.";
