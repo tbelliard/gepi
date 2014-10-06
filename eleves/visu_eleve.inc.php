@@ -1044,6 +1044,14 @@ Patientez pendant l'extraction des données... merci.
 </script>\n";
 		}
 
+		//==============================================
+			$temoin_rss_ele=retourne_temoin_ou_lien_rss($ele_login);
+			if($temoin_rss_ele!="") {
+				echo "<div style='float:right; margin-right:0.5em; '>".$temoin_rss_ele."</div>\n";
+			}
+		//==============================================
+
+
 		echo "<script type='text/javascript'>
 	document.getElementById('patience').style.display='none';
 </script>\n";
@@ -1332,7 +1340,6 @@ Patientez pendant l'extraction des données... merci.
 				echo "</div>\n";
 			}
 		}
-		//==============================================
 
 
 		echo "<table border='0' summary='Infos élève'>\n";
@@ -2885,6 +2892,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			$tabdiv_infobulle[]=creer_div_infobulle('div_envoi_cdt_par_mail',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
 			//++++++++++++++++++++++++++++++
 
+			/*
 			if((getSettingAOui('rss_cdt_eleve'))||(getSettingAOui('rss_cdt_responsable'))) {
 				if($_SESSION['statut']=='administrateur') {
 					$test_https = 'y';
@@ -2926,6 +2934,11 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 					}
 					echo "</div>\n";
 				}
+			}
+			*/
+			$temoin_rss_ele=retourne_temoin_ou_lien_rss($ele_login);
+			if($temoin_rss_ele!="") {
+				echo "<div style='text-align:right;'>".$temoin_rss_ele."</div>\n";
 			}
 
 			echo "</div>\n";

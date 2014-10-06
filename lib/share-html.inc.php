@@ -3486,4 +3486,101 @@ function js_cocher_decocher_tous_checkbox($nom_js_func="cocher_decocher_tous_che
 	return $retour;
 }
 
+function retourne_temoin_ou_lien_rss($ele_login) {
+	$retour="";
+
+	if((getSettingAOui('rss_cdt_eleve'))||(getSettingAOui('rss_cdt_responsable'))) {
+		if($_SESSION['statut']=='administrateur') {
+			$test_https = 'y';
+			if (!isset($_SERVER['HTTPS'])
+				OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+				OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+			{
+				$test_https = 'n';
+			}
+
+			//echo "<div style='text-align:right;'>\n";
+			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+			if($uri_el['uri']!="#") {
+				$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+			}
+			else {
+				$retour="<a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas' target='_blank' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Cliquez pour accéder au paramétrage du module RSS et créer le flux de cet élève\"><img src='../images/icons/rss_non_initialise.png' width='16' height='16' /></a>";
+			}
+			//echo "</div>\n";
+		}
+		elseif((($_SESSION['statut']=='scolarite')&&(getSettingAOui('rss_cdt_scol')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('rss_cdt_cpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('rss_cdt_pp'))&&(is_pp($_SESSION['login'], "", $ele_login)))) {
+			$test_https = 'y';
+			if (!isset($_SERVER['HTTPS'])
+				OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+				OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https"))
+			{
+				$test_https = 'n';
+			}
+
+			//echo "<div style='text-align:right;'>\n";
+			$uri_el = retourneUri($ele_login, $test_https, 'cdt');
+			if($uri_el['uri']!="#") {
+				$retour="<a href='".$uri_el['uri']."' title='Flux RSS du cahier de textes de cet élève' target='_blank'><img src='../images/icons/rss.png' width='16' height='16' /></a>";
+			}
+			else {
+				$retour="<img src='../images/icons/rss_non_initialise.png' width='16' height='16' title=\"Le flux RSS du cahier de textes de cet élève n'est pas initialisé. Contactez l'administrateur\" />";
+			}
+			//echo "</div>\n";
+		}
+	}
+
+	return $retour;
+}
+
+function retourne_lien_edt_eleve($ele_login) {
+	global $mysqli;
+	global $tabdiv_infobulle, $tabid_infobulle;
+
+	// Nécessite qu'avant le header.inc.php, il y ait
+	/*
+	$avec_js_et_css_edt="y";
+	$style_specifique[] = "edt_organisation/style_edt";
+	$style_specifique[] = "templates/DefaultEDT/css/small_edt";
+	$javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+	*/
+
+	$retour="";
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))||
+		((getSettingAOui('autorise_edt_eleve'))&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+	) {
+
+		$sql="SELECT * FROM eleves WHERE login='$ele_login';";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+
+			$titre_infobulle="EDT de ".$lig->prenom." ".$lig->nom;
+			$texte_infobulle="";
+			$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+			$retour="<a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$lig->prenom." ".$lig->nom."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>
+
+<style type='text/css'>
+.lecorps {
+	margin-left:0px;
+}
+</style>
+
+<script type='text/javascript'>
+function affiche_edt_en_infobulle() {
+	new Ajax.Updater($('edt_eleve_contenu_corps'),'../edt_organisation/index_edt.php?login_edt=".$ele_login."&type_edt_2=eleve&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+	afficher_div('edt_eleve','y',-20,20);
+}
+</script>\n";
+		}
+	}
+
+	return $retour;
+}
+
 ?>
