@@ -1580,10 +1580,37 @@ if((!isset($mode))||($mode=="")) {
 	if($nb_scories>0) {
 		echo "
 <br />
-<p><strong style='color:red;'>SCORIES&nbsp;:</strong> ".$nb_scories." association(s) existent dans la table 'sso_table_correspondance' pour des login qui n'existent plus dans Gepi.<br />
+<p style='text-indent:-6em; margin-left:6em;'><strong style='color:red;'>SCORIES&nbsp;:</strong> ".$nb_scories." association(s) existent dans la table 'sso_table_correspondance' pour des login qui n'existent plus dans Gepi.<br />
 Ces scories peuvent perturber l'association GUID_ENT/Login_GEPI.<br />
 Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT est enregistrée pour un ancien login, il ne vous sera plus proposé lors des importations, ni même pour la consultation.<br />
 <a href='".$_SERVER['PHP_SELF']."?mode=suppr_scories".add_token_in_url()."' >Supprimer ces scories</a></p>";
+
+		// Rechercher les logins non associés à des comptes utilisateurs
+		$nb_fausse_scorie_resp=0;
+		$nb_fausse_scorie_ele=0;
+		while($lig_scorie=mysqli_fetch_object($res)) {
+			$sql="SELECT 1=1 FROM resp_pers WHERE login='$lig_scorie->login_gepi';";
+			$res_scorie_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_scorie_resp)>0) {
+				$nb_fausse_scorie_resp++;
+			}
+			else {
+				$sql="SELECT 1=1 FROM eleves WHERE login='$lig_scorie->login_gepi';";
+				$res_scorie_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_scorie_ele)>0) {
+					$nb_fausse_scorie_ele++;
+				}
+			}
+		}
+
+		if($nb_fausse_scorie_ele>0) {
+			echo "<p style='color:red; margin-left:6em;'>".$nb_fausse_scorie_ele." de ces scories correspondent à un ou des élèves qui existent dans la table 'eleves', mais qui n'ont pas de compte utilisateur.<br />Commencez par <a href='../utilisateurs/create_eleve.php'>créer les comptes utilisateurs élèves manquants</a></p>";
+		}
+
+		if($nb_fausse_scorie_resp>0) {
+			echo "<p style='color:red; margin-left:6em;'>".$nb_fausse_scorie_resp." de ces scories correspondent à un ou des responsables qui existent dans la table 'resp_pers', mais qui n'ont pas de compte utilisateur.<br />Commencez par <a href='../utilisateurs/create_responsable.php'>créer les comptes utilisateurs responsables manquants</a></p>";
+		}
+
 	}
 	else {
 		$sql="select * from sso_table_correspondance where login_gepi not in (select login from eleves union select login from resp_pers union select login from utilisateurs where statut!='eleve' and statut!='responsable');";
@@ -1592,7 +1619,7 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 		if($nb_scories>0) {
 			echo "
 <br />
-<p><strong style='color:red;'>SCORIES encore&nbsp;:</strong> Vous avez ".$nb_scories." association(s) pour des personnes dont le login n'est pas ou plus dans les personnels de l'établissement, ni dans les tables 'eleves' ou 'resp_pers' (<em>responsables</em>).<br />
+<p style='text-indent:-6em; margin-left:6em;'><strong style='color:red;'>SCORIES encore&nbsp;:</strong> Vous avez ".$nb_scories." association(s) pour des personnes dont le login n'est pas ou plus dans les personnels de l'établissement, ni dans les tables 'eleves' ou 'resp_pers' (<em>responsables</em>).<br />
 Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage des tables</a> (<em>la partie 'Nettoyage des comptes élèves/responsables'</em>)</p>";
 		}
 	}
@@ -5207,6 +5234,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					//echo $cpt;
 					echo "</td>
 		<td style='color:red'><label for='ligne_$cpt'>Ne pas associer</label></td>
+		<td></td>
 		<td></td>
 		<td></td>
 	</tr>";
