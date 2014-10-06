@@ -219,7 +219,7 @@ echo " | \n";
 echo "<a href='./utilisateurs/mon_compte.php#accueil_simpl_prof'> Paramétrer mon interface </a>\n";
 
 if($accueil_afficher_tous_les_groupes=="n") {
-	echo "| <a href='".$_SERVER['PHP_SELF']."?accueil_afficher_tous_les_groupes=y'>Afficher tous les groupes sans tri</a>\n";
+	echo "| <a href='".$_SERVER['PHP_SELF']."?accueil_afficher_tous_les_groupes=y' title=\"Via Gérer mon compte (en haut à droite), vous pouvez paramétrer l'ordre d'affichage des enseignements.\nVous pouvez même masquer certains enseignements.\nEn cliquant ici, vous pourrez afficher tous les enseignements sans prendre en compte les ordres et masquages éventuels.\">Afficher tous les groupes sans tri</a>\n";
 }
 else {
 	echo "| <a href='".$_SERVER['PHP_SELF']."?accueil_afficher_tous_les_groupes=n' title=\"Vous pouvez choisir les groupes à afficher en page d'accueil simplifiée.
