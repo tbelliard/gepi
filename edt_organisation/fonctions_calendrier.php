@@ -138,6 +138,15 @@ function RecupereTimestampJour_CDT2 ($jour) {
 	//echo "A=".$annee."<br />";
 
 	$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+
+	/*
+	if($jour==0) {
+		echo "jour=$jour<br />";
+		echo "ts=$ts<br />";
+		echo "Date du 4 janvier de l'année: ".strftime("%a %d/%m/%Y %H:%M:%S", $ts)."<br />";
+	}
+	*/
+
 	while (date("D", $ts) != "Mon") {
 		$ts-=86400;
 	}
@@ -148,6 +157,26 @@ function RecupereTimestampJour_CDT2 ($jour) {
 		$semaine++;
 	}
 	$timestamp = $ts+86400*($jour+0);
+
+	/*
+	if($jour==0) {
+		echo "timestamp: ".strftime("%a %d/%m/%Y %H:%M:%S", $timestamp)."<br />";
+	}
+	*/
+
+	// Avec les heures d'été, on a des blagues:
+	// Il faut retourner un timestamp correspondant à 00h00 pour que le test sur la journée entre 0h et 23h59min59s fonctionne sur la récupération id_ct
+	$j=strftime("%d", $timestamp);
+	$m=strftime("%m", $timestamp);
+	$y=strftime("%Y", $timestamp);
+	$timestamp = mktime(0,0,0,$m,$j,$y);
+
+	/*
+	if($jour==0) {
+		echo "timestamp: ".strftime("%a %d/%m/%Y %H:%M:%S", $timestamp)."<br />";
+	}
+	*/
+
 	return $timestamp;
 }
 
