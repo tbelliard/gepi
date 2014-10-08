@@ -6052,12 +6052,12 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 	global $mysqli;
 	$tab="";
 
-	$sql="(SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
+	$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2'))";
 	if($meme_en_resp_legal_0=="y") {
-		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0')";
+		$sql.=" UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0')";
 	}
 	elseif($meme_en_resp_legal_0=="yy") {
-		$sql.=" UNION (SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0' AND r.acces_sp='y')";
+		$sql.=" UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0' AND r.acces_sp='y')";
 	}
 	$sql.=";";
 	//echo "$sql<br />";
@@ -6075,6 +6075,8 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
 
 			$tab[$cpt]['pers_id']=$lig->pers_id;
+
+			$tab[$cpt]['resp_legal']=$lig->resp_legal;
 
 			$cpt++;
 		}
@@ -11996,6 +11998,28 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	}
 
 	return $tab_engagements_user;
+}
+
+function get_tab_login_tel_engagement($id_engagement) {
+	/*
+	global $tab_engagements;
+
+	if((!is_array($tab_engagements))||(count($tab_engagements)==0)) {
+		$tab_engagements=get_tab_engagements();
+	}
+	*/
+
+	$tab_user=array();
+	$sql="SELECT DISTINCT eu.login FROM engagements_user eu WHERE eu.id_engagement='$id_engagement';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$cpt=0;
+	while($lig=mysqli_fetch_assoc($res)) {
+		$tab_user[$cpt]=$lig['login'];
+		$cpt++;
+	}
+
+	return $tab_user;
 }
 
 function is_delegue_conseil_classe($login_user, $id_classe="") {

@@ -186,7 +186,10 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
 	if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
 
-	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="") {
+	$engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : array();
+	$engagement_resp=isset($_POST['engagement_resp']) ? $_POST['engagement_resp'] : array();
+
+	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="" && count($_POST['engagement_ele'])==0 && count($_POST['engagement_resp'])==0) {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(message non enregitré)";
 		$record = 'no';
 	}
@@ -323,6 +326,30 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 					$t_login_destinataires[]=$un_parent['login'];
 				}
 			}
+
+		// Engagements élèves
+		if (count($engagement_ele)>0) {
+			for($loop=0;$loop<count($engagement_ele);$loop++) {
+				$tab_user_eng=get_tab_login_tel_engagement($engagement_ele[$loop]);
+				for($loop2=0;$loop2<count($tab_user_eng);$loop2++) {
+					if(!in_array($tab_user_eng[$loop2], $t_login_destinataires)) {
+						$t_login_destinataires[]=$tab_user_eng[$loop2];
+					}
+				}
+			}
+		}
+
+		// Engagements responsables
+		if (count($engagement_resp)>0) {
+			for($loop=0;$loop<count($engagement_resp);$loop++) {
+				$tab_user_eng=get_tab_login_tel_engagement($engagement_resp[$loop]);
+				for($loop2=0;$loop2<count($tab_user_eng);$loop2++) {
+					if(!in_array($tab_user_eng[$loop2], $t_login_destinataires)) {
+						$t_login_destinataires[]=$tab_user_eng[$loop2];
+					}
+				}
+			}
+		}
 
 	// on enregistre le message
 	if ($record == 'yes') {
@@ -797,6 +824,57 @@ Pour information, le <?php echo getSettingValue('gepi_prof_suivi')?> de la class
 <?php
 echo "</td></tr>\n";
 
+
+if(getSettingAOui('active_mod_engagements')) {
+	$tab_engagements=get_tab_engagements();
+
+	$chaine_engagements_ele="";
+	$cpt_eng=0;
+	foreach($tab_engagements['indice'] as $key => $current_engagement) {
+		if($current_engagement['ConcerneEleve']=='yes') {
+			$chaine_engagements_ele.="
+			<input type='checkbox' name='engagement_ele[]' id='engagement_ele_$cpt_eng' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_ele_$cpt_eng')\" /><label for='engagement_ele_$cpt_eng' id='texte_engagement_ele_$cpt_eng' title=\"".$current_engagement['description']."\">".$current_engagement['nom']."</label> (<em title=\"Effectif des élèves ayant cet engagement : ".$current_engagement['effectif']."\">".$current_engagement['effectif']."</em>)<br />";
+			$cpt_eng++;
+		}
+	}
+
+	if($chaine_engagements_ele!="") {
+		echo "<tr>
+	<td colspan=\"4\" >
+		<i>Élèves ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
+		$chaine_engagements_ele
+		<br />
+	</td>
+</tr>\n";
+	}
+
+	$chaine_engagements_resp="";
+	$cpt_eng=0;
+	foreach($tab_engagements['indice'] as $key => $current_engagement) {
+		if($current_engagement['ConcerneResponsable']=='yes') {
+			$chaine_engagements_resp.="
+			<input type='checkbox' name='engagement_resp[]' id='engagement_resp_$cpt_eng' value='".$current_engagement['id']."' onchange=\"checkbox_change('engagement_resp_$cpt_eng')\" /><label for='engagement_resp_$cpt_eng' id='texte_engagement_resp_$cpt_eng' title=\"".$current_engagement['description']."\">".$current_engagement['nom']."</label> (<em title=\"Effectif des responsable ayant cet engagement : ".$current_engagement['effectif']."\">".$current_engagement['effectif']."</em>)<br />";
+			$cpt_eng++;
+		}
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab_engagements);
+	echo "</pre>";
+	*/
+
+	if($chaine_engagements_resp!="") {
+		echo "<tr>
+	<td colspan=\"4\" >
+		<i>Responsables ayant un des engagements suivants&nbsp;:&nbsp;</i><br />
+		".$chaine_engagements_resp."<br />
+	</td>
+</tr>\n";
+	}
+}
+
+
 echo "<tr><td  colspan=\"4\" >\n";
 ?>
 
@@ -819,6 +897,8 @@ echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('SUPPRESS
 <br><br>
 
 <?php
+echo js_checkbox_change_style('checkbox_change', 'texte_', "y", 0.5);
+
 echo "</td></tr>\n";
 
 // Message
