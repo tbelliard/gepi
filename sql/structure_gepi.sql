@@ -916,6 +916,7 @@ id_ev_classe int(11) NOT NULL AUTO_INCREMENT,
 id_ev int(11) NOT NULL, 
 id_classe int(11) NOT NULL default '0', 
 date_evenement TIMESTAMP NOT NULL, 
+id_salle INT(3) NOT NULL default '0', 
 PRIMARY KEY  (id_ev_classe)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS d_dates_evenements_utilisateurs;

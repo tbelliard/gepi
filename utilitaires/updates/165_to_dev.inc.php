@@ -476,4 +476,17 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'id_salle' à la table 'd_dates_evenements_classes'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM d_dates_evenements_classes LIKE 'id_salle';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE d_dates_evenements_classes ADD id_salle INT(3) NOT NULL default '0';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

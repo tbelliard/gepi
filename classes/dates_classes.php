@@ -94,6 +94,8 @@ $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_d
 $texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
 $texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
 
+//debug_var();
+
 //
 // Purge des événements
 //
@@ -181,6 +183,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : array();
 	$display_date_id_classe=isset($_POST['display_date_id_classe']) ? $_POST['display_date_id_classe'] : array();
 	$display_heure_id_classe=isset($_POST['display_heure_id_classe']) ? $_POST['display_heure_id_classe'] : array();
+	$salle_id_classe=isset($_POST['salle_id_classe']) ? $_POST['salle_id_classe'] : array();
 
 	if(count($id_classe)==0) {
 		$msg_erreur = "ATTENTION : Aucune classe n'est choisie.<br />";
@@ -441,7 +444,11 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 					}
 
 					if(isset($date_evenement)) {
-						$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$id_classe[$loop]."', date_evenement='$date_evenement';";
+						$id_salle_courante="";
+						if(isset($salle_id_classe[$loop])) {
+							$id_salle_courante=$salle_id_classe[$loop];
+						}
+						$sql="INSERT INTO d_dates_evenements_classes SET id_ev='$id_ev', id_classe='".$id_classe[$loop]."', date_evenement='$date_evenement', id_salle='".$id_salle_courante."';";
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($insert) {
@@ -738,6 +745,7 @@ if (isset($id_ev)) {
 				$tab_classe_ev[$obj_ev_classe->id_classe]["date_evenement"]=$obj_ev_classe->date_evenement;
 				$tab_classe_ev[$obj_ev_classe->id_classe]["date_evenement_formatee"]=formate_date($obj_ev_classe->date_evenement);
 				$tab_classe_ev[$obj_ev_classe->id_classe]["heure_evenement"]=get_heure_2pt_minute_from_mysql_date($obj_ev_classe->date_evenement);
+				$tab_classe_ev[$obj_ev_classe->id_classe]["id_salle"]=$obj_ev_classe->id_salle;
 			}
 		}
 	}
@@ -818,7 +826,39 @@ echo "
 						<tr>
 							<td colspan=\"4\">";
 
-						echo "
+$tab_salle=get_tab_salle_cours();
+
+function ev_classe_options_salle($id_classe) {
+	global $tab_classe_ev, $tab_salle;
+
+	$retour="
+													<option value=''>---</option>";
+	for($loop=0;$loop<count($tab_salle['list']);$loop++) {
+		$selected="";
+		if((isset($tab_classe_ev[$id_classe]['id_salle']))&&($tab_salle['list'][$loop]['id_salle']==$tab_classe_ev[$id_classe]['id_salle'])) {
+			$selected=" selected";
+		}
+		$retour.="
+													<option value='".$tab_salle['list'][$loop]['id_salle']."'$selected>";
+		//=============================
+		// Debug:
+		//$retour.="$loop : ";
+		//=============================
+		$retour.=$tab_salle['list'][$loop]['designation_complete'];
+		//=============================
+		// Debug:
+		/*
+		$retour.=" (id_salle=".$tab_salle['list'][$loop]['id_salle'].")";
+		$retour.=" (id_classe=".$id_classe.")";
+		*/
+		//=============================
+		$retour.="</option>";
+	}
+
+	return $retour;
+}
+
+echo "
 								<table class='boireaus boireaus_alt sortable resizable' summary=\"Tableau de choix des classes et du paramétrage des dates\">
 									<thead>
 										<tr>
@@ -830,6 +870,12 @@ echo "
 											<th>Heure</th>
 											<th title=\"Choisissez la ligne modèle pour copier une heure.\">H</th>
 											<th><img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller l'heure sélectionnée.\"/></th>
+
+											<th></th>
+											<th>Salle <a href='../edt_organisation/ajouter_salle.php' target='_blank' title=\"Ajouter ou modifier une salle.\n\nSi vous ajoutez une salle, il faudra enregistrer l'événement et le modifier ensuite pour voir apparaître la nouvelle salle dans la liste proposée.\"><img src='../images/edit16.png' class='icone16' alt='Saisir' /></a></th>
+											<th title=\"Choisissez la ligne modèle pour copier une salle.\">S</th>
+											<th><img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la salle sélectionnée.\"/></th>
+
 										</tr>
 									</thead>
 									<tbody>";
@@ -897,6 +943,32 @@ foreach($tab_classe as $id_classe => $classe) {
 												&nbsp;
 												<a href='#' onclick=\"coller_heure($id_classe);return false;\" id='js_coller_$cpt'>
 													<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller l'heure sélectionnée.\"/>
+												</a>
+											</span>
+										</td>
+
+
+										<td>
+											&nbsp;en salle&nbsp;
+										</td>
+										<td>
+											<span id='span_salle_id_classe_".$id_classe."'>
+												<select name='salle_id_classe[".$cpt."]' id='salle_id_classe_$id_classe'>
+													".ev_classe_options_salle($id_classe)."
+												</select>
+											</span>
+										</td>
+
+										<td>
+											<span id='js_copier_salle_".$id_classe."' style='display:none;'>
+												<input type='radio' name = 'copier_salle' id= 'copier_salle_".$id_classe."' value = \"".$id_classe."\" /><label for='copier_salle_".$id_classe."'><img src='../images/icons/copy-16.png' class='icone16' title=\"Copier la salle associée à cette classe.\"/></label>
+											</span>
+										</td>
+										<td>
+											<span id='js_coller_salle_".$id_classe."' style='display:none;'>
+												&nbsp;
+												<a href='#' onclick=\"coller_salle($id_classe);return false;\" id='js_coller_$cpt'>
+													<img src='../images/icons/coller_23x24.png' class='icone16' title=\"Coller la salle sélectionnée.\"/>
 												</a>
 											</span>
 										</td>
@@ -1005,6 +1077,8 @@ echo "
 			document.getElementById('js_coller_date_'+id_classe).style.display='';
 			document.getElementById('js_copier_heure_'+id_classe).style.display='';
 			document.getElementById('js_coller_heure_'+id_classe).style.display='';
+			document.getElementById('js_copier_salle_'+id_classe).style.display='';
+			document.getElementById('js_coller_salle_'+id_classe).style.display='';
 		}
 		else {
 			document.getElementById('span_date_id_classe_'+id_classe).style.display='none'
@@ -1013,6 +1087,8 @@ echo "
 			document.getElementById('js_coller_date_'+id_classe).style.display='none';
 			document.getElementById('js_copier_heure_'+id_classe).style.display='none';
 			document.getElementById('js_coller_heure_'+id_classe).style.display='none';
+			document.getElementById('js_copier_salle_'+id_classe).style.display='none';
+			document.getElementById('js_coller_salle_'+id_classe).style.display='none';
 		}
 		//changement();
 	}
@@ -1032,6 +1108,8 @@ for($loop=0;$loop<count($tab_champs_date_a_cacher);$loop++) {
 	document.getElementById('js_coller_date_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
 	document.getElementById('js_copier_heure_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
 	document.getElementById('js_coller_heure_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_copier_salle_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
+	document.getElementById('js_coller_salle_".$tab_champs_date_a_cacher[$loop]."').style.display='none';
 	";
 }
 
@@ -1051,6 +1129,18 @@ echo "
 		for(i=0;i<radio_copier_heure.length;i++) {
 			if (radio_copier_heure[i].checked) {
 				document.getElementById('display_heure_id_classe_'+id_classe).value=document.getElementById('display_heure_id_classe_'+radio_copier_heure[i].value).value;
+			}
+		}
+	}
+
+	function coller_salle(id_classe) {
+		radio_copier_salle=document.formulaire_saisie_evenement.copier_salle;
+		for(i=0;i<radio_copier_salle.length;i++) {
+			if(radio_copier_salle[i].checked) {
+				id_classe_modele=radio_copier_salle[i].value;
+
+				indice_select_salle=document.getElementById('salle_id_classe_'+id_classe_modele).options.selectedIndex;
+				document.getElementById('salle_id_classe_'+id_classe).options.selectedIndex=indice_select_salle;
 			}
 		}
 	}
