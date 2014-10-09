@@ -641,6 +641,21 @@ Enseignants : ".$current_group['profs']['proflist_string']."\">".$current_group[
 		".js_checkbox_change_style('checkbox_change', 'texte_', "y")."
 	</fieldset>
 </form>";
+
+		if((isset($tab_grp_groupes['groupes']))&&(count($tab_grp_groupes['groupes'])>0)) {
+			echo "
+<p style='text-indent:-3em;margin-left:3em;margin-top:1em;'><strong>Enseignements inscrits dans le $groupe_de_groupes&nbsp;:</strong><br />";
+			foreach($tab_grp_groupes['groupes'] as $key => $current_group) {
+				echo "
+".$current_group['name']." (<em>".$current_group['classlist_string']."</em>) (<em>".$current_group['profs']['proflist_string']."</em>)<br />";
+			}
+			echo "</p>";
+		}
+		/*
+		echo "<pre>";
+		print_r($tab_grp_groupes);
+		echo "</pre>";
+		*/
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	elseif(($mode=="ajouter_groupes")&&(isset($id_grp_groupe))) {
