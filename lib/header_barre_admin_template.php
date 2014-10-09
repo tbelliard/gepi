@@ -319,7 +319,12 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles openDocument</a></li>'."\n";
 		if(getSettingAOui('active_mod_discipline')) {
-			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a></li>'."\n";
+			$temoin_disc="";
+			$cpt_disc=get_temoin_discipline_personnel();
+			if($cpt_disc>0) {
+				$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+			}
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_discipline/index.php" '.insert_confirm_abandon().'>Discipline/Sanctions</a>'.$temoin_disc.'</li>'."\n";
 		}
 		if(getSettingAOui('active_mod_epreuve_blanche')) {
 			$menus .= '  <li><a href="'.$gepiPath.'/mod_epreuve_blanche/index.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";

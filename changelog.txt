@@ -15,11 +15,19 @@ Edt:
 - Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi
   (dispositif alternatif, non lié à l'EDT classique de Gepi).
 
+Discipline:
+- Affichage d'un témoin d'incident/sanctions pour les élèves/parents.
+- Possibilité d'afficher un témoin pour les incidents dans la page d'accueil en compte personnel de l'établissement.
+
 Gestion:
 - Accès au dossier d'export des absences de mod_abs2 en fin d'année (dans Sauvegarde et restauration).
+- Possibilité de préciser la salle pour les événements classe.
 
 Engagements:
 - Ajout d'un module engagements (délégué de classe, membre du C.A.,...)
+
+Années antérieures:
+- Possibilité de générer un SQL des insertions lors de l'archivage.
 
 Livret Scolaire Lycée:
 - Ajout d'une ébauche de module.

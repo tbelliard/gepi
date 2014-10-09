@@ -134,7 +134,13 @@ if (isset($affiche_message) and ($affiche_message == 'yes') and isset($message_e
 	$tbs_message_enregistrement = $message_enregistrement;  
 } 
  
- 
+
+
+if(getSettingAOui('active_mod_discipline')) {
+	$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+	if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+}
+
 
 // ====================== Affichage des javascripts ===================
 

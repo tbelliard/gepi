@@ -12339,4 +12339,133 @@ function get_temoin_discipline($date_depuis="") {
 	return $cpt;
 }
 
+function get_temoin_discipline_personnel($date_depuis="") {
+	global $mysqli;
+
+	$cpt=0;
+
+	if($date_depuis=="") {
+		$sql="SELECT * FROM log WHERE LOGIN='".$_SESSION['login']."' AND (AUTOCLOSE='0' OR AUTOCLOSE='1' OR AUTOCLOSE='2' OR AUTOCLOSE='3' OR AUTOCLOSE='10') AND START<'".strftime("%Y-%m-%d %H:%M:%S", (time()-3600*24))."' ORDER BY START DESC LIMIT 1;";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tmp_tab=explode(" ", $lig->START);
+			$date_depuis=$tmp_tab[0];
+		}
+		else {
+			$date_depuis="1970-01-01";
+		}
+	}
+
+	if($_SESSION['statut']=='professeur') {
+		if(((getSettingAOui('visuDiscProfClasses'))||(getSettingAOui('visuDiscProfGroupes')))&&
+		(getPref($_SESSION['login'], 'DiscTemoinIncidentProf', "n")=="y")) {
+
+			if(getSettingAOui('visuDiscProfClasses')) {
+				$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+									s_protagonistes sp, 
+									j_groupes_classes jgc, 
+									j_groupes_professeurs jgp, 
+									j_eleves_classes jec
+								WHERE si.id_incident=sp.id_incident AND 
+									si.date>'$date_depuis' AND 
+									sp.login=jec.login AND 
+									jec.id_classe=jgc.id_classe AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+			}
+			else {
+				$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+									s_protagonistes sp, 
+									j_eleves_groupes jeg, 
+									j_groupes_professeurs jgp
+								WHERE si.id_incident=sp.id_incident AND 
+									si.date>'$date_depuis' AND 
+									sp.login=jeg.login AND 
+									jeg.id_groupe=jgp.id_groupe AND 
+									jgp.login='".$_SESSION['login']."';";
+			}
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+		elseif(getPref($_SESSION['login'], 'DiscTemoinIncidentPP', "n")=="y") {
+			$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
+			for($loop=0;$loop<count($tab_pp['id_classe']);$loop++) {
+				$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+									s_protagonistes sp, 
+									j_eleves_classes jec
+								WHERE si.id_incident=sp.id_incident AND 
+									si.date>'$date_depuis' AND 
+									sp.login=jec.login AND 
+									jec.id_classe='".$tab_pp['id_classe'][$loop]."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($mysqli, $sql);
+				$cpt+=mysqli_num_rows($res);
+			}
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentCpeTous', "n")=="y") {
+			$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+								s_protagonistes sp
+							WHERE si.id_incident=sp.id_incident AND 
+								si.date>'$date_depuis';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+		elseif(getPref($_SESSION['login'], 'DiscTemoinIncidentCpe', "n")=="y") {
+			$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+								s_protagonistes sp, 
+								j_eleves_cpe jecpe
+							WHERE si.id_incident=sp.id_incident AND 
+								si.date>'$date_depuis' AND 
+								sp.login=jecpe.e_login AND 
+								jecpe.cpe_login='".$_SESSION['login']."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentScolTous', "n")=="y") {
+			$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+								s_protagonistes sp
+							WHERE si.id_incident=sp.id_incident AND 
+								si.date>'$date_depuis';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+		elseif(getPref($_SESSION['login'], 'DiscTemoinIncidentScol', "n")=="y") {
+			$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+								s_protagonistes sp, 
+								j_eleves_classes jec,
+								j_scol_classes jsc
+							WHERE si.id_incident=sp.id_incident AND 
+								si.date>'$date_depuis' AND 
+								sp.login=jec.login AND 
+								jec.id_classe=jsc.id_classe AND 
+								jsc.login='".$_SESSION['login']."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentAdmin', "n")=="y") {
+			$sql="SELECT DISTINCT si.id_incident FROM s_incidents si, 
+								s_protagonistes sp
+							WHERE si.id_incident=sp.id_incident AND 
+								si.date>'$date_depuis';";
+			//echo "$sql<br />";
+			$res=mysqli_query($mysqli, $sql);
+			$cpt=mysqli_num_rows($res);
+		}
+	}
+
+	return $cpt;
+}
+
 ?>

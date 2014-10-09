@@ -1832,6 +1832,7 @@ if(getSettingAOui('active_bulletins')) {
   }
 
   protected function discipline() {
+		global $mod_disc_terme_incident, $gepiPath;
 		$this->b=0;
 
 		/*
@@ -1851,8 +1852,15 @@ if(getSettingAOui('active_bulletins')) {
 		}
 		else {
 		*/
+
+			$temoin_disc="";
+			$cpt_disc=get_temoin_discipline_personnel();
+			if($cpt_disc>0) {
+				$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+			}
+
 			$this->creeNouveauItem("/mod_discipline/index.php",
-					"Discipline",
+					"Discipline".$temoin_disc,
 					"Signaler des incidents, prendre des mesures, des sanctions.");
 		//}
 

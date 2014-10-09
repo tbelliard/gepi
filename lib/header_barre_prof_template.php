@@ -558,7 +558,12 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	//=======================================================
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
-	    $tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline");
+		$temoin_disc="";
+		$cpt_disc=get_temoin_discipline_personnel();
+		if($cpt_disc>0) {
+			$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+		}
+		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline".$temoin_disc);
 		$compteur_menu++;
 	} else {$barre_discipline = '';}
 

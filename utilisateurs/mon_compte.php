@@ -1054,13 +1054,16 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['validation_form_cdt2'])))
 if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 	check_token();
 
+	$message_mod_discipline="";
+	$nb_reg=0;
 	if(!savePref($_SESSION['login'],'mod_discipline_travail_par_defaut',traitement_magic_quotes($_POST['mod_discipline_travail_par_defaut']))) {
 		$msg.="Erreur lors de l'enregistrement de mod_discipline_travail_par_defaut.<br />";
 		$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
 	else {
 		$msg.="Enregistrement de mod_discipline_travail_par_defaut.<br />";
-		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$nb_reg++;
 	}
 
 	//debug_var();
@@ -1094,7 +1097,8 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		}
 		else {
 			$msg.="Enregistrement de mod_discipline_natures_exclues_mail.<br />";
-			$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			$nb_reg++;
 		}
 	}
 
@@ -1112,9 +1116,125 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 	}
 	else {
 		$msg.="Enregistrement de mod_discipline_natures_non_categorisees_exclues_mail.<br />";
-		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		$nb_reg++;
 	}
 
+	if($_SESSION['statut']=='professeur') {
+		if(isset($_POST['DiscTemoinIncidentProf'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentProf', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentProf.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentProf.<br />";
+			//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			$nb_reg++;
+		}
+
+		if(isset($_POST['DiscTemoinIncidentPP'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentPP', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentPP.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentPP.<br />";
+			//$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			$nb_reg++;
+		}
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		if(isset($_POST['DiscTemoinIncidentCpe'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentCpe', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentCpe.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentCpe.<br />";
+			$nb_reg++;
+		}
+
+		if(isset($_POST['DiscTemoinIncidentCpeTous'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentCpeTous', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentCpeTous.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentCpeTous.<br />";
+			$nb_reg++;
+		}
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		if(isset($_POST['DiscTemoinIncidentScol'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentScol', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentScol.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentScol.<br />";
+			$nb_reg++;
+		}
+
+		if(isset($_POST['DiscTemoinIncidentScolTous'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentScolTous', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentScolTous.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentScolTous.<br />";
+			$nb_reg++;
+		}
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		if(isset($_POST['DiscTemoinIncidentAdmin'])) {
+			$value="y";
+		}
+		else {
+			$value="n";
+		}
+		if(!savePref($_SESSION['login'],'DiscTemoinIncidentAdmin', $value)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentAdmin.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			$msg.="Enregistrement de DiscTemoinIncidentAdmin.<br />";
+			$nb_reg++;
+		}
+	}
+
+	if(($message_mod_discipline=="")&&($nb_reg>0)) {
+		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
 }
 
 
@@ -2782,6 +2902,70 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
     }
 }
 
+	//==============================================
+	echo "<p class='bold' style='margin-top:1em;'>Affichage d'un témoin d'incident en page d'accueil&nbsp;:</p>
+<p>Gepi permet d'afficher si vous le souhaitez un témoin indiquant que de nouveaux incidents ont été saisis depuis votre dernière connexion.</p>\n";
+	if($_SESSION['statut']=='professeur') {
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentProf',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentProf' id='DiscTemoinIncidentProf' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentProf')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentProf' id='texte_DiscTemoinIncidentProf'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant mes classes/groupes.</label>";
+		$tabindex++;
+		if(is_pp($_SESSION['login'])) {
+			$checked="";
+			if(getPref($_SESSION['login'], 'DiscTemoinIncidentPP',"n")=="y") {
+				$checked="checked ";
+			}
+
+			echo "<br />
+<input type='checkbox' name='DiscTemoinIncidentPP' id='DiscTemoinIncidentPP' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentPP')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentPP' id='texte_DiscTemoinIncidentPP'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant la ou les classes dont je suis ".getSettingValue('gepi_prof_suivi').".</label>";
+			$tabindex++;
+		}
+		echo "</p>";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentCpe',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpe' id='DiscTemoinIncidentCpe' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpe')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpe' id='texte_DiscTemoinIncidentCpe'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves dont je suis le CPE responsable.</label>";
+		$tabindex++;
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentCpeTous',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentCpeTous' id='DiscTemoinIncidentCpeTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentCpeTous')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentCpeTous' id='texte_DiscTemoinIncidentCpeTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
+		$tabindex++;
+		echo "</p>";
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentScol',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentScol' id='DiscTemoinIncidentScol' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScol')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScol' id='texte_DiscTemoinIncidentScol'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents concernant les élèves des classes auxquelles je suis associé en tant que compte 'scolarité'.</label>";
+		$tabindex++;
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentScolTous',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentScolTous' id='DiscTemoinIncidentScolTous' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentScolTous')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentScolTous' id='texte_DiscTemoinIncidentScolTous'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> pour les incidents quels que soient les élèves.</label>";
+		$tabindex++;
+		echo "</p>";
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		$checked="";
+		if(getPref($_SESSION['login'], 'DiscTemoinIncidentAdmin',"n")=="y") {
+			$checked="checked ";
+		}
+		echo "<p><input type='checkbox' name='DiscTemoinIncidentAdmin' id='DiscTemoinIncidentAdmin' value='yes' onchange=\"checkbox_change('DiscTemoinIncidentAdmin')\" tabindex='$tabindex' $checked/><label for='DiscTemoinIncidentAdmin' id='texte_DiscTemoinIncidentAdmin'> Afficher un témoin <img src='../images/icons/flag2.gif' class='icone16' alt='Témoin' /> lorsque de nouveaux incidents sont saisis.</label>";
+		$tabindex++;
+		echo "</p>";
+	}
+	echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le témoin ne disparait pas une fois l'incident visualisé.<br />Il disparait à la connexion suivante.</p>";
+
+	//==============================================
 	echo "<p class='bold' style='margin-top:1em;'>Signalement d'incidents par mail&nbsp;:</p>\n";
 	$sql2="";
 	if($_SESSION['statut']=='cpe') {
@@ -3464,7 +3648,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);
