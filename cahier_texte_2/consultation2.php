@@ -1220,6 +1220,7 @@ if(count($tab_grp)>0) {
 
 	foreach($tab_grp as $current_group) {
 		$id_groupe=$current_group['id'];
+		$content="";
 
 		// Affichage des informations générales
 		//$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and (date_ct='' OR date_ct='0'));";
@@ -1227,12 +1228,20 @@ if(count($tab_grp)>0) {
 		//echo "$sql<br />";
 		$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-		$content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
-		$id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-		$content.=affiche_docs_joints($id_ct,"c");
+		while($lig_ct=mysqli_fetch_object($appel_info_cahier_texte)) {
+			$tmp_content=$lig_ct->contenu;
+			$id_ct = $lig_ct->id_ct;
+			$tmp_content.=affiche_docs_joints($id_ct,"c");
+
+			if($tmp_content!="") {
+				$content.="<div style='margin:1em; padding:0.5em;border:1px solid black;'>";
+				$content.=$tmp_content;
+				$content.="</div>";
+			}
+		}
 
 		if($content!="") {
-			$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>";
+			$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;padding:0.5em;margin:1em;'>";
 			$infos_generales.="<h3>".$current_group['name']." (<em>".$current_group['description']." en ".$current_group['classlist_string']."</em>)"."</h3>";
 			$infos_generales.=$content;
 			$infos_generales.="</div>";

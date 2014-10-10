@@ -707,25 +707,30 @@ echo "<div class=\"centre_cont_texte\">\n";
 // ---------------------------- Fin Affichage des travaux à faire (div div /div) ---
 
 // ---------------------------- Affichage des informations générales (div div div) ---
-    $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
+$infos_generales="";
+$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='');";
+//echo "$sql<br />";
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
+while($lig_ct=mysqli_fetch_object($appel_info_cahier_texte)) {
 
-    $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
-    $content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
-    $id_ct = @old_mysql_result($appel_info_cahier_texte, 0, 'id_ct');
-// documents joints
-    $content .= affiche_docs_joints($id_ct,"c");
-    if ($content != '') {
-//echo "<strong>Informations Générales</strong><table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"]."; padding: 2px; margin: 2px;\" width = '100%' cellpadding='5'><tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 2px; margin: 2px;\"><td>".$content."</td></tr></table><br />\n";
-// Correction Régis : remplacement de <strong> par <strong> + ajout de class pour gérer la mise en page
-	   echo "<h2 class='h2_label'><strong>Informations Générales</strong></h2>\n";
-	   echo "<div class='ct_info_generale couleur_bord_tableau_notice color_fond_notices_i'>\n";
-//		  echo "<tr class=\"tr_info_generale\">\n";
-			 echo "<div class='tr_info_generale couleur_bord_tableau_notice couleur_cellule_i'>".$content."</div>\n\n";
-//		  echo "</tr>\n";
-	   echo "</div>\n";
-// ---------------------------- Fin affichage des informations générales (div div /div) ---
-	   echo "<br />\n";
-    }
+	$content=$lig_ct->contenu;
+	if($content!="") {
+		$id_ct = $lig_ct->id_ct;
+		$content .= affiche_docs_joints($id_ct,"c");
+
+		$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:93%; margin-top:1em; padding:0.5em;'>";
+		$infos_generales.=$content;
+		$infos_generales.="</div>";
+	}
+
+}
+
+//if ($content != '') {
+if ($infos_generales != '') {
+	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
+	echo $infos_generales;
+}
     echo "</div>\n";
 // ----------------------------  Fin de la colonne de gauche (div /div) ---
 

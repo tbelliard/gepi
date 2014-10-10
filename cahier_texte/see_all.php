@@ -249,6 +249,7 @@ if ($nb_test == 0) {
 	die();
 }
 // Affichage des informations générales
+/*
 $appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], "SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='')");
 $nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
 $content = @old_mysql_result($appel_info_cahier_texte, 0, 'contenu');
@@ -257,6 +258,31 @@ $content .= affiche_docs_joints($id_ct,"c");
 if ($content != '') {
 	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
 	echo "<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%;'>".$content."</div>";
+}
+*/
+$infos_generales="";
+$sql="SELECT contenu, id_ct  FROM ct_entry WHERE (id_groupe='$id_groupe' and date_ct='');";
+//echo "$sql<br />";
+$appel_info_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
+$nb_cahier_texte = mysqli_num_rows($appel_info_cahier_texte);
+while($lig_ct=mysqli_fetch_object($appel_info_cahier_texte)) {
+
+	$content=$lig_ct->contenu;
+	if($content!="") {
+		$id_ct = $lig_ct->id_ct;
+		$content .= affiche_docs_joints($id_ct,"c");
+
+		$infos_generales.="<div class='see_all_general couleur_bord_tableau_notice color_fond_notices_i' style='width:98%; margin:1em; padding:0.5em;'>";
+		$infos_generales.=$content;
+		$infos_generales.="</div>";
+	}
+
+}
+
+//if ($content != '') {
+if ($infos_generales != '') {
+	echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>INFORMATIONS GENERALES</strong>\n</h2>\n";
+	echo $infos_generales;
 }
 
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
