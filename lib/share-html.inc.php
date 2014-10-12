@@ -3583,4 +3583,123 @@ function affiche_edt_en_infobulle() {
 	return $retour;
 }
 
+
+function liens_user($page_lien, $nom_var_login, $tab_statuts) {
+	$retour="";
+
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
+	for($loop=0;$loop<count($tab_statuts);$loop++) {
+		if($loop>0) {
+			$sql.=" OR ";
+		}
+		$sql.="statut='".$tab_statuts[$loop]."'";
+	}
+	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
+	echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix des utilisateurs\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			if($lig->statut!=$statut_prec) {
+				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$statut_prec=$lig->statut;
+			}
+
+			$retour.="<a href='".$page_lien."?".$nom_var_login."=".$lig->login."'>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</a><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+	}
+	return $retour;
+}
+
+function liste_radio_utilisateurs($tab_statuts, $login_user_preselectionne="", $nom_champ='login_user', $nom_js_func_radio_change='radio_change_style') {
+	$retour="";
+
+	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
+	for($loop=0;$loop<count($tab_statuts);$loop++) {
+		if($loop>0) {
+			$sql.=" OR ";
+		}
+		$sql.="statut='".$tab_statuts[$loop]."'";
+	}
+	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table width='100%' summary=\"Tableau de choix de l'utilisateur\">\n";
+		$retour.="<tr valign='top' align='center'>\n";
+		$retour.="<td align='left'>\n";
+
+		$cpt=0;
+		$statut_prec="";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td align='left'>\n";
+			}
+
+			if($lig->statut!=$statut_prec) {
+				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$statut_prec=$lig->statut;
+			}
+
+			$retour.="<input type='radio' name='".$nom_champ."' id='".$nom_champ."_$cpt' value='$lig->login' ";
+			$retour.="onchange=\"".$nom_js_func_radio_change."()\" ";
+			if($lig->login==$login_user_preselectionne) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->login\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+	function $nom_js_func_radio_change() {
+		for (var k=0;k<$cpt;k++) {
+			if(document.getElementById('".$nom_champ."_'+k)){
+				if(document.getElementById('".$nom_champ."_'+k).checked==true) {
+					document.getElementById('texte_".$nom_champ."_'+k).style.fontWeight='bold';
+				}
+				else {
+					document.getElementById('texte_".$nom_champ."_'+k).style.fontWeight='normal';
+				}
+			}
+		}
+	}
+
+	$nom_js_func_radio_change();
+</script>\n";
+	}
+
+	return $retour;
+}
+
 ?>
