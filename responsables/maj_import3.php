@@ -1382,6 +1382,31 @@ else{
 					//else {
 					//	echo "<br />".$eleves[$i]['prenom']." ".$eleves[$i]['nom'].' sans date de sortie<br /><br />';
 					//}
+
+
+					// 20141013
+					// Mettre un message en page d'accueil pour les élèves encore dans des classes alors qu'ils n'y sont plus dans Sconet.
+					$date_mysql_courante=strftime("%Y-%m-%d %H:%M:%S");
+					$sql="SELECT DISTINCT e.* FROM eleves e, 
+										j_eleves_classes jec, 
+										periodes p 
+									WHERE e.login=jec.login AND 
+										jec.id_classe=p.id_classe AND 
+										jec.periode=p.num_periode AND 
+										p.date_fin>='".$date_mysql_courante."' AND 
+										e.ele_id='".$eleves[$i]['eleve_id']."';";
+					$test_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_ele_classe)>0) {
+						$lig_ele=mysqli_fetch_object($test_ele_classe);
+						$info_action_titre="Incohérence Sconet/Gepi pour ".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))." ($lig_ele->login)";
+
+						$info_action_texte="L'élève <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)." ".stripslashes($lig_ele->prenom))."</a> est inscrit dans une classe dans Gepi, alors qu'il n'y est plus dans Sconet.<br />Il faut soit le désinscrire pour les périodes à venir dans Gepi, soit le réinscrire dans une classe dans Sconet (<em>selon l'endroit où l'erreur se situe</em>).";
+
+						$info_action_destinataire=array("administrateur","scolarite");
+						$info_action_mode="statut";
+						enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+					}
+
 				}
 			}
 
