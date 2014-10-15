@@ -1292,17 +1292,25 @@ function get_period_number($_id_classe) {
 }
 
 /**
- * Renvoie le numéro et le nom de la première période active pour une classe
+ * Renvoie le numéro et le nom de la première période active (non verrouillée en saisie) pour une classe
  *
  * @param int $_id_classe identifiant unique de la classe
  * @return array numéro de la période 'num' et son nom 'nom'
  */
 function get_periode_active($_id_classe){
-  $periode_query  = mysql_query("SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'");
-  $reponse        = mysql_fetch_array($periode_query);
+	global $mysqli;
+	$sql_periode = "SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'";
 
-  return $retour = array('nom' => $reponse["num_periode"], 'nom' => $reponse["nom_periode"]);
+	$periode_query = mysqli_query($mysqli, $sql_periode);
+	if(mysqli_num_rows($periode_query)>0) {
+		$reponse = $periode_query->fetch_array();
+		$retour = array('num_periode' => $reponse["num_periode"], 'nom' => $reponse["nom_periode"]);
+	}
+	else {
+		$retour = array('num_periode' => "?", 'nom' => "Période non trouvée");
+	}
 
+	return $retour;
 }
 
 /**
