@@ -3716,7 +3716,9 @@ function cdt2_affiche_car_spec_sous_textarea() {
 
 		$retour.="Insérer&nbsp;: ";
 
-		for($loop=0;$loop<count($tab);$loop++) {
+		// Tous les caractères mis bout à bout occupent 1628 caractères là où mediumtext permet  16777215 (2^24 − 1) caractères
+		// https://dev.mysql.com/doc/refman/5.0/fr/string-type-overview.html#idm47771646626656
+		for($loop=0;$loop<count($tab)-1;$loop++) {
 			if($loop%2==0) {
 				$bg="white";
 			}
