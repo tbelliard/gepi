@@ -3050,7 +3050,12 @@ C'est une banque dans laquelle vous ne trouverez que ce que vous y aurez mis, ni
 	$tab['attribut_title_CDT2_Travaux_pour_ce_jour']="Voir les travaux à faire pour ce jour dans tous les enseignements associés à la classe.
 Cela peut vous permettre d'éviter de placer un contrôle en classe alors qu'il y en a déjà trois de programmés pour ce jour.";
 
-	$tab['attribut_title_CDT2_CarSpec']="Ouvrir une fenêtre popup pour insérer des caractères spéciaux de votre choix.";
+	$ajout="";
+	$cdt2_car_spec_liste=getPref($_SESSION['login'], 'cdt2_car_spec_liste', '');
+	if($cdt2_car_spec_liste=="") {
+		$ajout="\n\nSi le bouton est sans effet, il se peut qu'il faille forcer la mise à jour de la page.\nAvec Firefox ou Chrome, vous pouvez le faire en pressant CTRL+SHIFT+R.";
+	}
+	$tab['attribut_title_CDT2_CarSpec']="Ouvrir une fenêtre popup pour insérer des caractères spéciaux de votre choix.".$ajout;
 
 	return $tab;
 }
