@@ -1295,6 +1295,29 @@ autre='F',
 description='Extraction des engagements',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/cdt_choix_caracteres.php',
+administrateur='F',
+professeur='V',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Choix de caractères spéciaux pour le CDT2',
+statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_affichage_car_spec.php',
+administrateur='F',
+professeur='V',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='CDT2: Caractères spéciaux à insérer',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

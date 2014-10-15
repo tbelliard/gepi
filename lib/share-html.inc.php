@@ -1842,7 +1842,7 @@ function affiche_reinit_password($login) {
  * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
-function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1) {
+function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1, $background_color='') {
 	$retour="";
 	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
 	$retour.="
@@ -1852,10 +1852,12 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 				if(document.getElementById(id).checked) {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
 					document.getElementById('$prefixe_texte'+id).style.opacity=1;
+					document.getElementById('$prefixe_texte'+id).style.backgroundColor='$background_color';
 				}
 				else {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
 					document.getElementById('$prefixe_texte'+id).style.opacity=$perc_opacity;
+					document.getElementById('$prefixe_texte'+id).style.backgroundColor='';
 				}
 			}
 		}
@@ -3048,6 +3050,8 @@ C'est une banque dans laquelle vous ne trouverez que ce que vous y aurez mis, ni
 	$tab['attribut_title_CDT2_Travaux_pour_ce_jour']="Voir les travaux à faire pour ce jour dans tous les enseignements associés à la classe.
 Cela peut vous permettre d'éviter de placer un contrôle en classe alors qu'il y en a déjà trois de programmés pour ce jour.";
 
+	$tab['attribut_title_CDT2_CarSpec']="Ouvrir une fenêtre popup pour insérer des caractères spéciaux de votre choix.";
+
 	return $tab;
 }
 
@@ -3702,4 +3706,26 @@ function liste_radio_utilisateurs($tab_statuts, $login_user_preselectionne="", $
 	return $retour;
 }
 
+function cdt2_affiche_car_spec_sous_textarea() {
+	$cdt2_car_spec_liste=getPref($_SESSION['login'], "cdt2_car_spec_liste", "");
+
+	$retour="";
+
+	if($cdt2_car_spec_liste!="") {
+		$tab=explode(';', $cdt2_car_spec_liste);
+
+		$retour.="Insérer&nbsp;: ";
+
+		for($loop=0;$loop<count($tab);$loop++) {
+			if($loop%2==0) {
+				$bg="white";
+			}
+			else {
+				$bg="silver";
+			}
+			$retour.="<input type='button' name='bouton_$loop' value=\"".$tab[$loop].";\" style='background-color:$bg;' onclick=\"insere_texte_dans_ckeditor('".$tab[$loop].";')\" /> ";
+		}
+	}
+	return $retour;
+}
 ?>

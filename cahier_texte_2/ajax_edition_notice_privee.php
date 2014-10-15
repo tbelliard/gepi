@@ -173,6 +173,10 @@ echo "<button style='background-color:lightblue' onclick=\"javascript:
 						getWinBanqueTexte().setAjaxContent('./ajax_affichage_banque_texte.php',{});
 					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_Banque']."\">Banque</button>\n";
 
+echo "<button style='background-color:lightblue' onclick=\"javascript:
+						getWinCarSpec().setAjaxContent('./ajax_affichage_car_spec.php',{});
+					\" title=\"".$tab_termes_CDT2['attribut_title_CDT2_CarSpec']."\">&Omega;</button>\n";
+
 if(file_exists("./archives.php")) {
 	// Mon fichier contient juste:
 	/* <?php echo "<iframe src='../documents/archives/index.php' width='100%' height='100%'/>"; ?> */
@@ -350,6 +354,11 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 					<td colspan='5'>";
 
 	echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$cahierTexteNoticePrivee->getContenu()."</textarea>\n";
+
+	if(getPref($_SESSION["login"], 'cdt2_car_spec_sous_textarea', "no")=="yes") {
+		echo cdt2_affiche_car_spec_sous_textarea();
+	}
+
 	echo "</td>\n";
 	echo "</tr>\n";
 	?>

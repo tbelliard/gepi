@@ -1047,7 +1047,7 @@ function getWinListeNoticesPrivees() {
 				width: 600,
 				height: GetHeight() - 220}
 			);
-		$('win_liste_notices_privees_content').setStyle({	
+		$('win_liste_notices_privees_content').setStyle({
 			backgroundColor: '#fffdbc',
 			color: '#000000'
 		});
@@ -1085,7 +1085,7 @@ function getWinBanqueTexte() {
 				height:200}
 			);
 		$('win_banque_texte_content').setStyle({
-			backgroundColor: '#d0d0d0',
+			backgroundColor: 'lightblue',
 			fontSize: '14px',
 			color: '#000000'
 		});
@@ -1135,6 +1135,30 @@ function getWinArchives() {
 }
 
 
+function getWinCarSpec() {
+	if (typeof winCarSpec=="undefined") {
+		winCarSpec = new Window(
+				{id: 'win_car_spec',
+				title: 'Caractères spéciaux',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:10,
+				left:40,
+				width:300,
+				height:200}
+			);
+		$('win_car_spec_content').setStyle({
+			backgroundColor: 'lightblue',
+			fontSize: '14px',
+			color: '#000000'
+		});
+	}
+
+	winCarSpec.show();
+	winCarSpec.toFront();
+	return winCarSpec;
+}
+
 //include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 //include('../lib/DHTMLcalendar/calendar-setup.js');
 
@@ -1177,6 +1201,7 @@ function insere_lien_ggb_dans_ckeditor(titre, url) {
 	texte="<a href='visionneur_geogebra.php?url="+url+"' target='_blank'>"+titre+"</a>";
 	CKEDITOR.instances['contenu'].insertHtml(texte);
 }
+
 
 /**
 *
