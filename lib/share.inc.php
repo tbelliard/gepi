@@ -1298,12 +1298,11 @@ function get_period_number($_id_classe) {
  * @return array numéro de la période 'num' et son nom 'nom'
  */
 function get_periode_active($_id_classe){
-	global $mysqli;
 	$sql_periode = "SELECT num_periode, nom_periode FROM periodes WHERE id_classe = '" . $_id_classe . "' AND verouiller = 'N'";
 
-	$periode_query = mysqli_query($mysqli, $sql_periode);
-	if(mysqli_num_rows($periode_query)>0) {
-		$reponse = $periode_query->fetch_array();
+	$periode_query = mysql_query($sql_periode);
+	if(mysql_num_rows($periode_query)>0) {
+		$reponse=mysql_fetch_array($periode_query);
 		$retour = array('num_periode' => $reponse["num_periode"], 'nom' => $reponse["nom_periode"]);
 	}
 	else {
