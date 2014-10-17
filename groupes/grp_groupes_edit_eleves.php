@@ -164,7 +164,7 @@ if((isset($id_groupe))&&(isset($id_grp_groupe))&&(isset($_POST['modifier_liste_e
 			}
 
 			if(($envoi_mail_actif=='y')&&
-			((getSettingValue('gepiAdminAdress')!="")||(getSettingValue('email_dest_info_erreur_affect_grp')!="")) {
+			((getSettingValue('gepiAdminAdress')!="")||(getSettingValue('email_dest_info_erreur_affect_grp')!=""))) {
 				$texte_mail="Bonjour,
 
 L'enseignement ".$current_group['name']." (".$current_group['description'].") en classe de ".$current_group['classlist_string']." (".$current_group['proflist_string'].") a été modifié par ".$_SESSION['prenom']." ".$_SESSION['nom']."\n\n";
