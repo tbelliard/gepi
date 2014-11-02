@@ -888,7 +888,10 @@ echo "<div style='clear:both;'></div>\n";
 			$temoin_classe_entiere="y";
 			for($loop=0;$loop<count($tmp_grp["classes"]["list"]);$loop++) {
 				for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
-					if((isset($tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]))&&(count($tmp_grp["eleves"][$loop_per]["telle_classe"][$tmp_grp["classes"]["list"][$loop]])!=$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per])) {
+					// Test à vérifier...
+					if((isset($current_group["classes"]["list"][$loop]))&&
+					(isset($tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]))&&
+					(count($tmp_grp["eleves"][$loop_per]["telle_classe"][$tmp_grp["classes"]["list"][$loop]])!=$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per])) {
 						$temoin_classe_entiere="n";
 						break;
 					}
