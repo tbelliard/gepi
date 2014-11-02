@@ -1842,7 +1842,7 @@ function affiche_reinit_password($login) {
  * Sur les checkbox, insérer onchange="checkbox_change(this.id)"
  * @return string Le texte de la fonction javascript
  */
-function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1, $background_color='') {
+function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte='texte_', $avec_balise_script="n", $perc_opacity=1, $background_color='', $color='') {
 	$retour="";
 	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
 	$retour.="
@@ -1853,11 +1853,13 @@ function js_checkbox_change_style($nom_js_func='checkbox_change', $prefixe_texte
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='bold';
 					document.getElementById('$prefixe_texte'+id).style.opacity=1;
 					document.getElementById('$prefixe_texte'+id).style.backgroundColor='$background_color';
+					document.getElementById('$prefixe_texte'+id).style.color='$color';
 				}
 				else {
 					document.getElementById('$prefixe_texte'+id).style.fontWeight='normal';
 					document.getElementById('$prefixe_texte'+id).style.opacity=$perc_opacity;
 					document.getElementById('$prefixe_texte'+id).style.backgroundColor='';
+					document.getElementById('$prefixe_texte'+id).style.color='';
 				}
 			}
 		}
@@ -3732,6 +3734,60 @@ function cdt2_affiche_car_spec_sous_textarea() {
 			}
 			$retour.="<input type='button' name='bouton_$loop' value=\"".$tab[$loop].";\" style='background-color:$bg;' onclick=\"insere_texte_dans_ckeditor('".$tab[$loop].";')\" /> ";
 		}
+	}
+	return $retour;
+}
+
+function affiche_tableau_periodes_et_date_fin_classes() {
+	$retour="";
+
+	$sql="SELECT DISTINCT num_periode, nom_periode, date_fin FROM periodes ORDER BY num_periode ASC;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Numéro</th>
+		<th>Nom</th>
+		<th>Date de fin</th>
+		<th>Effectif</th>
+		<th>Classes</th>
+	</tr>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$date_fin_formatee=formate_date($lig->date_fin);
+			$retour.="
+	<tr class='white_hover'>
+		<td>".$lig->num_periode."</td>
+		<td id='modele_nom_periode_$cpt'>".$lig->nom_periode."</td>
+		<td>".$date_fin_formatee."</td>
+		<td>";
+			//formate_date($lig->date_fin)
+			$sql="SELECT COUNT(date_fin) AS eff_date_fin FROM periodes p WHERE p.num_periode='".$lig->num_periode."' AND p.nom_periode='".$lig->nom_periode."' AND p.date_fin='".$lig->date_fin."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$lig2=mysqli_fetch_object($res2);
+				$retour.=$lig2->eff_date_fin;
+			}
+		$retour.="</td>
+		<td>";
+
+			$sql="SELECT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe=c.id AND p.num_periode='".$lig->num_periode."' AND p.nom_periode='".$lig->nom_periode."' AND p.date_fin='".$lig->date_fin."' ORDER BY c.classe;";
+			//$retour.="$sql<br />";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$cpt2=0;
+				while($lig2=mysqli_fetch_object($res2)) {
+					if($cpt2>0) {$retour.=", ";}
+					$retour.=$lig2->classe;
+					$cpt2++;
+				}
+			}
+			$retour.="
+	</tr>";
+			$cpt++;
+		}
+		$retour.="
+</table>";
 	}
 	return $retour;
 }
