@@ -134,7 +134,7 @@ include('menu_bilans.inc.php');
 	</h2>
 </form>
 
-<table style="border: 1px solid black; background-color:lightgrey" cellpadding="5" cellspacing="5">
+<table style="border: 1px solid black; background-color:lightgrey" class="bilan_du_jour_table" cellpadding="5" cellspacing="5">
 <?php $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();?>
 	<tr>
 		<th style="border: 1px solid black; background-color: gray;">Classe</th>

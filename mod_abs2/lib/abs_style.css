@@ -173,3 +173,9 @@ img.sans_bord {
 tr.lignes_couleurs_alternees:nth-child(even) {background: #E8F1F4}
 tr.lignes_couleurs_alternees:nth-child(odd) {background: #C6DCE3}
 
+@media print {
+	.bilan_du_jour_table tr td {
+		border: 1px solid black;
+	}
+}
+
