@@ -53,6 +53,15 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 | <a href='scol_resp.php' title="Définir les comptes scolarité associés à telles et telles classes.
 Ce choix permet de limiter la liste des classes proposées aux différents comptes scolarité quand le suivi est réparti entre plusieurs personnes.">Paramétrage scolarité</a>
 | <a href='acces_appreciations.php'>Paramétrage de l'accès aux appréciations</a>
+<?php
+	if(acces("/groupes/maj_inscript_ele_d_apres_edt.php", $_SESSION['statut'])) {
+		$sql="SELECT 1=1 FROM edt_corresp2;";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "| <a href='../groupes/maj_inscript_ele_d_apres_edt.php' title=\"Si vous avez importé votre emploi du temps depuis le fichier EXP_Cours.xml d'EDT, vous pouvez mettre à jour les inscriptions d'élèves dans les groupes Gepi à l'aide de l'export EXP_Eleves.xml d'EDT.\">Màj inscriptions élèves d'après EDT </a>";
+		}
+	}
+?>
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
 | <a href='../groupes/modify_grp_group.php'>Groupes de groupes</a>
 | <a href='../groupes/correction_inscriptions_grp_csv.php'>Correction CSV</a>

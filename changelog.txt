@@ -14,6 +14,8 @@ Absences et remplacements de professeurs
 Edt:
 - Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi
   (dispositif alternatif, non lié à l'EDT classique de Gepi).
+- Possibilité d'importer l'emploi du temps depuis l'export EXP_COURS.xml d'EDT.
+- Possibilité de mettre à jour les inscriptions d'élèves dans des groupes Gepi d'après l'export EXP_ELEVES.xml d'EDT.
 
 Discipline:
 - Affichage d'un témoin d'incident/sanctions pour les élèves/parents.

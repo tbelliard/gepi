@@ -489,4 +489,79 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<strong>Ajout d'une table 'edt_corresp2' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_corresp2'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS edt_corresp2 (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	id_groupe int(11) NOT NULL,
+	mat_code_edt VARCHAR(255) NOT NULL DEFAULT '',
+	nom_groupe_edt VARCHAR(255) NOT NULL DEFAULT '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'edt_eleves_lignes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_eleves_lignes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS edt_eleves_lignes (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	nom varchar(255) NOT NULL default '',
+	prenom varchar(255) NOT NULL default '',
+	date_naiss varchar(255) NOT NULL default '',
+	sexe varchar(255) NOT NULL default '',
+	n_national varchar(255) NOT NULL default '',
+	classe varchar(255) NOT NULL default '',
+	groupes varchar(255) NOT NULL default '',
+	option_1 varchar(255) NOT NULL default '',
+	option_2 varchar(255) NOT NULL default '',
+	option_3 varchar(255) NOT NULL default '',
+	option_4 varchar(255) NOT NULL default '',
+	option_5 varchar(255) NOT NULL default '',
+	option_6 varchar(255) NOT NULL default '',
+	option_7 varchar(255) NOT NULL default '',
+	option_8 varchar(255) NOT NULL default '',
+	option_9 varchar(255) NOT NULL default '',
+	option_10 varchar(255) NOT NULL default '',
+	option_11 varchar(255) NOT NULL default '',
+	option_12 varchar(255) NOT NULL default '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'edt_tempo' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'edt_tempo'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS edt_tempo (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	col1 varchar(255) NOT NULL default '',
+	col2 varchar(255) NOT NULL default '',
+	PRIMARY KEY (id)
+	) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

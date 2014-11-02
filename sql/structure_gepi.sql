@@ -1159,3 +1159,45 @@ traitement varchar(100) NOT NULL default '',
 details_cours VARCHAR(255) NOT NULL DEFAULT '',
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_corresp2;
+CREATE TABLE IF NOT EXISTS edt_corresp2 (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_groupe int(11) NOT NULL,
+mat_code_edt VARCHAR(255) NOT NULL DEFAULT '',
+nom_groupe_edt VARCHAR(255) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_eleves_lignes;
+CREATE TABLE IF NOT EXISTS edt_eleves_lignes (
+id int(11) NOT NULL AUTO_INCREMENT,
+nom varchar(255) NOT NULL default '',
+prenom varchar(255) NOT NULL default '',
+date_naiss varchar(255) NOT NULL default '',
+sexe varchar(255) NOT NULL default '',
+n_national varchar(255) NOT NULL default '',
+classe varchar(255) NOT NULL default '',
+groupes varchar(255) NOT NULL default '',
+option_1 varchar(255) NOT NULL default '',
+option_2 varchar(255) NOT NULL default '',
+option_3 varchar(255) NOT NULL default '',
+option_4 varchar(255) NOT NULL default '',
+option_5 varchar(255) NOT NULL default '',
+option_6 varchar(255) NOT NULL default '',
+option_7 varchar(255) NOT NULL default '',
+option_8 varchar(255) NOT NULL default '',
+option_9 varchar(255) NOT NULL default '',
+option_10 varchar(255) NOT NULL default '',
+option_11 varchar(255) NOT NULL default '',
+option_12 varchar(255) NOT NULL default '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS edt_tempo;
+CREATE TABLE IF NOT EXISTS edt_tempo (
+id int(11) NOT NULL AUTO_INCREMENT,
+col1 varchar(255) NOT NULL default '',
+col2 varchar(255) NOT NULL default '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
