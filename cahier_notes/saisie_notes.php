@@ -88,6 +88,7 @@ $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] 
 
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : getPref($_SESSION['login'], 'cn_order_by', 'classe'));
 
+
 if ($id_devoir)  {
 	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
 	//echo "$sql<br />";
@@ -527,6 +528,9 @@ $message_cnil_commentaires.="<strong>Règle n° 1 :</strong> Avoir à l'esprit, 
 $message_cnil_commentaires.="<strong>Règle n° 2 :</strong> Rédiger des commentaires purement objectifs et jamais excessifs ou insultants.<br />";
 $message_cnil_commentaires.="<br />";
 $message_cnil_commentaires.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br /><br />";
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des notes";
     /**
@@ -1660,9 +1664,11 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 
 			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1500,10,10);\"";
 			echo " onclick=\"alterner_affichage_div('repartition_notes_$k','y',-100,20);return false;\"";
-			echo ">";
+			echo " title=\"Afficher l'histogramme de répartition des notes.\">";
 			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 			echo "</a>";
+
+			echo " <a href='#' onclick=\"afficher_dev_infobulle(".$id_dev[$k].");return false;\" title=\"Afficher les notes en infobulle... avec possibilité de tri.\"><img src='../images/icons/chercher.png' class='icone16' alt='Afficher' /></a>";
 		}
 		else {
 			echo "&nbsp;";
@@ -1693,6 +1699,9 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 
 // Pour permettre d'afficher moyenne, médiane, quartiles,... en mode Visualisation du carnet de notes
 $chaine_input_moy="";
+
+// 20141103
+$tab_ele_dev=array();
 
 //
 // Affichage des lignes "elèves"
@@ -1761,6 +1770,11 @@ while($i < $nombre_lignes) {
 				$data_pdf[$pointer][] = ($mess_comment_pdf[$i][$k]);
 				$tab_ele_notes[$i][]="";
 			}
+
+			// 20141103
+			$tab_ele_dev[$id_dev[$k]]['nom_dev']=$nom_dev[$k];
+			$tab_ele_dev[$id_dev[$k]]['eleve'][$eleve_login[$i]]['nom_prenom']=$eleve_nom[$i]." ".$eleve_prenom[$i];
+			$tab_ele_dev[$id_dev[$k]]['eleve'][$eleve_login[$i]]['note']=$mess_note_pdf[$i][$k];
 		}
 		$k++;
 	}
@@ -2637,6 +2651,40 @@ $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 
 echo "<br />";
 echo $message_cnil_commentaires."<br />";
+
+// 20141103
+foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
+	$titre_infobulle="Devoir n°".$current_id_dev." : ".$current_tab_notes['nom_dev'];
+
+	$texte_infobulle="<div align='center'>
+<table class='boireaus boireaus_alt resizable sortable'>
+	<thead>
+		<tr>
+			<th class='text' title=\"Cliquez pour trier\">Nom prénom</th>
+			<th class='number' title=\"Cliquez pour trier\">Note</th>
+		</tr>
+	</thead>
+	<tbody>";
+
+	foreach($current_tab_notes['eleve'] as $current_login_ele => $tmp_tab) {
+		$texte_infobulle.="
+	<tr>
+		<td>".$tmp_tab['nom_prenom']."</td>
+		<td>".$tmp_tab['note']."</td>
+	</tr>";
+	}
+
+	$texte_infobulle.="
+	</tbody>
+</table>
+</div>";
+
+	$tabdiv_infobulle[]=creer_div_infobulle('div_tel_devoir_'.$current_id_dev,$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
+}
+echo "<script type='text/javascript' language='javascript'>
+
+</script>";
+
 ?>
 
 <script type="text/javascript" language="javascript">
@@ -2669,6 +2717,11 @@ if((isset($id_devoir))&&($id_devoir!=NULL)&&($aff_photo_cn_par_defaut=='y')) {
 	echo "affiche_div_photo();\n";
 }
 ?>
+
+function afficher_dev_infobulle(id_dev) {
+	afficher_div('div_tel_devoir_'+id_dev,'y',10,10);
+}
+
 </script>
 <?php 
 /**
