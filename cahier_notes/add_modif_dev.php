@@ -784,7 +784,7 @@ if($interface_simplifiee=="y"){
 	$aff_display_parents_app=getPref($_SESSION['login'],'add_modif_dev_display_parents_app','n');
 
 	echo "<div align='center'>\n";
-	echo "<table class='boireaus' border='1' summary='Parametres du devoir'>\n";
+	echo "<table class='boireaus boireaus_alt' border='1' summary='Parametres du devoir'>\n";
 
 	if($aff_nom_court=='y'){
 		echo "<tr>\n";
