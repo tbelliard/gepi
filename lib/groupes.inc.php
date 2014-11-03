@@ -1227,4 +1227,68 @@ function get_groups_for_matiere($_matiere,$mode=NULL,$tab_champs=array()) {
 	return $groups;
 }
 
+/** Renvoie un tableau des élèves associés à une groupe
+ * 
+ * @param integer $id_groupe L'identifiant du groupe
+ * @param integer $periode Le numéro de période
+ *
+ * @return array Le tableau des élèves
+ */
+function get_eleves_from_groupe($id_groupe,$periode="") {
+	global $mysqli;
+
+	$tab=array();
+	if($periode=="") {
+		$sql="SELECT DISTINCT j.login, 
+						e.nom, 
+						e.prenom, 
+						e.ele_id, 
+						e.elenoet, 
+						e.sexe, 
+						e.no_gep 
+					FROM eleves e, 
+						j_eleves_groupes j 
+					WHERE (e.login=j.login AND 
+						j.id_groupe='".$id_groupe."')
+					ORDER BY e.nom, e.prenom;";
+	}
+	else {
+		$sql="SELECT DISTINCT j.login, 
+						e.nom, 
+						e.prenom, 
+						e.ele_id, 
+						e.elenoet, 
+						e.sexe, 
+						e.no_gep
+					FROM eleves e, 
+						j_eleves_groupes j 
+					WHERE (e.login=j.login AND 
+						j.id_groupe='".$id_groupe."' AND 
+						j.periode='".$periode."') 
+					ORDER BY e.nom, e.prenom;";
+	}
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab['list'][]=$lig->login;
+
+		$id_classe="";
+		if($periode=="") {
+			$sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $lig->login . "') ORDER BY periode DESC;";
+		}
+		else {
+			$sql="SELECT id_classe FROM j_eleves_classes WHERE (login = '" . $lig->login . "' and periode = '" . $periode . "');";
+		}
+		//echo "$sql<br />";
+		$res_classe_eleve =  mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_classe_eleve)>0) {
+			$lig_class_tmp=mysqli_fetch_object($res_classe_eleve);
+			$id_classe=$lig_class_tmp->id_classe;
+		}
+
+		$tab['users'][$lig->login]=array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "classe" => $id_classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe, "no_gep" => $lig->no_gep);
+	}
+
+	return $tab;
+}
+
 ?>

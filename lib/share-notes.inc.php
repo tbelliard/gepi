@@ -888,4 +888,23 @@ function nb_notes_ele_dans_tel_enseignement($login_ele, $id_groupe, $periode) {
 	$nb_notes_cn=mysqli_num_rows($test_cn);
 	return $nb_notes_cn;
 }
+
+/**
+ * Tester si un professeur est proprio d'un devoir
+ *
+ * @param string $login Le login du professeur
+ * @param integer $id_devoir L'identifiant du devoir
+ *
+ * @return boolean true ou false
+ */
+function test_prof_proprietaire_du_devoir($login, $id_devoir) {
+	$sql="select login from j_groupes_professeurs jgp, cn_cahier_notes ccn, cn_devoirs cd where jgp.id_groupe=ccn.id_groupe AND ccn.id_cahier_notes=cd.id_racine and cd.id='$id_devoir' AND jgp.login='$login';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>
