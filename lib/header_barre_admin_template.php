@@ -168,13 +168,20 @@ include("menu_plugins.inc.php");
 		$menus .= '        </li>'."\n";
 
 		// Classes
-		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Classes</a>'."\n";
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Classes et enseignements</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php" '.insert_confirm_abandon().' title="Gestion des classes, périodes, enseignements associés,...">Gestion des classes</a>'."\n";
 		$menus .= '                    <ul class="niveau4">'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/classes_param.php" '.insert_confirm_abandon().' title="Modification des paramètres des classes par lots de classes.">Paramétrage par lots</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/init_xml2/init_alternatif.php?cat=classes" '.insert_confirm_abandon().' title="Création d\'enseignements par lots.">Créations par lots</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/groupes/repartition_ele_grp.php" '.insert_confirm_abandon().' title="Répartition d\'élèves entre plusieurs enseignements/groupes.">Répartition entre groupes</a></li>'."\n";
+
+		$sql="SELECT 1=1 FROM edt_corresp2;";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$menus .= '                        <li><a href="'.$gepiPath.'/groupes/maj_inscript_ele_d_apres_edt.php" '.insert_confirm_abandon().' title="Si vous avez importé votre emploi du temps depuis le fichier EXP_Cours.xml d\'EDT, vous pouvez mettre à jour les inscriptions d\'élèves dans les groupes Gepi à l\'aide de l\'export EXP_Eleves.xml d\'EDT.">Mise à jour inscript. élèves d\'après EDT</a></li>'."\n";
+		}
+
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/prof_suivi.php" '.insert_confirm_abandon().' title="Définition des '.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.'.getSettingValue('gepi_prof_suivi').'</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php" '.insert_confirm_abandon().' title="Définition du CPE responsable des élèves de telle ou telle classe.'.getSettingValue('gepi_prof_suivi').' des élèves dans les différentes classes.">Param.CPE resp</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/scol_resp.php" '.insert_confirm_abandon().' title="Définition des classes visibles par défaut par les différents comptes de statut scolarité.">Param.SCOL resp</a></li>'."\n";
