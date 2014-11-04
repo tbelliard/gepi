@@ -53,6 +53,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $message Le message
  * @param string $destinataire Le destinataire
  * @param string $ajout_headers Text à ajouter dans le header
+ * @param string $plain_ou_html format du mail (plain pour texte brut, html sinon)
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain") {
 	global $gepiPath;
@@ -2278,7 +2279,7 @@ function get_noms_classes_from_ele_login($ele_login){
 		while($lig_tmp = $res_class->fetch_object()){
 			$tab_classe[]=$lig_tmp->classe;
 		}
-		$res_class->close()	;
+		$res_class->close();
 	}
 	
 	return $tab_classe;
@@ -2299,7 +2300,7 @@ function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
 	if($res_class->num_rows > 0) {
 		while($lig_tmp = $res_class->fetch_object()) {
 			if($chaine!="") {$chaine.=", ";}
-			$chaine=$lig_tmp->classe;                
+			$chaine=$lig_tmp->classe;
 		}
 		$res_class->close()	;
 	}
