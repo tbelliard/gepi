@@ -283,7 +283,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					echo $lig_ele->nom." ".$lig_ele->prenom." (".$lig_ele->date_naiss.") (".$lig_ele->n_national.")";
 
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
-					$sql="SELECT login FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_ele)==0) {
 						echo " <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
@@ -293,6 +293,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 						$lig_nn=mysqli_fetch_object($res_nn);
 
 						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
+						$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
 						$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
 						$tab_ele_regroupement_edt['prenom'][]=$lig_ele->prenom;
 						$tab_ele_regroupement_edt['date_naiss'][]=$lig_ele->date_naiss;
@@ -924,7 +925,7 @@ elseif($action=="comparer") {
 
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
 
-					$sql="SELECT login FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE non trouvé dans la table 'eleves'</span>";
@@ -933,6 +934,7 @@ elseif($action=="comparer") {
 						$lig_nn=mysqli_fetch_object($res_nn);
 
 						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
+						$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
 						$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
 						$tab_ele_regroupement_edt['prenom'][]=$lig_ele->prenom;
 						$tab_ele_regroupement_edt['date_naiss'][]=$lig_ele->date_naiss;
@@ -1281,7 +1283,7 @@ elseif($action="editer_ec2") {
 					<td><label for='suppr_$cpt' id='texte_suppr_$cpt'>$lig->nom_groupe_edt</label></td>
 					<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr_$cpt')\" /></td>
 					<td><label for='suppr_$cpt'>$lig2->mat_code_edt</label></td>
-					<td style='text-align:left'><a href='../groupes/edit_group.php?id_groupe=".$lig2->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig2->id_groupe)."</a></td>
+					<td style='text-align:left'><a href='../groupes/edit_group.php?id_groupe=".$lig2->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig2->id_groupe)."</a><a name='id_groupe_".$lig2->id_groupe."'></a></td>
 				</tr>";
 					$cpt++;
 				}
