@@ -1008,6 +1008,23 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 
 	</div>";
 
+// +++++++++++++++++++++++++++++++++
+$sql="SELECT 1=1 FROM edt_corresp2;";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+
+	$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+	$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_edt)>0) {
+		$lig_edt=mysqli_fetch_object($res_edt);
+		echo "<p style='margin-top:1em;'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt." <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec2#id_groupe_".$id_groupe."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Editer les regroupements associés.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></p>";
+	}
+	else {
+		echo "<p style='margin-top:1em;'>Aucun regroupement EDT n'est associé à ce groupe Gepi.</p>";
+	}
+}
+// +++++++++++++++++++++++++++++++++
+
 echo "</div>\n";
 
 //=================================================
