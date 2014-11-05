@@ -21,6 +21,7 @@ Edt:
 Discipline:
 - Affichage d'un témoin d'incident/sanctions pour les élèves/parents.
 - Possibilité d'afficher un témoin pour les incidents dans la page d'accueil en compte personnel de l'établissement.
+- Possibilité d'extraire les incidents pour un élève avec bloc adresse responsable.
 
 Gestion:
 - Accès au dossier d'export des absences de mod_abs2 en fin d'année (dans Sauvegarde et restauration).
