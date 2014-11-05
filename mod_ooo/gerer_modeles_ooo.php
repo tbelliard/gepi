@@ -90,6 +90,19 @@ if(($_SESSION['statut']=='administrateur')||
 	$fich[]="avertissement_fin_periode.odt";
 	$utilisation[]="Avertissement de fin de période";
 	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="mod_discipline_liste_incidents.odt";
+	$utilisation[]="Extraction des incidents et sanctions";
+	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="mod_discipline_liste_incidents_bloc_adresse.odt";
+	$utilisation[]="Extraction des incidents et sanctions<br />(<em>avec bloc adresse responsable</em>)";
+	$special[]="";
+
 }
 
 if(($_SESSION['statut']=='administrateur')||

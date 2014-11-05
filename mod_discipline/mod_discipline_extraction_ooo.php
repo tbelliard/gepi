@@ -141,16 +141,16 @@ while($lig=mysqli_fetch_object($res)) {
 }
 echo "
 		</select><br />
-		<input type='checkbox' name='avec_bloc_adresse_resp' id='avec_bloc_adresse_resp' value='y' /><label for='avec_bloc_adresse_resp' id='texte_avec_bloc_adresse_resp'> Avec le bloc adresse responsable/parent <span style='color:red'>Ca ne fonctionne pas...</span>.</label><br />
+		<input type='checkbox' name='avec_bloc_adresse_resp' id='avec_bloc_adresse_resp' value='y' /><label for='avec_bloc_adresse_resp' id='texte_avec_bloc_adresse_resp'> Avec le bloc adresse responsable/parent.</label><br />
 		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
 		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves' value='y' /><label for='cacher_autres_protagonistes_eleves' id='texte_cacher_autres_protagonistes_eleves'> Cacher ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
 
-		<input type='checkbox' name='debug' id='debug' value='y' /><label for='debug' id='texte_mode_test' style='color:red'> Debug pour contrôler les indices du tableau produit</label><br />
+		<!--input type='checkbox' name='debug' id='debug' value='y' /><label for='debug' id='texte_mode_test' style='color:red'> Debug pour contrôler les indices du tableau produit</label><br />
 
 		<input type='checkbox' name='mode_test' id='mode_test' value='y' /><label for='mode_test' id='texte_mode_test' style='color:red'> Mode test...<br />
 		Pour le moment, ça ne fonctionne pas.<br />
 		C'est le même problème que pour l'adresse<br />
-		Editer/modifier le fichier mod_discipline_liste_incidents2b.odt</label><br />
+		Editer/modifier le fichier mod_discipline_liste_incidents2b.odt</label><br /-->
 
 		<input type='hidden' name='mode' value='extract_responsable' />
 		</p>
@@ -239,6 +239,9 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	$tab_lignes_OOo_eleve=array();
 	$tab_lignes_OOo=array();
 
+	// Test
+	//$tab_lignes_OOo_eleve['eleve']['etab']=getSettingValue("gepiSchoolName");
+
 	$tab_lignes_OOo_eleve['etab']=getSettingValue("gepiSchoolName");
 	$tab_lignes_OOo_eleve['acad']=getSettingValue("gepiSchoolAcademie");
 	$tab_lignes_OOo_eleve['adr1']=getSettingValue("gepiSchoolAdress1")." ".getSettingValue("gepiSchoolAdress2");
@@ -261,15 +264,39 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]['cp']="";
 		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]['commune']="";
 		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]['pays']="";
-
 		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]['en_ligne']="";
+
+		$tab_lignes_OOo_eleve["resp_civilite"]="";
+		$tab_lignes_OOo_eleve["resp_nom"]="";
+		$tab_lignes_OOo_eleve["resp_prenom"]="";
+		$tab_lignes_OOo_eleve['resp_adr_id']="";
+		$tab_lignes_OOo_eleve['resp_adr1']="";
+		$tab_lignes_OOo_eleve['resp_adr2']="";
+		$tab_lignes_OOo_eleve['resp_adr3']="";
+		$tab_lignes_OOo_eleve['resp_cp']="";
+		$tab_lignes_OOo_eleve['resp_commune']="";
+		$tab_lignes_OOo_eleve['resp_pays']="";
+		$tab_lignes_OOo_eleve['resp_adr_en_ligne']="";
 	}
 	else {
 		$lig_resp=mysqli_fetch_object($res_resp);
 		$tab_lignes_OOo_eleve['responsable']["civilite"]=$lig_resp->civilite;
 		$tab_lignes_OOo_eleve['responsable']["nom"]=$lig_resp->nom;
 		$tab_lignes_OOo_eleve['responsable']["prenom"]=$lig_resp->prenom;
-		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]=get_adresse_responsable($lig_resp->pers_id);
+		$tab_adr_courante=get_adresse_responsable($lig_resp->pers_id);
+		$tab_lignes_OOo_eleve['responsable']["tab_adresse"]=$tab_adr_courante;
+
+		$tab_lignes_OOo_eleve["resp_civilite"]=$lig_resp->civilite;
+		$tab_lignes_OOo_eleve["resp_nom"]=$lig_resp->nom;
+		$tab_lignes_OOo_eleve["resp_prenom"]=$lig_resp->prenom;
+		$tab_lignes_OOo_eleve['resp_adr_id']=$tab_adr_courante['adr_id'];
+		$tab_lignes_OOo_eleve['resp_adr1']=$tab_adr_courante['adr1'];
+		$tab_lignes_OOo_eleve['resp_adr2']=$tab_adr_courante['adr2'];
+		$tab_lignes_OOo_eleve['resp_adr3']=$tab_adr_courante['adr3'];
+		$tab_lignes_OOo_eleve['resp_cp']=$tab_adr_courante['cp'];
+		$tab_lignes_OOo_eleve['resp_commune']=$tab_adr_courante['commune'];
+		$tab_lignes_OOo_eleve['resp_pays']=$tab_adr_courante['pays'];
+		$tab_lignes_OOo_eleve['resp_adr_en_ligne']=$tab_adr_courante['en_ligne'];
 	}
 
 	$nb_ligne=0;
@@ -538,14 +565,13 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 	$tab_lignes_OOo_eleve['incident']=$tab_lignes_OOo;
 
-
 	if(isset($_POST['debug'])) {
-		echo "<pre>";
+		echo "<hr />tab_lignes_OOo_eleve<pre>";
 		print_r($tab_lignes_OOo_eleve);
 		echo "</pre>";
 	}
 
-//die();
+	//die();
 
 	$mode_ooo="imprime";
 	
@@ -558,17 +584,22 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 	
 	
-	  $mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
-	  if(isset($mode_test)) {
-		  $fichier_a_utiliser="mod_discipline_liste_incidents2b.odt";
-		  $tableau_a_utiliser=$tab_lignes_OOo_eleve;
-		  $nom_a_utiliser="eleve";
-	  }
-	  else {
-		  $fichier_a_utiliser="mod_discipline_liste_incidents.odt";
-		  $tableau_a_utiliser=$tab_lignes_OOo;
-		  $nom_a_utiliser="incident";
-	  }
+	//$mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
+	//if(isset($mode_test)) {
+	if($avec_bloc_adresse_resp=="y") {
+		$fichier_a_utiliser="mod_discipline_liste_incidents_bloc_adresse.odt";
+
+		$tableau_a_utiliser=$tab_lignes_OOo_eleve;
+		$tab_tmp_test['eleve']=$tab_lignes_OOo_eleve;
+		$tableau_a_utiliser=$tab_tmp_test;
+
+		$nom_a_utiliser="eleve";
+	}
+	else {
+		$fichier_a_utiliser="mod_discipline_liste_incidents.odt";
+		$tableau_a_utiliser=$tab_lignes_OOo;
+		$nom_a_utiliser="incident";
+	}
 	
 	// le chemin du fichier est indique a partir de l'emplacement de ce fichier
 	$nom_dossier_modele_a_utiliser = $path."/";
