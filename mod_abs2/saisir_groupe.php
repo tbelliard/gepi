@@ -496,6 +496,9 @@ if ($current_creneau == null) {
 
 //**************** TABLEAU DES ELEVES *****************
 // 20120618
+$nb_non_manquements=0;
+$nb_manquements=0;
+
 $tab_regimes=array();
 $tab_regimes_eleves=array();
 $tab_types_abs_regimes=array();
@@ -633,6 +636,15 @@ echo "</pre>";
 				// 20121009
 				else {
 					$afficheEleve[$elv]['style'][$i] = "fondJaune";
+				}
+			}
+
+			if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
+					if($afficheEleve[$elv]['style'][$i] == "fondRouge") {
+					$nb_manquements++;
+				}
+				elseif($afficheEleve[$elv]['style'][$i] == "fondJaune") {
+					$nb_non_manquements++;
 				}
 			}
 		}
@@ -1183,6 +1195,12 @@ if ($eleve_col->isEmpty()) {
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
 			<p class="center"><?php echo $eleve_col->count(); ?> élèves (<?php echo $chaine_effectifs_regimes;?>).</p>
+			<p id='p_effectifs' class="center"><span onmouseover="this.style.fontSize='xx-large';" onmouseout="this.style.fontSize='';">
+			<?php
+				$effectif_sans_saisie=$eleve_col->count()-$nb_manquements-$nb_non_manquements;
+				echo "<span title='Effectif total'> ".$eleve_col->count()." </span>=<span style='color:red' title=\"$nb_manquements manquements à l'obligation de présence.\"> $nb_manquements </span>+<span style='color:yellow' title=\"$nb_non_manquements saisies sans manquement à l'obligation de présence\"> $nb_non_manquements </span>+<span title=\"$effectif_sans_saisie élèves sans saisie sur ce créneau.\"> $effectif_sans_saisie </span>";
+			?>
+			</span></p>
 <!-- Fin de la legende -->
 			<div style='clear:both;'></div>
 			<table class="tb_absences">
