@@ -128,8 +128,20 @@ if(($_SESSION['statut']=='administrateur')||
 
     $lien_wiki[]='';
     $entete_section[]="";
+    $fich[]="absence_extraction_bilan_resp.ods";
+    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format tableur<br />(<em>avec informations responsable légal 1</em>)";
+	$special[]="";
+
+    $lien_wiki[]='';
+    $entete_section[]="";
     $fich[]="absence_extraction_bilan.odt";
     $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes";
+	$special[]="";
+
+    $lien_wiki[]='';
+    $entete_section[]="";
+    $fich[]="absence_extraction_bilan_resp.odt";
+    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes<br />(<em>avec informations responsable légal 1</em>)";
 	$special[]="";
 
     $lien_wiki[]='';

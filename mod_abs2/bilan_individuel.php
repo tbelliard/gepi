@@ -316,13 +316,14 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
             } ?>
 			> Afficher le texte optionnel en bas de l'export odt
             <br />
+            <input dojoType="dijit.form.CheckBox" type='checkbox' name='export_avec_resp' id='export_avec_resp' value='y' <?php if(isset($_POST['export_avec_resp'])) {echo "checked ";}?> /><label for='export_avec_resp'> Inclure les informations responsable légal 1 dans l'export ODS/ODT.</label><br />
             <?php endif; ?>            
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
         </fieldset>
 		<br />
         <?php if($affichage_liens):?>
         <fieldset style="width:320px; float:left;">
-            <legend>Choix du mode de sortie des données</legend>            
+            <legend>Choix du mode de sortie des données</legend>
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un tableur (ods)</button>
             <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="odt" <?php
@@ -426,13 +427,68 @@ foreach ($eleve_col as $eleve) {
         $donnees[$eleve_id]['nom'] = $eleve->getNom();
         $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
         $donnees[$eleve_id]['classe'] = $eleve->getClasseNom();
+
 		if ($eleve->getDateSortie()) {
 			$donnees[$eleve_id]['sortie'] = date('j/m/Y',strtotime($eleve->getDateSortie()));
 		} else {
 			$donnees[$eleve_id]['sortie'] = "";
 		}
+
+		// 20141105
+		if(isset($_POST['export_avec_resp'])) {
+			//get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n")
+			//get_adresse_responsable($pers_id, $login_resp="")
+			//responsables_adresses_separees($login_eleve)
+			//$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$eleve->getLogin()."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')";
+			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$eleve->getLogin()."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='1';";
+			//echo "$sql<br />";
+			$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_resp)>0) {
+				$tab_resp=mysqli_fetch_assoc($res_resp);
+
+				$donnees[$eleve_id]['resp_legal'][1]=$tab_resp;
+
+				$tab_adr=get_adresse_responsable($tab_resp['pers_id']);
+
+				$donnees[$eleve_id]['resp_legal'][1]['adr1']=$tab_adr['adr1'];
+				$donnees[$eleve_id]['resp_legal'][1]['adr2']=$tab_adr['adr2'];
+				$donnees[$eleve_id]['resp_legal'][1]['adr3']=$tab_adr['adr3'];
+				$donnees[$eleve_id]['resp_legal'][1]['cp']=$tab_adr['cp'];
+				$donnees[$eleve_id]['resp_legal'][1]['commune']=$tab_adr['commune'];
+				$donnees[$eleve_id]['resp_legal'][1]['pays']=$tab_adr['pays'];
+				$donnees[$eleve_id]['resp_legal'][1]['en_ligne']=$tab_adr['en_ligne'];
+
+			}
+			else {
+				$donnees[$eleve_id]['resp_legal'][1]['pers_id']="";
+				$donnees[$eleve_id]['resp_legal'][1]['login']="";
+				$donnees[$eleve_id]['resp_legal'][1]['nom']="";
+				$donnees[$eleve_id]['resp_legal'][1]['prenom']="";
+				$donnees[$eleve_id]['resp_legal'][1]['civilite']="";
+				$donnees[$eleve_id]['resp_legal'][1]['tel_pers']="";
+				$donnees[$eleve_id]['resp_legal'][1]['tel_port']="";
+				$donnees[$eleve_id]['resp_legal'][1]['tel_prof']="";
+				$donnees[$eleve_id]['resp_legal'][1]['mel']="";
+				$donnees[$eleve_id]['resp_legal'][1]['adr_id']="";
+
+				$donnees[$eleve_id]['resp_legal'][1]['adr1']="";
+				$donnees[$eleve_id]['resp_legal'][1]['adr2']="";
+				$donnees[$eleve_id]['resp_legal'][1]['adr3']="";
+				$donnees[$eleve_id]['resp_legal'][1]['cp']="";
+				$donnees[$eleve_id]['resp_legal'][1]['commune']="";
+				$donnees[$eleve_id]['resp_legal'][1]['pays']="";
+				$donnees[$eleve_id]['resp_legal'][1]['en_ligne']="";
+			}
+		}
+
         $donnees[$eleve_id]['nbre_lignes_total'] = 0;
     }
+	/*
+	// 20141105
+	echo "<pre>";
+	print_r($donnees);
+	echo "</pre>";
+	*/
     // on récupère les saisies de l'élève
     $saisie_query = AbsenceEleveSaisieQuery::create()
                     ->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
@@ -813,6 +869,15 @@ if(isset($_SESSION['donnees_bilan_affichage'])){
     $donnees=unserialize($_SESSION['donnees_bilan_affichage']);
 }
 if ($affichage == 'ods') {
+
+	/*
+	// 20141105
+	echo "<pre>";
+	print_r($donnees);
+	echo "</pre>";
+	die();
+	*/
+
     $extension='ods';
     $export = array();
     foreach ($donnees as $id => $eleve) {
@@ -833,14 +898,43 @@ if ($affichage == 'ods') {
                         $nom = $eleve['nom'];
                         $prenom = $eleve['prenom'];
                         $classe = $eleve['classe'];
+
+				if(isset($_POST['export_avec_resp'])) {
+                        // 20141105
+                        $resp_1_nom=$eleve['resp_legal'][1]['nom'];
+                        $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
+                        $resp_1_civilite=$eleve['resp_legal'][1]['civilite'];
+                        $resp_1_adr1=$eleve['resp_legal'][1]['adr1'];
+                        $resp_1_adr2=$eleve['resp_legal'][1]['adr2'];
+                        $resp_1_adr3=$eleve['resp_legal'][1]['adr3'];
+                        $resp_1_cp=$eleve['resp_legal'][1]['cp'];
+                        $resp_1_commune=$eleve['resp_legal'][1]['commune'];
+                        $resp_1_pays=$eleve['resp_legal'][1]['pays'];
+                        $resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
+				}
+
                         $total_demi_journees = strval($eleve['demi_journees']);
                         $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
                         $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
-                        $retards = $eleve['retards'];                       
+                        $retards = $eleve['retards'];
                     }else{
                         $nom = '';
                         $prenom = '';
                         $classe = '';
+
+				if(isset($_POST['export_avec_resp'])) {
+                        $resp_1_nom="";
+                        $resp_1_prenom="";
+                        $resp_1_civilite="";
+                        $resp_1_adr1="";
+                        $resp_1_adr2="";
+                        $resp_1_adr3="";
+                        $resp_1_cp="";
+                        $resp_1_commune="";
+                        $resp_1_pays="";
+                        $resp_1_adr_en_ligne="";
+				}
+
                         $total_demi_journees = '';
                         $total_demi_journees_justifiees = '';
                         $total_demi_journees_non_justifiees = '';
@@ -849,7 +943,7 @@ if ($affichage == 'ods') {
                     if(!is_null($ods2)&& $ods2!=''){
                         $indice=FALSE;
                     }
-                    $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);                    
+                    $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
                     $ligne_demi_journees_non_justifiees=$value['demi_journees_non_justifiees'];
                     $ligne_demi_journees_justifiees=$value['demi_journees_justifiees'];
                     $type = $value['type'];
@@ -866,6 +960,35 @@ if ($affichage == 'ods') {
                             $besoin_echo_virgule = true;
                         }
                     }
+                    // 20141105
+				if(isset($_POST['export_avec_resp'])) {
+                    $export[] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+
+                        'total_demi_journees' => $total_demi_journees,
+                        'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                        'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                        'retards' => $retards,
+                        'dates' => $dates,
+                        'ligne_demi_journees_non_justifiees' => $ligne_demi_journees_non_justifiees,
+                        'ligne_demi_journees_justifiees' => $ligne_demi_journees_justifiees,
+                        'type' => $type,
+                        'motif' => $motif,
+                        'justification' => $justification,
+                        'export_commentaire' => $export_commentaire,
+
+                        'resp_1_nom'=>$resp_1_nom,
+                        'resp_1_prenom'=>$resp_1_prenom,
+                        'resp_1_civilite'=>$resp_1_civilite,
+                        'resp_1_adr1'=>$resp_1_adr1,
+                        'resp_1_adr2'=>$resp_1_adr2,
+                        'resp_1_adr3'=>$resp_1_adr3,
+                        'resp_1_cp'=>$resp_1_cp,
+                        'resp_1_commune'=>$resp_1_commune,
+                        'resp_1_pays'=>$resp_1_pays,
+                        'resp_1_adr_en_ligne'=>$resp_1_adr_en_ligne
+                        );
+				}
+				else {
                     $export[] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
                         'total_demi_journees' => $total_demi_journees,
                         'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
@@ -878,6 +1001,8 @@ if ($affichage == 'ods') {
                         'motif' => $motif,
                         'justification' => $justification,
                         'export_commentaire' => $export_commentaire);
+				}
+
                     $eleve_current =Null;
                     $abs_col = Null;
                     $ligne_demi_journees=Null;
@@ -906,11 +1031,26 @@ if ($affichage == 'ods') {
                     $nom = $eleve['nom'];
                     $prenom = $eleve['prenom'];
                     $classe = $eleve['classe'];
+
+				if(isset($_POST['export_avec_resp'])) {
+                    // 20141105
+                    $resp_1_nom=$eleve['resp_legal'][1]['nom'];
+                    $resp_1_prenom=$eleve['resp_legal'][1]['prenom'];
+                    $resp_1_civilite=$eleve['resp_legal'][1]['civilite'];
+                    $resp_1_adr1=$eleve['resp_legal'][1]['adr1'];
+                    $resp_1_adr2=$eleve['resp_legal'][1]['adr2'];
+                    $resp_1_adr3=$eleve['resp_legal'][1]['adr3'];
+                    $resp_1_cp=$eleve['resp_legal'][1]['cp'];
+                    $resp_1_commune=$eleve['resp_legal'][1]['commune'];
+                    $resp_1_pays=$eleve['resp_legal'][1]['pays'];
+                    $resp_1_adr_en_ligne=$eleve['resp_legal'][1]['en_ligne'];
+				}
+
                     $total_demi_journees = strval($eleve['demi_journees']);
                     $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
                     $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
                     $retards = $eleve['retards'];
-                    $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);                    
+                    $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
                     $ligne_demi_journees =$value['demi_journees'];
                     if($ligne_demi_journees >0){
                         $ligne_demi_journees_non_justifiees = $value['demi_journees_non_justifiees'];
@@ -940,11 +1080,32 @@ if ($affichage == 'ods') {
                         }
                     }
                     if (!isset($export[$id])) {
+                        // 20141105
+				if(isset($_POST['export_avec_resp'])) {
+                        $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+                            'total_demi_journees' => $total_demi_journees,
+                            'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                            'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                            'retards' => $retards,
+                            'resp_1_nom'=>$resp_1_nom,
+                            'resp_1_prenom'=>$resp_1_prenom,
+                            'resp_1_civilite'=>$resp_1_civilite,
+                            'resp_1_adr1'=>$resp_1_adr1,
+                            'resp_1_adr2'=>$resp_1_adr2,
+                            'resp_1_adr3'=>$resp_1_adr3,
+                            'resp_1_cp'=>$resp_1_cp,
+                            'resp_1_commune'=>$resp_1_commune,
+                            'resp_1_pays'=>$resp_1_pays,
+                            'resp_1_adr_en_ligne'=>$resp_1_adr_en_ligne
+                            );
+				}
+				else {
                         $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
                             'total_demi_journees' => $total_demi_journees,
                             'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
                             'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
                             'retards' => $retards);
+				}
                     }
                     $export[$id]['lignes'][] = Array('dates' => $dates,
                         'ligne_demi_journees_non_justifiees' => $ligne_demi_journees_non_justifiees,
@@ -958,7 +1119,12 @@ if ($affichage == 'ods') {
         }
     }    
 }
-$extraction_bilans = repertoire_modeles('absence_extraction_bilan.'.$extension);
+if(isset($_POST['export_avec_resp'])) {
+	$extraction_bilans = repertoire_modeles('absence_extraction_bilan_resp.'.$extension);
+}
+else {
+	$extraction_bilans = repertoire_modeles('absence_extraction_bilan.'.$extension);
+}
 $TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 $titre = 'Bilan individuel du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
 $classe = null;

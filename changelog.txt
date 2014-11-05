@@ -7,6 +7,7 @@ Gepi-master (Version de développement)
 ===========================
 Abs2
 - Sélection des traitements sur la classe dans liste_traitements.php et liste_notifications.php
+- Possibilité d'inclure l'identité et l'adresse du responsable légal 1 dans les exports ODT/ODS de l'onglet Bilan individuel.
 
 Absences et remplacements de professeurs
 - Ajout d'un module de saisie d'absences de professeurs avec possibilité de proposer des remplacements aux professeurs qui n'ont pas cours sur un créneau libéré.
