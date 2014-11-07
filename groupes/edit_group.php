@@ -752,13 +752,13 @@ Ce paramétrage est global, commun à toutes les classes.\" />";
 }
 elseif(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
 	$choix_nom_sur_bulletin1="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est votre choix.\" />";
-	$message_nom_sur_bulletin1="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est le nom court de l'enseignement (groupe dans le vocabulaire Gepi) qui apparait sur les bulletins.
+	$message_nom_sur_bulletin1="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est le nom court de l'enseignement ('groupe' dans le vocabulaire Gepi) qui apparait sur les bulletins.
 C'est le paramétrage que vous avez effectué dans Gestion générale/Configuration générale.
 Ce paramétrage est global, commun à toutes les classes.\" />";
 }
 elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
 	$choix_nom_sur_bulletin2="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est votre choix.\" />";
-	$message_nom_sur_bulletin2="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est la description de l'enseignement (groupe dans le vocabulaire Gepi) qui apparait sur les bulletins.
+	$message_nom_sur_bulletin2="&nbsp;<img src='../images/info.png' width='20' height='20' title=\"C'est la description de l'enseignement ('groupe' dans le vocabulaire Gepi) qui apparait sur les bulletins.
 C'est le paramétrage que vous avez effectué dans Gestion générale/Configuration générale.
 Ce paramétrage est global, commun à toutes les classes.\" />";
 }
@@ -1177,8 +1177,8 @@ echo "<div style='clear:both;'></div>
 	<div style='margin-left:4em;'>
 		<ul>
 			<li>le nom complet de la matière$choix_nom_sur_bulletin3</li>
-			<li>le nom court de l'enseignement (<em>groupe dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin1</li>
-			<li>la description de l'enseignement (<em>groupe dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin2</li>
+			<li>le nom court de l'enseignement (<em>\"groupe\" dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin1</li>
+			<li>la description de l'enseignement (<em>\"groupe\" dans le vocabulaire Gepi</em>)$choix_nom_sur_bulletin2</li>
 		</ul>
 		<p>Ce paramétrage peut être effectué dans la page <a href='../gestion/param_gen.php#bul_rel_nom_matieres'>Gestion générale/Configuration générale</a>.</p>
 	</div>
