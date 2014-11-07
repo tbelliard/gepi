@@ -717,6 +717,7 @@ elseif($action=="upload") {
 
 	$cpt=0;
 	$tab_ele=array();
+	//$tab_classes_trouvees=array();
 	foreach ($eleves_xml->children() as $key => $cur_eleve) {
 		if($key=='Eleves') {
 			/*
@@ -1210,10 +1211,12 @@ elseif($action=="comparer") {
 
 	function maj_composition_groupe(id_groupe, id_edt_tempo, num_periode) {
 		//alert(id_groupe+','+id_edt_tempo+','+num_periode);
+		document.getElementById('div_rapport_maj_groupe_'+id_groupe+'_'+id_edt_tempo).innerHTML=\"<img src='../images/spinner.gif' class='icone16' alt='Patientez...' /> Patience...\";
 		new Ajax.Updater($('div_rapport_maj_groupe_'+id_groupe+'_'+id_edt_tempo),'".$_SERVER['PHP_SELF']."?maj_composition_groupe=y&id_groupe='+id_groupe+'&id_edt_tempo='+id_edt_tempo+'&num_periode='+num_periode,{method: 'get'});
 	}
 
 	function suppr_assoc_regroupement_edt(id_groupe, id_edt_tempo) {
+		document.getElementById('div_suppr_assoc_'+id_groupe+'_'+id_edt_tempo).innerHTML=\"<img src='../images/spinner.gif' class='icone16' alt='Patientez...' /> Patience...\";
 		new Ajax.Updater($('div_suppr_assoc_'+id_groupe+'_'+id_edt_tempo),'".$_SERVER['PHP_SELF']."?div_suppr_assoc_regroupement=y&id_groupe='+id_groupe+'&id_edt_tempo='+id_edt_tempo,{method: 'get'});
 	}
 
