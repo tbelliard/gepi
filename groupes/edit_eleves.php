@@ -980,7 +980,7 @@ echo "<p>Cochez les élèves qui suivent cet enseignement, pour chaque période 
 
 if(count($tab_sig)>0) {
 	echo "<p style='color:red'>Une ou des erreurs d'affectation dans cet enseignement ont été signalées par le professeur.<br />
-	Vous pouvez accepter/prendre en compte les propositions de correction signalées par les drapeaux clignotants, en cliquant sur le drapeau en haut à droite du tableau, puis Enregistrer.<br />
+	Vous pouvez accepter/prendre en compte les propositions de correction signalées par les drapeaux clignotants, en cliquant sur le drapeau en haut à droite du tableau <span id='prise_en_compte_signalement_toutes_periodes'>&nbsp;&nbsp;<a href=\"javascript:prise_en_compte_signalement('prise_en_compte_signalement_toutes_periodes');changement();griser_degriser(etat_grisage);\"><img src='../images/icons/flag2.gif' width='16' height='16' alt='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' title='Prendre en compte tous les signalements d erreurs pour toutes les périodes.' /></a></span>, puis Enregistrer.<br />
 	Vous pouvez également rejeter ce signalement, en enregistrant sans cliquer sur le drapeau.</p>";
 }
 
