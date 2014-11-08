@@ -61,16 +61,29 @@ if(isset($form_id_sanction)) {
 	check_token();
 
 	for($i=0;$i<count($form_id_sanction);$i++) {
-		if(isset($sanction_effectuee[$form_id_sanction[$i]])) {
-			$sql="UPDATE s_sanctions SET effectuee='O' WHERE id_sanction='".$form_id_sanction[$i]."';";
+
+		// 20141106
+		// A FAIRE : Dans le cas prof, ajouter un test sur le fait qu'il a le droit
+		$marquer_sanction_effectuee_possible="y";
+		if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($form_id_sanction[$i], $_SESSION['login']))) {
+			$marquer_sanction_effectuee_possible="n";
+		}
+
+		if($marquer_sanction_effectuee_possible=="y") {
+			if(isset($sanction_effectuee[$form_id_sanction[$i]])) {
+				$sql="UPDATE s_sanctions SET effectuee='O' WHERE id_sanction='".$form_id_sanction[$i]."';";
+			}
+			else {
+				$sql="UPDATE s_sanctions SET effectuee='N' WHERE id_sanction='".$form_id_sanction[$i]."';";
+			}
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$res) {
+				$msg.="ERREUR lors de la mise à jour du statut de la sanction n°".$form_id_sanction[$i].".<br />\n";
+			}
 		}
 		else {
-			$sql="UPDATE s_sanctions SET effectuee='N' WHERE id_sanction='".$form_id_sanction[$i]."';";
-		}
-		//echo "$sql<br />\n";
-		$res=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(!$res) {
-			$msg.="ERREUR lors de la mise à jour du statut de la sanction n°".$form_id_sanction[$i].".<br />\n";
+			$msg.="ERREUR : Vous n'êtes pas autorisé à mettre à jour le statut de la sanction n°".$form_id_sanction[$i].".<br />\n";
 		}
 	}
 }
@@ -334,14 +347,15 @@ if(mysqli_num_rows($res_sanction)>0) {
 			echo "<td>\n";
 			echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
 
-		    echo "</td>\n";
+			echo "</td>\n";
 
 			echo "<td>\n";
 			echo nombre_reports($lig_sanction->id_sanction,"Néant");
-		    echo "</td>\n";
+			echo "</td>\n";
 
 			echo "<td>\n";
 			$marquer_sanction_effectuee_possible="y";
+			// Cas de sanctions saisies par le professeur (normalement, les sanctions sont saisies par un cpe/scolarite/administrateur)
 			if(($_SESSION['statut']=='professeur')&&(!sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login']))) {
 				$marquer_sanction_effectuee_possible="n";
 			}
@@ -647,7 +661,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 	//echo "<th>Date</th>\n";
 	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
-	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
+	echo "<th title=\"Trier par date\"><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
 	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
 	echo "#retenues_en_souffrance'>Date</a></th>\n";
 	echo "<th>Heure</th>\n";
@@ -687,9 +701,13 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 			//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
-			echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer ou modifier la sanction.'";
+			echo "<td>";
+			$tmp_date_sanction=formate_date($lig_sanction->date);
+			echo "<a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer ou modifier la sanction.'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">".formate_date($lig_sanction->date)."</a></td>\n";
+			echo ">".$tmp_date_sanction."</a><a href='".$_SERVER['PHP_SELF']."?jour_sanction=".$tmp_date_sanction."' title=\"Voir les retenues (et assimilées) du $tmp_date_sanction\"";
+			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+			echo "><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a></td>\n";
 			echo "<td>$lig_sanction->heure_debut</td>\n";
 			echo "<td>$lig_sanction->duree</td>\n";
 			echo "<td>$lig_sanction->lieu</td>\n";
@@ -735,15 +753,20 @@ if(mysqli_num_rows($res_sanction)>0) {
 			echo "<td>\n";
 			$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
 			echo u_p_nom($login_declarant);
-		    echo "</td>\n";
+			echo "</td>\n";
 		
 			echo "<td>\n";
 			echo nombre_reports($lig_sanction->id_sanction,"Néant");
-		    echo "</td>\n";
+			echo "</td>\n";
 
 
 			echo "<td>\n";
-			if(($_SESSION['statut']=='professeur')&&(in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+			$marquer_sanction_effectuee_possible="y";
+			if(($_SESSION['statut']=='professeur')&&(!in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+				$marquer_sanction_effectuee_possible="n";
+			}
+
+			if($marquer_sanction_effectuee_possible=="y") {
 				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
 				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
 				echo "onchange='changement();' ";
@@ -860,10 +883,15 @@ if(mysqli_num_rows($res_sanction)>0) {
 			echo "<td>\n";
 			$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
 			echo u_p_nom($login_declarant);
-		    echo "</td>\n";
+			echo "</td>\n";
 
 			echo "<td>\n";
-			if(($_SESSION['statut']=='professeur')&&(in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+			$marquer_sanction_effectuee_possible="y";
+			if(($_SESSION['statut']=='professeur')&&(!in_array($lig_sanction->id_sanction, $tab_sanctions_prof))) {
+				$marquer_sanction_effectuee_possible="n";
+			}
+
+			if($marquer_sanction_effectuee_possible=="y") {
 				echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
 				if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
 				echo "onchange='changement();' ";
@@ -886,8 +914,9 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 echo "</form>\n";
 
+echo "<script type='text/javascript'>
+	var change='no';\n";
 if(isset($tabid_infobulle)){
-	echo "<script type='text/javascript'>\n";
 	echo "function cacher_toutes_les_infobulles() {\n";
 	if(count($tabid_infobulle)>0){
 		for($i=0;$i<count($tabid_infobulle);$i++){
@@ -895,8 +924,8 @@ if(isset($tabid_infobulle)){
 		}
 	}
 	echo "}\n";
-	echo "</script>\n";
 }
+echo "</script>\n";
 
 echo "<p><br /></p>\n";
 

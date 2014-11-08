@@ -1176,6 +1176,9 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 //Eric
 					echo "<th>Imprimer</th>\n";
 //
+					// 20141106
+					echo "<th>Effectuée</th>\n";
+
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1194,9 +1197,9 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						$texte=nl2br($lig_sanction->travail);
 						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
-                        
-                        $texte.="<br />À apporter&nbsp;: ".$lig_sanction->materiel."<br />";
-                        
+
+						$texte.="<br />À apporter&nbsp;: ".$lig_sanction->materiel."<br />";
+
 						if($tmp_doc_joints!="") {
 							if($texte!="") {$texte.="<br />";}
 							$texte.="<strong>Documents joints</strong>&nbsp;:<br />";
@@ -1208,7 +1211,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\" title=\"Afficher les détails en infobulle.\">Détails</a>";
 						echo "</td>\n";
 //Eric
-						If ($passage_report) {
+						if ($passage_report) {
 							$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
 							if ($nombre_de_report <> 0) {
 								echo "<td>\n";
@@ -1241,7 +1244,38 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 							echo "<span title=\"Le module openDocument n'est pas activé. La génération de fichier ODT destiné à l'impression n'est pas possible.\">-</span>";
 						}
 						echo "</td>\n";
-//
+
+						// 20141106
+						// Sanction effectuée
+						echo "<td";
+						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							if($lig_sanction->effectuee=="O") {
+								$valeur_alt="N";
+							}
+							else {
+								$valeur_alt="O";
+							}
+
+							echo "<a href='#' onclick=\"maj_etat_sanction_effectuee_ou_non($lig_sanction->id_sanction, '$valeur_alt')\" title=\"Marquer la sanction comme effectuée ou non effectuée\">";
+							echo "<span id='span_sanction_effectuee_".$lig_sanction->id_sanction."'>";
+							if($lig_sanction->effectuee=="O") {
+								echo "<span style='color:green'>O</span>";
+							}
+							else {
+								echo "<span style='color:red'>N</span>";
+							}
+							echo "</span>";
+							echo "</a>";
+						}
+						else {
+							echo ">";
+							if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+						}
+						echo "</td>\n";
+
+						// Suppression
 						echo "<td>";
 						if(($_SESSION['statut']!='professeur')||($lig_sanction->saisie_par==$_SESSION['login'])) {
 							echo "<a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a>";
@@ -1271,6 +1305,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "<th>Lieu</th>\n";
 					echo "<th>Travail</th>\n";
 					echo "<th>Impr.</th>\n";
+					// 20141106
+					echo "<th>Effectuée</th>\n";
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1309,7 +1345,47 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						}
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+
+						// 20141106
+						// Sanction effectuée
+						echo "<td>";
+						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							if($lig_sanction->effectuee=="O") {
+								$valeur_alt="N";
+							}
+							else {
+								$valeur_alt="O";
+							}
+
+							echo "<a href='#' onclick=\"maj_etat_sanction_effectuee_ou_non($lig_sanction->id_sanction, '$valeur_alt')\" title=\"Marquer la sanction comme effectuée ou non effectuée\">";
+							echo "<span id='span_sanction_effectuee_".$lig_sanction->id_sanction."'>";
+							if($lig_sanction->effectuee=="O") {
+								echo "<span style='color:green'>O</span>";
+							}
+							else {
+								echo "<span style='color:red'>N</span>";
+							}
+							echo "</span>";
+							echo "</a>";
+						}
+						else {
+							echo ">";
+							if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+						}
+						echo "</td>\n";
+
+						// Suppression
+						echo "<td>";
+						if(($_SESSION['statut']!='professeur')||($lig_sanction->saisie_par==$_SESSION['login'])) {
+							echo "<a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a>\n";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone16' title=\"Un professeur ne peut supprimer que ses propres sanctions.\" />";
+						}
+						echo "</td>\n";
+
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -1327,6 +1403,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "<th>Date retour</th>\n";
 					echo "<th>Travail</th>\n";
 					echo "<th>Imprimer</th>\n";
+					// 20141106
+					echo "<th>Effectuée</th>\n";
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1360,7 +1438,46 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						}
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
+						// 20141106
+						// Sanction effectuée
+						echo "<td>";
+						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							if($lig_sanction->effectuee=="O") {
+								$valeur_alt="N";
+							}
+							else {
+								$valeur_alt="O";
+							}
+
+							echo "<a href='#' onclick=\"maj_etat_sanction_effectuee_ou_non($lig_sanction->id_sanction, '$valeur_alt')\" title=\"Marquer la sanction comme effectuée ou non effectuée\">";
+							echo "<span id='span_sanction_effectuee_".$lig_sanction->id_sanction."'>";
+							if($lig_sanction->effectuee=="O") {
+								echo "<span style='color:green'>O</span>";
+							}
+							else {
+								echo "<span style='color:red'>N</span>";
+							}
+							echo "</span>";
+							echo "</a>";
+						}
+						else {
+							echo ">";
+							if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+						}
+						echo "</td>\n";
+
+						// Suppression
+						echo "<td>";
+						if(($_SESSION['statut']!='professeur')||($lig_sanction->saisie_par==$_SESSION['login'])) {
+							echo "<a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a>\n";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone16' title=\"Un professeur ne peut supprimer que ses propres sanctions.\" />";
+						}
+						echo "</td>\n";
+
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -1379,6 +1496,8 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					echo "<th>Nature</th>\n";
 					echo "<th>Description</th>\n";
 					echo "<th>Imprimer</th>\n";
+					// 20141106
+					echo "<th>Effectuée</th>\n";
 					echo "<th>Suppr</th>\n";
 					echo "</tr>\n";
 					$alt_b=1;
@@ -1404,7 +1523,46 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						}
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a></td>\n";
+						// 20141106
+						// Sanction effectuée
+						echo "<td>";
+						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
+						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							if($lig_sanction->effectuee=="O") {
+								$valeur_alt="N";
+							}
+							else {
+								$valeur_alt="O";
+							}
+
+							echo "<a href='#' onclick=\"maj_etat_sanction_effectuee_ou_non($lig_sanction->id_sanction, '$valeur_alt')\" title=\"Marquer la sanction comme effectuée ou non effectuée\">";
+							echo "<span id='span_sanction_effectuee_".$lig_sanction->id_sanction."'>";
+							if($lig_sanction->effectuee=="O") {
+								echo "<span style='color:green'>O</span>";
+							}
+							else {
+								echo "<span style='color:red'>N</span>";
+							}
+							echo "</span>";
+							echo "</a>";
+						}
+						else {
+							echo ">";
+							if($lig_sanction->effectuee=="O") {echo "<span style='color:green'>O</span>";} else {echo "<span style='color:red'>N</span>";}
+						}
+						echo "</td>\n";
+
+						// Suppression
+						echo "<td>";
+						if(($_SESSION['statut']!='professeur')||($lig_sanction->saisie_par==$_SESSION['login'])) {
+							echo "<a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la ".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction' /></a>\n";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone16' title=\"Un professeur ne peut supprimer que ses propres sanctions.\" />";
+						}
+						echo "</td>\n";
+
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -1424,6 +1582,13 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 		}
 		echo "</table>\n";
 		echo "</blockquote>\n";
+
+		// 20141106
+		echo "<script type='text/javascript'>
+	function maj_etat_sanction_effectuee_ou_non(id_sanction) {
+		new Ajax.Updater($('span_sanction_effectuee_'+id_sanction),'ajax_discipline.php?id_sanction='+id_sanction+'&modif_sanction=etat_effectuee".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
 
 		rappel_incident($id_incident);
 	}
