@@ -131,6 +131,9 @@ if(isset($_POST['action'])) {
 		}
 		$chaine_form_confirm.="
 		</p>
+
+		<p><input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' /><label for='envoi_mail'> Envoyer la fiche bienvenue par mail si le mail est renseigné</label></p>
+
 		<p><input type='submit' value='Confirmer cette opération' /></p>
 	</fieldset>
 </form>

@@ -1325,7 +1325,38 @@ width:".$largeur1."%;\n";
 					if($affiche_adresse_resp=='y') {
 						echo "</div>\n";
 					}
+
+					// 20141108
+					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+					}
 	
+					if($envoi_mail_actif=='y') {
+						if((isset($_POST['envoi_mail']))&&(check_mail($user_email))) {
+							$texte_email="A l'attention de $user_prenom $user_nom<br />\n";
+							$texte_email.="Identifiant  : $user_login<br />\n";
+							if(isset($new_password)) {
+								$texte_email.="Mot de passe : $new_password<br />\n";
+							}
+
+							$texte_email.=$impression;
+
+							$sujet_mail = "[GEPI] Compte Gepi";
+
+							$headers = "";
+
+							// On envoie le mail
+							$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html");
+							if($envoi) {
+								echo "<div style='float:right; width:5em; text-align:center; color:green;' class='fieldset_opacite50 noprint'>Mail envoyé</div>";
+							}
+							else {
+								echo "<div style='float:right; width:5em; text-align:center; color:red;' class='fieldset_opacite50 noprint'>Echec de l'envoi du mail</div>";
+							}
+						}
+					}
+
 					/*
 					// Bloc adresse responsable
 					$addressblock_padding_right,
