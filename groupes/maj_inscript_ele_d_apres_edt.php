@@ -115,6 +115,44 @@ $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
+
+if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_edt']))) {
+	check_token();
+
+	$sql="SELECT * FROM edt_corresp WHERE id='".$_POST['id_nom_edt']."';";
+	$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_edt)==0) {
+		$msg="L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.<br />";
+	}
+	else {
+		$lig_edt=mysqli_fetch_object($res_edt);
+
+		$sql="DELETE FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		// Problème? On ne saisit pas le nom de matière EDT
+		$sql="INSERT INTO edt_corresp2 SET id_groupe='$id_groupe', nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_edt->nom_edt)."';";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($insert) {
+			$msg="Association enregistrée.<br />";
+		}
+		else {
+			$msg="Erreur lors de l'enregistrement de l'association.<br />";
+		}
+		/*
+		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp)>0) {
+			$sql="UPDATE SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+			$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+		else {
+
+		}
+		*/
+	}
+}
 
 if((isset($_GET['div_suppr_assoc_regroupement']))&&(isset($_GET['id_groupe']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_groupe']))&&(isset($_GET['id_edt_tempo']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_edt_tempo']))) {
 	$sql="SELECT * FROM edt_corresp2 ec2, edt_tempo et WHERE ec2.nom_groupe_edt=et.col1 AND et.id='".$_GET['id_edt_tempo']."' AND ec2.id_groupe='".$_GET['id_groupe']."';";
@@ -1243,7 +1281,7 @@ elseif($action=="comparer") {
 	require("../lib/footer.inc.php");
 	die();
 }
-elseif($action="editer_ec2") {
+elseif($action=="editer_ec2") {
 
 	echo "<p class='bold'>Voici les associations groupe Gepi/nom de regroupement EDT</p>";
 
@@ -1263,7 +1301,7 @@ elseif($action="editer_ec2") {
 			<thead>
 				<tr>
 					<th rowspan='2' class='text'>Nom de<br />regroupement EDT</th>
-					<th colspan='3'>Groupes Gepi associés</th>
+					<th colspan='4'>Groupes Gepi associés</th>
 				</tr>
 				<tr>
 					<th>
@@ -1272,6 +1310,7 @@ elseif($action="editer_ec2") {
 					</th>
 					<th class='text'>Matière EDT</th>
 					<th class='text'>Groupe Gepi</th>
+					<th class='nosort'>Éditer</th>
 				</tr>
 			</thead>
 			<tbody>";
@@ -1287,6 +1326,7 @@ elseif($action="editer_ec2") {
 					<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr_$cpt')\" /></td>
 					<td><label for='suppr_$cpt'>$lig2->mat_code_edt</label></td>
 					<td style='text-align:left'><a href='../groupes/edit_group.php?id_groupe=".$lig2->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig2->id_groupe)."</a><a name='id_groupe_".$lig2->id_groupe."'></a></td>
+					<td><a href='".$_SERVER['PHP_SELF']."?id_groupe=".$lig2->id_groupe."&amp;action=editer_ec3' title=\"Modifier l'association\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></td>
 				</tr>";
 					$cpt++;
 				}
@@ -1301,7 +1341,7 @@ elseif($action="editer_ec2") {
 
 		<p style='margin-left:4em; text-indent:-4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Seuls les enseignements Gepi, pour lesquels une association avec un regroupement EDT existe, sont proposés pour la mise à jour des affectations d'élèves.<br />
 		Supprimez les associations erronées.</p>
-	<fieldset>
+	</fieldset>
 </form>
 
 <script type='text/javascript'>
@@ -1325,6 +1365,68 @@ elseif($action="editer_ec2") {
 		}
 	}
 </script>";
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+elseif((isset($id_groupe))&&($action=="editer_ec3")) {
+
+	$current_group=get_group($id_groupe);
+
+	echo "<p class='bold'>Regroupement EDT associé à ".get_info_grp($id_groupe)." <a href='edit_group.php?id_groupe=$id_groupe' title=\"Voir/modifier l'enseignement.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></p>";
+
+	$sql="SELECT * FROM edt_corresp WHERE champ='groupe' ORDER BY nom_edt;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p style='color:red'>Aucune association n'est enregistrée.</p>";
+	}
+	else {
+		$tab_assoc=array();
+		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe' ORDER BY nom_groupe_edt;";
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res2)>0) {
+			while($lig2=mysqli_fetch_object($res2)) {
+				$tab_assoc[]=$lig2->nom_groupe_edt;
+			}
+		}
+		if(count($tab_assoc)>1) {
+			echo "<p style='color:red; text-indent:-6em; margin-left:6em;'>ANOMALIE&nbsp;: Le groupe/enseignement Gepi est associé à ".count($tab_assoc)." regroupements EDT (<em>";
+			for($loop=0;$loop<count($tab_assoc);$loop++) {
+				if($loop>0) {
+					echo ", ";
+				}
+				echo $tab_assoc[$loop];
+			}
+			echo "</em>).<br />Il ne devrait y en avoir qu'un.<br />Choisissez ci-dessous le bon et validez.</p>";
+		}
+
+		$lignes_options="
+				<option value=''>---</option>";
+		while($lig=mysqli_fetch_object($res)) {
+			$selected="";
+			if(in_array($lig->nom_edt, $tab_assoc)) {
+				$selected=" selected";
+			}
+			$lignes_options.="
+				<option value='$lig->id'$selected>$lig->nom_edt</option>";
+		}
+
+		echo "
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='hidden' name='action' value='editer_ec3' />
+		<input type='hidden' name='valider_ec3' value='y' />
+		<p>
+			Regroupement EDT à associer&nbsp;: 
+			<select name='id_nom_edt'>$lignes_options
+			</select>
+			 <input type='submit' value='Valider' />
+		</p>
+	</fieldset>
+</form>";
 	}
 
 	require("../lib/footer.inc.php");
