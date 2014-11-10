@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -442,7 +442,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 
 	// On va détailler ce qui serait supprimé en cas de confirmation
 	$tmp_group=get_group($_GET['id_groupe']);
-	echo "<div style='border: 2px solid red;'>\n";
+	echo "<div class='fieldset_opacite50' style='border: 2px solid red; margin:0.5em; padding:0.5em;'>\n";
 	echo "<p><strong>ATTENTION&nbsp;:</strong> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
 	echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
 	$suppression_possible='y';
