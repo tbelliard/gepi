@@ -9564,13 +9564,13 @@ function afficher_les_evenements($afficher_obsolete="n") {
 
 	if($afficher_obsolete=="y") {
 		if($_SESSION['statut']=='professeur') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='professeur' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='professeur' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='cpe') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='cpe' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='cpe' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='responsable') {
 			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
@@ -9579,6 +9579,7 @@ function afficher_les_evenements($afficher_obsolete="n") {
 								WHERE ddeu.statut='responsable' AND 
 									ddeu.id_ev=dde.id_ev AND 
 									dde.id_ev=ddec.id_ev AND 
+									dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND 
 									id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
 																	responsables2 r, 
 																	eleves e, 
@@ -9597,19 +9598,20 @@ function afficher_les_evenements($afficher_obsolete="n") {
 								WHERE ddeu.statut='eleve' AND 
 									ddeu.id_ev=dde.id_ev AND 
 									dde.id_ev=ddec.id_ev AND 
+									dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND 
 									ddec.id_classe=jec.id_classe AND 
 									jec.login='".$_SESSION['login']."';";
 		}
 	}
 	else {
 		if($_SESSION['statut']=='professeur') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='professeur' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='professeur' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND dde.id_ev=ddec.id_ev AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='cpe') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='cpe' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='cpe' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
-			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
+			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, d_dates_evenements_classes ddec, d_dates_evenements_utilisateurs ddeu WHERE ddeu.statut='scolarite' AND ddeu.id_ev=dde.id_ev AND dde.id_ev=ddec.id_ev AND ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
 		}
 		elseif($_SESSION['statut']=='responsable') {
 			$sql="SELECT DISTINCT ddec.id_ev FROM d_dates_evenements dde, 
@@ -9619,6 +9621,7 @@ function afficher_les_evenements($afficher_obsolete="n") {
 									ddeu.id_ev=dde.id_ev AND 
 									dde.id_ev=ddec.id_ev AND 
 									ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND 
+									dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND 
 									id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
 																	responsables2 r, 
 																	eleves e, 
@@ -9638,6 +9641,7 @@ function afficher_les_evenements($afficher_obsolete="n") {
 									ddeu.id_ev=dde.id_ev AND 
 									dde.id_ev=ddec.id_ev AND 
 									ddec.date_evenement>='".strftime("%Y-%m-%d %H:%M:%S", time()-12*3600)."' AND 
+									dde.date_debut<='".strftime("%Y-%m-%d %H:%M:%S")."' AND 
 									ddec.id_classe=jec.id_classe AND 
 									jec.login='".$_SESSION['login']."';";
 		}
