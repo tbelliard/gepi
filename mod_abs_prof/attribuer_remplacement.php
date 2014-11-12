@@ -623,13 +623,14 @@ echo "
 }
 
 if($mode=="") {
+	$tab_remplacements_a_venir_valides=array();
+
 	echo "
 <h2>Remplacements à venir validés</h2>";
 	$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND validation_remplacement='oui' ORDER BY date_debut_r, id_absence, id_classe, date_reponse;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		$tab_remplacements_a_venir_valides=array();
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			$tab_remplacements_a_venir_valides[$cpt]['id']=$lig->id;
