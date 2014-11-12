@@ -1017,11 +1017,87 @@ if(mysqli_num_rows($test)>0) {
 	$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_edt)>0) {
 		$lig_edt=mysqli_fetch_object($res_edt);
-		echo "<p style='margin-top:1em;'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt." <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></p>";
+		//onclick=\"return confirm_abandon (this, change, '$themessage')\"
+		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt."</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></p>";
 	}
 	else {
-		echo "<p style='margin-top:1em;'>Aucun regroupement EDT n'est associé à ce groupe Gepi <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Associer.\"><img src='../images/edit16.png' class='icone16' alt='Associer' /></a>.</p>";
+		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Aucun regroupement EDT n'est associé à ce groupe Gepi</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Associer.\"><img src='../images/edit16.png' class='icone16' alt='Associer' /></a>.</p>";
 	}
+
+	$texte_infobulle="";
+	$tab_assoc=array();
+	$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe' ORDER BY nom_groupe_edt;";
+	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res2)>0) {
+		while($lig2=mysqli_fetch_object($res2)) {
+			$tab_assoc[]=$lig2->nom_groupe_edt;
+		}
+	}
+	if(count($tab_assoc)>1) {
+		$texte_infobulle.="<p style='color:red; text-indent:-6em; margin-left:6em;'>ANOMALIE&nbsp;: Le groupe/enseignement Gepi est associé à ".count($tab_assoc)." regroupements EDT (<em>";
+		for($loop=0;$loop<count($tab_assoc);$loop++) {
+			if($loop>0) {
+				$texte_infobulle.=", ";
+			}
+			$texte_infobulle.=$tab_assoc[$loop];
+		}
+		$texte_infobulle.="</em>).<br />Il ne devrait y en avoir qu'un.<br />Choisissez ci-dessous le bon et validez.</p>";
+	}
+
+	$lignes_options="
+			<option value=''>---</option>";
+	$sql="SELECT * FROM edt_corresp WHERE champ='groupe' ORDER BY nom_edt;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$selected="";
+		if(in_array($lig->nom_edt, $tab_assoc)) {
+			$selected=" selected";
+		}
+		$lignes_options.="
+				<option value='$lig->id'$selected>$lig->nom_edt</option>";
+	}
+
+	$texte_infobulle.="
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post' style='margin:0.5em;'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field(true)."
+		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='hidden' name='action' value='editer_ec3' />
+		<input type='hidden' name='mode' value='js' />
+		<input type='hidden' name='valider_ec3' value='y' />
+		<p>
+			Regroupement EDT à associer&nbsp;: 
+			<select name='id_nom_edt' id='id_nom_edt'>$lignes_options
+			</select>
+			 <input type='button' value='Valider' onclick=\"valider_modif_choix_regroupement_edt();\" />
+		</p>
+	</fieldset>
+</form>";
+
+	$tabdiv_infobulle[]=creer_div_infobulle("div_regroupement_edt","Regroupement EDT associé","",$texte_infobulle,"",40,0,'y','y','n','n');
+
+	echo "
+<script type='text/javascript'>
+	function valider_modif_choix_regroupement_edt() {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		id_nom_edt=document.getElementById('id_nom_edt').options[document.getElementById('id_nom_edt').selectedIndex].value;
+
+		//new Ajax.Updater($('span_regroupement_edt_associe'),'maj_inscript_ele_d_apres_edt.php?id_groupe=$id_groupe&action=editer_ec3&valider_ec3=y&id_nom_edt='+,{method: 'get'});
+
+		new Ajax.Updater($('span_regroupement_edt_associe'),'maj_inscript_ele_d_apres_edt.php',{method: 'post',
+		parameters: {
+			id_groupe: $id_groupe,
+			action: 'editer_ec3',
+			valider_ec3: 'y',
+			mode_js: 'y',
+			id_nom_edt: id_nom_edt,
+			csrf_alea: csrf_alea
+		}});
+
+		cacher_div('div_regroupement_edt','y',10,10);
+	}
+</script>";
+
 }
 // +++++++++++++++++++++++++++++++++
 

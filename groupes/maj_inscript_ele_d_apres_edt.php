@@ -120,37 +120,64 @@ $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_g
 if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_edt']))) {
 	check_token();
 
-	$sql="SELECT * FROM edt_corresp WHERE id='".$_POST['id_nom_edt']."';";
-	$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_edt)==0) {
-		$msg="L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.<br />";
-	}
-	else {
-		$lig_edt=mysqli_fetch_object($res_edt);
-
+	if($_POST['id_nom_edt']=="") {
 		$sql="DELETE FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		$msg="Association supprimée.<br />";
 
-		// Problème? On ne saisit pas le nom de matière EDT
-		$sql="INSERT INTO edt_corresp2 SET id_groupe='$id_groupe', nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_edt->nom_edt)."';";
-		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-		if($insert) {
-			$msg="Association enregistrée.<br />";
+		if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
+			echo "Aucun regroupement EDT n'est associé à ce groupe Gepi";
+			die();
+		}
+	}
+	else {
+		$sql="SELECT * FROM edt_corresp WHERE id='".$_POST['id_nom_edt']."';";
+		$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_edt)==0) {
+			$msg="L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.<br />";
+
+			if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
+				echo "Regroupement EDT associé&nbsp;: <span style='color:red'>L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.</span>";
+				die();
+			}
 		}
 		else {
-			$msg="Erreur lors de l'enregistrement de l'association.<br />";
-		}
-		/*
-		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
-		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_grp)>0) {
-			$sql="UPDATE SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+			$lig_edt=mysqli_fetch_object($res_edt);
+
+			$sql="DELETE FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			// Problème? On ne saisit pas le nom de matière EDT
+			$sql="INSERT INTO edt_corresp2 SET id_groupe='$id_groupe', nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_edt->nom_edt)."';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($insert) {
+				$msg="Association enregistrée.<br />";
+
+				if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
+					echo "Regroupement EDT associé&nbsp;: ".$lig_edt->nom_edt;
+					die();
+				}
+			}
+			else {
+				$msg="Erreur lors de l'enregistrement de l'association.<br />";
+
+				if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
+					echo "Regroupement EDT associé&nbsp;: <span style='color:red'>ERREUR</span>";
+					die();
+				}
+			}
+			/*
+			$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
 			$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-		}
-		else {
+			if(mysqli_num_rows($res_grp)>0) {
+				$sql="UPDATE SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
+				$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			else {
 
+			}
+			*/
 		}
-		*/
 	}
 }
 
