@@ -577,7 +577,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
-if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe préc.</a>";}
+if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Classe précédente\"><img src='../images/arrow_left.png' class='icone16' alt='Précédente' /></a>";}
 if($chaine_options_classes!="") {
 
 	echo "<script type='text/javascript'>
@@ -603,12 +603,12 @@ if($chaine_options_classes!="") {
 </script>\n";
 
 
-	echo " | <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+	echo " <select name='id_classe' id='id_classe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
 	echo $chaine_options_classes;
 	echo "</select>\n";
 }
 //if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suivante</a>";}
-if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe suiv.</a>";}
+if($id_class_suiv!=0){echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Classe suivante\"><img src='../images/arrow_right.png' class='icone16' alt='Suivante' /></a>";}
 
 //=========================
 // AJOUT: boireaus 20081224
