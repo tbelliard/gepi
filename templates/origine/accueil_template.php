@@ -270,7 +270,7 @@
 			<div class="panneau_bas"></div>
 			<div class="panneau_centre">
 				<?php 
-				if(isset($liste_evenements)) {
+				if((isset($liste_evenements))&&($liste_evenements!="")) {
 					echo "<div class='postit' title=\"Événements à venir (définis) pour vos classes.\">".$liste_evenements."</div>";
 				}
 
