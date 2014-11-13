@@ -11399,4 +11399,19 @@ function cdt_changer_chemin_absolu_en_relatif($texte) {
 
 	return $contenu_cor;
 }
+
+function acces_messagerie($statut_user) {
+	if(!acces("/messagerie/index.php", $statut_user)) {
+		return false;
+	}
+	else {
+		// Traiter ici les statuts pour lesquels, il peut y avoir restriction du droit
+		if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('GepiAccesPanneauAffichageCpe'))) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+}
 ?>
