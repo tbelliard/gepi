@@ -86,7 +86,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 
             // dans accueil.php
-            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content);
+            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content, "statuts_destinataires"=>$statuts_destinataires1);
             // dans accueil_simpl_prof.php
             $texte_messages_simpl_prof .= "<div class='postit'>".$content."</div>";
         }
