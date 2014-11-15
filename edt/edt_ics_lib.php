@@ -1545,7 +1545,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	$texte_etat_travail,
 	$class_color_fond_notice;
 
-	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='../cahier_texte/index.php' title=\"Consulter le cahier de textes\">Tout voir</a></div>";
+	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='../cahier_texte/index.php' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Cahier de textes</div>";
 
 	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde, 
@@ -1647,7 +1647,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 			}
 		}
 
-		$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_cdt' title=\"Consulter le cahier de textes\">Tout voir</a></div>";
+		$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_cdt' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 		$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Cahier de textes</div>";
 
 

@@ -76,6 +76,12 @@ $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 
 //===================================================
+// Contrôler si le jour est dans la période de l'année scolaire courante
+$ts_debut_annee=getSettingValue('begin_bookings');
+$ts_fin_annee=getSettingValue('end_bookings');
+//===================================================
+
+//===================================================
 if($affichage!="semaine") {
 	if(!isset($display_date)) {
 		if((isset($num_semaine_annee))&&(preg_match("/^[0-9]{1,}\|[0-9]{4}$/", $num_semaine_annee))) {
@@ -117,6 +123,71 @@ if($affichage!="semaine") {
 		$msg.="Le jour choisi '$affichage' ne correspond pas à la date $display_date<br />";
 		$affichage=strftime("%u", $ts_display_date);
 	}
+
+	$tab_jour=get_tab_jour_ouverture_etab();
+
+	if(!in_array(strftime("%A", $ts_display_date), $tab_jour)) {
+		// Jour suivant
+		// Boucler sur 7 jours pour trouver le jour ouvré suivant
+		// Il faudrait même chercher une date hors vacances
+		$ts_display_date_suivante="";
+		$display_date_suivante="";
+		$display_date_suivante_num_jour="";
+		$ts_test=$ts_display_date;
+		$cpt=0;
+		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
+			$ts_test+=3600*24;
+			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+				$ts_display_date_suivante=$ts_test;
+				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
+				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				break;
+			}
+			$cpt++;
+		}
+		if($display_date_suivante!="") {
+			$ts_display_date=$ts_display_date_suivante;
+			$display_date=$display_date_suivante;
+			$affichage=$display_date_suivante_num_jour;
+
+			$tmp_tab=explode("/", $display_date);
+			$ts_display_date=mktime(12, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+			$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+			$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
+			$num_semaine=strftime("%V", $ts_display_date);
+
+			$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
+		}
+	}
+
+	if($ts_display_date<$ts_debut_annee) {
+		$msg.="Première date possible&nbsp;: Début de l'année scolaire.<br />";
+		$ts_display_date=$ts_debut_annee;
+
+		$display_date=strftime("%d/%m/%Y", $ts_display_date);
+		$affichage=strftime("%u", $ts_display_date);
+
+		$tmp_tab=explode("/", $display_date);
+		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
+		$num_semaine=strftime("%V", $ts_display_date);
+
+		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
+	}
+	elseif($ts_display_date>$ts_fin_annee) {
+		$msg.="Dernière date possible&nbsp;: Fin de l'année scolaire.<br />";
+		$ts_display_date=$ts_fin_annee;
+
+		$display_date=strftime("%d/%m/%Y", $ts_display_date);
+		$affichage=strftime("%u", $ts_display_date);
+
+		$tmp_tab=explode("/", $display_date);
+		$ts_debut_jour=mktime(0, 0, 0, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2]);
+		$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
+		$num_semaine=strftime("%V", $ts_display_date);
+
+		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
+	}
 }
 //===================================================
 if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
@@ -132,12 +203,6 @@ if($affichage=="semaine") {
 
 	$ts_display_date=$jours['num_jour'][1]['timestamp'];
 }
-//===================================================
-
-//===================================================
-// Contrôler si le jour est dans la période de l'année scolaire courante
-$ts_debut_annee=getSettingValue('begin_bookings');
-$ts_fin_annee=getSettingValue('end_bookings');
 //===================================================
 
 //===================================================
@@ -161,6 +226,26 @@ elseif($_SESSION['statut']=="responsable") {
 		$login_eleve=$tab_ele2[0];
 	}
 	// Il faudra proposer le choix si count($tab_ele2)>1
+
+	$login_ele_prec="";
+	$login_ele_suiv="";
+	$nom_prenom_ele_prec="";
+	$nom_prenom_ele_suiv="";
+	$login_ele_trouve=0;
+	for($loop=0;$loop<count($tab_ele);$loop+=2) {
+		if(($tab_ele[$loop]!=$login_eleve)&&($login_ele_trouve==0)) {
+			$login_ele_prec=$tab_ele[$loop];
+			$nom_prenom_ele_prec=$tab_ele[$loop+1];
+		}
+		elseif($tab_ele[$loop]==$login_eleve) {
+			$login_ele_trouve++;
+		}
+		elseif($login_ele_trouve==1) {
+			$login_ele_suiv=$tab_ele[$loop];
+			$nom_prenom_ele_suiv=$tab_ele[$loop+1];
+			$login_ele_trouve++;
+		}
+	}
 }
 else {
 	if(!isset($login_eleve)) {
@@ -199,6 +284,7 @@ $tab_couleur_onglet['absences']="azure";
 $tab_couleur_onglet['discipline']="salmon";
 
 $tab_couleur_onglet['edt']="moccasin";
+$tab_couleur_onglet['indication']="linen";
 
 //===================================================
 if((isset($_GET['mode']))&&($_GET['mode']=="update_div_cdt")&&(isset($_GET['id_cours']))&&(isset($login_eleve))) {
@@ -274,6 +360,8 @@ $hauteur_div_sous_bandeau=20;
 if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt2_eleve'))))||
 ((in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite')))&&(getSettingAOui('autorise_edt_tous')))||
 (($_SESSION['statut']=='administrateur')&&(getSettingAOui('autorise_edt_admin')))) {
+	$affichage_div_edt="y";
+
 	// Cadre Choix élève sous le bandeau d'entête
 	echo "
 <div id='div_sous_bandeau' style='float:left; width:100%; height:".$hauteur_div_sous_bandeau."px; text-align:center;'>
@@ -281,10 +369,19 @@ if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((ge
 		Cadre vide pour conserver l'espace au-dessus 
 		Il faut pouvoir adapter la hauteur en fonction de la réduction ou non du bandeau d'entête
 	-->
-	<p class='bold'>".$info_eleve." <span style='color:red'>(AFFICHER ICI UN choix de l'élève quand c'est un parent de plusieurs élèves)</span></p>
+	<p class='bold'>";
 
-	<!-- Proposer le choix de l'élève pour un parent (s'il y a plusieurs élèves) -->
+	if((isset($login_ele_prec))&&($login_ele_prec!="")) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
+	}
 
+	echo $info_eleve;
+
+	if((isset($login_ele_suiv))&&($login_ele_suiv!="")) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a>";
+	}
+
+	echo "</p>
 </div>";
 
 	// Cadre EDT à gauche
@@ -296,8 +393,25 @@ if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((ge
 <div id='div_edt' style='position:absolute; top:".$y1."px; left:".$x1."px; width:".$largeur1."px; height:".$hauteur1."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; background-color:".$tab_couleur_onglet['edt'].";'>
 	".$html."
 </div>";
+/*
+	echo "
+<div style='float:left; width:".$largeur1."px; height:".$hauteur1."px; margin-right:".$marge_droite."px;'>";
+if(isset($tab_ele)) {
+	for($loop=0;$loop<count($tab_ele);$loop+=2) {
+		echo "\$tab_ele[$loop]=".$tab_ele[$loop]."<br />";
+	}
+}
+if(isset($login_ele_prec)) {
+	echo "\$login_ele_prec=$login_ele_prec<br />";
+}
+if(isset($login_ele_suiv)) {
+	echo "\$login_ele_suiv=$login_ele_suiv<br />";
+}
+echo "</div>";
+*/
 }
 else {
+	$affichage_div_edt="n";
 	echo "
 <div style='float:left; width:8em;'>
 	<form id='form_chgt_date' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -361,7 +475,7 @@ if((getSettingAOui('active_carnets_notes'))&&(acces_carnet_notes($_SESSION['stat
 
 	$html="";
 	if($url_cn!="") {
-		$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cn."' title=\"Consulter le relevé de notes\">Tout voir</a></div>";
+		$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cn."' title=\"Consulter le relevé de notes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	}
 	//$html.="<h3>Dernières notes</h3>";
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Dernières notes</div>";
@@ -547,11 +661,11 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 	}
 
 
-	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_abs' title=\"Consulter le module Absences\">Tout voir</a></div>";
+	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	*/
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Absences</div>";
 
-	$html.="<p style='color:red'>Extraction des absences non encore implémentée.</p>";
+	$html.="<p style='color:red'>Extraction des absences non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
 
 	echo "
 <div id='div_abs' style='float:left; width:".$largeur_abs."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['absences'].";'>".$html."</div>";
@@ -576,10 +690,10 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$url_disc="../mod_discipline/traiter_incident.php?protagoniste_incident=".$login_eleve;
 	}
 
-	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_disc' title=\"Consulter le module Discipline\">Tout voir</a></div>";
+	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_disc' title=\"Consulter le module Discipline\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Discipline</div>";
 
-	$html.="<p style='color:red'>Extraction des incidents et sanctions non encore implémentée.</p>";
+	$html.="<p style='color:red'>Extraction des incidents et sanctions non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
 
 	echo "
 <div id='div_disc' style='float:left; width:".$largeur_disc."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['discipline'].";'>".$html."</div>";
@@ -637,13 +751,31 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 //=================================
 // Cadre Liens? Ou faire un message pour les liens vers le site du collège,...
 //=================================
+if($affichage_div_edt=="y") {
+	$largeur_indications=300;
+
+	$html="";
+
+	$html="<div style='float:right; width:15px; font-size:x-small; text-align:right; margin: 3px;'><img src='../images/icons/ico_ampoule.png' width='15' height='25' alt='Aide/Astuce' /></div>";
+
+	$html.="<div style='font-weight:bold; font-size: large; min-height:28px;' class='fieldset_opacite50'>Aide</div>";
+
+	$html.="<p>Quelques indications sur la présente page&nbsp;:</p>
+<ul>
+	<li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>
+	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>
+</ul>";
+
+	echo "
+<div id='div_indications' style='float:left; width:".$largeur_indications."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['indication'].";'>".$html."</div>";
+}
 
 //=================================
 echo "<script type='text/javascript'>
 	// Action lancée lors du clic dans le div_edt
 	function action_edt_cours(id_cours) {
 		//alert(id_cours);
-		new Ajax.Updater($('div_cdt_contenu'),'".$_SERVER['PHP_SELF']."?login_eleve=".$_SESSION['login']."&id_cours='+id_cours+'&mode=update_div_cdt&id_classe=".$id_classe."&display_date=".$display_date."',{method: 'get'});
+		new Ajax.Updater($('div_cdt_contenu'),'".$_SERVER['PHP_SELF']."?login_eleve=".$login_eleve."&id_cours='+id_cours+'&mode=update_div_cdt&id_classe=".$id_classe."&display_date=".$display_date."',{method: 'get'});
 		//afficher_div('edt_classe','y',-20,20);
 
 	}
