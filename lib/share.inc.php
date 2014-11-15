@@ -8654,12 +8654,13 @@ function is_prof_classe_ele($login_prof, $login_ele) {
 	$is_prof_ele=false;
 
 	$sql="SELECT 1=1 FROM j_groupes_classes jgc, 
-						j_groupes_professeurs jgp
+						j_groupes_professeurs jgp,
 						j_eleves_classes jec
 					WHERE jgp.login='".$login_prof."' AND 
 						jgp.id_groupe=jgc.id_groupe AND 
 						jec.id_classe=jgc.id_classe AND 
 						jec.login='$login_ele' LIMIT 1;";
+	//echo "$sql<br />";
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		$is_prof_ele=true;
@@ -9207,10 +9208,13 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		$obj = $res->fetch_object();
-		$statut = $obj->statut;		
+		$statut = $obj->statut;
 		$res->close();
 
 		if(($statut=="eleve")&&($login_user==$login_eleve)&&(getSettingAOui('GepiAccesCahierTexteEleve'))) {
+			$retour=true;
+		}
+		elseif(($statut=="responsable")&&(getSettingAOui('GepiAccesCahierTexteParent'))&&(getSettingAOui('GepiMemesDroitsRespNonLegaux'))&&(is_responsable($login_eleve, $login_user, "", "yy"))) {
 			$retour=true;
 		}
 		elseif(($statut=="responsable")&&(getSettingAOui('GepiAccesCahierTexteParent'))&&(is_responsable($login_eleve, $login_user))) {
@@ -9249,6 +9253,9 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 				$res_scol->close();
 				$retour=true;
 			}
+		}
+		elseif($statut=="administrateur") {
+			$retour=true;
 		}
 	}
 
@@ -12490,6 +12497,215 @@ function acces_messagerie($statut_user) {
 		else {
 			return true;
 		}
+	}
+}
+
+function acces_carnet_notes($statut_user) {
+	if(!getSettingAOui('active_carnets_notes')) {
+		return false;
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		return false;
+	}
+	elseif($_SESSION['statut']=='responsable') {
+		if(getSettingAOui('GepiAccesReleveParent')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		if(getSettingAOui('GepiAccesReleveEleve')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		return true;
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		return true;
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		return true;
+	}
+	else {
+		// A vérifier: 'secours', cas particulier du staut 'autre'
+		return false;
+	}
+}
+
+function acces_moyenne_chaque_devoir_carnet_notes($statut_user) {
+	if($_SESSION['statut']=='responsable') {
+		if(getSettingAOui('GepiAccesMoyClasseReleveParent')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		if(getSettingAOui('GepiAccesMoyClasseReleveEleve')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return true;
+	}
+}
+
+function acces_moyenne_min_max_chaque_devoir_carnet_notes($statut_user) {
+	if($_SESSION['statut']=='responsable') {
+		if(getSettingAOui('GepiAccesMoyMinClasseMaxReleveParent')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		if(getSettingAOui('GepiAccesMoyMinClasseMaxReleveEleve')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return true;
+	}
+}
+
+function get_id_classe_ele_d_apres_date($login_eleve, $timestamp) {
+	global $mysqli;
+	$id_classe="";
+
+	$date_mysql=strftime("%Y-%m-%d %H:%M:%S", $timestamp);
+
+	$sql="SELECT p.id_classe FROM periodes p, 
+						j_eleves_classes jec 
+					WHERE p.id_classe=jec.id_classe AND 
+						jec.login='".$login_eleve."' AND 
+						p.date_fin>='".$date_mysql."'
+					ORDER BY date_fin ASC LIMIT 1;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$id_classe=$lig->id_classe;
+	}
+
+	return $id_classe;
+}
+
+function get_id_classe_derniere_classe_ele($login_eleve) {
+	global $mysqli;
+	$id_classe="";
+
+	$sql="SELECT p.id_classe FROM periodes p, 
+						j_eleves_classes jec 
+					WHERE p.id_classe=jec.id_classe AND 
+						jec.login='".$login_eleve."'
+					ORDER BY date_fin DESC LIMIT 1;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$id_classe=$lig->id_classe;
+	}
+
+	return $id_classe;
+}
+
+/** Fonction destinée à tester si un utilisateur a le droit d'accéder aux incidents et sanctions de tel élève
+ *
+ * @param string $login_user Login de l'utilisateur
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return boolean true/false
+ */
+function acces_incidents_disc_eleve($login_user, $statut_user, $login_eleve) {
+	if($statut_user=='responsable') {
+		if((is_responsable($login_eleve, $login_user, "", "yy"))&&(getSettingAOui('visuRespDisc'))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($statut_user=='eleve') {
+		if(getSettingAOui('visuEleDisc')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($statut_user=='administrateur') {
+		return true;
+	}
+	elseif($statut_user=='scolarite') {
+		return true;
+	}
+	elseif($statut_user=='cpe') {
+		return true;
+	}
+	elseif($statut_user=='professeur') {
+		if(((is_prof_classe_ele($login_user, $login_eleve))&&(getSettingAOui('visuDiscProfClasses')))||
+			((is_prof_ele($login_user, $login_eleve))&&(getSettingAOui('visuDiscProfGroupes')))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		// Cas 'autre' à voir
+		return false;
+	}
+}
+
+
+/** Fonction destinée à tester si un utilisateur a le droit d'accéder aux absences de tel élève
+ *
+ * @param string $login_user Login de l'utilisateur
+ * @param string $login_eleve Login de l'élève
+ *
+ * @return boolean true/false
+ */
+function acces_abs_eleve($login_user, $statut_user, $login_eleve) {
+	if($statut_user=='responsable') {
+		if((is_responsable($login_eleve, $login_user, "", "yy"))&&(getSettingAOui('active_absences_parents'))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	elseif($statut_user=='eleve') {
+		return false;
+	}
+	elseif($statut_user=='administrateur') {
+		return true;
+	}
+	elseif($statut_user=='scolarite') {
+		return true;
+	}
+	elseif($statut_user=='cpe') {
+		return true;
+	}
+	elseif($statut_user=='professeur') {
+		return true;
+	}
+	else {
+		// Cas 'autre' à voir
+		return false;
 	}
 }
 ?>

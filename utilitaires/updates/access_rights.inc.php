@@ -1330,6 +1330,18 @@ autre='F',
 description='Import des inscriptions élèves depuis un XML EDT',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/eleves/resume_ele.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='V',
+autre='F',
+description='Accueil élève résumé',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

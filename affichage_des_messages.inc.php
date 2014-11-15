@@ -31,6 +31,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     $ind = 0;
     $texte_messages = '';
     $texte_messages_simpl_prof = ''; // variable uniquement utilisée dans accueil_simpl_prof.php
+    $texte_messages_resume_ele = ''; // variable uniquement utilisée dans eleves/resume_ele.php
     $affiche_messages = 'no';    
     while ($obj = $appel_messages->fetch_object()) {
         $statuts_destinataires1 = $obj->statuts_destinataires;
@@ -89,6 +90,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content, "statuts_destinataires"=>$statuts_destinataires1);
             // dans accueil_simpl_prof.php
             $texte_messages_simpl_prof .= "<div class='postit'>".$content."</div>";
+            $texte_messages_resume_ele .= "<div class='postit'>".$content."</div>";
         }
         $ind++;
     }
