@@ -433,7 +433,19 @@ Enfin, vous pouvez sélectionner la date en cliquant sur l'image Calendrier.\" /
 		Cadre vide pour conserver l'espace au-dessus 
 		Il faut pouvoir adapter la hauteur en fonction de la réduction ou non du bandeau d'entête
 	-->
-	<p class='bold'>".$info_eleve." <span style='color:red'>(AFFICHER ICI UN choix de l'élève)</span></p>
+	<p class='bold'>";
+
+	if((isset($login_ele_prec))&&($login_ele_prec!="")) {
+		echo "<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
+	}
+
+	echo $info_eleve;
+
+	if((isset($login_ele_suiv))&&($login_ele_suiv!="")) {
+		echo " <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a>";
+	}
+
+	echo "</p>
 
 	<!-- Proposer le choix de l'élève pour un parent (s'il y a plusieurs élèves) -->
 
