@@ -1594,6 +1594,24 @@ if(isset($_GET['mode'])) {
 		die();
 	}
 	elseif($_GET['mode']=="pdf") {
+		/*
+		debug_var();
+		echo "\$ligne1_csv<pre>";
+		print_r($ligne1_csv);
+		echo "</pre>";
+		echo "\$col_csv<pre>";
+		print_r($col_csv);
+		echo "</pre>";
+		echo "\$col<pre>";
+		print_r($col);
+		echo "</pre>";
+		*/
+
+		// On teste la présence d'au moins un coeff pour afficher la colonne des coef
+		$test_coef = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT coef FROM j_groupes_classes WHERE (id_classe='".$id_classe."' and coef > 0)"));
+		$ligne_supl = 0;
+		if ($test_coef != 0) {$ligne_supl = 1;}
+
 		$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 		if ($referent == "une_periode") {
@@ -1753,7 +1771,7 @@ if(isset($_GET['mode'])) {
 		$texte_test[1]="Edmou Dugenou";
 		$longueur_max_nom_prenom=0;
 		$largeur_col[1]=$largeur_col_nom_ele;
-		for($i=1;$i<=count($col_csv[1]);$i++) {
+		for($i=$ligne_supl;$i<=count($col_csv[1]);$i++) {
 			/*
 			// Le COL_CSV ne contient pas le nom prénom d'un élève qui n'a aucune note dans aucune matière
 			echo "<pre>";
@@ -1866,11 +1884,11 @@ if(isset($_GET['mode'])) {
 
 		$y2=$y2+$h_ligne_titre_tableau;
 		$k=1;
-		for($j=1;$j<count($col[1]);$j++) {
+		for($j=$ligne_supl;$j<count($col[1]);$j++) {
 			$x2=$x0;
 
 			// 20130328
-			if($j>1) {
+			if($j>$ligne_supl) {
 				//if($y2+$h_ligne<$hauteur_page-$marge_basse) {
 				if($y2+$h_ligne*2<$hauteur_page-$marge_basse) {
 					$y2+=$h_ligne;
