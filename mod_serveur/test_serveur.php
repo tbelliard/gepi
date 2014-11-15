@@ -52,22 +52,22 @@ if ($resultat_session == 'c') {
 }
 
 // Instance de la classe infos (voir serveur_infos.class.php)
-$test = new infos;
+$test_infos_serveur = new infos;
 
 // Analyse des paramètres
-if ($test->secureServeur() == 'on') {
+if ($test_infos_serveur->secureServeur() == 'on') {
 	$style_register = ' style="color: red; font-weight: bold;"';
-}elseif($test->secureServeur() == 'off'){
+}elseif($test_infos_serveur->secureServeur() == 'off'){
 	$style_register = '';
 }else{
 	$style_register = ' style="color: red; font-style: italic;"';
 }
-if ($test->maxExecution() <= '30') {
+if ($test_infos_serveur->maxExecution() <= '30') {
 	$warning_maxExec = '&nbsp;(Cette valeur peut être un peu courte si votre établissement est important)';
 }else{
 	$warning_maxExec = '&nbsp;(Cette valeur devrait suffire dans la grande majorité des cas)';
 }
-$charset = $test->defautCharset();
+$charset = $test_infos_serveur->defautCharset();
 /*+++++++++++++++++++++ On insère l'entête de Gepi ++++++++++++++++++++*/
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $style_specifique = "edt_organisation/style_edt";
@@ -89,31 +89,31 @@ if($OS==" - ") {$OS="indéterminé";}
 echo '
 	<h4>Les données de base de votre serveur web :</h4>
 	<p>OS serveur&nbsp;: '.$OS.'</p>
-	<p'.$style_register.'>Le register_globals est à '.$test->secureServeur().'.</p>
-	<p>Le serveur web est '.$test->version_serveur().'</p>
+	<p'.$style_register.'>Le register_globals est à '.$test_infos_serveur->secureServeur().'.</p>
+	<p>Le serveur web est '.$test_infos_serveur->version_serveur().'</p>
 	<p>Encodage '.$charset['toutes'].' -> encodage par défaut : '.$charset['defaut'].'.</p>';
 
-echo '<p>Votre version de php est la '.$test->versionPhp().'.</p>
-	<p>Votre version de serveur de base de données MySql est la '.$test->versionMysql().'.</p>';
-if ($test->versionGd()) {
-	echo '<p>Votre version du module GD est la '.$test->versionGd().'&nbsp;(indispensable pour toutes les images).</p>';
+echo '<p>Votre version de php est la '.$test_infos_serveur->versionPhp().'.</p>
+	<p>Votre version de serveur de base de données MySql est la '.$test_infos_serveur->versionMysql().'.</p>';
+if ($test_infos_serveur->versionGd()) {
+	echo '<p>Votre version du module GD est la '.$test_infos_serveur->versionGd().'&nbsp;(indispensable pour toutes les images).</p>';
 } else {
 	echo '<p class="red">GD n\'est pas installé (le module GD est indispensable pour les images)';
 }
 	echo '<br />
 	<hr />
-	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test->listeExtension().'
+	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test_infos_serveur->listeExtension().'
 	<hr />
 	<a name="reglages_php"></a>
 	<h4>Les réglages php : </h4>
 	<ul style="list-style-type:circle; margin-left:3em;">
-	<li style="list-style-type:circle">La mémoire maximale allouée à php est de '.$test->memoryLimit().' (<i>memory_limit</i>).
+	<li style="list-style-type:circle">La mémoire maximale allouée à php est de '.$test_infos_serveur->memoryLimit().' (<i>memory_limit</i>).
 	</li>
-	<li style="list-style-type:circle">La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().' (<i>post_max_size</i>).
+	<li style="list-style-type:circle">La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test_infos_serveur->maxSize().' (<i>post_max_size</i>).
 	</li>
-	<li style="list-style-type:circle">Le temps maximum alloué à php pour traiter un script est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
+	<li style="list-style-type:circle">Le temps maximum alloué à php pour traiter un script est de '.$test_infos_serveur->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
 	</li>
-	<li style="list-style-type:circle">La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).
+	<li style="list-style-type:circle">La taille maximum d\'un fichier envoyé à Gepi est de '.$test_infos_serveur->tailleMaxFichier().' (<i>upload_max_filesize</i>).
 	</li>';
 	$max_file_uploads=ini_get('max_file_uploads');
 	echo '
@@ -215,8 +215,8 @@ if ($test->versionGd()) {
 	echo "<br />\n";
 	echo "<p>Test d'écriture dans le fichier de personnalisation des couleurs (<i>voir <a href='../gestion/param_couleurs.php'>Gestion générale/Paramétrage des couleurs</a></i>)&nbsp;:<br />";
 	if(file_exists('../style_screen_ajout.css')){
-            $test=test_ecriture_style_screen_ajout();
-            if($test) {
+            $test_ecriture_style_screen_ajout=test_ecriture_style_screen_ajout();
+            if($test_ecriture_style_screen_ajout) {
                 echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
             } else {
                 echo "<span style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
