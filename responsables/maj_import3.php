@@ -2322,6 +2322,7 @@ else{
 					if((my_strtolower($rne_ancien_etab)!=my_strtolower($rne_ancien_etab2))&&(my_strtolower($rne_ancien_etab2)!=my_strtolower($gepiSchoolRne))) {
 						$temoin_chgt_ancien_etab="y";
 						//echo "\$temoin_chgt_ancien_etab=$temoin_chgt_ancien_etab<br />";
+						info_debug("Changement ancien etab: ".$tab_ele_id[$i]."\n");
 					}
 				}
 
@@ -2334,7 +2335,10 @@ else{
 									t.DATE_ENTREE IS NOT NULL AND
 									e.ele_id='$tab_ele_id[$i]';";
 					$test2=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($test2)>0) {$temoin_init_date_entree="y";}
+					if(mysqli_num_rows($test2)>0) {
+						$temoin_init_date_entree="y";
+						info_debug("temoin_init_date_entree\n");
+					}
 				}
 
 				$temoin_diff_mail_compte_vs_sconet="n";
@@ -2346,7 +2350,10 @@ else{
 									u.email!=t.MEL AND
 									e.ele_id='$tab_ele_id[$i]';";
 					$test3=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($test3)>0) {$temoin_diff_mail_compte_vs_sconet="y";}
+					if(mysqli_num_rows($test3)>0) {
+						$temoin_diff_mail_compte_vs_sconet="y";
+						info_debug("temoin_diff_mail_compte_vs_sconet\n");
+					}
 				}
 
 				if((mysqli_num_rows($test)>0)||($temoin_chgt_ancien_etab=="y")||($temoin_init_date_entree=="y")||($temoin_diff_mail_compte_vs_sconet=="y")) {
@@ -2365,6 +2372,7 @@ else{
 
 					//echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 					$sql="UPDATE tempo4 SET col3='modif' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id[$i]';";
+					info_debug("$sql\n");
 					if($tab_ele_id[$i]==$eleve_id_debug) {echo "Changement etab ou date d'entrée ou email sconet/compte<br />";echo "$sql<br />\n";}
 					$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -2544,6 +2552,7 @@ else{
 							//echo "</span>";
 							//echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 							$sql="UPDATE tempo4 SET col3='modif' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id[$i]';";
+							info_debug("Pas de classe.\n".$sql);
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							//echo "<br />\n";
 							// Pour le cas où on est dans la dernière tranche:
@@ -2576,6 +2585,7 @@ else{
 									//echo "</span>";
 									//echo "<input type='hidden' name='tab_ele_id_diff[]' value='".$tab_ele_id[$i]."' />\n";
 									$sql="UPDATE tempo4 SET col3='modif' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id[$i]';";
+									info_debug("Chgt classe\n".$sql);
 									if($tab_ele_id[$i]==$eleve_id_debug) {echo "Changement de classe<br />";echo "$sql<br />\n";}
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									//echo "<br />\n";
@@ -2808,9 +2818,9 @@ else{
 				echo "<th>N°NAT</th>\n";
 				echo "<th>Régime</th>\n";
 
-				if($alert_diff_mail_ele=="y") {
+				//if($alert_diff_mail_ele=="y") {
 					echo "<th>Email</th>\n";
-				}
+				//}
 
 				if(((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif')))||
 					((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif')))||
@@ -2848,6 +2858,7 @@ else{
 
 					// Pour ne pas représenter le même au tour suivant:
 					$sql="UPDATE tempo4 SET col3='modif_ou_new_presente' WHERE col1='maj_sconet_eleves' AND col2='$tab_ele_id_diff[$w]';";
+					info_debug($sql);
 					affiche_debug("<tr><td colspan='13'>$sql</td></tr>\n");
 					if($tab_ele_id_diff[$w]==$eleve_id_debug) {echo "$sql<br />\n";}
 					$update_tempo4=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -3379,7 +3390,7 @@ else{
 								echo "</td>\n";
 
 
-								if($alert_diff_mail_ele=="y") {
+								//if($alert_diff_mail_ele=="y") {
 									echo "<td";
 									if(stripslashes($lig_ele->email)!=stripslashes($affiche[12])){
 										//echo " background-color:lightgreen;'>";
@@ -3409,7 +3420,7 @@ else{
 										}
 									}
 									echo "</td>\n";
-								}
+								//}
 
 
 								// 20120630
@@ -3787,11 +3798,11 @@ else{
 
 								echo "</td>\n";
 
-								if($alert_diff_mail_ele=="y") {
+								//if($alert_diff_mail_ele=="y") {
 									echo "<td style='text-align: center;'>";
 									echo "$affiche[12]";
 									echo "</td>\n";
-								}
+								//}
 
 								// 20120630
 
@@ -4042,8 +4053,9 @@ else{
 						$sql.=", lieu_naissance='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->LIEU_NAISSANCE)."'";
 					}
 
-					//if(getSettingValue('mode_email_ele')!="mon_compte") {
-					if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+					// Si une modif email a été signalée, et que la ligne a été cochée, il faut la prendre en compte
+					if(getSettingValue('mode_email_ele')!="mon_compte") {
+					//if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
 						$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 					}
 
@@ -4140,8 +4152,8 @@ else{
 							$old_ele_id=$lig_tmp->ele_id;
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
-							//if(getSettingValue('mode_email_ele')!="mon_compte") {
-							if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+							if(getSettingValue('mode_email_ele')!="mon_compte") {
+							//if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
 								$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 							}
 
@@ -5402,10 +5414,10 @@ else{
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
 
-			$sql_resp_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+			$sql_resp_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 			$test_comptes_resp=mysqli_query($GLOBALS["mysqli"], $sql_resp_tmp);
 			if(mysqli_num_rows($test_comptes_resp)==0) {
-				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_ele_y' value='y' />\n";
+				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' />\n";
 			}
 			else {
 				echo "<br />\n";
