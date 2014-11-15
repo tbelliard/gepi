@@ -2838,9 +2838,10 @@ else{
 				echo "<th>N°NAT</th>\n";
 				echo "<th>Régime</th>\n";
 
-				if($alert_diff_mail_ele=="y") {
+				// On affiche quand même la colonne email pour le cas où le contenu de 'eleves' différerait du contenu du XML de Sconet
+				//if($alert_diff_mail_ele=="y") {
 					echo "<th>Email</th>\n";
-				}
+				//}
 
 				if(((getSettingValue('ele_tel_pers')=='yes')&&(getSettingAOui('ele_tel_pers_signaler_modif')))||
 					((getSettingValue('ele_tel_port')=='yes')&&(getSettingAOui('ele_tel_port_signaler_modif')))||
@@ -3410,7 +3411,7 @@ else{
 								echo "</td>\n";
 
 
-								if($alert_diff_mail_ele=="y") {
+								//if($alert_diff_mail_ele=="y") {
 									echo "<td";
 									if(stripslashes($lig_ele->email)!=stripslashes($affiche[12])){
 										//echo " background-color:lightgreen;'>";
@@ -3440,7 +3441,7 @@ else{
 										}
 									}
 									echo "</td>\n";
-								}
+								//}
 
 
 								// 20120630
@@ -3818,11 +3819,11 @@ else{
 
 								echo "</td>\n";
 
-								if($alert_diff_mail_ele=="y") {
+								//if($alert_diff_mail_ele=="y") {
 									echo "<td style='text-align: center;'>";
 									echo "$affiche[12]";
 									echo "</td>\n";
-								}
+								//}
 
 								// 20120630
 
@@ -4073,8 +4074,9 @@ else{
 						$sql.=", lieu_naissance='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->LIEU_NAISSANCE)."'";
 					}
 
-					//if(getSettingValue('mode_email_ele')!="mon_compte") {
-					if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+					// Si une modif email a été signalée, et que la ligne a été cochée, il faut la prendre en compte
+					if(getSettingValue('mode_email_ele')!="mon_compte") {
+					//if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
 						$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 					}
 
@@ -4171,8 +4173,9 @@ else{
 							$old_ele_id=$lig_tmp->ele_id;
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
-							//if(getSettingValue('mode_email_ele')!="mon_compte") {
-							if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
+							// Si une modif email a été signalée, et que la ligne a été cochée, il faut la prendre en compte
+							if(getSettingValue('mode_email_ele')!="mon_compte") {
+							//if((getSettingValue('mode_email_ele')!="mon_compte")&&($alert_diff_mail_ele=="y")) {
 								$sql.=", email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->MEL)."'";
 							}
 
@@ -5527,10 +5530,10 @@ else{
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
 
-			$sql_resp_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+			$sql_resp_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
 			$test_comptes_resp=mysqli_query($GLOBALS["mysqli"], $sql_resp_tmp);
 			if(mysqli_num_rows($test_comptes_resp)==0) {
-				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_ele_y' value='y' />\n";
+				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' />\n";
 			}
 			else {
 				echo "<br />\n";
