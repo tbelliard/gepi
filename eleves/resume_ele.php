@@ -526,6 +526,10 @@ if((getSettingAOui('active_carnets_notes'))&&(acces_carnet_notes($_SESSION['stat
 			}
 			$current_matiere_cn=$tab_group_edt[$lig->id_groupe]['matiere']['nom_complet'];
 
+			if(!isset($tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']])) {
+				$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']]=get_couleur_edt_matiere($tab_group_edt[$lig->id_groupe]['matiere']['matiere']);
+			}
+
 			if($lig->statut!="") {
 				$info_note=$lig->statut;
 			}
@@ -603,7 +607,7 @@ if((getSettingAOui('active_carnets_notes'))&&(acces_carnet_notes($_SESSION['stat
 			$info_devoir.="\nCette note concerne la période ".$lig->periode;
 
 			$html.="
-	<div id='div_cn' style='float:left;width:100%; border-bottom: 1px solid black;' title=\"$info_devoir\">
+	<div id='div_cn' style='float:left;width:99%; border-bottom: 1px solid black; margin-right:3px; margin-top:3px; margin-bottom:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50' title=\"$info_devoir\">
 		<div style='float:right; text-align:right; width:4em;'>
 			".$info_note."
 		</div>
