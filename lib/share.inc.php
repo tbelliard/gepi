@@ -9704,6 +9704,8 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			}
 		}
 
+		$retour.="<div style='float:right; width:16px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
+
 		if($lig->type=='autre') {
 			//$retour.=nl2br($lig->description)."<br />";
 			$retour.=$lig->texte_avant;
