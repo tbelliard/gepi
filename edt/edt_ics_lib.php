@@ -1545,7 +1545,42 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	$texte_etat_travail,
 	$class_color_fond_notice;
 
-	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='../cahier_texte/index.php' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+	$url_cdt="";
+	if($_SESSION['statut']=="responsable") {
+		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
+	}
+	elseif($_SESSION['statut']=="eleve") {
+		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
+	}
+	elseif($_SESSION['statut']=="professeur") {
+		if (getSettingValue("GepiCahierTexteVersion") == '2') {
+			$url_cdt="../cahier_texte_2/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe."&id_groupe=Toutes_matieres";
+		}
+		else {
+			$url_cdt="../cahier_texte/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe;
+		}
+	}
+	elseif($_SESSION['statut']=="scolarite") {
+		if (getSettingValue("GepiCahierTexteVersion") == '2') {
+			$url_cdt="../cahier_texte_2/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe."&id_groupe=Toutes_matieres";
+		}
+		else {
+			$url_cdt="../cahier_texte/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe;
+		}
+	}
+	elseif($_SESSION['statut']=="cpe") {
+		if (getSettingValue("GepiCahierTexteVersion") == '2') {
+			$url_cdt="../cahier_texte_2/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe."&id_groupe=Toutes_matieres";
+		}
+		else {
+			$url_cdt="../cahier_texte/see_all.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&id_classe=".$id_classe;
+		}
+	}
+
+	if($url_cdt!="") {
+		$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cdt."' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+	}
+
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Cahier de textes</div>";
 
 	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde, 
