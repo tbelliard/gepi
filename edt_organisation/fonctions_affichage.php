@@ -582,11 +582,24 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
     echo ("<div class=\"entete_creneaux\"></div>\n");
     for ($i = 0; $i < $creneaux['nb_creneaux']; $i++)
     {
-        echo("<div class=\"horaires\"><div class=\"cadre\"><strong>".$creneaux['creneaux'][$i]."</strong></div></div>\n");
+/*
+        if(in_array($creneaux['creneaux'][$i], array('R0', 'R1', 'R2'))) {
+            echo("<div class=\"demihoraires\"><div class=\"cadre\"><strong>".$creneaux['creneaux'][$i]."</strong></div></div>\n");
+        }
+        else {
+*/
+            echo("<div class=\"horaires\"><div class=\"cadre\"><strong>".$creneaux['creneaux'][$i]."</strong></div></div>\n");
+//        }
     }
 
     echo("</div></div><div class=\"spacer\"></div></div></div>");
 
+/*
+//20141007
+echo "Tableau des créneaux<pre>";
+print_r($creneaux);
+echo "</pre>";
+*/
 }
 
 // ======================================================
@@ -821,6 +834,7 @@ function AfficheIconePlusNew($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_cr
 // =============================================================================
 function AfficheIconePlusAdd($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_creneaux, $period)
 {
+    global $gepiPath;
 
     // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
     if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND my_strtolower($login_edt) == my_strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
@@ -831,7 +845,7 @@ function AfficheIconePlusAdd($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_cr
         }
         echo ("<span class=\"image\">");
 	    //echo "<a href='javascript:centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\")'>
-	    echo "<a href='modifier_cours.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."' onClick='centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\");return false;'>
+	    echo "<a href='$gepiPath/edt_organisation/modifier_cours.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."' onClick='centrerpopup(\"$gepiPath/edt_organisation/modifier_cours_popup.php?period_id=".$period."&amp;cours=aucun&amp;identite=".$login_edt."&amp;horaire=".$jour_sem."|".$id_creneaux."|".$deb."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\");return false;'>
         <img src=\"../templates/".NameTemplateEDT()."/images/ico_plus2.png\" title=\"Ajouter un cours\" alt=\"Ajouter un cours\" /></a>";
         echo ("</span>\n");
     }
@@ -843,12 +857,13 @@ function AfficheIconePlusAdd($type_edt,$heuredeb_dec,$login_edt,$jour_sem,$id_cr
 // =============================================================================
 function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
 {
+    global $gepiPath;
 
     // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
     if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND my_strtolower($login_edt) == my_strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
         echo ("<span class=\"image\">");
 	    //echo "<a href='javascript:centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\")'>
-	    echo "<a href='modifier_cours.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."' onClick='centrerpopup(\"modifier_cours_popup.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\");return false;'>
+	    echo "<a href='$gepiPath/edt_organisation/modifier_cours.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."' onClick='centrerpopup(\"$gepiPath/edt_organisation/modifier_cours_popup.php?period_id=".$period."&amp;id_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",700,205,\"scrollbars=no,statusbar=no,resizable=no,menubar=no,toolbar=no,status=no\");return false;'>
         <img src=\"../templates/".NameTemplateEDT()."/images/edit16.png\" title=\"Modifier\" alt=\"Modifier\" /></a>";
         echo ("</span>\n");
     }
@@ -862,12 +877,13 @@ function AfficheModifierIcone($type_edt,$login_edt,$id_cours, $period)
 // =============================================================================
 function AfficheEffacerIcone($type_edt,$login_edt,$id_cours, $period)
 {
+    global $gepiPath;
 
     // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
     if (($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "scolarite" OR ($_SESSION["statut"] == "professeur" AND getSettingValue("edt_remplir_prof") == 'y' AND my_strtolower($login_edt) == my_strtolower($_SESSION["login"]))) AND $type_edt == "prof") {
         echo ("<span class=\"image\">");
 	    //echo "<a href=\"./index_edt.php?visioedt=prof1&amp;login_edt=".$login_edt."&amp;type_edt_2=prof&amp;supprimer_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\"onclick=\"return confirm('Confirmez-vous cette suppression ?')\")'>
-        echo "<a href='javascript:centrerpopup(\"effacer_cours.php?period_id=".$period."&amp;supprimer_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",600,55,\"scrollbars=0,statusbar=0,resizable=0,menubar=no,toolbar=no,status=no\")'>        
+        echo "<a href='javascript:centrerpopup(\"$gepiPath/edt_organisation/effacer_cours.php?period_id=".$period."&amp;supprimer_cours=".$id_cours."&amp;type_edt=".$type_edt."&amp;identite=".$login_edt."\",600,55,\"scrollbars=0,statusbar=0,resizable=0,menubar=no,toolbar=no,status=no\")'>        
         <img src=\"../templates/".NameTemplateEDT()."/images/delete2.png\" title=\"Supprimer\" alt=\"Supprimer\" /></a>";
         echo ("</span>\n");
     }
