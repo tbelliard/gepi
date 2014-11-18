@@ -33,6 +33,9 @@ Engagements:
 Années antérieures:
 - Possibilité de générer un SQL des insertions lors de l'archivage.
 
+Divers:
+- Ajout d'une page d'accueil "simplifiée/graphique" pour les élèves et parents.
+
 Livret Scolaire Lycée:
 - Ajout d'une ébauche de module.
 
