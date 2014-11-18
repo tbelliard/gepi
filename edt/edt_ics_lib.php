@@ -32,6 +32,31 @@ $tab_couleur_edt[23]="#009EE0";
 $tab_couleur_edt[24]="#C19CC4";
 // Les couleurs sont dans l'EDT classique Gepi définies dans templates/DefaultEDT/css/style_edt.css avec des .cadreCouleur1, .cadreCouleur2,...
 
+/*
+// Couleurs pour les onglets dans visu_eleve.inc.php:
+$tab_couleur_onglet['eleve']="moccasin";
+$tab_couleur_onglet['responsables']="mintcream";
+$tab_couleur_onglet['enseignements']="whitesmoke";
+$tab_couleur_onglet['bulletins']="lightyellow";
+$tab_couleur_onglet['bulletin']="lemonchiffon";
+$tab_couleur_onglet['releves']="papayawhip";
+$tab_couleur_onglet['releve']="seashell";
+$tab_couleur_onglet['cdt']="linen";
+$tab_couleur_onglet['anna']="blanchedalmond";
+$tab_couleur_onglet['absences']="azure";
+$tab_couleur_onglet['discipline']="salmon";
+$tab_couleur_onglet['fp']="linen";
+*/
+
+$tab_couleur_onglet['releves']="papayawhip";
+$tab_couleur_onglet['releve']="seashell";
+$tab_couleur_onglet['cdt']="linen";
+$tab_couleur_onglet['absences']="azure";
+$tab_couleur_onglet['discipline']="salmon";
+
+$tab_couleur_onglet['edt']="moccasin";
+$tab_couleur_onglet['indication']="linen";
+
 function get_days_from_week_number($num_semaine ,$annee) {
 	$tab=array();
 
@@ -955,6 +980,9 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 	global $debug_edt;
 	global $hauteur_jour, $hauteur_entete;
 	global $tab_group_edt;
+
+	// Normalement, il ne devrait pas y avoir de collisions de cours... 
+	// sauf si l'EDT est mal rempli ou si les l'élève est inscrit à tort dans des groupes
 
 	$html="";
 

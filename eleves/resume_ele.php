@@ -261,31 +261,6 @@ if($id_classe=="") {
 }
 //===================================================
 
-/*
-// Couleurs pour les onglets dans visu_eleve.inc.php:
-$tab_couleur_onglet['eleve']="moccasin";
-$tab_couleur_onglet['responsables']="mintcream";
-$tab_couleur_onglet['enseignements']="whitesmoke";
-$tab_couleur_onglet['bulletins']="lightyellow";
-$tab_couleur_onglet['bulletin']="lemonchiffon";
-$tab_couleur_onglet['releves']="papayawhip";
-$tab_couleur_onglet['releve']="seashell";
-$tab_couleur_onglet['cdt']="linen";
-$tab_couleur_onglet['anna']="blanchedalmond";
-$tab_couleur_onglet['absences']="azure";
-$tab_couleur_onglet['discipline']="salmon";
-$tab_couleur_onglet['fp']="linen";
-*/
-
-$tab_couleur_onglet['releves']="papayawhip";
-$tab_couleur_onglet['releve']="seashell";
-$tab_couleur_onglet['cdt']="linen";
-$tab_couleur_onglet['absences']="azure";
-$tab_couleur_onglet['discipline']="salmon";
-
-$tab_couleur_onglet['edt']="moccasin";
-$tab_couleur_onglet['indication']="linen";
-
 //===================================================
 if((isset($_GET['mode']))&&($_GET['mode']=="update_div_cdt")&&(isset($_GET['id_cours']))&&(isset($login_eleve))) {
 	$class_notice_dev_fait="color_fond_notices_t_fait";
@@ -392,6 +367,7 @@ if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((ge
 
 <div id='div_edt' style='position:absolute; top:".$y1."px; left:".$x1."px; width:".$largeur1."px; height:".$hauteur1."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; background-color:".$tab_couleur_onglet['edt'].";'>
 	".$html."
+	<div style='width:16px; margin:2px;' title=\"Voir l'emploi du temps de la semaine\"><a href='../edt/index2.php?login_eleve=".$login_eleve."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
 </div>";
 /*
 	echo "
