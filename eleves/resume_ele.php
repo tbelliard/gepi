@@ -780,6 +780,7 @@ if($affichage_div_edt=="y") {
 <ul>
 	<li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>
 	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>
+	<li><p>Si vous préférez ne pas utiliser cette page comme page d'accueil,<br />si vous préférez le menu classique, vous pouvez paramétrer ce choix dans <a href=''><img src='../images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p></li>
 </ul>";
 
 	echo "

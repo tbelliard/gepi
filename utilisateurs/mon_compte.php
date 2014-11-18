@@ -720,6 +720,27 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 }
 
 //================================================================================
+if ((($_SESSION["statut"] == "eleve")||($_SESSION["statut"] == "responsable"))&&(isset($_POST['valide_accueil_simpl']))&&(isset($_POST['accueil_simpl']))) {
+	check_token();
+
+	$message_accueil_simpl="\n";
+
+	$accueil_simpl="y";
+	if($_POST['accueil_simpl']!="y") {
+		$accueil_simpl="n";
+	}
+
+	if(savePref($_SESSION['login'], "accueil_simpl", $accueil_simpl)) {
+		$msg.="Enregistrement de la préférence 'accueil_simpl' effectué.<br />";
+		$message_accueil_simpl.="<p style='color:green'>Enregistrement de la préférence 'accueil_simpl' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+	else{
+		$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_simpl'.<br />";
+		$message_accueil_simpl.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_simpl'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+}
+
+//================================================================================
 
 // 20121128
 if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_nom_ou_description_groupe']))) {
@@ -2174,6 +2195,34 @@ document.getElementById('$chaine_td').style.backgroundColor='lightgray';
 	}
 
 	echo "</td>\n";
+}
+
+//==============================================================================
+
+if(($_SESSION['statut']=='responsable')||($_SESSION['statut']=='eleve')) {
+	$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl', "y");
+	$checked_accueil_simpl_y=($pref_accueil_simpl=="y") ? " checked" : "";
+	$checked_accueil_simpl_n=($pref_accueil_simpl=="y") ? "" : " checked";
+
+	echo "<a name='accueil_simpl'></a>
+<form name='form_accueil_simpl' method='post' action='".$_SERVER['PHP_SELF']."#accueil_simpl'>
+	<fieldset class='fieldset_opacite50'>
+		<legend style='border: 1px solid grey; background-color: white; '>Page d'accueil simplifiée</legend>
+		".add_token_field()."
+		<input type='hidden' name='valide_accueil_simpl' value='y' />
+
+		<p><input type='radio' name='accueil_simpl' id='accueil_simpl_y' value='y' tabindex='$tabindex'$checked_accueil_simpl_y /><label for='accueil_simpl_y'>Utiliser la page d'accueil \"simplifiée\"</label><br />";
+	$tabindex++;
+	echo "
+		<input type='radio' name='accueil_simpl' id='accueil_simpl_n' value='n' tabindex='$tabindex'$checked_accueil_simpl_n /><label for='accueil_simpl_n'>Utiliser la page d'accueil avec le menu classique</label></p>";
+	$tabindex++;
+
+	echo "
+	<p><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center></p>".((isset($message_accueil_simpl)) ? "<br />".$message_accueil_simpl : "")."
+	</fieldset>
+</form>
+<br />\n";
+	$tabindex++;
 }
 
 //==============================================================================

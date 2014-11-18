@@ -143,16 +143,26 @@ if($_SESSION['statut']=='administrateur') {
   include_once("lib/share-admin.inc.php");
 }
 
-if($_SESSION['statut']=='professeur'){
+if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	$accueil_simpl=isset($_GET['accueil_simpl']) ? $_GET['accueil_simpl'] : NULL;
 	if(!isset($accueil_simpl)){
-		$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl',"n");
+		if($_SESSION['statut']=='professeur') {
+			$valeur_par_defaut="n";
+		}
+		else {
+			$valeur_par_defaut="y";
+		}
+
+		$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl',$valeur_par_defaut);
 		$accueil_simpl=$pref_accueil_simpl;
 	}
 
 	//$_SERVER['HTTP_REFERER']=	https://127.0.0.1/steph/gepi-trunk/accueil_simpl_prof.php
 	//$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/accueil.php
-	if((isset($_SERVER['HTTP_REFERER']))&&(preg_match("#$gepiPath/accueil_simpl_prof.php$#",$_SERVER['HTTP_REFERER']))&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")) {
+	if((($_SESSION['statut']=='professeur')&&((isset($_SERVER['HTTP_REFERER']))&&(preg_match("#$gepiPath/accueil_simpl_prof.php$#",$_SERVER['HTTP_REFERER']))&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")))||
+	((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((isset($_SERVER['HTTP_REFERER']))&&
+	((preg_match("#$gepiPath/eleves/resume_ele.php$#",$_SERVER['HTTP_REFERER']))||(preg_match("#$gepiPath/eleves/resume_ele.php?#",$_SERVER['HTTP_REFERER'])))
+	&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")))) {
 		// On va accéder à l'accueil.php classique
 	}
 	else {
@@ -166,11 +176,21 @@ if($_SESSION['statut']=='professeur'){
 
 			$msg=isset($_POST['msg']) ? $_POST['msg'] : (isset($_GET['msg']) ? $_GET['msg'] : NULL);
 
-			if(isset($msg)) {
-				header("Location: ./accueil_simpl_prof.php?msg=$msg");
+			if($_SESSION['statut']=='professeur') {
+				if(isset($msg)) {
+					header("Location: ./accueil_simpl_prof.php?msg=$msg");
+				}
+				else {
+					header("Location: ./accueil_simpl_prof.php");
+				}
 			}
 			else {
-				header("Location: ./accueil_simpl_prof.php");
+				if(isset($msg)) {
+					header("Location: ./eleves/resume_ele.php?msg=$msg");
+				}
+				else {
+					header("Location: ./eleves/resume_ele.php");
+				}
 			}
 			die();
 		}
@@ -179,6 +199,7 @@ if($_SESSION['statut']=='professeur'){
 else{
 	$accueil_simpl=NULL;
 }
+
 
 //debug_var();
 
