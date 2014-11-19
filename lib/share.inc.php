@@ -5480,6 +5480,7 @@ function liste_prof_suivi($id_classe, $pour_qui="", $avec_lien_mail="") {
 function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0,$bouton_supprimer=false)
 {
 	global $mysqli;
+	global $gepiPath;
 	// On arrondit le timestamp d'appel à l'heure (pas nécessaire mais pour l'esthétique)
 	$t_appel=time()-(time()%3600);
 	// suivant le nombre de paramètres passés :
@@ -5509,7 +5510,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		$contenu='
 		<form method="POST" action="#" name="f_suppression_message">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
-		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png" alt="" /></button>
+		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="'.$gepiPath.'/images/icons/delete.png" alt="" /></button>
 		</form>'.addslashes($texte);
 		$r_sql="UPDATE `messages` SET `texte`='".$contenu."' WHERE `id`='".$id_message."'";
 		$retour=mysqli_query($mysqli, $r_sql) ? TRUE : FALSE;

@@ -86,10 +86,11 @@ function formate_date_decompte($date_decompte) {
 
 function ajout_bouton_supprimer_message($contenu_cor,$id_message)
 	{
+	global $gepiPath;
 	$contenu_cor='
 	<form method="POST" action="accueil.php" name="f_suppression_message">
 	<input type="hidden" name="supprimer_message" value="'.$id_message.'">
-	<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
+	<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="'.$gepiPath.'/images/icons/delete.png"></button>
 	</form>'.$contenu_cor;
 	$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
 	return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
