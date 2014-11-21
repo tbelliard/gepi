@@ -641,23 +641,28 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 
 	$html="";
 
-	/*
-	if($_SESSION['statut']=="eleve") {
-		$url_abs="../mod_discipline/visu_disc.php";
-	}
-	elseif($_SESSION['statut']=="responsable") {
-		$url_abs="../mod_discipline/visu_disc.php?ele_login=".$login_eleve;
+	// Actuellement, l'élève n'a pas l'affichage absences
+	$url_abs="";
+	//if(($_SESSION['statut']=="eleve")||($_SESSION['statut']=="responsable")) {
+	if($_SESSION['statut']=="responsable") {
+		$url_abs="../mod_abs2/bilan_parent.php?ele_login=".$login_eleve;
 	}
 	else {
-		$url_abs="../mod_discipline/traiter_incident.php?protagoniste_incident=".$login_eleve;
+		$url_abs="../eleves/visu_eleve.php?ele_login=".$login_eleve."&onglet=absences";
 	}
 
+	if($url_abs!="") {
+		$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+	}
 
-	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
-	*/
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Absences</div>";
 
-	$html.="<p style='color:red'>Extraction des absences non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
+	$html.="<p style='color:red'>Extraction des absences, dans cette page, non encore implémentée.<br />Passez par le menu 'Accueil'";
+	if($url_abs!="") {
+		$html.="<br />ou par le lien <a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a>";
+	}
+	$html.="<br />L'objectif à terme est d'afficher ici, juste les absences/retards du jour sélectionné... ou de la semaine en cours... ou des 7 derniers jours.";
+	$html.="</p>";
 
 	echo "
 <div id='div_abs' style='float:left; width:".$largeur_abs."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['absences'].";'>".$html."</div>";
@@ -685,8 +690,75 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 	$html="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_disc' title=\"Consulter le module Discipline\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Discipline</div>";
 
-	$html.="<p style='color:red'>Extraction des incidents et sanctions non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
+	require_once("../mod_discipline/sanctions_func_lib.php");
 
+	$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve=tableau_des_avertissements_de_fin_de_periode_eleve($login_eleve);
+	if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
+		$html.=$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve;
+	}
+
+	//$html.="<p style='color:red'>Extraction des incidents et sanctions non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
+
+	$mode="";
+	$disc_date_debut="";
+	$disc_date_fin="";
+	$titre_infobulle=$mod_disc_terme_incident."s, mesures et ".$mod_disc_terme_sanction."s";
+	$texte_infobulle=tab_mod_discipline($login_eleve,$mode,$disc_date_debut,$disc_date_fin);
+	$tabdiv_infobulle[]=creer_div_infobulle('div_disc_infobulle',$titre_infobulle,"",$texte_infobulle,"",65,0,'y','y','n','n');
+
+	//$html.="<p style='font-weight: bold;'>Totaux des ".$mod_disc_terme_incident."s/mesures/".$mod_disc_terme_sanction."s en tant que Responsable.</p>\n";
+	$html.="<p style='font-weight: bold; margin-top:1em;'>".ucfirst($mod_disc_terme_incident)."s</p>\n";
+	if(count($tab_incidents_ele[$login_eleve])>0) {
+		$html.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_incident."s'>\n";
+		$html.="<tr><th>Nature</th><th>Total</th></tr>\n";
+		$alt=1;
+		foreach($tab_incidents_ele[$login_eleve] as $key => $value) {
+			$alt=$alt*(-1);
+			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
+		}
+		$html.="</table>\n";
+	}
+	else {
+		$html.="<p>Aucun ".$mod_disc_terme_incident." relevé en qualité de responsable.</p>\n";
+	}
+
+	$html.="<p style='font-weight: bold; margin-top:1em;'>Mesures prises</p>\n";
+	if(count($tab_mesures_ele[$login_eleve])>0) {
+		$html.="<p style='font-weight: bold; margin-top:1em;'>Mesures prises</p>\n";
+		$html.="<table class='boireaus' border='1' summary='Totaux mesures prises'>\n";
+		$html.="<tr><th>Mesure</th><th>Total</th></tr>\n";
+		$alt=1;
+		foreach($tab_mesures_ele[$login_eleve] as $key => $value) {
+			$alt=$alt*(-1);
+			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
+		}
+		$html.="</table>\n";
+	}
+	else {
+		$html.="<p>Aucune mesure prise en qualité de responsable.</p>\n";
+	}
+
+	$html.="<p style='font-weight: bold; margin-top:1em;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
+	if(count($tab_sanctions_ele[$login_eleve])>0) {
+		$html.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_sanction."s'>\n";
+		$html.="<tr><th>Nature</th><th>Total</th><th>Non<br />effectué(e)</th></tr>\n";
+		$alt=1;
+		foreach($tab_sanctions_ele[$login_eleve] as $key => $tab) {
+			$alt=$alt*(-1);
+			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($tab['total'])."</td><td>".count($tab['non_effectuee'])."</td></tr>\n";
+		}
+		$html.="</table>\n";
+	}
+	else {
+		$html.="<p>Aucun(e) ".$mod_disc_terme_sanction." en qualité de responsable.</p>\n";
+	}
+
+	$html.="<p style='margin-top:1em;'><a href='#' onclick=\"afficher_div('div_disc_infobulle','y',-100,20);\">Voir en détail</a></p>";
+	/*
+	echo "<pre>";
+	print_r($tab_incidents_ele);
+	echo "</pre>";
+	*/
 	echo "
 <div id='div_disc' style='float:left; width:".$largeur_disc."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['discipline'].";'>".$html."</div>";
 
