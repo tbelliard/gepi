@@ -34,10 +34,26 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 if (getSettingValue("GepiCahierTexteVersion") == '2') {
-    header("Location: ../cahier_texte_2/consultation.php");
-    die();
+	$parametres_url="";
+	if(isset($_GET['year'])) {
+		$parametres_url.="year=".$_GET['year']."&";
+	}
+	if(isset($_GET['month'])) {
+		$parametres_url.="month=".$_GET['month']."&";
+	}
+	if(isset($_GET['day'])) {
+		$parametres_url.="day=".$_GET['day']."&";
+	}
+	if(isset($_GET['login_eleve'])) {
+		$parametres_url.="login_eleve=".$_GET['login_eleve']."&";
+	}
+	if($parametres_url!="") {
+		$parametres_url="?".substr($parametres_url,1);
+	}
+	header("Location: ../cahier_texte_2/consultation.php".$parametres_url);
+	die();
 }
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
