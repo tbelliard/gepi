@@ -123,7 +123,7 @@ function infobulle_photo($eleve_login) {
 
 		$temoin_photo="y";
 
-		$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n',2000);
 
 		$retour.=" <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,20,20);\"";
 		$retour.=">";
@@ -621,6 +621,7 @@ function tab_lignes_adresse($ele_login) {
 
 function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre_affichage_a_eleve_seul="n") {
 	global $mod_disc_terme_incident, $mod_disc_terme_sanction;
+	global $tab_incidents_ele, $tab_mesures_ele, $tab_sanctions_ele;
 
 	$retour="";
 
@@ -693,6 +694,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 
 	$tab_incident=array();
 	$tab_sanction=array();
+	$tab_sanction_non_effectuee=array();
 	$tab_mesure=array();
 	$zone_de_commentaire = "";
 	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
@@ -908,9 +910,23 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 									if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
 										if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
 											$tab_sanction[addslashes($lig_suivi->nature)]++;
+
+											if($lig_suivi->effectuee=="O") {
+												$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]+=0;
+											}
+											else {
+												$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]++;
+											}
 										}
 										else {
 											$tab_sanction[addslashes($lig_suivi->nature)]=1;
+
+											if($lig_suivi->effectuee=="O") {
+												$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]=0;
+											}
+											else {
+												$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]=1;
+											}
 										}
 									}
 								}
@@ -1032,16 +1048,16 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 		$retour.="<p style='font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
 		if(count($tab_sanction)>0) {
 			$retour.="<table class='boireaus' border='1' summary='Totaux ".$mod_disc_terme_sanction."s'>\n";
-			$retour.="<tr><th>Nature</th><th>Total</th></tr>\n";
+			$retour.="<tr><th>Nature</th><th>Total</th><th>Non<br />effectué(e)</th></tr>\n";
 			$alt=1;
 			foreach($tab_sanction as $key => $value) {
 				$alt=$alt*(-1);
-				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td></tr>\n";
+				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".count($tab_sanction_non_effectuee[$key])."</td></tr>\n";
 			}
 			$retour.="</table>\n";
 		}
 		else {
-			$retour.="<p>Aucune mesure prise en qualité de responsable.</p>\n";
+			$retour.="<p>Aucun(e) ".$mod_disc_terme_sanction." en qualité de responsable.</p>\n";
 		}
 		$retour.="</div>\n";
 
@@ -1050,6 +1066,13 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 	}
 	else {
 		$retour="<p>Aucun ".$mod_disc_terme_incident." relevé.</p>\n";
+	}
+
+	$tab_incidents_ele[$ele_login]=$tab_incident;
+	$tab_mesures_ele[$ele_login]=$tab_mesure;
+	foreach($tab_sanction as $key => $value) {
+		$tab_sanctions_ele[$ele_login][$key]['total']=$value;
+		$tab_sanctions_ele[$ele_login][$key]['non_effectuee']=$tab_sanction_non_effectuee[$key];
 	}
 
 	return $retour;
