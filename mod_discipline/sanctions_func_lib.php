@@ -1039,7 +1039,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 			$retour.="</table>\n";
 		}
 		else {
-			$retour.="<p>Aucune mesure prise en qualité de responsable.</p>\n";
+			$retour.="<p>Aucun(e) ".$mod_disc_terme_sanction." en qualité de responsable.</p>\n";
 		}
 		$retour.="</div>\n";
 
