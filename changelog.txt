@@ -10,7 +10,15 @@ Abs2
 - Possibilité d'inclure l'identité et l'adresse du responsable légal 1 dans les exports ODT/ODS de l'onglet Bilan individuel.
 
 Absences et remplacements de professeurs
-- Ajout d'un module de saisie d'absences de professeurs avec possibilité de proposer des remplacements aux professeurs qui n'ont pas cours sur un créneau libéré.
+- Ajout d'un module de saisie d'absences de professeurs avec possibilité de
+  proposer des remplacements aux professeurs qui n'ont pas cours sur un créneau libéré.
+
+Bulletins:
+- Vérification de remplissage des bulletins: Possibilité de définir son propre
+  modèle de texte pour les mails alertant les professeurs que des appréciations
+  ou moyennes sont manquantes.
+  Possibilité d'y prendre en compte la date de conseil de classe définie dans
+  la page Dates événements classes.
 
 Edt:
 - Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi

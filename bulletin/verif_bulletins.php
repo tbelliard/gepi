@@ -48,6 +48,41 @@ if(!getSettingAOui('active_bulletins')) {
 	die();
 }
 
+$editer_modele_mail=isset($_POST['editer_modele_mail']) ? $_POST['editer_modele_mail'] : (isset($_GET['editer_modele_mail']) ? $_GET['editer_modele_mail'] : NULL);
+$valider_modele_mail=isset($_POST['editer_modele_mail']) ? $_POST['editer_modele_mail'] : NULL;
+$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+$per=isset($_POST['per']) ? $_POST['per'] : (isset($_GET['per']) ? $_GET['per'] : NULL);
+$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+
+if(isset($valider_modele_mail)) {
+	$MsgMailVerifRemplissageBulletins=$retour=preg_replace('/(\\\n)+/',"\n",$_POST['MsgMailVerifRemplissageBulletins']);
+	$MsgMailVerifRemplissageBulletins=$retour=preg_replace('/(\\\')+/',"'",$MsgMailVerifRemplissageBulletins);
+	if(!saveSetting("MsgMailVerifRemplissageBulletins", $MsgMailVerifRemplissageBulletins)) {
+		$msg="Erreur lors de l'enregistrement du modèle de message MsgMailVerifRemplissageBulletins<br />";
+	}
+	else {
+		$msg="Modèle de message MsgMailVerifRemplissageBulletins enregistré.<br />";
+	}
+}
+
+$MsgMailVerifRemplissageBulletins=getSettingValue('MsgMailVerifRemplissageBulletins');
+if($MsgMailVerifRemplissageBulletins=="") {
+	$MsgMailVerifRemplissageBulletins="Bonjour(soir) ___NOM_PROF___,
+ 
+Des moyennes et/ou appréciations ne sont pas remplies:
+___LIGNE_APPRECIATIONS_MANQUANTES___
+___LIGNE_MOYENNES_MANQUANTES___
+ 
+Lorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.
+En revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.
+ 
+Je vous serais reconnaissant(e) de bien vouloir les remplir rapidement.
+ 
+D'avance merci.
+-- 
+___NOM_EMETTEUR___";
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Vérification du remplissage des bulletins";
 require_once("../lib/header.inc.php");
@@ -59,6 +94,114 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 }
 
 //debug_var();
+
+if(isset($editer_modele_mail)) {
+	$param_lien="";
+	if(isset($id_classe)) {
+		$param_lien.="id_classe=$id_classe&";
+	}
+	if(isset($per)) {
+		$param_lien.="per=$per&";
+	}
+	if(isset($mode)) {
+		$param_lien.="mode=$mode&";
+	}
+	if($param_lien!="") {
+		$param_lien="?".preg_replace("/&$/", "", $param_lien);
+	}
+
+	echo "<p class=bold><a href='".$_SERVER['PHP_SELF'].$param_lien."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
+	echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='editer_modele_mail' value='y' />
+		<input type='hidden' name='valider_modele_mail' value='y' />
+		<p>Lors de la vérification des moyennes, appréciations,... non remplies, vous pouvez envoyer un message pour alerter les collègues qu'il leur reste peu de temps pour effectuer les saisies manquantes.<br />
+		Ce message peut être personnalisé ici.</p>
+		<p>Modèle de mail&nbsp;: </p>
+		<textarea name='MsgMailVerifRemplissageBulletins' id='MsgMailVerifRemplissageBulletins' cols='80' rows='15'>".stripslashes(getSettingValue('MsgMailVerifRemplissageBulletins'))."</textarea>
+
+		<p><input type='submit' value='Enregistrer' /></p>
+
+		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em>
+		<ul>
+			<li>
+				Vous pouvez utiliser certains 'jokers' dans le texte du message&nbsp;:<p>
+				<ul>
+					<li>___NOM_PROF___&nbsp;: La chaine civilité nom prénom.</li>
+					<!--li>___ENSEIGNEMENT___&nbsp;: La chaine précisant l'enseignement/groupe concerné.</li-->
+					<!--li>___LISTE_ELEVES___&nbsp;: La chaine précisant la liste des élèves concernés par les saisies manquantes.</li-->
+					<li>___LIGNE_APPRECIATIONS_MANQUANTES___&nbsp;: Une ligne correspondant à la chaine<br />
+					<span style='color:green;'>Appréciation(s) manquante(s) en ___ENSEIGNEMENT___ pour ___LISTE_ELEVES___.</span>
+					<li>___LIGNE_MOYENNES_MANQUANTES___&nbsp;: Une ligne correspondant à la chaine<br />
+					<span style='color:green;'>Moyenne(s) manquante(s) en ___ENSEIGNEMENT___ pour ___LISTE_ELEVES___.</span>
+					<li>___DATE_CONSEIL___&nbsp;: La date du conseil de classe si elle est saisie.</li>
+					<li>___NOM_EMETTEUR___&nbsp;: La chaine civilité nom prénom correspondant à celui qui émet le message.</li>
+				</ul>
+			</li>
+			<li>
+				Dans le message, les lignes vides sont supprimées.<br />
+				Pour imposer une ligne vide dans le message, mettez un caractère ESPACE sur la ligne en question.
+			</li>
+		</ul>
+		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>Exemples&nbsp;:</em> Voici des suggestions de modèles de messages&nbsp;:<p>
+		<ul>
+			<li>Exemple 1&nbsp;: <a href='#' onclick=\"document.getElementById('MsgMailVerifRemplissageBulletins').innerHTML=document.getElementById('modele_exemple_1').innerHTML;\">Utiliser ce modèle</a><br />
+			<pre id='modele_exemple_1' style='color:green;'>Bonjour(soir) ___NOM_PROF___,
+ 
+Des moyennes et/ou appréciations ne sont pas remplies:
+___LIGNE_APPRECIATIONS_MANQUANTES___
+___LIGNE_MOYENNES_MANQUANTES___
+ 
+Lorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.
+En revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.
+ 
+Je vous serais reconnaissant(e) de bien vouloir les remplir rapidement.
+ 
+D'avance merci.
+-- 
+___NOM_EMETTEUR___</pre></li>
+			<li>Exemple 2&nbsp;: <a href='#' onclick=\"document.getElementById('MsgMailVerifRemplissageBulletins').innerHTML=document.getElementById('modele_exemple_2').innerHTML;\">Utiliser ce modèle</a><br />
+			<pre id='modele_exemple_2' style='color:green;'>Bonjour(soir) ___NOM_PROF___,
+ 
+Les bulletins doivent être remplis 8 jours avant la date du conseil (soit 8 jours avant le ___DATE_CONSEIL___) pour laisser une semaine au ".getSettingValue('gepi_prof_suivi')." pour faire sa préparation des avis de conseil de classe et pour l'étude des cas sensibles avec la direction.
+ 
+Des moyennes et/ou appréciations ne sont pas remplies:
+___LIGNE_APPRECIATIONS_MANQUANTES___
+___LIGNE_MOYENNES_MANQUANTES___
+ 
+Lorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.
+En revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.
+ 
+Je vous serais reconnaissant(e) de bien vouloir les remplir rapidement.
+ 
+D'avance merci.
+-- 
+___NOM_EMETTEUR___</pre></li>
+		</ul>
+		";
+
+	if(isset($id_classe)) {
+		echo "
+		<input type='hidden' name='id_classe' value='$id_classe' />";
+	}
+	if(isset($per)) {
+		echo "
+		<input type='hidden' name='per' value='$per' />";
+	}
+	if(isset($mode)) {
+		echo "
+		<input type='hidden' name='mode' value='$mode' />";
+	}
+
+	echo "
+	</fieldset>
+</form>";
+
+	require("../lib/footer.inc.php");
+	die();
+}
 
 $tab_date_conseil=array();
 $sql="SELECT id_classe, date_evenement, classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE type='conseil_de_classe' AND date_evenement>='".strftime("%Y-%m-%d %H:%M:%S")."' AND dde.id_ev=ddec.id_ev AND c.id=ddec.id_classe ORDER BY date_evenement;";
@@ -551,6 +694,7 @@ Les saisies/modifications sont possibles.";
 
 	echo "<div style='clear:both;'></div>\n";
 
+	$tab_pp=get_tab_prof_suivi($id_classe);
 
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
@@ -1115,7 +1259,18 @@ Les saisies/modifications sont possibles.";
 		$num=0;
 
 		//echo "<div style='border: 1px solid black'>";
-		echo "<p class='bold'>Récapitulatif&nbsp;:</p>\n";
+		$param_lien="";
+		if(isset($id_classe)) {
+			$param_lien.="id_classe=$id_classe&amp;";
+		}
+		if(isset($per)) {
+			$param_lien.="per=$per&amp;";
+		}
+		if(isset($mode)) {
+			$param_lien.="mode=$mode&amp;";
+		}
+
+		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /><a></p>\n";
 		echo "<table class='boireaus' summary=\"Courriels\">\n";
 		$alt=1;
 
@@ -1125,37 +1280,66 @@ Les saisies/modifications sont possibles.";
 
 			$info_prof=$tab_alerte_prof[$login_prof]['civilite']." ".casse_mot($tab_alerte_prof[$login_prof]['nom'],'maj')." ".casse_mot($tab_alerte_prof[$login_prof]['prenom'],'majf2');
 
-			$message="Bonjour(soir) ".$info_prof.",\n\nDes moyennes et/ou appréciations ne sont pas remplies:\n";
+			$chaine_app_manquante="";
+			$chaine_moy_manquante="";
+			//$message="Bonjour(soir) ".$info_prof.",\n\nDes moyennes et/ou appréciations ne sont pas remplies:\n";
 			foreach($tab_prof['groupe'] as $group_id => $tab_group) {
 				if(isset($tab_group['app_manquante'])) {
-					$message.="Appréciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
+					//$message.="Appréciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
+					$chaine_app_manquante.="Appréciation(s) manquante(s) en ".$tab_alerte_prof[$login_prof]['groupe'][$group_id]['info']." pour ";
 					//echo count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);
+
 					for($loop=0;$loop<count($tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante']);$loop++) {
-						if($loop>0) {$message.=", ";}
+						if($loop>0) {
+							//$message.=", ";
+							$chaine_app_manquante.=", ";
+						}
 						//$message.=$tab_group['app_manquante'][$loop];
-						$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][$loop];
+						//$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][$loop];
+						$chaine_app_manquante.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][$loop];
 					}
-					$message.=".\n";
+					//$message.=".\n";
+					$chaine_app_manquante.=".\n";
 				}
 
 				if(isset($tab_group['moy_manquante'])) {
-					$message.="Moyenne(s) manquante(s) en ".$tab_group['info']." pour ";
+					//$message.="Moyenne(s) manquante(s) en ".$tab_group['info']." pour ";
+					$chaine_moy_manquante.="Moyenne(s) manquante(s) en ".$tab_group['info']." pour ";
 					for($loop=0;$loop<count($tab_group['moy_manquante']);$loop++) {
-						if($loop>0) {$message.=", ";}
+						if($loop>0) {
+							//$message.=", ";
+							$chaine_moy_manquante.=", ";
+						}
 						//$message.=$tab_group['moy_manquante'][$loop];
-						$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][$loop];
+						//$message.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][$loop];
+						$chaine_moy_manquante.=$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][$loop];
 					}
-					$message.=".\n";
+					//$message.=".\n";
+					$chaine_moy_manquante.=".\n";
 				}
 
 			}
 
-			$message.="\nLorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.\n";
+			//$message.="\nLorsqu'un élève n'a pas de note, veuillez saisir un tiret '-' pour signaler qu'il n'y a pas d'oubli de saisie de votre part.\nEn revanche, s'il s'agit d'une erreur d'affectation, vous disposez, en mode Visualisation d'un carnet de notes, d'un lien 'Signaler des erreurs d affectation' pour alerter l'administrateur Gepi sur un problème d'affectation d'élèves.\n";
 
-			$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
+			//$message.="\nJe vous serais reconnaissant(e) de bien vouloir les remplir rapidement.\n\nD'avance merci.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+			$message=stripslashes($MsgMailVerifRemplissageBulletins);
+			$message=preg_replace("/___NOM_PROF___/", $info_prof, $message);
+			//$message=preg_replace("/___ENSEIGNEMENT___/", "", $message);
+			//$message=preg_replace("/___LISTE_ELEVES___/", "", $message);
+			$message=preg_replace("/___LIGNE_APPRECIATIONS_MANQUANTES___/", $chaine_app_manquante, $message);
+			$message=preg_replace("/___LIGNE_MOYENNES_MANQUANTES___/", $chaine_moy_manquante, $message);
+			if(isset($tab_date_conseil[$id_classe]['date'])) {
+				$message=preg_replace("/___DATE_CONSEIL___/", formate_date($tab_date_conseil[$id_classe]['date'], "y2", "court"), $message);
+			}
+			$message=preg_replace("/___NOM_EMETTEUR___/", civ_nom_prenom($_SESSION['login']), $message);
 
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
+			if(in_array($login_prof, $tab_pp)) {
+				echo "<div style='float:right; width:16px;margin:3px;' title=\"Ce professeur est ".getSettingValue('gepi_prof_suivi')." d'élèves de cette classe.\"><img src='../images/bulle_verte.png' width='9' height='9' alt=\"".getSettingValue('gepi_prof_suivi')."\" /></div>";
+			}
 			if($tab_alerte_prof[$login_prof]['email']!="") {
 				if(check_mail($tab_alerte_prof[$login_prof]['email'])) {
 					$tab_num_mail[]=$num;
@@ -1168,6 +1352,7 @@ Les saisies/modifications sont possibles.";
 			else {
 				echo $info_prof;
 			}
+
 			//echo "<br />";
 			echo "</td>\n";
 			echo "<td rowspan='2'>\n";
