@@ -734,7 +734,7 @@ echo add_token_field();
 					}
 				}
 				echo "</td>\n";
-				echo "<td bgcolor=\"$couleur_fond\" style='text-align:center;'>Bulletin<span id='span_bull_per_$i'></span><br /><a href='#' onclick=\"vider_bulletins_periode($i);return false;\" title=\"Si vous souhaitez vider les moyennes saisies sur les bulletins (*), cliquez ici.\n\n(*) par exemple parce que vous avez fait une recopie des moyennes trop tôt avant la fin de période et qu'elles donne l'illusion que vous avez fini les saisies de notes pour cette période de notes.\n\nN'oubliez pas d'enregistrer après avoir vidé.\"><img src='../images/icons/trash.png' class='icone16' alt='Vider' /></a></td>\n";
+				echo "<td bgcolor=\"$couleur_fond\" style='text-align:center;'>Bulletin<span id='span_bull_per_$i'></span><br /><a href='#' onclick=\"vider_bulletins_periode($i);return false;\" title=\"Si vous souhaitez vider les moyennes saisies sur les bulletins (*), cliquez ici.\n\n(*) par exemple parce que vous avez fait une recopie des moyennes trop tôt avant la fin de période et qu'elles donnent l'illusion que vous avez fini les saisies de notes pour cette période de notes.\n\nN'oubliez pas d'enregistrer après avoir vidé.\"><img src='../images/icons/trash.png' class='icone16' alt='Vider' /></a></td>\n";
 			} else {
 				//echo "<td>&nbsp;</td>\n";
 				echo "<th style='text-align:center;'>Carnet<br />de notes</th><th style='text-align:center;'>Bulletin<span id='span_bull_per_$i'></span></th>\n";
