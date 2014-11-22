@@ -608,7 +608,7 @@ elseif(!isset($valide_select_eleves)) {
 				}
 			//echo "</span>\n";
 
-			echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+			echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 			$titre_infobulle="Fonction cell_ajustee()\n";
 			$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espérons;o).<br />\n";
