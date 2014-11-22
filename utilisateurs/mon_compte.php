@@ -699,7 +699,7 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 
 		for($loop=1;$loop<count($accueil_simpl_afficher_grp)+1;$loop++) {
 			if(isset($accueil_simpl_afficher_grp_rang[$loop])) {
-				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$loop], $accueil_simpl_afficher_grp_rang[$loop])) {
+				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$loop], sprintf("%02d", $accueil_simpl_afficher_grp_rang[$loop]))) {
 					$nb_reg++;
 				}
 				else{
