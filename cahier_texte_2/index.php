@@ -146,6 +146,7 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 						return false;
 				\">Voir les dernières notices</button>\n";
 echo "<br />";
+// Comment tester qu'une fenêtre est actuellement affichée?
 echo "<button style='width: 200px;' onclick=\"javascript:
 						getWinDernieresNotices().setLocation(155, 40);
 						getWinDernieresNotices().hide();
@@ -153,7 +154,32 @@ echo "<button style='width: 200px;' onclick=\"javascript:
 						getWinEditionNotice().setLocation(160, 334);
 						getWinEditionNotice().setSize(GetWidth()-360, GetHeight() - 160);
 						getWinListeNotices().setLocation(160, 0);
-						getWinListeNotices().setSize(330, GetHeight() - 160)
+						getWinListeNotices().setSize(330, GetHeight() - 160);
+						if(document.getElementById('win_banque_texte')) {
+							if(document.getElementById('win_banque_texte').style.display!='none') {
+								getWinBanqueTexte().setLocation(10, 40);
+							}
+						}
+						if(document.getElementById('win_car_spec')) {
+							if(document.getElementById('win_car_spec').style.display!='none') {
+								getWinCarSpec().setLocation(10, 340);
+							}
+						}
+						if(document.getElementById('win_archives')) {
+							if(document.getElementById('win_archives').style.display!='none') {
+								getWinArchives().setLocation(100, 400);
+							}
+						}
+						if(document.getElementById('win_liste_notices_privees')) {
+							if(document.getElementById('win_liste_notices_privees').style.display!='none') {
+								getWinListeNoticesPrivees().setLocation(0, 100);
+							}
+						}
+						if(document.getElementById('win_dev_classe')) {
+							if(document.getElementById('win_dev_classe').style.display!='none') {
+								getWinDevoirsDeLaClasse().setLocation(0, 304);
+							}
+						}
 						return false;
 				\">Repositionner les fenetres</button>\n";
 echo "</td>";
