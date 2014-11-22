@@ -1769,6 +1769,8 @@ elseif($mode=="afficher_edt") {
 
 		echo $html;
 
+		/*
+		// Pour tester:
 		$mode_infobulle="y";
 		$html=affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe, $login_prof);
 
@@ -1777,7 +1779,7 @@ elseif($mode=="afficher_edt") {
 		//$tabdiv_infobulle[]=creer_div_infobulle('div_edt',$titre_infobulle,"",$texte_infobulle,"",60,0,'y','y','n','n');
 		$tabdiv_infobulle[]=creer_div_infobulle('div_edt',$titre_infobulle,"",$texte_infobulle,"",($largeur_edt+100)."px",0,'y','y','n','n', 30);
 		echo "<p><a href='#' onclick=\"afficher_div('div_edt','y',-20,20)\">EDT en infobulle</a></p>";
-
+		*/
 	}
 
 
