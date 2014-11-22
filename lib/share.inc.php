@@ -10622,6 +10622,10 @@ function necessaire_saisie_avertissement_fin_periode() {
 		$chaine_js.=");";
 	}
 
+	if(!isset($chaine_js)) {
+		$chaine_js="var tab_id_type_avertissement=new Array();";
+	}
+
 	$retour="
 <script type='text/javascript'>
 
