@@ -61,6 +61,36 @@ if(!getSettingAOui('active_mod_abs_prof')) {
 	die();
 }
 
+$mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+
+if((isset($mode))&&($mode=="suppr_abs")&&(isset($_POST['suppr_abs']))) {
+	check_token();
+
+	$msg="";
+	$suppr_abs=$_POST['suppr_abs'];
+
+	$nb_suppr=0;
+	for($loop=0;$loop<count($suppr_abs);$loop++) {
+		$sql="DELETE FROM abs_prof_remplacement WHERE id_absence='".$suppr_abs[$loop]."';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$del) {
+			$msg.="Erreur lors de la suppression des propositions de remplacements associées à l'absence n°".$suppr_abs[$loop].".<br />";
+		}
+		else {
+			$sql="DELETE FROM abs_prof WHERE id='".$suppr_abs[$loop]."';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$del) {
+				$msg.="Erreur lors de la suppression de l'absence n°".$suppr_abs[$loop].".<br />";
+			}
+			else {
+				$nb_suppr++;
+			}
+		}
+	}
+
+	$msg.=$nb_suppr." absence(s) supprimée(s).<br />";
+}
+
 if($_SESSION['statut']=='professeur') {
 	//if((isset($_POST['is_posted']))&&($_POST['is_posted']==1)) {
 	if(isset($_POST['is_posted'])) {
@@ -134,6 +164,52 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
 //debug_var();
+
+if((($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('AbsProfSaisieAbsScol')))||
+	(($_SESSION['statut']=="cpe")&&(getSettingAOui('AbsProfSaisieAbsCpe'))))&&
+	(isset($mode))&&($mode=="suppr_abs")) {
+
+	echo "<a name=\"debut_de_page\"></a>
+<p class='bold'>
+	<a href='".$_SERVER['PHP_SELF']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+</p>
+
+<h2>Absences de professeurs</h2>";
+
+	$sql="SELECT * FROM abs_prof WHERE date_fin>='".strftime("%Y-%m-%d %H:%M:%S")."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "
+<p>Aucune absence à venir n'est saisie.</p>";
+	}
+	else {
+		echo "
+<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='mode' value='suppr_abs' />
+
+		<p>Les absences à venir sont les suivantes.<br />
+		Cochez les absences que vous souhaitez supprimer.<br />
+		Les propositions de remplacements et affichages associés seront supprimés également.</p>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			echo "<p><input type='checkbox' name='suppr_abs[]' id='suppr_abs_$cpt' value='$lig->id' /><label for='suppr_abs_$cpt'> Absence de ".civ_nom_prenom($lig->login_user)." entre le ".formate_date($lig->date_debut, "y2", "court")." et le ".formate_date($lig->date_fin, "y2", "court")."</label></p>
+			<div style='margin-left:2em; color:green;'".$lig->description."</div>";
+			$cpt++;
+		}
+		echo "
+		<p><input type='submit' value=\"Supprimer les absences cochées\" /></p>
+	</fieldset>
+</form>";
+
+
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
 
 echo "<a name=\"debut_de_page\"></a>
 <p class='bold'>
@@ -461,8 +537,18 @@ if(($_SESSION['statut']=="administrateur")||
 	}
 
 	echo "
-	<li><p><a href='afficher_remplacements.php'>Afficher les remplacements validés</a> et informer ou non les familles.</p></li>
-	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Supprimer des absences saisies</li>
+	<li><p><a href='afficher_remplacements.php'>Afficher les remplacements validés</a> et informer ou non les familles.</p></li>";
+	$sql="SELECT * FROM abs_prof WHERE date_fin>='".strftime("%Y-%m-%d %H:%M:%S")."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "
+	<li>Supprimer des absences à venir saisies&nbsp;: Aucune absence à venir n'est saisie.</li>";
+	}
+	else {
+		echo "
+	<li><a href='".$_SERVER['PHP_SELF']."?mode=suppr_abs'>Supprimer des absences à venir saisies</a></li>";
+	}
+	echo "
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date.</li>
 </ul>";
 
