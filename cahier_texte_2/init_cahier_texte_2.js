@@ -1143,7 +1143,7 @@ function getWinCarSpec() {
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:10,
-				left:40,
+				left:340,
 				width:300,
 				height:200}
 			);
