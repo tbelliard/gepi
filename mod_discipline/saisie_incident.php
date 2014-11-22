@@ -752,6 +752,7 @@ $headers);
 						//for($i=0;$i<count($mesure_demandee);$i++) {
 						//}
 
+						$msg_suppr_doc_joint="";
 						unset($suppr_doc_joint);
 						$suppr_doc_joint=isset($_POST['suppr_doc_joint_'.$i]) ? $_POST['suppr_doc_joint_'.$i] : array();
 						for($loop=0;$loop<count($suppr_doc_joint);$loop++) {
@@ -763,9 +764,14 @@ $headers);
 								if(!unlink($fichier_courant)) {
 									$msg.="Erreur lors de la suppression de $fichier_courant<br />";
 								}
+								else {
+									$msg_suppr_doc_joint="\nFichier joint supprimé : ".$suppr_doc_joint[$loop]."\n";
+								}
 							}
 						}
+						$texte_mail.=$msg_suppr_doc_joint;
 
+						$msg_doc_joint="";
 						unset($document_joint);
 						$document_joint=isset($_FILES["document_joint_".$i]) ? $_FILES["document_joint_".$i] : NULL;
 						if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
@@ -837,10 +843,22 @@ $headers);
 									}
 
 									$res_copy=copy("$source_file" , "$dest_file");
-									if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
+									if(!$res_copy) {
+										$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";
+									}
+									else {
+										$url_racine_gepi=getSettingValue('url_racine_gepi');
+										if($url_racine_gepi) {
+											$msg_doc_joint.="\nAjout d'un document : ".$url_racine_gepi.preg_replace("#^..#", "", $dest_file)."\n";
+										}
+										else {
+											$msg_doc_joint.="\nAjout d'un document : ".remplace_accents($document_joint['name'], "all")."\n";
+										}
+									}
 								}
 							}
 						}
+						$texte_mail.=$msg_doc_joint;
 
 						if(count($mesure_demandee)>0) {
 							if (isset($NON_PROTECT["travail_pour_mesure_demandee_".$i])){
@@ -923,7 +941,7 @@ $headers);
 						$msg.="Clôture de l'".$mod_disc_terme_incident." n°$id_incident.<br />\n";
 					}
 				}
-	
+
 				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
