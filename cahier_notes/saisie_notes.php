@@ -875,13 +875,13 @@ $nb_dev_sous_cont = 0;
 if ($id_devoir == 0) {
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post name=\"form1b\">\n";
 	echo "<fieldset style=\"padding-top: 0px; padding-bottom: 0px;  margin-left: 0px; margin-right: 100px;\">\n";
-	echo "<table summary='Paramètres'><tr><td>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :
-	</td><td><input type=\"checkbox\" name=\"affiche_comment\"  ";
+	echo "<table summary='Paramètres'><tr><td><label for='affiche_comment'>Masquer les colonnes \"commentaires\" non vides (mode visualisation uniquement) :</label>
+	</td><td><input type=\"checkbox\" name=\"affiche_comment\" id='affiche_comment' ";
 	if ($_SESSION['affiche_comment'] != 'yes') echo "checked";
 	echo " /></td><td><input type=\"submit\" name=\"ok\" value=\"OK\" /></td></tr>\n";
 	$nb_dev_sous_cont = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "select d.id from cn_devoirs d, cn_conteneurs c where (d.id_conteneur = c.id and c.parent='$id_conteneur')"));
 	if ($nb_dev_sous_cont != 0) {
-		echo "<tr><td>Afficher les évaluations des \"sous-".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
+		echo "<tr><td><label for='affiche_tous'>Afficher les évaluations des \"sous-".htmlspecialchars(my_strtolower(getSettingValue("gepi_denom_boite")))."s\" : </label></td><td><input type=\"checkbox\" id='affiche_tous' name=\"affiche_tous\"  ";
 		if ($_SESSION['affiche_tous'] == 'yes') {echo "checked";}
 		echo " /></td><td></td></tr>\n";
 	}
