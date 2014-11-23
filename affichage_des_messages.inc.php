@@ -2,7 +2,7 @@
 //debug_var();
 // suppression d'un message du panneau d'affichage
 if (isset($_POST['supprimer_message'])) {
-	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."'";
+	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."' AND login_destinataire='".$_SESSION['login']."'";
            
         $resultat = mysqli_query($mysqli, $r_sql);
 }
