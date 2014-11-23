@@ -2,9 +2,18 @@
 //debug_var();
 // suppression d'un message du panneau d'affichage
 if (isset($_POST['supprimer_message'])) {
-	$r_sql="DELETE FROM `messages` WHERE `id`='".$_POST['supprimer_message']."'";
-           
-        $resultat = mysqli_query($mysqli, $r_sql);
+	if(!isset($msg)) {
+		$msg="";
+	}
+
+	$r_sql="DELETE FROM `messages` WHERE id='".$_POST['supprimer_message']."' AND login_destinataire='".$_SESSION['login']."'";
+	$resultat = mysqli_query($mysqli, $r_sql);
+	if(!$resultat) {
+		$msg.="Erreur lors de la suppression du message.<br />";
+	}
+	else {
+		$msg.="Message supprimé ".strftime("%d/%m/%Y à %H:%M:%S").".<br />";
+	}
 }
 
 
