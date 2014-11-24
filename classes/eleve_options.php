@@ -71,7 +71,8 @@ if($_SESSION['statut']=="scolarite") {
 include "../lib/periodes.inc.php";
 
 
-if($_SESSION['statut']=="administrateur") {
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	if (isset($is_posted)) {
 		check_token();
 		$msg = '';
@@ -182,7 +183,8 @@ if(mysqli_num_rows($res_ele_tmp)>0){
 // =================================
 
 
-if($_SESSION['statut']=="administrateur"){
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 }
 //**************** EN-TETE **************************************
@@ -198,14 +200,16 @@ if(!isset($quitter_la_page)) {
 	echo "<form action='eleve_options.php' name='form1' method='post'>\n";
 
 	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\"";
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	}
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 	if("$login_eleve_prec"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_prec'";
-		if($_SESSION['statut']=="administrateur"){
+		if(($_SESSION['statut']=="administrateur")||
+		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		}
 		echo ">Elève précédent</a>";
@@ -238,7 +242,8 @@ if(!isset($quitter_la_page)) {
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 	//echo " | <select name='login_eleve' onchange='document.form1.submit()'>\n";
 	echo " | <select name='login_eleve' id='login_eleve'";
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo " onchange=\"confirm_changement_eleve(change, '$themessage');\"";
 	}
 	echo ">\n";
@@ -247,7 +252,8 @@ if(!isset($quitter_la_page)) {
 
 	if("$login_eleve_suiv"!="0"){
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;login_eleve=$login_eleve_suiv'";
-		if($_SESSION['statut']=="administrateur"){
+		if(($_SESSION['statut']=="administrateur")||
+		(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 		}
 		echo ">Elève suivant</a>";
@@ -261,7 +267,8 @@ else{
 	// Après modification éventuelle, il faut quitter cette page.
 	//echo "<p class=bold><a href=\"#\" onclick=\"return confirm_abandon (this, change, '$themessage');\">Refermer la page</a></p>\n";
 	//echo "<p class=bold><a href=\"#\" onclick=\"if(return confirm_abandon (this, change, '$themessage')){self.close()};\">Refermer la page</a></p>\n";
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<p class=bold><a href=\"#\" onclick=\"confirm_close (this, change, '$themessage');\">Refermer la page</a></p>\n";
 	}
 	else{
@@ -298,7 +305,8 @@ else{
 
 //=============================
 
-if($_SESSION['statut']=="administrateur"){
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	echo "<form action='eleve_options.php' name='form2' method=post>\n";
 
 	echo add_token_field();
@@ -338,7 +346,8 @@ else {
 }
 echo "</h3>\n";
 
-if($_SESSION['statut']=="administrateur"){
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	//echo "<p>Pour valider les modifications, cliquez sur le bouton qui apparait en bas de la page.</p>\n";
 	echo "<p>Pour valider les modifications, cliquez sur le bouton.</p>\n";
 
@@ -379,7 +388,8 @@ while ($j < $nb_periode) {
 	// MODIF: boireaus
 	//echo "<th><b>".$nom_periode[$j]."</b></th>";
 	echo "<th><b>".$nom_periode[$j]."</b>";
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<br />\n";
 		//echo "<input type='button' name='coche_col_$j' id='id_coche_col_$j' value='Coche' onClick='coche($j,\"col\")' />/\n";
 		//echo "<input type='button' name='decoche_col_$j' id='id_decoche_col_$j' value='Décoche' onClick='decoche($j,\"col\")' />\n";
@@ -403,7 +413,8 @@ while ($j < $nb_periode) {
 }
 //echo "<th>&nbsp;</th>\n";
 
-if($_SESSION['statut']=="administrateur"){
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 	echo "<th>\n";
 	echo "<a href='javascript:$chaine_coche'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
 	echo "<a href='javascript:$chaine_decoche'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
@@ -412,6 +423,8 @@ if($_SESSION['statut']=="administrateur"){
 
 echo "</tr>\n";
 
+$acces_edit_group=acces("/groupes/edit_group.php", $_SESSION['statut']);
+$acces_edit_eleves=acces("/groupes/edit_eleves.php", $_SESSION['statut']);
 $nb_erreurs=0;
 $i=0;
 $alt=1;
@@ -448,8 +461,14 @@ while ($i < $nombre_ligne) {
 
 	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
-	if(acces("/groupes/edit_group.php", $_SESSION['statut'])) {
-		echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif : Éditer cet enseignement.'>";
+	if($acces_edit_group) {
+		echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title=\"$texte_alternatif : Éditer cet enseignement.\">";
+		echo $nom_groupe;
+		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
+		echo "</a>";
+	}
+	elseif(($acces_edit_eleves)&&($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes'))) {
+		echo "<a href='../groupes/edit_eleves.php?id_groupe=$id_groupe&amp;id_classe=$id_classe' title=\"$texte_alternatif : Consulter/modifier la liste des élèves cet enseignement.\">";
 		echo $nom_groupe;
 		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
 		echo "</a>";
@@ -505,7 +524,8 @@ while ($i < $nombre_ligne) {
 				echo "<td style='text-align:center'>";
 				if($temoin!="") {
 					echo $temoin;
-					if($_SESSION['statut']=="administrateur") {
+					if(($_SESSION['statut']=="administrateur")||
+					(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 						echo "<input type='hidden' name='".$id_groupe."_".$j."' value='y' />";
 					}
 					else {
@@ -513,7 +533,8 @@ while ($i < $nombre_ligne) {
 					}
 				}
 				else {
-					if($_SESSION['statut']=="administrateur") {
+					if(($_SESSION['statut']=="administrateur")||
+					(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 						$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
 						echo "<a href='#' alt='$msg_erreur' title='$msg_erreur'><font color='red'>ERREUR</font></a>";
 					}
@@ -556,7 +577,8 @@ while ($i < $nombre_ligne) {
 			*/
 
 			echo "<td style='text-align:center'>\n";
-			if($_SESSION['statut']=="administrateur"){
+			if(($_SESSION['statut']=="administrateur")||
+			(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();' value='y' ";
 				if (mysqli_num_rows($test)>0) {
 					echo "checked ";
@@ -564,10 +586,14 @@ while ($i < $nombre_ligne) {
 				echo "/>\n";
 			}
 			else {
+				echo "<input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();' value='y' style='display:none; '";
 				if (mysqli_num_rows($test)==0) {
+					echo "/>\n";
 					echo "&nbsp;\n";
 				}
 				else {
+					echo "checked ";
+					echo "/>\n";
 					echo "<img src='../images/enabled.png' width='15' height='15' alt='Inscrit' />\n";
 				}
 			}
@@ -623,7 +649,8 @@ while ($i < $nombre_ligne) {
 	}
 	//=========================
 	// AJOUT: boireaus
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "<td>\n";
 		//echo "<input type='button' name='coche_lig_$i' value='C' onClick='modif_case($i,\"lig\",true)' />/\n";
 		//echo "<input type='button' name='decoche_lig_$i' value='D' onClick='modif_case($i,\"lig\",false)' />\n";
@@ -649,9 +676,13 @@ while ($j < $nb_periode) {
 
 	$j++;
 }
-echo "<th>\n";
-echo "&nbsp;";
-echo "</th>\n";
+
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
+	echo "<th>\n";
+	echo "&nbsp;";
+	echo "</th>\n";
+}
 echo "</tr>\n";
 
 echo "</table>\n";
@@ -740,7 +771,8 @@ echo "<script type='text/javascript' language='javascript'>
 
 if($nb_erreurs>0){
 	echo "<p style='color:red;'>Cet élève est affecté dans des groupes sur des périodes pour lesquelles il n'est pas dans la classe.<br />";
-	if($_SESSION['statut']=="administrateur"){
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 		echo "Pour supprimer l'élève de ces groupes, validez le présent formulaire.";
 	}
 	else{
@@ -750,7 +782,8 @@ if($nb_erreurs>0){
 }
 //============================================
 
-if($_SESSION['statut']=="administrateur"){
+if(($_SESSION['statut']=="administrateur")||
+(($_SESSION['statut']=="scolarite")&&(getSettingAOui('ScolEditElevesGroupes')))) {
 ?>
 	<p align='center'><input type='submit' value='Enregistrer les modifications' /></p>
 	<input type='hidden' name='id_classe' value='<?php echo $id_classe;?>' />
