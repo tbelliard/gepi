@@ -301,9 +301,12 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 if($_SESSION['statut']=='administrateur') {
-	echo "<p class='bold'><a href='../classes/classes_const.php";
 	if(isset($id_classe[0])) {
+		echo "<p class='bold'><a href='../classes/classes_const.php";
 		echo "?id_classe=".$id_classe[0];
+	}
+	else {
+		echo "<p class='bold'><a href='../classes/index.php";
 	}
 	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
