@@ -71,6 +71,10 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 	if(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
 		echo "| <a href='dates_classes.php' title=\"Définir des événements particuliers pour les classes (conseils de classe, arrêt des notes,...).\">Événements classe</a>";
 	}
+
+	if((getSettingAOui("active_mod_engagements"))&&(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut']))) {
+		echo "| <a href='../mod_engagements/saisie_engagements.php'>Saisir les engagements </a>";
+	}
 ?>
 </p>
 <p style='margin-top: 10px;'>
