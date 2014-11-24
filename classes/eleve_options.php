@@ -448,10 +448,16 @@ while ($i < $nombre_ligne) {
 
 	$texte_alternatif.=" (".$liste_classes_du_groupe.")";
 
-	echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif : Éditer cet enseignement.'>";
-	echo $nom_groupe;
-	echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
-	echo "</a>";
+	if(acces("/groupes/edit_group.php", $_SESSION['statut'])) {
+		echo "<a href='../groupes/edit_group.php?id_groupe=$id_groupe&amp;id_classe=$id_classe&amp;mode=groupe' title='$texte_alternatif : Éditer cet enseignement.'>";
+		echo $nom_groupe;
+		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
+		echo "</a>";
+	}
+	else {
+		echo $nom_groupe;
+		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
+	}
 	echo "</td>\n";
 	$j = 1;
 	while ($j < $nb_periode) {
