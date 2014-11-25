@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -73,7 +73,7 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 //if (!checkAccess()) {
 //if ((!checkAccess())&&($_SESSION['statut']!='autre')) {
 if (($_SESSION['statut']!='autre')&&(!checkAccess())) {
-	// Si in reste sur une page sans se déconnecter, on n'envoie pas, en fin de session, de redir, ni de message par mail du type:
+	// Si on reste sur une page sans se déconnecter, on n'envoie pas, en fin de session, de redir, ni de message par mail du type:
 	/*
 	** Alerte automatique sécurité Gepi **
 
@@ -178,7 +178,7 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			else {
-                echo "<img src='../images/enabled.png'  style='width:20px; height:20px' title='Lu/vu' alt='Activer' />";
+				echo "<img src='../images/enabled.png'  style='width:20px; height:20px' title='Lu/vu' alt='Activer' />";
 			}
 		}
 		else {
@@ -194,6 +194,11 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 	die();
 }
 
+$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+	$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+}
+
 // Relancer un message : le marquer comme non-lu
 if((isset($mode))&&($mode=='relancer')) {
 	check_token();
@@ -207,7 +212,7 @@ if((isset($mode))&&($mode=='relancer')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			else {
-                echo "<img src='../images/disabled.png' style='width:16px; height:16px' alt='Désactiver' title='Lu/vu' />";
+				echo "<img src='../images/disabled.png' style='width:16px; height:16px' alt='Désactiver' title='Lu/vu' />";
 			}
 		}
 		else {
@@ -236,7 +241,7 @@ if((isset($mode))&&($mode=='clore')) {
 				echo "<span style='color:red'>Erreur</span>";
 			}
 			elseif($retour==2) {
-                echo "<img src='../images/icons/securite.png' style='width:16px; height:16px' alt='Message traité' title='Message clos/traité.' />";
+				echo "<img src='../images/icons/securite.png' style='width:16px; height:16px' alt='Message traité' title='Message clos/traité.' />";
 			}
 			else {
 				echo "<img src='../images/disabled.png' style='width:20px; height:20px' alt='Non lu' title='Non lu/vu' />";
@@ -366,6 +371,32 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 
 				if($retour!="") {
 					$nb_reg++;
+
+					// 20141125
+					if($envoi_mail_actif=="y") {
+						if(isset($_POST['doubler_par_envoi_mail'])) {
+							$mail_dest=get_mail_user($value);
+							if(check_mail($mail_dest)) {
+								$subject = "[GEPI]: $sujet";
+								$texte_mail=preg_replace('/(\\\n)+/',"\n",$message);
+								$texte_mail=preg_replace('/(\\\')+/',"'",$texte_mail);
+								$texte_mail.="
+-- 
+".civ_nom_prenom($_SESSION['login']);
+
+								$headers = "";
+								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								}
+
+								// On envoie le mail
+								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+								if($envoi) {
+									$msg.="Mail envoyé pour ".civ_nom_prenom($value).".<br />";
+								}
+							}
+						}
+					}
 				}
 				else {
 					//$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest[$loop]).".<br />";
@@ -385,8 +416,34 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 			if($retour!="") {
 				$msg.="Message pour ".civ_nom_prenom($login_dest)." enregistré.<br />";
 
+				// 20141125
+				if($envoi_mail_actif=="y") {
+					if(isset($_POST['doubler_par_envoi_mail'])) {
+						$mail_dest=get_mail_user($login_dest);
+						if(check_mail($mail_dest)) {
+							$subject = "[GEPI]: $sujet";
+							$texte_mail=preg_replace('/(\\\n)+/',"\n",$message);
+							$texte_mail=preg_replace('/(\\\')+/',"'",$texte_mail);
+							$texte_mail.="
+-- 
+".civ_nom_prenom($_SESSION['login']);
+
+							$headers = "";
+							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							}
+
+							// On envoie le mail
+							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+							if($envoi) {
+								$msg.="Mail envoyé.<br />";
+							}
+						}
+					}
+				}
+
 				if(isset($_GET['envoi_js'])) {
-                    echo "<img src='$gepiPath/images/icons/mail_succes.png' style='width:16px; height:16px' alt='Succès title='Message envoyé' />";
+					echo "<img src='$gepiPath/images/icons/mail_succes.png' style='width:16px; height:16px' alt='Succès title='Message envoyé' />";
 					die();
 				}
 			}
@@ -394,7 +451,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 				$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($login_dest).".<br />";
 
 				if(isset($_GET['envoi_js'])) {
-                    echo "<img src='$gepiPath/images/icons/mail_echec.png' style='width:16px; height:16px' alt='Échec' title='Erreur lors de l envoi du message' />";
+					echo "<img src='$gepiPath/images/icons/mail_echec.png' style='width:16px; height:16px' alt='Échec' title='Erreur lors de l envoi du message' />";
 					die();
 				}
 			}
@@ -624,6 +681,20 @@ Par exemple, réclamer une punition à un élève." /></a></div>
 					}
 				?></textarea></td>
 			</tr>
+<?php
+	if($envoi_mail_actif=="y") {
+		echo "
+			<tr>
+				<th>Mail</th>
+				<td>
+					<input type='checkbox' name='doubler_par_envoi_mail' id='doubler_par_envoi_mail' value='y' onchange=\"checkbox_change('doubler_par_envoi_mail')\" /><label for='doubler_par_envoi_mail' id='texte_doubler_par_envoi_mail' title=\"Envoyer un mail en plus du message d'alerte dans Gepi...
+... sous réserve que le ou les destinataires aient une adresse mail renseignée dans Gepi.
+
+Le mail sera envoyé sur le champ... sans tenir compte d'un éventuel délai avant visibilité défini ci-dessous.\"> Envoyer en plus un mail</label>
+				</td>
+			</tr>";
+	}
+?>
 			<tr>
 				<th title="Une date de visibilité permet par exemple aux cpe/surveillants de saisir en fin de journée un message destiné aux professeurs de telle classe pour qu'ils envoient au bureau CPE tel élève le lendemain à 8h.
 Avec une date de visibilité pour le lendemain, le message ne dérangera pas les professeurs pendant qu'ils saisissent des notes ou leur cahier de textes la veille.
@@ -658,6 +729,8 @@ Ils risqueraient de cocher le message comme vu la veille et d'oublier le lendema
 <p><br /></p>
 
 <?php
+echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
+
 $titre_infobulle="Choix des destinataires";
 $texte_infobulle="<p>Cochez les destinataires de votre message et validez.</p>";
 $tab_statut=array('professeur', 'scolarite', 'cpe', 'administrateur', 'autre');
