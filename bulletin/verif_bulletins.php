@@ -55,8 +55,8 @@ $per=isset($_POST['per']) ? $_POST['per'] : (isset($_GET['per']) ? $_GET['per'] 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 if(isset($valider_modele_mail)) {
-	$MsgMailVerifRemplissageBulletins=$retour=preg_replace('/(\\\n)+/',"\n",$_POST['MsgMailVerifRemplissageBulletins']);
-	$MsgMailVerifRemplissageBulletins=$retour=preg_replace('/(\\\')+/',"'",$MsgMailVerifRemplissageBulletins);
+	$MsgMailVerifRemplissageBulletins=preg_replace('/(\\\n)+/',"\n",$_POST['MsgMailVerifRemplissageBulletins']);
+	$MsgMailVerifRemplissageBulletins=preg_replace('/(\\\')+/',"'",$MsgMailVerifRemplissageBulletins);
 	if(!saveSetting("MsgMailVerifRemplissageBulletins", $MsgMailVerifRemplissageBulletins)) {
 		$msg="Erreur lors de l'enregistrement du modèle de message MsgMailVerifRemplissageBulletins<br />";
 	}
