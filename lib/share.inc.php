@@ -701,9 +701,10 @@ function generate_unique_login_old($_nom, $_prenom, $_mode, $_casse='') {
  *
  * @param string $login login de l'utilisateur
  * @param integer $id_classe Id de la classe
+ * @param string $format Format d'affichage (par défaut, c'est le paramétrage lié à la classe)
  * @return string nom, prénom, civilité formaté
  */
-function affiche_utilisateur($login,$id_classe) {
+function affiche_utilisateur($login,$id_classe, $format="") {
 	global $mysqli;
 	$sql = "select nom, prenom, civilite from utilisateurs where login = '".$login."';";
 	//echo "$sql<br />";
@@ -719,24 +720,27 @@ function affiche_utilisateur($login,$id_classe) {
 		$civilite = $obj->civilite;
 		$resultat->close();
 
-		$sql_format = "select format_nom from classes where id = '".$id_classe."'";
-		$resultat_format = mysqli_query($mysqli, $sql_format); 
-		if($resultat_format->num_rows > 0) {
-			$obj_format = $resultat_format->fetch_object();
-			$format = $obj_format->format_nom;
-			$result = "";
-			$i='';
-			if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) 
-				  AND ($prenom != '')) {
-				$temp = explode("-", $prenom);
-				$i = mb_substr($temp[0], 0, 1);
-				if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
-				$i .= ". ";
+		if(($format=="")||(!in_array($format, array('np', 'pn', 'in', 'ni', 'cnp', 'cpn', 'cin', 'cni', 'cn')))) {
+			$sql_format = "select format_nom from classes where id = '".$id_classe."'";
+			$resultat_format = mysqli_query($mysqli, $sql_format); 
+			if($resultat_format->num_rows > 0) {
+				$obj_format = $resultat_format->fetch_object();
+				$format = $obj_format->format_nom;
+				//$result = "";
+				$resultat_format->close();
 			}
-			$resultat_format->close();
+			else {
+				$format="";
+			}
 		}
-		else {
-			$format="";
+
+		$i='';
+		if ((($format == 'ni') OR ($format == 'in') OR ($format == 'cni') OR ($format == 'cin')) 
+			  AND ($prenom != '')) {
+			$temp = explode("-", $prenom);
+			$i = mb_substr($temp[0], 0, 1);
+			if (isset($temp[1]) and ($temp[1] != '')) $i .= "-".mb_substr($temp[1], 0, 1);
+			$i .= ". ";
 		}
 
 		$result="";
@@ -2220,6 +2224,7 @@ function get_class_periode_from_ele_login($ele_login){
 			$tab_classe['periode'][$lig_tmp->periode]['classe']=$lig_tmp->classe;
 
 			$tab_classe['classe'][$lig_tmp->id_classe]['periode'][]=$lig_tmp->periode;
+			$tab_classe['classe'][$lig_tmp->id_classe]['classe']=$lig_tmp->classe;
 		}
 		$res_class->close();
 	}
@@ -5278,10 +5283,15 @@ function get_date_slash_from_mysql_date($mysql_date, $avec_nom_jour="") {
  * @return date $mysql_date date (aaaa-mm-jj HH:MM:SS)
  * @todo on a déjà cette fonction
  */
-function get_mysql_date_from_slash_date($slash_date) {
+function get_mysql_date_from_slash_date($slash_date, $avec_HHMMSS="y") {
 	$tmp_tab=explode("/",$slash_date);
 	if(isset($tmp_tab[2])) {
-		return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00";
+		if($avec_HHMMSS=="y") {
+			return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00";
+		}
+		else {
+			return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0];
+		}
 	}
 	else {
 		return "Date '$slash_date' mal formatée?";
@@ -12713,6 +12723,19 @@ function acces_abs_eleve($login_user, $statut_user, $login_eleve) {
 	else {
 		// Cas 'autre' à voir
 		return false;
+	}
+}
+
+function is_eleve_classe($login_ele, $id_classe) {
+	global $mysqli;
+	$sql="SELECT 1=1 FROM j_eleves_classes WHERE login='$login_ele' AND id_classe='$id_classe';";
+	$res=mysqli_query($mysqli, $sql);
+	if($res->num_rows == 0) {
+		return false;
+	}
+	else {
+		$res->close();
+		return true;
 	}
 }
 ?>
