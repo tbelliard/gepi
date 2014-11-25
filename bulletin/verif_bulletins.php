@@ -619,11 +619,14 @@ Les saisies/modifications sont possibles.";
 	echo "</pre>";
 	*/
 
-	$classe_courante_trouvee="n";
+	$id_class_prec=0;
+	$id_class_suiv=0;
+	$classe_courante_trouvee=0;
 	$temoin_une_date_de_conseil_de_classe=0;
 	$chaine_changement_classe_date_conseil="";
 	foreach($tab_date_conseil as $current_id_classe => $value) {
 		if(in_array($current_id_classe, $tab_id_classe)) {
+			/*
 			if($temoin_une_date_de_conseil_de_classe==0) {
 				$chaine_changement_classe_date_conseil.="
 <div style='float:left;' class='bold'>
@@ -634,7 +637,12 @@ Les saisies/modifications sont possibles.";
 		<select name='id_classe' onchange=\"document.forms['form2'].submit();\" title=\"Classes triées par date du prochain conseil.\">
 			<option value=''>---</option>";
 			}
+			*/
 
+			if($classe_courante_trouvee==1) {
+				$id_class_suiv=$current_id_classe;
+				$classe_courante_trouvee++;
+			}
 
 			if(isset($tab_verrouillage_periodes[$current_id_classe][$per])) {
 				$style_option_courante=" style='color:".$couleur_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."' title=\"Période ".$traduction_verrouillage_periode[$tab_verrouillage_periodes[$current_id_classe][$per]]."\"";
@@ -647,9 +655,13 @@ Les saisies/modifications sont possibles.";
 			<option value='$current_id_classe'".$style_option_courante;
 			if($current_id_classe==$id_classe) {
 				$chaine_changement_classe_date_conseil.=" selected='selected'";
-				$classe_courante_trouvee="y";
+				$classe_courante_trouvee++;
 			}
 			$chaine_changement_classe_date_conseil.=">".$tab_date_conseil[$current_id_classe]['classe']."</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(".formate_date($tab_date_conseil[$current_id_classe]['date'], "n", "").")</option>";
+
+			if($classe_courante_trouvee==0) {
+				$id_class_prec=$current_id_classe;
+			}
 
 			$temoin_une_date_de_conseil_de_classe++;
 		}
@@ -661,13 +673,36 @@ Les saisies/modifications sont possibles.";
 		*/
 	}
 	if($temoin_une_date_de_conseil_de_classe>0) {
+/*
 		$chaine_changement_classe_date_conseil.="
 		</select>
 	</form>
 </div>";
-
-		if($classe_courante_trouvee=="y") {
-			echo $chaine_changement_classe_date_conseil;
+*/
+		if($classe_courante_trouvee>0) {
+			echo "
+<div style='float:left;' class='bold'>
+	<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>
+	 | 
+		<input type='hidden' name='per' value='$per' />
+		<input type='hidden' name='mode' value='$mode' />";
+			if(isset($id_class_prec)) {
+				if($id_class_prec!=0) {
+					echo "
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;per=$per&amp;mode=$mode' title=\"Classe précédente (par date de conseil de classe)\"><img src='../images/icons/back.png' class='icone16' alt='Précédente'></a>\n";}
+			}
+			echo "
+		<select name='id_classe' onchange=\"document.forms['form2'].submit();\" title=\"Classes triées par date du prochain conseil.\">
+			<option value=''>---</option>".$chaine_changement_classe_date_conseil."
+		</select>";
+			if(isset($id_class_suiv)) {
+				if($id_class_suiv!=0) {
+					echo "
+		<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv&amp;per=$per&amp;mode=$mode' title=\"Classe suivante (par date de conseil de classe)\"><img src='../images/icons/forward.png' class='icone16' alt='Suivante'></a>\n";}
+			}
+			echo "
+	</form>
+</div>";
 		}
 
 	}
