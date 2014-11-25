@@ -572,7 +572,7 @@
 		//$yg=round($hauteurMoy+$hauteur-$i*($hauteur/(20/$pas)));
 		$yg=round($hauteurMoy+$hauteur-$i*($hauteur/20));
 		imageLine($img,$x1,$yg,$x2,$yg,$axes);
-		imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-20, $yg-10, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $i);
+		imagettftext($img, $taille_police*$rapport_imageString_imagettftext, 0, $x1-20, $yg+5, $axes, dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $i);
 		
 
 		//imagedashedline($img,$largeurGrad,$yg,$largeur+$largeurGrad,$yg,$axes);
