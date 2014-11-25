@@ -5247,10 +5247,15 @@ function get_date_slash_from_mysql_date($mysql_date, $avec_nom_jour="") {
  * @return date $mysql_date date (aaaa-mm-jj HH:MM:SS)
  * @todo on a déjà cette fonction
  */
-function get_mysql_date_from_slash_date($slash_date) {
+function get_mysql_date_from_slash_date($slash_date, $avec_HHMMSS="y") {
 	$tmp_tab=explode("/",$slash_date);
 	if(isset($tmp_tab[2])) {
-		return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00";
+		if($avec_HHMMSS=="y") {
+			return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0]." 00:00:00";
+		}
+		else {
+			return $tmp_tab[2]."-".$tmp_tab[1]."-".$tmp_tab[0];
+		}
 	}
 	else {
 		return "Date '$slash_date' mal formatée?";

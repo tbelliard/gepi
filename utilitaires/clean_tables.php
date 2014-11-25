@@ -2953,6 +2953,145 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'vidage_mod_discipline_date') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	$date_limite=isset($_POST['date_limite']) ? $_POST['date_limite'] : NULL;
+	if((!isset($date_limite))||($date_limite=="")) {
+		echo "<p style='color:red'>Suppression d'incidents impossible&nbp;: date invalide.</p>";
+	}
+	elseif(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_limite)) {
+		echo "<p style='color:red'>Suppression d'incidents impossible&nbp;: date '$date_limite' invalide.</p>";
+	}
+	else {
+		echo "<p><b>Suppression des incidents, sanctions, avertissements pour une date antérieure à ".$date_limite."&nbsp;:</b><br />\n";
+		$mysql_date_limite=get_mysql_date_from_slash_date($date_limite, "n");
+
+		$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+		if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+
+		$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+		if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
+
+		$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
+		if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+		$sql="SELECT * FROM s_travail WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo mysqli_num_rows($res)." travaux à faire&nbsp;: ";
+			$sql="DELETE FROM s_travail WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimés</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT * FROM s_retenues WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo mysqli_num_rows($res)." retenues&nbsp;: ";
+			$sql="DELETE FROM s_retenues WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimées</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT * FROM s_exclusions WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo mysqli_num_rows($res)." exclusions&nbsp;: ";
+			$sql="DELETE FROM s_exclusions WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimées</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT * FROM s_autres_sanctions WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo mysqli_num_rows($res)." autres ".$mod_disc_terme_sanction."s&nbsp;: ";
+			$sql="DELETE FROM s_autres_sanctions WHERE id_sanction in (SELECT id_sanction FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."'));";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimées</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT * FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."');";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo "Soit en tout ".mysqli_num_rows($res)." ".$mod_disc_terme_sanction."s&nbsp;: ";
+			$sql="DELETE FROM s_sanctions WHERE id_incident IN (SELECT id_incident FROM s_incidents WHERE date<='".$mysql_date_limite."');";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimées</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT * FROM s_incidents WHERE date<='".$mysql_date_limite."';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo "Soit ".mysqli_num_rows($res)." ".$mod_disc_terme_incident."s&nbsp;: ";
+			$sql="DELETE FROM s_incidents WHERE date<='".$mysql_date_limite."';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimés</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		$sql="SELECT 1=1 FROM s_avertissements WHERE date_avertissement<='".$mysql_date_limite." 00:00:00';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			echo mysqli_num_rows($res)." ".$mod_disc_terme_avertissement_fin_periode."s&nbsp;: ";
+			$sql="DELETE FROM s_avertissements WHERE date_avertissement<='".$mysql_date_limite." 00:00:00';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				echo " <span style='color:green'>supprimés</span><br />";
+			}
+			else {
+				echo " <span style='color:red'>erreur lors de la suppression</span><br />";
+			}
+		}
+
+		echo "<p>Terminé.</p>\n";
+	}
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_mod_discipline') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -3690,6 +3829,24 @@ else {
 <ul>
 <li>Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</li>
 </ul>\n";
+		echo "</form>\n";
+
+		echo "<hr />\n";
+	
+		echo "<p>Dans le cas où des incidents, sanctions, avertissements n'auraient pas été supprimés au changement d'année, vous pouvez en effectuer la suppression pour tout ce qui est antérieur à une date choisie.</p>\n";
+		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+		echo add_token_field();
+		echo "<center>\n";
+
+		$annee=strftime("%Y");
+		$mois=strftime("%m");
+		if($mois<=7) {$annee--;}
+		echo "Pour les incidents,... antérieurs au <input type='text' name='date_limite' id='date_limite_disc' size='10' value='31/07/$annee' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
+		echo img_calendrier_js("date_limite_disc", "img_bouton_date_limite_disc")."<br />";
+
+		echo "<input type=submit value=\"Supprimer du module Discipline ce qui est antérieur à la date ci-dessus\" />\n";
+		echo "</center>\n";
+		echo "<input type='hidden' name='action' value='vidage_mod_discipline_date' />\n";
 		echo "</form>\n";
 
 		echo "<hr />\n";
