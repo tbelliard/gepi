@@ -109,6 +109,7 @@ $liste_tables_del_etape_eleves = array(
 "gc_ele_arriv_red",
 "gc_eleves_options",
 // mod_discipline
+"s_avertissements",
 "s_communication",
 "s_exclusions",
 "s_incidents",
