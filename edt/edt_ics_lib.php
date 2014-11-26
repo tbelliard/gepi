@@ -2312,10 +2312,16 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND 
 						ec.id_definie_periode=ecr.id_definie_periode 
 					ORDER BY heuredebut_definie_periode;";
+		//echo "<div style='margin-left:1000px'>";
 		//echo "$sql<br />";
+		//echo "</div>";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
-
+			/*
+			echo "<div style='margin-left:1000px'><pre>";
+			print_r($lig);
+			echo "</pre></div>";
+			*/
 			$tab_debut=explode(":", $lig->heuredebut_definie_periode);
 			$heure_debut=$tab_debut[0];
 			$min_debut=$tab_debut[1];
@@ -2395,6 +2401,16 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 				$chaine_salle_courante="";
 				$chaine_salle_courante_span_title="";
+
+				$chaine_type_semaine_du_cours_courant="";
+				if(("$lig->id_semaine"!="")&&("$lig->id_semaine"!="0")) {
+					$chaine_type_semaine_du_cours_courant="\nSemaine : ".$lig->id_semaine;
+				}
+				/*
+				else {
+					$chaine_type_semaine_du_cours_courant="\nSemaine : standard";
+				}
+				*/
 
 				if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
 					if(!isset($tab_group_edt[$lig->id_groupe])) {
@@ -2529,7 +2545,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
 				}
 
-				$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
+				$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
 				<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
 				if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
 					$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
