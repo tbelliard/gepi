@@ -567,7 +567,7 @@ if ($test == -1) {
 $result .= "<strong>Mise à jour de la table 'messages' (token) :</strong><br />";
 $result_inter = traite_requete("UPDATE `messages` 
 	SET `texte`=REPLACE(`texte`,'f_suppression_message\">','f_suppression_message\">\n\t<input type=\"hidden\" name=\"csrf_alea\" value=\"_CSRF_ALEA_\">')
-	WHERE `texte` LIKE '%f_suppression_message%'");
+	WHERE `texte` LIKE '%f_suppression_message%' AND NOT `texte` LIKE '%name=\"csrf_alea\"%'");
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
 }
