@@ -178,6 +178,10 @@ function check_pas_de_collision($x1, $y1, $x2, $y2) {
 	global $tab_coord_prises;
 	$retour=true;
 
+	// A VOIR : Si on a des problèmes de collisions mal identifiées,
+	//          on peut peut-être jouer sur $marge_secu pour réduire les dimensions à droite et en bas lors des tests.
+	//          Si il se produit alors un chevauchement, il ne sera que léger,
+	//          limité à $marge_secu
 	for($loop=0;$loop<count($tab_coord_prises);$loop++) {
 		$tab=explode(",", $tab_coord_prises[$loop]);
 		$x1b=$tab[0];
@@ -976,6 +980,10 @@ function nom_ts_vacances($ts, $id_classe) {
 	}
 }
 
+// Cette fonction fonctionne mal si l'EDT est mal remplit:
+// Si un élève a deux cours en même temps (parce qu'il y a une erreur de remplissage de l'EDT ou une erreur d'affectation dans des groupes),
+// alors on a deux cadres l'un sur l'autre.
+// Plutôt utiliser affiche_edt2()
 function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage="semaine", $x0=350, $y0=150, $largeur_edt=800, $hauteur_une_heure=60) {
 	global $debug_edt;
 	global $hauteur_jour, $hauteur_entete;
@@ -1521,6 +1529,9 @@ function affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $afficha
 					$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
 				}
 
+				//$contenu_cellule.=" ".$hauteur_courante;
+				//$contenu_cellule.=" ".$font_size;
+
 				// Cadre de couleur avec une opacité réglable
 				$html.="<div style='position:absolute; 
 						top:".$y_courant."px; 
@@ -1578,6 +1589,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	$url_cdt="";
 	if($_SESSION['statut']=="responsable") {
 		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
+		//https://127.0.0.1/steph/gepi_git_trunk/cahier_texte_2/see_all.php?&year=2014&month=11&day=20&login_eleve=XXXXX&id_groupe=Toutes_matieres
 	}
 	elseif($_SESSION['statut']=="eleve") {
 		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
@@ -1789,4 +1801,1077 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 
 	return $html;
 }
+
+//function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_prof="", $largeur_edt=800, $x0=50, $y0=60, $hauteur_une_heure=60, $hauteur_titre=10, $hauteur_entete=40) {
+function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage="semaine", $x0=350, $y0=150, $largeur_edt=800, $hauteur_une_heure=60) {
+	global $debug_edt;
+	global $hauteur_jour, $hauteur_entete;
+	global $tab_group_edt;
+
+	global $tab_coord_prises;
+	$tab_coord_prises=array();
+
+	$param_lien_edt="";
+	if($login_eleve!="") {
+		$param_lien_edt.="login_eleve=$login_eleve&amp;";
+	}
+	elseif($id_classe!="") {
+		$param_lien_edt.="id_classe=$id_classe&amp;";
+	}
+	elseif($login_prof!="") {
+		$param_lien_edt.="login_prof=$login_prof&amp;";
+	}
+	$param_lien_edt.="type_affichage=$type_affichage&amp;";
+
+	$html="";
+
+	$ts_debut_annee=getSettingValue('begin_bookings');
+	$ts_fin_annee=getSettingValue('end_bookings');
+
+	$display_date=strftime("%d/%m/%Y", $ts_display_date);
+	$num_semaine=strftime("%V", $ts_display_date);
+	if($num_semaine<10) {
+		$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
+	}
+	else {
+		$num_semaine_annee=$num_semaine."|".strftime("%Y", $ts_display_date);
+	}
+
+	$tab_jour=get_tab_jour_ouverture_etab();
+
+	if($affichage=="semaine") {
+		$largeur_jour=$largeur_edt/count($tab_jour);
+
+		$tab_jours_aff=array();
+		if(in_array("lundi", $tab_jour)) {
+			$tab_jours_aff[]=1;
+		}
+		if(in_array("mardi", $tab_jour)) {
+			$tab_jours_aff[]=2;
+		}
+		if(in_array("mercredi", $tab_jour)) {
+			$tab_jours_aff[]=3;
+		}
+		if(in_array("jeudi", $tab_jour)) {
+			$tab_jours_aff[]=4;
+		}
+		if(in_array("vendredi", $tab_jour)) {
+			$tab_jours_aff[]=5;
+		}
+		if(in_array("samedi", $tab_jour)) {
+			$tab_jours_aff[]=6;
+		}
+		if(in_array("dimanche", $tab_jour)) {
+			$tab_jours_aff[]=7;
+		}
+	}
+	else {
+		$largeur_jour=$largeur_edt;
+
+		$tab_jours_aff=array($affichage);
+	}
+
+
+	$hauteur_titre=10;
+	$hauteur_entete=40;
+	$opacity_couleur=0.5;
+
+	$marge_secu=6;
+
+	$font_size=ceil($hauteur_une_heure/5);
+	$font_size2=ceil($hauteur_une_heure/8);
+	$font_size3=ceil($hauteur_une_heure/10);
+
+	$tab_group_edt=array();
+	$tab_aid_edt=array();
+	$tab_couleur_matiere=array();
+	$tab_prof=array();
+
+	$tab_salle=get_tab_salle_cours();
+
+	$html="";
+
+	$tab=explode("|", $num_semaine_annee);
+
+	$num_semaine=$tab[0];
+	$annee=$tab[1];
+
+	/*
+	$_SESSION['edt_ics_num_semaine']=$num_semaine;
+	$_SESSION['edt_ics_annee']=$annee;
+	*/
+
+	$jours=get_days_from_week_number($num_semaine, $annee);
+
+	/*
+	echo "<pre>";
+	print_r($jours);
+	echo "</pre>";
+	*/
+
+	$info_type_semaine="";
+	$info_type_semaine_html="";
+	$type_semaine=get_type_semaine($num_semaine);
+	//echo "\$type_semaine=$type_semaine<br />";
+	if($type_semaine!="") {
+		$info_type_semaine=" - Semaine $type_semaine";
+		$info_type_semaine_html=" <span style='font-size:".$font_size2."pt;' title=\"Semaine $type_semaine\">($type_semaine)</span>";
+	}
+	//=================================================================================
+	$premiere_heure=8;
+	//$derniere_heure=16.5;
+	$derniere_heure=17;
+
+	// Récupérer les horaires de début et de fin de journée dans le module EDT
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode ASC LIMIT 1;";
+	if($debug_edt=="y") {
+		echo "$sql<br />";
+	}
+	$res_premiere_heure=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_premiere_heure)>0) {
+		$lig_premiere_heure=mysqli_fetch_object($res_premiere_heure);
+		if($debug_edt=="y") {
+			echo "Première heure du jour&nbsp;: ".$lig_premiere_heure->heuredebut_definie_periode;
+		}
+		$tmp_tab=explode(":", $lig_premiere_heure->heuredebut_definie_periode);
+		$premiere_heure=$tmp_tab[0]+$tmp_tab[1]/60;
+		if($debug_edt=="y") {
+			echo " soit ".$premiere_heure."<br />";
+		}
+	}
+
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode DESC LIMIT 1;";
+	$res_derniere_heure=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_derniere_heure)>0) {
+		$lig_derniere_heure=mysqli_fetch_object($res_derniere_heure);
+		$tmp_tab=explode(":", $lig_derniere_heure->heurefin_definie_periode);
+		$derniere_heure=$tmp_tab[0]+$tmp_tab[1]/60;
+	}
+	//=================================================================================
+
+
+	$tmp_tab=explode(".", $premiere_heure);
+	$heure_debut_jour=$tmp_tab[0];
+	$min_debut_jour=0;
+	if(isset($tmp_tab[1])) {
+		$min_debut_jour=floor(($premiere_heure-$tmp_tab[0])*60);
+	}
+	$sec_debut_jour=0;
+
+	// Hauteur du DIV de la journée
+	$hauteur_jour=($derniere_heure-$premiere_heure)*$hauteur_une_heure;
+
+	$y_max=$y0+$hauteur_entete+$hauteur_jour;
+
+	//==================================================================
+	$x_jour=array();
+	if($affichage=="semaine") {
+		// Affichage des N jours de la semaine
+		//====================================
+		// Recherche du numéro de semaine précédente
+		$num_semaine_annee_precedente="";
+		if(strftime("%V", $jours['num_jour'][1]['timestamp'])<=strftime("%V", $ts_fin_annee)) {
+			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>1) {
+				if($num_semaine-1>9) {
+					$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
+				}
+				else {
+					$num_semaine_annee_precedente="0".($num_semaine-1)."|".$annee;
+				}
+			}
+			else {
+				$num_semaine_annee_precedente="52|".($annee-1);
+			}
+		}
+		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])>strftime("%V", $ts_debut_annee)) {
+			if($num_semaine-1>9) {
+				$num_semaine_annee_precedente=($num_semaine-1)."|".$annee;
+			}
+			else {
+				$num_semaine_annee_precedente="0".($num_semaine-1)."|".$annee;
+			}
+		}
+
+		// Semaine précédente
+		if($num_semaine_annee_precedente!="") {
+			//background-color:silver;
+			$x_courant=$x0-32;
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Semaine précédente\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
+		}
+		//====================================
+
+		//====================================
+		// Bandeaux verticaux des jours
+		for($i=0;$i<count($tab_jour);$i++) {
+			$x_courant=$x0+$i*$largeur_jour;
+			$x_jour[$i]=$x_courant;
+
+			// Abscisse du jour au-dessus de l'entête (pour debug)
+			if($debug_edt=="y") {
+				$html.="<div style='position:absolute; top:".($y0-$hauteur_entete-2)."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px;'>".$x_jour[$i]."</div>";
+			}
+
+			// Nom du jour en entête
+			$html.="<div style='position:absolute; top:".$y0."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px; border:1px solid black; text-align:center; background-color:silver;' title=\"".$jours['num_jour'][$i+1]['jjmmaaaa']."\">".ucfirst($tab_jour[$i])."<br /><span style='font-size:x-small'>".$jours['num_jour'][$i+1]['jjmmaaaa']."</span></div>";
+
+			// Bande verticale de la journée
+			$y_courant=$y0+$hauteur_entete;
+			$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black; background-color:white;z-index:1;'></div>";
+			// Pour avoir les traits verticaux
+			$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black;z-index:4;'></div>";
+		}
+		//====================================
+
+		//====================================
+		// Semaine suivante
+		$num_semaine_annee_suivante="";
+		if(strftime("%V", $jours['num_jour'][1]['timestamp'])>=strftime("%V", $ts_debut_annee)) {
+
+			if(strftime("%V", $jours['num_jour'][7]['timestamp'])>=52) {
+				$num_semaine_annee_suivante="01|".($annee+1);
+			}
+			else {
+				$num_semaine_annee_suivante=($num_semaine+1)."|".$annee;
+			}
+
+		}
+		elseif(strftime("%V", $jours['num_jour'][1]['timestamp'])<strftime("%V", $ts_fin_annee)) {
+			if($num_semaine-1>9) {
+				$num_semaine_annee_suivante=($num_semaine+1)."|".$annee;
+			}
+			else {
+				$num_semaine_annee_suivante="0".($num_semaine+1)."|".$annee;
+			}
+		}
+
+		if($num_semaine_annee_suivante!="") {
+			//background-color:silver;
+			$x_courant=$x0+$largeur_edt;
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_suivante."'><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
+		}
+		//====================================
+
+	}
+	else {
+		//====================================
+		// Jour précédent
+		// Boucler sur 7 jours pour trouver le précédent jour ouvré
+		$display_date_precedente="";
+		$display_date_precedente_num_jour="";
+		$ts_test=$ts_display_date;
+		$cpt=0;
+		while(($cpt<7)&&($ts_test>$ts_debut_annee)) {
+			$ts_test-=3600*24;
+			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+				$display_date_precedente=strftime("%d/%m/%Y", $ts_test);
+				$display_date_precedente_num_jour=strftime("%u", $ts_test);
+				break;
+			}
+			$cpt++;
+		}
+
+		if($display_date_precedente!="") {
+			//background-color:silver;
+			$x_courant=$x0-32;
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center;' title=\"Jour précédent\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."affichage=".$display_date_precedente_num_jour."&amp;display_date=".$display_date_precedente."'><img src='../images/arrow_left.png' class='icone16' alt='Précédent' /></a></div>";
+		}
+		//====================================
+
+		//====================================
+		// Colonne du jour
+		$x_courant=$x0;
+		$x_jour[0]=$x_courant;
+
+		// Abscisse du jour au-dessus de l'entête (pour debug)
+		if($debug_edt=="y") {
+			$html.="<div style='position:absolute; top:".($y0-$hauteur_entete-2)."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px;'>".$x_jour[0]."</div>";
+		}
+
+		// Nom du jour en entête
+		$html.="
+	<form action='".$_SERVER['PHP_SELF']."' id='form_chgt_date' method='post'>
+		<input type='hidden' name='affichage' value='jour'>
+		<input type='hidden' name='display_date' id='display_date' value='' onchange=\"document.getElementById('form_chgt_date').submit();\">
+		<!--input type='text' name='display_date' id='display_date' value=''-->
+	</form>
+
+	<div style='position:absolute; top:".$y0."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_entete."px; border:1px solid black; text-align:center; background-color:silver;' title=\"".$jours['num_jour'][$affichage]['jjmmaaaa'].$info_type_semaine."\">
+
+		<div style='float:right; width:16px;'>".img_calendrier_js("display_date", "img_bouton_display_date")."</div>
+
+		<span onclick=\"action_edt_cours('')\" title=\"Cliquez...\">".ucfirst($jours['num_jour'][$affichage]['nom_jour'])."</span><br />
+		<span style='font-size:x-small'>".$jours['num_jour'][$affichage]['jjmmaaaa']."</span>$info_type_semaine_html
+	</div>";
+
+		// Bande verticale de la journée
+		$y_courant=$y0+$hauteur_entete;
+		$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black; background-color:white;z-index:1;'></div>";
+		// Pour avoir les traits verticaux
+		$html.="<div style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_jour."px; height:".$hauteur_jour."px; border:1px solid black;z-index:4;'></div>";
+		//====================================
+
+		//====================================
+		// Jour suivant
+		// Boucler sur 7 jours pour trouver le jour ouvré suivant
+		$display_date_suivante="";
+		$display_date_suivante_num_jour="";
+		$ts_test=$ts_display_date;
+		$cpt=0;
+		while(($cpt<7)&&($ts_test<$ts_fin_annee)) {
+			$ts_test+=3600*24;
+			if(in_array(strftime("%A", $ts_test), $tab_jour)) {
+				$display_date_suivante=strftime("%d/%m/%Y", $ts_test);
+				$display_date_suivante_num_jour=strftime("%u", $ts_test);
+				break;
+			}
+			$cpt++;
+		}
+
+		if($display_date_suivante!="") {
+			//background-color:silver;
+			$x_courant=$x0+$largeur_jour;
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Jour suivant\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."affichage=".$display_date_suivante_num_jour."&amp;display_date=".$display_date_suivante."'><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
+		}
+		//====================================
+	}
+
+
+	//==================================================================
+	// Affichage des heures sur la droite
+	$heure_ronde_debut_jour=floor($premiere_heure);
+	$heure_courante=$heure_ronde_debut_jour;
+	$heure_ronde_debut_jour=floor($derniere_heure);
+	$hauteur_texte=12; // A la louche
+	$hauteur_demi_texte=ceil($hauteur_texte/2);
+	while($heure_courante<$heure_ronde_debut_jour) {
+		$y_courant=$y0+$hauteur_entete+($heure_courante-$premiere_heure)*$hauteur_une_heure-$hauteur_demi_texte;
+
+		$html.="<div style='position:absolute; top:".($y_courant)."px; left:".($x0+$largeur_edt)."px; width:30px; height:".$hauteur_une_heure."px; text-align:center;'>".$heure_courante."H</div>";
+
+		$heure_courante++;
+	}
+	//==================================================================
+
+	//==================================================================
+	// Affichage des noms de créneaux sur la gauche
+	$sql="SELECT * FROM edt_creneaux ORDER BY heuredebut_definie_periode;";
+	$res_creneaux=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_creneaux)>0) {
+		while($lig=mysqli_fetch_object($res_creneaux)) {
+			$tab_h=explode(":", $lig->heuredebut_definie_periode);
+			$c=$tab_h[0]+$tab_h[1]/60-$premiere_heure;
+			$y1_courant=$y0+$hauteur_entete+round($c*$hauteur_une_heure);
+
+			$tab_h=explode(":", $lig->heurefin_definie_periode);
+			$c=$tab_h[0]+$tab_h[1]/60-$premiere_heure;
+			$y2_courant=$y0+$hauteur_entete+round($c*$hauteur_une_heure);
+
+			$hauteur_courante=$y2_courant-$y1_courant;
+
+			$style_fond_creneau="background-color:white;";
+			if($lig->type_creneaux=="pause") {
+				$style_fond_creneau="background-color:silver;";
+			}
+			elseif($lig->type_creneaux=="repas") {
+				$style_fond_creneau="background-color:grey;";
+			}
+
+			// Nom du créneau sur la gauche
+			$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".($x0-32)."px; width:30px; height:".$hauteur_courante."px; text-align:center; border:1px solid black; vertical-align:middle;".$style_fond_creneau."' title=\"Créneau $lig->nom_definie_periode\nDe $lig->heuredebut_definie_periode à $lig->heurefin_definie_periode.\"><div style='position:relative; width:2em; height:1em;'>".$lig->nom_definie_periode."</div></div>";
+
+			// Bandes horizontales du créneau
+			$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".$x0."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; border:1px solid silver; z-index:2;".$style_fond_creneau."'></div>";
+
+			// Debug
+			if($debug_edt=="y") {
+				$html.="<div style='position:absolute; top:".($y1_courant)."px; left:".($x0+$largeur_edt+30)."px; width:".$largeur_edt."px; height:".$hauteur_courante."px; color:red; z-index:2;'>$y1_courant</div>";
+			}
+
+		}
+	}
+	//==================================================================
+
+	$tab_cours=array();
+	$tab_nom_classe=array();
+
+	/*
+	$sql="SELECT * FROM edt_cours ec, edt_creneaux ecr WHERE
+				ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') AND
+				(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND 
+				ec.id_definie_periode=ecr.id_definie_periode 
+			ORDER BY heuredebut_definie_periode;";
+	//echo "$sql<br />";
+	$res_cours_de_la_semaine=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res_cours_de_la_semaine)) {
+		if($debug_edt=="y") {
+			echo "<pre style='border:1px solid red; margin:0.5em;'>";
+			print_r($lig);
+			echo "</pre>";
+		}
+
+		$ts_debut=mysql_date_to_unix_timestamp($lig->date_debut);
+		$horaire_debut=strftime("%H:%M", $ts_debut);
+		$ts_fin=mysql_date_to_unix_timestamp($lig->date_fin);
+		$horaire_fin=strftime("%H:%M", $ts_fin);
+
+		$num_jour=strftime("%u", $ts_debut)-1;
+
+		$jour_debut_jour=strftime("%d", $ts_debut);
+		$mois_debut_jour=strftime("%m", $ts_debut);
+		$annee_debut_jour=strftime("%Y", $ts_debut);
+		$ts_debut_jour=mktime($heure_debut_jour,$min_debut_jour,$sec_debut_jour,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
+
+		$duree_en_min=floor(($ts_fin-$ts_debut)/60);
+		$hauteur_courante=floor($duree_en_min*$hauteur_une_heure/60);
+		//$hauteur_courante=floor($duree_en_min*$hauteur_une_heure/60)-ceil($marge_secu/2);
+
+		//$duree_depuis_debut_journee=floor(($ts_debut-$ts_debut_jour)/3600);
+		$duree_depuis_debut_journee=floor(10*($ts_debut-$ts_debut_jour)/3600)/10;
+		//$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure;
+		$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure+ceil($marge_secu/2);
+
+		if($debug_edt=="y") {
+			$html.="\$jour_debut_jour=$jour_debut_jour<br />";
+			$html.="\$ts_debut_jour=$ts_debut_jour<br />";
+			$html.="\$ts_debut=$ts_debut<br />";
+			$html.="\$duree_depuis_debut_journee=$duree_depuis_debut_journee<br />";
+			$html.="y_courant=$y_courant<br />";
+		}
+
+		$cpt_courant=0;
+		if(isset($tab_cours[$num_jour]['y'][$y_courant])) {
+			$cpt_courant=count($tab_cours[$num_jour]['y'][$y_courant]);
+		}
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+		// A FAIRE : Stocker dans des tableaux les retours de fonction qui suivent pour ne pas faire plusieurs fois les mêmes appels
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']=get_tab_matiere_gepi_pour_matiere_ics($lig->matiere_ics);
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['prof']=get_tab_prof_gepi_pour_prof_ics($lig->prof_ics);
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['salle']=$lig->salle_ics;
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_cours']=$lig->id;
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_classe']=$lig->id_classe;
+		if(!array_key_exists($lig->id_classe, $tab_nom_classe)) {
+			$tab_nom_classe[$lig->id_classe]=get_nom_classe($lig->id_classe);
+		}
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['classe']=$tab_nom_classe[$lig->id_classe];
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_debut']=$horaire_debut;
+		$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_fin']=$horaire_fin;
+
+		// Stockage des identifiants de cours que n'ont pas les élèves faute de suivre la matière
+		if(($_SESSION['statut']=='eleve')&&
+		($tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']['association_faite']=="y")&&
+		(!in_array($tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']['matiere'], $tab_matieres_eleve))) {
+			$tab_id_cours_exclu[]=$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_cours'];
+		}
+
+	}
+	*/
+
+
+
+	//==================================================================
+	// On passe à l'affichage du contenu du ou des jours
+	//for($num_jour=1;$num_jour<=count($tab_jour);$num_jour++) {
+	for($loop_jour=0;$loop_jour<count($tab_jours_aff);$loop_jour++) {
+		$num_jour=$tab_jours_aff[$loop_jour];
+
+		$jour_sem=$jours['num_jour'][$num_jour]['nom_jour'];
+		$jour_debut_jour=$jours['num_jour'][$num_jour]['jj'];
+		$mois_debut_jour=$jours['num_jour'][$num_jour]['mm'];
+		$annee_debut_jour=$jours['num_jour'][$num_jour]['aaaa'];
+
+		$ts_debut_jour=mktime($heure_debut_jour,$min_debut_jour,$sec_debut_jour,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
+
+		if($debug_edt=="y") {
+			echo "num_jour=$num_jour<br />";
+			echo "heure_debut_jour=$heure_debut_jour<br />";
+			echo "min_debut_jour=$min_debut_jour<br />";
+			echo "ts_debut_jour=$ts_debut_jour<br />";
+		}
+
+		// A REVOIR On suppose là qu'il n'y a qu'un id_calendrier.
+		//          A revoir quand on enregistrera des id_calendrier autres
+		// id_groupe, id_aid, duree, heuredeb_dec, id_semaine, id_cours
+		$ajout_sql="";
+		if($login_eleve!="") {
+			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') AND ";
+			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_eleves_groupes WHERE login = '".$login_eleve."') OR ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves WHERE login = '".$login_eleve."')) AND ";
+		}
+		if($id_classe!="") {
+			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') AND ";
+			$ajout_sql.="(ec.id_groupe IN (SELECT id_groupe from j_groupes_classes WHERE id_classe = '".$id_classe."') OR 
+					ec.id_aid IN (SELECT DISTINCT id_aid FROM j_aid_eleves jae, j_eleves_classes jec 
+											WHERE jae.login=jec.login AND jec.id_classe='".$id_classe."')) AND ";
+		}
+		if($login_prof!="") {
+			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_professeurs WHERE login = '".$login_prof."') AND ";
+			$ajout_sql.="ec.login_prof = '".$login_prof."' AND ";
+		}
+		$sql="SELECT DISTINCT * FROM edt_cours ec, edt_creneaux ecr WHERE
+						ec.jour_semaine = '".$jour_sem."' AND
+						$ajout_sql
+						(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND 
+						ec.id_definie_periode=ecr.id_definie_periode 
+					ORDER BY heuredebut_definie_periode;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		while($lig=mysqli_fetch_object($res)) {
+
+			$tab_debut=explode(":", $lig->heuredebut_definie_periode);
+			$heure_debut=$tab_debut[0];
+			$min_debut=$tab_debut[1];
+			$sec_debut=0;
+			$ts_debut=mktime($heure_debut,$min_debut,$sec_debut,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
+			$horaire_debut=$heure_debut.":".$min_debut;
+
+			$tab_fin=explode(":", $lig->heurefin_definie_periode);
+			$heure_fin=$tab_fin[0];
+			$min_fin=$tab_fin[1];
+			$sec_fin=0;
+			$ts_fin=mktime($heure_fin,$min_fin,$sec_fin,$mois_debut_jour,$jour_debut_jour,$annee_debut_jour);
+
+			// Problème avec les cours à cheval sur les créneaux de 1/2h du midi.
+			//$duree_courante=(($ts_fin-$ts_debut)/60)*($lig->duree/2);
+			$duree_courante=60*($lig->duree/2);
+
+			if($lig->heuredeb_dec=="0.5") {
+				$ts_debut+=ceil(($ts_fin-$ts_debut)/2);
+			}
+
+			$horaire_cours_courant="\nDébut du cours : ".strftime("%H:%M", $ts_debut)."";
+			$horaire_cours_courant.="\nDurée du cours : ".$duree_courante."minutes";
+
+			$duree_depuis_debut_journee=floor(10*($ts_debut-$ts_debut_jour)/3600)/10;
+			$y_courant=$y0+$hauteur_entete+$duree_depuis_debut_journee*$hauteur_une_heure+ceil($marge_secu/2);
+
+			//$hauteur_courante=$hauteur_une_heure*floor(10*($ts_fin-$ts_debut)/3600)/10-ceil($marge_secu/2);
+			$hauteur_courante=floor($hauteur_une_heure*$lig->duree/2)-$marge_secu;
+
+			$largeur_courante=$largeur_jour-$marge_secu;
+
+			if($affichage=="semaine") {
+				$x_courant=$x0+$largeur_jour*($num_jour-1)+ceil($marge_secu/2);
+			}
+			else {
+				$x_courant=$x0+ceil($marge_secu/2);
+			}
+
+			if($debug_edt=="y") {
+				$html.="\$jour_debut_jour=$jour_debut_jour<br />";
+				$html.="\$ts_debut_jour=$ts_debut_jour<br />";
+				$html.="\$ts_debut=$ts_debut<br />";
+				$html.="\$duree_depuis_debut_journee=$duree_depuis_debut_journee<br />";
+				$html.="y_courant=$y_courant<br />";
+			}
+
+
+			$cpt_courant=0;
+			if(isset($tab_cours[$num_jour]['y'][$y_courant])) {
+				$cpt_courant=count($tab_cours[$num_jour]['y'][$y_courant]);
+			}
+			$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['hauteur']=$hauteur_courante;
+
+			if(($ts_debut+600>$ts_fin_annee)||($ts_debut-600<$ts_debut_annee)) {
+				$bgcolor_courant="silver";
+
+				$contenu_cellule="Hors année scolaire";
+
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
+			}
+			elseif(($id_classe!="")&&(check_ts_vacances($ts_debut+600,$id_classe))) {
+				$bgcolor_courant="silver";
+
+				$contenu_cellule=nom_ts_vacances($ts_debut+600,$id_classe);
+
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
+			}
+			else {
+				$chaine_nom_enseignement="";
+				$chaine_matiere="";
+
+				$chaine_noms_profs="";
+				$chaine_proflist_string="";
+
+				$chaine_salle_courante="";
+				$chaine_salle_courante_span_title="";
+
+				if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
+					if(!isset($tab_group_edt[$lig->id_groupe])) {
+						$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
+					}
+
+					$current_group=$tab_group_edt[$lig->id_groupe];
+
+					$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'];
+
+					$chaine_matiere=$current_group['matiere']['matiere'];
+					$chaine_proflist_string=$current_group['profs']['proflist_string'];
+
+					if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
+						$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
+					}
+					$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+
+					$cpt_prof=0;
+					foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
+						if($cpt_prof>0) {
+							$chaine_noms_profs.=", ";
+						}
+						$chaine_noms_profs.=$current_prof['nom'];
+
+						/*
+						if(!isset($tab_prof[$lig->login_prof])) {
+							$tab_prof[$lig->login_prof]['nom']=$current_prof['nom'];
+							$tab_prof[$lig->login_prof]['designation']=$current_prof['civilite']." ".$current_prof['nom'].mb_substr($current_prof['prenom'],0,1);
+						}
+						*/
+
+						$cpt_prof++;
+					}
+				}
+				elseif($lig->id_aid!="") {
+					// A FAIRE Remplir un $tab_edt_aid pour ne pas faire plusieurs fois les mêmes requêtes:
+
+					if(!isset($tab_aid_edt[$lig->id_aid])) {
+						$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet FROM aid a, 
+																aid_config ac 
+															WHERE a.indice_aid=ac.indice_aid AND 
+																a.id='".$lig->id_aid."';";
+						$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_aid)==0) {
+							$tab_aid_edt[$lig->id_aid]['nom_general_court']="AID";
+							$tab_aid_edt[$lig->id_aid]['nom_general_complet']="AID";
+							$tab_aid_edt[$lig->id_aid]['nom_aid']="AID";
+							$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
+						}
+						else {
+							$lig_aid=mysqli_fetch_object($res_aid);
+
+							$tab_aid_edt[$lig->id_aid]['nom_general_court']=$lig_aid->nom;
+							$tab_aid_edt[$lig->id_aid]['nom_general_complet']=$lig_aid->nom_complet;
+							$tab_aid_edt[$lig->id_aid]['nom_aid']=$lig_aid->nom_aid;
+
+							$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
+																WHERE u.login=jau.id_utilisateur AND 
+																	jau.id_aid='".$lig->id_aid."'
+																ORDER BY u.nom, u.prenom;";
+							$res_aid_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_aid_prof)==0) {
+								$tab_aid_edt[$lig->id_aid]['proflist_string']="...";
+							}
+							else {
+								$tab_aid_edt[$lig->id_aid]['proflist_string']="";
+								$cpt_aid_prof=0;
+								while($lig_aid_prof=mysqli_fetch_object($res_aid_prof)) {
+									if($cpt_aid_prof>0) {
+										$tab_aid_edt[$lig->id_aid]['proflist_string'].=", ";
+									}
+									$tab_aid_edt[$lig->id_aid]['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
+									$cpt_aid_prof++;
+								}
+							}
+						}
+					}
+
+					$current_aid=$tab_aid_edt[$lig->id_aid];
+
+					$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
+
+					$chaine_matiere=$current_aid['nom_aid'];
+
+					if(!isset($tab_prof[$lig->login_prof])) {
+						$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_prof)>0) {
+							$lig_prof=mysqli_fetch_object($res_prof);
+							$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+							$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($lig_prof->prenom,0,1);
+						}
+						else {
+							$tab_prof[$lig->login_prof]['nom']="...";
+							$tab_prof[$lig->login_prof]['designation']="...";
+						}
+					}
+					$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+					$chaine_proflist_string=$current_aid['proflist_string'];
+
+					$bgcolor_courant="azure";
+				}
+				else {
+					// On ne devrait pas passer là
+
+					$chaine_nom_enseignement="Cours...";
+
+					$chaine_matiere="Matière";
+
+					if(!isset($tab_prof[$lig->login_prof])) {
+						$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
+						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_prof)>0) {
+							$lig_prof=mysqli_fetch_object($res_prof);
+							$tab_prof[$lig->login_prof]['nom']=$lig_prof->nom;
+							$tab_prof[$lig->login_prof]['designation']=$lig_prof->civilite." ".$lig_prof->nom." ".mb_substr($$lig_prof->prenom,0,1);
+						}
+						else {
+							$tab_prof[$lig->login_prof]['nom']="...";
+							$tab_prof[$lig->login_prof]['designation']="...";
+						}
+					}
+					$chaine_noms_profs=$tab_prof[$lig->login_prof]['nom'];
+					$chaine_proflist_string=$tab_prof[$lig->login_prof]['designation'];
+
+					$bgcolor_courant="white";
+				}
+
+				if(isset($tab_salle['indice'][$lig->id_salle])) {
+					$chaine_salle_courante_span_title=" en salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete'];
+					$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
+				}
+
+				$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
+				<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
+				if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
+					$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
+				}
+
+
+
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['matiere']=$chaine_matiere;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['prof']=$chaine_noms_profs;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['salle']=$chaine_salle_courante;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_cours']=$lig->id_cours;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['id_classe']=$id_classe;
+				if(!array_key_exists($id_classe, $tab_nom_classe)) {
+					$tab_nom_classe[$id_classe]=get_nom_classe($id_classe);
+				}
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['classe']=$tab_nom_classe[$id_classe];
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_debut']=$horaire_debut;
+				// Problème avec l'heure de fin calculée avec les créneaux.
+				//$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['horaire_fin']=$horaire_fin;
+
+
+				//$contenu_cellule.=" ".$hauteur_courante;
+				//$contenu_cellule.=" ".$font_size;
+
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['contenu_cellule']=$contenu_cellule;
+				$tab_cours[$num_jour]['y'][$y_courant][$cpt_courant]['bgcolor_cellule']=$bgcolor_courant;
+			}
+		}
+
+		if(isset($tab_cours[$num_jour])) {
+			if($debug_edt=="y") {
+				echo "\$tab_cours[$num_jour]<pre>";
+				print_r($tab_cours[$num_jour]);
+				echo "</pre>";
+			}
+
+			// +++++++++++++++++++++++++++
+			// +++++++++++++++++++++++++++
+			// On force ça pour le moment:
+			//$type_edt="classe";
+			// +++++++++++++++++++++++++++
+			// +++++++++++++++++++++++++++
+			//if($type_edt=="classe") {
+
+				$tab_collisions=array();
+
+				$tab_collisions2=array();
+
+				//foreach($tab_cours as $num_jour => $tab) {
+				$tab=$tab_cours[$num_jour];
+					/*
+					if($num_jour==0) {
+						echo "\$tab_cours[$num_jour]<pre>";
+						print_r($tab_cours[$num_jour]);
+						echo "</pre>";
+					}
+					*/
+
+					foreach($tab['y'] as $y_courant => $tab2) {
+						for($loop=0;$loop<count($tab2);$loop++) {
+							$hauteur_courante=$tab2[$loop]['hauteur'];
+							$y_courant_fin=$y_courant+$hauteur_courante;
+
+							if(isset($tab2[$loop]['id_cours'])) {
+								$id_cours_courant=$tab2[$loop]['id_cours'];
+
+								foreach($tab_cours[$num_jour]['y'] as $y3=> $tab3_cours) {
+									/*
+									echo "y3=$y3<pre>";
+									print_r($tab3_cours);
+									echo "</pre>";
+									*/
+
+									for($loop3=0;$loop3<count($tab3_cours);$loop3++) {
+										if($tab3_cours[$loop3]['id_cours']!=$id_cours_courant) {
+											$y_test_debut=$y3;
+											$y_test_fin=$y3+$tab3_cours[$loop3]['hauteur'];
+											$id_cours_test=$tab3_cours[$loop3]['id_cours'];
+
+											if(($y_test_debut>=$y_courant)&&($y_test_debut<$y_courant_fin)) {
+												if((!isset($tab_collisions[$id_cours_courant]))||(!in_array($id_cours_test, $tab_collisions[$id_cours_courant]))) {
+													$tab_collisions[$id_cours_courant][]=$id_cours_test;
+												}
+											}
+											elseif(($y_courant>=$y_test_debut)&&($y_courant<$y_test_fin)) {
+												if((!isset($tab_collisions[$id_cours_courant]))||(!in_array($id_cours_test, $tab_collisions[$id_cours_courant]))) {
+													$tab_collisions[$id_cours_courant][]=$id_cours_test;
+												}
+											}
+
+										}
+									}
+
+								}
+							}
+
+							/*
+							// DEBUG
+							if($id_cours_courant==602) {
+								echo "<div style='position:absolute; top:800px; left:1000px;'>";
+								echo "\$tab_collisions[$id_cours_courant]<pre>";
+								print_r($tab_collisions[$id_cours_courant]);
+								echo "</pre>";
+								echo "</div>";
+							}
+							if($id_cours_courant==603) {
+								echo "<div style='position:absolute; top:900px; left:1000px;'>";
+								echo "\$tab_collisions[$id_cours_courant]<pre>";
+								print_r($tab_collisions[$id_cours_courant]);
+								echo "</pre>";
+								echo "</div>";
+							}
+							*/
+
+						}
+					}
+				//}
+						
+				$tab_coord_prises=array();
+				//foreach($tab_cours as $num_jour => $tab) {
+				$tab=$tab_cours[$num_jour];
+					foreach($tab['y'] as $y_courant => $tab2) {
+						for($loop=0;$loop<count($tab2);$loop++) {
+							//$hauteur_courante=$tab2[$loop]['hauteur'];
+							$hauteur_courante=$tab2[$loop]['hauteur']-floor($marge_secu/2);
+
+							/*
+							$title="".$tab2[$loop]['matiere']['nom_complet'];
+							if($tab2[$loop]['prof']['designation']!="") {
+								$title.=" avec ".$tab2[$loop]['prof']['designation'];
+							}
+							if($tab2[$loop]['salle']!="") {
+								$title.=" en salle ".$tab2[$loop]['salle'];
+							}
+							$title.="\nDe ".$tab2[$loop]['horaire_debut']." à ".$tab2[$loop]['horaire_fin'].".";
+							*/
+
+							$contenu_courant_ajout="";
+							$text_color="";
+							if(isset($tab2[$loop]['id_cours'])) {
+								$id_cours_courant=$tab2[$loop]['id_cours'];
+
+								//$x_courant=$x_jour[$num_jour]+$marge_secu;
+								$x_courant=$x_jour[$loop_jour]+$marge_secu;
+								$largeur_courante=$largeur_jour-2*$marge_secu;
+								//$text_color="";
+								//$font_size="";
+
+								$style_font_size1=" style='font-size:normal;'";
+								$style_font_size2=" style='font-size:x-small;'";
+								//$contenu_courant_ajout="";
+								if(isset($tab_collisions[$id_cours_courant])) {
+									/*
+									// DEBUG
+									if($id_cours_courant==602) {
+										echo "<div style='position:absolute; top:1000px; left:1000px;'>";
+										echo "\$id_cours_courant=$id_cours_courant";
+										echo "</div>";
+									}
+									if($id_cours_courant==603) {
+										echo "<div style='position:absolute; top:1100px; left:1000px;'>";
+										echo "\$id_cours_courant=$id_cours_courant";
+										echo "</div>";
+									}
+									*/
+
+									$style_font_size1=" style='font-size:x-small;'";
+									$style_font_size2=" style='font-size:xx-small;'";
+
+									if($debug_edt=="y") {
+										$contenu_courant_ajout.="<br />nb_col=".count($tab_collisions[$id_cours_courant]);
+									}
+
+									// Compter les collisions effectives
+									$nb=count($tab_collisions[$id_cours_courant]);
+									foreach($tab_collisions[$id_cours_courant] as $id_cours_test) {
+										$nb=min($nb,count($tab_collisions[$id_cours_test]));
+									}
+									// DEBUG
+									if($debug_edt=="y") {
+										$contenu_courant_ajout.="<br />nb_reel=".$nb;
+									}
+									// Largeur du div de ce cours
+									//$largeur_courante=floor($largeur_jour/($nb+1))-2*$marge_secu;
+									// On donne au moins 1px de large... par sécurité
+									//$largeur_courante=max(floor($largeur_jour/($nb+1))-2*$marge_secu,1);
+									$largeur_courante=max(floor($largeur_jour/($nb+1))-1*$marge_secu,1);
+
+
+									//$font_size="font-size:x-small;";
+									//$font_size="font-size:smaller;";
+									$tmp_tab=array();
+									$tmp_tab[]=$id_cours_courant;
+									//foreach($tab_collisions as $tmp_current_id_cours => $tmp_current_id_cours_collision) {
+									foreach($tab_collisions[$id_cours_courant] as $tmp_current_id_cours_collision) {
+										$tmp_tab[]=$tmp_current_id_cours_collision;
+									}
+									sort($tmp_tab);
+
+									$chaine="";
+									for($loop2=0;$loop2<count($tmp_tab);$loop2++) {
+										if($chaine!="") {
+											$chaine.="|";
+										}
+										$chaine.=$tmp_tab[$loop2];
+									}
+
+									//while($x_courant<$x_jour[$num_jour]+$largeur_jour) {
+									while($x_courant<$x_jour[$loop_jour]+$largeur_jour) {
+										/*
+										if(($id_cours_courant==602)||($id_cours_courant==603)) {
+											$contenu_courant_ajout.="\$id_cours_courant=$id_cours_courant, \$x_courant=$x_courant et \$x_jour[$loop_jour]+$largeur_jour=".$x_jour[$loop_jour]."+".$largeur_jour."<br />\n";
+										}
+										*/
+										if(check_pas_de_collision($x_courant,$y_courant,$x_courant+$largeur_courante,$y_courant+$hauteur_courante)) {
+											$text_color="";
+											break;
+										}
+										else {
+											$x_courant+=$largeur_courante+floor($marge_secu/2);
+											//$x_courant+=floor($largeur_jour/($nb+1))+$marge_secu;
+											//$x_courant+=floor($largeur_jour/($nb+1));
+											$text_color="color:red;";
+										}
+									}
+
+									if($text_color!="") {
+										//$x_courant=$x_jour[$num_jour];
+										$x_courant=$x_jour[$loop_jour];
+									}
+
+									$tab_coord_prises[]=$x_courant.",".$y_courant.",".($x_courant+$largeur_courante).",".($y_courant+$hauteur_courante);
+									if($debug_edt=="y") {
+										$title.="\nCoordonnées : ".$x_courant.",".$y_courant.",".($x_courant+$largeur_courante).",".($y_courant+$hauteur_courante);
+									}
+								}
+
+
+
+							}
+
+
+
+
+								/*
+								$contenu_courant="<span title=\"$title\"$style_font_size1>".$tab2[$loop]['matiere']['matiere']."</span>";
+
+								// Ne pas inclure ce qui suit pour l'emploi du temps du prof
+								if($type_edt!="prof") {
+									$contenu_courant.="<br /><span$style_font_size2 title=\"".$tab2[$loop]['prof']['designation']."\">".$tab2[$loop]['prof']['nom']."</span>";
+								}
+								else {
+									$contenu_courant.="<br /><span$style_font_size2 title=\"".$tab2[$loop]['classe']."\">".$tab2[$loop]['classe']."</span>";
+								}
+								// Ne pas inclure ce qui suit pour l'emploi du temps d'une salle
+								$contenu_courant.="<br /><span$style_font_size2 title=\"Salle ".$tab2[$loop]['salle']."\">".$tab2[$loop]['salle']."</span>";
+
+								if($debug_edt=="y") {
+									$contenu_courant.="<br />id_cours=".$id_cours_courant;
+								}
+
+								$contenu_courant.=$contenu_courant_ajout;
+
+								// Fond blanc pour masquer les lignes d'heures
+								$html.="<div id='div_fond_masque_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; background-color:white; z-index:18; '></div>";
+
+								// Cadre de couleur avec une opacité réglable
+								if(!isset($tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']])) {
+									$tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']]=get_couleur_edt_matiere($tab2[$loop]['matiere']['matiere']);
+								}
+								$couleur_courante=$tab_couleur_matiere[$tab2[$loop]['matiere']['matiere']];
+								$html.="<div id='div_fond_couleur_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; background-color:".$couleur_courante."; opacity:$opacity_couleur; z-index:19; text-align:center;".$text_color.$font_size."' title='$title'></div>";
+
+								// Cadre du contenu de la cellule
+								$html.="<div id='div_texte_cours_".$tab2[$loop]['id_cours']."' style='position:absolute; top:".$y_courant."px; left:".$x_courant."px; width:".$largeur_courante."px; height:".$hauteur_courante."px; border:1px solid black; z-index:20; text-align:center; overflow:hidden; ".$text_color.$font_size."' title='$title'>".$contenu_courant."</div>";
+								*/
+
+
+
+								// Cadre de couleur avec une opacité réglable
+								$html.="<div style='position:absolute; 
+										top:".$y_courant."px; 
+										left:".$x_courant."px; 
+										width:".$largeur_courante."px; 
+										height:".$hauteur_courante."px; 
+										text-align:center; 
+										border:1px solid black; 
+										background-color:".$tab2[$loop]['bgcolor_cellule'].";
+										opacity:$opacity_couleur; 
+										z-index:19;'></div>";
+								// Cadre du contour de la cellule
+								$html.="<div style='position:absolute; 
+										top:".$y_courant."px; 
+										left:".$x_courant."px; 
+										width:".$largeur_courante."px; 
+										height:".$hauteur_courante."px; 
+										text-align:center; 
+										border:1px solid black; 
+										line-height:".$font_size."pt;
+										z-index:20;'>"."</div>";
+								// Cadre du contenu de la cellule
+								$decalage_vertical=floor($marge_secu/2);
+								if($hauteur_courante>$hauteur_une_heure) {
+									$decalage_vertical=floor(($hauteur_courante-$hauteur_une_heure)/2);
+								}
+								$html.="<div style='position:absolute; 
+										top:".($y_courant+$decalage_vertical)."px; 
+										left:".$x_courant."px; 
+										width:".$largeur_courante."px; 
+										height:".($hauteur_courante-$decalage_vertical)."px; 
+										text-align:center; 
+										line-height:".$font_size."pt;
+										overflow: hidden;
+										z-index:21;'";
+								if(isset($tab2[$loop]['id_cours'])) {
+									$html.="
+										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."')\"";
+								}
+								$html.=">".$tab2[$loop]['contenu_cellule']." ".$contenu_courant_ajout." ".$text_color."</div>";
+
+							//}
+
+						}
+
+					}
+				//}
+
+			//}
+		}
+	}
+
+	/*
+	echo "<div style='position:absolute; top:1500px;'>";
+	echo "\$tab_cours[5]<pre>";
+	print_r($tab_cours[5]);
+	echo "</pre>";
+	echo "</div>";
+	*/
+
+	//==================================================================
+
+	return $html;
+}
+
 ?>

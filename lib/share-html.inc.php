@@ -3616,7 +3616,7 @@ function affiche_edt_en_infobulle() {
 }
 
 
-function liens_user($page_lien, $nom_var_login, $tab_statuts) {
+function liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres_lien="") {
 	$retour="";
 
 	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
@@ -3627,7 +3627,7 @@ function liens_user($page_lien, $nom_var_login, $tab_statuts) {
 		$sql.="statut='".$tab_statuts[$loop]."'";
 	}
 	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
-	echo "$sql<br />";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -3651,7 +3651,7 @@ function liens_user($page_lien, $nom_var_login, $tab_statuts) {
 				$statut_prec=$lig->statut;
 			}
 
-			$retour.="<a href='".$page_lien."?".$nom_var_login."=".$lig->login."'>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</a><br />\n";
+			$retour.="<a href='".$page_lien."?".$nom_var_login."=".$lig->login.$autres_parametres_lien."'>$lig->civilite ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, 'majf2')."</a><br />\n";
 
 			$cpt++;
 		}

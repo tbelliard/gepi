@@ -304,10 +304,15 @@ if(isset($display_date)) {
 //=================================
 // Contenu EDT
 $x0=35;
+//$y0=2;
 $y0=2;
 $largeur_edt=114;
 $hauteur_une_heure=60;
-$html=affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+//$html=affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+$type_affichage="eleve";
+$login_prof="";
+$html=affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+
 // On récupère de la fonction $hauteur_jour, $hauteur_entete, $tab_group_edt
 //=================================
 
@@ -367,7 +372,7 @@ if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((ge
 
 <div id='div_edt' style='position:absolute; top:".$y1."px; left:".$x1."px; width:".$largeur1."px; height:".$hauteur1."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; background-color:".$tab_couleur_onglet['edt'].";'>
 	".$html."
-	<div style='width:16px; margin:2px;' title=\"Voir l'emploi du temps de la semaine\"><a href='../edt/index2.php?login_eleve=".$login_eleve."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
+	<div style='width:16px; margin:2px;' title=\"Voir l'emploi du temps de la semaine\"><a href='../edt/index2.php?login_eleve=".$login_eleve."&amp;affichage=semaine&amp;type_affichage=eleve&amp;num_semaine_annee=$num_semaine_annee'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a></div>
 </div>";
 /*
 	echo "
