@@ -259,13 +259,25 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>NOTES:</i></p>\n";
 echo "<ul>
-	<li>Les appréciations-types apparaissent dans la page de saisie des appréciations pour un enseignement lors du survol de l'icone qui vous a mené à cette page.</li>
-	<li>Il est possible d'utiliser la chaine de caractères '_PRENOM_' dans un commentaire-type.<br />
-	Lors de l'insertion, la chaine sera remplacée par le prénom de l'élève.</li>
-	<li>Le genre n'est pas encore géré:<br />
-	Le genre de l'élève dans des phrases comme 'Il doit se mettre au travail' ou 'Elle doit se mettre au travail' doit encore être corrigé à la main.<br />
-	Il doit être possible de résoudre ce problème de la même façon que pour le prénom de l'élève en ajoutant des champs de formulaires cachés...</li>
-	<li>Après modification des appréciations-types, il faut mettre à jour la page de saisie des appréciations pour que les modifications effectuées ici soient prises en compte.<br />Prenez soin de sauvegarder les appréciations éventuellement saisies avant de recharger la page.</li>
+	<li>
+		<p>Les appréciations-types apparaissent dans la page de saisie des appréciations pour un enseignement lors du survol de l'icone qui vous a mené à cette page.</p>
+	</li>
+	<li>
+		<p>Il est possible d'utiliser la chaine de caractères '<span style='color:green'>_PRENOM_</span>' dans un commentaire-type.<br />
+		Lors de l'insertion, la chaine sera remplacée par le prénom de l'élève.</p>
+		<p style='text-indent:-5em; margin-left:5em;'><em>Exemple&nbsp;:</em> Pour l'élève <strong>Jean AIMARRE</strong>, le commentaire-type<br />
+		<span style='color:green'><strong>_PRENOM_</strong> doit se mettre au travail</span><br />
+		deviendra lors de l'insertion dans l'appréciation<br />
+		<span style='color:green'><strong>Jean</strong> doit se mettre au travail</span>.</p>
+	</li>
+	<li>
+		<p>Le genre n'est pas encore géré:<br />
+		Le genre de l'élève dans des phrases comme 'Il doit se mettre au travail' ou 'Elle doit se mettre au travail' doit encore être corrigé à la main.<br />
+		Il doit être possible de résoudre ce problème de la même façon que pour le prénom de l'élève en ajoutant des champs de formulaires cachés...</p>
+	</li>
+	<li>
+		<p>Après modification des appréciations-types, il faut mettre à jour la page de saisie des appréciations pour que les modifications effectuées ici soient prises en compte.<br />Prenez soin de sauvegarder les appréciations éventuellement saisies avant de recharger la page.</p>
+	</li>
 </ul>\n";
 echo "<p><br /></p>\n";
 
