@@ -5519,7 +5519,7 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 		$id_message = $mysqli->insert_id;
 		$contenu='
 		<form method="POST" action="#" name="f_suppression_message">
-		<input type="hidden" name="csrf_alea" value="_CRSF_ALEA_">
+		<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
 		<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 		<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="'.$gepiPath.'/images/icons/delete.png" alt="" /></button>
 		</form>'.addslashes($texte);

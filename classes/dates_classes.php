@@ -160,10 +160,10 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 		$record = 'no';
 	}
 
-	// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CRSF_ALEA_
-	$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
+	// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CSRF_ALEA_
+	$pos_crsf_alea=strpos($contenu_cor,"_CSRF_ALEA_");
 	if($pos_crsf_alea!==false) {
-		$contenu_cor=preg_replace("/_CRSF_ALEA_/","",$contenu_cor);
+		$contenu_cor=preg_replace("/_CSRF_ALEA_/","",$contenu_cor);
 		$msg_erreur = "Contenu interdit.";
 		$record = 'no';
 	}

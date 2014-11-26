@@ -264,7 +264,7 @@ Cordialement.
 
 							$contenu_cor='
 							<form method="POST" action="accueil.php" name="f_suppression_message">
-							<input type="hidden" name="csrf_alea" value="_CRSF_ALEA_">
+							<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
 							<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 							<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 							</form>'.mysqli_real_escape_string($GLOBALS["mysqli"], nl2br($texte_mail));

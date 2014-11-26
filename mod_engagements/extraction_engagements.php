@@ -162,9 +162,9 @@ if(isset($action)) {
 			//$contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
 			$contenu_cor = $_POST['message'];
 
-			$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
+			$pos_crsf_alea=strpos($contenu_cor,"_CSRF_ALEA_");
 			if($pos_crsf_alea!==false) {
-				$contenu_cor=preg_replace("/_CRSF_ALEA_/","",$contenu_cor);
+				$contenu_cor=preg_replace("/_CSRF_ALEA_/","",$contenu_cor);
 				$msg.="Contenu interdit.<br />";
 				$record = 'no';
 			}
@@ -174,7 +174,7 @@ if(isset($action)) {
 				function ajout_bouton_supprimer_message($contenu_cor,$id_message) {
 					$contenu_cor='
 					<form method="POST" action="accueil.php" name="f_suppression_message">
-					<input type="hidden" name="csrf_alea" value="_CRSF_ALEA_">
+					<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
 					<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 					<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 					</form>'.$contenu_cor;

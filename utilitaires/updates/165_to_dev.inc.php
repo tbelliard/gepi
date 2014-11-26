@@ -564,10 +564,21 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-$result .= "<strong>Mise à jour de la table 'messages' :</strong><br />";
+$result .= "<strong>Mise à jour de la table 'messages' (token) :</strong><br />";
 $result_inter = traite_requete("UPDATE `messages` 
-	SET `texte`=REPLACE(`texte`,'f_suppression_message\">','f_suppression_message\">\n\t<input type=\"hidden\" name=\"csrf_alea\" value=\"_CRSF_ALEA_\">')
+	SET `texte`=REPLACE(`texte`,'f_suppression_message\">','f_suppression_message\">\n\t<input type=\"hidden\" name=\"csrf_alea\" value=\"_CSRF_ALEA_\">')
 	WHERE `texte` LIKE '%f_suppression_message%'");
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
+$result .= "<strong>Mise à jour de la table 'messages' (_CSRF_ALEA_) :</strong><br />";
+$result_inter = traite_requete("UPDATE `messages` 
+	SET `texte`=REPLACE(`texte`,'_CRSF_ALEA_','_CSRF_ALEA_')
+	WHERE `texte` LIKE '%_CRSF_ALEA_%'");
 if ($result_inter == '') {
 	$result .= msj_ok("SUCCES !");
 }
