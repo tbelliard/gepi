@@ -115,6 +115,7 @@ function check_token($redirection=TRUE) {
 
 	if(isset($niveau_arbo)) {
 		if($niveau_arbo=="0") {
+			$pref_arbo=".";
 		}
 		elseif($niveau_arbo==1) {
 			$pref_arbo="..";
