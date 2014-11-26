@@ -564,4 +564,15 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<strong>Mise à jour de la table 'messages' :</strong><br />";
+$result_inter = traite_requete("UPDATE `messages` 
+	SET `texte`=REPLACE(`texte`,'f_suppression_message\">','f_suppression_message\">\n\t<input type=\"hidden\" name=\"csrf_alea\" value=\"_CRSF_ALEA_\">')
+	WHERE `texte` LIKE '%f_suppression_message%'");
+if ($result_inter == '') {
+	$result .= msj_ok("SUCCES !");
+}
+else {
+	$result .= msj_erreur("ECHEC !");
+}
+
 ?>

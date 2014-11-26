@@ -2,6 +2,8 @@
 //debug_var();
 // suppression d'un message du panneau d'affichage
 if (isset($_POST['supprimer_message'])) {
+	check_token();
+	
 	if(!isset($msg)) {
 		$msg="";
 	}
