@@ -147,12 +147,15 @@ if((isset($_POST['is_posted']))) {
 
 							$mail_dest="";
 							$references_mail="";
-							$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id_absence='".$id_absence."' AND 
-															id_groupe='".$id_groupe."' AND 
-															id_classe='".$id_classe."' AND 
-															jour='".$jour."' AND 
-															id_creneau='".$id_creneau."' AND 
-															reponse!='non';";
+							$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, 
+													utilisateurs u 
+												WHERE apr.id_absence='".$id_absence."' AND 
+															apr.id_groupe='".$id_groupe."' AND 
+															apr.id_classe='".$id_classe."' AND 
+															apr.jour='".$jour."' AND 
+															apr.id_creneau='".$id_creneau."' AND 
+															apr.reponse!='non' AND 
+															u.login=apr.login_user;";
 							//echo "$sql<br />";
 							$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
 							while($lig_mail=mysqli_fetch_object($res_mail)) {
@@ -162,7 +165,9 @@ if((isset($_POST['is_posted']))) {
 										$references_mail.="\r\n";
 									}
 									//$mail_dest.=$lig_mail->email;
-									if((!preg_match("/^$lig_mail->email,/", $mail_dest))&&(!preg_match("/,$lig_mail->email,/", $mail_dest))&&(!preg_match("/,$lig_mail->email$/", $mail_dest))) {
+									if((!preg_match("/^$lig_mail->email,/", $mail_dest))&&
+									(!preg_match("/,$lig_mail->email,/", $mail_dest))&&
+									(!preg_match("/,$lig_mail->email$/", $mail_dest))) {
 										$mail_dest.=$lig_mail->email;
 									}
 									$references_mail.="proposition_remplacement_".$lig_mail->id."_".$jour;
@@ -250,8 +255,11 @@ if((isset($_GET['annuler_remplacement']))) {
 
 		$mail_dest="";
 		$references_mail="";
-		$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, utilisateurs u WHERE id='".$annuler_remplacement."' AND 
-										reponse!='non';";
+		$sql="SELECT u.email, apr.id FROM abs_prof_remplacement apr, 
+								utilisateurs u 
+							WHERE apr.id='".$annuler_remplacement."' AND 
+								apr.reponse!='non' AND 
+								u.login=apr.login_user;";
 		//echo "$sql<br />";
 		$res_mail=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig_mail=mysqli_fetch_object($res_mail)) {
@@ -400,13 +408,13 @@ else {
 echo "
 <h2>Attribuer les remplacements de professeurs</h2>";
 
+$tab_propositions_avec_reponse_positive=array();
 if($mode=="") {
 
 	$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND reponse='oui' ORDER BY date_debut_r, id_absence, id_classe, date_reponse;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		$tab_propositions_avec_reponse_positive=array();
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			//if(check_proposition_remplacement_validee2($lig->id)=="") {
