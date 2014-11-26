@@ -49,12 +49,12 @@ function generate_token() {
  * 
  * @todo On pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
  * @param bool $avec_id ajoute un argument id='csrf_alea' à la balise si TRUE
- * @param bool $avec_gepi_alea remplace le nombre aléatoire par "_CRSF_ALEA_" si FALSE
+ * @param bool $avec_gepi_alea remplace le nombre aléatoire par "_CSRF_ALEA_" si FALSE
  * @return text la balise <input...>
  */
 function add_token_field($avec_id=FALSE,$avec_gepi_alea=TRUE) {
 	
-	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
+	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CSRF_ALEA_";
 	
     if($avec_id) {
         return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$gepi_alea."' />\n";
@@ -72,12 +72,12 @@ function add_token_field($avec_id=FALSE,$avec_gepi_alea=TRUE) {
  * add_token_in_url(TRUE,FALSE) ou add_token_in_url(FALSE,FALSE)
  * 
  * @param bool $html_chars echappe le & si TRUE
- * @param bool $avec_gepi_alea remplace le nombre aléatoire par "_CRSF_ALEA_" si FALSE
+ * @param bool $avec_gepi_alea remplace le nombre aléatoire par "_CSRF_ALEA_" si FALSE
  * @return text le texte à ajouter à l'URL
  */
 function add_token_in_url($html_chars = TRUE, $avec_gepi_alea=TRUE) {
 	
-	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
+	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CSRF_ALEA_";
 
 	if($html_chars) {
 		return "&amp;csrf_alea=".$gepi_alea;
@@ -115,6 +115,7 @@ function check_token($redirection=TRUE) {
 
 	if(isset($niveau_arbo)) {
 		if($niveau_arbo=="0") {
+			$pref_arbo=".";
 		}
 		elseif($niveau_arbo==1) {
 			$pref_arbo="..";

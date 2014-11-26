@@ -144,9 +144,9 @@ if((isset($login_user))&&
 
 	$description=html_entity_decode($description);
 
-	$pos_crsf_alea=strpos($description,"_CRSF_ALEA_");
+	$pos_crsf_alea=strpos($description,"_CSRF_ALEA_");
 	if($pos_crsf_alea!==false) {
-		$description=preg_replace("/_CRSF_ALEA_/","",$description);
+		$description=preg_replace("/_CSRF_ALEA_/","",$description);
 		$msg.= "Contenu interdit.<br />";
 		$record = 'no';
 	}

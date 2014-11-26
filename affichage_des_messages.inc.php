@@ -2,6 +2,8 @@
 //debug_var();
 // suppression d'un message du panneau d'affichage
 if (isset($_POST['supprimer_message'])) {
+	check_token();
+	
 	if(!isset($msg)) {
 		$msg="";
 	}
@@ -86,12 +88,12 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
             // fin _DECOMPTE_
 
             // gestion du token (csrf_alea)
-            // si elle est présente la variable _CRSF_ALEA_ est remplacée lors de l'affichage du message
+            // si elle est présente la variable _CSRF_ALEA_ est remplacée lors de l'affichage du message
             // par la valeur du token de l'utilisateur, par exemple on peut ainsi inclure dans un message
-            // un lien appelant un script : <a href="module/script.php?id=33&csrf_alea=_CRSF_ALEA_">Vers le script</a>
-            $pos_crsf_alea=strpos($content,"_CRSF_ALEA_");
+            // un lien appelant un script : <a href="module/script.php?id=33&csrf_alea=_CSRF_ALEA_">Vers le script</a>
+            $pos_crsf_alea=strpos($content,"_CSRF_ALEA_");
             if($pos_crsf_alea!==false)
-                $content=preg_replace("/_CRSF_ALEA_/",$_SESSION['gepi_alea'],$content);
+                $content=preg_replace("/_CSRF_ALEA_/",$_SESSION['gepi_alea'],$content);
 
             //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 

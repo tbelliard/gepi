@@ -988,10 +988,10 @@ elseif(($mode=="upload")&&
 
 				$contenu_cor=preg_replace("/___LIEN_EMPLOI_DU_TEMPS___/", "<a href='$gepiPath/edt/index.php?mode=afficher_edt&type_edt=classe&id_classe=$id_classe&num_semaine_annee=".$num_semaine_annee."'>Emploi du temps</a>", $contenu_cor);
 
-				// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CRSF_ALEA_
-				$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
+				// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CSRF_ALEA_
+				$pos_crsf_alea=strpos($contenu_cor,"_CSRF_ALEA_");
 				if($pos_crsf_alea!==false) {
-					$contenu_cor=preg_replace("/_CRSF_ALEA_/","",$contenu_cor);
+					$contenu_cor=preg_replace("/_CSRF_ALEA_/","",$contenu_cor);
 					echo "<p style='color:red'>Le message proposé contenait une chaine interdite.<br />Il n'a pas été enregistré.</p>";
 				}
 				else {
@@ -1004,6 +1004,7 @@ elseif(($mode=="upload")&&
 					{
 						$contenu_cor='
 						<form method="POST" action="accueil.php" name="f_suppression_message">
+						<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
 						<input type="hidden" name="supprimer_message" value="'.$id_message.'">
 						<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="images/icons/delete.png"></button>
 						</form>'.$contenu_cor;
