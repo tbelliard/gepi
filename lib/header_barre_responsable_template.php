@@ -45,7 +45,7 @@ if (!$_SESSION["login"]) {
     die();
 }
 
-/*
+
 // Fonction générant le menu Plugins
 include("menu_plugins.inc.php");
 $barre_plugin=menu_plugins();
@@ -57,7 +57,7 @@ if ($barre_plugin!="") {
 					."</li>\n";
 }
 // fin plugins
-*/
+
 
 /*******************************************************************
  *
@@ -139,7 +139,21 @@ if ($barre_plugin!="") {
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/visu_disc.php"'.insert_confirm_abandon().' title="Incidents concernant les élèves/enfants dont vous êtes '.getSettingValue('denomination_responsable').'.">&nbsp;Discipline</a></li>'."\n";
 		}
 
-		//$menus .= $barre_plugin;
+		if(getSettingAOui('AAResponsable')) {
+			// Est-ce que le responsable est bien associé à un élève?
+			$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e
+			WHERE rp.pers_id=r.pers_id AND
+			r.ele_id=e.ele_id AND
+			rp.login='".$_SESSION['login']."';";
+			$resultat = mysqli_query($mysqli, $sql);  
+			$nb_lignes = $resultat->num_rows;
+			$resultat->close();
+			if($nb_lignes>0) {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_annees_anterieures/consultation_annee_anterieure.php"'.insert_confirm_abandon().' title="Consulter les données d\'années antérieures (bulletins simplifiés,...) concernant les élèves/enfants dont vous êtes '.getSettingValue('denomination_responsable').'.">&nbsp;Années antérieures</a></li>'."\n";
+			}
+		}
+
+		$menus .= $barre_plugin;
 
 		$tbs_menu_responsable[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		
 		$tbs_menu_responsable[]=array("li"=> $menus);
