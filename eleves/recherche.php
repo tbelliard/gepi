@@ -1120,7 +1120,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 						<!--option value=''>---</option-->";
 							for($loop=0;$loop<count($tab_matieres);$loop++) {
 								echo "
-						<option value='".$tab_matieres[$loop]['matiere']."'>".$tab_matieres[$loop]['nom_complet']."</option>";
+						<option value='".$tab_matieres[$loop]['matiere']."'>".$tab_matieres[$loop]['matiere']." (".$tab_matieres[$loop]['nom_complet'].")</option>";
 							}
 							echo "
 					</select>";
