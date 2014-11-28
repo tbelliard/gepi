@@ -104,39 +104,39 @@ include("../lib/initialisation_annee.inc.php");
 $liste_tables_del = $liste_tables_del_etape_eleves;
 
 if (!isset($step2)) {
-    $j=0;
-    $flag=0;
+	$j=0;
+	$flag=0;
 	$chaine_tables="";
-    while (($j < count($liste_tables_del)) and ($flag==0)) {
+	while (($j < count($liste_tables_del)) and ($flag==0)) {
 		$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW TABLES LIKE '$liste_tables_del[$j]'"));
-		if($test==1){
+		if($test==1) {
 			if (old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$flag=1;
 			}
 		}
-        $j++;
-    }
+		$j++;
+	}
 
 	for($loop=0;$loop<count($liste_tables_del);$loop++) {
 		if($chaine_tables!="") {$chaine_tables.=", ";}
 		$chaine_tables.="'".$liste_tables_del[$loop]."'";
 	}
 
-    if ($flag != 0){
-        echo "<p><b>ATTENTION...</b><br />\n";
-        echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>\n";
+	if ($flag != 0){
+	echo "<p><b>ATTENTION...</b><br />\n";
+	echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>\n";
 
-		echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
+	echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
-        echo "<form enctype='multipart/form-data' action='step2.php' method='post'>\n";
-		echo add_token_field();
-        echo "<input type=hidden name='step2' value='y' />\n";
-        echo "<input type='submit' value='Poursuivre la procédure' />\n";
-        echo "</form>\n";
-        echo "<p><br /></p>\n";
-		require("../lib/footer.inc.php");
-        die();
-    }
+	echo "<form enctype='multipart/form-data' action='step2.php' method='post'>\n";
+	echo add_token_field();
+	echo "<input type=hidden name='step2' value='y' />\n";
+	echo "<input type='submit' value='Poursuivre la procédure' />\n";
+	echo "</form>\n";
+	echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
+	die();
+	}
 }
 
 check_token(false);
@@ -168,7 +168,22 @@ if (isset($is_posted)) {
 		$j++;
 	}
 
+	$sql="SHOW TABLES LIKE 'edt_corresp';";
+	//echo "$sql<br />";
+	$test = sql_query1($sql);
+	if ($test != -1) {
+		$sql="SELECT 1=1 FROM edt_corresp;";
+		$res_test_tab=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_test_tab)>0) {
+			echo "<br />";
+			echo "Suppression des enregistrements susceptibles de changer d'une année sur l'autre dans 'edt_corresp'.";
+			$sql="DELETE FROM edt_corresp WHERE champ!='matiere' AND champ!='prof' AND champ!='jour' AND champ!='salle';";
+			$del = mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}
+
 	// Suppression des comptes d'élèves:
+
 	echo "<br />\n";
 	echo "<p><em>On supprime les anciens comptes élèves...</em> ";
 	$sql="DELETE FROM utilisateurs WHERE statut='eleve';";
@@ -182,18 +197,18 @@ if (isset($is_posted)) {
 		while($lig_scol=mysqli_fetch_object($res_scol)) {$tab_user_scol[]=$lig_scol->login;}
 	}
 
-    // On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
-    $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
-    $nb = mysqli_num_rows($call_data);
-    $i = "0";
+	// On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
+	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
+	$nb = mysqli_num_rows($call_data);
+	$i = "0";
 
-    while ($i < $nb) {
-        $classe = old_mysql_result($call_data, $i, "classe");
-        // On enregistre la classe
-        // On teste d'abord :
-        $test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
-        if ($test == "0") {
-            $reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
+	while ($i < $nb) {
+		$classe = old_mysql_result($call_data, $i, "classe");
+		// On enregistre la classe
+		// On teste d'abord :
+		$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
+		if ($test == "0") {
+			$reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
 
 			$id_classe=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 			for($loop=0;$loop<count($tab_user_scol);$loop++) {

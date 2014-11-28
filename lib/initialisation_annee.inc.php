@@ -125,7 +125,12 @@ $liste_tables_del_etape_eleves = array(
 "abs_prof_remplacement",
 // Table optionnelle pour les fils RSS de CDT
 "rss_users",
-"log_maj_sconet"
+"log_maj_sconet",
+// Tables import EDT
+"edt_lignes", 
+"edt_tempo", 
+"edt_corresp2", 
+"edt_eleves_lignes"
 );
 
 // Etape de l'import des matières
