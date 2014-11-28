@@ -2259,7 +2259,31 @@ if(isset($eleve_login)){
 		$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
 		$res_grp1=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp1)==0){
-			echo "L'élève n'est encore associé à aucune classe.";
+			echo "L'élève n'est encore associé(e) à aucune classe <a href='#' onclick=\" afficher_div('div_ajout_a_une_classe', 'y',-20,20);return false;\" title=\"Ajouter à une classe.\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>.";
+
+			$titre_infobulle="Ajouter à une classe";
+			$texte_infobulle="<form action='../classes/classes_ajout.php#ligne_$eleve_login' method='post' target='_blank'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<p style='text-align:center;'>
+			Ajouter à la classe de &nbsp;: 
+			<select name='id_classe' id='id_classe_ajout'>
+				<option value=''>---</option>";
+			$sql=retourne_sql_mes_classes();
+			$res_clas=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_clas)>0) {
+				while($lig_clas=mysqli_fetch_object($res_clas)) {
+					$texte_infobulle.="
+				<option value='$lig_clas->id'>$lig_clas->classe</option>";
+				}
+			}
+			$texte_infobulle.="
+			</select>
+			<input type='submit' name='filtrage' value='Ajouter' />
+		</p>
+	</fieldset>
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle("div_ajout_a_une_classe",$titre_infobulle,"",$texte_infobulle,"",22,0,'y','y','n','n');
 		}
 		else {
 			$acces_eleve_options=acces('/classes/eleve_options.php', $_SESSION['statut']);

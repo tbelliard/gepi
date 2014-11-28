@@ -380,6 +380,8 @@ Liste des élèves non affectés à une classe&nbsp;:</p>
 
 echo add_token_field();
 
+$tab_infos_classe=get_infos_classe_periode($id_classe);
+
 $call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM eleves ORDER BY nom, prenom");
 $nombreligne = mysqli_num_rows($call_eleves);
 if ($nombreligne == '0') {
@@ -389,31 +391,66 @@ if ($nombreligne == '0') {
 	echo "<p align='center' id='p_enregistrer_haut' style='display:none'><input type='submit' value='Enregistrer' /></p>\n";
 
 	$eleves_non_affectes = 'no';
-	echo "<table class='boireaus' cellpadding='5'>\n";
-	echo "<tr>\n";
-
-	echo "<th><p><b>Nom Prénom </b></p></th>\n";
+	echo "<table class='boireaus' cellpadding='5'>
+	<tr>
+		<th rowspan='2'><p><b>Nom Prénom </b></p></th>";
 	if($classes_ajout_sans_regime!="y") {
-		echo "<th><p><b>Régime</b></p></th>\n";
+		echo "
+		<th rowspan='2'><p><b>Régime</b></p></th>\n";
 	}
-	echo "<th><p><b>Redoublant</b></p></th>\n";
+	echo "
+		<th rowspan='2'><p><b>Redoublant</b></p></th>\n";
 	$i="1";
 	while ($i < $nb_periode) {
-		echo "<th><p><b>Ajouter per. $i</b><br />";
-
-		echo "<a href=\"javascript:CocheColonne(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
-
-		echo "</p></th>\n";
+		echo "
+		<th>
+			<p><b>Ajouter per. $i</b><br />
+			<a href=\"javascript:CocheColonne(".$i.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne(".$i.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
+			</p>
+		</th>\n";
 		$i++;
 	}
-
-
-	echo "<th><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>\n";
-	echo "</tr>";
+	echo "
+		<th rowspan='2'><p style='font-weight:bold; text-align:center;'>cocher / décocher <br />toutes périodes</p></th>
+	</tr>
+	<tr>";
+	$i="1";
+	while ($i < $nb_periode) {
+		echo "
+		<th title=\"Date de fin de période\">";
+		if(isset($tab_infos_classe[$i]['date_fin'])) {
+			if(acces("/edt_organisation/edt_calendrier.php", $_SESSION['statut'])) {
+				if(($_SESSION['statut']=='administrateur')&&(getSettingAOui('autorise_edt_admin'))) {
+					echo "<a href='../edt_organisation/edt_calendrier.php' title=\"Modifier les dates de fin de périodes.\" target='_blank'>".formate_date($tab_infos_classe[$i]['date_fin'])."</a>";
+				}
+				elseif(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+					// Actuellement, les comptes scolarité n'ont pas accès àa classes_ajout.php
+					echo "<a href='../bulletin/verrouillage.php' title=\"Modifier les dates de fin de périodes.\" target='_blank'>".formate_date($tab_infos_classe[$i]['date_fin'])."</a>";
+				}
+				else {
+					echo "<span title=\"Vous pouvez paramétrer les dates de fin de périodes en compte scolarité dans la page de Verrouillage des périodes.
+Un compte administrateur peut aussi faire le paramétrage pour peu que le module Emploi du temps soit activé pour les administrateurs.\">".formate_date($tab_infos_classe[$i]['date_fin'])."</span>";
+				}
+			}
+			elseif(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+				// Actuellement, les comptes scolarité n'ont pas accès àa classes_ajout.php
+				echo "<a href='../bulletin/verrouillage.php' title=\"Modifier les dates de fin de périodes.\" target='_blank'>".formate_date($tab_infos_classe[$i]['date_fin'])."</a>";
+			}
+			else {
+				echo formate_date($tab_infos_classe[$i]['date_fin']);
+			}
+		}
+		echo "</th>";
+		$i++;
+	}
+	echo "
+	</tr>";
 	$k = '0';
 	//=========================
 	// AJOUT: boireaus 20071010
 	// Compteur des élèves effectivement non affectés:
+
+	$acces_modify_eleve=acces("/eleves/modify_eleve.php", $_SESSION['statut']);
 
 	//$ki=0;
 	//=========================
@@ -472,10 +509,16 @@ if ($nombreligne == '0') {
 		}
 		if ($inserer_ligne == 'yes') {
 			$alt=$alt*(-1);
-			echo "<tr class='lig$alt'><td>\n";
+			echo "<tr class='lig$alt'><td><a name='ligne_$login_eleve'></a>\n";
 
+			$current_nom_prenom=casse_mot($nom_eleve, "maj")." ".casse_mot($prenom_eleve,'majf2');
 			//echo "<input type='hidden' name='log_eleve[$ki]' value=\"$login_eleve\" />\n";
-			echo "<p>".my_strtoupper($nom_eleve)." ".casse_mot($prenom_eleve,'majf2')."</p></td>\n";
+			if($acces_modify_eleve) {
+				echo "<p><a href='../eleves/modify_eleve.php?eleve_login=$login_eleve' target='_blank' title=\"Consulter/Modifier la fiche élève\">".$current_nom_prenom."</a></p></td>\n";
+			}
+			else {
+				echo "<p>".$current_nom_prenom."</p></td>\n";
+			}
 
 			if($classes_ajout_sans_regime!="y") {
 				echo "<td><p>Ext.|Int.|D/P|I-ext.<br /><input type='radio' name='regime_$id_eleve' value='ext.'";
@@ -505,7 +548,7 @@ if ($nombreligne == '0') {
 				echo "<td><p align='center'>";
 				if ($nom_classe[$i] == 'vide') {
 					//echo "<input type='checkbox' name='ajout_eleve_".$ki."[$i]' id='case_".$ki."_".$i."' value='yes' onchange='changement()' />";
-					echo "<input type='checkbox' name='ajout_eleve_".$id_eleve."[$i]' id='case_".$id_eleve."_".$i."' value='yes' onchange='changement()' />";
+					echo "<input type='checkbox' name='ajout_eleve_".$id_eleve."[$i]' id='case_".$id_eleve."_".$i."' value='yes' onchange='changement()' title=\"Ajouter $current_nom_prenom à la classe de $classe en période $i.\" />";
 					$chaine_id_eleve[$i][]="case_".$id_eleve."_".$i;
 				} else {
 					echo "$nom_classe[$i]";
