@@ -51,6 +51,7 @@ if (!checkAccess()) {
 }
 // Sécurité supplémentaire par rapport aux paramètres du module EdT / Calendrier
 if (param_edt($_SESSION["statut"]) != "yes") {
+	require_once("../langues/fr-lang.edt.php");
 	Die(ASK_AUTHORIZATION_TO_ADMIN);
 }
 
