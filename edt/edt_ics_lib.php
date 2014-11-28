@@ -1677,6 +1677,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non."
 			<p class=\"bold\">".$current_matiere_cdt."</p>
 			".$lig->contenu."
+			".affiche_docs_joints($lig->id_ct,"t")."
 		</div>
 	</div>";
 
@@ -1791,6 +1792,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 			<div style='border:1px solid black; margin:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig_cours->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50'>
 			<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non."
 				".$lig->contenu."
+				".affiche_docs_joints($lig->id_ct,"t")."
 			</div>
 		</div>";
 
