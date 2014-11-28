@@ -2667,10 +2667,17 @@ foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
 	<tbody>";
 
 	foreach($current_tab_notes['eleve'] as $current_login_ele => $tmp_tab) {
+		//number_format($tmp_tab['note'], 1, ".")
+		if(preg_match("/^[0-9]{1,}[,]{0,1}[0-9]{0,2}$/", $tmp_tab['note'])) {
+			$current_note=preg_replace("/,/", ".", $tmp_tab['note']);
+		}
+		else {
+			$current_note=$tmp_tab['note'];
+		}
 		$texte_infobulle.="
 	<tr>
 		<td>".$tmp_tab['nom_prenom']."</td>
-		<td>".$tmp_tab['note']."</td>
+		<td>".$current_note."</td>
 	</tr>";
 	}
 
