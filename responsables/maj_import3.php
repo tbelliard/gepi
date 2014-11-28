@@ -7154,15 +7154,43 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 													rp.tel_pers!=t.tel_pers OR
 													rp.tel_port!=t.tel_port OR
 													rp.tel_prof!=t.tel_prof";
-
-						// 20120331
-						$temoin_doublon_adr="n";
 						if(getSettingValue('ne_pas_proposer_redoublonnage_adresse')!='y') {
 							$sql.="						OR rp.adr_id!=t.adr_id";
-							// Si on accepte de se voir proposer le redoublonnage d'adresse, on considère le changement d'adr_id comme suffisnat pour repérer une modif.
+							// Si on accepte de se voir proposer le redoublonnage d'adresse,
+							// on considère le changement d'adr_id comme suffisant pour repérer une modif.
 						}
-						else {
-							// 20120331
+
+						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
+							$sql.="						OR rp.mel!=t.mel";
+						}
+						$sql.="					)
+												AND rp.pers_id='".$lig->pers_id."';";
+						//echo "$sql<br />\n";
+						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
+						info_debug($sql);
+						if(!$test=mysqli_query($GLOBALS["mysqli"], $sql)) {
+							info_debug("Erreur lors de la requete");
+							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+							//Illegal mix of collations
+							if(preg_match("/Illegal mix of collations/i",mysqli_error($GLOBALS["mysqli"]))) {
+								info_debug("Illegal mix of collations");
+								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
+								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
+								if($_SESSION['statut']=='administrateur') {
+									echo "Il faudrait <a href='../utilitaires/clean_tables.php?maj=corriger_interclassements".add_token_in_url()."'>corriger les interclassements</a>.<br />\n";
+								}
+								else {
+									echo "Il faudrait contacter l'administrateur pour qu'il effectue dans la rubrique <strong>Nettoyage des tables</strong> à une <strong>correction des interclassements</strong>.<br />\n";
+								}
+							}
+							echo "</p>\n";
+		
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						$temoin_doublon_adr="n";
+						if((mysqli_num_rows($test)==0)&&(getSettingValue('ne_pas_proposer_redoublonnage_adresse')=='y')) {
 							// Il faut un deuxième test:
 							// Il faut voir si l'adresse a changé
 							$sql2="SELECT pers_id, ta.* FROM temp_resp_adr_import ta, temp_resp_pers_import tp WHERE tp.adr_id=ta.adr_id AND tp.adr_id='$lig->adr_id';";
@@ -7193,38 +7221,6 @@ Sinon, les comptes non supprimés conservent leur login, même si vous ne cochez
 									}
 								}
 							}
-						}
-						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "\$temoin_doublon_adr=$temoin_doublon_adr<br />\n";}
-
-						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
-							$sql.="						OR rp.mel!=t.mel";
-						}
-						$sql.="					)
-												AND rp.pers_id='".$lig->pers_id."';";
-						//echo "$sql<br />\n";
-						//if(in_array($lig->pers_id, array('840470', '645875', '645690'))) {echo "<br />$sql<br />\n";}
-						info_debug($sql);
-						if(!$test=mysqli_query($GLOBALS["mysqli"], $sql)) {
-							echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
-							//Illegal mix of collations
-							if(preg_match("/Illegal mix of collations/i",mysqli_error($GLOBALS["mysqli"]))) {
-								echo "Il semble qu'il y ait un problème de 'collation' entre les tables 'resp_pers' et 'temp_resp_pers_import'&nbsp;:<br />\n";
-								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
-								/*
-								echo "Il faudrait supprimer la table 'temp_resp_pers_import', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour vos champs 'resp_pers'.<br />\n";
-								echo "Si par exemple, les champs de 'temp_resp_pers_import' ont pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
-								*/
-								if($_SESSION['statut']=='administrateur') {
-									echo "Il faudrait <a href='../utilitaires/clean_tables.php?maj=corriger_interclassements".add_token_in_url()."'>corriger les interclassements</a>.<br />\n";
-								}
-								else {
-									echo "Il faudrait contacter l'administrateur pour qu'il effectue dans la rubrique <strong>Nettoyage des tables</strong> à une <strong>correction des interclassements</strong>.<br />\n";
-								}
-							}
-							echo "</p>\n";
-		
-							require("../lib/footer.inc.php");
-							die();
 						}
 
 						$temoin_diff_mail_compte_vs_sconet="n";
