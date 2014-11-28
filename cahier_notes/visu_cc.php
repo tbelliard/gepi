@@ -738,8 +738,9 @@ if(isset($_GET['export_pdf2'])) {
 					$data_pdf[$num_ligne][] = "-";
 				}
 				else {
-					$data_pdf[$num_ligne][] = strtr($total_ele,'.',',');
-					$data_pdf[$num_ligne][] = strtr($total_sur,'.',',');
+					// A MODIFIER : On a des alignements pas chouettes
+					$data_pdf[$num_ligne][] = strtr(number_format($total_ele,1,".",""),'.',',');
+					$data_pdf[$num_ligne][] = strtr(number_format($total_sur,1,".",""),'.',',');
 
 					$moy=precision_arrondi(20*$total_ele/$total_sur,$precision);
 					$data_pdf[$num_ligne][] = strtr($moy,'.',',');
@@ -756,7 +757,7 @@ if(isset($_GET['export_pdf2'])) {
 			}
 
 
-			$data_pdf[$num_ligne][] = "Moyennes";
+			$data_pdf[$num_ligne][] = "Moyenne :";
 			$data_pdf[$num_ligne][] = "";
 
 			for($loop=0;$loop<count($tab_eval);$loop++) {
@@ -797,7 +798,7 @@ if(isset($_GET['export_pdf2'])) {
 				$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_en)>0) {
 					$lig_en=mysqli_fetch_object($res_en);
-					$data_pdf[$num_ligne][]=$lig_en->min;
+					$data_pdf[$num_ligne][]=number_format($lig_en->min,1,".","");
 				}
 				else {
 					$data_pdf[$num_ligne][]="";
@@ -810,11 +811,11 @@ if(isset($_GET['export_pdf2'])) {
 				$data_pdf[$num_ligne][] = "";
 			}
 			else {
-				$data_pdf[$num_ligne][] = min($tab_tot);
+				$data_pdf[$num_ligne][] = number_format(min($tab_tot),1,".","");
 
 				$data_pdf[$num_ligne][] = "";
 
-				$data_pdf[$num_ligne][] = min($tab_moy);
+				$data_pdf[$num_ligne][] = number_format(min($tab_moy),1,".","");
 			}
 			$num_ligne++;
 
@@ -828,7 +829,7 @@ if(isset($_GET['export_pdf2'])) {
 				$res_en=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_en)>0) {
 					$lig_en=mysqli_fetch_object($res_en);
-					$data_pdf[$num_ligne][]=$lig_en->max;
+					$data_pdf[$num_ligne][]=number_format($lig_en->max,1,".","");
 				}
 				else {
 					$data_pdf[$num_ligne][]="";
@@ -840,11 +841,11 @@ if(isset($_GET['export_pdf2'])) {
 				$data_pdf[$num_ligne][] = "";
 			}
 			else {
-				$data_pdf[$num_ligne][] = max($tab_tot);
+				$data_pdf[$num_ligne][] = number_format(max($tab_tot),1,".","");
 
 				$data_pdf[$num_ligne][] = "";
 
-				$data_pdf[$num_ligne][] = max($tab_moy);
+				$data_pdf[$num_ligne][] = number_format(max($tab_moy),1,".","");
 			}
 			$num_ligne++;
 
