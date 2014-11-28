@@ -19,6 +19,7 @@ Bulletins:
   ou moyennes sont manquantes.
   Possibilité d'y prendre en compte la date de conseil de classe définie dans
   la page Dates événements classes.
+- Possibilité de modifier la largeur du tableau et des colonnes du bulletin simplifié.
 
 Edt:
 - Dispositif d'import de fichiers ICAL/ICS pour remplir un Emploi du temps dans Gepi
@@ -43,6 +44,7 @@ Années antérieures:
 
 Divers:
 - Ajout d'une page d'accueil "simplifiée/graphique" pour les élèves et parents.
+- Possibilité d'exporter au format ical les dates de conseils de classe si un événement Conseils de classe a été défini.
 
 Livret Scolaire Lycée:
 - Ajout d'une ébauche de module.
