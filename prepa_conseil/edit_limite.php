@@ -417,6 +417,47 @@ else {
 	savePref($_SESSION['login'],'bull_simp_pref_couleur_alterne',$couleur_alterne);
 }
 
+//====================================
+$bull_simp_larg_tab_defaut = 680;
+$bull_simp_larg_col1_defaut = 120;
+$bull_simp_larg_col2_defaut = 38;
+$bull_simp_larg_col3_defaut = 38;
+$bull_simp_larg_col4_defaut = 20;
+
+$bull_simp_larg_tab=isset($_POST['bull_simp_larg_tab']) ? $_POST['bull_simp_larg_tab'] : (isset($_GET['bull_simp_larg_tab']) ? $_GET['bull_simp_larg_tab'] : getPref($_SESSION['login'], 'bull_simp_larg_tab', $bull_simp_larg_tab_defaut));
+$bull_simp_larg_col1=isset($_POST['bull_simp_larg_col1']) ? $_POST['bull_simp_larg_col1'] : (isset($_GET['bull_simp_larg_col1']) ? $_GET['bull_simp_larg_col1'] : getPref($_SESSION['login'], 'bull_simp_larg_col1', $bull_simp_larg_col1_defaut));
+$bull_simp_larg_col2=isset($_POST['bull_simp_larg_col2']) ? $_POST['bull_simp_larg_col2'] : (isset($_GET['bull_simp_larg_col2']) ? $_GET['bull_simp_larg_col2'] : getPref($_SESSION['login'], 'bull_simp_larg_col2', $bull_simp_larg_col2_defaut));
+$bull_simp_larg_col3=isset($_POST['bull_simp_larg_col3']) ? $_POST['bull_simp_larg_col3'] : (isset($_GET['bull_simp_larg_col3']) ? $_GET['bull_simp_larg_col3'] : getPref($_SESSION['login'], 'bull_simp_larg_col3', $bull_simp_larg_col3_defaut));
+$bull_simp_larg_col4=isset($_POST['bull_simp_larg_col4']) ? $_POST['bull_simp_larg_col4'] : (isset($_GET['bull_simp_larg_col4']) ? $_GET['bull_simp_larg_col4'] : getPref($_SESSION['login'], 'bull_simp_larg_col4', $bull_simp_larg_col4_defaut));
+if(!preg_match("/^[0-9]{1,}$/", $bull_simp_larg_tab)) {
+	$bull_simp_larg_tab=$bull_simp_larg_tab_defaut;
+}
+if(!preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col1)) {
+	$bull_simp_larg_col1=$bull_simp_larg_col1_defaut;
+}
+if(!preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col2)) {
+	$bull_simp_larg_col2=$bull_simp_larg_col2_defaut;
+}
+if(!preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col3)) {
+	$bull_simp_larg_col3=$bull_simp_larg_col3_defaut;
+}
+if(!preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col4)) {
+	$bull_simp_larg_col4=$bull_simp_larg_col4_defaut;
+}
+if($bull_simp_larg_tab<$bull_simp_larg_col1+$bull_simp_larg_col2+$bull_simp_larg_col3+$bull_simp_larg_col4) {
+	$bull_simp_larg_tab = $bull_simp_larg_tab_defaut;
+	$bull_simp_larg_col1 = $bull_simp_larg_col1_defaut;
+	$bull_simp_larg_col2 = $bull_simp_larg_col2_defaut;
+	$bull_simp_larg_col3 = $bull_simp_larg_col3_defaut;
+	$bull_simp_larg_col4 = $bull_simp_larg_col4_defaut;
+}
+savePref($_SESSION['login'], 'bull_simp_larg_tab', $bull_simp_larg_tab);
+savePref($_SESSION['login'], 'bull_simp_larg_col1', $bull_simp_larg_col1);
+savePref($_SESSION['login'], 'bull_simp_larg_col2', $bull_simp_larg_col2);
+savePref($_SESSION['login'], 'bull_simp_larg_col3', $bull_simp_larg_col3);
+savePref($_SESSION['login'], 'bull_simp_larg_col4', $bull_simp_larg_col4);
+//====================================
+
 if ($choix_edit == '2') {
 	bulletin($tab_moy,$login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$nb_coef_superieurs_a_zero,$affiche_categories,$couleur_alterne);
 }

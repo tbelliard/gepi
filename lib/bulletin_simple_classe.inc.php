@@ -41,6 +41,12 @@ global $display_moy_gen;
 
 global $affiche_deux_moy_gen;
 
+global $bull_simp_larg_tab,
+	$bull_simp_larg_col1,
+	$bull_simp_larg_col2,
+	$bull_simp_larg_col3,
+	$bull_simp_larg_col4;
+
 //echo "\$affiche_categories=$affiche_categories<br />";
 if(!getSettingValue("bull_intitule_app")){
 	$bull_intitule_app="Appréciations/Conseils";
@@ -96,13 +102,44 @@ if ($periode1 < $periode2) {
 //echo "\$test_coef=$test_coef<br />";
 
 // On initialise le tableau :
+$bull_simp_larg_tab_defaut = 680;
+$bull_simp_larg_col1_defaut = 120;
+$bull_simp_larg_col2_defaut = 38;
+$bull_simp_larg_col3_defaut = 38;
+$bull_simp_larg_col4_defaut = 20;
 
-$larg_tab = 680;
-$larg_col1 = 120;
-$larg_col2 = 38;
-$larg_col3 = 38;
-$larg_col4 = 20;
+$larg_tab = $bull_simp_larg_tab_defaut;
+$larg_col1 = $bull_simp_larg_col1_defaut;
+$larg_col2 = $bull_simp_larg_col3_defaut;
+$larg_col3 = $bull_simp_larg_col3_defaut;
+$larg_col4 = $bull_simp_larg_col4_defaut;
+
+if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_tab)) {
+	$larg_tab=$bull_simp_larg_tab;
+}
+if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col1)) {
+	$larg_col1=$bull_simp_larg_col1;
+}
+if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col2)) {
+	$larg_col2=$bull_simp_larg_col2;
+}
+if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col3)) {
+	$larg_col3=$bull_simp_larg_col3;
+}
+if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col4)) {
+	$larg_col4=$bull_simp_larg_col4;
+}
+
+if($bull_simp_larg_tab<$bull_simp_larg_col1+$bull_simp_larg_col2+$bull_simp_larg_col3+$bull_simp_larg_col4) {
+	$larg_tab = $bull_simp_larg_tab_defaut;
+	$larg_col1 = $bull_simp_larg_col1_defaut;
+	$larg_col2 = $bull_simp_larg_col2_defaut;
+	$larg_col3 = $bull_simp_larg_col3_defaut;
+	$larg_col4 = $bull_simp_larg_col4_defaut;
+}
+
 $larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
+
 //echo "<table width=$larg_tab border=1 cellspacing=1 cellpadding=1>\n";
 echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary=''>\n";
 echo "<tr><td width=\"$larg_col1\" class='bull_simpl'>$total élèves";

@@ -37,6 +37,12 @@ if($periode1!=$periode2) {
 // Pour éviter dans bulletin() d'afficher le lien vers saisie_avis2.php depuis la page saisie_avis2.php
 global $temoin_page_courante;
 
+global $bull_simp_larg_tab,
+	$bull_simp_larg_col1,
+	$bull_simp_larg_col2,
+	$bull_simp_larg_col3,
+	$bull_simp_larg_col4;
+
 $alt=1;
 
 // Initialisation des tableaux 
@@ -275,12 +281,42 @@ if ($on_continue == 'yes') {
 	$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
 
 	// On initialise le tableau :
-	
-	$larg_tab = 680;
-	$larg_col1 = 120;
-	$larg_col2 = 38;
-	$larg_col3 = 38;
-	$larg_col4 = 20;
+	$bull_simp_larg_tab_defaut = 680;
+	$bull_simp_larg_col1_defaut = 120;
+	$bull_simp_larg_col2_defaut = 38;
+	$bull_simp_larg_col3_defaut = 38;
+	$bull_simp_larg_col4_defaut = 20;
+
+	$larg_tab = $bull_simp_larg_tab_defaut;
+	$larg_col1 = $bull_simp_larg_col1_defaut;
+	$larg_col2 = $bull_simp_larg_col3_defaut;
+	$larg_col3 = $bull_simp_larg_col3_defaut;
+	$larg_col4 = $bull_simp_larg_col4_defaut;
+
+	if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_tab)) {
+		$larg_tab=$bull_simp_larg_tab;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col1)) {
+		$larg_col1=$bull_simp_larg_col1;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col2)) {
+		$larg_col2=$bull_simp_larg_col2;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col3)) {
+		$larg_col3=$bull_simp_larg_col3;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $bull_simp_larg_col4)) {
+		$larg_col4=$bull_simp_larg_col4;
+	}
+
+	if($bull_simp_larg_tab<$bull_simp_larg_col1+$bull_simp_larg_col2+$bull_simp_larg_col3+$bull_simp_larg_col4) {
+		$larg_tab = $bull_simp_larg_tab_defaut;
+		$larg_col1 = $bull_simp_larg_col1_defaut;
+		$larg_col2 = $bull_simp_larg_col2_defaut;
+		$larg_col3 = $bull_simp_larg_col3_defaut;
+		$larg_col4 = $bull_simp_larg_col4_defaut;
+	}
+
 	$larg_col5 = $larg_tab - $larg_col1 - $larg_col2 - $larg_col3 - $larg_col4;
 
 	//=========================

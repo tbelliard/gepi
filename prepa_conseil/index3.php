@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -622,7 +622,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-	echo "&nbsp;à la période : <select size=1 name=\"periode2\">\n";
+	echo "&nbsp;à la période : <select size='1' name=\"periode2\">\n";
 	$i = "1" ;
 	while ($i < $nb_periode) {
 	echo "<option value='$i'";
@@ -631,10 +631,87 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$i++;
 	}
 	echo "</select>\n";
-	echo "<input type=hidden name=id_classe value=$id_classe />\n";
+	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
 	echo "<br />\n";
 	echo "<br />\n";
+
+	// 20141127
+	// Largeurs de colonnes:
+	// Valeurs par défaut
+	$bull_simp_larg_tab_defaut = 680;
+	$bull_simp_larg_col1_defaut = 120;
+	$bull_simp_larg_col2_defaut = 38;
+	$bull_simp_larg_col3_defaut = 38;
+	$bull_simp_larg_col4_defaut = 20;
+
+	$bull_simp_larg_tab = $bull_simp_larg_tab_defaut;
+	$bull_simp_larg_col1 = $bull_simp_larg_col1_defaut;
+	$bull_simp_larg_col2 = $bull_simp_larg_col2_defaut;
+	$bull_simp_larg_col3 = $bull_simp_larg_col3_defaut;
+	$bull_simp_larg_col4 = $bull_simp_larg_col4_defaut;
+
+	$pref_bull_simp_larg_tab=getPref($_SESSION['login'], 'bull_simp_larg_tab', $bull_simp_larg_tab);
+	$pref_bull_simp_larg_col1=getPref($_SESSION['login'], 'bull_simp_larg_col1', $bull_simp_larg_col1);
+	$pref_bull_simp_larg_col2=getPref($_SESSION['login'], 'bull_simp_larg_col2', $bull_simp_larg_col2);
+	$pref_bull_simp_larg_col3=getPref($_SESSION['login'], 'bull_simp_larg_col3', $bull_simp_larg_col3);
+	$pref_bull_simp_larg_col4=getPref($_SESSION['login'], 'bull_simp_larg_col4', $bull_simp_larg_col4);
+	if(preg_match("/^[0-9]{1,}$/", $pref_bull_simp_larg_tab)) {
+		$bull_simp_larg_tab=$pref_bull_simp_larg_tab;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $pref_bull_simp_larg_col1)) {
+		$bull_simp_larg_col1=$pref_bull_simp_larg_col1;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $pref_bull_simp_larg_col2)) {
+		$bull_simp_larg_col2=$pref_bull_simp_larg_col2;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $pref_bull_simp_larg_col3)) {
+		$bull_simp_larg_col3=$pref_bull_simp_larg_col3;
+	}
+	if(preg_match("/^[0-9]{1,}$/", $pref_bull_simp_larg_col4)) {
+		$bull_simp_larg_col4=$pref_bull_simp_larg_col4;
+	}
+	if($bull_simp_larg_tab<$bull_simp_larg_col1+$bull_simp_larg_col2+$bull_simp_larg_col3+$bull_simp_larg_col4) {
+		$bull_simp_larg_tab = $bull_simp_larg_tab_defaut;
+		$bull_simp_larg_col1 = $bull_simp_larg_col1_defaut;
+		$bull_simp_larg_col2 = $bull_simp_larg_col2_defaut;
+		$bull_simp_larg_col3 = $bull_simp_larg_col3_defaut;
+		$bull_simp_larg_col4 = $bull_simp_larg_col4_defaut;
+	}
+
+	$affiche_rang = sql_query1("SELECT display_rang FROM classes WHERE id='".$id_classe."'");
+	$colspan=4;
+	if($affiche_rang!="y") {
+		$colspan--;
+	}
+	echo "<p>Largeur des colonnes&nbsp;:</p>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th rowspan='2'>Largeur totale du tableau</th>
+		<th colspan='4'>
+			Largeur des colonnes
+			 <a href=\"#\" onclick=\"document.getElementById('bull_simp_larg_tab').value=$bull_simp_larg_tab_defaut;
+							document.getElementById('bull_simp_larg_col1').value=$bull_simp_larg_col1_defaut;
+							document.getElementById('bull_simp_larg_col2').value=$bull_simp_larg_col2_defaut;
+							document.getElementById('bull_simp_larg_col3').value=$bull_simp_larg_col3_defaut;
+							document.getElementById('bull_simp_larg_col4').value=$bull_simp_larg_col4_defaut;
+							return false;\" title=\"Reprendre les valeurs par défaut.\"><img src='../images/icons/wizard.png' class='icone16' alt='Valeurs par défaut' /></a>
+		</th>
+	</tr>
+	<tr>
+		<th>Enseignements</th>
+		<th>Coefficients</th>
+		<th>Moyennes (classe et élève)</th>".(($affiche_rang=='y') ? "
+		<th>Rang de l'élève</th>" : "")."
+	</tr>
+	<tr>
+		<td><input type='text' name='bull_simp_larg_tab' id='bull_simp_larg_tab' value='$bull_simp_larg_tab' size='3' onKeyDown=\"clavier_2(this.id, event, 10,3000);\" AutoComplete=\"off\" /></td>
+		<td><input type='text' name='bull_simp_larg_col1' id='bull_simp_larg_col1' value='$bull_simp_larg_col1' size='3' onKeyDown=\"clavier_2(this.id, event, 10,3000);\" AutoComplete=\"off\" /></td>
+		<td><input type='text' name='bull_simp_larg_col2' id='bull_simp_larg_col2' value='$bull_simp_larg_col2' size='3' onKeyDown=\"clavier_2(this.id, event, 10,3000);\" AutoComplete=\"off\" /></td>
+		<td><input type='text' name='bull_simp_larg_col3' id='bull_simp_larg_col3' value='$bull_simp_larg_col3' size='3' onKeyDown=\"clavier_2(this.id, event, 10,3000);\" AutoComplete=\"off\" /></td>".(($affiche_rang=='y') ? "
+		<td><input type='text' name='bull_simp_larg_col4' id='bull_simp_larg_col4' value='$bull_simp_larg_col4' size='3' onKeyDown=\"clavier_2(this.id, event, 10,3000);\" AutoComplete=\"off\" /></td>" : "")."
+	</tr>
+</table>";
 
 	echo "<label for='bull_simp_pref_marges' style='cursor:pointer;'>\n";
 	echo "Ajouter une marge&nbsp;: \n";
