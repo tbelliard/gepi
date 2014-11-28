@@ -734,17 +734,25 @@ Les saisies/modifications sont possibles.";
 	$bulletin_rempli = 'yes';
 	$call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id = '$id_classe'");
 	$classe = old_mysql_result($call_classe, "0", "classe");
-	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
-(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'><span id='span_etat_verrouillage_classe'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</span> <a href='#'  onclick=\"afficher_div('div_modif_verrouillage','y',-20,20);return false;\" title=\"Verrouillez/déverrouillez la période pour cette classe.\"><img src='../images/icons/configure.png' class='icone16' alt='Modifier' /></a></em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
 
-	$titre_infobulle="Verrouillage de période";
-	$texte_infobulle="<p class='bold' style='text-align:center;'>Modifiez l'état de verrouillage ou non de la période<br />pour la classe de $classe</p>
+	echo "<p><strong>Classe&nbsp;: $classe - $nom_periode[$per] - Année scolaire&nbsp;: ".getSettingValue("gepiYear")."</strong><br />
+(<em style='color:".$couleur_verrouillage_periode[$ver_periode[$per]].";'><span id='span_etat_verrouillage_classe'>Période ".$traduction_verrouillage_periode[$ver_periode[$per]]."</span>";
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		echo " <a href='#'  onclick=\"afficher_div('div_modif_verrouillage','y',-20,20);return false;\" title=\"Verrouillez/déverrouillez la période pour cette classe.\"><img src='../images/icons/configure.png' class='icone16' alt='Modifier' /></a>";
+	}
+	echo "</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
+
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		$titre_infobulle="Verrouillage de période";
+		$texte_infobulle="<p class='bold' style='text-align:center;'>Modifiez l'état de verrouillage ou non de la période<br />pour la classe de $classe</p>
 <p style='text-align:center;'>Passer la période à l'état&nbsp;:<br />
 <a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=N".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'N');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['N']."'>ouverte en saisie</a> - 
 <a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=P".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'P');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['P']."'>partiellement close</a> - 
 <a href='verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=O".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'O');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['O']."'>close</a><br />
 &nbsp;</p>";
-	$tabdiv_infobulle[]=creer_div_infobulle("div_modif_verrouillage",$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+		$tabdiv_infobulle[]=creer_div_infobulle("div_modif_verrouillage",$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	}
+
 
 	//
 	// Vérification de paramètres généraux
