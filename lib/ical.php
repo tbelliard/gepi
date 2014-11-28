@@ -167,7 +167,7 @@ if(isset($id_ev)) {
 
 	}
 	elseif($_SESSION['statut']=='cpe') {
-		$sql="SELECT d.*,c.classe FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.e_login=jecpe.cpe_login AND jecpe.cpe_login='".$_SESSION['login']."') ORDER BY date_evenement, classe;";
+		$sql="SELECT d.*,c.classe FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."') ORDER BY date_evenement, classe;";
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		$sql="SELECT d.*,c.classe FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND d.id_classe=c.id AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."') ORDER BY date_evenement, classe;";
@@ -194,7 +194,7 @@ if(isset($id_ev)) {
 		echo "L'id_ev $id_ev ne vous concerne pas.";
 		die();
 	}
-
+	//echo "$sql<br />";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)==0) {
 		echo "L'id_ev $id_ev ne vous concerne pas.";
@@ -254,7 +254,33 @@ RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
 END:STANDARD
 END:VTIMEZONE";
 
-	$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."');";
+	}
+	elseif($_SESSION['statut']=='scolarite') {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jsc.id_classe FROM j_scol_classes jsc WHERE jsc.login='".$_SESSION['login']."');";
+	}
+	elseif($_SESSION['statut']=='cpe') {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec, j_eleves_cpe jecpe WHERE jec.login=jecpe.e_login AND jecpe.cpe_login='".$_SESSION['login']."');";
+	}
+	elseif($_SESSION['statut']=='responsable') {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM resp_pers rp, 
+														responsables2 r, 
+														eleves e, 
+														j_eleves_classes jec 
+													WHERE rp.login='".$_SESSION['login']."' AND 
+														rp.pers_id=r.pers_id AND 
+														r.ele_id=e.ele_id AND 
+														e.login=jec.login AND 
+														(r.resp_legal='1' OR r.resp_legal='2' OR r.acces_sp='y')
+													);";
+	}
+	elseif($_SESSION['statut']=='eleve') {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev' AND id_classe IN (SELECT DISTINCT jec.id_classe FROM j_eleves_classes jec WHERE jec.login='".$_SESSION['login']."');";
+	}
+	else {
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$id_ev';";
+	}
 	$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig2=mysqli_fetch_object($res2)) {
 		$nom_classe=get_nom_classe($lig2->id_classe);
