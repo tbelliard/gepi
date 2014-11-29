@@ -939,14 +939,14 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	}
 
 
-	if(($login_prof_contenu_creneaux_courant!="")&&(acces_edt_prof())) {
+	if(($contenu_creneaux_edt_avec_span_title!="n")&&($login_prof_contenu_creneaux_courant!="")&&(acces_edt_prof())) {
 		$ChaineNomProf="<a href='../edt_organisation/index_edt.php?login_edt=".$login_prof_contenu_creneaux_courant."&amp;type_edt_2=prof' title=\"Consulter l'emploi du temps de ".$rep_nom_prof['nom']."\" style='color:black;'>".$rep_nom_prof['nom']."</a>";
 	}
 	else {
 		$ChaineNomProf=$rep_nom_prof['nom'];
 	}
 
-	if((acces_edt_prof())&&(acces_edt_classe())) {
+	if(($contenu_creneaux_edt_avec_span_title!="n")&&(acces_edt_prof())&&(acces_edt_classe())) {
 		$ChaineSalle="<a href='../edt_organisation/index_edt.php?visioedt=salle1&amp;login_edt=".$rep_id_salle['id_salle']."&amp;type_edt_2=salle' title=\"Consulter l'emploi du temps de la salle ".$rep_salle."\" style='color:black;'>".$rep_salle."</a>";
 	}
 	else {
