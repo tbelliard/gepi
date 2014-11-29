@@ -1260,6 +1260,8 @@ return $tab_data;
 // =============================================================================
 function ConstruireEDTClasseDuJour($id_classe, $period, $jour) 
 {
+	global $contenu_creneaux_edt_avec_span_title;
+
     $table_data = array();
     $tab_cours = array();
     $type_edt = "classe";
