@@ -49,6 +49,7 @@ check_token();
 //récupération des paramètres de la requète
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);
 $date_ct = isset($_POST["date_ct"]) ? $_POST["date_ct"] :(isset($_GET["date_ct"]) ? $_GET["date_ct"] :NULL);
+$date_ct_cours_suivant = isset($_POST["date_ct_cours_suivant"]) ? $_POST["date_ct_cours_suivant"] :(isset($_GET["date_ct_cours_suivant"]) ? $_GET["date_ct_cours_suivant"] :NULL);
 $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
 $heure_entry = isset($_POST["heure_entry"]) ? $_POST["heure_entry"] :(isset($_GET["heure_entry"]) ? $_GET["heure_entry"] :NULL);
 $uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :0);

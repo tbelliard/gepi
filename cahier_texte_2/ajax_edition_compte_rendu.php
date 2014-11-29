@@ -167,6 +167,59 @@ if ($ctCompteRendu->getDateCt() == null) {
 //on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
 
+//================================================
+$date_ct_cours_suivant="";
+$ts_date_ct_cours_suivant="";
+$tab_jours=array('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche');
+//echo "today=$today<br />";
+$jour_courant=strftime("%A", $today);
+//echo "jour=".$jour_courant."<br />";
+$num_semaine=strftime("%V", $today);
+//echo "num_sem=".$num_semaine."<br />";
+$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine."';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+$type_edt_semaine="";
+if(mysqli_num_rows($res)>0) {
+	$lig=mysqli_fetch_object($res);
+	$type_edt_semaine=$lig->type_edt_semaine;
+}
+//echo "Type semaine : ".$type_edt_semaine."<br />";
+
+// Ou boucler sur les 21 jours en faisant $ts+=3600*24;
+$tab_creneau=get_tab_creneaux();
+$ts_test=$today;
+for($loop=1;$loop<21;$loop++) {
+	$ts_test+=3600*24;
+	$jour_test=strftime("%A", $ts_test);
+	$num_semaine_test=strftime("%V", $ts_test);
+
+	$ajout_sql="";
+	$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine_test."';";
+	//echo "$sql<br />";
+	$res_sem=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_sem)>0) {
+		$lig=mysqli_fetch_object($res_sem);
+		$type_edt_semaine=$lig->type_edt_semaine;
+		$ajout_sql=" AND (id_semaine='' OR id_semaine='0' OR id_semaine='".$type_edt_semaine."')";
+	}
+
+	$sql="SELECT ec.*, ecr.nom_definie_periode, ecr.heuredebut_definie_periode, ecr.heurefin_definie_periode FROM edt_cours ec, edt_creneaux ecr WHERE ec.id_groupe='$id_groupe' AND ec.jour_semaine='".$jour_test."'".$ajout_sql." AND ec.id_definie_periode=ecr.id_definie_periode ORDER BY heuredebut_definie_periode;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		// Le jour est trouvé
+
+		$lig=mysqli_fetch_object($res);
+
+		//echo "Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")<br />";
+		$date_ct_cours_suivant="Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")";
+		$ts_date_ct_cours_suivant=$ts_test;
+		break;
+	}
+}
+echo "<br />";
+//================================================
+
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
@@ -218,12 +271,6 @@ echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"ja
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
 					\">Editer les notices priv&eacute;es</button>\n";
-
-/*
-echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
-						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
-					\">Voir NP</button>\n";
-*/
 
 // Voir les notices privees:
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
@@ -409,10 +456,42 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 			
 		<?php if (!isset($info)) { ?>
-		<button type="submit" style='font-variant: small-caps;'
+		<!--button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
-		passer aux devoirs du lendemain</button>
-		<?php } ?>
+		passer aux devoirs du lendemain</button-->
+		<?php
+			if($date_ct_cours_suivant=="") {
+				echo "
+		<input type=\"submit\" style='font-variant: small-caps;'
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+			}
+			else {
+				$cdt2_afficher_passer_au_cours_suivant=getPref($_SESSION['login'], 'cdt2_afficher_passer_au_cours_suivant', "");
+
+				if(($cdt2_afficher_passer_au_cours_suivant=="")||($cdt2_afficher_passer_au_cours_suivant=="les_2")) {
+					echo "
+		<input type=\"submit\" style='font-variant: small-caps;'
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux&#13;&#10;devoirs du lendemain\" />";
+
+					echo "
+		<input type='submit' style='font-variant: small-caps;'
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant
+
+Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez faire apparaitre ici.\" />";
+				}
+				elseif($cdt2_afficher_passer_au_cours_suivant=="cours_suivant") {
+					echo "
+		<input type='submit' style='font-variant: small-caps;'
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux&#13;&#10;devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
+				}
+				else {
+					echo "
+		<input type=\"submit\" style='font-variant: small-caps;'
+			onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+				}
+			}
+		}
+		?>
 
 		<?php
 			$sql="SELECT * FROM ct_devoirs_entry WHERE id_groupe='$id_groupe' AND date_ct='".$ctCompteRendu->getDateCt()."';";
@@ -426,13 +505,11 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 		?>
 		<input type='hidden' name='get_devoirs_du_jour' id='get_devoirs_du_jour' value='' />
 
-		<input type='hidden' id='passer_a' name='passer_a'
-			value='compte_rendu' /> <input type="hidden" name="date_ct"
-			value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> <input
-			type="hidden" id="id_ct" name="id_ct"
-			value="<?php echo $ctCompteRendu->getIdCt(); ?>" /> <input
-			type="hidden" name="id_groupe"
-			value="<?php echo $groupe->getId(); ?>" /></td>
+		<input type='hidden' id='passer_a' name='passer_a' value='compte_rendu' /> 
+		<input type="hidden" name="date_ct" value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> 
+		<input type="hidden" name="date_ct_cours_suivant" id="date_ct_cours_suivant" value="<?php echo $ts_date_ct_cours_suivant; ?>" /> 
+		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $ctCompteRendu->getIdCt(); ?>" /> 
+		<input type="hidden" name="id_groupe" value="<?php echo $groupe->getId(); ?>" /></td>
 		<td><?php
 		if (!isset($info)) {
 			$hier = $today - 3600*24;
@@ -598,10 +675,42 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<?php if (!isset($info)) { ?>
-				<button type="submit" style='font-variant: small-caps;'
+				<!--button type="submit" style='font-variant: small-caps;'
 					onClick="javascript:$('passer_a').value = 'passer_devoir';">Enr. et
-				passer aux devoirs du lendemain</button>
-				<?php } ?>
+				passer aux devoirs du lendemain</button-->
+				<?php 
+					if($date_ct_cours_suivant=="") {
+						echo "
+				<input type=\"submit\" style='font-variant: small-caps;'
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+					}
+					else {
+						$cdt2_afficher_passer_au_cours_suivant=getPref($_SESSION['login'], 'cdt2_afficher_passer_au_cours_suivant', "");
+
+						if(($cdt2_afficher_passer_au_cours_suivant=="")||($cdt2_afficher_passer_au_cours_suivant=="les_2")) {
+							echo "
+				<input type=\"submit\" style='font-variant: small-caps;'
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+
+							echo "
+				<input type='submit' style='font-variant: small-caps;'
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant
+
+Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez faire apparaitre ici.\" />";
+						}
+						elseif($cdt2_afficher_passer_au_cours_suivant=="cours_suivant") {
+							echo "
+				<input type='submit' style='font-variant: small-caps;'
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir2';\" value=\"Enr. et passer aux devoirs du cours suivant\" title=\"$date_ct_cours_suivant\" />";
+						}
+						else {
+							echo "
+				<input type=\"submit\" style='font-variant: small-caps;'
+					onClick=\"javascript:$('passer_a').value = 'passer_devoir';\" value=\"Enr. et passer aux devoirs du lendemain\" />";
+						}
+					}
+				}
+				?>
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">

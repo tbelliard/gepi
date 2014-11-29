@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -1059,6 +1059,24 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['validation_form_cdt2'])))
 			}
 			else {
 				$msg.="Enregistrement de cdt2_WinListeNotices_nb_notices_privees.<br />";
+				$temoin_reg_cdt++;
+			}
+		}
+	}
+
+	if(isset($_POST['cdt2_afficher_passer_au_cours_suivant'])) {
+		if(!in_array($_POST['cdt2_afficher_passer_au_cours_suivant'], array('les_2', 'lendemain', 'cours_suivant'))) {
+			$msg.="Valeur invalide pour cdt2_afficher_passer_au_cours_suivant.<br />";
+			$temoin_erreur_cdt++;
+		}
+		else {
+			if(!savePref($_SESSION['login'],'cdt2_afficher_passer_au_cours_suivant',$_POST['cdt2_afficher_passer_au_cours_suivant'])) {
+				$msg.="Erreur lors de l'enregistrement de cdt2_afficher_passer_au_cours_suivant.<br />";
+				$message_cdt.="<p style='color:red'>Erreur lors de l'enregistrement de cdt2_afficher_passer_au_cours_suivant.</p>\n";
+				$temoin_erreur_cdt++;
+			}
+			else {
+				$msg.="Enregistrement de cdt2_afficher_passer_au_cours_suivant.<br />";
 				$temoin_reg_cdt++;
 			}
 		}
@@ -2892,6 +2910,29 @@ Compte-rendus&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_compt
 Devoirs à faire&nbsp;:&nbsp;&nbsp;&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_devoirs' id='cdt2_WinListeNotices_nb_devoirs' value='$cdt2_WinListeNotices_nb_devoirs' tabindex='$tabindex2' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
 Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_notices_privees' id='cdt2_WinListeNotices_nb_notices_privees' value='$cdt2_WinListeNotices_nb_notices_privees' tabindex='$tabindex3' size='3' onkeydown=\"clavier_2(this.id,event,1,100);\" autocomplete='off' /><br />
 <p>(<em>en cliquant sur 'Afficher toutes les notices' en bas de la fenêtre 'Liste des notices', vous pourrez tout de même afficher toutes les notices</em>)</p>";
+	$tabindex=$tabindex3+1;
+
+	$cdt2_afficher_passer_au_cours_suivant=getPref($_SESSION['login'], 'cdt2_afficher_passer_au_cours_suivant', "les_2");
+	$checked_1="";
+	$checked_2="";
+	$checked_3="";
+	if(($cdt2_afficher_passer_au_cours_suivant!="cours_suivant")&&($cdt2_afficher_passer_au_cours_suivant!="lendemain")) {$checked_1="checked ";}
+	elseif($cdt2_afficher_passer_au_cours_suivant=="lendemain") {$checked_2="checked ";}
+	else {$checked_3="checked ";}
+	$tabindex2=$tabindex+1;
+	$tabindex3=$tabindex+2;
+	echo "<br /><br /><p>Si l'emploi du temps est rempli, il est possible d'afficher un bouton <strong>Enregistrer et passer aux devoirs du Cours suivant</strong> en recherchant ce cours dans l'emploi du temps.<br />
+	Si l'emploi du temps est mal rempli ou incomplet, il vaut mieux conserver le bouton classique <strong>Enregistrer et passer aux devoirs du lendemain</strong>.</p>
+	<p>
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_1' value='les_deux' tabindex='$tabindex' $checked_1/>
+		<label for='cdt2_afficher_passer_au_cours_suivant_1' id='texte_cdt2_afficher_passer_au_cours_suivant_1'>Afficher les deux boutons (<em title=\"Par précaution... mais il est toujours possible de choisir la date d'une notice dans le calendrier.\">par précaution, le temps de s'assurer que l'emploi du temps est bien complet</em>)</label><br />
+
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_2' value='lendemain' tabindex='$tabindex2' $checked_2/>
+		<label for='cdt2_afficher_passer_au_cours_suivant_2' id='texte_cdt2_afficher_passer_au_cours_suivant_2'>Afficher seulement le bouton classique <strong>Enregistrer et passer aux devoirs du lendemain</strong></label><br />
+
+		<input type='radio' name='cdt2_afficher_passer_au_cours_suivant' id='cdt2_afficher_passer_au_cours_suivant_3' value='cours_suivant' tabindex='$tabindex3' $checked_3/>
+		<label for='cdt2_afficher_passer_au_cours_suivant_3' id='texte_cdt2_afficher_passer_au_cours_suivant_3'>Afficher seulement le bouton classique <strong>Enregistrer et passer aux devoirs du cours suivant</strong></label><br />
+	</p>";
 	$tabindex=$tabindex3+1;
 
 	echo "<p style='text-align:center;'>\n";

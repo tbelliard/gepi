@@ -464,6 +464,9 @@ id_devoir_en_cours = '';
 //object_en_cours_edition == 'devoir';
 object_en_cours_edition = 'compte_rendu';
 
+// Initialisation de la date du cours suivant:
+//date_ct_cours_suivant = '';
+
 //update div modification dans la liste des notices
 function updateDivModification() {
 	if ($('div_id_ct') != null) {
@@ -660,6 +663,13 @@ function completeEnregistrementCompteRenduCallback(response) {
 			new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=' + id_groupe,{ onComplete:function() {updateDivModification();debut_alert = new Date();}});
 		}
 	} else {
+		/*
+		alert("$F('passer_a')="+$F('passer_a'));
+		alert("$F('id_groupe')="+$F('id_groupe'));
+		alert("id_groupe="+id_groupe);
+		alert("date_ct_cours_suivant="+$('date_ct_cours_suivant').value);
+		*/
+		date_ct_cours_suivant=$('date_ct_cours_suivant').value;
 		//si response ne contient pas le mot erreur, il contient l'id du compte rendu
 		id_ct_en_cours = response;
 		var url;
@@ -667,9 +677,16 @@ function completeEnregistrementCompteRenduCallback(response) {
 			url = './ajax_edition_devoir.php?today=' + GetNextOpenDayUnixDate() +'&id_groupe=' + id_groupe;
 			object_en_cours_edition = 'devoir';
 			updateCalendarWithUnixDate(GetNextOpenDayUnixDate());
+		}
+		else {
+			if ($F('passer_a') == 'passer_devoir2') {
+				url = './ajax_edition_devoir.php?today=' + date_ct_cours_suivant +'&id_groupe=' + id_groupe;
+				object_en_cours_edition = 'devoir';
+				updateCalendarWithUnixDate(date_ct_cours_suivant);
 
-		} else {
-			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
+			} else {
+				url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
+			}
 		}
 
 		// Pour ne pas mettre à jour la fenêtre Liste des notices si on a délié la fenêtre Edition et la fenêtre Liste des notices:
