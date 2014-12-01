@@ -2493,17 +2493,19 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	return $retour;
 }
 
-function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher') {
+function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=array(), $nom_champ='login_user', $nom_func_js_tout_cocher_decocher='cocher_decocher', $avec_titre_statut="y", $sql="") {
 	$retour="";
 
-	$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
-	for($loop=0;$loop<count($tab_statuts);$loop++) {
-		if($loop>0) {
-			$sql.=" OR ";
+	if($sql=="") {
+		$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE (";
+		for($loop=0;$loop<count($tab_statuts);$loop++) {
+			if($loop>0) {
+				$sql.=" OR ";
+			}
+			$sql.="statut='".$tab_statuts[$loop]."'";
 		}
-		$sql.="statut='".$tab_statuts[$loop]."'";
+		$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
 	}
-	$sql.=") AND etat='actif' ORDER BY statut, nom, prenom, login;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$nombreligne=mysqli_num_rows($res);
@@ -2523,7 +2525,9 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 			}
 
 			if($lig->statut!=$statut_prec) {
-				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				if($avec_titre_statut=="y") {
+					$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				}
 				$statut_prec=$lig->statut;
 			}
 
