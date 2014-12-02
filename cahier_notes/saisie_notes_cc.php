@@ -607,7 +607,7 @@ foreach ($liste_eleves as $eleve) {
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>";
 	echo "<input type='hidden' name=\"log_eleve[$i]\" id='log_eleve_$i' value='$eleve_login[$i]' />\n";
-	echo $eleve_nom[$i]." ".$eleve_prenom[$i]."</td>\n";
+	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve_login[$i]."' title=\"Voir la fiche élève dans un nouvel onglet.\" target='_blank'>".$eleve_nom[$i]." ".$eleve_prenom[$i]."</a></td>\n";
 	echo "<td>$eleve_classe[$i]</td>\n";
 
 	echo "<td id='td_$num_id'>\n";
@@ -619,8 +619,12 @@ foreach ($liste_eleves as $eleve) {
 	if(isset($note_enr[$eleve_login[$i]])) {echo "\$note_enr[$eleve_login[$i]]=".$note_enr["$eleve_login[$i]"]."<br />";}
 	*/
 
+	$designation_eleve_js=addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'));
 	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
-	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".$designation_eleve_js."')";}
+	else {
+		echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
+	}
 	echo "\" onchange=\"verifcol($num_id);changement();\" value='";
 	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 		echo $note_import[$current_displayed_line];
@@ -634,6 +638,9 @@ foreach ($liste_eleves as $eleve) {
 	echo "<td>\n";
 	echo "<textarea id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" name='comment_eleve[$i]' rows='1' cols='60' class='wrap' onfocus=\"javascript:this.select()";
 	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(my_strtoupper($eleve_nom[$i])." ".casse_mot($eleve_prenom[$i],'majf2'))."')";}
+	else {
+		echo ";document.getElementById('div_photo_eleve').innerHTML='Pas de photo pour ".$designation_eleve_js."'";
+	}
 	echo "\" onchange=\"changement()\">";
 	if(isset($commentaire[$eleve_login[$i]])) {echo $commentaire[$eleve_login[$i]];}
 	echo "</textarea>\n";
