@@ -164,9 +164,9 @@ if ($ctCompteRendu->getDateCt() == null) {
 	$type_couleur = "c";
 }
 
-//on mets le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
+//on met le groupe dans le session, pour naviguer entre absence, cahier de texte et autres
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
-
+$id_groupe=$ctCompteRendu->getIdGroupe();
 //================================================
 $date_ct_cours_suivant="";
 $ts_date_ct_cours_suivant="";
@@ -219,7 +219,7 @@ for($loop=1;$loop<21;$loop++) {
 }
 echo "<br />";
 //================================================
-
+//debug_var();
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
