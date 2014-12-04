@@ -42,6 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
+
 // Intialisation
 unset($indice_aid);
 $indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
@@ -326,6 +328,7 @@ if (!isset($aid_id)) {
 	echo "<p class='grand'>Appréciations $nom_aid : $aid_nom</p>\n";
 	echo "<table class='boireaus' border=1 cellspacing=2 cellpadding=5>\n";
 
+	$compteur_eleve=0;
 	$indice_max_log_eleve=0;
 	$num_id=10;
 	$num = '1';
@@ -428,9 +431,11 @@ if (!isset($aid_id)) {
 							// MODIF: boireaus 20071003
 							//echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
 
-							echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
+							//echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
+							echo "<input type='hidden' name='log_eleve_".$k."[$compteur_eleve]' value=\"".$current_eleve_login_t[$k]."\" />\n";
 
-							echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
+							//echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
+							echo "<textarea id=\"n".$k.$num2."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$compteur_eleve."\" rows=4 cols=60 wrap='virtual' onchange=\"changement()\">";
 							//=========================
 
 							echo "$current_eleve_app_t[$k]";
@@ -443,7 +448,8 @@ if (!isset($aid_id)) {
 								//=========================
 								// MODIF: boireaus 20071003
 								//echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=$current_eleve_login_n_t[$k] value=";
-								echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$i]\" value=";
+								//echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$i]\" value=";
+								echo "<input id=\"n".$k.$num3."\" onKeyDown=\"clavier(this.id,event);\" type=text size = '4' name=\"note_eleve_".$k."[$compteur_eleve]\" value=";
 								//=========================
 								if ($current_eleve_statut_t[$k] == 'other') {
 									echo "\"\"";
@@ -474,6 +480,7 @@ if (!isset($aid_id)) {
 				$num_id++;
 
 				$indice_max_log_eleve++;
+				$compteur_eleve++;
 			}
 		}
 		$num++;
