@@ -157,6 +157,32 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 
 	</fieldset>
 
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Accès aux <?php echo $mod_disc_terme_avertissement_fin_periode."s";?></legend>
+	  <input type="radio"
+			 name="mod_disc_acces_avertissements"
+			 id='mod_disc_acces_avertissements_y'
+			 value="y"
+			<?php if (getSettingValue("mod_disc_acces_avertissements")!='n') echo " checked='checked'"; ?> />
+	  <label for='mod_disc_acces_avertissements_y' style='cursor: pointer;'>
+		Permettre l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>
+	  </label>
+	  <br />
+	  <input type="radio"
+			 name="mod_disc_acces_avertissements"
+			 id='mod_disc_acces_avertissements_n'
+			 value="n"
+			<?php if (getSettingValue("mod_disc_acces_avertissements")=='n') echo " checked='checked'"; ?> />
+	  <label for='mod_disc_acces_avertissements_n' style='cursor: pointer;'>
+		Interdire l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>
+	  </label>
+
+	  <p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> sont faits pour être saisis indépendamment du bulletin.<br />
+	  Ils n'apparaitront pas sur les bulletins, mais vous pourrez les imprimer depuis le module Discipline, ou depuis la page d'impression des bulletins.<br />
+	  La saisie se fait depuis le module Discipline, ou depuis les pages permettant la saisie des avis de conseil de classe.<br />
+	  Si vous ne souhaitez pas utiliser les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> vous pouvez interdire l'accès à la saisie ici.</p>
+	</fieldset>
+
 	<h2>Autoriser l'utilisation d'une zone commentaire dans la gestion des incidents</h2>
 	  <fieldset class="no_bordure">
 		<legend class="invisible">Zone de dialogue</legend>

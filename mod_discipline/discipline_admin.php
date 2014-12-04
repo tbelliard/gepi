@@ -92,6 +92,11 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 			$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_terme_avertissement_fin_periode\" !<br />";
 		}
 	}
+
+	$mod_disc_acces_avertissements=isset($_POST['mod_disc_acces_avertissements']) ? $_POST['mod_disc_acces_avertissements'] : "y";
+	if (!saveSetting("mod_disc_acces_avertissements", $mod_disc_acces_avertissements)) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_acces_avertissements\" !<br />";
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {

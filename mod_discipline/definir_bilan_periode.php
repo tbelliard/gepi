@@ -172,6 +172,17 @@ if(mysqli_num_rows($test)==0) {
 echo "<p class='bold'><a href='index.php'>Retour</a>";
 echo "</p>\n";
 
+if(getSettingValue('mod_disc_acces_avertissements')=="n") {
+	echo "<p style='color:red'>L'accès à la saisie des \"".$mod_disc_terme_avertissement_fin_periode."\" a été désactivé dans le ";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<a href='discipline_admin.php' target='_blank'>paramétrage du module Discipline</a>";
+	}
+	else {
+		echo "paramétrage du module Discipline";
+	}
+	echo ".<br />Contactez un administrateur si vous pensez que c'est une erreur.</p>";
+}
+
 echo "<form name='formulaire' action='".$_SERVER['PHP_SELF']."' method='post'>
 	<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
 		".add_token_field();

@@ -10390,33 +10390,37 @@ function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
  * @return boolean Accès ou non
  */
 function acces_saisie_avertissement_fin_periode($login_ele) {
-
-	if($_SESSION['statut']=='professeur') {
-		if((getSettingAOui('saisieDiscProfPAvt'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+	if(getSettingValue('mod_disc_acces_avertissements')=="n") {
+		return false;
+	}
+	else {
+		if($_SESSION['statut']=='professeur') {
+			if((getSettingAOui('saisieDiscProfPAvt'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+				return true;
+			}
+		}
+		elseif($_SESSION['statut']=='scolarite') {
+			if(getSettingAOui('GepiRubConseilScol')) {
+				return true;
+			}
+		}
+		elseif($_SESSION['statut']=='cpe') {
+			if(getSettingAOui('saisieDiscCpeAvtTous')) {
+				return true;
+			}
+			elseif((!getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		elseif($_SESSION['statut']=='secours') {
 			return true;
 		}
-	}
-	elseif($_SESSION['statut']=='scolarite') {
-		if(getSettingAOui('GepiRubConseilScol')) {
+		elseif($_SESSION['statut']=='administrateur') {
 			return true;
 		}
-	}
-	elseif($_SESSION['statut']=='cpe') {
-		if(getSettingAOui('saisieDiscCpeAvtTous')) {
-			return true;
-		}
-		elseif((!getSettingAOui('saisieDiscCpeAvt'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	elseif($_SESSION['statut']=='secours') {
-		return true;
-	}
-	elseif($_SESSION['statut']=='administrateur') {
-		return true;
 	}
 
 	return false;
@@ -10429,39 +10433,44 @@ function acces_saisie_avertissement_fin_periode($login_ele) {
  * @return boolean Accès ou non
  */
 function acces_impression_avertissement_fin_periode($login_ele) {
-	if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
-		if($_SESSION['statut']=='professeur') {
-			if(getSettingAOui('imprDiscProfAvtOOo')) {
-				return true;
-			}
+	if(getSettingValue('mod_disc_acces_avertissements')=="n") {
+		return false;
+	}
+	else {
+		if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+			if($_SESSION['statut']=='professeur') {
+				if(getSettingAOui('imprDiscProfAvtOOo')) {
+					return true;
+				}
 
-			if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+				if((getSettingAOui('imprDiscProfPAvtOOo'))&&(is_pp($_SESSION['login'], "", $login_ele))) {
+					return true;
+				}
+			}
+			elseif($_SESSION['statut']=='scolarite') {
+				if(getSettingAOui('GepiRubConseilScol')) {
+					return true;
+				}
+			}
+			elseif($_SESSION['statut']=='cpe') {
+				if(getSettingAOui('imprDiscCpeAvtOOo')) {
+					return true;
+				}
+				/*
+				elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
+					return true;
+				}
+				*/
+				else {
+					return false;
+				}
+			}
+			elseif($_SESSION['statut']=='secours') {
 				return true;
 			}
-		}
-		elseif($_SESSION['statut']=='scolarite') {
-			if(getSettingAOui('GepiRubConseilScol')) {
+			elseif($_SESSION['statut']=='administrateur') {
 				return true;
 			}
-		}
-		elseif($_SESSION['statut']=='cpe') {
-			if(getSettingAOui('imprDiscCpeAvtOOo')) {
-				return true;
-			}
-			/*
-			elseif((!getSettingAOui('GepiRubConseilCpe'))&&(is_cpe($_SESSION['login'], "", $login_ele))) {
-				return true;
-			}
-			*/
-			else {
-				return false;
-			}
-		}
-		elseif($_SESSION['statut']=='secours') {
-			return true;
-		}
-		elseif($_SESSION['statut']=='administrateur') {
-			return true;
 		}
 	}
 
@@ -10598,7 +10607,7 @@ function necessaire_saisie_avertissement_fin_periode() {
 
 	return $retour;
 }
-
+// 20141204 A VOIR
 function insere_avertissement_fin_periode_par_defaut() {
 	global $mod_disc_terme_avertissement_fin_periode;
 
