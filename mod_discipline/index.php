@@ -949,56 +949,57 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 
 
 /* ===== Titre du menu ===== */
-
-$acces_saisie_avertissement_fin_periode=acces_saisie_avertissement_fin_periode("");
-if($_SESSION['statut']=='professeur') {
-	$is_pp=is_pp($_SESSION['login']);
-}
-
-if(($acces_saisie_avertissement_fin_periode)||
-(($_SESSION['statut']=='professeur')&&(getSettingAOui('imprDiscProfAvtOOo')))||
-(($_SESSION['statut']=='professeur')&&($is_pp))&&(getSettingAOui('imprDiscProfPAvtOOo'))) {
-	$menuTitre[]=new menuGeneral;
-	end($menuTitre);
-	$a = key($menuTitre);
-	$menuTitre[$a]->classe='accueil';
-	$menuTitre[$a]->icone['chemin']='../images/icons/chercher.png';
-	$menuTitre[$a]->icone['titre']='';
-	$menuTitre[$a]->icone['alt']="";
-	$menuTitre[$a]->texte=$mod_disc_terme_avertissement_fin_periode;
-	$menuTitre[$a]->indexMenu=$a;
-
-	/* ===== Item du menu ===== */
-	if($acces_saisie_avertissement_fin_periode) {
-		$nouveauItem = new itemGeneral();
-		$nouveauItem->chemin='/mod_discipline/saisie_avertissement_fin_periode.php';
-		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
-		{
-			$nouveauItem->titre="Saisie ".$mod_disc_terme_avertissement_fin_periode ;
-			$nouveauItem->expli="Saisir un ou des ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
-			$nouveauItem->indexMenu=$a;
-			$menuPage[]=$nouveauItem;
-		}
-		unset($nouveauItem);
+$mod_disc_acces_avertissements=getSettingValue('mod_disc_acces_avertissements');
+if($mod_disc_acces_avertissements!="n") {
+	$acces_saisie_avertissement_fin_periode=acces_saisie_avertissement_fin_periode("");
+	if($_SESSION['statut']=='professeur') {
+		$is_pp=is_pp($_SESSION['login']);
 	}
 
-	/* ===== Item du menu ===== */
 	if(($acces_saisie_avertissement_fin_periode)||
 	(($_SESSION['statut']=='professeur')&&(getSettingAOui('imprDiscProfAvtOOo')))||
 	(($_SESSION['statut']=='professeur')&&($is_pp))&&(getSettingAOui('imprDiscProfPAvtOOo'))) {
-		$nouveauItem = new itemGeneral();
-		$nouveauItem->chemin='/mod_discipline/imprimer_bilan_periode.php';
-		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
-		{
-			$nouveauItem->titre="Imprimer les ".$mod_disc_terme_avertissement_fin_periode ;
-			$nouveauItem->expli="Imprimer les ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
-			$nouveauItem->indexMenu=$a;
-			$menuPage[]=$nouveauItem;
+		$menuTitre[]=new menuGeneral;
+		end($menuTitre);
+		$a = key($menuTitre);
+		$menuTitre[$a]->classe='accueil';
+		$menuTitre[$a]->icone['chemin']='../images/icons/chercher.png';
+		$menuTitre[$a]->icone['titre']='';
+		$menuTitre[$a]->icone['alt']="";
+		$menuTitre[$a]->texte=$mod_disc_terme_avertissement_fin_periode;
+		$menuTitre[$a]->indexMenu=$a;
+
+		/* ===== Item du menu ===== */
+		if($acces_saisie_avertissement_fin_periode) {
+			$nouveauItem = new itemGeneral();
+			$nouveauItem->chemin='/mod_discipline/saisie_avertissement_fin_periode.php';
+			if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+			{
+				$nouveauItem->titre="Saisie ".$mod_disc_terme_avertissement_fin_periode ;
+				$nouveauItem->expli="Saisir un ou des ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
+				$nouveauItem->indexMenu=$a;
+				$menuPage[]=$nouveauItem;
+			}
+			unset($nouveauItem);
 		}
-		unset($nouveauItem);
+
+		/* ===== Item du menu ===== */
+		if(($acces_saisie_avertissement_fin_periode)||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('imprDiscProfAvtOOo')))||
+		(($_SESSION['statut']=='professeur')&&($is_pp))&&(getSettingAOui('imprDiscProfPAvtOOo'))) {
+			$nouveauItem = new itemGeneral();
+			$nouveauItem->chemin='/mod_discipline/imprimer_bilan_periode.php';
+			if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+			{
+				$nouveauItem->titre="Imprimer les ".$mod_disc_terme_avertissement_fin_periode ;
+				$nouveauItem->expli="Imprimer les ".$mod_disc_terme_avertissement_fin_periode." saisis." ;
+				$nouveauItem->indexMenu=$a;
+				$menuPage[]=$nouveauItem;
+			}
+			unset($nouveauItem);
+		}
 	}
 }
-
 
 /*
 echo "</table>\n";
