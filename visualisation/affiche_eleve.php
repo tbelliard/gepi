@@ -2002,8 +2002,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<table summary='Présentation'>\n";
 	echo "<tr valign='top'>\n";
 	//====================================================================
+	// Largeur du bandeau de gauche
+	$largeur_colonne_gauche=max($largeur_imposee_photo,150);
+
 	// Bande de pilotage:
-	echo "<td class='noprint' align='center'>\n";
+	echo "<td class='noprint' align='center' style='width:".$largeur_colonne_gauche."px;'>\n";
 	//echo "<form action='$_PHP_SELF#graph' name='form_choix_eleves' method='post'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_choix_eleves' method='post'>\n";
 	echo add_token_field();
@@ -2016,6 +2019,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//echo "\$eleve1=$eleve1 et \$affiche_photo=$affiche_photo<br />";
 
+	echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
 	// Affichage de la photo si elle existe:
 	if((isset($eleve1))&&($affiche_photo!="non")) {
 		//$chemin_photos='/var/wwws/gepi/photos';
@@ -2181,24 +2185,23 @@ function eleve_suivant() {
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
 
-	    if(($precedent>0)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
-			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
-			echo "<a href='javascript:eleve_precedent();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
-et le précédent est $eleve_precedent\">précédent</span></a><br />\n";
+		if(($precedent>0)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
+			//echo "<a href='javascript:eleve_precedent();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]\net le précédent est $eleve_precedent\">précédent</span></a>";
+			echo "<a href='javascript:eleve_precedent();' title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]\net le précédent est $eleve_precedent\">&nbsp;&nbsp;<img src='../images/icons/back.png' class='icone20' alt='Précédent' />&nbsp;</a>";
+			//echo "<br />\n";
 		}
 
-		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
-		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\">Actualiser</a>\n";
+		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\" title=\"Actualiser l'affichage\">&nbsp;&nbsp;<img src='../images/icons/actualiser.png' class='icone20' alt='Actualiser' />&nbsp;</a>\n";
 
-	    if(($suivant<$nombreligne_effectives+1)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
-			echo "<br />\n";
-			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
-			echo "<a href='javascript:eleve_suivant();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
-et le suivant est $eleve_suivant\">suivant</span></a>";
+		if(($suivant<$nombreligne_effectives+1)&&(isset($tab_nomprenom_eleve[$numeleve1]))) {
+			//echo "<br />\n";
+			//echo "<a href='javascript:eleve_suivant();'>Élève <span title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]\net le suivant est $eleve_suivant\">suivant</span></a>";
+			echo "<a href='javascript:eleve_suivant();' title=\"L'élève actuellement affiché est $tab_nomprenom_eleve[$numeleve1]
+et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' class='icone20' alt='Suivant' />&nbsp;&nbsp;</a>";
 		}
 		echo "</p>\n";
 
-		echo "<hr width='150' />\n";
+		//echo "<hr width='150' />\n";
 
 	} else {
 		// Cas d'un responsable ou d'un élève :
@@ -2244,6 +2247,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		}
 		echo "<input type='submit' name='choix_eleves' value='Afficher' style='margin-bottom: 3px;'/><br />\n";
 	}
+	echo "</div>";
 
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
 		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
@@ -2265,6 +2269,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		echo "<hr width='150' />\n";
 	}
 
+	echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
 	// Choix de la période
 	echo "Choisir la période:<br />\n";
 	if($choix_periode=='periode') {$checked=" checked='yes'";}else{$checked="";}
@@ -2281,8 +2286,9 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	echo "<br />\n";
 	if($choix_periode=='toutes_periodes') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<label for='choix_toutes_periodes' style='cursor: pointer;' title=\"L'affichage des moyennes de toutes les périodes pour l'élève choisi est exclusif de l'affichage du deuxième champ SELECT ci-dessus (généralement Moyenne de la classe). En effet, dans le cas contraire, on arriverait au 3è trimestre à 6 courbes, ce qui serait illisible.\"><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\"/> Toutes les périodes</label>\n";
+	echo "</div>";
 
-	echo "<hr width='150' />\n";
+	//echo "<hr width='150' />\n";
 
 	//======================================================================
 	//======================================================================
@@ -2331,15 +2337,17 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 	if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
 	(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesGraphParamEleve')))||
 	(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphParamParent')))) {
-		echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
+		echo "<p style='margin-bottom:0.5em;'><a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.</p>\n";
 
-		echo "<hr width='150' />\n";
+		//echo "<hr width='150' />\n";
 	}
 
 
 	//======================================================================
 	//======================================================================
 	//======================================================================
+
+	echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
 
 	echo "<script type='text/javascript'>
 	function fct_desactivation_infobulle() {
@@ -2813,7 +2821,95 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 			}
 		}
 	}
+	echo "</div>";
 
+	//========================================================
+	// 20141203
+	// Mettre les bulletins simplifiés, la consultation,...
+	$acces_bull_simp="n";
+	if(($_SESSION['statut']=="responsable")&&(getSettingValue('GepiAccesBulletinSimpleParent')=='yes')) {
+		$acces_bull_simp="y";
+	}
+	elseif(($_SESSION['statut']=="eleve")&&(getSettingValue('GepiAccesBulletinSimpleEleve')=='yes')) {
+		$acces_bull_simp="y";
+	}
+	elseif($_SESSION['statut']=="professeur") {
+
+		if(getSettingValue('GepiAccesBulletinSimplePP')=='yes') {
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='$eleve1' AND professeur='".$_SESSION['login']."';";
+			$test_acces_bull_simp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_acces_bull_simp)>0) {
+				$acces_bull_simp="y";
+			}
+		}
+
+		if(getSettingValue('GepiAccesBulletinSimpleProfToutesClasses')=='yes') {
+			$acces_bull_simp="y";
+		}
+		elseif(getSettingValue('GepiAccesBulletinSimpleProfTousEleves')=='yes') {
+			$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE jec.login='$eleve1' AND jec.id_classe=jgc.id_classe AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."';";
+			$test_acces_bull_simp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_acces_bull_simp)>0) {
+				$acces_bull_simp="y";
+			}
+		}
+		elseif(getSettingValue('GepiAccesBulletinSimpleProf')=='yes') {
+			$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jeg.login='$eleve1' AND jgp.id_groupe=jeg.id_groupe AND jgp.login='".$_SESSION['login']."';";
+			$test_acces_bull_simp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_acces_bull_simp)>0) {
+				$acces_bull_simp="y";
+			}
+		}
+	}
+	elseif($_SESSION['statut']=="scolarite") {
+		$acces_bull_simp="y";
+	}
+	elseif($_SESSION['statut']=="cpe") {
+		$acces_bull_simp="y";
+	}
+	elseif($_SESSION['statut']=="administrateur") {
+		$acces_bull_simp="y";
+	}
+
+	$acces_visu_eleve=check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut']);
+
+	if((isset($eleve1))&&(($acces_bull_simp=="y")||($acces_visu_eleve))) {
+		echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
+		if($acces_bull_simp=="y") {
+			if($choix_periode=='toutes_periodes') {
+				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+				//echo "affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');";
+				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+	le bulletin simplifié de toutes les périodes.\">";
+				echo "Voir le bulletin simplifié";
+				echo "</a>";
+			}
+			else {
+				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+				//echo "affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');";
+				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
+	le bulletin simplifié de la période $num_periode_choisie.\">";
+				echo "Voir le bulletin simplifié";
+				echo "</a>";
+			}
+			if($acces_visu_eleve) {
+			echo "<br />";
+			}
+		}
+
+		if($acces_visu_eleve) {
+			//$titre_infobulle="Onglets élève";
+			//$texte_infobulle="";
+			//$tabdiv_infobulle[]=creer_div_infobulle("div_visu_eleve",$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n');
+			//onclick=\"afficher_div('div_visu_eleve','y',-100,-200); affiche_visu_eleve('$eleve1','$id_classe');return false;\" 
+			echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\" title=\"Voir la fiche élève avec ses différents onglets dans une autre page.\">";
+			echo "Consultation";
+			echo "</a>";
+		}
+
+		echo "</div>";
+	}
+	//========================================================
 
 	echo "<div id='debug_fixe' style='position: fixed; bottom: 20%; right: 5%;'></div>";
 
@@ -2899,6 +2995,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		$txt_appreciations_deroulantes="";
 
 		//========================================
+		/*
 		$acces_bull_simp="n";
 		if(($_SESSION['statut']=="responsable")&&(getSettingValue('GepiAccesBulletinSimpleParent')=='yes')) {
 			$acces_bull_simp="y";
@@ -2943,6 +3040,7 @@ et le suivant est $eleve_suivant\">suivant</span></a>";
 		elseif($_SESSION['statut']=="administrateur") {
 			$acces_bull_simp="y";
 		}
+		*/
 
 		if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
 			if($acces_bull_simp=="y") {
@@ -4883,8 +4981,11 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 			}
 
 			if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+				//$titre_infobulle="Onglets élève";
+				//$texte_infobulle="";
+				//$tabdiv_infobulle[]=creer_div_infobulle("div_visu_eleve",$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n');
+				//onclick=\"afficher_div('div_visu_eleve','y',-100,-200); affiche_visu_eleve('$eleve1','$id_classe');return false;\" 
 				echo " | ";
-
 				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
 				echo "Consultation";
 				echo "</a>";
@@ -5168,6 +5269,13 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 	document.forms['form_choix_eleves'].submit();
 </script>\n";
 	}
+/*
+echo "<script type='text/javascript'>
+	function affiche_visu_eleve(ele_login, id_classe) {
+		new Ajax.Updater($('div_visu_eleve_contenu_corps'),'../eleves/visu_eleve.php?ele_login='+ele_login+'&mode_infobulle=y".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
+*/
 
 	//echo "<div id='div_truc' style='position: absolute; z-index: 1000; top: 300px; left: 0px; width: 0px; border: 1px solid black; background-color:white; display:none;'>BLABLA</div>\n";
 	//echo "<div id='div_truc' class='infodiv'>BLABLA</div>\n";
