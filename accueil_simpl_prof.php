@@ -632,13 +632,13 @@ if(($pref_accueil_cn=="y")||
 				echo "<th colspan='".$colspan_per[$i]."'>";
 
 				echo "<span id='h_lien_affiche_$i'>";
-				echo "<a href='#' onClick=\"modif_col($i,'affiche');return false;\">";
+				echo "<a href='#' onClick=\"modif_col($i,'affiche');return false;\" title=\"Afficher les items de la période $i\">";
 				echo "P$i";
 				echo "</a>";
 				echo "</span>\n";
 
 				echo "<span id='h_lien_cache_$i'>";
-				echo "<a href='#' onClick=\"modif_col($i,'cache');return false;\">";
+				echo "<a href='#' onClick=\"modif_col($i,'cache');return false;\" title=\"Réduire/masquer les items de la période $i\">";
 				echo "Période $i";
 				echo "</a>";
 				echo "</span>\n";
@@ -652,13 +652,13 @@ if(($pref_accueil_cn=="y")||
 				echo "<th colspan='".$colspan_per[$j]."'>";
 
 				echo "<span id='h_lien_affiche_$j'>";
-				echo "<a href='#' onClick=\"modif_col($j,'affiche');return false;\">";
+				echo "<a href='#' onClick=\"modif_col($j,'affiche');return false;\" title=\"Afficher les items de la période $j\">";
 				echo "P$j";
 				echo "</a>";
 				echo "</span>\n";
 
 				echo "<span id='h_lien_cache_$j'>";
-				echo "<a href='#' onClick=\"modif_col($j,'cache');return false;\">";
+				echo "<a href='#' onClick=\"modif_col($j,'cache');return false;\" title=\"Réduire/masquer les items de la période $j\">";
 				echo $tab_noms_periodes[$i];
 				echo "</a>";
 				echo "</span>\n";
