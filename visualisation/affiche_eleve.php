@@ -3386,7 +3386,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 						if(mysqli_num_rows($app_eleve_query)>0) {
 							$ligtmp=mysqli_fetch_object($app_eleve_query);
 							
-							$titre_bulle=htmlspecialchars($matiere_nom[$cpt])." (<i>".htmlspecialchars($periode)."</i>)";
+							$titre_bulle="<span title=\"".$current_group[$loop]['name']." (".$current_group[$loop]['description'].") en ".$current_group[$loop]['classlist_string']." avec ".$current_group[$loop]['profs']['proflist_string']."\">".htmlspecialchars($matiere_nom[$cpt])." (<i>".htmlspecialchars($periode)."</i>)</span>";
 							// 20140706
 							$texte_bulle="";
 							if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
@@ -4295,7 +4295,9 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 			for($i=0;$i<count($id_groupe);$i++) {
 
 				if(isset($info_imagemap[$i])) {
+					$current_group=get_group($id_groupe[$i]);
 					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
+					$titre_bulle="<span title=\"".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string']."\">".htmlspecialchars($matiere_nom[$i])."</span>";
 
 					$compteur_periodes_app_deroul=0;
 
@@ -4309,7 +4311,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 							// 20140706
 							if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
 								if($acces_bull_simp=="y") {
-									$texte_bulle.="<div style='float:right;width:16px;'>".affiche_lien_proposition_ou_correction_appreciation($eleve1, $id_eleve1, $prenom1, $nom1, get_group($id_groupe[$i]), $id_classe, $num_periode[$j], $liste_profs_du_groupe[$id_groupe[$i]], $tab_mes_groupes, $tab_afficher_liens_modif_app=array())."</div>";
+									$texte_bulle.="<div style='float:right;width:16px;'>".affiche_lien_proposition_ou_correction_appreciation($eleve1, $id_eleve1, $prenom1, $nom1, $current_group, $id_classe, $num_periode[$j], $liste_profs_du_groupe[$id_groupe[$i]], $tab_mes_groupes, $tab_afficher_liens_modif_app=array())."</div>";
 								}
 							}
 							$texte_bulle.=$tab_imagemap[$j][$i]."</td></tr>\n";
