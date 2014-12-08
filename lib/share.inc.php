@@ -9803,10 +9803,10 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			if(mysqli_num_rows($res2)>0) {
 				while($lig2=mysqli_fetch_object($res2)) {
 					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
-						$retour.="<span style='color:red'>".$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y")."</span>";
+						$retour.="<span style='color:red'>".$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y", "court")."</span>";
 					}
 					else {
-						$retour.=$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y");
+						$retour.=$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y", "court");
 					}
 					if(($lig2->id_salle>0)&&(isset($tab_salle['indice'][$lig2->id_salle]))) {
 						$retour.=" (<em>salle ".$tab_salle['indice'][$lig2->id_salle]['designation_complete']."</em>)";
