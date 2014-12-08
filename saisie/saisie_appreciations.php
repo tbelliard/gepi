@@ -693,7 +693,8 @@ if($_SERVER['QUERY_STRING']!='') {
 else {
 	$_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?id_groupe=$id_groupe";
 }
-echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe'>Imprimer</a>\n";
+echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder à la page 'Mes moyennes et appréciations'.
+Vous pourrez y choisir ce que vous souhaitez extraire/imprimer parmi les moyennes, appréciations, rang,... des différentes périodes.\">Imprimer</a>\n";
 
 //=========================
 echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a> |";

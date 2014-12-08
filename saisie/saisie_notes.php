@@ -424,7 +424,8 @@ if (isset($retour_cn)) {
 echo " | <a href='saisie_appreciations.php?id_groupe=" . $current_group["id"] . "&amp;periode_cn=$periode_cn' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les appréciations</a>";
 // enregistrement du chemin de retour pour la fonction imprimer
 $_SESSION['chemin_retour'] = $_SERVER['PHP_SELF']."?". $_SERVER['QUERY_STRING'];
-echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer</a>";
+echo " | <a href='../prepa_conseil/index1.php?id_groupe=$id_groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder à la page 'Mes moyennes et appréciations'.
+Vous pourrez y choisir ce que vous souhaitez extraire/imprimer parmi les moyennes, appréciations, rang,... des différentes périodes.\">Imprimer</a>";
 
 //=========================
 echo " | <a href='index.php?id_groupe=" . $current_group["id"] . "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Import/Export notes et appréciations</a> | ";
