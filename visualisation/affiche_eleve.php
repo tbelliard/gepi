@@ -2514,8 +2514,16 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 							if(getSettingAOui('active_mod_discipline')) {
 								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
 
+									// L'appel à la saisie d'avertissement depuis l'infobulle pose problème.
+									/*
 									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
 			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									*/
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank'>
 				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 			</a>
 		</div>";
@@ -2726,8 +2734,16 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 							if(getSettingAOui('active_mod_discipline')) {
 								if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
 
+									// L'appel à la saisie d'avertissement depuis l'infobulle pose problème.
+									/*
 									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
 			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode_$num_periode_choisie');return false;\" style='color:black;' target='_blank'>
+				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
+			</a>
+		</div>";
+									*/
+									$texte.="<div style='float:right; width:16px; margin-right:0.5em;'>
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' target='_blank'>
 				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 			</a>
 		</div>";
