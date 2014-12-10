@@ -5,6 +5,9 @@
 
 Gepi-master (Version de développement)
 ===========================
+Librairies :
+- HTMLPurifier : màj en 4.6.0
+
 Abs2
 - Sélection des traitements sur la classe dans liste_traitements.php et liste_notifications.php
 - Possibilité d'inclure l'identité et l'adresse du responsable légal 1 dans les exports ODT/ODS de l'onglet Bilan individuel.
