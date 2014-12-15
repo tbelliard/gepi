@@ -604,6 +604,10 @@ if(getSettingValue('eleves_index_debug_var')=='y') {
 		document.getElementById('quelles_classes_rech_mef').checked=true;
 		verif2();
 	}
+	function verif9(){
+		document.getElementById('quelles_classes_rech_etab').checked=true;
+		verif2();
+	}
 </script>
 
 <?php
@@ -1014,6 +1018,60 @@ Mettre à jour votre table mef peut être une solution.\">Vide ou non référenc
 		echo "
 		</select>";
 		if(acces('/mef/admin_mef.php', $_SESSION['statut'])) {echo " - <a href='../mef/admin_mef.php'>Gérer les MEF</a>";}
+		echo "</span><br />\n";
+		//echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		// 20141215
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_etab' value='rech_etab' onclick='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		//echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont l'établissement d'origine est ";
+		echo "<select name='motif_rech_etab' onchange='verif9()'>
+		<option value='' title=\"Par non référencée, il est entendu que le code établissement n'est pas dans la liste des établissements identifiés.
+Mettre à jour votre table etablissements peut être une solution.\">Vide ou non référencée</option>";
+		$sql="SELECT DISTINCT e.* FROM etablissements e, j_eleves_etablissements jee WHERE e.id=jee.id_etablissement ORDER BY ville, niveau, nom;";
+		$res_etab=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_etab)>0) {
+			while($lig_etab=mysqli_fetch_object($res_etab)) {
+				echo "
+		<option value='$lig_etab->id'>";
+				/*
+				if(($lig_etab->niveau!="")&&(isset($type_etablissement[$lig_etab->niveau]))) {
+					echo $type_etablissement[$lig_etab->niveau]." ";
+				}
+				echo $lig_etab->nom;
+				if($lig_etab->ville!="") {
+					echo " (".$lig_etab->ville;
+					if($lig_etab->cp!="") {
+						echo " (".$lig_etab->cp.")";
+					}
+					echo ")";
+				}
+				*/
+				if($lig_etab->ville!="") {
+					echo $lig_etab->ville;
+					if($lig_etab->cp!="") {
+						echo " (".$lig_etab->cp.")";
+					}
+					echo " : ";
+				}
+
+				if(($lig_etab->niveau!="")&&(isset($type_etablissement[$lig_etab->niveau]))) {
+					echo $type_etablissement[$lig_etab->niveau]." ";
+				}
+				echo $lig_etab->nom;
+
+				echo "</option>";
+			}
+		}
+		echo "
+		</select>";
+		if(acces('/etablissements/index.php', $_SESSION['statut'])) {echo " - <a href='../etablissements/index.php'>Gérer les établissements</a>";}
 		echo "</span><br />\n";
 		//echo "</label>\n";
 		echo "</td>\n";
@@ -1635,7 +1693,8 @@ if(isset($quelles_classes)) {
 	if(isset($mode_rech_ele_id)) {$ajout_param_lien.="&amp;mode_rech_ele_id=$mode_rech_ele_id";}
 	if(isset($mode_rech_no_gep)) {$ajout_param_lien.="&amp;mode_rech_no_gep=$mode_rech_no_gep";}
 	// 20130607
-	if(isset($quelles_classes_rech_mef)) {$ajout_param_lien.="&amp;motif_rech_mef=$motif_rech_mef";}
+	if(isset($motif_rech_mef)) {$ajout_param_lien.="&amp;motif_rech_mef=$motif_rech_mef";}
+	if(isset($motif_rech_etab)) {$ajout_param_lien.="&amp;motif_rech_etab=$motif_rech_etab";}
 
 	echo "<th><p><a href='index.php?order_type=nom,prenom&amp;quelles_classes=$quelles_classes";
 	echo $ajout_param_lien;
