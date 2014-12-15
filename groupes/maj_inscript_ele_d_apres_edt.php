@@ -1123,6 +1123,18 @@ elseif($action=="comparer") {
 							$temoin="";
 							if(in_array($tab_ele_regroupement_edt['login'][$loop], $diff2)) {
 								$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />";
+								
+								if((isset($tab_ele_regroupement_edt['date_sortie'][$loop]))&&($tab_ele_regroupement_edt['date_sortie'][$loop]!="")) {
+									$temoin.="<img src='../images/icons/retour_sso.png' class='icone16' alt='Départ' ";
+									$temoin.="title=\"L'élève a quitté l'établissement le ".formate_date($tab_ele_regroupement_edt['date_sortie'][$loop])."\" ";
+									$temoin.="/>";
+								}
+								
+/*
+echo "<pre>";
+print_r($tab_ele_regroupement_edt);
+echo "</pre>";
+*/
 							}
 							echo "
 					<tr>
@@ -1172,8 +1184,18 @@ elseif($action=="comparer") {
 						foreach($current_tab_ele['users'] as $current_login_ele => $current_ele) {
 							$temoin="";
 							if(in_array($current_login_ele, $diff)) {
-								$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />";
-
+								$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' ";
+								/*
+								if((isset($current_ele['date_sortie']))&&($current_ele['date_sortie']!="")) {
+									$temoin.="title=\"L'élève a quitté l'établissement le ".$current_ele['date_sortie']."\" ";
+								}
+								*/
+								$temoin.="/>";
+/*
+echo "<pre>";
+print_r($current_ele);
+echo "</pre>";
+*/
 								if (!test_before_eleve_removal($current_login_ele, $current_id_groupe, $num_periode)) {
 									if(($acces_prepa_conseil_edit_limite=="y")&&($current_ele['classe']!="")) {
 										$temoin.="<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$current_login_ele."&id_classe=".$current_ele['classe']."&periode1=".$num_periode."&periode2=".$num_periode."' target='_blank'>";
