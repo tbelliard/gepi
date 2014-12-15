@@ -1139,7 +1139,7 @@ echo "</pre>";
 							echo "
 					<tr>
 						<td>".$temoin."</td>
-						<td>".$tab_ele_regroupement_edt['nom'][$loop]."</td>
+						<td><a href='../eleves/visu_eleve.php?ele_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$tab_ele_regroupement_edt['nom'][$loop]."</a></td>
 						<td>".$tab_ele_regroupement_edt['prenom'][$loop]."</td>
 						<td><a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$tab_ele_regroupement_edt['n_national'][$loop]."</a></td>
 						<td>".$tab_ele_regroupement_edt['classe'][$loop];
@@ -1218,7 +1218,7 @@ echo "</pre>";
 							echo "
 					<tr>
 						<td>".$temoin."</td>
-						<td>".$current_ele['nom']."</td>
+						<td><a href='../eleves/visu_eleve.php?ele_login=".$current_ele['login']."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$current_ele['nom']."</a></td>
 						<td>".$current_ele['prenom']."</td>
 						<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
 						<td>";
