@@ -48,7 +48,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Gestion des groupes de groupes',
+description='Gestion des ensembles de groupes',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
@@ -60,12 +60,12 @@ if (!checkAccess()) {
 
 $groupe_de_groupes=getSettingValue('denom_groupe_de_groupes');
 if($groupe_de_groupes=="") {
-	$groupe_de_groupes="groupe de groupes";
+	$groupe_de_groupes="ensemble de groupes";
 }
 
 $groupes_de_groupes=getSettingValue('denom_groupes_de_groupes');
 if($groupes_de_groupes=="") {
-	$groupes_de_groupes="groupes de groupes";
+	$groupes_de_groupes="ensembles de groupes";
 }
 
 // Initialisation des variables utilisées dans le formulaire
@@ -289,7 +289,7 @@ if((isset($mode))&&($mode=='valider_ajout_groupe')&&(isset($id_grp_groupe))) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE **************************************
-$titre_page = "Groupes de groupes";
+$titre_page = ucfirst($groupes_de_groupes);
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
@@ -827,7 +827,13 @@ Enseignants : ".$current_group['proflist_string']."\"";
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-	echo "<p style='color:red; margin-top:1em;'>
+	echo "
+<p style='margin-left:4em;text-indent:-4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Les \"$groupes_de_groupes\" sont destinés à permettre à des professeurs de gérer la composition de certains groupes.<br />
+Typiquement, des groupes dont la composition change toutes les 3 semaines, comme par exemple des groupes d'aide aux devoirs.<br />
+Mettre à jour ces groupes permet d'effectuer les saisies d'absences avec des groupes à jour.<br />
+Si les professeurs et AED font la répartition des élèves lors d'une réunion, il peut être commode de leur laisser effectuer la mise à jour directement.</p>
+
+<p style='color:red; margin-top:1em;'>
 A FAIRE :<br />
 - Donner l'accès aux utilisateurs administrateurs des $groupes_de_groupes à des pages de sélection des élèves type groupes/edit_eleves.php et groupes/repartition_ele_grp.php<br />
 - Pouvoir éditer les listes produites en CSV et PDF.<br />
