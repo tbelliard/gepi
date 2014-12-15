@@ -1264,3 +1264,5 @@ INSERT INTO droits SET id='/cahier_texte_2/ajax_affichage_car_spec.php', adminis
 INSERT INTO droits SET id='/cahier_texte_2/cdt_choix_caracteres.php', administrateur='F', professeur='V', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Choix de caractères spéciaux pour le CDT2', statut='';
 INSERT INTO droits SET id='/groupes/maj_inscript_ele_d_apres_edt.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Import des inscriptions élèves depuis un XML EDT', statut='';
 INSERT INTO droits SET id='/eleves/resume_ele.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='V', responsable='V', secours='V', autre='F', description='Accueil élève résumé', statut='';
+INSERT INTO setting SET name='denom_groupe_de_groupes', value='ensemble de groupes';
+INSERT INTO setting SET name='denom_groupes_de_groupes', value='ensembles de groupes';

@@ -354,6 +354,22 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['denom_groupe_de_groupes'])) {
+			$denom_groupe_de_groupes=$_POST['denom_groupe_de_groupes'];
+			if($denom_groupe_de_groupes=="") {$denom_groupe_de_groupes="ensemble de groupes";}
+			if (!saveSetting("denom_groupe_de_groupes", $denom_groupe_de_groupes)) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre denom_groupe_de_groupes !";
+			}
+		}
+
+		if (isset($_POST['denom_groupes_de_groupes'])) {
+			$denom_groupes_de_groupes=$_POST['denom_groupes_de_groupes'];
+			if($denom_groupes_de_groupes=="") {$denom_groupes_de_groupes="ensembles de groupes";}
+			if (!saveSetting("denom_groupes_de_groupes", $denom_groupes_de_groupes)) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre denom_groupes_de_groupes !";
+			}
+		}
+
 		if (isset($_POST['ele_tel_pers'])) {
 			if (!saveSetting("ele_tel_pers", $_POST['ele_tel_pers'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre ele_tel_pers !";
@@ -1324,6 +1340,26 @@ echo add_token_field();
 		</span>
 		<span class="cellTab plusPetit">
 		<input type="text" name="email_dest_info_erreur_affect_grp" value="<?php if(getSettingValue("email_dest_info_erreur_affect_grp")!="") {echo getSettingValue("email_dest_info_erreur_affect_grp");} ?>" onchange='changement()' /><br />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='groupe_de_groupes'></a>
+			Terme (<em>au singulier</em>) à employer pour désigner un "ensemble de groupes" sur lequel vous pouvez déléguer à certains professeurs la modification des listes d'élèves.
+		</span>
+		<span class="cellTab plusPetit">
+		<input type="text" name="denom_groupe_de_groupes" value="<?php if(getSettingValue("denom_groupe_de_groupes")!="") {echo getSettingValue("denom_groupe_de_groupes");} else {echo "ensemble de groupes";} ?>" onchange='changement()' /><br />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<a name='groupes_de_groupes'></a>
+			Terme (<em>au pluriel</em>) à employer pour désigner les "ensembles de groupes" sur lesquels vous pouvez déléguer à des professeurs la modification des listes d'élèves.
+		</span>
+		<span class="cellTab plusPetit">
+		<input type="text" name="denom_groupes_de_groupes" value="<?php if(getSettingValue("denom_groupes_de_groupes")!="") {echo getSettingValue("denom_groupes_de_groupes");} else {echo "ensembles de groupes";} ?>" onchange='changement()' /><br />
 		</span>
 	</p>
 

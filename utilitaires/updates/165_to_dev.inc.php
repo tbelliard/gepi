@@ -586,4 +586,34 @@ else {
 	$result .= msj_erreur("ECHEC !");
 }
 
+$result .= "&nbsp;-> Initialisation de 'denom_groupe_de_groupes' : ";
+$sql="SELECT value FROM setting WHERE name='denom_groupe_de_groupes';";
+$query = mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($query)==0) {
+	$sql="INSERT INTO setting SET name='denom_groupe_de_groupes', value='ensemble de groupes';";
+	$query = mysqli_query($mysqli, $sql);
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Initialisation déjà faite");
+}
+
+$result .= "&nbsp;-> Initialisation de 'denom_groupes_de_groupes' : ";
+$sql="SELECT value FROM setting WHERE name='denom_groupes_de_groupes';";
+$query = mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($query)==0) {
+	$sql="INSERT INTO setting SET name='denom_groupes_de_groupes', value='ensembles de groupes';";
+	$query = mysqli_query($mysqli, $sql);
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Initialisation déjà faite");
+}
+
 ?>
