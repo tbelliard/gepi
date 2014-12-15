@@ -61,9 +61,15 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 			echo "| <a href='../groupes/maj_inscript_ele_d_apres_edt.php' title=\"Si vous avez importé votre emploi du temps depuis le fichier EXP_Cours.xml d'EDT, vous pouvez mettre à jour les inscriptions d'élèves dans les groupes Gepi à l'aide de l'export EXP_Eleves.xml d'EDT.\">Màj inscriptions élèves d'après EDT </a>";
 		}
 	}
+
+	$groupes_de_groupes=getSettingValue('denom_groupes_de_groupes');
+	if($groupes_de_groupes=="") {
+		$groupes_de_groupes="ensembles de groupes";
+	}
+
 ?>
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
-| <a href='../groupes/modify_grp_group.php'>Groupes de groupes</a>
+| <a href='../groupes/modify_grp_group.php'><?php echo ucfirst($groupes_de_groupes);?></a>
 | <a href='../groupes/correction_inscriptions_grp_csv.php'>Correction CSV</a>
 <?php
 	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
