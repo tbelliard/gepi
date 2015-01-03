@@ -215,6 +215,15 @@
 
 <!-- messagerie -->
 <?php
+	if(in_array($_SESSION['statut'], array('administrateur', 'professeur', 'cpe', 'scolarite'))) {
+		if($gepiVersion!="master") {
+			$gepiVersionConnue=getPref($_SESSION['login'], 'gepiVersionConnue', '');
+			if($gepiVersionConnue!=$gepiVersion) {
+				$message_nouvelle_version_gepi=afficher_message_nouvelle_version_gepi();
+			}
+		}
+	}
+
 	if(in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite', 'responsable', 'eleve'))) {
 		//echo "<div align='center'>".afficher_les_evenements()."</div>";
 		$liste_evenements=afficher_les_evenements();
@@ -270,6 +279,10 @@
 			<div class="panneau_bas"></div>
 			<div class="panneau_centre">
 				<?php 
+				if((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!="")) {
+					echo "<div class='postit' title=\"Votre Gepi a été mis à jour.\">".$message_nouvelle_version_gepi."</div>";
+				}
+
 				if((isset($liste_evenements))&&($liste_evenements!="")) {
 					echo "<div class='postit' title=\"Événements à venir (définis) pour vos classes.\">".$liste_evenements."</div>";
 				}

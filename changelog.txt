@@ -6,7 +6,7 @@
 Gepi-master (Version de développement)
 ===========================
 Librairies :
-- HTMLPurifier : màj en 4.6.0
+- HTMLPurifier : Mise à jour en 4.6.0
 
 Abs2
 - Sélection des traitements sur la classe dans liste_traitements.php et liste_notifications.php
@@ -48,6 +48,9 @@ Années antérieures:
 Divers:
 - Ajout d'une page d'accueil "simplifiée/graphique" pour les élèves et parents.
 - Possibilité d'exporter au format ical les dates de conseils de classe si un événement Conseils de classe a été défini.
+- Affichage d'un message pour les personnels lors du changement de version de Gepi
+  (pour inviter à jeter un oeil au changelog et nouveaux droits pour l'admin, 
+  et pour aller voir Gérer mon compte pour les autres personnels).
 
 Livret Scolaire Lycée:
 - Ajout d'une ébauche de module.

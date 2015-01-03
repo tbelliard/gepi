@@ -10677,15 +10677,27 @@ function necessaire_saisie_avertissement_fin_periode() {
 			alert('Erreur');
 		}
 		else {
-			new Ajax.Updater($(saisie_avertissement_fin_periode_id_retour_ajax),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
-			parameters: {
-				login_ele: saisie_avertissement_fin_periode_login_ele,
-				periode: saisie_avertissement_fin_periode_periode,
-				saisie_avertissement_fin_periode: 'y',
-				mode_js: 'y',
-				lien_refermer: 'y',
-				id_type_avertissement: id_type_avertissement,
-			}});
+
+			// Problème avec l'appel depuis une infobulle de saisie d'avis du conseil dans affiche_eleve.php
+			//if($(saisie_avertissement_fin_periode_id_retour_ajax)) {
+				//alert('Le champ '+saisie_avertissement_fin_periode_id_retour_ajax+' existe/est atteint.');
+
+				new Ajax.Updater($(saisie_avertissement_fin_periode_id_retour_ajax),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
+				parameters: {
+					login_ele: saisie_avertissement_fin_periode_login_ele,
+					periode: saisie_avertissement_fin_periode_periode,
+					saisie_avertissement_fin_periode: 'y',
+					mode_js: 'y',
+					lien_refermer: 'y',
+					id_type_avertissement: id_type_avertissement,
+				}});
+			/*
+			}
+			else {
+				//alert('Le champ '+saisie_avertissement_fin_periode_id_retour_ajax+' n existe pas ou ne peut pas etre atteint.');
+				document.getElementById('form_saisie_avertissement_fin_periode').submit();
+			}
+			*/
 
 			cacher_div('div_saisie_avertissement_fin_periode');
 		}
@@ -10733,6 +10745,13 @@ function necessaire_saisie_avertissement_fin_periode() {
 				<input type='hidden' name='saisie_avertissement_fin_periode_login_ele' id='saisie_avertissement_fin_periode_login_ele' value='' />
 				<input type='hidden' name='saisie_avertissement_fin_periode_periode' id='saisie_avertissement_fin_periode_periode' value='' />
 				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
+				<!--
+				Problème avec l'appel depuis une infobulle de saisie d'avis du conseil dans affiche_eleve.php
+				<input type='hidden' name='login_ele' id='saisie_avertissement_fin_periode_login_ele' value='' />
+				<input type='hidden' name='periode' id='saisie_avertissement_fin_periode_periode' value='' />
+				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
+				-->
+
 				<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode</p>
 				<div id='div_champs_checkbox_avertissements_fin_periode'>
 					".champs_checkbox_avertissements_fin_periode("", 1)."
@@ -12748,5 +12767,37 @@ function is_eleve_classe($login_ele, $id_classe) {
 		$res->close();
 		return true;
 	}
+}
+
+/** Fonction destinée à retourner un message informant l'utilisateur que la version de Gepi a été mise à jour
+ *
+ * @return string Le message d'information/explication
+ */
+function afficher_message_nouvelle_version_gepi() {
+	global $gepiVersion, $gepiPath;
+
+	$retour="";
+
+	if($_SESSION['statut']=="administrateur") {
+		$retour="<div style='float:right; width:16px; margin:5px;' title='Supprimer ce message'><a href='$gepiPath/accueil.php?suppr_msg_chgt_version_gepi=y".add_token_in_url()."'><img src='$gepiPath/images/delete16.png' class='icone16' alt='Supprimer' /></a></div>
+<p>Gepi a été mis à jour en version <strong>".$gepiVersion."</strong></p>
+
+<p>De nouvelles fonctionnalités sont probablement proposées.<br />
+Vous pouvez en consulter la liste dans le <a href='$gepiPath/a_lire.php?fichier=changelog.txt#affichage_fichier'>changelog</a></p>
+
+<p>De nouveaux droits ont pu être ajoutés avec cette nouvelle version.<br />
+Consultez la liste des droits dans <a href='$gepiPath/gestion/droits_acces.php'>Droits d'accès</a> pour adapter le comportement de Gepi aux préférences de l'établissement.</p>
+
+<p>Vous pouvez définir certains choix personnels dans <a href='$gepiPath/utilisateurs/mon_compte.php'><img src='$gepiPath/images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p>";
+	}
+	elseif(in_array($_SESSION['statut'], array("professeur", "scolarite", "cpe"))) {
+		$retour="<div style='float:right; width:16px; margin:5px;' title='Supprimer ce message'><a href='$gepiPath/accueil.php?suppr_msg_chgt_version_gepi=y".add_token_in_url()."'><img src='$gepiPath/images/delete16.png' class='icone16' alt='Supprimer' /></a></div>
+<p>Gepi a été mis à jour en version <strong>".$gepiVersion."</strong></p>
+<p>De nouvelles fonctionnalités sont probablement proposées.<br />
+Votre administrateur a peut-être aussi activé de nouveaux modules.<br />
+Vous pouvez définir certains choix personnels dans <a href='$gepiPath/utilisateurs/mon_compte.php'><img src='$gepiPath/images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p>";
+	}
+
+	return $retour;
 }
 ?>

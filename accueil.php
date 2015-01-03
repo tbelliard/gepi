@@ -143,6 +143,11 @@ if($_SESSION['statut']=='administrateur') {
   include_once("lib/share-admin.inc.php");
 }
 
+if(isset($_GET['suppr_msg_chgt_version_gepi'])) {
+	check_token();
+	savePref($_SESSION['login'], 'gepiVersionConnue', $gepiVersion);
+}
+
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	$accueil_simpl=isset($_GET['accueil_simpl']) ? $_GET['accueil_simpl'] : NULL;
 	if(!isset($accueil_simpl)){
