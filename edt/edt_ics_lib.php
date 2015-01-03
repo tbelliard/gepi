@@ -1833,7 +1833,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	$display_date=strftime("%d/%m/%Y", $ts_display_date);
 	$num_semaine=strftime("%V", $ts_display_date);
 	if($num_semaine<10) {
+		// Le %V a l'air de déjà renvoyer le mois sur 2 chiffres
 		$num_semaine_annee="0".$num_semaine."|".strftime("%Y", $ts_display_date);
+		$num_semaine_annee=preg_replace("/^[0]{2,}/","0", $num_semaine_annee);
 	}
 	else {
 		$num_semaine_annee=$num_semaine."|".strftime("%Y", $ts_display_date);
@@ -1892,6 +1894,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	$tab_salle=get_tab_salle_cours();
 
 	$html="";
+
+	//$html="\$num_semaine_annee=$num_semaine_annee<br />";
 
 	$tab=explode("|", $num_semaine_annee);
 
