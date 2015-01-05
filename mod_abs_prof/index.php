@@ -71,6 +71,8 @@ if((isset($mode))&&($mode=="suppr_abs")&&(isset($_POST['suppr_abs']))) {
 
 	$nb_suppr=0;
 	for($loop=0;$loop<count($suppr_abs);$loop++) {
+		// A FAIRE : Commencer par sélectionner les remplacements validés ou acceptés pour avertir par mail et/ou en page d'accueil l'utilisateur.
+
 		$sql="DELETE FROM abs_prof_remplacement WHERE id_absence='".$suppr_abs[$loop]."';";
 		$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$del) {
@@ -549,7 +551,7 @@ if(($_SESSION['statut']=="administrateur")||
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=suppr_abs'>Supprimer des absences à venir saisies</a></li>";
 	}
 	echo "
-	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date.</li>
+	<li><a href='consulter_remplacements.php'>Consulter les absences passées pour générer des listes d'absences, de remplacements,... entre telle date et telle date</a>.</li>
 </ul>";
 
 
