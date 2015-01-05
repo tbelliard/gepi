@@ -1342,6 +1342,18 @@ autre='F',
 description='Accueil élève résumé',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs_prof/consulter_remplacements.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Consulter les remplacements de professeurs',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
