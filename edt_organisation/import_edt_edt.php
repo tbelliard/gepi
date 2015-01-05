@@ -2083,7 +2083,7 @@ mysql>
 								}
 
 								$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 								for($loop=0;$loop<count($tab_grp_candidat);$loop++) {
 									//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
 									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'";
