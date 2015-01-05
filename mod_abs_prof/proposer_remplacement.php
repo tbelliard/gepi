@@ -1304,6 +1304,7 @@ echo "
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir envoyer la proposition à tous les professeurs de la classe (cas du professeur privé d'un cours parce qu'une sortie est organisée pour la classe).</li>
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Proposer de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.</li>
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Réduire/masquer les jours passés.</li>
+	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir ne pas proposer de remplacement pour des cours qui ne sont pas en classe entière.</li>
 </ul>
 
 <script type='text/javascript'>
