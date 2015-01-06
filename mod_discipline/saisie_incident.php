@@ -1413,7 +1413,8 @@ if(isset($id_incident) ) {
                 <th>Retenue</th>               
 <?php
         }
-        if($_SESSION['statut']!='professeur') {
+        // A affiner pour le statut autre : il faudrait pouvoir préciser si c'est un statut seulement autorisé à saisir des incidents ou aussi autorisé à les traiter (droits à ajouter dans statuts personnalisés)
+        if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 ?>
                 <th>
                     <!--Avertir la famille... et afficher les avertissements effectués.-->
@@ -1633,8 +1634,8 @@ if(isset($id_incident) ) {
         </td>
 <?php
 		}
-                
-                if($_SESSION['statut']!='professeur') {
+                // A affiner pour le statut autre : il faudrait pouvoir préciser si c'est un statut seulement autorisé à saisir des incidents ou aussi autorisé à les traiter (droits à ajouter dans statuts personnalisés)
+                if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 ?>
         <td>
 <?php
