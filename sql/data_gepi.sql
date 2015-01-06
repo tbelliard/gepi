@@ -726,7 +726,7 @@ INSERT INTO droits VALUES ( '/mod_discipline/definir_autres_sanctions.php', 'V',
 INSERT INTO droits VALUES ( '/mod_discipline/liste_retenues_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Liste des retenues du jour', '');
 INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');
 INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');
-INSERT INTO droits VALUES ( '/mod_discipline/sauve_famille_avertie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg famille avertie', '');
+INSERT INTO droits VALUES ( '/mod_discipline/sauve_famille_avertie.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Svg famille avertie', '');
 INSERT INTO droits VALUES ( '/mod_discipline/discipline_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Activation/desactivation du module', '');
 INSERT INTO s_qualites SET qualite='Responsable';
 INSERT INTO s_qualites SET qualite='Victime';
