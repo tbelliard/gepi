@@ -616,7 +616,12 @@ if($etat_incident!='clos') {
 					$sql.="description='".$description."' ,";
 					$temoin_modif="y";
 				}
-				
+
+
+				// 20141209
+				// Nettoyer les échappements d'apostrophes
+
+
 				// Ajout Eric zone de commentaire
 				if (isset($NON_PROTECT["commentaire"])){
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
@@ -655,11 +660,11 @@ if($etat_incident!='clos') {
 				}
 				
 				$sql_declarant="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
-		        $res_declarant=mysqli_query($GLOBALS["mysqli"], $sql_declarant);
-		        if(mysqli_num_rows($res_declarant)>0) {
-			        $lig_decclarant=mysqli_fetch_object($res_declarant);
-			        $texte_mail= "Déclaration initiale de l'".$mod_disc_terme_incident." par ".u_p_nom($lig_decclarant->declarant)."\n";
-		        }
+				$res_declarant=mysqli_query($GLOBALS["mysqli"], $sql_declarant);
+				if(mysqli_num_rows($res_declarant)>0) {
+					$lig_decclarant=mysqli_fetch_object($res_declarant);
+					$texte_mail= "Déclaration initiale de l'".$mod_disc_terme_incident." par ".u_p_nom($lig_decclarant->declarant)."\n";
+				}
 	
 				$texte_mail.="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un ".$mod_disc_terme_incident." (n°$id_incident)";
 				if(isset($display_heure)) {
@@ -1431,7 +1436,8 @@ if(isset($id_incident) ) {
                 <th>Retenue</th>               
 <?php
         }
-        if($_SESSION['statut']!='professeur') {
+        // A affiner pour le statut autre : il faudrait pouvoir préciser si c'est un statut seulement autorisé à saisir des incidents ou aussi autorisé à les traiter (droits à ajouter dans statuts personnalisés)
+        if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 ?>
                 <th>
                     <!--Avertir la famille... et afficher les avertissements effectués.-->
@@ -1651,8 +1657,8 @@ if(isset($id_incident) ) {
         </td>
 <?php
 		}
-                
-                if($_SESSION['statut']!='professeur') {
+                // A affiner pour le statut autre : il faudrait pouvoir préciser si c'est un statut seulement autorisé à saisir des incidents ou aussi autorisé à les traiter (droits à ajouter dans statuts personnalisés)
+                if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
 ?>
         <td>
 <?php
