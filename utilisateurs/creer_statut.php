@@ -348,7 +348,7 @@ if ($query) {
 
 		$aff_users .= '
 		<tr>
-			<td>'.$tab["nom"].' '.$tab["prenom"].'</td>
+			<td><a href="modify_user.php?user_login='.$tab["login"].'" target="_blank" title="Voir/modifier dans un nouvel onglet/fenêtre le compte de l\'utilisateur.">'.$tab["nom"].' '.$tab["prenom"].'</a></td>
 			<td>
 		<form id="form'.$i.'" action="creer_statut.php" method="post">'."\n";
 
