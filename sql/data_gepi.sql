@@ -1267,3 +1267,4 @@ INSERT INTO droits SET id='/eleves/resume_ele.php', administrateur='V', professe
 INSERT INTO setting SET name='denom_groupe_de_groupes', value='ensemble de groupes';
 INSERT INTO setting SET name='denom_groupes_de_groupes', value='ensembles de groupes';
 INSERT INTO droits SET id='/mod_abs_prof/consulter_remplacements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Consulter les remplacements de professeurs', statut='';
+INSERT INTO setting SET name='force_error_reporting', value='n';

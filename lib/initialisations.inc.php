@@ -319,4 +319,10 @@ if (!class_exists('Propel')
     if (isset($_SESSION['objets_propel'])) unset($_SESSION['objets_propel']);
 }
 
+// Si nécessaire forcer l'affichage des erreurs PHP
+if (getSettingAOui('force_error_reporting')) {
+	error_reporting(-1);
+	ini_set("display_errors", 1);
+	}
+
 ?>

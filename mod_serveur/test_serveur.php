@@ -51,6 +51,12 @@ if ($resultat_session == 'c') {
     die();
 }
 
+// Traitement de force_error_reporting
+if (isset($_POST['force_error_reporting'])) {
+	check_token();
+	saveSetting('force_error_reporting',$_POST['force_error_reporting']);
+	}
+
 // Instance de la classe infos (voir serveur_infos.class.php)
 $test_infos_serveur = new infos;
 
@@ -157,6 +163,24 @@ if ($test_infos_serveur->versionGd()) {
 
 	echo "<br />\n";
 	echo "<hr />\n";
+	echo "<a name='force_error_reporting'></a><h4>Affichage des erreurs PHP</h4>\n";
+	echo "<p>Il peut être nécessaire <b>momentanément</b> de configurer Gepi pour forcer l'affichage des erreurs PHP afin de résoudre des dysfonctionnements. Attention ! En temps normal l'affichage des erreurs PHP doit être désactivé.</p>\n";
+	echo "<form action='#force_error_reporting' id='form_force_error_reporting' method='post'>\n";
+	echo "Forcer l'affichage des erreurs PHP : ";
+	echo "<input type='radio' name='force_error_reporting' id='force_error_reporting_y' value='y' ";
+	if (getSettingAOui('force_error_reporting')) echo "checked";
+	echo " onchange=\"document.getElementById('form_force_error_reporting').submit();\" >\n";
+	echo "<label for='force_error_reporting_y' style='cursor: pointer;'>Oui</label>\n";
+	echo " ";
+	echo "<input type='radio' name='force_error_reporting' id='force_error_reporting_n' value='n' ";
+	if (!getSettingAOui('force_error_reporting')) echo "checked";
+	echo " onchange=\"document.getElementById('form_force_error_reporting').submit();\" >\n";
+	echo "<label for='force_error_reporting_n' style='cursor: pointer;'>Non</label>\n";
+	echo add_token_field();
+	echo "</form>\n";
+	echo "<br />\n";
+	echo "<hr />\n";
+
 	echo "<h4>Encodage des caractères : </h4>\n";
 	if (function_exists('iconv')) {
 	    echo "iconv est installé sur votre système<br />";

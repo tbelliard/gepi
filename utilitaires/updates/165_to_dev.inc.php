@@ -616,4 +616,19 @@ if(mysqli_num_rows($query)==0) {
 	$result .= msj_present("Initialisation déjà faite");
 }
 
+$result .= "&nbsp;-> Ajout de l'entrée force_error_reporting à la table 'setting' : ";
+$sql="SELECT value FROM setting WHERE name='force_error_reporting';";
+$query = mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($query)==0) {
+	$sql="INSERT INTO setting SET name='force_error_reporting', value='n';";
+	$query = mysqli_query($mysqli, $sql);
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Ajout déjà fait");
+}
+
 ?>
