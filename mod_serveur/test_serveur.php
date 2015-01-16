@@ -54,8 +54,13 @@ if ($resultat_session == 'c') {
 // Traitement de force_error_reporting
 if (isset($_POST['force_error_reporting'])) {
 	check_token();
-	saveSetting('force_error_reporting',$_POST['force_error_reporting']);
+	if(saveSetting('force_error_reporting',$_POST['force_error_reporting'])) {
+		$msg="Paramètre 'force_error_reporting' enregistré (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
+	else {
+		$msg="Erreur lors de l'enregistrement du paramètre 'force_error_reporting' (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+}
 
 // Instance de la classe infos (voir serveur_infos.class.php)
 $test_infos_serveur = new infos;
