@@ -51,6 +51,7 @@ Divers:
 - Affichage d'un message pour les personnels lors du changement de version de Gepi
   (pour inviter à jeter un oeil au changelog et nouveaux droits pour l'admin, 
   et pour aller voir Gérer mon compte pour les autres personnels).
+- Possibilité dans Gestion générale/Configuration serveur de forcer l'affichage des erreurs PHP.
 
 Livret Scolaire Lycée:
 - Ajout d'une ébauche de module.
