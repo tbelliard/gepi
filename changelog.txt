@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.6.6 (18/01/2015)
 ===========================
 Librairies :
 - HTMLPurifier : Mise à jour en 4.6.0

@@ -233,12 +233,12 @@ if (isset ($_POST['maj'])) {
             require 'updates/163_to_164.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("master"))) {
+	if (($force_maj == 'yes') or (quelle_maj("1.6.5"))) {
             require 'updates/164_to_165.inc.php';
 	}
 
-	if (($force_maj == 'yes') or (quelle_maj("master"))) {
-        require 'updates/165_to_dev.inc.php';
+	if (($force_maj == 'yes') or (quelle_maj("1.6.6"))) {
+        require 'updates/165_to_166.inc.php';
 	}
 
 	// Mise à jour du numéro de version
