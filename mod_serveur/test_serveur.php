@@ -60,6 +60,7 @@ if (isset($_POST['force_error_reporting'])) {
 	else {
 		$msg="Erreur lors de l'enregistrement du paramètre 'force_error_reporting' (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
+	$msg_force_error_reporting=$msg;
 }
 
 // Instance de la classe infos (voir serveur_infos.class.php)
@@ -183,6 +184,9 @@ if ($test_infos_serveur->versionGd()) {
 	echo "<label for='force_error_reporting_n' style='cursor: pointer;'>Non</label>\n";
 	echo add_token_field();
 	echo "</form>\n";
+	if(isset($msg_force_error_reporting)) {
+		echo "<p style='color:red'>".$msg_force_error_reporting."</p>";
+	}
 	echo "<br />\n";
 	echo "<hr />\n";
 
