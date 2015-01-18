@@ -2079,7 +2079,8 @@ function checkbox_change(cpt) {
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
+			//echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Matière $matiere</p>\n";
 
 			$tab_groupes_inscrits=array();
 			//$sql="SELECT eg.id_groupe FROM ex_groupes eg, j_groupes_classes jgc WHERE eg.id_exam='$id_exam' AND eg.matiere='$matiere' AND jgc.id_classe='$id_classe' AND jgc.id_groupe=eg.id_groupe;";
