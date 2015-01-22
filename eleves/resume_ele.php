@@ -114,6 +114,15 @@ if($affichage!="semaine") {
 	$ts_debut_jour_suivant=mktime(23, 59, 59, $tmp_tab[1], $tmp_tab[0], $tmp_tab[2])+1;
 	$num_semaine=strftime("%V", $ts_display_date);
 
+	// DEBUG
+	/*
+	echo "<div style='margin-left:300px'>";
+	echo "display_date=$display_date<br />";
+	echo "affichage=$affichage<br />";
+	echo "ts_display_date=$ts_display_date<br />";
+	echo "</div>";
+	*/
+
 	$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 
 	if($affichage=="jour") {
@@ -188,11 +197,25 @@ if($affichage!="semaine") {
 
 		$num_semaine_annee=$num_semaine."|".$tmp_tab[2];
 	}
+	// DEBUG
+	/*
+	echo "<div style='margin-left:300px'>";
+	echo "ts_display_date=$ts_display_date<br />";
+	echo "display_date=$display_date<br />";
+	echo "affichage=$affichage<br />";
+	echo "</div>";
+	*/
 }
 //===================================================
 if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
 	$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
 }
+// DEBUG
+/*
+echo "<div style='margin-left:300px'>";
+echo "num_semaine_annee=$num_semaine_annee<br />";
+echo "</div>";
+*/
 //===================================================
 // Ca ne devrait pas être le cas sur cette page
 if($affichage=="semaine") {
@@ -301,6 +324,14 @@ if(isset($display_date)) {
 	$_SESSION['resume_ele_display_date']=$display_date;
 }
 
+// DEBUG
+/*
+echo "<div style='margin-left:300px'>";
+echo "ts_display_date=$ts_display_date<br />";
+echo "display_date=$display_date<br />";
+echo "affichage=$affichage<br />";
+echo "</div>";
+*/
 //=================================
 // Contenu EDT
 $x0=35;
@@ -635,7 +666,7 @@ if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login']
 	$html.="</div>";
 
 	echo "
-<div id='div_cdt' style='float:left; width:".$largeur_cdt."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['cdt'].";'>".$html."</div>";
+<div id='div_cdt' style='float:left; width:".$largeur_cdt."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['cdt'].";' title=\"Dans ce cadre, les travaux à faire pour la date choisie sont affichés.\nPour consulter les comptes-rendus de séance, cliquez sur la loupe en haut à droite de ce cadre CDT.\">".$html."</div>";
 }
 //=================================
 
