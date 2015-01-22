@@ -1719,7 +1719,7 @@ else{
 				echo "</form>\n";
 			}
 			else {
-			    echo "<p>La date de sortie de l'établissement notés dans Sconet est enregistrée dans GEPI.</p>\n";
+				echo "<p>La date de sortie de l'établissement notés dans Sconet est enregistrée dans GEPI.</p>\n";
 				echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures. On recherche ci-dessous les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
 	
 				echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
@@ -5305,7 +5305,8 @@ else{
 					echo "</th>\n";
 					echo "</tr>\n";
 
-					$tab_champs_grp=array('matieres','profs','classes');
+					//$tab_champs_grp=array('matieres','profs','classes');
+					$tab_champs_grp=array('matieres','profs','classes','eleves');
 
 					$nb_erreurs=0;
 					$i=0;
@@ -5352,6 +5353,13 @@ else{
 									"login = '" . $login_eleve . "' and " .
 									"periode = '" . $j . "')");
 
+							if(isset($tmp_group['eleves'][$j]["list"])) {
+								$eff_grp_periode_courante=count($tmp_group['eleves'][$j]["list"]);
+							}
+							else {
+								$eff_grp_periode_courante="-";
+							}
+
 							$sql="SELECT * FROM j_eleves_classes WHERE login='$login_eleve' AND periode='$j' AND id_classe='$id_classe'";
 							// CA NE VA PAS... SUR LES GROUPES A REGROUPEMENT, IL FAUT PRENDRE DES PRECAUTIONS...
 							info_debug($sql);
@@ -5381,7 +5389,7 @@ else{
 									}
 
 									if($temoin!=""){
-										echo "<td><center>".$temoin."<input type=hidden name=".$id_groupe."_".$j." value='checked' /></center></td>\n";
+										echo "<td><center>".$temoin."<input type=hidden name=".$id_groupe."_".$j." value='checked' /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
 									}
 									else{
 										$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
@@ -5426,7 +5434,7 @@ else{
 								else {
 									$checked=" checked";
 								}
-								echo "<center><input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();'$checked /></center></td>\n";
+								echo "<center><input type='checkbox' id='case".$i."_".$j."' name='".$id_groupe."_".$j."' onchange='changement();'$checked /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
 
 								//=========================
 							}
