@@ -722,6 +722,9 @@ for ($i=0;$i<$nb_mat;$i++) {
     echo ">" . htmlspecialchars($nom_matiere,ENT_QUOTES,"UTF-8") . "</option>\n";
 }
 echo "</select>\n";
+
+echo "<a href='../matieres/modify_matiere.php' title=\"Créer d'abord une matière\"><img src='../images/icons/wizard.png' class='icone16' alt=\"Créer d'abord une matière\" /></a>\n";
+
 echo "</td>\n";
 echo "<td>\n";
 echo "&nbsp;dans&nbsp;";
