@@ -907,10 +907,32 @@ else{
 				if(mysqli_num_rows($res)==0){
 					if(isset($_POST['is_posted'])) {
 						echo "<p>Il n'y a plus d'ELENOET pour lequel effectuer une correction.</p>\n";
-						echo "<p>Terminé.</p>\n";
+
+						$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%' OR ele_id LIKE '';";
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						if(mysqli_num_rows($res_ele)==0){
+							echo "<p>Terminé.</p>\n";
+						}
+						else {
+							echo "<p>Il reste un ou des élèves non rattachés à Sconet.<br />
+							<a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y".add_token_in_url()."'>Tenter une reconnaissance sur les Nom, prénom et date de naissance</a>.</p>\n";
+						}
+
 					}
 					else{
 						echo "<p>Aucun ELENOET trouvé pour effectuer une correction.</p>\n";
+
+						$sql="SELECT * FROM eleves WHERE ele_id LIKE 'e%' OR ele_id LIKE '';";
+						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						if(mysqli_num_rows($res_ele)==0){
+							echo "<p>Terminé.</p>\n";
+						}
+						else {
+							echo "<p>Il reste un ou des élèves non rattachés à Sconet.<br />
+							<a href='".$_SERVER['PHP_SELF']."?step=3&amp;stop=y".add_token_in_url()."'>Tenter une reconnaissance sur les Nom, prénom et date de naissance</a>.</p>\n";
+						}
 					}
 				}
 				else{
@@ -947,6 +969,154 @@ else{
 						echo "<td>$lig->prenom</td>\n";
 						echo "<td>$lig->sexe</td>\n";
 						echo "<td>$lig->naissance</td>\n";
+						echo "<td>$lig->elenoet</td>\n";
+						echo "<td>$lig->ele_id</td>\n";
+						echo "</tr>\n";
+						$cpt++;
+					}
+					echo "</table>\n";
+					echo "<input type='hidden' name='nb_ele_id' value='$cpt' />\n";
+					echo "<input type='submit' name='validation' value='Valider' />\n";
+				}
+			}
+			echo "</form>\n";
+
+			if(isset($cpt)) {
+				echo "<script type='text/javascript'>
+	function modifcase(mode){
+		for(i=0;i<$cpt;i++){
+			if(document.getElementById('ele_id_'+i)){
+				if(mode=='coche'){
+					document.getElementById('ele_id_'+i).checked=true;
+				}
+				else{
+					document.getElementById('ele_id_'+i).checked=false;
+				}
+			}
+		}
+	}
+</script>\n";
+			}
+
+			break;
+		case 3:
+			echo "<h2>Recherche des correspondances NOM/PRENOM/NAISSANCE</h2>\n";
+
+			if(isset($_POST['is_posted'])) {
+				$ele_id=isset($_POST['ele_id']) ? $_POST['ele_id'] : NULL;
+				$old_ele_id=isset($_POST['old_ele_id']) ? $_POST['old_ele_id'] : NULL;
+				$elenoet=isset($_POST['elenoet']) ? $_POST['elenoet'] : NULL;
+				$naissance=isset($_POST['naissance']) ? $_POST['naissance'] : NULL;
+				$nb_ele_id=isset($_POST['nb_ele_id']) ? $_POST['nb_ele_id'] : 0;
+				$cpt=0;
+				if(isset($ele_id)) {
+					//for($i=0;$i<count($ele_id);$i++){
+					for($i=0;$i<$nb_ele_id;$i++){
+						//$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]';";
+						$sql="DELETE FROM temp_gep_import2 WHERE elenoet='$elenoet[$i]' OR elenoet='".sprintf("%05d",$elenoet[$i])."';";
+						affiche_debug("$sql<br />\n");
+						$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+						if($elenoet[$i]!='') {
+							if((isset($ele_id[$i]))&&($ele_id[$i]!='')) {
+								//$sql="INSERT INTO tempo2 SET col1='$ele_id[$i]', col2='$elenoet[$i]';";
+								// Ou on fait les corrections dès maintenant.
+								//$sql="UPDATE eleves SET ele_id='$ele_id[$i]' WHERE elenoet='$elenoet[$i]';";
+								$sql="UPDATE eleves SET ele_id='$ele_id[$i]', elenoet='$elenoet[$i]', naissance='$naissance[$i]' WHERE ele_id='$old_ele_id[$i]';";
+								affiche_debug("$sql<br />\n");
+								//echo "$sql<br />\n";
+								/*
+								$fsql=fopen("/tmp/fich_debug.sql","a+");
+								fwrite($fsql,"$sql\n");
+								fclose($fsql);
+								*/
+								$correction1=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								if($old_ele_id[$i]!='') {
+									$sql="UPDATE responsables2 SET ele_id='$ele_id[$i]' WHERE ele_id='$old_ele_id[$i]';";
+									affiche_debug("$sql<br />\n");
+									//echo "$sql<br />\n";
+									$correction2=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+								$cpt++;
+							}
+						}
+					}
+					echo "<p>$cpt correction(s) effectuée(s).</p>\n";
+				}
+			}
+
+			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
+			echo "<input type='hidden' name='is_posted' value='yes' />\n";
+			echo "<input type='hidden' name='step' value='3' />\n";
+
+			$sql="SELECT e.login,e.nom,e.prenom,e.naissance,e.sexe, e.naissance, e.elenoet AS old_elenoet, e.ele_id AS old_ele_id, t.ele_id, t.elenoet, t.divcod, t.eledatnais FROM eleves e, temp_gep_import2 t WHERE e.ele_id LIKE 'e%' AND e.nom=t.elenom AND e.prenom=t.elepre ORDER BY e.nom, e.prenom LIMIT 20;";
+			affiche_debug("$sql<br />\n");
+			if(!$res=mysqli_query($GLOBALS["mysqli"], $sql)) {
+				echo "<p>Une <span style='color:red;'>erreur</span> s'est produite sur la requête&nbsp;:<br /><span style='color:green;'>".$sql."</span><br />\n";
+				//Illegal mix of collations
+				if(my_eregi("Illegal mix of collations",mysqli_error($GLOBALS["mysqli"]))) {
+					//echo "<span style='color:red'>".mysql_error()."</span>\n";
+					echo "Il semble qu'il y ait un problème de 'collation' sur les champs nom et prénom des tables 'eleves' et 'temp_gep_import2'&nbsp;:<br />\n";
+					echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"])."</span><br />\n";
+					echo "Il faudrait supprimer la table 'temp_gep_import2', renseigner la valeur de 'mysql_collate' dans la table 'setting' en mettant la même collation que pour votre champ 'eleves.ele_id'.<br />\n";
+					echo "Si par exemple, le champ 'eleves.ele_id' a pour collation 'latin1_general_ci', il faudrait exécuter une requête du type <span style='color:green;'>INSERT INTO setting SET name='mysql_collate', value='latin1_general_ci';</span> ou si la valeur existe déjà <span style='color:green;'>UPDATE setting SET value='latin1_general_ci' WHERE name='mysql_collate';</span><br />\n";
+				}
+				echo "</p>\n";
+			}
+			else {
+				if(mysqli_num_rows($res)==0){
+					if(isset($_POST['is_posted'])) {
+						echo "<p>Il n'y a plus de correspondance nom/prénom trouvée pour laquelle effectuer une correction.</p>\n";
+						echo "<p>Terminé.</p>\n";
+					}
+					else{
+						echo "<p>Aucune correspondance nom/prénom trouvée pour effectuer une correction.</p>\n";
+					}
+				}
+				else{
+					echo "<p>Cocher les lignes pour lesquelles corriger l'ELE_ID, l'ELENOET et la date de naissance dans la table 'eleves' (<i>et éventuellement dans la table 'responsables2'</i>) d'après la proposition en dernière colonne.</p>\n";
+					echo "<table class='boireaus'>\n";
+					echo "<tr>
+	<th rowspan='2'>
+		<a href=\"javascript:modifcase('coche')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>
+		 / 
+		<a href=\"javascript:modifcase('decoche')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>
+	</th>
+	<th colspan='5'>Table 'eleves'<br />
+	(<em>contenu actuel de la base</em>)</th>
+	<th colspan='3'>Table 'temp_gep_import2'<br />
+	(<em>correspondant au fichier XML fourni</em>)</th>
+</tr>";
+					echo "<tr>\n";
+					echo "<th>Login</th>\n";
+					echo "<th>Nom</th>\n";
+					echo "<th>Prénom</th>\n";
+					echo "<th>Sexe</th>\n";
+					echo "<th>Naissance</th>\n";
+					echo "<th>Naissance</th>\n";
+					echo "<th>ELENOET</th>\n";
+					echo "<td style='font-weight:bold; text-align:center; background-color:plum;'>ELE_ID</td>\n";
+					echo "</tr>\n";
+					$alt=1;
+					$cpt=0;
+					while($lig=mysqli_fetch_object($res)){
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td>";
+						echo "<input type='checkbox' name='ele_id[$cpt]' id='ele_id_$cpt' value='$lig->ele_id' />\n";
+						echo "<input type='hidden' name='elenoet[$cpt]' value='$lig->elenoet' />\n";
+						$naissance=mb_substr($lig->eledatnais,0,4)."-".mb_substr($lig->eledatnais,4,2)."-".mb_substr($lig->eledatnais,6,2);
+						echo "<input type='hidden' name='naissance[$cpt]' value='$naissance' />\n";
+						echo "<input type='hidden' name='old_ele_id[$cpt]' value='$lig->old_ele_id' />\n";
+						echo "</td>\n";
+						echo "<td>$lig->login</td>\n";
+						echo "<td>$lig->nom</td>\n";
+						echo "<td>$lig->prenom</td>\n";
+						echo "<td>$lig->sexe</td>\n";
+						echo "<td>$lig->naissance</td>\n";
+						echo "<td>$naissance</td>\n";
 						echo "<td>$lig->elenoet</td>\n";
 						echo "<td>$lig->ele_id</td>\n";
 						echo "</tr>\n";
