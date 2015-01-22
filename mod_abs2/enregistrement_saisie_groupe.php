@@ -363,6 +363,11 @@ for($i=0; $i<$total_eleves; $i++) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
 	    }
+
+		if(getSettingAOui('active_mod_alerte')) {
+			$message_enregistrement .= " <a href='../mod_alerte/form_message.php?sujet=[".$eleve->getClasse()->getNom()."] ".$eleve->getNom().' '.$eleve->getPrenom()."' title=\"Déposer un message d'alerte à propos de cet élève dans le module Alertes.\" target=\"_blank\"><img src='$gepiPath/images/icons/no_mail.png' class='icone16' alt='Dispositif Alertes' /></a>";
+		}
+
 	    $message_enregistrement .= "<br/>";
 	} else {
 	    $message_erreur_eleve[$id_eleve] .= format_verif_failures($saisie);
