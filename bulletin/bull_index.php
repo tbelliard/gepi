@@ -2817,6 +2817,11 @@ else {
 							while ($z < $nb_aid_b) {
 							   $call_data_aid_b->data_seek($z);
 							   $finfo = $call_data_aid_b->fetch_object();
+								/*
+								echo "<pre>";
+								print_r($finfo);
+								echo "</pre>";
+								*/
 							   $display_begin = $finfo->display_begin;
 							   $display_end = $finfo->display_end;
 							   $type_note = $finfo->type_note;
@@ -2827,147 +2832,162 @@ else {
 									$sql="SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid');";
 									//echo "$sql<br />";
 									$aid_query = mysqli_query($GLOBALS["mysqli"], $sql);
-									$obj_aid = $aid_query->fetch_object();
-									$aid_id = $obj_aid->id_aid;
-									if ($aid_id != '') {
+									if(mysqli_num_rows($aid_query)>0) {
+										$obj_aid = $aid_query->fetch_object();
+										$aid_id = $obj_aid->id_aid;
+										if ($aid_id != '') {
 
-										$tab_ele['aid_b'][$zz]['display_begin']=$display_begin;
-										$tab_ele['aid_b'][$zz]['display_end']=$display_end;
+											$tab_ele['aid_b'][$zz]['display_begin']=$display_begin;
+											$tab_ele['aid_b'][$zz]['display_end']=$display_end;
 
-										$tab_ele['aid_b'][$zz]['nom']=$finfo->nom;
-										$tab_ele['aid_b'][$zz]['nom_complet']=$finfo->nom_complet;
-										$tab_ele['aid_b'][$zz]['message']=$finfo->message;
+											$tab_ele['aid_b'][$zz]['nom']=$finfo->nom;
+											$tab_ele['aid_b'][$zz]['nom_complet']=$finfo->nom_complet;
+											$tab_ele['aid_b'][$zz]['message']=$finfo->message;
 
-										$tab_ele['aid_b'][$zz]['display_nom']==$finfo->display_nom;
+											$tab_ele['aid_b'][$zz]['display_nom']=$finfo->display_nom;
 										
-										//echo "\$tab_ele['aid_b'][$zz]['nom_complet']=".$tab_ele['aid_b'][$zz]['nom_complet']."<br />";
-										//echo "\$type_note=".$type_note."<br />";
+											//echo "\$tab_ele['aid_b'][$zz]['nom_complet']=".$tab_ele['aid_b'][$zz]['nom_complet']."<br />";
+											//echo "\$type_note=".$type_note."<br />";
 
-										$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
-										$obj_aid_nom = $aid_nom_query->fetch_object();
-										$tab_ele['aid_b'][$zz]['aid_nom']=$obj_aid_nom->nom;
+											$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
+											$obj_aid_nom = $aid_nom_query->fetch_object();
+											$tab_ele['aid_b'][$zz]['aid_nom']=$obj_aid_nom->nom;
 
-										//echo "\$tab_ele['aid_b'][$zz]['aid_nom']=".$tab_ele['aid_b'][$z]['aid_nom']."<br />";
+											//echo "\$tab_ele['aid_b'][$zz]['aid_nom']=".$tab_ele['aid_b'][$z]['aid_nom']."<br />";
 
-										// On regarde maintenant quelle sont les profs responsables de cette AID
-										$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
-										$nb_lig = mysqli_num_rows($aid_prof_resp_query);
-										$n = '0';
-										while ($n < $nb_lig) {
-											$obj_aid_prof_resp = $aid_prof_resp_query->fetch_object();
-											$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=$obj_aid_prof_resp->id_utilisateur;
+											// On regarde maintenant quelle sont les profs responsables de cette AID
+											$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
+											$nb_lig = mysqli_num_rows($aid_prof_resp_query);
+											$n = '0';
+											while ($n < $nb_lig) {
+												$obj_aid_prof_resp = $aid_prof_resp_query->fetch_object();
+												$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=$obj_aid_prof_resp->id_utilisateur;
 
-											//echo "\$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=".$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]."<br />";
+												//echo "\$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]=".$tab_ele['aid_b'][$zz]['aid_prof_resp_login'][$n]."<br />";
 
-											$n++;
-										}
-
-
-										// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
-										$tab_ele['aid_b'][$zz]['aid_note']='-';
-										$tab_ele['aid_b'][$zz]['aid_statut']='';
-										$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
-										$tab_ele['aid_b'][$zz]['aid_note_max']='-';
-										$tab_ele['aid_b'][$zz]['aid_note_min']='-';
-
-										//------
-										// On appelle l'appréciation de l'élève, et sa note
-										//------
-										$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-										$obj_current_eleve_aid_appreciation = $current_eleve_aid_appreciation_query->fetch_object();
-										$current_eleve_aid_appreciation =$obj_current_eleve_aid_appreciation->appreciation;
-										$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-										$periode_max = mysqli_num_rows($periode_query);
-										if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
-										if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
-											$place_eleve = "";
-											$current_eleve_aid_note = $obj_current_eleve_aid_appreciation->note;
-											$current_eleve_aid_statut = $obj_current_eleve_aid_appreciation->statut;
-											if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
-												$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
-											}
-											if ($current_eleve_aid_note == '') {
-												$current_eleve_aid_note = '-';
-											} else {
-												if ($affiche_graph == 'y')  {
-													if ($current_eleve_aid_note<5) { $place_eleve=6;}
-													if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
-													if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
-													if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
-													if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
-													if ($current_eleve_aid_note>=15) { $place_eleve=1;}
-
-													// Pas idéal: on fait ces requêtes autant de fois qu'il y a d'élève...
-													$quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
-													$quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
-													$quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
-													$quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
-													$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
-													$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-
-													$tab_ele['aid_b'][$zz]['quartile1_classe']=$quartile1_classe;
-													$tab_ele['aid_b'][$zz]['quartile2_classe']=$quartile2_classe;
-													$tab_ele['aid_b'][$zz]['quartile3_classe']=$quartile3_classe;
-													$tab_ele['aid_b'][$zz]['quartile4_classe']=$quartile4_classe;
-													$tab_ele['aid_b'][$zz]['quartile5_classe']=$quartile5_classe;
-													$tab_ele['aid_b'][$zz]['quartile6_classe']=$quartile6_classe;
-
-												}
-												$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
-											}
-											$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$obj_note_min = $aid_note_min_query->fetch_object();
-											$aid_note_min = $obj_note_min->note_min;
-											if ($aid_note_min == '') {
-												$aid_note_min = '-';
-											} else {
-												$aid_note_min=number_format($aid_note_min,1, ',', ' ');
-											}
-											$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$obj_aid_note_max = $aid_note_max_query->fetch_object();
-											$aid_note_max = $obj_aid_note_max->note_max;
-
-											if ($aid_note_max == '') {
-												$aid_note_max = '-';
-											} else {
-												$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+												$n++;
 											}
 
-											$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
-											$aid_note_moyenne = $obj_aid_note_moyenne->moyenne;
-											if ($aid_note_moyenne == '') {
-												$aid_note_moyenne = '-';
-											} else {
-												$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
-											}
 
-											$tab_ele['aid_b'][$zz]['aid_note']=$current_eleve_aid_note;
-											$tab_ele['aid_b'][$zz]['aid_statut']=$current_eleve_aid_statut;
-											$tab_ele['aid_b'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
-											$tab_ele['aid_b'][$zz]['aid_note_max']=$aid_note_max;
-											$tab_ele['aid_b'][$zz]['aid_note_min']=$aid_note_min;
-											$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
-										}
-
-										if ($type_note == 'no') {
+											// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
 											$tab_ele['aid_b'][$zz]['aid_note']='-';
 											$tab_ele['aid_b'][$zz]['aid_statut']='';
 											$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
 											$tab_ele['aid_b'][$zz]['aid_note_max']='-';
 											$tab_ele['aid_b'][$zz]['aid_note_min']='-';
-											//$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
+
+											//------
+											// On appelle l'appréciation de l'élève, et sa note
+											//------
+											$sql="SELECT * FROM aid_appreciations WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')";
+											$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($current_eleve_aid_appreciation_query)==0) {
+												$current_eleve_aid_appreciation="-";
+												$current_eleve_aid_note="-";
+												$current_eleve_aid_statut="-";
+											}
+											else {
+												$obj_current_eleve_aid_appreciation = $current_eleve_aid_appreciation_query->fetch_object();
+												$current_eleve_aid_appreciation=$obj_current_eleve_aid_appreciation->appreciation;
+												$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
+												$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
+											}
+
+											$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+											$periode_max = mysqli_num_rows($periode_query);
+											if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
+											if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+												$place_eleve = "";
+												//$current_eleve_aid_note = $obj_current_eleve_aid_appreciation->note;
+												//$current_eleve_aid_statut = $obj_current_eleve_aid_appreciation->statut;
+												if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
+													$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
+												}
+												if ($current_eleve_aid_note == '') {
+													$current_eleve_aid_note = '-';
+												} else {
+													if ($affiche_graph == 'y')  {
+														if ($current_eleve_aid_note<5) { $place_eleve=6;}
+														if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
+														if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
+														if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
+														if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
+														if ($current_eleve_aid_note>=15) { $place_eleve=1;}
+
+														// Pas idéal: on fait ces requêtes autant de fois qu'il y a d'élève...
+														$quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
+														$quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
+														$quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
+														$quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
+														$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
+														$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
+
+														$tab_ele['aid_b'][$zz]['quartile1_classe']=$quartile1_classe;
+														$tab_ele['aid_b'][$zz]['quartile2_classe']=$quartile2_classe;
+														$tab_ele['aid_b'][$zz]['quartile3_classe']=$quartile3_classe;
+														$tab_ele['aid_b'][$zz]['quartile4_classe']=$quartile4_classe;
+														$tab_ele['aid_b'][$zz]['quartile5_classe']=$quartile5_classe;
+														$tab_ele['aid_b'][$zz]['quartile6_classe']=$quartile6_classe;
+
+													}
+													if($current_eleve_aid_note!="-") {
+														$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+													}
+												}
+												$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$obj_note_min = $aid_note_min_query->fetch_object();
+												$aid_note_min = $obj_note_min->note_min;
+												if ($aid_note_min == '') {
+													$aid_note_min = '-';
+												} else {
+													$aid_note_min=number_format($aid_note_min,1, ',', ' ');
+												}
+												$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$obj_aid_note_max = $aid_note_max_query->fetch_object();
+												$aid_note_max = $obj_aid_note_max->note_max;
+
+												if ($aid_note_max == '') {
+													$aid_note_max = '-';
+												} else {
+													$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+												}
+
+												$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$obj_aid_note_moyenne = $aid_note_moyenne_query->fetch_object();
+												$aid_note_moyenne = $obj_aid_note_moyenne->moyenne;
+												if ($aid_note_moyenne == '') {
+													$aid_note_moyenne = '-';
+												} else {
+													$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+												}
+
+												$tab_ele['aid_b'][$zz]['aid_note']=$current_eleve_aid_note;
+												$tab_ele['aid_b'][$zz]['aid_statut']=$current_eleve_aid_statut;
+												$tab_ele['aid_b'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
+												$tab_ele['aid_b'][$zz]['aid_note_max']=$aid_note_max;
+												$tab_ele['aid_b'][$zz]['aid_note_min']=$aid_note_min;
+												$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
+											}
+
+											if ($type_note == 'no') {
+												$tab_ele['aid_b'][$zz]['aid_note']='-';
+												$tab_ele['aid_b'][$zz]['aid_statut']='';
+												$tab_ele['aid_b'][$zz]['aid_note_moyenne']='-';
+												$tab_ele['aid_b'][$zz]['aid_note_max']='-';
+												$tab_ele['aid_b'][$zz]['aid_note_min']='-';
+												//$tab_ele['aid_b'][$zz]['place_eleve']=$place_eleve;
+											}
+
+											$tab_ele['aid_b'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
+
+											//echo "\$tab_ele['aid_b'][$z]['aid_appreciation']=".$tab_ele['aid_b'][$z]['aid_appreciation']."<br />";
+
+											// Vaut-il mieux un tableau $tab_ele['aid_b']
+											// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
+											// La deuxième solution réduirait sans doute le nombre de requêtes
+
+											$zz++;
 										}
-
-										$tab_ele['aid_b'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
-
-										//echo "\$tab_ele['aid_b'][$z]['aid_appreciation']=".$tab_ele['aid_b'][$z]['aid_appreciation']."<br />";
-
-										// Vaut-il mieux un tableau $tab_ele['aid_b']
-										// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
-										// La deuxième solution réduirait sans doute le nombre de requêtes
-
-										$zz++;
 									}
 								}
 								$z++;
@@ -2998,143 +3018,158 @@ else {
 								if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
 									$indice_aid = $finfo_aid_e->indice_aid;
 									$aid_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_aid FROM j_aid_eleves WHERE (login='".$current_eleve_login[$i]."' and indice_aid='$indice_aid')");
-									$obj_aid = $aid_query->fetch_object();
-									$aid_id = '';
-									if ($obj_aid && $obj_aid->num_rows) $aid_id = $obj_aid->id_aid;
+									if(mysqli_num_rows($aid_query)>0) {
+										$obj_aid = $aid_query->fetch_object();
+										$aid_id = '';
+										if ($obj_aid && $obj_aid->num_rows) $aid_id = $obj_aid->id_aid;
 									
-									if ($aid_id != '') {
+										if ($aid_id != '') {
 
-										$tab_ele['aid_e'][$zz]['display_begin']=$display_begin;
-										$tab_ele['aid_e'][$zz]['display_end']=$display_end;
+											$tab_ele['aid_e'][$zz]['display_begin']=$display_begin;
+											$tab_ele['aid_e'][$zz]['display_end']=$display_end;
 
-										$tab_ele['aid_e'][$zz]['nom']=$finfo_aid_e->nom;
-										$tab_ele['aid_e'][$zz]['nom_complet']=$finfo_aid_e->nom_complet;
-										$tab_ele['aid_e'][$zz]['message']=$finfo_aid_e->message;
+											$tab_ele['aid_e'][$zz]['nom']=$finfo_aid_e->nom;
+											$tab_ele['aid_e'][$zz]['nom_complet']=$finfo_aid_e->nom_complet;
+											$tab_ele['aid_e'][$zz]['message']=$finfo_aid_e->message;
 
-										$tab_ele['aid_e'][$zz]['display_nom']=$finfo_aid_e->display_nom;
+											$tab_ele['aid_e'][$zz]['display_nom']=$finfo_aid_e->display_nom;
 
-										$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
-										$obj_aid_nom = $aid_nom_query->fetch_object();
-										$tab_ele['aid_e'][$zz]['aid_nom']=$obj_aid_nom->nom;
+											$aid_nom_query = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid');");
+											$obj_aid_nom = $aid_nom_query->fetch_object();
+											$tab_ele['aid_e'][$zz]['aid_nom']=$obj_aid_nom->nom;
 
-										$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
-										$nb_lig = mysqli_num_rows($aid_prof_resp_query);
-										$n = '0';
-										while ($n < $nb_lig) {
-										   $obj_aid_prof_resp = $aid_prof_resp_query->fetch_object();
-										   $tab_ele['aid_e'][$zz]['aid_prof_resp_login'][$n]=$obj_aid_prof_resp->id_utilisateur;
+											$aid_prof_resp_query = mysqli_query($GLOBALS["mysqli"], "SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
+											$nb_lig = mysqli_num_rows($aid_prof_resp_query);
+											$n = '0';
+											while ($n < $nb_lig) {
+											   $obj_aid_prof_resp = $aid_prof_resp_query->fetch_object();
+											   $tab_ele['aid_e'][$zz]['aid_prof_resp_login'][$n]=$obj_aid_prof_resp->id_utilisateur;
 											
-											$n++;
-										}
-
-										// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
-										$tab_ele['aid_e'][$zz]['aid_note']='-';
-										$tab_ele['aid_e'][$zz]['aid_statut']='';
-										$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
-										$tab_ele['aid_e'][$zz]['aid_note_max']='-';
-										$tab_ele['aid_e'][$zz]['aid_note_min']='-';
-
-
-										//------
-										// On appelle l'appréciation de l'élève, et sa note
-										//------
-										$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_appreciations WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-										$current_eleve_aid_appreciation_objet=$current_eleve_aid_appreciation_query->fetch_object();
-										$current_eleve_aid_appreciation = $current_eleve_aid_appreciation_objet->appreciation;
-										$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-										$periode_max = mysqli_num_rows($periode_query);
-										if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
-										if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
-											$place_eleve = "";
-											$current_eleve_aid_note = $current_eleve_aid_appreciation_objet->note;
-											$current_eleve_aid_statut = $current_eleve_aid_appreciation_objet->statut;
-											if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
-												$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
-											}
-											if ($current_eleve_aid_note == '') {
-												$current_eleve_aid_note = '-';
-											} else {
-												if ($affiche_graph == 'y')  {
-													if ($current_eleve_aid_note<5) { $place_eleve=6;}
-													if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
-													if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
-													if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
-													if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
-													if ($current_eleve_aid_note>=15) { $place_eleve=1;}
-
-													// Pas idéal: on fait ces requêtes autant de fois qu'il y a d'élève...
-													$quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
-													$quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
-													$quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
-													$quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
-													$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
-													$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
-
-													$tab_ele['aid_e'][$zz]['quartile1_classe']=$quartile1_classe;
-													$tab_ele['aid_e'][$zz]['quartile2_classe']=$quartile2_classe;
-													$tab_ele['aid_e'][$zz]['quartile3_classe']=$quartile3_classe;
-													$tab_ele['aid_e'][$zz]['quartile4_classe']=$quartile4_classe;
-													$tab_ele['aid_e'][$zz]['quartile5_classe']=$quartile5_classe;
-													$tab_ele['aid_e'][$zz]['quartile6_classe']=$quartile6_classe;
-
-												}
-												$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
-											}
-											$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$aid_note_min_objet = $aid_note_min_query->fetch_object();
-											
-											$aid_note_min = $aid_note_min_objet->note_min;
-											if ($aid_note_min == '') {
-												$aid_note_min = '-';
-											} else {
-												$aid_note_min=number_format($aid_note_min,1, ',', ' ');
-											}
-											$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$aid_note_max_objet = $aid_note_max_query->fetch_object();
-											$aid_note_max = $aid_note_max_objet->note_max;
-
-											if ($aid_note_max == '') {
-												$aid_note_max = '-';
-											} else {
-												$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+												$n++;
 											}
 
-											$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
-											$aid_note_moyenne_objet = $aid_note_moyenne_query->fetch_object();
-											$aid_note_moyenne = $aid_note_moyenne_objet->moyenne;
-											if ($aid_note_moyenne == '') {
-												$aid_note_moyenne = '-';
-											} else {
-												$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
-											}
-
-											$tab_ele['aid_e'][$zz]['aid_note']=$current_eleve_aid_note;
-											$tab_ele['aid_e'][$zz]['aid_statut']=$current_eleve_aid_statut;
-											$tab_ele['aid_e'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
-											$tab_ele['aid_e'][$zz]['aid_note_max']=$aid_note_max;
-											$tab_ele['aid_e'][$zz]['aid_note_min']=$aid_note_min;
-											$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
-										}
-
-
-										if ($type_note == 'no') {
+											// Initialisation pour le cas d'une période avec appréciation seule (note sur une autre préiode)
 											$tab_ele['aid_e'][$zz]['aid_note']='-';
 											$tab_ele['aid_e'][$zz]['aid_statut']='';
 											$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
 											$tab_ele['aid_e'][$zz]['aid_note_max']='-';
 											$tab_ele['aid_e'][$zz]['aid_note_min']='-';
-											//$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
+
+
+											//------
+											// On appelle l'appréciation de l'élève, et sa note
+											//------
+											$sql="SELECT * FROM aid_appreciations WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')";
+											$current_eleve_aid_appreciation_query = mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($current_eleve_aid_appreciation_query)==0) {
+												$current_eleve_aid_appreciation="-";
+												$current_eleve_aid_note="-";
+												$current_eleve_aid_statut="-";
+											}
+											else {
+												$obj_current_eleve_aid_appreciation = $current_eleve_aid_appreciation_query->fetch_object();
+												$current_eleve_aid_appreciation=$obj_current_eleve_aid_appreciation->appreciation;
+												$current_eleve_aid_note=$obj_current_eleve_aid_appreciation->note;
+												$current_eleve_aid_statut=$obj_current_eleve_aid_appreciation->statut;
+											}
+
+											$periode_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+											$periode_max = mysqli_num_rows($periode_query);
+											if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
+											if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+												$place_eleve = "";
+												//$current_eleve_aid_note = $current_eleve_aid_appreciation_objet->note;
+												//$current_eleve_aid_statut = $current_eleve_aid_appreciation_objet->statut;
+												if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
+													$current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
+												}
+												if ($current_eleve_aid_note == '') {
+													$current_eleve_aid_note = '-';
+												} else {
+													if ($affiche_graph == 'y')  {
+														if ($current_eleve_aid_note<5) { $place_eleve=6;}
+														if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
+														if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
+														if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
+														if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
+														if ($current_eleve_aid_note>=15) { $place_eleve=1;}
+
+														// Pas idéal: on fait ces requêtes autant de fois qu'il y a d'élève...
+														$quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
+														$quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
+														$quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
+														$quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
+														$quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
+														$quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
+
+														$tab_ele['aid_e'][$zz]['quartile1_classe']=$quartile1_classe;
+														$tab_ele['aid_e'][$zz]['quartile2_classe']=$quartile2_classe;
+														$tab_ele['aid_e'][$zz]['quartile3_classe']=$quartile3_classe;
+														$tab_ele['aid_e'][$zz]['quartile4_classe']=$quartile4_classe;
+														$tab_ele['aid_e'][$zz]['quartile5_classe']=$quartile5_classe;
+														$tab_ele['aid_e'][$zz]['quartile6_classe']=$quartile6_classe;
+
+													}
+													if($current_eleve_aid_note!="-") {
+														$current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+													}
+												}
+												$aid_note_min_query = mysqli_query($GLOBALS["mysqli"], "SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$aid_note_min_objet = $aid_note_min_query->fetch_object();
+											
+												$aid_note_min = $aid_note_min_objet->note_min;
+												if ($aid_note_min == '') {
+													$aid_note_min = '-';
+												} else {
+													$aid_note_min=number_format($aid_note_min,1, ',', ' ');
+												}
+												$aid_note_max_query = mysqli_query($GLOBALS["mysqli"], "SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$aid_note_max_objet = $aid_note_max_query->fetch_object();
+												$aid_note_max = $aid_note_max_objet->note_max;
+
+												if ($aid_note_max == '') {
+													$aid_note_max = '-';
+												} else {
+													$aid_note_max=number_format($aid_note_max,1, ',', ' ');
+												}
+
+												$aid_note_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+												$aid_note_moyenne_objet = $aid_note_moyenne_query->fetch_object();
+												$aid_note_moyenne = $aid_note_moyenne_objet->moyenne;
+												if ($aid_note_moyenne == '') {
+													$aid_note_moyenne = '-';
+												} else {
+													$aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+												}
+
+												$tab_ele['aid_e'][$zz]['aid_note']=$current_eleve_aid_note;
+												$tab_ele['aid_e'][$zz]['aid_statut']=$current_eleve_aid_statut;
+												$tab_ele['aid_e'][$zz]['aid_note_moyenne']=$aid_note_moyenne;
+												$tab_ele['aid_e'][$zz]['aid_note_max']=$aid_note_max;
+												$tab_ele['aid_e'][$zz]['aid_note_min']=$aid_note_min;
+												$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
+											}
+
+
+											if ($type_note == 'no') {
+												$tab_ele['aid_e'][$zz]['aid_note']='-';
+												$tab_ele['aid_e'][$zz]['aid_statut']='';
+												$tab_ele['aid_e'][$zz]['aid_note_moyenne']='-';
+												$tab_ele['aid_e'][$zz]['aid_note_max']='-';
+												$tab_ele['aid_e'][$zz]['aid_note_min']='-';
+												//$tab_ele['aid_e'][$zz]['place_eleve']=$place_eleve;
+											}
+
+											$tab_ele['aid_e'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
+
+											//echo "\$tab_ele['aid_e'][$z]['aid_appreciation']=".$tab_ele['aid_e'][$z]['aid_appreciation']."<br />";
+
+											// Vaut-il mieux un tableau $tab_ele['aid_b']
+											// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
+											// La deuxième solution réduirait sans doute le nombre de requêtes
+
+											$zz++;
 										}
-
-										$tab_ele['aid_e'][$zz]['aid_appreciation']=$current_eleve_aid_appreciation;
-
-										//echo "\$tab_ele['aid_e'][$z]['aid_appreciation']=".$tab_ele['aid_e'][$z]['aid_appreciation']."<br />";
-
-										// Vaut-il mieux un tableau $tab_ele['aid_b']
-										// ou calquer sur $tab_bulletin[$id_classe][$periode_num]['groupe']
-										// La deuxième solution réduirait sans doute le nombre de requêtes
-
-										$zz++;
 									}
 								}
 								$z++;
@@ -3213,11 +3248,13 @@ else {
 												WHERE (u.login=j.cpe_login AND
 													j.e_login='".$current_eleve_login[$i]."');";
 						$query = mysqli_query($GLOBALS["mysqli"], $sql);
-						$object = $query->fetch_object();
-						$current_eleve_cperesp_login = $object->login;
-						$tab_ele['cperesp_login']=$current_eleve_cperesp_login;
-						$current_eleve_cperesp_civilite = $object->civilite;
-						$tab_ele['cperesp_civilite']=$current_eleve_cperesp_civilite;
+						if(mysqli_num_rows($query)>0) {
+							$object = $query->fetch_object();
+							$current_eleve_cperesp_login = $object->login;
+							$tab_ele['cperesp_login']=$current_eleve_cperesp_login;
+							$current_eleve_cperesp_civilite = $object->civilite;
+							$tab_ele['cperesp_civilite']=$current_eleve_cperesp_civilite;
+						}
 						//==========================================
 
 
