@@ -920,7 +920,7 @@ width:".$largeur1."%;\n";
 				}
 			}
 			// C.P.E.
-			if($bull_affiche_abs_cpe=='y') {
+			if(($bull_affiche_abs_cpe=='y')&&(isset($tab_bull['eleve'][$i]['cperesp_civilite']))&&(isset($tab_bull['eleve'][$i]['cperesp_login']))) {
 				echo "  (".ucfirst($gepi_cpe_suivi)." chargé";
 
 				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
@@ -5527,7 +5527,7 @@ fclose($f);
 						$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_bull['eleve'][$i]['eleve_retards'].".</b>";
 					}
 				}
-				if($tab_modele_pdf["afficher_abs_cpe"][$classe_id]=='1') {
+				if(($tab_modele_pdf["afficher_abs_cpe"][$classe_id]=='1')&&(isset($tab_bull['eleve'][$i]['cperesp_civilite']))&&(isset($tab_bull['eleve'][$i]['cperesp_login']))) {
 					$pdf->SetFont('DejaVu','',8);
 					// C.P.E.
 					$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
