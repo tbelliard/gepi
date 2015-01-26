@@ -133,8 +133,8 @@ else {
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>
-|<a href="index.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+<p class="bold">
+<a href="index.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
 <?php
 	if ($action == "modif_aid") {
@@ -237,5 +237,13 @@ if ($action == "modif_aid") { ?>
     </form>
 
 <?php }
+
+echo "
+<script type='text/javascript'>
+if(document.getElementById('aidRegNom')) {
+	document.getElementById('aidRegNom').focus();
+}
+</script>";
+
 require("../lib/footer.inc.php");
 ?>
