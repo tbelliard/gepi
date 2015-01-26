@@ -70,7 +70,7 @@ $couleur_moy_cn = '#96C8F0';
 
 
 
-$nom_table = "class_temp".SESSION_ID();
+$nom_table = "class_temp".md5(SESSION_ID());
 
 if (isset($_POST['is_posted'])) {
 	check_token();
