@@ -274,7 +274,7 @@ if ($verif_version_plugins!="") {
 	echo "Attention ! le ou les plugins suivants :<br/>";
 	echo $verif_version_plugins;
 	echo "<br/>ne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
-	echo "<br/><span style='color: black; font-size: 66%;'>(Page de téléchargement des plugins : <a href='https://www.sylogix.org/projects/gepi/files'target='_blank'>https://www.sylogix.org/projects/gepi/files</a>)</span>";
+	echo "<br/><span style='color: black; font-size: 66%;'>(Page de téléchargement des plugins : <a href='http://www.sylogix.org/projects/gepi/files'target='_blank'>http://www.sylogix.org/projects/gepi/files</a>)</span>";
 	echo "</p>";
 }
 
