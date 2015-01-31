@@ -199,6 +199,10 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 			echo "\">Mode Moy.: $modeBoiteMoy</a>";
 		}
 
+		if($ver_periode>=2) {
+			echo " - <a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index' title=\"Créer une évaluation\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter une évaluation' /></a>";
+		}
+
 		$appel_dev = mysqli_query($GLOBALS["mysqli"], "select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 		$nb_dev  = mysqli_num_rows($appel_dev);
 		if ($nb_dev != 0) {$empty = 'no';}
