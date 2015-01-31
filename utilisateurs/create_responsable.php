@@ -645,7 +645,7 @@ else{
 	$alt=1;
 	while ($current_parent = mysqli_fetch_object($quels_parents)) {
 		if((isset($mode_recherche))&&($mode_recherche=='rl0')) {
-			$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
+			$sql="SELECT DISTINCT e.login,e.ele_id, e.nom, e.prenom, c.id AS id_classe, c.classe, r.resp_legal
 					FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
 					WHERE r.pers_id='".$current_parent->pers_id."' AND
 						r.resp_legal='0' AND
@@ -654,7 +654,7 @@ else{
 						jec.id_classe=c.id";
 		}
 		else {
-			$sql="SELECT DISTINCT e.ele_id, e.nom, e.prenom, c.classe, r.resp_legal
+			$sql="SELECT DISTINCT e.login,e.ele_id, e.nom, e.prenom, c.id AS id_classe, c.classe, r.resp_legal
 					FROM responsables2 r, eleves e, j_eleves_classes jec, classes c
 					WHERE r.pers_id='".$current_parent->pers_id."' AND
 						(r.resp_legal='1' OR r.resp_legal='2') AND
@@ -669,10 +669,10 @@ else{
 			echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='submit' value='Créer' onclick=\"$('create_pers_id').value='".$current_parent->pers_id."'; $('form_create_one_resp').submit();\" />\n";
-				echo "<td>".casse_mot($current_parent->nom,'maj')." ".casse_mot($current_parent->prenom,'majf2')."</td>\n";
+				echo "<td><a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir/modifier la fiche responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,'maj')." ".casse_mot($current_parent->prenom,'majf2')."</a></td>\n";
 				echo "<td>\n";
 				while($lig_ele=mysqli_fetch_object($test)){
-					echo "Responsable légal $lig_ele->resp_legal de ".casse_mot($lig_ele->prenom,'majf2')." ".casse_mot($lig_ele->nom,'maj')." (<i>$lig_ele->classe</i>)<br />\n";
+					echo "Responsable légal $lig_ele->resp_legal de <a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."' title=\"Voir/modifier la fiche élève dans un nouvel onglet.\" target='_blank'>".casse_mot($lig_ele->prenom,'majf2')." ".casse_mot($lig_ele->nom,'maj')."</a> (<i><a href='../classes/classes_const.php?id_classe=$lig_ele->id_classe' title=\"Voir/modifier la composition de la classe dans un nouvel onglet.\" target='_blank'>$lig_ele->classe</a></i>)<br />\n";
 				}
 				echo "</td>\n";
 			echo "</tr>\n";
