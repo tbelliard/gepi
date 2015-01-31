@@ -504,44 +504,46 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
  * @param int $cpt 
  */
 function javascript_tab_stat($pref_id,$cpt) {
-	
-	$alt=1;
-	echo "<table class='boireaus'>\n";
+	echo "<table class='boireaus boireaus_alt'>\n";
 	echo "<caption style='display:none;'>Statistiques</caption>";
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>Moyenne</th>\n";
 	echo "<td id='".$pref_id."moyenne'></td>\n";
 	echo "</tr>\n";
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>1er quartile</th>\n";
 	echo "<td id='".$pref_id."q1'></td>\n";
 	echo "</tr>\n";
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>Médiane</th>\n";
 	echo "<td id='".$pref_id."mediane'></td>\n";
 	echo "</tr>\n";
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>3è quartile</th>\n";
 	echo "<td id='".$pref_id."q3'></td>\n";
 	echo "</tr>\n";
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>Min</th>\n";
 	echo "<td id='".$pref_id."min'></td>\n";
 	echo "</tr>\n";
 
-	$alt=$alt*(-1);
-	echo "<tr class='lig$alt'>\n";
+	echo "<tr>\n";
 	echo "<th>Max</th>\n";
 	echo "<td id='".$pref_id."max'></td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<th>Nb.notes&ge;10</th>\n";
+	echo "<td id='".$pref_id."nb_sup_egal_10'></td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<th>Nb.notes&lt;10</th>\n";
+	echo "<td id='".$pref_id."nb_inf_10'></td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
 
@@ -561,6 +563,9 @@ function calcul_moy_med() {
 	var q3;
 	var rang=0;
 
+	var nb_inf_10=0;
+	var nb_sup_egal_10=0;
+
 	for(i=0;i<$cpt;i++) {
 		if(document.getElementById('n'+i)) {
 			valeur=document.getElementById('n'+i).value;
@@ -568,6 +573,13 @@ function calcul_moy_med() {
 			valeur=valeur.replace(',','.');
 
 			if((valeur!='abs')&&(valeur!='disp')&&(valeur!='-')&&(valeur!='')) {
+				if(valeur>=10) {
+					nb_sup_egal_10++;
+				}
+				else {
+					nb_inf_10++;
+				}
+
 				tab_valeur[j]=valeur;
 				// Tambouille pour éviter que 'valeur' soit pris pour une chaine de caractères
 				total=eval((total*100+valeur*100)/100);
@@ -609,6 +621,9 @@ function calcul_moy_med() {
 
 		document.getElementById('".$pref_id."min').innerHTML=tab_valeur[0];
 		document.getElementById('".$pref_id."max').innerHTML=tab_valeur[n-1];
+
+		document.getElementById('".$pref_id."nb_sup_egal_10').innerHTML=nb_sup_egal_10;
+		document.getElementById('".$pref_id."nb_inf_10').innerHTML=nb_inf_10;
 	}
 	else {
 		document.getElementById('".$pref_id."moyenne').innerHTML='-';
@@ -617,6 +632,8 @@ function calcul_moy_med() {
 		document.getElementById('".$pref_id."q3').innerHTML='-';
 		document.getElementById('".$pref_id."min').innerHTML='-';
 		document.getElementById('".$pref_id."max').innerHTML='-';
+		document.getElementById('".$pref_id."nb_sup_egal_10').innerHTML='-';
+		document.getElementById('".$pref_id."nb_inf_10').innerHTML='-';
 	}
 }
 
