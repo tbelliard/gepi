@@ -480,6 +480,14 @@ while ($i < $nombre_ligne) {
 	echo "</td>\n";
 	$j = 1;
 	while ($j < $nb_periode) {
+		$tmp_ele_grp=get_eleves_from_groupe($id_groupe,$j);
+		if(isset($tmp_ele_grp['users'])) {
+			$eff_grp=count($tmp_ele_grp['users']);
+		}
+		else {
+			$eff_grp=0;
+		}
+
 		$test=mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_groupes WHERE (" .
 				"id_groupe = '" . $id_groupe . "' and " .
 				"login = '" . $login_eleve . "' and " .
@@ -616,6 +624,7 @@ while ($i < $nombre_ligne) {
 				echo "<img id='img_erreur_affect_".$i."_".$j."' src='../images/icons/flag2.gif' width='17' height='18' title='".$info_erreur."' alt='".$info_erreur."' />";
 			}
 
+			echo " <em style='font-size:x-small' title=\"$eff_grp élève(s) sont inscrits dans cet enseignement en période $i.\n\n(effectif enregistré ne tenant pas compte des éventuelles modifications non encore validées dans cette page).\">($eff_grp)</em>";
 			echo "</td>\n";
 
 			/*
