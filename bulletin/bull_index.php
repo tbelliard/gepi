@@ -429,6 +429,8 @@ L'accès est également possible dans le menu horizontal sous l'entête si la ba
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
+	echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Le verrouillage des périodes s'effectue en compte 'scolarité' (<em>statut 'scolarité'</em>).</p>\n";
+
 }
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
