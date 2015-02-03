@@ -684,6 +684,8 @@ width:".$largeur1."%;\n";
 			echo "<td style='width:".$addressblock_classe_annee2."%;'>\n";
 			echo "<p class='bulletin' align='center'><span class=\"bgrand\">Classe de ".$tab_bull['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
 			$temp = my_strtolower($tab_bull["nom_periode"]);
+			echo $tab_bull['bull_prefixe_periode'];
+			/*
 			echo "Bulletin&nbsp;";
 			if($genre_periode=="M"){
 				echo "du ";
@@ -691,6 +693,7 @@ width:".$largeur1."%;\n";
 			else{
 				echo "de la ";
 			}
+			*/
 			echo "$temp</p>";
 			echo "</td>\n";
 			echo "</tr>\n";
@@ -805,6 +808,8 @@ width:".$largeur1."%;\n";
 			if ($tab_bull['affiche_adresse'] != "y") {
 				echo "<p class='bulletin'><span class=\"bgrand\">Classe de ".$tab_bull['eleve'][$i]['classe_nom_complet']."<br />Année scolaire ".$gepiYear."</span><br />\n";
 				$temp = my_strtolower($tab_bull['nom_periode']);
+				echo $tab_bull['bull_prefixe_periode'];
+				/*
 				echo "Bulletin&nbsp;";
 				if($genre_periode=="M"){
 					echo "du ";
@@ -812,6 +817,7 @@ width:".$largeur1."%;\n";
 				else{
 					echo "de la ";
 				}
+				*/
 				echo "$temp</p>\n";
 			} else {
 				echo "&nbsp;";
@@ -2476,7 +2482,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$type_texte = '';
 			}
 			$pdf->SetFont('DejaVu', $type_texte, $taille_texte);
-			$pdf->Cell(90,5, ("Bulletin du ".unhtmlentities($tab_bull['nom_periode'])),0,2,'C');
+			$pdf->Cell(90,5, ($tab_bull['bull_prefixe_periode'].unhtmlentities($tab_bull['nom_periode'])),0,2,'C');
 			$taille_texte = '8';
 			$type_texte = '';
 

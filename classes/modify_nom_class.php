@@ -187,7 +187,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -291,7 +291,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -419,10 +419,10 @@ if(isset($id_classe)) {
 	$ouvrir_infobulle_nav=getSettingValue("ouvrir_infobulle_nav");
 	
 	if($ouvrir_infobulle_nav=="y") {
-		$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
+		$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;' title=\"Ce cadre de navigation est ouvert par défaut au chargement de la page.\n\nCliquez pour ne pas ouvrir ce cadre par défaut au chargement de la page.\"><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/vert.png' width='16' height='16' /></a></div>\n";
 	}
 	else {
-		$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;'><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a></div>\n";
+		$texte.="<div id='save_mode_nav' style='float:right; width:20px; height:20px;' title=\"Ce cadre de navigation n'est pas ouvert par défaut au chargement de la page.\n\nCliquez pour ouvrir ce cadre par défaut au chargement de la page.\"><a href='#' onclick='modif_mode_infobulle_nav();return false;'><img src='../images/rouge.png' width='16' height='16' /></a></div>\n";
 	}
 
 	$texte.="<script type='text/javascript'>
@@ -500,7 +500,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -508,6 +508,7 @@ if (isset($id_classe)) {
 	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
+	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
 	// =========================
 
 } else {
@@ -542,7 +543,7 @@ if (isset($id_classe)) {
 	$rn_abs_2='n';
 	// =========================
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -554,6 +555,7 @@ if (isset($id_classe)) {
 	if($rn_type_par_defaut=="") {$rn_type_par_defaut="html";}
 	if($rn_aff_classe_nom=="") {$rn_aff_classe_nom=1;}
 	if($rn_rapport_standard_min_font=="") {$rn_rapport_standard_min_font=3;}
+	if($bull_prefixe_periode=="") {$bull_prefixe_periode="Bulletin du ";}
 	// =========================
 
 	// Mod ECTS
@@ -713,6 +715,24 @@ td {
 
 		?>
 		</table>
+	</td>
+</tr>
+<!-- ========================================= -->
+<tr>
+	<td colspan='3'>
+		<h2><b>Paramètres généraux des bulletins&nbsp;: </b></h2>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps; width: 35%;">
+		Préfixe du titre du bulletin&nbsp;:<br />
+		(<em style="font-variant: small-caps;">Par défaut, on a "<strong>Bulletin du </strong>" suivi du nom de la période</em>)
+	</td>
+	<td><?php 
+			echo "
+		<input type='text' name='bull_prefixe_periode' id='bull_prefixe_periode' value=\"$bull_prefixe_periode\" onchange='changement()' />";
+		?>
 	</td>
 </tr>
 <!-- ========================================= -->

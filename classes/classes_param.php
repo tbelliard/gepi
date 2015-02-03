@@ -38,6 +38,8 @@ if (!checkAccess()) {
 	die();
 }
 
+//debug_var();
+
 $periode_query = mysqli_query($GLOBALS["mysqli"], "select max(num_periode) max from periodes");
 $max_periode = old_mysql_result($periode_query, 0, 'max');
 
@@ -255,6 +257,11 @@ if (isset($_POST['is_posted'])) {
 								if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 							}
 						}
+					}
+
+					if(isset($_POST['modifier_bull_prefixe_periode_'.$per])) {
+						$register = saveParamClasse($id_classe, 'bull_prefixe_periode', $_POST['bull_prefixe_periode_'.$per]);
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
 					// On enregistre les infos relatives aux catégories de matières
@@ -1486,6 +1493,30 @@ td {
 		?>
 		</table>
 	</td>
+	</tr>
+
+	<tr>
+		<td colspan='3'>
+			<h2><b>Paramètres généraux des bulletins&nbsp;: </b></h2>
+		</td>
+	</tr>
+	<tr>
+		<td><input type='checkbox' name='modifier_bull_prefixe_periode_<?php echo $per;?>' id='modifier_bull_prefixe_periode<?php echo $per;?>' value='y' /></td>
+		<td style="font-variant: small-caps; width: 35%;" colspan='2'>
+			<label for='modifier_bull_prefixe_periode<?php echo $per;?>'>Modifier le préfixe du titre du bulletin</label>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;&nbsp;&nbsp;</td>
+		<td style="font-variant: small-caps; width: 35%;">
+			Préfixe du titre du bulletin&nbsp;:<br />
+			(<em style="font-variant: small-caps;">Par défaut, on a "<strong>Bulletin du </strong>" suivi du nom de la période</em>)
+		</td>
+		<td><?php 
+				echo "
+			<input type='text' name='bull_prefixe_periode_".$per."' id='bull_prefixe_periode_".$per."' value=\"Bulletin du \" onchange=\"document.getElementById('modifier_bull_prefixe_periode').checked=true;changement()\" />";
+			?>
+		</td>
 	</tr>
 
 	<tr>

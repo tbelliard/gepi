@@ -1841,6 +1841,18 @@ else {
 			}
 
 
+
+			// 20150203
+			$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode']=getParamClasse($id_classe, 'bull_prefixe_periode', "Bulletin du ");
+			if($tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode']=="") {
+				$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode']="Bulletin du ";
+			}
+			elseif(!preg_match("/ $/", $tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode'])) {
+				$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode'].=" ";
+			}
+
+
+
 			$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 			//echo "\$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=".$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']."<br />";
 
