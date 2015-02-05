@@ -1877,6 +1877,7 @@ echo "</pre>";
 				//$lignes_ce_cours.="$sql<br />";
 				$res_choix_prec=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_choix_prec)>0) {
+					// 20150204 : A FAIRE DANS CE CAS : Proposer l'association avec le groupe choisi dans la liste.
 					$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes'].="Lors d'un précédent import de l'emploi du temps, le regroupement EDT ".$tab['classe']." a été associés aux groupes Gepi suivants&nbsp;:<br />";
 
 					while($lig_choix_prec=mysqli_fetch_object($res_choix_prec)) {
@@ -2016,11 +2017,55 @@ mysql>
 					}
 					else {
 
-// A FAIRE: Reessayer sans filtrer sur le prof
-						$lignes_ce_cours.="A FAIRE: Reessayer sans filtrer sur le prof<br />";
+						// A FAIRE: Reessayer sans filtrer sur le prof
+						//$lignes_ce_cours.="A FAIRE: Reessayer sans filtrer sur le prof<br />";
 
 						if($debug_import_edt=="y") {$lignes_ce_cours.="DEBUG : ECHEC<br />";}
-						$cpt_non_trouve++;
+
+						// 20150204
+						if(count($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes'])>0) {
+							//$lignes_ce_cours.="PLOP<br />";
+
+							$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes précédemment associés au regroupement EDT&nbsp;:<br />";
+
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+							for($loop=0;$loop<count($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe']);$loop++) {
+								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' value='".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'";
+								/*
+								if($tab['details_cours']!="") {
+									$tmp_tab=explode("|", $tab['details_cours']);
+									$tmp_id_groupe=$tmp_tab[0];
+									if($tmp_id_groupe==$tab_grp_candidat[$loop]) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								else {
+									$id_groupe_choix_import_xml_precedent=get_id_groupe_from_tab_ligne($tab);
+									if(($id_groupe_choix_import_xml_precedent!="")&&($tab_grp_candidat[$loop]==$id_groupe_choix_import_xml_precedent)) {
+										$lignes_ce_cours.=" selected";
+									}
+								}
+								*/
+
+								$temoin_choix_precedent="";
+								/*
+								if(in_array($tab_grp_candidat[$loop], $tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'])) {
+									$temoin_choix_precedent=" <img src='../images/icons/flag_green.png' class='icone16' title=\"Choix effectué lors d'un précédent import.\"/ >";
+									$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop];
+								}
+								*/
+
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'>".get_info_grp($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop])."</label> <a href='#' onclick=\"afficher_details_groupe(".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+							}
+
+							$lignes_ce_cours.="</p>";
+							$cpt_indecis++;
+							$choix_a_faire="y";
+						}
+						else {
+							$cpt_non_trouve++;
+						}
 					}
 				}
 				elseif("$groupes"!="") {
