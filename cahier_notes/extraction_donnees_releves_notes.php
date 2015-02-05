@@ -200,7 +200,9 @@
 				$tab_releve[$id_classe][$periode_num]['categorie'][$key]=$value;
 			}
 
-
+			// 20150205
+			$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
+			$tab_releve[$id_classe][$periode_num]['gepi_prof_suivi']=$gepi_prof_suivi;
 
 			//+++++++++++++++++++++++++++++
 			// RECUPERER LES PARAMETRES ICI

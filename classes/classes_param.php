@@ -264,6 +264,11 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 					}
 
+					if(isset($_POST['modifier_gepi_prof_suivi_'.$per])) {
+						$register = saveParamClasse($id_classe, 'gepi_prof_suivi', $_POST['gepi_prof_suivi_'.$per]);
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+					}
+
 					// On enregistre les infos relatives aux catégories de matières
 					$tab_priorites_categories=array();
 					$temoin_pb_ordre_categories="n";
@@ -1020,6 +1025,17 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
         <?php } ?>
 		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:
 		<br /><input type="text" size="80" name="<?php echo "nb_".$per."_reg_formule"; ?>" value="" /></p>
+
+
+		<p><input type='checkbox' name='modifier_gepi_prof_suivi_<?php echo $per;?>' id='modifier_gepi_prof_suivi_<?php echo $per;?>' value='y' /><label for='modifier_gepi_prof_suivi_<?php echo $per;?>'>Modifier la dénomination du professeur chargé du suivi des élèves</label><br />
+		&nbsp;&nbsp;&nbsp;Dénomination du professeur chargé du suivi des élèves&nbsp;:<?php 
+				echo "
+			<input type='text' name='gepi_prof_suivi_".$per."' id='gepi_prof_suivi_".$per."' value=\"".getSettingValue('gepi_prof_suivi')."\" onchange=\"document.getElementById('modifier_gepi_prof_suivi_".$per."').checked=true;changement()\" />";
+			?>
+		</td>
+	</tr>
+
+
 		<p>Formatage de l'identité des professeurs&nbsp;:
 
 		<br />
@@ -1501,9 +1517,9 @@ td {
 		</td>
 	</tr>
 	<tr>
-		<td><input type='checkbox' name='modifier_bull_prefixe_periode_<?php echo $per;?>' id='modifier_bull_prefixe_periode<?php echo $per;?>' value='y' /></td>
+		<td><input type='checkbox' name='modifier_bull_prefixe_periode_<?php echo $per;?>' id='modifier_bull_prefixe_periode_<?php echo $per;?>' value='y' /></td>
 		<td style="font-variant: small-caps; width: 35%;" colspan='2'>
-			<label for='modifier_bull_prefixe_periode<?php echo $per;?>'>Modifier le préfixe du titre du bulletin</label>
+			<label for='modifier_bull_prefixe_periode_<?php echo $per;?>'>Modifier le préfixe du titre du bulletin</label>
 		</td>
 	</tr>
 	<tr>
@@ -1514,7 +1530,7 @@ td {
 		</td>
 		<td><?php 
 				echo "
-			<input type='text' name='bull_prefixe_periode_".$per."' id='bull_prefixe_periode_".$per."' value=\"Bulletin du \" onchange=\"document.getElementById('modifier_bull_prefixe_periode').checked=true;changement()\" />";
+			<input type='text' name='bull_prefixe_periode_".$per."' id='bull_prefixe_periode_".$per."' value=\"Bulletin du \" onchange=\"document.getElementById('modifier_bull_prefixe_periode_".$per."').checked=true;changement()\" />";
 			?>
 		</td>
 	</tr>

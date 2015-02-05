@@ -663,7 +663,7 @@ echo "</table>\n";
 // Maintenant, on met l'avis du conseil de classe :
 
 echo "<span class='bull_simpl'><b>Avis du conseil de classe </b> ";
-$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
+$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
 /*
 if ($current_eleve_profsuivi_login) {
 	echo "<b>(".ucfirst(getSettingValue("gepi_prof_suivi"))." : <i>".affiche_utilisateur($current_eleve_profsuivi_login,$id_classe)."</i>)</b>";

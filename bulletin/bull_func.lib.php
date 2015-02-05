@@ -109,7 +109,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		//============================================
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -1066,7 +1066,7 @@ width:".$largeur1."%;\n";
 					$span2="</span>";
 				}
 				echo $span1;
-				echo "<b>".ucfirst($gepi_prof_suivi)."</b> ";
+				echo "<b>".ucfirst($tab_bull['gepi_prof_suivi'])."</b> ";
 				echo "<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 				for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
 					echo ", ";
@@ -1180,7 +1180,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//============================================
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -5785,7 +5785,7 @@ $hauteur_pris_app_abs=0;
 					$index_pp='pp';
 				}
 				if(isset($tab_bull['eleve'][$i][$index_pp][0]['login'])) {
-					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> : ";
+					$pp_classe[$i]="<b>".ucfirst($tab_bull['gepi_prof_suivi'])."</b> : ";
 					$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 					for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i][$index_pp]);$i_pp++) {
 						$pp_classe[$i].=", ";
@@ -6017,7 +6017,7 @@ $hauteur_pris_app_abs=0;
 
 function releve_pdf_20090429($tab_rel,$i) {
 	global $annee_scolaire,
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 		$gepi_cpe_suivi,
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -6849,7 +6849,7 @@ function releve_pdf_20090429($tab_rel,$i) {
 			{
 				$pdf->SetXY($X_signature, $Y_signature);
 				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signature','LTR',2,'C');
-				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, $gepi_prof_suivi,'LR',2,'C');
+				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, $tab_rel['gepi_prof_suivi'],'LR',2,'C');
 				$pdf->Cell($largeur_cadre_signature/$nb_col_sign,$hauteur_cachet-8, '','LR',2,'C');
 				$X_signature = $X_signature+($largeur_restant/$nb_col_sign);
 			}

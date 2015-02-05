@@ -815,7 +815,8 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 				if($rn_sign_pp=='y'){
 					// echo "<div style='width:$largeur_case; border: 1px;'>\n";
 					echo "<div class='cel_signature nb_cel_$nb_cases'>\n";
-						echo "<strong>Signature du ".getSettingValue("gepi_prof_suivi").":</strong>";
+					$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
+						echo "<strong>Signature du ".$gepi_prof_suivi.":</strong>";
 						for($i=0;$i<$rn_sign_nblig;$i++){
 							echo "<br />\n";
 						}
@@ -1652,12 +1653,13 @@ function aff_lig_adresse_parent(mode){
 						$call_suivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
 						$nb_lignes = mysqli_num_rows($call_suivi);
 						if ($nb_lignes > 1) {
+							$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
 							echo "<p>\n";
 							echo "<input type=\"radio\" id=\"choix_edit_r3\" name=\"choix_edit\" value=\"3\" />n";
-							echo "<label for='choix_edit_r3' class='invisible'>Uniquement les relevés de notes des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
+							echo "<label for='choix_edit_r3' class='invisible'>Uniquement les relevés de notes des élèves dont le ".$gepi_prof_suivi." est :</label>\n";
 							//echo "</div>\n";
 			         	//echo "<div>n";
-							echo "Uniquement les relevés de notes des élèves dont le ".getSettingValue("gepi_prof_suivi")." est :";
+							echo "Uniquement les relevés de notes des élèves dont le ".$gepi_prof_suivi." est :";
 					      	echo "<select size=\"1\" id=\"login_prof\" name=\"login_prof\" onclick=\"active(1)\">\n";
 							echo "<label for='login_prof' class='invisible'>Prof</label>\n";
 					     //echo "<select size=\"1\" name=\"login_prof\" onchange=\"active(1)\" onfocus=\"active(1)\">\n";

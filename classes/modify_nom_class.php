@@ -187,7 +187,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -291,7 +291,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -580,10 +580,16 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
 <?php
 }
+
+$gepi_prof_suivi_classe=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
 ?>
 <p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
-<p><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
+<p style='margin-top:1em;'><b>Dénomination du professeur chargé du suivi des élèves&nbsp;:</b><br />
+<input type="text" name="gepi_prof_suivi" id='gepi_prof_suivi' value="<?php echo $gepi_prof_suivi_classe; ?>" onchange='changement()' />
+</p>
+
+<p style='margin-top:1em;'><b>Formatage de l'identité des professeurs pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_format" id='reg_format_np' value="<?php echo "np"; ?>" <?php if ($format_nom=="np") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>
@@ -612,7 +618,7 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 <input type="radio" name="reg_format" id='reg_format_cn' value="<?php echo "cn"; ?>" <?php   if ($format_nom=="cn") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_format_cn' style='cursor: pointer;'>Civ. Nom  (<em>M. Durand</em>)</label>
 
-<p><b>Formatage de l'identité des élèves pour les bulletins&nbsp;:</b>
+<p style='margin-top:1em;'><b>Formatage de l'identité des élèves pour les bulletins&nbsp;:</b>
 <br /><br />
 <input type="radio" name="reg_elformat" id='reg_elformat_np' value="<?php echo "np"; ?>" <?php if ($format_nom_eleve=="np") echo " checked='checked ' "; ?> onchange='changement()' />
 <label for='reg_elformat_np' style='cursor: pointer;'>Nom Prénom (<em>Durand Albert</em>)</label>

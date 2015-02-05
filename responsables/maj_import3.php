@@ -5211,7 +5211,8 @@ else{
 					info_debug($sql);
 					$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_pp)>0){
-						echo "<tr><td>".ucfirst(getSettingValue('gepi_prof_suivi')).": </td><td><select name='pp_resp'>\n";
+						$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+						echo "<tr><td>".ucfirst($gepi_prof_suivi).": </td><td><select name='pp_resp'>\n";
 						echo "<option value=''>---</option>\n";
 						while($lig_pp=mysqli_fetch_object($res_pp)){
 							echo "<option value='$lig_pp->login'";

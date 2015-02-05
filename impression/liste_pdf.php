@@ -388,7 +388,7 @@ echo "</pre>";
 			   if ($id_groupe == NULL) {
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
 				   $pdf->SetFont('DejaVu','I',8.5);
-               }
+			   }
 			  //PP de la classe
 			  if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
@@ -417,7 +417,8 @@ echo "</pre>";
 				   $call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
 				   $current_eleve_profsuivi_login = @old_mysql_result($call_profsuivi_eleve, '0', 'professeur');
 
-				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst(getSettingValue("gepi_prof_suivi")).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
+				   $gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst($gepi_prof_suivi).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			   }
 			}
 

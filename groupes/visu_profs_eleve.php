@@ -318,7 +318,8 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 
 
 		        if(mysqli_num_rows($res_pp)>0){
-		             echo " (<i>".getSettingValue('gepi_prof_suivi')."</i>)";
+		             $gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+		             echo " (<i>".$gepi_prof_suivi."</i>)";
 		        }
 		        echo "<br />\n";
 		    }

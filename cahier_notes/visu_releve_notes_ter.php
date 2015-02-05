@@ -348,7 +348,7 @@ $_SESSION['pref_deux_releves_par_page']=$deux_releves_par_page;
 $_SESSION['pref_tri_par_etab_orig']=$tri_par_etab_orig;
 
 // Prof principal
-$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
 
 // Initialisation:
 unset($tab_rn_nomdev);

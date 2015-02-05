@@ -1183,6 +1183,7 @@ if(getSettingAOui('active_bulletins')) {
 	</td>
     </tr>
 
+	<!--
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
         Genre des périodes :<br />(<i>'trimestre' ou 'semestre' est masculin; 'période' est féminin</i>)
@@ -1209,6 +1210,7 @@ if(getSettingAOui('active_bulletins')) {
         ?>
 	</td>
     </tr>
+    -->
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">

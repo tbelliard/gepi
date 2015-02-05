@@ -1285,7 +1285,8 @@ echo "</script>\n";
 					$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_acces)==0) {
 						// On pourrait mettre un tentative_intrusion()
-						echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
+						$gepi_prof_suivi=ucfirst(retourne_denomination_pp($tab_id_classe[$i]));
+						echo "<p>Vous n'êtes pas ".$gepi_prof_suivi." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
 						require("../lib/footer.inc.php");
 						die();
 					}
@@ -1293,7 +1294,8 @@ echo "</script>\n";
 			}
 			else {
 				// On pourrait mettre un tentative_intrusion()
-				echo "<p>Vous n'êtes pas ".getSettingValue("gepi_prof_suivi")." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
+				$gepi_prof_suivi=ucfirst(retourne_denomination_pp($tab_id_classe[$i]));
+				echo "<p>Vous n'êtes pas ".$gepi_prof_suivi." de cette classe, donc pas autorisé à accéder aux relevés de notes de ces élèves.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -1694,7 +1696,7 @@ else {
 
 
 	// Prof principal
-	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+	//$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	if($mode_bulletin!="pdf") {
 		echo "<div id='infodiv'>

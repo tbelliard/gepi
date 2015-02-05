@@ -1109,7 +1109,8 @@ echo add_token_field();
 	
 	<p class="ligneCaps">
 		<label for='gepi_prof_suivi' class="cellTab70">
-			Dénomination du professeur chargé du suivi des élèves :
+			Dénomination du professeur chargé du suivi des élèves :<br />
+			<em style='font-size:small'>(cette dénomination standard peut être modifiée pour telle ou telle classe particulière dans Gestion des classes/Telle_classe Paramètres)</em>
 		</label>
 		<span class="cellTab plusPetit">
 			<input type="text" name="gepi_prof_suivi" size="20" value="<?php echo(getSettingValue("gepi_prof_suivi")); ?>" onchange='changement()' />

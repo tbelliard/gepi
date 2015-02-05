@@ -793,6 +793,8 @@ if(count($groups)==0){
     die();
 }
 
+$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+
 // Pour repérer des groupes homonymes
 $msg_groupes_homonymes="";
 $tab_id_groupe_homonyme=array();
@@ -1123,8 +1125,8 @@ for($i=0;$i<10;$i++){
 			echo "</a>";
 	
 			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
-				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('gepi_prof_suivi')." est ".$liste_prof_suivi.".";}
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"".ucfirst($gepi_prof_suivi)." d'au moins un élève de la classe sur une des périodes.";
+				if($nb_prof_suivi>1) {echo " La liste des ".$gepi_prof_suivi." est ".$liste_prof_suivi.".";}
 				echo "\" />\n";
 			}
 

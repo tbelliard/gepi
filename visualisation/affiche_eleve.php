@@ -367,8 +367,9 @@ if(
 									jgp.login ='".$_SESSION['login']."';";
 			$verif=mysqli_query($GLOBALS["mysqli"], $sql);
 			if (mysqli_num_rows($verif)==0) {
-				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
-				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas ".getSettingValue('gepi_prof_suivi').".");
+				$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+				tentative_intrusion(2, "Tentative de saisie d'avis du conseil de classe pour un élève ($eleve_saisie_avis) dont vous n'êtes pas ".$gepi_prof_suivi.".");
+				$mess=rawurlencode("Tentative de saisie d'avis du conseil de classe pour un élève dont vous n'êtes pas ".$gepi_prof_suivi.".");
 				header("Location: ../accueil.php?msg=$mess");
 				die();
 			}

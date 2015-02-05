@@ -111,6 +111,10 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
 			}
 		}
+		$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+	}
+	else {
+		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 	}
 
 	$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
@@ -174,8 +178,8 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				}
 
 				if(in_array($prof_login,$tab_prof_suivi)) {
-					echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
-					if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('gepi_prof_suivi')." est ".$liste_prof_suivi.".";}
+					echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"".ucfirst($gepi_prof_suivi)." d'au moins un élève de la classe sur une des périodes.";
+					if($nb_prof_suivi>1) {echo " La liste des ".$gepi_prof_suivi." est ".$liste_prof_suivi.".";}
 					echo "\" />\n";
 				}
 

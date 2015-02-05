@@ -1853,7 +1853,11 @@ else {
 				$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode'].=" ";
 			}
 
-
+			// 20150205
+			$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['gepi_prof_suivi']=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+			if($tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['gepi_prof_suivi']=="") {
+				$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['gepi_prof_suivi']="professeur principal";
+			}
 
 			$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 			//echo "\$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=".$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']."<br />";

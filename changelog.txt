@@ -5,6 +5,12 @@
 
 Gepi-master (Version de développement)
 ===========================
+Bulletins:
+- Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
+
+Divers:
+- Possibilité de paramétrer classe par classe la dénomination du professeur chargé
+  du suivi des élèves d'une classe ("professeur principal" par défaut).
 
 Gepi-1.6.6 (18/01/2015)
 ===========================

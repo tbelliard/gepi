@@ -396,7 +396,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		//============================================
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -1828,7 +1828,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 
 			if($tab_rel['rn_sign_pp']=='y'){
 				echo "<td style='width: $largeur_case'>\n";
-				echo "<b>Signature du ".$gepi_prof_suivi.":</b>";
+				echo "<b>Signature du ".$tab_rel['gepi_prof_suivi'].":</b>";
 				for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 					echo "<br />\n";
 				}
@@ -1889,7 +1889,7 @@ if ($tab_rel['rn_abs_2'] == 'y') {
 
 function releve_pdf($tab_rel,$i) {
 	global $annee_scolaire,
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -3412,7 +3412,7 @@ function releve_pdf($tab_rel,$i) {
 				{
 					$pdf->SetXY($X_signature, $Y_signature);
 					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, 'Signature','LTR',2,'C');
-					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, $gepi_prof_suivi,'LR',2,'C');
+					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,4, $tab_rel['gepi_prof_suivi'],'LR',2,'C');
 					$pdf->Cell($largeur_cadre_signature/$nb_col_sign,$hauteur_cachet-8, '','LR',2,'C');
 					$X_signature = $X_signature+($largeur_restant/$nb_col_sign);
 				}

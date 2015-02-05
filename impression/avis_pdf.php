@@ -397,7 +397,8 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			$current_eleve_profsuivi_identite=affiche_utilisateur($current_eleve_profsuivi_login,$id_classe);
 		}
 
-		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot(getSettingValue("gepi_prof_suivi"),'majf2').' : '.$current_eleve_profsuivi_identite,'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
+		$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+		$pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,casse_mot($gepi_prof_suivi,'majf2').' : '.$current_eleve_profsuivi_identite,'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 	} else {
 
 		if ($id_groupe != NULL) {

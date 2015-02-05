@@ -415,7 +415,7 @@ if(isset($id_classe)){
 
 		$classe=get_classe($id_classe);
 
-		$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+		$gepi_prof_suivi=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
 
 		function accord_pluriel($nombre){
 			if($nombre>1){
