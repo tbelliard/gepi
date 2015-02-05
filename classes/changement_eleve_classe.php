@@ -737,7 +737,8 @@ Evitez les 'fantaisies';o).</p>
 		// CPE à modifier?
 		// Prof principal à modifier?
 		$ancre_login_eleve=my_ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
-		echo "<p>N'oubliez pas de contrôler/corriger les associations CPE et ".getSettingValue("gepi_prof_suivi")." pour cet élève: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
+		$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_future_classe));
+		echo "<p>N'oubliez pas de contrôler/corriger les associations CPE et ".$gepi_prof_suivi." pour cet élève: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
 
 
 		// Ménage:

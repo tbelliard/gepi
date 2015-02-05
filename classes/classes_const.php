@@ -390,12 +390,13 @@ $classe = old_mysql_result($call_classe, "0", "classe");
 
 //debug_var();
 //=============================
-// MODIF: boireaus
+
+$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
 
 if(!isset($quitter_la_page)){
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'>\n";
-	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	echo "<a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($gepi_prof_suivi)." : saisie rapide</a>\n";
 
 	if(getSettingAOui('active_mod_engagements')) {
 		if(($_SESSION['statut']=='administrateur')||
@@ -484,7 +485,7 @@ else {
 	// Après modification éventuelle, il faut quitter cette page.
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 	echo "<p class='bold'>";
-	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst(getSettingValue("gepi_prof_suivi"))." : saisie rapide</a>\n";
+	echo "<a href='index.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a> | <a href='prof_suivi.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">".ucfirst($gepi_prof_suivi)." : saisie rapide</a>\n";
 	if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec&amp;quitter_la_page=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
 
 	if($chaine_options_classes!="") {
@@ -657,7 +658,7 @@ function imposer_cpe() {
 		$i++;
 	}
 
-	$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
+	//$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
 	$k = '0';
 	echo "<table class='boireaus' border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
 	echo "<tr>\n";

@@ -784,7 +784,8 @@ if($_SESSION['statut']=='professeur') {
 			for($loop=0;$loop<count($id_classe);$loop++) {
 				if(!in_array($id_classe[$loop], $tab_pp['id_classe'])) {
 					echo "</p>\n";
-					echo "<p style='color:red'>Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de la classe de ".get_nom_classe($id_classe[$loop]);
+					$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe[$loop]));
+					echo "<p style='color:red'>Vous n'êtes pas ".$gepi_prof_suivi." de la classe de ".get_nom_classe($id_classe[$loop]);
 					$suite="n";
 					break;
 				}
@@ -964,7 +965,11 @@ $cpt1=0;
 $cpt2=0;
 for($i=0;$i<count($id_classe);$i++) {
 	$tab_engagements_classe=get_tab_engagements_user("", $id_classe[$i]);
-
+	/*
+	echo "<pre>";
+	print_r($tab_engagements_classe);
+	echo "</pre>";
+	*/
 	echo "
 		<p class='bold'>Classe de ".get_nom_classe($id_classe[$i])."</p>
 		<input type='hidden' name='id_classe[]' value='".$id_classe[$i]."' />
@@ -1045,6 +1050,7 @@ for($i=0;$i<count($id_classe);$i++) {
 						<a href='".$_SERVER['PHP_SELF']."?id_classe[0]=".$id_classe[$i]."&amp;imprimer_liste_eleve=y&amp;destinataire=$value".add_token_in_url()."' target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
 					</td>
 				</tr>";
+					// Ajouter un lien vers une page avec les infos dans le cas resp pour les PP avec GepiAccesGestElevesProfP, pour les scol,...
 					if(count($dates_conseils[$id_classe[$i]])>0) {
 						$cpt1++;
 					}

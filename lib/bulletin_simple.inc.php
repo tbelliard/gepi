@@ -1248,7 +1248,8 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 	
 	echo "<span class='bull_simpl'><b>Avis du conseil de classe </b> ";
 	if ($current_eleve_profsuivi_login) {
-		echo "<b>(".ucfirst(getSettingValue("gepi_prof_suivi"))." : <i>".affiche_utilisateur($current_eleve_profsuivi_login,$id_classe)."</i>)</b>";
+		$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
+		echo "<b>(".ucfirst($gepi_prof_suivi)." : <i>".affiche_utilisateur($current_eleve_profsuivi_login,$id_classe)."</i>)</b>";
 	}
 	echo " :</span>\n";
 	$larg_col1b = $larg_tab - $larg_col1 ;

@@ -2847,8 +2847,9 @@ if($_SESSION["statut"] == "professeur") {
 				echo ">".$group['name']." (<em style='font-size:small;'>".$group['description']." en ".$group['classlist_string']." avec ".$group['profs']['proflist_string']."</em>)&nbsp;: ";
 				$cpt_class_grp=0;
 				foreach($group['classes']['classes'] as $current_id_classe => $current_classe) {
+					$gepi_prof_suivi=ucfirst(retourne_denomination_pp($current_id_classe));
 					if($cpt_class_grp>0) {echo ", ";}
-					echo "<strong>".$current_classe['classe']."</strong> (<em title=\"".ucfirst(getSettingValue('gepi_prof_suivi'))."\">".liste_des_prof_suivi_de_telle_classe($current_id_classe)."</em>)";
+					echo "<strong>".$current_classe['classe']."</strong> (<em title=\"".ucfirst($gepi_prof_suivi)."\">".liste_des_prof_suivi_de_telle_classe($current_id_classe)."</em>)";
 					$cpt_class_grp++;
 				}
 				echo "</label>

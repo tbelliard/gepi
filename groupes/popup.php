@@ -135,7 +135,12 @@ else {
 	die();
 }
 
-$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+if(isset($id_classe)) {
+	$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
+}
+else {
+	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+}
 if($gepi_prof_suivi==""){
 	$gepi_prof_suivi="professeur principal";
 }
