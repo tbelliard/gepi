@@ -71,7 +71,8 @@ include "../lib/periodes.inc.php";
 if (isset($is_posted) and ($is_posted == 1)) {
 	check_token();
 
-	$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
+	//$gepiProfSuivi=getSettingValue("gepi_prof_suivi");
+	$gepiProfSuivi=ucfirst(retourne_denomination_pp($id_classe));
 
 	$call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT login, id_eleve FROM eleves ORDER BY nom, prenom;");
 	$nombreligne = mysqli_num_rows($call_eleves);

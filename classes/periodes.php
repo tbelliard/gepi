@@ -460,6 +460,13 @@ if($nb_periode>1) {
 	}
 }
 
+$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_classe));
+if(casse_mot($gepi_prof_suivi, "min")!=casse_mot(getSettingValue('gepi_prof_suivi'), "min")) {
+	$chaine_gepi_prof_suivi=$gepi_prof_suivi." (<em>".getSettingValue('gepi_prof_suivi')."</em>)";
+}
+else {
+	$chaine_gepi_prof_suivi=$gepi_prof_suivi;
+}
 echo "<br />
 <p><em>NOTES&nbsp;:</em></p>
 <ul>
@@ -468,7 +475,7 @@ Il s'agit de dates prises en compte pour l'appartenance d'élèves à la classe 
 C'est utile notamment pour les élèves qui changent de classe.<br />
 Ces dates sont aussi prises en compte dans les modules Absences.</p></li>
 <li><p>Le verrouillage des périodes de notes s'effectue en compte \"<strong>scolarité</strong>\" à la rubrique \"Verrouillage/déverrouillage des périodes\".</p></li>
-<li><p>L'accès des parents/élèves aux appréciations et avis des conseils de classe se paramètre en compte \"administrateur\" ou sous réserve d'en donner le droit dans Gestion générale/Droits d'accès en compte \"scolarité\" ou \"professeur\" s'il est ".getSettingValue('gepi_prof_suivi').".</p></li>
+<li><p>L'accès des parents/élèves aux appréciations et avis des conseils de classe se paramètre en compte \"administrateur\" ou sous réserve d'en donner le droit dans Gestion générale/Droits d'accès en compte \"scolarité\" ou \"professeur\" s'il est ".$chaine_gepi_prof_suivi.".</p></li>
 </ul>\n";
 
 require("../lib/footer.inc.php");

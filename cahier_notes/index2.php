@@ -67,8 +67,9 @@ if ($_SESSION['statut'] == "professeur") {
 			if(isset($id_classe)) {
 				if(!is_pp($_SESSION['login'], $id_classe)) {
 					$classe=get_nom_classe($id_classe);
-					tentative_intrusion("1","Tentative d'accès par un ".getSettingValue('gepi_prof_suivi')." aux moyennes des carnets de notes pour une classe qu'il n'a pas en responsabilité (".$classe.").");
-					header("Location: ../accueil.php?msg=Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de la classe de $classe.");
+					$gepi_prof_suivi=retourne_denomination_pp($id_classe);
+					tentative_intrusion("1","Tentative d'accès par un ".$gepi_prof_suivi." aux moyennes des carnets de notes pour une classe qu'il n'a pas en responsabilité (".$classe.").");
+					header("Location: ../accueil.php?msg=Vous n'êtes pas ".$gepi_prof_suivi." de la classe de $classe.");
 					//echo "Vous n'êtes pas autorisé à être ici.";
 					//require ("../lib/footer.inc.php");
 					die();

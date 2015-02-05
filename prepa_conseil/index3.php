@@ -121,7 +121,8 @@ if (isset($id_classe)) {
 			}
 		}
 		else {
-			$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+			//$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
+			$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 			//echo "\$gepi_prof_suivi=$gepi_prof_suivi<br/>";
 
 			$test = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SELECT 1=1 FROM j_eleves_classes jec, j_eleves_professeurs jep WHERE (jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe = '".$id_classe."')"));
@@ -383,6 +384,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// =================================
 
 
+		$gepi_prof_suivi=retourne_denomination_pp($id_classe);
+
 		$classe_eleve = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
 		$nom_classe = old_mysql_result($classe_eleve, 0, "classe");
 		echo "<p class='grand'>Classe de $nom_classe</p>\n";
@@ -400,7 +403,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			// Tous les élèves vont être affichés
 		}
 		elseif ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-			echo " (<em>uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours ou dont je suis ".getSettingValue('gepi_prof_suivi')."</em>)";
+			echo " (<em>uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours ou dont je suis ".$gepi_prof_suivi."</em>)";
 		}
 		echo "</label></td></tr>\n";
 
@@ -414,7 +417,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "checked ";
 			}
 			echo "/></td>\n";
-			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
+			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".$gepi_prof_suivi." est :</label>\n";
 			echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
 			$i=0;
 			while ($i < $nb_lignes) {

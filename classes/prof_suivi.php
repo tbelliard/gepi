@@ -324,6 +324,8 @@ if(!isset($id_classe)) {
 		echo "
 		<span id='span_tab_id_classe_".$i."'><input type='checkbox' name='tab_id_classe[]' id='tab_id_classe_".$i."' value='".$tab_id_classe[$i]."' onchange=\"checkbox_change('tab_id_classe_".$i."');\" checked /><label for='tab_id_classe_".$i."' id='label_tab_id_classe_".$i."'>".get_nom_classe($tab_id_classe[$i])."</label>\n";
 
+		$gepi_prof_suivi_current_classe=ucfirst(retourne_denomination_pp($tab_id_classe[$i]));
+
 		$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$tab_id_classe[$i]."';";
 		$res_ele_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_ele_classe=mysqli_num_rows($res_ele_classe);
@@ -347,7 +349,7 @@ if(!isset($id_classe)) {
 					$res_ele_pp=mysqli_query($GLOBALS["mysqli"], $sql);
 					$nb_ele_pp=mysqli_num_rows($res_ele_pp);
 
-					echo " selected='selected' style='background-color: lightgreen' title=\"Ce professeur est $gepi_prof_suivi de $nb_ele_pp élèves sur $nb_ele_classe élèves dans la classe.\">".$tab_profs_classe[$j]['civ_nom_prenom']." ($nb_ele_pp/$nb_ele_classe)</option>";
+					echo " selected='selected' style='background-color: lightgreen' title=\"Ce professeur est $gepi_prof_suivi_current_classe de $nb_ele_pp élèves sur $nb_ele_classe élèves dans la classe.\">".$tab_profs_classe[$j]['civ_nom_prenom']." ($nb_ele_pp/$nb_ele_classe)</option>";
 				}
 				else {
 					echo ">".$tab_profs_classe[$j]['civ_nom_prenom']."</option>";
@@ -359,8 +361,8 @@ if(!isset($id_classe)) {
 		if(count($tab_prof_suivi)>1) {
 			$chaine_decoche.="document.getElementById('tab_id_classe_$i').checked=false;\n";
 			$chaine_decoche.="checkbox_change('tab_id_classe_$i');\n";
-			echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=".$tab_id_classe[$i]."' target='_blank'><img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Il y a plusieurs '$gepi_prof_suivi' dans cette classe.
-Si vous voulez conserver plusieurs '$gepi_prof_suivi', effectuez un paramétrage individuel de la classe\" /></a>";
+			echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=".$tab_id_classe[$i]."' target='_blank'><img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Il y a plusieurs '$gepi_prof_suivi_current_classe' dans cette classe.
+Si vous voulez conserver plusieurs '$gepi_prof_suivi_current_classe', effectuez un paramétrage individuel de la classe\" /></a>";
 		}
 
 		echo "<br />";
@@ -388,6 +390,8 @@ Si vous voulez conserver plusieurs '$gepi_prof_suivi', effectuez un paramétrage
 }
 //=========================================================================
 
+$gepi_prof_suivi_current_classe=ucfirst(retourne_denomination_pp($id_classe));
+
 ?>
 
 <p class='bold'>Classe : <?php echo $classe; ?></p>
@@ -396,11 +400,12 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 	// On regarde combien il y a de profs de suivi actuellement dans la classe
 	$call_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
 	$nb_prof = mysqli_num_rows($call_profsuivi);
+
 ?>
 
 	<p>
 	<?php
-		echo ucfirst(getSettingValue("gepi_prof_suivi"));
+		echo ucfirst($gepi_prof_suivi_current_classe);
 	?> : précisez le nombre dans la classe :</p>
 	<form enctype="multipart/form-data" action="prof_suivi.php" method="post">
 	<select size = '1' name='nb_prof' onchange='changement()'>
@@ -418,7 +423,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 	<?php
 } else if (!isset($etape2) or ($etape2 != 'yes')) {
 ?>
-	<p>Pour chaque <?php echo getSettingValue("gepi_prof_suivi"); ?>, précisez le professeur : </p>
+	<p>Pour chaque <?php echo $gepi_prof_suivi_current_classe; ?>, précisez le professeur : </p>
 	<?php
 	$call_profsuivi = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe'");
 	$nb_prof_exist = mysqli_num_rows($call_profsuivi);
@@ -483,7 +488,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 		}
 	}
 	if ($etape2 == 'no') {
-		echo "<p>Vous n'avez pas défini de ".getSettingValue("gepi_prof_suivi")." !</p>\n";
+		echo "<p>Vous n'avez pas défini de ".$gepi_prof_suivi_current_classe." !</p>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"prof_suivi.php\" method=post>\n";
 		echo "<input type='submit' value='Retour' /><br />\n";
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -507,12 +512,12 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 				$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM utilisateurs WHERE login = '$tab_prof[$i]'");
 				$prof_nom = old_mysql_result($call_prof, 0, "nom");
 				$prof_prenom = old_mysql_result($call_prof, 0, "prenom");
-				echo "<th><p class='small'>".ucfirst(getSettingValue("gepi_prof_suivi"))." :<br />$prof_nom $prof_prenom<br />\n";
+				echo "<th><p class='small'>".ucfirst($gepi_prof_suivi_current_classe)." :<br />$prof_nom $prof_prenom<br />\n";
 				echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 				//echo " / <a href=\"javascript:DecocheColonne(".$i.")\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 				echo "</p></th>\n";
 			}
-			echo "<th><p class='small'>Pas de ".getSettingValue("gepi_prof_suivi")."<br />\n";
+			echo "<th><p class='small'>Pas de ".$gepi_prof_suivi_current_classe."<br />\n";
 			echo "<a href=\"javascript:CocheColonne(".$i.")\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
 			echo "</p></th>\n";
 			echo "</tr>\n";

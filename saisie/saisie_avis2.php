@@ -75,12 +75,19 @@ $current_eleve_mention = isset($_POST["current_eleve_mention"]) ? $_POST["curren
 //================================
 $affiche_message = isset($_GET["affiche_message"]) ? $_GET["affiche_message"] :NULL;
 
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	header("Location: ../accueil.php?msg=Classe non choisie.");
+	die();
+}
+
 if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
 	header("Location: ../accueil.php?msg=Accès non autorisé.");
 	die();
 }
 
 include "../lib/periodes.inc.php";
+
+$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
@@ -147,7 +154,7 @@ if (isset($_POST['is_posted'])) {
 				// Le prof est PP de cet élève en particulier, c'est OK
 			}
 			else {
-				$msg = "Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de cet élève.";
+				$msg = "Vous n'êtes pas ".$gepi_prof_suivi." de cet élève.";
 				$reg = 'no';
 			}
 
@@ -372,7 +379,7 @@ if (isset($id_classe) and (!isset($periode_num))) {
 	}
 	echo "</p>\n";
 	echo "<p><b>".$classe_suivi.", choisissez la période : </b><br />
-<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em></p>\n";
+<em style='font-size:small'>(".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em></p>\n";
 	include "../lib/periodes.inc.php";
 	$i="1";
 	echo "<ul>\n";
@@ -558,7 +565,7 @@ echo "</form>\n";
 	<p class='grand'>
 		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
 		<?php
-			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo "<em style='font-size:small'>(".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
 			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
 		?>
 	</p>
@@ -794,7 +801,7 @@ if (isset($fiche)) {
 	<p class='grand'>
 		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
 		<?php
-			echo "<em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
+			echo "<em style='font-size:small'>(".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
 			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
 		?>
 	</p>

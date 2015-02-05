@@ -112,7 +112,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					while($lig3=mysqli_fetch_object($res3)) {
 						echo "<option value='$lig->id_classe|$lig3->login'";
 						if(in_array($lig3->login, $tab_pp)) {
-							echo " style='background-color:green;' title=\"Ce professeur est ".getSettingValue('gepi_prof_suivi')." d'un ou plusieurs autres élèves de la classe.\"";
+							$gepi_prof_suivi=retourne_denomination_pp($lig->id_classe);
+							echo " style='background-color:green;' title=\"Ce professeur est ".$gepi_prof_suivi." d'un ou plusieurs autres élèves de la classe.\"";
 						}
 						if($lig3->login==$pp_actuel) {echo " selected";}
 						echo ">".civ_nom_prenom($lig3->login)."</option>";
@@ -1845,6 +1846,7 @@ if(isset($quelles_classes)) {
 
 		if ($eleve_profsuivi_nom == '') {
 			if(($acces_class_const)&&($eleve_id_classe!="")) {
+				$gepi_prof_suivi=retourne_denomination_pp($eleve_id_classe);
 				$eleve_profsuivi_nom = "<a href='../classes/classes_const.php?id_classe=".$eleve_id_classe."' title=\"Définir le ".$gepi_prof_suivi."\"><font color='red'>N/A</font></a>";
 			}
 			else {

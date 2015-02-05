@@ -2297,7 +2297,8 @@ if(isset($eleve_login)){
 				}
 
 				if($acces_class_const) {
-					echo "<a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier la liste des élèves de la classe.\nDéfinir le ".getSettingValue('gepi_prof_suivi').", le CPE,...\">".preg_replace("/ /","&nbsp;",$lig_classe->classe)."</a>\n";
+					$gepi_prof_suivi=retourne_denomination_pp($lig_classe->id_classe);
+					echo "<a href='../classes/classes_const.php?id_classe=$lig_classe->id_classe&amp;quitter_la_page=y' target='_blank' title=\"Consulter/modifier la liste des élèves de la classe.\nDéfinir le ".$gepi_prof_suivi.", le CPE,...\">".preg_replace("/ /","&nbsp;",$lig_classe->classe)."</a>\n";
 				}
 				else {
 					echo preg_replace("/ /","&nbsp;",$lig_classe->classe)."\n";

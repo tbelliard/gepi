@@ -16,13 +16,14 @@
 		}
 
 		$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
+		// A REVOIR : Si !isset($id_classe)
 		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec
 					WHERE jep.professeur='".$_SESSION['login']."' AND
 						jep.login=jec.login AND
 						jec.id_classe='$id_classe';";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)==0){
-			$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+			$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 			$msg="Vous n'êtes pas ".$gepi_prof_suivi." de la classe choisie.<br />Vous ne devriez donc pas accéder à cette page.";
 			header("Location: ../accueil.php?msg=".rawurlencode($msg));
 			die();
@@ -30,6 +31,7 @@
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
+		// A REVOIR : Si !isset($id_classe)
 		$sql="SELECT 1=1 FROM j_scol_classes jsc
 						WHERE jsc.login='".$_SESSION['login']."' AND
 							jsc.id_classe='$id_classe';";

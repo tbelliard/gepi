@@ -43,6 +43,11 @@ if (!checkAccess()) {
 // initialisation
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 
+if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
+	header("Location: ../accueil.php?msg=Classe non choisie.");
+	die();
+}
+
 include "../lib/periodes.inc.php";
 
 $msg="";
@@ -69,6 +74,8 @@ if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))
 	header("Location: ../accueil.php?msg=Accès non autorisé.");
 	die();
 }
+
+$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 
 $gepi_denom_mention=getSettingValue("gepi_denom_mention");
 if($gepi_denom_mention=="") {
@@ -155,7 +162,7 @@ if (isset($_POST['is_posted'])) {
 	} else {
 		if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
 			if(!is_pp($_SESSION['login'], $id_classe)) {
-				echo "<p style='color:red'>Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de $classe.</p>\n";
+				echo "<p style='color:red'>Vous n'êtes pas ".$gepi_prof_suivi." de $classe.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
@@ -471,7 +478,7 @@ if ($id_classe) {
 	$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 	?>
 	<p class= 'grand'>Avis du conseil de classe. Classe : <?php echo $classe; 
-	echo " - <em style='font-size:small'>(".getSettingValue("gepi_prof_suivi")."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
+	echo " - <em style='font-size:small'>(".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")</em>";
 	?>
 	</p>
 	<?php
@@ -500,7 +507,7 @@ if ($id_classe) {
 	} else {
 		if(getSettingAOui('GepiAccesPPTousElevesDeLaClasse')) {
 			if(!is_pp($_SESSION['login'], $id_classe)) {
-				echo "<p style='color:red'>Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de $classe.</p>\n";
+				echo "<p style='color:red'>Vous n'êtes pas ".$gepi_prof_suivi." de $classe.</p>\n";
 				require("../lib/footer.inc.php");
 				die();
 			}
