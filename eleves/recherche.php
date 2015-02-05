@@ -140,7 +140,7 @@ function extract_utilisateurs($tab_login) {
 							$tab_result_recherche['personnel'][$cpt_pers]['td_classes'].=$classe_prof;
 						}
 						if(in_array($id_classe_prof ,$tab_classes_pp)) {
-							$tab_result_recherche['personnel'][$cpt_pers]['td_classes'].=" <img src='../images/bulle_verte.png' title=\"".$tab_result_recherche['personnel'][$cpt_pers]['civ_nom_prenom']." est ".getSettingValue('gepi_prof_suivi')." d'au moins un élève de la classe de ".$classe_prof." sur une des périodes.\" height='9' width='9'>";
+							$tab_result_recherche['personnel'][$cpt_pers]['td_classes'].=" <img src='../images/bulle_verte.png' title=\"".$tab_result_recherche['personnel'][$cpt_pers]['civ_nom_prenom']." est ".retourne_denomination_pp($id_classe_prof)." d'au moins un élève de la classe de ".$classe_prof." sur une des périodes.\" height='9' width='9'>";
 						}
 						$cpt_classe++;
 					}

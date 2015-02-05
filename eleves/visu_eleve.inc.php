@@ -2075,16 +2075,23 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				}
 				echo "</table>\n";
 
-				echo "<p><strong>".ucfirst($gepi_prof_suivi)."</strong>: ";
+				if(count($tab_ele['classe'])==1) {
+					$gepi_prof_suivi_current_classe=retourne_denomination_pp($tab_ele['classe'][0]['id_classe']);
+					echo "<p><strong>".ucfirst($gepi_prof_suivi_current_classe)."</strong>: ";
+				}
+				else {
+					echo "<p><strong>".ucfirst($gepi_prof_suivi)."</strong>: ";
+				}
 				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
 					if(isset($tab_ele['classe'][$loop]['pp'])) {
 						if($loop>0) {echo ", ";}
 						if($tab_ele['classe'][$loop]['pp']['email']!="") {
+							$gepi_prof_suivi_current_classe=retourne_denomination_pp($tab_ele['classe'][$loop]['id_classe']);
 							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
 							//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
 							echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-							echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_prof_suivi."\">";
+							echo ",%0d%0aCordialement.' title=\"Envoyer un email au ".$gepi_prof_suivi_current_classe."\">";
 						}
 						echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
 						if($tab_ele['classe'][$loop]['pp']['email']!="") {

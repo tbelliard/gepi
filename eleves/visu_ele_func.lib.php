@@ -251,6 +251,8 @@ function info_eleve($ele_login) {
 				$tab_ele['periodes'][$cpt]['classe']=$lig_per->classe;
 				$tab_ele['periodes'][$cpt]['nom_complet']=$lig_per->nom_complet;
 
+				$tab_ele['periodes'][$cpt]['gepi_prof_suivi']=retourne_denomination_pp($lig_per->id_classe);
+
 				//echo "\$tab_ele['periodes'][$cpt]['num_periode']=".$tab_ele['periodes'][$cpt]['num_periode']."<br />";
 				//echo "\$tab_ele['periodes'][$cpt]['id_classe']=".$tab_ele['periodes'][$cpt]['id_classe']."<br />";
 
@@ -882,7 +884,7 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 		//============================================
 		// Paramètres généraux:
 		// En admin, dans Gestion générale/Configuration générale
-		$gepi_prof_suivi,
+		//$gepi_prof_suivi,
 
 		$RneEtablissement,
 		$gepiSchoolName,
@@ -1399,7 +1401,9 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 
 		if($tab_rel['rn_sign_pp']=='y'){
 			echo "<td width='$largeur_case'>\n";
-			echo "<b>Signature du ".$gepi_prof_suivi.":</b>";
+			// 20150205
+			//echo "<b>Signature du ".$gepi_prof_suivi.":</b>";
+			echo "<b>Signature du ".$tab_rel['periodes'][$index_per]['gepi_prof_suivi'].":</b>";
 			for($m=0;$m<$tab_rel['rn_sign_nblig'];$m++) {
 				echo "<br />\n";
 			}
