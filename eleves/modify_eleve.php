@@ -1766,9 +1766,13 @@ if (isset($eleve_login)) {
 			echo "</a>";
 		}
 		elseif(isset($eleve_nom)) {
-			echo " <a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $eleve_nom)."'";
+			echo "$eleve_login <a href='../utilisateurs/create_eleve.php?filtrage=Afficher&amp;critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $eleve_nom)."'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo " title=\"Ajouter un compte d'utilisateur pour cet élève.\"><img src='../images/icons/buddy_plus.png' class='icone16' /></a>";
+		}
+		else {
+			// On ne devrait jamais arriver là.
+			echo $eleve_login;
 		}
 	}
 	else {
