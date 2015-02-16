@@ -507,7 +507,8 @@ else {
 		$tab_file=get_tab_file($path);
 	
 		// Choix de la classe/groupe
-	
+		$cpt_js=0;
+
 		if($_SESSION['statut']=='professeur') {
 			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
 		}
@@ -551,9 +552,9 @@ else {
 
 			echo "<input type='submit' value='Envoyer' />\n";
 			echo "</form>\n";
-		}
 
-		$cpt_js=$cpt;
+			$cpt_js=$cpt;
+		}
 
 		if($_SESSION['statut']=='professeur') {
 			$groups=get_groups_for_prof($_SESSION['login']);
