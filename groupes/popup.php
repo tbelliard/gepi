@@ -398,7 +398,7 @@ if($gepi_prof_suivi==""){
 				if($lig_eleve->email!=""){
 					echo "
 	<div style='float:left; width:16px' class='noprint'>
-		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/mail.png' class='icone16' alt='Mail' /></a>
+		<a href='mailto:$lig_eleve->email?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail à cet élève'><img src='../images/icons/mail.png' class='icone16' alt='Mail' /></a>
 	</div>";
 					$tabmail[]=$lig_eleve->email;
 				}
