@@ -422,7 +422,7 @@ else {
 		// Choix de la classe/groupe
 	
 		if($_SESSION['statut']=='professeur') {
-			$sql="SELECT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
+			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
 		}
 		else {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
