@@ -143,14 +143,29 @@ if (isset($_POST['is_posted'])) {
 	savePref($_SESSION['login'], 'eval_cumul_vision_famille', $famille);
 
 	if(!isset($id_dev)) {
+		$creation_dev_autres_groupes=isset($_POST['creation_dev_autres_groupes']) ? $_POST['creation_dev_autres_groupes'] : 'n';
+		$id_autre_groupe=isset($_POST['id_autre_groupe']) ? $_POST['id_autre_groupe'] : array();
+		if(($creation_dev_autres_groupes=='y')&&(count($id_autre_groupe)>0)) {
+			for($i=0;$i<count($id_autre_groupe);$i++) {
+				$sql="INSERT INTO cc_dev SET id_groupe='".$id_autre_groupe[$i]."', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de la création du $nom_cc en ".get_info_grp($id_autre_groupe[$i]).".<br />";
+				}
+				else {
+					$msg.="Création du $nom_cc effectuée en ".get_info_grp($id_autre_groupe[$i]).".<br />";
+				}
+			}
+		}
+
 		$sql="INSERT INTO cc_dev SET id_groupe='$id_groupe', nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille';";
 		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$insert) {
-			$msg.="Erreur lors de la création du $nom_cc.";
+			$msg.="Erreur lors de la création du $nom_cc en ".get_info_grp($id_groupe).".<br />";
 		}
 		else {
 			$id_dev=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-			$msg.="Création du $nom_cc effectuée.";
+			$msg.="Création du $nom_cc effectuée en ".get_info_grp($id_groupe).".<br />";
 		}
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 		die();
@@ -158,16 +173,32 @@ if (isset($_POST['is_posted'])) {
 	else {
 		// Le devoir existe déjà
 		// S'il est rattaché à un devoir existant dans le carnet de notes, il ne doit pas pouvoir être modifié si la période correspondante est close.
-
 		// Sinon, il faut mettre à jour le devoir associé
-		
+
+		/*
+		$creation_dev_autres_groupes=isset($_POST['creation_dev_autres_groupes']) ? $_POST['creation_dev_autres_groupes'] : 'n';
+		$id_autre_groupe=isset($_POST['id_autre_groupe']) ? $_POST['id_autre_groupe'] : array();
+		if(($creation_dev_autres_groupes=='y')&&(count($id_autre_groupe)>0)) {
+			for($i=0;$i<count($id_autre_groupe);$i++) {
+				$sql="UPDATE cc_dev SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille' WHERE id_groupe='".$id_autre_groupe[$i]."' AND id='$id_dev';";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$update) {
+					$msg.="Erreur lors de la mise à jour du $nom_cc en ".get_info_grp($id_autre_groupe[$i]).".<br />";
+				}
+				else {
+					$msg.="Mise à jour du $nom_cc effectuée en ".get_info_grp($id_autre_groupe[$i]).".<br />";
+				}
+			}
+		}
+		*/
+
 		$sql="UPDATE cc_dev SET nom_court='$nom_court', nom_complet='$nom_complet', description='$description', arrondir='$precision', vision_famille='$famille' WHERE id_groupe='$id_groupe' AND id='$id_dev';";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(!$update) {
-			$msg.="Erreur lors de la mise à jour du $nom_cc.";
+			$msg.="Erreur lors de la mise à jour du $nom_cc en ".get_info_grp($id_groupe).".<br />";
 		}
 		else {
-			$msg.="$nom_cc mis à jour.";
+			$msg.="$nom_cc mis à jour en ".get_info_grp($id_groupe).".<br />";
 		}
 		header("Location: index_cc.php?id_racine=$id_racine&msg=$msg");
 		die();
@@ -193,7 +224,7 @@ echo "<a href='index_cc.php?id_racine=$id_racine'><img src='../images/icons/back
 echo "</p>\n";
 echo "</div>\n";
 
-echo "<h2 class='gepi'>Configuration du $nom_cc&nbsp;:</h2>\n";
+echo "<h2 class='gepi'>Configuration du $nom_cc en ".get_info_grp($id_groupe)."&nbsp;:</h2>\n";
 
 $aff_nom_court="y";
 $aff_nom_complet="y";
@@ -371,6 +402,70 @@ else {
 
 <?php
 echo "</table>\n";
+
+if(!isset($id_dev)) {
+	$tab_group=get_groups_for_prof($_SESSION['login']);
+	if(count($tab_group)>1) {
+		echo "<div align='center'>
+		<input type='checkbox' id='creation_dev_autres_groupes' name='creation_dev_autres_groupes' value='y' onchange=\"display_div_autres_groupes()\" onchange=\"changement();\" /><label for='creation_dev_autres_groupes'> Créer la même évaluation pour d'autres enseignements.</label><br />\n";
+
+		echo "<div id='div_autres_groupes'>\n";
+		echo "<table class='boireaus boireaus_alt' summary='Autres enseignements'>\n";
+		echo "<tr>\n";
+		echo "<th rowspan='2'>";
+		echo "<a href='javascript:modif_case(true)'><img src='../images/enabled.png' class='icone15' alt='Tout cocher' /></a>/\n";
+		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' class='icone15' alt='Tout décocher' /></a>\n";
+		echo "</th>\n";
+		echo "<th colspan='3'>Enseignement</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "<th>Nom</th>\n";
+		echo "<th>Description</th>\n";
+		echo "<th>Classe</th>\n";
+		echo "</tr>\n";
+
+		$alt=1;
+		$cpt=0;
+		for($i=0;$i<count($tab_group);$i++) {
+			if((!isset($tab_group[$i]["visibilite"]["cahier_notes"]))||($tab_group[$i]["visibilite"]["cahier_notes"]=='y')) {
+				if($tab_group[$i]['id']!=$id_groupe) {
+					echo "<tr>\n";
+					echo "<td>\n";
+					echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' onchange=\"changement();\" />\n";
+					echo "</td>\n";
+					echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['name'])."</label></td>\n";
+					echo "<td><label for='case_$cpt'>".htmlspecialchars($tab_group[$i]['description'])."</label></td>\n";
+					echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
+					$cpt++;
+					echo "</tr>\n";
+				}
+			}
+		}
+		echo "</table>\n";
+		echo "</div>\n";
+
+		echo "<script type='text/javascript'>
+function display_div_autres_groupes() {
+	if(document.getElementById('creation_dev_autres_groupes').checked==true) {
+		document.getElementById('div_autres_groupes').style.display='';
+	}
+	else {
+		document.getElementById('div_autres_groupes').style.display='none';
+	}
+}
+display_div_autres_groupes();
+
+function modif_case(statut){
+	for(k=0;k<$cpt;k++){
+		if(document.getElementById('case_'+k)){
+			document.getElementById('case_'+k).checked=statut;
+		}
+	}
+}
+
+</script>\n";
+	}
+}
 
 if(isset($id_dev)) {
 	echo "<input type='hidden' name='id_dev' value='$id_dev' />\n";
