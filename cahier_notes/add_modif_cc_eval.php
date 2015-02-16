@@ -207,9 +207,9 @@ if (isset($_POST['ok'])) {
 			$jour=strftime("%d");
 		}
 		$date=$annee."-".$mois."-".$jour." 00:00:00";
-        
-        
-        if ($_POST['vision_famille ']) {
+
+
+		if ($_POST['vision_famille ']) {
 			if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['vision_famille '])) {
 				$annee=mb_substr($_POST['vision_famille '],6,4);
 				$mois=mb_substr($_POST['vision_famille '],3,2);
@@ -284,7 +284,7 @@ if($aff_nom_court=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='nom_court' size='40' value=\"".$nom_court."\" autocomplete='off' onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='text' name='nom_court' id='nom_court' size='40' value=\"".$nom_court."\" autocomplete='off' onfocus=\"javascript:this.select()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -292,7 +292,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='nom_court' size='40' value=\"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='hidden' name='nom_court' id='nom_court' size='40' value=\"".$nom_court."\" onfocus=\"javascript:this.select()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -302,7 +302,7 @@ if($aff_nom_complet=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='nom_complet' size='40' value=\"".$nom_complet."\" autocomplete='off' onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='text' name='nom_complet' id='nom_complet' size='40' value=\"".$nom_complet."\" autocomplete='off' onfocus=\"javascript:this.select()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -310,7 +310,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='nom_complet' size='40' value=\"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
+	echo "<input type='hidden' name='nom_complet' id='nom_complet' size='40' value=\"".$nom_complet."\" onfocus=\"javascript:this.select()\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -319,7 +319,7 @@ if($aff_description=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<textarea name='description' rows='2' cols='40' >".$description."</textarea>\n";
+	echo "<textarea name='description' id='description' rows='2' cols='40' >".$description."</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -327,7 +327,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description&nbsp;:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='description' value=\"$description\" />\n";
+	echo "<input type='hidden' name='description' id='description' value=\"$description\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -344,7 +344,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td>Note sur:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='note_sur' size='4' value=\"".$coef."\" />\n";
+	echo "<input type='hidden' name='note_sur' id='note_sur' size='4' value=\"".$coef."\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -366,7 +366,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='display_date' size='10' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" />\n";
+	echo "<input type='hidden' name='display_date' id='display_date' size='10' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }
@@ -375,7 +375,7 @@ else{
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité (si le droit est ouvert) :</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='vision_famille ' id='vision_famille ' size='10' value=\"".$vision_famille ."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
+	echo "<input type='text' name='vision_famille' id='vision_famille' size='10' value=\"".$vision_famille ."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo img_calendrier_js("vision_famille ", "img_bouton_vision_famille ");
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -397,9 +397,56 @@ if($aff_nom_court=='y'){
 </script>\n";
 }
 
+echo "</form>\n";
+
 echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 
-echo "</form>\n";
+$sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev'";
+if(isset($id_eval)) {
+	$sql.=" AND id!='$id_eval'";
+}
+$sql.=" ORDER BY date;";
+//echo "$sql<br />";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	echo "<div align='center'>
+<br />
+<p>D'autres évaluations sont saisies dans ce(tte) $nom_cc&nbsp;:</p>
+<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Nom_court</th>
+		<th>Nom_complet</th>
+		<th>Description</th>
+		<th>Note_sur</th>
+		<th>Date</th>
+		<th>Date de visibilité</th>
+		<th>Copie</th>
+	</tr>";
+	while($lig=mysqli_fetch_object($res)) {
+		echo "
+	<tr>
+		<td id='cc_".$lig->id."_nom_court' onclick=\"document.getElementById('nom_court').value=this.innerHTML\">".$lig->nom_court."</td>
+		<td id='cc_".$lig->id."_nom_complet' onclick=\"document.getElementById('nom_complet').value=this.innerHTML\">".$lig->nom_complet."</td>
+		<td id='cc_".$lig->id."_description' onclick=\"document.getElementById('description').value=this.innerHTML\">".nl2br($lig->description)."</td>
+		<td id='cc_".$lig->id."_note_sur' onclick=\"document.getElementById('note_sur').value=this.innerHTML\">".$lig->note_sur."</td>
+		<td id='cc_".$lig->id."_display_date' onclick=\"document.getElementById('display_date').value=this.innerHTML\">".formate_date($lig->date)."</td>
+		<td id='cc_".$lig->id."_vision_famille' onclick=\"document.getElementById('vision_famille').value=this.innerHTML\">".formate_date($lig->vision_famille)."</td>
+		<td id='cc_".$lig->id."_nom_court' onclick=\"
+				document.getElementById('nom_court').value=document.getElementById('cc_".$lig->id."_nom_court').innerHTML;
+				document.getElementById('nom_complet').value=document.getElementById('cc_".$lig->id."_nom_complet').innerHTML;
+				document.getElementById('description').value=document.getElementById('cc_".$lig->id."_description').innerHTML;
+				document.getElementById('note_sur').value=document.getElementById('cc_".$lig->id."_note_sur').innerHTML;
+				document.getElementById('display_date').value=document.getElementById('cc_".$lig->id."_display_date').innerHTML;
+				document.getElementById('vision_famille').value=document.getElementById('cc_".$lig->id."_vision_famille').innerHTML;
+				\"><img src='../images/icons/copy-16.png' class='icone16' alt='Copier' /></td>
+	</tr>";
+	}
+	echo "
+</table>
+<p>En cliquant sur une cellule du tableau ci-dessus, vous copiez les paramètres vers l'évaluation courante.</p>
+</div>";
+}
+
 echo "<br />\n";
 /**
  * Pied de page
