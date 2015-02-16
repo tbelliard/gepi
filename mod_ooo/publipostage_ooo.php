@@ -75,6 +75,9 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 
 if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
+	if(!isset($msg)) {
+		$msg="";
+	}
 
 	$tab_file=get_tab_file($path);
 
@@ -85,29 +88,35 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 		for($i=0;$i<count($id_classe);$i++) {
 			$classe=get_class_from_id($id_classe[$i]);
 
-			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)>0) {
-				while($lig=mysqli_fetch_object($res)) {
-					$tab_eleves_OOo[$nb_eleve]=array();
+			// Ajout d'un test dans le cas prof
+			if(($_SESSION['statut']=='professeur')&&(!is_prof_classe($_SESSION['login'], $id_classe[$i]))) {
+				$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
+			}
+			else {
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab_eleves_OOo[$nb_eleve]=array();
 
-					$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
-					$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
-					$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
-					$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
-					$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
-					$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
-					$tab_eleves_OOo[$nb_eleve]['fille']="";
-					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
-					$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
-					$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
-					if(getSettingValue('ele_lieu_naissance')=="y") {
-						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-					} // récupérer la commune
+						$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+						$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+						$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+						$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+						$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
+						$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
+						$tab_eleves_OOo[$nb_eleve]['fille']="";
+						if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+						$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+						if(getSettingValue('ele_lieu_naissance')=="y") {
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+						} // récupérer la commune
 
-					$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+						$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
 
-					$nb_eleve++;
+						$nb_eleve++;
+					}
 				}
 			}
 		}
@@ -116,95 +125,108 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 		for($i=0;$i<count($id_groupe);$i++) {
 			$current_group=get_group($id_groupe[$i]);
 
-			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
-			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)>0) {
-				while($lig=mysqli_fetch_object($res)) {
-					$tab_eleves_OOo[$nb_eleve]=array();
+			// Ajout d'un test dans le cas prof
+			if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_classe[$i]))) {
+				$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
+			}
+			else {
+				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tab_eleves_OOo[$nb_eleve]=array();
 
-					$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
-					$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
-					$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
-					$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
-					$tab_eleves_OOo[$nb_eleve]['fille']="";
-					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
-					$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
-					$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
-					if(getSettingValue('ele_lieu_naissance')=="y") {
-						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-					} // récupérer la commune
+						$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+						$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+						$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+						$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+						$tab_eleves_OOo[$nb_eleve]['fille']="";
+						if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+						$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+						if(getSettingValue('ele_lieu_naissance')=="y") {
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+						} // récupérer la commune
 
-					$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
+						$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
 
-					$nb_eleve++;
+						$nb_eleve++;
+					}
 				}
 			}
 		}
 	}
 
-	$mode_ooo="imprime";
+	if(count($tab_eleves_OOo)>0) {
+		$mode_ooo="imprime";
 
-	include_once('./lib/tinyButStrong.class.php');
-	include_once('./lib/tinyDoc.class.php');
+		include_once('./lib/tinyButStrong.class.php');
+		include_once('./lib/tinyDoc.class.php');
 
-	$tempdir=get_user_temp_directory();
+		$tempdir=get_user_temp_directory();
 	
-	$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
+		$fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 
-	if($fb_dezip_ooo==2) {
-		$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non traité pour le moment... désolé.<br />";
+		if($fb_dezip_ooo==2) {
+			$msg="Mode \$fb_dezip_ooo=$fb_dezip_ooo non traité pour le moment... désolé.<br />";
+		}
+		else {
+			$tempdirOOo="../temp/".$tempdir;
+
+			$nom_dossier_temporaire = $tempdirOOo;
+			//par defaut content.xml
+			$nom_fichier_xml_a_traiter ='content.xml';
+
+			// Création d'une classe tinyDoc
+			$OOo = new tinyDoc();
+		
+			// Choix du module de dézippage
+			$dezippeur=getSettingValue("fb_dezip_ooo");
+			if ($dezippeur==1){
+				$OOo->setZipMethod('shell');
+				$OOo->setZipBinary('zip');
+				$OOo->setUnzipBinary('unzip');
+			}
+			else{
+				$OOo->setZipMethod('ziparchive');
+			}
+
+		
+			// setting the object
+			$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
+			// create a new openoffice document from the template with an unique id
+			$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+			// merge data with openoffice file named 'content.xml'
+			$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
+		
+		
+			// Traitement des tableaux
+			// On insère ici les lignes concernant la gestion des tableaux
+		
+			// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
+		
+			$OOo->mergeXml(
+				array(
+					'name'      => 'eleves',
+					'type'      => 'block',
+					'data_type' => 'array',
+					'charset'   => 'UTF-8'
+				),$tab_eleves_OOo);
+		
+			$OOo->SaveXml(); //traitement du fichier extrait
+		
+			$OOo->sendResponse(); //envoi du fichier traité
+			$OOo->remove(); //suppression des fichiers de travail
+			// Fin de traitement des tableaux
+			$OOo->close();
+		
+			die();
+		}
 	}
 	else {
-		$tempdirOOo="../temp/".$tempdir;
-
-		$nom_dossier_temporaire = $tempdirOOo;
-		//par defaut content.xml
-		$nom_fichier_xml_a_traiter ='content.xml';
-
-		// Création d'une classe tinyDoc
-		$OOo = new tinyDoc();
-		
-		// Choix du module de dézippage
-		$dezippeur=getSettingValue("fb_dezip_ooo");
-		if ($dezippeur==1){
-			$OOo->setZipMethod('shell');
-			$OOo->setZipBinary('zip');
-			$OOo->setUnzipBinary('unzip');
-		}
-		else{
-			$OOo->setZipMethod('ziparchive');
-		}
-
-		
-		// setting the object
-		$OOo->SetProcessDir($nom_dossier_temporaire ); //dossier où se fait le traitement (décompression / traitement / compression)
-		// create a new openoffice document from the template with an unique id
-		$OOo->createFrom($path."/".$tab_file[$num_fich]); // le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-		// merge data with openoffice file named 'content.xml'
-		$OOo->loadXml($nom_fichier_xml_a_traiter); //Le fichier qui contient les variables et doit être parsé (il sera extrait)
-		
-		
-		// Traitement des tableaux
-		// On insère ici les lignes concernant la gestion des tableaux
-		
-		// $OOo->mergeXmlBlock('eleves',$tab_eleves_OOo);
-		
-		$OOo->mergeXml(
-			array(
-				'name'      => 'eleves',
-				'type'      => 'block',
-				'data_type' => 'array',
-				'charset'   => 'UTF-8'
-			),$tab_eleves_OOo);
-		
-		$OOo->SaveXml(); //traitement du fichier extrait
-		
-		$OOo->sendResponse(); //envoi du fichier traité
-		$OOo->remove(); //suppression des fichiers de travail
-		// Fin de traitement des tableaux
-		$OOo->close();
-		
-		die();
+		$msg.="Aucun élève n'a été extrait.<br />";
+		unset($id_classe);
+		unset($id_groupe);
 	}
 }
 elseif(isset($_GET['suppr_fich'])) {
@@ -530,7 +552,9 @@ else {
 			echo "<input type='submit' value='Envoyer' />\n";
 			echo "</form>\n";
 		}
-	
+
+		$cpt_js=$cpt;
+
 		if($_SESSION['statut']=='professeur') {
 			$groups=get_groups_for_prof($_SESSION['login']);
 			if(count($groups)>0) {
@@ -565,12 +589,16 @@ else {
 				echo "</table>\n";
 				echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
 				echo "</form>\n";
+
+				if(count($groups)>$cpt_js) {
+					$cpt_js=count($groups);
+				}
 			}
 		}
 
 		echo "<script type='text/javascript'>
 function cocher_decocher(prefixe_id, mode) {
-	for (var k=0;k<$cpt;k++) {
+	for (var k=0;k<$cpt_js;k++) {
 		if(document.getElementById(prefixe_id+k)){
 			document.getElementById(prefixe_id+k).checked=mode;
 			checkbox_change(prefixe_id+k);
