@@ -153,6 +153,10 @@ include("menu_plugins.inc.php");
 		//$menus .= '                <li><a href="'.$gepiPath.'/impression/impression_serie.php"'.insert_confirm_abandon().'>Impression PDF listes</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/groupes/mes_listes.php"'.insert_confirm_abandon().'>Export CSV listes</a></li>'."\n";
 
+		if(getSettingValue('active_mod_ooo')=='y') {
+			$menus .= '                <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Effectuer des publipostages openDocument à l\'aide des données des tables \'eleves\' et \'classes\'.">Publipostage OOo</a></li>'."\n";
+		}
+
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs élèves.">Comptes Elèves</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers" '.insert_confirm_abandon().'>Trombinoscopes</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
@@ -325,6 +329,9 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '  <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Date événements</a></li>'."\n";
 		$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/index.php" '.insert_confirm_abandon().'>Modèles openDocument</a></li>'."\n";
+		if(getSettingValue('active_mod_ooo')=='y') {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_ooo/publipostage_ooo.php"'.insert_confirm_abandon().' title="Effectuer des publipostages openDocument à l\'aide des données des tables \'eleves\' et \'classes\'.">Publipostage OOo</a></li>'."\n";
+		}
 		if(getSettingAOui('active_mod_discipline')) {
 			$temoin_disc="";
 			$cpt_disc=get_temoin_discipline_personnel();

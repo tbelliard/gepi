@@ -653,6 +653,11 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/impression/impression_serie.php' , "texte"=>"Mes listes PDF");
 	$cpt_sous_menu++;
 
+	if(getSettingValue('active_mod_ooo')=='y') {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_ooo/publipostage_ooo.php' , "texte"=>"Publipostage OOo");
+		$cpt_sous_menu++;
+	}
+
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/groupes/visu_profs_class.php' , "texte"=>"Equipes pédagogiques");
 	$tmp_sous_menu2=array();
 	$cpt_sous_menu2=0;
