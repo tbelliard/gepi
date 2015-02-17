@@ -397,9 +397,10 @@ if($aff_nom_court=='y'){
 </script>\n";
 }
 
+echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
+
 echo "</form>\n";
 
-echo "<p style='text-align:center;'><input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
 
 $sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev'";
 if(isset($id_eval)) {
