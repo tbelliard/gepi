@@ -1015,13 +1015,16 @@ for($i=0;$i<count($id_classe);$i++) {
 					<th>Convocation</th>
 					<th>Mail</th>
 					<th>Listes élèves pour prise de notes</th>
+					<th>Informations</th>
 				</tr>
 			</thead>
 			<tbody>";
 				foreach($tab_engagements_classe['id_engagement_user'][$current_id_engagement] as $key => $value) {
+					$current_user=get_info_user($value);
+
 					echo "
 				<tr>
-					<td>".civ_nom_prenom($value)."</td>
+					<td>".$current_user['civ_denomination']."</td>
 					<td>";
 					if(count($dates_conseils[$id_classe[$i]])>0) {
 						echo "<input type='checkbox' name='convocation_".$id_classe[$i]."[]' id='convocation_$cpt1' value=\"$value\" />";
@@ -1043,11 +1046,26 @@ for($i=0;$i<count($id_classe);$i++) {
 					else {
 						echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
 					}
+
+					$infos_supplementaires="";
+					if($current_user['statut']=='responsable') {
+						$infos_supplementaires=affiche_infos_adresse_et_tel("", $current_user);
+					}
+					//get_info_responsable($login_resp)
+					//get_info_user($login_resp);
+					//GepiAccesGestElevesProfP
+					//GepiAccesGestElevesProf
+					//GepiAccesGestElevesProfesseur n'existe pas mais serait testé par AccesInfoResp()
+					// AccesInfoResp("GepiAccesGestEleves", $value)
+
 					echo "</td>
 					<td>
 						<!-- Je ne vois pas comment générer d'un coup un fichier ODT/ODS avec les listes d'élèves à distribuer aux différents délégués -->
 						<!--input type='checkbox' name='liste_eleve_".$id_classe[$i]."' id='liste_eleve_$cpt2' value=\"$value\" /-->
 						<a href='".$_SERVER['PHP_SELF']."?id_classe[0]=".$id_classe[$i]."&amp;imprimer_liste_eleve=y&amp;destinataire=$value".add_token_in_url()."' target='_blank'><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>
+					</td>
+					<td>
+						$infos_supplementaires
 					</td>
 				</tr>";
 					// Ajouter un lien vers une page avec les infos dans le cas resp pour les PP avec GepiAccesGestElevesProfP, pour les scol,...

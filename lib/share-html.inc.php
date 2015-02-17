@@ -3820,4 +3820,35 @@ function affiche_tableau_periodes_et_date_fin_classes() {
 	}
 	return $retour;
 }
+
+function affiche_infos_adresse_et_tel($login_user, $tab_user=array()) {
+	$retour="";
+	if($login_user!="") {
+		$tab_user=get_info_user($login_user);
+	}
+
+	$retour.="<table class='boireaus boireaus_alt2'>
+	<thead>
+		<tr>
+			<th>Téléphone</th>
+			<th>Mail</th>
+			<th>Adresse</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				".((isset($tab_user['tel_pers'])&&($tab_user['tel_pers']!="")) ? "Tel.pers&nbsp;:".$tab_user['tel_pers']."<br />" : "")."
+				".((isset($tab_user['tel_port'])&&($tab_user['tel_port']!="")) ? "Tel.port&nbsp;:".$tab_user['tel_port']."<br />" : "")."
+				".((isset($tab_user['tel_pers'])&&($tab_user['tel_prof']!="")) ? "Tel.prof&nbsp;:".$tab_user['tel_prof'] : "")."
+			</td>
+			<td>".(isset($tab_user['email']) ? "<a href='mailto:".$tab_user['email']."?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail'>".$tab_user['email']."</a>" : "")."</td>
+			<td>".(isset($tab_user['adresse']['en_ligne']) ? $tab_user['adresse']['en_ligne'] : "")."</td>
+		</tr>
+	</tbody>
+</table>";
+
+	return $retour;
+}
+
 ?>
