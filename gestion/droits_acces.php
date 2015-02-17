@@ -271,6 +271,11 @@ if(getSettingValue('active_mod_ooo')=='y') {
   $texteItem="a accès à l'upload de fichiers modèles openDocument personnels.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+  $titreItem='OOoAccesTousEleProf';
+  $texteItem="a accès aux données (nom, prénom, naissance, INE,...) des élèves de toutes les classes pour les fichiers modèles openDocument à sa disposition.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 
 if(getSettingValue('active_mod_alerte')=='y') {

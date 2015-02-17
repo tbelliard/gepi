@@ -65,9 +65,28 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 	if(isset($id_classe)) {
 		for($i=0;$i<count($id_classe);$i++) {
 			$classe=get_class_from_id($id_classe[$i]);
+/*
+			if(getSettingAOui('OOoAccesTousEleProf')) {
+				$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
+			}
+			else {
+				$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
+			}
+*/
 
 			// Ajout d'un test dans le cas prof
-			if(($_SESSION['statut']=='professeur')&&(!is_prof_classe($_SESSION['login'], $id_classe[$i]))) {
+			$acces_classe="n";
+			if($_SESSION['statut']!='professeur') {
+				$acces_classe="y";
+			}
+			elseif(getSettingAOui('OOoAccesTousEleProf')) {
+				$acces_classe="y";
+			}
+			elseif(is_prof_classe($_SESSION['login'], $id_classe[$i])) {
+				$acces_classe="y";
+			}
+
+			if($acces_classe!="y") {
 				$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
 			}
 			else {
@@ -442,11 +461,15 @@ else {
 		$tab_file=get_tab_file($path);
 	
 		// Choix de la classe/groupe
-
 		$cpt_js=0;
 
 		if($_SESSION['statut']=='professeur') {
-			$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
+			if(getSettingAOui('OOoAccesTousEleProf')) {
+				$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
+			}
+			else {
+				$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
+			}
 		}
 		else {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
@@ -455,6 +478,7 @@ else {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
+			echo "<fieldset class='fieldset_opacite50'>\n";
 			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";
 			echo " <a href=\"javascript:cocher_decocher('id_classe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_classe_', false)\">décocher</a> toutes les classes\n";
 			echo "</p>\n";
@@ -486,7 +510,8 @@ else {
 			echo "</tr>\n";
 			echo "</table>\n";
 
-			echo "<input type='submit' value='Envoyer' />\n";
+			echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
+			echo "</fieldset>\n";
 			echo "</form>\n";
 
 			$cpt_js=$cpt;
@@ -495,7 +520,9 @@ else {
 		if($_SESSION['statut']=='professeur') {
 			$groups=get_groups_for_prof($_SESSION['login']);
 			if(count($groups)>0) {
+				echo "Ou";
 				echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
+				echo "<fieldset class='fieldset_opacite50'>\n";
 				echo "<p>Pour quel enseignement souhaitez-vous imprimer le document ".$tab_file[$num_fich]."&nbsp;?";
 				echo " <a href=\"javascript:cocher_decocher('id_groupe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_groupe_', false)\">décocher</a> tous les enseignements\n";
 				echo "</p>\n";
@@ -525,11 +552,13 @@ else {
 				echo "</tr>\n";
 				echo "</table>\n";
 				echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
+				echo "</fieldset>\n";
 				echo "</form>\n";
 
 				if(count($groups)>$cpt_js) {
 					$cpt_js=count($groups);
 				}
+
 			}
 		}
 
