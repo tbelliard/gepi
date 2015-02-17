@@ -507,7 +507,10 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 				$cpt_sous_menu++;
 
-
+				if((getSettingAOui('active_mod_engagements'))&&(is_pp($_SESSION['login']))) {
+					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
+					$cpt_sous_menu++;
+				}
 
 				if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
 				((getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'])))) {
@@ -669,6 +672,11 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
 	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 	$cpt_sous_menu++;
+
+	if((getSettingAOui('active_mod_engagements'))&&(is_pp($_SESSION['login']))) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
+		$cpt_sous_menu++;
+	}
 
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
 	$cpt_sous_menu++;
