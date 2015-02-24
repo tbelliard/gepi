@@ -403,7 +403,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 					$msg.="Erreur lors de l'enregistrement du message pour ".civ_nom_prenom($value).".<br />";
 				}
 			}
-			$msg.="Message enregistré pour $nb_reg destinataire(s).<br />";
+			$msg.="Message enregistré pour $nb_reg destinataire(s)&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."<br />";
 		}
 		elseif(($login_dest!='')&&($sujet!='')&&($message!='')) {
 			if(isset($in_reply_to)) {
