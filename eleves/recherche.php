@@ -156,6 +156,9 @@ function extract_utilisateurs($tab_login) {
 function extract_eleves($tab_login) {
 	global $cpt_eleve, $tab_result_recherche, $acces_visu_eleve, $acces_modify_eleve, $acces_class_const, $acces_photo, $gepiPath;
 
+	$acces_modify_resp=acces("/responsables/modify_resp.php", $_SESSION['statut']);
+	$GepiAccesGestElevesProf=getSettingAOui('GepiAccesGestElevesProf');
+
 	for($loop_tab_login=0;$loop_tab_login<count($tab_login);$loop_tab_login++) {
 		$sql="SELECT * FROM eleves WHERE login='".$tab_login[$loop_tab_login]."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -255,6 +258,57 @@ function extract_eleves($tab_login) {
 					$cpt_classe++;
 				}
 			}
+
+
+			$tab_result_recherche['eleve'][$cpt_eleve]['resp']="";
+			$tab_result_recherche['eleve'][$cpt_eleve]['td_resp']="";
+			if((($_SESSION['statut']=='professeur')&&($GepiAccesGestElevesProf))||(in_array($_SESSION['statut'], array('scolarite', 'cpe', 'administrateur', 'autre')))) {
+				$cpt_resp=0;
+				$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.ele_id='$lig->ele_id' AND (resp_legal='1' OR resp_legal='2') ORDER BY nom, prenom, resp_legal;";
+				$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_resp)>0) {
+					while($lig_resp=mysqli_fetch_object($res_resp)) {
+						if($cpt_resp>0) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['resp'].=", ";
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<br />";
+						}
+						$tab_result_recherche['eleve'][$cpt_eleve]['resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
+						if($acces_modify_resp) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+						}
+						elseif($acces_visu_eleve) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\">".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+						}
+						else {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
+						}
+						$cpt_resp++;
+					}
+				}
+
+				$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE rp.pers_id=r.pers_id AND r.ele_id='$lig->ele_id' AND (resp_legal='0') ORDER BY nom, prenom, resp_legal;";
+				$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_resp)>0) {
+					while($lig_resp=mysqli_fetch_object($res_resp)) {
+						if($cpt_resp>0) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['resp'].=", ";
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<br />";
+						}
+						$tab_result_recherche['eleve'][$cpt_eleve]['resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
+						if($acces_modify_resp) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+						}
+						elseif($acces_visu_eleve) {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\">".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+						}
+						else {
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
+						}
+						$cpt_resp++;
+					}
+				}
+			}
+
 			//$compteur_personnes_trouvees++;
 			$cpt_eleve++;
 		}
@@ -757,6 +811,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 				}
 				echo "
 				<th class='text' title=\"Trier sur la classe\">Classe</th>
+				<th class='text'>Responsable</th>
 			</tr>";
 				for($loop=0;$loop<count($tab_result_recherche['eleve']);$loop++) {
 					echo "
@@ -765,12 +820,15 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 				<td>".$tab_result_recherche['eleve'][$loop]['td_login']."</td>
 				<td>".$tab_result_recherche['eleve'][$loop]['td_compte']."</td>
 				<td>".$tab_result_recherche['eleve'][$loop]['td_nom_prenom']."</td>";
-				if($acces_photo=="y") {
-					echo "
+					if($acces_photo=="y") {
+						echo "
 				<td>".$tab_result_recherche['eleve'][$loop]['td_photo']."</td>";
-				}
-				echo "
-				<td>".$tab_result_recherche['eleve'][$loop]['td_classe']."</td>
+					}
+					echo "
+				<td>".$tab_result_recherche['eleve'][$loop]['td_classe']."</td>";
+					echo "
+				<td>".$tab_result_recherche['eleve'][$loop]['td_resp']."</td>";
+					echo "
 			</tr>";
 				}
 				$compteur_max_personnes_trouvees=$loop+1;
