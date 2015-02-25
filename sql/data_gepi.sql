@@ -1268,3 +1268,4 @@ INSERT INTO setting SET name='denom_groupe_de_groupes', value='ensemble de group
 INSERT INTO setting SET name='denom_groupes_de_groupes', value='ensembles de groupes';
 INSERT INTO droits SET id='/mod_abs_prof/consulter_remplacements.php', administrateur='V', professeur='F', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Consulter les remplacements de professeurs', statut='';
 INSERT INTO setting SET name='force_error_reporting', value='n';
+INSERT INTO droits SET id='/groupes/export_groupes_sconet.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Exporter les groupes Gepi vers Sconet', statut='';

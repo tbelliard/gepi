@@ -62,6 +62,10 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 		}
 	}
 
+	if(acces("/groupes/export_groupes_sconet.php", $_SESSION['statut'])) {
+		echo "| <a href='../groupes/export_groupes_sconet.php' title=\"Exporter les groupes Gepi vers Sconet.\">Export groupes vers Sconet </a>";
+	}
+
 	$groupes_de_groupes=getSettingValue('denom_groupes_de_groupes');
 	if($groupes_de_groupes=="") {
 		$groupes_de_groupes="ensembles de groupes";
