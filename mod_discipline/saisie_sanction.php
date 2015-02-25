@@ -1250,7 +1250,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo "<td";
 						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
 						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
-							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\">";
 							if($lig_sanction->effectuee=="O") {
 								$valeur_alt="N";
 							}
@@ -1348,10 +1348,10 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						// 20141106
 						// Sanction effectuée
-						echo "<td>";
+						echo "<td";
 						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
 						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
-							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\">";
 							if($lig_sanction->effectuee=="O") {
 								$valeur_alt="N";
 							}
@@ -1440,10 +1440,10 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						// 20141106
 						// Sanction effectuée
-						echo "<td>";
+						echo "<td";
 						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
 						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
-							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\">";
 							if($lig_sanction->effectuee=="O") {
 								$valeur_alt="N";
 							}
@@ -1525,10 +1525,10 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 
 						// 20141106
 						// Sanction effectuée
-						echo "<td>";
+						echo "<td";
 						if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
 						(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($lig_sanction->id_sanction, $_SESSION['login'])))) {
-							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+							echo " title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\">";
 							if($lig_sanction->effectuee=="O") {
 								$valeur_alt="N";
 							}
