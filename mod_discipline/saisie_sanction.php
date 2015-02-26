@@ -835,7 +835,8 @@ if(isset($odt)&&
 				$qualification_faits=old_mysql_result($res_incident,0,"description");
 			}
 
-			$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";
+			//$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";
+			$sql="SELECT sas.*, sts.nature FROM s_autres_sanctions sas, s_types_sanctions2 sts WHERE sas.id_sanction='$id_sanction' AND sas.id_nature=sts.id_nature;";
 			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_sanction)==0) {
 				$nature_sanction="";
