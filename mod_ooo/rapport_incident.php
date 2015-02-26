@@ -262,7 +262,8 @@ if ($mode=='module_discipline') {
 
 		//recherche des mesures prises dans la table s_traitement_incident
 		$sql_mesures_prises="SELECT s_mesures.mesure,s_traitement_incident.login_ele FROM s_traitement_incident,s_mesures WHERE s_traitement_incident.id_incident='$id_incident' AND s_traitement_incident.id_mesure=s_mesures.id AND s_mesures.type='prise' ORDER BY s_traitement_incident.login_ele";
-		//echo "$sql_lieu<br />\n";
+		//$mesures_prises.=$sql_mesures_prises;
+		//echo "$sql_mesures_prises<br />\n";
 		$res_mesures_prises=mysqli_query($GLOBALS["mysqli"], $sql_mesures_prises);
 		if(mysqli_num_rows($res_mesures_prises)>0) {
 			while ($lig_mesure_prise=mysqli_fetch_object($res_mesures_prises)) {
@@ -318,7 +319,8 @@ if ($mode=='module_discipline') {
 				}
 			}
 		}
-		$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,s_types_sanctions.nature,s_sanctions.login FROM s_sanctions ,s_autres_sanctions,s_types_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=s_types_sanctions.id_nature ORDER BY s_sanctions.login";
+		//$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,s_types_sanctions.nature,s_sanctions.login FROM s_sanctions ,s_autres_sanctions,s_types_sanctions WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=s_types_sanctions.id_nature ORDER BY s_sanctions.login";
+		$sql_autres_mesures_prises="SELECT s_autres_sanctions.description,sts.nature,s_sanctions.login FROM s_sanctions ,s_autres_sanctions,s_types_sanctions2 sts WHERE s_sanctions.id_incident = '".$id_incident."'AND s_sanctions.id_sanction = s_autres_sanctions.id_sanction AND s_autres_sanctions.id_nature=sts.id_nature ORDER BY s_sanctions.login";
 		$res_autres_mesures_prises=mysqli_query($GLOBALS["mysqli"], $sql_autres_mesures_prises);
 		if(mysqli_num_rows($res_autres_mesures_prises)>0) {
 			while ($lig_autre_sanction=mysqli_fetch_object($res_autres_mesures_prises)) {
