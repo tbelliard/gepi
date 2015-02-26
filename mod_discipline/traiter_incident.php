@@ -1122,7 +1122,7 @@ echo "		}
 						$tab_individu[$lig_declarant->declarant]['email']=$lig1_declarant->email;
 					}
 					else {
-						$chaine="ERREUR: Login $lig1_declarant->declarant inconnu";
+						$chaine="ERREUR: Login $lig_declarant->declarant inconnu";
 					}
 				}
 				else {
