@@ -1537,4 +1537,7 @@ if($sous_rubrique === 'gb') { ?>
 
 require("../../lib/footer.inc.php");
 ?>
-<?php ((is_null($___mysqli_res = mysqli_close($GLOBALS["mysqli"]))) ? false : $___mysqli_res); ?>
+<?php
+// La connexion est déjà fermée en fin de footer.inc.php
+//((is_null($___mysqli_res = mysqli_close($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+?>
