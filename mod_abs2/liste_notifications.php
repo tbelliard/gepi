@@ -521,14 +521,14 @@ foreach ($results as $notification) {
 
     //donnees id
     echo '<td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;' title=\"Voir la notification n°".$notification->getPrimaryKey()."\"> ";
     echo $notification->getId();
     echo "</a>";
     echo '</td>';
 
     //donnees utilisateur
     echo '<td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\"> ";
     if ($notification->getUtilisateurProfessionnel() != null) {
 	echo $notification->getUtilisateurProfessionnel()->getCivilite().' '.$notification->getUtilisateurProfessionnel()->getNom();
     }
@@ -549,12 +549,12 @@ foreach ($results as $notification) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; width : 100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px;'>";
-	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
+	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;' title=\"Voir la liste des notifications concernant ".$eleve->getNom()." ".$eleve->getPrenom()."\"> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir dans un nouvel onglet les fiches du dossier de ".$eleve->getNom()." ".$eleve->getPrenom().".\">";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -563,18 +563,19 @@ foreach ($results as $notification) {
 	echo "<a href='liste_traitements.php?filter_classe=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
 	echo ($eleve->getClasse()->getNom());
 	echo "</a>";
+	/*
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir dans un nouvel onglet les fiches du dossier de ".$eleve->getNom()." ".$eleve->getPrenom().".\">";
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
-	
+	*/
 	
 	echo "</td>";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	    echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
+	    echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;' title=\"Voir la liste des notifications concernant ".$eleve->getNom()." ".$eleve->getPrenom()."\"> ";
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    $photos = $nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
@@ -596,7 +597,7 @@ foreach ($results as $notification) {
 	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	    echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
 	    echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
+	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;' title=\"Voir la saisie n°".$saisie->getPrimaryKey()."\">\n";
 	    echo $saisie->getDescription();
 	    echo "</a>";
 	    echo "</td>";
@@ -609,7 +610,7 @@ foreach ($results as $notification) {
     echo '<td>';
     if ($notification->getAbsenceEleveTraitement() != null) {
 	echo '<div>';
-	echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+	echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;' title=\"Voir le traitement n°".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."\"> ";
 	echo $notification->getAbsenceEleveTraitement()->getDescription();
 	echo "</a></div>";
     }
@@ -618,7 +619,7 @@ foreach ($results as $notification) {
     echo '<td>';
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\">\n";
     echo $notification->getTypeNotification();
     echo "</a>";
     echo "</span>";
@@ -629,7 +630,7 @@ foreach ($results as $notification) {
     echo '<td>';
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\">\n";
     if ($notification->getStatutEnvoi() != ''){
 	echo $notification->getStatutEnvoi();
     }
@@ -643,7 +644,7 @@ foreach ($results as $notification) {
     echo '<td>';
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\">\n";
     echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     echo "</a>";
         echo "</span>";
@@ -651,13 +652,13 @@ foreach ($results as $notification) {
 //  echo '</nobr></td>';
 
     echo '<td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\">\n";
     echo (strftime("%a %d/%m/%Y %H:%M", $notification->getUpdatedAt('U')));
     echo "</a>";
     echo '</td>';
 
     echo '<td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033' title=\"Voir la notification n°".$notification->getPrimaryKey()."\">\n";
     echo ($notification->getCommentaire());
     echo "&nbsp;";
     echo "</a>";
