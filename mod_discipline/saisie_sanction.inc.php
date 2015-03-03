@@ -140,7 +140,8 @@ else {
 		//echo envoi_mail_rappel_js();
 		echo "</div>\n";
 
-		echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo "<textarea name='no_anti_inject_travail' id='textarea_nature_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo insere_lien_recherche_ajax_ele('textarea_nature_travail');
 
 		//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
@@ -307,7 +308,8 @@ else {
 		//echo envoi_mail_rappel_js();
 		echo "</div>\n";
 
-		echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo "<textarea name='no_anti_inject_travail' id='textarea_nature_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo insere_lien_recherche_ajax_ele('textarea_nature_travail');
 
 		//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
@@ -515,7 +517,8 @@ else {
 		//echo envoi_mail_rappel_js();
 		echo "</div>\n";
 
-		echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo "<textarea name='no_anti_inject_travail' id='textarea_nature_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+		echo insere_lien_recherche_ajax_ele('textarea_nature_travail');
 
 		//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
@@ -576,7 +579,8 @@ else {
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Qualification des faits&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
-		echo "<textarea name='no_anti_inject_qualification_faits' cols='100' onchange='changement();'>$qualification_faits</textarea>\n";
+		echo "<textarea name='no_anti_inject_qualification_faits' id='textarea_qualification_faits' cols='100' onchange='changement();'>$qualification_faits</textarea>\n";
+		echo insere_lien_recherche_ajax_ele('textarea_qualification_faits');
 		echo "</td>\n";
 		echo "</tr>\n";
 	
@@ -654,7 +658,8 @@ else {
 			echo "<tr class='lig$alt'>\n";
 			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Description&nbsp;: </td>\n";
 			echo "<td style='text-align:left;'>\n";
-			echo "<textarea name='no_anti_inject_description' cols='30' onchange='changement();'>$description</textarea>\n";
+			echo "<textarea name='no_anti_inject_description' id='textarea_description_sanction' cols='30' onchange='changement();'>$description</textarea>\n";
+			echo insere_lien_recherche_ajax_ele('textarea_description_sanction');
 
 			if((isset($ele_login))&&(isset($id_incident))) {
 				sanction_documents_joints($id_incident, $ele_login);

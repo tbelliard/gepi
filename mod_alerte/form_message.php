@@ -671,7 +671,7 @@ Par exemple, réclamer une punition à un élève." /></a></div>
 					if(isset($sujet)) {
 						echo $sujet;
 					}
-				?>" onchange='changement()' /></td>
+				?>" onchange='changement()' /><?php echo insere_tout_le_necessaire_recherche_ajax_ele('sujet');?></td>
 			</tr>
 			<tr>
 				<th><label for='message_messagerie'>Message</label></th>
@@ -679,7 +679,7 @@ Par exemple, réclamer une punition à un élève." /></a></div>
 					if(isset($message)) {
 						echo stripslashes(preg_replace("/\\\\n/", "\n", $message));
 					}
-				?></textarea></td>
+				?></textarea><?php echo insere_lien_recherche_ajax_ele('message_messagerie');?></td>
 			</tr>
 <?php
 	if($envoi_mail_actif=="y") {

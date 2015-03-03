@@ -1366,6 +1366,18 @@ autre='F',
 description='Exporter les groupes Gepi vers Sconet',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/eleves/ajax_consultation.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='V',
+autre='V',
+description='Recherches/consultations classes/élèves via ajax',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

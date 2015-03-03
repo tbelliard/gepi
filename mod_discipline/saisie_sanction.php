@@ -1788,6 +1788,8 @@ else {
 	echo "<p>Euh... c'est pas prévu qu'on arrive là (pour le moment;o).</p>\n";
 }
 
+echo insere_fonctions_js_recherche_ajax_ele();
+echo insere_infobulle_recherche_ajax_ele();
 
 echo "<p><br /></p>\n";
 

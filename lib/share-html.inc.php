@@ -3851,4 +3851,77 @@ function affiche_infos_adresse_et_tel($login_user, $tab_user=array()) {
 	return $retour;
 }
 
+function insere_lien_recherche_ajax_ele($id_champ, $texte_lien_recherche="") {
+	global $gepiPath;
+
+	return "<a href=\"#\" onclick=\"recherche_classes_ajax_ele('$id_champ', ''); afficher_div('div_recherche_ajax_ele','y',10,10); return false;\" title=\"Rechercher des nom/prénoms élèves parmi les classes pour insérer dans le champ de formulaire.\"><img src='$gepiPath/images/icons/chercher_eleve.png' width='24' height='16' alt='Recherche' />$texte_lien_recherche</a>";
+}
+
+function insere_fonctions_js_recherche_ajax_ele() {
+	global $gepiPath;
+
+	return "<script type='text/javascript'>
+	function recherche_ele_clas_ajax_ele(id_champ, id_classe) {
+		new Ajax.Updater($('div_liste_ele_ajax_ele'),'$gepiPath/eleves/ajax_consultation.php?id_classe='+id_classe+'&id_champ='+id_champ,{method: 'get'});
+	}
+
+	function remplace_contenu_champ_ajax_ele(id_champ, texte) {
+		if(document.getElementById(id_champ)) {
+			document.getElementById(id_champ).value=texte;
+			document.getElementById(id_champ).focus();
+		}
+		else {
+			alert(\"Le champ '\"+id_champ+\"' n'existe pas.\");
+		}
+	}
+
+	function complete_contenu_champ_ajax_ele(id_champ, texte) {
+		if(document.getElementById(id_champ)) {
+			document.getElementById(id_champ).value+=texte;
+			document.getElementById(id_champ).focus();
+		}
+		else {
+			alert(\"Le champ '\"+id_champ+\"' n'existe pas.\");
+		}
+	}
+
+	function recherche_classes_ajax_ele(id_champ, mode2) {
+		//alert('plop');
+
+		$('span_titre_infobulle_recherche_ajax_ele').innerHTML=\"Recherche élève pour le champ '\"+id_champ+\"'\";
+
+		// S'il y a plusieurs liens de recherche pour plusieurs champs,
+		// il faut vider la liste des élèves précédente pour ne pas conserver
+		// des liens élèves pointant vers le champ associé à la dernière recherche.
+		$('div_liste_ele_ajax_ele').innerHTML='';
+
+		if(mode2=='') {
+			new Ajax.Updater($('p_div_recherche_ajax_ele'),'$gepiPath/eleves/ajax_consultation.php?mode=get_classes&id_champ='+id_champ,{method: 'get'});
+		}
+		else {
+			new Ajax.Updater($('p_div_recherche_ajax_ele'),'$gepiPath/eleves/ajax_consultation.php?mode=get_classes&mode2='+mode2+'&id_champ='+id_champ,{method: 'get'});
+		}
+	}
+</script>";
+}
+
+function insere_infobulle_recherche_ajax_ele() {
+	global $tabdiv_infobulle;
+
+	$chaine_classes="";
+	$titre_infobulle="<span id='span_titre_infobulle_recherche_ajax_ele'>Recherche élève</span>";
+	$texte_infobulle="<p>Recherche élève parmi les classes&nbsp;:</p>
+	<p id='p_div_recherche_ajax_ele'>$chaine_classes</p>
+	<div id='div_liste_ele_ajax_ele'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle("div_recherche_ajax_ele",$titre_infobulle, "", $texte_infobulle, "",35,0,'y','y','n','n',2);
+}
+
+function insere_tout_le_necessaire_recherche_ajax_ele($id_champ, $texte_lien_recherche="") {
+	global $gepiPath, $tabdiv_infobulle;
+
+	$retour=insere_lien_recherche_ajax_ele($id_champ, $texte_lien_recherche);
+	$retour.=insere_fonctions_js_recherche_ajax_ele();
+	$retour.=insere_infobulle_recherche_ajax_ele();
+	return $retour;
+}
 ?>

@@ -2876,6 +2876,7 @@ new Ajax.Autocompleter (
 	}
 
 	if($etat_incident!='clos') {
+		echo "<div style='float:right; width:24px;'>".insere_tout_le_necessaire_recherche_ajax_ele('description')."</div>";
 ?>
                     <textarea id="description" 
                               class='wrap' 
