@@ -750,6 +750,13 @@ if (isset($id_ev)) {
 		}
 	}
 }
+elseif((isset($record))&&($record=="no")) {
+	$texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
+	$texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
+
+	//$texte_avant=html_entity_decode($texte_avant);
+	//$texte_apres=html_entity_decode($texte_apres);
+}
 $display_date_debut=formate_date($date_debut);
 
 echo "<table style=\"border:1px solid black\" cellpadding=\"5\" cellspacing=\"0\">
@@ -1031,6 +1038,8 @@ echo "
 									}
 
 									function check_et_valide_form() {
+										valider_le_submit='y';
+
 										display_date_debut=document.getElementById('display_date_debut').value;
 
 										tmp=display_date_debut.split('/');
@@ -1039,8 +1048,38 @@ echo "
 										annee_debut=tmp[2];
 										if(!checkdate(mois_debut,jour_debut,annee_debut)) {
 											alert('La date de début d\'affichage est invalide.');
+											valider_le_submit='n';
 										}
-										else {
+
+										if((document.getElementById('destinataire_cpe').checked==false)&&
+										(document.getElementById('destinataire_prof').checked==false)&&
+										(document.getElementById('destinataire_scol').checked==false)&&
+										(document.getElementById('destinataire_ele').checked==false)&&
+										(document.getElementById('destinataire_resp').checked==false))
+										 {
+											alert('Aucun destinataire n\'a été coché.');
+											valider_le_submit='n';
+										}
+
+
+										/*
+										// JE NE TROUVE PAS COMMENT CONTROLER QUE LE CONTENU DU TEXTAREA CKEDITOR EST NON VIDE
+										if(document.getElementById('texte_avant').value=='') {
+											alert('Le texte_avant ne peut pas être vide.');
+											valider_le_submit='n';
+										}
+
+										alert(CKEDITOR.instances['texte_avant'].name);
+
+										alert(CKEDITOR.instances['texte_avant'].getValue());
+
+										alert(CKEDITOR.instances['texte_avant'].value);
+										CKEDITOR.instances['texte_avant'].updateElement();
+										alert(CKEDITOR.instances['texte_avant'].value);
+										alert(CKEDITOR.instances['texte_avant'].getData());
+										*/
+
+										if(valider_le_submit=='y') {
 											document.formulaire_saisie_evenement.submit();
 										}
 									}
