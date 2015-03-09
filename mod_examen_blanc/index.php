@@ -349,7 +349,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 		if($_SESSION['statut']=='professeur') {
 			for($i=0;$i<count($id_classe);$i++) {
 				if(!is_pp($_SESSION['login'], $id_classe[$i])) {
-					$gepi_prof_suivi=retourne__denomination_pp($id_classe[$i]);
+					$gepi_prof_suivi=retourne_denomination_pp($id_classe[$i]);
 					header("Location: ".$_SERVER['PHP_SELF']."?id_exam=$id_exam&msg=".rawurlencode("Vous n'êtes pas ".$gepi_prof_suivi." dans la classe de ".get_class_from_id($id_classe[$i])));
 					die();
 				}

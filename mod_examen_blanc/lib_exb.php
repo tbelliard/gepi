@@ -1922,7 +1922,7 @@ function bull_exb($tab_ele,$i) {
 				// Le nom du professeur principal
 				$pp_classe[$i]="";
 				if(isset($tab_ele['pp']['login'])) {
-					$gepi_prof_suivi=retourne__denomination_pp($tab_ele['id_classe']);
+					$gepi_prof_suivi=retourne_denomination_pp($tab_ele['id_classe']);
 					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> <i>".affiche_utilisateur($tab_ele['pp']['login'],$tab_ele['id_classe'])."</i>";
 				}
 				else {

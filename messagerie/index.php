@@ -753,7 +753,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		?>
 		<option value="<?php echo $classe['id']; ?>" <?php if (isset($id_classe)) if ($classe['id']==$id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
 pour tous les professeurs de la classe de <?php echo $classe['classe'];?>.
-Pour information, le <?php echo retourne__denomination_pp($classe['id']);?> de la classe est :
+Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la classe est :
 <?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
 			echo $classe['nom_complet'];
 			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
@@ -782,7 +782,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		?>
 		<option value="<?php echo $classe['id']; ?>" <?php if (isset($eleves_id_classe)) if ($classe['id']==$eleves_id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
 pour tous les élèves de la classe de <?php echo $classe['classe'];?>.
-Pour information, le <?php echo retourne__denomination_pp($classe['id']);?> de la classe est :
+Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la classe est :
 <?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
 			echo $classe['nom_complet'];
 			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
@@ -811,7 +811,7 @@ echo "<tr><td  colspan=\"4\" >\n";
 		?>
 		<option value="<?php echo $classe['id']; ?>" <?php if (isset($parents_id_classe)) if ($classe['id']==$parents_id_classe) echo "selected"; ?> title="Déposer un message sur le Panneau d'affichage
 pour tous les responsables (parents,...) d'élèves de la classe de <?php echo $classe['classe'];?>.
-Pour information, le <?php echo retourne__denomination_pp($classe['id']);?> de la classe est :
+Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la classe est :
 <?php echo liste_des_prof_suivi_de_telle_classe($classe['id']);?>"><?php
 			echo $classe['nom_complet'];
 			if($classe['nom_complet']!=$classe['classe']) {echo " (".$classe['classe'].")";}
