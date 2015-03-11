@@ -410,6 +410,11 @@ $texteItem="a accès aux bulletins simples des ".$gepiSettings['denomination_ele
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='imprimerConvocationConseilClassePP';
+$texteItem="a accès à l'impression des convocations au conseil de classe et à l'envoi par mail de ces convocations pour les classes dont il est ".getSettingValue("gepi_prof_suivi");
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -938,6 +943,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 $titreItem='CommentairesTypesCpe';
 $texteItem="peut utiliser des commentaires-types dans ses saisies d'avis du conseil de classe<br />
 			(<em>sous réserve de pouvoir saisir les avis du conseil de classe</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='imprimerConvocationConseilClasseCpe';
+$texteItem="a accès à l'impression des convocations au conseil de classe et à l'envoi par mail de ces convocations pour les classes dont il est CPE";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

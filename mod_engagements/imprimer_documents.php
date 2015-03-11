@@ -335,6 +335,15 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	check_token();
 
+	if(($_SESSION['statut']=="professeur")&&(!getSettingAOui('imprimerConvocationConseilClassePP'))) {
+		header("Location: imprimer_documents.php?msg=Impression non autorisée.");
+		die();
+	}
+	elseif(($_SESSION['statut']=="cpe")&&(!getSettingAOui('imprimerConvocationConseilClasseCpe'))) {
+		header("Location: imprimer_documents.php?msg=Impression non autorisée.");
+		die();
+	}
+
 	$msg="";
 
 	$date_conseil=isset($_POST['date_conseil']) ? $_POST['date_conseil'] : array();
@@ -762,6 +771,14 @@ if(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut'])) {
 	echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
 }
 
+$acces_imprimerConvocationConseilClasse=true;
+if(($_SESSION['statut']=="professeur")&&(!getSettingAOui('imprimerConvocationConseilClassePP'))) {
+	$acces_imprimerConvocationConseilClasse=false;
+}
+elseif(($_SESSION['statut']=="cpe")&&(!getSettingAOui('imprimerConvocationConseilClasseCpe'))) {
+	$acces_imprimerConvocationConseilClasse=false;
+}
+
 if($_SESSION['statut']=='professeur') {
 	$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
 	if(count($tab_pp['id_classe'])==0) {
@@ -1027,7 +1044,12 @@ for($i=0;$i<count($id_classe);$i++) {
 					<td>".$current_user['civ_denomination']."</td>
 					<td>";
 					if(count($dates_conseils[$id_classe[$i]])>0) {
-						echo "<input type='checkbox' name='convocation_".$id_classe[$i]."[]' id='convocation_$cpt1' value=\"$value\" />";
+						if($acces_imprimerConvocationConseilClasse) {
+							echo "<input type='checkbox' name='convocation_".$id_classe[$i]."[]' id='convocation_$cpt1' value=\"$value\" />";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Les comptes '".$_SESSION['statut']."s' ne sont pas autorisés à imprimer les convocations.\" >";
+						}
 					}
 					else {
 						echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
@@ -1036,11 +1058,16 @@ for($i=0;$i<count($id_classe);$i++) {
 					<td>";
 					if(count($dates_conseils[$id_classe[$i]])>0) {
 						$current_mail=get_mail_user($value);
-						if(check_mail($current_mail)) {
-							echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
+						if($acces_imprimerConvocationConseilClasse) {
+							if(check_mail($current_mail)) {
+								echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
+							}
+							else {
+								echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
+							}
 						}
 						else {
-							echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
+							echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Le comptes '".$_SESSION['statut']."s' ne sont pas autorisés à envoyer les convocations par mail.\" >";
 						}
 					}
 					else {
@@ -1088,7 +1115,8 @@ for($i=0;$i<count($id_classe);$i++) {
 		</div>";
 }
 
-echo "
+if($acces_imprimerConvocationConseilClasse) {
+	echo "
 		<p>
 			<a href='#' onClick=\"ModifCase('convocation',true);return false;\">Cocher toutes les convocations</a> / <a href='#' onClick=\"ModifCase('convocation',false);return false;\">décocher toutes les convocations</a><br />
 			<a href='#' onClick=\"ModifCase('mail',true);return false;\">Cocher toutes les mails</a> / <a href='#' onClick=\"ModifCase('mail',false);return false;\">décocher toutes les mails</a><br />
@@ -1109,6 +1137,11 @@ echo "
 		}
 	}
 </script>";
+}
+else {
+	echo "	</fieldset>
+</form>";
+}
 
 require_once("../lib/footer.inc.php");
 ?>
