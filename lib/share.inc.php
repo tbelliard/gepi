@@ -9716,7 +9716,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			}
 		}
 
-		$retour.="<div style='float:right; width:16px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
+		$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
 
 		if($lig->type=='autre') {
 			//$retour.=nl2br($lig->description)."<br />";
@@ -9821,6 +9821,13 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			$tab_classe_pp=array("id_classe");
 			if($_SESSION['statut']=="professeur") {
 				$tab_classe_pp=get_tab_ele_clas_pp($_SESSION['login']);
+			}
+
+			if(getSettingAOui('active_mod_engagements')) {
+				if(($_SESSION['statut']=="scolarite")||
+				(($_SESSION['statut']=="cpe")&&(getSettingAOui('imprimerConvocationConseilClasseCpe')))) {
+					$retour.="<div style='float:right;width:16px;margin-right:3px;'><a href=\"$gepiPath/mod_engagements/imprimer_documents.php\" title=\"Imprimer les documents pour les délégués\"><img src='$gepiPath/images/icons/odt.png' class='icone16' alt='Document' /></a></div>";
+				}
 			}
 
 			$retour.=$lig->texte_avant;
