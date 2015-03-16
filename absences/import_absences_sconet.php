@@ -319,7 +319,8 @@ require_once("../lib/header.inc.php");
 							echo "<li><p>Pour récupérer l'export de Sconet:<br />\n";
 							echo "Sur le menu de gauche :<br />\n";
 							echo "IMPORT/EXPORT -> Export Absences et Retard -> Sélectionner la période (T1, T2, T3)<br />\n";
-							echo "Puis cliquer sur le bouton 'Exporter les périodes sélectionnées'.</p>\n";
+							echo "Puis cliquer sur le bouton 'Exporter les périodes sélectionnées'.</p></li>\n";
+							echo "<li><p>Les dates de périodes doivent être définies dans Sconet par le chef d'établissement (<em>ou délégation</em>) dans les \"données communes\".</p></li>";
 							echo "</ul>\n";
 						}
 						else {
