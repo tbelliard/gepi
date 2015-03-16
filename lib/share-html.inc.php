@@ -3816,4 +3816,52 @@ function affiche_tableau_periodes_et_date_fin_classes() {
 	}
 	return $retour;
 }
+
+function retourne_tableau_lapsus_et_correction() {
+	$tab_lapsus_et_correction=array();
+
+	$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
+		terme VARCHAR(255) NOT NULL DEFAULT '',
+		terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
+		PRIMARY KEY (id)
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($create_table) {
+		$sql="SELECT * FROM vocabulaire;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig_voc=mysqli_fetch_object($res)) {
+				//$tab_voc[]=$lig_voc->terme;
+				//$tab_voc_corrige[]=$lig_voc->terme_corrige;
+				$tab_lapsus_et_correction['lapsus'][]=$lig_voc->terme;
+				$tab_lapsus_et_correction['correction'][]=$lig_voc->terme;
+			}
+		}
+	}
+	return $tab_lapsus_et_correction;
+}
+
+function teste_lapsus($chaine) {
+	global $tab_lapsus_et_correction;
+
+	$chaine_retour="";
+
+	if(count($tab_lapsus_et_correction)>0) {
+		$tab_voc=$tab_lapsus_et_correction['lapsus'];
+		$tab_voc_corrige=$tab_lapsus_et_correction['correction'];
+
+		$chaine_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($chaine,'min'))." ";
+		//echo "$appreciation_test<br />";
+		for($loop=0;$loop<count($tab_voc);$loop++) {
+			if(preg_match("/ ".$tab_voc[$loop]." /i",$chaine_test)) {
+				if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
+				$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
+				//log_ajax_app("Suspicion de faute de frappe : ".$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]);
+			}
+		}
+	}
+	return $chaine_retour;
+}
+
 ?>
