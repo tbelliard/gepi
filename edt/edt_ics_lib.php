@@ -1806,6 +1806,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 
 //function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_prof="", $largeur_edt=800, $x0=50, $y0=60, $hauteur_une_heure=60, $hauteur_titre=10, $hauteur_entete=40) {
 function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage="semaine", $x0=350, $y0=150, $largeur_edt=800, $hauteur_une_heure=60) {
+	//echo "y0=$y0<br />";
 	global $debug_edt;
 	global $hauteur_jour, $hauteur_entete;
 	global $tab_group_edt;
@@ -2312,12 +2313,32 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			//$ajout_sql.="ec.id_groupe IN (SELECT id_groupe from j_groupes_professeurs WHERE login = '".$login_prof."') AND ";
 			$ajout_sql.="ec.login_prof = '".$login_prof."' AND ";
 		}
+
+		//20150206
+		// A FAIRE : Prendre en compte un id_calendrier en fonction de la semaine choisie
+		//           Pour un emploi du temps élève, recuperer la classe associée à la semaine
+		//           puis tester l'id_calendrier dans edt_cours
+		//           Pour un emploi du temps prof, problème si ce n'est pas la même période EDT (id_calendrier) selon les classes
+		//           Cela dit le prof n'étant pas sensé être avec 2 classes différentes à un même instant,
+		//           il ne devrait pas y avoir de collision (sauf cas de l'EDT mal rempli avec un même enseignement regroupement de deux classes, inscrit à deux moments)
+		// POUR LE MOMENT : Si il y a plusieurs id_calendrier remplis dans edt_cours la requête ci-dessous va cumuler les EDT.
+
+		//20150205
+		$afficher_sem_AB=isset($_POST['afficher_sem_AB']) ? $_POST['afficher_sem_AB'] : (isset($_GET['afficher_sem_AB']) ? $_GET['afficher_sem_AB'] : "n");
+		if($afficher_sem_AB=="y") {
+			$avec_contrainte_semaine="";
+		}
+		else {
+			$avec_contrainte_semaine="(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND ";
+		}
 		$sql="SELECT DISTINCT * FROM edt_cours ec, edt_creneaux ecr WHERE
 						ec.jour_semaine = '".$jour_sem."' AND
 						$ajout_sql
-						(ec.id_semaine='' OR ec.id_semaine='0' OR ec.id_semaine='$type_semaine') AND 
+						$avec_contrainte_semaine
 						ec.id_definie_periode=ecr.id_definie_periode 
 					ORDER BY heuredebut_definie_periode;";
+
+
 		//echo "<div style='margin-left:1000px'>";
 		//echo "$sql<br />";
 		//echo "</div>";
