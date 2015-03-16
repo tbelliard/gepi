@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -822,6 +822,11 @@ echo "</form>\n";
 // Largeur des textarea
 $saisie_app_nb_cols_textarea=getPref($_SESSION["login"],'saisie_app_nb_cols_textarea',100);
 
+// 20150316
+if(getSettingValue('active_recherche_lapsus')!='n') {
+	$tab_lapsus_et_correction=retourne_tableau_lapsus_et_correction();
+}
+
 ?>
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
@@ -1213,7 +1218,8 @@ $i=0;
 $chaine_champs_input_prenom="";
 $chaine_champs_input_login="";
 //=========================
-$chaine_test_vocabulaire="";
+// 20150316: Désactivé parce que cela provoque une série de requêtes ajax au chargement de la page.
+//$chaine_test_vocabulaire="";
 //=========================
 foreach ($liste_eleves as $eleve_login) {
 
@@ -1510,7 +1516,10 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].="ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
 				// La vérification de fautes de frappe est maintenant faite dans la même requête ajax
 				//$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
-				$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
+
+				// 20150316: Désactivé parce que ce la provoque une série de requêtes ajax au chargement de la page.
+				//$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
+
 				$mess[$k].="\"";
 
 				//==================================
@@ -1548,7 +1557,12 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].=$eleve_app_t;
 
 				// Espace pour afficher les éventuelles fautes de frappe
-				$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'></div>\n";
+				$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'>";
+				// 20150316
+				if(getSettingValue('active_recherche_lapsus')!='n') {
+					$mess[$k].=teste_lapsus($eleve_app);
+				}
+				$mess[$k].="</div>\n";
 
 				$mess[$k].= "</td>\n";
 
@@ -1941,11 +1955,14 @@ echo "<script type='text/javascript'>
 	}
 \n";
 
+// 20150316
+/*
 if(getSettingValue('active_recherche_lapsus')!='n') {
 	if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
 		echo $chaine_test_vocabulaire;
 	}
 }
+*/
 
 echo "
 	/*
