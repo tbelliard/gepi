@@ -41,6 +41,20 @@ if (!checkAccess()) {
 
 
 $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : (isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL);
+$nettoyage_assoc=isset($_GET['nettoyage_assoc']) ? $_GET['nettoyage_assoc'] : NULL;
+
+if(isset($_GET['nettoyage_assoc']) and ($_GET['nettoyage_assoc'] == "y") and (isset($_GET['login_user']))) {
+	check_token();
+
+	$sql="DELETE FROM j_scol_classes WHERE login='".$_GET['login_user']."';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0){
+		$msg = "Associations avec le compte ".$_GET['login_user']." supprimées.<br />";
+	}
+	else {
+		$msg = "Erreur lors de la suppression des associations avec le compte ".$_GET['login_user'].".<br />";
+	}
+}
 
 if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 	check_token();
@@ -245,6 +259,19 @@ else{
 		echo "</table>\n";
 		echo "<input type='hidden' name='action' value='reg_scolresp' />\n";
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+
+		echo "<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em'><em>NOTES&nbsp;:</em> Seuls les comptes actifs sont présentés ici.<br />";
+		$sql="SELECT DISTINCT u.login, civilite, nom, prenom, statut FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login ORDER BY u.nom, u.prenom;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				if(!in_array($lig->login, $scol_login)) {
+					echo "<br />Le compte $lig->login ($lig->statut) de $lig->civilite $lig->nom $lig->prenom est associé à une ou des classes.<br />Si ce compte a été désactivé accidentellement, vous devriez le <a href='../utilisateurs/modify_user.php?user_login=$lig->login' onclick=\"return confirm_abandon (this, change, '$themessage')\">ré-activer</a>.<br />Si en revanche, ce compte ne doit plus être associé à des classes, vous devriez <a href='".$_SERVER['PHP_SELF']."?nettoyage_assoc=y&amp;login_user=".$lig->login.add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">supprimer les associations compte/classe pour $lig->login</a> pour éviter qu'il reçoive des mails concernant ces classes.<br />";
+				}
+			}
+		}
+		echo "</p>";
+
 	} else {
 		echo "</table>\n";
 		echo "<p class='grand'><b>Attention :</b> aucune classe n'a été définie dans la base GEPI !</p>\n";
