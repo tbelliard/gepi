@@ -423,7 +423,20 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 
 				// Saisie des avis de conseil de classe
 				if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
-					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_avis.php' , "texte"=>"Saisie des avis de conseils de classe");
+					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_avis.php' , "texte"=>"Avis de conseils de classe");
+
+					$tmp_sous_menu2=array();
+					$cpt_sous_menu2=0;
+						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/saisie/saisie_avis.php';
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte']="Saisie des avis de conseils de classe";
+						$cpt_sous_menu2++;
+
+						$tmp_sous_menu2[$cpt_sous_menu2]=array("lien"=> '/saisie/impression_avis.php' , "texte"=>"Impression des avis de conseils de classe");
+						$cpt_sous_menu2++;
+
+					$tmp_sous_menu[$cpt_sous_menu]['sous_menu']=$tmp_sous_menu2;
+					$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
+
 					$cpt_sous_menu++;
 				}
 
