@@ -170,7 +170,7 @@ if(isset($action)) {
 			}
 
 			if ($record == 'yes') {
-
+				/*
 				function ajout_bouton_supprimer_message($contenu_cor,$id_message) {
 					$contenu_cor='
 					<form method="POST" action="accueil.php" name="f_suppression_message">
@@ -215,6 +215,7 @@ if(isset($action)) {
 						}
 					return $retour;
 				}
+				*/
 
 				$t_login_destinataires=$login_user;
 				if (count($t_login_destinataires)>1) {$statuts_destinataires="_";}

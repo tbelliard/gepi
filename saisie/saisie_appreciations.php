@@ -1949,6 +1949,7 @@ echo "<script type='text/javascript'>
 			signalement_id_classe: signalement_id_classe,
 			signalement_num_periode: signalement_num_periode,
 			no_anti_inject_signalement_message: signalement_message,
+			suppression_possible:'oui'
 		}});
 
 		cacher_div('div_signaler_faute');

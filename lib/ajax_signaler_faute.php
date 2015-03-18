@@ -104,7 +104,7 @@ if(!preg_match('/^[0-9]*$/',$signalement_id_groupe)) {
 
 
 $envoi_mail_actif=getSettingValue('envoi_mail_actif');
-
+/*
 if($envoi_mail_actif!='n') {
 	// Recherche des destinataires
 	$sql="SELECT u.email FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login AND jgp.id_groupe='$signalement_id_groupe' AND u.email!='' AND u.email LIKE '%@%';";
@@ -147,5 +147,72 @@ if($envoi_mail_actif!='n') {
 else {
 	echo "<span style='color:red' title='Erreur lors du signalement de faute: Envoi de mail non actif'> KO</span>";
 	return false;
+}
+*/
+
+// Recherche des destinataires
+$sql="SELECT u.login, u.email FROM j_groupes_professeurs jgp, utilisateurs u WHERE u.login=jgp.login AND jgp.id_groupe='$signalement_id_groupe';";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
+	echo "<span style='color:red' title='Erreur lors du signalement de faute: Aucun destinataire trouvé???'> KO</span>";
+	return false;
+}
+else {
+	$pos_crsf_alea=strpos($signalement_message,"_CSRF_ALEA_");
+	if($pos_crsf_alea!==false) {
+		echo "<span style='color:res' title='ERREUR'> Contenu interdit</span>";
+		return false;
+	}
+	else {
+		$ajout_headers="";
+		$email_utilisateur=retourne_email($_SESSION['login']);
+		if($email_utilisateur!='') {
+			$ajout_headers="Reply-to: $email_utilisateur";
+		}
+
+		// On considère que le signalement est un succès, si le mail est envoyé pour au moins un destinataire
+		$temoin=false;
+		while($lig=mysqli_fetch_object($res)) {
+
+			if(($envoi_mail_actif!='n')&&(check_mail($lig->email))) {
+				$destinataire=$lig->email;
+
+				$sujet="[GEPI]: Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom'];
+
+				//if(envoi_mail($sujet, nl2br($signalement_message), $destinataire, $ajout_headers)) {$temoin=true;}
+				if(envoi_mail($sujet, $signalement_message, $destinataire, $ajout_headers)) {$temoin=true;}
+			}
+
+			// On dépose un message en page d'accueil:
+			$statuts_destinataires="_";
+			// Deux semaines d'affichage
+			$date_debut=time();
+			$date_fin=$date_debut+2*7*24*3600;
+			$date_decompte=$date_fin;
+
+			$contenu_cor="<strong>Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."</strong><br />".mysqli_real_escape_string($GLOBALS['mysqli'], nl2br($signalement_message));
+
+			if(!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$lig->login)) {
+				echo "PB";
+			}
+
+		}
+
+		if($temoin) {
+			echo "<span style='color:green' title=\"Signalement de faute effectué : Mail et message en page d'accueil.\"> OK</span>";
+		}
+		else {
+			echo "<span style='color:green' title=\"Signalement de faute effectué en page d'accueil, mais pas de mail envoyé.\"><img src='$gepiPath/images/icons/mail_echec.png' class='icone16' alt='Echec mail' >OK</span>";
+		}
+
+		$tab_champs=array('periodes');
+		$current_group=get_group($signalement_id_groupe,$tab_champs);
+		if(($current_group["classe"]["ver_periode"][$signalement_id_classe][$signalement_num_periode]=='P')&&
+		(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))) {
+			echo " <a href='../bulletin/autorisation_exceptionnelle_saisie_app.php?id_classe=$signalement_id_classe&periode=$signalement_num_periode&id_groupe=$signalement_id_groupe&refermer_page=y' target='_blank' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction'><img src='../images/icons/wizard.png' width='16' height='16' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction' /></a>";
+		}
+
+		return $temoin;
+	}
 }
 ?>

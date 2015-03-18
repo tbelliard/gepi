@@ -12821,4 +12821,55 @@ function retourne_denomination_pp($id_classe) {
 	}
 	return $gepi_prof_suivi;
 }
+
+//=========================================
+function ajout_bouton_supprimer_message($contenu_cor,$id_message) {
+	global $gepiPath;
+
+	$contenu_cor='
+	<form method="POST" action="'.$gepiPath.'/accueil.php" name="f_suppression_message">
+	<input type="hidden" name="csrf_alea" value="_CSRF_ALEA_">
+	<input type="hidden" name="supprimer_message" value="'.$id_message.'">
+	<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="'.$gepiPath.'/images/icons/delete.png"></button>
+	</form>'.$contenu_cor;
+	$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
+	return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+}
+
+function update_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) {
+	$r_sql = "UPDATE messages
+	SET texte = '".$contenu_cor."',
+	date_debut = '".$date_debut."',
+	date_fin = '".$date_fin."',
+	date_decompte = '".$date_decompte."',
+	auteur='".$_SESSION['login']."',
+	statuts_destinataires = '".$statuts_destinataires."',
+	login_destinataire='".$login_destinataire."'
+	WHERE id ='".$_POST['id_mess']."'";
+	//", matiere_destinataire='".$matiere_destinataire."'";
+	return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+}
+
+function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) {
+	$r_sql = "INSERT INTO messages
+	SET texte = '".$contenu_cor."',
+	date_debut = '".$date_debut."',
+	date_fin = '".$date_fin."',
+	date_decompte = '".$date_decompte."',
+	auteur='".$_SESSION['login']."',
+	statuts_destinataires = '".$statuts_destinataires."',
+	login_destinataire='".$login_destinataire."'";
+	//$r_sql.=", matiere_destinataire='".$matiere_destinataire."'";
+	//echo "$r_sql<br />";
+	$retour=mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+	if ($retour)
+		{
+		$id_message=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+		if (isset($_POST['suppression_possible']) && $_POST['suppression_possible']=="oui" &&  $statuts_destinataires=="_")
+			$retour=ajout_bouton_supprimer_message($contenu_cor,$id_message);
+		}
+	return $retour;
+}
+//=========================================
+
 ?>

@@ -1513,6 +1513,7 @@ echo "
 <input type='hidden' name='signalement_id_eleve' id='signalement_id_eleve' value='' />
 <input type='hidden' name='signalement_num_periode' id='signalement_num_periode' value='' />
 <input type='hidden' name='signalement_id_classe' id='signalement_id_classe' value='$id_classe' />
+<input type='hidden' name='suppression_possible' id='signalement_suppression_possible' value='oui' />
 
 <div id='div_signalement_message'></div>
 <!--textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea-->
@@ -1610,6 +1611,7 @@ echo "
 			signalement_id_classe: signalement_id_classe,
 			signalement_num_periode: signalement_num_periode,
 			no_anti_inject_signalement_message: signalement_message,
+			suppression_possible:'oui'
 		}});
 
 		cacher_div('div_signaler_faute');

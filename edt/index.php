@@ -1000,6 +1000,7 @@ elseif(($mode=="upload")&&
 
 					$contenu_cor=mysqli_real_escape_string($GLOBALS["mysqli"], $contenu_cor);
 
+					/*
 					function ajout_bouton_supprimer_message($contenu_cor,$id_message)
 					{
 						$contenu_cor='
@@ -1036,6 +1037,7 @@ elseif(($mode=="upload")&&
 						}
 						return $retour;
 					}
+					*/
 
 					$cpt_dest=0;
 					$statuts_destinataires="_";

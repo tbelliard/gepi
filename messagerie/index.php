@@ -84,6 +84,7 @@ function formate_date_decompte($date_decompte) {
 }
 */
 
+/*
 function ajout_bouton_supprimer_message($contenu_cor,$id_message)
 	{
 	global $gepiPath;
@@ -134,6 +135,7 @@ function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_
 		}
 	return $retour;
 	}
+*/
 
 // initialisation des notifications
 $msg_erreur=""; $msg_OK="";
