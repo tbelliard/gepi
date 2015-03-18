@@ -464,6 +464,11 @@ if(getSettingAOui('active_mod_discipline')) {
 	echo necessaire_saisie_avertissement_fin_periode();
 }
 
+// 20150318
+if(getSettingValue('active_recherche_lapsus')!='n') {
+	$tab_lapsus_et_correction=retourne_tableau_lapsus_et_correction();
+}
+
 echo "<form enctype='multipart/form-data' action='saisie_avis1.php' method='post'>\n";
 echo add_token_field(true);
 
@@ -793,7 +798,10 @@ if ($insert_mass_appreciation_type=="y") {
 	//$i++;
 	echo "</table>\n<br />\n<br />\n";
 
-	$chaine_test_vocabulaire="";
+	//=========================
+	// 20150318: Désactivé parce que cela provoque une série de requêtes ajax au chargement de la page.
+	//$chaine_test_vocabulaire="";
+	//=========================
 
 	$i = "0";
 	//$num_id=10;
@@ -1004,12 +1012,16 @@ $msg_acces_app_ele_resp\" />";
 				if ($result_test != 0) {
 					echo "<td>\n";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
-					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
+					//echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
+					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()";
 
 					if(getSettingValue('active_recherche_lapsus')!='n') {
-						echo " onBlur=\"ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
-						$chaine_test_vocabulaire.="ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
+						//echo " onBlur=\"ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\"";
+						echo ";ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');";
+						// 20150318: Désactivé parce que ce la provoque une série de requêtes ajax au chargement de la page.
+						//$chaine_test_vocabulaire.="ajaxVerifAvis('".$current_eleve_login_t[$k]."', '".$id_classe."', 'n".$k.$num_id."');\n";
 					}
+					echo "\"";
 
 					echo ">";
 					//=========================
@@ -1070,7 +1082,14 @@ $msg_acces_app_ele_resp\" />";
 						}
 					}
 
-					echo "<div id='div_verif_n".$k.$num_id."' style='color:red;'></div>\n";
+					//echo "<div id='div_verif_n".$k.$num_id."' style='color:red;'></div>\n";
+					// Espace pour afficher les éventuelles fautes de frappe
+					echo "<div id='div_verif_n".$k.$num_id."' style='color:red;'>";
+					// 20150316
+					if(getSettingValue('active_recherche_lapsus')!='n') {
+						echo teste_lapsus($current_eleve_avis_t[$k]);
+					}
+					echo "</div>\n";
 
 					echo "</td>\n";
 				} else {
@@ -1164,9 +1183,12 @@ $msg_acces_app_ele_resp\" />";
 			// Il faudra permettre de n'afficher ce décompte que si l'administrateur le souhaite.
 
 			echo "<script type='text/javascript'>
+";
 
-$chaine_test_vocabulaire;
+//20150318
+//$chaine_test_vocabulaire;
 
+			echo "
 cpt=".$tmp_timeout.";
 compte_a_rebours='y';
 
