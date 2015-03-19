@@ -2004,7 +2004,11 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 			else {
 				echo "<table class='boireaus' summary='Enseignements'>\n";
 				echo "<tr>\n";
-				echo "<th>Enseignement</th>\n";
+				echo "<th>Enseignements";
+				if(($acces_eleve_options)&&($tab_classe_acces_eleve_options[0])) {
+					echo " <a href='../classes/eleve_options.php?login_eleve=".$ele_login."&amp;id_classe=".$tab_ele['periodes'][0]['id_classe']."' title=\"Modifier la liste des enseignements suivis par cet élève.\"><img src='../images/icons/plus_moins.png' class='icone16' alt='Ajouter/enlever' /></a>";
+				}
+				echo "</th>\n";
 				echo "<th>Professeur(s)</th>\n";
 				for($j=0;$j<count($tab_ele['periodes']);$j++) {
 					echo "<th>\n";
