@@ -172,6 +172,7 @@ else {
 
 		// On considère que le signalement est un succès, si le mail est envoyé pour au moins un destinataire
 		$temoin=false;
+		$temoin2=true;
 		while($lig=mysqli_fetch_object($res)) {
 
 			if(($envoi_mail_actif!='n')&&(check_mail($lig->email))) {
@@ -193,16 +194,19 @@ else {
 			$contenu_cor="<strong>Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."</strong><br />".mysqli_real_escape_string($GLOBALS['mysqli'], nl2br($signalement_message));
 
 			if(!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$lig->login)) {
-				echo "PB";
+				$temoin2=false;
 			}
 
 		}
 
-		if($temoin) {
+		if(($temoin)&&($temoin2)) {
 			echo "<span style='color:green' title=\"Signalement de faute effectué : Mail et message en page d'accueil.\"> OK</span>";
 		}
-		else {
+		elseif($temoin2) {
 			echo "<span style='color:green' title=\"Signalement de faute effectué en page d'accueil, mais pas de mail envoyé.\"><img src='$gepiPath/images/icons/mail_echec.png' class='icone16' alt='Echec mail' >OK</span>";
+		}
+		else {
+			echo "<span style='color:red' title=\"Echec du signalement de faute.\">KO</span>";
 		}
 
 		$tab_champs=array('periodes');
