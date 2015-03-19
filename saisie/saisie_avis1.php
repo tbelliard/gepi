@@ -476,6 +476,11 @@ if(getSettingValue('active_recherche_lapsus')!='n') {
 	$tab_lapsus_et_correction=retourne_tableau_lapsus_et_correction();
 }
 
+// Pour que les signalements de faute et corrections du bulletin simplifié (affiché en infobulle) fonctionnent, il faut que les fonctions javascript soient définies dans la page de départ, pas dans celle appelée par ajax/js.
+require_once("../lib/bulletin_simple.inc.php");
+lib_signalement_fautes();
+lib_corriger_appreciation();
+
 echo "<form enctype='multipart/form-data' action='saisie_avis1.php' method='post'>\n";
 echo add_token_field(true);
 
