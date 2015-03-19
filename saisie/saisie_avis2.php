@@ -427,6 +427,7 @@ if (isset($id_classe) and (isset($periode_num)) and (!isset($fiche))) {
 	<p class="bold"><a href="saisie_avis2.php?id_classe=<?php echo $id_classe; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Choisir une autre période</a>
 
 	<?php
+	echo add_token_field(true);
 
 	echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 
@@ -566,9 +567,37 @@ echo "</form>\n";
 		Classe&nbsp;: <strong><?php echo $classe_suivi; ?></strong>
 		<?php
 			echo "<em style='font-size:small'>(".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y").")";
-			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</em>)</em>";
+			echo " - (<em style='color:".$couleur_verrouillage_periode[$ver_periode[$periode_num]].";'><span id='span_etat_verrouillage_classe'>Période ".$traduction_verrouillage_periode[$ver_periode[$periode_num]]."</span>";
+			if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+				echo " <a href='#'  onclick=\"afficher_div('div_modif_verrouillage','y',-20,20);return false;\" title=\"Verrouillez/déverrouillez la période pour cette classe.\"><img src='../images/icons/configure.png' class='icone16' alt='Modifier' /></a>";
+			}
+			echo "</em>)</em>";
 		?>
 	</p>
+
+<?php
+	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
+		$per=$periode_num;
+		$titre_infobulle="Verrouillage de période";
+		$texte_infobulle="<p class='bold' style='text-align:center;'>Modifiez l'état de verrouillage ou non de la période<br />pour la classe de $classe_suivi</p>
+<p style='text-align:center;'>Passer la période à l'état&nbsp;:<br />
+<a href='../bulletin/verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=N".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'N');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['N']."'>ouverte en saisie</a> - 
+<a href='../bulletin/verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=P".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'P');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['P']."'>partiellement close</a> - 
+<a href='../bulletin/verrouillage.php?mode=change_verrouillage&amp;id_classe=$id_classe&amp;num_periode=$per&amp;etat=O".add_token_in_url()."' onclick=\"changer_etat_verrouillage_periode($id_classe, $per, 'O');return false;\" target='_blank' style='color:".$couleur_verrouillage_periode['O']."'>close</a><br />
+&nbsp;</p>";
+		$tabdiv_infobulle[]=creer_div_infobulle("div_modif_verrouillage",$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	}
+?>
+
+	<script type='text/javascript'>
+		// <![CDATA[
+		function changer_etat_verrouillage_periode(id_classe, num_periode, etat) {
+			csrf_alea=document.getElementById('csrf_alea').value;
+			new Ajax.Updater($('span_etat_verrouillage_classe'),'../bulletin/verrouillage.php?mode=change_verrouillage&num_periode='+num_periode+'&id_classe='+id_classe+'&etat='+etat+'&csrf_alea='+csrf_alea,{method: 'get'});
+			cacher_div('div_modif_verrouillage');
+		}
+		//]]>
+	</script>
 
 	<p>Cliquez sur le nom de l'élève pour lequel vous voulez entrer ou modifier l'appréciation.</p>
 	<table class='boireaus' border="1" cellspacing="2" cellpadding="5" width="100%" summary="Choix de l'élève">
