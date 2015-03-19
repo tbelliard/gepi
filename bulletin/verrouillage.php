@@ -364,6 +364,16 @@ if (($classe != 0) AND ($periode !=0)) {
 
 } else {
 	if ($nombreligne != 0) {
+		$tab_dates_prochains_conseils=array();
+		$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+		$sql="SELECT DISTINCT ddec.id_ev, ddec.id_classe, ddec.date_evenement FROM d_dates_evenements dde, d_dates_evenements_classes ddec WHERE dde.type='conseil_de_classe' AND dde.id_ev=ddec.id_ev AND dde.date_debut<='$date_courante' AND ddec.date_evenement>='$date_courante' ORDER BY date_evenement DESC;";
+		$res_cc=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cc)>0) {
+			while($lig_cc=mysqli_fetch_object($res_cc)) {
+				$tab_dates_prochains_conseils[$lig_cc->id_classe]=formate_date($lig_cc->date_evenement,"y2","court");
+			}
+		}
+
 		echo "<form action=\"verrouillage.php\" name=\"formulaire\" method=\"post\">";
 		echo add_token_field();
 
@@ -380,9 +390,12 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th><a href=\"javascript:CocheCase(1,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></a></th>\n";
 			echo "<th><a href=\"javascript:CocheCase(2,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></a></th>\n";
 			echo "<th><a href=\"javascript:CocheCase(3,".$i.")\"><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></a></th>\n";
-            if(getSettingValue("active_module_absence")=="2"){
-                echo "<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">Date Fin</th>\n";
-            }
+			if(getSettingValue("active_module_absence")=="2"){
+				echo "<th title=\"Il est possible de mettre à jour d'un coup, en compte administrateur, les dates de fin de période depuis le paramétrage du module Emploi du temps : Menu Gestion/Gestion du calendrier/Mettre à jour les dates de fin de période pour le module Absences, d'après les dates de périodes de cours ci-dessous.\">Date Fin</th>\n";
+			}
+		}
+		if(count($tab_dates_prochains_conseils)>0) {
+			echo "<th title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
 		}
 		echo "</tr>\n";
 		//$flag = 0;
@@ -465,7 +478,18 @@ Calendar.setup({
 					}
 				}
 				for ($i = $j; $i < $max_per; $i++) echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
-		
+
+				if(count($tab_dates_prochains_conseils)>0) {
+					echo "<td>";
+					if(isset($tab_dates_prochains_conseils[$id_classe])) {
+						echo $tab_dates_prochains_conseils[$id_classe];
+					}
+					else {
+						echo "-";
+					}
+					echo "</td>\n";
+				}
+
 				echo "</tr>\n";
 			}
 		}
