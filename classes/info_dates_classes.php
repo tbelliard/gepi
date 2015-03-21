@@ -284,6 +284,7 @@ Bien cordialement.<br />
 										}
 										$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
 										$responsable_courant_ok++;
+										$tab_email_deja[]=$lig_u->email;
 									}
 								}
 
@@ -294,6 +295,7 @@ Bien cordialement.<br />
 										}
 										$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->mel.">";
 										$responsable_courant_ok++;
+										$tab_email_deja[]=$lig_u->mel;
 									}
 								}
 
