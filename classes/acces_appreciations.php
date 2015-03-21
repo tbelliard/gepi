@@ -399,6 +399,16 @@ if($acces_app_ele_resp=='manuel') {
 	// Le mode global paramétré est 'manuel'
 	// Si des paramétrages particuliers sont à autre chose que 'manuel', on bascule/modifie vers 'manuel'.
 
+	$tab_dates_prochains_conseils=array();
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+	$sql="SELECT DISTINCT ddec.id_ev, ddec.id_classe, ddec.date_evenement FROM d_dates_evenements dde, d_dates_evenements_classes ddec WHERE dde.type='conseil_de_classe' AND dde.id_ev=ddec.id_ev AND dde.date_debut<='$date_courante' AND ddec.date_evenement>='$date_courante' ORDER BY date_evenement DESC;";
+	$res_cc=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_cc)>0) {
+		while($lig_cc=mysqli_fetch_object($res_cc)) {
+			$tab_dates_prochains_conseils[$lig_cc->id_classe]=formate_date($lig_cc->date_evenement,"y2","court");
+		}
+	}
+
 	echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form_manuel'>\n";
 	//echo "<p align='center'><input type='submit' name='submit' value='Valider' /></p>\n";
 	//echo add_token_field();
@@ -410,6 +420,9 @@ if($acces_app_ele_resp=='manuel') {
 	echo "<th rowspan='3'>Classe</th>\n";
 	//echo "<th rowspan='2'>Statut</th>\n";
 	echo "<th colspan='$max_per'>Périodes</th>\n";
+	if(count($tab_dates_prochains_conseils)>0) {
+		echo "<th rowspan='3' title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
+	}
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -618,6 +631,16 @@ if($acces_app_ele_resp=='manuel') {
 						}
 						echo "</div>\n";
 
+					echo "</td>\n";
+				}
+				if(count($tab_dates_prochains_conseils)>0) {
+					echo "<td>";
+					if(isset($tab_dates_prochains_conseils[$id_classe])) {
+						echo $tab_dates_prochains_conseils[$id_classe];
+					}
+					else {
+						echo "-";
+					}
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
