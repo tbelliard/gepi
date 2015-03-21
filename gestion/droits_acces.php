@@ -882,6 +882,11 @@ if(getSettingValue('active_mod_alerte')=='y') {
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
 
+  $titreItem='droit_informer_evenement_scolarite';
+  $texteItem="peut informer par mail (sous réserve que le mail du destinataire soit renseigné) les personnes concernées par un événement.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //=======================================================================================
 
 // DROITS CPE
@@ -1254,6 +1259,11 @@ if(getSettingValue('active_mod_alerte')=='y') {
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 }
+
+  $titreItem='droit_informer_evenement_cpe';
+  $texteItem="peut informer par mail (sous réserve que le mail du destinataire soit renseigné) les personnes concernées par un événement.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //=======================================================================================
 

@@ -9716,6 +9716,10 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			}
 		}
 
+		if(acces_info_dates_evenements()) {
+			$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Informer les/des destinataires par mail.\"><a href='$gepiPath/classes/info_dates_classes.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/mail.png' class='icone16' alt='Mail' /></a></div>";
+		}
+
 		$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
 
 		if($lig->type=='autre') {
@@ -12872,4 +12876,18 @@ function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_
 }
 //=========================================
 
+function acces_info_dates_evenements() {
+	if(!acces('/classes/info_dates_classes.php', $_SESSION['statut'])) {
+		return false;
+	}
+	elseif($_SESSION['statut']=='administrateur') {
+		return true;
+	}
+	elseif(getSettingAOui('droit_informer_evenement_'.$_SESSION['statut'])) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>
