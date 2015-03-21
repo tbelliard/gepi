@@ -206,7 +206,7 @@ function extract_eleves($tab_login) {
 
 			$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
 			if($acces_visu_eleve) {
-				$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login' title=\"Consulter la fiche élève\">".$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']."</a>";
+				$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login' title=\"Consulter la fiche élève\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /> ".$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom']."</a>";
 			}
 			else {
 				$tab_result_recherche['eleve'][$cpt_eleve]['td_nom_prenom']=$tab_result_recherche['eleve'][$cpt_eleve]['nom_prenom'];
@@ -277,7 +277,7 @@ function extract_eleves($tab_login) {
 							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
 						}
 						elseif($acces_visu_eleve) {
-							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\">".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /> ".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
 						}
 						else {
 							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
@@ -299,7 +299,7 @@ function extract_eleves($tab_login) {
 							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/responsables/modify_resp.php?pers_id=".$lig_resp->pers_id."'>".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
 						}
 						elseif($acces_visu_eleve) {
-							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\">".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
+							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=$lig->login&amp;onglet=responsables' title=\"Consulter la liste des responsables dans le dossier élève\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /> ".$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (<em title=\"Responsable légal : ".$lig_resp->resp_legal."\">".$lig_resp->resp_legal."</em>)</a>";
 						}
 						else {
 							$tab_result_recherche['eleve'][$cpt_eleve]['td_resp'].=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom." (".$lig_resp->resp_legal.")";
@@ -444,7 +444,7 @@ if(isset($is_posted_recherche)) {
 						$tab_result_recherche['responsable'][$cpt_resp]['enfants'].=$tab_enfants[$loop+1];
 
 						if($acces_visu_eleve) {
-							$tab_result_recherche['responsable'][$cpt_resp]['td_enfants'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$tab_enfants[$loop]."' title=\"Consulter la fiche élève\">".$tab_enfants[$loop+1]."</a><br />";
+							$tab_result_recherche['responsable'][$cpt_resp]['td_enfants'].="<a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$tab_enfants[$loop]."' title=\"Consulter la fiche élève\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /> ".$tab_enfants[$loop+1]."</a><br />";
 						}
 						else {
 							$tab_result_recherche['responsable'][$cpt_resp]['td_enfants'].=$tab_enfants[$loop+1]."<br />";

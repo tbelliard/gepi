@@ -2898,7 +2898,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 				//echo "affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');";
 				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 	le bulletin simplifié de toutes les périodes.\">";
-				echo "Voir le bulletin simplifié";
+				echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletin simpl.' />Voir le bulletin simpl.";
 				echo "</a>";
 			}
 			else {
@@ -2906,7 +2906,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 				//echo "affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');";
 				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 	le bulletin simplifié de la période $num_periode_choisie.\">";
-				echo "Voir le bulletin simplifié";
+				echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletin simpl.' />Voir le bulletin simpl.";
 				echo "</a>";
 			}
 			if($acces_visu_eleve) {
@@ -2920,7 +2920,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 			//$tabdiv_infobulle[]=creer_div_infobulle("div_visu_eleve",$titre_infobulle,"",$texte_infobulle,"",50,0,'y','y','n','n');
 			//onclick=\"afficher_div('div_visu_eleve','y',-100,-200); affiche_visu_eleve('$eleve1','$id_classe');return false;\" 
 			echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\" title=\"Voir la fiche élève avec ses différents onglets dans une autre page.\">";
-			echo "Consultation";
+			echo "<img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' />Consultation";
 			echo "</a>";
 		}
 
@@ -4964,7 +4964,8 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 					//echo "affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');";
 					echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 le bulletin simplifié de toutes les périodes.\">";
-					echo "Voir le bulletin simplifié";
+					//echo "Voir le bulletin simplifié";
+					echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletin simpl.' />Voir le bulletin simpl.";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
@@ -4973,7 +4974,8 @@ le bulletin simplifié de toutes les périodes.\">";
 					//echo "affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');";
 					echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 le bulletin simplifié de la période $num_periode_choisie.\">";
-					echo "Voir le bulletin simplifié";
+					//echo "Voir le bulletin simplifié";
+					echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletin simpl.' />Voir le bulletin simpl.";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
 				}
@@ -5006,7 +5008,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 				//onclick=\"afficher_div('div_visu_eleve','y',-100,-200); affiche_visu_eleve('$eleve1','$id_classe');return false;\" 
 				echo " | ";
 				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
-				echo "Consultation";
+				echo "<img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' />Consultation";
 				echo "</a>";
 			}
 
