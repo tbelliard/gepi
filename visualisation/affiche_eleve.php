@@ -2644,6 +2644,22 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND verouiller!='O';";
 				$res_verr_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_verr_per)>1) {
+					if(acces('/bulletin/verrouillage.php', $_SESSION['statut'])) {
+						echo "<br /><a href='../bulletin/verrouillage.php' target='_blank' style='color:red' title=\"Plusieurs périodes ne sont pas complètement closes.
+Il n'est pas possible d'identifier la période pour laquelle vous souhaitez saisir l'avis du conseil.
+Ne laissez qu'une période ouverte ou partiellement close,
+ou bien optez pour l'affichage d'une seule période dans la présente page.
+
+Cliquez pour modifier dans un nouvel onglet le verrouillage des périodes.\"><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' /> Avis du conseil</a>";
+					}
+					else {
+						echo "<br /><span title=\"Plusieurs périodes ne sont pas complètement closes.
+Il n'est pas possible d'identifier la période pour laquelle vous souhaitez saisir l'avis du conseil.
+Ne laissez qu'une période ouverte ou partiellement close,
+ou bien optez pour l'affichage d'une seule période dans la présente page.\"><img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' /> Avis du conseil</span>";
+					}
+				}
 				if(mysqli_num_rows($res_verr_per)==1) {
 					// On ne propose la saisie d'avis que si une seule période est ouverte en saisie (N ou P)
 					// ... pour le moment.
