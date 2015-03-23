@@ -9727,22 +9727,23 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			$retour.=$lig->texte_avant;
 			//$retour.="<br />";
 
+			$liste_dest="";
 			if(in_array("professeur", $tab_u)) {
-				$retour.=" <img src='$gepiPath/images/icons/prof.png' class='icone16' alt='Prof' title=\"Professeurs de la classe.\" />";
+				$liste_dest.=" <img src='$gepiPath/images/icons/prof.png' class='icone16' alt='Prof' title=\"Professeurs de la classe.\" />";
 			}
 			if(in_array("cpe", $tab_u)) {
-				$retour.=" <img src='$gepiPath/images/icons/cpe.png' class='icone16' alt='Cpe' title=\"CPE de la classe.\" />";
+				$liste_dest.=" <img src='$gepiPath/images/icons/cpe.png' class='icone16' alt='Cpe' title=\"CPE de la classe.\" />";
 			}
 			if(in_array("scolarite", $tab_u)) {
-				$retour.=" <img src='$gepiPath/images/icons/scolarite.png' class='icone16' alt='Scol' title=\"Comptes scolarité associés à la classe.\" />";
+				$liste_dest.=" <img src='$gepiPath/images/icons/scolarite.png' class='icone16' alt='Scol' title=\"Comptes scolarité associés à la classe.\" />";
 			}
 			if(in_array("responsable", $tab_u)) {
-				$retour.=" <img src='$gepiPath/images/icons/responsable.png' class='icone16' alt='Resp' title=\"Comptes responsables associés à la classe.\" />";
+				$liste_dest.=" <img src='$gepiPath/images/icons/responsable.png' class='icone16' alt='Resp' title=\"Comptes responsables associés à la classe.\" />";
 			}
 			if(in_array("eleve", $tab_u)) {
-				$retour.=" <img src='$gepiPath/images/icons/eleve.png' class='icone16' alt='Resp' title=\"Élèves associés à la classe.\" />";
+				$liste_dest.=" <img src='$gepiPath/images/icons/eleve.png' class='icone16' alt='Resp' title=\"Élèves associés à la classe.\" />";
 			}
-			$retour.="<br />";
+			//$retour.="<br />";
 
 			if($afficher_obsolete=="y") {
 				if($_SESSION['statut']=='professeur') {
@@ -9805,6 +9806,78 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			}
 			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res2)>0) {
+
+				$tab_tableau=array();
+				$tab_liste_salles=array();
+				$tab_liste_dates=array();
+				while($lig2=mysqli_fetch_object($res2)) {
+					if(!in_array($lig2->date_evenement, $tab_liste_dates)) {
+						$tab_liste_dates[]=$lig2->date_evenement;
+					}
+
+					if(!in_array($lig2->id_salle, $tab_liste_salles)) {
+						$tab_liste_salles[]=$lig2->id_salle;
+					}
+
+					if(isset($tab_tableau[$lig2->date_evenement][$lig2->id_salle])) {
+						$tab_tableau[$lig2->date_evenement][$lig2->id_salle].=", ";
+					}
+					else {
+						$tab_tableau[$lig2->date_evenement][$lig2->id_salle]="";
+					}
+
+					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
+						//$tab_tableau[$lig2->date_evenement][$lig2->id_salle].="<span style='color:red'>".$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y", "court")."</span>";
+						$tab_tableau[$lig2->date_evenement][$lig2->id_salle].="<span style='color:red'>".$lig2->classe."</span>";
+					}
+					else {
+						//$tab_tableau[$lig2->date_evenement][$lig2->id_salle].=$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y", "court");
+						$tab_tableau[$lig2->date_evenement][$lig2->id_salle].=$lig2->classe;
+					}
+
+					/*
+					if(($lig2->id_salle>0)&&(isset($tab_salle['indice'][$lig2->id_salle]))) {
+						$tab_tableau[$lig2->date_evenement][$lig2->id_salle].=" (<em>salle ".$tab_salle['indice'][$lig2->id_salle]['designation_complete']."</em>)";
+					}
+					*/
+					//$retour.="<br />";
+				}
+
+				$retour.="<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>$liste_dest</th>";
+				for($loop=0;$loop<count($tab_liste_dates);$loop++) {
+					$retour.="
+		<th>".formate_date($tab_liste_dates[$loop], "y2", "court")."</th>";
+				}
+				$retour.="
+	</tr>";
+
+				for($loop0=0;$loop0<count($tab_liste_salles);$loop0++) {
+					if(($tab_liste_salles[$loop0]>0)&&(isset($tab_salle['indice'][$tab_liste_salles[$loop0]]))) {
+						$salle_courante=$tab_salle['indice'][$tab_liste_salles[$loop0]]['designation_complete'];
+					}
+					else {
+						$salle_courante="";
+					}
+					$retour.="
+	<tr>
+		<th>$salle_courante</th>";
+					for($loop=0;$loop<count($tab_liste_dates);$loop++) {
+						$retour.="
+		<td>";
+						if(isset($tab_tableau[$tab_liste_dates[$loop]][$tab_liste_salles[$loop0]])) {
+							$retour.=$tab_tableau[$tab_liste_dates[$loop]][$tab_liste_salles[$loop0]];
+						}
+						$retour.="</td>";
+					}
+					$retour.="
+	</tr>";
+				}
+				$retour.="
+</table>";
+
+				/*
 				while($lig2=mysqli_fetch_object($res2)) {
 					if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
 						$retour.="<span style='color:red'>".$lig2->classe."&nbsp;: ".formate_date($lig2->date_evenement, "y", "court")."</span>";
@@ -9817,6 +9890,7 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 					}
 					$retour.="<br />";
 				}
+				*/
 			}
 			$retour.=$lig->texte_apres;
 		}
