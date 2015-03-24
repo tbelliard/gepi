@@ -97,8 +97,21 @@ if($affichage!="semaine") {
 			}
 		}
 		else {
-			$display_date=strftime("%d/%m/%Y");
-			$affichage=strftime("%u");
+
+			// Tester l'heure courante dans la journée
+			$tab_horaire_etab=array();
+			$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".strftime("%A")."' AND fermeture_horaire_etablissement>'".strftime("%H:%M:%S")."';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS["mysqli"],$sql);
+			if(mysqli_num_rows($res)>0) {
+				$display_date=strftime("%d/%m/%Y");
+				$affichage=strftime("%u");
+			}
+			else {
+				$ts_jour_suivant=time()+3600*24;
+				$display_date=strftime("%d/%m/%Y", $ts_jour_suivant);
+				$affichage=strftime("%u", $ts_jour_suivant);
+			}
 		}
 	}
 	elseif(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $display_date)) {
