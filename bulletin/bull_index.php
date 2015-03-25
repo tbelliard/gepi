@@ -385,7 +385,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 
 
 
-	echo "<table class='boireaus' summary='Choix des périodes'>\n";
+	echo "<table class='boireaus boireaus_alt' summary='Choix des périodes'>\n";
 	echo "<tr>\n";
 	echo "<th>Classe</th>\n";
 	for($i=1;$i<=$max_per;$i++) {
@@ -429,7 +429,18 @@ L'accès est également possible dans le menu horizontal sous l'entête si la ba
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
-	echo "<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> Le verrouillage des périodes s'effectue en compte 'scolarité' (<em>statut 'scolarité'</em>).</p>\n";
+	$clore="clore";
+	if($_SESSION['statut']=='scolarite') {
+		$clore="<a href='verrouillage.php' target='_blank'>clore <img src='../images/icons/configure.png' width='16' height='16' title='Verrouillage/déverrouillage'/></a>\n";
+	}
+
+	echo "<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Le verrouillage des périodes s'effectue en compte 'scolarité' (<em>statut 'scolarité'</em>).</p></li>
+	<li><p>Si la période n'est pas close ou partiellement close, un filigrane est inséré en travers des bulletins PDF pour alerter que les moyennes et appréciations des professeurs peuvent encore changer.<br />
+	Pensez à $clore au moins partiellement la période si vous ne souhaitez pas ce filigrane.</p></li>
+	<li><p>Lorsque la période est partiellement close, seul l'avis du conseil de classe peut encore être saisi/modifié.</p></li>
+</ul>\n";
 
 }
 //======================================================
