@@ -2369,7 +2369,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 	if($desactivation_infobulle=="y") {
 		echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";
 	}
-	else{
+	else {
 		echo "<script type='text/javascript'>desactivation_infobulle='n';</script>\n";
 	}
 
@@ -2390,6 +2390,152 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))||
 		(($_SESSION['statut']=='cpe')&&((getSettingValue('GepiRubConseilCpe')=="yes")||(getSettingValue('GepiRubConseilCpeTous')=="yes")))
 	) {
+
+		// 20150325
+		$titre_infobulle="Modifier le verrouillage des périodes";
+		$texte_infobulle="<div id='contenu_div_verrouillage'>
+	<div align='center'>
+	<form action=\"../bulletin/verrouillage.php\" target='_blank' method='post' name='form_change_verrouillage'>
+		".add_token_field(true)."
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th></th>";
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			$texte_infobulle.="
+				<th title=\"Période n°$loop_per\">P.$loop_per</th>";
+		}
+		$texte_infobulle.="
+			</tr>
+			<tr>
+				<td style='background-color:green'>Ouvert</td>";
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			$checked="";
+			$style="";
+			if($ver_periode[$loop_per]=="N") {
+				$checked=" checked";
+				$style=" style='background-color:green'";
+			}
+			$texte_infobulle.="
+				<td$style><input type='radio' name='etat[$loop_per]' id='etat_N_$loop_per' value='N'$checked /></td>";
+		}
+		$texte_infobulle.="
+			</tr>
+			<tr>
+				<td style='background-color:orange'>Partiellement close</td>";
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			$checked="";
+			$style="";
+			if($ver_periode[$loop_per]=="P") {
+				$checked=" checked";
+				$style=" style='background-color:orange'";
+			}
+			$texte_infobulle.="
+				<td$style><input type='radio' name='etat[$loop_per]' id='etat_P_$loop_per' value='P'$checked /></td>";
+		}
+		$texte_infobulle.="
+			</tr>
+			<tr>
+				<td style='background-color:red'>Close</td>";
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			$checked="";
+			$style="";
+			if($ver_periode[$loop_per]=="O") {
+				$checked=" checked";
+				$style=" style='background-color:red'";
+			}
+			$texte_infobulle.="
+				<td$style><input type='radio' name='etat[$loop_per]' id='etat_O_$loop_per' value='O'$checked /></td>";
+		}
+		$texte_infobulle.="
+			</tr>
+		</table>
+		<p><input type='button' value='Valider' onclick='valide_change_verrouillage_periode()' /></p>
+		<p>Pour permettre la saisie de l'avis du conseil de classe en mode <strong>toutes_periodes</strong>, il faut ne conserver qu'<strong>une seule</strong> période ouverte ou partiellement close.</p>
+	</form>
+	</div>
+</div>";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_change_verrouillage_periode',$titre_infobulle,"",$texte_infobulle,"",23,0,'y','y','n','n');
+
+		/*
+		echo "<script type='text/javascript'>
+	function affiche_div_change_verrouillage_periode() {
+		afficher_div('div_change_verrouillage_periode','y',20,20);
+	}
+	function valide_change_verrouillage_periode() {
+		var etat=new Array();";
+
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			echo "
+		if(document.getElementById('etat_N_$loop_per').checked==true) {
+			etat[$loop_per]='N';
+		}
+		else {
+			if(document.getElementById('etat_O_$loop_per').checked==true) {
+				etat[$loop_per]='O';
+			}
+			else {
+				if(document.getElementById('etat_P_$loop_per').checked==true) {
+					etat[$loop_per]='P';
+				}
+				else {
+					etat[$loop_per]='';
+				}
+			}
+		}
+		//alert('etat[$loop_per]='+etat[$loop_per]);";
+		}
+
+		echo "
+		new Ajax.Updater($(contenu_div_verrouillage),'../bulletin/verrouillage.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {";
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			echo "
+			etat[$loop_per]: etat[$loop_per],";
+		}
+		echo "
+			mode: 'change_verrouillage',
+			id_classe: '$id_classe',
+		}});
+	}
+</script>\n";
+		*/
+
+		echo "<script type='text/javascript'>
+	function affiche_div_change_verrouillage_periode() {
+		afficher_div('div_change_verrouillage_periode','y',20,20);
+	}
+	function valide_change_verrouillage_periode() {
+		var chaine_etat=''";
+
+		for($loop_per=1;$loop_per<$nb_periode;$loop_per++) {
+			echo "
+		if(document.getElementById('etat_N_$loop_per').checked==true) {
+			chaine_etat=chaine_etat+'$loop_per|N|';
+		}
+		else {
+			if(document.getElementById('etat_O_$loop_per').checked==true) {
+				chaine_etat=chaine_etat+'$loop_per|O|';
+			}
+			else {
+				if(document.getElementById('etat_P_$loop_per').checked==true) {
+					chaine_etat=chaine_etat+'$loop_per|P|';
+				}
+				else {
+					chaine_etat=chaine_etat+'$loop_per||';
+				}
+			}
+		}";
+		}
+
+		echo "
+		new Ajax.Updater($(contenu_div_verrouillage),'../bulletin/verrouillage.php?a=a&".add_token_in_url(false)."',{method: 'post',
+		parameters: {
+			chaine_etat: chaine_etat,
+			mode: 'change_verrouillage',
+			id_classe: '$id_classe',
+		}});
+	}
+</script>\n";
 
 		$droit_saisie_avis="y";
 		// Contrôler si le prof est PP de l'élève
@@ -2646,7 +2792,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 				$res_verr_per=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_verr_per)>1) {
 					if(acces('/bulletin/verrouillage.php', $_SESSION['statut'])) {
-						echo "<br /><a href='../bulletin/verrouillage.php' target='_blank' style='color:red' title=\"Plusieurs périodes ne sont pas complètement closes.
+						echo "<br /><a href='../bulletin/verrouillage.php' onclick=\"affiche_div_change_verrouillage_periode(); return false;\" target='_blank' style='color:red' title=\"Plusieurs périodes ne sont pas complètement closes.
 Il n'est pas possible d'identifier la période pour laquelle vous souhaitez saisir l'avis du conseil.
 Ne laissez qu'une période ouverte ou partiellement close,
 ou bien optez pour l'affichage d'une seule période dans la présente page.

@@ -46,6 +46,7 @@ $periode=isset($_GET['periode']) ? $_GET['periode'] : 0;
 // quelle action après le verrouillage ?
 $action_apres=isset($_GET['action']) ? $_GET['action'] : NULL;
 
+//debug_var();
 
 if((isset($_GET['mode']))&&($_GET['mode']="change_verrouillage")&&
 (isset($_GET['id_classe']))&&(preg_match("/[0-9]{1,}/", $_GET['id_classe']))&&
@@ -79,6 +80,118 @@ if((isset($_GET['mode']))&&($_GET['mode']="change_verrouillage")&&
 	else {
 		echo "<span style='color:red'>KO</span>";
 	}
+	die();
+}
+/*
+elseif((isset($_POST['mode']))&&($_POST['mode']="change_verrouillage")&&
+(isset($_POST['id_classe']))&&(preg_match("/[0-9]{1,}/", $_POST['id_classe']))&&
+(isset($_POST['etat']))&&(is_array($_POST['etat']))) {
+	// Verrouillage depuis visualisation/affiche_eleve.php
+
+	check_token();
+
+	foreach($etat as $num_periode => $current_etat) {
+		if(!preg_match("/[0-9]{1,}/", $num_periode)) {
+			echo "<span style='color:red'>ERREUR : Le numéro de période $num_periode est invalide.</span>";
+		}
+		elseif(!in_array($current_etat, array("O", "P", "N"))) {
+			if($current_etat!="") {
+				echo "<span style='color:red'>ERREUR en période $num_periode, l'état $current_etat est invalide.</span>";
+			}
+		}
+		else {
+			echo "P$num_periode: ";
+			$sql="SELECT verouiller, date_fin FROM periodes p, 
+								j_scol_classes jsc 
+							WHERE jsc.login='".$_SESSION['login']."' AND 
+								jsc.id_classe=p.id_classe AND 
+								p.id_classe='".$_POST['id_classe']."' AND 
+								p.num_periode='".$num_periode."';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+				if ($lig->date_fin==0) {//la date de fin n'est pas renseignee, on la renseigne
+					$sql="UPDATE periodes SET verouiller='".$current_etat."', date_verrouillage=NOW(), date_fin=NOW() WHERE (num_periode='".$num_periode."' and id_classe='".$_GET['id_classe']."')";
+				} else {
+					$sql="UPDATE periodes SET verouiller='".$current_etat."', date_verrouillage=NOW() WHERE (num_periode='".$num_periode."' and id_classe='".$_GET['id_classe']."')";
+				}
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!$res) {
+					echo "<span style='color:red'>KO</a>";
+				}
+				else {
+					echo "<span style='color:".$couleur_verrouillage_periode[$current_etat]."' title=\"Période ".$traduction_verrouillage_periode[$current_etat].".
+".$explication_verrouillage_periode[$current_etat]."\">Période ".$traduction_verrouillage_periode[$current_etat]."</a>";
+				}
+			}
+			else {
+				echo "<span style='color:red'>KO</a>";
+			}
+		}
+		echo "<br />";
+	}
+
+	die();
+}
+*/
+elseif((isset($_POST['mode']))&&($_POST['mode']="change_verrouillage")&&
+(isset($_POST['id_classe']))&&(preg_match("/[0-9]{1,}/", $_POST['id_classe']))&&
+(isset($_POST['chaine_etat']))&&(is_string($_POST['chaine_etat']))) {
+	// Verrouillage depuis visualisation/affiche_eleve.php
+
+	check_token();
+
+	$etat=array();
+	$tab=explode("|", $_POST['chaine_etat']);
+	for($loop=0;$loop<count($tab);$loop+=2) {
+		if((preg_match("/[0-9]{1,}/", $tab[$loop]))&&(isset($tab[$loop+1]))) {
+			$etat[$tab[$loop]]=$tab[$loop+1];
+			//echo "\$etat[".$tab[$loop]."]=".$etat[$tab[$loop]]."<br />";
+		}
+	}
+
+	foreach($etat as $num_periode => $current_etat) {
+		if(!preg_match("/[0-9]{1,}/", $num_periode)) {
+			echo "<span style='color:red'>ERREUR : Le numéro de période $num_periode est invalide.</span>";
+		}
+		elseif(!in_array($current_etat, array("O", "P", "N"))) {
+			if($current_etat!="") {
+				echo "<span style='color:red'>ERREUR en période $num_periode, l'état $current_etat est invalide.</span>";
+			}
+		}
+		else {
+			echo "Période $num_periode&nbsp;: ";
+			$sql="SELECT verouiller, date_fin FROM periodes p, 
+								j_scol_classes jsc 
+							WHERE jsc.login='".$_SESSION['login']."' AND 
+								jsc.id_classe=p.id_classe AND 
+								p.id_classe='".$_POST['id_classe']."' AND 
+								p.num_periode='".$num_periode."';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+				if ($lig->date_fin==0) {//la date de fin n'est pas renseignee, on la renseigne
+					$sql="UPDATE periodes SET verouiller='".$current_etat."', date_verrouillage=NOW(), date_fin=NOW() WHERE (num_periode='".$num_periode."' and id_classe='".$_POST['id_classe']."')";
+				} else {
+					$sql="UPDATE periodes SET verouiller='".$current_etat."', date_verrouillage=NOW() WHERE (num_periode='".$num_periode."' and id_classe='".$_POST['id_classe']."')";
+				}
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!$res) {
+					echo "<span style='color:red'>KO</span>";
+				}
+				else {
+					echo "<span style='color:".$couleur_verrouillage_periode[$current_etat]."' title=\"Période ".$traduction_verrouillage_periode[$current_etat].".
+".$explication_verrouillage_periode[$current_etat]."\">Période ".$traduction_verrouillage_periode[$current_etat]."</span>";
+				}
+			}
+			else {
+				echo "<span style='color:red'>KO</span>";
+			}
+		}
+		echo "<br />";
+	}
+	echo "<p>Rafraichissez la page pour prendre en compte les modifications.</p>";
+
 	die();
 }
 
