@@ -1620,7 +1620,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	}
 
 	if($url_cdt!="") {
-		$html.="<div style='float:right; width:16px; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cdt."' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+		$html.="<div style='float:right; width:16px; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cdt."' title=\"Consulter l'ensemble du cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	}
 
 	$temoin_rss_ele=retourne_temoin_ou_lien_rss($login_eleve);
@@ -1731,7 +1731,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 		}
 
 		if($url_cdt!="") {
-			$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_cdt' title=\"Consulter le cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
+			$html.="<div style='float:right; width:4em; font-size:x-small; text-align:right; margin: 3px;'><a href='$url_cdt' title=\"Consulter l'ensemble du cahier de textes pour l'enseignement choisi.\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 		}
 
 		$temoin_rss_ele=retourne_temoin_ou_lien_rss($login_eleve);
