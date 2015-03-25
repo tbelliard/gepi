@@ -69,15 +69,15 @@ if((isset($_GET['mode']))&&($_GET['mode']="change_verrouillage")&&
 		}
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$res) {
-			echo "<span style='color:red'>KO</a>";
+			echo "<span style='color:red'>KO</span>";
 		}
 		else {
 			echo "<span style='color:".$couleur_verrouillage_periode[$_GET['etat']]."' title=\"Période ".$traduction_verrouillage_periode[$_GET['etat']].".
-".$explication_verrouillage_periode[$_GET['etat']]."\">Période ".$traduction_verrouillage_periode[$_GET['etat']]."</a>";
+".$explication_verrouillage_periode[$_GET['etat']]."\">Période ".$traduction_verrouillage_periode[$_GET['etat']]."</span>";
 		}
 	}
 	else {
-		echo "<span style='color:red'>KO</a>";
+		echo "<span style='color:red'>KO</span>";
 	}
 	die();
 }
