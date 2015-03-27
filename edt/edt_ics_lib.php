@@ -1623,6 +1623,17 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		$html.="<div style='float:right; width:16px; font-size:x-small; text-align:right; margin: 3px;'><a href='".$url_cdt."' title=\"Consulter l'ensemble du cahier de textes\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a></div>";
 	}
 
+	// 20150327
+	$delai = getSettingValue("delai_devoirs");
+	if(($delai=="")||($delai==0)||(!preg_match("/^[0-9]{1,}$/", $delai))) {
+		$html.="<p style='margin-left:4em; text-indent:-4em; color:red'>Erreur&nbsp;: Délai de visualisation du travail personnel non défini.<br />Contactez l'administrateur de GEPI de votre établissement.</p>";
+		$delai=1;
+	}
+
+	//$html.="delai=$delai<br />";
+
+	$ts_max=time()+3600*24*$delai;
+
 	$temoin_rss_ele=retourne_temoin_ou_lien_rss($login_eleve);
 	if($temoin_rss_ele!="") {
 		$html.="<div style='float:right; margin-right:0.5em; margin-top:3px; '>".$temoin_rss_ele."</div>\n";
@@ -1641,7 +1652,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				jec.id_classe='".$id_classe."' AND 
 				cde.contenu!='' AND 
 				cde.date_ct>='".$ts_debut_jour."' AND 
-				cde.date_ct<'".$ts_debut_jour_suivant."' AND 
+				cde.date_ct<'".min($ts_debut_jour_suivant,$ts_max)."' AND 
 				cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
 				jgm.id_groupe=jeg.id_groupe
 				ORDER BY jgm.id_matiere;";
