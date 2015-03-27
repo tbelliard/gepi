@@ -1759,7 +1759,7 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 			$delai=1;
 		}
 
-		$ts_max=time()+3600*$delai+1;
+		$ts_max=time()+3600*24*$delai+1;
 
 		$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde
 				WHERE cde.id_groupe='".$lig_cours->id_groupe."' AND 
