@@ -1649,6 +1649,66 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$html.="Aucun travail à faire pour le $display_date.";
+
+		// 20150327
+		$delai = getSettingValue("delai_devoirs");
+		if(($delai=="")||($delai==0)||(!preg_match("/^[0-9]{1,}$/", $delai))) {
+			$html.="<p style='margin-left:4em; text-indent:-4em; color:red'>Erreur&nbsp;: Délai de visualisation du travail personnel non défini.<br />Contactez l'administrateur de GEPI de votre établissement.</p>";
+			$delai=1;
+		}
+
+		//$html.="delai=$delai<br />";
+
+		$ts_max=time()+3600*24*$delai+1;
+
+		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec, 
+					j_groupes_matieres jgm
+				WHERE jeg.login='".$login_eleve."' AND 
+					jeg.id_groupe=cde.id_groupe AND 
+					jec.login=jeg.login AND 
+					jec.periode=jeg.periode AND 
+					jec.id_classe='".$id_classe."' AND 
+					cde.contenu!='' AND 
+					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct<'".$ts_max."' AND 
+					cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
+					jgm.id_groupe=jeg.id_groupe
+					ORDER BY cde.date_ct, jgm.id_matiere;";
+		//$html.="$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_jours_travaux=mysqli_num_rows($res);
+		if($nb_jours_travaux>0) {
+			if($nb_jours_travaux==1) {
+				$html.="<hr />Mais ".$nb_jours_travaux." travail à faire dans les jours qui suivent en ";
+			}
+			else {
+				$html.="<hr />Mais ".$nb_jours_travaux." travaux à faire dans les jours qui suivent.<br />";
+			}
+
+			$cpt_tmp=0;
+			while($lig=mysqli_fetch_object($res)) {
+				if(!isset($tab_group_edt[$lig->id_groupe])) {
+					$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
+				}
+				$current_matiere_cdt=$tab_group_edt[$lig->id_groupe]['matiere']['nom_complet'];
+
+				/*
+				if(!isset($tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']])) {
+					$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']]=get_couleur_edt_matiere($tab_group_edt[$lig->id_groupe]['matiere']['matiere']);
+				}
+				*/
+				if($cpt_tmp>0) {
+					$html.=", ";
+				}
+
+				$html.=$current_matiere_cdt;
+
+				$cpt_tmp++;
+			}
+			$html.=".<br />";
+		}
 	}
 	else {
 		$html.="<p>Travaux personnels pour le ".strftime("%a %d %b", $ts_display_date)."</p>";
@@ -1683,6 +1743,63 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 
 		}
 
+		// 20150327
+		$delai = getSettingValue("delai_devoirs");
+		if(($delai=="")||($delai==0)||(!preg_match("/^[0-9]{1,}$/", $delai))) {
+			$html.="<p style='margin-left:4em; text-indent:-4em; color:red'>Erreur&nbsp;: Délai de visualisation du travail personnel non défini.<br />Contactez l'administrateur de GEPI de votre établissement.</p>";
+			$delai=1;
+		}
+
+		$ts_max=time()+3600*24*$delai+1;
+
+		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
+					j_eleves_groupes jeg, 
+					j_eleves_classes jec, 
+					j_groupes_matieres jgm
+				WHERE jeg.login='".$login_eleve."' AND 
+					jeg.id_groupe=cde.id_groupe AND 
+					jec.login=jeg.login AND 
+					jec.periode=jeg.periode AND 
+					jec.id_classe='".$id_classe."' AND 
+					cde.contenu!='' AND 
+					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct<'".$ts_max."' AND 
+					cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
+					jgm.id_groupe=jeg.id_groupe
+					ORDER BY cde.date_ct, jgm.id_matiere;";
+		//$html.="$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_jours_travaux=mysqli_num_rows($res);
+		if($nb_jours_travaux>0) {
+			if($nb_jours_travaux==1) {
+				$html.="<hr />Et ".$nb_jours_travaux." travail à faire dans les jours qui suivent en ";
+			}
+			else {
+				$html.="<hr />Et ".$nb_jours_travaux." travaux à faire dans les jours qui suivent.<br />";
+			}
+
+			$cpt_tmp=0;
+			while($lig=mysqli_fetch_object($res)) {
+				if(!isset($tab_group_edt[$lig->id_groupe])) {
+					$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
+				}
+				$current_matiere_cdt=$tab_group_edt[$lig->id_groupe]['matiere']['nom_complet'];
+
+				/*
+				if(!isset($tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']])) {
+					$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']]=get_couleur_edt_matiere($tab_group_edt[$lig->id_groupe]['matiere']['matiere']);
+				}
+				*/
+				if($cpt_tmp>0) {
+					$html.=", ";
+				}
+
+				$html.=$current_matiere_cdt;
+
+				$cpt_tmp++;
+			}
+			$html.=".<br />";
+		}
 	}
 
 	return $html;
