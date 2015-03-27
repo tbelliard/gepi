@@ -1661,17 +1661,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	if(mysqli_num_rows($res)==0) {
 		$html.="Aucun travail à faire pour le $display_date.";
 
-		// 20150327
-		$delai = getSettingValue("delai_devoirs");
-		if(($delai=="")||($delai==0)||(!preg_match("/^[0-9]{1,}$/", $delai))) {
-			$html.="<p style='margin-left:4em; text-indent:-4em; color:red'>Erreur&nbsp;: Délai de visualisation du travail personnel non défini.<br />Contactez l'administrateur de GEPI de votre établissement.</p>";
-			$delai=1;
-		}
-
-		//$html.="delai=$delai<br />";
-
-		$ts_max=time()+3600*24*$delai+1;
-
+		// On affiche aussi le nombre de travaux pour les jours suivants
 		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
 					j_eleves_groupes jeg, 
 					j_eleves_classes jec, 
@@ -1682,7 +1672,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					jec.periode=jeg.periode AND 
 					jec.id_classe='".$id_classe."' AND 
 					cde.contenu!='' AND 
-					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct>='".($ts_debut_jour+3600*24)."' AND 
 					cde.date_ct<'".$ts_max."' AND 
 					cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
 					jgm.id_groupe=jeg.id_groupe
@@ -1692,10 +1682,10 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		$nb_jours_travaux=mysqli_num_rows($res);
 		if($nb_jours_travaux>0) {
 			if($nb_jours_travaux==1) {
-				$html.="<hr />Mais ".$nb_jours_travaux." travail à faire dans les jours qui suivent en ";
+				$html.="<hr />Mais ".$nb_jours_travaux." travail à faire pour les jours qui suivent en ";
 			}
 			else {
-				$html.="<hr />Mais ".$nb_jours_travaux." travaux à faire dans les jours qui suivent.<br />";
+				$html.="<hr />Mais ".$nb_jours_travaux." travaux à faire pour les jours qui suivent.<br />";
 			}
 
 			$cpt_tmp=0;
@@ -1755,14 +1745,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		}
 
 		// 20150327
-		$delai = getSettingValue("delai_devoirs");
-		if(($delai=="")||($delai==0)||(!preg_match("/^[0-9]{1,}$/", $delai))) {
-			$html.="<p style='margin-left:4em; text-indent:-4em; color:red'>Erreur&nbsp;: Délai de visualisation du travail personnel non défini.<br />Contactez l'administrateur de GEPI de votre établissement.</p>";
-			$delai=1;
-		}
-
-		$ts_max=time()+3600*24*$delai+1;
-
+		// On affiche aussi le nombre de travaux pour les jours suivants
 		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
 					j_eleves_groupes jeg, 
 					j_eleves_classes jec, 
@@ -1773,7 +1756,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					jec.periode=jeg.periode AND 
 					jec.id_classe='".$id_classe."' AND 
 					cde.contenu!='' AND 
-					cde.date_ct>='".$ts_debut_jour."' AND 
+					cde.date_ct>='".($ts_debut_jour+3600*24)."' AND 
 					cde.date_ct<'".$ts_max."' AND 
 					cde.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."' AND
 					jgm.id_groupe=jeg.id_groupe
@@ -1783,10 +1766,10 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		$nb_jours_travaux=mysqli_num_rows($res);
 		if($nb_jours_travaux>0) {
 			if($nb_jours_travaux==1) {
-				$html.="<hr />Et ".$nb_jours_travaux." travail à faire dans les jours qui suivent en ";
+				$html.="<hr />Et ".$nb_jours_travaux." travail à faire pour les jours qui suivent en ";
 			}
 			else {
-				$html.="<hr />Et ".$nb_jours_travaux." travaux à faire dans les jours qui suivent.<br />";
+				$html.="<hr />Et ".$nb_jours_travaux." travaux à faire pour les jours qui suivent.<br />";
 			}
 
 			$cpt_tmp=0;
