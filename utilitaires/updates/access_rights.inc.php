@@ -1247,18 +1247,6 @@ autre='F',
 description='Saisie des engagements pour un utilisateur',
 statut='';";
 
-$tab_req[] = "INSERT INTO droits SET id='/mod_lsl/index.php',
-administrateur='V',
-professeur='F',
-cpe='F',
-scolarite='F',
-eleve='F',
-responsable='F',
-secours='F',
-autre='F',
-description='Index du module LSL',
-statut='';";
-
 $tab_req[] = "INSERT INTO droits SET id='/groupes/correction_inscriptions_grp_csv.php',
 administrateur='V',
 professeur='F',

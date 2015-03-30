@@ -62,9 +62,6 @@ Divers:
   et pour aller voir Gérer mon compte pour les autres personnels).
 - Possibilité dans Gestion générale/Configuration serveur de forcer l'affichage des erreurs PHP.
 
-Livret Scolaire Lycée:
-- Ajout d'une ébauche de module.
-
 
 Gepi-1.6.5 (14/06/2014)
 ===========================
