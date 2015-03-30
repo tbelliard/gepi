@@ -3947,7 +3947,7 @@ else {
 			}
 			echo ".<br />Et contrôlez par ailleurs l'ordre des catégories dans ";
 			if($_SESSION['statut']=='administrateur') {
-				echo "<a href='../classes/index.php'>Gestion des bases/Gestion des classes/&ltTelle_classe;&gt; Paramètres</a>";
+				echo "<a href='../classes/index.php'>Gestion des bases/Gestion des classes/&lt;Telle_classe&gt; Paramètres</a>";
 			}
 			else {
 				echo "Gestion des bases/Gestion des classes/&lt;Telle_classe&gt; Paramètres";
