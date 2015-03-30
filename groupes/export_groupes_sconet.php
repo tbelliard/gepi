@@ -132,7 +132,18 @@ elseif($step==1) {
 	saveSetting("NumExportGroupesSconet", $num_envoi);
 
 	$f=fopen("../temp/".$tempdir."/export_groupes_".$num_fich.".xml", "w+");
-	fwrite($f, "<IMPORT_ELEVES VERSION=\"1.3\"><PARAMETRES><UAJ>".getSettingValue('GepiSchoolRne')."</UAJ><ANNEE_SCOLAIRE>".mb_substr(getSettingValue('gepiYear'), 0, 4)."</ANNEE_SCOLAIRE><DATE_IMPORT>".strftime("%d/%m/%Y")."</DATE_IMPORT><NUM_ENVOI>50218</NUM_ENVOI><LOGICIEL>GEPI</LOGICIEL></PARAMETRES><DONNEES><ELEVES>");
+	fwrite($f, "<?xml version='1.0' encoding='UTF-8'?>
+<IMPORT_ELEVES VERSION=\"1.3\">
+	<PARAMETRES>
+		<UAJ>".getSettingValue('GepiSchoolRne')."</UAJ>
+		<ANNEE_SCOLAIRE>".mb_substr(getSettingValue('gepiYear'), 0, 4)."</ANNEE_SCOLAIRE>
+		<DATE_IMPORT>".strftime("%d/%m/%Y")."</DATE_IMPORT>
+		<NUM_ENVOI>50218</NUM_ENVOI>
+		<LOGICIEL>GEPI</LOGICIEL>
+	</PARAMETRES>
+	<DONNEES>
+		<ELEVES>
+		");
 	fclose($f);
 
 	echo "<p>Préparation initiale effectuée.</p>
@@ -188,7 +199,12 @@ else {
 
 					$lig2=mysqli_fetch_object($res2);
 
-					$chaine_eleve="<ELEVE><ELEVE_ID>$lig2->ele_id</ELEVE_ID><NOM>$lig2->nom</NOM><PRENOM>$lig2->prenom</PRENOM><DATE_NAISS>$lig2->naissance</DATE_NAISS><GROUPES>";
+					$chaine_eleve="<ELEVE>
+			<ELEVE_ID>$lig2->ele_id</ELEVE_ID>
+			<NOM>$lig2->nom</NOM>
+			<PRENOM>$lig2->prenom</PRENOM>
+			<DATE_NAISS>$lig2->naissance</DATE_NAISS>
+			<GROUPES>";
 
 					// Récupérer la dernière classe/période de l'élève
 					$sql="SELECT id_classe, periode FROM j_eleves_classes WHERE login='$lig->login' ORDER BY periode DESC LIMIT 1;";
@@ -210,13 +226,19 @@ else {
 						else {
 							echo "$lig2->nom $lig2->prenom";
 							while($lig_grp=mysqli_fetch_object($res_grp)) {
-								$info_grp=preg_replace("/[^A-Za-z0-9_\-]/", "", ensure_ascii(preg_replace("/ /", "_", get_info_grp($lig_grp->id_groupe, $tab_infos=array('classes'), ""))))."_".$lig_grp->id_groupe;
+								$info_grp=$lig_grp->id_groupe;
 
-								$chaine_eleve.="<GROUPE><CODE_GROUPE>$info_grp</CODE_GROUPE><DATE_DEBUT_GROUPE>$debut_annee</DATE_DEBUT_GROUPE><DATE_FIN_GROUPE>$fin_annee</DATE_FIN_GROUPE></GROUPE>";
+								$chaine_eleve.="				<GROUPE>
+					<CODE_GROUPE>$info_grp</CODE_GROUPE>
+					<DATE_DEBUT_GROUPE>$debut_annee</DATE_DEBUT_GROUPE>
+					<DATE_FIN_GROUPE>$fin_annee</DATE_FIN_GROUPE>
+				</GROUPE>";
 							}
 						}
 
-						$chaine_eleve.="</GROUPES></ELEVE>";
+						$chaine_eleve.="			</GROUPES>
+		</ELEVE>
+		";
 
 						fwrite($f, $chaine_eleve);
 
@@ -254,7 +276,9 @@ else {
 		}
 	}
 	else {
-		fwrite($f, "</ELEVES></DONNEES></IMPORT_ELEVES>");
+		fwrite($f, "</ELEVES>"
+		   . "</DONNEES>"
+		   . "</IMPORT_ELEVES>");
 
 		echo "<p>Parcours terminé.</p>
 <!--p><a href='../temp/".$tempdir."/export_groupes_".$num_fich.".xml' target='_blank'>Récupérer le fichier XML</a> (<em>effectuer un clic-droit/enregistrer la cible</em>)</p-->
