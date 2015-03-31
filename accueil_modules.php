@@ -587,6 +587,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	}
 	unset($nouveauItem);
 
+// Engagements
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_engagements/index_admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_mod_engagements') ;
+		$nouveauItem->titre="Engagements" ;
+		$nouveauItem->expli="Pour gérer le module Engagements (délégués de classe, représentants de parents,...)" ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
 
 $tbs_microtime	="";
 $tbs_pmv="";
