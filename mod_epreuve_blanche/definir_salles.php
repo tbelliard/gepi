@@ -334,10 +334,10 @@ if(!isset($mode)) {
 		*/
 		$menu_a_droite.="<div style='float:right; width:18em;'>\n";
 
-		$menu_a_droite.="<div style='text-align:center; border: 1px solid black;'>\n";
+		$menu_a_droite.="<div style='text-align:center; border: 1px solid black; padding:3px;' class='fieldset_opacite50'>\n";
 		$menu_a_droite.="<p><a href='".$_SERVER['PHP_SELF']."?mode=affect_eleves&amp;id_epreuve=$id_epreuve'";
 		$menu_a_droite.=" onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-		$menu_a_droite.=">Affecter les élèves dans les salles</a>.</p>";
+		$menu_a_droite.="><img src='../images/icons/eleve.png' class='icone16' alt='Eleve' /> Affecter les élèves dans les salles</a>.</p>";
 		$menu_a_droite.="</div>\n";
 
 	}
@@ -371,7 +371,7 @@ if(!isset($mode)) {
 				$menu_a_droite.="<div style='float:right; width:18em;'>\n";
 			}
 
-			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;'>\n";
+			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;; padding:3px;' class='fieldset_opacite50'>\n";
 			$menu_a_droite.="<p>Sélectionner des salles parmi les salles définies antérieurement pour d'autres épreuves.<br />\n";
 			$menu_a_droite.=$chaine_salles_existantes;
 			$menu_a_droite.="</p>\n";
@@ -407,7 +407,7 @@ if(!isset($mode)) {
 				$menu_a_droite.="<div style='float:right; width:18em;'>\n";
 			}
 
-			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;'>\n";
+			$menu_a_droite.="<div style='border:1px solid black;margin-top:5px;; padding:3px;' class='fieldset_opacite50'>\n";
 			$menu_a_droite.="<p>Sélectionner des salles parmi les salles de cours définies dans un autre module.<br />\n";
 			$menu_a_droite.=$chaine_salles_cours_existantes;
 			$menu_a_droite.="</p>\n";
