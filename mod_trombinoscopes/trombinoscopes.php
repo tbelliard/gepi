@@ -1372,6 +1372,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	}
 	//===================================================
 
+	$acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='4' summary='Trombino'>\n";
 
@@ -1416,10 +1417,12 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 					$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
 				}
 
+				$lien_upload_propose="n";
 				if(($action_affiche=='classe')||($action_affiche=='groupe')) {
 					if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))) {
-						echo "<a href=\"#\" onclick=\"afficher_div_upload_photo('".$login_trombinoscope[$i]."','".addslashes($nom_es." ".$prenom_es)."');afficher_div('div_upload_photo','y',-20,20);return false;\">";
+						echo "<a href=\"#\" onclick=\"afficher_div_upload_photo('".$login_trombinoscope[$i]."','".addslashes($nom_es." ".$prenom_es)."');afficher_div('div_upload_photo','y',-20,20);return false;\" title=\"Téléverser une (nouvelle) photo pour $alt_nom_prenom_aff\">";
+						$lien_upload_propose="y";
 					}
 				}
 				echo "<img src='";
@@ -1429,7 +1432,9 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				else {
 					echo "images/trombivide.jpg";
 				}
-				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
+				echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\"";
+				if($lien_upload_propose=="n") {echo " title=\"".$alt_nom_prenom_aff."\"";}
+				echo " />\n";
 				if(($action_affiche=='classe')||($action_affiche=='groupe')) {
 					if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 					(($_SESSION['statut']=='cpe')&&(getSettingAOui('CpeAccesUploadPhotosEleves')))) {
@@ -1438,7 +1443,12 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 				echo "<br /><span>\n";
 
-				echo $nom_prenom_aff;
+				if($acces_visu_eleve) {
+					echo "<a href='../eleves/visu_eleve.php?ele_login=".$login_trombinoscope[$i]."' style='text-decoration:none; color:black;' title=\"Voir les onglets élève dans une nouvelle fenêtre\" target='_blank'>".$nom_prenom_aff."</a>";
+				}
+				else {
+					echo $nom_prenom_aff;
+				}
 
 				if ( $matiere_prof[$i] != '' ) {
 					echo "<span'>$matiere_prof[$i]</span>\n";
