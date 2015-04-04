@@ -765,7 +765,20 @@ echo "</div>";
 
 echo "<h2 class='gepi'>Configuration de l'évaluation :</h2>\n";
 
+require('cc_lib.php');
+$explication_ramener_sur_referentiel_case_cochee="Ce mode de calcul n'est pas un calcul de moyenne.
+Cela peut néanmoins être utile pour des notes qui correspondraient à plusieurs petits contrôles destinés à ne former qu'une seule note.
+Il conviendra de placer tous ces contrôles dans un(e) ".getSettingValue('gepi_denom_boite')." particulier distinct des autres évaluations.
 
+A noter: Il est également possible de saisir des $nom_cc 
+              plutôt que d'utiliser la présente solution.
+              Voir le lien $nom_cc sur la ligne de liens
+              sous l'entête dans votre carnet de notes.";
+$explication_ramener_sur_referentiel_case_non_cochee="C'est le mode normal de calcul d'une moyenne:
+On fait la somme des notes et on divise par le nombre de notes.
+
+Cette explication est un chouia plus complexe si tous les coefficients de toutes les évaluations ne sont pas égaux:
+C'est la somme des note*coef divisée par la somme des coefficients.";
 
 if($interface_simplifiee=="y"){
 	// Récupérer les paramètres à afficher.
@@ -868,8 +881,8 @@ if($interface_simplifiee=="y"){
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
     		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\" "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
 			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
-			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />\n";
-			echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
+			echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
+			echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -1049,9 +1062,9 @@ else{
 	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
 	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
-		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
-		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
-		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
+		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
+		echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
+		echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
 		echo "</td>";
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr></table>\n";
