@@ -924,4 +924,35 @@ function test_prof_proprietaire_du_devoir($login, $id_devoir) {
 		return false;
 	}
 }
+
+/**
+ * Retourne l'identifiant d'un cahier de notes associé à un groupe et une période
+ *
+ * @param integer $id_groupe identifant de groupe
+ * @param integer $periode numero de periode (ou vide si toutes les périodes)
+ *
+ * @return integer ou array
+ */
+function get_id_cahier_notes($id_groupe,$periode) {
+	if($periode!="") {
+		$retour="";
+		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='".$id_groupe."' AND periode='".$periode."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$retour=$lig->id_cahier_notes;
+		}
+	}
+	else {
+		$retour=array();
+		$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='".$id_groupe."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$retour[$lig->periode]=$lig->id_cahier_notes;
+			}
+		}
+	}
+	return $retour;
+}
 ?>

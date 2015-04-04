@@ -836,6 +836,12 @@ if(getSettingAOui('active_bulletins')) {
 		}
 	}
 
+	if (($condition)&&($this->statutUtilisateur=='scolarite')) {
+		  $this->creeNouveauItem("/cahier_notes/extraction_notes_cn.php",
+				  "Extraction/export CSV des CN",
+				  "Permet d'effectuer une extraction/export CSV des notes des carnets de notes de telle ou telle classe.");
+	}
+
 	if ($this->statutUtilisateur=='administrateur'){
 		$this->creeNouveauItem("/cahier_notes/autorisation_exceptionnelle_saisie.php",
 			"Autorisation exceptionnelle de saisie de CN",

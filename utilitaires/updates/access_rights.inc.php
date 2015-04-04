@@ -1378,6 +1378,18 @@ autre='F',
 description='Informer des dates d événements pour les classes',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_notes/extraction_notes_cn.php',
+administrateur='F',
+professeur='F',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Extraction et export des notes des carnets de notes',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
