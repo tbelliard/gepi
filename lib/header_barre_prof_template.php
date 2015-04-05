@@ -639,6 +639,8 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_trombinoscopes/trombinoscopes.php' , "texte"=>"Trombinoscope");
 		$tmp_sous_menu2=array();
 		$cpt_sous_menu2=0;
+		$tmp_sous_menu2[$cpt_sous_menu2]=array("lien"=> '/mod_trombinoscopes/trombinoscopes.php' , "texte"=>"Trombinoscope");
+		$cpt_sous_menu2++;
 		foreach($mes_groupes as $tmp_group) {
 			$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/mod_trombinoscopes/trombino_pdf.php?classe=&amp;groupe='.$tmp_group['id'].'&amp;equipepeda=&amp;discipline=&amp;statusgepi=&amp;affdiscipline=';
 			if($nom_ou_description_groupe_barre_h=='name') {
