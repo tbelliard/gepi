@@ -245,6 +245,16 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['abs2_rattachement_auto_saisies_englobees'])) {
+			if (!saveSetting("abs2_rattachement_auto_saisies_englobees", $_POST['abs2_rattachement_auto_saisies_englobees'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_rattachement_auto_saisies_englobees !";
+			}
+		} else {
+			if (!saveSetting("abs2_rattachement_auto_saisies_englobees", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_rattachement_auto_saisies_englobees !";
+			}
+		}
+
 		if (isset($_POST['abs2_jouer_sound_erreur'])) {
 			if (!saveSetting("abs2_jouer_sound_erreur", $_POST['abs2_jouer_sound_erreur'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_jouer_sound_erreur !";
@@ -385,6 +395,12 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 </p>
 <p>
 <?php if ((getSettingValue("abs2_montrer_creneaux_precedents")=='y') or (getSettingValue("abs2_afficher_saisies_creneau_courant")=='y')) echo "<p style='color:red'> VOUS AVEZ COCHÉ UNE DES DEUX CASES CI-DESSUS : l'affichage de ces informations au moment de l'appel professeur est susceptible de fausser son jugement. Il est possible que l'enseignant se fie uniquement à ces informations (sans effectuer un contrôle visuel effectif) et que son appel soit erroné. Sa responsabilité pourrait être engagée. Vous pouvez-vous rapprocher de votre chef d'établissement afin de convenir de ce réglage.";?></p>
+</p>
+
+<p>
+	<input type="checkbox" name="abs2_rattachement_auto_saisies_englobees" id="abs2_rattachement_auto_saisies_englobees" value="y"
+	<?php if (getSettingAOui("abs2_rattachement_auto_saisies_englobees")) echo " checked='checked'"; ?> />
+	<label for="abs2_rattachement_auto_saisies_englobees">&nbsp;Rattacher automatiquement les saisies englobées lors de la saisie sur le groupe (<em style='color:red'>expérimental</em>)</label>
 </p>
 
 <p>

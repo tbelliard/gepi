@@ -319,6 +319,19 @@ for($i=0; $i<$total_eleves; $i++) {
 
     $saisie_discipline = false;
 
+
+
+	// 20150404
+	// Il faudrait pouvoir tester ici si la saisie peut et doit être rattachée à un traitement existant
+	// Pb: si un prof saisit une absence... puis s'il s'agit d'un retard... et qu'il faut ensuite un passage à l'infirmerie, il va être délicat de se baser sur le fait que la saisie est sur le même créneau (englobée?)...
+
+	// Si on teste juste qu'une saisie englobe date_debut_saisie_engloblante<=date_debut_saisie et date_fin_saisie_engloblante>date_fin_saisie
+	// ou date_debut_saisie_engloblante<date_debut_saisie et date_fin_saisie_engloblante>=date_fin_saisie
+	// est-ce qu'on ne va pas rater des infos dans le cas d'un élève qui arrive avant sa date prévue de retour?
+
+
+
+
 	$info_type_saisie="";
     if (isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) {
 	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_absence_eleve'][$i]);
@@ -368,7 +381,90 @@ for($i=0; $i<$total_eleves; $i++) {
 			$message_enregistrement .= " <a href='../mod_alerte/form_message.php?sujet=[".$eleve->getClasse()->getNom()."] ".$eleve->getNom().' '.$eleve->getPrenom()."' title=\"Déposer un message d'alerte à propos de cet élève dans le module Alertes.\" target=\"_blank\"><img src='$gepiPath/images/icons/no_mail.png' class='icone16' alt='Dispositif Alertes' /></a>";
 		}
 
-	    $message_enregistrement .= "<br/>";
+	$abs2_rattachement_auto_saisies_englobees=getSettingValue("abs2_rattachement_auto_saisies_englobees");
+	if($abs2_rattachement_auto_saisies_englobees=="y") {
+		//$acces_visu_traitement=acces("/mod_abs2/visu_traitement.php", $_SESSION['statut']);
+		$acces_visu_traitement=false;
+		if((acces("/mod_abs2/visu_traitement.php", $_SESSION['statut']))&&(in_array($_SESSION['statut'], array('cpe', 'scolarite', 'administrateur')))) {
+			$acces_visu_traitement=true;
+		}
+
+		$debut_saisie=strftime("%Y-%m-%d %H:%M:%S", $saisie->getDebutAbs('U'));
+		$fin_saisie=strftime("%Y-%m-%d %H:%M:%S", $saisie->getFinAbs('U'));
+		// Recherche d'une saisie/traitement englobant la saisie courante
+		$sql="SELECT a_s.*, at.id AS id_traitement FROM a_saisies a_s, 
+					j_traitements_saisies jts, 
+					a_traitements at 
+				WHERE a_s.eleve_id='".$saisie->getEleve()->getId()."' AND 
+					a_s.deleted_at IS NULL AND 
+					at.deleted_at IS NULL AND 
+					a_s.id=jts.a_saisie_id AND 
+					at.id=jts.a_traitement_id AND 
+					((a_s.debut_abs<='".$debut_saisie."' AND a_s.fin_abs>'".$fin_saisie."') OR (a_s.debut_abs<'".$debut_saisie."' AND a_s.fin_abs>='".$fin_saisie."')) AND 
+					a_s.id!='".$saisie->getPrimaryKey()."';";
+		//$message_enregistrement .= "Test de rattachement pour ".$saisie->getEleve()->getLogin().":<br />$sql<br/>";
+		$res=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res)==1) {
+			$lig_saisie_conteneur=mysqli_fetch_object($res);
+			// Pour afficher des infos:
+			$saisie_conteneur=AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($lig_saisie_conteneur->id);
+			$message_enregistrement .= " (<em><a href='visu_saisie.php?id_saisie=".$lig_saisie_conteneur->id."' target='_blank' title=\"Saisie englobée par la saisie n°".$lig_saisie_conteneur->id." (du ".$saisie_conteneur->getDebutAbs('d/m/y H:i')." au ".$saisie_conteneur->getFinAbs('d/m/y H:i').")\">saisie englobée</a>";
+
+			$sql="SELECT 1=1 FROM j_traitements_saisies WHERE a_saisie_id='".$saisie->getPrimaryKey()."' AND a_traitement_id='".$lig_saisie_conteneur->id_traitement."';";
+			$res=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res)==0) {
+				$sql="INSERT INTO j_traitements_saisies SET  a_saisie_id='".$saisie->getPrimaryKey()."', a_traitement_id='".$lig_saisie_conteneur->id_traitement."';";
+				//$message_enregistrement .= "$sql<br/>";
+				$insert=mysqli_query($mysqli, $sql);
+				if($insert) {
+					if($acces_visu_traitement) {
+						$message_enregistrement.=" (<a href='visu_traitement.php?id_traitement=".$lig_saisie_conteneur->id_traitement."' title=\"Saisie rattachée au traitement n°".$lig_saisie_conteneur->id_traitement."\" target='_blank'>saisie rattachée</a>)";
+					}
+					else {
+						$message_enregistrement.=" (<span title=\"Saisie rattachée au traitement n°".$lig_saisie_conteneur->id_traitement."\" target='_blank'>saisie rattachée</span>)";
+					}
+				}
+				else {
+					$message_enregistrement.=" <span style='color:red'>(erreur lors du rattachement de la saisie)</span>";
+				}
+			}
+			$message_enregistrement.="</em>)";
+		}
+	}
+	$message_enregistrement .= "<br/>";
+
+/*
+$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
+
+    $traitement_recherche_saisie_a_rattacher=$traitement;
+
+    $date_debut = null;
+    $date_fin = null;
+    $id_eleve_array = null;
+    $id_saisie_array = null;
+    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {//$saisie = new AbsenceEleveSaisie();
+	if ($date_debut == null || $saisie->getDebutAbs('U') < $date_debut->format('U')) {
+	    $date_debut = clone $saisie->getDebutAbs(null);
+	}
+	if ($date_fin == null || $saisie->getFinAbs('U') > $date_fin->format('U')) {
+	    $date_fin = clone $saisie->getFinAbs(null);
+	}
+	$id_eleve_array[] = $saisie->getEleveId();
+	$id_saisie_array[] = $saisie->getId();
+    }
+    if ($date_debut != null) date_date_set($date_debut, $date_debut->format('Y'), $date_debut->format('m'), $date_debut->format('d') - 1);
+    if ($date_fin != null) date_date_set($date_fin, $date_fin->format('Y'), $date_fin->format('m'), $date_fin->format('d') + 1);
+    $query->filterByPlageTemps($date_debut, $date_fin)->filterByEleveId($id_eleve_array)->filterById($id_saisie_array, Criteria::NOT_IN);
+
+$query->distinct();
+
+}
+*/
+
+
+
+
 	} else {
 	    $message_erreur_eleve[$id_eleve] .= format_verif_failures($saisie);
 	}
