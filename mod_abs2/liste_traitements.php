@@ -69,6 +69,8 @@ $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] :(isset($_GET["aff
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
 $imprime = isset($_POST["imprime"]) ? $_POST["imprime"] :(isset($_GET["imprime"]) ? $_GET["imprime"] : Null);
 
+$ne_pas_afficher_traitements_saisies_rattachees=isset($_POST["ne_pas_afficher_traitements_saisies_rattachees"]) ? $_POST["ne_pas_afficher_traitements_saisies_rattachees"] : "n";
+
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
@@ -224,65 +226,79 @@ if ($affichage == 'tableur') {
 
     $traitement_array_avec_data = Array();
     foreach ($results as $traitement) {
-        $traitement_data = Array();
-
-        $traitement_data['traitement'] = $traitement;
-
-        if ($traitement->getUtilisateurProfessionnel() != null) {
-            $traitement_data['utilisateur'] = $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom();
-        }
-
-        $eleve_col = new PropelObjectCollection();
-        foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-            if ($saisie->getEleve() != null) {
-                $eleve_col->add($saisie->getEleve());
+        if(isset($_POST['envoye_depuis_liste_traitements'])) {
+            if((isset($_POST['liste_traitements_id_traitement']))&&(in_array($traitement->getPrimaryKey(), $_POST['liste_traitements_id_traitement']))) {
+                $extraire_ce_traitement="y";
+            }
+            else {
+                $extraire_ce_traitement="n";
             }
         }
-        $traitement_data['eleve_str'] = '';
-        foreach ($eleve_col as $eleve) {
-            if (!$eleve_col->isFirst()) {
-                $traitement_data['eleve_str'] .= '; ';
-            }
-            $traitement_data['eleve_str'] .= ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
+        else {
+            $extraire_ce_traitement="y";
         }
 
-        $traitement_data['saisie_str'] = '';
-        foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-            $traitement_data['saisie_str'] .= $saisie->getDescription().'; ';
-        }
+	  if($extraire_ce_traitement=="y") {
+		  $traitement_data = Array();
 
-        $classe_col = new PropelObjectCollection();
-        foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-            if ($saisie->getClasse() != null) {
-                $classe_col->add($saisie->getClasse());
-            }
-        }
-        $traitement_data['classe_str'] = '';
-        foreach ($classe_col as $classe) {
-            $traitement_data['classe_str'] .= $classe->getNom().'; ';
-        }
+		  $traitement_data['traitement'] = $traitement;
 
-        if ($traitement->getAbsenceEleveMotif() != null) {
-            $traitement_data['motif_str'] = $traitement->getAbsenceEleveMotif()->getNom();
-        } else {
-            $traitement_data['motif_str'] = '';
-        }
+		  if ($traitement->getUtilisateurProfessionnel() != null) {
+		      $traitement_data['utilisateur'] = $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom();
+		  }
 
-        if ($traitement->getAbsenceEleveJustification() != null) {
-            $traitement_data['justification_str'] = $traitement->getAbsenceEleveJustification()->getNom();
-        } else {
-            $traitement_data['justification_str'] = '';
-        }
-        
-        $traitement_data['notification_str'] = '';
-        foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
-            $traitement_data['notification_str'] .= $notification->getDescription().'; ';
-        }
+		  $eleve_col = new PropelObjectCollection();
+		  foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+		      if ($saisie->getEleve() != null) {
+		          $eleve_col->add($saisie->getEleve());
+		      }
+		  }
+		  $traitement_data['eleve_str'] = '';
+		  foreach ($eleve_col as $eleve) {
+		      if (!$eleve_col->isFirst()) {
+		          $traitement_data['eleve_str'] .= '; ';
+		      }
+		      $traitement_data['eleve_str'] .= ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
+		  }
 
-        $traitement_data['creation_str'] = strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U'));
-        $traitement_data['modification_str'] = strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U'));
+		  $traitement_data['saisie_str'] = '';
+		  foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+		      $traitement_data['saisie_str'] .= $saisie->getDescription().'; ';
+		  }
 
-        $traitement_array_avec_data[] = $traitement_data;
+		  $classe_col = new PropelObjectCollection();
+		  foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+		      if ($saisie->getClasse() != null) {
+		          $classe_col->add($saisie->getClasse());
+		      }
+		  }
+		  $traitement_data['classe_str'] = '';
+		  foreach ($classe_col as $classe) {
+		      $traitement_data['classe_str'] .= $classe->getNom().'; ';
+		  }
+
+		  if ($traitement->getAbsenceEleveMotif() != null) {
+		      $traitement_data['motif_str'] = $traitement->getAbsenceEleveMotif()->getNom();
+		  } else {
+		      $traitement_data['motif_str'] = '';
+		  }
+
+		  if ($traitement->getAbsenceEleveJustification() != null) {
+		      $traitement_data['justification_str'] = $traitement->getAbsenceEleveJustification()->getNom();
+		  } else {
+		      $traitement_data['justification_str'] = '';
+		  }
+		  
+		  $traitement_data['notification_str'] = '';
+		  foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+		      $traitement_data['notification_str'] .= $notification->getDescription().'; ';
+		  }
+
+		  $traitement_data['creation_str'] = strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U'));
+		  $traitement_data['modification_str'] = strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U'));
+
+		  $traitement_array_avec_data[] = $traitement_data;
+	  }
     }
 
 
@@ -301,7 +317,7 @@ if ($affichage == 'tableur') {
 
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
-// debug_var();
+//debug_var();
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -312,6 +328,10 @@ if(!$menu){
 echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 echo '<form method="post" action="liste_traitements.php" id="liste_traitements">';
+
+// 20150404
+echo "<input type='hidden' name='envoye_depuis_liste_traitements' value='y' />";
+
 echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
   echo "<p>";
   
@@ -333,9 +353,17 @@ echo '<button type="submit" name="affichage" value="tableur" >Exporter au format
 <button type="submit" name="imprime" value="lot" title="Crée un courrier pour chaque élève de la liste affichée ci-dessous" >
 	Courriers par lot
 </button>
+
+<input type='checkbox' name='ne_pas_afficher_traitements_saisies_rattachees' id='ne_pas_afficher_traitements_saisies_rattachees' value='y' <?php
+	if((isset($ne_pas_afficher_traitements_saisies_rattachees))&&($ne_pas_afficher_traitements_saisies_rattachees=="y")) {
+		echo "checked ";
+	}
+?>/><label for='ne_pas_afficher_traitements_saisies_rattachees'>Ne pas afficher les traitements/saisies rattachés</label>
 <?php
 echo "</p>";
 
+// 20150404
+//echo '<table id="table_liste_absents" class="tb_absences joss_alt" style="border-spacing:0; width:100%">';
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%">';
 
 echo '<thead>';
@@ -657,274 +685,359 @@ echo '</span>';
 echo '</th>';
 
 //en tete commentaire
-echo '<th>';
-echo 'Com.';
-echo '</th>';
+echo "
+	<th>Com.</th>
+</tr>
+</thead>
+<tbody>";
 
-echo '</tr>';
-echo '</thead>';
-
-echo '<tbody>';
-
+$ligne_traitement=array();
+$cpt_traitement=0;
 foreach ($results as $traitement) {
-    //$traitement = new AbsenceEleveTraitement();
-    if ($results->getPosition() %2 == '1') {
-	    $background_couleur="rgb(220, 220, 220);";
-    } else {
-	    $background_couleur="rgb(210, 220, 230);";
-    }
+	$ligne_traitement[$cpt_traitement]="";
 
-    echo "<tr style='background-color :$background_couleur'>\n";
+	//$traitement = new AbsenceEleveTraitement();
+	if ($results->getPosition() %2 == '1') {
+		$background_couleur="rgb(220, 220, 220);";
+	} else {
+		$background_couleur="rgb(210, 220, 230);";
+	}
 
-    //donnees id
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%;'> ";
-    echo $traitement->getId();
-    echo "</a>";
-    echo '</td>';
-	
-    //donnees utilisateur
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    if ($traitement->getUtilisateurProfessionnel() != null) {
-	echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom();
-    }
-    echo "</a>";
-    echo '</td>';
+	//======================================
+	$ligne_traitement[$cpt_traitement].="
+	<tr style='background-color :$background_couleur'>\n";
 
-    //donnees eleve
-    echo '<td>';
-    $eleve_col = new PropelObjectCollection();
-    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-	if ($saisie->getEleve() != null) {
-	    $eleve_col->add($saisie->getEleve());
+	//donnees id
+		$ligne_traitement[$cpt_traitement].="
+		<td title=\"Voir/modifier le traitement n°".$traitement->getPrimaryKey()."\">
+			<input type='hidden' name='liste_traitements_id_traitement[]' value='".$traitement->getPrimaryKey()."' />
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey();
+	if($menu){
+			$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%;'> 
+				".$traitement->getId()."
+			</a>
+		</td>";
+
+	//======================================
+	//donnees utilisateur
+	$ligne_traitement[$cpt_traitement].="
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+	if ($traitement->getUtilisateurProfessionnel() != null) {
+		$ligne_traitement[$cpt_traitement].=$traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom();
 	}
-    }
-    $cpt_eleve_col=0;
-    foreach ($eleve_col as $eleve) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
-	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de ".$eleve->getNom().' '.$eleve->getPrenom()."'> ";
-	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
-	echo "</a>";
-	echo "<a href='liste_traitements.php?filter_classe[]=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
-	echo ($eleve->getClasse()->getNom());
-	echo "</a>";
-	if ($utilisateur->getAccesFicheEleve($eleve)) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
-	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
-	    echo ' (voir fiche)';
-	    echo "</a>";
+	$ligne_traitement[$cpt_traitement].="</a>
+		</td>";
+
+	//======================================
+	//donnees eleve
+	$ligne_traitement[$cpt_traitement].="
+		<td>";
+	$eleve_col = new PropelObjectCollection();
+	foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+		if ($saisie->getEleve() != null) {
+			$eleve_col->add($saisie->getEleve());
+		}
 	}
-	echo "</td>";
-	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%;'> ";
- 	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
-	    $nom_photo = $eleve->getNomPhoto(1);
-	    $photos = $nom_photo;
-	    //if (($nom_photo != "") && (file_exists($photos))) {
-	    if (($nom_photo != NULL) && (file_exists($photos))) {
-		$valeur = redimensionne_image_petit($photos);
-		echo ' <img src="'.$photos.'" style="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
-	    }
+	$cpt_eleve_col=0;
+	foreach ($eleve_col as $eleve) {
+		$ligne_traitement[$cpt_traitement].="
+			<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>
+				<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>
+					<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>
+						<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de ".$eleve->getNom().' '.$eleve->getPrenom()."'> 
+							".($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom())."
+						</a>
+						<a href='liste_traitements.php?filter_classe[]=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>
+							".($eleve->getClasse()->getNom())."
+						</a>";
+		if ($utilisateur->getAccesFicheEleve($eleve)) {
+			$ligne_traitement[$cpt_traitement].="
+						<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>
+							 (voir fiche)
+						 </a>";
+		}
+		$ligne_traitement[$cpt_traitement].="
+					</td>
+					<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>
+						<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve";
+		if($menu){
+			$ligne_traitement[$cpt_traitement].="&menu=false";
+		} 
+		$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%;'> ";
+		if ((getSettingValue("active_module_trombinoscopes")=='y')) {
+			$nom_photo = $eleve->getNomPhoto(1);
+			$photos = $nom_photo;
+			//if (($nom_photo != "") && (file_exists($photos))) {
+			if (($nom_photo != NULL) && (file_exists($photos))) {
+				$valeur = redimensionne_image_petit($photos);
+				$ligne_traitement[$cpt_traitement].=' <img src="'.$photos.'" style="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
+			}
+		}
+		$ligne_traitement[$cpt_traitement].="
+						</a>
+					</td>
+				</tr>
+			</table>";
+		$cpt_eleve_col++;
 	}
-	echo "</a>";
-	echo "</td></tr></table>";
-	$cpt_eleve_col++;
-    }
 
 	// Les saisies ont dû être supprimées.
-    if($cpt_eleve_col==0) {
+	if($cpt_eleve_col==0) {
 		$chaine_saisies_supprimees="";
 		$sql="SELECT a_saisie_id FROM j_traitements_saisies WHERE a_traitement_id='".$traitement->getPrimaryKey()."';";
 		$res_saisies=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res_saisies)>0) {
-			echo "<span style='color:red' title=\"Saisie supprimée.\">";
+			$ligne_traitement[$cpt_traitement].="
+			<span style='color:red' title=\"Saisie supprimée.\">";
 			$cpt_saisie_cachees=0;
 			while($lig_saisie=mysqli_fetch_object($res_saisies)) {
 				if($cpt_saisie_cachees>0) {
-					echo " - ";
+					$ligne_traitement[$cpt_traitement].=" - ";
 					$chaine_saisies_supprimees.=" - ";
 				}
 				$chaine_saisies_supprimees.=" <a href='visu_saisie.php?id_saisie=$lig_saisie->a_saisie_id' title='Voir la saisie supprimée n°$lig_saisie->a_saisie_id' style='color:red'>$lig_saisie->a_saisie_id</a>";
 
 				$saisie_suppr = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($lig_saisie->a_saisie_id);
 				if ($saisie_suppr != null) {
-					//echo $saisie_suppr->getEleve()->getLogin();
-					echo ($saisie_suppr->getEleve()->getCivilite().' '.$saisie_suppr->getEleve()->getNom().' '.$saisie_suppr->getEleve()->getPrenom());
+					$ligne_traitement[$cpt_traitement].=$saisie_suppr->getEleve()->getCivilite().' '.$saisie_suppr->getEleve()->getNom().' '.$saisie_suppr->getEleve()->getPrenom();
 					if ($utilisateur->getAccesFicheEleve($saisie_suppr->getEleve())) {
-						echo "<br /><a href='../eleves/visu_eleve.php?ele_login=".$saisie_suppr->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' style='color:red'>";
-						echo ' (voir fiche)';
-						echo "</a>";
+						$ligne_traitement[$cpt_traitement].="
+			<br />
+			<a href='../eleves/visu_eleve.php?ele_login=".$saisie_suppr->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' style='color:red'> (voir fiche)</a>";
 					}
 				}
 
 
 				$cpt_saisie_cachees++;
 			}
-			echo "</span>";
+			$ligne_traitement[$cpt_traitement].="</span>";
 		}
-    }
+	}
 
-    echo '</td>';
+	$ligne_traitement[$cpt_traitement].="
+		</td>";
 
-    //donnees saisies
-    echo '<td>';
-    if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width: 150px; width:100%'>";
-    }
-    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%;'>\n";
-	echo $saisie->getDescription();
-	echo "</a>";
-	echo "</td>";
-	echo "</tr>";
-    }
-    if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	echo "</table>";
-    }
+	//======================================
+	$tab_traitement[$cpt_traitement]=$traitement->getPrimaryKey();
+
+	//donnees saisies
+	$ligne_traitement[$cpt_traitement].="
+		<td>";
+	if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
+		$ligne_traitement[$cpt_traitement].="
+			<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width: 150px; width:100%'>";
+
+		$tab_traitement_avec_plusieurs_saisies[$traitement->getPrimaryKey()]=array();
+	}
+	foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
+		$ligne_traitement[$cpt_traitement].="
+				<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>
+					<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>
+						<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
+		if($menu){
+			$ligne_traitement[$cpt_traitement].="&menu=false";
+		} 
+		$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%;'>
+				".$saisie->getDescription()."
+						</a>
+					</td>
+				</tr>";
+		if(isset($tab_traitement_avec_plusieurs_saisies[$traitement->getPrimaryKey()])) {
+			$tab_traitement_avec_plusieurs_saisies[$traitement->getPrimaryKey()][]=$saisie->getPrimaryKey();
+		}
+
+		//if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
+			$tab_traitement_saisies[$cpt_traitement][]=$saisie->getPrimaryKey();
+		//}
+	}
+	if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
+		$ligne_traitement[$cpt_traitement].="
+			</table>";
+	}
 
 	// Les saisies ont dû être supprimées.
-    if($cpt_eleve_col==0) {
-        echo "<span style='color:red' title=\"Saisie supprimée.\">".$chaine_saisies_supprimees."</span>";
-    }
-
-    echo '</td>';
-
-    //donnees type
-    //echo '<td><nobr>';
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo" ' style='display: block; height: 100%; color: #330033'>\n";
-    if ($traitement->getAbsenceEleveType() != null) {
-	echo $traitement->getAbsenceEleveType()->getNom();
-    } else {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    //echo '</nobr></td>';
-    echo '</td>';
-
-    echo '<td>';
-    if ($traitement->getManquementObligationPresence()) {
-	echo 'oui';
-    } else {
-	echo 'non';
-    }
-    echo '</td>';
-
-    echo '<td>';
-    if ($traitement->getSousResponsabiliteEtablissement()) {
-	echo 'oui';
-    } else {
-	echo 'non';
-    }
-    echo '</td>';
-    //donnees motif
-    echo '<td>';
-    if ($traitement->getAbsenceEleveMotif() != null) {
-	echo $traitement->getAbsenceEleveMotif()->getNom();
-    } else {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    //donnees justification
-    //echo '<td><nobr>';
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'>\n";
-    if ($traitement->getAbsenceEleveJustification() != null) {
-	echo $traitement->getAbsenceEleveJustification()->getNom();
-    } else {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    //echo '</nobr></td>';
-    echo '</td>';
-
-    //donnees notification
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'> ";
-    echo "</a>";
-	if (count($traitement->getAbsenceEleveNotifications())){
-    echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width:150px; width: 100%;'>";
-    foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
-	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%;'>\n";
-	echo $notification->getDescription();
-	echo "</a>";
-	echo "</td>";
-	echo "</tr>";
-    }
-    echo "</table>";
+	if($cpt_eleve_col==0) {
+		$ligne_traitement[$cpt_traitement].="
+			<span style='color:red' title=\"Saisie supprimée.\">".$chaine_saisies_supprimees."</span>";
 	}
- //   echo "</a>";
-    echo '</td>';
+	$ligne_traitement[$cpt_traitement].="
+		</td>";
+	//======================================
 
-    //echo '<td><nobr>';
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')));
-    echo "</a>";
-    //echo '</nobr></td>';
-    echo '</td>';
+	//donnees type
+	$ligne_traitement[$cpt_traitement].="
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'>";
+	if ($traitement->getAbsenceEleveType() != null) {
+		$ligne_traitement[$cpt_traitement].=$traitement->getAbsenceEleveType()->getNom();
+	} else {
+		$ligne_traitement[$cpt_traitement].="&nbsp;";
+	}
+	$ligne_traitement[$cpt_traitement].="</a>
+		</td>
+		<td>";
+	if ($traitement->getManquementObligationPresence()) {
+		$ligne_traitement[$cpt_traitement].="oui";
+	} else {
+		$ligne_traitement[$cpt_traitement].="non";
+	}
+		$ligne_traitement[$cpt_traitement].="
+		</td>
+		<td>";
+	if ($traitement->getSousResponsabiliteEtablissement()) {
+		$ligne_traitement[$cpt_traitement].="oui";
+	} else {
+		$ligne_traitement[$cpt_traitement].="non";
+	}
+	$ligne_traitement[$cpt_traitement].="
+		</td>";
 
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U')));
-    echo "</a>";
-    echo '</td>';
+	//donnees motif
+	$ligne_traitement[$cpt_traitement].="
+		<td>";
+	if ($traitement->getAbsenceEleveMotif() != null) {
+		$ligne_traitement[$cpt_traitement].=$traitement->getAbsenceEleveMotif()->getNom();
+	} else {
+		$ligne_traitement[$cpt_traitement].="&nbsp;";
+	}
+	$ligne_traitement[$cpt_traitement].="</a>";
 
-    echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
-    if($menu){
-                echo"&menu=false";
-            } 
-    echo "' style='display: block; height: 100%; color: #330033'>\n";
-    echo ($traitement->getCommentaire());
-    echo "&nbsp;";
-    echo "</a>";
-    echo '</td>';
+	//donnees justification
+	$ligne_traitement[$cpt_traitement].="
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	}
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'>\n";
+	if ($traitement->getAbsenceEleveJustification() != null) {
+		$ligne_traitement[$cpt_traitement].=$traitement->getAbsenceEleveJustification()->getNom();
+	} else {
+		$ligne_traitement[$cpt_traitement].="&nbsp;";
+	}
+	$ligne_traitement[$cpt_traitement].="</a>";
+	$ligne_traitement[$cpt_traitement].="
+		</td>";
 
-    echo '</tr>';
+	//donnees notification
+	$ligne_traitement[$cpt_traitement].="
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'> </a>";
+	if (count($traitement->getAbsenceEleveNotifications())){
+		$ligne_traitement[$cpt_traitement].="
+			<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width:150px; width: 100%;'>";
+		foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+			$ligne_traitement[$cpt_traitement].="
+				<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>
+					<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>
+						<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey();
+			if($menu){
+				$ligne_traitement[$cpt_traitement].="&menu=false";
+			} 
+			$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%;'>
+				".$notification->getDescription().
+						"</a>
+					</td>
+				</tr>";
+		}
+		$ligne_traitement[$cpt_traitement].="
+			</table>";
+	}
+	$ligne_traitement[$cpt_traitement].="
+		</td>
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey();
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'>
+				".strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')).
+			"</a>
+		</td>
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey();
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'>
+				".strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U'))."
+			</a>
+		</td>
+		<td>
+			<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+	if($menu){
+		$ligne_traitement[$cpt_traitement].="&menu=false";
+	} 
+	$ligne_traitement[$cpt_traitement].="' style='display: block; height: 100%; color: #330033'>
+				".$traitement->getCommentaire()."
+				&nbsp;
+			</a>
+		</td>
+	</tr>";
+	$cpt_traitement++;
+}
+
+/*
+echo "<div style='float:left; width:30%'>
+\$tab_traitement<pre>";
+print_r($tab_traitement);
+echo "</pre>
+</div>
+<div style='float:left; width:30%'>
+\$tab_traitement_saisies<pre>";
+print_r($tab_traitement_saisies);
+echo "</pre>
+</div>
+<div style='float:left; width:30%'>
+\$tab_traitement_avec_plusieurs_saisies<pre>";
+print_r($tab_traitement_avec_plusieurs_saisies);
+echo "</pre>
+</div>";
+*/
+
+if($ne_pas_afficher_traitements_saisies_rattachees=="n") {
+	for($loop=0;$loop<count($ligne_traitement);$loop++) {
+		echo $ligne_traitement[$loop];
+	}
+}
+else {
+	for($loop=0;$loop<count($ligne_traitement);$loop++) {
+		if((array_key_exists($tab_traitement[$loop], $tab_traitement_avec_plusieurs_saisies))&&(count($tab_traitement_avec_plusieurs_saisies[$tab_traitement[$loop]])>1)) {
+			echo $ligne_traitement[$loop];
+		}
+		else {
+			$afficher_ligne="y";
+			if(isset($tab_traitement_saisies[$loop])) {
+				for($loop2=0;$loop2<count($tab_traitement_saisies[$loop]);$loop2++) {
+					foreach($tab_traitement_avec_plusieurs_saisies as $current_traitement_englobant => $current_saisie_englobee) {
+						if(count($current_saisie_englobee)>1) {
+							for($loop3=0;$loop3<count($current_saisie_englobee);$loop3++) {
+								if($tab_traitement_saisies[$loop][$loop2]==$current_saisie_englobee[$loop3]) {
+									$afficher_ligne="n";
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if($afficher_ligne=="y") {
+				echo $ligne_traitement[$loop];
+			}
+		}
+	}
 }
 
 echo '</tbody>';
