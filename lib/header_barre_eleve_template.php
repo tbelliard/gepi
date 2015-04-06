@@ -107,10 +107,10 @@ if ($barre_plugin!="") {
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
 			}
-			elseif(getSettingAOui("GepiAccesBulletinSimpleParent")) {
+			elseif(getSettingAOui("GepiAccesBulletinSimpleEleve")) {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().' title="Permet de consulter vos bulletins simplifiés.">&nbsp;Bulletins</a></li>'."\n";
 			}
-			elseif(getSettingAOui("GepiAccesGraphParent")) {
+			elseif(getSettingAOui("GepiAccesGraphEleve")) {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().' title="Permet de visualiser sous forme graphique vos résultats.">&nbsp;Visu.graph</a></li>'."\n";
 			}
 		}
