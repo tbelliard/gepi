@@ -5,6 +5,12 @@
 
 Gepi-master (Version de développement)
 ===========================
+Librairies:
+- Ajout de PHPMailer (https://github.com/PHPMailer/PHPMailer)
+
+Abs2:
+- Possibilité d'associer automatiquement des saisies (saisir_groupe.php) à un traitement englobant.
+
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
 
