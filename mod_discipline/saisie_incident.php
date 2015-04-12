@@ -1315,11 +1315,26 @@ if(isset($id_incident) ) {
         if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
             $peutChanger = FALSE;
             // On recherche le primo-déclarant
-            $resPrimo=mysqli_query($GLOBALS["mysqli"], "SELECT primo_declarant , declarant FROM s_incidents WHERE id_incident='".$id_incident."'");
-            $response = mysqli_fetch_object($resPrimo);
-            if ($response->primo_declarant == $_SESSION['login'] || ($response->primo_declarant == '' && $response->declarant == $_SESSION['login'])) {
-                $peutChanger= TRUE;
-            }
+            $sql="SELECT primo_declarant , declarant FROM s_incidents WHERE id_incident='".$id_incident."' AND primo_declarant IS NOT NULL;";
+            //echo "$sql<br />";
+            $resPrimo=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($resPrimo)>0) {
+			$response = mysqli_fetch_object($resPrimo);
+			if ($response->primo_declarant == $_SESSION['login'] || ($response->primo_declarant == '' && $response->declarant == $_SESSION['login'])) {
+				$peutChanger= TRUE;
+			}
+		}
+		else {
+			$sql="SELECT declarant FROM s_incidents WHERE id_incident='".$id_incident."';";
+			//echo "$sql<br />";
+			$resPrimo=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($resPrimo)>0) {
+				$response = mysqli_fetch_object($resPrimo);
+				if ($response->declarant == $_SESSION['login']) {
+					$peutChanger= TRUE;
+				}
+			}
+		}
             if($peutChanger){
                 if (getSettingAOui('DisciplineCpeChangeDefaut')) {
                     // ===== Par défaut changement autorisé
@@ -1335,8 +1350,8 @@ if(isset($id_incident) ) {
                         $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
                             WHERE u.statut='professeur' 
                                 AND u.etat='actif'
-                                AND (u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
-                                    OR u.login != (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger'))
+                                AND (u.login IN (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
+                                    OR u.login NOT IN (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger'))
                             ORDER BY u.nom , u.prenom";
                     }
                 } else {
@@ -1344,7 +1359,7 @@ if(isset($id_incident) ) {
                     $sqlProf="SELECT u.login , u.nom , u.prenom FROM utilisateurs u
                         WHERE u.statut='professeur' 
                             AND u.etat='actif'
-                            AND u.login = (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
+                            AND u.login IN (SELECT p.login FROM preferences p WHERE p.name='cpePeuChanger' AND p.value LIKE 'yes')
                         ORDER BY u.nom , u.prenom";
                 }
                 //echo $sqlProf."<br />";
