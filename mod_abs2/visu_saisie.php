@@ -129,7 +129,7 @@ $style_specifique[] = "mod_abs2/lib/abs_style";
 if(!$menu){
 $titre_page = "Les absences";
 }
-$utilisation_jsdivdrag = "non";
+//$utilisation_jsdivdrag = "non";
 $dojo = true;
 $_SESSION['cacher_header'] = "y";
 
@@ -333,6 +333,8 @@ if (!$modifiable || $saisie->getDeletedAt() != null ) {
 <?php
     } else {
 	echo '<input id="trigger_calendrier_debut" name="date_debut"  type="text" dojoType="dijit.form.DateTextBox"  value="'. $saisie->getDebutAbs('Y-m-d').'"  style="width : 8em"/></nobr> ';
+
+echo choix_heure(array('heure_debut', 'heure_fin'), 'div_choix_heure');
 
     //    echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
 	echo '</nobr>';

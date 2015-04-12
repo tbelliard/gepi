@@ -3082,7 +3082,7 @@ function liste_des_prof_suivi_de_telle_classe($id_classe) {
 }
 
 function choix_heure($champ_heure,$div_choix_heure, $mode_retour="echo") {
-	global $tabdiv_infobulle;
+	global $tabdiv_infobulle, $gepiPath;
 
 	$retour="";
 
@@ -3090,10 +3090,10 @@ function choix_heure($champ_heure,$div_choix_heure, $mode_retour="echo") {
 	$res_abs_cren=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_abs_cren)>0) {
 		if($mode_retour=="echo") {
-			echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
+			echo " <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\" title=\"Choisir un créneau dans l'emploi du temps\"> <img src=\"$gepiPath/images/icons/clock.png\" class='icone16\"\" alt=\"Choix d'une heure\" /> </a>";
 		}
 		else {
-			$retour=" <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\">Choix</a>";
+			$retour=" <a href='#' onclick=\"afficher_div('$div_choix_heure','y',10,-40); return false;\" title=\"Choisir un créneau dans l'emploi du temps\"> <img src=\"$gepiPath/images/icons/clock.png\" class='icone16\"\" alt=\"Choix d'une heure\" /> </a>";
 		}
 
 		$texte="<table class='boireaus boireaus_alt' style='margin: auto;border:1px;'><caption class='invisible'>Choix d'une heure</caption>\n";
@@ -3115,11 +3115,22 @@ function choix_heure($champ_heure,$div_choix_heure, $mode_retour="echo") {
 				$tmp_bgcolor="lightgrey";
 			}
 
-			$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->nom_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>\n";
-			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>\n";
-			$texte.="</tr>\n";
+			if(!is_array($champ_heure)) {
+				$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">
+	<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->nom_definie_periode."</a></td>
+	<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>
+	<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');changement();return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>
+</tr>\n";
+			}
+			else {
+				$h_deb=preg_replace("/:00$/", "", $lig_ac->heuredebut_definie_periode);
+				$h_fin=preg_replace("/:00$/", "", $lig_ac->heurefin_definie_periode);
+				$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">
+	<td><a href='#' onclick=\"if(document.getElementById('".$champ_heure[0]."')) {document.getElementById('".$champ_heure[0]."').value='".$h_deb."';};if(document.getElementById('".$champ_heure[1]."')) {document.getElementById('".$champ_heure[1]."').value='".$h_fin."';};cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->nom_definie_periode."</a></td>
+	<td><a href='#' onclick=\"if(document.getElementById('".$champ_heure[0]."')) {document.getElementById('".$champ_heure[0]."').value='".$h_deb."';};if(document.getElementById('".$champ_heure[1]."')) {document.getElementById('".$champ_heure[1]."').value='".$h_fin."';};cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->heuredebut_definie_periode."</a></td>
+	<td><a href='#' onclick=\"if(document.getElementById('".$champ_heure[0]."')) {document.getElementById('".$champ_heure[0]."').value='".$h_deb."';};if(document.getElementById('".$champ_heure[1]."')) {document.getElementById('".$champ_heure[1]."').value='".$h_fin."';};cacher_div('$div_choix_heure');changement();return false;\">".$lig_ac->heurefin_definie_periode."</a></td>
+</tr>\n";
+			}
 		}
 		$texte.="</table>\n";
 
