@@ -192,11 +192,12 @@ function action_alea_invalide($envoyer_mail=TRUE) {
 		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 		if($envoi_mail_actif!="n") {
 			$destinataire=getSettingValue('gepiAdminAdress');
-			if($destinataire!='') {
+			if(check_mail($destinataire)) {
+				$tab_param_mail['destinataire']=$destinataire;
 				$sujet="Attaque CSRF";
 				$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
 				$message.=$details;
-				envoi_mail($sujet, $message,$destinataire);
+				envoi_mail($sujet, $message,$destinataire,"","plain",$tab_param_mail);
 			}
 		}
 	}

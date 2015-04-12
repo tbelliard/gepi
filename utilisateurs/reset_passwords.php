@@ -1334,6 +1334,7 @@ width:".$largeur1."%;\n";
 	
 					if($envoi_mail_actif=='y') {
 						if((isset($_POST['envoi_mail']))&&(check_mail($user_email))) {
+							$tab_param_mail['destinataire']=$user_email;
 							$texte_email="A l'attention de $user_prenom $user_nom<br />\n";
 							$texte_email.="Identifiant  : $user_login<br />\n";
 							if(isset($new_password)) {
@@ -1347,7 +1348,7 @@ width:".$largeur1."%;\n";
 							$headers = "";
 
 							// On envoie le mail
-							$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html");
+							$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html", $tab_param_mail);
 							if($envoi) {
 								echo "<div style='float:right; width:5em; text-align:center; color:green;' class='fieldset_opacite50 noprint'>Mail envoyé</div>";
 							}

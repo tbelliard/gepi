@@ -200,17 +200,25 @@ L'enseignement ".$current_group['name']." (".$current_group['description'].") en
 
 				$ajout_header="";
 				$email_declarant=retourne_email($_SESSION['login']);
-				if(($email_declarant!="")&&(check_mail($email_declarant))) {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
+				if(($email_declarant!="")&&(check_mail($email_declarant))) {
+					$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";
+					$tab_param_mail['cc'][]=$email_declarant;
+					$tab_param_mail['cc_name'][]=$nom_declarant;
+				}
 
 				$destinataire_mail=getSettingValue("gepiAdminAdress");
+				if(check_mail($destinataire_mail)) {
+					$tab_param_mail['destinataire'][]=$destinataire_mail;
+				}
 				$email_dest_info_erreur_affect_grp=getSettingValue('email_dest_info_erreur_affect_grp');
 				if(($email_dest_info_erreur_affect_grp!="")&&(check_mail($email_dest_info_erreur_affect_grp))&&($email_dest_info_erreur_affect_grp!=getSettingValue("gepiAdminAdress"))) {
 					if($destinataire_mail!="") {$destinataire_mail.=",";}
 					$destinataire_mail.=getSettingValue("email_dest_info_erreur_affect_grp");
+					$tab_param_mail['destinataire'][]=getSettingValue("email_dest_info_erreur_affect_grp");
 				}
 
 				$sujet_mail=$gepiPrefixeSujetMail."[GEPI]: Modification de la liste des élèves d un groupe";
-				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header);
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
 			}
 		}
 		// ==================================================

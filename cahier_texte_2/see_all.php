@@ -752,11 +752,13 @@ if(($id_groupe=='Toutes_matieres')&&
 			$sujet="Cahier de textes";
 			$message="Bonjour(soir),\nVoici le contenu du cahier de textes à compter du ".$date_debut_cdt_mail.":\n".$lignes_cdt_mail;
 			$destinataire=$_POST['mail_dest'];
+			$tab_param_mail['destinataire']=$_POST['mail_dest'];
 			$header_suppl="";
 			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 				$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
+				$tab_param_mail['bcc']=$_SESSION['email'];
 			}
-			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
+			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html", $tab_param_mail);
 			if($envoi) {
 				$message="Le cahier de textes a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
 				echo "<p style='color:green; text-align:center;'>$message</p>

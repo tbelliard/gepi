@@ -54,28 +54,233 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $destinataire Le destinataire
  * @param string $ajout_headers Text à ajouter dans le header
  * @param string $plain_ou_html format du mail (plain pour texte brut, html sinon)
+ * @param array $tab_param_mail tableau des paramètres mail pour phpMailer
  */
-function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain") {
-	global $gepiPath;
+function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain", $tab_param_mail=array()) {
+	global $gepiPath, $niveau_arbo;
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-  $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
-  $subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
-  
-  $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-  $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-  $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
-  $headers .= $ajout_headers;
+	$subject = $gepiPrefixeSujetMail."GEPI : $sujet";
+	$subject = "=?UTF-8?B?".base64_encode($subject)."?=\r\n";
 
-	// On envoie le mail
-	$envoi = mail($destinataire,
-		$subject,
-		$message,
-	  $headers);
+	if((getSettingAOui('utiliser_phpmailer'))&&(getSettingValue('phpmailer_smtp_host')!="")&&(getSettingValue('phpmailer_smtp_port')!="")&&(getSettingValue('phpmailer_from')!="")) {
+
+		/*
+		echo "<p>niveau_arbo=$niveau_arbo<br />";
+		echo "tab_param_mail:<pre>";
+		print_r($tab_param_mail);
+		echo "</pre>";
+		*/
+
+		//require_once($gepiPath."/lib/PHPMailer/PHPMailerAutoload.php");
+		if((!isset($niveau_arbo))||("$niveau_arbo"=="")||($niveau_arbo==1)) {
+			require_once("../lib/PHPMailer/PHPMailerAutoload.php");
+		}
+		elseif($niveau_arbo==0) {
+			require_once("lib/PHPMailer/PHPMailerAutoload.php");
+		}
+		elseif($niveau_arbo==2) {
+			require_once("../../lib/PHPMailer/PHPMailerAutoload.php");
+		}
+
+		$mail=new PHPMailer;
+		$mail->isSMTP();
+
+		if(getSettingAOui('phpmailer_debug')) {
+			$mail->SMTPDebug = 3;                               // Enable verbose debug output
+		}
+
+		$mail->Host=getSettingValue('phpmailer_smtp_host');
+		$mail->Port=getSettingValue('phpmailer_smtp_port');
+
+		if(getSettingAOui('phpmailer_smtp_auth')) {
+			$mail->SMTPAuth=true;
+			$mail->Username=getSettingAOui('phpmailer_smtp_username');
+			$mail->Password=getSettingAOui('phpmailer_smtp_password');
+		}
+
+		$mail->SMTPSecure=getSettingValue('phpmailer_securite');
+
+		$mail->CharSet = 'UTF-8';
+		$message=ensure_utf8($message);
+
+		/*
+		$mail = new PHPMailer;
+		$mail->isSMTP();                                      // Set mailer to use SMTP
+		$mail->Host = 'smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
+		$mail->SMTPAuth = true;                               // Enable SMTP authentication
+		$mail->Username = 'user@example.com';                 // SMTP username
+		$mail->Password = 'secret';                           // SMTP password
+		$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+		$mail->Port = 587;                                    // TCP port to connect to
+
+		$mail->addAddress('joe@example.net', 'Joe User');     // Add a recipient
+		$mail->addAddress('ellen@example.com');               // Name is optional
+		$mail->addReplyTo('info@example.com', 'Information');
+		$mail->addCC('cc@example.com');
+		$mail->addBCC('bcc@example.com');
+
+		$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+		$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+		*/
+
+		// From
+		if(isset($tab_param_mail['from'])) {
+			$mail->From = $tab_param_mail['from'];
+			if(isset($tab_param_mail['from_name'])) {
+				$mail->FromName = $tab_param_mail['from_name'];
+			}
+		}
+		else {
+			//$mail->From = "ne-pas-repondre@".$_SERVER['SERVER_NAME'];
+			//2015-04-08 15:35:54	CLIENT -> SERVER: MAIL FROM:<ne-pas-repondre@127.0.0.1>
+			//2015-04-08 15:35:54	SERVER -> CLIENT: 501 5.1.7 Bad sender address syntax
+			$mail->From = getSettingValue('phpmailer_from');
+			$mail->FromName = 'Mail automatique Gepi';
+		}
+
+		// Destinataires
+		if(isset($tab_param_mail['destinataire'])) {
+			if(is_array($tab_param_mail['destinataire'])) {
+				for($loop=0;$loop<count($tab_param_mail['destinataire']);$loop++) {
+					if(isset($tab_param_mail['destinataire_name'][$loop])) {
+						$mail->addAddress($tab_param_mail['destinataire'][$loop], $tab_param_mail['destinataire_name'][$loop]);
+					}
+					else {
+						$mail->addAddress($tab_param_mail['destinataire'][$loop]);
+					}
+				}
+			}
+			else {
+				if(isset($tab_param_mail['destinataire_name'])) {
+					$mail->addAddress($tab_param_mail['destinataire'], $tab_param_mail['destinataire_name']);
+				}
+				else {
+					$mail->addAddress($tab_param_mail['destinataire']);
+				}
+			}
+		}
+		else {
+			$dest_clean=preg_replace("#^.*<#","",preg_replace("#>.*$#","",$destinataire));
+			$mail->addAddress($dest_clean);
+		}
+
+		// CC
+		if(isset($tab_param_mail['cc'])) {
+			if(is_array($tab_param_mail['cc'])) {
+				for($loop=0;$loop<count($tab_param_mail['cc']);$loop++) {
+					if(isset($tab_param_mail['cc_name'][$loop])) {
+						$mail->addCC($tab_param_mail['cc'][$loop], $tab_param_mail['cc_name'][$loop]);
+					}
+					else {
+						$mail->addCC($tab_param_mail['cc'][$loop]);
+					}
+				}
+			}
+			else {
+				if(isset($tab_param_mail['cc_name'])) {
+					$mail->addCC($tab_param_mail['cc'], $tab_param_mail['cc_name']);
+				}
+				else {
+					$mail->addCC($tab_param_mail['cc']);
+				}
+			}
+		}
+
+		// BCC
+		if(isset($tab_param_mail['bcc'])) {
+			if(is_array($tab_param_mail['bcc'])) {
+				for($loop=0;$loop<count($tab_param_mail['bcc']);$loop++) {
+					if(isset($tab_param_mail['bcc_name'][$loop])) {
+						$mail->addBCC($tab_param_mail['bcc'][$loop], $tab_param_mail['bcc_name'][$loop]);
+					}
+					else {
+						$mail->addBCC($tab_param_mail['bcc'][$loop]);
+					}
+				}
+			}
+			else {
+				if(isset($tab_param_mail['bcc_name'])) {
+					$mail->addBCC($tab_param_mail['bcc'], $tab_param_mail['bcc_name']);
+				}
+				else {
+					$mail->addBCC($tab_param_mail['bcc']);
+				}
+			}
+		}
+
+		// ReplyTo
+		if(isset($tab_param_mail['replyto'])) {
+			if(is_array($tab_param_mail['replyto'])) {
+				for($loop=0;$loop<count($tab_param_mail['replyto']);$loop++) {
+					if(isset($tab_param_mail['replyto_name'][$loop])) {
+						$mail->addReplyTo($tab_param_mail['replyto'][$loop], $tab_param_mail['replyto_name'][$loop]);
+					}
+					else {
+						$mail->addReplyTo($tab_param_mail['replyto'][$loop]);
+					}
+				}
+			}
+			else {
+				if(isset($tab_param_mail['replyto_name'])) {
+					$mail->addReplyTo($tab_param_mail['replyto'], $tab_param_mail['replyto_name']);
+				}
+				else {
+					$mail->addReplyTo($tab_param_mail['replyto']);
+				}
+			}
+		}
+
+		if($plain_ou_html=="plain") {
+			$mail->isHTML(false);
+		}
+		else {
+			$mail->isHTML(true);
+		}
+
+		/*
+		// A REVOIR:
+		// Ca ne fonctionne pas... probable problème de syntaxe... s'inscrire sur la liste phpmailer pour prendre en compte ces paramètres
+		if(isset($tab_param_mail['message_id'])) {
+			$mail->AddCustomHeaders(array('Message-id', $tab_param_mail['message_id']));
+		}
+
+		if(isset($tab_param_mail['references'])) {
+			$mail->AddCustomHeaders(array('References', $tab_param_mail['references']));
+		}
+		*/
+
+		// Debug
+		//$message.="\n\nEnvoi avec PHPMailer";
+
+		$mail->Subject = $subject;
+		$mail->Body    = $message;
+		//$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+		if(!$mail->send()) {
+			$envoi=false;
+		}
+		else {
+			$envoi=true;
+		}
+
+	}
+	else {
+		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+		$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+		$headers .= $ajout_headers;
+
+		// On envoie le mail
+		$envoi = mail($destinataire,
+			$subject,
+			$message,
+		  $headers);
+	}
 
 	if(getSettingAOui('log_envoi_mail')) {
 		$dirname="$gepiPath/backup/".getSettingValue("backup_directory");
@@ -3621,7 +3826,6 @@ function mail_connexion() {
 		$user_login = $_SESSION['login'];
 
 		$sql="SELECT nom,prenom,email FROM utilisateurs WHERE login='$user_login';";
-              
 		$res_user = mysqli_query($mysqli, $sql);
 		if ($res_user->num_rows > 0) {
 			$lig_user = $res_user->fetch_object();
@@ -3668,8 +3872,9 @@ function mail_connexion() {
 				// On envoie le mail
 				//fdebug_mail_connexion("\$message=$message\n====================\n");
 				$destinataire=$lig_user->email;
+				$tab_param_mail['destinataire']=$lig_user->email;
 				$sujet="GEPI : Connexion $date";
-				envoi_mail($sujet, $message, $destinataire);
+				envoi_mail($sujet, $message, $destinataire,"","plain",$tab_param_mail);
 			}
 			$res_user->close();
 		}
@@ -3741,16 +3946,18 @@ function mail_alerte($sujet,$texte,$informer_admin='n') {
 		$message .= "(*) Vous ou une personne tentant d'usurper votre identité.\n";
 
 		$ajout="";
-		if(($informer_admin!='n')&&(getSettingValue("gepiAdminAdress")!='')) {
+		if(($informer_admin!='n')&&(check_mail(getSettingValue("gepiAdminAdress")))) {
 			$ajout="Bcc: ".getSettingValue("gepiAdminAdress")."\r\n";
+			$tab_param_mail['bcc']=getSettingValue("gepiAdminAdress");
 		}
 
 		// On envoie le mail
 		//fdebug_mail_connexion("\$message=$message\n====================\n");
 
 		$destinataire=$lig_user->email;
+		$tab_param_mail['destinataire']=$lig_user->email;
 		$sujet="GEPI : $sujet $date";
-		envoi_mail($sujet, $message, $destinataire, $ajout);
+		envoi_mail($sujet, $message, $destinataire, $ajout, "plain", $tab_param_mail);
 
 		$res_user->close();
 	} 
@@ -9464,6 +9671,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$email_destinataires=$lig_u->email;
 				while($lig_u=mysqli_fetch_object($req)) {
 					$email_destinataires.=", ".$lig_u->email;
+					$tab_param_mail['destinataire'][]=$lig_u->email;
 				}
 
 				$email_declarant="";
@@ -9475,6 +9683,8 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 					$lig_u=mysqli_fetch_object($req);
 					$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 					$email_declarant=$lig_u->email;
+					$tab_param_mail['from']=$lig_u->email;
+					$tab_param_mail['from_name']=$nom_declarant;
 				}
 
 				$email_autres_profs_grp="";
@@ -9486,7 +9696,12 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				if(mysqli_num_rows($req)>0) {
 					$lig_u=mysqli_fetch_object($req);
 					$email_autres_profs_grp.=$lig_u->email;
-					while($lig_u=mysqli_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+
+					$tab_param_mail['cc'][]=$lig_u->email;
+					while($lig_u=mysqli_fetch_object($req)) {
+						$email_autres_profs_grp.=",".$lig_u->email;
+						$tab_param_mail['cc'][]=$lig_u->email;
+					}
 				}
 
 				$sujet_mail="Demande de validation de correction d'appréciation";
@@ -9494,11 +9709,14 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$ajout_header="";
 				if($email_declarant!="") {
 					$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+					$tab_param_mail['cc'][]=$email_declarant;
 					if($email_autres_profs_grp!='') {
 						$ajout_header.=", $email_autres_profs_grp";
 					}
 					$ajout_header.="\r\n";
 					$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+					$tab_param_mail['replyto']=$email_declarant;
+					$tab_param_mail['replyto_name']=$nom_declarant;
 
 				}
 				elseif($email_autres_profs_grp!='') {
@@ -9509,7 +9727,7 @@ function envoi_mail_proposition_correction($corriger_app_login_eleve, $corriger_
 				$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 
 				fich_debug_proposition_correction_app($prefixe_debug." : envoi_mail($sujet_mail, \n$texte_mail, \n$email_destinataires, \n$ajout_header)\n");
-				$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header,"plain",$tab_param_mail);
 				if(!$envoi) {fich_debug_proposition_correction_app($prefixe_debug." : Erreur lors de l envoi du mail.\n\n");}
 			}
 			else {

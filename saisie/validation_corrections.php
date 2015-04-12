@@ -262,7 +262,11 @@ if(isset($_POST['action_corrections'])) {
 					if(mysqli_num_rows($req)>0) {
 						$lig_u=mysqli_fetch_object($req);
 						$email_destinataires.=$lig_u->email;
-						while($lig_u=mysqli_fetch_object($req)) {$email_destinataires.=",".$lig_u->email;}
+						$tab_param_mail['destinataire'][]=$lig_u->email;
+						while($lig_u=mysqli_fetch_object($req)) {
+							$email_destinataires.=",".$lig_u->email;
+							$tab_param_mail['destinataire'][]=$lig_u->email;
+						}
 					}
 
 					if($email_destinataires!='') {
@@ -272,6 +276,8 @@ if(isset($_POST['action_corrections'])) {
 						if($email_reply!="") {
 							$ajout_header.="Cc: $email_reply\r\n";
 							$ajout_header.="Reply-to: $email_reply\r\n";
+							$tab_param_mail['cc']=$email_reply;
+							$tab_param_mail['replyto']=$email_reply;
 						}
 	
 						$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
@@ -280,7 +286,7 @@ if(isset($_POST['action_corrections'])) {
 						}
 						$texte=$salutation.",\n\n".$texte."\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
 
-						$envoi = envoi_mail($sujet_mail, $texte, $email_destinataires, $ajout_header);
+						$envoi = envoi_mail($sujet_mail, $texte, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 					}
 				}
 			}

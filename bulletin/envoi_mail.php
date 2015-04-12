@@ -55,32 +55,41 @@ fclose($fich);
 //echo "<pre>\$message_mail=$message_mail</pre>\n";
 
 
-$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-
-$expediteur=retourne_email($_SESSION['login']);
-if($expediteur=='') {$expediteur="Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">";}
 
 /*
-$envoi=mail($destinataire,
-	$gepiPrefixeSujetMail.$sujet_mail,
-	$message_mail,
-	"From: $expediteur\r\n"."Reply-to: $expediteur\r\n"."X-Mailer: PHP/" . phpversion());
+	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+	$expediteur=retourne_email($_SESSION['login']);
+	if($expediteur=='') {
+		$expediteur="Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">";
+	}
+
+	$sujet_mail = $gepiPrefixeSujetMail."GEPI : $sujet_mail";
+	$sujet_mail = "=?UTF-8?B?".base64_encode($sujet_mail)."?=\r\n";
+
+	$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+	$headers .= "MIME-Version: 1.0\r\n";
+	$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
+	$headers .= "From: $expediteur\r\n"."Reply-to: $expediteur\r\n";
+
+	// On envoie le mail
+	$envoi = mail($destinataire,
+		$sujet_mail,
+		$message_mail,
+		$headers);
 */
+$ajout_header="";
 
-$sujet_mail = $gepiPrefixeSujetMail."GEPI : $sujet_mail";
-$sujet_mail = "=?UTF-8?B?".base64_encode($sujet_mail)."?=\r\n";
+$expediteur=retourne_email($_SESSION['login']);
+if(check_mail($expediteur)) {
+	$tab_param_mail['from']=$expediteur;
+	$tab_param_mail['replyto']=$expediteur;
+	$ajout_header.="From: $expediteur\r\n"."Reply-to: $expediteur\r\n";
+}
+$tab_param_mail['destinataire']=$destinataire;
 
-$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "Content-type: text/plain; charset=UTF-8\r\n";
-$headers .= "From: $expediteur\r\n"."Reply-to: $expediteur\r\n";
-
-// On envoie le mail
-$envoi = mail($destinataire,
-	$sujet_mail,
-	$message_mail,
-	$headers);
+$envoi = envoi_mail($sujet_mail, $message_mail, $destinataire, $ajout_header, "plain", $tab_param_mail);
 
 if($envoi) {echo " <img src='../images/enabled.png' width='20' height='20' alt='Message envoyé avec succès' title='Message envoyé avec succès' />";}
 else {echo " <img src='../images/icons/flag.png' width='17' height='18' alt='Echec de l envoi du message' title='Echec de l envoi du message' />";}

@@ -597,8 +597,10 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 							if(mysqli_num_rows($req)>0) {
 								$lig_u=mysqli_fetch_object($req);
 								$email_destinataires=$lig_u->email;
+								$tab_param_mail['destinataire'][]=$lig_u->email;
 								while($lig_u=mysqli_fetch_object($req)) {
 									$email_destinataires=", ".$lig_u->email;
+									$tab_param_mail['destinataire'][]=$lig_u->email;
 								}
 		
 								$email_declarant="";
@@ -609,6 +611,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 									$lig_u=mysqli_fetch_object($req);
 									$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 									$email_declarant=$lig_u->email;
+									$tab_param_mail['cc'][]=$lig_u->email;
+									$tab_param_mail['cc_name'][]=$nom_declarant;
 								}
 		
 								$email_autres_profs_grp="";
@@ -619,7 +623,11 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 								if(mysqli_num_rows($req)>0) {
 									$lig_u=mysqli_fetch_object($req);
 									$email_autres_profs_grp.=$lig_u->email;
-									while($lig_u=mysqli_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+									$tab_param_mail['cc'][]=$lig_u->email;
+									while($lig_u=mysqli_fetch_object($req)) {
+										$email_autres_profs_grp.=",".$lig_u->email;
+										$tab_param_mail['cc'][]=$lig_u->email;
+									}
 								}
 		
 								$sujet_mail="Demande de validation de correction d'appréciation";
@@ -632,7 +640,9 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 									}
 									$ajout_header.="\r\n";
 									$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
-		
+									$tab_param_mail['replyto']=$email_declarant;
+									$tab_param_mail['replyto_name']=$nom_declarant;
+
 								}
 								elseif($email_autres_profs_grp!='') {
 									$ajout_header.="Cc: $email_autres_profs_grp\r\n";
@@ -641,7 +651,7 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 								$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 
-								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 							}
 						}
 					}

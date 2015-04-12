@@ -741,12 +741,90 @@ if (isset($_POST['gepi_en_production'])) {
 	}
 }
 
+if (isset($_POST['utiliser_phpmailer'])) {
+	check_token();
+
+	if (!saveSetting("utiliser_phpmailer", $_POST['utiliser_phpmailer'])) {
+		$msg .= "Erreur lors de l'enregistrement de utiliser_phpmailer !";
+	}
+}
+
+if (isset($_POST['phpmailer_smtp_host'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_smtp_host", $_POST['phpmailer_smtp_host'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_smtp_host !";
+	}
+}
+
+if (isset($_POST['phpmailer_smtp_port'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_smtp_port", $_POST['phpmailer_smtp_port'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_smtp_port !";
+	}
+}
+
+if (isset($_POST['phpmailer_smtp_auth'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_smtp_auth", $_POST['phpmailer_smtp_auth'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_smtp_auth !";
+	}
+}
+
+if (isset($_POST['phpmailer_smtp_username'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_smtp_username", $_POST['phpmailer_smtp_username'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_smtp_username !";
+	}
+}
+
+if (isset($_POST['phpmailer_smtp_password'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_smtp_password", $_POST['phpmailer_smtp_password'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_smtp_password !";
+	}
+}
+
+if (isset($_POST['phpmailer_securite'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_securite", $_POST['phpmailer_securite'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_securite !";
+	}
+}
+
+if (isset($_POST['phpmailer_from'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_from", $_POST['phpmailer_from'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_from !";
+	}
+}
+
+if (isset($_POST['phpmailer_debug'])) {
+	check_token();
+
+	if (!saveSetting("phpmailer_debug", $_POST['phpmailer_debug'])) {
+		$msg .= "Erreur lors de l'enregistrement de phpmailer_debug !";
+	}
+}
+
 // Load settings
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
+if((getSettingAOui('utiliser_phpmailer'))&&
+((getSettingValue("phpmailer_smtp_host")=="")||
+(getSettingValue("phpmailer_smtp_port")=="")||
+(getSettingValue("phpmailer_from")==""))) {
+	$msg.="L'envoi de mail avec PHPMailer va échouer parce qu'un des champs indispensables est vide.<br />Voir <a href='".$_SERVER['PHP_SELF']."#phpmailer'>en bas de page</a>";
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
@@ -2155,6 +2233,242 @@ echo add_token_field();
 		Sur un serveur Gepi en production, avec des données que l'on ne veut pas perdre accidentellement, on désactive l'accès à quelques liens sensibles de Gepi comme <strong>Effacer la base</strong> et <strong>Données de test</strong>.<br />
 		Sur un Gepi de test en revanche, on peut souhaiter effectuer ces actions sensibles.
 	</p>
+</fieldset>
+</form>
+
+<hr />
+
+<a name='phpmailer'></a>
+<form enctype="multipart/form-data" action="param_gen.php" method="post" id="form4" style="width: 100%;">
+<fieldset class='fieldset_opacite50'>
+	<p>
+<?php
+echo add_token_field();
+?>
+	</p>
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Utiliser PHPMailer pour l'envoi de mail&nbsp;:<br />
+		<span class='small'>
+			Par opposition à l'envoi de mail par la fonction mail() de PHP.<br />
+			Ce choix peut présenter un intérêt si votre hébergeur<br />a interdit l'utilisation de la fonction mail().
+		</span>
+	</p>
+
+	<p class="cellTab">
+		<input type="radio" 
+			   name="utiliser_phpmailer" 
+			   id="utiliser_phpmailer_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('utiliser_phpmailer')=="") {saveSetting('utiliser_phpmailer', 'n');}
+				if(getSettingAOui('utiliser_phpmailer')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='utiliser_phpmailer_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="utiliser_phpmailer" 
+			   id="utiliser_phpmailer_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('utiliser_phpmailer')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='utiliser_phpmailer_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Serveur SMTP <span style='color:red'>(*)</span> : 
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="text" 
+				   name="phpmailer_smtp_host" 
+				   size="20" 
+				   value="<?php echo(getSettingValue("phpmailer_smtp_host")); ?>" 
+				   onchange='changement()' /><?php if((getSettingAOui('utiliser_phpmailer'))&&(getSettingValue("phpmailer_smtp_host")=="")) {echo "<span style='color:red'>ATTENTION : Ce champ ne doit pas être vide.</span>";}?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Port du serveur SMTP <span style='color:red'>(*)</span> : 
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="text" 
+				   name="phpmailer_smtp_port" 
+				   size="20" 
+				   value="<?php echo(getSettingValue("phpmailer_smtp_port")); ?>" 
+				   onchange='changement()' /><?php if((getSettingAOui('utiliser_phpmailer'))&&(getSettingValue("phpmailer_smtp_port")=="")) {echo "<span style='color:red'>ATTENTION : Ce champ ne doit pas être vide.</span>";}?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Adresse source des mails automatiques <span style='color:red'>(*)</span> : <br />
+			<span class='small'>
+				Ce qui correspond au champ FROM du mail.<br />
+				Le domaine doit impérativement être un domaine mail valide.<br />
+				Cela peut être quelque chose comme <span class='bold'>ne-pas-repondre@free.fr</span>
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="text" 
+				   name="phpmailer_from" 
+				   size="20" 
+				   value="<?php echo(getSettingValue("phpmailer_from")); ?>" 
+				   onchange='changement()' /><?php if((getSettingAOui('utiliser_phpmailer'))&&(getSettingValue("phpmailer_from")=="")) {echo "<span style='color:red'>ATTENTION : Ce champ ne doit pas être vide.</span>";}?>
+		</span>
+	</p>
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Utiliser une authentification SMTP&nbsp;:<br />
+			<span class='small'>
+				Dans ce cas, il faut préciser le compte et le mot de passe.
+			</span>
+	</p>
+	<p class="cellTab">
+		<input type="radio" 
+			   name="phpmailer_smtp_auth" 
+			   id="phpmailer_smtp_auth" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('phpmailer_smtp_auth')=="") {saveSetting('phpmailer_smtp_auth', 'n');}
+				if(getSettingAOui('phpmailer_smtp_auth')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_smtp_auth_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="phpmailer_smtp_auth" 
+			   id="phpmailer_smtp_auth_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('phpmailer_smtp_auth')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_smtp_auth_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Compte SMTP&nbsp;: 
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="text" 
+				   name="phpmailer_smtp_username" 
+				   size="20" 
+				   value="<?php echo(getSettingValue("phpmailer_smtp_username")); ?>" 
+				   onchange='changement()' />
+		</span>
+	</p>
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			Mot de passe du compte SMTP&nbsp;: 
+		</span>
+		<span class="cellTab plusPetit">
+			<input type="text" 
+				   name="phpmailer_smtp_password" 
+				   size="20" 
+				   value="<?php echo(getSettingValue("phpmailer_smtp_password")); ?>" 
+				   onchange='changement()' />
+		</span>
+	</p>
+
+	<p class="cellTab" style="font-variant: small-caps;">
+		Sécurité de la connexion&nbsp;:
+	</p>
+	<p class="cellTab">
+		<input type="radio" 
+			   name="phpmailer_securite" 
+			   id="phpmailer_securite_aucune" 
+			   value="" 
+			   <?php
+				if(getSettingValue('phpmailer_securite')=="") {saveSetting('phpmailer_securite', '');}
+				if(getSettingValue('phpmailer_securite')=="") {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_securite_aucune' style='cursor: pointer;'>
+			Aucune
+		</label>
+		<br />
+		<input type="radio" 
+			   name="phpmailer_securite" 
+			   id="phpmailer_securite_tls" 
+			   value="" 
+			   <?php
+				if(getSettingValue('phpmailer_securite')=="tls") {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_securite_tls' style='cursor: pointer;'>
+			TLS
+		</label>
+		<br />
+		<input type="radio" 
+			   name="phpmailer_securite" 
+			   id="phpmailer_securite_ssl" 
+			   value="" 
+			   <?php
+				if(getSettingValue('phpmailer_securite')=="ssl") {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_securite_ssl' style='cursor: pointer;'>
+			SSL
+		</label>
+	</p>
+
+	<p class="ligneCaps" style="font-variant: small-caps;">
+		Activer le debug PHPMailer&nbsp;:<br />
+			<span class='small'>
+				Si l'envoi de mail avec PHPMailer échoue, vous pouvez obtenir<br />des détails sur ce qui pose un problème en activant ici le debug.<br />
+				Cette activation va polluer les affichages dans Gepi<br />avec un grand nombre de lignes chaque fois qu'un mail est envoyé.<br />
+				Il ne faut pas laisser le debug activé hors phase de réglage.
+			</span>
+	</p>
+	<p class="cellTab">
+		<input type="radio" 
+			   name="phpmailer_debug" 
+			   id="phpmailer_debug" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('phpmailer_debug')=="") {saveSetting('phpmailer_debug', 'n');}
+				if(getSettingAOui('phpmailer_debug')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_debug_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="phpmailer_debug" 
+			   id="phpmailer_debug_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('phpmailer_debug')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='phpmailer_debug_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+
+	<p>
+	<input type="hidden" name="is_posted" value="1" />
+	</p>
+	<p class="center">
+		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+
+	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'><span style='color:red'>(*)</span> Ces champs doivent impérativement être non vides si vous utilisez PHPMailer sous peine de voir échouer l'envoi de mails.</p>
 </fieldset>
 </form>
 

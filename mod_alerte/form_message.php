@@ -377,6 +377,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 						if(isset($_POST['doubler_par_envoi_mail'])) {
 							$mail_dest=get_mail_user($value);
 							if(check_mail($mail_dest)) {
+								$tab_param_mail['destinataire']=$mail_dest;
 								$subject = "[GEPI]: $sujet";
 								$texte_mail=preg_replace('/(\\\n)+/',"\n",$message);
 								$texte_mail=preg_replace('/(\\\')+/',"'",$texte_mail);
@@ -387,10 +388,11 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+									$tab_param_mail['replyto']=$_SESSION['email'];
 								}
 
 								// On envoie le mail
-								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 								if($envoi) {
 									$msg.="Mail envoyé pour ".civ_nom_prenom($value).".<br />";
 								}
@@ -421,6 +423,7 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 					if(isset($_POST['doubler_par_envoi_mail'])) {
 						$mail_dest=get_mail_user($login_dest);
 						if(check_mail($mail_dest)) {
+							$tab_param_mail['destinataire']=$mail_dest;
 							$subject = "[GEPI]: $sujet";
 							$texte_mail=preg_replace('/(\\\n)+/',"\n",$message);
 							$texte_mail=preg_replace('/(\\\')+/',"'",$texte_mail);
@@ -431,10 +434,11 @@ if (($message_envoye=='y')&&(peut_poster_message($_SESSION['statut']))) {
 							$headers = "";
 							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								$tab_param_mail['replyto']=$_SESSION['email'];
 							}
 
 							// On envoie le mail
-							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 							if($envoi) {
 								$msg.="Mail envoyé.<br />";
 							}

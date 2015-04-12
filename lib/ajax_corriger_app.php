@@ -200,6 +200,8 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 				//echo "<span style='color:plum'>ancienne_app=$ancienne_app</span>";
 			}
 
+			$tab_param_mail=array();
+
 			$texte_mail="Je viens d'effectuer (".strftime("%d/%m/%Y à %H:%M:%S").") une correction de votre appréciation pour ".get_nom_prenom_eleve($corriger_app_login_eleve)." en ".$current_group["name"]." (".$current_group["description"]." en ".$current_group["classlist_string"].") en période ".$corriger_app_num_periode.".
 
 L'ancienne appréciation était:
@@ -239,6 +241,7 @@ Cordialement.
 
 						if(check_mail($lig_u->email)) {
 							$email_destinataires=$lig_u->email;
+							$tab_param_mail['destinataire'][]=$lig_u->email;
 							$cpt_dest++;
 						}
 
@@ -305,6 +308,7 @@ Cordialement.
 
 							if(check_mail($lig_u->email)) {
 								$email_cc=$lig_u->email;
+								$tab_param_mail['cc'][]=$lig_u->email;
 								$cpt_cc++;
 							}
 						}
@@ -317,6 +321,8 @@ Cordialement.
 							$lig_u=mysqli_fetch_object($req);
 							$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 							$email_declarant=$lig_u->email;
+							$tab_param_mail['from']=$lig_u->email;
+							$tab_param_mail['from_name']=$nom_declarant;
 						}
 
 						$sujet_mail="Correction d'appréciation";
@@ -324,11 +330,15 @@ Cordialement.
 						$ajout_header="";
 						if($email_declarant!="") {
 							$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+							$tab_param_mail['cc'][$cpt_cc]=$email_declarant;
+							$tab_param_mail['cc_name'][$cpt_cc]=$nom_declarant;
 							if($email_cc!='') {
 								$ajout_header.=", $email_cc";
 							}
 							$ajout_header.="\r\n";
 							$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+							$tab_param_mail['replyto']=$email_declarant;
+							$tab_param_mail['replyto_name']=$nom_declarant;
 
 						}
 						elseif($email_cc!='') {
@@ -339,7 +349,7 @@ Cordialement.
 						//$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 						$texte_mail=$salutation.",\n\n".$texte_mail;
 
-						$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+						$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header,"plain",$tab_param_mail);
 					}
 
 				}

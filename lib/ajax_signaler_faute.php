@@ -168,6 +168,7 @@ else {
 		$email_utilisateur=retourne_email($_SESSION['login']);
 		if($email_utilisateur!='') {
 			$ajout_headers="Reply-to: $email_utilisateur";
+			$tab_param_mail['replyto']=$email_utilisateur;
 		}
 
 		// On considère que le signalement est un succès, si le mail est envoyé pour au moins un destinataire
@@ -177,11 +178,12 @@ else {
 
 			if(($envoi_mail_actif!='n')&&(check_mail($lig->email))) {
 				$destinataire=$lig->email;
+				$tab_param_mail['destinataire']=$destinataire;
 
 				$sujet="[GEPI]: Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom'];
 
 				//if(envoi_mail($sujet, nl2br($signalement_message), $destinataire, $ajout_headers)) {$temoin=true;}
-				if(envoi_mail($sujet, $signalement_message, $destinataire, $ajout_headers)) {$temoin=true;}
+				if(envoi_mail($sujet, $signalement_message, $destinataire, $ajout_headers,"plain",$tab_param_mail)) {$temoin=true;}
 			}
 
 			// On dépose un message en page d'accueil:

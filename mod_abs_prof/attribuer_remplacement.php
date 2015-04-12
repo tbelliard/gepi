@@ -169,6 +169,7 @@ if((isset($_POST['is_posted']))) {
 									(!preg_match("/,$lig_mail->email,/", $mail_dest))&&
 									(!preg_match("/,$lig_mail->email$/", $mail_dest))) {
 										$mail_dest.=$lig_mail->email;
+										$tab_param_mail['destinataire'][]=$lig_mail->email;
 									}
 									$references_mail.="proposition_remplacement_".$lig_mail->id."_".$jour;
 								}
@@ -199,6 +200,7 @@ Cordialement.
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+									$tab_param_mail['replyto']=$_SESSION['email'];
 								}
 
 								$message_id='remplacement_c'.$id_creneau."_j".$jour;
@@ -206,7 +208,7 @@ Cordialement.
 								//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 								// On envoie le mail
-								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 							}
 						}
 					}
@@ -271,6 +273,7 @@ if((isset($_GET['annuler_remplacement']))) {
 				//$mail_dest.=$lig_mail->email;
 				if((!preg_match("/^$lig_mail->email,/", $mail_dest))&&(!preg_match("/,$lig_mail->email,/", $mail_dest))&&(!preg_match("/,$lig_mail->email$/", $mail_dest))) {
 					$mail_dest.=$lig_mail->email;
+					$tab_param_mail['destinataire'][]=$lig_mail->email;
 				}
 				$references_mail.="proposition_remplacement_".$lig_mail->id."_".$jour;
 			}
@@ -309,6 +312,7 @@ Cordialement.
 			$headers = "";
 			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 				$headers.="Reply-to:".$_SESSION['email']."\r\n";
+				$tab_param_mail['replyto']=$_SESSION['email'];
 			}
 
 			$message_id='remplacement_c'.$id_creneau."_j".$jour;
@@ -316,7 +320,7 @@ Cordialement.
 			//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 			// On envoie le mail
-			$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+			$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 		}
 
 	}

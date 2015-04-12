@@ -428,19 +428,23 @@ __ADR_ETAB__
 					$headers = "";
 					if(check_mail($etab_email)) {
 						$headers.="Reply-to:".$etab_email."\r\n";
+						$tab_param_mail['replyto']=$etab_email;
 					}
 
 					if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 						//$headers.="Reply-to:".$_SESSION['email']."\r\n";
 						$headers.="Bcc:".$_SESSION['email']."\r\n";
+						$tab_param_mail['bcc']=$_SESSION['email'];
 					}
+
+					$tab_param_mail['destinataire']=$tmp_tab['email'];
 
 					$message_id='convoc_conseil_classe_'.$id_classe[$loop]."_".time();
 					if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
 					//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 					// On envoie le mail
-					$envoi = envoi_mail($subject, $contenu_mail, $tmp_tab['email'], $headers);
+					$envoi = envoi_mail($subject, $contenu_mail, $tmp_tab['email'], $headers, "plain", $tab_param_mail);
 					if(!$envoi) {
 						$mail_erreur.="Erreur ($classe) : Erreur lors de l'envoi du mail pour le destinataire ".$mail[$i].".\n";
 					}
@@ -460,6 +464,7 @@ __ADR_ETAB__
 		$headers = "";
 		if(check_mail($etab_email)) {
 			$headers.="Reply-to:".$etab_email."\r\n";
+			$tab_param_mail['replyto']=$etab_email;
 		}
 
 		$mail_dest="";
@@ -469,6 +474,7 @@ __ADR_ETAB__
 		elseif(check_mail($etab_email)) {
 			$mail_dest=$etab_email;
 		}
+		$tab_param_mail['destinataire']=$mail_dest;
 
 		if($mail_dest!="") {
 			$message_id='erreurs_convoc_conseil_classe_'.time();
@@ -476,7 +482,7 @@ __ADR_ETAB__
 			//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 			// On envoie le mail
-			$envoi = envoi_mail($subject, $mail_erreur, $mail_dest, $headers);
+			$envoi = envoi_mail($subject, $mail_erreur, $mail_dest, $headers, "plain", $tab_param_mail);
 		}
 	}
 

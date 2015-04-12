@@ -2849,11 +2849,13 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 					$sujet="Cahier de textes";
 					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n".$lignes_cdt_mail;
 					$destinataire=$_POST['mail_dest'];
+					$tab_param_mail['destinataire']=$destinataire;
 					$header_suppl="";
 					if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 						$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
+						$tab_param_mail['bcc']=$_SESSION['email'];
 					}
-					$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
+					$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html", $tab_param_mail);
 					if($envoi) {
 						$message="Le cahier de textes de la semaine choisie a été expédié à l'adresse mail choisie '".$_POST['mail_dest']."'.";
 						echo "<p style='color:green; text-align:center;'>$message</p>

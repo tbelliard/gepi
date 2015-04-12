@@ -692,11 +692,13 @@ Mail&nbsp;:&nbsp;<input type='text' name='mail_dest' value='$mail_user' />
 			$sujet="Fiche Bienvenue Gepi";
 			$message="Bonjour(soir),\nVoici votre Fiche Bienvenue Gepi :\n".$lignes_FB;
 			$destinataire=$_POST['mail_dest'];
+			$tab_param_mail['destinataire']=$destinataire;
 			$header_suppl="";
 			if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 				$header_suppl.="Bcc:".$_SESSION['email']."\r\n";
+				$tab_param_mail['bcc']=$_SESSION['email'];
 			}
-			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html");
+			$envoi=envoi_mail($sujet, $message, $destinataire, $header_suppl, "html", $tab_param_mail);
 			if($envoi) {
 				$message="La Fiche Bienvenue a été expédiée à l'adresse mail choisie '".$_POST['mail_dest']."'.";
 				echo "<p style='color:green; text-align:center;' class='noprint'>$message</p>

@@ -222,9 +222,12 @@ Cordialement.
 -- 
 ".civ_nom_prenom($_SESSION['login']);
 
+							$tab_param_mail['destinataire']=$mail_dest;
+
 							$headers = "";
 							if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 								$headers.="Reply-to:".$_SESSION['email']."\r\n";
+								$tab_param_mail['replyto']=$_SESSION['email'];
 							}
 
 							$message_id='proposition_remplacement_'.$id_proposition."_".$jour;
@@ -232,7 +235,7 @@ Cordialement.
 							//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 							// On envoie le mail
-							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+							$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 						}
 					}
 				}
@@ -349,6 +352,7 @@ if((isset($_GET['valider_proposition']))||(isset($_POST['valider_proposition']))
 									//$mail_dest.=$lig->email;
 									if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
 										$mail_dest.=$lig->email;
+										$tab_param_mail['destinataire'][]=$lig->email;
 									}
 									$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 								}
@@ -379,6 +383,7 @@ Cordialement.
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+									$tab_param_mail['replyto']=$_SESSION['email'];
 								}
 
 								$message_id='remplacement_c'.$id_creneau."_j".$jour;
@@ -386,7 +391,7 @@ Cordialement.
 								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 								// On envoie le mail
-								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+								$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 							}
 						}
 
@@ -458,6 +463,7 @@ Cordialement.
 							//$mail_dest.=$lig->email;
 							if((!preg_match("/^$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email,/", $mail_dest))&&(!preg_match("/,$lig->email$/", $mail_dest))) {
 								$mail_dest.=$lig->email;
+								$tab_param_mail['destinataire'][]=$lig->email;
 							}
 							$references_mail.="proposition_remplacement_".$lig->id."_".$jour;
 						}
@@ -488,6 +494,7 @@ Cordialement.
 						$headers = "";
 						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							$tab_param_mail['replyto']=$_SESSION['email'];
 						}
 
 						$message_id='remplacement_c'.$id_creneau."_j".$jour;
@@ -495,7 +502,7 @@ Cordialement.
 						//if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 						// On envoie le mail
-						$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers);
+						$envoi = envoi_mail($subject, $texte_mail, $mail_dest, $headers, "plain", $tab_param_mail);
 					}
 				}
 

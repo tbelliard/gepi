@@ -279,14 +279,22 @@ echo "</pre>";
 				if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 	
 				$ajout_header="";
-				if($email_declarant!="") {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
-
-				$destinataire_mail=getSettingValue("gepiAdminAdress");
-				if((getSettingValue('email_dest_info_erreur_affect_grp')!="")&&(getSettingValue('email_dest_info_erreur_affect_grp')!=getSettingValue("gepiAdminAdress"))) {
-					$destinataire_mail.=",".getSettingValue("email_dest_info_erreur_affect_grp");
+				if($email_declarant!="") {
+					$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";
+					$tab_param_mail['cc'][]=$email_declarant;
+					$tab_param_mail['cc_name'][]=$nom_declarant;
 				}
 
-				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header);
+				$destinataire_mail=getSettingValue("gepiAdminAdress");
+				if(check_mail($destinataire_mail)) {
+					$tab_param_mail['destinataire'][]=$destinataire_mail;
+				}
+				if((getSettingValue('email_dest_info_erreur_affect_grp')!="")&&(getSettingValue('email_dest_info_erreur_affect_grp')!=getSettingValue("gepiAdminAdress"))) {
+					$destinataire_mail.=",".getSettingValue("email_dest_info_erreur_affect_grp");
+					$tab_param_mail['destinataire'][]=getSettingValue("email_dest_info_erreur_affect_grp");
+				}
+
+				$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
 			}
 		}
 

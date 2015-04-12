@@ -1081,6 +1081,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 }
 
 function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
+	global $tab_param_mail;
 	$retour="";
 
 	$id_nature="";
@@ -1158,6 +1159,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="") {
 	for($i=0;$i<count($tab_dest);$i++) {
 		if($i>0) {$retour.=", ";}
 		$retour.=$tab_dest[$i];
+		$tab_param_mail['destinataire'][]=$tab_dest[$i];
 	}
 	return $retour;
 }

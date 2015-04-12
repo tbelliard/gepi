@@ -143,6 +143,12 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$lig_u=mysqli_fetch_object($req);
 								$nom_personne_autorisant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
 								$email_personne_autorisant=$lig_u->email;
+								if(check_mail($email_personne_autorisant)) {
+									$tab_param_mail['cc'][]=$email_personne_autorisant;
+									$tab_param_mail['cc_name'][]=$nom_personne_autorisant;
+									$tab_param_mail['replyto']=$email_personne_autorisant;
+									$tab_param_mail['replyto_name']=$nom_personne_autorisant;
+								}
 							}
 
 							$email_destinataires="";
@@ -154,13 +160,20 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 							if(mysqli_num_rows($req)>0) {
 								$lig_u=mysqli_fetch_object($req);
 
-								$designation_destinataires.=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+								$designation_destinataire_courant=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+								$designation_destinataires.=$designation_destinataire_courant;
 								$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
+
+								$tab_param_mail['destinataire'][]=$lig_u->email;
+								$tab_param_mail['destinataire_name'][]=$designation_destinataire_courant;
 								while($lig_u=mysqli_fetch_object($req)) {
-									$designation_destinataires.=", ".remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+									$designation_destinataire_courant=remplace_accents($lig_u->civilite." ".$lig_u->nom." ".casse_mot($lig_u->prenom,'majf2'),'all_nospace');
+									$designation_destinataires.=", ".$designation_destinataire_courant;
 									// Il se passe un truc bizarre avec les suivants
 									//$email_destinataires.=$designation_destinataires." <".$lig_u->email.">";
 									$email_destinataires.=", ".$lig_u->email;
+									$tab_param_mail['destinataire'][]=$lig_u->email;
+									$tab_param_mail['destinataire_name'][]=$designation_destinataire_courant;
 								}
 
 								$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction de notes de bulletins";
@@ -191,7 +204,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 								$texte_mail=$salutation." ".$designation_destinataires.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
 
-								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header, "plain", $tab_param_mail);
 
 								if($envoi) {$msg.="Email expédié à ".htmlspecialchars($email_destinataires)."<br />";}
 							}

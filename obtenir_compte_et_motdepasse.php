@@ -94,14 +94,16 @@ if (isset($_POST['is_posted'])) {
 				if($destinataire=="") {
 					$destinataire=getSettingValue('gepiAdminAdress');
 				}
+				$tab_param_mail['destinataire']=$destinataire;
 
 				$ajout_headers="";
 				if(check_mail($email)) {
 					$ajout_headers="Reply-To: $email\r\n";
+					$tab_param_mail['replyto']=$email;
 				}
 
 				if($destinataire!="") {
-					envoi_mail($titre, $texte, $destinataire, $ajout_headers);
+					envoi_mail($titre, $texte, $destinataire, $ajout_headers, "plain", $tab_param_mail);
 				}
 			}
 

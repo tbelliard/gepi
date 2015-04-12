@@ -200,8 +200,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							if($destinataire_mail=="") {
 								$destinataire_mail=getSettingValue('gepiSchoolEmail');
 							}
+							$tab_param_mail['destinataire']=$destinataire_mail;
 							if(($destinataire_mail!='')&&(check_mail($destinataire_mail))) {
-								envoi_mail($sujet_mail, $message_mail, $destinataire_mail);
+								envoi_mail($sujet_mail, $message_mail, $destinataire_mail, "", "plain", $tab_param_mail);
 							}
 						}
 
@@ -209,7 +210,8 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							$sujet_mail="Mise à jour de votre adresse mail";
 							$message_mail="Vous avez procédé à la modification de votre adresse mail dans 'Gérer mon compte' le ".strftime('%A %d/%m/%Y à %H:%M:%S').". Votre nouvelle adresse est donc '$reg_email'. C'est cette adresse qui sera utilisée pour les éventuels prochains messages.";
 							$destinataire_mail=$user_email;
-							envoi_mail($sujet_mail, $message_mail, $destinataire_mail);
+							$tab_param_mail['destinataire']=$destinataire_mail;
+							envoi_mail($sujet_mail, $message_mail, $destinataire_mail, "", "plain", $tab_param_mail);
 						}
 					}
 				}
@@ -246,8 +248,9 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 							if($destinataire_mail=="") {
 								$destinataire_mail=getSettingValue('gepiSchoolEmail');
 							}
+							$tab_param_mail['destinataire']=$destinataire_mail;
 							if(($destinataire_mail!='')&&(check_mail($destinataire_mail))) {
-								envoi_mail($sujet_mail, $message_mail, $destinataire_mail);
+								envoi_mail($sujet_mail, $message_mail, $destinataire_mail, "", "plain", $tab_param_mail);
 							}
 						}
 					}

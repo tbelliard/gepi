@@ -162,6 +162,7 @@ Bien cordialement.<br />
 -- <br />
 ".getSettingValue('gepiSchoolName');
 					$destinataire=getSettingValue('gepiSchoolEmail');
+					$tab_param_mail['destinataire']=$destinataire;
 
 					$destinataires_bcc="";
 
@@ -184,6 +185,8 @@ Bien cordialement.<br />
 										$destinataires_bcc.=", ";
 									}
 									$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
+									$tab_param_mail['bcc'][]=$lig_u->email;
+									$tab_param_mail['bcc_name'][]=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom;
 									$nb_dest_prof++;
 								}
 							}
@@ -204,6 +207,8 @@ Bien cordialement.<br />
 										$destinataires_bcc.=", ";
 									}
 									$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
+									$tab_param_mail['bcc'][]=$lig_u->email;
+									$tab_param_mail['bcc_name'][]=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom;
 									$nb_dest_cpe++;
 								}
 							}
@@ -224,6 +229,8 @@ Bien cordialement.<br />
 										$destinataires_bcc.=", ";
 									}
 									$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
+									$tab_param_mail['bcc'][]=$lig_u->email;
+									$tab_param_mail['bcc_name'][]=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom;
 									$nb_dest_scol++;
 								}
 							}
@@ -246,6 +253,8 @@ Bien cordialement.<br />
 											$destinataires_bcc.=", ";
 										}
 										$destinataires_bcc.=$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
+										$tab_param_mail['bcc'][]=$lig_u->email;
+										$tab_param_mail['bcc_name'][]=$lig_u->prenom." ".$lig_u->nom;
 										$nb_dest_eleve++;
 										$tab_email_deja[]=$lig_u->email;
 									}
@@ -283,6 +292,8 @@ Bien cordialement.<br />
 											$destinataires_bcc.=", ";
 										}
 										$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->email.">";
+										$tab_param_mail['bcc'][]=$lig_u->email;
+										$tab_param_mail['bcc_name'][]=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom;
 										$responsable_courant_ok++;
 										$tab_email_deja[]=$lig_u->email;
 									}
@@ -294,6 +305,8 @@ Bien cordialement.<br />
 											$destinataires_bcc.=",";
 										}
 										$destinataires_bcc.=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom." <".$lig_u->mel.">";
+										$tab_param_mail['bcc'][]=$lig_u->mel;
+										$tab_param_mail['bcc_name'][]=$lig_u->civilite." ".$lig_u->prenom." ".$lig_u->nom;
 										$responsable_courant_ok++;
 										$tab_email_deja[]=$lig_u->mel;
 									}
@@ -313,6 +326,8 @@ Bien cordialement.<br />
 					else {
 						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 							$destinataires_bcc.=",".$_SESSION['email'];
+							$tab_param_mail['bcc'][]=$_SESSION['email'];
+							$tab_param_mail['bcc_name'][]=$_SESSION['prenom']." ".$_SESSION['nom'];
 						}
 
 						//echo "<div class='fieldset_opacite50' style='border:1px solid red; margin:1em;'>Destinataire: $destinataire<br />Destinataires BCC: ".htmlentities($destinataires_bcc)."<hr />".$sujet_mail."<hr />".$message_mail."</div>";
@@ -320,7 +335,7 @@ Bien cordialement.<br />
 						//echo "\$envoi_mail_actif=$envoi_mail_actif<br />";
 						if($envoi_mail_actif!="n") {
 							$ajout_headers="Bcc:".$destinataires_bcc;
-							if(envoi_mail($sujet_mail, $message_mail, $destinataire, $ajout_headers, "html")) {
+							if(envoi_mail($sujet_mail, $message_mail, $destinataire, $ajout_headers, "html", $tab_param_mail)) {
 								$msg.=$obj_classe->classe." message envoyé pour ";
 								if((isset($mail_prof[$obj_classe->id_classe]))&&($nb_dest_prof>0)) {
 									$msg.=$nb_dest_prof." professeur(s), ";
@@ -355,7 +370,8 @@ Bien cordialement.<br />
 				$message_mail2.="\nFin du compte-rendu.\n\nBien cordialement.
 -- 
 ".getSettingValue('gepiSchoolName');
-				envoi_mail($sujet_mail2, $message_mail2, $_SESSION['email']);
+				$tab_param_mail['destinataire']=$_SESSION['email'];
+				envoi_mail($sujet_mail2, $message_mail2, $_SESSION['email'], "", "plain", $tab_param_mail);
 			}
 		}
 	}

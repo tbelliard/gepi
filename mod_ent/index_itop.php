@@ -5926,7 +5926,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 </table>
 $impression";
 
-				if((isset($tab_parent[$loop]['email_gepi']))&&($envoi=envoi_mail("Compte Gepi", "Bonjour(soir),\n".$chaine, $tab_parent[$loop]['email_gepi'], "", "html"))) {
+				$tab_param_mail['destinataire']=$tab_parent[$loop]['email_gepi'];
+				if((isset($tab_parent[$loop]['email_gepi']))&&($envoi=envoi_mail("Compte Gepi", "Bonjour(soir),\n".$chaine, $tab_parent[$loop]['email_gepi'], "", "html", $tab_param_mail))) {
 					$tab_envoi_reussi[]=$tab_parent[$loop]['nom_prenom']." (".$tab_parent[$loop]['email_gepi'].") parent de ".$tab_parent[$loop]['resp_de'];
 				}
 				else {

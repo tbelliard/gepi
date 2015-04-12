@@ -487,24 +487,28 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 						$ajout_header="";
 						if(($_SESSION['email']!="")&&(check_mail($_SESSION['email']))) {
 							$ajout_header.="Cc: ".$_SESSION['prenom']." ".$_SESSION['nom']." <".$_SESSION['email'].">\r\n";
+							$tab_param_mail['cc']=$_SESSION['email'];
+							$tab_param_mail['cc_name']=$_SESSION['prenom']." ".$_SESSION['nom'];
 						}
 
 						$destinataire_mail="";
 						$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 						if(($gepiAdminAdress!="")&&(check_mail($gepiAdminAdress))) {
 							$destinataire_mail=$gepiAdminAdress;
+							$tab_param_mail['destinataire'][]=$destinataire_mail;
 						}
 						for($loop=0;$loop<count($current_group['profs']['list']);$loop++) {
 							$mail_user=get_mail_user($current_group['profs']['list'][$loop]);
 							if(($mail_user!="")&&(check_mail($mail_user))) {
 								if($destinataire_mail!="") {$destinataire_mail.=",";}
 								$destinataire_mail.=$mail_user;
+								$tab_param_mail['destinataire'][]=$mail_user;
 							}
 						}
 
 						if($destinataire_mail!="") {
 							$sujet_mail="[GEPI] Modification des affectations élèves dans un de vos enseignements";
-							$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header);
+							$envoi = envoi_mail($sujet_mail, $texte_mail, $destinataire_mail, $ajout_header, "plain", $tab_param_mail);
 						}
 					}
 

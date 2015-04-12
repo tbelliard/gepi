@@ -22,9 +22,20 @@
  */
 
 $variables_non_protegees = 'yes';
-
+/*
+if(isset($_POST['nature'])) {
+	echo "\$_POST['nature']=".$_POST['nature']."<br />";
+}
+*/
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+/*
+if(isset($_POST['nature'])) {
+	echo "\$_POST['nature']=".$_POST['nature']."<br />";
+}
+*/
+
+
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -531,11 +542,14 @@ if($etat_incident!='clos') {
 				// Pour ne pas spammer tant que la nature n'est pas saisie
 				if($nature!='') {
 					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
+					$tab_param_mail['message_id']=$message_id;
 				}
 				else {
 					$message_id="";
 				}
-	
+
+				$nature=preg_replace('/\\\\\'/',"'",$nature);
+
 				$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
 													date='$annee-$mois-$jour',
 													heure='$display_heure',
@@ -587,6 +601,21 @@ if($etat_incident!='clos') {
 				}
 	
 				if(isset($nature)) {
+					/*
+					if (get_magic_quotes_gpc()) {
+						echo "get_magic_quotes_gpc()=true<br />";
+					}
+					else {
+						echo "get_magic_quotes_gpc()=false<br />";
+					}
+					echo "nature=$nature<br />
+					corriger_caracteres($nature)=".corriger_caracteres($nature)."<br />
+					traitement_magic_quotes(corriger_caracteres($nature))=".traitement_magic_quotes(corriger_caracteres($nature))."<br />";
+					*/
+					$nature=preg_replace('/\\\\\'/',"'",$nature);
+					//$nature=stripslashes($nature);
+					//echo "nature=$nature<br />";
+
 					$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
 					//on vérifie si une catégorie est définie pour cette nature
 					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
@@ -982,6 +1011,8 @@ $headers);
 						}
 						else {
 							$references_mail=$lig_mi->message_id;
+							//$tab_param_mail['references'][]=$lig_mi->message_id;
+							$tab_param_mail['references']=$lig_mi->message_id;
 						}
 	
 						$tab_alerte_classe=array();
@@ -1046,6 +1077,7 @@ $headers);
 						//echo "\$texte_mail=$texte_mail<br />";
 	
 						if(count($tab_alerte_classe)>0) {
+							$tab_param_mail=array();
 							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
 							// La liste des destinataires, admin inclus doivent être définis dans "Définition des destinataires d'alertes"
 							//if($destinataires=="") {
@@ -1060,13 +1092,14 @@ $headers);
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
 									$headers.="Reply-to:".$_SESSION['email']."\r\n";
+									$tab_param_mail['replyto']=$_SESSION['email'];
 								}
 
 								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
 								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
-      
+
 								// On envoie le mail
-								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers);
+								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers, "plain", $tab_param_mail);
 
 							}
 						}
