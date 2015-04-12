@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -93,6 +93,13 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 	die("Droits insuffisants pour effectuer cette opération");
 }
 
+if(isset($id_classe)) {
+	$gepi_prof_suivi=retourne_denomination_pp($id_classe);
+}
+else {
+	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+}
+
 //debug_var();
 
 if(isset($editer_modele_mail)) {
@@ -165,7 +172,7 @@ ___NOM_EMETTEUR___</pre></li>
 			<li>Exemple 2&nbsp;: <a href='#' onclick=\"document.getElementById('MsgMailVerifRemplissageBulletins').innerHTML=document.getElementById('modele_exemple_2').innerHTML;\">Utiliser ce modèle</a><br />
 			<pre id='modele_exemple_2' style='color:green;'>Bonjour(soir) ___NOM_PROF___,
  
-Les bulletins doivent être remplis 8 jours avant la date du conseil (soit 8 jours avant le ___DATE_CONSEIL___) pour laisser une semaine au ".getSettingValue('gepi_prof_suivi')." pour faire sa préparation des avis de conseil de classe et pour l'étude des cas sensibles avec la direction.
+Les bulletins doivent être remplis 8 jours avant la date du conseil (soit 8 jours avant le ___DATE_CONSEIL___) pour laisser une semaine au ".$gepi_prof_suivi." pour faire sa préparation des avis de conseil de classe et pour l'étude des cas sensibles avec la direction.
  
 Des moyennes et/ou appréciations ne sont pas remplies:
 ___LIGNE_APPRECIATIONS_MANQUANTES___
@@ -755,7 +762,7 @@ Les saisies/modifications sont possibles.";
 	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
 		echo " <a href='#'  onclick=\"afficher_div('div_modif_verrouillage','y',-20,20);return false;\" title=\"Verrouillez/déverrouillez la période pour cette classe.\"><img src='../images/icons/configure.png' class='icone16' alt='Modifier' /></a>";
 	}
-	echo "</em>) - (<em>".getSettingValue('gepi_prof_suivi')."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
+	echo "</em>) - (<em>".$gepi_prof_suivi."&nbsp;: ".liste_prof_suivi($id_classe, "profs", "y")."</em>)</p>";
 
 	if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
 		$titre_infobulle="Verrouillage de période";
@@ -1070,7 +1077,7 @@ Les saisies/modifications sont possibles.";
 					}
 
 				} else {
-					echo " (pas de ".getSettingValue("gepi_prof_suivi").")";
+					echo " (pas de ".$gepi_prof_suivi.")";
 				}
 
 				$affiche_nom = 0;
@@ -1288,7 +1295,7 @@ Les saisies/modifications sont possibles.";
                             }
 
                         } else {
-                            echo " (pas de ".getSettingValue("gepi_prof_suivi").")";
+                            echo " (pas de ".$gepi_prof_suivi.")";
                         }
                     }
                     $affiche_nom = 0;
@@ -1328,7 +1335,7 @@ Les saisies/modifications sont possibles.";
 			$param_lien.="mode=$mode&amp;";
 		}
 
-		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /><a></p>\n";
+		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /></a></p>\n";
 		echo "<table class='boireaus' summary=\"Courriels\">\n";
 		$alt=1;
 
@@ -1396,7 +1403,7 @@ Les saisies/modifications sont possibles.";
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			if(in_array($login_prof, $tab_pp)) {
-				echo "<div style='float:right; width:16px;margin:3px;' title=\"Ce professeur est ".getSettingValue('gepi_prof_suivi')." d'élèves de cette classe.\"><img src='../images/bulle_verte.png' width='9' height='9' alt=\"".getSettingValue('gepi_prof_suivi')."\" /></div>";
+				echo "<div style='float:right; width:16px;margin:3px;' title=\"Ce professeur est ".$gepi_prof_suivi." d'élèves de cette classe.\"><img src='../images/bulle_verte.png' width='9' height='9' alt=\"".$gepi_prof_suivi."\" /></div>";
 			}
 			if($tab_alerte_prof[$login_prof]['email']!="") {
 				if(check_mail($tab_alerte_prof[$login_prof]['email'])) {
