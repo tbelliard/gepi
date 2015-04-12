@@ -1335,7 +1335,7 @@ Les saisies/modifications sont possibles.";
 			$param_lien.="mode=$mode&amp;";
 		}
 
-		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /><a></p>\n";
+		echo "<p class='bold'>Récapitulatif&nbsp;: <a href='".$_SERVER['PHP_SELF']."?".$param_lien."editer_modele_mail=y' title=\"Editer le modèle de mail.\"><img src='../images/edit16.png' class='icone16' alt='Editer le modèle de mail' /></a></p>\n";
 		echo "<table class='boireaus' summary=\"Courriels\">\n";
 		$alt=1;
 
