@@ -293,7 +293,12 @@ echo "
 </script>
 
 <br />
-<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le statut 'administrateur' n'est pas proposé pour éviter des accidents.</p>
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Le statut 'administrateur' n'est pas proposé pour éviter des accidents.</p></li>
+	<li><p>Si vous réinitialisez des mots de passe, il vous sera proposé, après validation, d'envoyer ces nouveaux mot de passe par mail pour les utilisateurs dont le mail est renseigné.<br />
+	Par sécurité, à la première connexion, les comptes concernés devront changer de mot de passe.</p></li>
+</ul>
 <p><br /></p>\n";
 require("../lib/footer.inc.php");
 ?>
