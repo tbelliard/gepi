@@ -1669,6 +1669,12 @@ echo "<legend style='border: 1px solid grey;";
 echo "background-color: white; ";
 echo "'>Informations personnelles</legend>\n";
 
+if($_SESSION['statut']=='responsable') {
+	echo "<div style='float:right; width:8em; text-align:center;' class='fieldset_opacite50'>
+	<a href='../responsables/infos_parent.php' title=\"Permet de consulter les informations vous concernant (coordonnées téléphoniques, adresse,...) dont dispose l'établissement.\" target='_blank'>Informations personnelles (<em>coordonnées</em>)</a>
+</div>";
+}
+
 echo add_token_field();
 echo "<h2>Informations personnelles *</h2>\n";
 

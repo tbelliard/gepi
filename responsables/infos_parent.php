@@ -146,7 +146,7 @@ echo "
 	</table>
 
 	<p style='margin-top:2em;'>(*) L'adresse email définie dans la table 'resp_pers' peut différer de l'adresse mail définie dans 'Gérer mon compte'.<br />
-	Cette différence ne devrait être que temporaire (<em>le temps que le secrétariat de l'établissement effectue la synchronisation de ces adresses</em>).</p>
+	Cette éventuelle différence ne devrait être que temporaire (<em>le temps que le secrétariat de l'établissement effectue la synchronisation de ces adresses</em>).</p>
 </div>";
 
 echo "<p class='bold' style='margin-top:2em;'>Enfants/élèves dont vous êtes responsable légal&nbsp;:</p>

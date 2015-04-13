@@ -888,6 +888,24 @@ if($affichage_div_edt=="y") {
 <div id='div_indications' style='float:left; width:".$largeur_indications."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['indication'].";'>".$html."</div>";
 }
 
+
+if($_SESSION['statut']=='responsable') {
+	$largeur_infos_resp=500;
+
+	$html="";
+
+	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Informations personnelles</div>
+<p class='bold' style='margin-top:2em;'>Voici les informations vous concernant personnellement&nbsp;:</p>
+".affiche_tableau_infos_resp($_SESSION['login'])."
+
+<p class='bold' style='margin-top:2em;'>Enfants/élèves dont vous êtes responsable légal&nbsp;:</p>
+".affiche_tableau_infos_eleves_associes_au_resp("", $_SESSION['login'])."
+</div>";
+
+	echo "
+<div id='div_infos_resp' style='float:left; width:".$largeur_infos_resp."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:aliceblue' class='infobulle_corps'>".$html."</div>";
+}
+
 //=================================
 echo "<script type='text/javascript'>
 	// Action lancée lors du clic dans le div_edt

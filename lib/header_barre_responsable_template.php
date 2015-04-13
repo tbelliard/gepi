@@ -153,6 +153,8 @@ if ($barre_plugin!="") {
 			}
 		}
 
+		$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/responsables/infos_parent.php"'.insert_confirm_abandon().' title="Permet de consulter les informations vous concernant (coordonnées téléphoniques, adresse,...) dont dispose l\'établissement.">&nbsp;Infos.personnelles</a></li>'."\n";
+
 		$menus .= $barre_plugin;
 
 		$tbs_menu_responsable[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php"'.insert_confirm_abandon().'>Accueil</a></li>'."\n");		

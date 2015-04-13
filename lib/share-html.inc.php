@@ -3982,4 +3982,227 @@ function insere_tout_le_necessaire_recherche_ajax_ele($id_champ, $texte_lien_rec
 	$retour.=insere_infobulle_recherche_ajax_ele();
 	return $retour;
 }
+
+function affiche_tableau_infos_resp($login_resp) {
+	$retour="";
+
+	$sql="SELECT rp.* FROM resp_pers rp WHERE login='".$login_resp."';";
+	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	//echo "$sql<br />";
+	if(mysqli_num_rows($res_resp)>0) {
+		$lig=mysqli_fetch_object($res_resp);
+		$retour.="
+<div style='margin-left:2em;'>
+	<table class='boireaus boireaus_alt boireaus_th_left' summary='Tableau de vos informations personnelles'>
+		<tr>
+			<th>Nom</th>
+			<td>".$lig->nom."</td>
+		</tr>
+		<tr>
+			<th>Prénom</th>
+			<td>".$lig->prenom."</td>
+		</tr>
+		<tr>
+			<th>Civilité</th>
+			<td>".$lig->civilite."</td>
+		</tr>
+		<tr>
+			<th>Tél.personnel</th>
+			<td>".$lig->tel_pers."</td>
+		</tr>
+		<tr>
+			<th>Tél.portable</th>
+			<td>".$lig->tel_port."</td>
+		</tr>
+		<tr>
+			<th>Tél.professionnel</th>
+			<td>".$lig->tel_prof."</td>
+		</tr>
+		<tr>
+			<th>Email (*)</th>
+			<td>".$lig->mel."</td>
+		</tr>";
+
+		$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig->adr_id."';";
+		$res_adr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_adr)==0) {
+			$retour.="
+		<tr>
+			<th>Adresse</th>
+			<td style='color:red'>Aucune adresse n'est enregistrée.</td>
+		</tr>";
+		}
+		else {
+			$lig_adr=mysqli_fetch_object($res_adr);
+
+			if($lig_adr->adr1!='') {
+				$retour.="		<tr><th>Ligne 1 adresse:</th><td>".$lig_adr->adr1."</td></tr>\n";
+			}
+			if($lig_adr->adr2!='') {
+				$retour.="		<tr><th>Ligne 2 adresse:</th><td>".$lig_adr->adr2."</td></tr>\n";
+			}
+			if($lig_adr->adr3!='') {
+				$retour.="		<tr><th>Ligne 3 adresse:</th><td>".$lig_adr->adr3."</td></tr>\n";
+			}
+			if($lig_adr->adr4!='') {
+				$retour.="		<tr><th>Ligne 4 adresse:</th><td>".$lig_adr->adr4."</td></tr>\n";
+			}
+			if($lig_adr->cp!='') {
+				$retour.="		<tr><th>Code postal:</th><td>".$lig_adr->cp."</td></tr>\n";
+			}
+			if($lig_adr->commune!='') {
+				$retour.="		<tr><th>Commune:</th><td>".$lig_adr->commune."</td></tr>\n";
+			}
+			if($lig_adr->pays!='') {
+				$retour.="		<tr><th>Pays:</th><td>".$lig_adr->pays."</td></tr>\n";
+			}
+		}
+
+		$retour.="
+	</table>
+
+	<p style='margin-top:2em;'>(*) L'adresse email définie dans la table 'resp_pers' peut différer de l'adresse mail définie dans 'Gérer mon compte'.<br />
+	Cette éventuelle différence ne devrait être que temporaire (<em>le temps que le secrétariat de l'établissement effectue la synchronisation de ces adresses</em>).</p>
+</div>";
+	}
+
+	return $retour;
+}
+
+function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="") {
+	$retour="";
+
+	if($pers_id!="") {
+		$sql="(SELECT e.* FROM eleves e,
+						responsables2 r
+					WHERE e.ele_id=r.ele_id AND
+						r.pers_id='".$pers_id."' AND
+					(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
+	}
+	else {
+		$sql="(SELECT e.* FROM eleves e,
+						responsables2 r, 
+						resp_pers rp
+					WHERE e.ele_id=r.ele_id AND 
+						r.pers_id=rp.pers_id AND 
+						rp.login='".$login_resp."' AND 
+					(r.resp_legal='1' OR r.resp_legal='2') ORDER BY e.nom,e.prenom)";
+	}
+	//$retour.="$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)>0) {
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
+			$tab_clas=get_class_from_ele_login($lig_ele->login);
+
+			$ligne_login="";
+			$sql="SELECT etat, auth_mode FROM utilisateurs WHERE statut='eleve' AND etat='actif' AND login='$lig_ele->login';";
+			$test_compte=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_compte)>0) {
+				$lig_user=mysqli_fetch_object($test_compte);
+				$ligne_login="
+				<tr>
+					<th>Login</th>
+					<td>
+						".$lig_ele->login."<br />
+						(<em>compte <span style='color:".(($lig_user->etat=='actif') ? "green' title='Le compte peut se connecter" : "red' title='Le compte ne peut pas se connecter")."'>".$lig_user->etat."</span></em>)
+					</td>
+				</tr>";
+			}
+
+			$ligne_lieu_naissance="";
+			if(getSettingAOui('ele_lieu_naissance')) {
+				$ligne_lieu_naissance="
+				<tr>
+					<th>Lieu de naissance</th>
+					<td>".get_commune($lig_ele->lieu_naissance,1)."</td>
+				</tr>";
+			}
+
+			$ligne_tel_pers_ele="";
+			if(getSettingAOui('ele_tel_pers')) {
+				$ligne_tel_pers_ele="
+					<tr>
+						<th>Tél.personnel</th>
+						<td>".$lig_ele->tel_pers."</td>
+					</tr>";
+			}
+
+			$ligne_tel_pers_port="";
+			if(getSettingAOui('ele_tel_port')) {
+				$ligne_tel_pers_port="
+					<tr>
+						<th>Tél.portable</th>
+						<td>".$lig_ele->tel_port."</td>
+					</tr>";
+			}
+
+			$ligne_tel_pers_prof="";
+			if(getSettingAOui('ele_tel_prof')) {
+				$ligne_tel_pers_prof="
+					<tr>
+						<th>Tél.professionnel</th>
+						<td>".$lig_ele->tel_prof."</td>
+					</tr>";
+			}
+
+			$ligne_regime="";
+			$sql="SELECT * FROM j_eleves_regime WHERE login='$lig_ele->login';";
+			$res_reg=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_reg)>0) {
+				$lig_reg=mysqli_fetch_object($res_reg);
+				$ligne_regime="
+					<tr>
+						<th>Régime</th>
+						<td>";
+				if($lig_reg->regime == "d/p") {$ligne_regime.="Demi-pensionnaire";}
+				elseif ($lig_reg->regime == "ext.") {$ligne_regime.="Externe";}
+				elseif ($lig_reg->regime == "int.") {$ligne_regime.="Interne";}
+				elseif ($lig_reg->regime == "i-e") {
+					$ligne_regime.="Interne&nbsp;externé";
+					if (my_strtoupper($tab_ele['sexe'])!= "F") {$ligne_regime.="e";}
+				}
+				$ligne_regime.="</td>
+					</tr>
+
+					<tr>
+						<th>Redoublant</th>
+						<td>".(($lig_reg->doublant == "R") ? "Oui" : "Non")."</td>
+					</tr>";
+			}
+
+			$retour.="
+			<div style='float:left; width:25em; margin-left:2em;'>
+				<table class='boireaus boireaus_alt boireaus_th_left' summary='Tableau de vos informations personnelles'>
+		".$ligne_login."
+					<tr>
+						<th>Nom</th>
+						<td>".$lig_ele->nom."</td>
+					</tr>
+					<tr>
+						<th>Prénom</th>
+						<td>".$lig_ele->prenom."</td>
+					</tr>
+					<tr>
+						<th>Genre</th>
+						<td>".(($lig_ele->sexe=='F') ? "féminin" : "masculin")."</td>
+					</tr>
+					<tr>
+						<th>Né(e) le</th>
+						<td>".formate_date($lig_ele->naissance)."</td>
+					</tr>".$ligne_lieu_naissance.$ligne_tel_pers_ele.$ligne_tel_pers_port.$ligne_tel_pers_prof."
+					<tr>
+						<th>Email (*)</th>
+						<td>".$lig_ele->email."</td>
+					</tr>
+					<tr>
+						<th>Classe</th>
+						<td>".$tab_clas['liste_nbsp']."</td>
+					</tr>".$ligne_regime."
+				</table>
+			</div>";
+		}
+	}
+
+	return $retour;
+}
 ?>
