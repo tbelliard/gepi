@@ -864,7 +864,6 @@ require_once("'.$pref_arbo.'/entete.php");
 		if(($suivant!='')||($precedent!='')) {
 			$retour.="<div style='float: left; width: 20px; margin-top: 0.5em;'>\n";
 			if($precedent!='') {
-				//$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
 				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent');\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
 				$retour.="<br />\n";
 			}
@@ -873,7 +872,6 @@ require_once("'.$pref_arbo.'/entete.php");
 			}
 
 			if($suivant!='') {
-				//$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
 				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant');\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
 			}
 			$retour.="</div>\n";
@@ -893,10 +891,52 @@ require_once("'.$pref_arbo.'/entete.php");
 		if(mysqli_num_rows($res)>0) {
 
 			while($lig=mysqli_fetch_object($res)) {
-				//
+				$notice_privee = CahierTexteNoticePriveePeer::retrieveByPK($lig->id_ct);
+
 				//$retour.="<div style='border: 1px solid black; margin: 0.5em; background-color:".$couleur_cellule['p']."'>\n";
 				$retour.="<div style='border: 1px solid black; margin: 0.5em; margin-left:25px; background-color: #f6f3a8'>\n";
-				$retour.="<div style='float: right; width: 4em; margin-right: 1.5em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+				$retour.="<div style='float: right; width: 4em; margin-right: 2em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+
+				if(my_strtoupper($lig->id_login)==my_strtoupper($_SESSION['login'])) {
+					$retour .= '<div style="margin: 0px; float: left;">';
+					$retour .=("<a href=\"#\" onclick=\"javascript:
+						id_groupe = '".$lig->id_groupe."';
+						getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig->id_ct."',{ onComplete: function() {	initWysiwyg();}});
+						updateCalendarWithUnixDate(".$lig->date_ct.");
+						getWinListeNotices();
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$lig->id_groupe."',{ onComplete:function() {updateDivModification();}});
+						object_en_cours_edition = 'notice_privee';
+					");
+					$retour .=("\">");
+					$retour .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
+					$retour .=(" ");
+
+					if ($notice_privee != null) {
+						$retour .=("<a href=\"#\" onclick=\"javascript:
+							contenu_a_copier = '".addslashes(htmlspecialchars($lig->contenu))."';
+							ct_a_importer_class='".get_class($notice_privee)."';
+							id_ct_a_importer='".$lig->id_ct."';
+							new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$lig->id_groupe."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$lig->id_ct."',{ onComplete:function() {updateDivModification();} });
+							getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=$lig->date_ct');
+							\"><img style=\"border: 0px;\" src=\"");
+						if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $notice_privee) {
+							$retour .=("../images/icons/copy-16-gold.png");
+						} else {
+							$retour .=("../images/icons/copy-16.png");
+						}
+						$retour .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
+					}
+					$retour .=(" ");
+
+					$retour .=("<a href=\"#\" onclick=\"javascript:
+					suppressionNoticePrivee('".strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
+					new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
+					getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=all');
+					return false;
+					\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
+					$retour .= '</div>';
+				}
+
 				$retour.=$lig->contenu;
 				$retour.="</div>\n";
 			}
@@ -919,13 +959,59 @@ require_once("'.$pref_arbo.'/entete.php");
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 
+			$id_ct_np_prec="";
 			while($lig=mysqli_fetch_object($res)) {
-				//
+				$notice_privee = CahierTexteNoticePriveePeer::retrieveByPK($lig->id_ct);
+
 				//$retour.="<div style='border: 1px solid black; margin: 0.5em; background-color:".$couleur_cellule['p']."'>\n";
+				$retour.="<a name='liste_NP_notice_privee_".$lig->id_ct."'></a>\n";
 				$retour.="<div style='border: 1px solid black; margin: 0.5em; margin-left:25px; background-color: #f6f3a8'>\n";
-				$retour.="<div style='float: right; width: 4em; margin-right: 1.5em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+				$retour.="<div style='float: right; width: 4em; margin-right: 2em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+
+				if(my_strtoupper($lig->id_login)==my_strtoupper($_SESSION['login'])) {
+					$retour .= '<div style="margin: 0px; float: left;">';
+					$retour .=("<a href=\"#\" onclick=\"javascript:
+						id_groupe = '".$lig->id_groupe."';
+						getWinEditionNotice().setAjaxContent('ajax_edition_notice_privee.php?id_ct=".$lig->id_ct."',{ onComplete: function() {	initWysiwyg();}});
+						updateCalendarWithUnixDate(".$lig->date_ct.");
+						getWinListeNotices();
+						new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$lig->id_groupe."',{ onComplete:function() {updateDivModification();}});
+						object_en_cours_edition = 'notice_privee';
+					");
+					$retour .=("\">");
+					$retour .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
+					$retour .=(" ");
+
+					if ($notice_privee != null) {
+						$retour .=("<a href=\"#\" onclick=\"javascript:
+							contenu_a_copier = '".addslashes(htmlspecialchars($lig->contenu))."';
+							ct_a_importer_class='".get_class($notice_privee)."';
+							id_ct_a_importer='".$lig->id_ct."';
+							new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$lig->id_groupe."&ct_a_importer_class=".get_class($notice_privee)."&id_ct_a_importer=".$lig->id_ct."',{ onComplete:function() {updateDivModification();} });
+							getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=all#liste_NP_notice_privee_".$id_ct_np_prec."');
+							\"><img style=\"border: 0px;\" src=\"");
+						if (isset($_SESSION['ct_a_importer']) && $_SESSION['ct_a_importer'] == $notice_privee) {
+							$retour .=("../images/icons/copy-16-gold.png");
+						} else {
+							$retour .=("../images/icons/copy-16.png");
+						}
+						$retour .=("\" alt=\"Copier\" title=\"Copier\" /></a>\n");
+					}
+					$retour .=(" ");
+
+					$retour .=("<a href=\"#\" onclick=\"javascript:
+					suppressionNoticePrivee('".strftime("%A %d %B %Y", $lig->date_ct)."','".$lig->id_ct."', '".$lig->id_groupe."','".add_token_in_js_func()."');
+					new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
+					getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$lig->id_groupe."&today=all#liste_NP_notice_privee_".$id_ct_np_prec."');
+					return false;
+					\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
+					$retour .= '</div>';
+				}
+
 				$retour.=$lig->contenu;
 				$retour.="</div>\n";
+
+				$id_ct_np_prec=$lig->id_ct;
 			}
 		}
 		else {$retour.="Aucune Notice Privée pour cet enseignement (".$info_groupe.").";}
