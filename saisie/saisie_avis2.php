@@ -307,6 +307,20 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
+//================================================
+$type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
+if(($type_bulletin_par_defaut!="pdf")&&($type_bulletin_par_defaut!="html")) {
+	$type_bulletin_par_defaut="pdf";
+}
+
+$acces_impression_bulletin=acces_impression_bulletin($current_eleve_login);
+$acces_impression_releve_notes=acces_impression_releve_notes($current_eleve_login);
+$chaine_intercaler_releve_notes="";
+if($acces_impression_releve_notes) {
+	$chaine_intercaler_releve_notes="&intercaler_releve_notes=y&rn_param_auto=y";
+}
+//================================================
+
 // Pour éviter dans bulletin() d'afficher le lien vers saisie_avis2.php
 $temoin_page_courante="saisie_avis2";
 
@@ -543,7 +557,7 @@ if(isset($id_class_suiv)){
 //fin ajout lien classe précédente / classe suivante
 
 if(acces('/impression/avis_pdf.php', $_SESSION['statut'])) {
-	echo "| Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\">P$periode_num</a>";
+	echo "| <img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Impression PDF des avis <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$periode_num' title=\"Générer un fichier PDF des avis du conseil de classe pour la période $periode_num seulement.\">P$periode_num</a>";
 	echo " - <a href='../impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=toutes' title=\"Générer un fichier PDF des avis du conseil de classe pour toutes les périodes.\">Toutes</a>";
 }
 
@@ -714,7 +728,19 @@ echo "</form>\n";
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td>\n<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app'>$current_eleve_nom $current_eleve_prenom</a></td>\n";
+		echo "
+	<td>
+		<div style='float:left; width:16px;' class='noprint'>
+			<a href='../eleves/visu_eleve.php?ele_login=$current_eleve_login&onglet=bulletins&onglet2=bulletin_$periode_num' title=\"Voir dans un nouvel onglet le bulletin simplifié de l'élève dans les onglets élève.\" target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Voir bulletin' /></a>";
+		if($acces_impression_bulletin) {
+			echo "<br />
+			<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$current_eleve_login."&tab_id_classe[0]=".$id_classe."&tab_periode_num[0]=".$periode_num."' target='_blank' title=\"Voir/imprimer le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$periode_num.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+		}
+		echo "
+		</div>
+
+		<a href = 'saisie_avis2.php?periode_num=$periode_num&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv#app' title=\"Saisir l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom en période $periode_num\">$current_eleve_nom $current_eleve_prenom</a>
+	</td>\n";
 
 		echo "<td>";
 		if($ver_periode[$periode_num]!="O") {
@@ -1328,6 +1354,12 @@ if (isset($fiche)) {
 
 	</form>
 	<?php
+
+		if($acces_impression_bulletin) {
+			echo "<p style='margin-bottom:1em;'><a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$current_eleve_login."&tab_id_classe[0]=".$id_classe."&tab_periode_num[0]=".$periode_num."' target='_blank' title=\"Voir/imprimer le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$periode_num.".
+
+Si vous avez modifié l'avis du conseil de classe, il faut enregistrer avant de suivre ce lien.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /> Imprimer le bulletin de période ".$periode_num." pour cet élève</a>.</p>";
+		}
 
 		if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
 		(getSettingAOui('GepiAccesGraphParent'))||
