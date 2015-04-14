@@ -460,7 +460,7 @@ if (getSettingValue("statuts_prives") == "y") {
 <a href="import_prof_csv.php?export_statut=autre" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">autres</a> 
 <a href='import_prof_csv.php?export_statut=autre&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV Autres sans entête' alt='CSV Autres sans entête'></a>, 
 
-<a href="import_prof_csv.php?export_statut=personnels" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL avec ligne d'entête.">personnels</a> <a href='import_prof_csv.php?export_statut=personnels&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV sans entête' alt='CSV sans entête'></a></p>
+<a href="import_prof_csv.php?export_statut=personnels" title="Export CSV au format NOM;PRENOM;LOGIN;EMAIL;STATUT avec ligne d'entête.">personnels</a> <a href='import_prof_csv.php?export_statut=personnels&amp;sans_entete=y' title='Export sans entête'><img src='../images/disabled.png' width='16' height='16' title='Export CSV sans entête' alt='CSV sans entête'></a></p>
 
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <?php
