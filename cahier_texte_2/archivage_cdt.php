@@ -351,6 +351,28 @@ else {
 			for($i=0;$i<count($tab_js);$i++) {
 				copy("../lib/".$tab_js[$i],$dossier_annee."/js/".$tab_js[$i]);
 			}
+
+			$script_js_selection="
+	function ajouter_contenu_notice_a_ma_selection(id) {
+		if(document.getElementById(id)) {
+			// Pour l'affichage du contenu de la sélection
+			document.getElementById('archive_selection_notices_contenu_notices').innerHTML=document.getElementById('archive_selection_notices_contenu_notices').innerHTML+'<br />'+document.getElementById(id).innerHTML;
+
+			// Pour valider la sélection et l'enregistrer dans un fichier:
+			document.getElementById('archive_selection_notices_textarea').value=document.getElementById('archive_selection_notices_textarea').value+'<br />'+document.getElementById(id).innerHTML;
+
+			//encodedString=btoa(document.getElementById('archive_selection_notices_textarea').value);
+			//alert(encodedString);
+		}
+	}
+
+	function afficher_contenu_selection() {
+		afficher_div('archive_selection_notices', 'y',10,10);
+	}\n";
+			$f=fopen($dossier_annee."/js/selection_notices.js", "w+");
+			fwrite($f, $script_js_selection);
+			fclose($f);
+
 		}
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
@@ -364,6 +386,7 @@ else {
 		echo "</form>\n";
 	}
 	else {
+		$contexte_archivage_cdt="y";
 
 		$gepiSchoolName=getSettingValue('gepiSchoolName');
 		$gepiYear=getSettingValue('gepiYear');
@@ -464,6 +487,11 @@ else {
 				}
 
 				$content.='}
+
+//debug_var();
+if(isset($msg)) {
+	echo $msg;
+}
 ?>
 ';
 				//=====================

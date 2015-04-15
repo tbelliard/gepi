@@ -14,6 +14,10 @@ Abs2:
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
 
+Cahiers de textes (2):
+- Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2
+  les sélections faites dans les archives CDT (archives de version>=1.6.7)
+
 Divers:
 - Possibilité de paramétrer classe par classe la dénomination du professeur chargé
   du suivi des élèves d'une classe ("professeur principal" par défaut).

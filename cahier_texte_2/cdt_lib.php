@@ -90,17 +90,7 @@ require_once("'.$pref_arbo.'/entete.php");
 <link rel='stylesheet' type='text/css' href='$pref_arbo/style_screen_ajout.css' />
 <script type='text/javascript' src='$pref_arbo/js/brainjar_drag.js'></script>
 <script type='text/javascript' src='$pref_arbo/js/position.js'></script>
-<script type='text/javascript'>
-	function ajouter_contenu_notice_a_ma_selection(id) {
-		if(document.getElementById(id)) {
-			document.getElementById('archive_selection_notices_contenu_notices').innerHTML=document.getElementById('archive_selection_notices_contenu_notices').innerHTML+'<br />'+document.getElementById(id).innerHTML;
-		}
-	}
-
-	function afficher_contenu_selection() {
-		afficher_div('archive_selection_notices', 'y',10,10);
-	}
-</script>\n";
+<script type='text/javascript' src='$pref_arbo/js/selection_notices.js'></script>\n";
 		$entete.="<title>$titre</title>\n";
 		$entete.="</head>\n";
 		$entete.="<body>\n";
@@ -119,7 +109,7 @@ require_once("'.$pref_arbo.'/entete.php");
 			$div.="<div class='infobulle_entete' style='$style_bar width: ".$largeur."' onmousedown=\"dragStart(event, '$id')\">\n";
 
 				$div.="<div style='$style_close'><a href=\"javascript:cacher_div('$id')\">";
-					$div.="<img src='../images/close16.png' width='16' height='16' alt='Fermer' title='Fermer' />";
+					$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' title='Fermer' />";
 				$div.="</a></div>\n";
 
 				$div.="<div style='$style_close'><a href=\"#\" onclick=\"document.getElementById('".$id."_contenu_notices').innerHTML='';return false;\">";
@@ -132,8 +122,15 @@ require_once("'.$pref_arbo.'/entete.php");
 			$div.="<div id='".$id."_contenu_corps'>";
 				$hauteur_hors_titre=$hauteur-1; // Le calcul n'est correct que dans le cas où l'unité est 'em'
 				$div.="<div style='width: ".$largeur."; height: ".$hauteur_hors_titre.$hauteur_unite."; overflow: auto;'>\n";
+
+					$div.="<form action=\"<?php echo \$_SERVER['PHP_SELF'];?>\" method='post'>\n";
+					$div.="<p><input type='submit' value='Valider/copier la sélection' /></p>\n";
+					$div.="<textarea style='display:none' name='".$id."_textarea' id='".$id."_textarea'></textarea>\n";
+					$div.="</form>\n";
+
 					$div.="<div style='padding-left: 1px;' id='".$id."_contenu_notices'>\n";
 					$div.="</div>\n";
+
 				$div.="</div>\n";
 			$div.="</div>\n";
 
@@ -190,18 +187,19 @@ require_once("'.$pref_arbo.'/entete.php");
 						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_t_".$value['id_ct']."'>\n";
-								$html.=$value['contenu'];
+								$contenu_notice_courante=$value['contenu'];
 								$adj=my_affiche_docs_joints($value['id_ct'],"t");
 								if($adj!='') {
-									$html.="<div style='border: 1px dashed black'>\n";
-									$html.=$adj;
-									$html.="</div>\n";
+									$contenu_notice_courante.="<div style='border: 1px dashed black'>\n";
+									$contenu_notice_courante.=$adj;
+									$contenu_notice_courante.="</div>\n";
 	
 									if($dossier_documents!='') {
 										$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"t");
 										my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
 									}
 								}
+								$html.=$contenu_notice_courante;
 							$html.="</div>\n";
 						$html.="</div>\n";
 					}

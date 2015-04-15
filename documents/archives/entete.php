@@ -107,4 +107,28 @@ setTimeout(\"corriger_div_lien_retour()\",1000);
 
 </script>\n";
 }
+
+if(isset($_POST['archive_selection_notices_textarea'])) {
+	//$tempdir=get_user_temp_directory($_SESSION['login']);
+
+	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
+	$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$msg="<p style='color:red; text-align:center;'>Dossier temporaire non trouvé.</p>";
+	}
+	else {
+		$lig=mysqli_fetch_object($res);
+		$tempdir=$lig->temp_dir;
+
+		if(file_exists($pref_arbo_include."/temp/".$tempdir)) {
+			$f=fopen($pref_arbo_include."/temp/".$tempdir."/cdt_selection.txt", "w+");
+			fwrite($f, stripslashes($_POST['archive_selection_notices_textarea']));
+			fclose($f);
+			$msg="<p style='color:green; text-align:center;'>Sélection enregistrée.</p>";
+		}
+		else {
+			$msg="<p style='color:red; text-align:center;'>Dossier temporaire non trouvé.</p>";
+		}
+	}
+}
 ?>

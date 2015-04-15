@@ -217,6 +217,10 @@ for($loop=1;$loop<21;$loop++) {
 		break;
 	}
 }
+//================================================
+// Cours suivant dans la journée
+
+//================================================
 echo "<br />";
 //================================================
 //debug_var();
@@ -307,6 +311,15 @@ if(getSettingAOui('cdt_afficher_volume_docs_joints')) {
 	}
 }
 echo "<br /><br />\n";
+
+//debug_var();
+
+// 20150415
+$tempdir=get_user_temp_directory($_SESSION['login']);
+if(file_exists("../temp/".$tempdir."/cdt_selection.txt")) {
+	$chaine_selection_archives=ensure_utf8(file_get_contents("../temp/".$tempdir."/cdt_selection.txt"));
+	echo "<textarea id='textarea_selection_archives' name='textarea_selection_archives' style='display:none;'>".base64_encode($chaine_selection_archives)."</textarea>";
+}
 
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
@@ -415,6 +428,12 @@ echo (" <a href=\"#\" onclick=\"javascript: /*ct_a_importer_class est globale*/
     });");
 echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold-trombone.png");
 echo("\" alt=\"Coller\" title=\"Coller les fichiers joints\" /></a>\n");
+
+// 20150415
+if(isset($chaine_selection_archives)) {
+	//echo "<a href=\"javascript:insere_texte_dans_ckeditor(atob(document.getElementById('textarea_selection_archives').value))\" title='Insérer le contenu de la sélection effectuée dans les archives'><img src='../images/icons/copy-16.png' width='16' height='16' alt='Insérer sélection archives' />A</a>";
+	echo "<a href=\"javascript:insere_texte_dans_ckeditor(Base64.decode(document.getElementById('textarea_selection_archives').value))\" title='Insérer le contenu de la sélection effectuée dans les archives'><img src='../images/icons/paste_A.png' width='16' height='16' alt='Insérer sélection archives' /></a>";
+}
 
 echo "</legend>\n";
 

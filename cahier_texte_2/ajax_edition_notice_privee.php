@@ -187,6 +187,13 @@ if(file_exists("./archives.php")) {
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
 
+// 20150415
+$tempdir=get_user_temp_directory($_SESSION['login']);
+if(file_exists("../temp/".$tempdir."/cdt_selection.txt")) {
+	$chaine_selection_archives=ensure_utf8(file_get_contents("../temp/".$tempdir."/cdt_selection.txt"));
+	echo "<textarea id='textarea_selection_archives' name='textarea_selection_archives' style='display:none;'>".base64_encode($chaine_selection_archives)."</textarea>";
+}
+
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
 
@@ -261,6 +268,12 @@ echo (" <a href=\"#\" onclick=\"javascript: /*contenu_a_copier est globale*/
     CKEDITOR.instances['contenu'].insertHtml(contenu_a_copier);");
 echo("\"><img style=\"border: 0px;\" src=\"../images/icons/copy-16-gold.png");
 echo("\" alt=\"Coller\" title=\"Coller le contenu\" /></a>\n");
+
+// 20150415
+if(isset($chaine_selection_archives)) {
+	//echo "<a href=\"javascript:insere_texte_dans_ckeditor(atob(document.getElementById('textarea_selection_archives').value))\" title='Insérer le contenu de la sélection effectuée dans les archives'><img src='../images/icons/copy-16.png' width='16' height='16' alt='Insérer sélection archives' />A</a>";
+	echo "<a href=\"javascript:insere_texte_dans_ckeditor(Base64.decode(document.getElementById('textarea_selection_archives').value))\" title='Insérer le contenu de la sélection effectuée dans les archives'><img src='../images/icons/paste_A.png' width='16' height='16' alt='Insérer sélection archives' /></a>";
+}
 
 echo "</legend>\n";
 
