@@ -562,6 +562,28 @@ echo "<pre>";
 print_r($tab_dev);
 echo "</pre>";
 */
+				$content.="<p style='text-align:center;'><a href=\"javascript:modif_affichage_colonne_notices('t', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('t', 'none')\">masquer</a> toutes les notices de travail à faire.<br />
+<a href=\"javascript:modif_affichage_colonne_notices('c', '')\">Afficher</a> / <a href=\"javascript:modif_affichage_colonne_notices('c', 'none')\">masquer</a> toutes les notices de compte-rendu de séance.</p>
+
+<script type='text/javascript'>
+	// Affichage masquage de certains types de notices
+	function modif_affichage_colonne_notices(type, display) {
+		//td_colonne_t_... ou td_colonne_c_...
+		var tableau_td=document.getElementsByTagName('td');
+		for(i=0;i<tableau_td.length;i++) {
+			var td_courant=tableau_td[i];
+			var id_courant=td_courant.getAttribute('id');
+			if(id_courant) {
+				if(id_courant.substring(0,13)=='td_colonne_'+type+'_') {
+					td_courant.style.display=display;
+				}
+			}
+		}
+
+		document.getElementById('th_colonne_'+type).style.display=display;
+	}
+</script>";
+
 				$content.=lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents,$mode);
 
 				/*

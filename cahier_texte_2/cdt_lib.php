@@ -124,7 +124,8 @@ require_once("'.$pref_arbo.'/entete.php");
 				$div.="<div style='width: ".$largeur."; height: ".$hauteur_hors_titre.$hauteur_unite."; overflow: auto;'>\n";
 
 					$div.="<form action=\"<?php echo \$_SERVER['PHP_SELF'];?>\" method='post'>\n";
-					$div.="<p><input type='submit' value='Valider/copier la sélection' /></p>\n";
+					$div.="<?php if(\$_SESSION['statut']=='professeur') {echo \"<p><input type='submit' value='Valider/copier la sélection' /></p>\";}?>\n";
+					//$div.="<p><input type='submit' value='Valider/copier la sélection' /></p>\n";
 					$div.="<textarea style='display:none' name='".$id."_textarea' id='".$id."_textarea'></textarea>\n";
 					$div.="</form>\n";
 
@@ -168,6 +169,11 @@ require_once("'.$pref_arbo.'/entete.php");
 		global $action;
 
 		$html="<table class='boireaus' style='margin:3px;' border='1' summary='CDT'>\n";
+		$html.="<tr>
+	<th>Date</th>
+	<th id='th_colonne_t' style='width:40%;'>Travaux à faire</th>
+	<th id='th_colonne_c' style='width:40%;'>Compte-rendu de séance</th>
+</tr>\n";
 		$alt=1;
 		for($k=0;$k<count($tab_dates);$k++) {
 			//$html.="<div style='border:1px solid black; margin:3px; padding: 3px;'>\n";
@@ -180,11 +186,11 @@ require_once("'.$pref_arbo.'/entete.php");
 
 			if(($ne_pas_afficher_colonne_vide!='y')||(($ne_pas_afficher_colonne_vide=='y')&&(count($tab_dev)>0))) {
 				//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='width:40%; text-align:left; padding: 3px;'>\n";
-				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
+				$html.="<td id='td_colonne_t_$k' style='width:40%; text-align:left; padding: 3px;'>\n";
 				if(isset($tab_dev[$tab_dates[$k]])) {
 					foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
 						// A VOIR: PB avec les bordures.
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+						$html.="<div id='conteneur_notice_t_".$value['id_ct']."' class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_t_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_t_".$value['id_ct']."'>\n";
 								$contenu_notice_courante=$value['contenu'];
@@ -212,10 +218,10 @@ require_once("'.$pref_arbo.'/entete.php");
 
 			if(($ne_pas_afficher_colonne_vide!='y')||(($ne_pas_afficher_colonne_vide=='y')&&(count($tab_notices)>0))) {
 				//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='width:40%; text-align:left; padding: 3px;'>\n";
-				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
+				$html.="<td id='td_colonne_c_$k' style='width:40%; text-align:left; padding: 3px;'>\n";
 				if(isset($tab_notices[$tab_dates[$k]])) {
 					foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+						$html.="<div id='conteneur_notice_c_".$value['id_ct']."' class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
 							$html.="<div class='noprint' style='float:right;width:3em;'><a href=\"javascript:ajouter_contenu_notice_a_ma_selection('contenu_notice_c_".$value['id_ct']."')\" title='Ajouter le contenu de la notice à ma sélection'><img src='../images/icons/add.png' width='16' height='16' /></a> <a href=\"javascript:afficher_contenu_selection()\" title='Voir le  contenu de ma sélection'><img src='../images/icons/chercher.png' width='16' height='16' /></a></div>\n";
 							$html.="<div id='contenu_notice_c_".$value['id_ct']."'>\n";
 								$html.=$value['contenu'];
