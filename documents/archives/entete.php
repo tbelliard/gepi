@@ -124,7 +124,7 @@ if(isset($_POST['archive_selection_notices_textarea'])) {
 			$f=fopen($pref_arbo_include."/temp/".$tempdir."/cdt_selection.txt", "w+");
 			fwrite($f, stripslashes($_POST['archive_selection_notices_textarea']));
 			fclose($f);
-			$msg="<p style='color:green; text-align:center;'>Sélection enregistrée.</p>";
+			$msg="<p style='color:green; text-align:center;'>Sélection enregistrée&nbsp;: <a href='".$pref_arbo_include."/temp/".$tempdir."/cdt_selection.txt"."' target='_blank'>TXT</a><br />Vous pourrez l'insérer dans le cahier de textes en cliquant sur l'icone <img src='".$pref_arbo_include."/images/icons/paste_A.png' class='icone16' alt='Coller' /> de la page de saisie de CDT2.</p>";
 		}
 		else {
 			$msg="<p style='color:red; text-align:center;'>Dossier temporaire non trouvé.</p>";
