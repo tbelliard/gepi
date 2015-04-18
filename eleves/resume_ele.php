@@ -898,6 +898,9 @@ if($_SESSION['statut']=='responsable') {
 <p class='bold' style='margin-top:2em;'>Voici les informations vous concernant personnellement&nbsp;:</p>
 ".affiche_tableau_infos_resp($_SESSION['login'])."
 
+<p style='margin-top:1em; text-align:justify;'>Si certaines informations, coordonnées sont erronées, pensez à alerter l'Administration de l'établissement pour qu'elles soient corrigées.<br />
+Une absence de correction de votre adresse par exemple pourrait avoir des conséquences sur la réception de courriers de l'établissement (<em>bulletins,...</em>).</p>
+
 <p class='bold' style='margin-top:2em;'>Enfants/élèves dont vous êtes responsable légal&nbsp;:</p>
 ".affiche_tableau_infos_eleves_associes_au_resp("", $_SESSION['login'])."
 </div>";
