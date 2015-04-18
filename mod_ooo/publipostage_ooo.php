@@ -104,7 +104,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 			$current_group=get_group($id_groupe[$i]);
 
 			// Ajout d'un test dans le cas prof
-			if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_classe[$i]))) {
+			if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_groupe[$i]))) {
 				$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
 			}
 			else {
