@@ -2,7 +2,7 @@
 <?php
 /*
  * $Id: $
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -294,6 +294,61 @@ echo add_token_field();
 		<p class="center">
 			<input type='submit' name='valider' value='Valider' />
 		</p>
+
+	  </fieldset>
+	</form>
+	<!-- ================================================ -->
+
+	<h2>Matières exclues des sélections "Équipe de telle classe"</h2>
+
+	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form2'>
+	  <fieldset style='border:1px solid grey; background-image: url("../images/background/opacite50.png");'>
+	<?php
+		echo add_token_field();
+	?>
+		<legend class="invisible">Matieres_exclus</legend>
+
+	<?php
+		$nb_col=3;
+		$colonne=1;
+		echo "<div style='float:left; width:30%'>";
+		for($loop=0;$loop<count($tab_mat);$loop++) {
+			if($loop>=$colonne*ceil(count($tab_mat)/$nb_col)) {
+				echo "</div>";
+				echo "<div style='float:left; width:30%'>";
+				$colonne++;
+			}
+
+			if(in_array($tab_mat[$loop]['matiere'], $tab_mat_exclue)) {
+				$checked="checked ";
+				$style=" style='font-weight:bold;'";
+			}
+			else {
+				$checked="";
+				$style="";
+			}
+			echo "
+		<input type='checkbox' id='mat_exclue_$loop' name='mat_exclue[]' value='".$tab_mat[$loop]['matiere']."' onchange=\"checkbox_change(this.id); changement();\" $checked/><label for='mat_exclue_$loop' id='texte_mat_exclue_$loop'$style> ".$tab_mat[$loop]['matiere']." <span style='font-size:small'>(<em>".$tab_mat[$loop]['nom_complet']."</em>)</span></label><br />";
+		}
+		echo "</div>";
+		echo js_checkbox_change_style('checkbox_change', 'texte_', "y");
+	?>
+
+		<input type='hidden' name='is_posted_matieres_exclues' value='y' />
+
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
+
+		<div style='clear:both;'>&nbsp;</div>
+
+		<p class="center">
+			<input type='submit' name='valider' value='Valider' />
+		</p>
+
+		<p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Certaines matières, correspondant par exemple aux groupes d'aide ne sont pas nécessairement destinés à recevoir certaines alertes.<br />
+		Vous pourrez les exclure des équipes pédagogiques "réduites".<br />
+		La sélection de l'équipe complète reste possible dans le module Alertes.</p>
 
 	  </fieldset>
 	</form>

@@ -742,6 +742,7 @@ $cpt_u=0;
 $chaine_js_login_u="var login_u=new Array(";
 $chaine_js_designation_u="var designation_u=new Array(";
 $chaine_prof_classe="";
+$chaine_prof_classe2="";
 for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -753,7 +754,7 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 			$sql="SELECT c.id, c.classe FROM classes c ORDER BY classe;";
 			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_classe)>0) {
-				$texte_infobulle.=" de <select name='id_classe' id='id_classe' onchange='coche_prof_de_la_classe()'><option value=''>---</option>";
+				$texte_infobulle.=" de <select name='id_classe' id='id_classe' onchange='coche_prof_de_la_classe()' title=\"Cocher les professeurs de l'équipe pédagogique *complète* des professeurs de telle classe.\"><option value=''>---</option>";
 				while($lig_classe=mysqli_fetch_object($res_classe)) {
 					$texte_infobulle.="<option value='$lig_classe->id'>$lig_classe->classe</option>";
 
@@ -774,9 +775,41 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 				}
 				$texte_infobulle.="</select>";
 			}
+
+			$sql="SELECT c.id, c.classe FROM classes c ORDER BY classe;";
+			$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_classe)>0) {
+				$texte_infobulle.=" - <select name='id_classe' id='id_classe2' onchange='coche_prof_de_la_classe2()' title=\"Cocher les professeurs de l'équipe pédagogique *réduite* des professeurs de telle classe (en excluant certaines matières).\"><option value=''>---</option>";
+				while($lig_classe=mysqli_fetch_object($res_classe)) {
+					$texte_infobulle.="<option value='$lig_classe->id'>$lig_classe->classe</option>";
+
+					$chaine_prof_classe2.="var prof_classe2_".$lig_classe->id."=new Array(";
+					$sql="SELECT DISTINCT login FROM j_groupes_professeurs jgp, 
+										j_groupes_classes jgc, 
+										j_groupes_matieres jgm 
+									WHERE jgc.id_classe='$lig_classe->id' AND 
+									jgc.id_groupe=jgp.id_groupe AND 
+									jgc.id_groupe=jgm.id_groupe AND 
+									jgm.id_matiere NOT IN (SELECT value FROM mod_alerte_divers WHERE name='matieres_exclues');";
+					$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+					$cpt_prof=0;
+					if(mysqli_num_rows($res_prof)>0) {
+						while($lig_prof=mysqli_fetch_object($res_prof)) {
+							if($cpt_prof>0) {
+								$chaine_prof_classe2.=", ";
+							}
+							$chaine_prof_classe2.="'$lig_prof->login'";
+							$cpt_prof++;
+						}
+					}
+					$chaine_prof_classe2.=");";
+				}
+				$texte_infobulle.="</select>";
+			}
 		}
 
 		$texte_infobulle.=" <input type='button' value='Ajouter' onclick=\"ajouter_dest_choisis(); cacher_div('div_choix_dest')\"></p>";
+
 		$texte_infobulle.="<div style='margin-left:1em;'><table class='boireaus boireaus_alt'>";
 
 		while($lig_u=mysqli_fetch_object($res_u)) {
@@ -808,6 +841,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		echo $chaine_js_login_u;
 		echo $chaine_js_designation_u;
 		echo $chaine_prof_classe;
+		echo $chaine_prof_classe2;
 
 		$chaine_edt_ajouter_mon_compte="";
 		$chaine_edt_ajouter_lien_prof="";
@@ -898,6 +932,25 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		if(id_classe!='') {
 			//alert(id_classe);
 			tab=eval('prof_classe_'+id_classe);
+			//alert(tab.length);
+			for(i=0;i<<?php echo $cpt_u;?>;i++) {
+				if(document.getElementById('login_dest_'+i)) {
+					for(j=0;j<tab.length;j++) {
+						if(tab[j]==document.getElementById('login_dest_'+i).value) {
+							document.getElementById('login_dest_'+i).checked=true;
+							checkbox_change('login_dest_'+i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function coche_prof_de_la_classe2() {
+		id_classe=document.getElementById('id_classe2').options[document.getElementById('id_classe2').selectedIndex].value;
+		if(id_classe!='') {
+			//alert(id_classe);
+			tab=eval('prof_classe2_'+id_classe);
 			//alert(tab.length);
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {

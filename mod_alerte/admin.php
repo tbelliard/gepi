@@ -212,6 +212,50 @@ if (isset($_POST['is_posted3'])) {
 	$msg.="$cpt_comptes_exclus_supprimes compte(s) précédemment exclu(s) du module Alertes ne le sont plus.<br />";
 }
 
+if(isset($_POST['is_posted_matieres_exclues'])) {
+	check_token();
+
+	$msg="";
+	$mat_exclue=isset($_POST['mat_exclue']) ? $_POST['mat_exclue'] : array();
+
+	$sql="DELETE FROM mod_alerte_divers WHERE name='matieres_exclues';";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+	$nb_mat_exclue=0;
+	for($loop=0;$loop<count($mat_exclue);$loop++) {
+		$sql="INSERT INTO mod_alerte_divers SET name='matieres_exclues', value='".$mat_exclue[$loop]."';";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$insert) {
+			$msg.="Erreur lors de l'enregistrement de l'exclusion de ".$mat_exclue[$loop]."<br />";
+		}
+		else {
+			$nb_mat_exclue++;
+		}
+	}
+
+	$msg.="$nb_mat_exclue matières seront exclues des Équipes pédagogiques pour les alertes.<br />";
+}
+
+$tab_mat_exclue=array();
+$sql="SELECT value FROM mod_alerte_divers WHERE name='matieres_exclues' ORDER BY value;";
+$res_mat_exclue=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_mat_exclue)>0) {
+	while($lig_mat_exclue=mysqli_fetch_object($res_mat_exclue)) {
+		$tab_mat_exclue[]=$lig_mat_exclue->value;
+	}
+}
+
+$tab_mat=array();
+$sql="SELECT * FROM matieres ORDER BY matiere;";
+$res_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_mat)>0) {
+	$cpt_mat=0;
+	while($lig_mat=mysqli_fetch_object($res_mat)) {
+		$tab_mat[$cpt_mat]['matiere']=$lig_mat->matiere;
+		$tab_mat[$cpt_mat]['nom_complet']=$lig_mat->nom_complet;
+		$cpt_mat++;
+	}
+}
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
