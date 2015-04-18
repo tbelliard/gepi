@@ -52,6 +52,8 @@ $num_fich=isset($_POST['num_fich']) ? $_POST['num_fich'] : (isset($_GET['num_fic
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 
+$mode_pub=isset($_POST['mode_pub']) ? $_POST['mode_pub'] : (isset($_GET['mode_pub']) ? $_GET['mode_pub'] : "");
+
 if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 	if(!isset($msg)) {
 		$msg="";
@@ -59,128 +61,314 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 
 	$tab_file=get_tab_file($path);
 
-	$tab_eleves_OOo=array();
-	$nb_eleve=0;
+	$tableau_des_fichiers_generes=array();
+	$chemin_temp="../temp/".get_user_temp_directory();
 
-	if(isset($id_classe)) {
-		for($i=0;$i<count($id_classe);$i++) {
-			$classe=get_class_from_id($id_classe[$i]);
-/*
-			if(getSettingAOui('OOoAccesTousEleProf')) {
-				$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
-			}
-			else {
-				$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE c.id=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe;";
-			}
-*/
+	//debug_var();
+	if((isset($mode_pub))&&($mode_pub=="un_fichier_par_selection")) {
+		if(isset($id_classe)) {
+			for($i=0;$i<count($id_classe);$i++) {
+				$tab_eleves_OOo=array();
+				$nb_eleve=0;
 
-			// Ajout d'un test dans le cas prof
-			$acces_classe="n";
-			if($_SESSION['statut']!='professeur') {
-				$acces_classe="y";
-			}
-			elseif(getSettingAOui('OOoAccesTousEleProf')) {
-				$acces_classe="y";
-			}
-			elseif(is_prof_classe($_SESSION['login'], $id_classe[$i])) {
-				$acces_classe="y";
-			}
+				$classe=get_class_from_id($id_classe[$i]);
 
-			if($acces_classe!="y") {
-				$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
-			}
-			else {
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)>0) {
-					while($lig=mysqli_fetch_object($res)) {
-						$tab_eleves_OOo[$nb_eleve]=array();
+				// Ajout d'un test dans le cas prof
+				$acces_classe="n";
+				if($_SESSION['statut']!='professeur') {
+					$acces_classe="y";
+				}
+				elseif(getSettingAOui('OOoAccesTousEleProf')) {
+					$acces_classe="y";
+				}
+				elseif(is_prof_classe($_SESSION['login'], $id_classe[$i])) {
+					$acces_classe="y";
+				}
 
-						$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
-						$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
-						$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
-						$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
-						$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
-						$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
-						$tab_eleves_OOo[$nb_eleve]['fille']="";
-						if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
-						$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
-						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
-						if(getSettingValue('ele_lieu_naissance')=="y") {
-							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-						} // récupérer la commune
+				if($acces_classe!="y") {
+					$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
+				}
+				else {
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab_eleves_OOo[$nb_eleve]=array();
 
-						$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+							$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+							$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
+							$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
+							$tab_eleves_OOo[$nb_eleve]['fille']="";
+							if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+							$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+							if(getSettingValue('ele_lieu_naissance')=="y") {
+								$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+							} // récupérer la commune
 
-						$nb_eleve++;
+							$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+
+							$nb_eleve++;
+						}
 					}
+				}
+
+				if(count($tab_eleves_OOo)>0) {
+					$mode_ooo="imprime";
+	
+					include_once('../tbs/tbs_class.php');
+					include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	
+					$OOo = new clsTinyButStrong;
+					$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+	
+					$nom_dossier_modele_a_utiliser = $path."/";// le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+					$nom_fichier_modele_ooo = $tab_file[$num_fich];
+
+					$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+	
+					$OOo->MergeBlock('eleves',$tab_eleves_OOo);
+
+					$nom_fic = remplace_accents($classe, "all")."_".$nom_fichier_modele_ooo;
+
+					$tableau_des_fichiers_generes[]=$nom_fic;
+
+					$OOo->Show(OPENTBS_FILE, $chemin_temp."/".$nom_fic);
+					$msg.="Fichier $classe : <a href='$chemin_temp/$nom_fic' target='_blank'>$nom_fic</a><br />";
+
+				}
+				else {
+					$msg.="Aucun élève n'a été extrait pour la classe de $classe.<br />";
+				}
+
+			}
+		}
+		else {
+			for($i=0;$i<count($id_groupe);$i++) {
+				$tab_eleves_OOo=array();
+				$nb_eleve=0;
+
+				$current_group=get_group($id_groupe[$i]);
+				//$info_grp=get_info_grp($id_groupe[$i], array('description', 'matieres', 'classes', 'profs'), "");
+				$info_grp=get_info_grp($id_groupe[$i], array('matieres', 'classes', 'profs'), "");
+
+				// Ajout d'un test dans le cas prof
+				if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_groupe[$i]))) {
+					$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
+				}
+				else {
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab_eleves_OOo[$nb_eleve]=array();
+
+							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+							$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+							$tab_eleves_OOo[$nb_eleve]['fille']="";
+							if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+							$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+							if(getSettingValue('ele_lieu_naissance')=="y") {
+								$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+							} // récupérer la commune
+
+							$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
+
+							$nb_eleve++;
+						}
+					}
+				}
+
+				if(count($tab_eleves_OOo)>0) {
+					$mode_ooo="imprime";
+	
+					include_once('../tbs/tbs_class.php');
+					include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	
+					$OOo = new clsTinyButStrong;
+					$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+	
+					$nom_dossier_modele_a_utiliser = $path."/";// le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+					$nom_fichier_modele_ooo = $tab_file[$num_fich];
+
+					$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+	
+					$OOo->MergeBlock('eleves',$tab_eleves_OOo);
+
+
+					$nom_fic = remplace_accents($info_grp, "all")."_".$nom_fichier_modele_ooo;
+
+					$tableau_des_fichiers_generes[]=$nom_fic;
+
+					$OOo->Show(OPENTBS_FILE, $chemin_temp."/".$nom_fic);
+					$msg.="Fichier $info_grp : <a href='$chemin_temp/$nom_fic' target='_blank'>$nom_fic</a><br />";
+
+				}
+				else {
+					$msg.="Aucun élève n'a été extrait pour l'enseignement $info_grp.<br />";
 				}
 			}
 		}
-	}
-	else {
-		for($i=0;$i<count($id_groupe);$i++) {
-			$current_group=get_group($id_groupe[$i]);
 
-			// Ajout d'un test dans le cas prof
-			if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_groupe[$i]))) {
-				$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
+		if(isset($_POST['zipper'])) {
+			//$tableau_des_fichiers_generes[]=$nom_fic;
+
+			if (!defined('PCLZIP_TEMPORARY_DIR') || constant('PCLZIP_TEMPORARY_DIR')!=$chemin_temp) {
+				@define( 'PCLZIP_TEMPORARY_DIR', $chemin_temp);
 			}
-			else {
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res)>0) {
-					while($lig=mysqli_fetch_object($res)) {
-						$tab_eleves_OOo[$nb_eleve]=array();
 
-						$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
-						$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
-						$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
-						$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
-						$tab_eleves_OOo[$nb_eleve]['fille']="";
-						if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
-						$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
-						$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
-						if(getSettingValue('ele_lieu_naissance')=="y") {
-							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
-						} // récupérer la commune
+			$fichier_zip="publipostage_ooo_".strftime("%Y-%m-%d_%H%M%S").".zip";
+			$chemin_fichier_zip=$chemin_temp."/".$fichier_zip;
 
-						$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
+			require_once('../lib/pclzip.lib.php');
 
-						$nb_eleve++;
-					}
+			$nb_fich_zippes=0;
+			$archive = new PclZip($chemin_fichier_zip);
+			for($loop=0;$loop<count($tableau_des_fichiers_generes);$loop++) {
+				$v_list = $archive->add($chemin_temp."/".$tableau_des_fichiers_generes[$loop],
+								PCLZIP_OPT_REMOVE_PATH,$chemin_temp);
+				if ($v_list == 0) {
+					$msg.="Erreur (".$tableau_des_fichiers_generes[$loop].") : ".$archive->errorInfo(TRUE)."<br />";
+				}
+				else {
+					$nb_fich_zippes++;
 				}
 			}
-		}
-	}
 
-	if(count($tab_eleves_OOo)>0) {
-		$mode_ooo="imprime";
-	
-		include_once('../tbs/tbs_class.php');
-		include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-	
-		$OOo = new clsTinyButStrong;
-		$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
-	
-		$nom_dossier_modele_a_utiliser = $path."/";// le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
-		$nom_fichier_modele_ooo = $tab_file[$num_fich];
-		   
-		$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
-	
-		$OOo->MergeBlock('eleves',$tab_eleves_OOo);
-	
-		$nom_fic = $nom_fichier_modele_ooo;
-		$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
-		$OOo->remove(); //suppression des fichiers de travail
-		$OOo->close();
-	
-		die();
-	}
-	else {
-		$msg.="Aucun élève n'a été extrait.<br />";
+			if ($nb_fich_zippes>0) {
+				$msg.="Archive zip créée ($nb_fich_zippes fichiers)&nbsp;: <a href='$chemin_fichier_zip'>$fichier_zip</a>";
+			}
+
+		}
+
 		unset($id_classe);
 		unset($id_groupe);
+	}
+	else {
+		// Extraction en un seul fichier
+
+		$tab_eleves_OOo=array();
+		$nb_eleve=0;
+
+		if(isset($id_classe)) {
+			for($i=0;$i<count($id_classe);$i++) {
+				$classe=get_class_from_id($id_classe[$i]);
+
+				// Ajout d'un test dans le cas prof
+				$acces_classe="n";
+				if($_SESSION['statut']!='professeur') {
+					$acces_classe="y";
+				}
+				elseif(getSettingAOui('OOoAccesTousEleProf')) {
+					$acces_classe="y";
+				}
+				elseif(is_prof_classe($_SESSION['login'], $id_classe[$i])) {
+					$acces_classe="y";
+				}
+
+				if($acces_classe!="y") {
+					$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
+				}
+				else {
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab_eleves_OOo[$nb_eleve]=array();
+
+							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+							$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+							$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
+							$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
+							$tab_eleves_OOo[$nb_eleve]['fille']="";
+							if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+							$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+							if(getSettingValue('ele_lieu_naissance')=="y") {
+								$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+							} // récupérer la commune
+
+							$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+
+							$nb_eleve++;
+						}
+					}
+				}
+			}
+		}
+		else {
+			for($i=0;$i<count($id_groupe);$i++) {
+				$current_group=get_group($id_groupe[$i]);
+
+				// Ajout d'un test dans le cas prof
+				if(($_SESSION['statut']=='professeur')&&(!check_prof_groupe($_SESSION['login'], $id_groupe[$i]))) {
+					$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
+				}
+				else {
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab_eleves_OOo[$nb_eleve]=array();
+
+							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
+							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
+							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
+							$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+							$tab_eleves_OOo[$nb_eleve]['fille']="";
+							if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
+							$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
+							$tab_eleves_OOo[$nb_eleve]['lieu_nais']=""; // on initialise les champs pour ne pas avoir d'erreurs
+							if(getSettingValue('ele_lieu_naissance')=="y") {
+								$tab_eleves_OOo[$nb_eleve]['lieu_nais']=preg_replace ( '@<[\/\!]*?[^<>]*?>@si'  , ''  , get_commune($lig->lieu_naissance,1)) ;
+							} // récupérer la commune
+
+							$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
+
+							$nb_eleve++;
+						}
+					}
+				}
+			}
+		}
+
+		if(count($tab_eleves_OOo)>0) {
+			$mode_ooo="imprime";
+	
+			include_once('../tbs/tbs_class.php');
+			include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	
+			$OOo = new clsTinyButStrong;
+			$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+	
+			$nom_dossier_modele_a_utiliser = $path."/";// le chemin du fichier est indiqué à partir de l'emplacement de ce fichier
+			$nom_fichier_modele_ooo = $tab_file[$num_fich];
+
+			$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+	
+			$OOo->MergeBlock('eleves',$tab_eleves_OOo);
+
+			$nom_fic = $nom_fichier_modele_ooo;
+
+			$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
+			$OOo->remove(); //suppression des fichiers de travail
+			$OOo->close();
+
+			die();
+		}
+		else {
+			$msg.="Aucun élève n'a été extrait.<br />";
+			unset($id_classe);
+			unset($id_groupe);
+		}
 	}
 }
 elseif(isset($_GET['suppr_fich'])) {
@@ -325,7 +513,9 @@ if(!isset($num_fich)) {
 			// Lister les modèles existants
 			echo "<p>Utiliser le modèle&nbsp;:<br />";
 			for($i=0;$i<count($tab_file);$i++) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i' title=\"Effectuer un publipostage OOo avec ce fichier modèle\">".$tab_file[$i]."</a> - <a href='mes_modeles/".$_SESSION['login']."/".$tab_file[$i]."' target='_blank'><img src='../images/edit16.png' width='16' height='16' title=\"Éditer le fichier ".$tab_file[$i]."\" /></a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."'><img src='../images/delete16.png' width='16' height='16' title=\"Supprimer le fichier ".$tab_file[$i]."\" /></a><br />";
+				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i' title=\"Effectuer un publipostage OOo avec ce fichier modèle\">".$tab_file[$i]." <img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a> - <a href='mes_modeles/".$_SESSION['login']."/".$tab_file[$i]."' target='_blank' title=\"Éditer le fichier ".$tab_file[$i]."
+pour (par exemple) modifier/améliorer ce modèle
+et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' width='16' height='16' alt='Éditer' /></a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."' title=\"Supprimer le fichier ".$tab_file[$i]."\"><img src='../images/delete16.png' width='16' height='16' alt='Supprimer' /></a><br />";
 			}
 			echo "</p>\n";
 		}
@@ -363,61 +553,7 @@ if(!isset($num_fich)) {
 			echo "</p>\n";
 
 			echo liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), array($_SESSION['login']));
-			/*
-			$sql="SELECT login, civilite, nom, prenom, statut FROM utilisateurs WHERE statut='administrateur' OR statut='scolarite' OR statut='cpe' OR statut='professeur' AND etat='actif' ORDER BY statut, login, nom, prenom;";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)>0) {
-				$nombreligne=mysql_num_rows($res);
-				$nbcol=3;
-				$nb_par_colonne=round($nombreligne/$nbcol);
-	
-				echo "<table width='100%' summary=\"Tableau de choix des utilisateurs auxquels distribuer le modèle\">\n";
-				echo "<tr valign='top' align='center'>\n";
-				echo "<td align='left'>\n";
 
-				$cpt=0;
-				$statut_prec="";
-				while($lig=mysql_fetch_object($res)) {
-					if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
-						echo "</td>\n";
-						echo "<td align='left'>\n";
-					}
-	
-					if($lig->statut!=$statut_prec) {
-						echo "<p><b>".ucfirst($lig->statut)."</b><br />\n";
-						$statut_prec=$lig->statut;
-					}
-	
-					echo "<input type='checkbox' name='login_user[]' id='login_user_$cpt' value='$lig->login' ";
-					echo "onchange=\"checkbox_change('login_user_$cpt')\" ";
-					if($lig->login==$_SESSION['login']) {
-						echo "checked ";
-						$temp_style=" style='font-weight: bold;'";
-					}
-					else {
-						$temp_style="";
-					}
-					echo "/><label for='login_user_$cpt'><span id='texte_login_user_$cpt'$temp_style>$lig->civilite $lig->nom $lig->prenom</span></label><br />\n";
-	
-					$cpt++;
-				}
-				echo "</td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
-
-				echo "<script type='text/javascript'>
-function cocher_decocher(mode) {
-	for (var k=0;k<$cpt;k++) {
-		if(document.getElementById('login_user_'+k)){
-			document.getElementById('login_user_'+k).checked=mode;
-			checkbox_change('login_user_'+k);
-		}
-	}
-}
-</script>\n";
-
-			}
-			*/
 		}
 	
 		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'></p>\n";
@@ -510,6 +646,13 @@ else {
 			echo "</tr>\n";
 			echo "</table>\n";
 
+			echo "<p>
+	<input type='radio' name='mode_pub' id='mode_pub' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub' id='texte_mode_pub' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
+	ou<br />
+	<input type='radio' name='mode_pub' id='mode_pub2' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub2' id='texte_mode_pub2'>Générer un fichier par classe sélectionnée.</label><br />
+	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id);\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
+</p>";
+
 			echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
 			echo "</fieldset>\n";
 			echo "</form>\n";
@@ -551,6 +694,13 @@ else {
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
+				echo "<p>
+	<input type='radio' name='mode_pub' id='mode_pub3' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub3' id='texte_mode_pub3' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
+	ou<br />
+	<input type='radio' name='mode_pub' id='mode_pub4' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub4' id='texte_mode_pub4'>Générer un fichier par classe sélectionnée.</label><br />
+	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id);\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
+</p>";
+
 				echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
 				echo "</fieldset>\n";
 				echo "</form>\n";
@@ -563,6 +713,9 @@ else {
 		}
 
 		echo "<script type='text/javascript'>
+".js_checkbox_change_style()."
+".js_change_style_radio()."
+
 function cocher_decocher(prefixe_id, mode) {
 	for (var k=0;k<$cpt_js;k++) {
 		if(document.getElementById(prefixe_id+k)){
@@ -582,21 +735,6 @@ function cocher_decocher(prefixe_id, mode) {
 		echo "PLOP";
 	}
 }
-
-
-echo "<script type='text/javascript'>
-function checkbox_change(id_cpt) {
-	if(document.getElementById(id_cpt)) {
-		if(document.getElementById(id_cpt).checked) {
-			document.getElementById('texte_'+id_cpt).style.fontWeight='bold';
-		}
-		else {
-			document.getElementById('texte_'+id_cpt).style.fontWeight='normal';
-		}
-	}
-}
-</script>\n";
-
 
 require_once("../lib/footer.inc.php");
 ?>

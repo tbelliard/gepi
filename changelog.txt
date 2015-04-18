@@ -18,6 +18,12 @@ Cahiers de textes (2):
 - Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2
   les sélections faites dans les archives CDT (archives de version>=1.6.7)
 
+Publipostage OOo:
+- Possibilité de générer (d'un coup) un fichier par classe ou enseignement sélectionné et de zipper l'ensemble.
+
+Alertes:
+- Possibilité de définir des équipes pédagogiques plus réduites pour exclure de certaines alertes certaines matières (par exemple les groupes d'aide).
+
 Divers:
 - Possibilité de paramétrer classe par classe la dénomination du professeur chargé
   du suivi des élèves d'une classe ("professeur principal" par défaut).
