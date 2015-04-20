@@ -25,16 +25,6 @@
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
-/*===== TODO : gérer de façon correcte le droit sur la page =====/
-// On crée l'entrée dans la table droits en attendant une gestion des droits plus propre
-$sql= "INSERT INTO `droits` "
-   . "(`id` ,`administrateur` ,`professeur` ,`cpe` ,`scolarite` ,`eleve` ,`responsable` ,`secours` ,`autre` ,`description` ,`statut`) "
-   . "VALUES ('/etablissements/chercheINE.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Recherche des INE sans établissements', '') "
-   . "ON DUPLICATE KEY UPDATE `administrateur`='V'; ";
-
-$resultchargeDB = $mysqli->query($sql);
-/===== FIN TODO : gérer de façon correcte le droit sur la page =====*/
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
