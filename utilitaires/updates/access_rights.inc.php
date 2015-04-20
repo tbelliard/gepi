@@ -1390,6 +1390,19 @@ autre='F',
 description='Extraction et export des notes des carnets de notes',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/etablissements/chercheINE.php', "
+   . "administrateur='V', "
+   . "professeur='F', "
+   . "cpe='F', "
+   . "scolarite='F', "
+   . "eleve='F', "
+   . "responsable='F', "
+   . "secours='F', "
+   . "autre='F', "
+   . "description='Recherche des INE sans établissements', "
+   . "statut='';";
+
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
@@ -1401,4 +1414,6 @@ if ($test1 == 1) {
         $droits_requests = $tab_req;
         $tab_req = array ();
 }
+
+
 ?>

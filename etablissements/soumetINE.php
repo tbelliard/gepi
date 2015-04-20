@@ -1,6 +1,6 @@
 
 <?php
-$data = array($enregistrer,$_POST['nom_0291552E'],$_POST['niveau_0291552E'],$_POST['type_0291552E'],$_POST['cp_0291552E'],$_POST['ville_0291552E']);
+$data = array($enregistrer,$_POST['nom_'.$enregistrer],$_POST['niveau_'.$enregistrer],$_POST['type_'.$enregistrer],$_POST['cp_'.$enregistrer],$_POST['ville_'.$enregistrer]);
  
 $message = "Id : ".$data[0]." - nom : ".$data[1]." - "
    . "niveau : ". $data[2]." - type : ".$data[3]." - "
