@@ -64,9 +64,9 @@ function ineSansEtab () {
 function enregistreEtab ($etab) {
 	global $mysqli;
 	$sql= "INSERT INTO `etablissements` (`id`,`nom`,`niveau`,`type`,`cp`,`ville`) "
-	   . "VALUES ('".$etab[0]."','".$etab[1]."','".$etab[2]."','".$etab[3]."','".$etab[4]."','".$etab[5]."') "
-	   . "ON DUPLICATE KEY UPDATE `nom`='".$etab[1]."' , `niveau`='".$etab[2]."' ,"
-	   . "`type`='".$etab[3]."' , `cp`='".$etab[4]."' , `ville`='".$etab[5]."' ";
+	   . "VALUES (\"".$etab[0]."\",\"".$etab[1]."\",\"".$etab[2]."\",\"".$etab[3]."\",\"".$etab[4]."\",\"".$etab[5]."\") "
+	   . "ON DUPLICATE KEY UPDATE `nom`=\"".$etab[1]."\" , `niveau`=\"".$etab[2]."\" ,"
+	   . "`type`=\"".$etab[3]."\" , `cp`=\"".$etab[4]."\" , `ville`=\"".$etab[5]."\" ";
 	//echo "<br />".$sql."<br />";
 	$resultchargeDB = $mysqli->query($sql);
 	
@@ -87,7 +87,7 @@ $enregistrer =  isset($_POST['enregistrer']) ? $_POST['enregistrer'] : NULL;
 $recherche =  isset($_POST['recherche']) ? $_POST['recherche'] : NULL;
 
 if ($enregistrer) {
-	include 'soumetINE.php';
+	include 'soumetRNE.php';
 } elseif ($recherche) {
 	include 'import1Etab.php';
 
@@ -98,11 +98,11 @@ if ($enregistrer) {
 $etabATraite = ineSansEtab ();
 
 //**************** EN-TETE *****************
-$titre_page = "INE sans établissements";
+$titre_page = "Identifiants sans établissements";
 $tbs_librairies[]= "script.js";
 
 // ====== Inclusion des balises head et du bandeau =====
-if (!suivi_ariane($_SERVER['PHP_SELF'],"INE sans établissements"))
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
 		echo "erreur lors de la création du fil d'ariane";
 
 require_once("../lib/header.inc.php");
@@ -119,11 +119,11 @@ require_once("../lib/header.inc.php");
 <?php if ($etabATraite->num_rows) { ?>
 <fieldset>
 	<legend>Établissements non trouvés</legend>
-	<form method="post" action="chercheINE.php" id="form_INE">	
+	<form method="post" action="chercheRNE.php" id="form_RNE">	
 		<table class='boireaus'>
 			<caption style="caption-side:bottom">Identifiants non rattachés à un établissement</caption>
 			<tr>
-				<th>INE</th>
+				<th>Identifiant</th>
 				<th>nom</th>
 				<th>niveau</th>
 				<th>type</th>
@@ -133,38 +133,38 @@ require_once("../lib/header.inc.php");
 				<th>Sauvegarder</th>	  	  	 	 
 			</tr>
 			<?php $cpt=-1;
-			while($INE = $etabATraite->fetch_object()){
-				if ($INE->id_etablissement){
+			while($RNE = $etabATraite->fetch_object()){
+				if ($RNE->id_etablissement){
 
 				?>
 				<tr class="lig<?php echo $cpt; ?>">
 					<td>
-						<?php echo $INE->id_etablissement; ?>
-						<input type="hidden" name="ine_<?php echo $INE->id_etablissement; ?>" value="<?php echo $INE->id_etablissement; ?>" />
+						<?php echo $RNE->id_etablissement; ?>
+						<input type="hidden" name="ine_<?php echo $RNE->id_etablissement; ?>" value="<?php echo $RNE->id_etablissement; ?>" />
 					</td>
 					<td>
-						<input type="text" name="nom_<?php echo $INE->id_etablissement; ?>" title="Nom de l'établissement" />
+						<input type="text" name="nom_<?php echo $RNE->id_etablissement; ?>" title="Nom de l'établissement" />
 					</td>
 					<td>
-						<input type="text" name="niveau_<?php echo $INE->id_etablissement; ?>" title="aucun, ecole, college, lycee, lprof …" size="14" />					
+						<input type="text" name="niveau_<?php echo $RNE->id_etablissement; ?>" title="aucun, ecole, college, lycee, lprof …" size="14" />					
 					</td>
 					<td>
-						<input type="text" name="type_<?php echo $INE->id_etablissement; ?>" title="aucun, prive, public …" size="10" />		
+						<input type="text" name="type_<?php echo $RNE->id_etablissement; ?>" title="aucun, prive, public …" size="10" />		
 					</td>
 					<td>
-						<input type="text" name="cp_<?php echo $INE->id_etablissement; ?>" title="code postal" size="6" />
+						<input type="text" name="cp_<?php echo $RNE->id_etablissement; ?>" title="code postal" size="6" />
 					</td>
 					<td>
-						<input type="text" name="ville_<?php echo $INE->id_etablissement; ?>" title="ville" />
+						<input type="text" name="ville_<?php echo $RNE->id_etablissement; ?>" title="ville" />
 					</td>
 					<td>
-						<?php include 'importerINE.php';  ?>
+						<?php include 'importerRNE.php';  ?>
 					</td>
 					<td class="center">
 						<button name="enregistrer"
-								id="soumet_<?php echo $INE->id_etablissement; ?>"
+								id="soumet_<?php echo $RNE->id_etablissement; ?>"
 								title="Enregistrer les données de la ligne"
-								value="<?php echo $INE->id_etablissement; ?>" >
+								value="<?php echo $RNE->id_etablissement; ?>" >
 							enregistrer
 						</button>
 					</td>
@@ -181,7 +181,7 @@ require_once("../lib/header.inc.php");
 <?php } else { ?>
 <p class="vert bold center">
 	<br />
-	Tous le INE sont rattachés à un établissement
+	Tous les identifiants sont rattachés à un établissement
 </p>
 		
 <?php } ?>

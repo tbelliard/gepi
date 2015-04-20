@@ -57,7 +57,7 @@ require_once("../lib/header.inc.php");
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
  | <a href="modify_etab.php">Ajouter un établissement</a>
  | <a href="import_etab_csv.php">Importer un fichier d'établissements</a>
- | <a href="chercheINE.php">Rechercher les identifiants non associés à un établissement</a>
+ | <a href="chercheRNE.php">Rechercher les identifiants non associés à un établissement</a>
 </p>
 <p>Les données de la base établissement servent à l'affichage de l'établissement d'origine des <?php echo $gepiSettings['denomination_eleves'];?>
  sur les documents tels que les bulletins simplifiés.</p>

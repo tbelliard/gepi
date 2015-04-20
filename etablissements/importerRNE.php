@@ -3,7 +3,7 @@
 
 <?php $handle=opendir('./bases'); ?>
 
-<select name="csv_file_<?php echo $INE->id_etablissement; ?>" 
+<select name="csv_file_<?php echo $RNE->id_etablissement; ?>" 
 		id="csv_file"
 		size="1" 
 		title="Choisissez le fichier d'établissements où chercher" >
@@ -23,9 +23,9 @@ foreach ($files_tab as $file) { ?>
 <?php closedir($handle); ?>
 <button 
 	   name='recherche'
-	   id="recherche_<?php echo $INE->id_etablissement; ?>_<?php echo $file; ?>"
+	   id="recherche_<?php echo $RNE->id_etablissement; ?>_<?php echo $file; ?>"
 	   title="Rechercher l'établissement dans le fichier .csv choisi"
-	   value="<?php echo $INE->id_etablissement; ?>"/>
+	   value="<?php echo $RNE->id_etablissement; ?>"/>
 	Rechercher
 </button>
 <?php unset($files_tab); ?>

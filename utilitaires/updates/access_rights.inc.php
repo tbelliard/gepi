@@ -1390,7 +1390,7 @@ autre='F',
 description='Extraction et export des notes des carnets de notes',
 statut='';";
 
-$tab_req[] = "INSERT INTO droits SET id='/etablissements/chercheINE.php', "
+$tab_req[] = "INSERT INTO droits SET id='/etablissements/chercheRNE.php', "
    . "administrateur='V', "
    . "professeur='F', "
    . "cpe='F', "
@@ -1399,7 +1399,7 @@ $tab_req[] = "INSERT INTO droits SET id='/etablissements/chercheINE.php', "
    . "responsable='F', "
    . "secours='F', "
    . "autre='F', "
-   . "description='Recherche des INE sans établissements', "
+   . "description='Recherche des RNE sans établissements', "
    . "statut='';";
 
 
