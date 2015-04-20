@@ -205,6 +205,18 @@
 	  </label>
 	</p>
 
+	<p>
+	  <input type="checkbox" 
+			 name="AbsProfGroupesClasseSeulement" 
+			 id='AbsProfGroupesClasseSeulement' 
+			 value="yes" 
+			<?php if (getSettingAOui("AbsProfGroupesClasseSeulement")) echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='AbsProfGroupesClasseSeulement' style='cursor: pointer;'>
+		Ne pas proposer de remplacement pour des groupes/enseignements qui ne sont pas des groupes classe.
+	  </label>
+	</p>
+
 	<p class="center">
 	  <input type="submit" value="Enregistrer" />
 	</p>
