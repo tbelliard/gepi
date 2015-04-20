@@ -140,22 +140,40 @@ require_once("../lib/header.inc.php");
 				<tr class="lig<?php echo $cpt; ?>">
 					<td>
 						<?php echo $RNE->id_etablissement; ?>
-						<input type="hidden" name="ine_<?php echo $RNE->id_etablissement; ?>" value="<?php echo $RNE->id_etablissement; ?>" />
+						<input type="hidden" 
+							   name="id[]" 
+							   value="<?php echo $RNE->id_etablissement; ?>" />
 					</td>
 					<td>
+						<?php /*
 						<input type="text" name="nom_<?php echo $RNE->id_etablissement; ?>" title="Nom de l'établissement" />
+						 */ ?>
+						<input type="text" 
+							   name="nom[<?php echo $RNE->id_etablissement; ?>]" 
+							   title="Nom de l'établissement" />
 					</td>
 					<td>
-						<input type="text" name="niveau_<?php echo $RNE->id_etablissement; ?>" title="aucun, ecole, college, lycee, lprof …" size="14" />					
+						<input type="text" 
+							   name="niveau[<?php echo $RNE->id_etablissement; ?>]" 
+							   title="aucun, ecole, college, lycee, lprof …" 
+							   size="14" />					
+					</td>
+					<td>	
+						<input type="text" 
+							   name="type[<?php echo $RNE->id_etablissement; ?>]" 
+							   title="aucun, prive, public …" 
+							   size="10" />		
 					</td>
 					<td>
-						<input type="text" name="type_<?php echo $RNE->id_etablissement; ?>" title="aucun, prive, public …" size="10" />		
+						<input type="text" 
+							   name="cp[<?php echo $RNE->id_etablissement; ?>]" 
+							   title="code postal" 
+							   size="6" />
 					</td>
 					<td>
-						<input type="text" name="cp_<?php echo $RNE->id_etablissement; ?>" title="code postal" size="6" />
-					</td>
-					<td>
-						<input type="text" name="ville_<?php echo $RNE->id_etablissement; ?>" title="ville" />
+						<input type="text" 
+							   name="ville[<?php echo $RNE->id_etablissement; ?>]" 
+							   title="ville" />
 					</td>
 					<td>
 						<?php include 'importerRNE.php';  ?>
@@ -187,7 +205,7 @@ require_once("../lib/header.inc.php");
 <?php } ?>
 
 <?php
-debug_var();
+//debug_var();
 
 require("../lib/footer.inc.php");
 
