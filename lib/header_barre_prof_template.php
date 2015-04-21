@@ -52,6 +52,8 @@ $nom_ou_description_groupe_barre_h=getPref($_SESSION['login'], "nom_ou_descripti
 
 $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "light"))?"yes":"no";
 
+$is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
+
 	//=======================================================
 	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes', 'visibilite'));
 	$tmp_mes_classes=array();
@@ -422,7 +424,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				}
 
 				// Saisie des avis de conseil de classe
-				if((getSettingValue("GepiRubConseilProf") == "yes")&&(is_pp($_SESSION['login']))) {
+				if((getSettingValue("GepiRubConseilProf") == "yes")&&($is_pp_header_barre_prof_template)) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/saisie/saisie_avis.php' , "texte"=>"Avis de conseils de classe");
 
 					$tmp_sous_menu2=array();
@@ -474,7 +476,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 					$cpt_sous_menu++;
 				}
 
-				if((getSettingAOui('GepiProfImprBul'))&&(is_pp($_SESSION['login']))) {
+				if((getSettingAOui('GepiProfImprBul'))&&($is_pp_header_barre_prof_template)) {
 					$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
 					if(count($tab_pp)>0) {
 						$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/bulletin/bull_index.php' , "texte"=>"Imprimer bulletins");
@@ -520,13 +522,13 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 				$cpt_sous_menu++;
 
-				if((getSettingAOui('active_mod_engagements'))&&(is_pp($_SESSION['login']))) {
+				if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 					$cpt_sous_menu++;
 				}
 
 				if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
-				((getSettingAOui('AAProfPrinc'))&&(is_pp($_SESSION['login'])))) {
+				((getSettingAOui('AAProfPrinc'))&&($is_pp_header_barre_prof_template))) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_annees_anterieures/consultation_annee_anterieure.php' , "texte"=>"Années antérieures");
 					$cpt_sous_menu++;
 				}
@@ -575,9 +577,13 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
 		$temoin_disc="";
-		$cpt_disc=get_temoin_discipline_personnel();
-		if($cpt_disc>0) {
-			$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+		if((getPref($_SESSION['login'], 'DiscTemoinIncidentProf', "n")=="y")||(getPref($_SESSION['login'], 'DiscTemoinIncidentPP', "n")=="y")) {
+			$cpt_disc=get_temoin_discipline_personnel();
+			if($cpt_disc>0) {
+				//$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+				$DiscTemoinIncidentTaille=getPref($_SESSION['login'], 'DiscTemoinIncidentTaille', 16);
+				$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' width='$DiscTemoinIncidentTaille' height='$DiscTemoinIncidentTaille' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+			}
 		}
 		$tbs_menu_prof[$compteur_menu]=array("lien"=> '/mod_discipline/index.php' , "texte"=>"Discipline".$temoin_disc);
 		$compteur_menu++;
@@ -688,7 +694,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 	$tmp_sous_menu[$cpt_sous_menu]['niveau_sous_menu']=3;
 	$cpt_sous_menu++;
 
-	if((getSettingAOui('active_mod_engagements'))&&(is_pp($_SESSION['login']))) {
+	if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
 		$cpt_sous_menu++;
 	}

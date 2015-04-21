@@ -1274,6 +1274,24 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 		}
 	}
 
+	if(isset($_POST['DiscTemoinIncidentTaille'])) {
+		$value=preg_replace("/[^0-9]/", "", $_POST['DiscTemoinIncidentTaille']);
+		if(($value!=$_POST['DiscTemoinIncidentTaille'])||($value<10)) {
+			$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentTaille : valeur ".$_POST['DiscTemoinIncidentTaille']." invalide.<br />";
+			$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+		}
+		else {
+			if(!savePref($_SESSION['login'],'DiscTemoinIncidentTaille', $value)) {
+				$msg.="Erreur lors de l'enregistrement de DiscTemoinIncidentTaille.<br />";
+				$message_mod_discipline="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+			}
+			else {
+				$msg.="Enregistrement de DiscTemoinIncidentTaille.<br />";
+				$nb_reg++;
+			}
+		}
+	}
+
 	if(($message_mod_discipline=="")&&($nb_reg>0)) {
 		$message_mod_discipline="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
 	}
@@ -3063,6 +3081,11 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		$tabindex++;
 		echo "</p>";
 	}
+
+	$DiscTemoinIncidentTaille=getPref($_SESSION['login'], 'DiscTemoinIncidentTaille', 16);
+	echo "<p><label for='DiscTemoinIncidentTaille' id='texte_DiscTemoinIncidentTaille'> Taille en pixels du témoin affiché&nbsp;: </label><input type='text' name='DiscTemoinIncidentTaille' id='DiscTemoinIncidentTaille' value='$DiscTemoinIncidentTaille' onchange=\"changement()\" tabindex='$tabindex' onkeydown=\"clavier_2(this.id,event,10,40);\" size='3' /></p>";
+	$tabindex++;
+
 	echo "<p style='text-indent:-4em; margin-left:4em;'><em>NOTE&nbsp;:</em> Le témoin ne disparait pas une fois l'incident visualisé.<br />Il disparait à la connexion suivante.</p>";
 
 	//==============================================

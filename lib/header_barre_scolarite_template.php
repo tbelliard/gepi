@@ -253,9 +253,12 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		// Module discipline
 		if (getSettingValue("active_mod_discipline")=='y') {
 			$temoin_disc="";
-			$cpt_disc=get_temoin_discipline_personnel();
-			if($cpt_disc>0) {
-				$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' class='icone16' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+			if((getPref($_SESSION['login'], 'DiscTemoinIncidentScol', "n")=="y")||(getPref($_SESSION['login'], 'DiscTemoinIncidentScolTous', "n")=="y")) {
+				$cpt_disc=get_temoin_discipline_personnel();
+				if($cpt_disc>0) {
+					$DiscTemoinIncidentTaille=getPref($_SESSION['login'], 'DiscTemoinIncidentTaille', 16);
+					$temoin_disc=" <img src='$gepiPath/images/icons/flag2.gif' width='$DiscTemoinIncidentTaille' height='$DiscTemoinIncidentTaille' title=\"Un ou des ".$mod_disc_terme_incident."s ($cpt_disc) ont été saisis dans les dernières 24h ou depuis votre dernière connexion.\" />";
+				}
 			}
 			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/index.php"'.insert_confirm_abandon().'>Discipline</a>'.$temoin_disc.'</li>'."\n";
 		}
