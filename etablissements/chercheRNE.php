@@ -49,7 +49,7 @@ if ($utilisateur == null) {
 
 
 //*************** FONCTIONS ***************
-function ineSansEtab () {
+function rneSansEtab () {
 	global $mysqli;
 	$sql= "SELECT DISTINCT id_etablissement "
 	   . "FROM j_eleves_etablissements "
@@ -95,7 +95,7 @@ if ($enregistrer) {
 
 
 
-$etabATraite = ineSansEtab ();
+$etabATraite = rneSansEtab ();
 
 //**************** EN-TETE *****************
 $titre_page = "Identifiants sans établissements";
@@ -117,10 +117,10 @@ require_once("../lib/header.inc.php");
 	unset($_SESSION['msg_etab']);
 } ?>
 <?php if ($etabATraite->num_rows) { ?>
-<fieldset>
+<fieldset class='fieldset_opacite50'>
 	<legend>Établissements non trouvés</legend>
-	<form method="post" action="chercheRNE.php" id="form_RNE">	
-		<table class='boireaus'>
+	<form method="post" action="chercheRNE.php" id="form_RNE">
+		<table class='boireaus boireaus_alt'>
 			<caption style="caption-side:bottom">Identifiants non rattachés à un établissement</caption>
 			<tr>
 				<th>Identifiant</th>
@@ -128,16 +128,16 @@ require_once("../lib/header.inc.php");
 				<th>niveau</th>
 				<th>type</th>
 				<th>cp</th>
-				<th>ville</th>		
-				<th>Rechercher</th>	  	 	
-				<th>Sauvegarder</th>	  	  	 	 
+				<th>ville</th>
+				<th>Rechercher</th>
+				<th>Sauvegarder</th>
 			</tr>
-			<?php $cpt=-1;
+			<?php
 			while($RNE = $etabATraite->fetch_object()){
 				if ($RNE->id_etablissement){
 
 				?>
-				<tr class="lig<?php echo $cpt; ?>">
+				<tr>
 					<td>
 						<?php echo $RNE->id_etablissement; ?>
 						<input type="hidden" 
@@ -156,13 +156,13 @@ require_once("../lib/header.inc.php");
 						<input type="text" 
 							   name="niveau[<?php echo $RNE->id_etablissement; ?>]" 
 							   title="aucun, ecole, college, lycee, lprof …" 
-							   size="14" />					
+							   size="14" />
 					</td>
 					<td>	
 						<input type="text" 
 							   name="type[<?php echo $RNE->id_etablissement; ?>]" 
 							   title="aucun, prive, public …" 
-							   size="10" />		
+							   size="10" />
 					</td>
 					<td>
 						<input type="text" 
@@ -188,7 +188,6 @@ require_once("../lib/header.inc.php");
 					</td>
 				</tr>
 			<?php 
-					$cpt*=-1;
 					}
 				} ?>
 		</table>
@@ -201,7 +200,7 @@ require_once("../lib/header.inc.php");
 	<br />
 	Tous les identifiants sont rattachés à un établissement
 </p>
-		
+
 <?php } ?>
 
 <?php

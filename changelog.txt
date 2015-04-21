@@ -11,6 +11,9 @@ Librairies:
 Abs2:
 - Possibilité d'associer automatiquement des saisies (saisir_groupe.php) à un traitement englobant.
 
+Absence et remplacement de professeurs:
+- Possibilité de ne pas afficher de case à cocher pour ne pas proposer de remplacer des enseignements qui ne correspondent pas à des groupes-classes.
+
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
 
@@ -27,6 +30,8 @@ Alertes:
 Divers:
 - Possibilité de paramétrer classe par classe la dénomination du professeur chargé
   du suivi des élèves d'une classe ("professeur principal" par défaut).
+- Import simplifié des établissements d'origine non référencés.
+
 
 Gepi-1.6.6 (18/01/2015)
 ===========================
