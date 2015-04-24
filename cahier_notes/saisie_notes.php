@@ -361,6 +361,10 @@ if (isset($_POST['appreciations'])) {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	if(!isset($msg)) {
+		$msg="";
+	}
+
 	$tab_precision=array('s1', 's5', 'se', 'p1', 'p5', 'pe');
 	$cn_precision=isset($_POST['cn_precision']) ? $_POST['cn_precision'] : "";
 	if(in_array($cn_precision, $tab_precision)) {
@@ -375,6 +379,29 @@ if (isset($_POST['is_posted'])) {
 	$comment_eleve=$_POST['comment_eleve'];
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
+
+	// 20150424
+	$modif_note_sur=isset($_POST['modif_note_sur']) ? $_POST['modif_note_sur'] : NULL;
+	if(isset($modif_note_sur)) {
+		if((preg_match("/^[0-9]{1,}$/", $modif_note_sur))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $modif_note_sur))) {
+
+			// Contrôler que la période est ouverte pour au moins un élève...
+
+			if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces_exceptionnel_saisie)) {
+				$sql="UPDATE cn_devoirs SET note_sur='$modif_note_sur' WHERE id='$id_devoir';";
+				$update_note_sur = mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$update_note_sur) {
+					$msg.="ERREUR lors de la modification du référentiel de l'évaluation.<br />";
+				}
+				else {
+					$msg.="Modification du référentiel de l'évaluation (<em>maintenant sur $modif_note_sur</em>).<br />";
+				}
+			}
+		}
+		else {
+			$msg.="ERREUR : Le référentiel choisi est invalide : '$modif_note_sur'.<br />";
+		}
+	}
 
 	$appel_note_sur = mysqli_query($GLOBALS["mysqli"], "SELECT note_sur FROM cn_devoirs WHERE id = '$id_devoir'");
 	$obj_note_sur=$appel_note_sur->fetch_object();
@@ -494,7 +521,7 @@ if (isset($_POST['is_posted'])) {
     $sql="SELECT 1=1 FROM matieres_notes WHERE periode='".$periode_num."' AND id_groupe='".$id_groupe."';";
     $test_bulletin=mysqli_query($GLOBALS["mysqli"], $sql);
     if(mysqli_num_rows($test_bulletin)>0) {
-        $msg=" ATTENTION: Des notes sont présentes sur le bulletin.<br />Si vous avez modifié ou ajouté des notes, pensez à mettre à jour la recopie vers le bulletin.";
+        $msg.=" ATTENTION: Des notes sont présentes sur le bulletin.<br />Si vous avez modifié ou ajouté des notes, pensez à mettre à jour la recopie vers le bulletin.<br />";
     }
     //==========================================================
 
@@ -928,10 +955,12 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 }
 
 // Début du deuxième formulaire
-echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post  name=\"form2\">\n";
+echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post id=\"form2\">\n";
 if ($id_devoir != 0) {
 	echo add_token_field();
 	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+
+	echo "<input type='hidden' name='modif_note_sur' id='modif_note_sur' value='' />\n";
 }
 
 // Couleurs utilisées
@@ -1346,9 +1375,11 @@ $w_pdf[] = $w1;
 if ($multiclasses) {echo "<td class='cn'>&nbsp;</td>\n";}
 if ($multiclasses) {$w_pdf[] = $w2;}
 $i = 0;
+$indice_devoir_saisi=-1;
 while ($i < $nb_dev) {
 	// En mode saisie, on n'affiche que le devoir à saisir
 	if (($id_devoir==0) or ($id_dev[$i] == $id_devoir)) {
+		$indice_devoir_saisi=$i;
 		if ($coef[$i] != 0) {$tmp = " bgcolor = $couleur_calcul_moy ";} else {$tmp = '';}
 		$header_pdf[] = ($nom_dev[$i]." (".$display_date[$i].")");
 		$w_pdf[] = $w2;
@@ -2347,6 +2378,9 @@ if ($id_devoir) {
 	$texte_infobulle.="/></td><td><label for='precision_pe' style='cursor: pointer;'>au point entier le plus proche</label></td></tr>
 </table>
 <p><input type='button' name='valider_ramener_sur_N' value='Valider' onclick='effectuer_ramener_sur_N()' /></p>
+<!--20150424-->
+<p>L'évaluation est actuellement <strong>configurée/notée sur ".$note_sur[$indice_devoir_saisi]."</strong><br />
+<input type='checkbox' name='modif_eval_ramener_sur' id='modif_eval_ramener_sur' value='y' onchange=\"checkbox_change(this.id)\" /><label for='modif_eval_ramener_sur' id='texte_modif_eval_ramener_sur'>Modifier cette valeur pour prendre la valeur de <strong>ramener_sur</strong> ci_dessus</label></p>
 </div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_ramener_sur_N',$titre_infobulle,"",$texte_infobulle,"",32,0,'y','y','n','n');
 	echo "<span id='p_ramener_sur_N2' style='display:none'><a href='#' onclick=\"afficher_div('div_ramener_sur_N','y',20,20); return false;\" target=\'_blank\'>Ramener sur N</a></span>";
@@ -2354,6 +2388,8 @@ if ($id_devoir) {
 	//=====================================================
 
 	echo "<script type='text/javascript'>
+	".js_checkbox_change_style()."
+
 	function effectuer_ramener_sur_N() {
 		if((document.getElementById('ramener_sur_N'))&&(document.getElementById('ramener_sur_N').value!='')&&(document.getElementById('total_bareme'))&&(document.getElementById('total_bareme').value!='')) {
 
@@ -2473,7 +2509,13 @@ if ($id_devoir) {
 
 				calcul_moy_med();
 
-				alert('Opération terminée.');
+				if(document.getElementById('modif_eval_ramener_sur').checked==true) {
+					document.getElementById('modif_note_sur').value=ramener_sur_N;
+					document.getElementById('form2').submit();
+				}
+				else {
+					alert('Opération terminée.');
+				}
 				cacher_div('div_ramener_sur_N');
 			}
 			else {
@@ -2548,7 +2590,7 @@ if ($id_devoir) {
 
 
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
-	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method='post' id='form_import_notes'>\n";
 	echo add_token_field();
 	echo "<a name='import_notes_tableur'></a>";
 	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
@@ -2609,7 +2651,7 @@ if ($id_devoir) {
 
 if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
-	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method='post' id='form_import_app'>\n";
 	echo add_token_field();
 	echo "<h3 class='gepi'>Importation directe des appréciations par copier/coller à partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
