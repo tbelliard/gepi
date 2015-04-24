@@ -1025,7 +1025,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		include($path);
 
 		// Le premier argument est la version du protocole CAS
-		phpCAS::client(CAS_VERSION_2_0,$cas_host,$cas_port,$cas_root,'');
+		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
 		phpCAS::setLang(PHPCAS_LANG_FRENCH);
 		if ($cas_use_logout) {
 			phpCAS::logout();
