@@ -193,7 +193,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 					$cpt_sous_menu2=0;
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
 						$tmp_sous_menu2[$cpt_sous_menu2]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop;
-						$tmp_sous_menu2[$cpt_sous_menu2]['texte']=$tmp_group["periodes"][$loop]["nom_periode"];
+						$tmp_sous_menu2[$cpt_sous_menu2]['texte']="<span title=\"Carnet de notes de ".$tmp_group["name"]." en ".$tmp_group["classlist_string"]." : Période ".$tmp_group["periodes"][$loop]["nom_periode"]."\">".$tmp_group["periodes"][$loop]["nom_periode"]."</span>";
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 							$tmp_sous_menu2[$cpt_sous_menu2]['texte'].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
 						}
@@ -267,7 +267,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			
 							for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
 								$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
-								$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
+								$tmp_sous_menu3[$cpt_sous_menu3]['texte']="<span title=\"Saisir les notes/moyennes sur les bulletins de ".$tmp_group["name"]." en ".$tmp_group["classlist_string"]." en période  ".$tmp_group["periodes"][$loop]["nom_periode"]."\">".$tmp_group["periodes"][$loop]["nom_periode"]."</span>";
 								$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
 								if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 									$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
@@ -309,7 +309,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			
 							for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
 								$tmp_sous_menu3[$cpt_sous_menu3]["lien"]='/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop;
-								$tmp_sous_menu3[$cpt_sous_menu3]["texte"]=$tmp_group["periodes"][$loop]["nom_periode"];
+								$tmp_sous_menu3[$cpt_sous_menu3]['texte']="<span title=\"Saisir les appréciations sur les bulletins de ".$tmp_group["name"]." en ".$tmp_group["classlist_string"]." en période  ".$tmp_group["periodes"][$loop]["nom_periode"]."\">".$tmp_group["periodes"][$loop]["nom_periode"]."</span>";
 								$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
 								if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 									$tmp_sous_menu3[$cpt_sous_menu3]["texte"].=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
