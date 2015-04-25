@@ -382,7 +382,7 @@ if (isset($_POST['is_posted'])) {
 
 	// 20150424
 	$modif_note_sur=isset($_POST['modif_note_sur']) ? $_POST['modif_note_sur'] : NULL;
-	if(isset($modif_note_sur)) {
+	if((isset($modif_note_sur))&&($modif_note_sur!="")) {
 		if((preg_match("/^[0-9]{1,}$/", $modif_note_sur))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $modif_note_sur))) {
 
 			// Contrôler que la période est ouverte pour au moins un élève...
