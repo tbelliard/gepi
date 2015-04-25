@@ -168,6 +168,16 @@ if ($ctCompteRendu->getDateCt() == null) {
 $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
 $id_groupe=$ctCompteRendu->getIdGroupe();
 //================================================
+// Recherche du cours suivant mais pas dans la journée à partir du lendemain (pour donner du travail à faire)
+
+// Pour pouvoir sauter les jours de vacances
+$tab_jours_vacances=array();
+foreach($groupe->getClasses() as $current_classe) {
+	$id_premiere_classe=$current_classe->getId();
+	$tab_jours_vacances=get_tab_jours_vacances($id_premiere_classe);
+	break;
+}
+
 $date_ct_cours_suivant="";
 $ts_date_ct_cours_suivant="";
 $tab_jours=array('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche');
@@ -190,35 +200,37 @@ $tab_creneau=get_tab_creneaux();
 $ts_test=$today;
 for($loop=1;$loop<21;$loop++) {
 	$ts_test+=3600*24;
-	$jour_test=strftime("%A", $ts_test);
-	$num_semaine_test=strftime("%V", $ts_test);
+	if(!in_array(strftime("%Y%m%d", $ts_test), $tab_jours_vacances)) {
+		$jour_test=strftime("%A", $ts_test);
+		$num_semaine_test=strftime("%V", $ts_test);
 
-	$ajout_sql="";
-	$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine_test."';";
-	//echo "$sql<br />";
-	$res_sem=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_sem)>0) {
-		$lig=mysqli_fetch_object($res_sem);
-		$type_edt_semaine=$lig->type_edt_semaine;
-		$ajout_sql=" AND (id_semaine='' OR id_semaine='0' OR id_semaine='".$type_edt_semaine."')";
-	}
+		$ajout_sql="";
+		$sql="SELECT * FROM edt_semaines WHERE num_edt_semaine='".$num_semaine_test."';";
+		//echo "$sql<br />";
+		$res_sem=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_sem)>0) {
+			$lig=mysqli_fetch_object($res_sem);
+			$type_edt_semaine=$lig->type_edt_semaine;
+			$ajout_sql=" AND (id_semaine='' OR id_semaine='0' OR id_semaine='".$type_edt_semaine."')";
+		}
 
-	$sql="SELECT ec.*, ecr.nom_definie_periode, ecr.heuredebut_definie_periode, ecr.heurefin_definie_periode FROM edt_cours ec, edt_creneaux ecr WHERE ec.id_groupe='$id_groupe' AND ec.jour_semaine='".$jour_test."'".$ajout_sql." AND ec.id_definie_periode=ecr.id_definie_periode ORDER BY heuredebut_definie_periode;";
-	//echo "$sql<br />";
-	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
-		// Le jour est trouvé
+		$sql="SELECT ec.*, ecr.nom_definie_periode, ecr.heuredebut_definie_periode, ecr.heurefin_definie_periode FROM edt_cours ec, edt_creneaux ecr WHERE ec.id_groupe='$id_groupe' AND ec.jour_semaine='".$jour_test."'".$ajout_sql." AND ec.id_definie_periode=ecr.id_definie_periode ORDER BY heuredebut_definie_periode;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			// Le jour est trouvé
 
-		$lig=mysqli_fetch_object($res);
+			$lig=mysqli_fetch_object($res);
 
-		//echo "Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")<br />";
-		$date_ct_cours_suivant="Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")";
-		$ts_date_ct_cours_suivant=$ts_test;
-		break;
+			//echo "Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")<br />";
+			$date_ct_cours_suivant="Cours suivant le ".strftime("%a %d/%m/%Y", $ts_test)." en ".$lig->nom_definie_periode." (".$lig->heuredebut_definie_periode." - ".$lig->heuredebut_definie_periode.")";
+			$ts_date_ct_cours_suivant=$ts_test;
+			break;
+		}
 	}
 }
 //================================================
-// Cours suivant dans la journée
+// Cours suivant dans la journée... à chercher
 
 //================================================
 echo "<br />";
