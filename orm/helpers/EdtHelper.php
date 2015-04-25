@@ -157,7 +157,7 @@ class EdtHelper {
         }else{
             $date_debut_clone=clone($date_debut);
         }
-        $date_debut_clone->setTime(00, 00, 00);
+        $date_debut_clone->setTime(0, 0, 0);
         if($date_fin==Null){
             $date_fin_clone=EdtHelper::getDernierJourAnneeScolaire();
         }else{
@@ -169,10 +169,10 @@ class EdtHelper {
         $nbre_demi_journees_etab_ouvert=0;
         while ($date_debut_clone->format('U') < $date_fin_clone->format('U')){
             $date_clone= clone $date_debut_clone;            
-            if($date_debut_clone->format('h:i')=="00:00"){                
-                $date_clone->setTime(09,00,00); //on met 9 heures au cas ou un étab commence à 8h30 par exemple                
-            }elseif($date_debut_clone->format('h:i')=="12:00"){
-                $date_clone->setTime(15,00,00);//on met 15 heures pour être dans la demi journée de l'après-midi
+            if($date_debut_clone->format('H:i')=="00:00"){                
+                $date_clone->setTime(9,0,0); //on met 9 heures au cas ou un étab commence à 8h30 par exemple                
+            }elseif($date_debut_clone->format('H:i')=="12:00"){
+                $date_clone->setTime(15,0,0);//on met 15 heures pour être dans la demi journée de l'après-midi
             }else {
                 echo'Il y a un problème sur les heures';
                 die();
