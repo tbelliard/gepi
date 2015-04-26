@@ -659,6 +659,32 @@ echo "<td>\n";
 		//]]>
 	</script>\n";
 				}
+				elseif(LDAPServer::is_setup()) {
+					if (isset($eleve_nom)) {
+						echo " value=\"".$eleve_nom."\"";
+					}
+
+					echo " onblur=\"affiche_login_scribe('nom')\"";
+					echo " />";
+
+					echo "
+	<script type='text/javascript'>
+		// <![CDATA[
+		function affiche_login_scribe(champ) {
+
+			valeur=document.getElementById(champ).value;
+			if(valeur!='') {
+
+				nom=document.getElementById('nom').value;
+				prenom=document.getElementById('prenom').value;
+
+				//alert('valeur='+valeur);
+				new Ajax.Updater($('suggestion_login'),'cherche_login.php?nom='+nom+'&prenom='+prenom+'&type_server=scribe',{method: 'get'});
+			}
+		}
+		//]]>
+	</script>\n";
+				}
 				else {
 					if (isset($eleve_nom)) {
 						echo " value=\"".$eleve_nom."\"";

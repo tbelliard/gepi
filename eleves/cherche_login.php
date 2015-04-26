@@ -75,8 +75,122 @@ if((getSettingAOui('gepi_non_plugin_lcs_mais_recherche_ldap'))&&(file_exists("..
 $nom=isset($_POST['nom']) ? $_POST['nom'] : (isset($_GET['nom']) ? $_GET['nom'] : "");
 $prenom=isset($_POST['prenom']) ? $_POST['prenom'] : (isset($_GET['prenom']) ? $_GET['prenom'] : "");
 $statut_recherche=isset($_POST['statut_recherche']) ? $_POST['statut_recherche'] : (isset($_GET['statut_recherche']) ? $_GET['statut_recherche'] : "eleve");
+$type_server=isset($_POST['type_server']) ? $_POST['type_server'] : (isset($_GET['type_server']) ? $_GET['type_server'] : "");
 
-if(($nom!="")||($prenom!="")) {
+if(($type_server=='scribe')&&(($nom!="")||($prenom!=""))) {
+	$ldap = new LDAPServerScribe();
+	$ldap->connect();
+
+	$nom=preg_replace("[A-Za-z]","*",$nom);
+	$prenom=preg_replace("[A-Za-z]","*",$prenom);
+
+	$filtre="";
+	if($nom!='') {
+		if($prenom!='') {
+			$filtre="(&(".$ldap->champ_nom."=*$nom*)(".$ldap->champ_prenom."=*$prenom*))";
+		}
+		else {
+			$filtre="(".$ldap->champ_nom."=*$nom*)";
+		}
+	}
+	elseif($prenom!='') {
+		$filtre="(".$ldap->champ_prenom."=*$prenom*)";
+	}
+
+	if($filtre!="") {
+		$result= ldap_search ($ldap->ds, 'ou=utilisateurs,'.$ldap->get_base_branch(), $filtre);
+		if ($result) {
+			$info = @ldap_get_entries( $ldap->ds, $result );
+			if($info["count"]==0) {
+				echo "<span style='color:red;'>Aucun enregistrement n'a été trouvé dans le LDAP pour ".$nom." ".$prenom.". Il est <strong>indispensable</strong>, pour un accès de l'élève à Gepi, de créer le compte dans l'annuaire avant de le créer dans Gepi&nbsp;!!!</span><br />\n";
+				$erreur++;
+			}
+			else {
+				/*
+				echo "<pre>";
+				echo print_r($info);
+				echo "</pre>";
+				*/
+				if($statut_recherche=="eleve") {
+					echo "<table class='boireaus'>\n";
+					echo "<tr>\n";
+					echo "<th>Login Scribe</th>\n";
+					echo "<th>Nom</th>\n";
+					echo "<th>Prénom</th>\n";
+					echo "<th>Naissance</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+					for($i=0;$i<$info["count"];$i++) {
+
+						//$nouvel_eleve->setNaissance(formater_date_pour_mysql($eleves[$nb]['entpersondatenaissance'][0]));
+						$naissance=$infos[$i]['entpersondatenaissance'][0];
+						$tab=explode("/",$naissance);
+						$jour=$tab[0];
+						$mois=$tab[1];
+						$annee=$tab[2];
+
+						$sexe=$info[$i]['entpersonsexe'][0];
+
+						$employeenumber=(array_key_exists('employeenumber', $info[$i])) ? $info[$i]['employeenumber'][0] : "";
+
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i][$ldap->champ_login][0]."';
+															document.getElementById('nom').value='".$info[$i][$ldap->champ_nom][0]."';
+															document.getElementById('prenom').value='".$info[$i][$ldap->champ_prenom][0]."';
+															document.getElementById('birth_day').value='".$jour."';
+															document.getElementById('birth_month').value='".$mois."';
+															document.getElementById('birth_year').value='".$annee."';
+															document.getElementById('reg_email').value='".$info[$i][$ldap->champ_email][0]."';
+															document.getElementById('elenoet').value='".$employeenumber."';
+															document.getElementById('reg_sexe$sexe').checked=true;
+															return false;\"
+										title=\"Compléter les champs de formulaire avec les informations trouvées dans l'annuaire LDAP pour cet identifiant.\">".$info[$i][$ldap->champ_login][0]."</a></td>\n";
+						echo "<td>".$info[$i][$ldap->champ_nom][0]."</td>\n";
+						echo "<td>".$info[$i][$ldap->champ_prenom][0]."</td>\n";
+						echo "<td>".$naissance."</td>\n";
+						echo "</tr>\n";
+					}
+					echo "</table>\n";
+				}
+				else {
+					echo "<table class='boireaus'>\n";
+					echo "<tr>\n";
+					echo "<th>Login Scribe</th>\n";
+					echo "<th>Nom</th>\n";
+					echo "<th>Prénom</th>\n";
+					echo "</tr>\n";
+					$alt=1;
+					for($i=0;$i<$info["count"];$i++) {
+
+						//$civilite=$infos[0]['personaltitle'][0];
+
+						$sexe=$info[$i]['entpersonsexe'][0];
+
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
+						echo "<td><a href=\"#\" onclick=\"document.getElementById('reg_login').value='".$info[$i][$ldap->champ_login][0]."';
+															document.getElementById('reg_nom').value='".$info[$i][$ldap->champ_nom][0]."';
+															document.getElementById('reg_prenom').value='".$info[$i][$ldap->champ_prenom][0]."';
+															document.getElementById('reg_email').value='".$info[$i]["mail"][0]."';
+															if('$sexe'=='F') {document.getElementById('reg_civilite').selectedIndex=2;} else {document.getElementById('reg_civilite').selectedIndex=1;}
+															return false;\"
+										title=\"Compléter les champs de formulaire avec les informations trouvées dans l'annuaire LDAP pour cet identifiant.\">".$info[$i][$ldap->champ_login][0]."</a></td>\n";
+						echo "<td>".$info[$i][$ldap->champ_nom][0]."</td>\n";
+						echo "<td>".$info[$i][$ldap->champ_prenom][0]."</td>\n";
+						//echo "<td>".$naissance."</td>\n";
+					}
+					echo "</table>\n";
+				}
+			}
+			@ldap_free_result($result);
+		}
+		else {
+			echo "<p style='color:red;>Echec de la recherche dans le LDAP.</p>\n";
+		}
+	}
+}
+elseif(($nom!="")||($prenom!="")) {
 
 	$nom=preg_replace("[A-Za-z]","*",$nom);
 	$prenom=preg_replace("[A-Za-z]","*",$prenom);
