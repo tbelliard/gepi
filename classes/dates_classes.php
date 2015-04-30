@@ -542,7 +542,7 @@ echo "</div>";
 
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
-echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouvel événement</a></p>\n";
+echo "<p class='bold'><a href='../accueil.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Nouvel événement</a><span id='span_lien_js_nouvel_evenement' style='display:none'> | <a href='dates_classes2.php' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Créer l'événement avec la nouvelle interface de saisie (nécessitant JavaScript).\">Nouvel événement (2)</a></span></p>\n";
 echo "<table width=\"98%\" cellspacing=0 align=\"center\">\n";
 echo "<tr>\n";
 echo "<td valign='top'>\n";
@@ -643,8 +643,9 @@ if ($nb_messages>0) {
 		echo "</p>\n";
 
 		//echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
-		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\">modifier</a>
-		- <a href='".$_SERVER['PHP_SELF']."?id_del=$lig->id_ev&amp;action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer cet événement ?', '".$message_suppression."')\">supprimer</a>
+		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> modifier</a>
+		<span id='span_lien_js_evenement_$ind' style='display:none'>-<a href='dates_classes2.php?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'événement avec la nouvelle interface de saisie\n(nécessitant Javascript)\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> 2 </a></span>
+		- <a href='".$_SERVER['PHP_SELF']."?id_del=$lig->id_ev&amp;action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer cet événement ?', '".$message_suppression."')\"><img src='../images/delete16.png' class='icone16' alt='Supprimer' /> supprimer</a>
 		<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");padding: 3px; margin: 3px;'>".affiche_evenement($lig->id_ev, "y")."</div>
 		</div>\n";
 		$ind++;
@@ -779,6 +780,14 @@ echo "
 							<td colspan=\"4\">
 								<span class='grand'>".$titre_mess." 
 								<!--a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\" onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a-->
+								<span id='span_lien_js_evenement_modif' style='display:none'><a href='dates_classes2.php";
+if (isset($id_ev)) {
+	echo "?id_ev=$id_ev' title=\"Modifier l'événement avec la nouvelle interface de saisie\n(nécessitant Javascript)\"";
+}
+else {
+	echo "' title=\"Créer l'événement avec la nouvelle interface de saisie\n(nécessitant Javascript)\"";
+}
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> 2 </a></span>
 								</span>
 							</td>
 						</tr>
@@ -789,16 +798,16 @@ echo "
 						</tr>
 						<tr>
 							<td>
-								<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label>
+								<input type='radio' name='type' id='type_conseil_de_classe' value='conseil_de_classe' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement2();\" ".($type=="conseil_de_classe" ? "checked " : "")."/><label for='type_conseil_de_classe' id='texte_type_conseil_de_classe'>Conseil de classe</label>
 							</td>
 							<td>
-								<input type='radio' name='type' id='type_autre' value='autre' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement();\" ".($type!="conseil_de_classe" ? "checked " : "")."/><label for='type_autre' id='texte_type_autre'>Autre</label>
+								<input type='radio' name='type' id='type_autre' value='autre' onchange=\"checkbox_change('type_conseil_de_classe');checkbox_change('type_autre');changement2();\" ".($type!="conseil_de_classe" ? "checked " : "")."/><label for='type_autre' id='texte_type_autre'>Autre</label>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=\"4\">
 								<p><i>L'événement sera affiché à compter de la date&nbsp;: 
-								<input type='text' name='display_date_debut' id='display_date_debut' size='10' value=\"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" onchange='changement()' AutoComplete=\"off\" />
+								<input type='text' name='display_date_debut' id='display_date_debut' size='10' value=\"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" onchange='changement2()' AutoComplete=\"off\" />
 								".img_calendrier_js("display_date_debut", "img_bouton_display_date_debut")."<br />
 								(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p>
 							</td>
@@ -810,19 +819,19 @@ echo "
 						</tr>
 						<tr style='vertical-align:top'>
 							<td>
-								<input type=\"checkbox\" id=\"destinataire_prof\" name=\"destinataire_prof\" value=\"y\" ".(($destinataire_prof=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_prof');changement();\" /><label for='destinataire_prof' id='texte_destinataire_prof' style='cursor: pointer;'>Professeurs de la classe</label>
+								<input type=\"checkbox\" id=\"destinataire_prof\" name=\"destinataire_prof\" value=\"y\" ".(($destinataire_prof=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_prof');changement2();\" /><label for='destinataire_prof' id='texte_destinataire_prof' style='cursor: pointer;'>Professeurs de la classe</label>
 							</td>
 							<td>
-								<input type=\"checkbox\" id=\"destinataire_cpe\" name=\"destinataire_cpe\" value=\"y\" ".(($destinataire_cpe=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_cpe');changement();\" /><label for='destinataire_cpe' id='texte_destinataire_cpe' style='cursor: pointer;'>CPE de la classe</label>
+								<input type=\"checkbox\" id=\"destinataire_cpe\" name=\"destinataire_cpe\" value=\"y\" ".(($destinataire_cpe=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_cpe');changement2();\" /><label for='destinataire_cpe' id='texte_destinataire_cpe' style='cursor: pointer;'>CPE de la classe</label>
 							</td>
 							<td>
-								<input type=\"checkbox\" id=\"destinataire_scol\" name=\"destinataire_scol\" value=\"y\" ".(($destinataire_scol=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_scol');changement();\" /><label for='destinataire_scol' id='texte_destinataire_scol' style='cursor: pointer;'>Comptes scolarité associés à la classe</label>
+								<input type=\"checkbox\" id=\"destinataire_scol\" name=\"destinataire_scol\" value=\"y\" ".(($destinataire_scol=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_scol');changement2();\" /><label for='destinataire_scol' id='texte_destinataire_scol' style='cursor: pointer;'>Comptes scolarité associés à la classe</label>
 							</td>
 							<td>
-								<input type=\"checkbox\" id=\"destinataire_resp\" name=\"destinataire_resp\" value=\"y\" ".(($destinataire_resp=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_resp');changement();\" /><label for='destinataire_resp' id='texte_destinataire_resp' style='cursor: pointer;'>Responsables d'élèves de la classe</label>
+								<input type=\"checkbox\" id=\"destinataire_resp\" name=\"destinataire_resp\" value=\"y\" ".(($destinataire_resp=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_resp');changement2();\" /><label for='destinataire_resp' id='texte_destinataire_resp' style='cursor: pointer;'>Responsables d'élèves de la classe</label>
 							</td>
 							<td>
-								<input type=\"checkbox\" id=\"destinataire_ele\" name=\"destinataire_ele\" value=\"y\" ".(($destinataire_ele=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_ele');changement();\" /><label for='destinataire_ele' id='texte_destinataire_ele' style='cursor: pointer;'>Élèves de la classe</label>
+								<input type=\"checkbox\" id=\"destinataire_ele\" name=\"destinataire_ele\" value=\"y\" ".(($destinataire_ele=="y") ? " checked" : "")." onchange=\"checkbox_change('destinataire_ele');changement2();\" /><label for='destinataire_ele' id='texte_destinataire_ele' style='cursor: pointer;'>Élèves de la classe</label>
 							</td>
 						</tr>
 						<tr>
@@ -903,7 +912,7 @@ foreach($tab_classe as $id_classe => $classe) {
 										<tr id='div_ligne_$id_classe' onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor=''\">
 										<td>
 										<span style='display:none' title='Pour le tri.'>".$classe['classe']."</span>
-										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe);changement();\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
+										<input type=\"checkbox\" id=\"id_classe_".$id_classe."\" name=\"id_classe[$cpt]\" value=\"$id_classe\" ".((array_key_exists($id_classe, $tab_classe_ev)) ? " checked" : "")." onchange=\"modif_affichage_ligne_classe($id_classe);changement2();\" /><label for='id_classe_".$id_classe."' id='texte_id_classe_".$id_classe."' style='cursor: pointer;'>".$classe['classe']."</label>
 										</td>
 
 										<td>
@@ -960,7 +969,7 @@ foreach($tab_classe as $id_classe => $classe) {
 										</td>
 										<td>
 											<span id='span_salle_id_classe_".$id_classe."'>
-												<select name='salle_id_classe[".$cpt."]' id='salle_id_classe_$id_classe'>
+												<select name='salle_id_classe[".$cpt."]' id='salle_id_classe_$id_classe' onchange='changement2()'>
 													".ev_classe_options_salle($id_classe)."
 												</select>
 											</span>
@@ -1095,6 +1104,27 @@ echo "
 </table>
 
 <script type='text/javascript'>
+
+if(document.getElementById('span_lien_js_nouvel_evenement')) {
+	document.getElementById('span_lien_js_nouvel_evenement').style.display='';
+}
+
+if(document.getElementById('span_lien_js_evenement_modif')) {
+	document.getElementById('span_lien_js_evenement_modif').style.display='';
+}
+
+for(i=0;i<$nb_messages;i++) {
+	if(document.getElementById('span_lien_js_evenement_'+i)) {
+		document.getElementById('span_lien_js_evenement_'+i).style.display='';
+	}
+}
+
+function changement2() {
+	changement();
+	if(document.getElementById('span_lien_js_evenement_modif')) {
+		document.getElementById('span_lien_js_evenement_modif').style.display='none';
+	}
+}
 
 ".js_checkbox_change_style('checkbox_change', 'texte_', 'n')."
 

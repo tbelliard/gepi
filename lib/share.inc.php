@@ -9913,6 +9913,8 @@ function afficher_les_evenements($afficher_obsolete="n") {
 function affiche_evenement($id_ev, $afficher_obsolete="n") {
 	global $gepiPath;
 	global $tab_salle;
+	global $evenement_sans_lien_mail;
+	global $evenement_sans_lien_ics;
 	$retour="";
 
 	if(count($tab_salle)==0) {
@@ -9934,11 +9936,15 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 			}
 		}
 
-		if(acces_info_dates_evenements()) {
-			$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Informer les/des destinataires par mail.\"><a href='$gepiPath/classes/info_dates_classes.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/mail.png' class='icone16' alt='Mail' /></a></div>";
+		if((!isset($evenement_sans_lien_mail))||($evenement_sans_lien_mail!="y")) {
+			if(acces_info_dates_evenements()) {
+				$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Informer les/des destinataires par mail.\"><a href='$gepiPath/classes/info_dates_classes.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/mail.png' class='icone16' alt='Mail' /></a></div>";
+			}
 		}
 
-		$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
+		if((!isset($evenement_sans_lien_ics))||($evenement_sans_lien_ics!="y")) {
+			$retour.="<div style='float:right; width:16px;margin-right:3px;' title=\"Exporter au format ical/ics l'événement.\nVous pourrez l'importer dans un agenda type Google, WebCalendar,...\"><a href='$gepiPath/lib/ical.php?id_ev=".$id_ev."' target='_blank'><img src='$gepiPath/images/icons/ical.png' class='icone16' alt='ical' /></a></div>";
+		}
 
 		if($lig->type=='autre') {
 			//$retour.=nl2br($lig->description)."<br />";
@@ -10441,6 +10447,115 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 	return $retour;
 }
 
+function affiche_details_evenement($id_ev, $afficher_obsolete="n") {
+	global $gepiPath;
+	global $tab_salle;
+	global $evenement_sans_lien_mail;
+	global $evenement_sans_lien_ics;
+	$retour="";
+
+	$sql="SELECT * FROM d_dates_evenements WHERE id_ev='$id_ev';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$retour="<p style='color:red'>L'événement n°$id_ev est inconnu.</p>";
+	}
+	else {
+		$tab_u=array();
+		$sql="SELECT * FROM d_dates_evenements_utilisateurs WHERE id_ev='$id_ev';";
+		//echo "$sql<br />";
+		$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_u)>0) {
+			while($lig_u=mysqli_fetch_object($res_u)) {
+				$tab_u[]=$lig_u->statut;
+			}
+		}
+
+		$liste_dest="";
+		if(in_array("professeur", $tab_u)) {
+			$liste_dest.=" <img src='$gepiPath/images/icons/prof.png' class='icone16' alt='Prof' title=\"Professeurs de la classe.\" />";
+		}
+		if(in_array("cpe", $tab_u)) {
+			$liste_dest.=" <img src='$gepiPath/images/icons/cpe.png' class='icone16' alt='Cpe' title=\"CPE de la classe.\" />";
+		}
+		if(in_array("scolarite", $tab_u)) {
+			$liste_dest.=" <img src='$gepiPath/images/icons/scolarite.png' class='icone16' alt='Scol' title=\"Comptes scolarité associés à la classe.\" />";
+		}
+		if(in_array("responsable", $tab_u)) {
+			$liste_dest.=" <img src='$gepiPath/images/icons/responsable.png' class='icone16' alt='Resp' title=\"Comptes responsables associés à la classe.\" />";
+		}
+		if(in_array("eleve", $tab_u)) {
+			$liste_dest.=" <img src='$gepiPath/images/icons/eleve.png' class='icone16' alt='Resp' title=\"Élèves associés à la classe.\" />";
+		}
+
+		$lig=mysqli_fetch_object($res);
+
+		$retour="<p class='bold'>Événement de type ".$lig->type." n°$id_ev visible à compter du ".formate_date($lig->date_debut)."<br />
+Statuts concernés&nbsp;: $liste_dest</p>
+<div class='fieldset_opacite50' style='padding:0.5em; margin:0.5em;'>
+	".affiche_evenement($id_ev, $afficher_obsolete)."
+</div>";
+	}
+	return $retour;
+}
+
+function get_tab_infos_evenement($id_ev) {
+	$tab=array();
+
+	$sql="SELECT * FROM d_dates_evenements WHERE id_ev='$id_ev';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		// Modification des valeurs
+		$titre_mess = "Modification de l'événement n°".$id_ev;
+		$obj_ev=mysqli_fetch_object($res);
+
+		$tab['type']=$obj_ev->type;
+		$tab['date_debut']=$obj_ev->date_debut;
+		$tab['texte_avant']=$obj_ev->texte_avant;
+		$tab['texte_apres']=$obj_ev->texte_apres;
+
+		//$tab_u=array();
+		$sql="SELECT * FROM d_dates_evenements_utilisateurs WHERE id_ev='$obj_ev->id_ev';";
+		$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_u)>0) {
+			while($lig_u=mysqli_fetch_object($res_u)) {
+				//$tab_u[]=$lig_u->statut;
+
+				$tab['statuts'][]=$lig_u->statut;
+			}
+		}
+
+		$sql="SELECT * FROM d_dates_evenements_classes WHERE id_ev='$obj_ev->id_ev' ORDER BY date_evenement;";
+		$res_c=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_c)>0) {
+			$tab['classes']=array();
+			$tab['evenement']=array();
+			$tab['date_evenement']=array();
+			$tab['id_salle']=array();
+			while($lig_c=mysqli_fetch_object($res_c)) {
+				if(!in_array($lig_c->id_classe, $tab['classes'])) {
+					$tab['classes'][]=$lig_c->id_classe;
+				}
+
+				if(!in_array($lig_c->date_evenement, $tab['date_evenement'])) {
+					$tab['date_evenement'][]=$lig_c->date_evenement;
+				}
+
+				if(!in_array($lig_c->id_salle, $tab['id_salle'])) {
+					$tab['id_salle'][]=$lig_c->id_salle;
+				}
+
+				//$tab['evenement'][]=$lig_c->;
+				$tab['evenement'][$lig_c->id_ev_classe]['id_classe']=$lig_c->id_classe;
+				$tab['evenement'][$lig_c->id_ev_classe]['id_salle']=$lig_c->id_salle;
+				$tab['evenement'][$lig_c->id_ev_classe]['date_evenement']=$lig_c->date_evenement;
+			}
+		}
+
+	}
+
+	return $tab;
+}
 
 function get_info_id_definie_periode($id_definie_periode) {
 	$tab=array();
