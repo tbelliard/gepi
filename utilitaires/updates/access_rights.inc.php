@@ -1402,6 +1402,17 @@ $tab_req[] = "INSERT INTO droits SET id='/etablissements/chercheRNE.php', "
    . "description='Recherche des RNE sans établissements', "
    . "statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/classes/dates_classes2.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Définition de dates pour les classes',
+statut='';";
 
 //$tab_req[] = "";
 
