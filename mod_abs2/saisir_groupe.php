@@ -857,7 +857,7 @@ foreach ($groupe_col as $group) {
 					</option>
 <?php } ?>
 				</select>
-<?php echo format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve,"groupe"); ?>
+<?php echo format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve,"groupe");?>
 				<button type="submit">Afficher les élèves</button>
 			</p>
 		</form>	
@@ -1293,11 +1293,11 @@ if ($eleve_col->isEmpty()) {
 									&& ($afficheEleve['0']['creneau_courant']  != ($i + 1)) 
 									&& ($afficheEleve['0']['creneau_courant']  != ($i + 2))) {
 								echo ' noSmartphone';
-							}?> center">
+							}?> center" title="<?php echo preg_replace("/:00$/","",$edt_creneau->getHeuredebutDefiniePeriode())." -> ".preg_replace("/:00$/","",$edt_creneau->getHeurefinDefiniePeriode());?>">
 							<?php
 								// 20120618
 								if($afficheEleve['0']['creneau_courant'] == $i) {
-									echo "<a href=\"javascript:cocher_decocher_abs_eleves();changement();\">".$edt_creneau->getNomDefiniePeriode()."</a>";
+									echo "<a href=\"javascript:cocher_decocher_abs_eleves();changement();\" title=\"Tout cocher/décocher\">".$edt_creneau->getNomDefiniePeriode()."</a>";
 								}
 								else {
 									echo $edt_creneau->getNomDefiniePeriode();
