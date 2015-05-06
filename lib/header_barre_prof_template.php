@@ -71,7 +71,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
                         if($tmp_mes_classes_pp[$key_id_classe]!='') {
                             $tmp_mes_classes_pp[$key_id_classe].=", ";
                         }
-                        $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+                        $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom : ".retourne_denomination_pp($key_id_classe)." de la ".$value_tab_classe['classe']."\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
                     }                        
                 }                
                 $res->close();
