@@ -259,6 +259,9 @@ if(!isset($quitter_la_page)) {
 		echo ">Elève suivant</a>";
 	}
 
+	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Exporter les options suivies par les élèves de ".get_nom_classe($id_classe)."</a>";
+
+
 	echo "</p>\n";
 	echo "</form>\n";
 }

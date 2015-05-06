@@ -1414,6 +1414,18 @@ autre='F',
 description='Définition de dates pour les classes',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/classes/export_ele_opt.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Export options élèves',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

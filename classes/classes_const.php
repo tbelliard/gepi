@@ -475,6 +475,8 @@ if(!isset($quitter_la_page)){
 	echo "</a>";
 	//=========================
 
+	echo " | <a href='export_ele_opt.php?id_classe[0]=$id_classe'>Exporter les options suivies par les élèves</a>";
+
 	echo "</p>\n";
 	echo "</form>\n";
 

@@ -75,6 +75,7 @@ Ce choix permet de limiter la liste des classes proposées aux différents compt
 | <a href='../groupes/repartition_ele_grp.php'>Répartir des élèves entre plusieurs groupes</a>
 | <a href='../groupes/modify_grp_group.php'><?php echo ucfirst($groupes_de_groupes);?></a>
 | <a href='../groupes/correction_inscriptions_grp_csv.php'>Correction CSV</a>
+| <a href='../classes/export_ele_opt.php'>Export CSV des options élèves</a>
 <?php
 	if(getSettingAOui('active_carnets_notes')) {echo "| <a href='../cahier_notes_admin/creation_conteneurs_par_lots.php'>Créer des ".casse_mot(getSettingValue("gepi_denom_boite"), 'min')."s par lots</a>";}
 

@@ -49,6 +49,9 @@ require_once("../lib/header.inc.php");
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un(e) autre classe/groupe</a>";
+if(acces("/classes/export_ele_opt.php", $_SESSION['statut'])) {
+	echo " | <a href='../classes/export_ele_opt.php'>Exporter des options élèves en CSV</a>";
+}
 echo "</p>\n";
 
 echo "<script type='text/javascript'>

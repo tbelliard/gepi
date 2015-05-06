@@ -70,6 +70,11 @@ else {
 if(check_droit_acces('/impression/impression_serie.php',$_SESSION['statut'])) {
 	echo " | <a href='../impression/impression_serie.php'>Listes PDF</a>";
 }
+
+if(acces("/classes/export_ele_opt.php", $_SESSION['statut'])) {
+	echo " | <a href='../classes/export_ele_opt.php'>Exporter des options élèves en CSV</a>";
+}
+
 echo "</p>\n";
 
 
