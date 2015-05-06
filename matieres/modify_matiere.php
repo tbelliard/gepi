@@ -40,6 +40,29 @@ if (!checkAccess()) {
 
 //debug_var();
 
+if((isset($_GET['export_ele_csv']))&&(isset($_GET['matiere']))) {
+	check_token();
+
+	$csv="INE;ELENOET;ELE_ID;LOGIN;NOM;PRENOM;SEXE;NAISSANCE;CLASSES;\n";
+	$sql="SELECT distinct e.* FROM j_eleves_groupes jeg, 
+						j_groupes_matieres jgm, 
+						j_eleves_classes jec,
+						eleves e
+					WHERE jeg.id_groupe=jgm.id_groupe AND 
+						jec.login=jeg.login AND 
+						jec.login=e.login AND 
+						jgm.id_matiere='".$_GET['matiere']."';";
+	$res=mysqli_query($GLOBALS["mysqli"],$sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$csv.=$lig->no_gep.";".$lig->elenoet.";".$lig->ele_id.";".$lig->login.";".$lig->nom.";".$lig->prenom.";".$lig->sexe.";".formate_date($lig->naissance).";".get_chaine_liste_noms_classes_from_ele_login($lig->login).";\n";
+	}
+
+	$nom_fic=remplace_accents("liste_eleves_suivant_".$_GET['matiere'])."_".strftime("%Y%m%d_%H%M%S").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo echo_csv_encoded($csv);
+	die();
+}
+
 if (isset($_POST['isposted'])) {
 	check_token();
     $ok = 'yes';
@@ -468,6 +491,16 @@ if((isset($current_matiere))&&($current_matiere!="")) {
 			echo "<br />";
 		}
 		echo "</p>\n";
+
+
+		$sql="select distinct jeg.login from j_eleves_groupes jeg, j_groupes_matieres jgm, j_eleves_classes jec where jeg.id_groupe=jgm.id_groupe AND jec.login=jeg.login AND jgm.id_matiere='$current_matiere';";
+		$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+		$eff_ele=mysqli_num_rows($res_ele);
+		echo "<p style='margin-top:1em;'>$eff_ele élève(s) sui(ven)t un enseignement dans la matière $current_matiere.";
+		if($eff_ele>0) {
+			echo "<br /><a href='".$_SERVER['PHP_SELF']."?export_ele_csv=y&matiere=".$current_matiere.add_token_in_url()."' target='_blank'>Exporter la liste des élèves en CSV</a>";
+		}
+		echo "</p>";
 	}
 	echo "<hr />\n";
 }
