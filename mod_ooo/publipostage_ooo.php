@@ -725,7 +725,16 @@ function cocher_decocher(prefixe_id, mode) {
 	}
 }
 
-</script>\n";
+</script>
+
+<p style='margin-top:1em; margin-left:3.5em; text-indent:-3.5em; line-height: 1.5em;'><em>Note&nbsp;:</em> Si vous générez un fichier par classe, imprimer les fichiers un par un peut être fastidieux.<br />
+Vous pouvez effectuer l'impression en ligne de commande.<br />
+Téléchargez le Zip, extrayez le dans un nouveau dossier et de là&nbsp;:<br />
+Vers l'imprimante par défaut&nbsp;:<br />
+&nbsp;&nbsp;&nbsp;<span style='color:white; background-color:black'>libreoffice -p *.ods</span><br />
+Ou vers une imprimante particulière (<em>nommée Toshiba_estudio dans l'exemple qui suit</em>)&nbsp;:<br />
+&nbsp;&nbsp;&nbsp;<span style='color:white; background-color:black; padding:3px;'>libreoffice --pt Toshiba_estudio *.ods</span><br />
+Voir l'aide <a href='https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr'>https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr</a> pour plus de détails.</p>\n";
 
 	}
 	else {
