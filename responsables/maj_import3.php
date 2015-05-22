@@ -2248,6 +2248,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
+										e.date_sortie!='' OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
@@ -2282,6 +2283,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
+										e.date_sortie!='' OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
@@ -3224,9 +3226,10 @@ else{
 								echo "</td>\n";
 								// ELE_ID:
 								echo "<td style='text-align: center;'>";
-								echo "<label for='check_".$cpt."'>";
-								echo "$affiche[5]";
-								echo "</label>";
+								//echo "<label for='check_".$cpt."'>";
+								//echo "$affiche[5]";
+								//echo "</label>";
+								echo "<a href='../eleves/modify_eleve.php?eleve_login=".$lig_ele->login."' target='_blank' title=\"Ouvrir la fiche de l'élève dans un nouvel onglet.\">".$affiche[5]."</a>";
 //								echo "<input type='hidden' name='modif_".$cpt."_eleid' value='$affiche[5]' />\n";
 //								echo "<input type='hidden' name='modif_".$cpt."_login' value='$lig_ele->login' />\n";
 								echo "</td>\n";
