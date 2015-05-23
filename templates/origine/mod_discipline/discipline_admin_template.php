@@ -30,6 +30,8 @@
 interface discipline_admin {
     //put your code here
 }
+
+$themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -98,9 +100,12 @@ interface discipline_admin {
 	else {
 		echo "../accueil.php";
 	}
-	echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	if((getSettingAOui('active_mod_discipline'))&&(acces("/mod_discipline/index.php", $_SESSION['statut']))) {
-		echo " | <a href='index.php'>Accéder au module Discipline</a>";
+		echo " | <a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder au module Discipline</a>";
+	}
+	if(acces("/mod_discipline/param_pointages.php", $_SESSION['statut'])) {
+		echo " | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer le pointage de menus manquements/incidents</a>";
 	}
 	"</p>";
 ?>
@@ -131,6 +136,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 name="activer"
 			 id='activer_y'
 			 value="y"
+			 onchange='changement()'
 			<?php if (getSettingValue("active_mod_discipline")=='y') echo " checked='checked'"; ?> />
 	  <label for='activer_y' style='cursor: pointer;'>
 		Activer le module Discipline
@@ -140,6 +146,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 name="activer"
 			 id='activer_n'
 			 value="n"
+			 onchange='changement()'
 			<?php if (getSettingValue("active_mod_discipline")=='n') echo " checked='checked'"; ?> />
 	  <label for='activer_n' style='cursor: pointer;'>
 		Désactiver le module Discipline
@@ -153,6 +160,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	  <input type="text"
 			 name="mod_disc_terme_incident"
 			 id='mod_disc_terme_incident'
+			 onchange='changement()'
 			 value="<?php echo $mod_disc_terme_incident; ?>" />
 	  <br />
 
@@ -160,6 +168,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 	  <input type="text"
 			 name="mod_disc_terme_sanction"
 			 id='mod_disc_terme_sanction'
+			 onchange='changement()'
 			 value="<?php echo $mod_disc_terme_sanction; ?>" />
 	  <br />
 
@@ -168,6 +177,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 name="mod_disc_terme_avertissement_fin_periode"
 			 id='mod_disc_terme_avertissement_fin_periode'
 			 size='30'
+			 onchange='changement()'
 			 value="<?php echo $mod_disc_terme_avertissement_fin_periode; ?>" />
 	  <br />
 
@@ -179,6 +189,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 name="mod_disc_acces_avertissements"
 			 id='mod_disc_acces_avertissements_y'
 			 value="y"
+			 onchange='changement()'
 			<?php if (getSettingValue("mod_disc_acces_avertissements")!='n') echo " checked='checked'"; ?> />
 	  <label for='mod_disc_acces_avertissements_y' style='cursor: pointer;'>
 		Permettre l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>
@@ -188,6 +199,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 name="mod_disc_acces_avertissements"
 			 id='mod_disc_acces_avertissements_n'
 			 value="n"
+			 onchange='changement()'
 			<?php if (getSettingValue("mod_disc_acces_avertissements")=='n') echo " checked='checked'"; ?> />
 	  <label for='mod_disc_acces_avertissements_n' style='cursor: pointer;'>
 		Interdire l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>

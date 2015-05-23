@@ -574,6 +574,20 @@ if(($_SESSION['statut']=='administrateur')||
 		unset($nouveauItem);
 	}
 }
+
+if($_SESSION['statut']=="administrateur") {
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/param_pointages.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->titre="Paramétrer le pointage de menus manquements/".$mod_disc_terme_incident."s";
+		$nouveauItem->expli="Paramétrer le dispositif de pointage des menus manquements ".$mod_disc_terme_incident."s disciplinaires.";
+		$nouveauItem->indexMenu=$a;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+}
+
 //fin de la table configuration
 
 
@@ -656,6 +670,19 @@ if(($_SESSION['statut']=='administrateur')||
 	  }
 	  unset($nouveauItem);
 	}
+}
+
+if(getSettingAOui('active_mod_disc_pointage')) {
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/saisie_pointages.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->titre="Pointer de menus manquements/".$mod_disc_terme_incident."s";
+		$nouveauItem->expli="Pointer de menus manquements ".$mod_disc_terme_incident."s disciplinaires.";
+		$nouveauItem->indexMenu=$a;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
 }
 
 // 20130610: Vérifier cette requête: Mettre LIMIT 1

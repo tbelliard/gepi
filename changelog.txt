@@ -21,6 +21,9 @@ Cahiers de textes (2):
 - Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2
   les sélections faites dans les archives CDT (archives de version>=1.6.7)
 
+Discipline:
+- Ajout d'un dispositif pour pointer les menus manquements (Oubli de matériel, Travail non fait, Comportement,...)
+
 Publipostage OOo:
 - Possibilité de générer (d'un coup) un fichier par classe ou enseignement sélectionné et de zipper l'ensemble.
 

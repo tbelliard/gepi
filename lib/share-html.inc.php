@@ -4205,4 +4205,79 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 
 	return $retour;
 }
+
+function retourne_tab_html_pointages_disc($login_ele) {
+	global $tab_type_pointage_discipline;
+
+	if(count($tab_type_pointage_discipline)==0) {
+		$tab_type_pointage_discipline=get_tab_type_pointage_discipline();
+	}
+
+	$retour="";
+
+	// A REVOIR POUR AFFICHER DES TOTAUX PAR PERIODE
+
+	$tab_totaux=array();
+	$sql="SELECT DISTINCT sp.* FROM sp_saisies sp WHERE sp.login='$login_ele';";
+	//$retour.="$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(!isset($tab_totaux[$lig->id_type])) {
+				$tab_totaux[$lig->id_type]=0;
+			}
+			$tab_totaux[$lig->id_type]++;
+		}
+
+		$tab_clas_ele=get_class_periode_from_ele_login($login_ele);
+
+		$retour.="<p class='bold'>Pointage des menus manquements&nbsp;:</p>
+<table class='boireaus boireaus_alt' style='margin-left:1em;'>
+	<thead>
+		<tr>
+			<th>Type</th>";
+
+		if(isset($tab_clas_ele['periode'])) {
+			foreach($tab_clas_ele['periode'] as $num_per => $current_classe) {
+				$retour.="
+			<th title=\"Inscrit en ".$current_classe['classe']." en période $num_per\">P".$num_per."</th>";
+			}
+		}
+
+		$retour.="
+			<th>Total</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>";
+		for($loop2=0;$loop2<count($tab_type_pointage_discipline['indice']);$loop2++) {
+			$current_id_type=$tab_type_pointage_discipline['indice'][$loop2]['id_type'];
+
+			$retour.="
+		<tr>
+			<th>".$tab_type_pointage_discipline['indice'][$loop2]['nom']."</th>";
+
+			if(isset($tab_clas_ele['periode'])) {
+				foreach($tab_clas_ele['periode'] as $num_per => $current_classe) {
+					$retour.="
+			<td title=\"Filtrage des pointages par période non encore implémenté.\"></td>";
+				}
+			}
+
+			$retour.="
+			<td>";
+			if(isset($tab_totaux[$current_id_type])) {
+				$retour.=$tab_totaux[$current_id_type];
+			}
+			$retour.="</td>
+		</tr>";
+		}
+		$retour.="
+	</tbody>
+</table>
+<br />";
+	}
+
+	return $retour;
+}
 ?>

@@ -2512,7 +2512,7 @@ function get_chaine_liste_noms_classes_from_ele_login($ele_login) {
 			if($chaine!="") {$chaine.=", ";}
 			$chaine=$lig_tmp->classe;
 		}
-		$res_class->close()	;
+		$res_class->close();
 	}
 	
 	return $chaine;
@@ -13296,5 +13296,58 @@ function acces_info_dates_evenements() {
 	else {
 		return false;
 	}
+}
+
+function get_tab_eleves_classe($id_classe) {
+	$temp=array();
+	$tab_per=array();
+	$temp["eleves"]["all"]["list"] = array();
+	$sql="SELECT e.*, jec.id_classe, jec.periode, c.classe FROM eleves e, j_eleves_classes jec, classes c WHERE jec.id_classe='$id_classe' AND jec.id_classe=c.id AND jec.login=e.login ORDER BY periode, e.nom, e.prenom;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$temp["eleves"][$lig->periode]["list"][]=$lig->login;
+			$temp["eleves"][$lig->periode]["users"][$lig->login]=array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe);
+			if(!in_array($lig->periode, $tab_per)) {
+				$tab_per[]=$lig->periode;
+			}
+		}
+
+		for($loop=0;$loop<count($tab_per);$loop++) {
+			foreach($temp["eleves"][$tab_per[$loop]]["users"] as $current_login => $current_ele) {
+				if(!in_array($current_login, $temp["eleves"]["all"]["list"])) {
+					$temp["eleves"]["all"]["list"][]=$current_login;
+
+					$temp["eleves"]["all"]["users"][$current_login]=$current_ele;
+				}
+			}
+		}
+	}
+	return $temp;
+}
+
+function get_tab_type_pointage_discipline() {
+	$tab=array();
+
+	$sql="SELECT * FROM sp_types_saisies ORDER BY rang, nom;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$tab['id_type'][$lig->id_type]['id_type']=$lig->id_type;
+			$tab['id_type'][$lig->id_type]['nom']=$lig->nom;
+			$tab['id_type'][$lig->id_type]['description']=$lig->description;
+			$tab['id_type'][$lig->id_type]['rang']=$lig->rang;
+
+			$tab['indice'][$cpt]['id_type']=$lig->id_type;
+			$tab['indice'][$cpt]['nom']=$lig->nom;
+			$tab['indice'][$cpt]['description']=$lig->description;
+			$tab['indice'][$cpt]['rang']=$lig->rang;
+			$cpt++;
+		}
+	}
+
+	return $tab;
 }
 ?>

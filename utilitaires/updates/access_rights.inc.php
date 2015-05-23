@@ -1426,6 +1426,29 @@ autre='F',
 description='Export options élèves',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_discipline/saisie_pointages.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Discipline: Pointages petits incidents',
+statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_discipline/param_pointages.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Discipline: Definir les types de pointages de petits incidents',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
