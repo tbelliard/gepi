@@ -486,7 +486,8 @@ for($loop=0;$loop<count($select_saisie);$loop++) {
 		if (($nom_photo == NULL) or (!(file_exists($photos)))) {
 			$photos = "../mod_trombinoscopes/images/trombivide.jpg";
 		}
-		$valeur = redimensionne_image_petit_bis($photos);
+		//$valeur = redimensionne_image_petit_bis($photos);
+		$valeur = redimensionne_image_petit($photos);
 		echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
