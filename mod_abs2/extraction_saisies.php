@@ -111,6 +111,9 @@ if ($affichage != 'ods') {// on affiche pas de html
 
 	    include('menu_abs2.inc.php');
 	    include('menu_bilans.inc.php');
+
+		//debug_var();
+
 	    ?>
 	    <div id="contain_div" class="css-panes">
 
@@ -125,6 +128,17 @@ if ($affichage != 'ods') {// on affiche pas de html
 		<script type='text/javascript'>
 			function raffraichit_a_aujourdhui() {
 				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y');?>";
+				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', time()+3600*24);?>";
+				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
+				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
+				document.getElementById('id_classe_2').value=document.getElementById('id_classe').value;
+				document.getElementById('type_extrait_2').value=document.getElementById('type_extrait').value;
+				document.getElementById('type_saisie_2').value=document.getElementById('type_saisie').value;
+
+				document.getElementById('form_change_date').submit();
+			}
+			function raffraichit_a_derniere_semaine() {
+				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y', time()-7*3600*24);?>";
 				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', time()+3600*24);?>";
 				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
 				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
@@ -149,7 +163,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    
 	    &nbsp;<a href="#" onclick="document.getElementById('date_absence_eleve_debut').value='<?php echo strftime('%d/%m/%Y');?>'; document.getElementById('date_absence_eleve_fin').value='<?php echo strftime('%d/%m/%Y', time()+3600*24);?>'; return false;" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
 	    -->
-	    &nbsp;<a href="javascript:raffraichit_a_aujourdhui()" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
+	    &nbsp;<a href="javascript:raffraichit_a_aujourdhui()" title="Prendre la date du jour courant." style="font-size:x-small;">J1<img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
+	    &nbsp;-&nbsp;<a href="javascript:raffraichit_a_derniere_semaine()" title="Sélectionner les 7 derniers jours." style="font-size:x-small;">J7<img src='../images/icons/wizard.png' class='icone16' alt="Dernière semaine" /></a>
 
 		</h2>
 	    <?php 
@@ -164,7 +179,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 			$classe_col = $utilisateur->getClasses();
 		    }
 		    if (!$classe_col->isEmpty()) {
-			    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" id=\"id_classe\">");
+			    //echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" id=\"id_classe\">");
+			    echo ("Classe : <select style=\"width :12em;font-size:12px;\" name=\"id_classe\" id=\"id_classe\">");
 			    echo "<option value='-1'>Toutes les classes</option>\n";
 			    foreach ($classe_col as $classe) {
 				    echo "<option value='".$classe->getId()."'";
@@ -182,7 +198,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 
 	    <p>
 	    Type :
-	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait" id="type_extrait">
+	    <!--select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait" id="type_extrait"-->
+	    <select style="font-size:12px;" name="type_extrait" id="type_extrait">
 	    <option value='1' <?php if ($type_extrait == '1') {echo 'selected="selected"';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
 	    <option value='2' <?php if ($type_extrait == '2') {echo 'selected="selected"';}?>>Liste de toutes les saisies</option>
 	    </select>
@@ -200,7 +217,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 	        		if(document.getElementById('type_saisie').selectedIndex>1) {
 	        			document.getElementById('type_extrait').selectedIndex=1;
         			}"-->
-	    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_saisie" id="type_saisie">
+	    <!--select dojoType="dijit.form.Select" style="font-size:12px;" name="type_saisie" id="type_saisie"-->
+	    <select style="font-size:12px;" name="type_saisie" id="type_saisie">
 			<option value=''>---</option>
 <?php
 	echo "
@@ -298,7 +316,7 @@ if ($affichage == 'html') {
 			echo '
 	<tr style="border:1px solid" class="tr_alt">
 		<td style="border:1px solid; vertical-align:top">
-			<a href="../eleves/visu_eleve.php?ele_login='.$saisie->getEleve()->getLogin().'&amp;onglet=absences&amp;quitter_la_page=y" target="_blank" title="Voir la fiche élève">
+			<a href="../eleves/visu_eleve.php?ele_login='.$saisie->getEleve()->getLogin().'&amp;onglet=absences&amp;quitter_la_page=y" target="_blank" title="Voir la fiche élève dans un nouvel onglet.">
 				'.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom().'
 			</a>
 		</td>
@@ -319,7 +337,7 @@ if ($affichage == 'html') {
 				<tr class="lig'.$alt.'">
 					<td>
 						<span style="display:none" title="Non affichée. Juste là pour le tri">'.$saisie->getDebutAbs('Ymd_Hi').'</span>
-						<a href="visu_saisie.php?id_saisie='.$saisie->getId().'">'.$saisie->getDateDescription().'</a>
+						<a href="visu_saisie.php?id_saisie='.$saisie->getId().'" title="Voir la saisie dans un nouvel onglet." target="_blank">'.$saisie->getDateDescription().'</a>
 					</td>
 					<td>'.$saisie->getTypesDescription().'</td>
 				</tr>';
