@@ -75,13 +75,13 @@ if (isset($id_classe) && $id_classe != null) $_SESSION['id_classe_abs'] = $id_cl
 if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null) $_SESSION['date_absence_eleve_debut'] = $date_absence_eleve_debut;
 if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null) $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
 
-if ($date_absence_eleve_debut != null) {
+if (($date_absence_eleve_debut != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_debut))) {
     $dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
 } else {
     $dt_date_absence_eleve_debut = new DateTime('now');
     $dt_date_absence_eleve_debut->setDate($dt_date_absence_eleve_debut->format('Y'), $dt_date_absence_eleve_debut->format('m') - 1, $dt_date_absence_eleve_debut->format('d'));
 }
-if ($date_absence_eleve_fin != null) {
+if (($date_absence_eleve_fin != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_fin))) {
     $dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
 } else {
     $dt_date_absence_eleve_fin = new DateTime('now');
@@ -114,6 +114,12 @@ if ($affichage != 'ods') {// on affiche pas de html
 
 		//debug_var();
 
+		// Semaine précédente,...
+		$ts_debut_semaine=time()-strftime("%u")*24*3600;
+		$ts_fin_semaine=$ts_debut_semaine+7*24*3600;
+		$ts_debut_semaine_prec=$ts_debut_semaine-7*24*3600;
+		$ts_fin_semaine_prec=$ts_debut_semaine_prec+7*24*3600;
+
 	    ?>
 	    <div id="contain_div" class="css-panes">
 
@@ -137,9 +143,33 @@ if ($affichage != 'ods') {// on affiche pas de html
 
 				document.getElementById('form_change_date').submit();
 			}
-			function raffraichit_a_derniere_semaine() {
+			/*
+			function raffraichit_7j() {
 				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y', time()-7*3600*24);?>";
 				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', time()+3600*24);?>";
+				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
+				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
+				document.getElementById('id_classe_2').value=document.getElementById('id_classe').value;
+				document.getElementById('type_extrait_2').value=document.getElementById('type_extrait').value;
+				document.getElementById('type_saisie_2').value=document.getElementById('type_saisie').value;
+
+				document.getElementById('form_change_date').submit();
+			}
+			*/
+			function raffraichit_semaine_courante() {
+				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y', $ts_debut_semaine);?>";
+				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', $ts_fin_semaine);?>";
+				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
+				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
+				document.getElementById('id_classe_2').value=document.getElementById('id_classe').value;
+				document.getElementById('type_extrait_2').value=document.getElementById('type_extrait').value;
+				document.getElementById('type_saisie_2').value=document.getElementById('type_saisie').value;
+
+				document.getElementById('form_change_date').submit();
+			}
+			function raffraichit_semaine_prec() {
+				document.getElementById('date_absence_eleve_debut_2').value="<?php echo strftime('%d/%m/%Y', $ts_debut_semaine_prec);?>";
+				document.getElementById('date_absence_eleve_fin_2').value="<?php echo strftime('%d/%m/%Y', $ts_fin_semaine_prec);?>";
 				// Dojo ne semble pas permettre non plus de récupérer les champs qui suivent
 				document.getElementById('nom_eleve_2').value=document.getElementById('nom_eleve').value;
 				document.getElementById('id_classe_2').value=document.getElementById('id_classe').value;
@@ -164,7 +194,11 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    &nbsp;<a href="#" onclick="document.getElementById('date_absence_eleve_debut').value='<?php echo strftime('%d/%m/%Y');?>'; document.getElementById('date_absence_eleve_fin').value='<?php echo strftime('%d/%m/%Y', time()+3600*24);?>'; return false;" title="Prendre la date du jour courant." style="font-size:x-small;"><img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
 	    -->
 	    &nbsp;<a href="javascript:raffraichit_a_aujourdhui()" title="Prendre la date du jour courant." style="font-size:x-small;">J1<img src='../images/icons/wizard.png' class='icone16' alt="Aujourd'hui" /></a>
-	    &nbsp;-&nbsp;<a href="javascript:raffraichit_a_derniere_semaine()" title="Sélectionner les 7 derniers jours." style="font-size:x-small;">J7<img src='../images/icons/wizard.png' class='icone16' alt="Dernière semaine" /></a>
+	<!--
+	    &nbsp;-&nbsp;<a href="javascript:raffraichit_7j()" title="Les 7 derniers jours." style="font-size:x-small;">J-7<img src='../images/icons/wizard.png' class='icone16' alt="Les 7 derniers jours" /></a>
+	-->
+	    &nbsp;-&nbsp;<a href="javascript:raffraichit_semaine_courante()" title="Semaine courante." style="font-size:x-small;">Sem<img src='../images/icons/wizard.png' class='icone16' alt="Semaine courante" /></a>
+	    &nbsp;-&nbsp;<a href="javascript:raffraichit_semaine_prec()" title="Semaine précédente." style="font-size:x-small;">S-1<img src='../images/icons/wizard.png' class='icone16' alt="Semaine précédente" /></a>
 
 		</h2>
 	    <?php 
