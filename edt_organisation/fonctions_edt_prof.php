@@ -211,6 +211,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
 	global $debug_edt;
 	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
 	global $week_selected;
+	global $edt_liens_target_blank;
 
 	if($debug_edt=="y") {
 		echo "<p><b>ConstruireColonne</b><br />";
@@ -541,6 +542,10 @@ function ConstruireEDTProf($login_edt, $period)
 {
 	global $debug_edt;
 	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
+
+	global $edt_liens_target_blank;
+
+	//echo "\$edt_liens_target_blank=$edt_liens_target_blank<br />";
 
 	//$debug_edt="y";
 
@@ -1364,6 +1369,7 @@ return $tab_data;
 function ConstruireEDTProfDuJour($login_edt, $period, $jour) 
 {
 	global $current_edt_id_cours; // id_cours utilisé pour les semaines A/B dans GetColor()
+	global $edt_liens_target_blank;
 
     $table_data = array();
     $type_edt = "prof";

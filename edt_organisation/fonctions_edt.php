@@ -680,6 +680,8 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	// 20130528
 	global $login_prof_contenu_creneaux_courant;
 
+	global $edt_liens_target_blank;
+
 	$login_prof_contenu_creneaux_courant="";
 
     if (($period != NULL) AND ($period != '0')) {
@@ -797,7 +799,11 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 			$rep_classe = mysqli_fetch_array($req_classe);
 
 			if($acces_edt_classe) {
-				$res = $res." <a href='../edt_organisation/index_edt.php?login_edt=".$rep_id_classe['id_classe']."&amp;type_edt_2=classe&amp;visioedt=classe1' title=\"Consulter l'emploi du temps de la classe de ".$rep_classe['classe']."\" style='color:black;'>".$rep_classe['classe']."</a>";
+				$res.=" <a href='../edt_organisation/index_edt.php?login_edt=".$rep_id_classe['id_classe']."&amp;type_edt_2=classe&amp;visioedt=classe1' title=\"Consulter l'emploi du temps de la classe de ".$rep_classe['classe']."\" style='color:black;'";
+				if($edt_liens_target_blank=="y") {
+					$res.=" target='_blank'";
+				}
+				$res.=">".$rep_classe['classe']."</a>";
 			}
 			else {
 				$res = $res." ".$rep_classe['classe'];
@@ -997,7 +1003,11 @@ function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement, $
 	}
 
 	if(($contenu_creneaux_edt_avec_span_title!="n")&&(acces_edt_prof())&&(acces_edt_classe())) {
-		$ChaineSalle="<a href='../edt_organisation/index_edt.php?visioedt=salle1&amp;login_edt=".$rep_id_salle['id_salle']."&amp;type_edt_2=salle' title=\"Consulter l'emploi du temps de la salle ".$rep_salle."\" style='color:black;'>".$rep_salle."</a>";
+		$ChaineSalle="<a href='../edt_organisation/index_edt.php?visioedt=salle1&amp;login_edt=".$rep_id_salle['id_salle']."&amp;type_edt_2=salle' title=\"Consulter l'emploi du temps de la salle ".$rep_salle."\" style='color:black;'";
+		if($edt_liens_target_blank=="y") {
+			$ChaineSalle.=" target='_blank'";
+		}
+		$ChaineSalle.=">".$rep_salle."</a>";
 	}
 	else {
 		$ChaineSalle=$rep_salle;

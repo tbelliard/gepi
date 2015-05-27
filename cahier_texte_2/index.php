@@ -102,6 +102,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
 //		Init emplois du temps
 //
 //=================================
+$edt_liens_target_blank="y";
 include("../edt_organisation/cdt_initialisation.php");
 $pas_de_message_deconnexion = 1;
 require_once("../lib/header.inc.php");
