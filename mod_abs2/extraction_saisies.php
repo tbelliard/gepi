@@ -75,16 +75,31 @@ if (isset($id_classe) && $id_classe != null) $_SESSION['id_classe_abs'] = $id_cl
 if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null) $_SESSION['date_absence_eleve_debut'] = $date_absence_eleve_debut;
 if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null) $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
 
-if (($date_absence_eleve_debut != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_debut))) {
-    $dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
+//if (($date_absence_eleve_debut != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_debut))) {
+if ($date_absence_eleve_debut != null) {
+	if (preg_match("#^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$#", $date_absence_eleve_debut)) {
+		$dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
+	}
+	else {
+		$msg="Date de début invalide&nbsp;: $date_absence_eleve_debut<br />";
+		$dt_date_absence_eleve_debut = new DateTime('now');
+		$dt_date_absence_eleve_debut->setDate($dt_date_absence_eleve_debut->format('Y'), $dt_date_absence_eleve_debut->format('m') - 1, $dt_date_absence_eleve_debut->format('d'));
+	}
 } else {
-    $dt_date_absence_eleve_debut = new DateTime('now');
-    $dt_date_absence_eleve_debut->setDate($dt_date_absence_eleve_debut->format('Y'), $dt_date_absence_eleve_debut->format('m') - 1, $dt_date_absence_eleve_debut->format('d'));
+	$dt_date_absence_eleve_debut = new DateTime('now');
+	$dt_date_absence_eleve_debut->setDate($dt_date_absence_eleve_debut->format('Y'), $dt_date_absence_eleve_debut->format('m') - 1, $dt_date_absence_eleve_debut->format('d'));
 }
-if (($date_absence_eleve_fin != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_fin))) {
-    $dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
+//if (($date_absence_eleve_fin != null)&&(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $date_absence_eleve_fin))) {
+if ($date_absence_eleve_fin != null) {
+	if(preg_match("#^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$#", $date_absence_eleve_fin)) {
+		$dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
+	}
+	else {
+		$msg="Date invalide de fin&nbsp;: $date_absence_eleve_fin<br />";
+		$dt_date_absence_eleve_fin = new DateTime('now');
+	}
 } else {
-    $dt_date_absence_eleve_fin = new DateTime('now');
+	$dt_date_absence_eleve_fin = new DateTime('now');
 }
 $dt_date_absence_eleve_debut->setTime(0,0,0);
 $dt_date_absence_eleve_fin->setTime(23,59,59);
@@ -106,6 +121,8 @@ $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
     require_once("../lib/header.inc.php");
 //******************************************
+
+//debug_var();
 
     if ($traitement_csv_en_cours != 'true') {
 
