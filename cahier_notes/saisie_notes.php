@@ -164,6 +164,46 @@ if ($id_devoir)  {
 	}
 }
 
+//20150529
+if(isset($_GET['export_csv'])) {
+	check_token();
+
+	$nom_fic=$current_group["name"];
+	$nom_fic.="_".$current_group["description"];
+	$nom_fic.="_".$current_group["classlist_string"];
+	$nom_fic.="_periode_".$periode_num;
+	$nom_fic.="_".date("Ymd");
+	$nom_fic=remplace_accents($nom_fic, "all");
+
+	$csv="";
+
+	$header_pdf = array();
+	$header_pdf = unserialize($_SESSION['header_pdf']);
+	for($loop=0;$loop<count($header_pdf);$loop++) {
+		$csv.=$header_pdf[$loop].";";
+	}
+	$csv.="\r\n";
+
+	// tableau des données
+	$data_pdf = array();
+	$data_pdf = unserialize($_SESSION['data_pdf']);
+	for($loop=0;$loop<count($data_pdf);$loop++) {
+		for($loop2=0;$loop2<count($data_pdf[$loop]);$loop2++) {
+			$csv.=$data_pdf[$loop][$loop2].";";
+		}
+		$csv.="\r\n";
+	}
+
+	/*
+	echo "<pre>";
+	echo $csv;
+	echo "</pre>";
+	*/
+
+	send_file_download_headers('text/x-csv',$nom_fic.'.csv');
+	echo echo_csv_encoded($csv);
+	die();
+}
 
 //Initialisation pour le pdf
 $w_pdf=array();
@@ -843,6 +883,8 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)||($acces
 echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;nom_pdf_en_detail=oui\" onclick=\"return VerifChargement()\" target=\"_blank\" ";
 if((isset($id_devoir))&&($id_devoir!=0)) {echo "title=\"Impression des notes de l'évaluation au format PDF\"";} else {echo "title=\"Impression du Carnet de Notes au format PDF\"";}
 echo "> Imprimer au format PDF </a>|";
+
+echo "<a href=\"".$_SERVER['PHP_SELF']."?export_csv=y&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num".add_token_in_url()."\" target=\"_blank\" onclick=\"return VerifChargement()\"> Exporter en CSV </a>| ";
 
 if(acces_modif_liste_eleves_grp_groupes($id_groupe)) {
 	echo "<a href='../groupes/grp_groupes_edit_eleves.php?id_groupe=$id_groupe' title=\"Si la liste des élèves du groupe affiché n'est pas correcte, vous êtes autorisé à modifier la liste.\">Modifier le groupe <img src='../images/icons/edit_user.png' class='icone16' title=\"Modifier.\" /></a></div>";
