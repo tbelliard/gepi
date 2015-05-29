@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2013 Thomas Belliard
+* Copyright 2001, 2015 Thomas Belliard
 *
 * This file is part of GEPI.
 *
@@ -63,54 +63,60 @@ if (!$auth_sso) {
 // d'instancier la classe 'Session' sans initialiser la session php, qui
 // sera déjà initialisée.
 if ($gepiSettings['auth_sso'] == 'cas') {
-		include_once('./lib/CAS.php');
-		if ($mode_debug) {
-		    phpCAS::setDebug($debug_log_file);
-    }
-		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
-		$path = "./secure/config_cas.inc.php";
-		include($path);
+	include_once('./lib/CAS.php');
+	if ($mode_debug) {
+		phpCAS::setDebug($debug_log_file);
+	}
+	// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
+	$path = "./secure/config_cas.inc.php";
+	include($path);
 
-		# On défini l'URL de base, pour que phpCAS ne se trompe pas dans la génération
-		# de l'adresse de retour vers le service (attention, requiert patchage manuel
-		# de phpCAS !!)
-		if (isset($gepiBaseUrl)) {
-			$url_base = $gepiBaseUrl;
-		} else {
-			$url_base = Session::https_request() ? 'https' : 'http';
-			$url_base .= '://';
-			$url_base .= $_SERVER['SERVER_NAME'];
-		}
+	# On défini l'URL de base, pour que phpCAS ne se trompe pas dans la génération
+	# de l'adresse de retour vers le service (attention, requiert patchage manuel
+	# de phpCAS !!)
+	if (isset($gepiBaseUrl)) {
+		$url_base = $gepiBaseUrl;
+	} else {
+		$url_base = Session::https_request() ? 'https' : 'http';
+		$url_base .= '://';
+		$url_base .= $_SERVER['SERVER_NAME'];
+	}
 
-    // La session doit être nommée de la même manière dans Session.class.php
-    // sinon ça ne marchera pas...
-    session_name("GEPI");
-    
-		// Le premier argument est la version du protocole CAS
-		// Le dernier argument a été ajouté par patchage manuel de phpCAS.
-		settype($cas_port, "integer");
-		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
-		phpCAS::setLang(PHPCAS_LANG_FRENCH);
+	// La session doit être nommée de la même manière dans Session.class.php
+	// sinon ça ne marchera pas...
+	session_name("GEPI");
 
-		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
-		// été trouvé par le client CAS.
-		phpCAS::setNoCasServerValidation();
+	// Le premier argument est la version du protocole CAS
+	// Le dernier argument a été ajouté par patchage manuel de phpCAS.
+	settype($cas_port, "integer");
+	phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true, $url_base);
+	phpCAS::setLang(PHPCAS_LANG_FRENCH);
 
-    // On a une demande de logout envoyée par le serveur CAS :
-    //   il faut initialiser la session tout de suite, pour pouvoir la détruire complètement
-    if (isset($logout_request)) {
-      $session_gepi = new Session();
-  		// Gestion du single sign-out
-      phpCAS::setSingleSignoutCallback(array($session_gepi, 'cas_logout_callback'));
-		  phpCAS::handleLogoutRequests(false);
-		}
-		// Authentification
-		phpCAS::forceAuthentication();
-    
-    // Initialisation de la session, avec blocage de l'initialisation de la
-    // session php ainsi que des tests de timeout et update de logs,
-    // car l'authentification CAS n'est pas encore validée côté Gepi !
-    $session_gepi = new Session(true);
+	if((isset($cas_proxy_server))&&($cas_proxy_server!="")&&(isset($cas_proxy_port))&&($cas_proxy_port!="")) {
+		phpCAS::setExtraCurlOption(CURLOPT_PROXY     , $cas_proxy_server);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYPORT , $cas_proxy_port);
+		phpCAS::setExtraCurlOption(CURLOPT_PROXYTYPE , CURLPROXY_HTTP);
+	}
+
+	// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
+	// été trouvé par le client CAS.
+	phpCAS::setNoCasServerValidation();
+
+	// On a une demande de logout envoyée par le serveur CAS :
+	//   il faut initialiser la session tout de suite, pour pouvoir la détruire complètement
+	if (isset($logout_request)) {
+		$session_gepi = new Session();
+		// Gestion du single sign-out
+		phpCAS::setSingleSignoutCallback(array($session_gepi, 'cas_logout_callback'));
+		phpCAS::handleLogoutRequests(false);
+	}
+	// Authentification
+	phpCAS::forceAuthentication();
+
+	// Initialisation de la session, avec blocage de l'initialisation de la
+	// session php ainsi que des tests de timeout et update de logs,
+	// car l'authentification CAS n'est pas encore validée côté Gepi !
+	$session_gepi = new Session(true);
 } else {
   $session_gepi = new Session();
 }
