@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -58,6 +58,12 @@ $titre_pdf = urlencode($titre);
 // Initialisation
 unset($id_groupe);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : (isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
+
+if(!isset($id_groupe)) {
+	header("Location: ../accueil.php?msg=Groupe/enseignement non choisi");
+	die();
+}
+
 $current_group = get_group($id_groupe);
 $id_classe = $current_group["classes"]["list"][0];
 
@@ -74,6 +80,53 @@ $avec_moy_bull = isset($_POST["avec_moy_bull"]) ? $_POST["avec_moy_bull"] : (iss
 
 include "../lib/periodes.inc.php";
 
+//20150529
+if(isset($_GET['export_csv'])) {
+	check_token();
+
+	$nom_fic=$current_group["name"];
+	$nom_fic.="_".$current_group["description"];
+	$nom_fic.="_".$current_group["classlist_string"];
+	$nom_fic.="_".'_'.date("Ymd");
+	$nom_fic=remplace_accents($nom_fic, "all");
+
+	$csv="";
+
+	$header1 = array();
+	$header1 = unserialize($_SESSION['header_pdf']);
+	for($loop=0;$loop<count($header1);$loop++) {
+		$csv.=$header1[$loop].";";
+	}
+	$csv.="\r\n";
+
+	// tableau des largeurs
+	/*
+	$w1 = array();
+	$w1 = unserialize($_SESSION['w_pdf']);
+	*/
+
+	// tableau des données
+	$data1 = array();
+	//$data1 = unserialize($_SESSION['data_pdf']);
+	$data1 = unserialize($_SESSION['data_pdf']);
+	for($loop=0;$loop<count($data1);$loop++) {
+		for($loop2=0;$loop2<count($data1[$loop]);$loop2++) {
+			$csv.=$data1[$loop][$loop2].";";
+		}
+		$csv.="\r\n";
+	}
+
+	/*
+	echo "<pre>";
+	echo $csv;
+	echo "</pre>";
+	*/
+
+	send_file_download_headers('text/x-csv',$nom_fic.'.csv');
+	echo echo_csv_encoded($csv);
+	die();
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Visualisation de toutes les notes de l'année";
 require_once("../lib/header.inc.php");
@@ -87,7 +140,7 @@ echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER[
 
 echo "<p class='bold'>";
 echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
-echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a> | ";
+echo "<a href=\"../fpdf/imprime_pdf.php?titre=$titre_pdf&amp;id_groupe=$id_groupe\" target=\"_blank\" onclick=\"return VerifChargement()\">Imprimer au format PDF</a> | <a href=\"".$_SERVER['PHP_SELF']."?export_csv=y&amp;id_groupe=$id_groupe".add_token_in_url()."\" target=\"_blank\" onclick=\"return VerifChargement()\">Exporter en CSV</a> | ";
 
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	if($_SESSION['statut']=='professeur') {
