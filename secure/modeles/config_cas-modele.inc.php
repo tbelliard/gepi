@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2008 Thomas Belliard
+ * Copyright 2001, 2015 Thomas Belliard
  *
  * This file is part of GEPI.
  *
@@ -33,6 +33,12 @@
 $cas_host = "localhost"; // l'hôte du serveur CAS
 $cas_port = 8443; // Le port
 $cas_root = 'cas';
+
+# Si le serveur hébergeant Gepi est situé derrière une passerelle,
+# il se peut que les requêtes vers le serveur CAS doivent passer par le proxy de la passerelle
+# pour être autorisées en sortie et atteindre le serveur CAS
+//$cas_proxy_server="";
+//$cas_proxy_port=;
 
 # Si la variable suivante contient une URL, l'utilisateur qui se déconnecte de Gepi
 # sera redirigé vers la page logout de CAS. Ensuite, soit l'utilisateur sera invité
