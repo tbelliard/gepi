@@ -59,6 +59,16 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 		$msg="";
 	}
 
+	$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : 'nimporte');
+	if($num_periode=='nimporte') {
+		$sql_ajout_jec="";
+		$sql_ajout_jeg="";
+	}
+	else {
+		$sql_ajout_jec=" AND jec.periode='$num_periode'";
+		$sql_ajout_jeg=" AND jeg.periode='$num_periode'";
+	}
+
 	$tab_file=get_tab_file($path);
 
 	$tableau_des_fichiers_generes=array();
@@ -89,7 +99,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
 				}
 				else {
-					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]'".$sql_ajout_jec." ORDER BY e.nom, e.prenom;";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
@@ -160,7 +170,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
 				}
 				else {
-					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]'".$sql_ajout_jeg." ORDER BY e.nom, e.prenom;";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
@@ -276,7 +286,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$msg.="Accès non autorisé aux informations élèves de la classe $classe.<br />";
 				}
 				else {
-					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]' ORDER BY e.nom, e.prenom;";
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe[$i]'".$sql_ajout_jec." ORDER BY e.nom, e.prenom;";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
@@ -313,7 +323,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$msg.="Accès non autorisé aux informations élèves pour l'enseignement".get_info_grp($id_groupe[$i]).".<br />";
 				}
 				else {
-					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]' ORDER BY e.nom, e.prenom;";
+					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]'".$sql_ajout_jeg." ORDER BY e.nom, e.prenom;";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
@@ -599,6 +609,16 @@ else {
 		// Choix de la classe/groupe
 		$cpt_js=0;
 
+		$sql="SELECT MAX(num_periode) AS maxper FROM periodes p, classes c WHERE c.id=p.id_classe;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			echo "<p style='colore:red'>Aucune classe avec période(s) n'a été trouvée.</p>";
+			require_once("../lib/footer.inc.php");
+			die();
+		}
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+
 		if($_SESSION['statut']=='professeur') {
 			if(getSettingAOui('OOoAccesTousEleProf')) {
 				$sql="SELECT c.id, c.classe FROM classes c ORDER BY c.classe;";
@@ -613,7 +633,7 @@ else {
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
+			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form1'>\n";
 			echo "<fieldset class='fieldset_opacite50'>\n";
 			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";
 			echo " <a href=\"javascript:cocher_decocher('id_classe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_classe_', false)\">décocher</a> toutes les classes\n";
@@ -646,14 +666,24 @@ else {
 			echo "</tr>\n";
 			echo "</table>\n";
 
-			echo "<p>
+			echo "<p style='text-indent:-3em; margin-left:3em;'>Extraire les élèves inscrits dans les classes choisies&nbsp;:<br />
+	<input type='radio' name='num_periode' id='num_periode_nimporte' value='nimporte' checked /><label for='num_periode_nimporte' id='texte_num_periode_nimporte'>Quelle que soit la période</label><br />";
+			for($loop=1;$loop<=$maxper;$loop++) {
+				echo "
+	<input type='radio' name='num_periode' id='num_periode_$loop' value='$loop' /><label for='num_periode_$loop' id='texte_num_periode_$loop'>Période $loop</label><br />";
+			}
+			echo "
+</p>";
+
+			echo "
+<p>
 	<input type='radio' name='mode_pub' id='mode_pub' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub' id='texte_mode_pub' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
 	ou<br />
 	<input type='radio' name='mode_pub' id='mode_pub2' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub2' id='texte_mode_pub2'>Générer un fichier par classe sélectionnée.</label><br />
-	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id);\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
+	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id); check_choix_zip('');\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
 </p>";
 
-			echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
+			echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit' /><input type='button' value='Envoyer' id='bouton_submit_js' onclick=\"valider_publipostage('form1', 'id_classe_')\" style='display:none;' /></p>\n";
 			echo "</fieldset>\n";
 			echo "</form>\n";
 
@@ -664,7 +694,7 @@ else {
 			$groups=get_groups_for_prof($_SESSION['login']);
 			if(count($groups)>0) {
 				echo "Ou";
-				echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
+				echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form2'>\n";
 				echo "<fieldset class='fieldset_opacite50'>\n";
 				echo "<p>Pour quel enseignement souhaitez-vous imprimer le document ".$tab_file[$num_fich]."&nbsp;?";
 				echo " <a href=\"javascript:cocher_decocher('id_groupe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_groupe_', false)\">décocher</a> tous les enseignements\n";
@@ -694,14 +724,25 @@ else {
 				echo "</td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-				echo "<p>
+
+				echo "<p style='text-indent:-3em; margin-left:3em;'>Extraire les élèves inscrits dans les classes choisies&nbsp;:<br />
+	<input type='radio' name='num_periode' id='num_periode2_nimporte' value='nimporte' checked /><label for='num_periode2_nimporte' id='texte_num_periode2_nimporte'>Quelle que soit la période</label><br />";
+				for($loop=1;$loop<=$maxper;$loop++) {
+					echo "
+	<input type='radio' name='num_periode' id='num_periode2_$loop' value='$loop' /><label for='num_periode2_$loop' id='texte_num_periode2_$loop'>Période $loop</label><br />";
+				}
+				echo "
+</p>";
+
+				echo "
+<p>
 	<input type='radio' name='mode_pub' id='mode_pub3' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub3' id='texte_mode_pub3' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
 	ou<br />
 	<input type='radio' name='mode_pub' id='mode_pub4' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub4' id='texte_mode_pub4'>Générer un fichier par classe sélectionnée.</label><br />
-	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id);\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
+	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper2' value='y' onchange=\"checkbox_change(this.id); check_choix_zip('2');\" /><label for='zipper2' id='texte_zipper2'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
 </p>";
 
-				echo "<p class='center'><input type='submit' value='Envoyer' /></p>\n";
+				echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit2' /><input type='button' value='Envoyer' id='bouton_submit_js2' onclick=\"valider_publipostage2('form2', 'id_groupe_')\" style='display:none;' /></p>\n";
 				echo "</fieldset>\n";
 				echo "</form>\n";
 
@@ -721,6 +762,52 @@ function cocher_decocher(prefixe_id, mode) {
 		if(document.getElementById(prefixe_id+k)){
 			document.getElementById(prefixe_id+k).checked=mode;
 			checkbox_change(prefixe_id+k);
+		}
+	}
+}
+
+if(document.getElementById('bouton_submit')) {
+	document.getElementById('bouton_submit').style.display='none';
+}
+if(document.getElementById('bouton_submit2')) {
+	document.getElementById('bouton_submit2').style.display='none';
+}
+if(document.getElementById('bouton_submit_js')) {
+	document.getElementById('bouton_submit_js').style.display='';
+}
+if(document.getElementById('bouton_submit_js2')) {
+	document.getElementById('bouton_submit_js2').style.display='';
+}
+
+function valider_publipostage(form_id, prefixe_id) {
+	var envoyer='n';
+	for(k=0;k<$cpt_js;k++) {
+		if(document.getElementById(prefixe_id+k)){
+			if(document.getElementById(prefixe_id+k).checked==true) {
+				envoyer='y';
+				break;
+			}
+		}
+	}
+
+	if(envoyer=='n') {
+		alert('Aucun groupe ou classe n\'a été sélectionné.');
+	}
+	else {
+		document.getElementById(form_id).submit();
+	}
+}
+
+function check_choix_zip(num) {
+	if(document.getElementById('zipper'+num)){
+		if(document.getElementById('zipper'+num).checked==true) {
+			if(num=='') {
+				document.getElementById('mode_pub2').checked=true;
+			}
+			else {
+				document.getElementById('mode_pub4').checked=true;
+			}
+			change_style_radio();
 		}
 	}
 }
