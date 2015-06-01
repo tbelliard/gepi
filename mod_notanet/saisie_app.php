@@ -235,7 +235,6 @@ else {
 	$texte="Photo";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
 
-
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 	//echo "<table class='boireaus' width='100%'>\n";
@@ -288,6 +287,7 @@ else {
 			}
 			//========================
 
+			/*
 			$sql="SELECT na.appreciation FROM notanet_app na,
 								notanet n
 							WHERE (
@@ -295,6 +295,12 @@ else {
 									n.matiere='$matiere' AND
 									na.login=n.login AND
 									na.matiere=n.matiere
+								);";
+			*/
+			$sql="SELECT na.appreciation FROM notanet_app na
+							WHERE (
+									na.login='$eleve_login' AND
+									na.matiere='$matiere'
 								);";
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
 			$app_query = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -307,7 +313,24 @@ else {
 
 			// Appel des notes
 			//$sql="SELECT * FROM notanet n WHERE (n.login='$eleve_login' AND n.mat='$matiere');";
-			$sql="SELECT n.note FROM notanet n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
+			// 20150601 : Il faudrait voir si c'est une note saisie ou extraite
+
+			$sql="SELECT mode FROM notanet_corresp nc, notanet_ele_type net WHERE nc.matiere='$matiere' AND nc.type_brevet=net.type_brevet AND net.login='$eleve_login';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)==0) {
+				$mode_moy="extract";
+			}
+			else {
+				$lig=mysqli_fetch_object($res);
+				$mode_moy=$lig->mode;
+			}
+
+			if($mode_moy=="extract") {
+				$sql="SELECT n.note FROM notanet n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
+			}
+			else {
+				$sql="SELECT n.note FROM notanet_saisie n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
+			}
 			//echo "<tr><td colspan='3'>$sql</td></tr>";
 			$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
