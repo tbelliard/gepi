@@ -917,10 +917,10 @@ for($i=0;$i<14;$i++) {
 			//echo "opacity:0.5;";
 			// Colorisation différente selon le mode d'affichage:
 			if($mode=='professeur') {
-				if($couleur_classe[$current_group["classes"]["list"][0]]!='') {echo " background-color:".$couleur_classe[$current_group["classes"]["list"][0]].";";}
+				if((isset($couleur_classe[$current_group["classes"]["list"][0]]))&&($couleur_classe[$current_group["classes"]["list"][0]]!='')) {echo " background-color:".$couleur_classe[$current_group["classes"]["list"][0]].";";}
 			}
 			else {
-				if($couleur_matiere[$current_group['matiere']['matiere']]!='') {echo " background-color:".$tab_couleur_edt[$couleur_matiere[$current_group['matiere']['matiere']]].";";}
+				if((isset($couleur_matiere[$current_group['matiere']['matiere']]))&&($couleur_matiere[$current_group['matiere']['matiere']]!='')&&(isset($tab_couleur_edt[$couleur_matiere[$current_group['matiere']['matiere']]]))) {echo " background-color:".$tab_couleur_edt[$couleur_matiere[$current_group['matiere']['matiere']]].";";}
 			}
 			echo "'>\n";
 
