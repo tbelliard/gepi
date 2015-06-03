@@ -487,7 +487,7 @@ $eleve_col = $query
 				$signaler_saisies_englobees=isset($_POST['signaler_saisies_englobees']) ? $_POST['signaler_saisies_englobees'] : NULL;
 				$checked_ou_pas="";
 				if($signaler_saisies_englobees=="y") {$checked_ou_pas=" checked";}
-				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees'>Signaler les saisies englobées <img src='../images/icons/ico_toit2.png' width='16' height='16' title='Témoin que la saisie est englobée' /></label>\n";
+				echo "<input type='checkbox' id='signaler_saisies_englobees' name='signaler_saisies_englobees' value='y'$checked_ou_pas /><label for='signaler_saisies_englobees' title=\"Afficher un témoin comme quoi la saisie est englobée/couverte par une autre.\">Signaler les saisies englobées <img src='../images/icons/ico_toit2.png' width='16' height='16' alt='Témoin que la saisie est englobée' /></label>\n";
 
 				echo " - ";
 				$ne_pas_afficher_saisies_englobees=isset($_POST['ne_pas_afficher_saisies_englobees']) ? $_POST['ne_pas_afficher_saisies_englobees'] : NULL;
@@ -499,7 +499,8 @@ $eleve_col = $query
 				$ne_pas_afficher_lignes_avec_traitement_englobant=isset($_POST['ne_pas_afficher_lignes_avec_traitement_englobant']) ? $_POST['ne_pas_afficher_lignes_avec_traitement_englobant'] : NULL;
 				$checked_ou_pas="";
 				if($ne_pas_afficher_lignes_avec_traitement_englobant=="y") {$checked_ou_pas=" checked";}
-				echo "<input type='checkbox' id='ne_pas_afficher_lignes_avec_traitement_englobant' name='ne_pas_afficher_lignes_avec_traitement_englobant' value='y'$checked_ou_pas /><label for='ne_pas_afficher_lignes_avec_traitement_englobant' title='Ne pas afficher les lignes pour lesquelles les saisies sont traitées ou englobées.'>Ne pas afficher les lignes traitées ou englobées</label>\n";
+				echo "<input type='checkbox' id='ne_pas_afficher_lignes_avec_traitement_englobant' name='ne_pas_afficher_lignes_avec_traitement_englobant' value='y'$checked_ou_pas /><label for='ne_pas_afficher_lignes_avec_traitement_englobant' title='Ne pas afficher les lignes pour lesquelles les saisies sont traitées ou englobées...
+de façon à ne laisser que ce qui reste à traiter.'>Ne pas afficher les lignes traitées ou englobées</label>\n";
 
 				//==========================================
 				// 20131107 : Contournement bug dojo
@@ -634,7 +635,9 @@ Cela devrait permettre de contourner le problème.\">
 	$nb_checkbox = 0; //nombre de checkbox
 	$compteur = 0;
 	$tab_eleve_id=array();
-	foreach($eleve_col as $eleve) {        
+	foreach($eleve_col as $eleve) {
+		//$tab_traitements_deja_affiches=array();
+
 		$compteur = $compteur + 1;
 		//$regime_eleve=$eleve->getEleveRegimeDoublant();
 
@@ -719,9 +722,18 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 				$chaine_conflits="";
 				foreach ($absences_du_creneau as $absence) {
 					$traitement_col->addCollection($absence->getAbsenceEleveTraitements());
+					// A FAIRE : Eplucher isSaisiesContradictoiresManquementObligation parce qu'il semble y avoir des faux positifs
 					if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $absence->isSaisiesContradictoiresManquementObligation()) {
 						//if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
 						$violet = true;
+/*
+if($eleve->getLogin()=='coiffeyl') {
+$tmp_obj=$absence->getSaisiesContradictoiresManquementObligation();
+echo "<span style='color:red'>Créneau $i</span><br /><pre>";
+print_r($tmp_obj);
+echo "</pre>";
+}
+*/
 						break;
 					} else {
 						$style = 'style="background-color :'.$absence->getColor().'"';
@@ -784,17 +796,22 @@ Du '.get_date_heure_from_mysql_date($saisie->getDebutAbs()).' au '.get_date_heur
 					$nb_checkbox_eleve_courant_sur_ce_creneau++;
 
 					//if ($saisie->getNotifiee()) {$ligne_courante.=" (notifiée)";}
-					$chaine_contenu_td.='</nobr> ';                        
+					$chaine_contenu_td.='</nobr> ';
 					//$ligne_courante.=$saisie->getTypesDescription();
-					$chaine_contenu_td.='</a>';                        
+					$chaine_contenu_td.='</a>';
 					if($saisie->getNotificationEnCours()) {
 						$chaine_contenu_td.='<img src="../images/icons/courrier_envoi.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
-					}                        
+					}
 					if($saisie->getNotifiee()) {
 						$chaine_contenu_td.='<img src="../images/icons/courrier_retour.png" title="'.$saisie->getTypesNotificationsDescription().'" />';
 					}
 					$chaine_contenu_td.='<br/>';
 					if(!$saisie->getTraitee()) {
+						// Saisie non traitée
+
+						//Debug
+						//$chaine_contenu_td.='non traitée<br/>';
+
 						//if(!isset($ne_pas_afficher_saisies_englobees)) {
 						if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
 							$ligne_courante.=$chaine_contenu_td;
@@ -833,54 +850,165 @@ Du '.get_date_heure_from_mysql_date($saisie->getDebutAbs()).' au '.get_date_heur
 							// Fait (?) avec le test $violet plus haut.
 						}
 					} else {
-						$ligne_courante.=$chaine_contenu_td;
 
-						//$ligne_courante.='<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
-						$saisie_justifiee_ou_pas="";
-						$ligne_courante.="<span title=\"";
-						$tab_traitements_deja_affiches=array();
-						foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-							if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
-								$description_traitement_courant=$traitement->getDescription();
-								$ligne_courante.="Traitement ".$description_traitement_courant."\n";
-								if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+						if((!isset($ne_pas_afficher_saisies_englobees))||($violet)) {
+
+							if((isset($signaler_saisies_englobees))||(isset($ne_pas_afficher_lignes_avec_traitement_englobant))) {
+
+								$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+								if($saisies_englobante_col->isEmpty()) {
+
+									$ligne_courante.=$chaine_contenu_td;
+									$nb_saisies_non_englobees++;
+
+									$saisie_justifiee_ou_pas="";
+									$ligne_courante.="<span title=\"";
+									$tab_traitements_deja_affiches=array();
+									foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+										if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+											$description_traitement_courant=$traitement->getDescription();
+											$ligne_courante.="Traitement ".$description_traitement_courant."\n";
+											if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+											$tab_traitements_deja_affiches[]=$traitement->getId();
+										}
+									}
+									$ligne_courante.="\">";
+									$ligne_courante.=$saisie->getTypesDescription();
+									$ligne_courante.=$saisie_justifiee_ou_pas;
+									$ligne_courante.="</span>";
+
+									// 20140429
+									if($violet) {
+										foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+											$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+											if($saisies_englobante_col->isEmpty()) {
+												$ligne_courante.="<a href=\"liste_saisies_selection_traitement.php?id_traitement=".$traitement->getId()."&amp;filter_recherche_saisie_a_rattacher=oui&amp;rattachement_preselection=y&amp;id_eleve=".$eleve->getId()."\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\"\"><img src='../images/icons/chercher.png' class='icone16' alt='Chercher' /></a>";
+											}
+
+										}
+									}
+									$ligne_courante.='<br/>';
+								}
+								else {
+									$texte_saisie_couverte='La saisie est englobée par : ';
+									$cpt_saisie_couverte=0;
+									foreach ($saisies_englobante_col as $saisies_englobante) {
+										if($cpt_saisie_couverte==0) {
+											$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+										}
+										$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
+										$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
+										if (!$saisies_englobante_col->isLast()) {
+											$texte_saisie_couverte.=' - ';
+										}
+										$cpt_saisie_couverte++;
+									}
+
+									$ligne_courante.=$lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
+								}
+
+							}
+							else {
+								$ligne_courante.=$chaine_contenu_td;
+
+								// Debug
+								//$ligne_courante.="traitée";
+
+								//$ligne_courante.='<img src="../images/icons/flag_green.png" title="'.$saisie->getTypesDescription().'" />';
+								$saisie_justifiee_ou_pas="";
+								$ligne_courante.="<span title=\"";
+								$tab_traitements_deja_affiches=array();
+								foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+									if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+										$description_traitement_courant=$traitement->getDescription();
+										$ligne_courante.="Traitement ".$description_traitement_courant."\n";
+										if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+										$tab_traitements_deja_affiches[]=$traitement->getId();
+									}
+								}
+								$ligne_courante.="\">";
+								$ligne_courante.=$saisie->getTypesDescription();
+								$ligne_courante.=$saisie_justifiee_ou_pas;
+								$ligne_courante.="</span>";
+
+								if($violet) {
+									foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+										$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+										if($saisies_englobante_col->isEmpty()) {
+											$ligne_courante.="<a href=\"liste_saisies_selection_traitement.php?id_traitement=".$traitement->getId()."&amp;filter_recherche_saisie_a_rattacher=oui&amp;rattachement_preselection=y&amp;id_eleve=".$eleve->getId()."\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\"\"><img src='../images/icons/chercher.png' class='icone16' alt='Chercher' /></a>";
+										}
+									}
+								}
+								$ligne_courante.='<br/>';
 							}
 						}
-						$ligne_courante.="\">";
-						$ligne_courante.=$saisie->getTypesDescription();
-						$ligne_courante.=$saisie_justifiee_ou_pas;
-						$ligne_courante.="</span>";
+						else {
 
-						// 20140429
-						if($violet) {
-							foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-								/*
-								$ligne_courante.="<a href=\"#\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\" onclick=\"document.getElementById('id_traitement').value = '".$traitement->getId()."'; 
-								document.getElementById('creation_traitement').value='no'; 
-								document.getElementById('ajout_traitement').value='no'; 
-								document.getElementById('creation_lot_traitements').value = 'no'; 
-								document.getElementById('chercher_traitements_a_rattacher').value='yes'; 
-								document.getElementById('filter_recherche_saisie_a_rattacher').value='oui'; 
-								document.getElementById('rattachement_preselection').value='y'; 
-								pop_it(document.creer_traitement);
-								return false;\" target=\"_blank\">";
-								*/
-								$ligne_courante.="<a href=\"liste_saisies_selection_traitement.php?id_traitement=".$traitement->getId()."&amp;filter_recherche_saisie_a_rattacher=oui&amp;rattachement_preselection=y&amp;id_eleve=".$eleve->getId()."\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\"\"><img src='../images/icons/chercher.png' class='icone16' alt='Chercher' /></a>";
-								// target=\"_blank\"
 
+
+
+							$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+							if($saisies_englobante_col->isEmpty()) {
+
+								$ligne_courante.=$chaine_contenu_td;
+								$nb_saisies_non_englobees++;
+
+								$saisie_justifiee_ou_pas="";
+								$ligne_courante.="<span title=\"";
+								$tab_traitements_deja_affiches=array();
+								foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+									if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
+										$description_traitement_courant=$traitement->getDescription();
+										$ligne_courante.="Traitement ".$description_traitement_courant."\n";
+										if(preg_match("/justification :/", $description_traitement_courant)) {$saisie_justifiee_ou_pas=" <img src='../images/vert.png' width='16' height='16' title='Saisie justifiée' />";}
+										$tab_traitements_deja_affiches[]=$traitement->getId();
+									}
+								}
+								$ligne_courante.="\">";
+								$ligne_courante.=$saisie->getTypesDescription();
+								$ligne_courante.=$saisie_justifiee_ou_pas;
+								$ligne_courante.="</span>";
+
+								// 20140429
+								if($violet) {
+									foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+										$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+										if($saisies_englobante_col->isEmpty()) {
+											$ligne_courante.="<a href=\"liste_saisies_selection_traitement.php?id_traitement=".$traitement->getId()."&amp;filter_recherche_saisie_a_rattacher=oui&amp;rattachement_preselection=y&amp;id_eleve=".$eleve->getId()."\" title=\"Chercher des saisies à rattacher au traitement n°".$traitement->getId()." pour régler le conflit.\"\"><img src='../images/icons/chercher.png' class='icone16' alt='Chercher' /></a>";
+										}
+
+									}
+								}
+								$ligne_courante.='<br/>';
 							}
+							elseif(isset($signaler_saisies_englobees)) {
+								$texte_saisie_couverte='La saisie est englobée par : ';
+								$cpt_saisie_couverte=0;
+								foreach ($saisies_englobante_col as $saisies_englobante) {
+									if($cpt_saisie_couverte==0) {
+										$lien_saisie_couverte="<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+									}
+									$texte_saisie_couverte.=$saisies_englobante->getDateDescription();
+									$texte_saisie_couverte.=' '.$saisies_englobante->getTypesTraitements();
+									if (!$saisies_englobante_col->isLast()) {
+										$texte_saisie_couverte.=' - ';
+									}
+									$cpt_saisie_couverte++;
+								}
+
+								$ligne_courante.=$lien_saisie_couverte.'<img src="../images/icons/ico_toit2.png" title="'.$texte_saisie_couverte.'" /></a>';
+							}
+
+
 						}
 
-						/*
-						$ligne_courante.="<br />";
-						$tab_traitements_deja_affiches=array();
-						foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-							if(!in_array($traitement->getId(), $tab_traitements_deja_affiches)) {
-								$ligne_courante.=$traitement->getDescription().' : ';
-							}
-						}
-						*/
-						$ligne_courante.='<br/>';
+
+
+
+
+
+
+
 					}
 					//$ligne_courante.='<br/>';
 					//$ligne_courante.='</nobr>';
