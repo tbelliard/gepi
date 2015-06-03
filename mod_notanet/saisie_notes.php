@@ -611,14 +611,17 @@ while($lig=mysqli_fetch_object($res_notes_deja_saisies)) {
 $sql="SELECT DISTINCT jeg.login FROM j_eleves_classes jec, 
 	j_eleves_groupes jeg,
 	j_groupes_matieres jgm,
-	notanet_corresp nc
+	notanet_corresp nc, 
+	eleves e
 WHERE jec.login=jeg.login AND
 	jec.id_classe='$id_classe' AND
 	jeg.id_groupe=jgm.id_groupe AND
 	jeg.id_groupe='$id_groupe' AND
 	jgm.id_matiere='$matiere' AND
 	jgm.id_matiere=nc.matiere AND
-	nc.type_brevet='$type_brevet';";
+	jeg.login=e.login AND 
+	nc.type_brevet='$type_brevet'
+ORDER BY e.nom, e.prenom, e.naissance;";
 //echo "$sql<br />";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
