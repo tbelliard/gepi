@@ -582,6 +582,11 @@ $texteItem="a accès à l'ouverture exceptionnelle de saisie/correction de notes
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='PeutDonnerAccesBullAppPeriodeCloseScol';
+$texteItem="a accès à l'ouverture exceptionnelle de saisie/correction d'appréciations du bulletin d'un enseignement particulier en période partiellement close<br />(<em>typiquement pour corriger une erreur sans devoir rouvrir complètement la période en saisie pour tous les professeurs, ni devoir passer par un compte secours pour faire la modification à la place du professeur.</em>).";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='AccesModifAppreciationScol';
 $texteItem="peut corriger les appréciations des professeurs en période non close.<br />(<em>cela permet de corriger des fautes pendant le conseil de classe.<br />Le professeur concerné reçoit un mail l'informant de la modification.</em>).";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

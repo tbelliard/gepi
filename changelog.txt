@@ -16,6 +16,7 @@ Absence et remplacement de professeurs:
 
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
+- Ajout d'un droit PeutDonnerAccesBullAppPeriodeCloseScol pour pouvoir restreindre l'accès scolarité à l'autorisation exceptionnelle de saisie/correction d'appréciations des bulletins.
 
 Cahiers de textes (2):
 - Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2

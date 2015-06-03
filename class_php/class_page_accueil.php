@@ -1268,7 +1268,7 @@ if(getSettingAOui('active_bulletins')) {
 				  "Permet de vérifier si toutes les rubriques des bulletins sont remplies.");
 		 }
 
-		if ($this->statutUtilisateur!='professeur'){
+		if (($this->statutUtilisateur=='administrateur')||(($this->statutUtilisateur=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol')))) {
 		  $this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_app.php",
 				  "Autorisation exceptionnelle de saisie d'appréciations",
 				  "Permet d'autoriser exceptionnellement un enseignant à proposer une saisie d'appréciations pour un enseignement sur une période partiellement close.");

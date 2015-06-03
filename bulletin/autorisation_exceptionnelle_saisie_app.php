@@ -43,6 +43,12 @@ if (!checkAccess()) {
 	die();
 }
 
+if(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol'))) {
+	$mess=rawurlencode("Accès interdit !");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
@@ -116,6 +122,23 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 					}
 					else {
 						$msg.="Enregistrement de l'autorisation effectué.<br />";
+
+						$complement_texte_mail="";
+						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+							if((isset($_POST['donner_acces_modif_bull_note']))&&($_POST['donner_acces_modif_bull_note']=='y')) {
+								$sql="DELETE FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+								$sql="INSERT INTO acces_exceptionnel_matieres_notes SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res) {
+									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
+								}
+								else {
+									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
+									$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
+								}
+							}
+						}
 
 						$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 						if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
@@ -235,6 +258,8 @@ if(($_SESSION['statut']=='administrateur')&&(isset($_GET['definir_message']))) {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\" > Autorisation exceptionnelle</a>";
 	echo "</p>\n";
 
+	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
+
 	echo "<p>Par défaut le message reçu par un professeur exceptionnellement autorisé à saisir en retard ou corriger ses notes/appréciations est le suivant&nbsp;:<br />\n";
 
 	$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des appréciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en période NUMERO_PERIODE.\n\n";
@@ -277,8 +302,10 @@ if(!isset($id_classe)) {
 	if($_SESSION['statut']=='administrateur') {
 		echo " | <a href=\"".$_SERVER['PHP_SELF']."?definir_message=y\" > Définir le message</a>";
 	}
+	echo " | <a href='autorisation_exceptionnelle_saisie_note.php'>Autoriser la modification de moyennes des bulletins</a>\n";
 	echo "</p>\n";
 
+	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
 	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
 	// On adapte la liste des classes selon le visiteur
@@ -320,7 +347,11 @@ if(!isset($id_classe)) {
 }
 elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
+	echo " | <a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe'>Autoriser la modification de moyennes des bulletins</a>\n";
 	echo "</p>\n";
+
+	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
+
 	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à proposer des saisies/corrections d'appréciations?</p>\n";
 	$groups=get_groups_for_class($id_classe,"","n");
 
@@ -388,13 +419,16 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre enseignement de la classe</a>\n";
+	echo " | <a href='autorisation_exceptionnelle_saisie_note.php?id_classe=$id_classe'>Autoriser la modification de moyennes des bulletins</a>\n";
 	echo "</p>\n";
+
+	echo "<h2>Autoriser la modification d'appréciations des bulletins</h2>";
 
 	//if(!isset($is_posted)) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 		echo add_token_field();
 		$group=get_group($id_groupe);
-		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'apprécations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
+		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'appréciations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
 
 		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='".$group['id']."' AND periode='$periode';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -465,6 +499,12 @@ else {
 		}
 		echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
 		echo "<br />";
+
+		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
+			echo "<br />\n";
+			echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés.</label>";
+			echo "<br />\n";
+		}
 
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";

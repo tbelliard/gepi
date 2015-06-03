@@ -56,7 +56,7 @@ PRIMARY KEY ( id )
 
 */
 
-if(($_SESSION['statut']=='scolarité')&&(!getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol'))) {
+if(($_SESSION['statut']=='scolarite')&&(!getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol'))) {
 	$mess=rawurlencode("Accès interdit !");
 	header("Location: ../accueil.php?msg=$mess");
 	die();
@@ -132,14 +132,38 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 						$complement_texte_mail="";
 						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 							if((isset($_POST['donner_acces_modif_bull_note']))&&($_POST['donner_acces_modif_bull_note']=='y')) {
+								$sql="DELETE FROM acces_exceptionnel_matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								$sql="INSERT INTO acces_exceptionnel_matieres_notes SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00';";
 								$res=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$res) {
-									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les bulletins.<br />";
+									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les notes des bulletins.<br />";
 								}
 								else {
-									$msg.="Enregistrement de l'autorisation pour les bulletins effectué.<br />";
+									$msg.="Enregistrement de l'autorisation pour les notes des bulletins effectué.<br />";
 									$complement_texte_mail="Vous pourrez aussi corriger les moyennes du bulletin.\n\n";
+								}
+							}
+						}
+
+						if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol')))) {
+							if((isset($_POST['donner_acces_modif_bull_app']))&&($_POST['donner_acces_modif_bull_app']=='y')) {
+								$sql="DELETE FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$periode';";
+								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
+								$mode=isset($_POST['mode']) ? $_POST['mode'] : "proposition";
+								if((isset($mode))&&(!in_array($mode, array('proposition', 'acces_complet')))) {
+									$mode="proposition";
+									$msg.="Mode de validation de la saisie d'appréciation incorrect.<br />On opte pour une 'proposition seule' devant être controlée/validée par la suite.<br />";
+								}
+								$sql="INSERT INTO matieres_app_delais SET id_groupe='$id_groupe', periode='$periode', date_limite='$annee-$mois-$jour $heure:$minute:00', mode='".$mode."';";
+								$res=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res) {
+									$msg.="ERREUR lors de l'insertion de l'enregistrement pour les appréciations des bulletins.<br />";
+								}
+								else {
+									$msg.="Enregistrement de l'autorisation pour les appréciations des bulletins effectué.<br />";
+									$complement_texte_mail="Vous pourrez aussi corriger les appreciations du bulletin.\n\n";
 								}
 							}
 						}
@@ -485,11 +509,23 @@ else {
 
 	echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 
-	// A FAIRE: Donner aussi l'accès bull note...
-	if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesCNPeriodeCloseScol')))) {
+	if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullNotePeriodeCloseScol')))) {
 		echo "<br />\n";
 		echo "<input type='checkbox' name='donner_acces_modif_bull_note' id='donner_acces_modif_bull_note' value='y' /><label for='donner_acces_modif_bull_note'> Donner aussi l'accès à la modification de la moyenne sur les bulletins associés</label>";
 		echo "<br />\n";
+	}
+
+	if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('PeutDonnerAccesBullAppPeriodeCloseScol')))) {
+		echo "<input type='checkbox' name='donner_acces_modif_bull_app' id='donner_acces_modif_bull_app' value='y' /><label for='donner_acces_modif_bull_app'> Donner aussi l'accès à la modification de l'appréciation sur les bulletins associés</label><br />";
+		echo "<div style='margin-left:3em;'>";
+			echo "<input type='radio' name='mode' id='mode_proposition' value='proposition' checked /><label for='mode_proposition'> Permettre la proposition de corrections (<em>proposition qui devront ensuite être validées par un compte scolarité ou administrateur</em>).</label>\n";
+			echo "<br />";
+			if(getSettingAOui('autoriser_correction_bulletin')) {
+				echo "<span style='color:red'>Ce premier mode ne présente pas d'intérêt ici puisque vous avez donné globalement le droit (<em>en administrateur dans Gestion générale/Droits d'accès</em>) de proposer des corrections tant que la période n'est pas complètement close</span>.<br /><span style='color:red'>Seul le mode ci-dessous apporte quelque chose dans votre configuration.</span><br />";
+			}
+			echo "<input type='radio' name='mode' id='mode_acces_complet' value='acces_complet' /><label for='mode_acces_complet'> Permettre la saisie/modification des appréciations sans contrôle de votre part avant validation.</label>\n";
+			echo "<br />";
+		echo "</div>";
 	}
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</p>\n";
