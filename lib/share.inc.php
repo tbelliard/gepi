@@ -13350,4 +13350,45 @@ function get_tab_type_pointage_discipline() {
 
 	return $tab;
 }
+
+function get_clas_ele_telle_date($login_ele, $mysql_date, $slash_date="") {
+	$tab=array();
+
+	if($mysql_date=="") {
+		$mysqldate=get_mysql_date_from_slash_date($slash_date);
+	}
+
+	$sql="SELECT c.id,c.classe FROM periodes p, 
+						classes c, 
+						j_eleves_classes jec 
+					WHERE p.id_classe=c.id AND 
+						jec.id_classe=c.id AND 
+						jec.login='$login_ele' AND 
+						p.date_fin>='$mysql_date' 
+						ORDER BY date_fin DESC LIMIT 1";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab['id_classe']=$lig->id;
+		$tab['classe']=$lig->classe;
+	}
+	else {
+		// Chercher la dernière classe de l'élève?
+		$sql="SELECT c.id,c.classe FROM periodes p, 
+						classes c, 
+						j_eleves_classes jec 
+					WHERE p.id_classe=c.id AND 
+						jec.id_classe=c.id AND 
+						jec.login='$login_ele' 
+						ORDER BY date_fin DESC LIMIT 1";
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tab['id_classe']=$lig->id;
+			$tab['classe']=$lig->classe;
+		}
+	}
+
+	return $tab;
+}
 ?>
