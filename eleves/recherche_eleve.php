@@ -17,7 +17,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 
 	$page=isset($_POST['page']) ? $_POST['page'] : (isset($_GET['page']) ? $_GET['page'] : "");
 
-	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")&&($page!="saisie_secours_eleve.php")&&($page!="consultation_annee_anterieure.php")) {
+	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")&&($page!="saisie_secours_eleve.php")&&($page!="consultation_annee_anterieure.php")&&($page!="visu_eleve_calendrier.php")) {
 		$page="../logout.php?auto=2";
 		// Remarque: Cela n'empêche pas de bricoler l'adresse destination des liens affichés...
 		echo "Accès non autorisé.";
@@ -162,6 +162,32 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 
 					echo "<td>\n";
 					echo "<a href='$page?logineleve=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars($lig_clas->classe)."</a>";
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			}
+			elseif($page=='visu_eleve_calendrier.php') {
+				echo "<tr class='lig$alt'>\n";
+
+				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_classes jec WHERE jec.login='$ele_login' AND c.id=jec.id_classe ORDER BY jec.periode;";
+				$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_clas)==0) {
+					echo "<td>\n";
+					echo htmlspecialchars("$ele_nom $ele_prenom");
+					echo "</td>\n";
+
+					echo "<td>\n";
+					echo "aucune classe";
+					echo "</td>\n";
+				}
+				else {
+					$lig_clas=mysqli_fetch_object($res_clas);
+					echo "<td>\n";
+					echo "<a href='$page?login_ele=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars("$ele_nom $ele_prenom")."</a>";
+					echo "</td>\n";
+
+					echo "<td>\n";
+					echo "<a href='$page?login_ele=$ele_login&amp;id_classe=$lig_clas->id'>".htmlspecialchars($lig_clas->classe)."</a>";
 					echo "</td>\n";
 				}
 				echo "</tr>\n";

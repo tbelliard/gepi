@@ -3075,6 +3075,11 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			if($onglet!="absences") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
+
+			if(acces('/mod_abs2/visu_eleve_calendrier.php', $_SESSION['statut'])) {
+				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/visu_eleve_calendrier.php?login_ele=$ele_login' title=\"Voir les absences de l'élève sur un calendrier\" target='_blank'><img src='../images/icons/absences.png' class='icone16' alt='Absences sur calendrier' /></a></div>";
+			}
+
 			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 			    if(count($tab_ele['absences'])==0) {
