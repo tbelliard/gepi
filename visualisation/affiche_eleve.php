@@ -4908,7 +4908,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 		//=========================
 
 		// 20140226
-		if(getSettingAOui('active_mod_discipline')) {
+		if((getSettingAOui('active_mod_discipline'))&&(getSettingAOui('mod_disc_acces_avertissements'))) {
 			echo "<div align='center'>\n";
 			$mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 			if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
