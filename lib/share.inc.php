@@ -11327,6 +11327,15 @@ function get_info_eleve($login_ele, $periode) {
 		$tab['id_eleve']=$lig->id_eleve;
 		$tab['mef_code']=$lig->mef_code;
 
+		$sql="SELECT * FROM j_eleves_regime WHERE login='$login_ele';";
+		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res2)>0) {
+			$lig2=mysqli_fetch_object($res2);
+
+			$tab['doublant']=$lig2->doublant;
+			$tab['regime']=$lig2->regime;
+		}
+
 		$sql="SELECT c.id, c.classe FROM classes c, j_eleves_classes jec WHERE c.id=jec.id_classe AND jec.login='$login_ele' AND jec.periode='$periode';";
 		$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res2)>0) {

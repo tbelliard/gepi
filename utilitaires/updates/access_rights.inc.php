@@ -1460,6 +1460,19 @@ secours='F',
 autre='F',
 description='Absences2 : Visualisation absences élève dans un calendrier',
 statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_notanet/recherche_ine.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Notanet : Recherche INE',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
