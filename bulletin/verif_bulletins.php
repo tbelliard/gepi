@@ -93,14 +93,12 @@ if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiProfImprBul")
 	die("Droits insuffisants pour effectuer cette opération");
 }
 
-/*
 if(isset($id_classe)) {
 	$gepi_prof_suivi=retourne_denomination_pp($id_classe);
 }
 else {
-*/
 	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
-//}
+}
 
 //debug_var();
 
