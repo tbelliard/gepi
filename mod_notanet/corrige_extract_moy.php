@@ -62,6 +62,8 @@ require_once("../lib/header.inc.php");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 // Bibliothèque pour Notanet et Fiches brevet
 include("lib_brevets.php");
 
@@ -266,7 +268,7 @@ else {
 
 			$chaine_eleves_classe=array();
 			//if(!isset($_POST['valider_select_eleve'])) {
-			if(!isset($_POST['afficher_select_eleve'])) {
+			if((!isset($_POST['afficher_select_eleve']))&&(!isset($_GET['afficher_select_eleve']))) {
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
 
 				echo "<div id='fixe'><input type='submit' name='valider_select_eleve' value='Afficher les élèves sélectionnés' /></div>\n";
@@ -364,7 +366,7 @@ else {
 			else {
 
 				$num_eleve=0;
-				$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : NULL;
+				$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
 				if(!isset($ele_login)) {
 					echo "<p>Vous n'avez sélectionné aucun élève.</p>\n";
 				}

@@ -460,9 +460,13 @@ if($_SESSION['statut']=="administrateur") {
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";
 
-	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
+	echo "<p>Il peut arriver que lors de l'import du CSV dans Notanet certains élèves soient en erreur avec un message du genre&nbsp;:<br />
+<span style='color:red'>&nbsp;&nbsp;&nbsp;1234567890M Identifiant national inconnu dans la base de données</span><br />
+La page suivante peut vous aider à <a href='recherche_ine.php'>identifier rapidement ces élèves</a>.</p>\n";
 
-	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.<br />
+	echo "<p style='margin-top:1em;'>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
+
+	echo "<p style='margin-top:1em;'><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.<br />
 	Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Module_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Module_notanet</a></p>\n";
 }
 elseif($_SESSION['statut']=="scolarite") {
