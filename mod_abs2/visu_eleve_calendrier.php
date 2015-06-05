@@ -710,6 +710,7 @@ else {
 }
 
 echo "<div style='text-align:center;'>
+<h2>".get_nom_prenom_eleve($login_ele, "avec_classe")."</h2>
 <p>
 	<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;annee=$annee_prec&amp;mois=$mois_prec'>Préc.</a>
 	- $nom_mois $annee -
