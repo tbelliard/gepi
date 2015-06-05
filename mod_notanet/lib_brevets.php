@@ -1609,7 +1609,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 					if(mysqli_num_rows($resultat_moy)>0){
 						$ligne_moy=mysqli_fetch_object($resultat_moy);
 						//echo "$ligne_moy->moyenne<br />";
-						$moyenne=$ligne_moy->moyenne;
+						//$moyenne=$ligne_moy->moyenne;
+						$moyenne=preg_replace("/,/",".",$ligne_moy->moyenne);
 						if((isset($tabmatieres[$j]['extraction_moyenne']))&&($tabmatieres[$j]['extraction_moyenne']=="n")) {
 							echo "<td style='font-weight:bold; text-align:center; color:blue; font-style: italic;";
 							if($moyenne=="") {
