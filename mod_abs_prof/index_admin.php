@@ -93,7 +93,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==1)) {
 if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	check_token();
 
-	$tab=array('AbsProfSaisieAbsScol','AbsProfProposerRemplacementScol','AbsProfAttribuerRemplacementScol','AbsProfSaisieAbsCpe','AbsProfProposerRemplacementCpe','AbsProfAttribuerRemplacementCpe', 'AbsProfGroupesClasseSeulement');
+	$tab=array('AbsProfSaisieAbsScol','AbsProfProposerRemplacementScol','AbsProfAttribuerRemplacementScol','AbsProfSaisieAbsCpe','AbsProfProposerRemplacementCpe','AbsProfAttribuerRemplacementCpe', 'AbsProfGroupesClasseSeulement', 'AbsProfAutoriserProfPasApparaitre');
 
 	for($loop=0;$loop<count($tab);$loop++) {
 		if(isset($_POST[$tab[$loop]])) {

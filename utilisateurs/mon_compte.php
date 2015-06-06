@@ -1093,6 +1093,27 @@ if(($_SESSION['statut']=='professeur')&&(isset($_POST['validation_form_cdt2'])))
 	}
 }
 
+
+if(isset($_POST['validation_form_abs_prof'])) {
+	check_token();
+
+	if(isset($_POST['AbsProf_jamais_remplacer'])) {
+		$valeur='y';
+	}
+	else {
+		$valeur='n';
+	}
+
+	if(!savePref($_SESSION['login'],'AbsProf_jamais_remplacer',$valeur)) {
+		$msg.="Erreur lors de l'enregistrement de AbsProf_jamais_remplacer.<br />";
+		$message_mod_abs_prof="<p style='color:red'>Erreur lors de l'enregistrement&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+	else {
+		$msg.="Enregistrement de AbsProf_jamais_remplacer.<br />";
+		$message_mod_abs_prof="<p style='color:green'>Enregistrement effectué&nbsp;: ".strftime('%d/%m/%Y à %H:%M:%S').".</p>\n";
+	}
+}
+
 if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 	check_token();
 
@@ -2979,6 +3000,30 @@ Notices privées&nbsp;:&nbsp;<input type='text' name='cdt2_WinListeNotices_nb_no
 }
 
 //==============================================================================
+if(($_SESSION['statut']=='professeur')&&(getSettingAOui('active_mod_abs_prof'))&&(getSettingAOui('AbsProfAutoriserProfPasApparaitre'))) {
+	$AbsProf_jamais_remplacer=getPref($_SESSION['login'], 'AbsProf_jamais_remplacer', 'n');
+	echo "<a name='mod_abs_prof'></a><form name='form_mod_abs_prof' method='post' action='".$_SERVER['PHP_SELF']."#mod_abs_prof'>\n";
+	echo add_token_field();
+	echo "<fieldset class='fieldset_opacite50'>\n";
+	echo "<legend style='border: 1px solid grey; background-color: white; ";
+	echo "'>Module Absences et remplacements de professeurs</legend>\n";
+	echo "<p>Remplacer des collègues pour une absence ponctuelle peut rendre service en déchargeant la permanence et en coupant l'herbe sous le pied des parents médisants quant aux absences de professeurs;).<br />
+	Vous pouvez toujours refuser les propositions de remplacement qui vous sont faites.<br />
+	L'établissement vous autorise même à ne pas apparaître dans la liste des personnes auxquelles proposer d'effectuer un remplacement&nbsp;: <br />\n";
+	echo "<input type='checkbox' name='AbsProf_jamais_remplacer' id='AbsProf_jamais_remplacer' value='$AbsProf_jamais_remplacer' tabindex='$tabindex' onchange=\"changement(); checkbox_change(this.id);\" ".(($AbsProf_jamais_remplacer=="y") ? "checked" : "")." /><label for='AbsProf_jamais_remplacer' id='texte_AbsProf_jamais_remplacer'> Ne pas apparaître dans la liste des candidats potentiels pour effectuer des remplacements</label><br />\n";
+	$tabindex++;
+	echo "<input type='hidden' name='validation_form_abs_prof' value='y' />\n";
+	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+	$tabindex++;
+	echo "</p>\n";
+
+	if(isset($message_mod_abs_prof)) {echo $message_mod_abs_prof;}
+
+	echo "</fieldset>\n";
+	echo "</form>\n";
+	echo "<br/>\n";
+}
+//==============================================================================
 //debug_var();
 $chaine_champs_checkbox_mod_discipline="";
 $tab_statuts_mod_discipline=array('professeur', 'administrateur', 'scolarite', 'cpe');
@@ -3771,7 +3816,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);

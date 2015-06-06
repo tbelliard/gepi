@@ -922,11 +922,14 @@ $tab_jour_u[5]="vendredi";
 $tab_jour_u[6]="samedi";
 $tab_jour_u[7]="dimanche";
 
-// 20150420
 $AbsProfGroupesClasseSeulement=getSettingValue('AbsProfGroupesClasseSeulement');
 
-$tab_profs_exclus_des_propositions_de_remplacement=get_tab_profs_exclus_des_propositions_de_remplacement();
+$tmp_tab_profs_exclus_des_propositions_de_remplacement=get_tab_profs_exclus_des_propositions_de_remplacement();
+$tab_profs_refusant_toute_proposition_de_remplacement=get_tab_profs_refusant_toute_proposition_de_remplacement();
+$tab_profs_exclus_des_propositions_de_remplacement=array_merge($tmp_tab_profs_exclus_des_propositions_de_remplacement, $tab_profs_refusant_toute_proposition_de_remplacement);
+
 $tab_matieres_exclues_des_propositions_de_remplacement=get_tab_matieres_exclues_des_propositions_de_remplacement();
+
 /*
 echo "<pre>";
 print_r($tab_profs_exclus_des_propositions_de_remplacement);

@@ -217,6 +217,19 @@
 	  </label>
 	</p>
 
+	<p>
+	  <input type="checkbox" 
+			 name="AbsProfAutoriserProfPasApparaitre" 
+			 id='AbsProfAutoriserProfPasApparaitre' 
+			 value="yes" 
+			<?php if (getSettingAOui("AbsProfAutoriserProfPasApparaitre")) echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='AbsProfAutoriserProfPasApparaitre' style='cursor: pointer;'>
+		Autoriser les professeurs choisir de ne pas apparaître du tout dans la liste des propositions de remplacement.<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;(<em>choix (pour le professeur) à effectuer dans 'Gérer mon compte'</em>)
+	  </label>
+	</p>
+
 	<p class="center">
 	  <input type="submit" value="Enregistrer" />
 	</p>

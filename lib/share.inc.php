@@ -12292,6 +12292,22 @@ function get_tab_matieres_exclues_des_propositions_de_remplacement() {
 	return $tab;
 }
 
+function get_tab_profs_refusant_toute_proposition_de_remplacement() {
+	$tab=array();
+
+	if((getSettingAOui('active_mod_abs_prof'))&&(getSettingAOui('AbsProfAutoriserProfPasApparaitre'))) {
+		$sql="SELECT login FROM preferences WHERE name='AbsProf_jamais_remplacer';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab[]=$lig->login;
+			}
+		}
+	}
+
+	return $tab;
+}
+
 function get_tab_jours_vacances($id_classe='') {
 	$tab=array();
 

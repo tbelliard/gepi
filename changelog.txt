@@ -13,6 +13,7 @@ Abs2:
 
 Absence et remplacement de professeurs:
 - Possibilité de ne pas afficher de case à cocher pour ne pas proposer de remplacer des enseignements qui ne correspondent pas à des groupes-classes.
+- Possibilité d'autoriser les professeurs à refuser d'apparaître dans la liste des candidats potentiels pour effectuer un remplacement.
 
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
