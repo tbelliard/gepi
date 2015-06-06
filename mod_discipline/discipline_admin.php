@@ -149,6 +149,9 @@ if(isset($_POST['suppr_doc_joints'])) {
 	}
 }
 
+if(!is_dir($dossier_documents_discipline)) {
+	mkdir($dossier_documents_discipline);
+}
 $handle=opendir($dossier_documents_discipline);
 $nombre_de_dossiers_de_documents_discipline=0;
 while ($file = readdir($handle)) {
