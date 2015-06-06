@@ -141,11 +141,17 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 	elseif($_SESSION['statut']=='cpe') {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		if(getSettingAOui('GepiAccesTouteFicheEleveCpe')) {
+			$sql2="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
+		}
 	}
 	elseif($_SESSION['statut']=='scolarite') {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
 		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		if(getSettingAOui('GepiAccesTouteFicheEleveScolarite')) {
+			$sql2="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY classe";
+		}
 	}
 	else{
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
@@ -155,12 +161,18 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 
+	if((mysqli_num_rows($result_classes)==0)&&(isset($sql2))) {
+		$result_classes=mysqli_query($GLOBALS["mysqli"], $sql2);
+		$nb_classes = mysqli_num_rows($result_classes);
+	}
+	//echo "\$sql2=$sql2<br />";
 	if(mysqli_num_rows($result_classes)==0) {
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
 	else {
+		$tab_classes_deja=array();
 		$nb_classes=mysqli_num_rows($result_classes);
-		$nb_class_par_colonne=round($nb_classes/3);
+		$nb_class_par_colonne=round($nb_classes/2);
 		echo "<table width='100%'>\n";
 		echo "<tr valign='top' align='left'>\n";
 		$cpt=0;
@@ -192,12 +204,69 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 				}
 				echo "</tr>\n";
 			}
+			$tab_classes_deja[]=$lig_class->id;
 			$cpt++;
 		}
 		echo "</table>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
+
+		if(isset($sql2)) {
+			$result_classes=mysqli_query($GLOBALS["mysqli"], $sql2);
+			$nb_classes = mysqli_num_rows($result_classes);
+
+			$tab_autres_classes=array();
+			while($lig_class=mysqli_fetch_object($result_classes)) {
+				if(!in_array($lig_class->id, $tab_classes_deja)) {
+					$tab_autres_classes[$lig_class->id]=$lig_class->classe;
+				}
+			}
+
+			if(count($tab_autres_classes)>0) {
+				echo "<p>Voici les autres classes (<em>celles dont vous n'êtes pas 'responsable' privilégié</em>)&nbsp;:</p>";
+
+				$nb_class_par_colonne=round(count($tab_autres_classes)/2);
+				echo "<table width='100%'>\n";
+				echo "<tr valign='top' align='left'>\n";
+				$cpt=0;
+				echo "<td>\n";
+				echo "<table border='0'>\n";
+				foreach($tab_autres_classes as $current_id_classe => $current_classe) {
+					if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)) {
+						echo "</table>\n";
+						echo "</td>\n";
+						//echo "<td style='padding: 0 10px 0 10px'>\n";
+						echo "<td>\n";
+						echo "<table border='0'>\n";
+					}
+
+					$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode";
+					$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					if(mysqli_num_rows($res_per)==0) {
+						echo "<p>ERREUR: Aucune période n'est définie pour la classe $current_classe</p>\n";
+						echo "</body></html>\n";
+						die();
+					}
+					else{
+						echo "<tr>\n";
+						echo "<td>$current_classe</td>\n";
+						while($lig_per=mysqli_fetch_object($res_per)) {
+							echo "<td> - <a href='popup.php?id_classe=$current_id_classe&amp;periode_num=$lig_per->num_periode' onclick=\"ouvre_popup_visu_groupe('VIE_SCOLAIRE','$current_id_classe','$lig_per->num_periode');return false;\" target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+						}
+						echo "</tr>\n";
+					}
+					$cpt++;
+				}
+				echo "</table>\n";
+				echo "</td>\n";
+				echo "</tr>\n";
+				echo "</table>\n";
+
+			}
+		}
+
 	}
 //}
 
