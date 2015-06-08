@@ -657,7 +657,9 @@ if ($insert_mass_appreciation_type=="y") {
 		}
 
 		echo "<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "Insérer l'avis-type suivant pour tous les avis vides&nbsp;: ";
+		echo "<p>Insérer l'avis-type suivant<br />
+<input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_vide' value='vide' checked /><label for='insert_mass_appreciation_type_mode_vide'>pour tous les avis vides</label><br />
+<input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_ajout' value='ajout' /><label for='insert_mass_appreciation_type_mode_ajout'>en complément des avis</label><br />";
 		echo "<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
 
 		echo "<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
@@ -669,12 +671,23 @@ if ($insert_mass_appreciation_type=="y") {
 
 		echo "<script type='text/javascript'>
 	function ajoute_a_textarea_vide() {
+		if(document.getElementById('insert_mass_appreciation_type_mode_vide').checked==true) {
+			mode_insert='vide';
+		}
+		else {
+			mode_insert='ajout';
+		}
 		champs_textarea=document.getElementsByTagName('textarea');
 		//alert('champs_textarea.length='+champs_textarea.length);
 		for(i=0;i<champs_textarea.length;i++){
 			if(champs_textarea[i].name!='no_anti_inject_ajout_a_textarea_vide') {
-				if(champs_textarea[i].value=='') {
+				if((mode_insert=='vide')&&(champs_textarea[i].value=='')) {
 					champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+				}
+				else {
+					if(mode_insert=='ajout') {
+						champs_textarea[i].value+=document.getElementById('ajout_a_textarea_vide').value;
+					}
 				}
 			}
 		}
