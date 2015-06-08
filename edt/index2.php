@@ -192,7 +192,7 @@ if($affichage!="semaine") {
 //===================================================
 if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
 	//$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
-	$num_semaine_annee=strftime("%V")."|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
+	$num_semaine_annee=strftime("%V")."|".((strftime("%m")>7) ? (strftime("%Y")-1) : strftime("%Y"));
 }
 //===================================================
 if($affichage=="semaine") {
