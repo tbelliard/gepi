@@ -3978,29 +3978,66 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 
 
 
+			/*
+			debug_var();
 
-
+			echo "display_errors=".ini_get('display_errors')."<br />";
+			echo "log_errors=".ini_get('log_errors')."<br />";
+			echo "error_reporting=".ini_get('error_reporting')."<br />";
+			*/
 
 			// Graphe:
 			echo "<a name='graph'></a>\n";
-			//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
-			//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_data=3'>";
-			//echo "<p>img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'</p>";
-			//echo "<img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe'>";
-			//echo "<img src='draw_artichow_fig7.php?&temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=$eleve2&compteur=$compteur&nb_series=$nb_series&id_classe=$id_classe&mgen1=$mgen[1]&mgen2=$mgen[2]&largeur_graphe=$largeur_graphe&hauteur_graphe=$hauteur_graphe&taille_police=$taille_police'>";
-
-			//echo "<a href=\"javascript:document.getElementById('div_matiere_2').style.display=''\" onMouseover=\"document.getElementById('div_matiere_2').style.display=''\" onMouseout=\"document.getElementById('div_matiere_2').style.display='none'\">";
-
-			//echo "\$type_graphe=".$type_graphe."<br />\n";
 
 			if($type_graphe=='courbe') {
 				if(count($matiere)>0) {
 
 					if($mode_graphe=='png') {
+
+						//+++++++++++++++++++++++++++++++++
+						/*
+						$alea_graphe=strftime("%Y%m%d%H%M%S")."_".rand();
+						$tmp_tab=array('temp1' => $serie[1],
+							'temp2' => $serie[2],
+							'etiquette' => $liste_matieres,
+							'titre' => $graph_title,
+							'v_legend1' => $eleve1,
+							'v_legend2' => $eleve2,
+							'compteur' => $compteur,
+							'nb_series' => $nb_series,
+							'id_classe' => $id_classe,
+							'periode' => rawurlencode($periode),
+							'largeur_graphe' => $largeur_graphe,
+							'hauteur_graphe' => $hauteur_graphe,
+							'taille_police' => $taille_police,
+							'epaisseur_traits' => $epaisseur_traits,
+							'epaisseur_croissante_traits_periodes' => $epaisseur_croissante_traits_periodes,
+							'tronquer_nom_court' => $tronquer_nom_court,
+							'temoin_image_escalier' => $temoin_image_escalier);
+						if($affiche_mgen=='oui') {
+							$tmp_tab['mgen1']=$mgen[1];
+							$tmp_tab['mgen2']=$mgen[2];
+						}
+						//echo "&amp;periode=$periode";
+						if($affiche_minmax=="oui") {
+							$tmp_tab['seriemin']=$seriemin;
+							$tmp_tab['seriemax']=$seriemax;
+						}
+						if($affiche_moy_classe!='oui') {
+							$tmp_tab['avec_moy_classe']="n";
+						}
+						$_SESSION['graphe_tab_'.$alea_graphe]=$tmp_tab;
+						echo "<img src='draw_graphe_test.php?alea_graphe=$alea_graphe'";
+						echo " style='border: 1px solid black;' height='$hauteur_graphe' width='$largeur_graphe' alt='Graphe' ";
+						echo "usemap='#imagemap' ";
+						echo "/>\n";
+						*/
+						//+++++++++++++++++++++++++++++++++
+
 						echo "<img src='draw_graphe.php?";
 						//echo "&amp;temp1=$serie[1]";
-						echo "temp1=$serie[1]";
-						echo "&amp;temp2=$serie[2]";
+						echo "temp1=".$serie[1];
+						echo "&amp;temp2=".$serie[2];
 						echo "&amp;etiquette=$liste_matieres";
 						echo "&amp;titre=$graph_title";
 						echo "&amp;v_legend1=$eleve1";
@@ -4009,8 +4046,8 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 						echo "&amp;nb_series=$nb_series";
 						echo "&amp;id_classe=$id_classe";
 						if($affiche_mgen=='oui') {
-							echo "&amp;mgen1=$mgen[1]";
-							echo "&amp;mgen2=$mgen[2]";
+							echo "&amp;mgen1=".$mgen[1];
+							echo "&amp;mgen2=".$mgen[2];
 						}
 						//echo "&amp;periode=$periode";
 						echo "&amp;periode=".rawurlencode($periode);
@@ -5508,10 +5545,12 @@ function div_cmnt_type() {
 			$retour_lignes_cmnt_type.="Commentaires-types";
 			$retour_lignes_cmnt_type.="</div>\n";
 
-			$retour_lignes_cmnt_type.="<div style='height: 9em; overflow: auto;'>\n";
+			$retour_lignes_cmnt_type.="<div style='height: 9em; overflow: auto;' class='boireaus'>\n";
 			$cpt=0;
+			$alt=1;
 			while($ligne_commentaire=mysqli_fetch_object($resultat_commentaire)) {
-				$retour_lignes_cmnt_type.="<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
+				$alt=$alt*(-1);
+				$retour_lignes_cmnt_type.="<div class='lig$alt' style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
 				if(preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
