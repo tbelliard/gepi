@@ -2533,6 +2533,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 			else {
 				$chaine_nom_enseignement="";
 				$chaine_matiere="";
+				$chaine_liste_classes="";
 
 				$chaine_noms_profs="";
 				$chaine_proflist_string="";
@@ -2566,6 +2567,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
 					}
 					$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+
+					$chaine_liste_classes=$current_group['classlist_string'];
 
 					$cpt_prof=0;
 					foreach($current_group['profs']['users'] as $current_prof_login => $current_prof) {
@@ -2683,8 +2686,18 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					$chaine_salle_courante="<br /><span style='font-size:".$font_size3."pt;' title=\"Salle ".$tab_salle['indice'][$lig->id_salle]['designation_complete']."\">".$tab_salle['indice'][$lig->id_salle]['designation_courte']."</span>";
 				}
 
-				$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
+				if($type_affichage=="prof") {
+					$liste_classes="";
+					if($chaine_liste_classes!="") {
+						$liste_classes="<br />".$chaine_liste_classes;
+					}
+					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span>".$liste_classes.$chaine_salle_courante;
+				}
+				else {
+					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
 				<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
+				}
+
 				if(($lig->id_semaine!='0')&&($lig->id_semaine!='')) {
 					$contenu_cellule.=" <span class='fieldset_opacite50' style='float:right; font-size:".$font_size2."pt;' title=\"Semaine ".$lig->id_semaine."\">".$lig->id_semaine."</span>";
 				}
