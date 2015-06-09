@@ -183,10 +183,10 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			if((!isset($tmp_group["visibilite"]["cahier_notes"]))||($tmp_group["visibilite"]["cahier_notes"]=='y')) {
 				$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_notes/index.php?id_groupe='.$tmp_group['id'];
 				if($nom_ou_description_groupe_barre_h=='name') {
-					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+					$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['name'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
 				}
 				else {
-					$tmp_sous_menu[$cpt_sous_menu]['texte']=$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)';
+					$tmp_sous_menu[$cpt_sous_menu]['texte']="<span title=\"Cahier de notes de cet enseignement.\nVous pouvez:\n- y saisir des notes,\n- imprimer votre carnet de notes pour telle période,\n- ou en récapitulatif de toute l'année.\">".$tmp_group['description'].' (<em>'.$tmp_group['classlist_string'].'</em>)</span>';
 				}
 				if($utiliserMenuBarreLight=="no") {
 					$tmp_sous_menu2=array();
