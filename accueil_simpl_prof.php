@@ -941,14 +941,17 @@ for($i=0;$i<count($groups);$i++){
 						if($class_style!="deverrouille") {
 							if(acces_exceptionnel_saisie_bull_note_groupe_periode($groups[$i]['id'], $j)) {
 								echo "<td style='background-color:orange;' title='Accès exceptionnellement ouvert'>\n";
+								$image="bulletin_saisie.png";
 							}
 							else {
 								echo "<td class='$class_style'>\n";
+								$image="bulletin_visu.png";
 							}
 						}
 						else {
 							//echo "<td class='$class_style'>\n";
 							echo "<td>\n";
+								$image="bulletin_saisie.png";
 						}
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
 							echo "<div id='h_bn_".$i."_".$j."'>";
@@ -957,7 +960,7 @@ for($i=0;$i<count($groups);$i++){
 								echo " onmouseover=\"afficher_div('info_bn_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_bn_".$i."_".$j."');\"";
 							}
 							echo ">";
-							echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Notes' border='0' />";
+							echo "<img src='images/icons/$image' width='32' height='34' alt='Notes' border='0' />";
 							echo "</a>";
 
 							echo "<br />\n";
@@ -982,13 +985,16 @@ for($i=0;$i<count($groups);$i++){
 						if($class_style!="deverrouille") {
 							if(acces_exceptionnel_saisie_bull_app_groupe_periode($groups[$i]['id'], $j)) {
 								echo "<td style='background-color:orange;' title='Accès exceptionnellement ouvert'>\n";
+								$image="bulletin_saisie.png";
 							}
 							else {
 								echo "<td class='$class_style'>\n";
+								$image="bulletin_visu.png";
 							}
 						}
 						else {
 							echo "<td>\n";
+								$image="bulletin_saisie.png";
 						}
 						echo "<div id='h_ba_".$i."_".$j."'>";
 						if(!in_array($groups[$i]['id'],$invisibilite_groupe['bulletins'])) {
@@ -997,7 +1003,7 @@ for($i=0;$i<count($groups);$i++){
 								echo " onmouseover=\"afficher_div('info_ba_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_ba_".$i."_".$j."');\"";
 							}
 							echo ">";
-							echo "<img src='images/icons/bulletin.png' width='32' height='34' alt='Appréciations' border='0' />";
+							echo "<img src='images/icons/$image' width='32' height='34' alt='Appréciations' border='0' />";
 							echo "</a>";
 							echo "<br />\n";
 		
@@ -1156,24 +1162,46 @@ for($i=0;$i<count($groups);$i++){
 	if($afficher_col_notanet=="y") {
 		if((isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']))||(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']))) {
 
+			//$sql="SELECT DISTINCT login FROM notanet_saisie ns, j_eleves_groupes jeg WHERE jeg.login=ns.login AND jeg.id_groupe='".$groups[$i]['id']."';";
+			$sql_notes="SELECT DISTINCT ns.login FROM notanet_saisie ns, j_eleves_groupes jeg WHERE jeg.login=ns.login AND ns.note!='' AND jeg.id_groupe='".$groups[$i]['id']."';";
+			$nb_note=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql_notes));
+
+			$sql_app="SELECT DISTINCT na.login FROM notanet_app na, j_eleves_groupes jeg WHERE jeg.login=na.login AND na.appreciation!='' AND jeg.id_groupe='".$groups[$i]['id']."';";
+			$nb_app=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql_app));
+
+			$sql_ele="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$groups[$i]['id']."' and periode=(SELECT max(periode) FROM j_eleves_groupes WHERE id_groupe='".$groups[$i]['id']."');";
+			$nb_ele=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], $sql_ele));
+			if($nb_note==$nb_ele) {
+				$chaine_remplissage_note="<br /><span style='font-size:x-small'>($nb_note/$nb_ele)</span>";
+			}
+			else {
+				$chaine_remplissage_note="<br /><span style='color:red;font-size:x-small'>($nb_note/$nb_ele)</span>";
+			}
+			if($nb_app==$nb_ele) {
+				$chaine_remplissage_app="<br /><span style='font-size:x-small'>$nb_app/$nb_ele</span>";
+			}
+			else {
+				$chaine_remplissage_app="<br /><span style='color:red;font-size:x-small'>$nb_app/$nb_ele</span>";
+			}
+
 			if(((isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']))&&($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N"))||((isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']))&&($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']=="N"))) {
 				echo "<td class='deverrouille'>";
 
 				if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
 					if($tab_groupes_notanet[$groups[$i]['id']]['verrouillage']=="N") {
-						echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les appréciations pour les Fiches Brevet\" /></a>";
+						echo "<div style='float:left;width:34px;'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_app_saisie.png' width='34' height='34' title=\"Saisir les appréciations pour les Fiches Brevet\" /></a>".$chaine_remplissage_app."</div>";
 					}
 					else {
-						echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n";
+						echo "<div style='float:left;width:34px;'><a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_app_visu.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n".$chaine_remplissage_app."</div>";
 					}
 				}
 
 				if(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage'])) {
 					if($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage']=="N") {
-						echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_edit.png' width='34' height='34' title=\"Saisir les notes pour les Notanet et les Fiches Brevet\" /></a>";
+						echo "<div style='float:left;width:34px;'> <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_note_saisie.png' width='34' height='34' title=\"Saisir les notes pour les Notanet et les Fiches Brevet\" /></a>".$chaine_remplissage_note."</div>";
 					}
 					else {
-						echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n";
+						echo "<div style='float:left;width:34px;'> <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_note_visu.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n".$chaine_remplissage_note."</div>";
 					}
 				}
 
@@ -1184,11 +1212,11 @@ for($i=0;$i<count($groups);$i++){
 				//echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>";
 
 				if(isset($tab_groupes_notanet[$groups[$i]['id']]['verrouillage'])) {
-					echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n";
+					echo "<a href='./mod_notanet/saisie_app.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_app_visu.png' width='34' height='34' title=\"Consulter vos appréciations pour les Fiches Brevet\" /></a>\n".$chaine_remplissage_app;
 				}
 
 				if(isset($tab_groupes_notanet_saisie_note[$groups[$i]['id']]['verrouillage'])) {
-					echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/chercher.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n";
+					echo " <a href='./mod_notanet/saisie_notes.php?id_groupe=".$groups[$i]['id']."'><img src='./images/icons/bulletin_note_visu.png' width='34' height='34' title=\"Consulter vos notes pour Notanet et les Fiches Brevet\" /></a>\n".$chaine_remplissage_note;
 				}
 
 				echo "</td>\n";
