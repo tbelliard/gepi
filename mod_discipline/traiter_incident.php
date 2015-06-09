@@ -1471,7 +1471,7 @@ echo "		}
 					}
 				}
 				if(($identite_trouvee=='y')&&((peut_poster_message($_SESSION['statut'])))) {
-					echo "<a href='$gepiPath/mod_alerte/form_message.php?login_dest=".$lig->declarant."&amp;sujet=".ucfirst($mod_disc_terme_incident)." du $date_declaration_incident&amp;id_incident=$lig->id_incident".add_token_in_url()."' title='Déposer un message dans le module Alertes de Gepi' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Alerter' /></a>";
+					echo "<a href='$gepiPath/mod_alerte/form_message.php?login_dest=".$lig->declarant."&amp;sujet=".ucfirst($mod_disc_terme_incident)." du $date_declaration_incident&amp;id_incident=$lig->id_incident".add_token_in_url()."' title='Déposer un message dans le module Alertes de Gepi' target='_blank'><img src='../images/icons/$icone_deposer_alerte' width='16' height='16' alt='Alerter' /></a>";
 				}
 				echo "</td>\n";
 			}

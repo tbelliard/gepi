@@ -1626,7 +1626,7 @@ if ($eleve['creneau_courant'] == $i) { ?>
 						<td class="commentaire">
 							<?php
 								if((getSettingAOui("active_mod_alerte"))&&(check_mae($_SESSION['login']))) {
-									echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[".$designation_classe_groupe_ou_aid."]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/mail.png' class='icone16' alt='Alerter' /></a></div>";
+									echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[".$designation_classe_groupe_ou_aid."]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a></div>";
 								}
 							?>
 							<label for="commentaire_absence_eleve_<?php echo $eleve['position']; ?>">Commentaire :</label>

@@ -444,6 +444,7 @@ function EdtDuJourHorizontal($tab_data, $jour, $flags)
 // =============================================================================
 function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $period) 
 {
+	global $icone_deposer_alerte;
 	$peut_poster_message=peut_poster_message($_SESSION['statut']);
     echo ("<div class=\"fenetre\">\n");
 
@@ -546,9 +547,6 @@ function AfficherEDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $per
 						if((isset($tab_data[$jour]['heuredebut'][$index_box]))&&($tab_data[$jour]['heuredebut'][$index_box]!='')) {
 							echo "&amp;heure_visibilite=".$tab_data[$jour]['heuredebut'][$index_box];
 						}
-						// Icone du module Alertes
-						//$icone_deposer_alerte="no_mail.png";
-						$icone_deposer_alerte="module_alerte32.png";
 						echo add_token_in_url()."' target='_blank' title=\"Déposer pour ce professeur un message\ndans le module Alertes/Informations de Gepi\"><img src='../images/icons/$icone_deposer_alerte' width='10' height='10' /></a></div>";
 					}
 				}

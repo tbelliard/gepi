@@ -261,4 +261,7 @@ $message_cnil_bons_usages.="<strong>Règle n° 2 :</strong> Rédiger des comment
 $message_cnil_bons_usages.="<br />";
 $message_cnil_bons_usages.="Pour plus de détails, consultez <a href='http://www.cnil.fr/la-cnil/actualite/article/article/zones-bloc-note-et-commentaires-les-bons-reflexes-pour-ne-pas-deraper/' target='_blank'>l'article de la CNIL</a>?<br /><br />";
 
+// Icone du module Alertes
+//$icone_deposer_alerte="mail.png";
+$icone_deposer_alerte="module_alerte32.png";
 ?>

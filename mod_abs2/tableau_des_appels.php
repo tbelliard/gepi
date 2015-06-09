@@ -223,7 +223,7 @@ foreach($classe_col as $classe){
 //		</td>';
 	echo '	<td>';
 	if((getSettingAOui('active_mod_alerte'))&&(getSettingAOui('PeutPosterMessage'.ucfirst($_SESSION['statut'])))) {
-		echo "<div style='float:right; width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=L appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." n a pas été effectué.' target='_blank'><img src='../images/icons/mail.png' width='16' height='16' title=\"Rédiger un message à propos de la classe de ".$classe->getNom().".\" /></a></div>";
+		echo "<div style='float:right; width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."&message=L appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." n a pas été effectué.' target='_blank'><img src='../images/icons/$icone_deposer_alerte' width='16' height='16' title=\"Rédiger un message à propos de la classe de ".$classe->getNom().".\" /></a></div>";
 	}
 
 	if((getSettingAOui('autorise_edt_tous'))||
@@ -342,7 +342,7 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 					onclick=\"envoi_rappel_appel($cpt_user,
 												'".$edtCours->getUtilisateurProfessionnel()->getLogin()."', 
 												'".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')." : Appel en ".$classe->getNom()."', 
-												'Sauf erreur, vous avez oublié de faire l appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')."');return false;\"><img src='../images/icons/mail.png' width='16' height='16' title='Envoyer un rappel.' /></a></span>";
+												'Sauf erreur, vous avez oublié de faire l appel en ".$classe->getNom()." sur le créneau ".$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i')."-".$choix_creneau_obj->getHeurefinDefiniePeriode('H:i')."');return false;\"><img src='../images/icons/$icone_deposer_alerte' width='16' height='16' title='Envoyer un rappel.' /></a></span>";
 				}
 			}
 			$cpt_user++;
