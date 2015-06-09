@@ -331,7 +331,61 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
     return FALSE;
 }
 
+function get_tab_aid($id_aid) {
+	$tab_aid=array();
 
+	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet FROM aid a, 
+											aid_config ac 
+										WHERE a.indice_aid=ac.indice_aid AND 
+											a.id='".$id_aid."';";
+	$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid)==0) {
+		$tab_aid['nom_general_court']="AID";
+		$tab_aid['nom_general_complet']="AID";
+		$tab_aid['nom_aid']="AID";
+		$tab_aid['proflist_string']="...";
+		$tab_aid['classes']=array();
+	}
+	else {
+		$lig_aid=mysqli_fetch_object($res_aid);
+
+		$tab_aid['nom_general_court']=$lig_aid->nom;
+		$tab_aid['nom_general_complet']=$lig_aid->nom_complet;
+		$tab_aid['nom_aid']=$lig_aid->nom_aid;
+
+		$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
+											WHERE u.login=jau.id_utilisateur AND 
+												jau.id_aid='".$id_aid."'
+											ORDER BY u.nom, u.prenom;";
+		$res_aid_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid_prof)==0) {
+			$tab_aid['proflist_string']="...";
+		}
+		else {
+			$tab_aid['proflist_string']="";
+			$cpt_aid_prof=0;
+			while($lig_aid_prof=mysqli_fetch_object($res_aid_prof)) {
+				if($cpt_aid_prof>0) {
+					$tab_aid['proflist_string'].=", ";
+				}
+				$tab_aid['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
+				$cpt_aid_prof++;
+			}
+		}
+
+		// A FAIRE : récupérer les classes d'après les élèves inscrits
+		$tab_aid['classes']=array();
+		$sql="SELECT DISTINCT c.* FROM classes c, ";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab_aid['classes'][$lig["id"]]=$lig;
+			}
+		}
+	}
+
+	return $tab_aid;
+}
 
 
 ?>

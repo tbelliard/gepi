@@ -248,6 +248,10 @@ if($no_entete=="y") {
 $mode_infobulle=isset($_POST['mode_infobulle']) ? $_POST['mode_infobulle'] : (isset($_GET['mode_infobulle']) ? $_GET['mode_infobulle'] : "n");
 if($mode_infobulle=="n") {
 	require_once("../lib/header.inc.php");
+
+	if(acces("/edt/index2.php", $_SESSION['statut'])) {
+		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php'><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a></div>";
+	}
 }
 
 require_once("./voir_edt_view.php");

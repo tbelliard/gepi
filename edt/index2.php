@@ -65,6 +65,110 @@ $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_
 $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET['login_eleve']) ? $_GET['login_eleve'] : NULL);
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
 
+
+if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_cours']))) {
+	$sql="SELECT * FROM edt_cours ec, edt_creneaux ecr WHERE ec.id_cours='".$_GET['id_cours']."' AND ec.id_definie_periode=ecr.id_definie_periode;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<p style='color:red'>Cours n°".$_GET['id_cours']." non trouvé.</p>";
+	}
+	else {
+		$lig=mysqli_fetch_object($res);
+
+		// Afficher des détails sur le créneau
+		echo "<p>Cours du ".$lig->jour_semaine;
+		if($lig->heuredeb_dec==0) {
+			if($lig->duree==2) {
+				echo " en ".$lig->nom_definie_periode;
+				echo " (<em>".preg_replace("/:[0-9]*$/", "", $lig->heuredebut_definie_periode)."-&gt;".preg_replace("/:[0-9]*$/", "", $lig->heurefin_definie_periode)."</em>)";
+			}
+			else {
+				echo " commençant en ".$lig->nom_definie_periode." pour une durée de ".($lig->duree/2)."h.";
+			}
+
+
+
+
+			$hms=$lig->heuredebut_definie_periode;
+
+
+
+
+		}
+		else {
+			echo " commençant en milieu de créneau ".$lig->nom_definie_periode;
+			echo " pour une durée de ".($lig->duree/2)."h.";
+
+
+
+
+			$hms=$lig->heuredebut_definie_periode;
+
+// OU mktime créer une date avec heure, min,...
+
+		}
+		echo "</p>";
+
+		if($lig->id_groupe!=0) {
+			$current_group=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
+			$info_grp=get_info_grp($lig->id_groupe);
+			echo "<p>".$info_grp."</p>";
+
+			echo "<p>Voir l'EDT de la classe&nbsp: ";
+			$cpt_classe=0;
+			foreach($current_group['classes']['classes'] as $current_id_classe => $current_classe) {
+				if($cpt_classe>0) {
+					echo " - ";
+				}
+				//echo "<a href='".$_SERVER['PHP_SELF']."?login_prof=$login_prof&amp;id_classe=$current_id_classe&amp;type_affichage=$type_affichage&amp;login_eleve=$login_eleve&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' /></a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+				$cpt_classe++;
+			}
+			echo "</p>";
+		}
+		elseif($lig->id_aid!=0) {
+			$tab_aid=get_tab_aid($lig->id_aid);
+
+			echo "<p>".$tab_aid['nom_general_court']." (".$tab_aid['nom_general_complet'].") (".$tab_aid['nom_aid'].")</p>";
+
+			echo "<p>Voir l'EDT de la classe&nbsp: ";
+			$cpt_classe=0;
+			foreach($tab_aid['classes'] as $current_id_classe => $current_classe) {
+				if($cpt_classe>0) {
+					echo " - ";
+				}
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$current_id_classe&amp;type_affichage=classe&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' />".$current_classe['classe']."</a>";
+				$cpt_classe++;
+			}
+			echo "</p>";
+		}
+
+// Pour un prof afficher des liens vers le CDT, les notes,...
+
+// Pour un EDT classe, mettre des liens EDT prof,...
+
+// Afficher les infos liées à la classe (pp), edt classe,...
+
+		// Récupérer l'heure du créneau
+		if(peut_poster_message($_SESSION['statut'])) {
+			$ts=time();
+			if(mb_strtolower(strftime("%A"))!=$lig->jour_semaine) {
+				for($i=1;$i<7;$i++) {
+					$ts+=3600*24;
+					if(mb_strtolower(strftime("%A", $ts))==$lig->jour_semaine) {
+						break;
+					}
+				}
+			}
+
+			echo "<a href='../mod_alerte/form_message.php?message_envoye=y&login_dest=".$lig->login_prof."&date_visibilite=".strftime("%d/%m/%Y", $ts)."&heure_visibilite=".strftime("%H:%M:%S").add_token_in_url()."' title=\"Déposer une alerte à destination de ".civ_nom_prenom($lig->login_prof)."\" target='_blank'><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerte' />Déposer une alerte/rappel, pour ".civ_nom_prenom($lig->login_prof).", à afficher le ".strftime("%d/%m/%Y", $ts)." à ".strftime("%H:%M")."</a><br />";
+		}
+	}
+
+	die();
+}
+
 //===================================================
 // Contrôler si le jour est dans la période de l'année scolaire courante
 $ts_debut_annee=getSettingValue('begin_bookings');
@@ -192,7 +296,17 @@ if($affichage!="semaine") {
 //===================================================
 if((!isset($num_semaine_annee))||($num_semaine_annee=="")||(!preg_match("/[0-9]{2}\|[0-9]{4}/", $num_semaine_annee))) {
 	//$num_semaine_annee="36|".((strftime("%m")>7) ? strftime("%Y") : (strftime("%Y")-1));
-	$num_semaine_annee=strftime("%V")."|".((strftime("%m")>7) ? (strftime("%Y")-1) : strftime("%Y"));
+	//$num_semaine_annee=strftime("%V")."|".((strftime("%m")>7) ? (strftime("%Y")-1) : strftime("%Y"));
+	$tmp_mois_courant=strftime("%m");
+	if($tmp_mois_courant==7) {
+		$num_semaine_annee="27|".strftime("%Y");
+	}
+	elseif($tmp_mois_courant==8) {
+		$num_semaine_annee="36|".strftime("%Y");
+	}
+	else {
+		$num_semaine_annee=strftime("%V")."|".strftime("%Y");
+	}
 }
 //===================================================
 if($affichage=="semaine") {
@@ -426,7 +540,7 @@ if($mode!="afficher_edt") {
 }
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-
+//debug_var();
 function echo_selon_mode($texte) {
 	global $mode;
 
@@ -960,8 +1074,14 @@ $x1=10;
 if($mode!="afficher_edt") {
 	$y1=252;
 
-	$y_decalage_1_js=190;
-	$y_decalage_2_js=252;
+	if(isset($_SESSION['ariane'])) {
+		$y_decalage_1_js=210;
+		$y_decalage_2_js=272;
+	}
+	else {
+		$y_decalage_1_js=190;
+		$y_decalage_2_js=252;
+	}
 }
 else {
 	$y1=30;
@@ -1026,11 +1146,24 @@ $tabdiv_infobulle[]=creer_div_infobulle('edt_test',$titre_infobulle,"",$texte_in
 
 echo "<p><a href=\"javascript:afficher_div('edt_test','y',-10,20)\">Afficher en infobulle l'EDT choisi</a></p>";
 */
-echo "<script type='text/javascript'>
+
+$titre_infobulle="Action EDT";
+$texte_infobulle="<!--p>Choix&nbsp;:</p-->
+<div id='div_action_edt'></div>";
+$tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2000);
+
+echo "<!--div id='div_action_edt'></div-->
+
+<script type='text/javascript'>
 	// Action lancée lors du clic dans le div_edt
 	function action_edt_cours(id_cours) {
 		// Actuellement, aucune action n'est lancée.
 		// La fonction est là pour éviter une erreur JavaScript
+
+		new Ajax.Updater($('div_action_edt'),'".$_SERVER['PHP_SELF']."?action_js=y&id_cours='+id_cours+'&num_semaine_annee=".$num_semaine_annee."&affichage=".$affichage."',{method: 'get'});
+
+		afficher_div('infobulle_action_edt', 'y', 10, 10);
+		document.getElementById('infobulle_action_edt').style.zIndex=2000;
 	}
 
 	// Adaptation de l'emplacement vertical du div_edt
