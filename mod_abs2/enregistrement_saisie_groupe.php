@@ -378,7 +378,10 @@ for($i=0; $i<$total_eleves; $i++) {
 	    }
 
 		if(getSettingAOui('active_mod_alerte')) {
-			$message_enregistrement .= " <a href='../mod_alerte/form_message.php?sujet=[".$eleve->getClasse()->getNom()."] ".$eleve->getNom().' '.$eleve->getPrenom()."' title=\"Déposer un message d'alerte à propos de cet élève dans le module Alertes.\" target=\"_blank\"><img src='$gepiPath/images/icons/no_mail.png' class='icone16' alt='Dispositif Alertes' /></a>";
+			// Icone du module Alertes
+			//$icone_deposer_alerte="no_mail.png";
+			$icone_deposer_alerte="module_alerte32.png";
+			$message_enregistrement .= " <a href='../mod_alerte/form_message.php?sujet=[".$eleve->getClasse()->getNom()."] ".$eleve->getNom().' '.$eleve->getPrenom()."' title=\"Déposer un message d'alerte à propos de cet élève dans le module Alertes.\" target=\"_blank\"><img src='$gepiPath/images/icons/$icone_deposer_alerte' class='icone16' alt='Dispositif Alertes' /></a>";
 		}
 
 	$abs2_rattachement_auto_saisies_englobees=getSettingValue("abs2_rattachement_auto_saisies_englobees");

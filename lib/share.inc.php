@@ -8193,7 +8193,7 @@ function peut_poster_message($statut) {
 
 function affichage_temoin_messages_recus($portee="header_et_fixe") {
 	global $gepiPath;
-    global $mysqli;
+	global $mysqli;
 
 	$MessagerieDelaisTest=getSettingValue('MessagerieDelaisTest');
 	if(($MessagerieDelaisTest=='')||(!preg_match('/^[0-9]$/', $MessagerieDelaisTest))||($MessagerieDelaisTest==0)) {
@@ -8205,8 +8205,11 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 
 	$retour="";
 
+	// Mieux vaut l'enveloppe seule pour le témoin
+	$image_no_mail="no_mail.png";
+	//$image_no_mail="module_alerte32.png";
 	if(peut_poster_message($_SESSION['statut'])) {
-		$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
+		$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/$image_no_mail' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
 	}
 	else {
 		$sql="SELECT 1=1 FROM messagerie WHERE login_dest='".$_SESSION['login']."' OR login_src='".$_SESSION['login']."';";
@@ -8215,11 +8218,11 @@ function affichage_temoin_messages_recus($portee="header_et_fixe") {
 		$nb_lignes = $resultat->num_rows;
         
 		if($nb_lignes > 0) {
-			$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
+			$retour.="<span id='span_messages_recus'><a href='$gepiPath/mod_alerte/form_message.php' target='_blank'><img src='$gepiPath/images/icons/$image_no_mail' width='16' height='16' title='Aucun message' alt='Aucun message' /></a></span>";
 			$resultat->close();
 		}
 		else {
-			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/no_mail.png' width='16' height='16' title='Aucun message' alt='Aucun message' /></span>";
+			$retour.="<span id='span_messages_recus'><img src='$gepiPath/images/icons/$image_no_mail' width='16' height='16' title='Aucun message' alt='Aucun message' /></span>";
 		}
 	}
 
