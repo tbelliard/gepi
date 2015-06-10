@@ -533,74 +533,76 @@ if (!$current_group) {
 			echo "<td>\n";
 		}
 		*/
-
 			$id_classe = old_mysql_result($appel_donnees, $i, "id");
 			$aff_class = 'no';
+			$get_groups_for_class_avec_visibilite="y";
 			$groups = get_groups_for_class($id_classe,"","n");
 			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
 
 			foreach($groups as $group) {
-				$temoin_pp="no";
-				$flag2 = "no";
-				//if ($_SESSION['statut']!='scolarite') {
-				// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
-				if ($_SESSION['statut']=='professeur') {
-					$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs
-					WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
-					if (old_mysql_result($test, 0) == 1) {$flag2 = 'yes';}
+				if($group['visibilite']['bulletins']!="n") {
+					$temoin_pp="no";
+					$flag2 = "no";
+					//if ($_SESSION['statut']!='scolarite') {
+					// Seuls les comptes scolarite, professeur et secours ont accès à cette page.
+					if ($_SESSION['statut']=='professeur') {
+						$test = mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM j_groupes_professeurs
+						WHERE (id_groupe='" . $group["id"]."' and login = '" . $_SESSION["login"] . "')");
+						if (old_mysql_result($test, 0) == 1) {$flag2 = 'yes';}
 
-					if($acces_pp=="y") {
-						$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jec.id_classe=jep.id_classe AND jep.professeur='".$_SESSION['login']."' AND jec.id_classe='$id_classe';";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($test)>0) {
-							$flag2 = 'yes';
-							$temoin_pp="yes";
-						}
-					}
-				} else {
-					$flag2 = 'yes';
-				}
-
-				if ($flag2 == "yes") {
-					$display_class = old_mysql_result($appel_donnees, $i, "classe");
-					if ($aff_class == 'no') {
-						echo "<tr>\n";
-						echo "<td valign='top'>\n";
-						echo "<span class='norme'>";
-						echo "<b>$display_class</b> : ";
-						echo "</span>";
-						echo "</td>\n";
-						echo "<td>\n";
-
-						$aff_class = 'yes';
-					}
-
-					echo "<span class='norme'>";
-					echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . " </a>\n";
-
-					// pas de nom si c'est un prof qui demande la page.
-					//if ($_SESSION['statut']!='professeur') {
-					if(($_SESSION['statut']!='professeur')||($temoin_pp=="yes")) {
-						$id_groupe_en_cours = $group["id"];
-						//recherche profs du groupe
-						$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
-						$result_prof_groupe=mysqli_query($GLOBALS["mysqli"], $sql_prof_groupe);
-						echo "(";
-						$cpt=0;
-						$nb_profs = mysqli_num_rows($result_prof_groupe);
-						while($lig_prof=mysqli_fetch_object($result_prof_groupe)){
-							if (($nb_profs !=1) AND ($cpt<$nb_profs-1)){
-							echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom))." - ";
-							} else {
-							echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom));
+						if($acces_pp=="y") {
+							$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jec.id_classe=jep.id_classe AND jep.professeur='".$_SESSION['login']."' AND jec.id_classe='$id_classe';";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)>0) {
+								$flag2 = 'yes';
+								$temoin_pp="yes";
 							}
-							$cpt++;
 						}
-						echo ")";
+					} else {
+						$flag2 = 'yes';
 					}
 
-					echo "</span>\n";
-					echo "<br />\n";
+					if ($flag2 == "yes") {
+						$display_class = old_mysql_result($appel_donnees, $i, "classe");
+						if ($aff_class == 'no') {
+							echo "<tr>\n";
+							echo "<td valign='top'>\n";
+							echo "<span class='norme'>";
+							echo "<b>$display_class</b> : ";
+							echo "</span>";
+							echo "</td>\n";
+							echo "<td>\n";
+
+							$aff_class = 'yes';
+						}
+
+						echo "<span class='norme'>";
+						echo "<a href='index1.php?id_groupe=" . $group["id"] . "'>" . htmlspecialchars($group["description"]) . " </a>\n";
+
+						// pas de nom si c'est un prof qui demande la page.
+						//if ($_SESSION['statut']!='professeur') {
+						if(($_SESSION['statut']!='professeur')||($temoin_pp=="yes")) {
+							$id_groupe_en_cours = $group["id"];
+							//recherche profs du groupe
+							$sql_prof_groupe = "SELECT jgp.login,u.nom,u.prenom FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe_en_cours' AND u.login=jgp.login";
+							$result_prof_groupe=mysqli_query($GLOBALS["mysqli"], $sql_prof_groupe);
+							echo "(";
+							$cpt=0;
+							$nb_profs = mysqli_num_rows($result_prof_groupe);
+							while($lig_prof=mysqli_fetch_object($result_prof_groupe)){
+								if (($nb_profs !=1) AND ($cpt<$nb_profs-1)){
+								echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom))." - ";
+								} else {
+								echo "$lig_prof->nom ".ucfirst(mb_strtolower($lig_prof->prenom));
+								}
+								$cpt++;
+							}
+							echo ")";
+						}
+
+						echo "</span>\n";
+						echo "<br />\n";
+					}
 				}
 			}
 			//if ($flag2 == 'yes') {echo "</span><br /><br />\n";}
