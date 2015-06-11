@@ -252,7 +252,8 @@
 
 					writinfo('/tmp/infos_graphe.txt','a+',"mb_strlen(preg_replace(\"/[0-9.]/\",\"\",\$moyenne[".$k."][".$i."]))=mb_strlen(preg_replace(\"/[0-9.]/\",\"\",".$moyenne[$k][$i]."))=".mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
 
-					if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					//if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))) {
 						$total_tmp[$i]=$total_tmp[$i]+$moyenne[$k][$i];
 						$cpt++;
 					}
@@ -724,7 +725,8 @@
 				$tab_x=array();
 				$tab_y=array();
 				for($i=1;$i<$nbMat+1;$i++){
-					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+					//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))) {
 
 						$angle=round(($i-1)*360/$nbMat);
 						$tab=coordcirc($moyenne[$k][$i],$angle);
@@ -967,7 +969,14 @@
 
 				if($afficher_la_serie_courante=="y") {
 
-					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+					//if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {
+					if((($moyenne[$k][$i+1]!="")&&($moyenne[$k][$i+1]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i+1])))&&
+					(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève")))) {
+						$texte_courant=nf($moyenne[$k][$i+1]);
+					}
+					else {
+						$texte_courant=$moyenne[$k][$i+1];
+					}
 
 					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
 					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);
@@ -1212,7 +1221,14 @@
 
 				if($afficher_la_serie_courante=="y") {
 
-					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+					//if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i+1]);} else {$texte_courant=$moyenne[$k][$i+1];}
+					if((($moyenne[$k][$i+1]!="")&&($moyenne[$k][$i+1]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i+1])))&&
+					(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève")))) {
+						$texte_courant=nf($moyenne[$k][$i+1]);
+					}
+					else {
+						$texte_courant=$moyenne[$k][$i+1];
+					}
 
 					imagettftext($img, $tmp_taille_police*$rapport_imageString_imagettftext, 0, $xtmp, $ytmp, $couleureleve[$k], dirname(__FILE__)."/../fpdf/font/unifont/DejaVuSansCondensed.ttf", $texte_courant);
 					$xtmp=$xtmp+mb_strlen($texte_courant." ")*ImageFontWidth($taille_police_inf);

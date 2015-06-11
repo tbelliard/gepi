@@ -255,7 +255,9 @@
 
 					writinfo('/tmp/infos_graphe.txt','a+',"mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",\$moyenne[".$k."][".$i."]))=mb_strlen(preg_replace(\"/[0-9\.]/\",\"\",".$moyenne[$k][$i]."))=".mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
 
-					if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					//if(($moyenne[$k][$i]!='-')&&(mb_strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&(mb_strtoupper($moyenne[$k][$i])!="ABS")&&(mb_strtoupper($moyenne[$k][$i])!="AB")&&(mb_strtoupper($moyenne[$k][$i])!="DIS")&&(mb_strtoupper($moyenne[$k][$i])!="DISP")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))){
+					if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))) {
 						$total_tmp[$i]=$total_tmp[$i]+$moyenne[$k][$i];
 						$cpt++;
 					}
@@ -696,7 +698,13 @@
 
 				if($afficher_la_serie_courante=="y") {
 					$ytmp=$ytmp+15;
-					if(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève"))) {$texte_courant=nf($moyenne[$k][$i]);} else {$texte_courant=$moyenne[$k][$i];}
+					if((($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i])))&&
+					(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève")))) {
+						$texte_courant=nf($moyenne[$k][$i]);
+					}
+					else {
+						$texte_courant=$moyenne[$k][$i];
+					}
 					$largeur_texte = mb_strlen($texte_courant) * ImageFontWidth($taille_police);
 
 					$tmp=$x1-round($largeurMat/2)+round((($x2-$x1)-$largeur_texte)/2);
@@ -881,7 +889,8 @@
 				$x1=$x[$i];
 				// C'est eleve_classe.php qui envoye 0 quand il n'y a pas de note... A CHANGER...
 				//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
-				if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+				//if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&($moyenne[$k][$i]!="N.NOT")&&($moyenne[$k][$i]!="ABS")&&($moyenne[$k][$i]!="DIS")){
+				if(($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i]))) {
 					$y1=round($hauteurMoy+$hauteur-$moyenne[$k][$i]*$hauteur/20);
 					imageFilledRectangle($img,$x1-2,$y1-2,$x1+2,$y1+2,$couleureleve[$k]);
 
