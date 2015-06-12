@@ -791,10 +791,59 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
-
-
-
 	//echo "\$type_graphe=".$type_graphe."<br />\n";
+
+
+	// On évite d'initialiser à NULL pour permettre de pré-cocher le choix_periode.
+	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : "periode");
+	$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+	$num_periode_choisie=isset($_POST['num_periode_choisie']) ? $_POST['num_periode_choisie'] : (isset($_GET['num_periode_choisie']) ? $_GET['num_periode_choisie'] : NULL);
+
+	if(isset($num_periode_choisie)) {
+		$sql="SELECT nom_periode FROM periodes WHERE num_periode='$num_periode_choisie' AND id_classe='$id_classe';";
+		$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_nom_per)>0) {
+			$lig_nom_per=mysqli_fetch_object($res_nom_per);
+			$periode=$lig_nom_per->nom_periode;
+		}
+	}
+
+	if(isset($periode)) {
+		$sql="SELECT num_periode FROM periodes WHERE nom_periode='$periode' AND id_classe='$id_classe';";
+		$res_num_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_num_per)>0) {
+			$lig_num_per=mysqli_fetch_object($res_num_per);
+			$num_periode_choisie=$lig_num_per->num_periode;
+		}
+	}
+	/*
+	if(($choix_periode!='toutes_periodes')&&(isset($_POST['periode']))) {
+		$periode=$_POST['periode'];
+	}
+	else {
+	*/
+	if(($choix_periode=='toutes_periodes')||(!isset($periode))) {
+		$periode="";
+		// 20130405
+		if(isset($id_classe)) {
+			$num_periode_courante=cherche_periode_courante($id_classe, "", 1, "y");
+
+			$sql="SELECT nom_periode FROM periodes WHERE num_periode='$num_periode_courante' AND id_classe='$id_classe';";
+			$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_nom_per)>0) {
+				$periode=old_mysql_result($res_nom_per, 0, "nom_periode");
+			}
+		}
+		elseif(isset($login_eleve)) {
+			$num_periode_courante=cherche_periode_courante_eleve($login_eleve, "", 1, "y");
+
+			$sql="SELECT nom_periode FROM periodes p, j_eleves_classes jec WHERE num_periode='$num_periode_courante' AND p.id_classe=jec.id_classe AND jec.login='$login_eleve';";
+			$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_nom_per)>0) {
+				$periode=old_mysql_result($res_nom_per, 0, "nom_periode");
+			}
+		}
+	}
 
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
@@ -808,11 +857,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
+		/*
 		if(isset($_POST['choix_periode'])) {
 			echo "<input type='hidden' name='choix_periode' value='".$_POST['choix_periode']."' />\n";
 		}
 		if(isset($_POST['periode'])) {
 			echo "<input type='hidden' name='periode' value='".$_POST['periode']."' />\n";
+		}
+		$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : "periode");
+		$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+		*/
+
+		if(isset($choix_periode)) {
+			echo "<input type='hidden' name='choix_periode' value='".$choix_periode."' />\n";
+		}
+		if(isset($periode)) {
+			echo "<input type='hidden' name='periode' value='".$periode."' />\n";
 		}
 
 		echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> | <a href='index.php'>Autre outil de visualisation</a>";
@@ -924,6 +984,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			echo "</select>\n";
 		}
+
+		if(acces("/visualisation/graphes_classe.php", $_SESSION['statut'])) {
+			if((isset($num_periode_choisie))&&(preg_match("/^[0-9]{1,}$/", $num_periode_choisie))) {
+				echo " | <a href='graphes_classe.php?id_classe=$id_classe&amp;num_periode=$num_periode_choisie&amp;afficher_graphes=y'>Graphes de tous les élèves de la classe</a>";
+			}
+			else {
+				echo " | <a href='graphes_classe.php?id_classe=$id_classe&amp;num_periode=toutes&amp;afficher_graphes=y'>Graphes de tous les élèves de la classe</a>";
+			}
+		}
+
 		echo "</p>\n";
 		echo "</form>\n";
 
@@ -1017,16 +1087,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//debug_var();
 
+	/*
 	// On évite d'initialiser à NULL pour permettre de pré-cocher le choix_periode.
-	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
-	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "toutes_periodes";
-	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "periode";
-	//echo "\$choix_periode=$choix_periode<br />";
-	//if($choix_periode!='toutes_periodes') {
-	if(($choix_periode!='toutes_periodes')&&(isset($_POST['periode']))) {
-		$periode=$_POST['periode'];
+	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : (isset($_GET['choix_periode']) ? $_GET['choix_periode'] : "periode");
+	$periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+	$num_periode_choisie=isset($_POST['num_periode_choisie']) ? $_POST['num_periode_choisie'] : (isset($_GET['num_periode_choisie']) ? $_GET['num_periode_choisie'] : NULL);
+
+	if(isset($num_periode_choisie)) {
+		$sql="SELECT nom_periode FROM periodes WHERE num_periode='$num_periode_choisie' AND id_classe='$id_classe';";
+		$res_nom_per=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_nom_per)>0) {
+			$lig_nom_per=mysqli_fetch_object($res_nom_per);
+			$periode=$lig_nom_per->nom_periode;
+		}
 	}
-	else {
+	if(($choix_periode=='toutes_periodes')||(!isset($periode))) {
 		$periode="";
 		// 20130405
 		if(isset($id_classe)) {
@@ -1048,9 +1123,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 		}
 	}
-
-
-
+	*/
 	//======================================================================
 	//======================================================================
 	//======================================================================
@@ -1417,7 +1490,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	else{
 		$pref_tronquer_nom_court=getPref($_SESSION['login'],'graphe_tronquer_nom_court','');
-		if(($pref_tronquer_nom_court=='oui')||($pref_tronquer_nom_court=='non')) {
+		if(preg_match("/^[0-9]{1,}$/", $pref_tronquer_nom_court)) {
 			$tronquer_nom_court=$pref_tronquer_nom_court;
 		}
 		else {
