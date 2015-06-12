@@ -508,7 +508,7 @@ else {
 	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_classes=2'>Export au format LOGIN;CLASSE</a><br />
 	&nbsp;<br />
 	(*) Si vous faites un projet par niveau, il faudra concaténer les exports des différents projets pour effectuer une initialisation CSV.<br />
-	De plus, seul les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).<br />&nbsp;
+	De plus, seuls les élèves avec ELENOET renseigné seront exportés (<em>cela risque de ne pas être le cas pour les élèves nouveaux arrivants</em>).<br />&nbsp;
 </li>\n";
 	echo "<li><p>Exporter les associations élèves/options en CSV&nbsp;:<br />
 	<a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;csv_eleves_options=1'>Export au format requis pour l'initialisation CSV</a> c'est-à-dire ELENOET;OPTION_1!OPTION_2!OPTION_3<br /></p>
