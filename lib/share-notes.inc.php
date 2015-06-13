@@ -955,4 +955,100 @@ function get_id_cahier_notes($id_groupe,$periode) {
 	}
 	return $retour;
 }
+
+/**
+ * Retourne le tableau des notes de devoirs obtenues dans un groupe pour une période donnée
+ *
+ * @param integer $id_groupe identifant de groupe
+ * @param integer $periode numero de periode
+ *
+ * @return array
+ */
+function get_tab_notes($id_groupe, $periode) {
+	// En l'état ne pas laisser vide $periode
+	$tab=array();
+
+	$id_cahier_notes=get_id_cahier_notes($id_groupe,$periode);
+	if($id_cahier_notes!="") {
+		$sql="SELECT * FROM cn_conteneurs WHERE id_racine='".$id_cahier_notes."';";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab['conteneur'][$lig['id']]=$lig;
+			}
+		}
+
+		$sql="SELECT * FROM cn_devoirs WHERE id_racine='".$id_cahier_notes."' ORDER BY id_conteneur, date;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab['devoir'][$lig['id']]=$lig;
+
+				$sql="SELECT cnd.*,e.nom,e.prenom FROM cn_notes_devoirs cnd, eleves e WHERE id_devoir='".$lig['id']."' AND cnd.login=e.login ORDER BY e.nom,e.prenom;";
+				//echo "$sql<br />";
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res2)>0) {
+					while($lig2=mysqli_fetch_assoc($res2)) {
+						$tab['devoir'][$lig['id']]['note'][$lig2['login']]=$lig2;
+					}
+				}
+			}
+		}
+	}
+	return $tab;
+}
+
+/**
+ * Retourne le tableau des notes de devoirs obtenues pour un élève donné, dans un groupe donné, pour une période donnée
+ *
+ * @param string $login_ele login de l'élève
+ * @param integer $id_groupe identifant de groupe
+ * @param integer $periode numero de periode
+ *
+ * @return array
+ */
+function get_tab_notes_ele($login_ele, $id_groupe, $periode) {
+	// En l'état ne pas laisser vide $periode
+	$tab=array();
+
+	// On risque de donner accès à des notes non encore visibles
+	$ajout_sql="";
+	if(!in_array($_SESSION['statut'], array("scolarite", "professeur"))) {
+		$ajout_sql=" AND cd.date_ele_resp<='".strftime("%Y-%m-%d %H:%M:%S")."'";
+	}
+
+	$sql="SELECT cnd.*,cd.*,
+				cc.nom_court AS cc_nom_court,
+				cc.nom_complet AS cc_nom_complet,
+				cc.description AS cc_description,
+				cc.mode AS cc_mode, 
+				cc.coef AS cc_coef, 
+				cc.arrondir AS cc_arrondir, 
+				cc.ponderation AS cc_ponderation, 
+				cc.display_parents AS cc_display_parents, 
+				cc.display_bulletin AS display_bulletin, 
+				cc.parent AS cc_parent 
+			FROM cn_notes_devoirs cnd, 
+				cn_devoirs cd, 
+				cn_conteneurs cc, 
+				cn_cahier_notes ccn 
+			WHERE cnd.login='".$login_ele."' AND 
+				cnd.id_devoir=cd.id AND 
+				cc.id=cd.id_conteneur AND 
+				cd.id_racine= ccn.id_cahier_notes AND 
+				ccn.id_groupe='".$id_groupe."' AND 
+				ccn.periode='".$periode."'".$ajout_sql."
+			ORDER BY cd.id_conteneur, cd.date;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[$lig['id_devoir']]=$lig;
+		}
+	}
+
+	return $tab;
+}
 ?>

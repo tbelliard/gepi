@@ -1869,9 +1869,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<td>\n";
 
 			if($graphe_click_refermer_aff_app=='y') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<input type='radio' name='graphe_click_refermer_aff_app' id='graphe_click_refermer_aff_app_y' value='y'$checked /><label for='graphe_click_refermer_aff_app_y' style='cursor: pointer;'>lorsque l'on clique sur une autre colonne d'appréciation,<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou lorsqu'on clique que l'icone <img='../images/icons/close16.png' class='icone16' /> de l'entête de l'infobulle</label><br />";
+			echo "<p style='text-indent:-1.5em;margin-left:1.5em;'><input type='radio' name='graphe_click_refermer_aff_app' id='graphe_click_refermer_aff_app_y' value='y'$checked /><label for='graphe_click_refermer_aff_app_y' style='cursor: pointer;'>lorsque l'on clique sur une autre colonne d'appréciation,<br />ou lorsqu'on clique que l'icone <img='../images/icons/close16.png' class='icone16' /> de l'entête de l'infobulle</label><br />
+			<em style='font-size:x-small'>(si la correction d'appréciation est autorisée, c'est le seul choix permettant d'atteindre le bouton/lien de donnant accès à la correction)</em></p>";
 			if($graphe_click_refermer_aff_app!='y') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<input type='radio' name='graphe_click_refermer_aff_app' id='graphe_click_refermer_aff_app_n' value='n'$checked /><label for='graphe_click_refermer_aff_app_n' style='cursor: pointer;'>lorsque le pointeur de la souris quitte la colonne de l'enseignement</label>";
+			echo "<p style='text-indent:-1.5em;margin-left:1.5em;'><input type='radio' name='graphe_click_refermer_aff_app' id='graphe_click_refermer_aff_app_n' value='n'$checked /><label for='graphe_click_refermer_aff_app_n' style='cursor: pointer;'>lorsque le pointeur de la souris quitte la colonne de l'enseignement</label></p>";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -3174,6 +3175,48 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 	echo "<td width='".$largeur_graphe."px'>\n";
 	//====================================================================
 
+	// 20150613
+	if(!in_array($_SESSION['statut'], array('professeur', 'scolarite', 'cpe'))) {
+		$acces_cn=false;
+	}
+	elseif(!acces_carnet_notes($_SESSION['statut'])) {
+		$acces_cn=false;
+	}
+	elseif($_SESSION['statut']=='professeur') {
+		if(getSettingAOui('GepiAccesReleveProfToutesClasses')) {
+			$acces_cn=true;
+		}
+		elseif((getSettingAOui('GepiAccesReleveProfP'))&&(is_pp($_SESSION['login'], $id_classe, $eleve1))) {
+			$acces_cn=true;
+		}
+		elseif((getSettingAOui('GepiAccesReleveProfTousEleves'))&&(is_prof_classe_ele($_SESSION['login'], $eleve1))) {
+			$acces_cn=true;
+		}
+		elseif((getSettingAOui('GepiAccesReleveProf'))&&(is_prof_ele($_SESSION['login'], $eleve1, "", $id_classe))) {
+			$acces_cn=true;
+		}
+		else {
+			$acces_cn=false;
+		}
+	}
+	else {
+		$acces_cn=true;
+	}
+
+	$titre_infobulle="Notes";
+	$texte_infobulle="<div id='div_notes_cn'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	echo "<script type='text/javascript'>
+	//function affiche_div_notes_cn(id_groupe, periode) {
+		//new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login=$eleve1&id_groupe='+id_groupe+'&periode='+periode,{method: 'get'});
+
+	function affiche_div_notes_cn(id_groupe) {
+		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login=$eleve1&id_groupe='+id_groupe,{method: 'get'});
+
+		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
+	}
+</script>";
+
 	// Récupération des infos personnelles sur l'élève (nom, prénom, sexe, date de naissance et redoublant)
 	// Et calcul de l'age (si le serveur est à l'heure;o).
 	
@@ -3638,7 +3681,11 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 						if(mysqli_num_rows($app_eleve_query)>0) {
 							$ligtmp=mysqli_fetch_object($app_eleve_query);
 							
-							$titre_bulle="<span title=\"".$current_group[$loop]['name']." (".$current_group[$loop]['description'].") en ".$current_group[$loop]['classlist_string']." avec ".$current_group[$loop]['profs']['proflist_string']."\">".htmlspecialchars($matiere_nom[$cpt])." (<i>".htmlspecialchars($periode)."</i>)</span>";
+							$titre_bulle="<span title=\"".$current_group[$loop]['name']." (".$current_group[$loop]['description'].") en ".$current_group[$loop]['classlist_string']." avec ".$current_group[$loop]['profs']['proflist_string']."\">".htmlspecialchars($matiere_nom[$cpt])." (<i>".preg_replace("/ /","&nbsp;",htmlspecialchars($periode))."</i>)</span>";
+							// 20150613
+							if($acces_cn) {
+								$titre_bulle.=" <a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=$id_classe&choix_periode=periode&tab_periode_num[0]=$num_periode&mode_bulletin=pdf&valide_select_eleves=y&choix_parametres=effectue&tab_selection_ele_0_0[0]=$eleve1&rn_param_auto=y' title=\"Voir les notes du carnet de notes dans cet enseignement.\" onclick=\"affiche_div_notes_cn(".$current_group[$loop]['id'].");return false;\" target='_blank'><img src='../images/icons/cn_16.png' class='icone16' alt='Notes' /></a>";
+							}
 							// 20140706
 							$texte_bulle="";
 							if((isset($eleve1))&&(isset($nom1))&&(isset($prenom1))) {
@@ -4587,6 +4634,14 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 					$current_group=get_group($id_groupe[$i]);
 					$titre_bulle=htmlspecialchars($matiere_nom[$i]);
 					$titre_bulle="<span title=\"".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string']."\">".htmlspecialchars($matiere_nom[$i])."</span>";
+					// 20150613
+					if($acces_cn) {
+						$titre_bulle.=" <a href='../cahier_notes/visu_releve_notes_bis.php?tab_id_classe[0]=$id_classe&choix_periode=periode";
+						for($j=1;$j<=count($num_periode);$j++) {
+							$titre_bulle.="&tab_periode_num[".($j-1)."]=$j";
+						}
+						$titre_bulle.="&mode_bulletin=pdf&valide_select_eleves=y&choix_parametres=effectue&tab_selection_ele_0_0[0]=$eleve1&rn_param_auto=y' title=\"Voir les notes du carnet de notes dans cet enseignement.\" onclick=\"affiche_div_notes_cn(".$current_group['id'].");return false;\" target='_blank'><img src='../images/icons/cn_16.png' class='icone16' alt='Notes' /></a>";
+					}
 
 					$compteur_periodes_app_deroul=0;
 
