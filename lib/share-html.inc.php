@@ -4280,4 +4280,285 @@ function retourne_tab_html_pointages_disc($login_ele) {
 
 	return $retour;
 }
+
+function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
+	global $gepiPath, $mes_groupes;
+
+	if($target!="") {
+		$target=" target='$target'";
+	}
+
+	$sql="SELECT c.classe, p.* FROM periodes p, classes c WHERE p.id_classe='$id_classe' AND p.id_classe=c.id ORDER BY p.num_periode;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: <span style='color:red'>Classe n+$id_classe inconnue</span></p>";
+	}
+	else {
+		$tab_per=array();
+		while($lig=mysqli_fetch_object($res)) {
+			$tab_per[$lig->num_periode]['nom_periode']=$lig->nom_periode;
+			$tab_per[$lig->num_periode]['verouiller']=$lig->verouiller;
+			$nom_classe=$lig->classe;
+		}
+
+		$retour="<p class='bold'>Bulletins et conseil de classe&nbsp;: $nom_classe</p>
+<table class='boireaus boireaus_alt'>
+	<thead>
+		<tr>
+			<th>Action</th>";
+		foreach($tab_per as $current_num_periode => $periode) {
+			$retour.="
+			<th>".$periode['nom_periode']."</th>";
+		}
+		$retour.="
+		</tr>
+	</thead>
+	<tbody>";
+
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
+		(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
+			// Saisie de l'avis du conseil
+			$retour.="
+		<tr>
+			<td>Saisir l'avis du conseil de classe&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				if($periode['verouiller']!='O') {
+					$retour.="
+			<td><a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$id_classe'$target><img src='$gepiPath/images/saisie_avis1.png' class='icone32' alt='Saisir' /></a></td>";
+				}
+				else {
+					$retour.="
+			<td style='background-color:gray' title=\"Période close\"><img src='$gepiPath/images/disabled.png' class='icone20' alt='Clos' /></td>";
+				}
+			}
+			$retour.="
+		</tr>";
+
+			// Impression avis du conseil
+			$retour.="
+		<tr>
+			<td>Imprimer les avis du conseil de classe&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				$sql="SELECT DISTINCT a.login FROM avis_conseil_classe a, j_eleves_classes jec WHERE jec.login=a.login AND jec.periode=a.periode AND jec.id_classe='$id_classe' AND a.periode='$current_num_periode' AND avis!='';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
+					$retour.="
+			<td title=\"Aucun avis n'est saisi pour cette période.\"></td>";
+				}
+				else {
+					$retour.="
+			<td><a href='$gepiPath/impression/avis_pdf.php?id_classe=$id_classe&amp;periode_num=$current_num_periode'$target><img src='$gepiPath/images/icons/pdf.png' class='icone32' alt='Saisir' /></a></td>";
+				}
+			}
+			$retour.="
+		</tr>";
+
+			// Affichage Appréciations sur le groupe classe
+			$retour.="
+		<tr>
+			<td>Imprimer les appréciations des professeurs sur le groupe classe&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				$sql="SELECT DISTINCT mag.id_groupe FROM matieres_appreciations_grp mag, j_groupes_classes jgc WHERE jgc.id_groupe=mag.id_groupe AND jgc.id_classe='$id_classe' AND mag.periode='$current_num_periode' AND appreciation!='' AND appreciation!='-';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
+					$retour.="
+			<td title=\"Aucune appréciation sur le groupe-classe n'est saisie pour cette période.\"></td>";
+				}
+				else {
+					$retour.="
+			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a></td>";
+				}
+			}
+			$retour.="
+		</tr>";
+
+			// Imprimer les documents de prise de notes à destination des élèves délégués pendant le conseil de classe
+			if(getSettingAOui('active_mod_engagements')) {
+				$retour.="
+		<tr>
+			<td>Imprimer les grilles/listes destinées à la prise de notes pendant le conseil de classe&nbsp:</td>";
+				foreach($tab_per as $current_num_periode => $periode) {
+					$retour.="
+			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe&amp;periode=$current_num_periode&amp;imprimer_liste_eleve=y&destinataire=".add_token_in_url()."'$target><img src='$gepiPath/images/icons/ods.png' class='icone32' alt='ODS' /></a></td>";
+				}
+				$retour.="
+		</tr>";
+			}
+		}
+
+		// Bulletins,... 
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='professeur')) {
+			//Toutes les moyennes d'une classe
+			// Bulletins simplifiés
+			// Graphes
+			$retour.="
+		<tr>
+			<td>Toutes les moyennes de la classe&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				/*
+				$retour.="
+			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
+				*/
+				$retour.="
+			<td><a href='$gepiPath/prepa_conseil/visu_toutes_notes.php?id_classe=$id_classe&amp;num_periode=$current_num_periode&amp;couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/releve.png' class='icone32' alt='Moyennes' /></a></td>";
+			}
+			$retour.="
+		</tr>
+		<tr>
+			<td>Bulletins simplifiés&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				//https://127.0.0.1/steph/gepi_git_trunk/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=boivinj&id_classe=42&periode1=3&periode2=3
+				/*
+				$retour.="
+			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe&couleur_alterne=y'$target><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
+				*/
+				$retour.="
+			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin_simp.png' class='icone32' alt='BullSimp' /></a></td>";
+			}
+			$retour.="
+		</tr>
+		<tr>
+			<td>Graphes&nbsp:</td>";
+			foreach($tab_per as $current_num_periode => $periode) {
+				$retour.="
+			<td><a href='$gepiPath/visualisation/affiche_eleve.php?id_classe=$id_classe&amp;num_periode_choisie=$current_num_periode'$target title=\"Voir les graphes de la classe en période $current_num_periode\"><img src='$gepiPath/images/icons/graphes.png' class='icone32' alt='Graphes' /></a></td>";
+			}
+			$retour.="
+		</tr>";
+		}
+
+		if($_SESSION['statut']=='professeur') {
+			if((!isset($mes_groupes))||(count($mes_groupes)==0)) {
+				$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes', 'visibilite'));
+			}
+
+			$tab_mes_groupes_avec_bulletin_dans_cette_classe=array();
+			foreach($mes_groupes as $tmp_group) {
+				if((isset($tmp_group["classes"]["classes"][$id_classe]))&&
+				((!isset($tmp_group['visibilite']['bulletins']))||($tmp_group['visibilite']['bulletins']!="n"))) {
+					$tab_mes_groupes_avec_bulletin_dans_cette_classe[]=$tmp_group;
+				}
+			}
+
+			$ajout_title_saisie_app="";
+			if(getSettingAOui('autoriser_correction_bulletin')) {
+				$ajout_title_saisie_app=", proposer des corrections de mes appréciations.";
+			}
+
+			// Saisie des notes
+			// Saisie des appréciations
+			for($loop=0;$loop<count($tab_mes_groupes_avec_bulletin_dans_cette_classe);$loop++) {
+				$retour.="
+		<tr>
+			<td>".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['name']."&nbsp:</td>";
+				foreach($tab_per as $current_num_periode => $periode) {
+					if($periode['verouiller']=='N') {
+						$retour.="
+			<td>
+				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target><img src='$gepiPath/images/icons/bulletin_note_saisie.png' class='icone32' alt='Saisir note' /></a> 
+				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target><img src='$gepiPath/images/icons/bulletin_app_saisie.png' class='icone32' alt='Saisir app' /></a> 
+				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
+			</td>";
+					}
+					else {
+						$retour.="
+			<td style='background-color:gray' title=\"Période close\">
+				<a href='$gepiPath/saisie/saisie_notes.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes moyennes\"><img src='$gepiPath/images/icons/bulletin_note_visu.png' class='icone32' alt='Visu note' /></a> 
+				<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir mes appréciations".$ajout_title_saisie_app."\"><img src='$gepiPath/images/icons/bulletin_app_visu.png' class='icone32' alt='Visu app' /></a> 
+				<a href='$gepiPath/prepa_conseil/index1.php?id_groupe=".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['id']."'$target title=\"Voir/imprimer mes moyennes et appréciations\"><img src='$gepiPath/images/icons/bulletin_visu.png' class='icone32' alt='Mes moy et app' /></a> 
+			</td>";
+					}
+				}
+			}
+			$retour.="
+		</tr>";
+
+		}
+		// Cas secours à traiter aussi
+
+
+		$retour.="
+	</tbody>
+</table>";
+	}
+
+	return $retour;
+}
+
+function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
+	$retour="";
+
+	$tab_clas_per=get_class_periode_from_ele_login($login_ele);
+	if(!isset($tab_clas_per['periode'])) {
+		$retour="<p style='color:red'>".get_nom_prenom_eleve($login_ele)." n'est inscrit dans aucune classe.</p>";
+	}
+	else {
+		/*
+		echo "<pre>";
+		print_r($tab_clas_per);
+		echo "</pre>";
+		*/
+		$tab_notes=array();
+		foreach($tab_clas_per['periode'] as $current_num_periode => $current_clas) {
+			$tab_notes[$current_num_periode]=get_tab_notes_ele($login_ele, $id_groupe, $current_num_periode);
+		}
+		/*
+		echo "<pre>";
+		print_r($tab_notes);
+		echo "</pre>";
+		*/
+		if(count($tab_notes)==0) {
+			$retour="<p style='color:red'>".get_nom_prenom_eleve($login_ele)." n'a aucune note quelle que soit la période.</p>";
+		}
+		else {
+			if($mode==1) {
+				$retour="<table class='boireaus boireaus_alt'>
+	<thead>
+		<tr>";
+				foreach($tab_notes as $current_num_periode => $current_note_per) {
+					$retour.="
+			<th>".$tab_clas_per['periode'][$current_num_periode]['nom_periode']."</th>";
+				}
+				$retour.="
+		</tr>
+	</thead>
+	<tbody>
+		<tr>";
+				foreach($tab_notes as $current_num_periode => $current_note_per) {
+					$retour.="
+			<td style='vertical-align:top;'>
+				<table border='0' style='border-spacing:0;'>";
+
+					foreach($current_note_per as $current_id_devoir => $current_devoir) {
+						$retour.="
+					<tr title=\"".$current_devoir['nom_court']." (".$current_devoir['nom_complet'].")\nCoefficient : ".$current_devoir['coef']."\nDate : ".formate_date($current_devoir['date'])."\">
+						<td style='text-align:left;border:0px solid black;'>
+							<strong>".$current_devoir['nom_court']."&nbsp;:</strong> 
+						</td>
+						<td style='text-align:right;border:0px solid black;'>";
+						if($current_devoir['statut']=="") {
+							$retour.=$current_devoir['note'];
+						}
+						else {
+							$retour.=$current_devoir['statut'];
+						}
+						$retour.="</td>
+					</tr>";
+					}
+					$retour.="
+				</table>
+			</td>";
+				}
+				$retour.="
+		</tr>
+	</tbody>
+</table>";
+			}
+			else {
+			}
+		}
+	}
+
+	return $retour;
+}
 ?>

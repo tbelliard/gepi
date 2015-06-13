@@ -688,7 +688,12 @@ if((isset($id_classe[0]))&&(isset($_GET['imprimer_liste_eleve']))&&(isset($_GET[
 
 	$tab_OOo=array();
 
-	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='".$id_classe[0]."' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
+	$ajout_sql="";
+	if(isset($_GET['periode'])) {
+		$ajout_sql=" AND jec.periode='".$_GET['periode']."'";
+	}
+
+	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.id_classe='".$id_classe[0]."' AND jec.login=e.login".$ajout_sql." ORDER BY e.nom, e.prenom;";
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {

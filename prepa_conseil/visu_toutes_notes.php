@@ -46,6 +46,8 @@ if(!getSettingAOui('active_bulletins')) {
 	die();
 }
 
+//debug_var();
+
 //Initialisation
 //$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
 //$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;
@@ -125,7 +127,7 @@ $aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] : (
 //============================
 //echo "\$aff_date_naiss=$aff_date_naiss<br />";
 
-$couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] :  NULL;
+$couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : (isset($_GET['couleur_alterne']) ? $_GET['couleur_alterne'] : NULL);
 
 //================================
 if(file_exists("../visualisation/draw_graphe.php")){

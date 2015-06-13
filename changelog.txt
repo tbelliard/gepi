@@ -18,6 +18,9 @@ Absence et remplacement de professeurs:
 Bulletins:
 - Possibilité de définir un autre préfixe que "Bulletin du " précédant le nom de période pour les bulletins.
 - Ajout d'un droit PeutDonnerAccesBullAppPeriodeCloseScol pour pouvoir restreindre l'accès scolarité à l'autorisation exceptionnelle de saisie/correction d'appréciations des bulletins.
+- Graphes: Possibilité d'afficher sur une seule page les graphes de tous les élèves d'une classe
+  (pour les imprimer par exemple).
+- Graphes: Possibilité d'afficher les notes du carnet de notes en infobulle.
 
 Cahiers de textes (2):
 - Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2
@@ -36,6 +39,7 @@ Divers:
 - Possibilité de paramétrer classe par classe la dénomination du professeur chargé
   du suivi des élèves d'une classe ("professeur principal" par défaut).
 - Import simplifié des établissements d'origine non référencés.
+- Facilités (depuis un événement conseil_de_classe) d'accès aux fonctions utiles en période de conseil de classe.
 
 
 Gepi-1.6.6 (18/01/2015)

@@ -663,6 +663,9 @@
 	</div>
 </div>
 
+<?php
+	include("./lib/footer_tab_infobulle.php");
+?>
 
 </body>
 </html>

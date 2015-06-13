@@ -2420,15 +2420,17 @@ function nettoyer_caracteres_nom($chaine, $mode="a", $chaine_autres_caracteres_a
 function get_class_periode_from_ele_login($ele_login){
 	global $mysqli;
 
-	$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
+	$sql="SELECT DISTINCT jec.id_classe, c.classe, jec.periode, p.nom_periode FROM j_eleves_classes jec, classes c, periodes p WHERE p.id_classe=c.id AND jec.periode=p.num_periode AND jec.id_classe=c.id AND jec.login='$ele_login' ORDER BY periode,classe;";
 	$res_class=mysqli_query($mysqli, $sql);
 	$tab_classe=array();
 	if($res_class->num_rows > 0) {
 		while($lig_tmp=$res_class->fetch_object()) {
 			$tab_classe['periode'][$lig_tmp->periode]['id_classe']=$lig_tmp->id_classe;
 			$tab_classe['periode'][$lig_tmp->periode]['classe']=$lig_tmp->classe;
+			$tab_classe['periode'][$lig_tmp->periode]['nom_periode']=$lig_tmp->nom_periode;
 
 			$tab_classe['classe'][$lig_tmp->id_classe]['periode'][]=$lig_tmp->periode;
+			$tab_classe['classe'][$lig_tmp->id_classe]['nom_periode'][]=$lig_tmp->nom_periode;
 			$tab_classe['classe'][$lig_tmp->id_classe]['classe']=$lig_tmp->classe;
 		}
 		$res_class->close();
@@ -9918,6 +9920,18 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 	global $tab_salle;
 	global $evenement_sans_lien_mail;
 	global $evenement_sans_lien_ics;
+	global $mes_groupes;
+
+	/*
+	global $posDiv_infobulle;
+	global $tabid_infobulle;
+	global $unite_div_infobulle;
+	global $niveau_arbo;
+	global $pas_de_decalage_infobulle;
+	global $class_special_infobulle;
+	*/
+	global $tabdiv_infobulle;
+
 	$retour="";
 
 	if(count($tab_salle)==0) {
@@ -10123,6 +10137,15 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 		}
 		elseif($lig->type=='conseil_de_classe') {
 
+			$texte_infobulle="<div id='div_action_conseil_de_classe_$id_ev'></div>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_action_conseil_de_classe_'.$id_ev, "Bulletins et conseils de classe","",$texte_infobulle,"",40,0,'y','y','n','n');
+			$retour.="<script type='text/javascript'>
+	function afficher_action_classe_$id_ev(id_classe) {
+		new Ajax.Updater($('div_action_conseil_de_classe_$id_ev'), '$gepiPath/lib/ajax_action.php?mode=actions_conseil_classe&id_classe='+id_classe,{method: 'get'});
+		afficher_div('div_infobulle_action_conseil_de_classe_$id_ev', 'y', 10, 10);
+	}
+</script>";
+
 			$tab_classe_pp=array("id_classe");
 			if($_SESSION['statut']=="professeur") {
 				$tab_classe_pp=get_tab_ele_clas_pp($_SESSION['login']);
@@ -10288,15 +10311,15 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
 ".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
 
-Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
-									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+Cliquer pour saisir/consulter l'avis du conseil de classe,\npour saisir vos notes et appréciations,\npour consulter les graphes, les bulletins,...\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red' onclick=\"afficher_action_classe_$id_ev($lig2->id_classe);return false;\">";
 								}
 								else {
 									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
 ".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
 
-Cliquer pour saisir l'avis du conseil de classe.\">";
-									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+Cliquer pour saisir l'avis du conseil de classe,\npour saisir vos notes et appréciations,\npour consulter les graphes, les bulletins,...\">";
+									$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black' onclick=\"afficher_action_classe_$id_ev($lig2->id_classe);return false;\">";
 								}
 								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 								$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
@@ -10308,19 +10331,24 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 
 							}
 							else {
+								$tab_cellules[$tmp_jour][$tmp_heure].="<a href='#' style='color:black' onclick=\"afficher_action_classe_$id_ev($lig2->id_classe);return false;\">";
 								if($lig2->date_evenement<strftime("%Y-%m-%d %H:%M:%S")) {
 									$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."\">";
+".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
+
+Cliquer pour consulter vos notes et appréciations, les graphes, les bulletins,...\">";
 								}
 								else {
 									$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
-".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."\">";
+".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
+
+Cliquer pour saisir vos notes et appréciations, consulter les graphes, les bulletins,...\">";
 								}
 								// Problème: Un prof peut avoir plusieurs groupes dans une classe
 								//$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_appreciations.php?id_groupe=' style='color:black'>";
 								$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
-								//$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
 								$tab_cellules[$tmp_jour][$tmp_heure].="</span>";
+								$tab_cellules[$tmp_jour][$tmp_heure].="</a>";
 							}
 						}
 						elseif($_SESSION["statut"]=="scolarite") {
@@ -10328,15 +10356,15 @@ Cliquer pour saisir l'avis du conseil de classe.\">";
 								$tab_cellules[$tmp_jour][$tmp_heure].="<span style='color:red' title=\"La date du conseil de classe de $lig2->classe est passée : ".formate_date($lig2->date_evenement, "y")."
 ".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
 
-Cliquer pour saisir/consulter l'avis du conseil de classe.\">";
-							$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red'>";
+Cliquer pour saisir/consulter l'avis du conseil de classe,\n pour accéder aux bulletins, aux graphes,...\">";
+							$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:red' onclick=\"afficher_action_classe_$id_ev($lig2->id_classe);return false;\">";
 							}
 							else {
 								$tab_cellules[$tmp_jour][$tmp_heure].="<span title=\"Date du conseil de classe de $lig2->classe : ".formate_date($lig2->date_evenement, "y")."
 ".ucfirst(retourne_denomination_pp($lig2->id_classe))." : ".$liste_pp.$indication_salle."
 
-Cliquer pour saisir l'avis du conseil de classe.\">";
-								$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black'>";
+Cliquer pour saisir l'avis du conseil de classe,\n pour accéder aux bulletins, aux graphes,...\">";
+								$tab_cellules[$tmp_jour][$tmp_heure].="<a href='$gepiPath/saisie/saisie_avis1.php?id_classe=$lig2->id_classe' style='color:black' onclick=\"afficher_action_classe_$id_ev($lig2->id_classe);return false;\">";
 							}
 							$tab_cellules[$tmp_jour][$tmp_heure].=$lig2->classe;
 							$tab_cellules[$tmp_jour][$tmp_heure].="</a>";

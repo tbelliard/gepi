@@ -206,6 +206,14 @@ $titre_page = "Accueil GEPI";
 require_once("./lib/header.inc.php");
 //**************** FIN EN-TETE *************
 
+/*
+foreach($tmp_mes_classes as $current_id_classe => $current_classe) {
+	echo "<hr />";
+	echo affiche_choix_action_conseil_de_classe($current_id_classe, "_blank");
+	echo "<hr />";
+}
+*/
+
 //echo "\$colspan=$colspan<br />";
 
 echo "<div class='norme'><p class='bold'>\n";
@@ -1038,7 +1046,7 @@ for($i=0;$i<count($groups);$i++){
 						$cpt=0;
 						foreach($groups[$i]["classes"]["classes"] as $classe){
 							if($cpt>0){echo "<br />\n";}
-							echo "<a href='visualisation/affiche_eleve.php?id_classe=".$classe['id']."'";
+							echo "<a href='visualisation/affiche_eleve.php?id_classe=".$classe['id']."&amp;num_periode_choisie=$j'";
 							if($pref_accueil_infobulles=="y"){
 								echo " onmouseover=\"afficher_div('info_graphe_".$i."_".$j."_".$cpt."','y',10,10);\" onmouseout=\"cacher_div('info_graphe_".$i."_".$j."_".$cpt."');\"";
 							}
