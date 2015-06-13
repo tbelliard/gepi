@@ -1485,6 +1485,18 @@ autre='F',
 description='Tous les graphes sur une page pour une classe donnée',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/lib/ajax_action.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='V',
+autre='F',
+description='Action ajax',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
