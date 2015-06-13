@@ -106,7 +106,7 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
             if ($champ == "") {return FALSE; die();}
         }
 
-        // Le profeseur est-il responsable de cet AID ?
+        // Le professeur est-il responsable de cet AID ?
         $CheckAccessProf2 = sql_query1("select count(id_utilisateur) from j_aid_utilisateurs WHERE (id_utilisateur='".$_SESSION['login']."' and indice_aid='".$indice_aid."' and id_aid='".$aid_id."')");
         if (($CheckAccessProf2 == 0) and ($test_droits_special==0) ) {
             if ($champ == "") {return FALSE; die();}
