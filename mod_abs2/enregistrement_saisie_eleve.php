@@ -73,11 +73,14 @@ $multisaisie = isset($_POST["multisaisie"]) ? $_POST["multisaisie"] :NULL;
 
 $message_enregistrement = "";
 
+$temoin_erreur_saisie="";
+
 //initialisation des variable
 if ($id_creneau != null && $id_creneau != -1) {
     $creneau = EdtCreneauQuery::create()->findPk($id_creneau);
     if ($creneau == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_creneau<br/>";
+	$temoin_erreur_saisie="y";
 	$id_creneau = null;
     }
 } else {
@@ -89,6 +92,7 @@ if ($id_cours != null && $id_cours != -1) {
     if ($current_cours != null) {
     } else {
 	$message_enregistrement .= "Probleme avec le parametre id_cours<br/>";
+	$temoin_erreur_saisie="y";
 	$id_cours = null;
     }
 } else {
@@ -101,10 +105,12 @@ if ($type_absence != null && $type_absence != -1) {
     if ($type != null) {
 	if (!$type->isStatutAutorise($utilisateur->getStatut())) {
 	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence']."<br/>";
+	    $temoin_erreur_saisie="y";
 	    $type = null;
 	}
     } else {
 	$message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence']."<br/>";
+	$temoin_erreur_saisie="y";
     }
 }
 
@@ -118,6 +124,7 @@ if ($current_cours != null) {
 	        if ($current_cours->getTypeSemaine() != '' && $current_cours->getTypeSemaine() != '0' && $current_cours->getTypeSemaine() != $semaine->getTypeEdtSemaine()) {
 		    $message_enregistrement .= "Probleme avec la semaine : " .$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
 		    $message_enregistrement .= ", le type ne correspond pas au cours.";
+		    $temoin_erreur_saisie="y";
 		} else {
 		    $saisie = new AbsenceEleveSaisie();
 		    $saisie->setUtilisateurProfessionnel($utilisateur);
@@ -137,15 +144,18 @@ if ($current_cours != null) {
 	}
     }
 } else {
+
     try {
 	$date_debut = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_debut_saisir_eleve']));
     } catch (Exception $x) {
 	$message_enregistrement .= "Mauvais format de date.<br/>";
+	$temoin_erreur_saisie="y";
     }
     try {
 	$date_fin = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_fin_saisir_eleve']));
     } catch (Exception $x) {
 	$message_enregistrement .= "Mauvais format de date.<br/>";
+	$temoin_erreur_saisie="y";
     }
 
     if ($creneau != null) {
@@ -157,16 +167,19 @@ if ($current_cours != null) {
 	    $heure_debut = new DateTime($_POST['heure_debut_absence_eleve']);
 	} catch (Exception $x) {
 	    $message_enregistrement .= "Mauvais format d'heure.<br/>";
+	    $temoin_erreur_saisie="y";
 	}
 	try {
 	    $heure_fin = new DateTime($_POST['heure_fin_absence_eleve']);
 	} catch (Exception $x) {
 	    $message_enregistrement .= "Mauvais format d'heure.<br/>";
+	    $temoin_erreur_saisie="y";
 	}
     }
 
     if ($date_debut->format('U') > $date_fin->format('U')) {
 	$message_enregistrement .= "La date de debut d'absence ne peut pas être postérieure à la date de fin.<br/>";
+	$temoin_erreur_saisie="y";
     }
 
     if ($message_enregistrement == "") {
@@ -213,6 +226,21 @@ if ($current_cours != null) {
     }
 }
 
+$ts_debut_annee=getSettingValue('begin_bookings');
+$ts_fin_annee=getSettingValue('end_bookings');
+foreach ($saisie_col_modele as $saisie_modele) {
+	if(($saisie_modele->getDebutAbs('U')<$ts_debut_annee)||($saisie_modele->getDebutAbs('U')>$ts_fin_annee)) {
+		$message_enregistrement .= "<span style='color:red'>Date de début hors année scolaire (<em>du ".strftime("%d/%m/%Y", $ts_debut_annee)." au ".strftime("%d/%m/%Y", $ts_fin_annee)."</em>).<br />Veillez à corriger pour ne pas inquiéter les familles, ni fausser les totaux.</span><br/>";
+		$temoin_erreur_saisie="y";
+		break;
+	}
+	if(($saisie_modele->getFinAbs('U')<$ts_debut_annee)||($saisie_modele->getFinAbs('U')>$ts_fin_annee)) {
+		$message_enregistrement .= "<span style='color:red'>Date de fin hors année scolaire (<em>du ".strftime("%d/%m/%Y", $ts_debut_annee)." au ".strftime("%d/%m/%Y", $ts_fin_annee)."</em>).<br />Veillez à corriger pour ne pas inquiéter les familles, ni fausser les totaux.</span><br/>";
+		$temoin_erreur_saisie="y";
+		break;
+	}
+}
+
 for($i=0; $i<$total_eleves; $i++) {
 
     //$id_eleve = $_POST['id_eleve_absent'][$i];
@@ -225,6 +253,7 @@ for($i=0; $i<$total_eleves; $i++) {
     $eleve = EleveQuery::create()->findPk($_POST['active_absence_eleve'][$i]);
     if ($eleve == null) {
 	$message_enregistrement .= "Probleme avec l'id eleve : ".$_POST['id_eleve_absent'][$i]."<br/>";
+	$temoin_erreur_saisie="y";
 	continue;
     }
 

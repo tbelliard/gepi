@@ -245,7 +245,12 @@ echo '</p>';
 echo "</tr></table>";
 
 if (isset($message_enregistrement)) {
-    echo "<span style='color:green'>".$message_enregistrement."</span>";
+	if($temoin_erreur_saisie=="y") {
+		echo "<span style='color:red'>".$message_enregistrement."</span>";
+	}
+	else {
+		echo "<span style='color:green'>".$message_enregistrement."</span>";
+	}
 }
 
 //afichage des eleves

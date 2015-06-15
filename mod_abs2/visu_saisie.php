@@ -161,6 +161,20 @@ if ($saisie != null) {
 }
 
 
+$ts_debut_annee=getSettingValue('begin_bookings');
+$ts_fin_annee=getSettingValue('end_bookings');
+/*
+echo "\$ts_debut_annee=$ts_debut_annee<br />";
+echo "\$ts_fin_annee=$ts_fin_annee<br />";
+echo "\$saisie->getDebutAbs('U')=".$saisie->getDebutAbs('U')."<br />";
+*/
+if(($saisie->getDebutAbs('U')<$ts_debut_annee)||($saisie->getDebutAbs('U')>$ts_fin_annee)) {
+	echo "<p style='text-indent:-7em; margin-left:7em; color:red'><strong>ANOMALIE&nbsp;:</strong> La date de début d'absence saisie n'est pas dans l'année scolaire (<em>du ".strftime("%d/%m/%Y", $ts_debut_annee)." au ".strftime("%d/%m/%Y", $ts_fin_annee)."</em>).<br />Cela peut provoquer des totaux d'absences erronés... et des inquiétudes de la part de la famille.</p>";
+}
+if(($saisie->getFinAbs('U')<$ts_debut_annee)||($saisie->getFinAbs('U')>$ts_fin_annee)) {
+	echo "<p style='color:red'><strong>ANOMALIE&nbsp;:</strong> La date de fin d'absence saisie n'est pas dans l'année scolaire (<em>du ".strftime("%d/%m/%Y", $ts_debut_annee)." au ".strftime("%d/%m/%Y", $ts_fin_annee)."</em>).<br />Cela peut provoquer des totaux d'absences erronés... et des inquiétudes de la part de la famille.</p>";
+}
+
 //la saisie est-elle modifiable ?
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
 //elle date de moins d'une heure et l'option a ete coché partie admin
@@ -176,11 +190,16 @@ if ($utilisateur->getStatut() == 'professeur') {
 }
 
 if (!$modifiable) {
-    echo "La saisie n'est pas modifiable<br/>";
+    echo "<span style='color:red'>La saisie n'est pas modifiable</span><br/>";
 }
 
 if (isset($message_enregistrement)) {
-    echo $message_enregistrement;
+	if($temoin_erreur_saisie=="y") {
+		echo "<span style='color:red'>".$message_enregistrement."</span>";
+	}
+	else {
+		echo "<span style='color:blue'>".$message_enregistrement."</span>";
+	}
 }
 
 echo '<table class="normal">';
