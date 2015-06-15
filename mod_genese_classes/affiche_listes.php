@@ -216,7 +216,7 @@ if((isset($id_aff))&&(isset($_GET['mode']))&&($_GET['mode']=='nommer_aff')) {
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 	<fieldset class='fieldset_opacite50'>
-		<p>Nommer l'affichage n°$id_aff&nbsp::</p>
+		<p>Nommer l'affichage n°$id_aff&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='projet' value='$projet' />
 		<input type='hidden' name='id_aff' value='$id_aff' />
@@ -824,7 +824,7 @@ if(!isset($afficher_listes)) {
 		echo "<p align='center'><input type='submit' name='ajouter' value='Modifier la requête' /></p>\n";
 	}
 	else {
-		echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter' /></p>\n";
+		echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter/Valider' /></p>\n";
 	}
 	//================================
 
@@ -834,7 +834,7 @@ if(!isset($afficher_listes)) {
 	//================================
 	// Suite du formulaire avec la liste des requêtes déjà effectuées:
 	if(isset($id_aff)) {
-
+		$chaine_id_requetes_existantes="";
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' ORDER BY id_req;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -847,6 +847,9 @@ if(!isset($afficher_listes)) {
 				$txt_requete.="<tr>\n";
 				$txt_requete.="<td valign='top'>\n";
 				$txt_requete.="<input type='checkbox' name='suppr[]' id='suppr_$lig->id_req' value='$lig->id_req' title=\"Cocher pour sélectionner à la suppression\net valider la suppression en cliquant sur le bouton Ajouter plus haut\n(quitte à ne rien cocher dans la requête à Ajouter).\" /> ";
+
+				$chaine_id_requetes_existantes.=",'suppr_$lig->id_req'";
+
 				$txt_requete.="</td>\n";
 				$txt_requete.="<td>\n";
 				//$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
@@ -1070,7 +1073,17 @@ echo "</pre>";
 			//echo "</table>\n";
 
 			// Ajouter un bouton pour supprimer
-			echo "<p>Cochez les requêtes à supprimer.</p>\n";
+			echo "<p>Cochez les requêtes à supprimer <img src='../images/delete16.png' class='icone16' />.<br /><a href='#' onclick=\"cocher_toutes_les_requetes(); alert('Si vous validez avec le bouton Ajouter, toutes les requêtes cochées seront supprimées.'); return false;\">Cocher toutes les requêtes dans la perspective de les supprimer.</a></p>
+<script type='text/javascript'>
+	function cocher_toutes_les_requetes() {
+		var req=new Array(".mb_substr($chaine_id_requetes_existantes,1).");
+		for(i=0;i<req.length;i++) {
+			if(document.getElementById(req[i])) {
+				document.getElementById(req[i]).checked=true;
+			}
+		}
+	}
+</script>\n";
 
 		}
 	}
