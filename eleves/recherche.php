@@ -781,7 +781,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 		// Affichage des élèves trouvés
 		if(isset($tab_result_recherche['eleve'])) {
 			if(count($tab_result_recherche['eleve'])==0) {
-				echo "<p style='color:red'>Aucun élève trouvé.</p>\n";
+				echo "<p style='color:red; margin-top: 0.5em;'>Aucun élève trouvé (<em>avec ce critère de recherche</em>)..</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_csv1'>
@@ -842,7 +842,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 		// Affichage des responsables trouvés
 		if(isset($tab_result_recherche['responsable'])) {
 			if(count($tab_result_recherche['responsable'])==0) {
-				echo "<p style='color:red'>Aucun responsable trouvé.</p>\n";
+				echo "<p style='color:red; margin-top: 0.5em;'>Aucun responsable trouvé (<em>avec ce critère de recherche</em>)..</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_csv2'>
@@ -889,7 +889,7 @@ if((isset($is_posted_recherche))||(isset($is_posted_recherche2))||(isset($is_pos
 		// Affichage des personnels trouvés
 		if(isset($tab_result_recherche['personnel'])) {
 			if(count($tab_result_recherche['personnel'])==0) {
-				echo "<p style='color:red'>Aucun personnel trouvé.</p>\n";
+				echo "<p style='color:red; margin-top: 0.5em;'>Aucun personnel trouvé (<em>avec ce critère de recherche</em>).</p>\n";
 			}
 			else {
 				echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form_csv3'>
