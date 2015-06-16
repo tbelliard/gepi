@@ -965,8 +965,9 @@ elseif((isset($mode))&&($mode=="positionner")) {
 	}
 	//===========================================
 	$tab_nom_classe_deja=array();
-	$id_classe_ev=isset($_POST['id_classe_ev']) ? $_POST['id_classe_ev'] : NULL;
+	$id_classe_ev=isset($_POST['id_classe_ev']) ? $_POST['id_classe_ev'] : array();
 	$sql="SELECT DISTINCT d.id_classe, c.classe FROM d_dates_evenements_classes d, classes c WHERE id_ev='$id_ev' AND c.id=d.id_classe;";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
@@ -983,7 +984,7 @@ elseif((isset($mode))&&($mode=="positionner")) {
 		die();
 	}
 	//===========================================
-	$id_salle_ev=isset($_POST['id_salle_ev']) ? $_POST['id_salle_ev'] : NULL;
+	$id_salle_ev=isset($_POST['id_salle_ev']) ? $_POST['id_salle_ev'] : array();
 	$sql="SELECT DISTINCT d.id_salle, sc.nom_salle, sc.numero_salle FROM d_dates_evenements_classes d, salle_cours sc WHERE id_ev='$id_ev' AND sc.id_salle=d.id_salle ORDER BY sc.nom_salle, sc.numero_salle;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
