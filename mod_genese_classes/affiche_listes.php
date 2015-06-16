@@ -1746,6 +1746,7 @@ else {
 		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 
 		$tab_lv_et_opt_requete[$loop]=array();
+		$tab_eff_lv_et_opt_requete[$loop]=array();
 		/*
 		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th id='th_lv1_$loop'>&nbsp;</th>\n";}
 		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th id='th_lv2_$loop'>&nbsp;</th>\n";}
@@ -1974,6 +1975,13 @@ else {
 									if((!isset($tab_lv_et_opt_requete[$loop]['lv1']))||(!in_array($lv1[$i], $tab_lv_et_opt_requete[$loop]['lv1']))) {
 										$tab_lv_et_opt_requete[$loop]['lv1'][]=$lv1[$i];
 									}
+
+									if(!isset($tab_eff_lv_et_opt_requete[$loop]['lv1'][$lv1[$i]])) {
+										$tab_eff_lv_et_opt_requete[$loop]['lv1'][$lv1[$i]]=1;
+									}
+									else {
+										$tab_eff_lv_et_opt_requete[$loop]['lv1'][$lv1[$i]]++;
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -2172,6 +2180,10 @@ else {
 			$chaine_liste_lv1="";
 			foreach($tab_lv_et_opt_requete[$loop]['lv1'] as $key => $value) {
 				$chaine_liste_lv1.=" ".$value;
+
+				if(isset($tab_eff_lv_et_opt_requete[$loop]['lv1'][$value])) {
+					$chaine_liste_lv1.="&nbsp;<span style=font-size:x-small>(".$tab_eff_lv_et_opt_requete[$loop]['lv1'][$value].")</span>";
+				}
 			}
 			echo "<script type='text/javascript'>
 	/*
