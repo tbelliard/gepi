@@ -384,32 +384,34 @@ if(!isset($type_brevet)) {
 	echo "</p>\n";
 	echo "</div>\n";
 
+	echo "<h2>Fiches brevet</h2>";
+
 	echo "<ul>\n";
 		while($lig=mysqli_fetch_object($res)) {
 			switch ($lig->type_brevet ) {
 				case 0 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 1 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 2 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 3 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 4 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 5 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 6 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 				case 7 :
-					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+					echo "<li><a href='".$_SERVER['PHP_SELF']."?type_brevet=".$lig->type_brevet."'>Générer les fiches brevet pour la série ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 				break;
 			}
 		}
@@ -469,6 +471,8 @@ if (!isset($id_classe)) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?parametrer=y'>Paramétrer</a>";
 	echo "</p>\n";
 	echo "</div>\n";
+
+	echo "<h2>Fiches brevet série ".$tab_type_brevet[$type_brevet]."</h2>";
 
 	// Les tables notanet ne sont pas renseignées, on s'arrête
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe AND n.login=net.login AND net.type_brevet='$type_brevet' ORDER BY classe");
@@ -909,6 +913,7 @@ for($i=0;$i<count($id_classe);$i++){
 
 			// ************************************************************************************************
 			//	 On récupère l'avis du chef d'établissement
+			$tab_eleves_OOo[$nb_eleve]['favorable']="";						// on initialise le champ pour ne pas avoir d'erreur
 			$tab_eleves_OOo[$nb_eleve]['decision']="";						// on initialise le champ pour ne pas avoir d'erreur
 			$tab_eleves_OOo[$nb_eleve]['appreciation']= "";			// on initialise le champ pour ne pas avoir d'erreur
 			$tab_eleves_OOo[$nb_eleve]['avis']= "";			// on initialise le champ pour ne pas avoir d'erreur
@@ -917,8 +922,13 @@ for($i=0;$i<count($id_classe);$i++){
 			$res_avis=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_avis)>0) {
 				$lig_avis=mysqli_fetch_object($res_avis);
-				if($lig_avis->favorable=="O") {$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";}
-				elseif($lig_avis->favorable=="N") {$tab_eleves_OOo[$nb_eleve]['decision']="Doit faire ses preuves";}
+				$tab_eleves_OOo[$nb_eleve]['favorable']=$lig_avis->favorable;
+				if($lig_avis->favorable=="O") {
+					$tab_eleves_OOo[$nb_eleve]['decision']="Avis favorable";
+				}
+				elseif($lig_avis->favorable=="N") {
+					$tab_eleves_OOo[$nb_eleve]['decision']="Doit faire ses preuves";
+				}
 				//$tab_eleves_OOo[$nb_eleve]['appreciation']= htmlspecialchars($lig_avis->avis);
 				$tab_eleves_OOo[$nb_eleve]['appreciation']= $lig_avis->avis;
 				$tab_eleves_OOo[$nb_eleve]['avis']=$lig_avis->favorable;
