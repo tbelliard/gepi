@@ -66,8 +66,20 @@ if(!getSettingAOui('active_bulletins')) {
 
 // Vérification sur $id_classe
 if(!isset($id_classe)) {
-	header("Location: ../accueil.php?msg=Classe non choisie pour les bulletins simplifiés");
-	die();
+	if(isset($login_eleve)) {
+		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$login_eleve' ORDER BY periode DESC LIMIT 1;";
+		//echo "$sql<br />";
+		$res = mysqli_query($GLOBALS["mysqli"], $sql);
+		if (mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$id_classe=$lig->id_classe;
+		}
+	}
+
+	if(!isset($id_classe)) {
+		header("Location: ../accueil.php?msg=Classe non choisie pour les bulletins simplifiés");
+		die();
+	}
 }
 elseif(!is_numeric($id_classe)) {
 	header("Location: ../accueil.php?msg=Classe invalide ($id_classe) pour les bulletins simplifiés");
