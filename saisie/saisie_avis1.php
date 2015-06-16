@@ -955,7 +955,15 @@ if ($insert_mass_appreciation_type=="y") {
 			}
 
 			if ($ver_periode[$k] != "N") {
-				echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span>";
+				echo "<tr class='lig$alt'>\n<td><span title=\"$gepiClosedPeriodLabel\">".preg_replace("/ /", "&nbsp;", $nom_periode[$k])."</span>";
+
+				if($ver_periode[$k]!="O") {
+					echo "
+				<div style='float:right; width:16px;' class='noprint'>
+					<a href='saisie_avis2.php?periode_num=$k&id_classe=$id_classe&fiche=y&current_eleve_login=$current_eleve_login#app' title=\"Saisir l'avis pour ".$current_eleve_prenom." ".$current_eleve_nom." en période $k.\"  onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Saisie indiv' /></a>
+				</div>";
+				}
+
 
 				// 20121118
 				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
