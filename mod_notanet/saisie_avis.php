@@ -233,12 +233,107 @@ else {
 	$tabdiv_infobulle[]=creer_div_infobulle('AB',"","","<center>Absent</center>","",8,0,'y','y','n','n');
 	*/
 
+
+	$insert_mass_appreciation_type=getSettingValue("insert_mass_appreciation_type");
+	if ($insert_mass_appreciation_type=="y") {
+		// INSERT INTO setting SET name='insert_mass_appreciation_type', value='y';
+
+		$sql="CREATE TABLE IF NOT EXISTS b_droits_divers (login varchar(50) NOT NULL default '', nom_droit varchar(50) NOT NULL default '', valeur_droit varchar(50) NOT NULL default '');";
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		// Pour tester:
+		// INSERT INTO b_droits_divers SET login='toto', nom_droit='insert_mass_appreciation_type', valeur_droit='y';
+
+		$sql="SELECT 1=1 FROM b_droits_divers WHERE login='".$_SESSION['login']."' AND nom_droit='insert_mass_appreciation_type' AND valeur_droit='y';";
+		$res_droit=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_droit)>0) {
+			$droit_insert_mass_appreciation_type="y";
+		}
+		else {
+			$droit_insert_mass_appreciation_type="n";
+		}
+
+		if($droit_insert_mass_appreciation_type=="y") {
+			$default_mass_appreciation="";
+			if(getSettingValue('default_mass_appreciation')!="") {
+				$default_mass_appreciation=getSettingValue('default_mass_appreciation');
+			}
+
+			echo "<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+			echo "<p>Insérer l'avis-type suivant<br />
+	<input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_vide' value='vide' checked /><label for='insert_mass_appreciation_type_mode_vide'>pour tous les avis vides</label><br />
+	<input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_ajout' value='ajout' /><label for='insert_mass_appreciation_type_mode_ajout'>en complément des avis</label><br />";
+			echo "<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
+
+			echo "<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
+
+			echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide(); changement()' /><br />\n";
+
+			echo "<input type='button' name='button_vider_tous_les_avis' value='Vider tous les avis' onclick='vider_tous_les_avis(); changement()' /><br />\n";
+			echo "</div>\n";
+
+			echo "<script type='text/javascript'>
+		function ajoute_a_textarea_vide() {
+			if(document.getElementById('insert_mass_appreciation_type_mode_vide').checked==true) {
+				mode_insert='vide';
+			}
+			else {
+				mode_insert='ajout';
+			}
+			champs_textarea=document.getElementsByTagName('textarea');
+			//alert('champs_textarea.length='+champs_textarea.length);
+			for(i=0;i<champs_textarea.length;i++){
+				if(champs_textarea[i].name!='no_anti_inject_ajout_a_textarea_vide') {
+					if((mode_insert=='vide')&&(champs_textarea[i].value=='')) {
+						champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
+					}
+					else {
+						if(mode_insert=='ajout') {
+							champs_textarea[i].value+=document.getElementById('ajout_a_textarea_vide').value;
+						}
+					}
+				}
+			}
+		}
+
+		function vider_tous_les_avis() {
+			var is_confirmed = confirm('ATTENTION : Vous avez demandé à vider tous les avis saisis pour cette classe ! Etes-vous sûr de vouloir vider ces avis ?');
+			if(is_confirmed){
+				champs_textarea=document.getElementsByTagName('textarea');
+				for(i=0;i<champs_textarea.length;i++){
+					if(champs_textarea[i].name!='no_anti_inject_ajout_a_textarea_vide') {
+						champs_textarea[i].value='';
+					}
+				}
+			}
+		}
+	</script>\n";
+		}
+	}
+
 	$titre="<span id='span_titre_photo'>Photo</span>";
 	$texte="Photo";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
 
+	necessaire_bull_simple();
+
+	$titre="<span id='span_avis_conseil'>Avis du conseil de classe</span>";
+	$texte="<div id='contenu_infobulle_avis_conseil_classe'>Avis du conseil de classe</div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_avis_conseil_classe',$titre,"",$texte,"",30,0,'y','y','n','n');
+
+	echo "<script type='text/javascript'>
+	// <![CDATA[
+	function affiche_avis_conseil(login_eleve) {
+		new Ajax.Updater($('contenu_infobulle_avis_conseil_classe'),'../lib/ajax_action.php?mode=tab_avis_conseil&ele_login='+login_eleve,{method: 'get'});
+		afficher_div('div_avis_conseil_classe', 'y', 10, 10);
+	}
+	//]]>
+</script>\n";
+
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
+
+		$nb_per_classe=get_period_number($id_classe[$i]);
 
 		echo "<p>Classe de <b>".get_class_from_id($id_classe[$i])."</b><br />\n";
 		echo "<input type='hidden' name='id_classe[$i]' value='".$id_classe[$i]."' />\n";
@@ -325,7 +420,9 @@ else {
 					echo "<td colspan='2'>".$lig_ele->nom." ".$lig_ele->prenom;
 				}
 				else {
-					echo "<td>".$lig_ele->nom." ".$lig_ele->prenom."</td>";
+					echo "<td>";
+					echo "<div style='float:right; width:16px;'><a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=$lig_ele->login&id_classe=".$id_classe[$i]."&periode1=1&periode2=$nb_per_classe' onclick=\"affiche_avis_conseil('$lig_ele->login');return false;\"><img src='../images/icons/bulletin.png' class='icone16' alt='Avis' /></a></div>";
+					echo $lig_ele->nom." ".$lig_ele->prenom."</td>";
 
 					echo "<td>";
 					if(file_exists($photo)) {

@@ -3236,6 +3236,7 @@ function necessaire_bull_simple() {
 	echo "<script type='text/javascript'>
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
+		//alert(login_eleve);
 		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
 		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
@@ -4557,6 +4558,62 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 			else {
 			}
 		}
+	}
+
+	return $retour;
+}
+
+function affiche_tab_avis_conseil($login_ele, $avec_js="y") {
+	global $gepiPath;
+
+	$retour="";
+
+	$sql="SELECT DISTINCT e.nom, e.prenom, a.*, jec.id_classe, c.classe, p.nom_periode 
+			FROM avis_conseil_classe a, 
+				eleves e, 
+				j_eleves_classes jec, 
+				periodes p, 
+				classes c 
+			WHERE a.login='".$login_ele."' AND 
+				a.login=jec.login AND 
+				e.login=jec.login AND 
+				a.periode=jec.periode AND 
+				a.periode=p.num_periode AND 
+				jec.id_classe=p.id_classe AND 
+				jec.id_classe=c.id
+			ORDER BY a.periode;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab=array();
+		$max_per=0;
+		while($lig=mysqli_fetch_array($res)) {
+			$tab[]=$lig;
+			if($lig['periode']>$max_per) {
+				$max_per=$lig['periode'];
+			}
+		}
+
+		$retour="<p class='bold'>".$tab[0]['nom']." ".$tab[0]['prenom']." <a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_ele."&id_classe=".$tab[0]['id_classe']."&periode1=1&periode2=".$max_per."&couleur_alterne=y' target='_blank'";
+		if($avec_js=="y") {
+			$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', 1, $max_per); return false;\"";
+		}
+		$retour.="><img src='$gepiPath/images/icons/bulletin.png' class='icone16' alt='BullSimp' /></a></p>
+<table class='boireaus boireaus_alt'>";
+		for($loop=0;$loop<count($tab);$loop++) {
+			$retour.="
+	<tr>
+		<td>".preg_replace("/ /", "&nbsp;", $tab[$loop]['classe'])."</td>
+		<td title=\"Voir le bulletin simplifié pour la période ".$tab[$loop]['periode'].".\"><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_ele."&id_classe=".$tab[$loop]['id_classe']."&periode1=".$tab[$loop]['periode']."&periode2=".$tab[$loop]['periode']."&couleur_alterne=y' target='_blank'";
+		if($avec_js=="y") {
+			$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', ".$tab[$loop]['periode'].", ".$tab[$loop]['periode']."); return false;\"";
+		}
+		$retour.=">".preg_replace("/ /", "&nbsp;", $tab[$loop]['nom_periode'])."</a></td>
+		<td>".$tab[$loop]['avis']."</td>
+	</tr>";
+		}
+		$retour.="
+</table>";
 	}
 
 	return $retour;
