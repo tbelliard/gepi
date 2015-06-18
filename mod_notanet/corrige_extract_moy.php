@@ -300,6 +300,7 @@ else {
 						echo "<table class='boireaus' border='1'>\n";
 						echo "<tr>\n";
 						echo "<th>Elève</th>\n";
+						echo "<th>Série</th>\n";
 						echo "<th>";
 						echo "Sélectionner<br />";
 						echo "<a href=\"javascript:CocheClasseSelectEleves(".$lig_clas->id_classe.");changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheClasseSelectEleves(".$lig_clas->id_classe.");changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
@@ -319,6 +320,7 @@ else {
 							}
 
 							echo "<td><label for='ele_login_$cpt'>$lig_ele->nom $lig_ele->prenom</label></td>\n";
+							echo "<td><label for='ele_login_$cpt'>".$tab_type_brevet[$lig_ele->type_brevet]."</label></td>\n";
 							echo "<td><input type='checkbox' id='ele_login_$cpt' name='ele_login[]' value=\"$lig_ele->login\" /></td>\n";
 
 							echo "</tr>\n";
