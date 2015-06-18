@@ -1501,7 +1501,8 @@ foreach ($liste_eleves as $eleve_login) {
 				if($liste_notes_detaillees!='') {
 
 					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
-					$texte="<div style='float:right; width:16px' title=\"Visualiser les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
+					$texte="<div style='float:right; width:16px' title=\"Visualiser les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' target='_blank'><img src='../images/icons/cn_16.png' class='icone16' alt='Visualiser CN' /></a></div>";
+					$texte.="<div style='float:right; width:16px' title=\"Visualiser en infobulle les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' onclick=\"affiche_div_notes_cn(".$current_group['id'].", '".$eleve_login."');return false;\" target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
 					$texte.=$liste_notes_detaillees;
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
@@ -1592,6 +1593,19 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		$k++;
 	}
+
+
+	$titre_infobulle="Notes";
+	$texte_infobulle="<div id='div_notes_cn'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	echo "<script type='text/javascript'>
+	function affiche_div_notes_cn(id_groupe, login_ele) {
+		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login='+login_ele+'&id_groupe='+id_groupe,{method: 'get'});
+
+		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
+	}
+</script>";
+
 
 	//
 	//Affichage de la ligne
