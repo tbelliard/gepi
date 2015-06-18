@@ -1134,6 +1134,10 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet&amp;id_aff=$id_aff'>Modifier la liste de requêtes pour l'".casse_mot($tab_aff_courant['nom'], "min")."</a>";
 	echo "</p>\n";
 
+	echo "<div style='float:right; width:5em; text-align:center;' class='fieldset_opacite50'>
+	<a href='affiche_listes2.php?projet=".$projet."&id_aff=$id_aff'>Affichage élèves seuls</a>
+</div>";
+
 	echo "<h2>Projet $projet : Affichage</h2>\n";
 
 
