@@ -726,6 +726,7 @@ echo "</form>\n";
 		// ***** AJOUT POUR LES MENTIONS *****
 		$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "
@@ -1182,6 +1183,14 @@ if (isset($fiche)) {
 	// ***** AJOUT POUR LES MENTIONS *****
 	$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 	// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
+	//=========================
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe);
+	if($chaine_date_conseil_classe!="") {
+		echo "<div style='float:right; width:8em; text-align:center;'>".$chaine_date_conseil_classe."<br /></div>";
+	}
+	//=========================
+
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
 	echo add_token_field();
 	echo "<table border='0' summary=\"Elève $current_eleve_login\">\n";

@@ -647,6 +647,11 @@ echo add_token_field();
 <!--tr><td><input type=submit value=Enregistrer></td><td> : Enregistrer les moyennes dans le bulletin</td></tr></table-->
 
 <?php
+	//=========================
+	$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group);
+	echo $chaine_date_conseil_classe;
+	//=========================
+
 	$temoin_notes=0;
 
 	// Il ne faudrait afficher le bouton d'enregistrement que si la période choisie est ouverte ou seulement partiellement close.
@@ -1319,6 +1324,7 @@ if (($current_group["classe"]["ver_periode"]["all"][$periode_cn]>=2)||
 
 	echo "<center>\n";
 	echo "<div id='fixe'>\n";
+	echo $chaine_date_conseil_classe;
 	echo "<input type='submit' value='Enregistrer' />\n";
 	echo "</div>\n";
 	echo "</center>\n";

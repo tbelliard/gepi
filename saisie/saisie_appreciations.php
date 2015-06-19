@@ -874,6 +874,9 @@ if($proposer_liens_enregistrement=="y") {
 	}
 }
 //=========================
+$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group);
+echo $chaine_date_conseil_classe;
+//=========================
 
 if($proposer_liens_enregistrement=="y") {
 	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
@@ -1822,12 +1825,14 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <center>
 	<div id="fixe">
 	<?php
+		echo $chaine_date_conseil_classe."<br />";
 		if($proposer_liens_enregistrement=='y') {
 			echo "
 		<input type='submit' value='Enregistrer' /><br />
 
 		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
-		<div id='decompte'></div>\n";
+		<div id='decompte' title=\"La session ne sera plus valide, si vous ne consultez pas une page
+ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n";
 		}
 
 		//============================================

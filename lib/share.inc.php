@@ -10588,6 +10588,52 @@ function get_tab_infos_evenement($id_ev) {
 	return $tab;
 }
 
+function get_tab_date_prochain_evenement_telle_classe($id_classe, $type) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement>=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement LIMIT 1;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab=$lig;
+			$tab['slashdate_ev']=formate_date($lig['date_evenement']);
+			$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+			$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+		}
+	}
+	return $tab;
+}
+
+function get_infos_salle_cours($id_salle) {
+	$tab=array();
+
+	$sql="SELECT * FROM salle_cours WHERE id_salle='$id_salle';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$tab['id_salle']=$lig->id_salle;
+		$tab['numero_salle']=$lig->numero_salle;
+		$tab['nom_salle']=$lig->nom_salle;
+
+		if($lig->numero_salle!="") {
+			$designation_courte=$lig->numero_salle;
+			$designation_complete=$lig->numero_salle;
+		}
+		else {
+			$designation_courte=$lig->nom_salle;
+		}
+
+		if($lig->nom_salle!="") {
+			$designation_complete.=" (".$lig->nom_salle.")";
+		}
+
+		$tab['designation_courte']=$designation_courte;
+		$tab['designation_complete']=$designation_complete;
+	}
+
+	return $tab;
+}
+
 function get_info_id_definie_periode($id_definie_periode) {
 	$tab=array();
 
@@ -12680,7 +12726,10 @@ function cdt_copie_fichiers_archive_vers_cdt_courant($texte, $type_notice, $id_g
 	return $contenu_cor;
 }
 
-
+/** Fonction destinée à générer un tableau du contenu de la table 'salle_cours'
+ *
+ * @return array Tableau des salles avec indices primaires 'indice' et 'list'
+ */
 function get_tab_salle_cours() {
 	$tab=array();
 
@@ -12720,7 +12769,10 @@ function get_tab_salle_cours() {
 	return $tab;
 }
 
-
+/** Fonction destinée à générer un tableau du cotnenu de la table edt_creneaux
+ *
+ * @return array Tableau des créneaux avec indices primaires 'indice' et 'list'
+ */
 function get_tab_creneaux() {
 	$tab=array();
 

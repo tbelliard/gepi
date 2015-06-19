@@ -1179,10 +1179,19 @@ $msg_acces_app_ele_resp\" />";
 		?>
 		<input type='hidden' name='is_posted' value="yes" />
 		<input type='hidden' name='id_classe' value=<?php echo "$id_classe";?> />
-		<center><div id="fixe"><input type='submit' value='Enregistrer' />
+		<center>
+			<div id="fixe">
+				<?php
+					//=========================
+					$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe);
+					echo $chaine_date_conseil_classe."<br />";
+					//=========================
+				?>
+				<input type='submit' value='Enregistrer' title="Enregistrer les avis saisis" />
 
 		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
-		<div id='decompte'></div>
+		<div id='decompte' title="La session ne sera plus valide, si vous ne consultez pas une page
+ou ne validez pas ce formulaire avant le nombre de secondes indiqué."></div>
 
 		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 		<input type='hidden' id='info_focus' name='champ_info_focus' value='' size='3' />

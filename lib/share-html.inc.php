@@ -4625,4 +4625,57 @@ function affiche_tab_avis_conseil($login_ele, $avec_js="y") {
 
 	return $retour;
 }
+
+function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group=NULL) {
+	if(!isset($current_group)) {
+		$current_group=get_group($id_groupe, array('classes'));
+	}
+
+	$chaine_date_conseil_classe="";
+
+	foreach($current_group["classes"]["list"] as $key => $current_id_classe) {
+		$current_ev=get_tab_date_prochain_evenement_telle_classe($current_id_classe, 'conseil_de_classe');
+
+		if(isset($current_ev['id_ev'])) {
+			if($chaine_date_conseil_classe=="") {
+				$chaine_date_conseil_classe="<p align='center' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+			}
+			$lieu_conseil_de_classe="";
+			if(isset($current_ev['lieu']['designation_complete'])) {
+				$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
+			}
+			$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
+		}
+	}
+
+	if($chaine_date_conseil_classe!="") {
+		$chaine_date_conseil_classe.="</p>";
+	}
+
+	return $chaine_date_conseil_classe;
+}
+
+
+function affiche_date_prochain_conseil_de_classe_classe($id_classe) {
+	$chaine_date_conseil_classe="";
+
+	$current_ev=get_tab_date_prochain_evenement_telle_classe($id_classe, 'conseil_de_classe');
+
+	if(isset($current_ev['id_ev'])) {
+		if($chaine_date_conseil_classe=="") {
+			$chaine_date_conseil_classe="<p align='center' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+		}
+		$lieu_conseil_de_classe="";
+		if(isset($current_ev['lieu']['designation_complete'])) {
+			$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
+		}
+		$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
+	}
+
+	if($chaine_date_conseil_classe!="") {
+		$chaine_date_conseil_classe.="</p>";
+	}
+
+	return $chaine_date_conseil_classe;
+}
 ?>
