@@ -656,20 +656,20 @@ if ($insert_mass_appreciation_type=="y") {
 			$default_mass_appreciation=getSettingValue('default_mass_appreciation');
 		}
 
-		echo "<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
-		echo "<p>Insérer l'avis-type suivant<br />
+		$texte_infobulle="<div style='margin:1em; padding:0.2em; width:40em; border: 1px solid black; background-color: white; font-size: small; text-align:center;'>\n";
+		$texte_infobulle.="<p>Insérer l'avis-type suivant<br />
 <input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_vide' value='vide' checked /><label for='insert_mass_appreciation_type_mode_vide'>pour tous les avis vides</label><br />
 <input type='radio' name='insert_mass_appreciation_type_mode' id='insert_mass_appreciation_type_mode_ajout' value='ajout' /><label for='insert_mass_appreciation_type_mode_ajout'>en complément des avis</label><br />";
-		echo "<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
+		$texte_infobulle.="<textarea name='no_anti_inject_ajout_a_textarea_vide' id='ajout_a_textarea_vide' cols='50'>$default_mass_appreciation</textarea><br />\n";
 
-		echo "<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
+		$texte_infobulle.="<input type='checkbox' name='enregistrer_ajout_a_textarea_vide' id='enregistrer_ajout_a_textarea_vide' value='y' /><label for='enregistrer_ajout_a_textarea_vide'>Enregistrer cet avis-type comme avis-type par défaut</label><br />\n";
 
-		echo "<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide(); changement()' /><br />\n";
+		$texte_infobulle.="<input type='button' name='ajouter_a_textarea_vide' value='Ajouter' onclick='ajoute_a_textarea_vide(); changement()' /><br />\n";
 
-		echo "<input type='button' name='button_vider_tous_les_avis' value='Vider tous les avis' onclick='vider_tous_les_avis(); changement()' /><br />\n";
-		echo "</div>\n";
+		$texte_infobulle.="<input type='button' name='button_vider_tous_les_avis' value='Vider tous les avis' onclick='vider_tous_les_avis(); changement()' /><br />\n";
+		$texte_infobulle.="</div>\n";
 
-		echo "<script type='text/javascript'>
+		$texte_infobulle.="<script type='text/javascript'>
 	function ajoute_a_textarea_vide() {
 		if(document.getElementById('insert_mass_appreciation_type_mode_vide').checked==true) {
 			mode_insert='vide';
@@ -705,6 +705,12 @@ if ($insert_mass_appreciation_type=="y") {
 		}
 	}
 </script>\n";
+
+		$titre_infobulle="Insertion en masse";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_insertion_en_masse',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		echo "<div style='float:right;width:5em; text-align:center;' class='fieldset_opacite50'><a href='#' onclick=\"afficher_div('div_insertion_en_masse', 'y', 10, 10);return false;\">Insertion en masse</a></div>";
+
 	}
 }
 //=========================
@@ -1062,7 +1068,7 @@ $msg_acces_app_ele_resp\" />";
 					echo "$current_eleve_avis_t[$k]";
 					echo "</textarea>\n";
 
-					echo "<div style='float:right; width:16px' title=\"Éditer l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom, sur la période $k avec rappel du bulletin.\"><a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login_t[$k]."#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Éditer' /></a></div>";
+					echo "<div style='float:right; width:16px' title=\"Éditer l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom sur la période $k avec rappel du bulletin.\"><a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login_t[$k]."#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Éditer' /></a></div>";
 
 					// ***** AJOUT POUR LES MENTIONS *****
 					if(test_existence_mentions_classe($id_classe)) {
