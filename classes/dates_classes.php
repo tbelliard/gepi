@@ -644,7 +644,7 @@ if ($nb_messages>0) {
 
 		//echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
 		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> modifier</a>
-		<span id='span_lien_js_evenement_$ind' style='display:none'>-<a href='dates_classes2.php?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'événement avec la nouvelle interface de saisie\n(nécessitant Javascript)\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> 2 </a></span>
+		<span id='span_lien_js_evenement_$ind' style='display:none;'>-<a href='dates_classes2.php?id_ev=$lig->id_ev' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'événement avec la nouvelle interface de saisie\n(nécessitant Javascript)\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /> 2 </a></span>
 		- <a href='".$_SERVER['PHP_SELF']."?id_del=$lig->id_ev&amp;action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer cet événement ?', '".$message_suppression."')\"><img src='../images/delete16.png' class='icone16' alt='Supprimer' /> supprimer</a>
 		<div style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");padding: 3px; margin: 3px;'>".affiche_evenement($lig->id_ev, "y")."</div>
 		</div>\n";
@@ -778,7 +778,7 @@ echo "
 					<table border=\"0\" width = \"100%\" cellspacing=\"1\" cellpadding=\"1\" >
 						<tr>
 							<td colspan=\"4\">
-								<span class='grand'>".$titre_mess." 
+								<span class='grand'>".$titre_mess." <span style='font-weight:bold; font-style:italic;'>(Interface 1)</span> - 
 								<!--a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\" onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a-->
 								<span id='span_lien_js_evenement_modif' style='display:none'><a href='dates_classes2.php";
 if (isset($id_ev)) {
