@@ -43,6 +43,11 @@ global $bull_simp_larg_tab,
 	$bull_simp_larg_col3,
 	$bull_simp_larg_col4;
 
+global $themessage;
+if((!isset($themessage))||($themessage=="")) {
+	$themessage="Des saisies n\'ont pas été enregistrées. Voulez-vous vraiment quitter sans enregistrer ?";
+}
+
 $alt=1;
 
 // Initialisation des tableaux 
@@ -1292,7 +1297,7 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 		if(($temoin_page_courante!="saisie_avis2")&&($tab_classe_periode[$nb]['verouiller']!="O")) {
 			if(($_SESSION['statut']=='scolarite')||
 			(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
-				echo "<div style='float:right; width:16px;' title=\"Saisir/Modifier l'avis du conseil de classe.\" class='noprint'><a href = '../saisie/saisie_avis2.php?periode_num=$nb&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login#app'><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></div>";
+				echo "<div style='float:right; width:16px;' title=\"Saisir/Modifier l'avis du conseil de classe.\" class='noprint'><a href = '../saisie/saisie_avis2.php?periode_num=$nb&amp;id_classe=$id_classe&amp;fiche=y&amp;current_eleve_login=$current_eleve_login#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></div>";
 				//&amp;ind_eleve_login_suiv=$ind_eleve_login_suiv
 			}
 		}
