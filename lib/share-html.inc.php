@@ -4570,7 +4570,7 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 	return $retour;
 }
 
-function affiche_tab_avis_conseil($login_ele, $avec_js="y") {
+function affiche_tab_avis_conseil($login_ele, $avec_js="y", $avec_lien="y") {
 	global $gepiPath;
 
 	$retour="";
@@ -4601,21 +4601,32 @@ function affiche_tab_avis_conseil($login_ele, $avec_js="y") {
 			}
 		}
 
-		$retour="<p class='bold'>".$tab[0]['nom']." ".$tab[0]['prenom']." <a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_ele."&id_classe=".$tab[0]['id_classe']."&periode1=1&periode2=".$max_per."&couleur_alterne=y' target='_blank'";
-		if($avec_js=="y") {
-			$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', 1, $max_per); return false;\"";
+		$retour="<p class='bold'>".$tab[0]['nom']." ".$tab[0]['prenom'];
+		if($avec_lien=="y") {
+			$retour.=" <a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_ele."&id_classe=".$tab[0]['id_classe']."&periode1=1&periode2=".$max_per."&couleur_alterne=y' target='_blank'";
+			if($avec_js=="y") {
+				$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', 1, $max_per); return false;\"";
+			}
+			$retour.="><img src='$gepiPath/images/icons/bulletin.png' class='icone16' alt='BullSimp' /></a>";
 		}
-		$retour.="><img src='$gepiPath/images/icons/bulletin.png' class='icone16' alt='BullSimp' /></a></p>
+		$retour.="</p>
 <table class='boireaus boireaus_alt'>";
 		for($loop=0;$loop<count($tab);$loop++) {
 			$retour.="
 	<tr>
-		<td>".preg_replace("/ /", "&nbsp;", $tab[$loop]['classe'])."</td>
+		<td>".preg_replace("/ /", "&nbsp;", $tab[$loop]['classe'])."</td>";
+		if($avec_lien=="y") {
+			$retour.="
 		<td title=\"Voir le bulletin simplifié pour la période ".$tab[$loop]['periode'].".\"><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$login_ele."&id_classe=".$tab[$loop]['id_classe']."&periode1=".$tab[$loop]['periode']."&periode2=".$tab[$loop]['periode']."&couleur_alterne=y' target='_blank'";
-		if($avec_js=="y") {
-			$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', ".$tab[$loop]['periode'].", ".$tab[$loop]['periode']."); return false;\"";
+			if($avec_js=="y") {
+				$retour.=" onclick=\"affiche_bull_simp('$login_ele', '".$tab[0]['id_classe']."', ".$tab[$loop]['periode'].", ".$tab[$loop]['periode']."); return false;\"";
+			}
+			$retour.=">".preg_replace("/ /", "&nbsp;", $tab[$loop]['nom_periode'])."</a></td>";
 		}
-		$retour.=">".preg_replace("/ /", "&nbsp;", $tab[$loop]['nom_periode'])."</a></td>
+		else {
+			$retour.="<td>".preg_replace("/ /", "&nbsp;", $tab[$loop]['nom_periode'])."</td>";
+		}
+		$retour.="
 		<td>".$tab[$loop]['avis']."</td>
 	</tr>";
 		}

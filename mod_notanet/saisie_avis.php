@@ -321,17 +321,45 @@ else {
 	$texte="Photo";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
 
-	necessaire_bull_simple();
+	echo necessaire_bull_simple();
+
+	$max_per=0;
+	for($i=0;$i<count($id_classe);$i++) {
+		$nb_per_classe=get_period_number($id_classe[$i]);
+		if($nb_per_classe>$max_per) {
+			$max_per=$nb_per_classe;
+		}
+	}
 
 	$titre="<span id='span_avis_conseil'>Avis du conseil de classe</span>";
-	$texte="<div id='contenu_infobulle_avis_conseil_classe'>Avis du conseil de classe</div>";
+	//$texte="<div id='contenu_infobulle_avis_conseil_classe'>Avis du conseil de classe</div>";
+	$texte="
+<div style='float:right; width:16px'><a href='#' onclick=\"affiche_bull_simp2(); return false;\" title=\"Voir le bulletin simplifié.\"><img src='../images/icons/bulletin.png' class='icone16' alt='BullSimp' /></a></div>
+<input type='hidden' name='current_login_ele' id='current_login_ele' value='' />
+<input type='hidden' name='current_id_classe' id='current_id_classe' value='' />
+<div id='contenu_infobulle_avis_conseil_classe'>Avis du conseil de classe</div>";
 	$tabdiv_infobulle[]=creer_div_infobulle('div_avis_conseil_classe',$titre,"",$texte,"",30,0,'y','y','n','n');
 
 	echo "<script type='text/javascript'>
 	// <![CDATA[
-	function affiche_avis_conseil(login_eleve) {
+	function affiche_avis_conseil(login_eleve, id_classe) {
+		document.getElementById('current_login_ele').value=login_eleve;
+		document.getElementById('current_id_classe').value=id_classe;
+
 		new Ajax.Updater($('contenu_infobulle_avis_conseil_classe'),'../lib/ajax_action.php?mode=tab_avis_conseil&ele_login='+login_eleve,{method: 'get'});
 		afficher_div('div_avis_conseil_classe', 'y', 10, 10);
+	}
+
+	function affiche_bull_simp2() {
+		login_eleve=document.getElementById('current_login_ele').value;
+		id_classe=document.getElementById('current_id_classe').value;
+		num_per1=1;
+		num_per2=$max_per;
+
+		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+
+		afficher_div('div_bull_simp', 'y', 10, 10);
 	}
 	//]]>
 </script>\n";
@@ -427,7 +455,7 @@ else {
 				}
 				else {
 					echo "<td>";
-					echo "<div style='float:right; width:16px;'><a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=$lig_ele->login&id_classe=".$id_classe[$i]."&periode1=1&periode2=$nb_per_classe' onclick=\"affiche_avis_conseil('$lig_ele->login');return false;\"><img src='../images/icons/bulletin.png' class='icone16' alt='Avis' /></a></div>";
+					echo "<div style='float:right; width:16px;'><a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=$lig_ele->login&id_classe=".$id_classe[$i]."&periode1=1&periode2=$nb_per_classe' onclick=\"affiche_avis_conseil('$lig_ele->login', '".$id_classe[$i]."');return false;\"><img src='../images/icons/bulletin.png' class='icone16' alt='Avis' /></a></div>";
 					echo $lig_ele->nom." ".$lig_ele->prenom."</td>";
 
 					echo "<td>";

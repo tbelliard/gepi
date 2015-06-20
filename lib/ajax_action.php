@@ -89,7 +89,7 @@ if(($mode=="notes_ele_grp_per")&&(isset($ele_login))&&(isset($id_groupe))) {
 if(($mode=="tab_avis_conseil")&&(isset($ele_login))) {
 	//necessaire_bull_simple();
 	//echo affiche_tab_avis_conseil($ele_login);
-	echo affiche_tab_avis_conseil($ele_login, "n");
+	echo affiche_tab_avis_conseil($ele_login, "n", "n");
 	//include("../lib/footer_tab_infobulle.php");
 	// Je n'arrive pas à obtenir l'infobulle depuis celle qui affiche le tableau des conseils.
 }
