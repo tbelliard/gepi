@@ -371,35 +371,46 @@ C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne
 				//echo "<a name='ancre_$j'></a>";
 				echo strtoupper($tabmatieres[$j][0])."</td>\n";
 
+				/*
+				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY id;";
+				//echo "$sql<br />";
+				$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_test)>0) {
+					
+				}
+				else {
+				}
+				*/
+
 				//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet';";
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY id;";
 				$res_notanet_corresp=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_notanet_corresp)>0){
 					$lig_notanet_corresp=mysqli_fetch_object($res_notanet_corresp);
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_imposee_$j' value='imposee'";
 					if($lig_notanet_corresp->statut=='imposee'){
 						echo " checked='true'";
 					}
 					echo " /></td>\n";
 
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='optionnelle'";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_optionnelle_$j' value='optionnelle'";
 					if($lig_notanet_corresp->statut=='optionnelle'){
 						echo " checked='true'";
 					}
 					echo " /></td>\n";
 
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='non dispensee dans l etablissement'";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_non_dispensee_$j' value='non dispensee dans l etablissement'";
 					if($lig_notanet_corresp->statut=='non dispensee dans l etablissement'){
 						echo " checked='true'";
 					}
 					echo " /></td>\n";
 
-					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
+					echo "<td style='text-align:center' id='td_mode_matiere_saisie_$j'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
 					if($lig_notanet_corresp->mode=='saisie'){
 						echo " checked='true'";
 					}
 					echo " /></td>\n";
-					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' value='extract_moy'";
+					echo "<td style='text-align:center' id='td_mode_matiere_extract_moy_$j'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_extract_moy_$j' value='extract_moy'";
 					if($lig_notanet_corresp->mode!='saisie'){
 						echo " checked='true'";
 					}
@@ -407,15 +418,15 @@ C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne
 
 				}
 				else{
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='imposee'";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_imposee_$j' value='imposee'";
 					echo " checked='true'";
 					echo " /></td>\n";
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='optionnelle' /></td>\n";
-					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' value='non dispensee dans l etablissement' /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_optionnelle_$j' value='optionnelle' /></td>\n";
+					echo "<td style='text-align:center'><input type='radio' name='statut_matiere[$j]' id='statut_matiere_non_dispensee_$j' value='non dispensee dans l etablissement' /></td>\n";
 
-					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
+					echo "<td style='text-align:center' id='td_mode_matiere_saisie_$j'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_saisie_$j' value='saisie'";
 					echo " /></td>\n";
-					echo "<td style='text-align:center'><input type='radio' name='mode_matiere[$j]' value='extract_moy'";
+					echo "<td style='text-align:center' id='td_mode_matiere_extract_moy_$j'><input type='radio' name='mode_matiere[$j]' id='mode_matiere_extract_moy_$j' value='extract_moy'";
 					echo " checked='true'";
 					echo " /></td>\n";
 
@@ -444,13 +455,10 @@ C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne
 
 					echo "<a name='ancre_$j'></a>";
 
-					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' ORDER BY matiere;";
-					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' ORDER BY matiere;";
-					//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY matiere;";
 					$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' AND matiere!='' AND matiere!='0' ORDER BY id;";
 					//echo "$sql<br />";
 					$res_test=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_test)>0){
+					if(mysqli_num_rows($res_test)>0) {
 						$cpt=0;
 						echo "<p align='left'>";
 						while($lig_tmp=mysqli_fetch_object($res_test)) {
@@ -472,6 +480,16 @@ C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne
 							$cpt++;
 
 						}
+					}
+					else {
+						echo "<script type='text/javascript'>
+	document.getElementById('mode_matiere_saisie_$j').disabled=true;
+	document.getElementById('td_mode_matiere_saisie_$j').style.backgroundColor='yellow';
+	document.getElementById('td_mode_matiere_saisie_$j').title='Aucune matière Gepi n\'est associée.\\n\\nMême si c\'est une matière avec note saisie plutôt qu\'extraite des bulletins, commencez par associer la matière du professeur qui fera la saisie.';
+	document.getElementById('mode_matiere_extract_moy_$j').disabled=true;
+	document.getElementById('td_mode_matiere_extract_moy_$j').style.backgroundColor='yellow';
+	document.getElementById('td_mode_matiere_extract_moy_$j').title='Aucune matière Gepi n\'est associée.\\n\\nMême si c\'est une matière avec note saisie plutôt qu\'extraite des bulletins, commencez par associer la matière du professeur qui fera la saisie.';
+</script>";
 					}
 					echo "<p align='center'>";
 					echo "<a href='#' onclick=\"document.getElementById('j_matiere').value='$j';
@@ -550,9 +568,18 @@ C'est ce qui est proposé pour la note d'EPS qui doit correspondre à la moyenne
 		//echo "<li><p></p></li>\n";
 		echo "<li><p>Il est possible de sélectionner plusieurs matières pour une option (<i>ex.: AGL1 et ALL1 pour la Langue vivante 1</i>) en utilisant CTRL+clic avec la souris.<br />
 		(<i>on parle de sélection multiple</i>)</p></li>\n";
+		echo "<li><p>Dans les classes bilangue, les élèves démarr(ai)ent en 6ème ALL1 et AGL1.<br />Si arrivés en 3ème, c'est toujours ALL1 et AGL1, il faut déclarer ALL1 comme LV2 pour que l'extraction fonctionne dans le cas série Générale pour tous les élèves (<em>bilangues ou non</em>).<br />Si ce choix ne vous convient pas, deux solutions&nbsp;:</p>
+		<ul>
+			<li><p>Dans Gestion des bases/Gestion des classes, modifiez en AGL2 la matière associée aux enseignements d'AGL1 bilangue et associez la matière AGL2 à la LV2 dans le module Notanet.</p></li>
+			<li><p>La solution fastidieuse&nbsp;:<br />
+				Il faut s'y prendre en deux fois, avec un paramètrage pour générer un export pour les bilangues (<em>avec ALL1 en LV1 et AGL1 en LV2</em>).<br />N'oubliez pas de générer aussi les fiches brevet avec cette configuration.<br />Puis avec un nouveau paramétrage, avec AGL1 en LV1 pour les autres élèves.</p></li>
+		</ul>
+		</li>\n";
 		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
-		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
+			</li>
+			<li><p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
 		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à la matière gepi HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
+		echo "<li><p>Il arrive que d'une année sur l'autre, le mode d'initialisation de l'année change ou qu'un nouveau nom de matière soit donné à telle ou telle matière.<br />Cela a été constaté pour l'Histoire-Géographie qui voir fréquemment son nom passer de HIGEO à HI-GE dans certains établissements.<br />Dans ce cas, il convient d'associer, à la matière Notanet HISTOIRE-GÉOGRAPHIE, le nouveau nom de matière Gepi utilisé dans l'établissement.</p></li>\n";
 
 		if(($type_brevet==2)||($type_brevet==3)||($type_brevet==4)||($type_brevet==5)||($type_brevet==6)) {
 				echo "<li><p>Dans certains établissements, on enseigne la LV1, mais pas les SCPHY pour les brevets PRO.<br />
