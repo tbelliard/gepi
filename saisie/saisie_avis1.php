@@ -1061,6 +1061,9 @@ $msg_acces_app_ele_resp\" />";
 
 					echo "$current_eleve_avis_t[$k]";
 					echo "</textarea>\n";
+
+					echo "<div style='float:right; width:16px' title=\"Éditer l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom, sur la période $k avec rappel du bulletin.\"><a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login_t[$k]."#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Éditer' /></a></div>";
+
 					// ***** AJOUT POUR LES MENTIONS *****
 					if(test_existence_mentions_classe($id_classe)) {
 						echo ucfirst($gepi_denom_mention)." : ";
