@@ -510,16 +510,28 @@ if(getSettingAOui('active_bulletins')) {
 	$afficher_correction_validation="n";
 	if($_SESSION['statut']=='scolarite') {
 		// Il faut détecter les corrections d'appréciation de groupe et pas seulement celles d'élèves:
-		//$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jec.id_classe AND jec.login=mac.login AND jec.periode=mac.periode AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
-		$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM classes c, j_groupes_classes jgc, matieres_app_corrections mac, j_scol_classes jsc WHERE c.id=jgc.id_classe AND jgc.id_groupe=mac.id_groupe AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe;";
 	}
-	else {
-		//$sql="SELECT 1=1 FROM matieres_app_corrections;";
-		$sql="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
+	elseif(($_SESSION['statut']=='professeur')&&(getSettingAOui('autoriser_valider_correction_app_pp'))&&(is_pp($_SESSION['login']))) {
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe 
+						FROM classes c, 
+							j_eleves_classes jec, 
+							j_eleves_professeurs jep, 
+							matieres_app_corrections mac 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=mac.login AND 
+							jep.login=mac.login AND 
+							jep.professeur='".$_SESSION['login']."' ORDER BY classe;";
 	}
-    
-        $resultat = mysqli_query($mysqli, $sql);
-        if($resultat AND ($resultat->num_rows > 0)) {$afficher_correction_validation="y";}
+	elseif(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='secours')) {
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe FROM matieres_app_corrections mac, j_groupes_classes jgc, classes c WHERE mac.id_groupe=jgc.id_groupe AND jgc.id_classe=c.id ORDER BY classe;";
+	}
+	if(isset($sql_correction_app)) {
+		//echo "$sql_correction_app<br />";
+		$resultat = mysqli_query($mysqli, $sql_correction_app);
+		if($resultat AND ($resultat->num_rows > 0)) {$afficher_correction_validation="y";}
+		//echo "\$afficher_correction_validation=$afficher_correction_validation<br />";
+	}
 
 	if(getSettingAOui('active_bulletins')) {
 		    if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
@@ -556,10 +568,8 @@ if(getSettingAOui('active_bulletins')) {
 			$texte_item="Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.";
 			if($_SESSION['statut']=='scolarite') {
 				$sql="SELECT 1=1 FROM matieres_app_corrections map, j_scol_classes jsc, j_groupes_classes jgc where jsc.login='".$_SESSION['login']."' AND jsc.id_classe=jgc.id_classe AND jgc.id_groupe=map.id_groupe;";
-				
-                    $resultat = mysqli_query($mysqli, $sql);  
-                    $nb_aid = $resultat->num_rows;
-                
+				$resultat = mysqli_query($mysqli, $sql);  
+				$nb_aid = $resultat->num_rows;
 				if($nb_aid>0) {
 					$texte_item.="<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n";
 				}
@@ -1245,8 +1255,8 @@ if(getSettingAOui('active_bulletins')) {
 		if (($this->statutUtilisateur=='administrateur')&&(getSettingAOui('GepiAdminValidationCorrectionBulletins'))&&(acces('/saisie/validation_corrections.php', 'administrateur'))) {
 			$afficher_correction_validation="n";
 			$sql="SELECT 1=1 FROM matieres_app_corrections;";  
-                $test_mac = mysqli_query($mysqli, $sql);  
-                $nb_lignes = $test_mac->num_rows;
+			$test_mac = mysqli_query($mysqli, $sql);  
+			$nb_lignes = $test_mac->num_rows;
 
 			
 			if($test_mac AND $nb_lignes>0) {$afficher_correction_validation="y";}

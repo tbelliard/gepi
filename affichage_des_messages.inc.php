@@ -137,5 +137,25 @@ if (basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") {
 		echo affiche_remplacements_confirmes($_SESSION['login']);
 		echo affiche_remplacements_en_attente_de_reponse($_SESSION['login']);
 	}
+
+
+	if((getSettingAOui('active_bulletins'))&&($_SESSION['statut']=='professeur')&&(getSettingAOui('autoriser_valider_correction_app_pp'))&&(is_pp($_SESSION['login']))) {
+		$sql_correction_app="SELECT DISTINCT c.id, c.classe 
+						FROM classes c, 
+							j_eleves_classes jec, 
+							j_eleves_professeurs jep, 
+							matieres_app_corrections mac 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=mac.login AND 
+							jep.login=mac.login AND 
+							jep.professeur='".$_SESSION['login']."' ORDER BY classe;";
+		//echo "$sql_correction_app<br />";
+		$resultat = mysqli_query($mysqli, $sql_correction_app);
+		if($resultat AND ($resultat->num_rows > 0)) {
+			echo "<div style='color:red; width:40em;' class='fieldset_opacite50'>Une ou des propositions de correction d'appréciations requièrent votre attention.<br /><a href='saisie/validation_corrections.php'>Consulter les propositions pour les accepter ou les rejeter</a></div>";
+		}
+	}
+
+
 }
 ?>

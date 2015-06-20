@@ -400,6 +400,11 @@ $texteItem="peut signaler, en période ouverte ou partiellement close, (<em>à s
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='autoriser_valider_correction_app_pp';
+$texteItem="peut valider les propositions de correction d'appréciations de ses collègues pour les classes dont il est ".getSettingValue('gepi_prof_suivi').".";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesRestrAccesAppProfP';
 $texteItem="a accès au paramétrage des accès ".$gepiSettings['denomination_responsables']."/".$gepiSettings['denomination_eleves']." aux appréciations/avis des classes dont il est ".getSettingValue("gepi_prof_suivi");
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
