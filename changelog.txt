@@ -21,6 +21,7 @@ Bulletins:
 - Graphes: Possibilité d'afficher sur une seule page les graphes de tous les élèves d'une classe
   (pour les imprimer par exemple).
 - Graphes: Possibilité d'afficher les notes du carnet de notes en infobulle.
+- Possibilité d'autoriser le Professeur Principal à valider les corrections d'appréciations proposées par ses collègues.
 
 Cahiers de textes (2):
 - Avec l'archivage des CDT de cette version de Gepi, possibilité de coller dans les notices CDT2
