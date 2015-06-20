@@ -1189,6 +1189,9 @@ if (isset($fiche)) {
 	if($chaine_date_conseil_classe!="") {
 		echo "<div style='float:right; width:8em; text-align:center;'>".$chaine_date_conseil_classe."<br /></div>";
 	}
+	elseif(acces("/classes/dates_classes.php", $_SESSION['statut'])) {
+		echo "<div style='float:right; width:8em; text-align:center;'><p style='font-size:xx-small; color:red;' title=\"Faire apparaitre une date de conseil de classe en page d'accueil pour les personnes souhaitées (professeurs, cpe, scolarité, élèves, parents) est un plus pour les utilisateurs.\nCela permet de plus un accès plus direct aux différentes saisies à effectuer en période de conseil de classe.\n\nSi le conseil de classe est passé, ne tenez pas compte de ce message.\">Aucune date<br />de conseil de classe<br />n'a été définie dans Gepi.<br /><a href='../classes/dates_classes.php' target='_blank'>Définir une date de conseil.</a></p></div>";
+	}
 	//=========================
 
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";

@@ -1193,6 +1193,9 @@ $msg_acces_app_ele_resp\" />";
 				<?php
 					//=========================
 					$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_classe($id_classe);
+					if(($chaine_date_conseil_classe=="")&&(acces("/classes/dates_classes.php", $_SESSION['statut']))) {
+						$chaine_date_conseil_classe="<p style='font-size:xx-small; color:red;' title=\"Faire apparaitre une date de conseil de classe en page d'accueil pour les personnes souhaitées (professeurs, cpe, scolarité, élèves, parents) est un plus pour les utilisateurs.\nCela permet de plus un accès plus direct aux différentes saisies à effectuer en période de conseil de classe.\n\nSi le conseil de classe est passé, ne tenez pas compte de ce message.\">Aucune date<br />de conseil de classe<br />n'a été définie dans Gepi.<br /><a href='../classes/dates_classes.php' target='_blank'>Définir une date de conseil.</a></p>";
+					}
 					echo $chaine_date_conseil_classe."<br />";
 					//=========================
 				?>
