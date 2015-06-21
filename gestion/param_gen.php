@@ -145,6 +145,56 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
 			}
 		}
+		if (isset($_POST['date_debut_annee'])) {
+			if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $_POST['date_debut_annee'])) {
+				$msg.="Date de début d'année scolaire '".$_POST['date_debut_annee']."' invalide.<br />";
+			}
+			else {
+				$tab_date=explode("/", $_POST['date_debut_annee']);
+				if(!isset($tab_date[2])) {
+					$msg.="Date de début d'année scolaire '".$_POST['date_debut_annee']."' invalide.<br />";
+				}
+				else {
+					$begin_month=$tab_date[1];
+					$begin_day=$tab_date[0];
+					$begin_year=$tab_date[2];
+					$begin_bookings = mktime(0,0,0,$begin_month, $begin_day, $begin_year);
+					if((!$begin_bookings)||($begin_bookings==-1)) {
+						$msg.="Date de début d'année scolaire '".$_POST['date_debut_annee']."' invalide.<br />";
+					}
+					else {
+						if (!saveSetting("begin_bookings", $begin_bookings)) {
+							$msg .= "Erreur lors de l'enregistrement de la date de début de l'année scolaire !";
+						}
+					}
+				}
+			}
+		}
+		if (isset($_POST['date_fin_annee'])) {
+			if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $_POST['date_fin_annee'])) {
+				$msg.="Date de fin d'année scolaire '".$_POST['date_fin_annee']."' invalide.<br />";
+			}
+			else {
+				$tab_date=explode("/", $_POST['date_fin_annee']);
+				if(!$tab_date[2]) {
+					$msg.="Date de fin d'année scolaire '".$_POST['date_fin_annee']."' invalide.<br />";
+				}
+				else {
+					$end_month=$tab_date[1];
+					$end_day=$tab_date[0];
+					$end_year=$tab_date[2];
+					$end_bookings = mktime(0,0,0,$end_month, $end_day, $end_year);
+					if((!$end_bookings)||($end_bookings==-1)) {
+						$msg.="Date de fin d'année scolaire '".$_POST['date_fin_annee']."' invalide.<br />";
+					}
+					else {
+						if (!saveSetting("end_bookings", $end_bookings)) {
+							$msg .= "Erreur lors de l'enregistrement de la date de fin de l'année scolaire !";
+						}
+					}
+				}
+			}
+		}
 		if (isset($_POST['gepiSchoolName'])) {
 			if (!saveSetting("gepiSchoolName", $_POST['gepiSchoolName'])) {
 				$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
@@ -826,6 +876,23 @@ if((getSettingAOui('utiliser_phpmailer'))&&
 	$msg.="L'envoi de mail avec PHPMailer va échouer parce qu'un des champs indispensables est vide.<br />Voir <a href='".$_SERVER['PHP_SELF']."#phpmailer'>en bas de page</a>";
 }
 
+$date_debut_annee="";
+$begin_bookings=getSettingValue('begin_bookings');
+if(preg_match("/^[0-9]{1,}$/", $begin_bookings)) {
+	$date_debut_annee=strftime("%d/%m/%Y", $begin_bookings);
+}
+
+$date_fin_annee="";
+$end_bookings=getSettingValue('end_bookings');
+if(preg_match("/^[0-9]{1,}$/", $end_bookings)) {
+	$date_fin_annee=strftime("%d/%m/%Y", $end_bookings);
+}
+
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -850,11 +917,35 @@ echo add_token_field();
 	
 	<p class="ligneCaps">
 		<label for='gepiSchoolRne' class="cellTab70">
-			Année scolaire :
+			Année scolaire&nbsp;:
 		</label>
 		<span class="cellTab">
 			<input type="text" name="gepiYear" size="20" value="<?php echo(getSettingValue("gepiYear")); ?>" onchange='changement()' />
 		</span>
+	</p>
+
+	<p class="ligneCaps" title="Les dates de début et de fin d'année sont utilisées
+pour limiter les saisies à des dates situées dans l'année scolaire
+(cahier de textes, absences,...)">
+		<label for='date_debut_annee' class="cellTab70">
+			Date de début de l'année scolaire&nbsp;:
+		</label>
+		<span class="cellTab">
+			<input type="text" name="date_debut_annee" id="date_debut_annee" size="10" value="<?php echo $date_debut_annee; ?>" onchange='changement()' onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
+			<?php echo img_calendrier_js("date_debut_annee", "img_bouton_date_debut_annee");?>
+		</span>
+	</p>
+	<p class="ligneCaps" title="Les dates de début et de fin d'année sont utilisées
+pour limiter les saisies à des dates situées dans l'année scolaire
+(cahier de textes, absences,...)">
+		<label for='date_debut_annee' class="cellTab70">
+			Date de fin de l'année scolaire&nbsp;:
+		</label>
+		<span class="cellTab">
+			<input type="text" name="date_fin_annee" id="date_fin_annee" size="10" value="<?php echo $date_fin_annee; ?>" onchange='changement()' onKeyDown="clavier_date(this.id,event);" AutoComplete="off" />
+			<?php echo img_calendrier_js("date_fin_annee", "img_bouton_date_fin_annee");?>
+		</span>
+		<br />
 	</p>
 	
 	<p class="ligneCaps">
