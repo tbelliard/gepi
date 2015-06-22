@@ -789,7 +789,7 @@ if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
     }
 }
 */
-					$chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'
+					$chaine_contenu_td.='<a style="font-size:88%;" href="#" onClick="javascript:document.getElementById(\'absences_du_jour\').action=\'absences_du_jour.php#ancre_id_eleve_'.$eleve->getId().'\';showwindow(\'visu_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false"><img src="../images/icons/saisie.png" title="Voir la saisie n°'.$saisie->getPrimaryKey().'
 Du '.get_date_heure_from_mysql_date($saisie->getDebutAbs()).' au '.get_date_heure_from_mysql_date($saisie->getFinAbs()).'"/>';
 
 					$nb_checkbox_eleve_courant++;
@@ -1274,6 +1274,9 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 			document.getElementById("img_bug_dojo").style.display="none";
 		}
 	}
+
+	// Nettoyage après submit
+	document.getElementById(\'absences_du_jour\').action=\'absences_du_jour.php\';
 </script>';
 
 require_once("../lib/footer.inc.php");
