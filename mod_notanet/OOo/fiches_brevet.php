@@ -503,8 +503,9 @@ if (!isset($id_classe)) {
 	echo "</select></p>\n";
 	echo "<p>\n<input type='radio' name='tri' id='tri_alpha' value='alpha' checked='checked' /><label for='tri_alpha' style='cursor: pointer;'> Tri alphabétique sur les noms et prénoms des élèves indépendamment des classes.</label><br />\n";
 	echo "<input type='radio' name='tri' id='tri_classe' value='classe' /><label for='tri_classe' style='cursor: pointer;'> Tri par classe puis tri alphabétique sur les noms et prénoms des élèves.</label></p>\n";
-	echo "<p>\n<input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /><label for='avec_app' id='avec_app_label' style='cursor: pointer;'> Avec les appréciations</label>\n";
-	echo "<input type='submit' name='choix_classe' value='Envoyer' />\n</p>\n";
+	echo "<p><input type='checkbox' name='avec_app' id='avec_app' value='y' checked='checked' /><label for='avec_app' id='avec_app_label' style='cursor: pointer;'> Avec les appréciations</label></p>\n";
+	//echo "<p style='text-indent:-2em; margin-left:2em;'><input type='checkbox' name='suppr_retour_a_la_ligne' id='suppr_retour_a_la_ligne' value='y' /><label for='suppr_retour_a_la_ligne' id='suppr_retour_a_la_ligne_label' style='cursor: pointer;'> Supprimer les retours à la ligne dans les avis et appréciations</label><br />Si votre modèle OOo est un fichier tableur, les retours à la ligne peuvent perturber la génération.</p>";
+	echo "<p><input type='submit' name='choix_classe' value='Envoyer' />\n</p>\n";
 
 	echo "</blockquote>\n";
 	echo "</form>\n";
@@ -661,6 +662,33 @@ for($i=0;$i<count($id_classe);$i++){
 
 			$tab_eleves_OOo[$nb_eleve]=array();
 			$tab_eleves_OOo[$nb_eleve]['fb_session']=$fb_session;
+
+			$tab_eleves_OOo[$nb_eleve]['mefcode']=$lig1->mef_code;
+			
+			/***** MEF *****/
+			$tab_eleves_OOo[$nb_eleve]['mef']="";
+			$sql_mef="SELECT libelle_edition FROM mef WHERE mef_code='".$lig1->mef_code."';";
+			$res_mef=mysqli_query($GLOBALS["mysqli"], $sql_mef);
+			if(mysqli_num_rows($res_mef)>0) {
+			   $lig_mef=mysqli_fetch_object($res_mef);
+			   $tab_eleves_OOo[$nb_eleve]['mef']=$lig_mef->libelle_edition;
+			}	
+			
+			/***** Langue régionale	*****/
+			$tab_eleves_OOo[$nb_eleve]['lvr']="";
+			$tab_eleves_OOo[$nb_eleve]['lvrNom']="";
+			$sql_lvr="SELECT * FROM `notanet_lvr_ele` WHERE `login` LIKE '".$lig1->login."';";
+			$res_lvr=mysqli_query($GLOBALS["mysqli"], $sql_lvr);
+			if(mysqli_num_rows($res_lvr)>0) {
+			   $lig_lvr=mysqli_fetch_object($res_lvr);
+			   $tab_eleves_OOo[$nb_eleve]['lvr']=$lig_lvr->note;
+			   $sql_lvrNom="SELECT * FROM `notanet_lvr` WHERE `id` = ".$lig_lvr->id_lvr.";";
+			   $res_lvrNom=mysqli_query($GLOBALS["mysqli"], $sql_lvrNom);
+			   if(mysqli_num_rows($res_lvrNom)>0) {
+				  $lig_lvrNom=mysqli_fetch_object($res_lvrNom);
+				  $tab_eleves_OOo[$nb_eleve]['lvrNom']=$lig_lvrNom->intitule;
+			   }
+			}
 
 			//echo "<p>$lig1->nom $lig1->prenom<br />";
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
