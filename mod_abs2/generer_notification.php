@@ -71,13 +71,13 @@ $notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification
 $retour_envoi = '';
 
 if ($notification == null && !isset($_POST["creation_notification"])) {
-    $message_enregistrement .= 'Generation impossible : notification non trouvée. ';
+    $message_enregistrement .= '<span style="color:red">Generation impossible : notification non trouvée.</span> ';
     include("visu_notification.php");
     die();
 }
 
 if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER && $notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
-    $message_enregistrement .= 'Génération impossible : envoi déjà effectué. ';
+    $message_enregistrement .= '<span style="color:red">Génération impossible : envoi déjà effectué.</span> ';
     include("visu_notification.php");
     die();
 }
@@ -121,9 +121,9 @@ $TBS->MergeBlock('notifications',$tableNotifications);
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
 }
 if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES) {
-    $message_enregistrement = 'Envoi réussi. '.$retour_envoi;
+    $message_enregistrement = '<span style="color:green">Envoi réussi.</span> '.$retour_envoi;
 } else {
-    $message_enregistrement = 'Échec de l\'envoi. '.$retour_envoi;
+    $message_enregistrement = '<span style="color:red">Échec de l\'envoi.</span> '.$retour_envoi;
 }
 include('visu_notification.php');
 ?>
