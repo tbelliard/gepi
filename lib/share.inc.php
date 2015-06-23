@@ -13416,7 +13416,7 @@ function get_tab_eleves_classe($id_classe) {
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
 			$temp["eleves"][$lig->periode]["list"][]=$lig->login;
-			$temp["eleves"][$lig->periode]["users"][$lig->login]=array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe);
+			$temp["eleves"][$lig->periode]["users"][$lig->login]=array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe);
 			if(!in_array($lig->periode, $tab_per)) {
 				$tab_per[]=$lig->periode;
 			}

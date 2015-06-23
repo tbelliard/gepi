@@ -555,7 +555,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                         $e_sconet_id = $obj_eleve->ele_id;
                         $e_elenoet = $obj_eleve->elenoet;
                         $temp["eleves"][$key]["list"][] = $e_login;
-                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe);
+                        $temp["eleves"][$key]["users"][$e_login] = array("login" => $e_login, "nom" => $e_nom, "prenom" => $e_prenom, "id_classe" => $e_classe, "classe" => $e_classe, "sconet_id" => $e_sconet_id, "elenoet" => $e_elenoet, "sexe" => $e_sexe);
                         $res_classe_eleve_periode->close();
                     }
                     

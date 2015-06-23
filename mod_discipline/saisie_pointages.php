@@ -305,7 +305,7 @@ if(!isset($mode)) {
 			echo "<div class='fieldset_opacite50' style='float:left; width:45%; padding:0.5em;'>
 	<p style='text-indent:-4em; margin-left:4em;'>Choisissez un enseignement pour lequel effectuer une saisie&nbsp;:<br />";
 			foreach($groups as $current_group) {
-			echo "
+				echo "
 		<a href='".$_SERVER['PHP_SELF']."?mode=groupe&amp;id_groupe=".$current_group['id']."'>".$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']."</a><br />";
 			}
 			echo "</p>
@@ -351,9 +351,16 @@ if(($mode=="groupe")||($mode=="classe")) {
 				require_once("../lib/footer.inc.php");
 				die();
 			}
-			$param_lien="mode=classe&amp;id_groupe=$id_classe";
+			$param_lien="mode=classe&amp;id_classe=$id_classe";
 			$message_groupe_ou_classe="<p class='bold' style='text-align:center;'>Classe de ".get_nom_classe($id_classe)."</p>";
 		}
+
+		// DEBUG
+		/*
+		echo "<pre>";
+		print_r($tab_ele);
+		echo "</pre>";
+		*/
 
 		if(!isset($display_date)) {
 			$display_date=strftime("%d/%m/%Y");
@@ -490,8 +497,16 @@ if(($mode=="groupe")||($mode=="classe")) {
 		 | 
 		<input type='text' name='display_date' id='display_date' size='10' value='$display_date' 
 					onkeydown='clavier_date_plus_moins(this.id,event);' />".img_calendrier_js("display_date", "img_bouton_display_date")."
-		<input type='submit' value='Changer de date' />
-		<input type='hidden' name='id_groupe' value='$id_groupe' />
+		<input type='submit' value='Changer de date' />";
+		if(isset($id_groupe)) {
+			echo "
+		<input type='hidden' name='id_groupe' value='$id_groupe' />";
+		}
+		if(isset($id_classe)) {
+			echo "
+		<input type='hidden' name='id_classe' value='$id_classe' />";
+		}
+		echo "
 		<input type='hidden' name='id_creneau' value='$id_creneau' />
 		<input type='hidden' name='mode' value='$mode' />
 	</p>
@@ -539,12 +554,25 @@ $message_creneau
 			</thead>
 			<tbody>";
 		$cpt_checkbox=0;
+		$tab_classe=array();
+		$tab_totaux_tfoot=array('total', 'creneau');
+		$tab_totaux_tfoot['total']=array();
+		$tab_totaux_tfoot['creneau']=array();
 		for($loop=0;$loop<count($tab_ele['eleves']['all']['list']);$loop++) {
 			$current_eleve_login=$tab_ele['eleves']['all']['list'][$loop];
 			$current_eleve_nom=$tab_ele["eleves"]["all"]["users"][$current_eleve_login]['nom'];
 			$current_eleve_prenom=$tab_ele["eleves"]["all"]["users"][$current_eleve_login]['prenom'];
-			$current_eleve_id_classe=$tab_ele["eleves"]["all"]["users"][$current_eleve_login]['classe'];
-			$current_eleve_classe=get_nom_classe($current_eleve_id_classe);
+			$current_eleve_id_classe=$tab_ele["eleves"]["all"]["users"][$current_eleve_login]['id_classe'];
+
+			if(!isset($tab_classe[$current_eleve_id_classe]['effectif'])) {
+				$tab_classe[$current_eleve_id_classe]['nom_classe']=get_nom_classe($current_eleve_id_classe);
+				$tab_classe[$current_eleve_id_classe]['effectif']=1;
+			}
+			else {
+				$tab_classe[$current_eleve_id_classe]['effectif']++;
+			}
+
+			$current_eleve_classe=$tab_classe[$current_eleve_id_classe]['nom_classe'];
 			echo "
 				<tr>
 					<td>
@@ -565,6 +593,11 @@ $message_creneau
 					$current_nom_sp=$tab_type_pointage_discipline['indice'][$loop2]['nom'];
 					echo "
 						<span title=\"$current_nom_sp : ".$tab_totaux[$current_eleve_login][$current_id_type]."\">".mb_substr($current_nom_sp,0,2)."&nbsp;: ".$tab_totaux[$current_eleve_login][$current_id_type]."</span><br />";
+
+					if(!isset($tab_totaux_tfoot['total'][$current_id_type])) {
+						$tab_totaux_tfoot['total'][$current_id_type]=0;
+					}
+					$tab_totaux_tfoot['total'][$current_id_type]+=$tab_totaux[$current_eleve_login][$current_id_type];
 				}
 			}
 			echo "
@@ -594,6 +627,12 @@ $message_creneau
 								echo "
 						<span title=\"$current_description_sp\n".$tab_saisies[$current_id_creneau][$current_eleve_login][$current_id_type]['commentaire']."\nSaisi par ".civ_nom_prenom($tab_saisies[$current_id_creneau][$current_eleve_login][$current_id_type]['created_by'])."\">$current_nom_sp</span><br />";
 							}
+
+							if(!isset($tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type])) {
+								$tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type]=0;
+							}
+							$tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type]++;
+
 						}
 						else {
 							echo "
@@ -618,6 +657,11 @@ $message_creneau
 							echo "
 						<span title=\"".$current_description_sp."\n".$tab_saisies[$current_id_creneau][$current_eleve_login][$current_id_type]['commentaire']."\nSaisi par ".civ_nom_prenom($tab_saisies[$current_id_creneau][$current_eleve_login][$current_id_type]['created_by'])."\">".$current_nom_sp."</span>";
 							$cpt_saisies_creneau_courant++;
+
+							if(!isset($tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type])) {
+								$tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type]=0;
+							}
+							$tab_totaux_tfoot['creneau'][$current_id_creneau][$current_id_type]++;
 						}
 					}
 				}
@@ -637,6 +681,37 @@ $message_creneau
 		}
 		echo "
 			</tbody>
+			<tfoot>
+				<tr>
+					<th>Totaux</th>
+					<th>";
+		foreach($tab_classe as $current_id_classe => $current_clas) {
+			echo preg_replace("/ /","&nbsp;",$current_clas['nom_classe'])."<span style='font-size:xx-small' title='Effectif'>&nbsp;(".$current_clas['effectif'].")</span> ";
+		}
+		echo "</th>
+					<th>";
+		foreach($tab_totaux_tfoot['total'] as $current_id_type => $current_effectif) {
+			echo "<span title=\"".$tab_type_pointage_discipline['id_type'][$current_id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$current_id_type]['description'].")\">".mb_substr($tab_type_pointage_discipline['id_type'][$current_id_type]['nom'], 0, 2)."&nbsp;:&nbsp;".$current_effectif."</span><br />";
+		}
+		echo "</th>";
+		// <!-- Boucle sur les créneaux -->
+		foreach($tab_creneaux as $current_id_creneau => $current_creneau) {
+			echo "
+					<th>";
+			if(isset($tab_totaux_tfoot['creneau'][$current_id_creneau])) {
+				foreach($tab_totaux_tfoot['creneau'][$current_id_creneau] as $current_id_type => $current_effectif) {
+					echo "<span title=\"".$tab_type_pointage_discipline['id_type'][$current_id_type]['nom']." (".$tab_type_pointage_discipline['id_type'][$current_id_type]['description'].")\">".mb_substr($tab_type_pointage_discipline['id_type'][$current_id_type]['nom'], 0, 2)."&nbsp;:&nbsp;".$current_effectif."</span><br />";
+				}
+			}
+		echo "</th>";
+		}
+		if($active_module_trombinoscopes) {
+			echo "
+					<th>Photos</th>";
+		}
+		echo "
+				</tr>
+			</tfoot>
 		</table>
 		<!--p><input type='submit' value='Enregistrer' /></p-->
 		<p style='text-align:center;'><input type='submit' value=\"Enregistrer les saisies pour le créneau ".$tab_creneaux[$id_creneau]['nom_creneau']."\" /></p>
@@ -658,7 +733,12 @@ $message_creneau
 		}
 	}
 </script>";
-
+		/*
+		// DEBUG
+		echo "<pre>";
+		print_r($tab_classe);
+		echo "</pre>";
+		*/
 }
 else {
 	echo "<p>Mode $mode non encore implémenté.</p>";
