@@ -304,6 +304,103 @@ if (!$notif_mail_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotificatio
     echo '<br/><br/>';
 }
 
+if(getSettingAOui("abs2_sms")) {
+	//
+	//on envoie les SMS
+	//
+	$nb_sms_envoyes = 0;
+	if (isset($_GET['envoyer_sms']) && $_GET['envoyer_sms'] == 'true') {
+	    // Load the template
+	    include_once 'lib/function.php';
+	    $sms_modele=repertoire_modeles('absence_sms.txt');
+	    include_once '../orm/helpers/AbsencesNotificationHelper.php';
+	    foreach($notifications_col as $notif) {
+		$TBS = AbsencesNotificationHelper::MergeNotification($notif, $sms_modele);
+		$retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notif, $TBS->Source);
+		if ($retour_envoi == '') {
+		    $nb_sms_envoyes = $nb_sms_envoyes + 1;
+		}
+	    }
+	    echo 'SMS envoyés : '.$nb_sms_envoyes.'<br/>';
+	}
+
+	//
+	//on affiche les notifications de type SMS
+	//
+	$notif_sms_a_envoyer_col = new PropelCollection();
+	$notif_sms_fini_col = new PropelCollection();
+	foreach($notifications_col as $notif) {
+	    if ($notif->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
+		if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL || $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
+		    $notif_sms_a_envoyer_col->add($notif);
+		} else {
+		    $notif_sms_fini_col->add($notif);
+		}
+	    }
+	}
+	if (!$notif_sms_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
+	    echo 'SMS envoyés';
+	    // A CORRIGER : id table_liste_absents répété plusieurs fois dans la page
+	    echo '<table id="table_liste_absents" style="border-spacing:0px;">';
+	    //en tete commentaire
+	    echo '</tr>';
+	    echo '<th>id</th>';
+	    echo '<th></th>';
+	    echo '<th></th>';
+	    echo '<th>SMS</th>';
+	    echo '<th>statut</th>';
+	    echo '<th>date d\'envoi</th>';
+	    echo '<th>traitement</th>';
+	    echo '</tr>';
+	    foreach($notif_sms_fini_col as $notif) {
+		echo '<tr>';
+		echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
+		echo '<td>';
+		if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES
+			|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION) {
+		    echo '<div style="color : green;">envoi réussi</div>';
+		} else {
+		    echo '<div style="color : red;">Erreur : '.$notif->getErreurMessageEnvoi().'</div>';
+		}
+		echo '</td>';
+		echo '<td>';
+		echo ' <a href="generer_notifications_par_lot.php?retirer_id_notification='.$notif->getId().'">Retirer du lot</a>';
+		echo '</td>';
+		echo '<td>'.$notif->getTelephone().'</td>';
+		echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
+		echo '<td>'.$notif->getDateEnvoi('d/m/Y H:i').'</td>';
+		echo '<td>Traitement '.$notif->getAbsenceEleveTraitement()->getDescription().'</td>';
+		echo '</tr>';
+	    }
+	    echo '</table></br>';
+	    echo '<br/><br/>';
+	}
+	if (!$notif_sms_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotification();
+	    echo 'Notifications à envoyer par SMS';
+	    echo '<table id="table_liste_absents" style="border-spacing:0px;">';
+	    //en tete commentaire
+	    echo '</tr>';
+	    echo '<th>id</th>';
+	    echo '<th></th>';
+	    echo '<th>SMS</th>';
+	    echo '<th>statut</th>';
+	    echo '<th>traitement</th>';
+	    echo '</tr>';
+	    foreach($notif_sms_a_envoyer_col as $notif) {
+		echo '<tr>';
+		    echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
+		    echo '<td><a href="generer_notifications_par_lot.php?retirer_id_notification='.$notif->getId().'">Retirer du lot</a></td>';
+		    echo '<td>'.$notif->getTelephone().'</td>';
+		    echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
+		    echo '<td>Traitement '.$notif->getAbsenceEleveTraitement()->getDescription().'</td>';
+		echo '</tr>';
+	    }
+	    echo '</table></br>';
+	    echo '<a dojoType="dijit.form.Button" onclick="location.href=\'generer_notifications_par_lot.php?envoyer_sms=true\';" href="generer_notifications_par_lot.php?envoyer_sms=true">Envoyer les SMS</a>';
+	    echo '<br/><br/>';
+	}
+}
+
 //
 //on affiche les notifications de type courrier
 //
