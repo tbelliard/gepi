@@ -200,10 +200,6 @@ function afficher_contraintes($tab_clas_fut) {
 		$retour.="</table>\n";
 	}
 
-	if($cpt==0) {
-		$retour="";
-	}
-
 	return $retour;
 }
 
