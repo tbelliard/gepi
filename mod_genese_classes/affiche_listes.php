@@ -91,6 +91,25 @@ if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele'])
 	}
 }
 
+if((isset($projet))&&(isset($_GET['set_profil']))&&(isset($_GET['profil']))&&(isset($_GET['login']))) {
+	check_token();
+
+	if(in_array($_GET['profil'], array('GC', 'C', 'RAS', 'B', 'TB'))) {
+		$sql="UPDATE gc_eleves_options SET profil='".$_GET['profil']."' WHERE projet='".$projet."' AND login='".$_GET['login']."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$res) {
+			echo "ERREUR";
+		}
+		else {
+			echo $_GET['profil'];
+		}
+	}
+	else {
+	}
+
+	die();
+}
+
 if((isset($projet))&&(isset($_POST['valider_enregistrement_nom_aff']))&&(isset($_POST['id_aff']))) {
 	check_token();
 
@@ -1386,7 +1405,12 @@ else {
 			}
 		}
 
-		document.getElementById('div_profil_'+cpt).innerHTML=profil;
+		//document.getElementById('div_profil_'+cpt).innerHTML=profil;
+
+		current_login_ele=document.getElementById('login_eleve_'+cpt).value;
+
+		new Ajax.Updater($('div_profil_'+cpt),'affiche_listes.php?set_profil=y&login='+current_login_ele+'&projet=$projet&profil='+profil+'".add_token_in_url(false)."',{method: 'get'});
+
 		cacher_div('div_set_profil');
 	}
 
@@ -1718,7 +1742,8 @@ else {
 		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select_sexe$loop'></span>";
 		$contenu_affichage_requete_courante.="</th>\n";
 
-		$contenu_affichage_requete_courante.="<th class='text'>Profil";
+//20150623
+		$contenu_affichage_requete_courante.="<th class='text' id='th_req_n__$loop'><span style='display:none'>Bidule</span>Profil";
 		//$contenu_affichage_requete_courante.="<br />\n<span id='eff_select$loop'></span>";
 		$contenu_affichage_requete_courante.="</th>\n";
 		$contenu_affichage_requete_courante.="<th class='number' title=\"Cliquez pour trier par niveau scolaire.\">Niveau</th>\n";
@@ -1857,7 +1882,7 @@ else {
 						else {
 							$contenu_affichage_requete_courante.=$designation_eleve;
 						}
-						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' id='login_eleve_$cpt' value='$lig->login' />\n";
 						$contenu_affichage_requete_courante.="</td>\n";
 						$lignes_tab.=$designation_eleve.";";
 
@@ -1905,9 +1930,12 @@ else {
 						}
 						//===================================
 						// Profil...
-						$contenu_affichage_requete_courante.="<td>\n";
+//20150623
+						$contenu_affichage_requete_courante.="<td id='td_profil_req_".$loop."_ele_".$cpt."'>\n";
+						$contenu_affichage_requete_courante.="<span style='display:none;'>".$profil."</span>";
 						for($m=0;$m<count($tab_profil);$m++) {if($profil==$tab_profil[$m]) {$contenu_affichage_requete_courante.="<span style='color:".$tab_couleur_profil[$m].";'>";break;}}
 						//$contenu_affichage_requete_courante.=$profil;
+						$contenu_affichage_requete_courante.="<span style='display:none;'>".$profil."</span>";
 						$contenu_affichage_requete_courante.="<span id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</span>\n";
 
 						$contenu_affichage_requete_courante.="</span>\n";
@@ -2528,7 +2556,7 @@ echo "
 </script>\n";
 
 	// A METTRE DANS UNE INFOBULLE?
-	echo "<p style='bold'>Récapitulatif des effectifs&nbsp;:</p>\n";
+	echo "<p class='bold'>Récapitulatif des effectifs&nbsp;:</p>\n";
 	echo $lignes_requetes;
 
 	$titre="Récapitulatif des effectifs";
