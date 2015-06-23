@@ -42,6 +42,7 @@ Divers:
 - Import simplifié des établissements d'origine non référencés.
 - Facilités (depuis un événement conseil_de_classe) d'accès aux fonctions utiles en période de conseil de classe.
 - Possibilité d'importer les dates de vacances scolaires d'après l'ICS officiel Education Nationale.
+- Possibilité de définir un texte différent pour parents et élèves de celui des personnels dans les dates événements.
 
 
 Gepi-1.6.6 (18/01/2015)
