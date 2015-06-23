@@ -2004,6 +2004,13 @@ else {
 									if((!isset($tab_lv_et_opt_requete[$loop]['lv2']))||(!in_array($lv2[$i], $tab_lv_et_opt_requete[$loop]['lv2']))) {
 										$tab_lv_et_opt_requete[$loop]['lv2'][]=$lv2[$i];
 									}
+
+									if(!isset($tab_eff_lv_et_opt_requete[$loop]['lv2'][$lv2[$i]])) {
+										$tab_eff_lv_et_opt_requete[$loop]['lv2'][$lv2[$i]]=1;
+									}
+									else {
+										$tab_eff_lv_et_opt_requete[$loop]['lv2'][$lv2[$i]]++;
+									}
 								}
 							}
 							$contenu_affichage_requete_courante.="</td>\n";
@@ -2020,6 +2027,13 @@ else {
 
 									if((!isset($tab_lv_et_opt_requete[$loop]['lv3']))||(!in_array($lv3[$i], $tab_lv_et_opt_requete[$loop]['lv3']))) {
 										$tab_lv_et_opt_requete[$loop]['lv3'][]=$lv3[$i];
+									}
+
+									if(!isset($tab_eff_lv_et_opt_requete[$loop]['lv3'][$lv3[$i]])) {
+										$tab_eff_lv_et_opt_requete[$loop]['lv3'][$lv3[$i]]=1;
+									}
+									else {
+										$tab_eff_lv_et_opt_requete[$loop]['lv3'][$lv3[$i]]++;
 									}
 								}
 							}
@@ -2039,6 +2053,13 @@ else {
 
 									if((!isset($tab_lv_et_opt_requete[$loop]['autre_opt']))||(!in_array($autre_opt[$i], $tab_lv_et_opt_requete[$loop]['autre_opt']))) {
 										$tab_lv_et_opt_requete[$loop]['autre_opt'][]=$autre_opt[$i];
+									}
+
+									if(!isset($tab_eff_lv_et_opt_requete[$loop]['autre_opt'][$autre_opt[$i]])) {
+										$tab_eff_lv_et_opt_requete[$loop]['autre_opt'][$autre_opt[$i]]=1;
+									}
+									else {
+										$tab_eff_lv_et_opt_requete[$loop]['autre_opt'][$autre_opt[$i]]++;
 									}
 
 									$cpt_autre_opt++;
@@ -2205,6 +2226,10 @@ else {
 			$chaine_liste_lv2="";
 			foreach($tab_lv_et_opt_requete[$loop]['lv2'] as $key => $value) {
 				$chaine_liste_lv2.=" ".$value;
+
+				if(isset($tab_eff_lv_et_opt_requete[$loop]['lv2'][$value])) {
+					$chaine_liste_lv2.="&nbsp;<span style=font-size:x-small>(".$tab_eff_lv_et_opt_requete[$loop]['lv2'][$value].")</span>";
+				}
 			}
 			echo "<script type='text/javascript'>
 	/*
@@ -2222,6 +2247,10 @@ else {
 			$chaine_liste_lv3="";
 			foreach($tab_lv_et_opt_requete[$loop]['lv3'] as $key => $value) {
 				$chaine_liste_lv3.=" ".$value;
+
+				if(isset($tab_eff_lv_et_opt_requete[$loop]['lv3'][$value])) {
+					$chaine_liste_lv3.="&nbsp;<span style=font-size:x-small>(".$tab_eff_lv_et_opt_requete[$loop]['lv3'][$value].")</span>";
+				}
 			}
 			echo "<script type='text/javascript'>
 	/*
@@ -2239,6 +2268,10 @@ else {
 			$chaine_liste_autre_opt="";
 			foreach($tab_lv_et_opt_requete[$loop]['autre_opt'] as $key => $value) {
 				$chaine_liste_autre_opt.=" ".$value;
+
+				if(isset($tab_eff_lv_et_opt_requete[$loop]['autre_opt'][$value])) {
+					$chaine_liste_autre_opt.="&nbsp;<span style=font-size:x-small>(".$tab_eff_lv_et_opt_requete[$loop]['autre_opt'][$value].")</span>";
+				}
 			}
 			echo "<script type='text/javascript'>
 	/*
