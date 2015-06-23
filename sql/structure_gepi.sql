@@ -907,6 +907,7 @@ id_ev int(11) NOT NULL AUTO_INCREMENT,
 type varchar(50) NOT NULL default '', 
 texte_avant TEXT NOT NULL default '', 
 texte_apres TEXT NOT NULL default '', 
+texte_apres_ele_resp TEXT NOT NULL default '', 
 date_debut TIMESTAMP NOT NULL, 
 PRIMARY KEY  (id_ev)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

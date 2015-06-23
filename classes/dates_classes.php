@@ -28,7 +28,10 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
 // Pour ne pas interférer avec fckeditor
-if ((isset($action)) and ($action == 'evenement') and (isset($_POST['texte_avant']) || isset($_POST['texte_apres'])) and isset($_POST['ok'])) {$traite_anti_inject = 'no';}
+if ((isset($action)) and ($action == 'evenement') and 
+(isset($_POST['texte_avant']) || isset($_POST['texte_apres']) || isset($_POST['texte_apres_ele_resp'])) and 
+isset($_POST['ok'])) {$traite_anti_inject = 'no';}
+
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -93,6 +96,7 @@ $type=isset($_POST['type']) ? $_POST['type'] : "autre";
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : "";
 $texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
 $texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
+$texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apres_ele_resp'] : "";
 
 //debug_var();
 
@@ -149,6 +153,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 	//$contenu_cor = traitement_magic_quotes(corriger_caracteres($texte_avant));
 	$contenu_cor=html_entity_decode($texte_avant);
 	$contenu_cor2=html_entity_decode($texte_apres);
+	$contenu_cor3=html_entity_decode($texte_apres_ele_resp);
 
 	if ($destinataire_prof=="" && $destinataire_cpe=="" && $destinataire_scol=="" && $destinataire_resp=="" && $destinataire_ele=="") {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(événement non enregitré)<br />";
@@ -199,6 +204,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 			$sql="INSERT d_dates_evenements SET type='$type', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
+									texte_apres_ele_resp='$contenu_cor3', 
 									date_debut='".get_mysql_date_from_slash_date($display_date_debut)."';";
 			//echo "$sql<br />";
 			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -295,6 +301,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 			$sql="UPDATE d_dates_evenements SET type='$type', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
+									texte_apres_ele_resp='$contenu_cor3', 
 									date_debut='".get_mysql_date_from_slash_date($display_date_debut)."'
 								WHERE id_ev='$id_ev';";
 			//echo "$sql<br />";
@@ -677,6 +684,7 @@ $date_debut=strftime("%Y-%m-%d %H:%M:%S");
 $heure_courante=strftime("%H:%M");
 $texte_avant="";
 $texte_apres="";
+$texte_apres_ele_resp="";
 $tab_classe_ev=array();
 if (isset($id_ev)) {
 	$sql="SELECT * FROM d_dates_evenements WHERE id_ev='$id_ev';";
@@ -694,6 +702,7 @@ if (isset($id_ev)) {
 		$date_debut=$obj_ev->date_debut;
 		$texte_avant=$obj_ev->texte_avant;
 		$texte_apres=$obj_ev->texte_apres;
+		$texte_apres_ele_resp=$obj_ev->texte_apres_ele_resp;
 
 		$tab_u=array();
 		$sql="SELECT * FROM d_dates_evenements_utilisateurs WHERE id_ev='$obj_ev->id_ev';";
@@ -754,6 +763,7 @@ if (isset($id_ev)) {
 elseif((isset($record))&&($record=="no")) {
 	$texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
 	$texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
+	$texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apres_ele_resp'] : "";
 
 	//$texte_avant=html_entity_decode($texte_avant);
 	//$texte_apres=html_entity_decode($texte_apres);
@@ -1006,7 +1016,7 @@ echo "
 						</tr>
 						<tr>
 							<td colspan=\"4\">
-								<i>Texte affiché avant les dates :</i>";
+								<i>Texte affiché avant les dates&nbsp;:</i>";
 $oCKeditor = new CKeditor('../ckeditor/');
 $oCKeditor->editor('texte_avant',$texte_avant);
 echo "
@@ -1014,9 +1024,18 @@ echo "
 						</tr>
 						<tr>
 							<td colspan=\"4\">
-								<i>Texte affiché après les dates :</i>";
+								<i>Texte affiché après les dates pour les personnels&nbsp;:</i>";
 $oCKeditor2 = new CKeditor('../ckeditor/');
 $oCKeditor2->editor('texte_apres',$texte_apres);
+echo "
+							</td>
+						</tr>
+						<tr>
+							<td colspan=\"4\">
+								<i>Texte affiché après les dates pour les élèves et responsables&nbsp;:<br />
+								(<em>sous réserve qu'ils soient concernés par cet événement</em>)</i>";
+$oCKeditor3 = new CKeditor('../ckeditor/');
+$oCKeditor3->editor('texte_apres_ele_resp',$texte_apres_ele_resp);
 echo "
 							</td>
 						</tr>

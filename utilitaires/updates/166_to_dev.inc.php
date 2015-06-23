@@ -65,5 +65,31 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "&nbsp;-> Ajout d'un champ 'texte_apres_ele_resp' à la table 'd_dates_evenements'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM d_dates_evenements LIKE 'texte_apres_ele_resp';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE d_dates_evenements ADD texte_apres_ele_resp TEXT NOT NULL default '';");
+	if ($query) {
+		$result .= msj_ok("Ok !");
+
+		$sql="SELECT * FROM d_dates_evenements;";
+		$res = mysqli_query($mysqli, $sql);
+		if($res) {
+			while($lig=mysqli_fetch_object($res)) {
+				$sql="UPDATE d_dates_evenements SET texte_apres_ele_resp='".mysqli_real_escape_string($GLOBALS['mysqli'], $lig->texte_apres)."' WHERE id_ev='".$lig->id_ev."';";
+				//$sql="UPDATE d_dates_evenements SET texte_apres_ele_resp='".$lig->texte_apres."' WHERE id_ev='".$lig->id_ev."';";
+				//$result.="$sql<br />";
+				$update = mysqli_query($mysqli, $sql);
+				if(!$update) {
+					$result.=msj_erreur("ERREUR lors la mise à jour du champ 'texte_apres_ele_resp' de l'<a href='../classes/dates_classes.php?id_ev=".$lig->id_ev."' title=\"Consulter dans un nouvel onglet.\" target='_blank'>événément n°".$lig->id_ev."</a><br />");
+				}
+			}
+		}
+	} else {
+		$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 ?>

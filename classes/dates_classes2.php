@@ -28,7 +28,9 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 
 // Dans le cas ou on poste un message, pas de traitement anti_inject
 // Pour ne pas interférer avec fckeditor
-if ((isset($action)) and ($action == 'evenement') and (isset($_POST['texte_avant']) || isset($_POST['texte_apres'])) and isset($_POST['ok'])) {$traite_anti_inject = 'no';}
+if ((isset($action)) and ($action == 'evenement') and 
+(isset($_POST['texte_avant']) || isset($_POST['texte_apres']) || isset($_POST['texte_apres_ele_resp'])) and 
+isset($_POST['ok'])) {$traite_anti_inject = 'no';}
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -93,6 +95,7 @@ $type=isset($_POST['type']) ? $_POST['type'] : "autre";
 $display_date_debut=isset($_POST['display_date_debut']) ? $_POST['display_date_debut'] : "";
 $texte_avant=isset($_POST['texte_avant']) ? $_POST['texte_avant'] : "";
 $texte_apres=isset($_POST['texte_apres']) ? $_POST['texte_apres'] : "";
+$texte_apres_ele_resp=isset($_POST['texte_apres_ele_resp']) ? $_POST['texte_apres_ele_resp'] : "";
 
 $mode = isset($_POST["mode"]) ? $_POST["mode"] :(isset($_GET["mode"]) ? $_GET["mode"] :NULL);
 
@@ -107,6 +110,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 	//$contenu_cor = traitement_magic_quotes(corriger_caracteres($texte_avant));
 	$contenu_cor=html_entity_decode($texte_avant);
 	$contenu_cor2=html_entity_decode($texte_apres);
+	$contenu_cor3=html_entity_decode($texte_apres_ele_resp);
 
 	if ($destinataire_prof=="" && $destinataire_cpe=="" && $destinataire_scol=="" && $destinataire_resp=="" && $destinataire_ele=="") {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(événement non enregitré)<br />";
@@ -146,6 +150,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 			$sql="INSERT d_dates_evenements SET type='$type', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
+									texte_apres_ele_resp='$contenu_cor3', 
 									date_debut='".get_mysql_date_from_slash_date($display_date_debut)."';";
 			//echo "$sql<br />";
 			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -243,6 +248,7 @@ if ((isset($action)) and ($action == 'evenement') and isset($_POST['ok']) and !i
 			$sql="UPDATE d_dates_evenements SET type='$type', 
 									texte_avant='$contenu_cor', 
 									texte_apres='$contenu_cor2', 
+									texte_apres_ele_resp='$contenu_cor3', 
 									date_debut='".get_mysql_date_from_slash_date($display_date_debut)."'
 								WHERE id_ev='$id_ev';";
 			//echo "$sql<br />";
@@ -511,6 +517,7 @@ if((!isset($id_ev))||
 	$heure_courante=strftime("%H:%M");
 	$texte_avant="";
 	$texte_apres="";
+	$texte_apres_ele_resp="";
 	if (isset($id_ev)) {
 		$tab_ev=get_tab_infos_evenement($id_ev);
 		if(count($tab_ev)==0) {
@@ -524,6 +531,7 @@ if((!isset($id_ev))||
 			$date_debut=$tab_ev['date_debut'];
 			$texte_avant=$tab_ev['texte_avant'];
 			$texte_apres=$tab_ev['texte_apres'];
+			$texte_apres_ele_resp=$tab_ev['texte_apres_ele_resp'];
 
 			if(in_array("professeur", $tab_ev['statuts'])) {
 				$destinataire_prof="y";
@@ -640,6 +648,14 @@ echo "
 $oCKeditor2 = new CKeditor('../ckeditor/');
 $oCKeditor2->editor('texte_apres',$texte_apres);
 	echo "
+							</td>
+						</tr>
+						<tr>
+							<td colspan=\"4\">
+								<i>Texte affiché après les dates pour les élèves et responsables<br />(<em>sous réserve qu'ils soient concernés par cet événement</em>)&nbsp;:</i>";
+$oCKeditor3 = new CKeditor('../ckeditor/');
+$oCKeditor3->editor('texte_apres_ele_resp',$texte_apres_ele_resp);
+echo "
 							</td>
 						</tr>
 					</table>
