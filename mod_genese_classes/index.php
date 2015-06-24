@@ -523,24 +523,27 @@ else {
 
 echo "<p><i>NOTES</i>&nbsp;:</p>\n";
 echo "<ul>\n";
-echo "<li><p>Ce module est destiné à permettre de préparer en fin d'année les classes de l'année scolaire suivante.</p></li>\n";
-echo "<li><p>Le principal indique les contraintes (<i>telles options sur telles classes uniquement,...</i>) et un ensemble de professeurs, cpe,... tente de fabriquer les classes en respectant les contraintes, en séparant certains élèves, en maintenant ensemble d'autres élèves,...<br />
+echo "<li><p style='margin-bottom:0.5em;'>Ce module est destiné à permettre de préparer en fin d'année les classes de l'année scolaire suivante.</p></li>\n";
+echo "<li><p style='margin-bottom:0.5em;'>Le principal indique les contraintes (<i>telles options sur telles classes uniquement,...</i>) et un ensemble de professeurs, cpe,... tente de fabriquer les classes en respectant les contraintes, en séparant certains élèves, en maintenant ensemble d'autres élèves,...<br />
 Faire participer les professeurs et cpe permet d'avoir les points de vue en classe et hors des classes.</p></li>\n";
-echo "<li><p>Quelques éléments sur l'utilisation du dispositif&nbsp;:<br />
+echo "<li><p style='margin-bottom:0.5em;'>Quelques éléments sur l'utilisation du dispositif&nbsp;:<br />
 Les points 1 à 7 doivent être suivis dans l'ordre.<br />
-Ensuite, on peut générer des listes d'élèves groupés par options afin de préparer sur papier les destinations possibles des élèves des différents groupes.<br />
+Le point <strong>7.&nbsp;Saisir les options des élèves</strong> doit être validé au moins une fois pour enregistrer les moyennes générales,... dans la table 'gc_eleves_options'.<br />
+Ensuite seulement, cette moyenne apparaitra dans les pages suivantes.<br />
+Ces préparatifs effectués, on peut générer des listes d'élèves groupés par options afin de préparer sur papier les destinations possibles des élèves des différents groupes.<br />
 Certains élèves doivent être affectés dans certaines classes de façon impérative du fait de leur jeu d'options.<br />
 On affecte ensuite des élèves en tentant de créer des têtes de classes.<br />
 On complète.<br />
 On répartit les cas restants.<br />
 Et enfin, on génère un affichage des listes de classes futures... ainsi que les regroupements de langues,...</p>
-<p>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
+<p style='margin-bottom:0.5em;'>On procède éventuellement à quelques échanges, puis on présente des listes au principal qui accepte ou non la répartition proposée.</p>
 </li>";
 
 if((getSettingValue("active_module_absence")=='2')&&(getSettingValue("abs2_import_manuel_bulletin")!='y')&&(acces("/mod_abs2/admin/admin_table_totaux_absences.php", $_SESSION['statut']))) {
 	echo "
 <li>
-<p>Pour que les totaux d'absences, retards,... soient correctement affichés, il convient de <a href='../mod_abs2/admin/admin_table_totaux_absences.php'>remplir la table des totaux d'absences</a>.</p>
+<p style='margin-bottom:0.5em;'>Pour que les totaux d'absences, retards,... soient correctement affichés, il convient de <a href='../mod_abs2/admin/admin_table_totaux_absences.php'>remplir la table des totaux d'absences</a>.<br />
+Après cette opération de remplissage, il faut valider une fois le formulaire du point numéro <strong>7.&nbsp;Saisir les options des élèves</strong></p>
 </li>\n";
 }
 
