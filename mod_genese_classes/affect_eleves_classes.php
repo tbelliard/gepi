@@ -70,6 +70,8 @@ function echo_debug_affect($texte) {
 	}
 }
 
+include("gc_func.inc.php");
+
 //if((isset($_POST['is_posted']))&&(isset($_POST['valide_aff_classe_fut']))) {
 if(isset($_POST['is_posted'])) {
 	//echo "GRRRRRRR";
@@ -125,6 +127,7 @@ if(isset($_POST['is_posted'])) {
 		$msg="ERREUR: $nb_err erreurs lors de l'enregistrement des classes futures,... (".strftime("%d/%m/%Y à %H:%M:%S").")";
 	}
 	$msg.=$complement_msg;
+	$msg.=verif_proportion_garcons_filles();
 }
 
 function get_infos_gc_affichage($id_aff) {

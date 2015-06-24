@@ -62,7 +62,9 @@ if (!checkAccess()) {
 //======================================================================================
 
 $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $_GET['projet'] : NULL);
+$msg="";
 
+include("gc_func.inc.php");
 
 if(isset($_POST['is_posted'])) {
 	check_token();
@@ -137,6 +139,15 @@ if(isset($_POST['is_posted'])) {
 			else {$nb_err++;}
 		}
 	}
+
+	if($nb_reg>0) {
+		$msg.="<span style='color:green'>".$nb_reg." enregistrement(s) effectué(s).</span><br />";
+	}
+	if($nb_err>0) {
+		$msg.=$nb_err." erreur(s) lors des enregistrements.<br />";
+	}
+	$msg.=verif_proportion_garcons_filles();
+
 /*
 $_POST['colorisation']=	lv1
 $_POST['eleve']=	Array (*)

@@ -39,4 +39,38 @@
 		return $tab_opt_exclue;
 	}
 
+	function verif_proportion_garcons_filles() {
+		global $projet;
+
+		$retour="";
+
+		$sql="SELECT DISTINCT classe FROM gc_divisions WHERE projet='$projet' AND statut='future' ORDER BY classe;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+
+				$sql="SELECT 1=1 FROM gc_eleves_options geo, eleves e WHERE projet='".$projet."' AND classe_future='".$lig->classe."' AND e.sexe='F' AND geo.login=e.login;";
+				$res_f=mysqli_query($GLOBALS["mysqli"], $sql);
+				$eff_f=mysqli_num_rows($res_f);
+
+				$sql="SELECT 1=1 FROM gc_eleves_options geo, eleves e WHERE projet='".$projet."' AND classe_future='".$lig->classe."' AND e.sexe='M' AND geo.login=e.login;";
+				$res_m=mysqli_query($GLOBALS["mysqli"], $sql);
+				$eff_m=mysqli_num_rows($res_m);
+
+				$eff_total=$eff_m+$eff_f;
+				if($eff_total>=20) {
+					if($eff_f/$eff_total>=2/3) {
+						$retour.="<br /><strong>ATTENTION&nbsp;:</strong> La sélection courante de $lig->classe présente plus de 2/3 de filles.";
+					}
+					elseif($eff_m/$eff_total>=2/3) {
+						$retour.="<br /><strong>ATTENTION&nbsp;:</strong> La sélection courante de $lig->classe présente plus de 2/3 de garçons.";
+					}
+				}
+
+			}
+
+		}
+
+		return $retour;
+	}
 ?>
