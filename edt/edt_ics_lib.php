@@ -3267,7 +3267,7 @@ function affiche_abs2_sur_edt2() {
 
 		$titre_infobulle="Saisie Absence";
 		$texte_infobulle="<div id='div_visu_saisie_abs'></div>";
-		$tabdiv_infobulle[]=creer_div_infobulle('infobulle_visu_saisie_abs',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
+		$tabdiv_infobulle[]=creer_div_infobulle('infobulle_visu_saisie_abs',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n',4000);
 
 		$html.="<script type='text/javascript'>
 		function visu_saisie_abs_en_infobulle(id_saisie) {
