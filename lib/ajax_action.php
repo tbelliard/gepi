@@ -27,6 +27,7 @@
 $variables_non_protegees = 'yes';
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -60,6 +61,12 @@ if (!checkAccess()) {
     die();
 }
 
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+if ($utilisateur == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
 //check_token();
 
 header('Content-Type: text/html; charset=utf-8');
@@ -72,6 +79,7 @@ $target=isset($_POST['target']) ? $_POST['target'] : (isset($_GET['target']) ? $
 
 if(($mode=="actions_conseil_classe")&&(isset($id_classe))&&(preg_match("/^[0-9]{1,}$/", $id_classe))&&(in_array($_SESSION['statut'], array('professeur', 'scolarite')))) {
 	echo affiche_choix_action_conseil_de_classe($id_classe, $target);
+	die();
 }
 
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
@@ -84,6 +92,7 @@ if(($mode=="notes_ele_grp_per")&&(isset($ele_login))&&(isset($id_groupe))) {
 	<p>".get_info_grp($id_groupe)."</p>
 	".affiche_tableau_notes_ele($ele_login, $id_groupe)."
 </div>";
+	die();
 }
 
 if(($mode=="tab_avis_conseil")&&(isset($ele_login))) {
@@ -92,6 +101,25 @@ if(($mode=="tab_avis_conseil")&&(isset($ele_login))) {
 	echo affiche_tab_avis_conseil($ele_login, "n", "n");
 	//include("../lib/footer_tab_infobulle.php");
 	// Je n'arrive pas à obtenir l'infobulle depuis celle qui affiche le tableau des conseils.
+	die();
+}
+
+$id_saisie=isset($_GET['id_saisie']) ? $_GET['id_saisie'] : NULL;
+if(($mode=="visu_abs")&&(isset($id_saisie))&&(acces("/mod_abs2/visu_saisie.php", $_SESSION['statut']))) {
+
+	if (getSettingValue("active_module_absence")!='2') {
+		die("<p style='color:red'>Le module n'est pas activé.</p>");
+	}
+
+	// Ca ne fonctionne pas
+	//include("../mod_abs2/visu_saisie.php?id_saisie=".$id_saisie);
+	//require("../mod_abs2/visu_saisie.php?id_saisie=".$id_saisie);
+	$_SESSION["id_saisie"]=$id_saisie;
+	//$menu=true;
+	$_SESSION['affichage_depuis_edt2']=true;
+	include("../mod_abs2/visu_saisie.php");
+	$_SESSION['affichage_depuis_edt2']=false;
+	die();
 }
 
 ?>

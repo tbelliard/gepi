@@ -422,6 +422,7 @@ Patientez pendant l'extraction des données... merci.
 		echo "<p>L'".$gepiSettings['denomination_eleve']." dont le login serait $ele_login n'est pas dans la table 'eleves'.</p>\n";
 	}
 	else {
+
 		if(getSettingAOui('active_mod_discipline')) {
 			require("../mod_discipline/mod_discipline.lib.php");
 		}
@@ -3077,17 +3078,21 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			echo "'>";
 
 			if(acces('/mod_abs2/visu_eleve_calendrier.php', $_SESSION['statut'])) {
-				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/visu_eleve_calendrier.php?login_ele=$ele_login' title=\"Voir les absences de l'élève sur un calendrier\" target='_blank'><img src='../images/icons/absences.png' class='icone16' alt='Absences sur calendrier' /></a></div>";
+				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/visu_eleve_calendrier.php?login_ele=$ele_login' title=\"Voir les absences de l'élève par mois sur un calendrier\" target='_blank'><img src='../images/icons/absences.png' class='icone16' alt='Absences sur calendrier' /></a></div>";
+			}
+
+			if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
+				echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage des absences sur un EDT version 2\"><a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$ele_login."&affichage_complementaire_sur_edt=absences2' target='_blank'><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a></div>";
 			}
 
 			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
-			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-			    if(count($tab_ele['absences'])==0) {
-				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
-			    }
-			    else {
-				    echo "<table class='boireaus'>\n";
-				    echo "<caption>
+				echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+				if(count($tab_ele['absences'])==0) {
+					echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+				}
+				else {
+					echo "<table class='boireaus'>\n";
+					echo "<caption>
 						<strong>Etat périodique de l'absentéisme porté sur le bulletin</strong>
 						</br>
 						<em>Ce bilan est figé le jour de la bascule de l'état sur le bulletin";

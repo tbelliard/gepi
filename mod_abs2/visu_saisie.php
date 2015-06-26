@@ -124,9 +124,11 @@ $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_
 $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 if (isset($id_saisie) && $id_saisie != null) $_SESSION['id_saisie'] = $id_saisie;
 
+$affichage_depuis_edt2=isset($_SESSION['affichage_depuis_edt2']) ? $_SESSION['affichage_depuis_edt2'] : false;
+
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
-if(!$menu){
+if((!$menu)&&(!$affichage_depuis_edt2)) {
 $titre_page = "Les absences";
 }
 //$utilisation_jsdivdrag = "non";
@@ -135,11 +137,10 @@ $_SESSION['cacher_header'] = "y";
 
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
-if(!$menu){
+if((!$menu)&&(!$affichage_depuis_edt2)) {
 include('menu_abs2.inc.php');
 }
 echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : auto;'>\n";
-
 
 $saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
 if ($saisie == null) {
@@ -235,7 +236,7 @@ pour la marquer en 'Erreur de saisie'.\" /></div>";
 if ($modifiable) {
 	// Il faudrait pouvoir supprimer des saisies même si l'élève a été viré du groupe, mais on a alors une erreur au niveau des tests sur l'objet propel
 	if($temoin_plus_dans_le_grp=="n") {
-		echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
+		echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="../mod_abs2/enregistrement_modif_saisie.php"'.($affichage_depuis_edt2 ? " target='_blank'" : "").'>';
 		echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
 		echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 		if ($saisie->getDeletedAt() == null) {
@@ -261,7 +262,7 @@ echo '</td></tr>';
 echo '</tbody>';
 
 echo '</table>';
-echo '<form dojoType="dijit.form.Form" jsId="modification" id="modification"  method="post" action="./enregistrement_modif_saisie.php">';
+echo '<form dojoType="dijit.form.Form" jsId="modification" id="modification"  method="post" action="../mod_abs2/enregistrement_modif_saisie.php"'.($affichage_depuis_edt2 ? " target='_blank'" : "").'>';
 echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
 echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 echo '<table class="normal">';
@@ -445,11 +446,11 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 		}else {
 		if ($utilisateur->getStatut() != 'professeur') {
 			$total_traitements_modifiable_non_prof++;
-			echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
+			echo "<a href='../mod_abs2/visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
 		    if($menu){
 		            echo"&menu=false";
 		        } 
-		    echo"' style='display: block; height: 100%;'> ";
+		    echo"' style='display: block; height: 100%;'".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
 			echo $traitement->getDescription();
 			echo "</a>";
 		} else {
@@ -498,11 +499,11 @@ echo '<table style="background-color:#c7e3ec;">';
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."";
+    echo "<a href='../mod_abs2/visu_notification.php?id_notification=".$notification->getId()."";
     if($menu){
                 echo"&menu=false";
             } 
-    echo"' style='display: block; height: 100%;'> ";
+    echo"' style='display: block; height: 100%;'".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
     if ($notification->getDateEnvoi() != null) {
 	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
     } else {
@@ -558,14 +559,14 @@ if ($saisie->getIdSIncidents() !== null) {
     echo 'Discipline : ';
     echo '</td><td colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
-    $saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
+    $saisie->getIdSIncidents()."&step=2&return_url=no_return' target='_blank'>Visualiser l'incident </a>";
     echo '</td></tr>';
 } elseif ($modifiable && $saisie->hasModeInterfaceDiscipline()) {
     echo '<tr><td>';
     echo 'Discipline : ';
     echo '</td><td colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
+	$saisie->getId()."&return_url=no_return' target='_blank'>Saisir un incident disciplinaire</a>";
     echo '</td></tr>';
 }
 $saisies_conflit_col = $saisie->getSaisiesContradictoiresManquementObligation();
@@ -574,7 +575,7 @@ if (!$saisies_conflit_col->isEmpty()) {
     echo 'La saisie est en contradiction avec : ';
     echo '</td><td colspan="2">';
     foreach ($saisies_conflit_col as $saisie_conflit) {
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''> ";
+	echo "<a href='../mod_abs2/visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
 	echo $saisie_conflit->getId();
 	echo "</a>";
 	if (!$saisies_conflit_col->isLast()) {
@@ -589,7 +590,7 @@ if (!$saisies_englobante_col->isEmpty()) {
     echo 'La saisie est englobée par : ';
     echo '</td><td colspan="2">';
     foreach ($saisies_englobante_col as $saisies_englobante) {
-	echo "<a href='visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'> ";
+	echo "<a href='../mod_abs2/visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
 	echo $saisies_englobante->getDateDescription();
         echo ' '.$saisies_englobante->getTypesTraitements();
 	echo "</a>";
@@ -658,7 +659,7 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 	    echo '</td>';
     	echo '<td>';
     	if ($version->getVersion() != $saisie->getVersion() && $saisie->getDeletedAt() == null) {
-    		echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'';
+    		echo '<a href="../mod_abs2/enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'';
             if($menu){
                 echo'&menu=false';
             } 
@@ -709,4 +710,5 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 </script>
 <?php
 require_once("../lib/footer.inc.php");
+//$_SESSION['ni_menu_ni_titre']=false;
 ?>

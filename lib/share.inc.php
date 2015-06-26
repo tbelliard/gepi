@@ -13499,4 +13499,29 @@ function get_clas_ele_telle_date($login_ele, $mysql_date, $slash_date="") {
 
 	return $tab;
 }
+
+function get_horaires_jour($jour="") {
+	$tab=array();
+
+	if($jour=="") {
+		$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='lundi';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_assoc($res)) {
+				$tab[$lig['jour_horaire_etablissement']]=$lig;
+			}
+		}
+	}
+	else {
+		$sql="SELECT * FROM horaires_etablissement WHERE jour_horaire_etablissement='".$jour."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$tab=mysqli_fetch_assoc($res);
+		}
+	}
+	//$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+
+	return $tab;
+}
+
 ?>

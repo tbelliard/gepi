@@ -1922,6 +1922,25 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	global $hauteur_jour, $hauteur_entete;
 	global $tab_group_edt;
 
+	//+++++++++++++++++++++
+	// 20150622
+	/*
+	global $tab_coord_creneaux;
+	if((!isset($tab_coord_creneaux))||(!is_array($tab_coord_creneaux))) {
+		$tab_coord_creneaux=array();
+	}
+	*/
+	global $jours;
+	global $largeur_jour;
+	global $x_jour;
+	global $premiere_heure;
+	global $marge_secu;
+	global $hauteur_titre;
+	global $affichage_complementaire_sur_edt;
+	//+++++++++++++++++++++
+	global $complement_liens_edt;
+	//+++++++++++++++++++++
+
 	global $tab_coord_prises;
 	$tab_coord_prises=array();
 
@@ -1936,6 +1955,10 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$param_lien_edt.="login_prof=$login_prof&amp;";
 	}
 	$param_lien_edt.="type_affichage=$type_affichage&amp;";
+
+	if((isset($complement_liens_edt))&&($complement_liens_edt!="")) {
+		$param_lien_edt.=$complement_liens_edt."&amp;";
+	}
 
 	$html="";
 
@@ -2286,6 +2309,12 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 			$hauteur_courante=$y2_courant-$y1_courant;
 
+			/*
+			// 20150622
+			$tab_coord_creneaux['creneau'][$lig->id_definie_periode]['ordonnees'][0]=$y1_courant;
+			$tab_coord_creneaux['creneau'][$lig->id_definie_periode]['ordonnees'][1]=$y2_courant;
+			*/
+
 			$style_fond_creneau="background-color:white;";
 			if($lig->type_creneaux=="pause") {
 				$style_fond_creneau="background-color:silver;";
@@ -2427,6 +2456,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 		//20150206
 		// A FAIRE : Prendre en compte un id_calendrier en fonction de la semaine choisie
+		//           A VERIFIER : Est-ce id_calendar ou id_calendrier (il y a les 2 dans la table)
 		//           Pour un emploi du temps élève, recuperer la classe associée à la semaine
 		//           puis tester l'id_calendrier dans edt_cours
 		//           Pour un emploi du temps prof, problème si ce n'est pas la même période EDT (id_calendrier) selon les classes
@@ -3015,7 +3045,12 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 									$html.="
 										onclick=\"action_edt_cours('".$tab2[$loop]['id_cours']."')\"";
 								}
-								$html.=">".$tab2[$loop]['contenu_cellule']." ".$contenu_courant_ajout." ".$text_color."</div>";
+								$html.=">";
+								// DEBUG:
+								$chaine_debug="";
+								//$chaine_debug="<span style='font-size:xx-small;color:lime;'>".$y0."+".$hauteur_entete."+".$y_courant."=".($y0+$hauteur_entete+$y_courant)."</span> ";
+								$html.=$chaine_debug;
+								$html.=$tab2[$loop]['contenu_cellule']." ".$contenu_courant_ajout." ".$text_color."</div>";
 
 							//}
 
@@ -3037,6 +3072,254 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	*/
 
 	//==================================================================
+
+	if((isset($affichage_complementaire_sur_edt))&&($affichage_complementaire_sur_edt=="absences2")) {
+		$html.=affiche_abs2_sur_edt2();
+	}
+
+	return $html;
+}
+
+function affiche_abs2_sur_edt2() {
+	global $login_eleve;
+	global $jours;
+	global $largeur_jour;
+	global $hauteur_jour;
+	global $x_jour;
+	global $premiere_heure;
+	global $marge_secu;
+	global $hauteur_titre;
+	global $debug_edt;
+	global $tabdiv_infobulle, $tabid_infobulle;
+
+	global $x0, $y0, $largeur_edt, $hauteur_une_heure;
+	global $hauteur_entete;
+
+	$html="";
+
+	if(isset($login_eleve)) {
+		foreach($jours['num_jour'] as $num_jour => $current_jour) {
+			if(!isset($ts_1er_jour)) {
+				$ts_1er_jour=mktime(0, 0, 0, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
+				$mysqldate_1er_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 00:00:00";
+			}
+			$ts_dernier_jour=mktime(23, 59, 59, $current_jour['mm'], $current_jour['jj'], $current_jour['aaaa']);
+			$mysqldate_dernier_jour=$current_jour['aaaa']."-".$current_jour['mm']."-".$current_jour['jj']." 23:59:59";
+		}
+
+		$tab_abs=array();
+		$sql="SELECT * FROM a_saisies a, eleves e 
+					WHERE e.id_eleve=a.eleve_id AND 
+						e.login='".$login_eleve."' AND 
+						((a.debut_abs>='".$mysqldate_1er_jour."' AND a.debut_abs<='".$mysqldate_dernier_jour."') OR 
+						(a.fin_abs>='".$mysqldate_1er_jour."' AND a.fin_abs<='".$mysqldate_dernier_jour."') OR 
+						(a.debut_abs<='".$mysqldate_1er_jour."' AND a.fin_abs>='".$mysqldate_dernier_jour."'));";
+		//$html.="$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$html.="<p style='color:red'>Aucune saisie d'absence trouvée.</p>";
+		}
+		else {
+			$cpt=0;
+			while($lig=mysqli_fetch_assoc($res)) {
+				// *******************************************************
+				// *******************************************************
+				// A FAIRE : Il faudrait récupérer l'info englobée ou non.
+				// *******************************************************
+				// *******************************************************
+				$tab_abs[$cpt]=$lig;
+				$id_saisie=$lig['id'];
+
+				$tab_abs[$cpt]['englobee']="n";
+
+				$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
+				if ($saisie == null) {
+					$tab_abs[$cpt]['trouvee']="n";
+				}
+				else {
+					$tab_abs[$cpt]['trouvee']="y";
+
+					$saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
+					if(!$saisies_englobante_col->isEmpty()) {
+						$tab_abs[$cpt]['englobee']="y";
+					}
+				}
+				$cpt++;
+			}
+		}
+		/*
+		echo "tab_abs<pre>";
+		print_r($tab_abs);
+		echo "</pre>";
+		*/
+
+		// Afficher ou non les saisies englobées.
+		$afficher_englobee="y";
+
+		//$y_div_conteneur=$y1;
+		$y_div_conteneur=$y0;
+		//$y_div_conteneur=$y_decalage_2_js;
+		//$html.="\$y_div_conteneur=$y_div_conteneur<br />";
+
+		$cpt_abs=0;
+		foreach($tab_abs as $cpt => $current_abs) {
+
+			$ts_debut_abs=mysql_date_to_unix_timestamp($current_abs['debut_abs']);
+			$ts_fin_abs=mysql_date_to_unix_timestamp($current_abs['fin_abs']);
+			//$aaaammjj_debut_abs=strftime("%Y%m%d", $ts_debut_abs);
+
+			// Il faut boucler sur les jours inclus dans l'absence
+			// ERREUR : Si l'absence dure plus d'une semaine... SAUF QU'ON N'AFFICHE QU'UNE SEMAINE A LA FOIS SUR L'EDT
+			foreach($jours['num_jour'] as $num_jour => $current_jour) {
+				if(($ts_fin_abs>$current_jour['timestamp'])&&($ts_debut_abs<=$current_jour['timestamp']+3600*24-1)) {
+					//$x=$x1+$x0+($num_jour-1)*$largeur_jour+$marge_secu/2;
+					$x=$x0+($num_jour-1)*$largeur_jour+$marge_secu/2;
+
+					//$ts_debut_1er_jour_absence=mktime(0,0,0,strftime("%m", $ts_debut_abs),strftime("%d", $ts_debut_abs),strftime("%Y", $ts_debut_abs));
+					$ts_debut_jour=mktime(0,0,0,strftime("%m", $current_jour['timestamp']),strftime("%d", $current_jour['timestamp']),strftime("%Y", $current_jour['timestamp']));
+
+					if($ts_debut_abs<$current_jour['timestamp']) {
+						// L'absence débute avant ce jour
+						// On va prendre l'heure de début de journée
+						//$y=$y_div_conteneur+$hauteur_entete+$hauteur_titre;
+						$y=$y_div_conteneur+$hauteur_entete;
+					}
+					elseif($ts_debut_abs<$current_jour['timestamp']+3600*24-1) {
+						// L'absence débute dans la journée
+						$delta=($ts_debut_abs-$ts_debut_jour-3600*$premiere_heure)/3600;
+
+						//$y=$y_div_conteneur+$hauteur_entete+$hauteur_titre+$delta*$hauteur_une_heure;
+						$y=$y_div_conteneur+$hauteur_entete+$delta*$hauteur_une_heure;
+					}
+
+					// Fin du div
+					if($ts_fin_abs>$current_jour['timestamp']+3600*24-1) {
+						//$y_fin=$y_div_conteneur+$hauteur_entete+$hauteur_titre+$hauteur_jour;
+						$y_fin=$y_div_conteneur+$hauteur_entete+$hauteur_jour;
+
+						if((isset($tab_jour[$num_jour-1]))&&(isset($tab_horaire_jour[$tab_jour[$num_jour-1]]))) {
+							$tmp_tab=explode(":", $tab_horaire_jour[$tab_jour[$num_jour-1]]['fermeture_horaire_etablissement']);
+							$heure=$tmp_tab[0];
+							$minute=$tmp_tab[1];
+							$seconde=$tmp_tab[2];
+							$ts_fin_journee_cours=mktime($heure,$minute,$seconde,strftime("%m", $ts_debut_jour),strftime("%d", $ts_debut_jour),strftime("%Y", $ts_debut_jour));
+							$delta=($ts_fin_journee_cours-$ts_debut_jour-3600*$premiere_heure)/3600;
+
+							//$y_fin=$y_div_conteneur+$hauteur_entete+$hauteur_titre+$delta*$hauteur_une_heure;
+							$y_fin=$y_div_conteneur+$hauteur_entete+$delta*$hauteur_une_heure;
+						}
+					}
+					else {
+						// L'absence finit dans la journée
+						$delta=($ts_fin_abs-$ts_debut_jour-3600*$premiere_heure)/3600;
+
+						//$y_fin=$y_div_conteneur+$hauteur_entete+$hauteur_titre+$delta*$hauteur_une_heure;
+						$y_fin=$y_div_conteneur+$hauteur_entete+$delta*$hauteur_une_heure;
+					}
+
+					// Pour éviter des collisions d'affichage lors du debug
+					$decalage_x=0;
+					$chaine_debug="";
+					//$decalage_x=$largeur_jour/2;
+					//$chaine_debug="<span style='font-size:xx-small; color:red'>".ceil($y)."</span>";
+
+					// Pour les saisies englobées, il faudrait juste afficher un texte avec un lien/action ouvrant la saisie.
+					if($current_abs['englobee']=='n') {
+						$bgcolor="background-color:red; ";
+
+						// Défaut: pour une absence courant sur plusieurs jours, on n'entoure que le div de la journée de début de la saisie englobante
+						$chaine_mise_en_exergue="";
+						$chaine_mise_en_exergue="onmouseover=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='2px solid lime'\" onmouseout=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='0px solid red'\" ";
+
+						// Fond : Opacité 50
+						$html.="<div id='div_fond_abs_".$cpt_abs."' style='position:absolute; top:".ceil($y)."px; left:".ceil($x)."px; width:".($largeur_jour-$marge_secu)."px; height:".floor($y_fin-$y)."px; opacity:0.5; ".$bgcolor." border:1px solid red; z-index:3000;' ".$chaine_mise_en_exergue." title=\"Saisie n°".$current_abs['id']."
+	Du ".formate_date($current_abs['debut_abs'],"y","court")." au ".formate_date($current_abs['fin_abs'],"y","court")."\"></div>";
+						//<a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_abs['id']."' target='_blank'>".$current_abs['id']."</a>
+
+						// Texte
+						$html.="<div id='div_saisie_abs_".$cpt_abs."' style='position:absolute; top:".ceil($y)."px; left:".ceil($x+$decalage_x)."px; width:16px; height:16px; z-index:3001;'><a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_abs['id']."' onclick=\"visu_saisie_abs_en_infobulle(".$current_abs['id'].");return false;\" target='_blank' title=\"Voir la saisie n°".$current_abs['id']."
+	Du ".formate_date($current_abs['debut_abs'],"y","court")." au ".formate_date($current_abs['fin_abs'],"y","court")."\"><img src='../images/icons/saisie_1.png' class='icone16' alt='Saisie' /></a>".$chaine_debug."</div>";
+					}
+					else {
+						$bgcolor="";
+
+						if($afficher_englobee=="y") {
+							// Texte
+							$html.="<div id='div_saisie_abs_".$cpt_abs."' style='position:absolute; top:".ceil($y)."px; left:".ceil($x+$decalage_x)."px; width:".($largeur_jour-$marge_secu)."px; height:".floor($y_fin-$y)."px; ".$bgcolor."z-index:3001;'><a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_abs['id']."' onclick=\"visu_saisie_abs_en_infobulle(".$current_abs['id'].");return false;\" target='_blank' title=\"Voir la saisie (englobée) n°".$current_abs['id']."
+	Du ".formate_date($current_abs['debut_abs'],"y","court")." au ".formate_date($current_abs['fin_abs'],"y","court")."\"><img src='../images/icons/saisie.png' class='icone16' alt='Saisie' /></a>".$chaine_debug."</div>";
+						}
+					}
+
+					$cpt_abs++;
+				}
+			}
+
+		}
+
+		/*
+		echo "<div style='clear:both;'></div>";
+
+		echo "<pre>";
+		print_r($jours);
+		echo "</pre>";
+
+		*/
+
+		$titre_infobulle="Saisie Absence";
+		$texte_infobulle="<div id='div_visu_saisie_abs'></div>";
+		$tabdiv_infobulle[]=creer_div_infobulle('infobulle_visu_saisie_abs',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
+
+		$html.="<script type='text/javascript'>
+		function visu_saisie_abs_en_infobulle(id_saisie) {
+			//alert('plop');
+			new Ajax.Updater($('div_visu_saisie_abs'),'../lib/ajax_action.php?mode=visu_abs&id_saisie='+id_saisie,{method: 'get'});
+			afficher_div('infobulle_visu_saisie_abs', 'y', 10,10);
+		}
+
+		function permuter_display_div_abs(mode) {
+			if(mode=='') {
+				if(document.getElementById('lien_permuter_display_abs_visible')) {
+					document.getElementById('lien_permuter_display_abs_visible').style.display='none';
+				}
+				else {
+					document.getElementById('lien_permuter_display_abs_visible').style.display='';
+				}
+
+				if(document.getElementById('lien_permuter_display_abs_invisible')) {
+					document.getElementById('lien_permuter_display_abs_invisible').style.display='';
+				}
+				else {
+					document.getElementById('lien_permuter_display_abs_invisible').style.display='none';
+				}
+			}
+			else {
+				if(document.getElementById('lien_permuter_display_abs_visible')) {
+					document.getElementById('lien_permuter_display_abs_visible').style.display='';
+				}
+				else {
+					document.getElementById('lien_permuter_display_abs_visible').style.display='none';
+				}
+
+				if(document.getElementById('lien_permuter_display_abs_invisible')) {
+					document.getElementById('lien_permuter_display_abs_invisible').style.display='none';
+				}
+				else {
+					document.getElementById('lien_permuter_display_abs_invisible').style.display='';
+				}
+			}
+
+			for(i=0;i<$cpt_abs;i++) {
+				if(document.getElementById('div_fond_abs_'+i)) {
+					document.getElementById('div_fond_abs_'+i).style.display=mode;
+				}
+				if(document.getElementById('div_saisie_abs_'+i)) {
+					document.getElementById('div_saisie_abs_'+i).style.display=mode;
+				}
+			}
+		}
+		permuter_display_div_abs('');
+	</script>";
+	}
 
 	return $html;
 }

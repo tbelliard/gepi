@@ -763,6 +763,11 @@ foreach ($donnees as $id => $eleve) {
                         echo ' (voir fiche)';
                         echo "</a>";
                     }
+
+			if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
+				echo "<a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$propel_eleve->getLogin()."&affichage_complementaire_sur_edt=absences2' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a> ";
+			}
+
                     if($affichage_liens){
                       echo'<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&ods2='.$ods2.'"><img src="../images/icons/ods.png" title="export ods"></a>
                       <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'"><img src="../images/icons/odt.png" title="export odt"></a><br/>';

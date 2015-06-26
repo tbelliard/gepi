@@ -2,6 +2,7 @@
 @set_time_limit(0);
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -36,6 +37,13 @@ if (!checkAccess()) {
 	die();
 }
 
+//recherche de l'utilisateur avec propel
+$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+if ($utilisateur == null) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
 if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt2_eleve'))))||
 ((in_array($_SESSION['statut'], array('professeur', 'cpe', 'scolarite')))&&(getSettingAOui('autorise_edt_tous')))||
 (($_SESSION['statut']=='administrateur')&&(getSettingAOui('autorise_edt_admin')))) {
@@ -49,6 +57,24 @@ else {
 $msg="";
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+
+//debug_var();
+//============================================================
+$complement_liens_edt="";
+$complement_liens_edt2="";
+if((isset($mode))&&($mode=="afficher_edt")) {
+	$complement_liens_edt="mode=afficher_edt";
+	$complement_liens_edt2="&$complement_liens_edt";
+}
+$affichage_complementaire_sur_edt=isset($_POST['affichage_complementaire_sur_edt']) ? $_POST['affichage_complementaire_sur_edt'] : (isset($_GET['affichage_complementaire_sur_edt']) ? $_GET['affichage_complementaire_sur_edt'] : NULL);
+if(isset($affichage_complementaire_sur_edt)) {
+	if($complement_liens_edt!="") {
+		$complement_liens_edt.="&";
+	}
+	$complement_liens_edt.="affichage_complementaire_sur_edt=$affichage_complementaire_sur_edt";
+	$complement_liens_edt2.="&affichage_complementaire_sur_edt=$affichage_complementaire_sur_edt";
+}
+//============================================================
 
 require("edt_ics_lib.php");
 
@@ -605,7 +631,7 @@ if(!isset($type_affichage)) {
 //debug_var();
 
 $tab_jour=get_tab_jour_ouverture_etab();
-
+$tab_horaire_jour=get_horaires_jour();
 /*
 echo "\$tab_jour<pre>";
 print_r($tab_jour);
@@ -915,6 +941,14 @@ else {
 		}
 	}
 
+	if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe', 'professeur')))&&(getSettingValue('active_module_absence')=='2')) {
+		echo_selon_mode("
+		 <select name='affichage_complementaire_sur_edt' id='affichage_complementaire_sur_edt' title=\"Affichage complémentaire\">
+		 	<option value=''".((!isset($affichage_complementaire_sur_edt))||($affichage_complementaire_sur_edt=="") ? " selected" : "").">---</option>
+		 	<option value='absences2'".((isset($affichage_complementaire_sur_edt))&&($affichage_complementaire_sur_edt=="absences2") ? " selected" : "").">Absences</option>
+		</select>");
+	}
+
 	/*
 	if((isset($login_eleve))&&($login_eleve!="")) {
 		// Affichage élève ou classe ou prof
@@ -1003,6 +1037,7 @@ echo_selon_mode("
 
 			</select>");
 
+// Pour afficher l'EDT seul sans titre, menu,... et l'EDT des semaines A/B
 echo_selon_mode("<div style='float:right; width:5em;'>
 	<a href='".$_SERVER['PHP_SELF']."?login_prof=$login_prof&amp;id_classe=$id_classe&amp;type_affichage=$type_affichage&amp;login_eleve=$login_eleve&amp;num_semaine_annee=$num_semaine_annee&amp;affichage=$affichage&amp;mode=afficher_edt".add_token_in_url()."' target='_blank' title=\"Afficher l'EDT seul\"><img src='../images/icons/edt.png' class='icone16' alt='EDT seul' /></a>
 	-
@@ -1033,11 +1068,11 @@ echo "<div style='width:".($largeur_edt+2*40)."px; text-align:center;'>
 if((isset($login_ele_prec))&&($login_ele_prec!="")) {
 	if($affichage=="semaine") {
 		echo "
-		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
+		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee".$complement_liens_edt2."' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
 	}
 	else {
 		echo "
-		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
+		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;display_date=$display_date&amp;affichage=jour".$complement_liens_edt2."' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
 	}
 }
 
@@ -1048,17 +1083,23 @@ echo "
 if((isset($login_ele_suiv))&&($login_ele_suiv!="")) {
 	if($affichage=="semaine") {
 		echo "
-		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a> ";
+		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;affichage=semaine&amp;num_semaine_annee=$num_semaine_annee".$complement_liens_edt2."' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a> ";
 	}
 	else {
 		echo "
-		 <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;display_date=$display_date&amp;affichage=jour' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a>";
+		 <a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_suiv."&amp;display_date=$display_date&amp;affichage=jour".$complement_liens_edt2."' title=\"Voir la page pour $nom_prenom_ele_suiv\"><img src=\"../images/arrow_right.png\" class='icone16' alt=\"$nom_prenom_ele_suiv\" /></a>";
 	}
 }
 
 echo "</p>
 </div>";
 
+//============================================================
+if(($type_affichage=='eleve')&&(isset($login_eleve))&&($affichage_complementaire_sur_edt=="absences2")) {
+	echo "<div style='float:right;width:;'><a href='#' id='lien_permuter_display_abs_visible' onclick=\"permuter_display_div_abs('')\" title=\"Afficher les absences.\"><img src='../images/icons/absences_visibles.png' width='26' height='26' alt='Afficher abs' /></a><a href='#' id='lien_permuter_display_abs_invisible' onclick=\"permuter_display_div_abs('none')\" title=\"Masquer les absences.\"><img src='../images/icons/absences_invisibles.png' width='26' height='26' alt='Masquer abs' /></a></div>";
+}
+
+//$affichage_complementaire_sur_edt="absences2";
 //============================================================
 
 $x0=50;
@@ -1150,7 +1191,8 @@ echo "<p><a href=\"javascript:afficher_div('edt_test','y',-10,20)\">Afficher en 
 $titre_infobulle="Action EDT";
 $texte_infobulle="<!--p>Choix&nbsp;:</p-->
 <div id='div_action_edt'></div>";
-$tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2000);
+$tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
+
 
 echo "<!--div id='div_action_edt'></div-->
 
