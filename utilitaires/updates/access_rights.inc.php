@@ -1521,6 +1521,18 @@ autre='F',
 description='EDT : Import des vacances depuis l ICAL officiel EducNat',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/edt/index2.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='V',
+responsable='V',
+secours='V',
+autre='F',
+description='EDT 2 : Index',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
