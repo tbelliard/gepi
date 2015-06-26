@@ -3082,7 +3082,7 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 			}
 
 			if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
-				echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage des absences sur un EDT version 2\"><a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$ele_login."&affichage_complementaire_sur_edt=absences2' target='_blank'><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a></div>";
+				echo "<div style='float:right; width:24px; margin:5px;' title=\"Affichage des absences sur un EDT version 2\"><a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$ele_login."&affichage_complementaire_sur_edt=absences2' target='_blank'><img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2' /></a></div>";
 			}
 
 			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {

@@ -249,10 +249,14 @@ if($no_entete=="y") {
 //https://127.0.0.1/steph/gepi_git_trunk/edt/index2.php?login_eleve=bejae&type_affichage=eleve&affichage_complementaire_sur_edt=absences2&num_semaine_annee=27|2015
 $chaine_opt_edt2="";
 if((isset($login_edt))&&($login_edt!="")) {
+	$chaine_image_edt="<img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' />";
 	if((isset($type_edt_2))&&($type_edt_2=="eleve")) {
 		$chaine_opt_edt2="?affichage=semaine&type_affichage=eleve&login_eleve=".$login_edt;
 		if(isset($_GET['affichage_complementaire_sur_edt'])) {
 			$chaine_opt_edt2.="&affichage_complementaire_sur_edt=".$_GET['affichage_complementaire_sur_edt'];
+			if($_GET['affichage_complementaire_sur_edt']=="absences2") {
+				$chaine_image_edt="<img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2ABS2' />";
+			}
 		}
 	}
 	elseif((isset($type_edt_2))&&($type_edt_2=="prof")) {
@@ -269,12 +273,12 @@ if($mode_infobulle=="n") {
 	require_once("../lib/header.inc.php");
 
 	if(acces("/edt/index2.php", $_SESSION['statut'])) {
-		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."'><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a></div>";
+		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."'>".$chaine_image_edt."</a></div>";
 	}
 }
 else {
 	if(acces("/edt/index2.php", $_SESSION['statut'])) {
-		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."' target='_blank'><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a></div>";
+		echo "<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 2\"><a href='$gepiPath/edt/index2.php".$chaine_opt_edt2."' target='_blank'>".$chaine_image_edt."</a></div>";
 	}
 }
 

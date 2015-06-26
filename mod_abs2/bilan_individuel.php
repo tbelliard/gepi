@@ -765,7 +765,7 @@ foreach ($donnees as $id => $eleve) {
                     }
 
 			if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
-				echo "<a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$propel_eleve->getLogin()."&affichage_complementaire_sur_edt=absences2' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' /></a> ";
+				echo "<a href='$gepiPath/edt/index2.php?affichage=semaine&type_affichage=eleve&login_eleve=".$propel_eleve->getLogin()."&affichage_complementaire_sur_edt=absences2' target='_blank' title=\"Affichage des absences sur un EDT version 2\"><img src='$gepiPath/images/icons/edt2_abs2.png' width='24' height='24' alt='EDT2ABS2' /></a> ";
 			}
 
                     if($affichage_liens){
