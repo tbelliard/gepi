@@ -206,7 +206,7 @@ if (isset($message_enregistrement)) {
 echo '<table class="normal">';
 echo '<tbody>';
 echo '<tr><td>';
-echo 'N° de saisie : ';
+echo 'N° de saisie&nbsp;: ';
 echo '</td><td>';
 echo $saisie->getPrimaryKey();
     if ($saisie->getDeletedAt()!=null) {
@@ -273,7 +273,7 @@ if ($saisie->getEleve() == null) {
     echo "Marqueur d'appel effectué";
     echo '</td>';
 } else {
-    echo '<td>Élève : </td>';
+    echo '<td>Élève&nbsp;: </td>';
     echo '<td colspan="2">';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
     echo ' '.$saisie->getEleve()->getClasseNom();
@@ -298,7 +298,7 @@ echo '</tr>';
 
 if ($saisie->getClasse() != null) {
     echo '<tr><td>';
-    echo 'Classe : ';
+    echo 'Classe&nbsp;: ';
     echo '</td><td colspan="2">';
     echo $saisie->getClasse()->getNom();
     echo '</td></tr>';
@@ -306,7 +306,7 @@ if ($saisie->getClasse() != null) {
 
 if ($saisie->getGroupe() != null) {
     echo '<tr><td>';
-    echo 'Groupe : ';
+    echo 'Groupe&nbsp;: ';
     echo '</td><td colspan="2">';
     echo $saisie->getGroupe()->getNameAvecClasses();
     echo '</td></tr>';
@@ -314,7 +314,7 @@ if ($saisie->getGroupe() != null) {
 
 if ($saisie->getAidDetails() != null) {
     echo '<tr><td>';
-    echo 'Aid : ';
+    echo 'Aid&nbsp;: ';
     echo '</td><td colspan="2">';
     echo $saisie->getAidDetails()->getNom();
     echo '</td></tr>';
@@ -322,7 +322,7 @@ if ($saisie->getAidDetails() != null) {
 
 if ($saisie->getEdtEmplacementCours() != null) {
     echo '<tr><td>';
-    echo 'Cours : ';
+    echo 'Cours&nbsp;: ';
     echo '</td><td colspan="2">';
     echo $saisie->getEdtEmplacementCours()->getDescription();
     echo '</td></tr>';
@@ -330,14 +330,14 @@ if ($saisie->getEdtEmplacementCours() != null) {
 
 if ($saisie->getEdtCreneau() != null) {
     echo '<tr><td>';
-    echo 'Créneau : ';
+    echo 'Créneau&nbsp;: ';
     echo '</td><td colspan="2">';
     echo $saisie->getEdtCreneau()->getDescription();
     echo '</td></tr>';
 }
 
 echo '<tr><td>';
-echo 'Début : ';
+echo 'Début&nbsp;: ';
 echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null ) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
@@ -352,7 +352,7 @@ if (!$modifiable || $saisie->getDeletedAt() != null ) {
 </button>
 <?php
     } else {
-	echo '<input id="trigger_calendrier_debut" name="date_debut"  type="text" dojoType="dijit.form.DateTextBox"  value="'. $saisie->getDebutAbs('Y-m-d').'"  style="width : 8em"/></nobr> ';
+	echo '<input id="trigger_calendrier_debut" name="date_debut"  type="text" dojoType="dijit.form.DateTextBox"  value="'. $saisie->getDebutAbs('Y-m-d').'"  style="width: 8em"/></nobr> ';
 
 echo choix_heure(array('heure_debut', 'heure_fin'), 'div_choix_heure');
 
@@ -373,7 +373,7 @@ echo choix_heure(array('heure_debut', 'heure_fin'), 'div_choix_heure');
 echo '<span id="commentaire_heure_debut_abs"></span></td></tr>';
 
 echo '<tr><td>';
-echo 'Fin : ';
+echo 'Fin&nbsp;: ';
 echo '</td><td colspan="2">';
 if (!$modifiable || $saisie->getDeletedAt() != null) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
@@ -408,7 +408,7 @@ if (!$modifiable || $saisie->getDeletedAt() != null) {
 echo '</td></tr>';
 
 echo '<tr><td>';
-echo 'Traitement : ';
+echo 'Traitement&nbsp;: ';
 echo '</td><td style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
@@ -421,7 +421,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 		if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
 		$total_traitements_modifiable = $total_traitements_modifiable + 1;
 		$type_autorises->getFirst();
-		echo $traitement->getDescription().' : ';
+		echo $traitement->getDescription().'&nbsp;: ';
 		if ($type_autorises->count() != 0) {
 			echo '<input type="hidden" name="id_traitement[';
 			echo ($total_traitements_modifiable - 1);
@@ -493,7 +493,7 @@ if ($saisie->getManquementObligationPresenceEnglobante()){
 echo '</td></tr>';
 
 echo '<tr><td>';
-echo 'Notification : ';
+echo 'Notification&nbsp;: ';
 echo '</td><td>';
 echo '<table style="background-color:#c7e3ec;">';
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
@@ -510,9 +510,9 @@ foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     }
     if ($notification->getTypeNotification() != null) {
-	echo ', type : '.$notification->getTypeNotification();
+	echo ', type&nbsp;: '.$notification->getTypeNotification();
     }
-    echo ', statut : '.$notification->getStatutEnvoi();
+    echo ', statut&nbsp;: '.$notification->getStatutEnvoi();
     echo "</a>";
     echo '</td></tr>';
 }
@@ -525,7 +525,7 @@ echo '<tr><td>';
 
 if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
     echo '<tr><td>';
-    echo 'Commentaire : ';
+    echo 'Commentaire&nbsp;: ';
     echo '</td><td colspan="2">';
     if (!$modifiable || $saisie->getDeletedAt() != null) {
 	echo ($saisie->getCommentaire());
@@ -536,7 +536,7 @@ if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentair
 }
 
 echo '<tr><td>';
-echo 'Enregistré le : ';
+echo 'Enregistré le&nbsp;: ';
 echo '</td><td colspan="2">';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
 echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.mb_substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
@@ -544,7 +544,7 @@ echo '</td></tr>';
 
 if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
     echo '<tr><td>';
-    echo 'Modifiée le : ';
+    echo 'Modifiée le&nbsp;: ';
     echo '</td><td colspan="2">';
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getVersionCreatedAt('U')));
     $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
@@ -556,14 +556,14 @@ if ($saisie->getCreatedAt('U') != $saisie->getVersionCreatedAt('U')) {
 
 if ($saisie->getIdSIncidents() !== null) {
     echo '<tr><td>';
-    echo 'Discipline : ';
+    echo 'Discipline&nbsp;: ';
     echo '</td><td colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
     $saisie->getIdSIncidents()."&step=2&return_url=no_return' target='_blank'>Visualiser l'incident </a>";
     echo '</td></tr>';
 } elseif ($modifiable && $saisie->hasModeInterfaceDiscipline()) {
     echo '<tr><td>';
-    echo 'Discipline : ';
+    echo 'Discipline&nbsp;: ';
     echo '</td><td colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 	$saisie->getId()."&return_url=no_return' target='_blank'>Saisir un incident disciplinaire</a>";
@@ -572,7 +572,7 @@ if ($saisie->getIdSIncidents() !== null) {
 $saisies_conflit_col = $saisie->getSaisiesContradictoiresManquementObligation();
 if (!$saisies_conflit_col->isEmpty()) {
     echo '<tr><td>';
-    echo 'La saisie est en contradiction avec : ';
+    echo 'La saisie est en contradiction avec&nbsp;: ';
     echo '</td><td colspan="2">';
     foreach ($saisies_conflit_col as $saisie_conflit) {
 	echo "<a href='../mod_abs2/visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
@@ -587,7 +587,7 @@ if (!$saisies_conflit_col->isEmpty()) {
 $saisies_englobante_col = $saisie->getAbsenceEleveSaisiesEnglobantes();
 if (!$saisies_englobante_col->isEmpty()) {
     echo '<tr><td>';
-    echo 'La saisie est englobée par : ';
+    echo 'La saisie est englobée par&nbsp;: ';
     echo '</td><td colspan="2">';
     foreach ($saisies_englobante_col as $saisies_englobante) {
 	echo "<a href='../mod_abs2/visu_saisie.php?id_saisie=".$saisies_englobante->getPrimaryKey()."' style='color:".$saisies_englobante->getColor()."'".($affichage_depuis_edt2 ? " target='_blank'" : "")."> ";
@@ -632,7 +632,7 @@ mais vous pouvez aussi en créer un nouveau.">Créer un *nouveau* traitement pou
 if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") && $saisie->getAllVersions()->count()!=1) {
     echo '<tr><td colspan="3" style="text-align : center;">';
     echo 'Versions précédentes';
-    echo '<table>';
+    echo '<table style="background-color:#cae7cb;">';
     foreach($saisie->getAllVersions() as $version) {
     	echo '<tr>';
     	echo '<td>'.$version->getVersion().'</td>';
@@ -647,9 +647,9 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 		echo '<td>'.$version->getDateDescription().'</td>';
 	    echo '<td>';
 	    if ($version->getVersion() == 1) {
-	    	echo 'Créée le : ';
+	    	echo 'Créée le&nbsp;: ';
 	    } else {
-	    	echo 'Modifiée le : ';
+	    	echo 'Modifiée le&nbsp;: ';
 	    }
 	    echo (strftime("%a %d/%m/%Y %H:%M", $version->getVersionCreatedAt('U')));
 	    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($version->getVersionCreatedBy())->findOne();
@@ -706,6 +706,9 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	}
 
 	teste_validite_heure_debut_abs();
+
+	//setTimeout(cacher_div('div_choix_heure'), 1000);
+
   //]]>
 </script>
 <?php
