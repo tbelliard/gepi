@@ -60,7 +60,7 @@ CREATE TABLE eleves
 	tel_port varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone portable de l\'eleve',
 	tel_prof varchar(255) DEFAULT '' NOT NULL COMMENT 'Telephone professionnel (?) de l\'eleve',
 	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
-	date_entree DATETIME COMMENT 'Timestamp d\entrée de l\'élève de l\'établissement (début d\'inscription)',
+	date_entree DATETIME COMMENT 'Timestamp d\'entrée de l\'élève de l\'établissement (début d\'inscription)',
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
 	mef_code VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'code mef de la formation de l\'eleve',
 	PRIMARY KEY (id_eleve),
