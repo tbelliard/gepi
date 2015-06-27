@@ -176,7 +176,10 @@ $liste_tables_del_etape_matieres = array(
 //"edt_ics_prof",
 // EDT?
 'edt_classes',
-'edt_cours'
+'edt_cours',
+"grp_groupes",
+"grp_groupes_admin",
+"grp_groupes_groupes"
 /*
 // Attente de confirmation de Pascal Fautrero pour décommenter...
 ,
