@@ -377,6 +377,9 @@ $chaine_periode_ouverte.="</p>";
 </select>
 <!--input type='hidden' name='id_groupe' value='$id_groupe' /-->
 <input type='hidden' name='id_grp_groupe' value='$id_grp_groupe' />
+
+ | <a href='repartition_ele_grp.php?id_grp_groupe=$id_grp_groupe'>Répartir les élèves entre les groupes du $groupe_de_groupes</a>
+
 </p>
 </form>
 
@@ -481,8 +484,6 @@ $chaine_periode_ouverte.="</p>";
 	}
 
 	echo "
-<p style='color:red'>A FAIRE : Proposer aussi un lien vers une page de <a href='repartition_ele_grp.php?id_grp_groupe=$id_grp_groupe'>répartition entre les groupes du $groupe_de_groupes</a></p>
-
 <h2>".ucfirst($groupe_de_groupes)." n°$id_grp_groupe</h2>
 <div style='margin-left:2em;'>
 	<h3>".$current_group['name']." (<em style='font-size:small;'>".$current_group['description']." en ".$current_group['classlist_string']."</em>) (<em>".$current_group['profs']['proflist_string']."</em>)</h3>
