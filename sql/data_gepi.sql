@@ -805,7 +805,7 @@ INSERT INTO droits SET id='/mod_examen_blanc/releve.php',administrateur='V',prof
 INSERT INTO droits SET id='/mod_examen_blanc/bull_exb.php',administrateur='V',professeur='V',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Examen blanc: Bulletins',statut='';
 INSERT INTO droits VALUES ('/saisie/saisie_synthese_app_classe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Synthèse des appréciations sur le groupe classe.', '');
 INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');
-INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Répartir des élèves dans des groupes', '');
+INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Répartir des élèves dans des groupes', '');
 INSERT INTO droits VALUES ('/prepa_conseil/edit_limite_bis.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');
 INSERT INTO droits VALUES ('/prepa_conseil/index2bis.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Visualisation des notes par classes', '');
 INSERT INTO droits VALUES ('/prepa_conseil/index3bis.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');

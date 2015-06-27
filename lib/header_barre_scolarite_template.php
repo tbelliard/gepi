@@ -299,6 +299,26 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '               <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php"'.insert_confirm_abandon().'>Visu. équipes péda</a></li>'."\n";
 		$menus .= '            </ul>'."\n";
 
+		if(acces_modif_liste_eleves_grp_groupes()) {
+			$groupe_de_groupes=getSettingValue('denom_groupe_de_groupes');
+			if($groupe_de_groupes=="") {
+				$groupe_de_groupes="groupe de groupes";
+			}
+
+			$groupes_de_groupes=getSettingValue('denom_groupes_de_groupes');
+			if($groupes_de_groupes=="") {
+				$groupes_de_groupes="groupes de groupes";
+			}
+
+			$menus .= '       <li class="plus"><a href="'.$gepiPath.'/groupes/grp_groupes_edit_eleves.php"'.insert_confirm_abandon().' title="Administrer les '.$groupes_de_groupes.' pour modifier les inscriptions élèves.">'.ucfirst($groupes_de_groupes).'</a>'."\n";
+
+			$menus .= '       <ul class="niveau3">'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/groupes/grp_groupes_edit_eleves.php"'.insert_confirm_abandon().' title="Administrer les '.$groupes_de_groupes.' pour modifier les inscriptions élèves.">'.ucfirst($groupes_de_groupes).'</a></li>'."\n";
+			$menus .= '           <li><a href="'.$gepiPath.'/groupes/repartition_ele_grp.php"'.insert_confirm_abandon().' title="Répartir les élèves des groupes d un '.$groupe_de_groupes.' entre les différents groupes/enseignements.">Répartir entre plusieurs groupes</a></li>'."\n";
+			$menus .= '       </ul>'."\n";
+			$menus .= '       </li>'."\n";
+		}
+
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li class="plus"><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Responsables</a>'."\n";
 		$menus .= '           <ul class="niveau3">'."\n";

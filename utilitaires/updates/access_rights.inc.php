@@ -654,7 +654,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/saisie/saisie_synthese_app_classe.php
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/saisie_message_connexion.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Saisie de messages de connexion.', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Répartir des élèves dans des groupes', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/groupes/repartition_ele_grp.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Répartir des élèves dans des groupes', '');";
 
 
 $tab_req[] = "INSERT INTO droits VALUES ('/prepa_conseil/edit_limite_bis.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');";

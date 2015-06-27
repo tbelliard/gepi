@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -275,11 +275,14 @@ if(!isset($id_grp_groupe)) {
 	while($lig=mysqli_fetch_object($res)) {
 		$current_grp_groupes=get_tab_grp_groupes($lig->id_grp_groupe, array('classes', 'profs'));
 		echo "
-	<li>
+	<li style='margin-bottom:1em;'>
 		<p>
 			<span title=\"Modifier le élèves inscrits dans des enseignements du $groupe_de_groupes n°$lig->id_grp_groupe
 
 ".$current_grp_groupes['description']."\">".$current_grp_groupes['nom_court']." (<em style='font-size:small'>".$current_grp_groupes['nom_complet']."</em>)</span>
+			<br />
+			<a href='repartition_ele_grp.php?id_grp_groupe=$lig->id_grp_groupe'>Répartir les élèves entre les groupes</a><br />
+			ou modifier les inscriptions pour un des groupes suivants&nbsp;:
 		</p>
 		<ul>";
 		foreach($current_grp_groupes['groupes'] as $cpt => $current_group) {
@@ -379,18 +382,7 @@ $chaine_periode_ouverte.="</p>";
 
 <script type='text/javascript'>
 	var change='no';
-</script>
-
-<p style='color:red'>A FAIRE : Proposer aussi un lien vers une page de répartition entre les groupes du $groupe_de_groupes</p>
-
-<h2>".ucfirst($groupe_de_groupes)." n°$id_grp_groupe</h2>
-<div style='margin-left:2em;'>
-	<h3>".$current_group['name']." (<em style='font-size:small;'>".$current_group['description']." en ".$current_group['classlist_string']."</em>) (<em>".$current_group['profs']['proflist_string']."</em>)</h3>
-
-	<p>Vous pouvez modifier la liste des élèves inscrits dans le groupe&nbsp;:</p>
-	$chaine_periode_ouverte
-	<div style='margin-left:2em;'>";
-
+</script>";
 
 	// Effectifs des classes associées au groupe:
 	$tab_eff_clas_grp=array();
@@ -405,6 +397,114 @@ $chaine_periode_ouverte.="</p>";
 		}
 	}
 
+	if(count($current_grp_groupes['groupes']>1)) {
+		echo "<div style='float:right; text-align:center; width:40em;margin-top:3em;'>\n";
+		echo "
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form_copie_ele' method='post'>
+		<fieldset class='fieldset_opacite50'>
+			<p>
+				<select name='choix_modele_copie' id='choix_modele_copie'>";
+		$cpt_ele_grp=0;
+		$chaine_js=array();
+		$id_groupe_js=array();
+		foreach($current_grp_groupes['groupes'] as $tmp_current_group) {
+			//if($tmp_current_group['id_groupe']!=$id_groupe) {
+				$tmp_grp=get_group($tmp_current_group['id_groupe']);
+
+				$temoin_classe_entiere="y";
+				for($loop=0;$loop<count($tmp_grp["classes"]["list"]);$loop++) {
+					for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+						if((isset($tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]))&&(count($tmp_grp["eleves"][$loop_per]["telle_classe"][$tmp_grp["classes"]["list"][$loop]])!=$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per])) {
+							$temoin_classe_entiere="n";
+							break;
+						}
+					}
+				}
+
+				$chaine_js[$cpt_ele_grp]="";
+				for($loop=0;$loop<count($tmp_grp["eleves"]["all"]["list"]);$loop++) {
+					$chaine_js[$cpt_ele_grp].=",\"".$tmp_grp["eleves"]["all"]["list"][$loop]."\"";
+				}
+				$chaine_js[$cpt_ele_grp]=mb_substr($chaine_js[$cpt_ele_grp],1);
+
+				$id_groupe_js[$cpt_ele_grp]=$tmp_current_group['id_groupe'];
+
+				echo "<option value='$cpt_ele_grp'";
+				if($tmp_current_group['id_groupe']==$id_groupe) {
+					echo " style='color:blue;'";
+					if($temoin_classe_entiere=="y") {
+						echo " title=\"Groupe courant, en classe(s) entière(s).
+		Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+					}
+					else {
+						echo " title=\"Groupe courant: Sous-groupe.
+		Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+					}
+				}
+				elseif($temoin_classe_entiere=="y") {
+					echo " style='color:grey;' title=\"Classe(s) entière(s).
+	Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+				}
+				else {
+					echo " title=\"Sous-groupe.
+	Enseignement dispensé par ".$tmp_grp["profs"]["proflist_string"]."\"";
+				}
+				//if((isset($_SESSION['id_groupe_reference_copie_assoc']))&&($_SESSION['id_groupe_reference_copie_assoc']==$tmp_current_group['id_groupe'])) {echo " selected='true'";}
+				if($tmp_current_group['id_groupe']==$id_groupe) {echo " selected='true'";}
+				echo ">".$tmp_grp['description']." (".$tmp_grp['name']." en ".$tmp_grp["classlist_string"].")</option>\n";
+
+				$cpt_ele_grp++;
+			//}
+		}
+		echo "</select>\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Recopie des élèves associés' onclick=\"recopie_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "<br />\n";
+		echo "<input type='button' name='Copie' value='Copie INVERSE des élèves associés' onclick=\"recopie_inverse_grp_ele(document.getElementById('choix_modele_copie').selectedIndex);changement();\" />\n";
+		echo "</p>\n";
+
+		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+		echo "<input type='hidden' name='id_grp_groupe' value='$id_grp_groupe' />\n";
+
+		echo "</fieldset>\n";
+		echo "</form>\n";
+
+		echo "<script type='text/javascript'>\n";
+		for($loop=0;$loop<count($chaine_js);$loop++) {
+			echo "tab_grp_ele_".$loop."=new Array(".$chaine_js[$loop].");\n";
+			echo "id_groupe_js_".$loop."=".$id_groupe_js[$loop].";\n";
+		}
+		echo "</script>\n";
+
+		echo "<br />\n";
+		echo "</div>\n";
+	}
+
+	echo "
+<p style='color:red'>A FAIRE : Proposer aussi un lien vers une page de <a href='repartition_ele_grp.php?id_grp_groupe=$id_grp_groupe'>répartition entre les groupes du $groupe_de_groupes</a></p>
+
+<h2>".ucfirst($groupe_de_groupes)." n°$id_grp_groupe</h2>
+<div style='margin-left:2em;'>
+	<h3>".$current_group['name']." (<em style='font-size:small;'>".$current_group['description']." en ".$current_group['classlist_string']."</em>) (<em>".$current_group['profs']['proflist_string']."</em>)</h3>
+
+	<p>Vous pouvez modifier la liste des élèves inscrits dans le groupe&nbsp;:</p>
+	$chaine_periode_ouverte
+	<div style='margin-left:2em;'>";
+
+	// Effectifs des classes associées au groupe:
+	$tab_eff_clas_grp=array();
+	for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
+		$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]]=array();
+
+		for($loop_per=1;$loop_per<$current_group["nb_periode"];$loop_per++) {
+			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='".$current_group["classes"]["list"][$loop]."' AND periode='".$loop_per."';";
+			//echo "$sql<br />";
+			$res_compte=mysqli_query($GLOBALS["mysqli"], $sql);
+			$tab_eff_clas_grp[$current_group["classes"]["list"][$loop]][$loop_per]=mysqli_num_rows($res_compte);
+		}
+	}
+
+	/*
 	echo "<div style='float:right; text-align:center;'>\n";
 	if(count($current_grp_groupes['groupes']>1)) {
 		echo "
@@ -486,6 +586,7 @@ $chaine_periode_ouverte.="</p>";
 
 		echo "<br />\n";
 	}
+	*/
 ?>
 
 <p>
@@ -506,6 +607,7 @@ $chaine_periode_ouverte.="</p>";
 	echo "
 </div>
 
+	<div style='float:left;'>
 		<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>
 			<fieldset class='fieldset_opacite50'>
 				".add_token_field()."
@@ -1141,6 +1243,8 @@ $chaine_periode_ouverte.="</p>";
 		</script>
 
 		<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em;'><em>NOTES&nbsp;:</em> Il n'est pas possible de désinscrire un élève d'un groupe pour une période sur laquelle il a des notes, appréciation ou avis du conseil de classe dans le bulletin.</p>
+
+	</div>
 	</div>
 </div>";
 

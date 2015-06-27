@@ -12037,6 +12037,18 @@ function acces_modif_liste_eleves_grp_groupes($id_groupe="", $id_grp_groupe="") 
 	}
 }
 
+function is_groupe_du_grp_groupes($id_groupe, $id_grp_groupe) {
+	$sql="SELECT 1=1 FROM grp_groupes_groupes WHERE id_groupe='".$id_groupe."' AND id_grp_groupe='".$id_grp_groupe."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
 {
