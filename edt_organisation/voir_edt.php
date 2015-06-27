@@ -248,8 +248,8 @@ if($no_entete=="y") {
 //https://127.0.0.1/steph/gepi_git_trunk/edt_organisation/index_edt.php?login_edt=bejae&type_edt_2=eleve&no_entete=y&no_menu=y&lien_refermer=y
 //https://127.0.0.1/steph/gepi_git_trunk/edt/index2.php?login_eleve=bejae&type_affichage=eleve&affichage_complementaire_sur_edt=absences2&num_semaine_annee=27|2015
 $chaine_opt_edt2="";
+$chaine_image_edt="<img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' />";
 if((isset($login_edt))&&($login_edt!="")) {
-	$chaine_image_edt="<img src='$gepiPath/images/icons/edt2.png' class='icone16' alt='EDT2' />";
 	if((isset($type_edt_2))&&($type_edt_2=="eleve")) {
 		$chaine_opt_edt2="?affichage=semaine&type_affichage=eleve&login_eleve=".$login_edt;
 		if(isset($_GET['affichage_complementaire_sur_edt'])) {
