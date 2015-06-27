@@ -605,7 +605,7 @@ Enseignants : ".$current_group['profs']['proflist_string']."\">".$current_group[
 		echo "
 <p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;mode=ajouter_user&amp;id_grp_groupe=$id_grp_groupe' title=\"Ajouter des groupes au $groupe_de_groupes.\">Ajouter des utilisateurs autorisés à modifier la liste des élèves des groupes de ce $groupe_de_groupes.</a></p>";
 
-		echo "<p style='color:red; margin-top:1em;'>ATTENTION à ne pas modifier simultanément plusieurs formulaires.</p>";
+		echo "<p style='color:red; margin-top:1em;'>ATTENTION à ne pas modifier simultanément plusieurs formulaires<br />(<em>seules les modifications du formulaire validé seront prises en compte et les autres perdues</em>).</p>";
 
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -835,7 +835,6 @@ Si les professeurs et AED font la répartition des élèves lors d'une réunion,
 
 <p style='color:red; margin-top:1em;'>
 A FAIRE :<br />
-- Donner l'accès aux utilisateurs administrateurs des $groupes_de_groupes à des pages de sélection des élèves type groupes/edit_eleves.php et groupes/repartition_ele_grp.php<br />
 - Pouvoir éditer les listes produites en CSV et PDF.<br />
 </p>";
 
