@@ -1533,6 +1533,18 @@ autre='F',
 description='EDT 2 : Index',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/bulletin/bulletins_et_conseils_classes.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Bulletins et conseils de classe',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

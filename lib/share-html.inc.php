@@ -1150,8 +1150,9 @@ function affiche_docs_joints($id_ct,$type_notice) {
  * @param type $tab_lien tableau des liens
  * @param int $nbcol Nombre de colonnes
  * @param type $extra_options Options supplémentaires
+ * @param type $tab_extra Tableau supplémentaire pour par exemple des liens onclick
  */
-function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
+function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL,$tab_extra=NULL) {
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -1177,8 +1178,11 @@ function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
 
 		//echo "<br />\n";
 		echo "<a href='".$tab_lien[$i]."'";
-    if ($extra_options) echo ' '.$extra_options;
-    echo ">".$tab_txt[$i]."</a>";
+		if ($extra_options) echo ' '.$extra_options;
+		if(isset($tab_extra[$i])) {
+			echo $tab_extra[$i];
+		}
+		echo ">".$tab_txt[$i]."</a>";
 		echo "<br />\n";
 		$i++;
 	}

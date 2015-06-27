@@ -243,7 +243,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 
 		// Bulletins
 		if (getSettingValue("active_bulletins") == "y") {
-			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/saisie/index.php' , "texte"=>"Bulletins");
+			$tbs_menu_prof[$compteur_menu]=array("lien"=> '/bulletin/bulletins_et_conseils_classes.php' , "texte"=>"Bulletins");
 			$tmp_sous_menu=array();
 			$cpt_sous_menu=0;
 

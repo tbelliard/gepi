@@ -128,7 +128,7 @@ if ($barre_plugin!="") {
 			//=======================================================
 			// Bulletins
 			if (getSettingValue("active_bulletins") == "y") {
-				$menus .= '<li class="li_inline"><a href="#"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/bulletin/bulletins_et_conseils_classes.php"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
 	
 				$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Moyennes une classe</a></li>'."\n";
