@@ -143,7 +143,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'>
-	<a href='../edt_organisation/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">
+	<a href='../edt_organisation/edt_calendrier.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">
 		<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour
 	</a>";
 
