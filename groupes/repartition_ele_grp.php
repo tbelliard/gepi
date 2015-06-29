@@ -522,7 +522,9 @@ if($_SESSION['statut']=="administrateur") {
 			}
 		}
 
-	</script>\n";
+	</script>
+	
+	<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -641,7 +643,9 @@ if($_SESSION['statut']=="administrateur") {
 			}
 		}
 
-	</script>\n";
+	</script>
+
+	<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -694,7 +698,9 @@ Professeurs : ".$current_group['profs']['proflist_string']."\">".$current_group[
 	</li>";
 		}
 		echo "
-</ul>";
+</ul>
+
+<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>";
 
 		require("../lib/footer.inc.php");
 		die();
@@ -773,7 +779,11 @@ if(!isset($num_periode)) {
 	}
 
 	echo "<br />\n";
-	echo "<p><em>NOTE&nbsp;:</em> Vous allez effectuer la répartition entre les groupes sur une période dans un premier temps, et dans un deuxième temps, vous pourrez recopier le paramétrage de cette période pour d'autres périodes.</p>\n";
+	echo "<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li style='margin-bottom:1em;'><p>Vous allez effectuer la répartition entre les groupes sur une période dans un premier temps, et dans un deuxième temps, vous pourrez recopier le paramétrage de cette période pour d'autres périodes.</p></li>
+	<li style='margin-bottom:1em;'><p style='text-indent:-6.5em; margin-left:6.5em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p></li>
+</ul>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -788,7 +798,9 @@ if(!isset($_POST['recopie_select'])) {
 	<a href=\"grp_groupes_edit_eleves.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 	 | <a href=\"".$_SERVER['PHP_SELF']."\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre ".$groupe_de_groupes."</a>
 	 | <a href=\"".$_SERVER['PHP_SELF']."?id_grp_groupe=$id_grp_groupe\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre période</a>
-</p>";
+</p>
+
+<div id='fixe'></div>";
 
 		$id_groupe=array();
 		$sql="SELECT DISTINCT id_groupe FROM grp_groupes_groupes WHERE id_grp_groupe='".$id_grp_groupe."';";
@@ -973,7 +985,11 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<table class='boireaus' summary='Répartition des élèves'>\n";
 	echo "<tr>\n";
 	//echo "<th>Elève</th>\n";
-	echo "<th><input type='submit' name='Valider_repartition2' value='Enregistrer' />\n";
+	echo "<th>
+	<div style='float:right; width:16px;'>
+		<a href='javascript:affichage_des_photos_ou_non()' id='temoin_photo'><img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\nCliquer pour masquer les photos.' /></a>
+	</div>
+	<input type='submit' name='Valider_repartition2' value='Enregistrer' />\n";
 	//echo "<br /><a href=\"javascript:document.getElementById('order_by_nom').checked=true;document.form3.submit();\">Elève</a>";
 	echo "<br /><a href=\"javascript:confirm_Passer_a_tel_tri(change, '$themessage', 'nom');\">Elève</a>";
 	echo "</th>\n";
@@ -1095,6 +1111,9 @@ if(!isset($_POST['recopie_select'])) {
 	echo "<th></th>\n";
 	echo "</tr>\n";
 
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+	$acces_eleve_options=acces("/classes/eleve_options.php", $_SESSION['statut']);
+
 	// LISTE FOIREUSE UNE FOIS QU'ON A VALIDE UNE FOIS
 	//for($j=0;$j<count($group["eleves"]["all"]["list"]);$j++) {
 	$cpt=0;
@@ -1104,6 +1123,7 @@ if(!isset($_POST['recopie_select'])) {
 	for($j=0;$j<count($tab_eleve);$j++) {
 		$login_ele=$tab_eleve[$j];
 		$tmp_tab_class_ele=get_class_from_ele_login($login_ele);
+		$tmp_tab_class_per_ele=get_class_periode_from_ele_login($login_ele);
 
 		if(($classe_prec!="")&&($tmp_tab_class_ele["liste"]!=$classe_prec)) {
 			if($order_by=='classe') {
@@ -1120,7 +1140,31 @@ if(!isset($_POST['recopie_select'])) {
 		echo "<td>\n";
 		echo "<input type='hidden' name='login_ele[$cpt]' value='".$login_ele."' />\n";
 		$nom_prenom_ele=get_nom_prenom_eleve($login_ele);
-		echo $nom_prenom_ele;
+		if($acces_visu_eleve) {
+			echo "<div style='float:right; width:16px'><a href='../eleves/visu_eleve.php?ele_login=".$login_ele."&amp;onglet=enseignements' target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='OngletsEle' /></a></div>";
+		}
+
+		/*
+		if(isset($eleves_list["users"][$e_login]['elenoet'])) {
+			echo " onmouseover=\"affiche_photo_courante('".nom_photo($eleves_list["users"][$e_login]['elenoet'])."')\" onmouseout=\"vide_photo_courante();\"";
+		}
+		*/
+		$chaine_photo=" onmouseover=\"vide_photo_courante()\" onmouseout=\"vide_photo_courante();\"";
+		$sql="SELECT elenoet FROM eleves WHERE login='".$login_ele."';";
+		$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_elenoet)>0) {
+			$lig_elenoet=mysqli_fetch_object($res_elenoet);
+			$chaine_photo=" onmouseover=\"affiche_photo_courante('".nom_photo($lig_elenoet->elenoet)."')\" onmouseout=\"vide_photo_courante();\"";
+		}
+
+		if(($acces_eleve_options)&&
+		(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&(isset($tmp_tab_class_per_ele['periode'][$num_periode]['id_classe']))&&(is_scol_classe_ele($_SESSION['login'], $login_ele, $num_periode))))) {
+			echo "<a href='../classes/eleve_options.php?login_eleve=".$login_ele."&id_classe=".$tmp_tab_class_per_ele['periode'][$num_periode]['id_classe']."' target='_blank' title=\"Voir/modifier les inscriptions de cet élève dans un nouvel onglet.\"".$chaine_photo.">".$nom_prenom_ele."</a>";
+		}
+		else {
+			echo "<a href='#'".$chaine_photo.">".$nom_prenom_ele."</a>";
+		}
 		echo "</td>\n";
 	
 		echo "<td>\n";
@@ -1177,7 +1221,7 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 		else {echo $ligne_si_desinscription_possible;}
 
 		echo "<td>\n";
-		if($nb_grp_ele>1) {echo $info_plusieurs_grp_ele;}
+		if($nb_grp_ele>1) {echo "<span title=\"Si vous validez le formulaire, l'élève sera désinscrit de tous les groupes sauf de celui qui est coché.\">".$info_plusieurs_grp_ele."</span>";}
 		else {echo "&nbsp;";}
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -1296,7 +1340,30 @@ Enseignement dispensé par ".$group[$i]['profs']['proflist_string']."\">\n";
 	}
 	calcule_effectifs();
 	document.getElementById('tr_effectifs').style.display='';
+
+	function affiche_photo_courante(photo) {
+		document.getElementById('fixe').innerHTML=\"<img src='\"+photo+\"' width='150' alt='Photo' />\";
+	}
+
+	function vide_photo_courante() {
+		document.getElementById('fixe').innerHTML='';
+	}
+
+	function affichage_des_photos_ou_non() {
+		if(document.getElementById('fixe').style.display=='') {
+			document.getElementById('fixe').style.display='none';
+			document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo-barre.png' class='icone16' alt='Photo masquée' title='Photo masquée.\\nCliquer pour afficher les photos.' />\";
+		}
+		else {
+			document.getElementById('fixe').style.display='';
+			document.getElementById('temoin_photo').innerHTML=\"<img src='../images/icons/camera-photo.png' class='icone16' alt='Photo affichée' title='Photo affichée.\\nCliquer pour masquer les photos.' />\";
+		}
+	}
+
 </script>\n";
+
+	echo "<p style='text-indent:-6.5em; margin-left:6.5em; margin-top:1em;'>ATTENTION&nbsp;: Cette page de répartition ne permet pas d'inscrire ou de conserver l'inscription dans plus d'un des groupes qui seront sélectionnés à l'affichage.<br />Parmi les groupes affichés, un élève ne pourra pas être inscrit dans plus d'un d'entre eux.</p>";
+
 
 	//====================================
 	/*
