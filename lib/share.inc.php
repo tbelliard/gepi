@@ -13536,4 +13536,45 @@ function get_horaires_jour($jour="") {
 	return $tab;
 }
 
+
+function is_scol_classe_ele($login_scol, $login_ele, $num_periode="") {
+	global $mysqli;
+	$is_scol_ele=false;
+
+	$ajout_sql="";
+	if($num_periode!="") {
+		$ajout_sql=" AND periode='$num_periode'";
+	}
+	$sql="SELECT 1=1 FROM j_eleves_classes jec, 
+						j_scol_classes jsc
+					WHERE jsc.login='".$login_scol."' AND 
+						jec.id_classe=jsc.id_classe AND 
+						jec.login='$login_ele'".$ajout_sql." LIMIT 1;";
+	//echo "$sql<br />";
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$is_scol_ele=true;
+		$res->close();
+	}
+
+	return $is_scol_ele;
+}
+
+function is_scol_classe($login_scol, $id_classe) {
+	global $mysqli;
+
+	$is_scol_classe=false;
+
+	$sql="SELECT 1=1 FROM j_scol_classes jsc
+					WHERE jsc.login='".$login_prof."' AND 
+						jsc.id_classe='$id_classe' LIMIT 1;";
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows > 0) {
+		$is_scol_classe = true;
+		$res->close();
+	}
+
+	return $is_scol_classe;
+}
+
 ?>
