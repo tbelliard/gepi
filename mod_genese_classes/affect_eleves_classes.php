@@ -616,7 +616,7 @@ width='16' height='16' alt='Nommer' /></a>";
 					$txt_requete.=" <a href='affiche_listes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;afficher_listes=y#requete_".$lig->id_req."' title=\"Afficher les élèves.\"><img src ='../images/icons/chercher.png'
 width='16' height='16' alt='Afficher' /></a>";
 
-					$txt_requete.=" <a href='affect_eleves_classes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;suppr_req=".$lig->id_req.add_token_in_url()."' title=\"Supprimer la requête.\"><img src ='../images/delete16.png'
+					$txt_requete.=" <a href='affect_eleves_classes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;suppr_req=".$lig->id_req.add_token_in_url()."' title=\"Supprimer la requête.\" onclick=\"return confirm('Etes-vous sûr de vouloir supprimer cette requête?')\"><img src ='../images/delete16.png'
 width='16' height='16' alt='Supprimer' /></a>";
 
 					$txt_requete.="<br />";
