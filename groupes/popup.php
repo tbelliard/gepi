@@ -601,8 +601,12 @@ if($gepi_prof_suivi==""){
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){
 			echo "<table class='boireaus' border='1'>\n";
-			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></th>\n";
-			echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></th>\n";
+			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom";
+			if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+			echo "'>Elève</a></th>\n";
+			echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe";
+			if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+			echo "'>Classe</a></th>\n";
 			if($avec_details=='y') {
 				// Ajouter un test sur le trombino actif ou non
 				if(getSettingValue('active_module_trombinoscopes')=='y') {echo "<th>Photo</th>\n";}
