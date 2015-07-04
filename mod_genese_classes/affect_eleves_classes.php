@@ -61,6 +61,8 @@ if (!checkAccess()) {
 }
 //======================================================================================
 
+//debug_var();
+
 $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $_GET['projet'] : NULL);
 
 function echo_debug_affect($texte) {
@@ -71,6 +73,40 @@ function echo_debug_affect($texte) {
 }
 
 include("gc_func.inc.php");
+
+if((isset($_POST['nommer_requete']))&&(isset($_POST['nom_requete']))&&(isset($_POST['projet']))&&(isset($_POST['id_aff']))&&(isset($_POST['id_req']))) {
+	check_token();
+
+	$nom_requete=remplace_accents($_POST['nom_requete'], "all");
+	if($nom_requete!="") {
+		$sql="UPDATE gc_affichages SET nom_requete='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_requete)."' WHERE projet='$projet' AND id_aff='".$_POST['id_aff']."' AND id_req='".$_POST['id_req']."';";
+		//echo "$sql<br />";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($del) {
+			$msg="<span class='color:green'>Requête n°".$_POST['id_req']." de l'affichage n°".$_POST['id_aff']." renommée&nbsp;: $nom_requete</span><br />";
+		}
+		else {
+			$msg="<span class='color:green'>ERREUR lors du renommage de la requête n°".$_POST['id_req']." de l'affichage n°".$_POST['id_aff']." en&nbsp;: $nom_requete</span><br />";
+		}
+	}
+	else {
+		$msg="<span class='color:red'>ERREUR: Nom de requête ($nom_requete) invalide.</span><br />";
+	}
+}
+
+if((isset($_GET['id_aff']))&&(isset($_GET['projet']))&&(isset($_GET['id_aff']))&&(isset($_GET['suppr_req']))) {
+	check_token();
+
+	$sql="DELETE FROM gc_affichages WHERE projet='$projet' AND id_aff='".$_GET['id_aff']."' AND id_req='".$_GET['suppr_req']."';";
+	//echo "$sql<br />";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($del) {
+		$msg="<span class='color:green'>Requête n°".$_GET['suppr_req']." de l'affichage n°".$_GET['id_aff']." supprimée.</span><br />";
+	}
+	else {
+		$msg="<span class='color:red'>ERREUR lors de la suppression de la requête n°".$_GET['suppr_req']." de l'affichage n°".$_GET['id_aff'].".</span><br />";
+	}
+}
 
 //if((isset($_POST['is_posted']))&&(isset($_POST['valide_aff_classe_fut']))) {
 if(isset($_POST['is_posted'])) {
@@ -484,7 +520,10 @@ function change_display(id) {
 			// 20140624
 			$tab_aff_courant=get_infos_gc_affichage($lig_req_aff->id_aff);
 			//echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">Affichage n°$lig_req_aff->id_aff</a>";
-			echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">".$tab_aff_courant['nom']."</a>";
+			echo "<p><a href='#' onclick=\"change_display('id_aff_".$lig_req_aff->id_aff."')\" title=\"Voir la liste des requêtes pour choisir laquelle:
+- afficher pour répartition
+- juste afficher la liste des élèves concernés.\">".$tab_aff_courant['nom']."</a>";
+			echo " <a href='affiche_listes.php?projet=".$projet."&id_aff=".$lig_req_aff->id_aff."' title=\"Ajouter une requête à cet affichage.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>";
 			echo "</p>\n";
 
 			echo "<div id='id_aff_$lig_req_aff->id_aff' style='display:none;'>\n";
@@ -568,10 +607,17 @@ function change_display(id) {
 					//tableau_eleves_req($id_aff, $id_req)
 					//$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 					//$txt_requete.=" - <a href='#' onmouseover=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\" onmouseout=\"cacher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."')\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
-					$txt_requete.=" - <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
+
+					$txt_requete.=" - <a href='#' onclick=\"afficher_nommer_req(".$lig_req_aff->id_aff.", ".$id_req."); return false;\"' title=\"Nommer Nommer la requête.\"><img src ='../images/icons/configure.png'
+width='16' height='16' alt='Nommer' /></a>";
+
+					$txt_requete.=" <a href='#' onclick=\"afficher_div('div_id_aff_".$lig_req_aff->id_aff."_id_req_".$lig->id_req."','y',100,100);\"><img src='../images/vert.png' width='16' height='16' title='Afficher les élèves de la requête n°$id_req en infobulle' /></a>";
 
 					$txt_requete.=" <a href='affiche_listes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;afficher_listes=y#requete_".$lig->id_req."' title=\"Afficher les élèves.\"><img src ='../images/icons/chercher.png'
 width='16' height='16' alt='Afficher' /></a>";
+
+					$txt_requete.=" <a href='affect_eleves_classes.php?id_aff=$lig_req_aff->id_aff&amp;projet=$projet&amp;suppr_req=".$lig->id_req.add_token_in_url()."' title=\"Supprimer la requête.\"><img src ='../images/delete16.png'
+width='16' height='16' alt='Supprimer' /></a>";
 
 					$txt_requete.="<br />";
 
@@ -673,6 +719,7 @@ width='16' height='16' alt='Afficher' /></a>";
 	$res_autre=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_autre=mysqli_num_rows($res_autre);
 	
+	echo "<div style='float:left;'>";
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 	echo "<table class='boireaus' border='1' summary='Choix des paramètres'>\n";
 	echo "<tr>\n";
@@ -895,6 +942,31 @@ width='16' height='16' alt='Afficher' /></a>";
 	echo "<p align='center'><input type='submit' name='choix_affich' value='Valider' /></p>\n";
 
 	echo "</form>\n";
+	echo "</div>\n";
+	echo "<div style='clear:both;'></div>";
+
+	$titre_infobulle="Nommer la requête\n";
+	$texte_infobulle="<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"form_autre_requete\">
+	".add_token_field()."
+	<input type='hidden' name='nommer_requete' value=\"y\" />
+	<p>Nommer la requête n°<span id='id_req_actuelle'></span>&nbsp;:<br /><input type='text' name='nom_requete' value=\"\" /></p>
+	<input type='hidden' name='projet' value=\"".$projet."\" />
+	<input type='hidden' name='id_aff' id='id_aff_nommage' value=\"\" />
+	<input type='hidden' name='id_req' id='id_req_nommage' value=\"\" />
+	<p><input type='submit' value='Renommer' /></p>
+</form>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_set_nom_requete',$titre_infobulle,"",$texte_infobulle,"",14,0,'y','y','n','n');
+
+	echo "<script type='text/javascript'>
+	function afficher_nommer_req(id_aff, id_req) {
+		document.getElementById('id_req_actuelle').innerHTML=id_req;
+		document.getElementById('id_req_nommage').value=id_req;
+		document.getElementById('id_aff_nommage').value=id_aff;
+		afficher_div('div_set_nom_requete', 'y', 10, 10);
+
+		//new Ajax.Updater($('div_profil_'+cpt),'affiche_listes.php?set_profil=y&login='+current_login_ele+'&projet=$projet&profil='+profil+'".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
 
 	echo "<p><i>NOTES&nbsp;:</i></p>\n";
 	echo "<ul>\n";
