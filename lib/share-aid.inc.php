@@ -331,7 +331,7 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
     return FALSE;
 }
 
-function get_tab_aid($id_aid) {
+function get_tab_aid($id_aid, $order_by_ele="") {
 	$tab_aid=array();
 
 	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end FROM aid a, 
@@ -355,7 +355,10 @@ function get_tab_aid($id_aid) {
 		$tab_aid['display_begin']=$lig_aid->display_begin;
 		$tab_aid['display_end']=$lig_aid->display_end;
 
-		$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
+		$tab_aid['profs']=array();
+		$tab_aid['profs']['list']=array();
+		$tab_aid['profs']['users']=array();
+		$sql="SELECT u.login, u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
 											WHERE u.login=jau.id_utilisateur AND 
 												jau.id_aid='".$id_aid."'
 											ORDER BY u.nom, u.prenom;";
@@ -371,6 +374,10 @@ function get_tab_aid($id_aid) {
 					$tab_aid['proflist_string'].=", ";
 				}
 				$tab_aid['proflist_string'].=$lig_aid_prof->civilite." ".$lig_aid_prof->nom." ".mb_substr($lig_aid_prof->prenom,0,1);
+
+				$tab_aid['profs']['list'][]=$lig_aid_prof->login;
+				$tab_aid['profs']['users'][$lig_aid_prof->login]=array("login"=>$lig_aid_prof->login, "civilite"=>$lig_aid_prof->civilite, "nom"=>$lig_aid_prof->nom, "prenom"=>$lig_aid_prof->prenom);
+
 				$cpt_aid_prof++;
 			}
 		}
@@ -404,26 +411,35 @@ function get_tab_aid($id_aid) {
 			$lig=mysqli_fetch_object($res);
 			$maxper=$lig->maxper;
 
+			$tab_aid['maxper']=$maxper;
+
 			$tab_aid['eleves']["all"]['list']=array();
 			$tab_aid['eleves']["all"]['users']=array();
+
+			if($order_by_ele=="") {
+				$order_by_ele=" ORDER BY e.nom, e.prenom, e.naissance";
+			}
 
 			for($i=1;$i<=$maxper;$i++) {
 				$tab_aid['eleves'][$i]['list']=array();
 				$tab_aid['eleves'][$i]['users']=array();
 
 				if(($i>=$tab_aid['display_begin'])&&($i<=$tab_aid['display_end'])) {
-					$sql="SELECT DISTINCT e.*, jec.id_classe FROM eleves e,
+					$sql="SELECT DISTINCT e.*, jec.id_classe, c.classe FROM classes c,
+													eleves e,
 													j_eleves_classes jec, 
 													j_aid_eleves jae 
-												WHERE e.login=jec.login AND 
+												WHERE c.id=jec.id_classe AND 
+													e.login=jec.login AND 
 													jec.login=jae.login AND 
 													jec.periode='".$i."' AND 
-													jae.id_aid='".$id_aid."';";
+													jae.id_aid='".$id_aid."'".$order_by_ele.";";
+					//echo "$sql<br />";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
 							$tab_aid["eleves"][$i]["list"][] = $lig->login;
-							$tab_aid["eleves"][$i]["users"][$lig->login] = array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->id_classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe);
+							$tab_aid["eleves"][$i]["users"][$lig->login] = array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->id_classe, "nom_classe" => $lig->classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe, "email" => $lig->email, "naissance" => $lig->naissance);
 							if(!in_array($lig->login, $tab_aid['eleves']["all"]['list'])) {
 								$tab_aid['eleves']["all"]['list'][]=$lig->login;
 								$tab_aid['eleves']["all"]["users"][$lig->login]=$tab_aid["eleves"][$i]["users"][$lig->login];

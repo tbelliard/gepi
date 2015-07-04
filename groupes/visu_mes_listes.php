@@ -61,6 +61,12 @@ echo "<script type='text/javascript'>
 		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
+
+	function ouvre_popup_visu_aid(id_aid,periode_num) {
+		//alert('azerty');
+		eval(\"fen=window.open('../aid/popup.php?id_aid=\"+id_aid+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
 </script>";
 
 //$id_classe=isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL;
@@ -80,7 +86,8 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
 		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
-			echo "</body></html>\n";
+
+			require("../lib/footer.inc.php");
 			die();
 		}
 		else {
@@ -136,10 +143,55 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			echo "</body></html>\n";
-			die();
+
 		}
 
+
+	$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_utilisateurs jau WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY ac.nom, ac.nom_complet;";
+	//echo "$sql<br />";
+	$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid_config)>0) {
+		echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+<ul>";
+		while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+			echo "
+	<li>
+		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
+		<ul>";
+			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
+			//echo "$sql<br />";
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				while($lig_aid=mysqli_fetch_object($res_aid)) {
+					echo "
+			<li>
+				<strong>".$lig_aid->nom."&nbsp;:</strong> ";
+					if($lig_aid_config->display_begin<=$lig_aid_config->display_end) {
+						$cpt=0;
+						for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
+							if($cpt>0) {echo " - ";}
+							echo "<a href='../aid/popup.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' onclick=\"ouvre_popup_visu_aid('$lig_aid->id','$i');return false;\" target='_blank'>Période $i</a>\n";
+							$cpt++;
+						}
+					}
+					echo "
+			</li>";
+				}
+			}
+			echo "
+		</ul>
+	</li>";
+		}
+	}
+	echo "
+</ul>
+<p><br /></p>";
+
+
+
+
+		require("../lib/footer.inc.php");
+		die();
 	}
 	elseif($_SESSION['statut']=='cpe') {
 		echo "<p>Sélectionnez la classe et la période pour lesquels vous souhaitez visualiser la liste des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
@@ -271,6 +323,48 @@ $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 		}
 
 	}
+
+// Recherche des AID avec élèves inscrits
+$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid ORDER BY ac.nom, ac.nom_complet;";
+//echo "$sql<br />";
+$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_aid_config)>0) {
+	echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+<ul>";
+	while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+		echo "
+	<li>
+		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
+		<ul>";
+		$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid ORDER BY a.numero, a.nom;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while($lig_aid=mysqli_fetch_object($res_aid)) {
+				echo "
+			<li>
+				<strong>".$lig_aid->nom."&nbsp;:</strong> ";
+				if($lig_aid_config->display_begin<=$lig_aid_config->display_end) {
+					$cpt=0;
+					for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
+						if($cpt>0) {echo " - ";}
+						echo "<a href='../aid/popup.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' onclick=\"ouvre_popup_visu_aid('$lig_aid->id','$i');return false;\" target='_blank'>Période $i</a>\n";
+						$cpt++;
+					}
+				}
+				echo "
+			</li>";
+			}
+		}
+		echo "
+		</ul>
+	</li>";
+	}
+}
+echo "
+</ul>
+<p><br /></p>";
+
 //}
 
 require("../lib/footer.inc.php");

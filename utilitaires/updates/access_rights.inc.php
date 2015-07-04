@@ -1545,6 +1545,18 @@ autre='F',
 description='Bulletins et conseils de classe',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/aid/popup.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Visualisation des membres d un AID',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
