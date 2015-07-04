@@ -152,7 +152,7 @@ if($_SESSION['statut']=='professeur') {
 			for($i=0;$i<count($tabnumper);$i++){
 				if($i>0){echo "<td> - </td>\n";}
 				echo "<td>\n";
-				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]'>".htmlspecialchars($tabnomper[$i],ENT_QUOTES,"UTF-8")."</a>\n";
+				echo "<a href='get_csv.php?id_groupe=$lig_grp->id&amp;periode_num=$tabnumper[$i]' target='_blank'>".htmlspecialchars($tabnomper[$i],ENT_QUOTES,"UTF-8")."</a>\n";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
@@ -286,11 +286,50 @@ if($_SESSION['statut']=='professeur') {
 			echo "</fieldset>\n";
 			echo "</form>\n";
 		}
-
-		require("../lib/footer.inc.php");
-		die();
 	}
 
+	$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_utilisateurs jau WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY ac.nom, ac.nom_complet;";
+	//echo "$sql<br />";
+	$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_aid_config)>0) {
+		echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+<ul>";
+		while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+			echo "
+	<li>
+		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
+		<ul>";
+			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
+			//echo "$sql<br />";
+			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_aid)>0) {
+				while($lig_aid=mysqli_fetch_object($res_aid)) {
+					echo "
+			<li>
+				<strong>".$lig_aid->nom."&nbsp;:</strong> ";
+					if($lig_aid_config->display_begin<=$lig_aid_config->display_end) {
+						$cpt=0;
+						for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
+							if($cpt>0) {echo " - ";}
+							echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' target='_blank'>Période $i</a>\n";
+							$cpt++;
+						}
+					}
+					echo "
+			</li>";
+				}
+			}
+			echo "
+		</ul>
+	</li>";
+		}
+	}
+	echo "
+</ul>
+<p><br /></p>";
+
+	require("../lib/footer.inc.php");
+	die();
 }
 
 if(isset($id_groupe)) {
@@ -368,7 +407,7 @@ else {
 			echo "<tr>\n";
 			echo "<td>$lig_class->classe</td>\n";
 			while($lig_per=mysqli_fetch_object($res_per)){
-				echo "<td> - <a href='get_csv.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode'>".$lig_per->nom_periode."</a></td>\n";
+				echo "<td> - <a href='get_csv.php?id_classe=$lig_class->id&amp;periode_num=$lig_per->num_periode' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 			}
 			echo "</tr>\n";
 		}
@@ -579,6 +618,48 @@ echo "<input type='hidden' name='mode' value='personnalise' />\n";
 echo "<input type='submit' value='Exporter' />\n";
 echo "</fieldset>\n";
 echo "</form>\n";
+
+// Recherche des AID avec élèves inscrits
+$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid ORDER BY ac.nom, ac.nom_complet;";
+//echo "$sql<br />";
+$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_aid_config)>0) {
+	echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+<ul>";
+	while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+		echo "
+	<li>
+		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
+		<ul>";
+		$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid ORDER BY a.numero, a.nom;";
+		//echo "$sql<br />";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0) {
+			while($lig_aid=mysqli_fetch_object($res_aid)) {
+				echo "
+			<li>
+				<strong>".$lig_aid->nom."&nbsp;:</strong> ";
+				if($lig_aid_config->display_begin<=$lig_aid_config->display_end) {
+					$cpt=0;
+					for($i=$lig_aid_config->display_begin;$i<=$lig_aid_config->display_end;$i++) {
+						if($cpt>0) {echo " - ";}
+						echo "<a href='get_csv.php?id_aid=".$lig_aid->id."&amp;periode_num=".$i."' target='_blank'>Période $i</a>\n";
+						$cpt++;
+					}
+				}
+				echo "
+			</li>";
+			}
+		}
+		echo "
+		</ul>
+	</li>";
+	}
+}
+echo "
+</ul>
+<p><br /></p>";
+
 
 require("../lib/footer.inc.php");
 ?>

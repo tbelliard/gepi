@@ -8,6 +8,9 @@ Gepi-master (Version de développement)
 Librairies:
 - Ajout de PHPMailer (https://github.com/PHPMailer/PHPMailer)
 
+AID:
+- Possibilité d'effectuer un export CSV depuis Mes listes CSV.
+
 Abs2:
 - Possibilité d'associer automatiquement des saisies (saisir_groupe.php) à un traitement englobant.
 

@@ -334,7 +334,7 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
 function get_tab_aid($id_aid) {
 	$tab_aid=array();
 
-	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet FROM aid a, 
+	$sql="SELECT a.nom AS nom_aid, ac.nom, ac.nom_complet, ac.display_begin, ac.display_end FROM aid a, 
 											aid_config ac 
 										WHERE a.indice_aid=ac.indice_aid AND 
 											a.id='".$id_aid."';";
@@ -352,6 +352,8 @@ function get_tab_aid($id_aid) {
 		$tab_aid['nom_general_court']=$lig_aid->nom;
 		$tab_aid['nom_general_complet']=$lig_aid->nom_complet;
 		$tab_aid['nom_aid']=$lig_aid->nom_aid;
+		$tab_aid['display_begin']=$lig_aid->display_begin;
+		$tab_aid['display_end']=$lig_aid->display_end;
 
 		$sql="SELECT u.civilite, u.nom, u.prenom FROM utilisateurs u, j_aid_utilisateurs jau 
 											WHERE u.login=jau.id_utilisateur AND 
@@ -373,13 +375,62 @@ function get_tab_aid($id_aid) {
 			}
 		}
 
-		// A FAIRE : récupérer les classes d'après les élèves inscrits
 		$tab_aid['classes']=array();
-		$sql="SELECT DISTINCT c.* FROM classes c, ";
+		$sql="SELECT DISTINCT c.* FROM classes c, 
+							j_eleves_classes jec, 
+							j_aid_eleves jae 
+						WHERE c.id=jec.id_classe AND 
+							jec.login=jae.login AND 
+							jae.id_aid='".$id_aid."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			while($lig=mysqli_fetch_assoc($res)) {
-				$tab_aid['classes'][$lig["id"]]=$lig;
+				$tab_aid['classes']['list'][]=$lig["id"];
+				$tab_aid['classes']['classes'][$lig["id"]]=$lig;
+			}
+		}
+
+		$tab_aid['eleves']=array();
+
+		// Périodes: Peut-on faire un AID avec des classes à nombre de périodes différent?
+		$sql="SELECT max(num_periode) AS maxper FROM periodes p, 
+							j_eleves_classes jec, 
+							j_aid_eleves jae 
+						WHERE p.id_classe=jec.id_classe AND 
+							jec.login=jae.login AND 
+							jae.id_aid='".$id_aid."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$maxper=$lig->maxper;
+
+			$tab_aid['eleves']["all"]['list']=array();
+			$tab_aid['eleves']["all"]['users']=array();
+
+			for($i=1;$i<=$maxper;$i++) {
+				$tab_aid['eleves'][$i]['list']=array();
+				$tab_aid['eleves'][$i]['users']=array();
+
+				if(($i>=$tab_aid['display_begin'])&&($i<=$tab_aid['display_end'])) {
+					$sql="SELECT DISTINCT e.*, jec.id_classe FROM eleves e,
+													j_eleves_classes jec, 
+													j_aid_eleves jae 
+												WHERE e.login=jec.login AND 
+													jec.login=jae.login AND 
+													jec.periode='".$i."' AND 
+													jae.id_aid='".$id_aid."';";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							$tab_aid["eleves"][$i]["list"][] = $lig->login;
+							$tab_aid["eleves"][$i]["users"][$lig->login] = array("login" => $lig->login, "nom" => $lig->nom, "prenom" => $lig->prenom, "id_classe" => $lig->id_classe, "classe" => $lig->id_classe, "sconet_id" => $lig->ele_id, "elenoet" => $lig->elenoet, "sexe" => $lig->sexe);
+							if(!in_array($lig->login, $tab_aid['eleves']["all"]['list'])) {
+								$tab_aid['eleves']["all"]['list'][]=$lig->login;
+								$tab_aid['eleves']["all"]["users"][$lig->login]=$tab_aid["eleves"][$i]["users"][$lig->login];
+							}
+						}
+					}
+				}
 			}
 		}
 	}
