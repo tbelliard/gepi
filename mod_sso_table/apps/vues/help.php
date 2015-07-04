@@ -28,7 +28,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <h2>Ce module sert à créer une correspondance entre les logins Gépi et ENT dans le cas d'une authentification CAS</h2>
 <h3>Il y a trois possibilités pour la mise en place de la correspondance :</h3>
 <ol>
-	<li><strong>Par importation des correspondances depuis un fichier csv :</strong></li>
+	<li><a name='correspondances'></a><strong>Par importation des correspondances depuis un fichier csv :</strong></li>
 	<p>Cliquer sur Import de données</p>
 	<p>Le fichier à fournir doit s'appeler correspondances.csv</p>
 	<p>Il ne doit contenir par ligne que deux données séparées par un ;</p>
@@ -45,7 +45,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	<p>Dans les autres cas la correspondance est mise en place.</p>
 	<br />
 
-	<li><strong>Par mise en place manuelle de la correspondance pour un utilisateur de Gépi :</strong></li>
+	<li><a name='maj'></a><strong>Par mise en place manuelle de la correspondance pour un utilisateur de Gépi :</strong></li>
 	<p>Cliquer sur <em>Mise à jour de données </em></p>
 	<p>Rechercher le nom d'un utilisateur de Gépi </p>
 	<p class='message_red'>Attention cet utilisateur doit avoir son mode d'authentification paramétré en sso</p>
@@ -57,7 +57,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	<br />
 	<br />
 
-	<li><strong>Par recherche des correspondances sur les noms et prénoms, à partir d'un fichier csv :</strong></li>	
+	<li><a name='csv'></a><strong>Par recherche des correspondances sur les noms et prénoms, à partir d'un fichier csv :</strong></li>	
 	<p>Cliquer sur <em>CVS export ENT</em></p>
 	<p>Le fichier à fournir doit s'appeler <em>ENT-Identifiants.csv</em></p>
 	<p>Il doit contenir par ligne treize champs séparés par un ;</p>

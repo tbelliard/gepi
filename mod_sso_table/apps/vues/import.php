@@ -36,5 +36,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
     <input type='file'  name='fichier'  />
     <input type='submit' value='Télechargement' />
 </form>
+
+<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Le fichier ENT attendu doit se nommer correspondances.csv<br />C'est le cas n°<strong>1</strong> détaillé dans l'onglet <strong><a href='index.php?ctrl=import#csv'>Aide</a></strong>.</p>
 </body>
 </html>
