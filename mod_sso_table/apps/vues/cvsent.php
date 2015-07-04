@@ -41,3 +41,27 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 </form>
 
 <p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Le fichier ENT attendu doit se nommer ENT-Identifiants.csv ou ENT-Identifiants-<strong>RNE</strong>.csv<br />C'est le cas n°<strong>3</strong> détaillé dans l'onglet <strong><a href='index.php?ctrl=help#csv'>Aide</a></strong>.</p>
+
+<hr />
+
+<form action='traite_export_csv.php' method='post' enctype='multipart/form-data'>
+	<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'>Si au lieu d'un export CSV avec les 13 champs attendus, vous disposez d'un export CSV du type&nbsp;:<br />
+Civilité;Nom;Prénom;Profil;Login;Identifiant ENT;Etablissement;<br />
+Mme;DUGENOU;CORINNE;Professeur;corinne.dugenou;QAA12345;Collège Jacques Brel;<br />
+M.;LECERCLE;JEROME;Professeur;jerome.lecercle;QAA45678;Collège Jacques Brel;<br />
+...
+	</p>
+
+	<p class="title-page">Veuillez fournir le fichier csv&nbsp;:</p>
+	<p>
+		<input type='file' name='fichier' />
+
+		<input type='hidden' name='mode' value='upload' />
+		<input type='submit' value='Téléchargement' />
+	</p>
+
+	<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Ce genre de situation peut arriver si par exemple, pour les personnels, l'authentification passe par le serveur LDAP académique (<em>donnant accès aussi au webmail,...</em>).<br />
+	Dans ce cas, l'ENT ne génère pas le mot de passe de l'utilisateur ENT.<br />
+	Seul un export plus restreint est possible.</p>
+</form>
+
