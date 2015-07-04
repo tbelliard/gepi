@@ -39,3 +39,5 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <input type='submit' value='Téléchargement' />
 </p>
 </form>
+
+<p style='margin-top:1em; text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em> Le fichier ENT attendu doit se nommer ENT-Identifiants.csv ou ENT-Identifiants-<strong>RNE</strong>.csv<br />C'est le cas n°<strong>3</strong> détaillé dans l'onglet <strong><a href='index.php?ctrl=help#csv'>Aide</a></strong>.</p>
