@@ -60,6 +60,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la septième et dernière étape : elle consiste à importer le fichier <b>g_eleves_options.csv</b> contenant les associations des élèves et des enseignements de type 'groupe', c'est-à-dire qui ne corerespondent pas à un enseignement de classe entière.\n";
 	echo "<p style='margin-left:6em; text-indent:-6em;'><em>Remarque&nbsp;:</em> cette opération n'efface pas les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : \n";
@@ -74,7 +81,7 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -205,6 +212,10 @@ if (!isset($_POST["action"])) {
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
 		// en proposant des champs de saisie pour modifier les données si on le souhaite
 		//
+
+		if(isset($en_tete)) {
+			$_SESSION['init_csv_ligne_entete']=$en_tete;
+		}
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 

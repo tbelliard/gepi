@@ -63,6 +63,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la quatrième étape : elle consiste à importer le fichier <b>g_professeurs.csv</b> contenant les données des professeurs.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
 	echo "<ul><li>Nom</li>\n" .
@@ -77,7 +84,7 @@ if (!isset($_POST["action"])) {
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 
 	echo "<br />\n";
-	echo "<label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked />\n";
+	echo "<label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked />\n";
 
 
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?<br />\n";
@@ -268,6 +275,10 @@ if (!isset($_POST["action"])) {
 		// en proposant des champs de saisie pour modifier les données si on le souhaite
 		//
 
+		if(isset($en_tete)) {
+			$_SESSION['init_csv_ligne_entete']=$en_tete;
+		}
+
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
@@ -431,10 +442,11 @@ if (!isset($_POST["action"])) {
 				$alt=1;
 				for ($i=0;$i<$k-1;$i++) {
 					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'>\n";
 					if ($data_tab[$i]["prof_exists"]) {
+						echo "<tr class='lig$alt' title=\"Le professeur existe déjà dans la base.\">\n";
 						echo "<td style='color: blue;'>\n";
 					} else {
+						echo "<tr class='lig$alt'>\n";
 						echo "<td>\n";
 					}
 

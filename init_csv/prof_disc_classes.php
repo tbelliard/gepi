@@ -63,6 +63,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la sixième étape : elle consiste à importer le fichier <b>g_prof_disc_classes.csv</b> contenant les données relatives aux enseignements.</p>\n";
 	echo "<p><b>ATTENTION !</b> Avec cette opération, vous effacez tous les groupes d'enseignement qui avaient été définis l'année dernière. Ils seront écrasés par ceux que vous allez importer avec la procédure courante.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
@@ -81,7 +88,7 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 
-	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -160,11 +167,16 @@ if (!isset($_POST["action"])) {
 
 
 			// Première étape : on s'assure que le prof existe. S'il n'existe pas, on laisse tomber.
-			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_prof . "'"),0);
+			$sql="SELECT count(login) FROM utilisateurs WHERE login = '" . $reg_prof . "';";
+			//echo "$sql<br />";
+			$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql),0);
 			if ($test == 1) {
 
 				// Le prof existe. cool. Maintenant on récupère la matière.
-				$test = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet FROM matieres WHERE matiere = '" . $reg_matiere . "'");
+				//$sql="SELECT nom_complet FROM matieres WHERE matiere = '" . mysqli_real_escape_string($GLOBALS["mysqli"], $reg_matiere) . "'";
+				$sql="SELECT nom_complet FROM matieres WHERE matiere = '" . $reg_matiere . "'";
+				//echo "$sql<br />";
+				$test = mysqli_query($GLOBALS["mysqli"], $sql);
 
 				if (mysqli_num_rows($test) == 1) {
 					// La matière existe
@@ -192,33 +204,45 @@ if (!isset($_POST["action"])) {
 
 					$valid_classes = array();
 					foreach ($reg_classes as $classe) {
-						$test = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM classes WHERE classe = '" . $classe . "'");
+						$sql="SELECT id FROM classes WHERE classe = '" . $classe . "'";
+						//echo "$sql<br />";
+						$test = mysqli_query($GLOBALS["mysqli"], $sql);
 						if (mysqli_num_rows($test) == 1) $valid_classes[] = old_mysql_result($test, 0, "id");
 					}
 
 					if (count($valid_classes) > 0) {
 						// C'est bon, on a au moins une classe valide. On peut créer le groupe !
 
-						$new_group = mysqli_query($GLOBALS["mysqli"], "INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . html_entity_decode($reg_matiere_complet) . "'");
+						$sql="INSERT INTO groupes SET name = '" . $reg_matiere . "', description = '" . mysqli_real_escape_string($GLOBALS["mysqli"], html_entity_decode($reg_matiere_complet)) . "'";
+						//echo "$sql<br />";
+						$new_group = mysqli_query($GLOBALS["mysqli"], $sql);
 						$group_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 						if (!$new_group) {
 							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// Le groupe est créé. On associe la matière.
-						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'");
+						$sql="INSERT INTO j_groupes_matieres SET id_groupe = '".$group_id."', id_matiere = '" . $reg_matiere . "'";
+						//echo "$sql<br />";
+						$res = mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$res) {
 							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// On associe le prof
-						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'");
+						$sql="INSERT INTO j_groupes_professeurs SET id_groupe = '" . $group_id . "', login = '" . $reg_prof . "'";
+						//echo "$sql<br />";
+						$res = mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$res) {
 							echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 						}
 						// On associe la matière au prof
-						$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'");
+						$sql="INSERT INTO j_professeurs_matieres SET id_professeur = '" . $reg_prof . "', id_matiere = '" . $reg_matiere . "'";
+						//echo "$sql<br />";
+						$res = mysqli_query($GLOBALS["mysqli"], $sql);
 						// On associe le groupe aux classes (ou à la classe)
 						foreach ($valid_classes as $classe_id) {
-							$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'");
+							$sql="INSERT INTO j_groupes_classes SET id_groupe = '" . $group_id . "', id_classe = '" . $classe_id ."'";
+							//echo "$sql<br />";
+							$res = mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$res) {
 								echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 							}
@@ -228,13 +252,19 @@ if (!isset($_POST["action"])) {
 						if ($reg_type == "CG") {
 
 							// On récupère le nombre de périodes pour la classe
-							$periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $valid_classes[0] . "'"), 0);
-							$get_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT(login) FROM j_eleves_classes WHERE id_classe = '" . $valid_classes[0] . "'");
+							$sql="SELECT count(num_periode) FROM periodes WHERE id_classe = '" . $valid_classes[0] . "'";
+							//echo "$sql<br />";
+							$periods = old_mysql_result(mysqli_query($GLOBALS["mysqli"], $sql), 0);
+							$sql="SELECT DISTINCT(login) FROM j_eleves_classes WHERE id_classe = '" . $valid_classes[0] . "'";
+							//echo "$sql<br />";
+							$get_eleves = mysqli_query($GLOBALS["mysqli"], $sql);
 							$nb = mysqli_num_rows($get_eleves);
 							for ($e=0;$e<$nb;$e++) {
 								$current_eleve = old_mysql_result($get_eleves, $e, "login");
 								for ($p=1;$p<=$periods;$p++) {
-									$res = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'");
+									$sql="INSERT INTO j_eleves_groupes SET login = '" . $current_eleve . "', id_groupe = '" . $group_id . "', periode = '" . $p . "'";
+									//echo "$sql<br />";
+									$res = mysqli_query($GLOBALS["mysqli"], $sql);
 									if (!$res) {
 										echo "<span style='color:red'>".mysqli_error($GLOBALS["mysqli"]).'<span><br />';
 									}
@@ -269,6 +299,10 @@ if (!isset($_POST["action"])) {
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
 		// en proposant des champs de saisie pour modifier les données si on le souhaite
 		//
+
+		if(isset($en_tete)) {
+			$_SESSION['init_csv_ligne_entete']=$en_tete;
+		}
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 

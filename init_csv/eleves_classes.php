@@ -47,7 +47,7 @@ $liste_tables_del = array("j_eleves_classes");
 $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc.php");
 //************** FIN EN-TETE ***************
-
+//debug_var();
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
@@ -62,6 +62,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la cinquième étape : elle consiste à importer le fichier <b>g_eleves_classes.csv</b> contenant les données relatives aux disciplines.</p>\n";
 	echo "<p>Remarque : cette opération n'efface par les classes. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
@@ -74,7 +81,7 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
-    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+    echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
 
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -242,6 +249,10 @@ if (!isset($_POST["action"])) {
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
 		// en proposant des champs de saisie pour modifier les données si on le souhaite
 		//
+
+		if(isset($en_tete)) {
+			$_SESSION['init_csv_ligne_entete']=$en_tete;
+		}
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 

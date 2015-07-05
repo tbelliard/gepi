@@ -57,6 +57,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la troisième étape : elle consiste à importer le fichier <b>g_disciplines.csv</b> contenant les données relatives aux disciplines.</p>\n";
 	echo "<p><i>Remarque :</i> cette opération n'efface aucune donnée dans la base. Elle ne fait qu'une mise à jour, le cas échéant, de la liste des matières.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
@@ -69,7 +76,7 @@ if (!isset($_POST["action"])) {
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
-    echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes' checked /></p>\n";
+    echo "<p><label for='ligne_entete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='ligne_entete' id='ligne_entete' value='yes'$checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "<p><br /></p>\n";
 	echo "</form>\n";
@@ -191,6 +198,8 @@ if (!isset($_POST["action"])) {
 
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 		$ligne_entete=isset($_POST['ligne_entete']) ? $_POST['ligne_entete'] : 'no';
+
+		$_SESSION['init_csv_ligne_entete']=$ligne_entete;
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
 		// autant forcer l'utilisateur à être rigoureux

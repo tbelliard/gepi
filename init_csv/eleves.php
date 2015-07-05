@@ -72,6 +72,13 @@ if (!isset($_POST["action"])) {
 	// On sélectionne le fichier à importer
 	//
 
+	if(isset($_SESSION['init_csv_ligne_entete'])&&($_SESSION['init_csv_ligne_entete']=="no")) {
+		$checked="";
+	}
+	else {
+		$checked=" checked";
+	}
+
 	echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>g_eleves.csv</b> contenant les données élèves.</p>\n";
 	echo "<p>Les champs suivants doivent être présents, dans l'ordre, et <b>séparés par un point-virgule</b> : </p>\n";
 	echo "<ul><li>Nom</li>\n" .
@@ -89,7 +96,7 @@ if (!isset($_POST["action"])) {
 	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
-	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
+	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (<em>non vide</em>) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes'$checked /></p>\n";
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
@@ -412,6 +419,10 @@ if (!isset($_POST["action"])) {
 		// en proposant des champs de saisie pour modifier les données si on le souhaite
 		//
 
+		if(isset($en_tete)) {
+			$_SESSION['init_csv_ligne_entete']=$en_tete;
+		}
+
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 		// On vérifie le nom du fichier... Ce n'est pas fondamentalement indispensable, mais
@@ -440,6 +451,8 @@ if (!isset($_POST["action"])) {
 				}
 				//=========================
 
+				$cpt_INE_manquant=0;
+				$msg_INE_manquant="";
 				$k = 0;
 				$nat_num = array();
 				while (!feof($fp)) {
@@ -524,6 +537,14 @@ if (!isset($_POST["action"])) {
 							$data_tab[$k]["sexe"] = $tabligne[8];
 							// On incrémente pour le prochain enregistrement
 							$k++;
+						}
+						elseif($tabligne[4]== "") {
+							$cpt_INE_manquant++;
+							$msg_INE_manquant.=$tabligne[0]." ".$tabligne[1]." (".$tabligne[2].") sans numéro national (ne sera pas enregistré(e)).<br />";
+						}
+						elseif(in_array($tabligne[4], $nat_num)) {
+							$cpt_INE_manquant++;
+							$msg_INE_manquant.=$tabligne[0]." ".$tabligne[1]." (".$tabligne[2].") a le même numéro INE (".$tabligne[4].") qu'un autre élève pris en compte sans numéro national (ne sera pas enregistré(e)).<br />";
 						}
 					}
 				}
@@ -633,6 +654,11 @@ if (!isset($_POST["action"])) {
 
 				if($nb_error>0) {
 					echo "<p><span style='color:red'>$nb_error erreur(s) détectée(s) lors de la préparation.</span></p>\n";
+				}
+
+				if($cpt_INE_manquant>0) {
+					echo "<p style='color:red'>".$cpt_INE_manquant." élève(s) ne sera(ont) pas enregistrés&nbsp;:<br />";
+					echo $msg_INE_manquant."</p>";
 				}
 
 				echo "<p><input type='submit' value='Enregistrer' /></p>\n";
