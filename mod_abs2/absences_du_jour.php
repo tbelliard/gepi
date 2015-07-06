@@ -742,7 +742,7 @@ echo "</pre>";
 				if ($violet) {
 					$style = 'style="background-color : purple"';
 				} 
-				$ligne_courante.='<td '.$style.'>';
+				$ligne_courante.='<td '.$style.' title="Créneau '.$edt_creneau->getNomDefiniePeriode()."\n".'('.preg_replace("/:[0-9]*$/","",$edt_creneau->getHeuredebutDefiniePeriode()).' - '.preg_replace("/:[0-9]*$/","",$edt_creneau->getHeurefinDefiniePeriode()).')">';
 
 				/*
 				if($violet) {
