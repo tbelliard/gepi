@@ -255,7 +255,7 @@ foreach($classe_col as $classe) {
 			<td>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche ".$eleve->getNom()." ".$eleve->getPrenom()." dans un nouvel onglet.\">";
 			    echo $eleve->getNom().' '.$eleve->getPrenom();
 			    echo "</a>";
 			} else {
@@ -276,21 +276,21 @@ foreach($classe_col as $classe) {
                         echo '<td style="background-color:'.$abs->getColor().';text-align:center;"';
                         if($abs->getColor()=='red') {
                         	//echo " title=\"Manquement aux obligations de présence\"><span style=\"color:".$abs->getColor()."\">M</span>";
-                        	echo " title=\"Manquement aux obligations de présence\">";
+                        	echo " title=\"Manquement aux obligations de présence.\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
                         	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
                         	echo "M";
                         	echo "</a>";
                         }
                         elseif($abs->getColor()=='orange') {
                         	//echo " title=\"Retard\"><span style=\"color:".$abs->getColor()."\">R</span>";
-                        	echo " title=\"Retard\">";
+                        	echo " title=\"Retard\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
                         	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
                         	echo "R";
                         	echo "</a>";
                         }
                         elseif($abs->getColor()=='blue') {
                         	//echo " title=\"Non manquement aux obligations de présence\"><span style=\"color:".$abs->getColor()."\">NM</span>";
-                        	echo " title=\"Non manquement aux obligations de présence\">";
+                        	echo " title=\"Non manquement aux obligations de présence\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
                         	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
                         	echo "NM";
                         	echo "</a>";
