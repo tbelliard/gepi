@@ -1557,6 +1557,18 @@ autre='F',
 description='Visualisation des membres d un AID',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/init_xml2/traite_xml_edt.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Import des enseignements via un Export XML EDT',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

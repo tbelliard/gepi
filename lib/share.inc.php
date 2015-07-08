@@ -13577,4 +13577,17 @@ function is_scol_classe($login_scol, $id_classe) {
 	return $is_scol_classe;
 }
 
+function get_valeur_champ($table, $critere, $champ) {
+	global $mysqli;
+
+	$retour="";
+	$sql="SELECT ".$champ." FROM ".$table." WHERE ".$critere;
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_array($res);
+		$retour=$lig[0];
+	}
+
+	return $retour;
+}
 ?>

@@ -168,7 +168,8 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
 	}
 
 	if($debug_import=="y") {
-		echo "<pre>Tableau des options en classe de $classe : \$tab_options=$tab_options<br />\n";
+		//echo "<pre>Tableau des options en classe de $classe : \$tab_options=$tab_options<br />\n";
+		echo "<pre>Tableau des options en classe de $classe : \$tab_options<br />\n";
 		echo print_r($tab_options)."<br />\n";
 		echo "</pre>\n";
 	}
@@ -244,9 +245,21 @@ while ($classe_row = mysqli_fetch_object($appel_donnees_classes)) {
 	}
 }
 
-//echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante de nettoyage des tables GEPI.</p>\n";
-//echo "<center><p><a href='clean_tables.php'>Suppression des données inutiles</a></p></center>\n";
-echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante d'import des professeurs principaux.</p>\n";
+if((isset($_SESSION['init_xml_groupes']))&&($_SESSION['init_xml_groupes']=="xml_edt")) {
+	echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />
+	Ce traitement a été effectué d'après les options saisies pour les élèves dans Sconet/Siècle.<br />
+	Il arrive fréquemment que les appartenances de tel élève à tel groupe ne soit pas renseigné.<br />
+	Pour affiner davantage, vous pouvez effectuer une mise à jour des inscriptions dans les groupes d'après un fichier export XML d'IndexEducation (<em>EXP_ELEVE.xml</em>).<br />
+	<a href='../groupes/maj_inscript_ele_d_apres_edt.php?a=a".add_token_in_url()."' target='_blank'>Mettre à jour (<em>dans un nouvel onglet</em>) les inscriptions des élèves dans les groupes d'après un EXP_ELEVE.xml</a><br />
+	Si vous préférez remettre à plus tard ce traitement, vous pourrez le lancer depuis la page <strong>Gestion des bases/Gestion des classes/Màj inscriptions élèves d'après EDT</strong> dans la liste des liens sous le bandeau 'entête.<br />
+	(<em>vous pourrez d'ailleurs le lancer plusieurs fois dans l'année au gré des modifications d'inscriptions des élèves dans les groupes d'EDT IndexEducation</em>).</p>\n";
+
+	echo "<p style='margin-top:1em;'>Vous pouvez procéder à l'étape suivante d'import des professeurs principaux.</p>\n";
+}
+else {
+	echo "<p>L'importation des options suivies par les élèves dans la base GEPI a été effectuée avec succès !<br />
+	Vous pouvez procéder à l'étape suivante d'import des professeurs principaux.</p>\n";
+}
 echo "<center><p><a href='init_pp.php'>Import des professeurs principaux</a></p></center>\n";
 require("../lib/footer.inc.php");
 ?>

@@ -118,7 +118,7 @@ if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue(
 	*/
 ?>
 <ul>
-	<li>
+	<li style='margin-top:1em;'>
 		<p>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (<i>élèves, notes, appréciations, ...</i>).<br />
 		Seules seront conservées les données suivantes :<br /></p>
 		<ul>
@@ -129,7 +129,7 @@ if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue(
 			<li><p>Les données relatives aux différents types d'AID.</p></li>
 		</ul>
 	</li>
-	<li>
+	<li style='margin-top:1em;'>
 		<p>Pour procéder aux importations, quatre fichiers sont requis:</p>
 		<p>Les trois premiers, 'ElevesAvecAdresses.xml', 'Nomenclature.xml', 'ResponsablesAvecAdresses.xml', doivent être récupérés depuis l'application web Sconet.<br />
 		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers 'ElevesAvecAdresses.xml', 'Nomenclature.xml' et 'ResponsablesAvecAdresses.xml'.</p>
@@ -147,36 +147,38 @@ if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue(
 		?>
 
 		<ul>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves, de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>) et le fichier <b>Nomenclature.xml</b> sont requis.<br />
 				Le deuxième fichier sert à identifier les noms courts des options des élèves (<i>le premier fichier ne contient que les codes numériques de ces options</i>).</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : le fichier <b>ResponsablesAvecAdresses.xml</b> est requis.</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='matieres.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>sts_emp_RNE_ANNEE.xml</b> est requis.</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='professeurs.php'>Procéder à la quatrième phase</a> d'importation des professeurs.<br />
 				Le fichier <b>sts_emp_RNE_ANNEE.xml</b> doit avoir été fourni à l'étape précédente pour pouvoir être à nouveau lu lors de cette étape.</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='prof_disc_classe_csv.php?a=a<?php echo add_token_in_url();?>'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves.<br />
-				Le fichier <b>sts_emp_RNE_ANNEE.xml</b> doit avoir été fourni deux étapes auparavant pour pouvoir être à nouveau lu lors de cette étape.</p>
+				Le fichier <b>sts_emp_RNE_ANNEE.xml</b> doit avoir été fourni deux étapes auparavant pour pouvoir être à nouveau lu lors de cette étape.<br />
+				<strong>Attention&nbsp;:</strong> Les affectations sont faites ici d'après le contenu du fichier sts_emp_RNE_ANNEE.xml<br />
+				Si vous avez opté pour l'utilisation d'un autre fichier après l'importation des professeurs, vous ne devriez pas suivre le lien de la 5è étape ci-dessus.</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='init_pp.php'>Procéder à la sixième phase</a>: Initialisation des professeurs principaux.</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='clean_tables.php?a=a<?php echo add_token_in_url();?>'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers XML lors des différentes phases d'initialisation seront effacées !</p>
 			</li>
-			<li>
+			<li style='margin-top:1em;'>
 				<p><a href='clean_temp.php?a=a<?php echo add_token_in_url();?>'>Procéder à la phase de nettoyage des fichiers</a>: Supprimer les fichiers XML et CSV qui n'auraient pas été supprimés auparavant.</p>
 			</li>
 		</ul>
 	</li>
-	<li>
+	<li style='margin-top:1em;'>
 		<p>Une fois toute la procédure d'initialisation des données terminée, il vous sera possible d'effectuer toutes les modifications nécessaires au cas par cas par le biais des outils de gestion inclus dans <b>GEPI</b>.</p>
 	</li>
 </ul>
