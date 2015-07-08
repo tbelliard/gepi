@@ -350,7 +350,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
 					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_ele)==0) {
+					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
 						$reserves_sur_maj++;
 					}
