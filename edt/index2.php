@@ -78,7 +78,7 @@ if(isset($affichage_complementaire_sur_edt)) {
 
 require("edt_ics_lib.php");
 
-$type_edt=isset($_POST['type_edt']) ? $_POST['type_edt'] : (isset($_GET['type_edt']) ? $_GET['type_edt'] : NULL);
+//$type_edt=isset($_POST['type_edt']) ? $_POST['type_edt'] : (isset($_GET['type_edt']) ? $_GET['type_edt'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : "");
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : "");
 $num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_annee'] : (isset($_GET['num_semaine_annee']) ? $_GET['num_semaine_annee'] : NULL);
@@ -553,6 +553,33 @@ if(isset($type_affichage)) {
 		}
 	}
 	//============================
+}
+
+if((isset($_GET['mode']))&&($_GET['mode']=='afficher_edt_js')) {
+	$tab_jour=get_tab_jour_ouverture_etab();
+	$tab_horaire_jour=get_horaires_jour();
+
+	/*
+	if($affichage=="semaine") {
+		$largeur_edt=800;
+	}
+	else {
+		$largeur_edt=114;
+	}
+	$y0=10;
+	$hauteur_une_heure=60;
+	*/
+	$x0=50;
+
+	$largeur_edt=isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800;
+	$y0=isset($_GET['y0']) ? $_GET['y0'] : 10;
+	$hauteur_une_heure=isset($_GET['hauteur_une_heure']) ? $_GET['hauteur_une_heure'] : 60;
+	$hauteur_jour=isset($_GET['hauteur_jour']) ? $_GET['hauteur_jour'] : 800;
+
+	$mode_infobulle="y";
+	$html=affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+	echo $html;
+	die();
 }
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
@@ -1175,24 +1202,29 @@ echo $html;
 //++++++++++++++++++++++++++++++++++++++++
 */
 
-/*
-echo "<div style='clear:both'></div>";
-
-// Pour éviter une erreur:
-$hauteur_jour=800;
-$unite_div_infobulle="px";
-$titre_infobulle="EDT";
-$texte_infobulle=$html;
-$tabdiv_infobulle[]=creer_div_infobulle('edt_test',$titre_infobulle,"",$texte_infobulle,"","1000",($hauteur_jour+200),'y','y','n','n');
-
-echo "<p><a href=\"javascript:afficher_div('edt_test','y',-10,20)\">Afficher en infobulle l'EDT choisi</a></p>";
-*/
-
 $titre_infobulle="Action EDT";
 $texte_infobulle="<!--p>Choix&nbsp;:</p-->
 <div id='div_action_edt'></div>";
 $tabdiv_infobulle[]=creer_div_infobulle('infobulle_action_edt',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',4000);
 
+
+//===============================================
+/*
+// Test infobulle
+echo "<div style='clear:both'></div>";
+$mode_infobulle="y";
+$largeur_edt=600;
+$y0=30;
+$hauteur_une_heure=40;
+$hauteur_jour=800;
+$unite_div_infobulle="px";
+$titre_infobulle="EDT";
+$html=affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
+$texte_infobulle="<div class='infobulle_corps' style='width:700px;height:".($hauteur_jour+100)."px;'>&nbsp;</div>".$html;
+$tabdiv_infobulle[]=creer_div_infobulle('edt_test',$titre_infobulle,"",$texte_infobulle,"","700",($hauteur_jour+100),'y','y','n','n');
+echo "<p><a href=\"javascript:afficher_div('edt_test','y',-10,20)\">Afficher en infobulle l'EDT choisi</a></p>";
+*/
+//===============================================
 
 echo "<!--div id='div_action_edt'></div-->
 
@@ -1205,7 +1237,7 @@ echo "<!--div id='div_action_edt'></div-->
 		new Ajax.Updater($('div_action_edt'),'".$_SERVER['PHP_SELF']."?action_js=y&id_cours='+id_cours+'&num_semaine_annee=".$num_semaine_annee."&affichage=".$affichage."',{method: 'get'});
 
 		afficher_div('infobulle_action_edt', 'y', 10, 10);
-		document.getElementById('infobulle_action_edt').style.zIndex=2000;
+		document.getElementById('infobulle_action_edt').style.zIndex=5000;
 	}
 
 	// Adaptation de l'emplacement vertical du div_edt

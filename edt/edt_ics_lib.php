@@ -324,6 +324,7 @@ function affiche_edt_ics($num_semaine_annee, $type_edt, $id_classe="", $login_pr
 		$html.="<script type='text/javascript'>
 	//alert('plop');
 	function edt_semaine_suivante(num_semaine, annee, id_classe, login_prof) {
+		//alert('plop');
 		new Ajax.Updater($('div_edt_".$chaine_alea."'),'../edt/index.php?num_semaine_annee='+num_semaine+'|'+annee+'&id_classe='+id_classe+'&login_prof='+login_prof+'&type_edt=$type_edt&mode=afficher_edt_js',{method: 'get'});
 	}
 </script>
@@ -1946,21 +1947,32 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 	$param_lien_edt="";
 	if($login_eleve!="") {
-		$param_lien_edt.="login_eleve=$login_eleve&amp;";
+		$param_lien_edt.="login_eleve=$login_eleve&";
 	}
 	elseif($id_classe!="") {
-		$param_lien_edt.="id_classe=$id_classe&amp;";
+		$param_lien_edt.="id_classe=$id_classe&";
 	}
 	elseif($login_prof!="") {
-		$param_lien_edt.="login_prof=$login_prof&amp;";
+		$param_lien_edt.="login_prof=$login_prof&";
 	}
-	$param_lien_edt.="type_affichage=$type_affichage&amp;";
+	$param_lien_edt.="type_affichage=$type_affichage&";
 
 	if((isset($complement_liens_edt))&&($complement_liens_edt!="")) {
-		$param_lien_edt.=$complement_liens_edt."&amp;";
+		$param_lien_edt.=$complement_liens_edt."&";
 	}
 
 	$html="";
+
+	global $mode_infobulle;
+	$chaine_alea=remplace_accents(rand(1, 1000000)."_".microtime(),"all");
+	$html.="<script type='text/javascript'>
+	function edt_semaine_suivante(num_semaine_annee) {
+		//alert('plop');
+		new Ajax.Updater($('div_edt_".$chaine_alea."'),'../edt/index2.php?num_semaine_annee='+num_semaine_annee+'&mode=afficher_edt_js&$param_lien_edt&largeur_edt=$largeur_edt&y0=$y0&hauteur_une_heure=$hauteur_une_heure&hauteur_jour=$hauteur_jour',{method: 'get'});
+	}
+</script>
+
+<div id='div_edt_".$chaine_alea."'>";
 
 	$ts_debut_annee=getSettingValue('begin_bookings');
 	$ts_fin_annee=getSettingValue('end_bookings');
@@ -2028,7 +2040,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 	$tab_salle=get_tab_salle_cours();
 
-	$html="";
+	//$html="";
 
 	//$html="\$num_semaine_annee=$num_semaine_annee<br />";
 
@@ -2188,7 +2200,11 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		if($num_semaine_annee_suivante!="") {
 			//background-color:silver;
 			$x_courant=$x0+$largeur_edt;
-			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_suivante."'><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
+			$html.="<div style='position:absolute; top:".($y0+floor(($hauteur_entete-16)/2))."px; left:".$x_courant."px; width:30px; height:".$hauteur_entete."px; text-align:center; z-index:20;' title=\"Semaine suivante\"><a href='".$_SERVER['PHP_SELF']."?".$param_lien_edt."num_semaine_annee=".$num_semaine_annee_suivante."'";
+			if($mode_infobulle=="y") {
+				$html.=" onclick=\"edt_semaine_suivante('$num_semaine_annee_suivante'); return false;\"";
+			}
+			$html.="><img src='../images/arrow_right.png' class='icone16' alt='Suivant' /></a></div>";
 		}
 		//====================================
 
@@ -3076,6 +3092,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 	if((isset($affichage_complementaire_sur_edt))&&($affichage_complementaire_sur_edt=="absences2")) {
 		$html.=affiche_abs2_sur_edt2();
 	}
+
+	$html.="</div>";
 
 	return $html;
 }
