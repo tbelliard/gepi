@@ -743,6 +743,7 @@ $chaine_js_login_u="var login_u=new Array(";
 $chaine_js_designation_u="var designation_u=new Array(";
 $chaine_prof_classe="";
 $chaine_prof_classe2="";
+$chaine_prof_matiere="";
 for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -806,6 +807,36 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 				}
 				$texte_infobulle.="</select>";
 			}
+
+			$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere AND 
+									jgm.id_matiere NOT IN (SELECT value FROM mod_alerte_divers WHERE name='matieres_exclues') ORDER BY matiere;";
+			$res_matiere=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_matiere)>0) {
+				$texte_infobulle.=" - <select name='matiere' id='matiere' onchange='coche_prof_de_la_matiere()' title=\"Cocher les professeurs de la matière.\"><option value=''>---</option>";
+				while($lig_matiere=mysqli_fetch_object($res_matiere)) {
+					$texte_infobulle.="<option value='".preg_replace("/[^A-Za-z0-9_]/","_",remplace_accents($lig_matiere->matiere, "all"))."' title=\"".$lig_matiere->matiere." (".$lig_matiere->nom_complet.")\">$lig_matiere->matiere</option>";
+
+					$chaine_prof_matiere.="var prof_matiere_".preg_replace("/[^A-Za-z0-9_]/","_",remplace_accents($lig_matiere->matiere, "all"))."=new Array(";
+					$sql="SELECT DISTINCT login FROM j_groupes_professeurs jgp, 
+										j_groupes_matieres jgm 
+									WHERE jgm.id_matiere='$lig_matiere->matiere' AND 
+									jgm.id_groupe=jgp.id_groupe AND 
+									jgp.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
+					$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+					$cpt_prof=0;
+					if(mysqli_num_rows($res_prof)>0) {
+						while($lig_prof=mysqli_fetch_object($res_prof)) {
+							if($cpt_prof>0) {
+								$chaine_prof_matiere.=", ";
+							}
+							$chaine_prof_matiere.="'$lig_prof->login'";
+							$cpt_prof++;
+						}
+					}
+					$chaine_prof_matiere.=");";
+				}
+				$texte_infobulle.="</select>";
+			}
 		}
 
 		$texte_infobulle.=" <input type='button' value='Ajouter' onclick=\"ajouter_dest_choisis(); cacher_div('div_choix_dest')\"></p>";
@@ -842,6 +873,7 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		echo $chaine_js_designation_u;
 		echo $chaine_prof_classe;
 		echo $chaine_prof_classe2;
+		echo $chaine_prof_matiere;
 
 		$chaine_edt_ajouter_mon_compte="";
 		$chaine_edt_ajouter_lien_prof="";
@@ -951,6 +983,25 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		if(id_classe!='') {
 			//alert(id_classe);
 			tab=eval('prof_classe2_'+id_classe);
+			//alert(tab.length);
+			for(i=0;i<<?php echo $cpt_u;?>;i++) {
+				if(document.getElementById('login_dest_'+i)) {
+					for(j=0;j<tab.length;j++) {
+						if(tab[j]==document.getElementById('login_dest_'+i).value) {
+							document.getElementById('login_dest_'+i).checked=true;
+							checkbox_change('login_dest_'+i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function coche_prof_de_la_matiere() {
+		matiere=document.getElementById('matiere').options[document.getElementById('matiere').selectedIndex].value;
+		if(matiere!='') {
+			//alert(matiere);
+			tab=eval('prof_matiere_'+matiere);
 			//alert(tab.length);
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {
