@@ -568,7 +568,7 @@ if($action=="") {
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<p>
-			Veuillez fournir l'export EXP_ELEVES.xml d'EDT&nbsp;:<br />
+			Veuillez fournir l'export EXP_ELEVE.xml d'EDT&nbsp;:<br />
 			<input type=\"file\" size=\"65\" name=\"xml_file\" id='input_xml_file' class='fieldset_opacite50' style='padding:5px; margin:5px;' /><br />
 			<input type='hidden' name='action' value='upload' />
 		</p>
@@ -577,7 +577,7 @@ if($action=="") {
 			<input type='button' id='input_button' value='Valider' style='display:none;' onclick=\"check_champ_file()\" />
 		</p>
 
-		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Le fichier EXP_ELEVES.xml importé va être traité en identifiant les élèves par leur numéro INE (<em>N_NATIONAL dans le fichier XML et no_gep dans Gepi</em>).<br />Les groupes d'élèves EDT auxquels appartient chaque élève sont donnés dans la liste CLASSE où les groupes sont séparés par une virgule (<em>le premier groupe est généralement la classe de l'élève et les suivants désignent des groupes d'élèves</em>).<br />
+		<p style='text-indent:-4em; margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Le fichier EXP_ELEVE.xml importé va être traité en identifiant les élèves par leur numéro INE (<em>N_NATIONAL dans le fichier XML et no_gep dans Gepi</em>).<br />Les groupes d'élèves EDT auxquels appartient chaque élève sont donnés dans la liste CLASSE où les groupes sont séparés par une virgule (<em>le premier groupe est généralement la classe de l'élève et les suivants désignent des groupes d'élèves</em>).<br />
 		Lors de l'import du EXP_Cours.xml d'EDT, les associations groupe_Gepi/nom_de_groupe_EDT ont été enregistrées.<br />
 		C'est ce qui va permettre de rechercher les différences.</p>
 	</fieldset>
