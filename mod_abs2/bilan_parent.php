@@ -182,7 +182,7 @@ $mois_precedent="";
   </form>
 
   <!-- Absences du jour -->
-  <table style="border: 1px solid black;" cellpadding="5" cellspacing="5" title="Les absences du jour">
+  <table style="border: 1px solid black;" cellpadding="5" cellspacing="5" title="Les absences du jour" class='boireaus boireaus_alt'>
     <?php $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime(); ?>
     <tr>
       <th style="border: 1px solid black; background-color: gray; min-width: 300px; max-width: 500px;">Nom Pr&eacute;nom</th>
@@ -190,7 +190,7 @@ $mois_precedent="";
 //afficher les créneaux
       foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau) {
       ?>
-        <th style="border: 1px solid black; background-color: gray;">
+        <th style="border: 1px solid black; background-color: gray;" title="De <?php echo preg_replace("/:[0-9]*$/","",$creneau->getHeuredebutDefiniePeriode())." à ".preg_replace("/:[0-9]*$/","",$creneau->getHeurefinDefiniePeriode()); ?>">
         <?php echo $creneau->getNomDefiniePeriode(); ?>
       </th>
       <?php
@@ -213,6 +213,7 @@ $mois_precedent="";
                       ->filterByUtilisateurProfessionnel($utilisateur)
                       ->distinct()->find();
 
+      $temoin_abs_ou_retard_ce_jour=0;
       foreach ($eleve_col as $eleve) {
 		$eleve_a_afficher=is_responsable($eleve->getLogin(), $utilisateur->getLogin(), "", "yy");
 
@@ -223,6 +224,8 @@ $mois_precedent="";
 		        $affichage = true;
 		      }
 		    }
+        if ($affichage) {
+            $temoin_abs_ou_retard_ce_jour++;
     ?>
         <tr>
           <td>
@@ -231,7 +234,6 @@ $mois_precedent="";
         ?>
       </td>
       <?php
-        if ($affichage) {
           // On traite alors pour chaque créneau
           foreach ($creneau_col as $creneau) {
             $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
@@ -284,8 +286,12 @@ $mois_precedent="";
 		}
     ?>
     </table>
-
-    <p>
+<?php
+	if($temoin_abs_ou_retard_ce_jour==0) {
+		echo "<p style='margin-top:1em;' class='bold'>Aucune absence saisie le ".strftime("%A %d/%m/%Y", $dt_debut->getTimestamp()).".</p>";
+	}
+?>
+    <p style='margin-top:1em;'>
       <span style="background-color:red;">&nbsp;&nbsp;NJ&nbsp;&nbsp;</span>
               	Manquement aux obligations scolaires : Absence non justifiée (<em style='font-weight:bold' title="Merci de fournir un justificatif à la Vie Scolaire (coupon dans le carnet ou certificat médical ou autre)">justificatif attendu</em>)
     </p>
@@ -354,7 +360,7 @@ $mois_precedent="";
         //afficher les créneaux
         foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau) {
       ?>
-          <th style="border: 1px solid black; background-color: gray;">
+          <th style="border: 1px solid black; background-color: gray;" title="De <?php echo preg_replace("/:[0-9]*$/","",$creneau->getHeuredebutDefiniePeriode())." à ".preg_replace("/:[0-9]*$/","",$creneau->getHeurefinDefiniePeriode()); ?>">
         <?php
           echo $creneau->getNomDefiniePeriode();
           /*
@@ -374,6 +380,7 @@ $mois_precedent="";
     <?php
         unset($date_actuelle);
         $date_actuelle = clone $dt_fin_toutes;
+        $cpt_abs=0;
         while ($date_actuelle >= $dt_debut_toutes) {
           //on regarde si une des saisies du jour est affichable selon les critères (etab ouvert et manquement obligation)
           $affichage = false;
@@ -384,6 +391,14 @@ $mois_precedent="";
           }
           //Il y'a au moins une absence affichable donc peut afficher
           if ($affichage) {
+			if ($cpt_abs%2==0) {
+				//$background_couleur="rgb(220, 220, 220);";
+				$background_couleur="silver;";
+			} else {
+				//$background_couleur="rgb(210, 220, 230);";
+				$background_couleur="lightblue;";
+			}
+			$cpt_abs++;
 
 			$tmp_date_actuelle=$date_actuelle->format('d/m/Y');
 			$tmp_tab=explode("/",$tmp_date_actuelle);
@@ -393,7 +408,7 @@ $mois_precedent="";
 			}
 
     ?>
-            <tr class='white_hover'>
+            <tr class='white_hover' style="background-color :<?php echo $background_couleur;?>">
               <td style="text-align:center;"><?php
               	//$tmp_date_actuelle=date("l", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
               	$tmp_date_actuelle=strftime("%A", mktime(13,59,0,$tmp_tab[1],$tmp_tab[0],$tmp_tab[2]))." ".$tmp_date_actuelle;
@@ -440,6 +455,11 @@ $mois_precedent="";
                   case 4:
       ?>
                     <td style="background:red;" title="Absence non justifiée : Le <?php echo $tmp_date_actuelle.' de '.$info_creneau_balise_title;?>">NJ</td>
+      <?php
+                    break;
+                  default:
+      ?>
+                    <td style="background:yellow;" title="Absence non encore traitée par le service de Vie Scolaire">...</td>
       <?php
                     break;
                 }
