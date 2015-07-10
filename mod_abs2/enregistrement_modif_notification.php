@@ -215,11 +215,11 @@ if ( $modif == 'type') {
 }
 
 if (!$notification->isModified()) {
-    $message_enregistrement .= 'Pas de modifications</span>';
+    $message_enregistrement .= '<span style="color:blue">Pas de modifications</span>';
 } else {
     if ($notification->validate()) {
 	$notification->save();
-	$message_enregistrement .= 'Modification enregistrée</span>';
+	$message_enregistrement .= '<span style="color:green">Modification enregistrée</span>';
     } else {
 	$no_br = true;
 	foreach ($notification->getValidationFailures() as $erreurs) {
