@@ -75,7 +75,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 if(!$menu){
     $titre_page = "Les absences";
 }
-$utilisation_jsdivdrag = "non";
+//$utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -197,6 +197,7 @@ echo 'Saisies : ';
 echo '</td><td>';
 echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
+$tab_ele=array();
 if ($notification->getAbsenceEleveTraitement() != null) {
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	//$saisie = new AbsenceEleveSaisie();
@@ -226,6 +227,9 @@ if ($notification->getAbsenceEleveTraitement() != null) {
 	    echo '<tr><td>';
 	    echo '<div>';
 	    echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+		if(!in_array($saisie->getEleve()->getLogin(), $tab_ele)) {
+			$tab_ele[]=$saisie->getEleve()->getLogin();
+		}
 	    if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 		$nom_photo = $saisie->getEleve()->getNomPhoto(1);
 		$photos = $nom_photo;
@@ -459,8 +463,65 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="email"/>';
-	echo '<input type="text" size="20" name="email" value=""/>';
+	echo '<input type="text" size="20" name="email" id="email_saisi" value=""/>';
 	echo '<button type="submit">Valider</button>';
+
+	if(count($tab_ele)>0) {
+		$chaine_ele="";
+		for($loop=0;$loop<count($tab_ele);$loop++) {
+			$sql="SELECT * FROM eleves WHERE login='".$tab_ele[$loop]."' AND email!='';";
+			//echo "$sql<br />";
+			$res_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_ele)>0) {
+				$lig_ele=mysqli_fetch_object($res_ele);
+				$chaine_ele.="<p>".$lig_ele->nom." ".$lig_ele->prenom." (<em>".formate_date($lig_ele->naissance);
+				if(time()-mysql_date_to_unix_timestamp($lig_ele->naissance." 00:00:00")>18*3600*24*365.25) {
+					$chaine_ele.=" (majeur)";
+				}
+				$chaine_ele.="</em>)</p><table class='boireaus boireaus_alt'>";
+				$chaine_ele.="<tr><th title=\"Email inscrit dans la table 'eleves'\n(généralement inscrit dans Sconet).\">Email élève</th><td><a href=\"#\" onclick=\"document.getElementById('email_saisi').value='$lig_ele->email';return false;\" title=\"Choisir ce mail\">".$lig_ele->email."</a></td></tr>";
+
+				$sql="SELECT * FROM utilisateurs WHERE login='".$tab_ele[$loop]."' AND statut='eleve' AND email!='';";
+				echo "$sql<br />";
+				$res_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_ele)>0) {
+					$lig_ele=mysqli_fetch_object($res_ele);
+					$chaine_ele.="<tr><th title=\"Email inscrit dans la table 'utilisateurs'\n(généralement inscrit via Gérer mon compte).\">Email du compte utilisateur élève</th><td><a href=\"#\" onclick=\"document.getElementById('email_saisi').value='$lig_ele->email';return false;\" title=\"Choisir ce mail\">".$lig_ele->email."</a></td></tr>";
+				}
+
+				$chaine_ele.="</table>";
+			}
+			else {
+				$sql="SELECT * FROM utilisateurs WHERE login='".$tab_ele[$loop]."' AND statut='eleve' AND email!='';";
+				//echo "$sql<br />";
+				$res_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_ele)>0) {
+					$sql="SELECT * FROM eleves WHERE login='".$tab_ele[$loop]."';";
+					$res_ele2=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($res_ele2)>0) {
+						$lig_ele2=mysqli_fetch_object($res_ele2);
+						$chaine_ele.="<p>".$lig_ele2->nom." ".$lig_ele2->prenom." (<em>".formate_date($lig_ele2->naissance);
+						if(time()-mysql_date_to_unix_timestamp($lig_ele2->naissance." 00:00:00")>18*3600*24*365.25) {
+							$chaine_ele.=" (majeur)";
+						}
+						$chaine_ele.="</em>)</p><table class='boireaus boireaus_alt'>";
+
+						$lig_ele=mysqli_fetch_object($res_ele);
+
+						$chaine_ele.="<tr><th title=\"Email inscrit dans la table 'utilisateurs'\n(généralement inscrit via Gérer mon compte).\">Email du compte utilisateur élève</th><td><a href=\"#\" onclick=\"document.getElementById('email_saisi').value='$lig_ele->email';return false;\" title=\"Choisir ce mail\">".$lig_ele->email."</a></td></tr>";
+						$chaine_ele.="</table>";
+					}
+				}
+			}
+		}
+		if($chaine_ele!="") {
+			echo " <a href='#' title=\"Email de l'élève\" onclick=\"afficher_div('div_infobulle_autre_mail', 'y', 10, 10); return false;\"><img src='../images/icons/wizard.png' class='icone16' alt='Email' /></a>";
+			$titre_infobulle="Choix d'un mail";
+			$texte_infobulle=$chaine_ele;
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_autre_mail',$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+		}
+	}
+
 	echo '</p>';
 	echo '</form>';
 	echo '</div>';
@@ -532,8 +593,42 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
-	echo '<input type="text" size="20" name="tel" value=""/>';
+	echo '<input type="text" size="20" name="tel" id="tel_saisi" value=""/>';
 	echo '<button type="submit">Valider</button>';
+
+	if(count($tab_ele)>0) {
+		$chaine_tel_ele="";
+		for($loop=0;$loop<count($tab_ele);$loop++) {
+			$sql="SELECT * FROM eleves WHERE login='".$tab_ele[$loop]."' AND (tel_pers!='' OR tel_port!='' OR tel_prof!='');";
+			$res_tel_ele=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_tel_ele)>0) {
+				$lig_tel_ele=mysqli_fetch_object($res_tel_ele);
+				$chaine_tel_ele.="<p>".$lig_tel_ele->nom." ".$lig_tel_ele->prenom." (<em>".formate_date($lig_tel_ele->naissance);
+				if(time()-mysql_date_to_unix_timestamp($lig_tel_ele->naissance." 00:00:00")>18*3600*24*365.25) {
+					//$chaine_tel_ele.=time()."-".mysql_date_to_unix_timestamp($lig_tel_ele->naissance." 00:00:00")."=".(time()-mysql_date_to_unix_timestamp($lig_tel_ele->naissance))." et 18*3600*24*365.25=".(18*3600*24*365.25);
+					$chaine_tel_ele.=" (majeur)";
+				}
+				$chaine_tel_ele.="</em>)</p><table class='boireaus boireaus_alt'>";
+				if($lig_tel_ele->tel_pers!="") {
+					$chaine_tel_ele.="<tr><th>Tel.pers</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_pers';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_pers."</a></td></tr>";
+				}
+				if($lig_tel_ele->tel_port!="") {
+					$chaine_tel_ele.="<tr><th>Tel.port</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_port';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_port."</a></td></tr>";
+				}
+				if($lig_tel_ele->tel_prof!="") {
+					$chaine_tel_ele.="<tr><th>Tel.prof</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_prof';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_prof."</a></td></tr>";
+				}
+				$chaine_tel_ele.="</table>";
+			}
+		}
+		if($chaine_tel_ele!="") {
+			echo " <a href='#' title=\"Téléphone de l'élève\" onclick=\"afficher_div('div_infobulle_autre_tel', 'y', 10, 10); return false;\"><img src='../images/icons/wizard.png' class='icone16' alt='Tel' /></a>";
+			$titre_infobulle="Choix d'un numéro";
+			$texte_infobulle=$chaine_tel_ele;
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_autre_tel',$titre_infobulle,"",$texte_infobulle,"",25,0,'y','y','n','n');
+		}
+	}
+
 	echo '</p>';
 	echo '</form>';
 	echo '</div>';
