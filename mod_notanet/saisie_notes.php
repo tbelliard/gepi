@@ -82,17 +82,30 @@ if((getSettingAOui("notanet_saisie_note_ouverte"))&&(isset($_POST['is_posted']))
 			// Inutile si seul l'admin accède et qu'on ne limite pas l'accès à telle ou telle classe
 
 			if(isset($note[$key])) {
+				$note_courante=preg_replace("/,/",".",$note[$key]);
+				if(($note_courante!="")&&
+				(!preg_match("/^[0-9]{1,}$/", $note_courante))&&
+				(!preg_match("/^[0-9]{1,}.[0-9]*$/", $note_courante))&&
+				(!preg_match("/^.[0-9]{1,}$/", $note_courante))&&
+				(mb_strtolower($note_courante)!="di")&&
+				(mb_strtolower($note_courante)!="ab")
+				) {
+					$msg.="Note pour ".$ele_login[$key]." invalide : ".$note[$key]."<br />";
+					$pb_record="yes";
+				}
+				else {
+					$sql="DELETE FROM notanet_saisie WHERE login='".$ele_login[$key]."' AND matiere='$matiere';";
+					$del=mysql_query($sql);
 
-				$sql="DELETE FROM notanet_saisie WHERE login='".$ele_login[$key]."' AND matiere='$matiere';";
-				$del=mysql_query($sql);
-
-				$sql="INSERT INTO notanet_saisie SET login='".$ele_login[$key]."', matiere='$matiere', note='".$note[$key]."';";
-				//echo "$sql<br />";
-				$register=mysql_query($sql);
-				if (!$register) {
-					$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
-					//echo "ERREUR<br />";
-					$pb_record = 'yes';
+					//$sql="INSERT INTO notanet_saisie SET login='".$ele_login[$key]."', matiere='$matiere', note='".$note[$key]."';";
+					$sql="INSERT INTO notanet_saisie SET login='".$ele_login[$key]."', matiere='$matiere', note='".$note_courante."';";
+					//echo "$sql<br />";
+					$register=mysql_query($sql);
+					if (!$register) {
+						$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+						//echo "ERREUR<br />";
+						$pb_record = 'yes';
+					}
 				}
 			}
 		}
@@ -157,17 +170,31 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')&&(isset($id_
 										$info_ele_autre_groupe.=", ".get_nom_prenom_eleve($lig_ele->login);
 									}
 									else {
-										$sql="DELETE FROM notanet_saisie WHERE login='".$lig_ele->login."' AND matiere='$matiere';";
-										$del=mysql_query($sql);
-
-										$sql="INSERT INTO notanet_saisie SET login='".$lig_ele->login."', matiere='$matiere', note='".$tab[3]."';";
-										//echo "$sql<br />";
-										$register=mysql_query($sql);
-										if (!$register) {
-											$msg .= "Erreur lors de l'enregistrement des données pour ".$lig_ele->login.".<br />";
+										$note_courante=preg_replace("/,/",".",$tab[3]);
+										if(($note_courante!="")&&
+										(!preg_match("/^[0-9]{1,}$/", $note_courante))&&
+										(!preg_match("/^[0-9]{1,}.[0-9]*$/", $note_courante))&&
+										(!preg_match("/^.[0-9]{1,}$/", $note_courante))&&
+										(mb_strtolower($note_courante)!="di")&&
+										(mb_strtolower($note_courante)!="ab")
+										) {
+											$msg.="Note pour ".$lig_ele->login." invalide : ".$tab[3]."<br />";
+											$pb_record="yes";
 										}
 										else {
-											$nb_reg++;
+											$sql="DELETE FROM notanet_saisie WHERE login='".$lig_ele->login."' AND matiere='$matiere';";
+											$del=mysql_query($sql);
+
+											//$sql="INSERT INTO notanet_saisie SET login='".$lig_ele->login."', matiere='$matiere', note='".$tab[3]."';";
+											$sql="INSERT INTO notanet_saisie SET login='".$lig_ele->login."', matiere='$matiere', note='".$note_courante."';";
+											//echo "$sql<br />";
+											$register=mysql_query($sql);
+											if (!$register) {
+												$msg .= "Erreur lors de l'enregistrement des données pour ".$lig_ele->login.".<br />";
+											}
+											else {
+												$nb_reg++;
+											}
 										}
 									}
 								}
@@ -190,17 +217,31 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')&&(isset($id_
 									$info_ele_autre_groupe.=", ".get_nom_prenom_eleve($current_login_ele);
 								}
 								else {
-									$sql="DELETE FROM notanet_saisie WHERE login='".$current_login_ele."' AND matiere='$matiere';";
-									$del=mysql_query($sql);
-
-									$sql="INSERT INTO notanet_saisie SET login='".$current_login_ele."', matiere='$matiere', note='".$tab[1]."';";
-									//echo "$sql<br />";
-									$register=mysql_query($sql);
-									if (!$register) {
-										$msg .= "Erreur lors de l'enregistrement des données pour ".$current_login_ele.".<br />";
+									$note_courante=preg_replace("/,/",".",$tab[1]);
+									if(($note_courante!="")&&
+									(!preg_match("/^[0-9]{1,}$/", $note_courante))&&
+									(!preg_match("/^[0-9]{1,}.[0-9]*$/", $note_courante))&&
+									(!preg_match("/^.[0-9]{1,}$/", $note_courante))&&
+									(mb_strtolower($note_courante)!="di")&&
+									(mb_strtolower($note_courante)!="ab")
+									) {
+										$msg.="Note pour ".$current_login_ele." invalide : ".$tab[1]."<br />";
+										$pb_record="yes";
 									}
 									else {
-										$nb_reg++;
+										$sql="DELETE FROM notanet_saisie WHERE login='".$current_login_ele."' AND matiere='$matiere';";
+										$del=mysql_query($sql);
+
+										//$sql="INSERT INTO notanet_saisie SET login='".$current_login_ele."', matiere='$matiere', note='".$tab[1]."';";
+										$sql="INSERT INTO notanet_saisie SET login='".$current_login_ele."', matiere='$matiere', note='".$note_courante."';";
+										//echo "$sql<br />";
+										$register=mysql_query($sql);
+										if (!$register) {
+											$msg .= "Erreur lors de l'enregistrement des données pour ".$current_login_ele.".<br />";
+										}
+										else {
+											$nb_reg++;
+										}
 									}
 								}
 							}
