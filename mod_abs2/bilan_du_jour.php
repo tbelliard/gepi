@@ -84,6 +84,13 @@ $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+
+// 20150710
+$style_specifique[] = "mod_abs2/lib/abs_style";
+$javascript_specifique[] = "mod_abs2/lib/include";
+$utilisation_scriptaculous="ok";
+$utilisation_win = 'oui';
+
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
@@ -252,7 +259,8 @@ foreach($classe_col as $classe) {
                 <td><pre>';
             //print_r($abs);
             echo '</pre></td>
-			<td>';
+			<td>
+			<a name="ancre_id_eleve_'.$eleve->getId().'"></a>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche ".$eleve->getNom()." ".$eleve->getPrenom()." dans un nouvel onglet.\">";
@@ -275,23 +283,27 @@ foreach($classe_col as $classe) {
                     }else{
                         echo '<td style="background-color:'.$abs->getColor().';text-align:center;"';
                         if($abs->getColor()=='red') {
-                        	//echo " title=\"Manquement aux obligations de présence\"><span style=\"color:".$abs->getColor()."\">M</span>";
                         	echo " title=\"Manquement aux obligations de présence.\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
-                        	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
+                        	// 20150710
+					echo '<a style="font-size:88%;" href="visu_saisie.php?id_saisie='.$abs->getId().'" onClick="javascript:document.getElementById(\'choix_date\').action=\'bilan_du_jour.php#ancre_id_eleve_'.$eleve->getId().'\';showwindow_bdj(\'visu_saisie.php?id_saisie='.$abs->getId().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false;" title="Voir la saisie n°'.$abs->getId().'
+Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "M";
                         	echo "</a>";
                         }
                         elseif($abs->getColor()=='orange') {
                         	//echo " title=\"Retard\"><span style=\"color:".$abs->getColor()."\">R</span>";
                         	echo " title=\"Retard\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
-                        	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
+                        	// 20150710
+					echo '<a style="font-size:88%;" href="visu_saisie.php?id_saisie='.$abs->getId().'" onClick="javascript:document.getElementById(\'choix_date\').action=\'bilan_du_jour.php#ancre_id_eleve_'.$eleve->getId().'\';showwindow_bdj(\'visu_saisie.php?id_saisie='.$abs->getId().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false;" title="Voir la saisie n°'.$abs->getId().'
+Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "R";
                         	echo "</a>";
                         }
                         elseif($abs->getColor()=='blue') {
-                        	//echo " title=\"Non manquement aux obligations de présence\"><span style=\"color:".$abs->getColor()."\">NM</span>";
                         	echo " title=\"Non manquement aux obligations de présence\n".$abs->getDescription()."\n".$abs->getTypesTraitements()."\">";
-                        	echo "<a href='visu_saisie.php?id_saisie=".$abs->getId()."'>";
+                        	// 20150710
+					echo '<a style="font-size:88%;" href="visu_saisie.php?id_saisie='.$abs->getId().'" onClick="javascript:document.getElementById(\'choix_date\').action=\'bilan_du_jour.php#ancre_id_eleve_'.$eleve->getId().'\';showwindow_bdj(\'visu_saisie.php?id_saisie='.$abs->getId().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false;" title="Voir la saisie n°'.$abs->getId().'
+Du '.get_date_heure_from_mysql_date($abs->getDebutAbs()).' au '.get_date_heure_from_mysql_date($abs->getFinAbs()).'">';
                         	echo "NM";
                         	echo "</a>";
                         }
@@ -324,6 +336,23 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Button");    
     dojo.require("dijit.form.Form");    
     dojo.require("dijit.form.DateTextBox");
+
+
+	function showwindow_bdj(url,title){
+		var Height=document.documentElement.clientHeight-75;
+		var Width=document.documentElement.clientWidth-75;
+		var win = new Window({title: title, width:Width , height:Height, url: url, showEffectOptions: {duration:0.5}}); 
+		win.showCenter(); 
+		myObserver={
+			onClose:function(){
+				Windows.removeObserver(this);
+				window.document.forms[\'choix_date\'].submit();
+			}
+		}
+		Windows.addObserver(myObserver); 
+	}
+
     </script>';
+
 require_once("../lib/footer.inc.php");
 ?>

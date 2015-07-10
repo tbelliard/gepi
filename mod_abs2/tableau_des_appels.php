@@ -85,6 +85,13 @@ $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+
+// 20150710
+$style_specifique[] = "mod_abs2/lib/abs_style";
+$javascript_specifique[] = "mod_abs2/lib/include";
+$utilisation_scriptaculous="ok";
+$utilisation_win = 'oui';
+
 $dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
@@ -232,6 +239,8 @@ foreach($classe_col as $classe){
 	}
 
 	echo '<h4>'.$classe->getNom().'</h4>';
+	// 20150710
+	echo '<a name="ancre_classe_'.$classe->getId().'"></a>';
 	echo '</td>';
 
 	//la classe a-t-elle des cours actuellement ? On récupère la liste des cours pour cette période.
@@ -452,9 +461,14 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
          }else{
                  echo'-';
              } 
-            echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."' title=\"Voir la saisie.\">";             
+            //echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."' title=\"Voir la saisie.\">";             
+
+		// 20150710
+		echo '<a  style="color: '.$absenceSaisie->getColor().';" href="visu_saisie.php?id_saisie='.$absenceSaisie->getPrimaryKey().'" onClick="javascript:document.getElementById(\'choix_du_creneau\').action=\'tableau_des_appels.php#ancre_classe_'.$classe->getId().'\';showwindow_tda(\'visu_saisie.php?id_saisie='.$absenceSaisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false;" title="Voir la saisie n°'.$absenceSaisie->getPrimaryKey().'
+		Du '.get_date_heure_from_mysql_date($absenceSaisie->getDebutAbs()).' au '.get_date_heure_from_mysql_date($absenceSaisie->getFinAbs()).'">';
+
 	    if($num_saisie==1){
-                echo ('Saisie '.$num_saisie); 
+                echo ('<b>S</b>aisie '.$num_saisie); 
             }else{
                 echo ($num_saisie);
             }           
@@ -549,6 +563,23 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 
 }
 echo '</div>';
+
+// 20150710
+echo "<script type='text/javascript'>
+	function showwindow_tda(url,title){
+		var Height=document.documentElement.clientHeight-75;
+		var Width=document.documentElement.clientWidth-75;
+		var win = new Window({title: title, width:Width , height:Height, url: url, showEffectOptions: {duration:0.5}}); 
+		win.showCenter(); 
+		myObserver={
+			onClose:function(){
+				Windows.removeObserver(this);
+				window.document.forms['choix_du_creneau'].submit();
+			}
+		}
+		Windows.addObserver(myObserver); 
+	}
+</script>";
 
 $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dojo.parser");
