@@ -6962,7 +6962,7 @@ function get_tel_resp_ele($ele_login) {
 		$res->close();
 	}
 
-	$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
+	$sql="SELECT rp.*, r.resp_legal, e.tel_pers AS ele_tel_pers, e.tel_port AS ele_tel_port, e.tel_prof AS ele_tel_prof FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND e.ele_id=r.ele_id AND r.pers_id=rp.pers_id AND resp_legal='0' ORDER BY rp.civilite, rp.nom, rp.prenom;";
 	$res=mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		while($lig=$res->fetch_object()) {
@@ -6977,6 +6977,17 @@ function get_tel_resp_ele($ele_login) {
 			}
 			if($lig->tel_prof!='') {
 				$tab_tel['responsable'][$cpt_resp]['tel_prof']=$lig->tel_prof;
+			}
+
+			// On va remplir plusieurs fois les champs suivants (mais avec les mêmes valeurs) s'il y a plusieurs responsables
+			if((getSettingAOui('ele_tel_pers'))&&($lig->ele_tel_pers!='')) {
+				$tab_tel['eleve']['tel_pers']=$lig->ele_tel_pers;
+			}
+			if((getSettingAOui('ele_tel_port'))&&($lig->ele_tel_port!='')) {
+				$tab_tel['eleve']['tel_port']=$lig->ele_tel_port;
+			}
+			if((getSettingAOui('ele_tel_prof'))&&($lig->ele_tel_prof!='')) {
+				$tab_tel['eleve']['tel_prof']=$lig->ele_tel_prof;
 			}
 			$cpt_resp++;
 		}
