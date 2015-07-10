@@ -70,7 +70,7 @@ $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GE
 $message_enregistrement = '';
 $notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification);
 if ($notification == null && !isset($_POST["creation_notification"])) {
-    $message_enregistrement .= 'Modification impossible : notification non trouvée. ';
+    $message_enregistrement .= '<span style="color:red">Modification impossible : notification non trouvée.</span> ';
     include("visu_notification.php");
     die();
 }
@@ -79,7 +79,7 @@ if ( isset($_POST["creation_notification"])) {
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :NULL);
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     if ($traitement == null) {
-	$message_enregistrement .= 'Modification impossible : traitement non trouvé. ';
+	$message_enregistrement .= '<span style="color:red">Modification impossible : traitement non trouvé.</span> ';
 	include("visu_notification.php");
 	die();
     } else {
@@ -127,9 +127,9 @@ if ( $modif == 'type') {
     $notification->setCommentaire($_POST["commentaire"]);
 } elseif ($modif == 'enlever_responsable') {
     if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByResponsableEleveId($_POST["pers_id"])->limit(1)->delete()) {
-	$message_enregistrement .= 'Responsable supprimé';
+	$message_enregistrement .= '<span style="color:green">Responsable supprimé</span>';
     } else {
-	$message_enregistrement .= 'Suppression impossible';
+	$message_enregistrement .= '<span style="color:red">Suppression impossible</span>';
     }
     include("visu_notification.php");
     die;
@@ -138,7 +138,7 @@ if ( $modif == 'type') {
     if ($responsable != null && !$notification->getResponsableEleves()->contains($responsable)) {
 	$notification->addResponsableEleve($responsable);
 	$notification->save();
-        $message_enregistrement .= 'Responsable ajouté';
+        $message_enregistrement .= '<span style="color:green">Responsable ajouté</span>';
         include("visu_notification.php");
         die;
     }
@@ -161,7 +161,7 @@ if ( $modif == 'type') {
     $clone->setErreurMessageEnvoi(null);
     $clone->save();
     $_POST["id_notification"] = $clone->getId();
-    $message_enregistrement .= 'Nouvelle notification';
+    $message_enregistrement .= '<span style="color:green">Nouvelle notification</span>';
     include("visu_notification.php");
     die();
 } elseif ($modif == 'duplication_par_responsable') {    
@@ -196,11 +196,11 @@ if ( $modif == 'type') {
         $clone->setDateEnvoi(null);
         $clone->setErreurMessageEnvoi(null);
         $clone->save();        
-        $message_enregistrement .= 'Nouvelle notification <a href="./visu_notification.php?id_notification='.$clone->getId();
+        $message_enregistrement .= '<span style="color:green">Nouvelle notification <a href="./visu_notification.php?id_notification='.$clone->getId();
         if ($menu) {
             $message_enregistrement .='&menu=false';
         }
-        $message_enregistrement .= '">'.$clone->getId().'</a> créée pour '.$responsableToAdd->getCivilite().' '.$responsableToAdd->getPrenom().' '.$responsableToAdd->getNom().' <br />';
+        $message_enregistrement .= '">'.$clone->getId().'</a> créée pour '.$responsableToAdd->getCivilite().' '.$responsableToAdd->getPrenom().' '.$responsableToAdd->getNom().'</span> <br />';
     }
     include("visu_notification.php");
     die();
@@ -215,11 +215,11 @@ if ( $modif == 'type') {
 }
 
 if (!$notification->isModified()) {
-    $message_enregistrement .= 'Pas de modifications';
+    $message_enregistrement .= 'Pas de modifications</span>';
 } else {
     if ($notification->validate()) {
 	$notification->save();
-	$message_enregistrement .= 'Modification enregistrée';
+	$message_enregistrement .= 'Modification enregistrée</span>';
     } else {
 	$no_br = true;
 	foreach ($notification->getValidationFailures() as $erreurs) {

@@ -70,6 +70,9 @@ $notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification
 
 $retour_envoi = '';
 
+$icone_succes_envoi="";
+$icone_echec_envoi="";
+
 if ($notification == null && !isset($_POST["creation_notification"])) {
     $message_enregistrement .= '<span style="color:red">Generation impossible : notification non trouvée.</span> ';
     include("visu_notification.php");
@@ -111,6 +114,9 @@ $TBS->MergeBlock('notifications',$tableNotifications);
 
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
 
+    $icone_succes_envoi="<img src='../images/icons/mail_succes.png' class='icone16' alt='Succès' /> ";
+    $icone_echec_envoi="<img src='../images/icons/mail_echec.png' class='icone16' alt='Echec' /> ";
+
 } else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
     // Load the template
     $sms=repertoire_modeles('absence_sms.txt');
@@ -119,11 +125,14 @@ $TBS->MergeBlock('notifications',$tableNotifications);
     $message = $TBS->Source;
 
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
+
+    $icone_succes_envoi="<img src='../images/icons/smartphone_succes.png' class='icone16' alt='Succès' /> ";
+    $icone_echec_envoi="<img src='../images/icons/smartphone_echec.png' class='icone16' alt='Echec' /> ";
 }
 if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES) {
-    $message_enregistrement = '<span style="color:green">Envoi réussi.</span> '.$retour_envoi;
+    $message_enregistrement = $icone_succes_envoi.'<span style="color:green">Envoi réussi.</span> '.$retour_envoi;
 } else {
-    $message_enregistrement = '<span style="color:red">Échec de l\'envoi.</span> '.$retour_envoi;
+    $message_enregistrement = $icone_echec_envoi.'<span style="color:red">Échec de l\'envoi.</span> '.$retour_envoi;
 }
 include('visu_notification.php');
 ?>

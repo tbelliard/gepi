@@ -69,7 +69,7 @@ $menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["m
 $message_enregistrement = '';
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
 if ($traitement == null) {
-    $message_enregistrement .= 'Modification impossible : traitement non trouvée.';
+    $message_enregistrement .= '<span style="color:red">Modification impossible : traitement non trouvée.</span>';
     include("visu_traitement.php");
     die();
 }
@@ -111,7 +111,7 @@ if ($modif == 'type') {
 		$tmp_date=$tab_date[2].".".$tab_date[1].".".$tab_date[0];
 		$date_debut = new DateTime($tmp_date);
 	} catch (Exception $x) {
-		$message_enregistrement .= "Mauvais format de date.<br/>";
+		$message_enregistrement .= "<span style='color:red'>Mauvais format de date.</span><br/>";
 	}
 
 	// Date de fin transmise au format aaaa-mm-jj
@@ -120,7 +120,7 @@ if ($modif == 'type') {
 		$tmp_date=$tab_date[2].".".$tab_date[1].".".$tab_date[0];
 		$date_fin = new DateTime($tmp_date);
 	} catch (Exception $x) {
-		$message_enregistrement .= "Mauvais format de date.<br/>";
+		$message_enregistrement .= "<span style='color:red'>Mauvais format de date.</span><br/>";
 	}
 
 	// Heure de début transmise au format HH:MM
@@ -128,7 +128,7 @@ if ($modif == 'type') {
 		$heure_debut = new DateTime($_POST['heure_debut']);
 		$date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
 	} catch (Exception $x) {
-		$message_enregistrement .= "Mauvais format d'heure.<br/>";
+		$message_enregistrement .= "<span style='color:red'>Mauvais format d'heure.</span><br/>";
 	}
 
 	// Heure de fin transmise au format HH:MM
@@ -136,7 +136,7 @@ if ($modif == 'type') {
 		$heure_fin = new DateTime($_POST['heure_fin']);
 		$date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 	} catch (Exception $x) {
-		$message_enregistrement .= "Mauvais format d'heure.<br/>";
+		$message_enregistrement .= "<span style='color:red'>Mauvais format d'heure.</span><br/>";
 	}
 
 	if ($message_enregistrement == "") {
@@ -156,14 +156,14 @@ if ($modif == 'type') {
 
 if (!$traitement->isModified()) {
     if (isset($count_delete) && $count_delete > 0) {
-	$message_enregistrement .= 'Saisie supprimée';
+	$message_enregistrement .= '<span style="color:red">Saisie supprimée</span>';
     } else {
-	$message_enregistrement .= 'Pas de modifications';
+	$message_enregistrement .= '<span style="color:red">Pas de modifications</span>';
     }
 } else {
     if ($traitement->validate()) {
 	$traitement->save();
-	$message_enregistrement .= 'Modification enregistrée';
+	$message_enregistrement .= '<span style="color:green">Modification enregistrée</span>';
     } else {
 	$no_br = true;
 	foreach ($traitement->getValidationFailures() as $erreurs) {
