@@ -85,6 +85,7 @@
 	<script type="text/javascript" src="<?php echo $tbs_gepiPath?>/lib/cookieClass.js"></script>
 	<script type="text/javascript">
 		//<![CDATA[ 
+		var change = 'no';
 		function changement() {
 			change = 'yes';
 		}
