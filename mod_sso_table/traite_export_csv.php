@@ -67,7 +67,7 @@ if(!isset($mode)) {
 elseif($mode=="enregistrer_correspondances") {
 	check_token();
 
-	debug_var();
+	//debug_var();
 
 	$msg="";
 	$assoc=isset($_POST['assoc']) ? $_POST['assoc'] : array();
@@ -75,25 +75,30 @@ elseif($mode=="enregistrer_correspondances") {
 		$msg="Aucune association n'a été cochée.<br />";
 	}
 	else {
+		$compteur=isset($_POST['compteur']) ? $_POST['compteur'] : 0;
+
 		$nb_reg=0;
 		$nb_err=0;
-		for($loop=0;$loop<count($assoc);$loop++) {
-			$tab=explode("|", $assoc[$loop]);
-			if((isset($tab[1]))&&($tab[0]!="")&&($tab[1]!="")) {
-				$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$tab[1]."';";
-				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		//for($loop=0;$loop<count($assoc);$loop++) {
+		for($loop=0;$loop<$compteur;$loop++) {
+			if(isset($assoc[$loop])) {
+				$tab=explode("|", $assoc[$loop]);
+				if((isset($tab[1]))&&($tab[0]!="")&&($tab[1]!="")) {
+					$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$tab[1]."';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				$sql="DELETE FROM sso_table_correspondance WHERE login_sso='".$tab[0]."';";
-				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					$sql="DELETE FROM sso_table_correspondance WHERE login_sso='".$tab[0]."';";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
-				$sql="INSERT INTO sso_table_correspondance SET login_sso='".$tab[0]."', login_gepi='".$tab[1]."';";
-				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(!$insert) {
-					$msg.="Erreur lors de l'enregistrement de l'association ".$tab[0]." &lt;-&gt; ".$tab[1]."<br />";
-					$nb_err++;
-				}
-				else {
-					$nb_reg++;
+					$sql="INSERT INTO sso_table_correspondance SET login_sso='".$tab[0]."', login_gepi='".$tab[1]."';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'enregistrement de l'association ".$tab[0]." &lt;-&gt; ".$tab[1]."<br />";
+						$nb_err++;
+					}
+					else {
+						$nb_reg++;
+					}
 				}
 			}
 		}
@@ -290,7 +295,7 @@ if($mode=="upload") {
 							}
 							echo "
 			<td>
-				<input type='checkbox' name='assoc[]' id='assoc_".$compteur."' value=\"".$tab[$tabindice["Identifiant ENT"]]."|".$lig->login."\" onchange=\"checkbox_change(this.id); changement();\" />
+				<input type='checkbox' name='assoc[$compteur]' id='assoc_".$compteur."' value=\"".$tab[$tabindice["Identifiant ENT"]]."|".$lig->login."\" onchange=\"checkbox_change(this.id); changement();\" />
 			</td>
 			<td><label for='assoc_".$compteur."' id='texte_assoc_".$compteur."'>".$lig->login."</label></td>
 			<td><label for='assoc_".$compteur."' id='texte_assoc_".$compteur."'>".$lig->nom."</label></td>
@@ -328,7 +333,7 @@ if($mode=="upload") {
 							}
 								echo "
 			<td>
-				<input type='radio' name='assoc[]' value=\"|\" />
+				<input type='radio' name='assoc[$compteur]' value=\"|\" />
 			</td>
 			<td>-</td>
 			<td>-</td>
@@ -359,7 +364,7 @@ if($mode=="upload") {
 								//}
 								echo "
 			<td>
-				<input type='radio' name='assoc[]' id='assoc_".$compteur."_".$cpt."' value=\"".$tab[$tabindice["Identifiant ENT"]]."|".$lig->login."\" onchange=\"change_style_radio(this.id); changement();\" />
+				<input type='radio' name='assoc[$compteur]' id='assoc_".$compteur."_".$cpt."' value=\"".$tab[$tabindice["Identifiant ENT"]]."|".$lig->login."\" onchange=\"change_style_radio(this.id); changement();\" />
 			</td>
 			<td><label for='assoc_".$compteur."_".$cpt."' id='texte_assoc_".$compteur."_".$cpt."'>".$lig->login."</label></td>
 			<td><label for='assoc_".$compteur."_".$cpt."' id='texte_assoc_".$compteur."_".$cpt."'>".$lig->nom."</label></td>
@@ -377,6 +382,7 @@ if($mode=="upload") {
 				echo "
 	</tbody>
 </table>
+<input type='hidden' name='compteur' value='$compteur' />
 <p><input type='submit' value='Enregistrer les correspondances' /></p>
 </form>
 
