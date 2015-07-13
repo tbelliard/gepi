@@ -9159,11 +9159,18 @@ function temoin_compte_sso($login_user) {
 		$sql="SELECT auth_mode FROM utilisateurs WHERE login='$login_user' AND auth_mode='sso';";
 		$test=mysqli_query($mysqli, $sql);
 		if($test->num_rows > 0) {
-			$sql2="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$login_user';";
+			$sql2="SELECT login_sso FROM sso_table_correspondance WHERE login_gepi='$login_user';";
 			$test2=mysqli_query($mysqli, $sql2);
 			if($test2->num_rows == 0) {
 				$retour.="<img src='".$gepiPath."/images/icons/sens_interdit.png' width='16' height='16' alt=\"Correspondance SSO absente\" title=\"La correspondance SSO n'est pas enregistrée dans la table 'sso_table_correspondance' pour ce compte.\" />";
-				$test2->close();
+			}
+			else {
+				$lig=mysqli_fetch_object($test2);
+				$retour.="<img src='".$gepiPath."/images/icons/buddy_sso.png' width='16' height='16' alt=\"Correspondance SSO présente\" title=\"La correspondance SSO est enregistrée";
+				if($_SESSION['statut']=='administrateur') {
+					$retour.=" (".$lig->login_sso.")";
+				}
+				$retour.=" dans la table 'sso_table_correspondance' pour ce compte.\" />";
 			}
 			$test->close();
 		}

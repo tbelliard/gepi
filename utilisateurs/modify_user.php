@@ -810,6 +810,11 @@ if (!isset($user_login) or $user_login == '') {
 <option value='ldap' <?php if ($user_auth_mode=='ldap') echo " selected ";  ?>>LDAP</option>
 <option value='sso' <?php if ($user_auth_mode=='sso') echo " selected ";  ?>>SSO (Cas, LCS, LemonLDAP)</option>
 </select>
+<?php
+	if(isset($user_login)) {
+		echo temoin_compte_sso($user_login);
+	}
+?>
 </td></tr>
 <?php
 if ($ldap_write_access) {

@@ -167,7 +167,12 @@ elseif($mode=='changer_auth_mode') {
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
-		echo "<span style='color:green;'>$auth_mode_user</span>";
+		if(($auth_mode_user=="sso")&&(getSettingAOui('sso_cas_table'))) {
+			echo temoin_compte_sso($login_user);
+		}
+		else {
+			echo "<span style='color:green;'>$auth_mode_user</span>";
+		}
 	}
 	else {
 		echo "<span style='color:red;' title=\"Erreur lors du changement auth_mode :
