@@ -749,8 +749,14 @@ while ($current_eleve = mysqli_fetch_object($quels_eleves)) {
 			echo "</span></a>\n";
 		echo "</td>\n";
 
+		$sso_table_login_ent="";
+		//if(($current_eleve->auth_mode=="sso")&&(getSettingAOui('sso_cas_table'))) {
+		if(getSettingAOui('sso_cas_table')) {
+			$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$current_eleve->login'", 'login_sso');
+		}
+
 		echo "<td title=\"Cliquez pour modifier le mode d'authentification du compte\">\n";
-			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_eleve->login."&amp;auth_mode_user=".$current_eleve->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_eleve->login', '$current_eleve->auth_mode') ;return false;\">";
+			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_eleve->login."&amp;auth_mode_user=".$current_eleve->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_eleve->login', '$current_eleve->auth_mode', '$sso_table_login_ent') ;return false;\">";
 			echo "<span id='auth_mode_$current_eleve->login'>";
 			echo $current_eleve->auth_mode;
 			echo "</span>";

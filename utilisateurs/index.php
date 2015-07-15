@@ -870,7 +870,12 @@ while ($i < $nombreligne){
 	echo "<td><p class='small'><span class='bold'>{$col[$i][1]}</span>";
 	echo "<br />";
 
-	echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$user_login."&amp;auth_mode_user=".$user_auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$user_login', '$user_auth_mode') ;return false;\">";
+	$sso_table_login_ent="";
+	if(($user_auth_mode=="sso")&&(getSettingAOui('sso_cas_table'))) {
+		$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$user_login'", 'login_sso');
+	}
+
+	echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$user_login."&amp;auth_mode_user=".$user_auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$user_login', '$user_auth_mode', '$sso_table_login_ent') ;return false;\">";
 	echo "<span id='auth_mode_$user_login' title='Auth_mode de $user_login : $user_auth_mode' style='font-size:x-small;'>";
 
 	if(($user_auth_mode=="sso")&&(getSettingAOui('sso_cas_table'))) {

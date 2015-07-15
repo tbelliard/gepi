@@ -2456,7 +2456,7 @@ Créer le compte?' target='_blank'>-</a>";
 				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
 
-			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."', '$lig->login_sso') ;return false;\" title=\"Modifier le mode d'authentification\">";
 			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
 			echo "</span>";
@@ -2468,7 +2468,7 @@ Créer le compte?' target='_blank'>-</a>";
 			<td><label for='suppr_$cpt'><span id='prenom_$cpt'>$lig->prenom</span></label></td>
 			<td><label for='suppr_$cpt'>$classe</label></td>
 			<td><label for='suppr_$cpt'>".formate_date($lig->naissance)."</label></td>
-			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=$lig->login_gepi&amp;login_sso=$lig->login_sso&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
+			<td><a href='".$_SERVER['PHP_SELF']."?login_gepi=".$lig->login_gepi."&amp;login_sso=".$lig->login_sso."&amp;mode=saisie_manuelle'><img src='../images/edit16.png' width='16' height='16' title=\"Corriger l'association\" /></label></td>
 		</tr>
 ";
 		$cpt++;
@@ -3246,7 +3246,7 @@ if($mode=="consult_responsables") {
 				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_responsable.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de ce responsable.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
 
-			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."', '$lig->login_sso') ;return false;\" title=\"Modifier le mode d'authentification\">";
 			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
 			echo "</span>";
@@ -3771,7 +3771,7 @@ if($mode=="consult_personnels") {
 				echo "<div style='float:right;width:16px;'><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/", "%", $lig->nom)."' target='_blank' onclick=\"changer_etat_utilisateur('$lig->login', 'etat_".$cpt."_".$lig->login."') ;return false;\" title=\"Activer le compte utilisateur de cet élève.\"><span id='etat_".$cpt."_".$lig->login."'><img src='../images/icons/buddy_no.png' width='16' height='16' title='Compte inactif' /></a></span></div>\n";
 			}
 
-			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."') ;return false;\" title=\"Modifier le mode d'authentification\">";
+			echo "<a href='../utilisateurs/ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$lig->login."&amp;auth_mode_user=".$lig_u->auth_mode."".add_token_in_url()."' onclick=\"afficher_changement_auth_mode_avec_param('$lig->login', '$lig_u->auth_mode', 'auth_mode_".$cpt."_".$lig->login."', '$lig->login_sso') ;return false;\" title=\"Modifier le mode d'authentification\">";
 			echo "<span id='auth_mode_".$cpt."_".$lig->login."'>";
 			echo $lig_u->auth_mode;
 			echo "</span>";

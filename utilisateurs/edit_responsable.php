@@ -945,8 +945,14 @@ Cliquer pour donner l'accès.\" /></a>";
 			echo "</span></a>\n";
 		echo "</td>\n";
 
+		$sso_table_login_ent="";
+		//if(($current_parent->auth_mode=="sso")&&(getSettingAOui('sso_cas_table'))) {
+		if(getSettingAOui('sso_cas_table')) {
+			$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$current_parent->login'", 'login_sso');
+		}
+
 		echo "<td title=\"Cliquez pour modifier le mode d'authentification du compte\">";
-			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_parent->login."&amp;auth_mode_user=".$current_parent->auth_mode."&amp;test_recup_critere=y".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_parent->login', '$current_parent->auth_mode') ;return false;\">";
+			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_parent->login."&amp;auth_mode_user=".$current_parent->auth_mode."&amp;test_recup_critere=y".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_parent->login', '$current_parent->auth_mode', '$sso_table_login_ent') ;return false;\">";
 			echo "<span id='auth_mode_$current_parent->login'>";
 			echo $current_parent->auth_mode;
 			echo "</span>";

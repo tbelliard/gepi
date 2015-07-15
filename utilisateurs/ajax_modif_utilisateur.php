@@ -65,7 +65,7 @@ header('Content-Type: text/html; charset=utf-8');
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : "");
 $login_user=isset($_POST['login_user']) ? $_POST['login_user'] : (isset($_GET['login_user']) ? $_GET['login_user'] : "");
 $auth_mode_user=isset($_POST['auth_mode_user']) ? $_POST['auth_mode_user'] : (isset($_GET['auth_mode_user']) ? $_GET['auth_mode_user'] : "");
-
+$sso_table_login_ent=isset($_POST['sso_table_login_ent']) ? $_POST['sso_table_login_ent'] : (isset($_GET['sso_table_login_ent']) ? $_GET['sso_table_login_ent'] : NULL);
 /*
 echo "\$mode=$mode<br />";
 echo "\$login_user=$login_user<br />";
@@ -74,7 +74,12 @@ echo "\$auth_mode=$auth_mode<br />";
 
 //debug_var();
 
-if($mode=='changer_auth_mode2') {
+if($mode=="get_sso_table_login_ent") {
+	check_token();
+	echo get_valeur_champ('sso_table_correspondance', "login_gepi='$login_user'", 'login_sso');
+	die();
+}
+elseif($mode=='changer_auth_mode2') {
 	//**************** EN-TETE *****************
 	$titre_page = "Changer le auth_mode d'un compte";
 	require_once("../lib/header.inc.php");
@@ -110,6 +115,12 @@ if($mode=='changer_auth_mode2') {
 		echo "<input type='radio' name='auth_mode_user' id='auth_mode_user_$loop' value='".$tab_auth_mode[$loop]."' ";
 		echo "/><label for='auth_mode_user_$loop'> $tab_auth_mode[$loop]</label><br />\n";
 	}
+
+	if(getSettingAOui('sso_cas_table')) {
+		$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$user_login'", 'login_sso');
+		echo "Correspondance SSO&nbsp: <input type='text' name='sso_table_login_ent' id='sso_table_login_ent' value='$sso_table_login_ent' /><br />";
+	}
+
 	echo add_token_field();
 	echo "<input type='submit' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
@@ -167,6 +178,27 @@ elseif($mode=='changer_auth_mode') {
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
+		if((getSettingAOui('sso_cas_table'))&&(isset($sso_table_login_ent))) {
+			$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$sso_table_login_ent' AND login_gepi!='$login_user';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+				echo " <span style='color:red;'>ERREUR : $sso_table_login_ent est déjà attribué à ".$lig->login_gepi."</span> ";
+			}
+			else {
+				$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$login_user';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$sql="UPDATE sso_table_correspondance SET login_sso='$sso_table_login_ent' WHERE login_gepi='$login_user';";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				else {
+					$sql="INSERT INTO sso_table_correspondance SET login_sso='$sso_table_login_ent', login_gepi='$login_user';";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+			}
+		}
+
 		if(($auth_mode_user=="sso")&&(getSettingAOui('sso_cas_table'))) {
 			echo temoin_compte_sso($login_user);
 		}

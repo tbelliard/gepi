@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-echo "<div id='div_changer_auth_mode' style='position: absolute; top: 220px; right: 20px; width: 250px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+echo "<div id='div_changer_auth_mode' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 250px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
 	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 250px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_changer_auth_mode')\">\n";
 		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
@@ -44,6 +44,13 @@ echo "<div id='div_changer_auth_mode' style='position: absolute; top: 220px; rig
 		//if($eleve_auth_mode==$tab_auth_mode[$loop]) {}
 		echo "/><label for='auth_mode_user_$loop'> $tab_auth_mode[$loop]</label><br />\n";
 	}
+
+	if(getSettingAOui('sso_cas_table')) {
+		echo "<span title=\"La valeur saisie ou modifiée n'est prise en compte à l'enregistrement que si le mode choisi est 'sso'.\">Correspondance SSO&nbsp: <input type='text' name='sso_table_login_ent' id='sso_table_login_ent' value='' /></span>
+<span id='span_sso_table_login_ent' style='display:none'></span>
+<br />";
+	}
+
 	echo add_token_field();
 	echo "<input type='button' onclick='valider_changement_auth_mode()' name='Valider' value='Valider' />\n";
 	echo "</form>\n";
@@ -54,10 +61,21 @@ echo "</div>\n";
 
 echo "<script type='text/javascript'>
 
-	function afficher_changement_auth_mode(login_user, auth_mode) {
+	function afficher_changement_auth_mode(login_user, auth_mode, sso_table_login_ent) {
 		// auth_mode est le auth_mode actuel de l'utilisateur
 		document.getElementById('titre_entete_changer_auth_mode').innerHTML='Auth_mode de '+login_user;
 		document.getElementById('auth_mode_login_user').value=login_user;
+
+		if(document.getElementById('sso_table_login_ent')) {
+			document.getElementById('sso_table_login_ent').value=sso_table_login_ent;
+			// Cette valeur n'est plus correcte après une màj
+
+			new Ajax.Updater($('span_sso_table_login_ent'),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&mode=get_sso_table_login_ent".add_token_in_url(false)."',{method: 'get'});
+			//document.getElementById('sso_table_login_ent').value=document.getElementById('span_sso_table_login_ent').innerHTML;
+			setTimeout('maj_sso_table_login_ent()', 500);
+
+			document.getElementById('corps_changer_auth_mode').style.height='8.5em';
+		}
 
 		// On coche le auth_mode actuel de l'utilisateur
 		for(i=0;i<".count($tab_auth_mode).";i++) {
@@ -69,11 +87,26 @@ echo "<script type='text/javascript'>
 		afficher_div('div_changer_auth_mode','y',-20,20);
 	}
 
-	function afficher_changement_auth_mode_avec_param(login_user, auth_mode, id_retour) {
+	function maj_sso_table_login_ent() {
+		document.getElementById('sso_table_login_ent').value=document.getElementById('span_sso_table_login_ent').innerHTML;
+	}
+
+	function afficher_changement_auth_mode_avec_param(login_user, auth_mode, id_retour, sso_table_login_ent) {
 		// auth_mode est le auth_mode actuel de l'utilisateur
 		document.getElementById('titre_entete_changer_auth_mode').innerHTML='Auth_mode de '+login_user;
 		document.getElementById('auth_mode_login_user').value=login_user;
 		document.getElementById('auth_mode_id_retour').value=id_retour;
+
+		if(document.getElementById('sso_table_login_ent')) {
+			document.getElementById('sso_table_login_ent').value=sso_table_login_ent;
+			// Cette valeur n'est plus correcte après une màj
+
+			new Ajax.Updater($('span_sso_table_login_ent'),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&mode=get_sso_table_login_ent".add_token_in_url(false)."',{method: 'get'});
+			//document.getElementById('sso_table_login_ent').value=document.getElementById('span_sso_table_login_ent').innerHTML;
+			setTimeout('maj_sso_table_login_ent()', 500);
+
+			document.getElementById('corps_changer_auth_mode').style.height='8.5em';
+		}
 
 		// On coche le auth_mode actuel de l'utilisateur
 		for(i=0;i<".count($tab_auth_mode).";i++) {
@@ -100,13 +133,19 @@ echo "<script type='text/javascript'>
 				}
 			}
 
+			sso_table_login_ent='';
+			if(document.getElementById('sso_table_login_ent')) {
+				sso_table_login_ent=document.getElementById('sso_table_login_ent').value;
+			}
+
 			//alert(auth_mode_user);
+			//alert('sso_table_login_ent='+sso_table_login_ent);
 
 			if(id_retour=='') {
-				new Ajax.Updater($('auth_mode_'+login_user),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode".add_token_in_url(false)."',{method: 'get'});
+				new Ajax.Updater($('auth_mode_'+login_user),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode&sso_table_login_ent='+sso_table_login_ent+'".add_token_in_url(false)."',{method: 'get'});
 			}
 			else {
-				new Ajax.Updater($(id_retour),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode".add_token_in_url(false)."',{method: 'get'});
+				new Ajax.Updater($(id_retour),'../utilisateurs/ajax_modif_utilisateur.php?login_user='+login_user+'&auth_mode_user='+auth_mode_user+'&mode=changer_auth_mode&sso_table_login_ent='+sso_table_login_ent+'".add_token_in_url(false)."',{method: 'get'});
 			}
 		}
 		else {
