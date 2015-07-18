@@ -798,9 +798,7 @@ if(!isset($_POST['recopie_select'])) {
 	<a href=\"grp_groupes_edit_eleves.php\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 	 | <a href=\"".$_SERVER['PHP_SELF']."\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre ".$groupe_de_groupes."</a>
 	 | <a href=\"".$_SERVER['PHP_SELF']."?id_grp_groupe=$id_grp_groupe\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre période</a>
-</p>
-
-<div id='fixe'></div>";
+</p>";
 
 		$id_groupe=array();
 		$sql="SELECT DISTINCT id_groupe FROM grp_groupes_groupes WHERE id_grp_groupe='".$id_grp_groupe."';";
@@ -883,6 +881,7 @@ if(!isset($_POST['recopie_select'])) {
 	}
 
 	//===============================
+	echo "<div id='fixe'></div>";
 	echo "<div style='float:right; text-align:center; width:15em;'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post'>\n";
 	echo "<fieldset style='padding-top: 8px; padding-bottom: 8px;  margin-left: 3px; margin-right: auto; background-image: url(\"../images/background/opacite50.png\");'>\n";
