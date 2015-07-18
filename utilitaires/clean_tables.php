@@ -43,6 +43,35 @@ $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 $id_info=isset($_POST['id_info']) ? $_POST['id_info'] : (isset($_GET['id_info']) ? $_GET['id_info'] : '');
 $mode_auto=isset($_POST['mode_auto']) ? $_POST['mode_auto'] : (isset($_GET['mode_auto']) ? $_GET['mode_auto'] : 'n');
 
+
+if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
+	check_token();
+
+	$msg="";
+	$suppr_assoc_doublon=isset($_POST['suppr_assoc_doublon']) ? $_POST['suppr_assoc_doublon'] : (isset($_GET['suppr_assoc_doublon']) ? $_GET['suppr_assoc_doublon'] : array());
+
+	$cpt_suppr=0;
+	for($loop=0;$loop<count($suppr_assoc_doublon);$loop++) {
+		$tab=explode("|", $suppr_assoc_doublon[$loop]);
+
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$tab[0]."' AND login_sso='".$tab[1]."';";
+		//echo "$sql<br />";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($suppr) {
+			$cpt_suppr++;
+		}
+		else {
+			$msg.="Erreur lors de la suppression de l'association ".$suppr_assoc_doublon[$loop]."<br />";
+		}
+	}
+
+	if($cpt_suppr>0) {
+		$msg.=$cpt_suppr." association(s) supprimée(s).<br />";
+	}
+	$mode="";
+}
+
+
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -3669,7 +3698,94 @@ else {
 		echo "<form action=\"verif_groupes.php\" method=\"post\">\n";
 		echo "<center><input type=submit value='Contrôler les groupes' /></center>\n";
 		echo "</form>\n";
-	
+
+
+	//===================================================
+	// Anomalies sso_table_correspondance:
+	// Il y a un index sur login_gepi, mais pas sur login_sso
+	$sql="SELECT DISTINCT login_sso FROM sso_table_correspondance WHERE login_gepi!='' AND login_sso!='' AND login_gepi IN (SELECT login FROM utilisateurs) GROUP BY login_sso HAVING COUNT(login_sso)>'1';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_scories=mysqli_num_rows($res);
+	if($nb_scories>0) {
+		echo "
+<hr />
+<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		<p style='text-indent:-6em; margin-left:6em;'><strong style='color:red;'>ANOMALIE&nbsp;:</strong> Vous avez ".$nb_scories." identifiant(s) ENT associés à plusieurs logins Gepi dans la table 'sso_table_correspondance'.<br />Cela ne devrait pas arriver.<br />
+		Contrôlez les associations et supprimez celles qui sont en trop.</p>
+		<p>Voici les comptes en collision&nbsp;:</p>
+		".add_token_field()."
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th>
+						<span id=tout_cocher_decocher' style='display:none;'>
+							<a href=\"javascript:tout_cocher()\" title='Tout cocher'><img src='../images/enabled.png' width='20' height='20' /></a>
+							/
+							<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
+						</span>
+					</th>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Statut</th>
+					<th>Login Gepi</th>
+					<th>Identifiant ENT</th>
+				</tr>
+			</thead>
+			<tbody>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT * FROM utilisateurs u, sso_table_correspondance stc WHERE u.login=stc.login_gepi AND stc.login_sso='".$lig->login_sso."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
+				echo "
+				<tr>
+					<td>
+						<input type='checkbox' name='suppr_assoc_doublon[]' id='ligne_".$cpt."' value=\"".$lig2->login_gepi."|".$lig2->login_sso."\" onchange=\"checkbox_change(this.id)\" />
+					</td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->nom</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->prenom</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->statut</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->login_gepi</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->login_sso</label></td>
+				</tr>";
+				$cpt++;
+			}
+		}
+		echo "
+			</tbody>
+		</table>
+		<input type='hidden' name='mode' value=\"suppr_assoc_doublon\" />
+		<p><input type='submit' value=\"Supprimer les associations cochées\" /></p>
+	</fieldset>
+</form>
+<script type='text/javascript'>
+	document.getElementById('tout_cocher_decocher').style.display='';
+
+	".js_checkbox_change_style()."
+
+	function tout_cocher() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=true;
+				checkbox_change('ligne_'+i);
+			}
+		}
+	}
+
+	function tout_decocher() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=false;
+				checkbox_change('ligne_'+i);
+			}
+		}
+	}
+</script>";
+	}
+	//===================================================
+
+
 		echo "<hr />\n";
 	
 		//echo "<p>Jusqu'à la version 1.4.3-1, GEPI a comporté un bug sur le calcul des moyennes de conteneurs (<i>boites/sous-matières</i>).<br />\nSi on déplaçait un devoir ou un conteneur vers un autre conteneur, il pouvait se produire une absence de recalcul des moyennes de certains conteneurs.<br />\nLe problème est désormais corrigé, mais dans le cas où vos moyennes ne sembleraient pas correctes, vous pouvez provoquer le recalcul des moyennes de l'ensemble des conteneurs pour l'ensemble des groupes/matières.<br />\nLes modifications effectuées seront affichées.</p>\n";

@@ -91,6 +91,30 @@ if((isset($_POST['temoin_suhosin_1']))&&(!isset($_POST['temoin_suhosin_2']))) {
 	$msg.="Il semble que certaines variables n'ont pas été transmises.<br />Cela peut arriver lorsqu'on tente de transmettre (<em>cocher trop de cases</em>) trop de variables.<br />Vous devriez tenter de cocher moins de cases et vous y prendre en plusieurs fois.<br />";
 }
 
+if((isset($_POST['mode']))&&($_POST['mode']=='suppr_assoc_doublon')) {
+	check_token();
+	$suppr_assoc_doublon=isset($_POST['suppr_assoc_doublon']) ? $_POST['suppr_assoc_doublon'] : (isset($_GET['suppr_assoc_doublon']) ? $_GET['suppr_assoc_doublon'] : array());
+
+	$cpt_suppr=0;
+	for($loop=0;$loop<count($suppr_assoc_doublon);$loop++) {
+		$tab=explode("|", $suppr_assoc_doublon[$loop]);
+
+		$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$tab[0]."' AND login_sso='".$tab[1]."';";
+		//echo "$sql<br />";
+		$suppr=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($suppr) {
+			$cpt_suppr++;
+		}
+		else {
+			$msg.="Erreur lors de la suppression de l'association ".$suppr_assoc_doublon[$loop]."<br />";
+		}
+	}
+
+	if($cpt_suppr>0) {
+		$msg.=$cpt_suppr." association(s) supprimée(s).<br />";
+	}
+	$mode="";
+}
 if(isset($_GET['supprimer_comptes_parents'])) {
 	check_token();
 
@@ -1624,6 +1648,90 @@ Par exemple, si un utilisateur a un nouveau login et qu'une association GUID_ENT
 <p style='text-indent:-6em; margin-left:6em;'><strong style='color:red;'>SCORIES encore&nbsp;:</strong> Vous avez ".$nb_scories." association(s) pour des personnes dont le login n'est pas ou plus dans les personnels de l'établissement, ni dans les tables 'eleves' ou 'resp_pers' (<em>responsables</em>).<br />
 Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage des tables</a> (<em>la partie 'Nettoyage des comptes élèves/responsables'</em>)</p>";
 		}
+	}
+
+	//===================================================
+	// Anomalies:
+	// Il y a un index sur login_gepi, mais pas sur login_sso
+	$sql="SELECT DISTINCT login_sso FROM sso_table_correspondance WHERE login_gepi!='' AND login_sso!='' AND login_gepi IN (SELECT login FROM utilisateurs) GROUP BY login_sso HAVING COUNT(login_sso)>'1';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_scories=mysqli_num_rows($res);
+	if($nb_scories>0) {
+		echo "
+<br />
+<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		<p style='text-indent:-6em; margin-left:6em;'><strong style='color:red;'>ANOMALIE&nbsp;:</strong> Vous avez ".$nb_scories." identifiant(s) ENT associés à plusieurs logins Gepi.<br />Cela ne devrait pas arriver.<br />
+		Contrôlez les associations et supprimez celles qui sont en trop.</p>
+		<p>Voici les comptes en collision&nbsp;:</p>
+		".add_token_field()."
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th>
+						<span id=tout_cocher_decocher' style='display:none;'>
+							<a href=\"javascript:tout_cocher()\" title='Tout cocher'><img src='../images/enabled.png' width='20' height='20' /></a>
+							/
+							<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
+						</span>
+					</th>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Statut</th>
+					<th>Login Gepi</th>
+					<th>Identifiant ENT</th>
+				</tr>
+			</thead>
+			<tbody>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT * FROM utilisateurs u, sso_table_correspondance stc WHERE u.login=stc.login_gepi AND stc.login_sso='".$lig->login_sso."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig2=mysqli_fetch_object($res2)) {
+				echo "
+				<tr>
+					<td>
+						<input type='checkbox' name='suppr_assoc_doublon[]' id='ligne_".$cpt."' value=\"".$lig2->login_gepi."|".$lig2->login_sso."\" onchange=\"checkbox_change(this.id)\" />
+					</td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->nom</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->prenom</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->statut</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->login_gepi</label></td>
+					<td><label for='ligne_".$cpt."' id='texte_ligne_".$cpt."'>$lig2->login_sso</label></td>
+				</tr>";
+				$cpt++;
+			}
+		}
+		echo "
+			</tbody>
+		</table>
+		<input type='hidden' name='mode' value=\"suppr_assoc_doublon\" />
+		<p><input type='submit' value=\"Supprimer les associations cochées\" /></p>
+	</fieldset>
+</form>
+<script type='text/javascript'>
+	document.getElementById('tout_cocher_decocher').style.display='';
+
+	".js_checkbox_change_style()."
+
+	function tout_cocher() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=true;
+				checkbox_change('ligne_'+i);
+			}
+		}
+	}
+
+	function tout_decocher() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('ligne_'+i)) {
+				document.getElementById('ligne_'+i).checked=false;
+				checkbox_change('ligne_'+i);
+			}
+		}
+	}
+</script>";
 	}
 	//===================================================
 	// Vider:
