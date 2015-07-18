@@ -196,6 +196,25 @@ include('menu_bilans.inc.php');
 echo "<div class='css-panes' id='containDiv'>\n";
 
 //==========================================
+// Vérification:
+$begin_bookings=getSettingValue('begin_bookings');
+$mysql_begin_bookings=strftime("%Y-%m-%d %H:%M:%S", $begin_bookings);
+$slash_date_begin_bookings=strftime("%d/%m/%Y", $begin_bookings);
+$end_bookings=getSettingValue('end_bookings');
+$mysql_end_bookings=strftime("%Y-%m-%d %H:%M:%S", $end_bookings);
+$slash_date_end_bookings=strftime("%d/%m/%Y", $end_bookings);
+$sql="SELECT e.nom,e.prenom,a.id,a.debut_abs,a.fin_abs,datediff(fin_abs,debut_abs) as duree FROM a_saisies a,eleves e WHERE (debut_abs<'".$mysql_begin_bookings."' OR fin_abs<'".$mysql_begin_bookings."' OR debut_abs>'".$mysql_end_bookings."' OR fin_abs>'".$mysql_end_bookings."' OR fin_abs<debut_abs) AND a.eleve_id=e.id_eleve AND deleted_at IS NULL ORDER BY e.nom, e.prenom;";
+$res_anomalie=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_anomalie)>0) {
+	echo "<p class='fieldset_opacite50' style='text-indent:-6em;margin-left:6em;'><strong style='color:red'>Anomalie&nbsp;:</strong> Une ou des saisies sont hors année scolaire (<em>du ".$slash_date_begin_bookings." au ".$slash_date_end_bookings."</em>) ou avec des dates de début/fin anormales.<br />Vous devriez corriger pour ne pas conserver des données érronées et éviter des totaux d'absences incorrects.<br />En voici la liste<br />";
+	while($lig=mysqli_fetch_object($res_anomalie)) {
+		echo '<a href="visu_saisie.php?id_saisie='.$lig->id.'" onClick="showwindow(\'visu_saisie.php?id_saisie='.$lig->id.'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false">Saisie n°'.$lig->id.'&nbsp;: '.$lig->nom.' '.$lig->prenom.' du  '.formate_date($lig->debut_abs, "y", "court").' au '.formate_date($lig->fin_abs, "y", "court").'</a><br />';
+	}
+	echo "</p>";
+}
+//==========================================
+
+//==========================================
 // 20131107 : Contournement bug dojo
 $ne_pas_afficher_form_choix_grp_classe=isset($_POST['ne_pas_afficher_form_choix_grp_classe']) ? $_POST['ne_pas_afficher_form_choix_grp_classe'] : NULL;
 if((!isset($ne_pas_afficher_form_choix_grp_classe))||($ne_pas_afficher_form_choix_grp_classe!="y")) {
