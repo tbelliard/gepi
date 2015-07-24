@@ -215,6 +215,34 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		}
 	}
 
+	if((isset($eleve_login))&&(isset($_POST['ele_id']))&&(isset($_POST['add_resp_legal_0']))&&(isset($_POST['is_posted']))&&($_POST['is_posted']=='add_resp_legal_0')) {
+		check_token();
+
+		$add_resp_legal_0=$_POST['add_resp_legal_0'];
+
+		$msg="";
+
+		$cpt=0;
+		for($loop=0;$loop<count($add_resp_legal_0);$loop++) {
+			$sql="SELECT 1=1 FROM responsables2 WHERE ele_id='".$_POST['ele_id']."' AND pers_id='".$add_resp_legal_0[$loop]."';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				$msg.="L'élève est déjà associé au responsable n°".$add_resp_legal_0[$loop].".<br />";
+			}
+			else {
+				$sql="INSERT INTO responsables2 SET ele_id='".$_POST['ele_id']."', pers_id='".$add_resp_legal_0[$loop]."', resp_legal='0';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($insert) {
+					$cpt++;
+				}
+				else {
+					$msg.="Erreur lors de l'association avec l'élève n°".$add_ele_id_resp_legal_0[$loop].".<br />";
+				}
+			}
+		}
+
+		$msg.=$cpt." responsable(s) associé(s) à cet élève en qualité de \"responsable(s)\" non légal(ux).<br />";
+	}
 
 	/*
 	foreach($_POST as $post => $val){
@@ -1359,6 +1387,86 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		die();
 	}
 
+	// 20150724
+	if(isset($_GET['ajout_resp_legal_0'])){
+
+		echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+
+			echo "<form enctype='multipart/form-data' name='resp' action='modify_eleve.php' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='eleve_login' value='$eleve_login' />
+		<input type='hidden' name='ele_id' value='$ele_id' />
+		
+		<p>Choix d'un ou plusieurs <strong>responsables non légaux</strong> pour <b>".casse_mot($eleve_prenom,'majf2')." ".my_strtoupper($eleve_nom)."</b></p>\n";
+
+		$sql="SELECT DISTINCT rp.pers_id,rp.nom,rp.prenom FROM resp_pers rp WHERE pers_id NOT IN (SELECT pers_id FROM responsables2 WHERE ele_id='".$ele_id."') ORDER BY rp.nom, rp.prenom";
+		//echo "$sql<br />";
+		$call_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nombreligne = mysqli_num_rows($call_resp);
+		// si la table des responsables est non vide :
+		if ($nombreligne != 0) {
+
+			echo "
+		<p align='center'><input type='submit' name='valider_choix_resp' value='Enregistrer' /></p>
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th>Cocher</th>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Voir/Modifier</th>
+				</tr>
+			</thead>
+			<tbody>";
+			$cpt=0;
+			while($lig_resp=mysqli_fetch_object($call_resp)){
+
+				echo "
+				<tr>
+					<td><input type='checkbox' name='add_resp_legal_0[]' id='add_resp_legal_0".$cpt."' value='$lig_resp->pers_id' onchange=\"checkbox_change(this.id)\" /></td>
+					<td><label for='add_resp_legal_0".$cpt."'>$lig_resp->pers_id</label></td>
+					<td><label for='add_resp_legal_0".$cpt."' id='texte_add_resp_legal_0".$cpt."'>$lig_resp->nom</label></td>
+					<td><label for='add_resp_legal_0".$cpt."'>$lig_resp->prenom</label></td>
+					<td><a href='../responsables/modify_resp.php?pers_id=".$lig_resp->pers_id."&amp;quitter_la_page=y' title=\"Voir/modifier la fiche dans un nouvel onglet\" target='_blank'><img src='../images/edit16.png' alt='Éditer' class='icone16' /></a></td>
+				</tr>";
+				$cpt++;
+			}
+			echo "
+			</tbody>
+		</table>
+		<center><input type='submit' value='Enregistrer' /></center>
+		<input type='hidden' name='is_posted' value='add_resp_legal_0' />
+
+		<div id='fixe'>
+			<input type='submit' value='Enregistrer' />
+		</div>";
+		}
+		else{
+			echo "<p>Aucun responsable n'est disponible.</p>\n";
+		}
+
+		echo "<p>Si le responsable ne figure pas dans la liste, vous pouvez l'ajouter à la base<br />\n";
+		echo "(<i>après avoir, le cas échéant, sauvegardé cette fiche</i>)<br />\n";
+		if($_SESSION['statut']=="scolarite") {
+			echo "en vous rendant dans [<a href='../responsables/index.php'>Gestion des fiches responsables élèves</a>]</p>\n";
+		}
+		else{
+			echo "en vous rendant dans [Gestion des bases-><a href='../responsables/index.php'>Gestion des responsables élèves</a>]</p>\n";
+		}
+
+		echo "
+	</fieldset>
+</form>
+
+<script type='text/javascript'>
+	".js_checkbox_change_style()."
+</script>";
+
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 
 	//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
@@ -2494,8 +2602,8 @@ if(isset($eleve_login)){
 
 		//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
-		echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i>";
-		echo "<br />\n<br />\n";
+		echo "<i>Si vous n'envoyez pas les bulletins scolaires par voie postale, vous pouvez ignorer cette rubrique.</i><br />
+	(<em>l'adresse peut néanmoins aussi servir pour les modules absences, discipline,...</em>)<br />\n<br />\n";
 
 		$temoin_tableau="";
 		$chaine_adr1='';
@@ -2813,6 +2921,29 @@ if(isset($eleve_login)){
 				}
 			}
 		}
+
+
+		// 20150724
+		echo "<p style='text-indent:-4em; margin-left: 4em; margin-top: 2em;'><em>NOTE&nbsp;:</em> A titre indicatif parce que par défaut (*), les responsables non légaux ne sont pas concernés par les bulletins.<br />";
+		if(isset($ele_id)) {
+			$sql="SELECT * FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='".$ele_id."' AND r.resp_legal='0' ORDER BY rp.nom, rp.prenom;";
+			$res_resp0=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_resp0)>0){
+				while($lig_resp0=mysqli_fetch_object($res_resp0)) {
+					echo "
+<a href='../responsables/modify_resp.php?pers_id=".$lig_resp0->pers_id."' title=\"Voir/modifier la fiche de ce responsable.\" onclick=\"return confirm_abandon (this, change, '$themessage')\">".$lig_resp0->nom." ".$lig_resp0->prenom."</a> (<em>responsable non légal</em>)<br />";
+				}
+			}
+		}
+		echo "
+<a href='modify_eleve.php?eleve_login=".$eleve_login."&amp;ajout_resp_legal_0=y' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /> Ajouter un responsable non légal</a><br />
+<br />
+(*) Les responsables non légaux ne sont pas destinataires par défaut des bulletins.<br />
+Vous pouvez toutefois autoriser la génération de bulletins pour certains responsables non légaux<br />
+(<em>cela peut se révéler utile dans des cas compliqués, par exemple avec des enfants en famille d'accueil</em>).<br />
+Vous pouvez même créer des comptes utilisateurs pour des responsables non légaux.<br />
+Contrôlez".(($_SESSION['statut']=='administrateur') ? " les droits Responsables dans <a href='../gestion/droits_acces.php#responsable' target='_blank'>Gestion générale/Droits d'accès</a>" : ", en administrateur, les droits Responsables dans <strong>Gestion générale/Droits d'accès</strong>")."</p>";
+
 	}
 }
 
