@@ -74,6 +74,34 @@ if((isset($_GET['envoi_bulletin_resp_legal_0']))&&(($_GET['envoi_bulletin_resp_l
 	}
 }
 
+if((isset($_POST['is_posted']))&&($_POST['is_posted']=="add_resp_legal_0")&&(isset($_POST['pers_id']))) {
+	check_token();
+	$msg="";
+
+	$add_ele_id_resp_legal_0=isset($_POST['add_ele_id_resp_legal_0']) ? $_POST['add_ele_id_resp_legal_0'] : array();
+	$cpt=0;
+
+	for($loop=0;$loop<count($add_ele_id_resp_legal_0);$loop++) {
+		$sql="SELECT 1=1 FROM responsables2 WHERE pers_id='".$_POST['pers_id']."' AND ele_id='".$add_ele_id_resp_legal_0[$loop]."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			$msg.="Le responsable est déjà associé à l'élève n°".$add_ele_id_resp_legal_0[$loop].".<br />";
+		}
+		else {
+			$sql="INSERT INTO responsables2 SET pers_id='".$_POST['pers_id']."', ele_id='".$add_ele_id_resp_legal_0[$loop]."', resp_legal='0';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($insert) {
+				$cpt++;
+			}
+			else {
+				$msg.="Erreur lors de l'association avec l'élève n°".$add_ele_id_resp_legal_0[$loop].".<br />";
+			}
+		}
+	}
+
+	$msg.=$cpt." élève(s) associé(s) à ce responsable en qualité de \"responsable\" non légal.<br />";
+}
+
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 
@@ -599,6 +627,8 @@ if(isset($associer_eleve)) {
 		die();
 	}
 
+	echo "<h2>".casse_mot($lig_pers->prenom,'majf2')." ".my_strtoupper($lig_pers->nom)."</h2>\n";
+
 	$tab_anomalie_ele_id=array();
 	$compteur=0;
 	while($lig_ele=mysqli_fetch_object($res_ele)){
@@ -610,6 +640,7 @@ if(isset($associer_eleve)) {
 
 			if($compteur==0){
 				echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>\n";
+				echo "<fieldset class='fieldset_opacite50'>\n";
 				echo add_token_field();
 				echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
@@ -617,7 +648,7 @@ if(isset($associer_eleve)) {
 					echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 				}
 
-				echo "<p>Sélectionner l'élève à associer à ".casse_mot($lig_pers->prenom,'majf2')." ".my_strtoupper($lig_pers->nom)."<br />\n";
+				echo "<p>Sélectionner l'élève à associer à <strong>".casse_mot($lig_pers->prenom,'majf2')." ".my_strtoupper($lig_pers->nom)."</strong> en qualité de <strong>responsable légal 1 ou 2</strong><br />\n";
 
 				//echo "<p align='center'>\n";
 				echo "<select name='add_ele_id'";
@@ -643,11 +674,67 @@ if(isset($associer_eleve)) {
 
 		echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 		echo "<input type='hidden' name='is_posted' value='1' />\n";
+		echo "</fieldset>\n";
 		echo "</form>\n";
+		echo "<br />";
 	}
 	else{
 		echo "<p>Tous les élèves ont leur deux responsables légaux.</p>\n";
 	}
+
+	//======================================
+	$sql="SELECT DISTINCT e.* FROM eleves e, responsables2 r WHERE e.ele_id=r.ele_id AND r.pers_id!='".$pers_id."' ORDER BY e.nom, e.prenom;";
+	//echo "$sql<br />\n";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)>0) {
+		echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		<p>Sélectionner un ou des élèves à associer à <strong>".casse_mot($lig_pers->prenom,'majf2')." ".my_strtoupper($lig_pers->nom)."</strong> en qualité de <strong>responsable non légal</strong> (<em>contact</em>)<br />
+		".add_token_field()."
+		<input type='hidden' name='pers_id' value='$pers_id' />
+		".((isset($quitter_la_page)) ? "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />" : "")."
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th>Cocher</th>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Prénom</th>
+					<th>Naissance</th>
+				</tr>
+			</thead>
+			<tbody>";
+		$cpt=0;
+		while($lig_ele=mysqli_fetch_object($res_ele)){
+
+			echo "
+				<tr>
+					<td><input type='checkbox' name='add_ele_id_resp_legal_0[]' id='add_ele_id_resp_legal_0".$cpt."' value='$lig_ele->ele_id' onchange=\"checkbox_change(this.id)\" /></td>
+					<td><label for='add_ele_id_resp_legal_0".$cpt."'>$lig_ele->ele_id</label></td>
+					<td><label for='add_ele_id_resp_legal_0".$cpt."' id='texte_add_ele_id_resp_legal_0".$cpt."'>$lig_ele->nom</label></td>
+					<td><label for='add_ele_id_resp_legal_0".$cpt."'>$lig_ele->prenom</label></td>
+					<td><label for='add_ele_id_resp_legal_0".$cpt."'>$lig_ele->naissance</label></td>
+				</tr>";
+			$cpt++;
+		}
+		echo "
+			</tbody>
+		</table>
+		<center><input type='submit' value='Enregistrer' /></center>
+		<input type='hidden' name='is_posted' value='add_resp_legal_0' />
+
+		<div id='fixe'>
+			<input type='submit' value='Enregistrer' />
+		</div>
+
+	</fieldset>
+</form>
+
+<script type='text/javascript'>
+	".js_checkbox_change_style()."
+</script>";
+	}
+	//======================================
 
 	if(count($tab_anomalie_ele_id)>0) {
 		echo "<p><span style='color:red'>ANOMALIE&nbsp;:</span> Un ou des élèves n'ont pas d'ELE_ID.<br />Comment avez-vous initialisé/importé/créé ces élèves&nbsp;?<br />En voici la liste&nbsp;:</p>";
