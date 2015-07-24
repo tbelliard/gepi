@@ -347,117 +347,125 @@ if($current_group) {
 		}
 	}
 
-	foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
-		$eleve_login = $current_eleve["login"];
-		$eleve_nom = $current_eleve["nom"];
-		$eleve_prenom = $current_eleve["prenom"];
+	/*
+	echo "<pre>";
+	print_r($tab_aid);
+	echo "</pre>";
+	*/
 
-		//$eleve_classe = $current_eleve["classe"];
-		$sql="SELECT classe FROM classes WHERE id='".$current_eleve["classe"]."'";
-		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_tmp)==0){
-			die("$eleve_login ne serait dans aucune classe???</body></html>");
-		}
-		else{
-			$lig_tmp=mysqli_fetch_object($res_tmp);
-			$eleve_classe=$lig_tmp->classe;
-		}
+	if(isset($tab_aid["eleves"][$periode_num]["users"])) {
+		foreach($tab_aid["eleves"][$periode_num]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
 
-		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
-		// ... pourrait-on l'ajouter?
-		$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
-		$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-
-		if(mysqli_num_rows($res_tmp)==0){
-			die("Problème avec les infos (date de naissance, sexe,...) de $eleve_login</body></html>");
-		}
-		else{
-			$lig_tmp=mysqli_fetch_object($res_tmp);
-			$eleve_sexe=$lig_tmp->sexe;
-			if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
-				$eleve_naissance=formate_date($lig_tmp->naissance);
-			}
-			else {
-				$eleve_naissance=$lig_tmp->naissance;
-			}
-			$eleve_email=$lig_tmp->email;
-			$eleve_no_gep=$lig_tmp->no_gep;
-			$eleve_elenoet=$lig_tmp->elenoet;
-			$eleve_ele_id=$lig_tmp->ele_id;
-
-			if($avec_lieu_naiss=='y') {
-				$eleve_lieu_naissance=get_commune($lig_tmp->lieu_naissance,'2');
-			}
-		}
-
-		if(((isset($avec_doublant))&&($avec_doublant=='y'))||
-		((isset($avec_regime))&&($avec_regime=='y'))) {
-			$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve["login"]."';";
+			//$eleve_classe = $current_eleve["classe"];
+			$sql="SELECT classe FROM classes WHERE id='".$current_eleve["classe"]."'";
 			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_tmp)==0) {
-				//die("Problème avec les infos (régime, doublant) de $eleve_login</body></html>");
-				$eleve_regime="X";
-				$eleve_doublant="X";
+			if(mysqli_num_rows($res_tmp)==0){
+				die("$eleve_login ne serait dans aucune classe???</body></html>");
 			}
-			else {
-				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
-					$eleve_regime=$lig_tmp->regime;
-					$eleve_doublant=$lig_tmp->doublant;
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_classe=$lig_tmp->classe;
+			}
+
+			// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
+			// ... pourrait-on l'ajouter?
+			$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			if(mysqli_num_rows($res_tmp)==0){
+				die("Problème avec les infos (date de naissance, sexe,...) de $eleve_login</body></html>");
+			}
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_sexe=$lig_tmp->sexe;
+				if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
+					$eleve_naissance=formate_date($lig_tmp->naissance);
+				}
+				else {
+					$eleve_naissance=$lig_tmp->naissance;
+				}
+				$eleve_email=$lig_tmp->email;
+				$eleve_no_gep=$lig_tmp->no_gep;
+				$eleve_elenoet=$lig_tmp->elenoet;
+				$eleve_ele_id=$lig_tmp->ele_id;
+
+				if($avec_lieu_naiss=='y') {
+					$eleve_lieu_naissance=get_commune($lig_tmp->lieu_naissance,'2');
 				}
 			}
-		}
 
-		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {
-			$eleve_infos_resp_1="";
-			$eleve_infos_resp_2="";
-			$eleve_infos_resp_0="";
+			if(((isset($avec_doublant))&&($avec_doublant=='y'))||
+			((isset($avec_regime))&&($avec_regime=='y'))) {
+				$sql="SELECT * FROM j_eleves_regime WHERE login='".$current_eleve["login"]."';";
+				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_tmp)==0) {
+					//die("Problème avec les infos (régime, doublant) de $eleve_login</body></html>");
+					$eleve_regime="X";
+					$eleve_doublant="X";
+				}
+				else {
+					while($lig_tmp=mysqli_fetch_object($res_tmp)) {
+						$eleve_regime=$lig_tmp->regime;
+						$eleve_doublant=$lig_tmp->doublant;
+					}
+				}
+			}
+
+			if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {
+				$eleve_infos_resp_1="";
+				$eleve_infos_resp_2="";
+				$eleve_infos_resp_0="";
 			
-			$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
-			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_tmp)>0) {
-				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
-					if($lig_tmp->resp_legal=='1') {
-						$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
-					}
-					elseif($lig_tmp->resp_legal=='2') {
-						$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
-					}
-					else {
-						if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
-						$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+				$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.ele_id='$eleve_ele_id' AND r.pers_id=rp.pers_id AND (r.resp_legal='1' OR r.resp_legal='2' OR (r.pers_contact='1' AND (rp.tel_pers!='' OR rp.tel_prof!='' OR rp.tel_port!='')));";
+				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_tmp)>0) {
+					while($lig_tmp=mysqli_fetch_object($res_tmp)) {
+						if($lig_tmp->resp_legal=='1') {
+							$eleve_infos_resp_1="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
+						elseif($lig_tmp->resp_legal=='2') {
+							$eleve_infos_resp_2="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
+						else {
+							if($eleve_infos_resp_0!="") {$eleve_infos_resp_0.=";";}
+							$eleve_infos_resp_0.="$lig_tmp->civilite $lig_tmp->nom $lig_tmp->prenom;$lig_tmp->tel_pers;$lig_tmp->tel_prof;$lig_tmp->tel_port";
+						}
 					}
 				}
 			}
+
+			//$fd.="$eleve_classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
+
+			$ligne="";
+			if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.="$eleve_classe;";}
+			if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$eleve_login;";}
+			if((isset($avec_nom))&&($avec_nom=='y')) {$ligne.="$eleve_nom;";}
+			if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
+			if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
+			if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
+			if($avec_lieu_naiss=='y') {$ligne.="$eleve_lieu_naissance;";}
+
+			if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+			if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
+			if($_SESSION['statut']!='professeur') {
+				//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
+				if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
+				if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
+				if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
+			}
+			if((isset($avec_doublant))&&($avec_doublant=='y')) {$ligne.="$eleve_doublant;";}
+			if((isset($avec_regime))&&($avec_regime=='y')) {$ligne.="$eleve_regime;";}
+
+			if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$ligne.=$eleve_infos_resp_1.";".$eleve_infos_resp_2.";".$eleve_infos_resp_0.";";}
+
+			// Suppression du ; en fin de ligne
+			$ligne=preg_replace('/;$/','',$ligne);
+
+			$fd.=$ligne."\n";
 		}
-
-		//$fd.="$eleve_classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
-
-		$ligne="";
-		if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.="$eleve_classe;";}
-		if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$eleve_login;";}
-		if((isset($avec_nom))&&($avec_nom=='y')) {$ligne.="$eleve_nom;";}
-		if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
-		if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
-		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
-		if($avec_lieu_naiss=='y') {$ligne.="$eleve_lieu_naissance;";}
-
-		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
-		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
-		if($_SESSION['statut']!='professeur') {
-			//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
-			if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
-			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
-			if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
-		}
-		if((isset($avec_doublant))&&($avec_doublant=='y')) {$ligne.="$eleve_doublant;";}
-		if((isset($avec_regime))&&($avec_regime=='y')) {$ligne.="$eleve_regime;";}
-
-		if((isset($avec_infos_resp))&&($avec_infos_resp=='y')) {$ligne.=$eleve_infos_resp_1.";".$eleve_infos_resp_2.";".$eleve_infos_resp_0.";";}
-
-		// Suppression du ; en fin de ligne
-		$ligne=preg_replace('/;$/','',$ligne);
-
-		$fd.=$ligne."\n";
 	}
 } else {
 	$tab_classe=array();
