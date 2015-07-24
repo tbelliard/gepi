@@ -91,6 +91,7 @@ if (isset($is_posted) and ($is_posted =="1")) {
           die();
        } else if ($mode == "multiple") {
           $msg = "AID enregistrée !" ;
+          $mess = rawurlencode($msg);
           header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
           die();
        }
