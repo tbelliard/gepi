@@ -299,7 +299,7 @@ if($_SESSION['statut']=='professeur') {
 	<li>
 		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
 		<ul>";
-			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
+			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_aid=a.id AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
 			//echo "$sql<br />";
 			$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_aid)>0) {
