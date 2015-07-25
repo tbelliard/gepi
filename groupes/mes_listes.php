@@ -323,9 +323,10 @@ if($_SESSION['statut']=='professeur') {
 		</ul>
 	</li>";
 		}
+		echo "
+</ul>";
 	}
 	echo "
-</ul>
 <p><br /></p>";
 
 	require("../lib/footer.inc.php");
@@ -620,7 +621,7 @@ echo "</fieldset>\n";
 echo "</form>\n";
 
 // Recherche des AID avec élèves inscrits
-$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid ORDER BY ac.nom, ac.nom_complet;";
+$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY ac.nom, ac.nom_complet;";
 //echo "$sql<br />";
 $res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_aid_config)>0) {
@@ -631,7 +632,7 @@ if(mysqli_num_rows($res_aid_config)>0) {
 	<li>
 		<strong>".$lig_aid_config->nom." (<em>".$lig_aid_config->nom_complet."</em>)</strong>&nbsp;:
 		<ul>";
-		$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid ORDER BY a.numero, a.nom;";
+		$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY a.numero, a.nom;";
 		//echo "$sql<br />";
 		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_aid)>0) {
