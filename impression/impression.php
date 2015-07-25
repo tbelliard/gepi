@@ -87,7 +87,8 @@ if(mysqli_num_rows($res_modeles)>0) {
 	echo "</form>\n";
 }
 
-echo "<h3>Liste des classes : </h3>\n";
+echo "<h3>Liste des classes : </h3>
+<div style='margin-left:3em; margin-bottom:1em;'>\n";
 
 // Pour tout le monde la possibilité d'imprimer la liste de toutes les classes par période.
 echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer une liste d'élèves au format PDF :</p>\n";
@@ -131,9 +132,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if(mysqli_num_rows($res_per)==0){
-				echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
-				echo "</body></html>\n";
-				die();
+				echo "<p style='color:red'>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 			}
 			else{
 				echo "<tr>\n";
@@ -149,11 +148,13 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-	}	
-		
+	}
+	echo "</div>\n";
 // Module toutes les classes
 
 	if($_SESSION['statut']=='professeur'){
+		echo "<h3>Liste des enseignements&nbsp;:</h3>
+<div style='margin-left:3em; margin-bottom:1em;'>\n";
 		echo "<p>Séléctionnez l'enseignement et la période pour lesquels vous souhaitez imprimer une liste alphabétique d'élèves au format PDF :</p>\n";
 		$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 			jgp.login = '".$_SESSION['login']."' AND
@@ -162,9 +163,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		if(mysqli_num_rows($res_grp)==0){
-			echo "<p>Vous n'avez apparemment aucun enseignement.</p>\n";
-			echo "</body></html>\n";
-			die();
+			echo "<p style='color:red'>Vous n'avez apparemment aucun enseignement.</p>\n";
 		}
 		else{
 			echo "<table>\n";
@@ -190,9 +189,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 							$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$lig_class->id' ORDER BY num_periode";
 							$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_per)==0){
-								echo "<p>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
-								echo "</body></html>\n";
-								die();
+								echo "<p style='color:red'>ERREUR: Aucune période n'est définie pour la classe $lig_class->classe</p>\n";
 							}
 							else{
 								while($lig_per=mysqli_fetch_object($res_per)){
@@ -219,10 +216,57 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez im
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
-			require("../lib/footer.inc.php");
-			die();
 		}
 	}
 //}
+echo "</div>\n";
+
+$temoin_afficher_aid="n";
+if($_SESSION['statut']=='professeur') {
+	$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_utilisateurs jau WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY ac.nom, ac.nom_complet;";
+}
+else {
+	$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY ac.nom, ac.nom_complet;";
+}
+$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_aid_config)>0){
+	$html_aid="<h3>Liste des AID&nbsp;: </h3>
+<div style='margin-left:3em; margin-bottom:1em;'>
+	<p>Séléctionnez l'AID pour lequel vous souhaitez imprimer une liste alphabétique d'élèves au format PDF :</p>
+	<table>\n";
+	while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+		if($_SESSION['statut']=='professeur') {
+			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_aid=a.id AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
+		}
+		else {
+			$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY a.numero, a.nom;";
+		}
+		//echo "$sql<br />\n";
+		$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid)>0){
+			$temoin_afficher_aid="y";
+			while($lig_aid=mysqli_fetch_object($res_aid)) {
+				$current_aid=get_tab_aid($lig_aid->id);
+				$html_aid.="
+		<tr>
+			<td>
+				<b>".htmlspecialchars($current_aid['nom_aid'])."</b> (".$current_aid['classlist_string'].")&nbsp;: </b>
+			</td>
+			<td> - </td>
+			<td>
+				Tri <a href='liste_pdf.php?id_aid=$lig_aid->id' target='_blank'>Alpha</a> - <a href='liste_pdf.php?id_aid=$lig_aid->id&amp;tri=classes' target='_blank'>Classe</a>
+			</td>
+		</tr>\n";
+			}
+		}
+	}
+	$html_aid.="</table>
+</div>\n";
+
+	if($temoin_afficher_aid=="y") {
+		echo $html_aid;
+	}
+}
+
 require("../lib/footer.inc.php");
 ?>

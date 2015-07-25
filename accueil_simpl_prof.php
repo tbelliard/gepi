@@ -1146,7 +1146,8 @@ for($i=0;$i<count($groups);$i++){
 							echo " onmouseover=\"afficher_div('info_liste_pdf_".$i."_".$j."','y',10,10);\" onmouseout=\"cacher_div('info_liste_pdf_".$i."_".$j."');\"";
 						}
 						echo ">";
-						echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+						//echo "<img src='images/icons/bulletin_simp.png' width='34' height='34' alt='Listes PDF' border='0' />";
+						echo "<img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' />";
 						echo "</a>";
 	
 						if($pref_accueil_infobulles=="y"){
@@ -1612,6 +1613,7 @@ while ($i < $tmp_nb_aid) {
 							if($pref_accueil_liste_pdf=="y"){
 								echo "<!-- Colonne Liste PDF -->\n";
 								echo "<td class='$class_style'>\n";
+								echo "<a href='liste_pdf.php?id_aid=".$lig_aid->id."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
 								echo "</td>\n";
 							}
 					}

@@ -316,8 +316,8 @@ else {
 
 			echo "<br />\n";
 			echo "Option de tri&nbsp;:<br />\n";
-			echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
-			echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
+			echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe'> Par classe puis alphabétique</label><br />\n";
+			echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha'> Alphabétique</label><br />\n";
 
 			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
 			if($nb_modeles>0) {
@@ -401,8 +401,8 @@ if ($id_choix_periode != 0) {
 
 		echo "<br />\n";
 		echo "Option de tri&nbsp;:<br />\n";
-		echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
-		echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
+		echo "<input type=\"radio\" name=\"tri\" id='tri_classe2' value=\"classes\" /><label for='tri_classe2'> Par classe puis alphabétique</label><br />\n";
+		echo "<input type=\"radio\" name=\"tri\" id='tri_alpha2' value=\"alpha\" checked /><label for='tri_alpha2'> Alphabétique</label><br />\n";
 
 		// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
 		if($nb_modeles>0) {
@@ -428,6 +428,152 @@ if ($id_choix_periode != 0) {
 		</form>\n
 	</fieldset>\n
 	</div>";
+}
+
+// AID
+if ($id_choix_periode != 0) {
+	if($_SESSION['statut']=='professeur') {
+		$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_utilisateurs jau WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jau.indice_aid AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY ac.nom, ac.nom_complet;";
+		//echo "$sql<br />";
+		$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid_config)>0) {
+			echo "<h3>Liste des AID : </h3>\n";
+
+			// sélection multiple
+			echo "<div style=\"text-align: center;\">
+	<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf3\">
+		<fieldset class='fieldset_opacite50'>
+			<legend style='border: 1px solid grey; background-color: white;'>Sélectionnez le (ou les) AID(s) pour lesquels vous souhaitez imprimer les listes.</legend>
+			<br />
+			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='5'>
+				<optgroup label=\"-- Les AID --\">\n";
+
+			while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+				$sql="SELECT DISTINCT a.* FROM aid a, j_aid_utilisateurs jau WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jau.indice_aid AND jau.id_aid=a.id AND jau.id_utilisateur='".$_SESSION['login']."' ORDER BY a.numero, a.nom;";
+				//echo "$sql<br />";
+				$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_aid)>0) {
+					while($lig_aid=mysqli_fetch_object($res_aid)) {
+						echo "
+				<option value='".$lig_aid->id."'";
+						if(($id_choix_periode<$lig_aid_config->display_begin)&&($id_choix_periode>$lig_aid_config->display_end)) {
+							echo " style='color:gray'";
+						}
+						echo ">".$lig_aid->nom." (".$lig_aid_config->nom." (".$lig_aid_config->nom_complet."))</option>";
+					}
+				}
+			}
+
+			echo "
+				</optgroup>
+			</select>
+			<br />
+			Option de tri&nbsp;:<br />
+			<input type=\"radio\" name=\"tri\" id='tri_classe3' value=\"classes\" /><label for='tri_classe3'> Par classe puis alphabétique</label><br />
+			<input type=\"radio\" name=\"tri\" id='tri_alpha3' value=\"alpha\" checked /><label for='tri_alpha3'> Alphabétique</label><br />\n";
+
+			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			if($nb_modeles>0) {
+				echo "
+			<br />
+			Modèle de réglages&nbsp;: <br />
+			<select name='id_modele'>
+				<option value=''>Réglages par défaut de Gepi</option>";
+				for($loop=0;$loop<count($tab_modele);$loop++) {
+					echo "
+				<option value='".$tab_modele[$loop]['id_modele']."'";
+					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+					echo ">".$tab_modele[$loop]['nom_modele']."</option>";
+				}
+				echo "
+			</select>";
+			}
+			else {
+				// On utilisera les paramètres par défaut
+			}
+
+			echo "
+			<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />
+			<br /><br />
+			<input value=\"Valider les AID\" name=\"Valider\" type=\"submit\" />
+			<br />
+		</fieldset>
+	</form>
+</div>";
+		}
+
+	}
+	else {
+
+		$sql="SELECT DISTINCT ac.* FROM aid_config ac, aid a, j_aid_eleves jae WHERE ac.indice_aid=a.indice_aid AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY ac.nom, ac.nom_complet;";
+		//echo "$sql<br />";
+		$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid_config)>0) {
+			echo "<h3>Liste des AID : </h3>\n";
+
+			// sélection multiple
+			echo "<div style=\"text-align: center;\">
+	<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf3\">
+		<fieldset class='fieldset_opacite50'>
+			<legend style='border: 1px solid grey; background-color: white;'>Sélectionnez le (ou les) AID(s) pour lesquels vous souhaitez imprimer les listes.</legend>
+			<br />
+			<select id='liste_aid' name='id_liste_aid[]' multiple='yes' size='5'>
+				<optgroup label=\"-- Les AID --\">\n";
+
+			while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
+				$sql="SELECT DISTINCT a.* FROM aid a, j_aid_eleves jae WHERE a.indice_aid='".$lig_aid_config->indice_aid."' AND a.indice_aid=jae.indice_aid AND a.id=jae.id_aid ORDER BY a.numero, a.nom;";
+				//echo "$sql<br />";
+				$res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_aid)>0) {
+					while($lig_aid=mysqli_fetch_object($res_aid)) {
+						echo "
+				<option value='".$lig_aid->id."'";
+						if(($id_choix_periode<$lig_aid_config->display_begin)&&($id_choix_periode>$lig_aid_config->display_end)) {
+							echo " style='color:gray'";
+						}
+						echo ">".$lig_aid->nom." (".$lig_aid_config->nom." (".$lig_aid_config->nom_complet."))</option>";
+					}
+				}
+			}
+
+			echo "
+				</optgroup>
+			</select>
+			<br />
+			Option de tri&nbsp;:<br />
+			<input type=\"radio\" name=\"tri\" id='tri_classe4' value=\"classes\" /><label for='tri_classe4'> Par classe puis alphabétique</label><br />
+			<input type=\"radio\" name=\"tri\" id='tri_alpha4' value=\"alpha\" checked /><label for='tri_alpha4'> Alphabétique</label><br />\n";
+
+			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			if($nb_modeles>0) {
+				echo "
+			<br />
+			Modèle de réglages&nbsp;: <br />
+			<select name='id_modele'>
+				<option value=''>Réglages par défaut de Gepi</option>";
+				for($loop=0;$loop<count($tab_modele);$loop++) {
+					echo "
+				<option value='".$tab_modele[$loop]['id_modele']."'";
+					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+					echo ">".$tab_modele[$loop]['nom_modele']."</option>";
+				}
+				echo "
+			</select>";
+			}
+			else {
+				// On utilisera les paramètres par défaut
+			}
+
+			echo "
+			<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />
+			<br /><br />
+			<input value=\"Valider les AID\" name=\"Valider\" type=\"submit\" />
+			<br />
+		</fieldset>
+	</form>
+</div>";
+		}
+	}
 }
 
 echo "<br />

@@ -212,6 +212,7 @@ $pdf->SetAutoPageBreak(true, $marge_bas);
 // DE   IMPRIME.PHP
 $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
+$id_aid=isset($_GET['id_aid']) ? $_GET["id_aid"] : NULL;
 $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 
 //On recupère les variables pour l'affichage
@@ -219,6 +220,7 @@ $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
 $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"] : NULL;
+$id_liste_aid=isset($_POST['id_liste_aid']) ? $_POST["id_liste_aid"] : NULL;
 //echo "count(\$id_liste_groupes)=".count($id_liste_groupes)."<br />";
 if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;}
 if (!(is_numeric($id_periode))) {
@@ -232,42 +234,66 @@ $nb_eleves = 0;
 $flag_groupe = FALSE;
 
 // DEFINIR LE NOMBRE DE BOUCLES A FAIRE
+//+++++++++++++++++++++++++++++++++++++++++
 // Impressions RAPIDES
 if ($id_groupe!=NULL) { // C'est un groupe
-    $nb_pages=1;
+	$nb_pages=1;
 	$flag_groupe = true;
 }
-
 if ($id_classe!=NULL) { // C'est une classe
-    $nb_pages=1;
+	$nb_pages=1;
 } //fin c'est une classe
-
+if ($id_aid!=NULL) { // C'est un AID
+	$nb_pages=1;
+} //fin c'est un AID
+//+++++++++++++++++++++++++++++++++++++++++
 //IMPRESSION A LA CHAINE
 if ($id_liste_classes!=NULL) {
-    $nb_pages = sizeof($id_liste_classes);
-//echo $nb_pages;
+	$nb_pages = sizeof($id_liste_classes);
+	//echo $nb_pages;
 }
-
 //IMPRESSION A LA CHAINE
 if ($id_liste_groupes!=NULL) {
-    $nb_pages = sizeof($id_liste_groupes);
+	$nb_pages = sizeof($id_liste_groupes);
 	$flag_groupe = true;
-//echo $nb_pages;
+	//echo $nb_pages;
 }
+//IMPRESSION A LA CHAINE
+if ($id_liste_aid!=NULL) {
+	$nb_pages = sizeof($id_liste_aid);
+	$flag_aid = true;
+	//echo $nb_pages;
+}
+//+++++++++++++++++++++++++++++++++++++++++
 
 
+//+++++++++++++++++++++++++++++++++++++++++
 if ($id_groupe != NULL) {
 	$current_group = get_group($id_groupe);
 }
 elseif((isset($id_liste_groupes))&&(count($id_liste_groupes)==1)) {
 	$current_group = get_group($id_liste_groupes[0]);
 }
-
 $flag_groupe_plusieurs_classes = "n";
 if(count($current_group['classes']['list'])>1) {
 	$flag_groupe_plusieurs_classes = "y";
 }
 //$info_tmp=count($current_group['classes']['list']);
+//+++++++++++++++++++++++++++++++++++++++++
+if ($id_aid != NULL) {
+	$current_aid = get_tab_aid($id_aid);
+}
+elseif((isset($id_liste_aid))&&(count($id_liste_aid)==1)) {
+	$current_aid = get_tab_aid($id_liste_aid[0]);
+}
+$flag_aid_plusieurs_classes = "n";
+if(isset($current_aid)) {
+	if(count($current_aid['classes']['list'])>1) {
+		$flag_aid_plusieurs_classes = "y";
+	}
+}
+//+++++++++++++++++++++++++++++++++++++++++
+
 
 //echo $nb_pages;
 
@@ -281,7 +307,9 @@ if(count($current_group['classes']['list'])>1) {
 			}
 		} elseif ($id_classe!=NULL) { // C'est une classe
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
-		} //fin c'est une classe
+		} elseif ($id_aid!=NULL) { // C'est unAID
+			$donnees_eleves = traite_donnees_aid($id_aid,$id_periode,$nb_eleves,$tri);
+		} //fin c'est un AID
 
 		//IMPRESSION A LA CHAINE
 		if ($id_liste_groupes!=NULL) {
@@ -291,17 +319,26 @@ if(count($current_group['classes']['list'])>1) {
 				$id_classe=$donnees_eleves[0]['id_classe'];
 			}
 		}
-/*
-echo "\$i_pdf=$i_pdf<br />
-\$donnees_eleves
-<pre>";
-print_r($donnees_eleves);
-echo "</pre>";
-*/
+
+		if ($id_liste_aid!=NULL) {
+			$donnees_eleves = traite_donnees_aid($id_liste_aid[$i_pdf],$id_periode,$nb_eleves,$tri);
+			$id_aid=$id_liste_aid[$i_pdf];
+			if(count($donnees_eleves)>0) {
+				$id_classe=$donnees_eleves[0]['id_classe'];
+			}
+		}
+
 		if ($id_liste_classes!=NULL) {
 			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
 		}
+		/*
+		echo "\$i_pdf=$i_pdf<br />
+		\$donnees_eleves
+		<pre>";
+		print_r($donnees_eleves);
+		echo "</pre>";
+		*/
 
 		//echo "count(\$donnees_eleves)=".count($donnees_eleves)."<br />";
 		if(count($donnees_eleves)==0) {
@@ -385,7 +422,7 @@ echo "</pre>";
 			}
 
 			if (($affiche_pp==1)) {
-			   if ($id_groupe == NULL) {
+			   if (($id_groupe == NULL)&&($id_aid == NULL)) {
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
 				   $pdf->SetFont('DejaVu','I',8.5);
 			   }
@@ -412,6 +449,31 @@ echo "</pre>";
 					}
 					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
 				}
+			   } elseif ($id_aid != NULL) {
+				$current_aid = get_tab_aid($id_aid);
+				// On n'affiche pas le PP (il peut y en avoir plusieurs) et on n'affiche pas la période (pas d'intérêt pour les AID)
+				/*
+				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_per)==0){
+					die("Problème avec les infos de la classe $id_classe</body></html>");
+				}
+				else{
+					$lig_tmp=mysqli_fetch_object($res_per);
+					$periode=$lig_tmp->nom_periode;
+					//Affichage  de la période
+					//$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+					if(isset($current_aid)) {
+						$texte_per=$current_aid['classlist_string']." - ".$periode;
+						//$texte_per=$current_group['classlist_string'];
+					}
+					else {
+						$texte_per=$periode;
+					}
+					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
+				}
+				*/
+				$pdf->CellFitScale($L_entete_discipline,$H_entete_classe , $current_aid['classlist_string'],'TLBR',2,'C');
 			   } else {
 				   $sql = "SELECT professeur FROM j_eleves_professeurs WHERE (login = '".$donnees_eleves[0]['login']."' and id_classe='$id_classe')";
 				   $call_profsuivi_eleve = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -421,31 +483,30 @@ echo "</pre>";
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,ucfirst($gepi_prof_suivi).' : '.affiche_utilisateur($current_eleve_profsuivi_login,$id_classe),'LRB',0,'L');//'Année scolaire '.getSettingValue('gepiYear')
 			   }
 			}
-
 			else {
-              // On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
-			  if ($id_groupe != NULL) {
-				$current_group = get_group($id_groupe);
-				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
-				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($res_per)==0){
-					die("Problème avec les infos de la classe $id_classe</body></html>");
-				}
-				else{
-					$lig_tmp=mysqli_fetch_object($res_per);
-					$periode=$lig_tmp->nom_periode;
-					if(isset($current_group)) {
-						$texte_per=$current_group['classlist_string']." - ".$periode;
+				// On n'affiche pas le PP (il peut y en avoir plusieurs) ==> on affiche la période
+				if ($id_groupe != NULL) {
+					$current_group = get_group($id_groupe);
+					$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='$id_periode' ORDER BY num_periode";
+					$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_per)==0){
+						die("Problème avec les infos de la classe $id_classe</body></html>");
 					}
-					else {
-						$texte_per=$periode;
+					else{
+						$lig_tmp=mysqli_fetch_object($res_per);
+						$periode=$lig_tmp->nom_periode;
+						if(isset($current_group)) {
+							$texte_per=$current_group['classlist_string']." - ".$periode;
+						}
+						else {
+							$texte_per=$periode;
+						}
+						//Affichage  de la période
+						//$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
+						$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
 					}
-					//Affichage  de la période
-					//$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$periode,'TLBR',2,'C');
-					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe ,$texte_per,'TLBR',2,'C');
 				}
-			  }
-			  //$pdf->CellFitScale($L_entete_classe,$H_entete_classe,' '.$current_classe,'LTRB',2,'C');
+				//$pdf->CellFitScale($L_entete_classe,$H_entete_classe,' '.$current_classe,'LTRB',2,'C');
 			}
 
 
@@ -457,13 +518,20 @@ echo "</pre>";
 			if ($id_groupe != NULL) {
 				$current_group = get_group($id_groupe);
 				$matiere = $current_group["description"];
-                 //echo $matiere."<br/>";
+				//echo $matiere."<br/>";
+				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
+				$pdf->SetFont('DejaVu','I',11);
+				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
+			} elseif ($id_aid != NULL) {
+				$current_aid = get_tab_aid($id_aid);
+				$matiere = $current_aid["nom_aid"];
+				//echo $matiere."<br/>";
 				$pdf->CellFitScale($L_entete_discipline,$H_entete_discipline /2 ,$matiere,'LTR',2,'C');
 				$pdf->SetFont('DejaVu','I',11);
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
-			// On demande une classe ==> on ajoute la période.
-			        $pdf->SetFont('DejaVu','I',11);
+				// On demande une classe ==> on ajoute la période.
+				$pdf->SetFont('DejaVu','I',11);
 
 				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
 				$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -483,7 +551,7 @@ echo "</pre>";
 
 		//La ligne de texte après les entêtes
 			if ($avec_ligne_texte==1) {
-			    if ($ligne_texte == '') {$ligne_texte=' ';}
+				if ($ligne_texte == '') {$ligne_texte=' ';}
 				$pdf->CellFitScale(0,10,$ligne_texte,'',2,'C');
 				$Y_courant=$pdf->GetY()+2.5;
 			}
@@ -606,7 +674,7 @@ echo "</pre>";
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont('DejaVu','',9);
 				//if ($flag_groupe==true) {
-				if ($flag_groupe_plusieurs_classes=="y") {
+				if (($flag_groupe_plusieurs_classes=="y")||($flag_aid_plusieurs_classes=="y")) {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']." (".$donnees_eleves[$nb_eleves_i]['nom_court'].")"));
 				} else {
 					$texte = (($donnees_eleves[$nb_eleves_i]['nom'])." ".($donnees_eleves[$nb_eleves_i]['prenom']));

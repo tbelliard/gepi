@@ -149,6 +149,7 @@ global $prefix_base ;
 			$res_regime=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_regime)==0) {
 				$eleve_doublant='';
+
 				$eleve_regime='';
 			}
 			else {
@@ -178,6 +179,129 @@ global $prefix_base ;
 
 	/*
 	echo "<pre>\$donnees_eleves\n";
+
+	print_r($donnees_eleves);
+	echo "</pre>";
+	*/
+	//echo "tri=$tri<br />";
+    if ($tri=='classes') {
+		$column=array();
+		$column1=array();
+		$column2=array();
+		foreach($donnees_eleves as $sortarray)
+		{
+			//$column[] = $sortarray['id_classe'];
+			//@array_multisort($column, SORT_ASC, $donnees_eleves);
+			$column[] = $sortarray['nom_complet'];
+			$column1[] = $sortarray['nom_court'];
+			$column2[] = $sortarray['nom'];
+		}
+		@array_multisort($column, SORT_ASC, $column1, SORT_ASC, $column2, SORT_ASC, $donnees_eleves);
+		/*
+		echo "<pre>\$column\n";
+		print_r($column);
+		echo "</pre>";
+		*/
+	}
+	/*
+	echo "<pre>\$donnees_eleves\n";
+	print_r($donnees_eleves);
+	echo "</pre>";
+	*/
+	if(isset($donnees_eleves)) {
+	    return $donnees_eleves;
+	}
+	else {
+	    return array();
+	}
+}
+
+
+// Traitement des données pour un AID référencé par id_aid et id_periode
+// retourne un tableau avec les données de la base
+// modifie la variable nombre_eleve
+//variable $tri  ==> 'classe' tri des AID par classe puis nom er prénom / autrement par liste alpha
+function traite_donnees_aid($id_aid,$id_periode,&$nombre_eleves,$tri)
+{
+	global $prefix_base ;
+
+	$current_aid = get_tab_aid($id_aid);
+/*
+echo "Aid n°$id_aid<pre>";
+print_r($current_aid);
+echo "</pre>";
+*/
+	$donnees_eleves=array();
+	$cpt_i=0;
+	if(isset($current_aid["eleves"][$id_periode]["users"])) {
+		foreach($current_aid["eleves"][$id_periode]["users"] as $current_eleve) {
+			$eleve_login = $current_eleve["login"];
+			$eleve_nom = $current_eleve["nom"];
+			$eleve_prenom = $current_eleve["prenom"];
+
+			$sql="SELECT classe, nom_complet FROM classes WHERE id='".$current_eleve["classe"]."'";
+			//echo "$sql<br />";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_tmp)==0){
+				die("$eleve_login ne serait dans aucune classe???</body></html>");
+			}
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_classe=$lig_tmp->classe;
+				$eleve_classe_nom_complet=$lig_tmp->nom_complet;
+			}
+			// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance,ereno...
+			//$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
+			$sql="SELECT id_classe,naissance,ereno FROM eleves, j_eleves_classes WHERE eleves.login='$eleve_login' AND j_eleves_classes.login=eleves.login;";
+		    //echo "$sql<br />";
+			$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			if(mysqli_num_rows($res_tmp)==0){
+				die("Problème avec les infos de $eleve_login</body></html>");
+			}
+			else{
+				$lig_tmp=mysqli_fetch_object($res_tmp);
+				$eleve_naissance=$lig_tmp->naissance;
+				$eleve_ereno=$lig_tmp->ereno;
+				$eleve_id_classe=$lig_tmp->id_classe;
+
+				// A quoi servent les données ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
+				$sql="SELECT doublant,regime FROM j_eleves_regime WHERE login='$eleve_login';";
+				$res_regime=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_regime)==0) {
+					$eleve_doublant='';
+
+					$eleve_regime='';
+				}
+				else {
+					$lig_tmp2=mysqli_fetch_object($res_regime);
+					$eleve_doublant=$lig_tmp2->doublant;
+					$eleve_regime=$lig_tmp2->regime;
+				}
+			}
+		  //pour rendre compatible groupe et classe  par la suite
+			$donnees_eleves[$cpt_i]['login'] = $eleve_login; 
+			$donnees_eleves[$cpt_i]['ereno'] = $eleve_ereno;
+			$donnees_eleves[$cpt_i]['nom'] = $eleve_nom;
+			$donnees_eleves[$cpt_i]['prenom'] = $eleve_prenom;
+			$donnees_eleves[$cpt_i]['naissance'] = $eleve_naissance;
+			$donnees_eleves[$cpt_i]['nom_complet'] =  $eleve_classe_nom_complet;
+			$donnees_eleves[$cpt_i]['nom_court'] =  $eleve_classe;
+			$donnees_eleves[$cpt_i]['doublant'] = $eleve_doublant;
+			$donnees_eleves[$cpt_i]['regime'] = $eleve_regime;
+			$donnees_eleves[$cpt_i]['id_classe'] = $eleve_id_classe; 
+			$donnees_eleves[$cpt_i]['id_periode'] = $id_periode; // ID de la période traitée
+				
+			$ident_eleve_sel1=$donnees_eleves[$cpt_i]['login'];
+		
+			$cpt_i++;
+		}
+	}
+	$nombre_eleves = $cpt_i; // parametre de la fonction
+
+	/*
+	echo "<pre>\$donnees_eleves\n";
+
 	print_r($donnees_eleves);
 	echo "</pre>";
 	*/

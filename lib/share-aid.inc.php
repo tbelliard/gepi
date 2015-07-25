@@ -383,6 +383,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 		}
 
 		$tab_aid['classes']=array();
+		$tab_aid['classlist_string']="";
 		$sql="SELECT DISTINCT c.* FROM classes c, 
 							j_eleves_classes jec, 
 							j_aid_eleves jae 
@@ -394,6 +395,8 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 			while($lig=mysqli_fetch_assoc($res)) {
 				$tab_aid['classes']['list'][]=$lig["id"];
 				$tab_aid['classes']['classes'][$lig["id"]]=$lig;
+				if($tab_aid['classlist_string']!="") {$tab_aid['classlist_string'].=", ";}
+				$tab_aid['classlist_string'].=$lig['classe'];
 			}
 		}
 
@@ -406,6 +409,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 						WHERE p.id_classe=jec.id_classe AND 
 							jec.login=jae.login AND 
 							jae.id_aid='".$id_aid."';";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$lig=mysqli_fetch_object($res);
