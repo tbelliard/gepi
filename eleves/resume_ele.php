@@ -254,7 +254,7 @@ elseif($_SESSION['statut']=="responsable") {
 	}
 
 	if(count($tab_ele2)==0) {
-		header("Location: ../accueil.php?msg=Aucun élève trouvé");
+		header("Location: ../accueil.php?accueil_simpl=n&msg=Aucun élève trouvé");
 		die();
 	}
 

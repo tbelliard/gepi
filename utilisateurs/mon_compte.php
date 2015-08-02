@@ -2339,223 +2339,226 @@ if($_SESSION['statut']=='professeur') {
 
 	//============================================================
 
-	echo "<a name='accueil_simpl_prof'></a><form name='form_accueil_simpl_prof' method='post' action='".$_SERVER['PHP_SELF']."#accueil_simpl_prof'>\n";
-	echo add_token_field();
-	echo "<fieldset style='border: 1px solid grey;";
-	echo "background-image: url(\"../images/background/opacite50.png\"); ";
-	echo "'>\n";
-	echo "<legend style='border: 1px solid grey;";
-	//echo "background-image: url(\"../images/background/opacite50.png\"); ";
-	echo "background-color: white; ";
-	echo "'>Page d'accueil simplifiée</legend>\n";
+	//============================================================
+	// La page d'accueil simplifiée pour les profs n'est proposée que si un des modules Notes, CDT, Trombinoscope est activé
+	if((getSettingAOui('active_carnets_notes'))||(getSettingAOui('active_cahiers_texte'))||(getSettingAOui('active_module_trombinoscopes'))) {
+		echo "<a name='accueil_simpl_prof'></a><form name='form_accueil_simpl_prof' method='post' action='".$_SERVER['PHP_SELF']."#accueil_simpl_prof'>\n";
+		echo add_token_field();
+		echo "<fieldset style='border: 1px solid grey;";
+		echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "'>\n";
+		echo "<legend style='border: 1px solid grey;";
+		//echo "background-image: url(\"../images/background/opacite50.png\"); ";
+		echo "background-color: white; ";
+		echo "'>Page d'accueil simplifiée</legend>\n";
 
-	echo "<input type='hidden' name='valide_accueil_simpl_prof' value='y' />\n";
+		echo "<input type='hidden' name='valide_accueil_simpl_prof' value='y' />\n";
 
-	//echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée.</p>\n";
+		//echo "<p>Paramétrage de la page d'<b>accueil</b> simplifiée.</p>\n";
 
-	//echo "<div style='margin-left:3em;'>\n";
-	$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
+		//echo "<div style='margin-left:3em;'>\n";
+		$tabchamps=array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_trombino','accueil_cn','accueil_bull','accueil_visu','accueil_liste_pdf');
 
-	//echo "<table border='1'>\n";
-	echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
+		//echo "<table border='1'>\n";
+		echo "<table class='boireaus' border='1' summary='Préférences professeurs'>\n";
 
-	// 1ère ligne
-	//$lignes_entete="<tr style='background-color: white;'>\n";
-	$lignes_entete="<tr class='entete'>\n";
-	$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
-	$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
-	$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
-	$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
-	$lignes_entete.="</tr>\n";
+		// 1ère ligne
+		//$lignes_entete="<tr style='background-color: white;'>\n";
+		$lignes_entete="<tr class='entete'>\n";
+		$lignes_entete.="<th rowspan='2'>".$gepiSettings['denomination_professeur']."</th>\n";
+		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
+		$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
+		$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
+		$lignes_entete.="</tr>\n";
 
-	// 2ème ligne
-	//$lignes_entete.="<tr style='background-color: white;'>\n";
-	$lignes_entete.="<tr class='entete'>\n";
-	$lignes_entete.="<th>le Cahier de textes</th>\n";
-	$lignes_entete.="<th>le Trombinoscope</th>\n";
-	$lignes_entete.="<th>le Carnet de notes</th>\n";
-	$lignes_entete.="<th>les notes et appréciations des Bulletins</th>\n";
-	$lignes_entete.="<th>la Visualisation des graphes et bulletins simplifiés</th>\n";
-	$lignes_entete.="<th>les Listes PDF des élèves</th>\n";
-	$lignes_entete.="</tr>\n";
+		// 2ème ligne
+		//$lignes_entete.="<tr style='background-color: white;'>\n";
+		$lignes_entete.="<tr class='entete'>\n";
+		$lignes_entete.="<th>le Cahier de textes</th>\n";
+		$lignes_entete.="<th>le Trombinoscope</th>\n";
+		$lignes_entete.="<th>le Carnet de notes</th>\n";
+		$lignes_entete.="<th>les notes et appréciations des Bulletins</th>\n";
+		$lignes_entete.="<th>la Visualisation des graphes et bulletins simplifiés</th>\n";
+		$lignes_entete.="<th>les Listes PDF des élèves</th>\n";
+		$lignes_entete.="</tr>\n";
 
-	echo $lignes_entete;
+		echo $lignes_entete;
 
-	$i=0;
+		$i=0;
 
-	echo "<tr>\n";
+		echo "<tr>\n";
 
-	echo "<td id='td_nomprenom_0_accueil_simpl'>";
-	echo my_strtoupper($_SESSION['nom'])." ".casse_mot($_SESSION['prenom'],'majf2');
-	echo "</td>\n";
+		echo "<td id='td_nomprenom_0_accueil_simpl'>";
+		echo my_strtoupper($_SESSION['nom'])." ".casse_mot($_SESSION['prenom'],'majf2');
+		echo "</td>\n";
 
-	$j=0;
-	cellule_checkbox($_SESSION['login'],$tabchamps[$j],0,'accueil_simpl');
-	for($j=1;$j<count($tabchamps);$j++){
-		cellule_checkbox($_SESSION['login'],$tabchamps[$j],0,'');
-	}
+		$j=0;
+		cellule_checkbox($_SESSION['login'],$tabchamps[$j],0,'accueil_simpl');
+		for($j=1;$j<count($tabchamps);$j++){
+			cellule_checkbox($_SESSION['login'],$tabchamps[$j],0,'');
+		}
 
-	echo "</tr>\n";
+		echo "</tr>\n";
 
-	echo "</table>\n";
+		echo "</table>\n";
 
 
-	echo "<p class='bold' style='margin-top:1em;'>Vous pouvez trier/masquer des enseignements en page d'accueil simplifiée&nbsp;:</p>";
-	$tab_grp_order=array();
-	$tab_grp_hidden=array();
-	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
-	$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_grp_order)>0) {
-		while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
-			$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
-			if($lig_grp_order->value=='-1') {
-				$tab_grp_hidden[]=$tmp_id_groupe;
-			}
-			else {
-				$tab_grp_order[]=$tmp_id_groupe;
+		echo "<p class='bold' style='margin-top:1em;'>Vous pouvez trier/masquer des enseignements en page d'accueil simplifiée&nbsp;:</p>";
+		$tab_grp_order=array();
+		$tab_grp_hidden=array();
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+		$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp_order)>0) {
+			while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
+				$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig_grp_order->name);
+				if($lig_grp_order->value=='-1') {
+					$tab_grp_hidden[]=$tmp_id_groupe;
+				}
+				else {
+					$tab_grp_order[]=$tmp_id_groupe;
+				}
 			}
 		}
-	}
 
-	// On passe en revue les groupes qui ont été triés dans Mon compte
-	$cpt=1;
-	if(count($tab_grp_order)>0) {
-		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:</p>
+		// On passe en revue les groupes qui ont été triés dans Mon compte
+		$cpt=1;
+		if(count($tab_grp_order)>0) {
+			echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont triés&nbsp;:</p>
 <table class='boireaus boireaus_alt'>";
-		for($loop=0;$loop<count($tab_grp_order);$loop++) {
-			for($i=0;$i<count($groups);$i++) {
-				if($groups[$i]['id']==$tab_grp_order[$loop]) {
+			for($loop=0;$loop<count($tab_grp_order);$loop++) {
+				for($i=0;$i<count($groups);$i++) {
+					if($groups[$i]['id']==$tab_grp_order[$loop]) {
 
-					echo "
+						echo "
 	<tr>
 		<td>
 			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
-					if(count($groups[$i]['profs']['list'])>1) {
-						echo " avec ".$groups[$i]['profs']['proflist_string'];
-					}
-					echo "</em>)"."</span>
+						if(count($groups[$i]['profs']['list'])>1) {
+							echo " avec ".$groups[$i]['profs']['proflist_string'];
+						}
+						echo "</em>)"."</span>
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
 					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 						<option value='-1'>Ne pas afficher ce groupe</option>";
-					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
-						if($loop2==$cpt) {
-							$selected=" selected";
-						}
-						else {
-							$selected="";
+						for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+							if($loop2==$cpt) {
+								$selected=" selected";
+							}
+							else {
+								$selected="";
+							}
+							echo "
+						<option value='$loop2'$selected>$loop2</option>";
 						}
 						echo "
-						<option value='$loop2'$selected>$loop2</option>";
-					}
-					echo "
 					</select>
 		</td>
 	</tr>";
-					break;
+						break;
+					}
 				}
+				$cpt++;
 			}
-			$cpt++;
+			echo "</table>";
 		}
-		echo "</table>";
-	}
 
-	// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
-	$temoin_grp_non_encore_trie="n";
-	for($i=0;$i<count($groups);$i++) {
-		if((!in_array($groups[$i]['id'], $tab_grp_order))&&(!in_array($groups[$i]['id'], $tab_grp_hidden))) {
-			if($temoin_grp_non_encore_trie=="n") {
-				echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:</p>
+		// Les groupes qui n'ont pas été triés dans Mon compte et pas cachés non plus
+		$temoin_grp_non_encore_trie="n";
+		for($i=0;$i<count($groups);$i++) {
+			if((!in_array($groups[$i]['id'], $tab_grp_order))&&(!in_array($groups[$i]['id'], $tab_grp_hidden))) {
+				if($temoin_grp_non_encore_trie=="n") {
+					echo "<p style='margin-left:3em;text-indent:-2em;'>L'ordre ou le masquage des groupes suivants n'a pas encore été défini (<em>ils seront affichés</em>)&nbsp;:</p>
 <table class='boireaus boireaus_alt'>";
-				$temoin_grp_non_encore_trie="y";
-			}
-			echo "
+					$temoin_grp_non_encore_trie="y";
+				}
+				echo "
 	<tr>
 		<td>
 			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
-			if(count($groups[$i]['profs']['list'])>1) {
-				echo " avec ".$groups[$i]['profs']['proflist_string'];
-			}
-			echo "</em>)"."</span>
+				if(count($groups[$i]['profs']['list'])>1) {
+					echo " avec ".$groups[$i]['profs']['proflist_string'];
+				}
+				echo "</em>)"."</span>
 			<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
 			<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 				<option value='-1' selected>Ne pas afficher ce groupe</option>";
-			for($loop2=1;$loop2<count($groups)+1;$loop2++) {
-					if($loop2==$cpt) {
-					$selected=" selected";
-				}
-				else {
-					$selected="";
+				for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+						if($loop2==$cpt) {
+						$selected=" selected";
+					}
+					else {
+						$selected="";
+					}
+					echo "
+				<option value='$loop2'$selected>$loop2</option>";
 				}
 				echo "
-				<option value='$loop2'$selected>$loop2</option>";
-			}
-			echo "
 			</select>
 		</td>
 	</tr>";
-			$cpt++;
+				$cpt++;
+			}
 		}
-	}
-	if($temoin_grp_non_encore_trie=="y") {
-		echo "</table>";
-	}
+		if($temoin_grp_non_encore_trie=="y") {
+			echo "</table>";
+		}
 
-	// Les groupes cachés
-	if(count($tab_grp_hidden)>0) {
-		echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:</p>
+		// Les groupes cachés
+		if(count($tab_grp_hidden)>0) {
+			echo "<p style='margin-left:3em;text-indent:-2em;'>Les groupes suivants sont actuellement cachés en page d'accueil simplifiée&nbsp;:</p>
 <table class='boireaus boireaus_alt'>";
-		for($loop=0;$loop<count($tab_grp_hidden);$loop++) {
-			for($i=0;$i<count($groups);$i++) {
-				if($groups[$i]['id']==$tab_grp_hidden[$loop]) {
+			for($loop=0;$loop<count($tab_grp_hidden);$loop++) {
+				for($i=0;$i<count($groups);$i++) {
+					if($groups[$i]['id']==$tab_grp_hidden[$loop]) {
 
-					echo "
+						echo "
 	<tr>
 		<td>
 			<span id='texte_accueil_simpl_afficher_grp_$cpt'>".$groups[$i]['name']." (<em style='font-size:small'>".$groups[$i]['name']." en ".$groups[$i]['classlist_string'];
-					if(count($groups[$i]['profs']['list'])>1) {
-						echo " avec ".$groups[$i]['profs']['proflist_string'];
-					}
-					echo "</em>)"."</span>
+						if(count($groups[$i]['profs']['list'])>1) {
+							echo " avec ".$groups[$i]['profs']['proflist_string'];
+						}
+						echo "</em>)"."</span>
 					<input type='hidden' name='accueil_simpl_afficher_grp[$cpt]' value='".$groups[$i]['id']."' />
 		</td>
 		<td>
 					<select name='accueil_simpl_afficher_grp_rang[$cpt]'>
 						<option value='-1' selected>Ne pas afficher ce groupe</option>";
-					for($loop2=1;$loop2<count($groups)+1;$loop2++) {
-						echo "
+						for($loop2=1;$loop2<count($groups)+1;$loop2++) {
+							echo "
 						<option value='$loop2'>$loop2</option>";
-					}
-					echo "
+						}
+						echo "
 					</select>
 		</td>
 	</tr>";
-					break;
+						break;
+					}
 				}
+				$cpt++;
 			}
-			$cpt++;
+			echo "</table>";
 		}
-		echo "</table>";
+
+		echo "<p style='text-align:center;'>\n";
+		echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
+		$tabindex++;
+		echo "</p>\n";
+
+		if(isset($message_accueil_simpl_prof)) {echo $message_accueil_simpl_prof;}
+
+		echo "</fieldset>\n";
+		echo "</form>\n";
+		//echo "  <hr />\n";
+		echo "<br/>\n";
+
+		//echo "</div>\n";
 	}
-
-	echo "<p style='text-align:center;'>\n";
-	echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
-	$tabindex++;
-	echo "</p>\n";
-
-	if(isset($message_accueil_simpl_prof)) {echo $message_accueil_simpl_prof;}
-
-	echo "</fieldset>\n";
-	echo "</form>\n";
-	//echo "  <hr />\n";
-	echo "<br/>\n";
-
-	//echo "</div>\n";
 }
-
 //==============================================================================
 
 if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "professeur")) {

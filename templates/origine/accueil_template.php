@@ -262,7 +262,7 @@
 	if ((count($afficheAccueil->message))||
 	((isset($liste_evenements))&&($liste_evenements!=""))||
 	((isset($message_remplacements))&&($message_remplacements!=""))||
-	((isset($message_remplacements_proposes))&&($message_remplacements_a_valider!=""))||
+	((isset($message_remplacements_proposes))&&($message_remplacements_proposes!=""))||
 	((isset($message_remplacements_a_valider))&&($message_remplacements_a_valider!=""))||
 	((isset($message_remplacements_confirmes))&&($message_remplacements_confirmes!=""))||
 	((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!=""))) :
