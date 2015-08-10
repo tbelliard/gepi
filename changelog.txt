@@ -11,6 +11,7 @@ Librairies:
 AID:
 - Possibilité de visualiser en popup les élèves d'un AID depuis Mes_listes.
 - Possibilité d'effectuer un export CSV depuis Mes_listes_CSV.
+- Possibilité d'effectuer une impression PDF des listes d'élèves.
 
 Abs2:
 - Possibilité d'associer automatiquement des saisies (saisir_groupe.php) à un traitement englobant.

@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -114,6 +114,102 @@ if (isset($_POST['is_posted'])) {
 			}
 			else {
 				$msg .= "Enregistrement de end_bookings effectué.<br />";
+			}
+		}
+
+		// 20150810
+		$maj_dates_per=isset($_POST['maj_dates_per']) ? $_POST['maj_dates_per'] : array();
+		if(count($maj_dates_per)>0) {
+			$nb_update_per=0;
+			// Il faudrait vérifier que les dates sont cohérentes
+			$ts_prec=0;
+			for($loop=0;$loop<count($maj_dates_per);$loop++) {
+				$debut_per=isset($_POST["debut_per_".$maj_dates_per[$loop]]) ? $_POST["debut_per_".$maj_dates_per[$loop]] : NULL;
+				$fin_per=isset($_POST["fin_per_".$maj_dates_per[$loop]]) ? $_POST["fin_per_".$maj_dates_per[$loop]] : NULL;
+
+				$sql="SELECT * FROM edt_calendrier WHERE id_calendrier='".$maj_dates_per[$loop]."';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)==0) {
+					$msg.="La période dont l'identifiant id_calendrier est n°".$maj_dates_per[$loop]." n'existe pas.<br />";
+				}
+				else {
+					$lig_cal=mysqli_fetch_object($res);
+	
+					unset($ts_debut);
+					unset($ts_fin);
+
+					if(!preg_match("#[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}#", $debut_per)) {
+						$msg.="La date de début de période $debut_per est invalide.<br />";
+					}
+					else {
+						$tmp_tab=explode("/", $debut_per);
+						$jour_debut=$tmp_tab[0];
+						$mois_debut=$tmp_tab[1];
+						$annee_debut=$tmp_tab[2];
+
+						if(!checkdate($mois_debut,$jour_debut,$annee_debut)) {
+							$msg.="La date de début de période $debut_per est invalide.<br />";
+						}
+						else {
+							$ts_debut=gmmktime(0, 0, 0, $mois_debut, $jour_debut, $annee_debut);
+							if(!$ts_debut) {
+								$msg.="La date de début de période $debut_per est invalide.<br />";
+							}
+						}
+					}
+
+					if(!preg_match("#[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}#", $fin_per)) {
+						$msg.="La date de fin de période $fin_per est invalide.<br />";
+					}
+					else {
+						$tmp_tab=explode("/", $fin_per);
+						$jour_fin=$tmp_tab[0];
+						$mois_fin=$tmp_tab[1];
+						$annee_fin=$tmp_tab[2];
+
+						if(!checkdate($mois_fin,$jour_fin,$annee_fin)) {
+							$msg.="La date de fin de période $fin_per est invalide.<br />";
+						}
+						else {
+							$ts_fin=gmmktime(23, 59, 0, $mois_fin, $jour_fin, $annee_fin);
+							if(!$ts_fin) {
+								$msg.="La date de fin de période $fin_per est invalide.<br />";
+							}
+						}
+					}
+
+					if((isset($ts_debut))&&(isset($ts_fin))) {
+						// Ca ne convient pas: Les timestamp dans edt_calendrier sont en GMT
+						//$sql="UPDATE edt_calendrier SET debut_calendrier_ts='$ts_debut', fin_calendrier_ts='$ts_fin', jourdebut_calendrier='".strftime("%Y-%m-%d", $ts_debut)."', heuredebut_calendrier='00:00:00', jourfin_calendrier='".strftime("%Y-%m-%d", $ts_fin)."', heurefin_calendrier='23:59:00' WHERE id_calendrier='".$maj_dates_per[$loop]."';";
+						//$sql="UPDATE edt_calendrier SET debut_calendrier_ts='$ts_debut', fin_calendrier_ts='$ts_fin', jourdebut_calendrier='".$annee_debut."-".$mois_debut."-".$jour_debut."', heuredebut_calendrier='00:00:00', jourfin_calendrier='".$annee_fin."-".$mois_fin."-".$jour_fin."', heurefin_calendrier='23:59:00' WHERE id_calendrier='".$maj_dates_per[$loop]."';";
+						$sql="UPDATE edt_calendrier SET debut_calendrier_ts='$ts_debut', fin_calendrier_ts='$ts_fin', jourdebut_calendrier='".gmstrftime("%Y-%m-%d", $ts_debut)."', heuredebut_calendrier='00:00:00', jourfin_calendrier='".gmstrftime("%Y-%m-%d", $ts_fin)."', heurefin_calendrier='23:59:00' WHERE id_calendrier='".$maj_dates_per[$loop]."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						if($update) {
+
+							$tmp_tab=explode(";", $lig_cal->classe_concerne_calendrier);
+							for($loop2=0;$loop2<count($tmp_tab);$loop2++) {
+								if($tmp_tab[$loop2]!="") {
+									//$sql="UPDATE periodes SET date_fin='".strftime("%Y-%m-%d", $ts_fin+3600*2)." 00:00:00' WHERE id_classe='".$tmp_tab[$loop2]."' AND num_periode='".$lig_cal->numero_periode."'";
+									$sql="UPDATE periodes SET date_fin='".gmstrftime("%Y-%m-%d", $ts_fin+3600*2)." 00:00:00' WHERE id_classe='".$tmp_tab[$loop2]."' AND num_periode='".$lig_cal->numero_periode."'";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$update) {
+										$msg.="Erreur lors de la mise à jour de la date de fin pour la classe ".get_nom_classe($tmp_tab[$loop2])."<br />";
+									}
+								}
+							}
+
+							$nb_update_per++;
+						}
+						else {
+							$msg.="Erreur lors de la mise à jour des dates de début et fin de la période ".$lig_cal->nom_calendrier.".<br />";
+						}
+					}
+				}
+			}
+			if($nb_update_per>0) {
+				$msg.=$nb_update_per." périodes mises à jour.<br />";
 			}
 		}
 
@@ -254,6 +350,11 @@ if(isset($_SESSION['chgt_annee'])) {
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 // End standart header
@@ -269,7 +370,7 @@ echo "<p class='bold'><a href='index.php#chgt_annee' ".insert_confirm_abandon().
 
 echo "<p>Au changement d'année, avant d'initialiser la nouvelle année scolaire, il convient d'effectuer quelques opérations.<br />Elles sont en principe détaillées (<i>peut-être même plus à jour si des ajouts y ont été apportés après la sortie de votre version de GEPI</i>) sur le <a href='https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur' target='_blank'>Wiki</a>.</p>\n";
 
-echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='width: 100%;'>\n";
+echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' id='form1' style='width: 100%;'>\n";
 echo "<fieldset style='border: 1px solid grey;";
 echo "background-image: url(\"../images/background/opacite50.png\"); ";
 echo "'>\n";
@@ -310,8 +411,8 @@ echo "</ol>\n";
 
 echo "<p>La partie concernant la nouvelle année&nbsp;:</p>\n";
 echo "<ol>\n";
-echo "<li><p>Modifier l'année scolaire&nbsp; (<em>actuellement ".getSettingValue('gepiYear')."</em>) : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
-echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
+echo "<li style='margin-top:1em;'><p>Modifier l'année scolaire&nbsp; (<em>actuellement ".getSettingValue('gepiYear')."</em>) : <input type='text' name='gepiYear' size='20' value='".date('Y')."/".(date('Y')+1)."' onchange='changement()' /></li>\n";
+echo "<li style='margin-top:1em;'><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:<br />";
 ?>
 
 <table>
@@ -344,7 +445,72 @@ echo "<li><p>Modifier les dates de début et de fin des cahiers de textes&nbsp;:
 <?php
 echo "</li>\n";
 
-echo "<li>\n";
+// 20150810
+$sql="SELECT * FROM edt_calendrier WHERE numero_periode!='0' AND etabferme_calendrier='1' ORDER BY numero_periode;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+$cpt_per=0;
+if(mysqli_num_rows($res)>0) {
+	echo "<li style='margin-top:1em;'><p>Vous pouvez définir les dates de début et fin de périodes&nbsp;:<br />
+	<a href='javascript:ajout_un_an_dates_per()'>Ajouter un an aux dates et fins de périodes ci-dessous</a></p>
+	<ul>\n";
+	while($lig=mysqli_fetch_object($res)) {
+		echo "
+		<li>
+			<p style='text-indent:-3em;margin-left:3em;'>
+				<input type='checkbox' name='maj_dates_per[]' id='maj_dates_per_".$cpt_per."' value='".$lig->id_calendrier."' onchange=\"checkbox_change(this.id)\" /><label for='maj_dates_per_".$cpt_per."' id='texte_maj_dates_per_".$cpt_per."'> ".$lig->nom_calendrier."</label>&nbsp;:<br />
+				Début&nbsp;:<input type='text' name='debut_per_".$lig->id_calendrier."' id='debut_per_".$cpt_per."' value='".gmstrftime("%d/%m/%Y", $lig->debut_calendrier_ts)."' onchange=\"document.getElementById('maj_dates_per_".$cpt_per."').checked=true;checkbox_change('maj_dates_per_".$cpt_per."');\" size='8' onkeydown=\"clavier_date_plus_moins(this.id,event);document.getElementById('maj_dates_per_".$cpt_per."').checked=true;checkbox_change('maj_dates_per_".$cpt_per."');\" AutoComplete='off' /> à 00h00 ".img_calendrier_js("debut_per_".$cpt_per, "img_bouton_debut_per_".$cpt_per)."<br />
+				Fin&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:<input type='text' name='fin_per_".$lig->id_calendrier."' id='fin_per_".$cpt_per."' value='".gmstrftime("%d/%m/%Y", $lig->fin_calendrier_ts)."' onchange=\"document.getElementById('maj_dates_per_".$cpt_per."').checked=true;checkbox_change('maj_dates_per_".$cpt_per."');\" size='8' onkeydown=\"clavier_date_plus_moins(this.id,event);document.getElementById('maj_dates_per_".$cpt_per."').checked=true;checkbox_change('maj_dates_per_".$cpt_per."');\" AutoComplete='off' /> à 23h59 ".img_calendrier_js("fin_per_".$cpt_per, "img_bouton_fin_per_".$cpt_per)."
+			</p>
+			<p>
+				".strftime("%Y-%m-%d %H:%M:%S", $lig->debut_calendrier_ts)." à 
+				".strftime("%Y-%m-%d %H:%M:%S", $lig->fin_calendrier_ts)."
+			</p>
+		</li>";
+		$cpt_per++;
+	}
+	echo "
+	</ul>
+	<p style='margin-top:1em;'>NOTES&nbsp;:</p>
+	<ul>
+		<li>Vous pourrez modifier ces dates par la suite s'il faut affiner ou corriger.</li>
+		<li>Seules les périodes cochées verront leurs dates de début et fin modifiées.</li>
+	</ul>
+</li>\n";
+}
+
+echo "<li style='margin-top:1em;'>\n";
+
+echo "<script type='text/javascript'>
+	/*
+	function maj_dates_periodes() {
+		for(i=0;i<$cpt_per;i++) {
+
+		}
+	}
+	*/
+
+	function ajout_un_an_dates_per() {
+		for(i=0;i<$cpt_per;i++) {
+			if(document.getElementById('maj_dates_per_'+i)) {
+				document.getElementById('maj_dates_per_'+i).checked=true;
+				checkbox_change('maj_dates_per_'+i);
+			}
+			if(document.getElementById('debut_per_'+i)) {
+				tmp_date=document.getElementById('debut_per_'+i).value;
+				tab=tmp_date.split('/');
+				document.getElementById('debut_per_'+i).value=tab[0]+'/'+tab[1]+'/'+eval(eval(tab[2])+1);
+			}
+			if(document.getElementById('fin_per_'+i)) {
+				tmp_date=document.getElementById('fin_per_'+i).value;
+				tab=tmp_date.split('/');
+				document.getElementById('fin_per_'+i).value=tab[0]+'/'+tab[1]+'/'+eval(eval(tab[2])+1);
+			}
+		}
+	}
+
+	".js_checkbox_change_style()."
+</script>";
+
 
 // Sauvegarde temporaire:
 $sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs
@@ -460,9 +626,53 @@ if(mysqli_num_rows($test)>0) {
 }
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
-echo "<input type='submit' name='Valider' value='Valider' />\n";
+echo "<input type='submit' name='Valider' id='Valider' value='Valider' />\n";
+echo "<input type='button' name='Valider2' id='Valider2' value='Valider' style='display:none;' onclick=\"check_et_valide_submit_form()\" />\n";
 echo "</fieldset>\n";
-echo "</form>\n";
+echo "</form>
+<script type='text/javascript'>
+	if(document.getElementById('Valider2')) {
+		document.getElementById('Valider2').style.display='';
+		if(document.getElementById('Valider')) {
+			document.getElementById('Valider').style.display='none';
+		}
+	}
+
+	function check_et_valide_submit_form() {
+		if('$cpt_per'=='0') {
+			document.getElementById('form1').submit();
+		}
+		else {
+			var m=0;
+			var n=0;
+			for(i=0;i<$cpt_per;i++) {
+				if(document.getElementById('maj_dates_per_'+i)) {
+					if(document.getElementById('maj_dates_per_'+i).checked==true) {
+						n++;
+					}
+				}
+				m++;
+			}
+			if(n==0) {
+				var is_confirmed = confirm(\"Vous avez choisi de ne modifier aucune date de période.\\nSi il s'agit d'une erreur, répondez ANNULER ci-dessous,\\nsinon confirmez la validation sans modification des dates de périodes par un OUI.\\nValider le formulaire?\");
+				if(is_confirmed){
+					document.getElementById('form1').submit();
+				}
+			}
+			else {
+				if(n!=m) {
+					var is_confirmed = confirm(\"Vous avez choisi de ne pas modifier certaines dates de pérides.\\nSi il s'agit d'une erreur, répondez ANNULER ci-dessous,\\nsinon confirmez la validation par un OUI.\\nValider le formulaire?\");
+					if(is_confirmed){
+						document.getElementById('form1').submit();
+					}
+				}
+				else {
+					document.getElementById('form1').submit();
+				}
+			}
+		}
+	}
+</script>\n";
 
 echo "<br />\n";
 
@@ -470,7 +680,7 @@ $lday = strftime("%d", getSettingValue("end_bookings"));
 $lmonth = strftime("%m", getSettingValue("end_bookings"));
 $lyear = date('Y')-1;
 
-echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form1' style='width: 100%;'>
+echo "<form action='".$_SERVER['PHP_SELF']."' method='post' name='form2' style='width: 100%;'>
 	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>
 		".add_token_field()."
 		<p>
@@ -515,7 +725,8 @@ echo "</li>
 		<p class='bold'>Rappel des opérations à effectuer après l'initialisation</p>
 		<ul>
 			<li>
-				<p><a href='../edt_organisation/edt_calendrier.php'>Changer les dates dans le calendrier EDT</a> et forcer les dates pour les absences (<em>Lien Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous.</em>).<br />
+				<p>Si vous avez plusieurs types de classes (<em>classes à trimestres et classes à semestre</em>), ou si vous avez de nouvelles classes par rapport à l'année précédente (<em>un nom de classe qui n'existait pas l'année précédente</em>), il faudra contrôler les dates de périodes pour vérifier que rien n'a été oublié&nbsp;:<br />
+				<a href='../edt_organisation/edt_calendrier.php'>Changer les dates dans le calendrier EDT</a> et forcer les dates pour les absences (<em>Lien Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous.</em>).<br />
 				Les dates de périodes de notes et les dates de vacances doivent être mises à jour sans quoi les compositions des groupes risquent d'être erronées lors de la saisie des absences et les totaux d'absences également.<br />
 				De plus, si vous avez de nouvelles classes, il faut qu'elles soient associées aux périodes de notes et de vacances.</p>
 			</li>
@@ -529,7 +740,7 @@ echo "</li>
 				<p>Effectuer l'association SSO pour les nouveaux comptes si vous êtes dans un environnement ENT.</p>
 			</li>
 			<li>
-				<p>Si vous utilisez un compte générique pour les professeurs d'EPS pour la saisie des absences<br />(<em>il arrive que tous les professeurs d'EPS fassent les saisies sur la même machine; se déconnecter/reconnecter pour ces saisies est très malcommode</em>),<br /><a href='../utilisateurs/index.php?mode=personnels'>ré-activer le compte Equipe EPS</a>,<br />créer un  enseignement par classe invisible sur B, CN, CDT via <a href='../classes/classes_param.php#creer_enseignement'>Paramétrage par lots</a>.</p>
+				<p>Si vous utilisez un compte générique pour les professeurs d'EPS pour la saisie des absences<br />(<em>il arrive que tous les professeurs d'EPS fassent les saisies sur la même machine; se déconnecter/reconnecter pour ces saisies est très malcommode</em>),<br /><a href='../utilisateurs/index.php?mode=personnels'>ré-activer le compte Equipe EPS</a>,<br />créer un  enseignement (<em>le nommer \"EPS_abs\" par exemple</em>) par classe invisible sur B, CN, CDT via <a href='../classes/classes_param.php#creer_enseignement'>Paramétrage par lots</a>.</p>
 			</li>
 			<li>
 				<p>Si vous utilisez le module Flux RSS pour les cahiers de textes, <a href='../cahier_texte_admin/rss_cdt_admin.php#rss_initialisation_cas_par_cas'>Créer les flux RSS manquants</a>.</p>
