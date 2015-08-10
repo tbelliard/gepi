@@ -2989,6 +2989,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
             </tr>
 <?php
 	//========================
+	$tab_mes_demandee=array();
 	if(count($ele_login)>0) {
 		$alt=$alt*(-1);
 ?>
@@ -3014,7 +3015,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
 				}
 			}
 
-			$tab_mes_demandee=array();
+			//$tab_mes_demandee=array();
 			//$sql="SELECT mesure FROM s_mesures WHERE type='demandee';";
 			$sql="SELECT * FROM s_mesures WHERE type='demandee';";
 			$res_mes=mysqli_query($GLOBALS["mysqli"], $sql);
