@@ -134,6 +134,20 @@ if (!isset($_POST["action"])) {
 		echo "<br />\n";
 		echo "<p><em>On remplit les tables 'classes', 'periodes' et 'j_eleves_classes'&nbsp;:</em> ";
 
+
+		// Pour ne pas mettre une info_action par classe si aucune période edt_calendrier n'est encore saisie
+		$sql="SELECT 1=1 FROM edt_calendrier WHERE classe_concerne_calendrier!=';' AND classe_concerne_calendrier!='';";
+		$test_cal=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_edt_cal=mysqli_num_rows($test_cal);
+		// On ne met alors qu'une seule info_action
+		if($nb_edt_cal==0) {
+			$info_action_titre="Dates de périodes et de vacances";
+			$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
+			$info_action_destinataire=array("administrateur");
+			$info_action_mode="statut";
+			enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+		}
+
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
@@ -177,10 +191,34 @@ if (!isset($_POST["action"])) {
 							"display_rang = 'n', " .
 							"display_address = 'n', " .
 							"display_coef = 'y'";
-						//echo "$sql<br />";
+						echo "$sql<br />";
 						$insert1 = mysqli_query($GLOBALS["mysqli"], $sql);
 						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
 						$classe_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+
+						$tab_id_classe=array();
+						$sql="SELECT id FROM classes ORDER BY classe;";
+						$res_classe = mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_classe=mysqli_fetch_object($res_classe)) {
+							$tab_id_classe[]=$lig_classe->id;
+						}
+
+						// Associer aux vacances:
+						$sql="SELECT * FROM edt_calendrier WHERE numero_periode='0' AND etabvacances_calendrier='1';";
+						$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_cal=mysqli_fetch_object($res_cal)) {
+							$chaine_id_classe="";
+
+							$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+							for($loop=0;$loop<count($tab_id_classe);$loop++) {
+								if(($tab_id_classe[$loop]==$classe_id)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+									$chaine_id_classe.=$tab_id_classe[$loop].";";
+								}
+							}
+
+							$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+							$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+						}
 
 						for ($p=1;$p<4;$p++) {
 							if ($p == 1) {$v = "O";}
@@ -191,8 +229,41 @@ if (!isset($_POST["action"])) {
 									"verouiller = '" . $v . "', " .
 									"id_classe = '" . $classe_id . "', ".
 									"date_verrouillage='0000-00-00 00:00:00'";
-							//echo "$sql<br />";
+							echo "$sql<br />";
 							$insert2 = mysqli_query($GLOBALS["mysqli"], $sql);
+
+							// 20150810
+							$sql="SELECT * FROM edt_calendrier WHERE numero_periode='".$p."';";
+							echo "$sql<br />";
+							$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_cal)==1) {
+								$lig_cal=mysqli_fetch_object($res_cal);
+
+								$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+								$chaine_id_classe="";
+								for($loop=0;$loop<count($tab_id_classe);$loop++) {
+									if(($tab_id_classe[$loop]==$classe_id)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+										$chaine_id_classe.=$tab_id_classe[$loop].";";
+									}
+								}
+
+								$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+								echo "$sql<br />";
+								$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+
+								$sql="UPDATE periodes SET date_fin='".$lig_cal->jourfin_calendrier."' WHERE id_classe='".$classe_id."' AND num_periode='".$lig_cal->numero_periode."';";
+								echo "$sql<br />";
+								$update_per=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							}
+							elseif($nb_edt_cal>0) {
+								$info_action_titre="Dates de périodes pour la classe ".get_nom_classe($classe_id);
+								$info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($classe_id)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
+								$info_action_destinataire=array("administrateur");
+								$info_action_mode="statut";
+								enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+							}
+
 						}
 						$num_periods = 3;
 
@@ -279,6 +350,9 @@ if (!isset($_POST["action"])) {
 				// On lit une ligne pour passer la ligne d'entête:
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
+					echo "<p>A titre d'information, la ligne d'entête passée est la suivante&nbsp;:<br />
+					<span style='color:green'>$ligne</span><br />
+					Si il ne s'agit pas d'une ligne d'entête, vous pouvez <a href='".$_SERVER['PHP_SELF']."'>refaire cette étape</a>.</p>";
 				}
 				//=========================
 

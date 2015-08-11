@@ -167,6 +167,7 @@ if (!isset($_POST["action"])) {
 		$i = 0;
 		// Compteur d'erreurs
 		$error = 0;
+		$temoin_ele_manquant=0;
 		// Compteur d'enregistrement
 		$total = 0;
 		while ($lig=mysqli_fetch_object($res_temp)) {
@@ -220,6 +221,8 @@ if (!isset($_POST["action"])) {
 					if ($test == 0 OR !$test) {
 						// Test négatif : aucun élève avec cet ID... On envoie un message d'erreur.
 						echo "<p style='color:red'>Erreur : l'élève avec l'identifiant interne " . $reg_id_eleve . " n'existe pas dans Gepi.</p>\n";
+						$error++;
+						$temoin_ele_manquant++;
 					} else {
 						// Test positif : on peut donc enregistrer les données de responsable.
 
@@ -288,8 +291,11 @@ if (!isset($_POST["action"])) {
 			$i++;
 		}
 
-		if ($error > 0) echo "<p style='color:red'>Il y a eu " . $error . " erreurs.</p>\n";
-		if ($total > 0) echo "<p>" . $total . " responsables ont été enregistrés.</p>\n";
+		if ($error > 0) {echo "<p style='color:red'>Il y a eu " . $error . " erreurs.</p>\n";}
+		if($temoin_ele_manquant>0) {
+			echo "<p style='color:red'>Un ou des élèves manquants ont été signalés.<br />Il se peut qu'il s'agisse d'élèves sans numéro national (INE) signalés à l'étape 1 et non enregistrés pour cette raison.</p>\n";
+		}
+		if ($total > 0) {echo "<p>" . $total . " responsables ont été enregistrés.</p>\n";}
 
 		echo "<p><a href='index.php#responsables'>Revenir à la page précédente</a></p>\n";
 
@@ -333,6 +339,9 @@ if (!isset($_POST["action"])) {
 				// On lit une ligne pour passer la ligne d'entête:
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
+					echo "<p>A titre d'information, la ligne d'entête passée est la suivante&nbsp;:<br />
+					<span style='color:green'>$ligne</span><br />
+					Si il ne s'agit pas d'une ligne d'entête, vous pouvez <a href='".$_SERVER['PHP_SELF']."'>refaire cette étape</a>.</p>";
 				}
 				//=========================
 
