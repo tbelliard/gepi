@@ -448,6 +448,9 @@ if (!isset($_POST["action"])) {
 				// On lit une ligne pour passer la ligne d'entête:
 				if($en_tete=="yes") {
 					$ligne = fgets($fp, 4096);
+					echo "<p>A titre d'information, la ligne d'entête passée est la suivante&nbsp;:<br />
+					<span style='color:green'>$ligne</span><br />
+					Si il ne s'agit pas d'une ligne d'entête, vous pouvez <a href='".$_SERVER['PHP_SELF']."'>refaire cette étape</a>.</p>";
 				}
 				//=========================
 
