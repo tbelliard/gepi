@@ -725,10 +725,10 @@ echo "</li>
 		<p class='bold'>Rappel des opérations à effectuer après l'initialisation</p>
 		<ul>
 			<li>
-				<p>Si vous avez plusieurs types de classes (<em>classes à trimestres et classes à semestre</em>), ou si vous avez de nouvelles classes par rapport à l'année précédente (<em>un nom de classe qui n'existait pas l'année précédente</em>), il faudra contrôler les dates de périodes pour vérifier que rien n'a été oublié&nbsp;:<br />
+				<p>Si vous avez plusieurs types de classes (<em>classes à trimestres et classes à semestre</em>), ou si vous avez de nouvelles classes par rapport à l'année précédente (<em>un nom de classe qui n'existait pas l'année précédente</em>), il faudra contrôler les dates de périodes pour vérifier que rien n'a été oublié.<br />
+				Dans tous les cas, les dates de vacances devront être mises à jour (<em>il est possible de les importer d'après le fichier iCal officiel Education Nationale</em>).<br />
 				<a href='../edt_organisation/edt_calendrier.php'>Changer les dates dans le calendrier EDT</a> et forcer les dates pour les absences (<em>Lien Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous.</em>).<br />
-				Les dates de périodes de notes et les dates de vacances doivent être mises à jour sans quoi les compositions des groupes risquent d'être erronées lors de la saisie des absences et les totaux d'absences également.<br />
-				De plus, si vous avez de nouvelles classes, il faut qu'elles soient associées aux périodes de notes et de vacances.</p>
+				Les dates de périodes de notes et les dates de vacances doivent être mises à jour sans quoi les compositions des groupes risquent d'être erronées lors de la saisie des absences et les totaux d'absences également.</p>
 			</li>
 			<li>
 				<p>Créer les comptes élèves/responsables manquants.</p>
