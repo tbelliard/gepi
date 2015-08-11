@@ -75,6 +75,9 @@ if(isset($_POST['afficher_liaison_ent'])) {
 }
 
 $afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
+if($afficher_liaison_ent=="") {
+	saveSetting('use_ent', "n");
+}
 
 if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1") {
 	check_token();
@@ -933,6 +936,7 @@ if($afficher_liaison_ent=="") {
 	$checked_aucun=" checked";
 }
 
+echo "<a name='liaison_ent'></a>\n";
 echo "<h3 class='gepi'>ENT</h3>\n";
 echo "<p>Cette section concerne des dispositifs spécifiques à deux Espaces Numériques de Travail.<br />
 L'ENT Argos dans une mouture spécifique à l'académie de Bordeaux d'une part,<br />
@@ -945,6 +949,9 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_argos_bordeaux\" value=\"argos_bordeaux\"$checked_argos_bordeaux /><label for='afficher_liaison_ent_argos_bordeaux'>Liaison ENT pour l'ENT Argos de Bordeaux</label><br />
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_netcollege\" value=\"netcollege\"$checked_netcollege /><label for='afficher_liaison_ent_netcollege'>Liaison ENT pour l'ENT Netcollege</label><br />
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_aucun\" value=\"\"$checked_aucun /><label for='afficher_liaison_ent_aucun'>Ne pas afficher le menu <strong>Liaison ENT</strong></label><br />
+		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dans ce dernier cas, si <strong>Utiliser la table de correspondance SSO</strong> est coché ci-dessus dans le formulaire <strong>Modes d'authentification</strong>,<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c'est une entrée <strong>Correspondances identifiants SSO</strong> qui sera proposée<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dans <strong>Gestion des bases/Comptes utilisateurs</strong>)<em><br />
 		<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />
 		<input type=hidden name=mode_navig value='$mode_navig' />
 	</fieldset>
