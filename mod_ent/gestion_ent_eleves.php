@@ -121,7 +121,7 @@ if ($action == "modifier") {
 			}
 
 			$aff_erreurs .= '
-			<p>Une erreur sur cet élève : '.$reg_nom.' '.$reg_prenom.' (num. int. '.$reg_eleonet.') - '.$reg_sexe.' - '.$reg_naissance.'
+			<p>Une erreur sur cet élève : '.$reg_nom.' '.$reg_prenom.' (num. int. '.$reg_elenoet.') - '.$reg_sexe.' - '.$reg_naissance.'
 			<input type="text" name="modifier_'.$j.'" value="'.$aff_rep_r.'" />'.$aff_rep_nomprenom_r.'
 			<input type="hidden" name="id_'.$j.'" value="'.$inc.'" />.</p>';
 			$j++;
