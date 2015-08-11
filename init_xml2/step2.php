@@ -197,6 +197,19 @@ if (isset($is_posted)) {
 		while($lig_scol=mysqli_fetch_object($res_scol)) {$tab_user_scol[]=$lig_scol->login;}
 	}
 
+	// Pour ne pas mettre une info_action par classe si aucune période edt_calendrier n'est encore saisie
+	$sql="SELECT 1=1 FROM edt_calendrier WHERE classe_concerne_calendrier!=';' AND classe_concerne_calendrier!='';";
+	$test_cal=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_edt_cal=mysqli_num_rows($test_cal);
+	// On ne met alors qu'une seule info_action
+	if($nb_edt_cal==0) {
+		$info_action_titre="Dates de périodes et de vacances";
+		$info_action_texte="Pensez à importer les périodes de vacances et saisir ou mettre à jour les dates de périodes et les classes associées dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.<br />Les dates de vacances sont notamment utilisées pour les totaux d'absences.";
+		$info_action_destinataire=array("administrateur");
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+	}
+
 	// On va enregistrer la liste des classes, ainsi que les périodes qui leur seront attribuées
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT distinct(DIVCOD) classe FROM temp_gep_import2 WHERE DIVCOD!='' ORDER BY DIVCOD");
 	$nb = mysqli_num_rows($call_data);
@@ -205,9 +218,11 @@ if (isset($is_posted)) {
 	while ($i < $nb) {
 		$classe = old_mysql_result($call_data, $i, "classe");
 		// On enregistre la classe
+		$insert_ou_update_classe="";
 		// On teste d'abord :
 		$test = old_mysql_result(mysqli_query($GLOBALS["mysqli"], "SELECT count(*) FROM classes WHERE (classe='$classe')"),0);
 		if ($test == "0") {
+			$insert_ou_update_classe="insert";
 			$reg_classe = mysqli_query($GLOBALS["mysqli"], "INSERT INTO classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni'");
 
 			$id_classe=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
@@ -222,7 +237,32 @@ if (isset($is_posted)) {
 				}
 			}
 
+			$tab_id_classe=array();
+			$sql="SELECT id FROM classes ORDER BY classe;";
+			$res_classe = mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_classe=mysqli_fetch_object($res_classe)) {
+				$tab_id_classe[]=$lig_classe->id;
+			}
+
+			// Associer aux vacances:
+			$sql="SELECT * FROM edt_calendrier WHERE numero_periode='0' AND etabvacances_calendrier='1';";
+			$res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_cal=mysqli_fetch_object($res_cal)) {
+				$chaine_id_classe="";
+
+				$tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+				for($loop=0;$loop<count($tab_id_classe);$loop++) {
+					if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+						$chaine_id_classe.=$tab_id_classe[$loop].";";
+					}
+				}
+
+				$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+				$update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+
         } else {
+            $insert_ou_update_classe="update";
             $reg_classe = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET classe='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($classe, "an", " -_", ""))."',nom_complet='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_nom_complet[$classe], "an", " '-_", ""))."',suivi_par='".mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_suivi[$classe], "an", " .,'-_", ""))."',formule='".html_entity_decode(mysqli_real_escape_string($GLOBALS["mysqli"], nettoyer_caracteres_nom($reg_formule[$classe], "an", " .,'-_", "")))."', format_nom='cni' WHERE classe='$classe'");
         }
         if (!$reg_classe) {echo "<p style='color:red'>Erreur lors de l'enregistrement de la classe $classe.";}
@@ -237,8 +277,41 @@ if (isset($is_posted)) {
                 $num = $j+1;
                 $nom_per = "Période ".$num;
                 if ($num == "1") { $ver = "N"; } else { $ver = 'O'; }
-                $register = mysqli_query($GLOBALS["mysqli"], "INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe'");
+                $sql="INSERT INTO periodes SET num_periode='$num',nom_periode='$nom_per',verouiller='$ver',id_classe='$id_classe';";
+                $register = mysqli_query($GLOBALS["mysqli"], $sql);
                 if (!$register) echo "<p>Erreur lors de l'enregistrement d'une période pour la classe $classe";
+
+                // 20150810
+                if($insert_ou_update_classe=="insert") {
+                    $sql="SELECT * FROM edt_calendrier WHERE numero_periode='".$num."';";
+                    $res_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+                    if(mysqli_num_rows($res_cal)==1) {
+                        $lig_cal=mysqli_fetch_object($res_cal);
+
+                        $tab_id_classe_deja=explode(";", $lig_cal->classe_concerne_calendrier);
+                        $chaine_id_classe="";
+                        for($loop=0;$loop<count($tab_id_classe);$loop++) {
+                            if(($tab_id_classe[$loop]==$id_classe)||(in_array($tab_id_classe[$loop], $tab_id_classe_deja))) {
+                                $chaine_id_classe.=$tab_id_classe[$loop].";";
+                            }
+                        }
+
+                        //$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$lig_cal->classe_concerne_calendrier.$id_classe.";' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+                        $sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".$chaine_id_classe."' WHERE id_calendrier='".$lig_cal->id_calendrier."';";
+                        $update_cal = mysqli_query($GLOBALS["mysqli"], $sql);
+
+                        $sql="UPDATE periodes SET date_fin='".$lig_cal->jourfin_calendrier."' WHERE id_classe='".$id_classe."' AND num_periode='".$lig_cal->numero_periode."';";
+                        $update_per=mysqli_query($GLOBALS["mysqli"], $sql);
+                    }
+                    elseif($nb_edt_cal>0) {
+                        $info_action_titre="Dates de périodes pour la classe ".get_nom_classe($id_classe);
+                        $info_action_texte="Pensez à contrôler que la classe ".get_nom_classe($id_classe)." est bien associée aux périodes et vacances dans <a href='edt_organisation/edt_calendrier.php'>Emplois du temps/Gestion/Gestion du calendrier</a>.";
+                        $info_action_destinataire=array("administrateur");
+                        $info_action_mode="statut";
+                        enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+                    }
+                }
+
                 $j++;
             }
         } else {
@@ -284,12 +357,22 @@ if (isset($is_posted)) {
 	}
 
     // On efface les classes qui ne sont pas réutilisées cette année  ainsi que les entrées correspondantes dans  j_groupes_classes
-    $sql = mysqli_query($GLOBALS["mysqli"], "select distinct id_classe from periodes where verouiller='T'");
+    $sql="select distinct id_classe from periodes where verouiller='T';";
+    $res_menage = mysqli_query($GLOBALS["mysqli"], $sql);
     $k = 0;
-    while ($k < mysqli_num_rows($sql)) {
-       $id_classe = old_mysql_result($sql, $k);
+    while ($k < mysqli_num_rows($res_menage)) {
+       $id_classe = old_mysql_result($res_menage, $k);
        $res1 = mysqli_query($GLOBALS["mysqli"], "delete from classes where id='".$id_classe."'");
        $res2 = mysqli_query($GLOBALS["mysqli"], "delete from j_groupes_classes where id_classe='".$id_classe."'");
+       // 20150810
+       $sql="SELECT * FROM edt_calendrier WHERE classe_concerne_calendrier LIKE '".$id_classe.";%' OR classe_concerne_calendrier LIKE '%;".$id_classe.";%';";
+       $res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+       if(mysqli_num_rows($res_edt)>0) {
+           while($lig_edt=mysqli_fetch_object($res_edt)) {
+               $sql="UPDATE edt_calendrier SET classe_concerne_calendrier='".preg_replace("/^$id_classe;/", "", preg_replace("/;$id_classe;/", ";", $lig_edt->classe_concerne_calendrier))."' WHERE classe_concerne_calendrier LIKE '".$id_classe.";%' OR classe_concerne_calendrier LIKE '%;".$id_classe.";%';";
+               $update=mysqli_query($GLOBALS["mysqli"], $sql);
+           }
+       }
        $k++;
     }
     // On supprime les groupes qui n'ont plus aucune affectation de classe
