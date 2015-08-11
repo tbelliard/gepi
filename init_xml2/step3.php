@@ -198,6 +198,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 						$test_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test_etab)==0){
 							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
+							echo "$sql<br />";
 							$insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$insert_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
@@ -205,6 +206,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 						}
 						else {
 							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
+							echo "$sql<br />";
 							$update_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$update_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
@@ -626,12 +628,15 @@ else {
 		// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
 
 		if($temoin_erreur_recup_login_ent>0) {
-			echo "<p><strong style='color:red'>ATTENTION&nbsp;:</strong> ".$temoin_erreur_recup_login_ent." logins ENT n'ont pas pu être récupérés dans votre table 'ldap_bx'.<br />Vous devriez corriger et refaire cette étape.</p>";
+			echo "<p style='margin-top:1em; margin-bottom:2em; margin-left:7.5em; text-indent: -7.5em;'><strong style='color:red'>ATTENTION&nbsp;:</strong> ".$temoin_erreur_recup_login_ent." logins ENT n'ont pas pu être récupérés dans votre table 'ldap_bx'.<br />
+			Vous devriez corriger et refaire cette étape.<br />
+			<br />
+			Si vous n'utilisez pas la table 'ldap_bx' pour imposer des logins élèves depuis l'ENT, vous devriez revalider le formulaire Liaison ENT dans <a href='../gestion/options_connect.php#liaison_ent'>Gestion générale/Options de connexion</a> en choisissant <strong>Ne pas afficher le menu Liaison ENT</strong></p>";
 		}
 
 		echo '
-			<p>--&gt; Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
-			<p><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
+			<p style="margin-left:7.5em;">--&gt; Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
+			<p style="margin-left:7.5em;"><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
 		';
 	} else {
 		echo "<p>--&gt; Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
