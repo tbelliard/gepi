@@ -4221,7 +4221,6 @@ function retourne_tab_html_pointages_disc($login_ele) {
 
 	$retour="";
 
-	// A REVOIR POUR AFFICHER DES TOTAUX PAR PERIODE
 	// En cas de changement de classe avec des dates de périodes différentes pour les classes, on peut avoir un total annuel qui ne corresponde pas à la somme des totaux de périodes
 	// Un même pointage pourra être pris en compte dans telle classe sur telle période et dans telle autre classe sur telle autre période.
 
@@ -4244,14 +4243,22 @@ function retourne_tab_html_pointages_disc($login_ele) {
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
 						if(!isset($tab_totaux[$num_per][$lig->id_type])) {
-							$tab_totaux[$num_per][$lig->id_type]=0;
+							$tab_totaux[$num_per][$lig->id_type]['total']=0;
+							$tab_totaux[$num_per][$lig->id_type]['detail']="";
 						}
-						$tab_totaux[$num_per][$lig->id_type]++;
+						$tab_totaux[$num_per][$lig->id_type]['total']++;
+						if(!isset($tab_u[$lig->created_by])) {
+							$tab_u[$lig->created_by]=affiche_utilisateur($lig->created_by, $id_classe);
+						}
+						$chaine_detail="- ".formate_date($lig->date_sp, "n", "complet")." (".$tab_u[$lig->created_by].")\n";
+						$tab_totaux[$num_per][$lig->id_type]['detail'].=$chaine_detail;
 
 						if(!isset($tab_totaux['all'][$lig->id_type])) {
-							$tab_totaux['all'][$lig->id_type]=0;
+							$tab_totaux['all'][$lig->id_type]['total']=0;
+							$tab_totaux['all'][$lig->id_type]['detail']="";
 						}
-						$tab_totaux['all'][$lig->id_type]++;
+						$tab_totaux['all'][$lig->id_type]['total']++;
+						$tab_totaux['all'][$lig->id_type]['detail'].=$chaine_detail;
 					}
 				}
 			}
@@ -4293,7 +4300,7 @@ function retourne_tab_html_pointages_disc($login_ele) {
 				foreach($tab_clas_ele['periode'] as $num_per => $current_classe) {
 					if(isset($tab_totaux[$num_per][$current_id_type])) {
 						$retour.="
-			<td>".$tab_totaux[$num_per][$current_id_type]."</td>";
+			<td title=\"".$tab_totaux[$num_per][$current_id_type]['detail']."\">".$tab_totaux[$num_per][$current_id_type]['total']."</td>";
 					}
 					else {
 						$retour.="
@@ -4302,12 +4309,15 @@ function retourne_tab_html_pointages_disc($login_ele) {
 				}
 			}
 
-			$retour.="
-			<td>";
 			if(isset($tab_totaux['all'][$current_id_type])) {
-				$retour.=$tab_totaux['all'][$current_id_type];
+				$retour.="
+			<td title=\"".$tab_totaux['all'][$current_id_type]['detail']."\">".$tab_totaux['all'][$current_id_type]['total']."</td>";
 			}
-			$retour.="</td>
+			else {
+				$retour.="
+			<td>-</td>";
+			}
+			$retour.="
 		</tr>";
 		}
 		$retour.="
