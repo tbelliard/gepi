@@ -310,10 +310,25 @@ if(isset($_POST['save_params'])) {
 		$msg.="Erreur lors de l'enregistrement de 'disc_pointage_aff_totaux_resp'<br />";
 	}
 
+	if(isset($_POST['mod_disc_terme_menus_incidents'])) {
+		if($_POST['mod_disc_terme_menus_incidents']=="") {
+			$msg.="Erreur: Le nom des 'menus incidents' ne peut pas être vide.<br />";
+		}
+		elseif(!saveSetting('mod_disc_terme_menus_incidents', $_POST['mod_disc_terme_menus_incidents'])) {
+			$msg.="Erreur lors de l'enregistrement du nom des 'menus incidents'.<br />";
+		}
+	}
+
 	if($msg=="") {
 		$msg="Enregistrement effectué : ".strftime("%d/%m/%Y à %H:%M:%S")."<br />";
 	}
 }
+
+$mod_disc_terme_menus_incidents=getSettingValue("mod_disc_terme_menus_incidents");
+if($mod_disc_terme_menus_incidents=="") {
+	$mod_disc_terme_menus_incidents="menus incidents";
+}
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Définition des pointages";
@@ -323,7 +338,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-".((getSettingAOui('active_mod_disc_pointage')) ? " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de menus incidents</a>" : "")."
+".((getSettingAOui('active_mod_disc_pointage')) ? " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de ".$mod_disc_terme_menus_incidents."</a>" : "")."
 </p>\n";
 
 //=============================================
@@ -338,25 +353,47 @@ $checked="";
 if(getSettingAOui('active_mod_disc_pointage')) {
 	$checked=" checked";
 }
-echo "<input type='checkbox' name='active_mod_disc_pointage' id='active_mod_disc_pointage' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='active_mod_disc_pointage' id='texte_active_mod_disc_pointage'> Activer le dispositif de saisie/pointages disciplinaires</label><br />\n";
+echo "<p><input type='checkbox' name='active_mod_disc_pointage' id='active_mod_disc_pointage' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='active_mod_disc_pointage' id='texte_active_mod_disc_pointage'> Activer le dispositif de saisie/pointages disciplinaires</label><br /><br />\n";
+
+
+echo "Nom à donner aux <strong>menus incidents</strong>&nbsp;: <input type='text' name='mod_disc_terme_menus_incidents' id='mod_disc_terme_menus_incidents' value=\"".$mod_disc_terme_menus_incidents."\" onchange='changement();' /><br />
+<em>(suggestions&nbsp;: 'manquements', 'menus manquements', 'menus incidents')</em>
+<br /><br />\n";
+
 
 $checked="";
 if(getSettingAOui('disc_pointage_aff_totaux_visu_ele')) {
 	$checked=" checked";
 }
-echo "<input type='checkbox' name='disc_pointage_aff_totaux_visu_ele' id='disc_pointage_aff_totaux_visu_ele' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_visu_ele' id='texte_disc_pointage_aff_totaux_visu_ele'> Faire apparaître les totaux par types dans la page de Consultation des onglets élève <img src='../images/icons/ele_onglets.png' class='icone16' alt='Consultation élève' /></label><br />\n";
+echo "<input type='checkbox' name='disc_pointage_aff_totaux_visu_ele' id='disc_pointage_aff_totaux_visu_ele' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_visu_ele' id='texte_disc_pointage_aff_totaux_visu_ele'> Faire apparaître les totaux par types dans la page de Consultation des onglets élève <img src='../images/icons/ele_onglets.png' class='icone16' alt='Consultation élève' /></label><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(page accessible des personnels de l'établissement)</em><br /><br />\n";
+
+$checked="";
+if(getSettingAOui('disc_pointage_acces_totaux_ele')) {
+	$checked=" checked";
+}
+echo "<input type='checkbox' name='disc_pointage_acces_totaux_ele' id='disc_pointage_acces_totaux_ele' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_acces_totaux_ele' id='texte_disc_pointage_acces_totaux_ele'> Donner l'accès aux totaux par types dans la page Discipline pour les utilisateurs élèves</label><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(sous réserve que l'accès aux ".$mod_disc_terme_incident."s soit donné aux élèves)</em>
+<br />\n";
 
 $checked="";
 if(getSettingAOui('disc_pointage_aff_totaux_ele')) {
 	$checked=" checked";
 }
-echo "<input type='checkbox' name='disc_pointage_aff_totaux_ele' id='disc_pointage_aff_totaux_ele' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_ele' id='texte_disc_pointage_aff_totaux_ele'> Faire apparaître les totaux par types en page d'accueil pour les utilisateurs élèves</label><span style='color:red'><br />(non encore implémenté; pas tant que le détail des totaux par période n'est pas mis au point)</span><br />\n";
+echo "<input type='checkbox' name='disc_pointage_aff_totaux_ele' id='disc_pointage_aff_totaux_ele' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_ele' id='texte_disc_pointage_aff_totaux_ele'> Faire apparaître les totaux par types en page d'accueil pour les utilisateurs élèves</label><br /><br />\n";
+
+$checked="";
+if(getSettingAOui('disc_pointage_acces_totaux_resp')) {
+	$checked=" checked";
+}
+echo "<input type='checkbox' name='disc_pointage_acces_totaux_resp' id='disc_pointage_acces_totaux_resp' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_acces_totaux_resp' id='texte_disc_pointage_acces_totaux_resp'> Donner l'accès aux totaux par types dans la page Discipline pour les utilisateurs responsables élèves</label><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(sous réserve que l'accès aux ".$mod_disc_terme_incident."s soit donné aux responsables élèves)</em><br />\n";
 
 $checked="";
 if(getSettingAOui('disc_pointage_aff_totaux_resp')) {
 	$checked=" checked";
 }
-echo "<input type='checkbox' name='disc_pointage_aff_totaux_resp' id='disc_pointage_aff_totaux_resp' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_resp' id='texte_disc_pointage_aff_totaux_resp'> Faire apparaître les totaux par types en page d'accueil pour les responsables élèves</label><span style='color:red'><br />(non encore implémenté; pas tant que le détail des totaux par période n'est pas mis au point)</span><br />\n";
+echo "<input type='checkbox' name='disc_pointage_aff_totaux_resp' id='disc_pointage_aff_totaux_resp' value=\"y\" onchange='checkbox_change(this.id); changement();'$checked /><label for='disc_pointage_aff_totaux_resp' id='texte_disc_pointage_aff_totaux_resp'> Faire apparaître les totaux par types en page d'accueil pour les responsables élèves</label><br />\n";
 
 echo "<input type='hidden' name='save_params' value='y' />\n";
 echo "<p class='center'><input type='submit' name='valider' value='Valider' /></p>\n";

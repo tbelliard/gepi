@@ -748,6 +748,19 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 
 	//$html.="<p style='color:red'>Extraction des incidents et sanctions non encore implémentée.<br />Passez par le menu 'Accueil'</p>";
 
+
+
+	if((getSettingAOui('active_mod_disc_pointage'))&&
+	((($_SESSION['statut']=='eleve')&&((getSettingAOui('disc_pointage_aff_totaux_ele'))||(getSettingAOui('disc_pointage_acces_totaux_ele'))))||
+	(($_SESSION['statut']=='responsable')&&((getSettingAOui('disc_pointage_aff_totaux_resp'))||(getSettingAOui('disc_pointage_acces_totaux_resp')))))) {
+		$pointages_ele_courant=retourne_tab_html_pointages_disc($login_eleve);
+		if($pointages_ele_courant!="") {
+			$html.=$pointages_ele_courant;
+		}
+	}
+
+
+
 	$mode="";
 	$disc_date_debut="";
 	$disc_date_fin="";
@@ -771,7 +784,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$html.="<p>Aucun ".$mod_disc_terme_incident." relevé en qualité de responsable.</p>\n";
 	}
 
-	$html.="<p style='font-weight: bold; margin-top:1em;'>Mesures prises</p>\n";
+	//$html.="<p style='font-weight: bold; margin-top:1em;'>Mesures prises</p>\n";
 	if(count($tab_mesures_ele[$login_eleve])>0) {
 		$html.="<p style='font-weight: bold; margin-top:1em;'>Mesures prises</p>\n";
 		$html.="<table class='boireaus' border='1' summary='Totaux mesures prises'>\n";

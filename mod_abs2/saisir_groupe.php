@@ -801,17 +801,26 @@ include('menu_abs2.inc.php');
 		if((getSettingAOui('active_mod_discipline'))&&(getSettingAOui('active_mod_disc_pointage'))) {
 			if(isset($id_groupe)) {
 	?>
-	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php?mode=groupe&amp;id_groupe=<?php echo $id_groupe;?>' target="_blank" title="Pointer (dans un nouvel onglet) les menus manquements ou incidents disciplinaires."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
+	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php?mode=groupe&amp;id_groupe=<?php echo $id_groupe;?>' target="_blank" title="Pointer (dans un nouvel onglet) les <?php echo $mod_disc_terme_menus_incidents;?>
+
+
+(menus manquements/incidents disciplinaires par opposion à des <?php echo $mod_disc_terme_incident;?> nécessitant une déclaration plus détaillée dans le module Discipline)."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
 	<?php
 			}
 			elseif(isset($id_classe)) {
 	?>
-	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php?mode=classe&amp;id_classe=<?php echo $id_classe;?>' target="_blank" title="Pointer (dans un nouvel onglet) les menus manquements ou incidents disciplinaires."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
+	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php?mode=classe&amp;id_classe=<?php echo $id_classe;?>' target="_blank" title="Pointer (dans un nouvel onglet) les <?php echo $mod_disc_terme_menus_incidents;?>
+
+
+(menus manquements/incidents disciplinaires par opposion à des <?php echo $mod_disc_terme_incident;?> nécessitant une déclaration plus détaillée dans le module Discipline)."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
 	<?php
 			}
 			else {
 	?>
-	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php' target="_blank" title="Pointer (dans un nouvel onglet) les menus manquements ou incidents disciplinaires."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
+	<div style='float:right; width:20px; margin-right:3px;'><a href='../mod_discipline/saisie_pointages.php' target="_blank" title="Pointer (dans un nouvel onglet) les <?php echo $mod_disc_terme_menus_incidents;?>
+
+
+(menus manquements/incidents disciplinaires par opposion à des <?php echo $mod_disc_terme_incident;?> nécessitant une déclaration plus détaillée dans le module Discipline)."><img src='../images/icons/pointage_disc.png' width='20' height='20' alt='Pointages disciplinaires' /></a></div>
 	<?php
 			}
 		}

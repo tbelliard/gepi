@@ -105,7 +105,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quit
 		echo " | <a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Accéder au module Discipline</a>";
 	}
 	if(acces("/mod_discipline/param_pointages.php", $_SESSION['statut'])) {
-		echo " | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer le pointage de menus manquements/incidents</a>";
+		echo " | <a href='param_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer le pointage des ".$mod_disc_terme_menus_incidents."</a>";
 	}
 	"</p>";
 ?>

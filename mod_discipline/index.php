@@ -580,8 +580,8 @@ if($_SESSION['statut']=="administrateur") {
 	$nouveauItem->chemin='/mod_discipline/param_pointages.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Paramétrer le pointage de menus manquements/".$mod_disc_terme_incident."s";
-		$nouveauItem->expli="Paramétrer le dispositif de pointage des menus manquements ".$mod_disc_terme_incident."s disciplinaires.";
+		$nouveauItem->titre="Paramétrer le pointage de ".$mod_disc_terme_menus_incidents;
+		$nouveauItem->expli="Paramétrer le dispositif de pointage des ".$mod_disc_terme_menus_incidents.".";
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -677,8 +677,8 @@ if(getSettingAOui('active_mod_disc_pointage')) {
 	$nouveauItem->chemin='/mod_discipline/saisie_pointages.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->titre="Pointer de menus manquements/".$mod_disc_terme_incident."s";
-		$nouveauItem->expli="Pointer de menus manquements ".$mod_disc_terme_incident."s disciplinaires.";
+		$nouveauItem->titre="Pointer de ".$mod_disc_terme_menus_incidents;
+		$nouveauItem->expli="Pointer de ".$mod_disc_terme_menus_incidents."<br /><em>(menus incidents/manquements disciplinaires)</em>.";
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}

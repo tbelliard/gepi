@@ -140,6 +140,10 @@ if(getSettingAOui('active_mod_discipline')) {
 	$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
 	if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 }
+$mod_disc_terme_menus_incidents=getSettingValue("mod_disc_terme_menus_incidents");
+if($mod_disc_terme_menus_incidents=="") {
+	$mod_disc_terme_menus_incidents="menus incidents";
+}
 
 
 // ====================== Affichage des javascripts ===================
