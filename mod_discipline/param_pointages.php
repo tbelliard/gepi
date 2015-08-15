@@ -422,7 +422,8 @@ echo "</form>\n";
 echo "<p><br /></p>\n";
 //=============================================
 
-echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
+echo "<a name='saisie_types'></a>
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#saisie_types' method='post' name='formulaire'>
 <fieldset class='fieldset_opacite50'>\n";
 echo add_token_field();
 
@@ -451,7 +452,7 @@ else {
 
 		echo "<td>\n";
 		if($cpt>0) {
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_type=$lig->id_type&amp;move=up".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/up.png' class='icone16' alt='Haut' /></a> ";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_type=$lig->id_type&amp;move=up".add_token_in_url()."#saisie_types' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/up.png' class='icone16' alt='Haut' /></a> ";
 		}
 		echo "</td>\n";
 		echo "<td>\n";
@@ -459,7 +460,7 @@ else {
 		echo "</td>\n";
 		echo "<td>\n";
 		if($cpt<mysqli_num_rows($res)-1) {
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_type=$lig->id_type&amp;move=down".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/down.png' class='icone16' alt='Bas' /></a> ";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_type=$lig->id_type&amp;move=down".add_token_in_url()."#saisie_types' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/down.png' class='icone16' alt='Bas' /></a> ";
 		}
 		echo "</td>\n";
 
