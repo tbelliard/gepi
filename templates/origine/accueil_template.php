@@ -272,7 +272,7 @@
 			for($loop=0;$loop<count($tab_ele_resp);$loop+=2) {
 				$pointages_ele_courant=retourne_tab_html_pointages_disc($tab_ele_resp[$loop]);
 				if($pointages_ele_courant!="") {
-					$affichage_pointages.="<div class=\"postit\"><p><strong>".$tab_ele_resp[$loop]."</strong></p>".$pointages_ele_courant."</div>";
+					$affichage_pointages.="<div class=\"postit\"><p><strong>".get_nom_prenom_eleve($tab_ele_resp[$loop])."</strong></p>".$pointages_ele_courant."</div>";
 				}
 			}
 		}
