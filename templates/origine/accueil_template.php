@@ -259,12 +259,32 @@
 		}
 	}
 
+	if(getSettingAOui('active_mod_disc_pointage')) {
+		$affichage_pointages="";
+		if(($_SESSION['statut']=='eleve')&&(getSettingAOui('disc_pointage_aff_totaux_ele'))) {
+			$pointages_ele_courant=retourne_tab_html_pointages_disc($_SESSION['login']);
+			if($pointages_ele_courant!="") {
+				$affichage_pointages.="<div class=\"postit\">".$pointages_ele_courant."</div>";
+			}
+		}
+		elseif(($_SESSION['statut']=='responsable')&&(getSettingAOui('disc_pointage_aff_totaux_resp'))) {
+			$tab_ele_resp=get_enfants_from_resp_login($_SESSION['login'], 'avec_classe', "yy");
+			for($loop=0;$loop<count($tab_ele_resp);$loop+=2) {
+				$pointages_ele_courant=retourne_tab_html_pointages_disc($tab_ele_resp[$loop]);
+				if($pointages_ele_courant!="") {
+					$affichage_pointages.="<div class=\"postit\"><p><strong>".$tab_ele_resp[$loop]."</strong></p>".$pointages_ele_courant."</div>";
+				}
+			}
+		}
+	}
+
 	if ((count($afficheAccueil->message))||
 	((isset($liste_evenements))&&($liste_evenements!=""))||
 	((isset($message_remplacements))&&($message_remplacements!=""))||
 	((isset($message_remplacements_proposes))&&($message_remplacements_proposes!=""))||
 	((isset($message_remplacements_a_valider))&&($message_remplacements_a_valider!=""))||
 	((isset($message_remplacements_confirmes))&&($message_remplacements_confirmes!=""))||
+	((isset($affichage_pointages))&&($affichage_pointages!=""))||
 	((isset($message_nouvelle_version_gepi))&&($message_nouvelle_version_gepi!=""))) :
 ?>
 
@@ -307,6 +327,10 @@
 
 				if((isset($message_remplacements))&&($message_remplacements!="")) {
 					echo $message_remplacements;
+				}
+
+				if((isset($affichage_pointages))&&($affichage_pointages!="")) {
+					echo $affichage_pointages;
 				}
 
 				if (count($afficheAccueil->message)) :
