@@ -4213,6 +4213,7 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 
 function retourne_tab_html_pointages_disc($login_ele) {
 	global $tab_type_pointage_discipline;
+	global $mod_disc_terme_menus_incidents;
 
 	if(count($tab_type_pointage_discipline)==0) {
 		$tab_type_pointage_discipline=get_tab_type_pointage_discipline();
@@ -4221,7 +4222,102 @@ function retourne_tab_html_pointages_disc($login_ele) {
 	$retour="";
 
 	// A REVOIR POUR AFFICHER DES TOTAUX PAR PERIODE
+	// En cas de changement de classe avec des dates de périodes différentes pour les classes, on peut avoir un total annuel qui ne corresponde pas à la somme des totaux de périodes
+	// Un même pointage pourra être pris en compte dans telle classe sur telle période et dans telle autre classe sur telle autre période.
 
+	$tab_clas_ele=get_class_periode_from_ele_login($login_ele);
+
+	$tab_totaux=array();
+	$tab_clas_ele=get_class_periode_from_ele_login($login_ele);
+	foreach($tab_clas_ele['periode'] as $num_per => $classe_courante) {
+		$sql="";
+
+		$id_classe=$classe_courante['id_classe'];
+
+		$sql="SELECT e.* FROM periodes p, edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND numero_periode='".$num_per."' AND p.num_periode=e.numero_periode AND p.id_classe='$id_classe';";
+		//$retour.="$sql<br />";
+		$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_edt)>0) {
+			while($lig_edt=mysqli_fetch_object($res_edt)) {
+				$sql="SELECT DISTINCT sp.* FROM sp_saisies sp WHERE sp.login='$login_ele' AND date_sp>='".$lig_edt->jourdebut_calendrier." ".$lig_edt->heuredebut_calendrier."' AND date_sp<'".$lig_edt->jourfin_calendrier." ".$lig_edt->heurefin_calendrier."';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if(!isset($tab_totaux[$num_per][$lig->id_type])) {
+							$tab_totaux[$num_per][$lig->id_type]=0;
+						}
+						$tab_totaux[$num_per][$lig->id_type]++;
+
+						if(!isset($tab_totaux['all'][$lig->id_type])) {
+							$tab_totaux['all'][$lig->id_type]=0;
+						}
+						$tab_totaux['all'][$lig->id_type]++;
+					}
+				}
+			}
+		}
+	}
+
+	if(count($tab_totaux)>0) {
+		$retour.="<p class='bold'>Pointage des ".$mod_disc_terme_menus_incidents."&nbsp;:</p>
+<table class='boireaus boireaus_alt' style='margin-left:1em;'>
+	<thead>
+		<tr>
+			<th>Type</th>";
+
+		foreach($tab_clas_ele['periode'] as $num_per => $classe_courante) {
+			$retour.="
+			<th title=\"Inscrit en ".$classe_courante['classe']." en période $num_per\">P".$num_per."</th>";
+		}
+
+		$retour.="
+			<th>Total</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>";
+
+		for($loop2=0;$loop2<count($tab_type_pointage_discipline['indice']);$loop2++) {
+			$current_id_type=$tab_type_pointage_discipline['indice'][$loop2]['id_type'];
+
+			$title_th="";
+			if((!preg_match("/</", $tab_type_pointage_discipline['indice'][$loop2]['description']))&&(!preg_match("/>/", $tab_type_pointage_discipline['indice'][$loop2]['description']))) {
+				$title_th=" title=\"".$tab_type_pointage_discipline['indice'][$loop2]['description']."\"";
+			}
+
+			$retour.="
+		<tr>
+			<th".$title_th.">".$tab_type_pointage_discipline['indice'][$loop2]['nom']."</th>";
+
+			if(isset($tab_clas_ele['periode'])) {
+				foreach($tab_clas_ele['periode'] as $num_per => $current_classe) {
+					if(isset($tab_totaux[$num_per][$current_id_type])) {
+						$retour.="
+			<td>".$tab_totaux[$num_per][$current_id_type]."</td>";
+					}
+					else {
+						$retour.="
+			<td>-</td>";
+					}
+				}
+			}
+
+			$retour.="
+			<td>";
+			if(isset($tab_totaux['all'][$current_id_type])) {
+				$retour.=$tab_totaux['all'][$current_id_type];
+			}
+			$retour.="</td>
+		</tr>";
+		}
+		$retour.="
+	</tbody>
+</table>
+<br />";
+
+	}
+
+	/*
 	$tab_totaux=array();
 	$sql="SELECT DISTINCT sp.* FROM sp_saisies sp WHERE sp.login='$login_ele';";
 	//$retour.="$sql<br />";
@@ -4282,6 +4378,7 @@ function retourne_tab_html_pointages_disc($login_ele) {
 </table>
 <br />";
 	}
+	*/
 
 	return $retour;
 }
