@@ -138,6 +138,11 @@ if($tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve!='') {
 	echo "<div style='float:right; width:25em; margin-bottom:0.5em; margin-left:0.5em;'>".$tableau_des_avertissements_de_fin_de_periode_eleve_de_cet_eleve."</div>\n";
 }
 
+if((getSettingAOui('active_mod_disc_pointage'))&&
+((($_SESSION['statut']=='eleve')&&(getSettingAOui('disc_pointage_acces_totaux_ele')))||(($_SESSION['statut']=='responsable')&&(getSettingAOui('disc_pointage_acces_totaux_resp'))))) {
+	echo retourne_tab_html_pointages_disc($ele_login);
+}
+
 echo tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin);
 
 require("../lib/footer.inc.php");
