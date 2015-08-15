@@ -830,18 +830,18 @@ echo "</label>\n";
 echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_display_portail' value='yes' id='label_sso_display_portail'";
-if ($gepiSettings['sso_display_portail'] == 'yes') echo " checked ";
+if (getSettingAOui('sso_display_portail')) echo " checked ";
 echo " /> <label for='label_sso_display_portail' style='cursor: pointer;'>Sessions SSO uniquement : afficher un lien vers un portail (<em>vous devez renseigner le champ ci-dessous</em>).";
 echo "</label>\n";
 echo "</p>\n";
 
 echo "<p>\n";
 echo "<label for='label_sso_url_portail' style='cursor: pointer;'>Adresse complète du portail : </label>\n";
-echo "<input type='text' size='60' name='sso_url_portail' value='".$gepiSettings['sso_url_portail']."' id='label_sso_url_portail' />\n";
+echo "<input type='text' size='60' name='sso_url_portail' value='".getSettingValue('sso_url_portail')."' id='label_sso_url_portail' />\n";
 echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso_hide_logout'";
-if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked='checked' ";
+if (getSettingAOui('sso_hide_logout')) echo " checked='checked' ";
 echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (<em>soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter</em>).";
 echo "</label>\n";
 echo "</p>\n";
