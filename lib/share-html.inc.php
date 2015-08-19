@@ -4224,8 +4224,6 @@ function retourne_tab_html_pointages_disc($login_ele) {
 	// En cas de changement de classe avec des dates de périodes différentes pour les classes, on peut avoir un total annuel qui ne corresponde pas à la somme des totaux de périodes
 	// Un même pointage pourra être pris en compte dans telle classe sur telle période et dans telle autre classe sur telle autre période.
 
-	$tab_clas_ele=get_class_periode_from_ele_login($login_ele);
-
 	$tab_totaux=array();
 	$tab_clas_ele=get_class_periode_from_ele_login($login_ele);
 	foreach($tab_clas_ele['periode'] as $num_per => $classe_courante) {
