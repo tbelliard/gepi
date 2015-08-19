@@ -6298,6 +6298,7 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 			$tab[$cpt]['nom']=$lig->nom;
 			$tab[$cpt]['prenom']=$lig->prenom;
 			$tab[$cpt]['civilite']=$lig->civilite;
+			$tab[$cpt]['mel']=$lig->mel;
 
 			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
 
@@ -13382,6 +13383,7 @@ function ajout_bouton_supprimer_message($contenu_cor,$id_message) {
 	<button type="submit" title=" Supprimer ce message " style="border: none; background: none; float: right;"><img style="vertical-align: bottom;" src="'.$gepiPath.'/images/icons/delete.png"></button>
 	</form>'.$contenu_cor;
 	$r_sql="UPDATE messages SET texte='".$contenu_cor."' WHERE id='".$id_message."'";
+	//echo htmlentities($r_sql)."<br />";
 	return mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
 }
 
@@ -13417,6 +13419,25 @@ function set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_
 		if (isset($_POST['suppression_possible']) && $_POST['suppression_possible']=="oui" &&  $statuts_destinataires=="_")
 			$retour=ajout_bouton_supprimer_message($contenu_cor,$id_message);
 		}
+	return $retour;
+}
+
+function set_message2($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$login_destinataire) {
+	$r_sql = "INSERT INTO messages
+	SET texte = '".$contenu_cor."',
+	date_debut = '".$date_debut."',
+	date_fin = '".$date_fin."',
+	date_decompte = '".$date_decompte."',
+	auteur='".$_SESSION['login']."',
+	statuts_destinataires = '".$statuts_destinataires."',
+	login_destinataire='".$login_destinataire."'";
+	//$r_sql.=", matiere_destinataire='".$matiere_destinataire."'";
+	//echo "$r_sql<br />";
+	$retour=mysqli_query($GLOBALS["mysqli"], $r_sql)?true:false;
+	if ($retour) {
+		$id_message=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+		$retour=$id_message;
+	}
 	return $retour;
 }
 //=========================================
@@ -13600,6 +13621,7 @@ function get_valeur_champ($table, $critere, $champ) {
 
 	$retour="";
 	$sql="SELECT ".$champ." FROM ".$table." WHERE ".$critere;
+	//echo "$sql<br />";
 	$res=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_array($res);

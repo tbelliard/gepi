@@ -73,6 +73,21 @@ PRIMARY KEY (id_type)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create=mysqli_query($GLOBALS["mysqli"], $sql);
 
+$sql="CREATE TABLE IF NOT EXISTS sp_seuils (
+id_seuil int(11) NOT NULL AUTO_INCREMENT,
+seuil int(11) NOT NULL,
+periode CHAR(1) NOT NULL default 'y',
+type VARCHAR(255) NOT NULL default '',
+administrateur CHAR(1) NOT NULL default '',
+scolarite CHAR(1) NOT NULL default '',
+cpe CHAR(1) NOT NULL default '',
+eleve CHAR(1) NOT NULL default '',
+responsable CHAR(1) NOT NULL default '',
+professeur_principal CHAR(1) NOT NULL default '',
+PRIMARY KEY (id_seuil)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$create=mysqli_query($GLOBALS["mysqli"], $sql);
+
 require('sanctions_func_lib.php');
 
 $suppr_pointage=isset($_POST['suppr_pointage']) ? $_POST['suppr_pointage'] : NULL;
@@ -104,6 +119,135 @@ function corrige_rangs_types_saisies() {
 			else {
 				$rang++;
 			}
+		}
+	}
+}
+
+if(isset($_POST['modif_seuils'])) {
+	check_token();
+
+	$msg="";
+
+	// Suppr
+	$nb_suppr=0;
+	if(isset($_POST['suppr_seuil'])) {
+		$suppr_seuil=$_POST['suppr_seuil'];
+		for($loop=0;$loop<count($suppr_seuil);$loop++) {
+			$sql="DELETE FROM sp_seuils WHERE id_seuil='".$suppr_seuil[$loop]."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				$nb_suppr++;
+			}
+			else {
+				$msg.="Erreur lors de la suppression du seuil n°".$suppr_seuil[$loop].".<br />";
+			}
+		}
+	}
+	if($nb_suppr>0) {
+		$msg.=$nb_suppr." seuil(s) supprimé(s).<br />";
+	}
+
+	// Modif
+	$nb_modif=0;
+	$sql="SELECT * FROM sp_seuils ORDER BY seuil, type;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if((isset($_POST['seuil_'.$lig->id_seuil]))&&
+			(isset($_POST['periode_'.$lig->id_seuil]))&&
+			(isset($_POST['type_'.$lig->id_seuil]))&&
+			(isset($_POST['destinataire_'.$lig->id_seuil]))) {
+				$destinataire_courant=$_POST['destinataire_'.$lig->id_seuil];
+				$modif="n";
+				if(($_POST['seuil_'.$lig->id_seuil]!=$lig->seuil)||
+				($_POST['seuil_'.$lig->id_seuil]!=$lig->type)||
+				($_POST['seuil_'.$lig->id_seuil]!=$lig->periode)) {
+					$modif="y";
+				}
+				else {
+					if((($lig->administrateur=="y")&&(!in_array('administrateur', $destinataire_courant)))||
+					(($lig->administrateur=="n")&&(in_array('administrateur', $destinataire_courant)))) {
+						$modif="y";
+					}
+					if((($lig->scolarite=="y")&&(!in_array('scolarite', $destinataire_courant)))||
+					(($lig->scolarite=="n")&&(in_array('scolarite', $destinataire_courant)))) {
+						$modif="y";
+					}
+					if((($lig->cpe=="y")&&(!in_array('cpe', $destinataire_courant)))||
+					(($lig->cpe=="n")&&(in_array('cpe', $destinataire_courant)))) {
+						$modif="y";
+					}
+					if((($lig->professeur_principal=="y")&&(!in_array('professeur_principal', $destinataire_courant)))||
+					(($lig->professeur_principal=="n")&&(in_array('professeur_principal', $destinataire_courant)))) {
+						$modif="y";
+					}
+					if((($lig->eleve=="y")&&(!in_array('eleve', $destinataire_courant)))||
+					(($lig->eleve=="n")&&(in_array('eleve', $destinataire_courant)))) {
+						$modif="y";
+					}
+					if((($lig->responsable=="y")&&(!in_array('responsable', $destinataire_courant)))||
+					(($lig->responsable=="n")&&(in_array('responsable', $destinataire_courant)))) {
+						$modif="y";
+					}
+					/*
+					for($loop=0;$loop<count($destinataire_courant);$loop++) {
+						
+					}
+					*/
+				}
+
+				if($modif=="y") {
+					$sql="UPDATE sp_seuils SET seuil='".$_POST['seuil_'.$lig->id_seuil]."', 
+									type='".$_POST['type_'.$lig->id_seuil]."', 
+									periode='".$_POST['periode_'.$lig->id_seuil]."', 
+									administrateur='".((in_array('administrateur', $destinataire_courant)) ? "y" : "n")."',
+									scolarite='".((in_array('scolarite', $destinataire_courant)) ? "y" : "n")."',
+									cpe='".((in_array('cpe', $destinataire_courant)) ? "y" : "n")."',
+									professeur_principal='".((in_array('professeur_principal', $destinataire_courant)) ? "y" : "n")."',
+									eleve='".((in_array('eleve', $destinataire_courant)) ? "y" : "n")."',
+									responsable='".((in_array('responsable', $destinataire_courant)) ? "y" : "n")."' 
+									WHERE id_seuil='".$lig->id_seuil."';";
+					//echo "$sql<br />";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($update) {
+						$nb_modif++;
+					}
+					else {
+						$msg.="Erreur lors de la modification du seuil n°".$suppr_seuil[$loop].".<br />";
+					}
+				}
+			}
+		}
+	}
+	if($nb_modif>0) {
+		$msg.=$nb_modif." seuil(s) modifié(s).<br />";
+	}
+
+	// Ajout
+	if((isset($_POST['seuil']))&&
+	($_POST['seuil']>0)&&
+	(isset($_POST['periode']))&&
+	(isset($_POST['type']))&&
+	(isset($_POST['destinataire']))) {
+		$destinataire_courant=$_POST['destinataire'];
+
+		$sql="INSERT INTO sp_seuils SET seuil='".$_POST['seuil']."', 
+							type='".$_POST['type']."', 
+							periode='".$_POST['periode']."', 
+							administrateur='".((in_array('administrateur', $destinataire_courant)) ? "y" : "n")."',
+							scolarite='".((in_array('scolarite', $destinataire_courant)) ? "y" : "n")."',
+							cpe='".((in_array('cpe', $destinataire_courant)) ? "y" : "n")."',
+							professeur_principal='".((in_array('professeur_principal', $destinataire_courant)) ? "y" : "n")."',
+							eleve='".((in_array('eleve', $destinataire_courant)) ? "y" : "n")."',
+							responsable='".((in_array('responsable', $destinataire_courant)) ? "y" : "n")."';";
+		//echo "$sql<br />";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if($insert) {
+			$msg.="Nouveau seuil enregistré.<br />";
+		}
+		else {
+			$msg.="Erreur lors de la modification du seuil n°".$suppr_seuil[$loop].".<br />";
 		}
 	}
 }
@@ -335,7 +479,7 @@ $titre_page = "Discipline: Définition des pointages";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 ".((getSettingAOui('active_mod_disc_pointage')) ? " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de ".$mod_disc_terme_menus_incidents."</a>" : "")."
@@ -437,7 +581,7 @@ if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucun type de pointage n'est encore défini.</p>\n";
 }
 else {
-	echo "<p>Types de pointages existants&nbsp;:</p>\n";
+	echo "<p class='bold'>Types de pointages existants&nbsp;:</p>\n";
 	echo "<table class='boireaus' border='1' summary='Tableau des pointages existants'>\n";
 	echo "<tr>\n";
 	echo "<th colspan='3'>Rang</th>\n";
@@ -484,7 +628,7 @@ else {
 	echo "</table>\n";
 }
 
-echo "<p style='margin-top:1em;'>Nouveau type de pointage&nbsp;:</p>\n";
+echo "<p style='margin-top:1em;' class='bold'>Nouveau type de pointage&nbsp;:</p>\n";
 
 echo "<table class='boireaus' border='1' summary='Nouvelle pointage'>\n";
 echo "<tr class='lig1'>\n";
@@ -511,10 +655,199 @@ echo "</blockquote>\n";
 echo "</fieldset>\n";
 echo "</form>\n";
 
+echo "<p><br /></p>\n";
+//=============================================
+
+echo "<a name='seuils'></a>
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#saisie_types' method='post' name='formulaire3'>
+<fieldset class='fieldset_opacite50'>\n";
+echo add_token_field();
+
+echo "<p class='bold'>Seuils et actions</p>
+<blockquote>
+	<p>Vous pouvez programmer l'envoi de mail et/ou l'affichage d'un message en page d'accueil pour certaines personnes/statuts lorsqu'un certain nombre de pointages de menus ".$mod_disc_terme_incident."s est atteint par tel ou tel élève.</p>\n";
+
+$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+
+$cpt=0;
+$sql="SELECT * FROM sp_seuils ORDER BY seuil, type;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)==0) {
+	echo "<p>Aucun seuil n'est encore défini.</p>\n";
+}
+else {
+	echo "
+	<p class='bold'>Seuils existants&nbsp;:</p>
+	<table class='boireaus boireaus_alt' border='1' summary='Tableau des seuils existants'>
+		<tr>
+			<th>Seuil</th>
+			<th>Période</th>
+			<th>Type</th>
+			<th>Destinataires</th>
+			<th>Supprimer</th>
+		</tr>\n";
+	while($lig=mysqli_fetch_object($res)) {
+		$checked_radio_periode="";
+		$style_periode_y="";
+		$checked_radio_annee="";
+		$style_periode_n="";
+		if($lig->periode=="y") {
+			$checked_radio_periode="checked ";
+			$style_periode_y=" style='font-weight:bold'";
+		}
+		else {
+			$checked_radio_annee="checked ";
+			$style_periode_n=" style='font-weight:bold'";
+		}
+
+		$checked_radio_mail="";
+		$checked_radio_message="";
+		$style_type_mail="";
+		$style_type_message="";
+		if($lig->type=="mail") {
+			$checked_radio_mail="checked ";
+			$style_type_mail=" style='font-weight:bold'";
+		}
+		else {
+			$checked_radio_message="checked ";
+			$style_type_message=" style='font-weight:bold'";
+		}
+
+		$checked_administrateur="";
+		$style_administrateur="";
+		$checked_scolarite="";
+		$style_scolarite="";
+		$checked_cpe="";
+		$style_cpe="";
+		$checked_professeur_principal="";
+		$style_professeur_principal="";
+		$checked_eleve="";
+		$style_eleve="";
+		$checked_responsable="";
+		$style_responsable="";
+		if($lig->administrateur=="y") {
+			$checked_administrateur="checked ";
+			$style_administrateur=" style='font-weight:bold'";
+		}
+		if($lig->scolarite=="y") {
+			$checked_scolarite="checked ";
+			$style_scolarite=" style='font-weight:bold'";
+		}
+		if($lig->cpe=="y") {
+			$checked_cpe="checked ";
+			$style_cpe=" style='font-weight:bold'";
+		}
+		if($lig->professeur_principal=="y") {
+			$checked_professeur_principal="checked ";
+			$style_professeur_principal=" style='font-weight:bold'";
+		}
+		if($lig->eleve=="y") {
+			$checked_eleve="checked ";
+			$style_eleve=" style='font-weight:bold'";
+		}
+		if($lig->responsable=="y") {
+			$checked_responsable="checked ";
+			$style_responsable=" style='font-weight:bold'";
+		}
+
+		echo "
+		<tr>
+			<td>
+				<select name='seuil_".$lig->id_seuil."' onchange='changement()'>";
+		for($loop=1;$loop<200;$loop++) {
+			$selected="";
+			if($lig->seuil==$loop) {
+				$selected=" selected='true'";
+			}
+			echo "
+					<option value='$loop'$selected>$loop</option>";
+		}
+		echo "
+				</select>
+			</td>
+			<td style='text-align:left;'>
+				<input type='radio' name='periode_".$lig->id_seuil."' id='periode_y_".$lig->id_seuil."' value='y' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_n_".$lig->id_seuil."');\" $checked_radio_periode/><label for='periode_y_".$lig->id_seuil."' id='texte_periode_y_".$lig->id_seuil."'$style_periode_y>Période</label><br />
+				<input type='radio' name='periode_".$lig->id_seuil."' id='periode_n_".$lig->id_seuil."' value='n' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_y_".$lig->id_seuil."');\" $checked_radio_annee/><label for='periode_n_".$lig->id_seuil."' id='texte_periode_n_".$lig->id_seuil."'$style_periode_n>Année</label>
+			</td>
+			<td style='text-align:left;'>
+				<input type='radio' name='type_".$lig->id_seuil."' id='type_mail_".$lig->id_seuil."' value='mail' onchange=\"changement();checkbox_change(this.id);checkbox_change('type_message_".$lig->id_seuil."');\" $checked_radio_mail/><label for='type_mail_".$lig->id_seuil."' id='texte_type_mail_".$lig->id_seuil."'$style_type_mail>Mail</label><br />
+				<input type='radio' name='type_".$lig->id_seuil."' id='type_message_".$lig->id_seuil."' value='message' onchange=\"changement();checkbox_change(this.id);checkbox_change('type_mail_".$lig->id_seuil."');\" $checked_radio_message/><label for='type_message_".$lig->id_seuil."' id='texte_type_message_".$lig->id_seuil."'$style_type_message>Message en page d'accueil</label>
+			</td>
+			<td style='text-align:left;'>
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_administrateur_".$lig->id_seuil."' value='administrateur' onchange=\"changement();checkbox_change(this.id);\" $checked_administrateur/><label for='destinataire_administrateur_".$lig->id_seuil."' id='texte_destinataire_administrateur_".$lig->id_seuil."'$style_administrateur>Administrateur</label><br />
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_scolarite_".$lig->id_seuil."' value='scolarite' onchange=\"changement();checkbox_change(this.id);\" $checked_scolarite/><label for='destinataire_scolarite_".$lig->id_seuil."' id='texte_destinataire_scolarite_".$lig->id_seuil."'$style_scolarite>Scolarité</label><br />
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_cpe_".$lig->id_seuil."' value='cpe' onchange=\"changement();checkbox_change(this.id);\" $checked_cpe/><label for='destinataire_cpe_".$lig->id_seuil."' id='texte_destinataire_cpe_".$lig->id_seuil."'$style_cpe>Cpe</label><br />
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_professeur_principal_".$lig->id_seuil."' value='professeur_principal' onchange=\"changement();checkbox_change(this.id);\" $checked_professeur_principal/><label for='destinataire_professeur_principal_".$lig->id_seuil."' id='texte_destinataire_professeur_principal_".$lig->id_seuil."'$style_professeur_principal>".$gepi_prof_suivi."</label><br />
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_eleve_".$lig->id_seuil."' value='eleve' onchange=\"changement();checkbox_change(this.id);\" $checked_eleve/><label for='destinataire_eleve_".$lig->id_seuil."' id='texte_destinataire_eleve_".$lig->id_seuil."'$style_eleve>Élève</label><br />
+				<input type='checkbox' name='destinataire_".$lig->id_seuil."[]' id='destinataire_responsable_".$lig->id_seuil."' value='responsable' onchange=\"changement();checkbox_change(this.id);\" $checked_responsable/><label for='destinataire_responsable_".$lig->id_seuil."' id='texte_destinataire_responsable_".$lig->id_seuil."'$style_responsable>Responsable</label><br />
+			</td>
+			<td>
+				<input type='checkbox' name='suppr_seuil[]' id='suppr_seuil_".$cpt."' value='".$lig->id_seuil."' onchange='changement()' />
+			</td>
+		</tr>";
+		$cpt++;
+
+	}
+
+	echo "</table>\n";
+}
+
+echo "<p style='margin-top:1em; font-weight:bold;'>Nouveau seuil&nbsp;:</p>\n";
+
+echo "<table class='boireaus boireaus_alt' border='1' summary='Nouveau seuil'>
+		<tr>
+			<th>Seuil</th>
+			<th>Période</th>
+			<th>Type</th>
+			<th>Destinataires</th>
+		</tr>
+		<tr>
+		<td>
+			<select name='seuil' onchange='changement()'>
+				<option value=''>---</option>";
+		for($loop=1;$loop<200;$loop++) {
+			echo "
+				<option value='$loop'>$loop</option>";
+		}
+		echo "
+			</select>
+		</td>
+		<td style='text-align:left;'>
+			<input type='radio' name='periode' id='periode_y' value='y' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_n');\" checked /><label for='periode_y' id='texte_periode_y' style='font-weight:bold'>Période</label><br />
+			<input type='radio' name='periode' id='periode_n' value='n' onchange=\"changement();checkbox_change(this.id);checkbox_change('periode_y');\" /><label for='periode_n' id='texte_periode_n'$style_periode_n>Année</label>
+		</td>
+		<td style='text-align:left;'>
+			<input type='radio' name='type' id='type_mail' value='mail' onchange=\"changement();checkbox_change(this.id);checkbox_change('type_message');\" checked /><label for='type_mail' id='texte_type_mail' style='font-weight:bold'>Mail</label><br />
+			<input type='radio' name='type' id='type_message' value='message' onchange=\"changement();checkbox_change(this.id);;checkbox_change('type_mail')\" /><label for='type_message' id='texte_type_message'>Message en page d'accueil</label>
+		</td>
+		<td style='text-align:left;'>
+			<input type='checkbox' name='destinataire[]' id='destinataire_administrateur' value='administrateur' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_administrateur' id='texte_destinataire_administrateur'>Administrateur</label><br />
+			<input type='checkbox' name='destinataire[]' id='destinataire_scolarite' value='scolarite' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_scolarite' id='texte_destinataire_scolarite'>Scolarité</label><br />
+			<input type='checkbox' name='destinataire[]' id='destinataire_cpe' value='cpe' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_cpe' id='texte_destinataire_cpe'>Cpe</label><br />
+			<input type='checkbox' name='destinataire[]' id='destinataire_professeur_principal' value='professeur_principal' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_professeur_principal' id='texte_destinataire_professeur_principal'>".$gepi_prof_suivi."</label><br />
+			<input type='checkbox' name='destinataire[]' id='destinataire_eleve' value='eleve' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_eleve' id='texte_destinataire_eleve'>Élève</label><br />
+			<input type='checkbox' name='destinataire[]' id='destinataire_responsable' value='responsable' onchange=\"changement();checkbox_change(this.id);\" /><label for='destinataire_responsable' id='texte_destinataire_responsable'>Responsable</label><br />
+		</td>
+	</tr>
+</table>
+<input type='hidden' name='modif_seuils' value='y' /></p>
+<p class='center'><input type='submit' name='valider' value='Valider' /></p>
+<p style='margin-top:1em; margin-left:4em; text-indent:-4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Les seuils peuvent être calculés sur l'année, ou par période (<em>en fin de période un compteur est alors considéré comme réinitialisé pour les seuils</em>).</p></li>
+	<li><p>Pour que les actions (<em>mails, message</em>) par période fonctionnent, ils faut que les dates de périodes soient renseignées dans <a href='../edt_organisation/edt_calendrier.php' target='_blank'>Emploi du temps/Gestion/Gestion du calendrier</a><br />
+	Ils faut également que les classes y soient associées.</p></li>
+</ul>
+</blockquote>
+</fieldset>
+</form>\n";
+
+
 echo "<p style='color:red; margin-top:1em;'><em>A FAIRE&nbsp;:</em></p>
 <ul>
 	<li><p>Faire une page pour récapituler les totaux (<em>par classe/élève, mais aussi classement</em>).</p></li>
 	<li><p>Pouvoir paramétrer des seuils provoquant un envoi de mail, un rappel en page d'accueil pour tel ou tel statut.<br />
+	Pouvoir insérer par lots des seuils (tous les 5 pointages (5, 10, 15,...))<br />
 	Pouvoir pointer qu'un traitement a été fait pour tel élève au passage du seuil.</p></li>
 </ul>
 <p><br /></p>";

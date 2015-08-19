@@ -1202,3 +1202,40 @@ col1 varchar(255) NOT NULL default '',
 col2 varchar(255) NOT NULL default '',
 PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS sp_saisies;
+CREATE TABLE IF NOT EXISTS sp_saisies (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_type int(11) NOT NULL,
+login VARCHAR(50) NOT NULL default '',
+date_sp datetime NOT NULL default '0000-00-00 00:00:00',
+commentaire text NOT NULL,
+created_at datetime NOT NULL default '0000-00-00 00:00:00',
+created_by VARCHAR(50) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS sp_types_saisies;
+CREATE TABLE IF NOT EXISTS sp_types_saisies (
+id_type int(11) NOT NULL AUTO_INCREMENT,
+nom VARCHAR(255) NOT NULL default '',
+description TEXT NOT NULL,
+rang int(11) NOT NULL,
+PRIMARY KEY (id_type)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS sp_seuils;
+CREATE TABLE IF NOT EXISTS sp_seuils (
+id_seuil int(11) NOT NULL AUTO_INCREMENT,
+seuil int(11) NOT NULL,
+periode CHAR(1) NOT NULL default 'y',
+type VARCHAR(255) NOT NULL default '',
+administrateur CHAR(1) NOT NULL default '',
+scolarite CHAR(1) NOT NULL default '',
+cpe CHAR(1) NOT NULL default '',
+eleve CHAR(1) NOT NULL default '',
+responsable CHAR(1) NOT NULL default '',
+professeur_principal CHAR(1) NOT NULL default '',
+PRIMARY KEY (id_seuil)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

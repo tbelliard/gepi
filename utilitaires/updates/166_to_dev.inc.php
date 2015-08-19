@@ -92,4 +92,76 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'sp_saisies' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'sp_saisies'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sp_saisies (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_type int(11) NOT NULL,
+login VARCHAR(50) NOT NULL default '',
+date_sp datetime NOT NULL default '0000-00-00 00:00:00',
+commentaire text NOT NULL,
+created_at datetime NOT NULL default '0000-00-00 00:00:00',
+created_by VARCHAR(50) NOT NULL DEFAULT '',
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'sp_types_saisies' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'sp_types_saisies'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sp_types_saisies (
+id_type int(11) NOT NULL AUTO_INCREMENT,
+nom VARCHAR(255) NOT NULL default '',
+description TEXT NOT NULL,
+rang int(11) NOT NULL,
+PRIMARY KEY (id_type)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'sp_seuils' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'sp_seuils'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sp_seuils (
+id_seuil int(11) NOT NULL AUTO_INCREMENT,
+seuil int(11) NOT NULL,
+periode CHAR(1) NOT NULL default 'y',
+type VARCHAR(255) NOT NULL default '',
+administrateur CHAR(1) NOT NULL default '',
+scolarite CHAR(1) NOT NULL default '',
+cpe CHAR(1) NOT NULL default '',
+eleve CHAR(1) NOT NULL default '',
+responsable CHAR(1) NOT NULL default '',
+professeur_principal CHAR(1) NOT NULL default '',
+PRIMARY KEY (id_seuil)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>
