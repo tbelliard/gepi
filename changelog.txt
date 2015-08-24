@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.6.7 (24/08/2015)
 ===========================
 Librairies:
 - Ajout de PHPMailer (https://github.com/PHPMailer/PHPMailer)
