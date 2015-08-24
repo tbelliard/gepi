@@ -955,6 +955,11 @@ Cliquer pour donner l'accès.\" /></a>";
 			echo "<a href='ajax_modif_utilisateur.php?mode=changer_auth_mode2&amp;login_user=".$current_parent->login."&amp;auth_mode_user=".$current_parent->auth_mode."&amp;test_recup_critere=y".add_token_in_url()."' onclick=\"afficher_changement_auth_mode('$current_parent->login', '$current_parent->auth_mode', '$sso_table_login_ent') ;return false;\">";
 			echo "<span id='auth_mode_$current_parent->login'>";
 			echo $current_parent->auth_mode;
+
+			if(($current_parent->auth_mode=="sso")&&(getSettingAOui('sso_cas_table'))) {
+				echo temoin_compte_sso($current_parent->login);
+			}
+
 			echo "</span>";
 			echo "</a>";
 		echo "</td>\n";

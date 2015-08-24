@@ -179,7 +179,7 @@ elseif($mode=='changer_auth_mode') {
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if($res) {
 		if((getSettingAOui('sso_cas_table'))&&(isset($sso_table_login_ent))) {
-			$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$sso_table_login_ent' AND login_gepi!='$login_user';";
+			$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='$sso_table_login_ent' AND login_sso!='' AND login_gepi!='$login_user';";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				$lig=mysqli_fetch_object($res);

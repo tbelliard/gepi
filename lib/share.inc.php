@@ -9167,11 +9167,16 @@ function temoin_compte_sso($login_user) {
 			}
 			else {
 				$lig=mysqli_fetch_object($test2);
-				$retour.="<img src='".$gepiPath."/images/icons/buddy_sso.png' width='16' height='16' alt=\"Correspondance SSO présente\" title=\"La correspondance SSO est enregistrée";
-				if($_SESSION['statut']=='administrateur') {
-					$retour.=" (".$lig->login_sso.")";
+				if($lig->login_sso=="") {
+					$retour.="<img src='".$gepiPath."/images/icons/sens_interdit.png' width='16' height='16' alt=\"Correspondance SSO vide\" title=\"La correspondance SSO est vide dans la table 'sso_table_correspondance' pour ce compte Gepi.\" />";
 				}
-				$retour.=" dans la table 'sso_table_correspondance' pour ce compte.\" />";
+				else {
+					$retour.="<img src='".$gepiPath."/images/icons/buddy_sso.png' width='16' height='16' alt=\"Correspondance SSO présente\" title=\"La correspondance SSO est enregistrée";
+					if($_SESSION['statut']=='administrateur') {
+						$retour.=" (".$lig->login_sso.")";
+					}
+					$retour.=" dans la table 'sso_table_correspondance' pour ce compte.\" />";
+				}
 			}
 			$test->close();
 		}
