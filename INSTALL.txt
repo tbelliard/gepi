@@ -1,4 +1,4 @@
-Gepi-master -- Procédure d'installation
+Gepi-1.6.7 -- Procédure d'installation
 ==========================================
 
 La branche stable actuelle est la 1.6.7
