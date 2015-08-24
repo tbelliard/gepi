@@ -1286,3 +1286,6 @@ INSERT INTO droits SET id='/edt/index2.php', administrateur='V', professeur='V',
 INSERT INTO droits SET id='/bulletin/bulletins_et_conseils_classes.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Bulletins et conseils de classe', statut='';
 INSERT INTO droits SET id='/aid/popup.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Visualisation des membres d un AID', statut='';
 INSERT INTO droits SET id='/init_xml2/traite_xml_edt.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Import des enseignements via un Export XML EDT', statut='';
+INSERT INTO droits SET id='/mod_sso_table/traite_export_csv.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Export CSV', statut='';
+INSERT INTO droits SET id='/mod_sso_table/publipostage.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Publipostage', statut='';
+
