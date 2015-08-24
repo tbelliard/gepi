@@ -400,7 +400,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 <p>
 	<input type="checkbox" name="abs2_rattachement_auto_saisies_englobees" id="abs2_rattachement_auto_saisies_englobees" value="y"
 	<?php if (getSettingAOui("abs2_rattachement_auto_saisies_englobees")) echo " checked='checked'"; ?> />
-	<label for="abs2_rattachement_auto_saisies_englobees">&nbsp;Rattacher automatiquement les saisies englobées lors de la saisie sur le groupe (<em style='color:red'>expérimental</em>)</label>
+	<label for="abs2_rattachement_auto_saisies_englobees">&nbsp;Rattacher automatiquement les saisies englobées lors de la saisie sur le groupe.</label>
 </p>
 
 <p>
