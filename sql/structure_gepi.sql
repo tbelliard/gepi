@@ -1239,3 +1239,28 @@ professeur_principal CHAR(1) NOT NULL default '',
 PRIMARY KEY (id_seuil)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS signature_droits;
+CREATE TABLE IF NOT EXISTS signature_droits (
+id INT(11) unsigned NOT NULL auto_increment,
+login VARCHAR( 255 ) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS signature_fichiers;
+CREATE TABLE IF NOT EXISTS signature_fichiers (
+id_fichier INT(11) unsigned NOT NULL auto_increment,
+fichier VARCHAR( 255 ) NOT NULL ,
+login VARCHAR( 255 ) NOT NULL ,
+type VARCHAR( 255 ) NOT NULL,
+PRIMARY KEY ( id_fichier )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS signature_classes;
+CREATE TABLE IF NOT EXISTS signature_classes (
+id INT(11) unsigned NOT NULL auto_increment,
+login VARCHAR( 255 ) NOT NULL ,
+id_classe INT( 11 ) NOT NULL ,
+id_fichier INT( 11 ) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
