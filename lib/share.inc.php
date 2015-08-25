@@ -139,34 +139,42 @@ function verif_mot_de_passe($password,$flag) {
  * @return string yes si le login existe, no sinon
  */
 function test_unique_login($s) {
-    global $mysqli;
-    // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+	global $mysqli;
+	// On vérifie que le login ne figure pas déjà dans la base utilisateurs
+	$sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
 	$resultat = mysqli_query($mysqli, $sql1);  
 	$test1 = $resultat->num_rows;
 	$resultat->close();
-    
-    if ($test1 != "0") {
-        return 'no';
-    } else {
-        $sql2 = "SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')";        
+
+	if ($test1 != "0") {
+		return 'no';
+	} else {
+		$sql2 = "SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')";
 		$resultat = mysqli_query($mysqli, $sql2);  
 		$test2 = $resultat->num_rows;
 		$resultat->close();
-        if ($test2 != "0") {
-            return 'no';
-        } else {
+		if ($test2 != "0") {
+			return 'no';
+		} else {
 			$sql3 = "SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')";
-            $resultat = mysqli_query($mysqli, $sql2);  
-            $test3 = $resultat->num_rows;
-            $resultat->close();
+			$resultat = mysqli_query($mysqli, $sql2);  
+			$test3 = $resultat->num_rows;
+			$resultat->close();
 			if ($test3 != "0") {
 				return 'no';
 			} else {
-	            return 'yes';
-	        }
-        }
-    }
+				$sql4 = "SELECT login FROM tempo_utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+				$resultat = mysqli_query($mysqli, $sql4);  
+				$test4 = $resultat->num_rows;
+				$resultat->close();
+				if ($test4 != "0") {
+					return 'no';
+				} else {
+					return 'yes';
+				}
+			}
+		}
+	}
 }
 
 /**
@@ -10513,6 +10521,12 @@ function necessaire_saisie_avertissement_fin_periode() {
 		saisie_avertissement_fin_periode_periode=document.getElementById('saisie_avertissement_fin_periode_periode').value;
 		saisie_avertissement_fin_periode_id_retour_ajax=document.getElementById('saisie_avertissement_fin_periode_id_retour_ajax').value;
 
+		/*
+		alert('saisie_avertissement_fin_periode_login_ele='+saisie_avertissement_fin_periode_login_ele);
+		alert('saisie_avertissement_fin_periode_periode='+saisie_avertissement_fin_periode_periode);
+		alert('saisie_avertissement_fin_periode_id_retour_ajax='+saisie_avertissement_fin_periode_id_retour_ajax);
+		*/
+
 		$chaine_js
 
 		id_type_avertissement='';
@@ -10534,15 +10548,25 @@ function necessaire_saisie_avertissement_fin_periode() {
 			alert('Erreur');
 		}
 		else {
-			new Ajax.Updater($(saisie_avertissement_fin_periode_id_retour_ajax),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
-			parameters: {
-				login_ele: saisie_avertissement_fin_periode_login_ele,
-				periode: saisie_avertissement_fin_periode_periode,
-				saisie_avertissement_fin_periode: 'y',
-				mode_js: 'y',
-				lien_refermer: 'y',
-				id_type_avertissement: id_type_avertissement,
-			}});
+			//if($(saisie_avertissement_fin_periode_id_retour_ajax)) {
+				//alert('Le champ '+saisie_avertissement_fin_periode_id_retour_ajax+' existe/est atteint.');
+
+				new Ajax.Updater($(saisie_avertissement_fin_periode_id_retour_ajax),'../mod_discipline/saisie_avertissement_fin_periode.php?a=a&".add_token_in_url(false)."',{method: 'post',
+				parameters: {
+					login_ele: saisie_avertissement_fin_periode_login_ele,
+					periode: saisie_avertissement_fin_periode_periode,
+					saisie_avertissement_fin_periode: 'y',
+					mode_js: 'y',
+					lien_refermer: 'y',
+					id_type_avertissement: id_type_avertissement,
+				}});
+			/*
+			}
+			else {
+				//alert('Le champ '+saisie_avertissement_fin_periode_id_retour_ajax+' n existe pas ou ne peut pas etre atteint.');
+				document.getElementById('form_saisie_avertissement_fin_periode').submit();
+			}
+			*/
 
 			cacher_div('div_saisie_avertissement_fin_periode');
 		}
@@ -10587,9 +10611,17 @@ function necessaire_saisie_avertissement_fin_periode() {
 	<div id='corps_saisie_avertissement_fin_periode' class='infobulle_corps' style='color: black; cursor: auto; padding: 0px; height: 15em; width: $largeur_infobulle; overflow: auto;'>
 		<form name='form_saisie_avertissement_fin_periode' id='form_saisie_avertissement_fin_periode' action ='../mod_discipline/saisie_avertissement_fin_periode.php' method='post' target='_blank'>
 			<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
+
 				<input type='hidden' name='saisie_avertissement_fin_periode_login_ele' id='saisie_avertissement_fin_periode_login_ele' value='' />
 				<input type='hidden' name='saisie_avertissement_fin_periode_periode' id='saisie_avertissement_fin_periode_periode' value='' />
 				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
+
+				<!--
+				<input type='hidden' name='login_ele' id='saisie_avertissement_fin_periode_login_ele' value='' />
+				<input type='hidden' name='periode' id='saisie_avertissement_fin_periode_periode' value='' />
+				<input type='hidden' name='saisie_avertissement_fin_periode_id_retour_ajax' id='saisie_avertissement_fin_periode_id_retour_ajax' value='' />
+				-->
+
 				<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode</p>
 				<div id='div_champs_checkbox_avertissements_fin_periode'>
 					".champs_checkbox_avertissements_fin_periode("", 1)."
