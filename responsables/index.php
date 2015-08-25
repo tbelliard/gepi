@@ -90,6 +90,28 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 						}
 
 
+						$sql="SELECT statut FROM tempo_utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res3)>0){
+							$lig3=mysqli_fetch_object($res3);
+							if($lig3->statut=='responsable') {
+								$sql="DELETE FROM tempo_utilisateurs WHERE login='$lig1->login';";
+								//echo "$sql<br />\n";
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res4){
+									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login de la table 'tempo_utilisateurs'.<br />\n";
+								}
+								else {
+									$msg.="Compte d'utilisateur $lig1->login supprimé de la table 'tempo_utilisateurs'.<br />\n";
+								}
+							}
+							else {
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login dans la table 'tempo_utilisateurs', mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+							}
+						}
+
+
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
 						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -166,6 +188,27 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 						}
 
 
+						$sql="SELECT statut FROM tempo_utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res3)>0){
+							$lig3=mysqli_fetch_object($res3);
+							if($lig3->statut=='responsable') {
+								$sql="DELETE FROM tempo_utilisateurs WHERE login='$lig1->login';";
+								//echo "$sql<br />\n";
+								$res4=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$res4){
+									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login de la table 'tempo_utilisateurs'.<br />\n";
+								}
+								else {
+									$msg.="Compte d'utilisateur $lig1->login supprimé de la table 'tempo_utilisateurs'.<br />\n";
+								}
+							}
+							else {
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login dans la table 'tempo_utilisateurs', mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+							}
+						}
+
 
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
@@ -209,11 +252,57 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 		$suppr_resp=$suppr_resp0;
 		for($i=0;$i<count($suppr_resp);$i++){
 			// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-			$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
+			$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 			//echo "$sql<br />\n";
 			$res1=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res1)>0){
 				$lig1=mysqli_fetch_object($res1);
+
+
+				$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
+				//echo "$sql<br />\n";
+				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res3)>0){
+					$lig3=mysqli_fetch_object($res3);
+					if($lig3->statut=='responsable') {
+						$sql="DELETE FROM utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res4=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$res4){
+							$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
+						}
+						else {
+							$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+						}
+					}
+					else {
+						$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+					}
+				}
+
+
+				$sql="SELECT statut FROM tempo_utilisateurs WHERE login='$lig1->login';";
+				//echo "$sql<br />\n";
+				$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res3)>0){
+					$lig3=mysqli_fetch_object($res3);
+					if($lig3->statut=='responsable') {
+						$sql="DELETE FROM tempo_utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res4=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$res4){
+							$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login de la table 'tempo_utilisateurs'.<br />\n";
+						}
+						else {
+							$msg.="Compte d'utilisateur $lig1->login supprimé de la table 'tempo_utilisateurs'.<br />\n";
+						}
+					}
+					else {
+						$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login dans la table 'tempo_utilisateurs', mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+					}
+				}
+
+
 				$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 				//echo "$sql<br />\n";
 				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -250,6 +339,8 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
 $titre_page = "Gestion des ".$gepiSettings['denomination_responsables'];
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 //echo "\$num_resp=$num_resp<br />";
 
