@@ -365,34 +365,42 @@ function verif_mot_de_passe($password,$flag) {
  * @return string yes si le login existe, no sinon
  */
 function test_unique_login($s) {
-    global $mysqli;
-    // On vérifie que le login ne figure pas déjà dans la base utilisateurs
-    $sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+	global $mysqli;
+	// On vérifie que le login ne figure pas déjà dans la base utilisateurs
+	$sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
 	$resultat = mysqli_query($mysqli, $sql1);  
 	$test1 = $resultat->num_rows;
 	$resultat->close();
-    
-    if ($test1 != "0") {
-        return 'no';
-    } else {
-        $sql2 = "SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')";        
+
+	if ($test1 != "0") {
+		return 'no';
+	} else {
+		$sql2 = "SELECT login FROM eleves WHERE (login='$s' OR login = '".my_strtoupper($s)."')";
 		$resultat = mysqli_query($mysqli, $sql2);  
 		$test2 = $resultat->num_rows;
 		$resultat->close();
-        if ($test2 != "0") {
-            return 'no';
-        } else {
+		if ($test2 != "0") {
+			return 'no';
+		} else {
 			$sql3 = "SELECT login FROM resp_pers WHERE (login='$s' OR login='".my_strtoupper($s)."')";
-            $resultat = mysqli_query($mysqli, $sql2);  
-            $test3 = $resultat->num_rows;
-            $resultat->close();
+			$resultat = mysqli_query($mysqli, $sql2);  
+			$test3 = $resultat->num_rows;
+			$resultat->close();
 			if ($test3 != "0") {
 				return 'no';
 			} else {
-	            return 'yes';
-	        }
-        }
-    }
+				$sql4 = "SELECT login FROM tempo_utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
+				$resultat = mysqli_query($mysqli, $sql4);  
+				$test4 = $resultat->num_rows;
+				$resultat->close();
+				if ($test4 != "0") {
+					return 'no';
+				} else {
+					return 'yes';
+				}
+			}
+		}
+	}
 }
 
 /**
