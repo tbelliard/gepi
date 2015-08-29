@@ -370,6 +370,11 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 		}
 	}
 
+	$restriction_visibilite_notices_devoirs="";
+	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+		$restriction_visibilite_notices_devoirs=" AND ct.date_visibilite_eleve<='".strftime("%Y-%m-%d %H:%M:%S")."'";
+	}
+
     if ($delai == "") die("Erreur : Délai de visualisation du travail personnel non défini. Contactez l'administrateur de GEPI de votre établissement.");
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
@@ -385,7 +390,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "jc.id_classe = '" . $id_classe . "' and " .
 	            "ct.contenu != '' and " .
 	            "ct.date_ct >= '$jour' and
-	             ct.date_ct < '$jour_suivant'
+	             ct.date_ct < '$jour_suivant'".$restriction_visibilite_notices_devoirs."
 	            );";
 
         } elseif ($selected_eleve) {
@@ -425,12 +430,12 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "jec.login = '" . $selected_eleve->login ."' and " .
                 "ct.contenu != '' and " .
                 "ct.date_ct >= '$jour' and
-	             ct.date_ct < '$jour_suivant'
+	             ct.date_ct < '$jour_suivant'".$restriction_visibilite_notices_devoirs."
 	            )";
 
         }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
-		//echo "$sql<br />";
+		echo "$sql<br />";
 		$appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
         $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
