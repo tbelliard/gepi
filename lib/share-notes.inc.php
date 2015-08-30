@@ -685,6 +685,8 @@ function calcule_moy_mediane_quartiles($tab) {
 	$tab_retour['max']='-';
 	$tab_retour['q1']='-';
 	$tab_retour['q3']='-';
+	$tab_retour['supegal10']="-";
+	$tab_retour['inf10']="-";
 
 	if(count($tab2)>0) {
 		sort($tab2);
@@ -700,6 +702,21 @@ function calcule_moy_mediane_quartiles($tab) {
 
 		$min=min($tab2);
 		$max=max($tab2);
+
+		for($i=0;$i<count($tab2);$i++) {
+			if($tab2[$i]>=10) {
+				if($tab_retour['supegal10']=="-") {
+					$tab_retour['supegal10']=0;
+				}
+				$tab_retour['supegal10']++;
+			}
+			elseif($tab2[$i]<10) {
+				if($tab_retour['inf10']=="-") {
+					$tab_retour['inf10']=0;
+				}
+				$tab_retour['inf10']++;
+			}
+		}
 
 		$q1="-";
 		$q3="-";

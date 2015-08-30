@@ -2226,6 +2226,38 @@ if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
 	}
 	echo "</tr>\n";
 }
+
+if(getPref($_SESSION['login'], 'cn_avec_sup10', 'y')=='y') {
+	$tot_data_pdf++;
+	echo "<tr>\n";
+
+	$data_pdf[$tot_data_pdf][]='Nb.notes≥10 :';
+	echo "<td class='cn bold'><b>Nb.notes&ge;10&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['supegal10']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['supegal10'];
+	}
+	echo "</tr>\n";
+	
+	$tot_data_pdf++;
+	$data_pdf[$tot_data_pdf][]='Nb.notes<10 :';
+	echo "<tr>\n";
+	echo "<td class='cn bold'><b>Nb.notes&lt;10&nbsp;:</b></td>\n";
+	if ($multiclasses) {
+		echo "<td class='cn bold'>&nbsp;</td>\n";
+		$data_pdf[$tot_data_pdf][]='';
+	}
+	for($i=$indice_premiere_col_note;$i<count($tab_m);$i++) {
+		echo "<td class='cn bold'>".$tab_m[$i]['inf10']."</td>\n";
+		$data_pdf[$tot_data_pdf][]=$tab_m[$i]['inf10'];
+	}
+	echo "</tr>\n";
+}
 echo "</table>\n";
 
 if((isset($id_devoir))&&($id_devoir!=0)) {

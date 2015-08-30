@@ -852,6 +852,15 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 		$nb_reg++;
 	}
 
+	$cn_avec_sup10=isset($_POST['cn_avec_sup10']) ? $_POST['cn_avec_sup10'] : "n";
+	if(!savePref($_SESSION['login'],'cn_avec_sup10',$cn_avec_sup10)) {
+		$msg.="Erreur lors de l'enregistrement de 'cn_avec_sup10'<br />\n";
+		$message_cn.="Erreur lors de l'enregistrement de 'cn_avec_sup10'.<br />";
+	}
+	else {
+		$nb_reg++;
+	}
+
 	$cn_order_by=isset($_POST['cn_order_by']) ? $_POST['cn_order_by'] : "classe";
 	if(!savePref($_SESSION['login'],'cn_order_by',$cn_order_by)) {
 		$msg.="Erreur lors de l'enregistrement de 'cn_order_by'<br />\n";
@@ -2544,6 +2553,19 @@ if($_SESSION['statut']=='professeur') {
 			echo "</table>";
 		}
 
+		// A FAIRE : Tri et affichage ou non des AID
+
+
+
+
+
+
+
+
+
+
+
+
 		echo "<p style='text-align:center;'>\n";
 		echo "<input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' />\n";
 		$tabindex++;
@@ -2615,6 +2637,16 @@ if ((getSettingValue('active_carnets_notes')!='n')&&($_SESSION["statut"] == "pro
 	echo " tabindex='$tabindex'";
 	$tabindex++;
 	echo " /><label for='cn_avec_mediane_q1_q3' id='texte_cn_avec_mediane_q1_q3'> Afficher pour chaque colonne de notes les valeur médiane, 1er et 3è quartiles.</label>\n";
+	echo "</p>\n";
+
+	echo "<p>\n";
+	$cn_avec_mediane_q1_q3=getPref($_SESSION['login'], 'cn_avec_sup10', 'y');
+	echo "<input type='checkbox' name='cn_avec_sup10' id='cn_avec_sup10' value='y' ";
+	echo "onchange=\"checkbox_change('cn_avec_sup10');changement()\" ";
+	if($cn_avec_mediane_q1_q3=='y') {echo 'checked';}
+	echo " tabindex='$tabindex'";
+	$tabindex++;
+	echo " /><label for='cn_avec_sup10' id='texte_cn_avec_sup10'> Afficher pour chaque colonne de notes le nombre de notes supérieures ou égales à 10 et le nombre de notes inférieures à 10.</label>\n";
 	echo "</p>\n";
 
 	echo "<p>Dans la page de saisie des notes de devoirs, trier par défaut <br />\n";
@@ -3819,7 +3851,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);
