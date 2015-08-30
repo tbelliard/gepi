@@ -103,7 +103,8 @@ if (!isset($_POST["action"])) {
 
 	echo champ_input_choix_format_login('login_gen_type', $default_login_gen_type);
 
-	if (getSettingValue("use_ent") == "y") {
+	//if (getSettingValue("use_ent") == "y") {
+	if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent')=='argos_bordeaux')) {
 		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
 		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>Les logins sont produits par un ENT (<span title=\"cette case permet l'utilisation de la table 'ldap_bx', assurez vous qu'elle soit remplie avec les bonnes informations.\">Attention !</span>)</label>\n";
 		echo "<br />\n";

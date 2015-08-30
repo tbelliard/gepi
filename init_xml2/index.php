@@ -47,7 +47,8 @@ require_once("../lib/header.inc.php");
 <p class='bold'><a href="../gestion/index.php#init_xml2"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <?php
 // A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+//if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent')=='argos_bordeaux')) {
 	echo '<p>Avant de commencer, vous devez récupérer les logins de vos utilisateurs dans l\'ENT : <a href="../mod_ent/index.php">RECUPERER</a></p>';
 }
 ?>

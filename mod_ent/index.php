@@ -48,11 +48,12 @@ if (getSettingValue("use_ent") != 'y') {
 }
 
 $afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
+
 if($afficher_liaison_ent=="") {
-	if((preg_match("/^027/", getSettingValue('gepiSchoolRne')))||(preg_match("/^076/", getSettingValue('gepiSchoolRne')))) {
-		header("Location:./index_itop.php");
+	//if((preg_match("/^027/", getSettingValue('gepiSchoolRne')))||(preg_match("/^076/", getSettingValue('gepiSchoolRne')))) {
+		header("Location:./.gestion/options_connect.php#liaison_ent");
 		die();
-	}
+	//}
 }
 else {
 	// On tient compte du paramétrage

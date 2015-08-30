@@ -198,7 +198,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 						$test_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test_etab)==0){
 							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$insert_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
@@ -206,7 +206,7 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 						}
 						else {
 							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
-							echo "$sql<br />";
+							//echo "$sql<br />";
 							$update_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$update_etab) {
 								echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
@@ -624,7 +624,8 @@ else {
     }
 
 	// A VERIFIER : Avec afficher_liaison_ent = argos_bordeaux passe-t-on par cette table ldap_bx?
-	if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
+	//if ((getSettingValue("use_ent") == 'y')&&(getSettingValue('afficher_liaison_ent')!="netcollege")) {
+	if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent')=='argos_bordeaux')) {
 		// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
 
 		if($temoin_erreur_recup_login_ent>0) {
