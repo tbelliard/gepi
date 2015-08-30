@@ -331,7 +331,8 @@ else {
 	
 				// Dans le cas où Gepi est intégré à un ENT, il ne doit pas générer de login mais récupérer celui qui existe déjà
 				// A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-				if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+				//if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+				if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent')=='argos_bordeaux')) {
 					// On a récupéré les informations dans la table ldap_bx
 					// voir aussi les explications de la ligne 710 du fichiers professeurs.php
 					$sql_p = "SELECT login_u FROM ldap_bx
@@ -521,7 +522,8 @@ else {
     }
 
     // A MODIFIER : Pouvoir gérer use_ent et NetCollege ITOP hors 27:
-    if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+    //if ((getSettingValue("use_ent") == 'y')&&(!preg_match("/^027/", getSettingValue('gepiSchoolRne')))) {
+    if ((getSettingValue("use_ent") == "y")&&(getSettingValue('afficher_liaison_ent')=='argos_bordeaux')) {
     	// Dans le cas d'un ent on renvoie l'admin pour qu'il vérifie tous les logins de la forme erreur_xx
     	echo '
 			<p>--&gt; Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
