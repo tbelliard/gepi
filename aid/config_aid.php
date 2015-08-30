@@ -293,11 +293,11 @@ Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
 
 Type de notation :  <br />
 
-<input type="radio" name="type_note" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /> Une note pour chaque période
+<input type="radio" name="type_note" id="type_note_every" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /><label for='type_note_every'> Une note pour chaque période</label>
 
-<input type="radio" name="type_note" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /> Une note uniquement pour la dernière période
+<input type="radio" name="type_note" id="type_note_last" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /><label for='type_note_last'> Une note uniquement pour la dernière période</label>
 
-<input type="radio" name="type_note" value="no" <?php if ($type_note == "no") { echo ' checked="checked"';} ?> onclick="mise_a_zero()" /> Pas de note
+<input type="radio" name="type_note" id="type_note_no" value="no" <?php if ($type_note == "no") { echo ' checked="checked"';} ?> onclick="mise_a_zero()" /><label for='type_note_no'> Pas de note</label>
 
 <hr />
 
@@ -365,15 +365,15 @@ while ($i < $max_periode) {
 
 Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
 
-<br />Note maximum : <input type="text" name="note_max" size="20" <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
+<br />Note maximum : <input type="text" name="note_max" size="4" <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
 
 <hr />
 
 Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :<br />
 
-<input type="radio" name="display_nom" value="y" <?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> /> Oui
+<input type="radio" name="display_nom" id='display_nom_y' value="y" <?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> /><label for='display_nom_n'> Oui</label>
 
-<input type="radio" name="display_nom" value="n" <?php if ($display_nom == "n") { echo ' checked="checked"';} ?> /> Non
+<input type="radio" name="display_nom" id='display_nom_n' value="n" <?php if ($display_nom == "n") { echo ' checked="checked"';} ?> /><label for='display_nom_n'> Non</label>
 
 <hr />
 
@@ -477,12 +477,23 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 
 <p><b>Outils complémentaires de gestion des AIDs :</b></p>
 <p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
-(attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).
+(<em>attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire, trombinoscope,...</em>).
 <a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Consulter l'aide</a>.</p>
 <p>
-<input type="radio" onclick="javascript:Element.show('outils_comp');" name="activer_outils_comp" value="y" <?php if ($activer_outils_comp=='y') echo " checked"; ?> />&nbsp;Activer les outils compl&eacute;mentaires<br />
-<input type="radio" onclick="javascript:Element.hide('outils_comp');" name="activer_outils_comp" value="n" <?php if ($activer_outils_comp=='n') echo " checked"; ?> />&nbsp;Désactiver les outils compl&eacute;mentaires
+<!--  onclick="javascript:Element.show('outils_comp');" -->
+<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" onchange="js_adapte_outil_comp()" <?php if ($activer_outils_comp=='y') echo " checked"; ?> /><label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label><br />
+<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" onchange="js_adapte_outil_comp()" <?php if ($activer_outils_comp=='n') echo " checked"; ?> /><label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
 </p>
+<script type="text/javascript">
+function js_adapte_outil_comp() {
+	if(document.getElementById('activer_outils_comp_y').checked==true) {
+		Element.show('outils_comp');
+	}
+	else {
+		Element.hide('outils_comp');
+	}
+}
+</script>
 <?php if ($activer_outils_comp=='y') {?>
     <div id="outils_comp">
 <?php } else { ?>
@@ -490,7 +501,7 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 <?php } ?>
 <hr />
 <p><b>Modification des fiches projet : </b></p>
-<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de modifier les fiches projet (documentaliste, ...)
+<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (<em>professeurs ou CPE</em>) ayant le droit de modifier les fiches projet (<em>documentaliste,...</em>)
 même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
 <?php
 $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
@@ -536,7 +547,7 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
 <p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
 <p>
 <input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> />
-<label for="feuille_presence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
+<label for="feuillePresence"> Afficher un lien permettant l'impression de feuilles de pr&eacute;sence</label>
 </p>
 </div>
 
