@@ -388,6 +388,11 @@ echo "<script type='text/javascript'>
 		document.form_trombino.submit();
 	}
 
+	function valide_trombino_aid(id_aid){
+		document.getElementById('aid').value=id_aid;
+		document.form_trombino_aid.submit();
+	}
+
 	function valide_liste_pdf(id_groupe,num_periode){
 		document.getElementById('id_groupes').value=id_groupe;
 		document.getElementById('id_periode').value=num_periode;
@@ -1268,6 +1273,22 @@ while ($i < $tmp_nb_aid) {
 	$tmp_aid_display_bulletin = @old_mysql_result($res_aid, $i, "display_bulletin");
 	$tmp_aid_bull_simplifie = @old_mysql_result($res_aid, $i, "bull_simplifie");
 	$tmp_aid_type_note = @old_mysql_result($res_aid, $i, "type_note");
+	$tmp_aid_outils_complementaires = @old_mysql_result($res_aid, $i, "outils_complementaires");
+
+/*
+
+SELECT * FROM aid_config
+WHERE display_bulletin = 'y'
+OR bull_simplifie = 'y'
+ORDER BY nom;
+
+$sql = "SELECT DISTINCT ac.indice_aid, ac.nom, ac.nom_complet
+FROM aid_config ac, j_aid_utilisateurs u
+WHERE ac.outils_complementaires = 'y'
+AND u.indice_aid = ac.indice_aid
+AND u.id_utilisateur='".$_SESSION['login']."'
+ORDER BY ac.nom_complet"; 
+*/
 
 	$sql="SELECT * FROM j_aid_utilisateurs
 		WHERE (id_utilisateur = '".$_SESSION['login']."'
@@ -1379,6 +1400,23 @@ while ($i < $tmp_nb_aid) {
 			if($pref_accueil_trombino=="y") {
 				echo "<!-- Colonne Trombino -->\n";
 				echo "<td>";
+				if($tmp_aid_outils_complementaires=="y") {
+					echo "<a href='mod_trombinoscopes/trombinoscopes.php' onClick=\"valide_trombino_aid('".$lig_aid->id."'); return false;\"";
+
+					if($pref_accueil_infobulles=="y"){
+						echo " onmouseover=\"afficher_div('info_trombino_$ii','y',10,10);\" onmouseout=\"cacher_div('info_trombino_$ii');\"";
+					}
+					echo ">";
+					echo "<img src='images/icons/trombino.png' width='32' height='32' alt='Trombinoscope' border='0' />";
+					echo "</a>\n";
+
+					if($pref_accueil_infobulles=="y"){
+						echo "<div id='info_trombino_$ii' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_trombino_$ii');\">Trombinoscope de ".$tmp_nom_aid." (<i>$liste_classes_aid</i>).</div>\n";
+
+						$tab_liste_infobulles[]='info_trombino_'.$ii;
+					}
+
+				}
 				echo "</td>\n";
 			}
 
@@ -1656,6 +1694,11 @@ echo "<form enctype=\"multipart/form-data\" action=\"mod_trombinoscopes/trombino
 echo "<input type=\"hidden\" name=\"etape\" value=\"2\" />\n";
 //echo "<input type=\"hidden\" name=\"classe\" id=\"classe\" value='' />\n";
 echo "<input type=\"hidden\" name=\"groupe\" id=\"groupe\" value='' />\n";
+echo "</form>\n";
+
+echo "<form enctype=\"multipart/form-data\" action=\"mod_trombinoscopes/trombinoscopes.php\" method=\"post\" name=\"form_trombino_aid\" target=\"_blank\">\n";
+echo "<input type=\"hidden\" name=\"etape\" value=\"2\" />\n";
+echo "<input type=\"hidden\" name=\"aid\" id=\"aid\" value='' />\n";
 echo "</form>\n";
 
 
