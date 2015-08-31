@@ -25,32 +25,32 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 ?>
 [onload;file=menu.php]
-<h2>Ce module sert à créer une correspondance entre les logins Gépi et ENT dans le cas d'une authentification CAS</h2>
+<h2>Ce module sert à créer une correspondance entre les logins Gepi et ENT dans le cas d'une authentification CAS</h2>
 <h3>Il y a trois possibilités pour la mise en place de la correspondance :</h3>
 <ol>
 	<li><a name='correspondances'></a><strong>Par importation des correspondances depuis un fichier csv :</strong></li>
 	<p>Cliquer sur Import de données</p>
 	<p>Le fichier à fournir doit s'appeler correspondances.csv</p>
 	<p>Il ne doit contenir par ligne que deux données séparées par un ;</p>
-	<p>La première donnée est le login Gépi et la deuxième le login sso (de l'ent par exemple)</p>
+	<p>La première donnée est le login Gepi et la deuxième le login sso (de l'ent par exemple)</p>
 	<p>Voici un exemple</p>
 	<img src='img/fichier.png' />
 	<p class='message_red'>Vérifiez bien dans un logiciel comme notepad++ par exemple qu'il n'y a pas de lignes vides.. </p>
 	<p class='message_red'>Attention au formattage des données avec des tableurs comme Excel par exemple.. </p>
 	<p>Une fois le traitement effectué vous obtiendrez un tableau avec les résultats :</p>
 	<img src='img/resultat.png' />
-	<p>Si l'utilisateur n'existe pas dans Gépi , ou si une entrée existe déja dans la table de correspondance (login Gépi ou sso),
+	<p>Si l'utilisateur n'existe pas dans Gepi , ou si une entrée existe déja dans la table de correspondance (login Gepi ou sso),
 	aucune correspondance n'est mis en place.</p>
-	<p>Si l'utilisateur existe dans Gépi mais que le compte n'est pas paramétré en sso la correspondance est mise en place mais le mode de connexion doit être modifié dans Gépi </p>
+	<p>Si l'utilisateur existe dans Gepi mais que le compte n'est pas paramétré en sso la correspondance est mise en place mais le mode de connexion doit être modifié dans Gepi </p>
 	<p>Dans les autres cas la correspondance est mise en place.</p>
 	<br />
 
-	<li><a name='maj'></a><strong>Par mise en place manuelle de la correspondance pour un utilisateur de Gépi :</strong></li>
+	<li><a name='maj'></a><strong>Par mise en place manuelle de la correspondance pour un utilisateur de Gepi :</strong></li>
 	<p>Cliquer sur <em>Mise à jour de données </em></p>
-	<p>Rechercher le nom d'un utilisateur de Gépi </p>
+	<p>Rechercher le nom d'un utilisateur de Gepi </p>
 	<p class='message_red'>Attention cet utilisateur doit avoir son mode d'authentification paramétré en sso</p>
 	<p>Cliquez sur le login de l'utilisateur choisi :</p>
-	<p>Vous pouvez entrer le login sso pour la correspondance avec Gépi.</p>
+	<p>Vous pouvez entrer le login sso pour la correspondance avec Gepi.</p>
 	<p>Si une correspondance existe déja le login sso s'affiche. Vous pouvez le mettre à jour.</p>
 	<p>Voici une copie d'écran :</p>
 	<img src='img/maj.png' />
@@ -65,9 +65,9 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	  <li>RNE de l'établissement : non utilisé</li>
 	  <li>UID : identifiant SSO dans l'ENT, c'est ce champ qui sert de jointure</li>
 	  <li>classe de l'élève : sert à repérer les comptes parents et élèves</li>
-	  <li>profil : sert à différencier les doublons parents et élèves, les intitulés peuvent être différents de ceux de Gépi mais doivent être cohérents</li>
-	  <li>prénom : le premier doit correspondre à celui de Gépi</li>
-	  <li>nom : doit correspondre à celui de Gépi</li>
+	  <li>profil : sert à différencier les doublons parents et élèves, les intitulés peuvent être différents de ceux de Gepi mais doivent être cohérents</li>
+	  <li>prénom : le premier doit correspondre à celui de Gepi</li>
+	  <li>nom : doit correspondre à celui de Gepi</li>
 	  <li>login : login dans l'ENT, non utilisé</li>
 	  <li>mot de passe : mot de passe dans l'ENT, non utilisé</li>
 	  <li>cle de jointure : non utilisé</li>
@@ -98,9 +98,9 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	</ul>
 	<p>Une fois le traitement effectué vous obtiendrez un tableau avec les résultats :</p>
 	<img src='img/resultat.png' />
-	<p>Si l'utilisateur n'existe pas dans Gépi, aucune correspondance n'est mise en place.</p>
+	<p>Si l'utilisateur n'existe pas dans Gepi, aucune correspondance n'est mise en place.</p>
 	<p>Si une entrée existe déja dans la table de correspondance, aucune correspondance n'est mise en place et on affiche si la correspondance est différente.</p>
-	<p>Si l'utilisateur existe dans Gépi mais que le compte n'est pas paramétré en SSO, la correspondance est mise en place mais le mode de connexion doit être modifié dans Gépi.</p>
+	<p>Si l'utilisateur existe dans Gepi mais que le compte n'est pas paramétré en SSO, la correspondance est mise en place mais le mode de connexion doit être modifié dans Gepi.</p>
 	<p>Dans les autres cas la correspondance est mise en place.</p>
 
 </ol>

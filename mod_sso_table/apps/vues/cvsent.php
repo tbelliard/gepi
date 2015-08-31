@@ -28,7 +28,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 
 <h2>Import CSV type 1</h2>
 <div style='margin-left:3em;'>
-	<p>Vous allez mettre en place les correspondances entre les logins de Gépi et ceux de votre ENT d'après les noms et les prénoms, controlez dans l'aide les contraintes sur ce fichier :</p>
+	<p>Vous allez mettre en place les correspondances entre les logins de Gepi et ceux de votre ENT d'après les noms et les prénoms, controlez dans l'aide les contraintes sur ce fichier :</p>
 	<form action="index.php?ctrl=cvsent&action=result" enctype='multipart/form-data' method="post">
 	<fieldset class='fieldset_opacite50'>
 		<p>

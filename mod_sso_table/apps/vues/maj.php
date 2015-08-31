@@ -26,7 +26,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 ?>
 [onload;file=menu.php]
 <p>A partir de cette page vous pouvez mettre à jour manuellement une correspondance :</p>
-<p>Rechercher un utilisateur dans Gépi. Attention son compte doit être activé et paramétré en sso</p>
+<p>Rechercher un utilisateur dans Gepi. Attention son compte doit être activé et paramétré en sso</p>
 <form action="index.php?ctrl=maj&action=search"  method="post">
           <input type="text" name="nom" id="nom" value="" />
           <input type="submit" name="action" value="Rechercher" class="submit"/>

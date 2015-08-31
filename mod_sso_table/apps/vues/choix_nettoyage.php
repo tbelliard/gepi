@@ -31,7 +31,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <form action="index.php?ctrl=nettoyage&action=choix" enctype='multipart/form-data' method="post">
 <p>
 	<input type="radio" name="choix" value="vidage_complet" checked="checked" />Vider complètement la table de correspondances<br/>
-	<input type="radio" name="choix" value="anciens_comptes" />Supprimer de la table les comptes n'existant plus dans Gépi<br/>
+	<input type="radio" name="choix" value="anciens_comptes" />Supprimer de la table les comptes n'existant plus dans Gepi<br/>
 	<input type="radio" name="choix" value="profil" />Supprimer les correspondances pour un profil (enseignant,eleve,tuteur....) <br/>
     <input type="radio" name="choix" value="classe" />Supprimer les correspondances pour une classe<br/>
 </p>

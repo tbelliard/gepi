@@ -51,7 +51,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
   <p>Voici les logins des correspondances à supprimer:</p>
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
-      <td width="20%"><strong>Logins Gépi n'ayant pas de compte utilisateurs dans l'application</strong></td>
+      <td width="20%"><strong>Logins Gepi n'ayant pas de compte utilisateurs dans l'application</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
       <td>[b1.login_gepi;block=tr]</td>
@@ -74,7 +74,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
   <br />
   <table width="70%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
-      <td width="40%"><strong>Logins Gépi n'ayant pas de compte utilisateurs dans l'application</strong></td>
+      <td width="40%"><strong>Logins Gepi n'ayant pas de compte utilisateurs dans l'application</strong></td>
       <td ><strong>Action réalisée</strong></td>
     </tr>
     <tr bgcolor="#F0F0F0">
