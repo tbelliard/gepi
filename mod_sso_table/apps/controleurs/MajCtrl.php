@@ -55,7 +55,7 @@ class MajCtrl extends Controleur {
       $this->nom=$_POST['nom'];
       $data=new ImportModele();
       $this->search_result=$data->search($this->nom);
-      if(!$this->search_result)throw new exception("Aucun utilisateur correspondant à vos critères de recherche n'existe dans Gépi avec son compte paramétré en sso");
+      if(!$this->search_result)throw new exception("Aucun utilisateur correspondant à vos critères de recherche n'existe dans Gepi avec son compte paramétré en sso");
       $this->vue->LoadTemplate('result_search.php');
       $this->vue->MergeBlock('b1',$this->search_result) ;
         $this->vue->MergeBlock('sso1',array()) ;

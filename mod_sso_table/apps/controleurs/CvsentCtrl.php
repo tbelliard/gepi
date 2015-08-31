@@ -137,7 +137,7 @@ class CvsentCtrl extends Controleur {
                 }
                 $this->res = $data->cherche_login($this->ligne, $statut, $recherche);
                 if (mysqli_num_rows($this->res) == 1) {
-                    // on a un seul utilisateur dans Gépi
+                    // on a un seul utilisateur dans Gepi
                     $row = mysqli_fetch_row($this->res);
                     $login_gepi = $row[0];
                 } else {
@@ -180,7 +180,7 @@ class CvsentCtrl extends Controleur {
               $this->tuteur = $data->est_que_tuteur();
               if (mysql_num_rows($this->tuteur) != 0) {
               while ($this->row = mysql_fetch_array($this->tuteur)) {
-              // on a bien un compte tuteur dans l'ENT, on peut le supprimer il n'a pas de compte dans gépi
+              // on a bien un compte tuteur dans l'ENT, on peut le supprimer il n'a pas de compte dans Gepi
               $data->del_by_uid($this->row['uid']);
               }
               }
@@ -239,7 +239,7 @@ class CvsentCtrl extends Controleur {
 
             fclose($this->fic);
 
-            // il reste encore les erreurs : 2 comptes ENT -> 1 compte Gépi, on peut nettoyer quand les 2 comptes ne sont pas des comptes parents
+            // il reste encore les erreurs : 2 comptes ENT -> 1 compte Gepi, on peut nettoyer quand les 2 comptes ne sont pas des comptes parents
             $this->res = $data->doublon_2ent_1gepi();
             if (mysqli_num_rows($this->res) > 0) {
                 while ($this->row2 = mysqli_fetch_array($this->res)) {
@@ -261,7 +261,7 @@ class CvsentCtrl extends Controleur {
             } else {
                 $this->ecriture = FALSE;
             }
-            // On récupère tous les membres de l'ENT ayant un login Gépi
+            // On récupère tous les membres de l'ENT ayant un login Gepi
             $this->res = $data->get_gepi_ent();
             if (mysqli_num_rows($this->res) != 0) {
                 while ($this->ligne = mysqli_fetch_array($this->res)) {
@@ -273,20 +273,20 @@ class CvsentCtrl extends Controleur {
                     }
                 }
             }
-            // On récupère les membres de l'ENT sans login présents dans Gépi
+            // On récupère les membres de l'ENT sans login présents dans Gepi
             $this->class = "message_red";
             $this->res = $data->get_sans_login();
             if (mysqli_num_rows($this->res) != 0) {
                 while ($this->ligne = mysqli_fetch_array($this->res)) {
                     $this->res2 = $data->cherche_login($this->ligne);
                     if (mysqli_num_rows($this->res2) > 0) {
-                        $this->message = 'Il y a plusieurs personnes dans Gépi ayant les mêmes noms et prénoms';
+                        $this->message = 'Il y a plusieurs personnes dans Gepi ayant les mêmes noms et prénoms';
                         $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                         $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
                     }
                 }
             }
-            // On récupère les membres de l'ENT sans login absents de Gépi
+            // On récupère les membres de l'ENT sans login absents de Gepi
             $this->res = $data->get_sans_login();
             if (mysqli_num_rows($this->res) != 0) {
                 while ($this->ligne = mysqli_fetch_array($this->res)) {
@@ -306,7 +306,7 @@ class CvsentCtrl extends Controleur {
                             $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                             $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
                         } else {
-                            $this->message = "L'utilisateur n'existe probablement pas dans gépi.";
+                            $this->message = "L'utilisateur n'existe probablement pas dans Gepi.";
                             $this->class = "message_red";
                             $nomPrenom = $this->ligne['nom'] . " " . $this->ligne['prenom'];
                             $this->table[] = array('login_gepi' => $nomPrenom, 'login_sso' => $this->ligne['uid'], 'couleur' => $this->class, 'message' => $this->message);
@@ -357,10 +357,10 @@ class CvsentCtrl extends Controleur {
                 $row = mysqli_fetch_row($result);
                 if ($row[0] == $this->ligne['uid']) {
                     $this->class = "message_blue";
-                    $this->message = 'Une entrée identique existe déjà dans la table pour ce login gépi';
+                    $this->message = 'Une entrée identique existe déjà dans la table pour ce login Gepi';
                 } else {
                     $this->class = "message_red";
-                    $this->message = 'Une entrée différente existe déjà dans la table pour ce login gépi';
+                    $this->message = 'Une entrée différente existe déjà dans la table pour ce login Gepi';
                 }
                 break;
             case 1:
@@ -369,7 +369,7 @@ class CvsentCtrl extends Controleur {
                 break;
             case 2:
                 $this->class = "message_red";
-                $this->message = 'L\'utilisateur n\'existe pas dans gépi.';
+                $this->message = 'L\'utilisateur n\'existe pas dans Gepi.';
                 break;
             case 3:
                 $this->class = "message_orange";

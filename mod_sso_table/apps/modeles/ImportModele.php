@@ -258,7 +258,7 @@ class ImportModele {
 					`statut` varchar(100) COMMENT 'statut dans ENT',
 					`prenom` varchar(50) COMMENT 'prenom dans ENT',
 					`nom` varchar(50) COMMENT 'nom dans ENT',
-					`login` varchar(50) COMMENT 'login de Gépi',
+					`login` varchar(50) COMMENT 'login de Gepi',
 					`jointure` varchar(50) COMMENT 'jointure ENT annuaire',
 					`pere` varchar(50) COMMENT 'uid pere dans ENT',
 					`mere` varchar(50) COMMENT 'uid mere',
@@ -372,7 +372,7 @@ class ImportModele {
   }
 
   /**
-   * Recherche le login d'un utilisateur responsable en utilisant son enfant pour le retrouver dans Gépi (traitement des doublons)
+   * Recherche le login d'un utilisateur responsable en utilisant son enfant pour le retrouver dans Gepi (traitement des doublons)
    * @param array $eleve issus de public function est_responsable($ligne)
    * @param array $ligne enregistrement de l'utilisateur cherché
    * @return ressource mysql_query($this->req) login du responsable
@@ -530,7 +530,7 @@ class ImportModele {
   }
 
   /**
-   * On récupère les utilisateurs de Gépi sans correspondance dans la table
+   * On récupère les utilisateurs de Gepi sans correspondance dans la table
    */
   public function get_homonymes_sans_correspondance($nom) {
     $this->req = "SELECT * FROM `utilisateurs`  WHERE  nom='" . traitement_magic_quotes($nom) . "' AND NOT EXISTS
