@@ -2108,7 +2108,9 @@ mysql>
 									if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
 									$test_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($test_grp)>0) {
-										$tab_grp_candidat[]=$lig->id_groupe;
+										if(!in_array($lig->id_groupe, $tab_grp_candidat)) {
+											$tab_grp_candidat[]=$lig->id_groupe;
+										}
 									}
 								}
 							}
