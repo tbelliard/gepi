@@ -2528,7 +2528,7 @@ echo add_token_field();
 	<p class="cellTab">
 		<input type="radio" 
 			   name="phpmailer_debug" 
-			   id="phpmailer_debug" 
+			   id="phpmailer_debug_y" 
 			   value="y" 
 			   <?php
 				if(getSettingValue('phpmailer_debug')=="") {saveSetting('phpmailer_debug', 'n');}
