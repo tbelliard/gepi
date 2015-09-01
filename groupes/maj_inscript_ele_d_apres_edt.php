@@ -843,6 +843,8 @@ elseif($action=="upload") {
 	}
 	echo "</span>";
 
+	echo "<p>$cpt élève(s) trouvés dans ce fichier.</p>";
+
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?action=comparer'>Rechercher les modifications d'appartenance aux groupes/enseignements</a>.</p>";
 
 	echo "<p style='color:red'><em>A FAIRE&nbsp;:</em> Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
@@ -982,6 +984,7 @@ elseif($action=="comparer") {
 					groupes like '$current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe');";
+			//echo "$sql<br />";
 			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)==0) {
 				echo "<p>Aucun élève n'a dans ses groupes le nom EDT ".$current_nom_groupe.".</p>";
@@ -995,12 +998,18 @@ elseif($action=="comparer") {
 
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
 
-					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					if($lig_ele->n_national!="") {
+						$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					}
+					else {
+						$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
+					}
+					//echo "$sql<br />";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE non trouvé dans la table 'eleves'</span>";
 					}
-					else {
+					elseif(mysqli_num_rows($res_nn)==1) {
 						$lig_nn=mysqli_fetch_object($res_nn);
 
 						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
@@ -1022,6 +1031,9 @@ elseif($action=="comparer") {
 						$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
 						if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
 						$tab_ele_regroupement_edt['classe'][]=$classe;
+					}
+					else {
+						echo " <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
 					}
 					echo "<br />";
 
