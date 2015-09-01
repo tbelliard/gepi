@@ -474,7 +474,7 @@ else {
 						while ($test_unicite != 'yes') {
 							// test_unique_e_login() contrôle l'existence du login dans la table 'utilisateurs' et ***renseigne la table 'tempo2'***
 							//$test_unicite = test_unique_e_login($login_eleve,$i);
-							$test_unicite = test_unique_e_login($login_eleve,$id_tempo);
+							$test_unicite = test_unique_e_login($login_eleve,$id_tempo, "y");
 							if ($test_unicite != 'yes') {
 								$login_eleve = $temp.$k;
 								$k++;
