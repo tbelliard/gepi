@@ -11688,10 +11688,11 @@ function nombre_de_dossiers_docs_joints_a_des_sanctions() {
 	if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
 		if(isset($_COOKIE['RNE'])) {
 			$dossier_documents_discipline.="_".$_COOKIE['RNE'];
-			if(!file_exists("../$dossier_documents_discipline")) {
-				@mkdir("../$dossier_documents_discipline",0770);
-			}
 		}
+	}
+
+	if(!file_exists($dossier_documents_discipline)) {
+		@mkdir($dossier_documents_discipline,0770);
 	}
 
 	$handle=opendir($dossier_documents_discipline);
