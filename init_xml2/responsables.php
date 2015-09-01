@@ -503,7 +503,7 @@
 							}
 							else{
 
-								$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
+								$sql="SELECT * FROM tempo_utilisateurs WHERE identifiant1='".$personnes[$i]["personne_id"]."' AND statut='responsable';";
 								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 								$res_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($res_tmp_u)>0) {
@@ -514,30 +514,40 @@
 									if(mysqli_num_rows($test_u)>0) {
 										$lig_test_u=mysqli_fetch_object($test_u);
 										if($lig_test_u->statut!='responsable') {
-											echo "<span style='color:red;'>ANOMALIE&nbsp;:</span> Un compte d'uilisateur <b>$lig_test_u->statut</b> existait pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+											echo "<span style='color:red;'>ANOMALIE&nbsp;:</span> Un compte d'utilisateur <b>$lig_test_u->statut</b> existait pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+										}
+										else {
+											echo "<span style='color:red;'>ATTENTION&nbsp;:</span> Un compte d'utilisateur <b>$lig_test_u->statut</b> existe déjà pour le login <b>$lig_tmp_u->login</b>.<br />Est-ce le même que le responsable nouvellement créé&nbsp;???<br />Un Nettoyage des tables serait peut-être bienvenu.<br /><span style='color:red;'>$sql</span><br />";
 										}
 									}
 									else {
-										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"])."', ";
-										if(isset($personnes[$i]["lc_civilite"])){
-											$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
-										}
-										$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
-										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
-										if(!$insert_u) {
-											echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+										// On vérifie si le login existe déjà:
+										$test_unicite = test_unique_login($lig_tmp_u->login, "y");
+										if ($test_unicite != 'yes') {
+											echo "<span style='color:red;'>ATTENTION&nbsp;:</span> Un compte d'utilisateur existe déjà pour le login <b>$lig_tmp_u->login</b> mis en réserve pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
 										}
 										else {
-											$nb_utilisateurs_responsables_restaures++;
+											$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["nom"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $personnes[$i]["prenom"])."', ";
+											if(isset($personnes[$i]["lc_civilite"])){
+												$sql.="civilite='".casse_mot($personnes[$i]["lc_civilite"],'majf2')."', ";
+											}
+											$sql.="password='".$lig_tmp_u->password."', salt='".$lig_tmp_u->salt."', email='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_tmp_u->email)."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+											$insert_u=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$insert_u) {
+												echo "<span style='color:red;'>Erreur</span> lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"]."&nbsp;:<br /><span style='color:red;'>$sql</span><br />";
+											}
+											else {
+												$nb_utilisateurs_responsables_restaures++;
 
-											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
-											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
+												$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+												if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+												$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-											$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
-											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+												$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
+												if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+												$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
+											}
 										}
 									}
 								}

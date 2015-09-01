@@ -364,7 +364,7 @@ function verif_mot_de_passe($password,$flag) {
  * @param string $s le login testé
  * @return string yes si le login existe, no sinon
  */
-function test_unique_login($s) {
+function test_unique_login($s, $sauf_tempo_utilisateurs="n") {
 	global $mysqli;
 	// On vérifie que le login ne figure pas déjà dans la base utilisateurs
 	$sql1 = "SELECT login FROM utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
@@ -388,7 +388,7 @@ function test_unique_login($s) {
 			$resultat->close();
 			if ($test3 != "0") {
 				return 'no';
-			} else {
+			} elseif($sauf_tempo_utilisateurs=="n") {
 				$sql4 = "SELECT login FROM tempo_utilisateurs WHERE (login='$s' OR login='".my_strtoupper($s)."')";
 				$resultat = mysqli_query($mysqli, $sql4);  
 				$test4 = $resultat->num_rows;
@@ -398,6 +398,9 @@ function test_unique_login($s) {
 				} else {
 					return 'yes';
 				}
+			}
+			else {
+				return 'yes';
 			}
 		}
 	}
@@ -412,11 +415,11 @@ function test_unique_login($s) {
  * @param <type> $indice ??
  * @return string yes si le login existe, no sinon
  */
-function test_unique_e_login($s, $indice) {
+function test_unique_e_login($s, $indice, $sauf_tempo_utilisateurs="n") {
     global $mysqli;
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
     
-    $test7 = test_unique_login($s);
+    $test7 = test_unique_login($s, $sauf_tempo_utilisateurs);
     if ($test7 == "no") {
         // Si le login figure déjà dans une des bases élève des années passées ou bien
         // dans la base utilisateurs, on retourne 'no' !
