@@ -168,6 +168,12 @@ if(isset($choix_donnees)) {
 		}
 		$ligne_entete.="\n";
 	}
+	elseif($_POST['format_export']==5) {
+		for($loop=0;$loop<count($tab_id_groupe);$loop++) {
+			$ligne_entete.=preg_replace("/;/", ",", get_info_grp($tab_id_groupe[$loop], array('description', 'matieres', 'classes', 'profs'),"txt")).";";
+		}
+		$ligne_entete.="\n";
+	}
 
 	$nb_max_opt=0;
 	for($loop_classe=0;$loop_classe<count($id_classe);$loop_classe++) {
@@ -294,6 +300,14 @@ if(isset($choix_donnees)) {
 					for($loop=0;$loop<count($tab_id_groupe);$loop++) {
 						if((isset($id_groupe[$tab_id_groupe[$loop]]['matiere']['matiere']))&&(in_array($id_groupe[$tab_id_groupe[$loop]]['matiere']['matiere'], $tab_ele_mat[$lig->login]))) {
 							$lignes_csv.=1;
+						}
+						$lignes_csv.=";";
+					}
+				}
+				elseif($_POST['format_export']==5) {
+					for($loop=0;$loop<count($tab_id_groupe);$loop++) {
+						if((isset($id_groupe[$tab_id_groupe[$loop]]['matiere']['matiere']))&&(in_array($id_groupe[$tab_id_groupe[$loop]]['matiere']['matiere'], $tab_ele_mat[$lig->login]))) {
+							$lignes_csv.=$id_groupe[$tab_id_groupe[$loop]]['matiere']['matiere'];
 						}
 						$lignes_csv.=";";
 					}
@@ -909,6 +923,11 @@ Dupre;Thomas;...;1;;1;<br />
 Dupont;Simone;...;;1;1;;<br />
 </label></p>
 
+<p style='text-indent:-3em; margin-left:3em;'><input type='radio' name='format_export' id='format_export_5' value='5' /><label for='format_export_5'>Liste des enseignements&nbsp;:<br />
+NOM;PRENOM;...;AGL1_groupe_1;AGL1_groupe_2;ESP2_groupe_1;ESP2_groupe_2;<br />
+Dupre;Thomas;...;AGL1;;ESP2;<br />
+Dupont;Simone;...;;AGL1;ESP2;;<br />
+</label></p>
 ";
 	echo "</div>\n";
 
