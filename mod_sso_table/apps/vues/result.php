@@ -29,7 +29,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <p>Résultats du traitement :</p>
 <table width="80%" border="1" align="center" cellpadding="2" cellspacing="0">
     <tr bgcolor="#CACACA">
-        <td width="20%"><strong>Login gépi</strong></td>
+        <td width="20%"><strong>Login Gepi</strong></td>
         <td width="20%"><strong>Login sso</strong></td>
         <td width="60%"><strong>Résultat</strong></td>
     </tr>

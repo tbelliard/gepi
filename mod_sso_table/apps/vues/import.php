@@ -25,7 +25,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 };
 ?>
 [onload;file=menu.php]
-<p>Vous allez mettre en place les correspondances entre les logins de gépi et ceux d'un logiciel tiers :</p>
+<p>Vous allez mettre en place les correspondances entre les logins de Gepi et ceux d'un logiciel tiers :</p>
 <p class="title-page">Veuillez fournir le fichier csv :</p>
 <form action="index.php?ctrl=import&action=result" enctype='multipart/form-data' method="post">
     <p>

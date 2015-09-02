@@ -28,7 +28,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <p>Mise à jour de l'utilisateur : [b1.login_gepi] </p>
 <p class='message_red'> Si le champs login sso n'est pas vide c'est qu'une correspondance existe déja pour cet utilisateur. Soyez certain de la mise à jour</p>
 <form action="index.php?ctrl=maj&action=updated"  method="post">
-      <p>Login gépi :</p>
+      <p>Login Gepi :</p>
        <input type="text" name="login_gepi" id="login_gepi" value="[b1.login_gepi]" disabled />
        <input type="hidden" name="login_gepi" id="login_gepi" value="[b1.login_gepi]" />
        <p>Login sso :</p>    <input type="text" name="login_sso" id="login_sso" value="[b1.login_sso;if b1.login_ss0 !='']" />
