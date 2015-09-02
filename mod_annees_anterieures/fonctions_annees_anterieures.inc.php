@@ -655,7 +655,7 @@ function insert_eleve($login,$ine,$annee,$param) {
 	if($fichier_sql!="") {
 		enregistrer_sql_archivage($sql);
 	}
-	$del = sql_query1($sql);
+	$del = mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="INSERT INTO archivage_eleves2 SET
 	ine='".$ine."',
