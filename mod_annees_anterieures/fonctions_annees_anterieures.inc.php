@@ -646,7 +646,7 @@ function insert_eleve($login,$ine,$annee,$param) {
 		$regime=$lig_ele->regime;
 		$doublant=$lig_ele->doublant;
 	}
-	$del = sql_query1("delete from archivage_eleve2 where ine ='".$ine."'");
+	$del = mysqli_query($GLOBALS["mysqli"], "delete from archivage_eleve2 where ine ='".$ine."'");
 	$sql="INSERT INTO archivage_eleves2 SET
 	ine='".$ine."',
 	annee = '".$annee."',
