@@ -94,6 +94,8 @@ class CvsentCtrl extends Controleur {
                 $copie = move_uploaded_file($file,'../temp/'.get_user_temp_directory().'/'. $this->file);
             } elseif ($this->file == 'ENT-Identifiants-'.mb_strtoupper(getSettingValue('gepiSchoolRne')).'.csv') {
                 $copie = move_uploaded_file($file,'../temp/'.get_user_temp_directory().'/ENT-Identifiants.csv');
+            } elseif (preg_match("/^ENT-Identifiants-".mb_strtoupper(getSettingValue('gepiSchoolRne'))."[A-Za-z0-9_]*.csv$/", $this->file)) {
+                $copie = move_uploaded_file($file,'../temp/'.get_user_temp_directory().'/ENT-Identifiants.csv');
             } else
                 throw new Exception('Le nom du fichier est incorrect');
         } else
