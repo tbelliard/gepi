@@ -476,6 +476,9 @@ elseif($mode=='publiposter') {
 		$compteur_pages_imprimees=0;
 
 		for($loop=0;$loop<count($classe);$loop++) {
+			$tab_cle_courante=array();
+			$tab_courant=array();
+
 			$fp=fopen($dest_file,"r");
 			$ligne_entete=trim(fgets($fp,4096));
 
@@ -523,6 +526,11 @@ elseif($mode=='publiposter') {
 					}
 
 					if($afficher=="y") {
+
+						$tab_cle_courante[]=$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
+						$tab_courant[$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]]=$tab;
+
+						/*
 						echo "
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
@@ -591,10 +599,83 @@ elseif($mode=='publiposter') {
 							echo "<p>&nbsp;</p>";
 						}
 						$compteur_pages_imprimees++;
-
+						*/
 					}
 				}
 				$compteur++;
+			}
+
+			sort($tab_cle_courante);
+			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
+				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
+				echo "
+		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
+			<tr>
+				<td style='width:8em;'>À l'attention de </td>
+				<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
+			</tr>
+			<tr>
+				<td>Login </td>
+				<td class='bold'>".$tab[$tabindice['login']]."</td>
+			</tr>
+			<tr>
+				<td>Mot de passe </td>
+				<td class='bold'>".$tab[$tabindice['mot de passe']]."</td>
+			</tr>";
+
+				if((isset($tabindice['nom enfant']))&&($tab[$tabindice['nom enfant']]!='')) {
+					echo "
+			<tr>
+				<td>Responsable de </td>
+				<td>".$tab[$tabindice['nom enfant']];
+					if(isset($tabindice['prenom enfant'])) {
+						echo " ".$tab[$tabindice['prenom enfant']];
+					}
+					echo "</td>
+			</tr>";
+				}
+
+				if(isset($tabindice['classe'])) {
+					echo "
+			<tr>
+				<td>Classe de </td>
+				<td>".$tab[$tabindice['classe']]."</td>
+			</tr>";
+						}
+
+				
+
+				echo "
+		</table>";
+
+				if($fiche_bienvenue=="y") {
+					if(isset($tabindice['profil'])) {
+						if((mb_strtolower($tab[$tabindice['profil']])=='tuteur')||
+						(mb_strtolower($tab[$tabindice['profil']])=='parent')||
+						(mb_strtolower($tab[$tabindice['profil']])=='responsable')) {
+							$page=$ImpressionFicheParent;
+						}
+						elseif((mb_strtolower($tab[$tabindice['profil']])=='eleve')||(mb_strtolower($tab[$tabindice['profil']])=='élève')) {
+							$page=$ImpressionFicheEleve;
+						}
+						else {
+							$page=$Impression;
+						}
+					}
+					else {
+						$page=$Impression;
+					}
+					echo $page;
+
+
+					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+						echo "<p class='saut'></p>";
+					}
+				}
+				else {
+					echo "<p>&nbsp;</p>";
+				}
+				$compteur_pages_imprimees++;
 			}
 		}
 	}
