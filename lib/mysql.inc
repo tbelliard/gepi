@@ -60,6 +60,7 @@ function sql_query1 ($sql)
 {
     $r = mysqli_query($GLOBALS["mysqli"], $sql);
     if (! $r) return -1;
+    if ($r === TRUE) return $sql;
     if (mysqli_num_rows($r) != 1 || (($___mysqli_tmp = mysqli_num_fields($r)) ? $___mysqli_tmp : false) != 1
         || ($result = old_mysql_result($r, 0, 0)) == "") $result = -1;
     ((mysqli_free_result($r) || (is_object($r) && (get_class($r) == "mysqli_result"))) ? true : false);
