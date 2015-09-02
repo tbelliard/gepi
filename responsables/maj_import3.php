@@ -4768,7 +4768,8 @@ else{
 								echo "<option value=''>---</option>\n";
 								while($lig_classe=mysqli_fetch_object($res_classe)){
 									echo "<option value='$lig_classe->id'";
-									if(my_strtolower($lig_ele->divcod)==my_strtolower($lig_classe->classe)) {echo " selected='true'";}
+									//if(my_strtolower($lig_ele->divcod)==my_strtolower($lig_classe->classe)) {echo " selected='true'";}
+									if(preg_replace("/[^a-z0-9]/","",ensure_ascii(mb_strtolower($lig_ele->divcod)))==preg_replace("/[^a-z0-9]/","",ensure_ascii(mb_strtolower($lig_classe->classe)))) {echo " selected='true'";}
 									echo ">$lig_classe->classe</option>\n";
 								}
 								echo "</select>\n";
