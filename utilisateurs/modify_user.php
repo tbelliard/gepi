@@ -559,7 +559,7 @@ if (isset($user_login) and ($user_login!='')) {
 	$utilisateur_courant_trouve="n";
 	//$sql="SELECT login,nom,prenom FROM utilisateurs WHERE statut='$user_statut' ORDER BY nom,prenom";
 	//$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE statut='$user_statut' AND etat='actif' ORDER BY statut, nom,prenom";
-	$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE etat='actif' ORDER BY statut, nom,prenom";
+	$sql="SELECT login,nom,prenom,statut FROM utilisateurs WHERE etat='actif' AND (statut='administrateur' OR statut='professeur' OR statut='cpe' OR statut='scolarite' OR statut='autre' OR statut='secours') ORDER BY statut, nom,prenom";
 	$res_liste_user=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_liste_user)>0){
 		$login_user_prec="";
