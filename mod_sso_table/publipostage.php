@@ -297,8 +297,12 @@ if($mode=="upload") {
 					echo "
 		<p style='text-indent:-3em;margin-left:3em;'>Classes&nbsp;:";
 					for($loop=0;$loop<count($tab_classe);$loop++) {
+						$info_classe=$tab_classe[$loop];
+						if($info_classe=="") {
+							$info_classe="<span style='color:red'>Aucune classe (<em>parents ou élèves de l'année passée?</em>)</span>";
+						}
 						echo "<br />
-			<input type='checkbox' name='classe[]' id='classe_$loop' value=\"".$tab_classe[$loop]."\" onchange=\"checkbox_change(this.id)\" /><label for='classe_$loop' id='texte_classe_$loop'>".$tab_classe[$loop]."</label>";
+			<input type='checkbox' name='classe[]' id='classe_$loop' value=\"".$tab_classe[$loop]."\" onchange=\"checkbox_change(this.id)\" /><label for='classe_$loop' id='texte_classe_$loop'>".$info_classe."</label>";
 					}
 				echo "
 			<br />
