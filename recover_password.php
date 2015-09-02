@@ -104,11 +104,12 @@ if (isset($_POST['login'])) {
 	        			"Vous pouvez également copier/coller l'adresse complète dans votre navigateur.\n" .
 	        			"Ce lien doit être utilisé avant l'heure suivante : " .
 	        			date("G:i:s",$expiration_timestamp) ."\n" .
-	        			", sous peine de n'être plus valide.\n";
+	        			" sous peine de n'être plus valide.\n";
 
 	        	//- Debug - echo $mail_content;
 	        	//- Debug - if ($mail_content) {
-	        	if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
+	        	//if (mail($email, "Gepi - réinitialisation de votre mot de passe", $mail_content)) {
+			if(envoi_mail("Gepi - réinitialisation de votre mot de passe", $mail_content, $email)) {
 	        		$message = "Un courriel vient de vous être envoyé.";
 	        	} else {
 	        		$message = "Erreur lors de l'envoi du courriel.";
