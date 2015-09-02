@@ -32,9 +32,9 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 	<form action="index.php?ctrl=cvsent&action=result" enctype='multipart/form-data' method="post">
 	<fieldset class='fieldset_opacite50'>
 		<p>
-			<input type="radio" name="choix" value="erreur" checked="checked" />Recherche des erreurs : seules les erreurs sont affichées, aucune donnée n'est écrite dans la base<br/>
-			<input type="radio" name="choix" value="test" />Test : toutes les entrées sont listées avec leur état, aucune donnée n'est écrite dans la base<br/>
-			<input type="radio" name="choix" value="ecrit" />Inscription dans la base : toutes les entrées sont traitées puis listées avec leur état. Les données sont écrites dans la base <br/>
+			<input type="radio" name="choix" value="erreur" id='choix_erreur' checked="checked" /><label for='choix_erreur'>Recherche des erreurs : seules les erreurs sont affichées, aucune donnée n'est écrite dans la base</label><br/>
+			<input type="radio" name="choix" id='choix_test' value="test" /><label for='choix_test'>Test : toutes les entrées sont listées avec leur état, aucune donnée n'est écrite dans la base</label><br/>
+			<input type="radio" name="choix" id='choix_ecrit' value="ecrit" /><label for='choix_ecrit'>Inscription dans la base : toutes les entrées sont traitées puis listées avec leur état. Les données sont écrites dans la base</label><br/>
 		</p>
 		<p class="title-page">Veuillez fournir le fichier csv&nbsp;:</p>
 		<p>
@@ -90,7 +90,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <h2>Publipostage</h2>
 <div style='margin-left:3em;'>
 	<p>Vous pouvez ici imprimer les logins et mots de passe destinés aux utilisateurs.<br />
-	Seul les fichiers CSV type 1 (<em>ENT-Identifiants</em>) sont actuellement pris en compte.</p>
+	Seuls les fichiers CSV type 1 (<em>ENT-Identifiants</em>) sont actuellement pris en compte.</p>
 	<form action="publipostage.php" enctype='multipart/form-data' method="post">
 	<fieldset class='fieldset_opacite50'>
 		<input type='hidden' name='mode' value='upload' />

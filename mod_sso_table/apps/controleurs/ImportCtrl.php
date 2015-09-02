@@ -143,7 +143,7 @@ class ImportCtrl extends Controleur {
         switch ($code) {
             case 0:
                 $this->class = "message_red";
-                $this->message = 'Une entrée existe déja dans la table pour ce login gépi';
+                $this->message = 'Une entrée existe déja dans la table pour ce login Gepi';
                 break;
             case 1:
                 $this->class = "message_red";
@@ -151,7 +151,7 @@ class ImportCtrl extends Controleur {
                 break;
             case 2:
                 $this->class = "message_red";
-                $this->message = 'L\'utilisateur n\'existe pas dans gépi.';
+                $this->message = 'L\'utilisateur n\'existe pas dans Gepi.';
                 break;
             case 3:
                 $this->class = "message_orange";
