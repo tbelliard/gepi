@@ -360,6 +360,8 @@ if($mode=="upload") {
 }
 elseif($mode=='publiposter') {
 
+	//debug_var();
+
 	$tempdir=get_user_temp_directory();
 	if($tempdir=="") {
 		echo "<p style='color:red'>Dossier temporaire de l'utilisateur non valide.</p>";
@@ -383,7 +385,8 @@ elseif($mode=='publiposter') {
 	$classe=isset($_POST['classe']) ? $_POST['classe'] : NULL;
 	$profil=isset($_POST['profil']) ? $_POST['profil'] : NULL;
 
-	$tabchamps = array("profil", "classe", "nom", "prenom", "login", "mot de passe", "prenom enfant", "nom enfant", "adresse", "code postal", "ville", "pays");
+	// Ajout de l'UID pour croiser avec sso_table_correspondance et s'assurer que l'élève est encore dans l'établissement
+	$tabchamps = array("uid", "profil", "classe", "nom", "prenom", "login", "mot de passe", "prenom enfant", "nom enfant", "adresse", "code postal", "ville", "pays");
 
 	// Lecture de la ligne 1 et la mettre dans $temp
 	$ligne_entete=trim(fgets($fp,4096));
@@ -414,6 +417,12 @@ elseif($mode=='publiposter') {
 		die();
 	}
 
+	/*
+	echo "<pre>";
+	print_r($tabindice);
+	echo "</pre>";
+	*/
+
 	$cpt=0;
 	for($loop=0;$loop<count($tabchamps);$loop++) {
 		if(isset($tabindice[$tabchamps[$loop]])) {
@@ -428,10 +437,28 @@ elseif($mode=='publiposter') {
 	$ImpressionNombre=getSettingValue('ImpressionNombre');
 	$ImpressionNombreParent=getSettingValue('ImpressionNombreParent');
 	$ImpressionNombreEleve=getSettingValue('ImpressionNombreEleve');
+	//echo "\$ImpressionNombreEleve=$ImpressionNombreEleve<br />";
 
-	if((isset($profil))&&(isset($tabindice['profil']))&&(count($tabindice['profil'])>1)) {
+	$impression_nombre_global=100;
+	//if((isset($profil))&&(isset($tabindice['profil']))&&(count($tabindice['profil'])>1)) {
+	if(isset($profil)) {
 		for($loop=0;$loop<count($profil);$loop++) {
+			//echo "\$profil[$loop]=$profil[$loop]<br />";
+			if(((mb_strtolower($profil[$loop])=="parent")||(mb_strtolower($profil[$loop])=="tuteur")||(mb_strtolower($profil[$loop])=="responsable"))&&($ImpressionNombreParent<$impression_nombre_global)) {
+				$impression_nombre_global=$ImpressionNombreParent;
+			}
+			elseif((mb_strtolower($profil[$loop])=="eleve")&&($ImpressionNombreEleve<$impression_nombre_global)) {
+				$impression_nombre_global=$ImpressionNombreEleve;
+			}
+			//echo "\$impression_nombre_global=$impression_nombre_global<br />";
 		}
+	}
+
+	if($impression_nombre_global==100) {
+		$impression_nombre_global=1;
+	}
+	elseif($impression_nombre_global<=0) {
+		$impression_nombre_global=1;
 	}
 
 	/*
@@ -442,6 +469,7 @@ elseif($mode=='publiposter') {
 
 	if((isset($classe))&&(count($classe)>1)) {
 		$compteur=0;
+		$compteur_pages_imprimees=0;
 
 		for($loop=0;$loop<count($classe);$loop++) {
 			$fp=fopen($dest_file,"r");
@@ -474,6 +502,20 @@ elseif($mode=='publiposter') {
 
 					if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/i", $tab[$tabindice['mot de passe']]))) {
 						$afficher="n";
+					}
+
+					if(($afficher=="y")&&(isset($tabindice["uid"]))) {
+						if($tab[$tabindice['uid']]=="") {
+							$afficher="n";
+						}
+						else {
+							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$tab[$tabindice['uid']]."';";
+							//echo "$sql<br />";
+							$test_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_sso)==0) {
+								$afficher="n";
+							}
+						}
 					}
 
 					if($afficher=="y") {
@@ -536,11 +578,15 @@ elseif($mode=='publiposter') {
 							}
 							echo $page;
 
-							echo "<p class='saut'></p>";
+
+							if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+								echo "<p class='saut'></p>";
+							}
 						}
 						else {
 							echo "<p>&nbsp;</p>";
 						}
+						$compteur_pages_imprimees++;
 
 					}
 				}
@@ -549,6 +595,7 @@ elseif($mode=='publiposter') {
 		}
 	}
 	else {
+		$compteur_pages_imprimees=0;
 		$compteur=0;
 		while (!feof($fp)) {
 			$ligne = trim(fgets($fp, 4096));
@@ -559,6 +606,12 @@ elseif($mode=='publiposter') {
 			if($ligne!='') {
 				$infos="";
 				$tab=explode(";", ensure_utf8($ligne));
+
+				/*
+				echo "<pre>";
+				print_r($tab);
+				echo "</pre>";
+				*/
 
 				$afficher="y";
 				if((isset($profil))&&(isset($tabindice['profil']))&&(!in_array($tab[$tabindice['profil']], $profil))) {
@@ -571,6 +624,20 @@ elseif($mode=='publiposter') {
 
 				if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/", $tab[$tabindice['mot de passe']]))) {
 					$afficher="n";
+				}
+
+				if(($afficher=="y")&&(isset($tabindice["uid"]))) {
+					if($tab[$tabindice['uid']]=="") {
+						$afficher="n";
+					}
+					else {
+						$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$tab[$tabindice['uid']]."';";
+						//echo "$sql<br />";
+						$test_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_sso)==0) {
+							$afficher="n";
+						}
+					}
 				}
 
 				if($afficher=="y") {
@@ -633,9 +700,12 @@ elseif($mode=='publiposter') {
 						}
 						echo $page;
 
-						echo "<p class='saut'></p>";
+						if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+							echo "<p class='saut'></p>";
+						}
 					}
 
+					$compteur_pages_imprimees++;
 				}
 			}
 			$compteur++;
