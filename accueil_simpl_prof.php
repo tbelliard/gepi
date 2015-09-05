@@ -1613,7 +1613,11 @@ while ($i < $tmp_nb_aid) {
 							if($pref_accueil_liste_pdf=="y"){
 								echo "<!-- Colonne Liste PDF -->\n";
 								echo "<td class='$class_style'>\n";
-								echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
+								if($afficher_aid=="y") {
+									echo "<div id='h_listes_".$ii."_".$j."'>";
+									echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
+									echo "</div>";
+								}
 								echo "</td>\n";
 							}
 					}
