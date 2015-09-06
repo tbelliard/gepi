@@ -366,168 +366,8 @@ for($i=0;$i<count($tab_noms_periodes);$i++){
 
 $nb_groupes=count($groups);
 
-
-echo "<script type='text/javascript'>
-	function valide_bull_simpl(id_classe,num_periode){
-		document.getElementById('id_classe').value=id_classe;
-		document.getElementById('periode1').value=num_periode;
-		document.getElementById('periode2').value=num_periode;
-		document.form_choix_edit.submit();
-	}
-
-	/*
-	function valide_trombino(id_classe){
-		document.getElementById('classe').value='c-'+id_classe;
-		document.form_trombino.submit();
-	}
-	*/
-
-	function valide_trombino(id_groupe){
-		//document.getElementById('classe').value='g-'+id_groupe;
-		document.getElementById('groupe').value=id_groupe;
-		document.form_trombino.submit();
-	}
-
-	function valide_liste_pdf(id_groupe,num_periode){
-		document.getElementById('id_groupes').value=id_groupe;
-		document.getElementById('id_periode').value=num_periode;
-		document.form_liste_pdf.submit();
-	}
-
-
-
-	function modif_col(num_periode,mode){
-		if(mode=='affiche'){
-			if(document.getElementById('h_lien_affiche_'+num_periode)){
-				document.getElementById('h_lien_affiche_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_lien_cache_'+num_periode)){
-				document.getElementById('h_lien_cache_'+num_periode).style.display='';
-			}
-
-			if(document.getElementById('h_cn_'+num_periode)){
-				document.getElementById('h_cn_'+num_periode).style.display='';
-			}
-			if(document.getElementById('h_b_'+num_periode)){
-				document.getElementById('h_b_'+num_periode).style.display='';
-			}
-			if(document.getElementById('h_v_'+num_periode)){
-				document.getElementById('h_v_'+num_periode).style.display='';
-			}
-
-			if(document.getElementById('h_bn_'+num_periode)){
-				document.getElementById('h_bn_'+num_periode).style.display='';
-			}
-			if(document.getElementById('h_ba_'+num_periode)){
-				document.getElementById('h_ba_'+num_periode).style.display='';
-			}
-			if(document.getElementById('h_g_'+num_periode)){
-				document.getElementById('h_g_'+num_periode).style.display='';
-			}
-			if(document.getElementById('h_bs_'+num_periode)){
-				document.getElementById('h_bs_'+num_periode).style.display='';
-			}
-
-			if(document.getElementById('h_liste_pdf_'+num_periode)){
-				document.getElementById('h_liste_pdf_'+num_periode).style.display='';
-			}
-
-			// Pour afficher/cacher les lignes du tableau, évaluer count(\$groups)=\$nb_groupes
-			for(i=0;i<=$nb_groupes;i++){
-				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
-					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='';
-				}
-				if(document.getElementById('h_bn_'+i+'_'+num_periode)){
-					document.getElementById('h_bn_'+i+'_'+num_periode).style.display='';
-				}
-				if(document.getElementById('h_ba_'+i+'_'+num_periode)){
-					document.getElementById('h_ba_'+i+'_'+num_periode).style.display='';
-				}
-				if(document.getElementById('h_g_'+i+'_'+num_periode)){
-					document.getElementById('h_g_'+i+'_'+num_periode).style.display='';
-				}
-				if(document.getElementById('h_bs_'+i+'_'+num_periode)){
-					document.getElementById('h_bs_'+i+'_'+num_periode).style.display='';
-				}
-				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
-					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='';
-				}
-			}
-		}
-		else{
-			if(document.getElementById('h_lien_affiche_'+num_periode)){
-				document.getElementById('h_lien_affiche_'+num_periode).style.display='';
-			}
-
-			if(document.getElementById('h_lien_cache_'+num_periode)){
-				document.getElementById('h_lien_cache_'+num_periode).style.display='none';
-			}
-
-			if(document.getElementById('h_cn_'+num_periode)){
-				document.getElementById('h_cn_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_b_'+num_periode)){
-				document.getElementById('h_b_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_v_'+num_periode)){
-				document.getElementById('h_v_'+num_periode).style.display='none';
-			}
-
-			if(document.getElementById('h_bn_'+num_periode)){
-				document.getElementById('h_bn_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_ba_'+num_periode)){
-				document.getElementById('h_ba_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_g_'+num_periode)){
-				document.getElementById('h_g_'+num_periode).style.display='none';
-			}
-			if(document.getElementById('h_bs_'+num_periode)){
-				document.getElementById('h_bs_'+num_periode).style.display='none';
-			}
-
-			if(document.getElementById('h_liste_pdf_'+num_periode)){
-				document.getElementById('h_liste_pdf_'+num_periode).style.display='none';
-			}
-
-			for(i=0;i<=$nb_groupes;i++){
-				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
-					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='none';
-				}
-				if(document.getElementById('h_bn_'+i+'_'+num_periode)){
-					document.getElementById('h_bn_'+i+'_'+num_periode).style.display='none';
-				}
-				if(document.getElementById('h_ba_'+i+'_'+num_periode)){
-					document.getElementById('h_ba_'+i+'_'+num_periode).style.display='none';
-				}
-				if(document.getElementById('h_g_'+i+'_'+num_periode)){
-					document.getElementById('h_g_'+i+'_'+num_periode).style.display='none';
-				}
-				if(document.getElementById('h_bs_'+i+'_'+num_periode)){
-					document.getElementById('h_bs_'+i+'_'+num_periode).style.display='none';
-				}
-				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
-					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='none';
-				}
-			}
-		}
-	}
-
-	var fen;
-	function ouvre_popup_visu_groupe(id_groupe,id_classe){
-		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
-		setTimeout('fen.focus()',500);
-	}
-
-</script>\n";
-
 echo "<script type='text/javascript' src='lib/brainjar_drag.js'></script>\n";
 echo "<script type='text/javascript' src='lib/position.js'></script>\n";
-
-
-
-
 
 if($colspan>0){
 	for($i=1;$i<=$maxper;$i++){
@@ -1396,7 +1236,12 @@ while ($i < $tmp_nb_aid) {
 						else {
 							$afficher_aid="n";
 						}
-
+/*
+echo "Periode $j<br />
+\$tmp_aid_display_begin=$tmp_aid_display_begin<br />
+\$tmp_aid_display_end=$tmp_aid_display_end<br />
+\$afficher_aid=$afficher_aid<br />";
+*/
 							$class_style="";
 
 							$nb_verrtot=0;
@@ -1643,6 +1488,164 @@ while ($i < $tmp_nb_aid) {
 //==================================================================
 
 echo "</table>\n";
+
+
+
+echo "<script type='text/javascript'>
+	function valide_bull_simpl(id_classe,num_periode){
+		document.getElementById('id_classe').value=id_classe;
+		document.getElementById('periode1').value=num_periode;
+		document.getElementById('periode2').value=num_periode;
+		document.form_choix_edit.submit();
+	}
+
+	/*
+	function valide_trombino(id_classe){
+		document.getElementById('classe').value='c-'+id_classe;
+		document.form_trombino.submit();
+	}
+	*/
+
+	function valide_trombino(id_groupe){
+		//document.getElementById('classe').value='g-'+id_groupe;
+		document.getElementById('groupe').value=id_groupe;
+		document.form_trombino.submit();
+	}
+
+	function valide_liste_pdf(id_groupe,num_periode){
+		document.getElementById('id_groupes').value=id_groupe;
+		document.getElementById('id_periode').value=num_periode;
+		document.form_liste_pdf.submit();
+	}
+
+
+
+	function modif_col(num_periode,mode){
+		if(mode=='affiche'){
+			if(document.getElementById('h_lien_affiche_'+num_periode)){
+				document.getElementById('h_lien_affiche_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_lien_cache_'+num_periode)){
+				document.getElementById('h_lien_cache_'+num_periode).style.display='';
+			}
+
+			if(document.getElementById('h_cn_'+num_periode)){
+				document.getElementById('h_cn_'+num_periode).style.display='';
+			}
+			if(document.getElementById('h_b_'+num_periode)){
+				document.getElementById('h_b_'+num_periode).style.display='';
+			}
+			if(document.getElementById('h_v_'+num_periode)){
+				document.getElementById('h_v_'+num_periode).style.display='';
+			}
+
+			if(document.getElementById('h_bn_'+num_periode)){
+				document.getElementById('h_bn_'+num_periode).style.display='';
+			}
+			if(document.getElementById('h_ba_'+num_periode)){
+				document.getElementById('h_ba_'+num_periode).style.display='';
+			}
+			if(document.getElementById('h_g_'+num_periode)){
+				document.getElementById('h_g_'+num_periode).style.display='';
+			}
+			if(document.getElementById('h_bs_'+num_periode)){
+				document.getElementById('h_bs_'+num_periode).style.display='';
+			}
+
+			if(document.getElementById('h_liste_pdf_'+num_periode)){
+				document.getElementById('h_liste_pdf_'+num_periode).style.display='';
+			}
+
+			// Pour afficher/cacher les lignes du tableau, évaluer count(\$groups)=\$nb_groupes
+			for(i=0;i<=$nb_groupes+$nb_aid;i++){
+				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
+					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='';
+				}
+				if(document.getElementById('h_bn_'+i+'_'+num_periode)){
+					document.getElementById('h_bn_'+i+'_'+num_periode).style.display='';
+				}
+				if(document.getElementById('h_ba_'+i+'_'+num_periode)){
+					document.getElementById('h_ba_'+i+'_'+num_periode).style.display='';
+				}
+				if(document.getElementById('h_g_'+i+'_'+num_periode)){
+					document.getElementById('h_g_'+i+'_'+num_periode).style.display='';
+				}
+				if(document.getElementById('h_bs_'+i+'_'+num_periode)){
+					document.getElementById('h_bs_'+i+'_'+num_periode).style.display='';
+				}
+				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='';
+				}
+			}
+		}
+		else{
+			if(document.getElementById('h_lien_affiche_'+num_periode)){
+				document.getElementById('h_lien_affiche_'+num_periode).style.display='';
+			}
+
+			if(document.getElementById('h_lien_cache_'+num_periode)){
+				document.getElementById('h_lien_cache_'+num_periode).style.display='none';
+			}
+
+			if(document.getElementById('h_cn_'+num_periode)){
+				document.getElementById('h_cn_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_b_'+num_periode)){
+				document.getElementById('h_b_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_v_'+num_periode)){
+				document.getElementById('h_v_'+num_periode).style.display='none';
+			}
+
+			if(document.getElementById('h_bn_'+num_periode)){
+				document.getElementById('h_bn_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_ba_'+num_periode)){
+				document.getElementById('h_ba_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_g_'+num_periode)){
+				document.getElementById('h_g_'+num_periode).style.display='none';
+			}
+			if(document.getElementById('h_bs_'+num_periode)){
+				document.getElementById('h_bs_'+num_periode).style.display='none';
+			}
+
+			if(document.getElementById('h_liste_pdf_'+num_periode)){
+				document.getElementById('h_liste_pdf_'+num_periode).style.display='none';
+			}
+
+			for(i=0;i<=$nb_groupes+$nb_aid;i++){
+				if(document.getElementById('h_cn_'+i+'_'+num_periode)){
+					document.getElementById('h_cn_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_bn_'+i+'_'+num_periode)){
+					document.getElementById('h_bn_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_ba_'+i+'_'+num_periode)){
+					document.getElementById('h_ba_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_g_'+i+'_'+num_periode)){
+					document.getElementById('h_g_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_bs_'+i+'_'+num_periode)){
+					document.getElementById('h_bs_'+i+'_'+num_periode).style.display='none';
+				}
+				if(document.getElementById('h_listes_'+i+'_'+num_periode)){
+					document.getElementById('h_listes_'+i+'_'+num_periode).style.display='none';
+				}
+			}
+		}
+	}
+
+	var fen;
+	function ouvre_popup_visu_groupe(id_groupe,id_classe){
+		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		setTimeout('fen.focus()',500);
+	}
+
+</script>\n";
+
 
 // Formulaire validé via JavaScript pour afficher les bulletins simplifiés
 //echo "<form enctype=\"multipart/form-data\" action=\"../prepa_conseil/edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">";
