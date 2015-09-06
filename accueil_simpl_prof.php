@@ -1262,6 +1262,7 @@ $sql="SELECT * FROM aid_config
 		WHERE display_bulletin = 'y'
 			OR bull_simplifie = 'y'
 			ORDER BY nom;";
+//echo "$sql<br />";
 $res_aid=mysqli_query($GLOBALS["mysqli"], $sql);
 $i=0;
 $tmp_nb_aid_a_afficher=0;
@@ -1653,7 +1654,7 @@ ORDER BY ac.nom_complet";
 								echo "<td class='$class_style'>\n";
 								if($afficher_aid=="y") {
 									echo "<div id='h_listes_".$ii."_".$j."'>";
-									echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
+									echo "<a href='impression/liste_pdf.php?id_aid=".$lig_aid->id."&amp;periode_num=".$j."' target='_blank'><img src='images/icons/pdf32.png' width='32' height='32' alt='PDF' /></a>";
 									echo "</div>";
 								}
 								echo "</td>\n";
