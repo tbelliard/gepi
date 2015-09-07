@@ -1254,7 +1254,12 @@ Patientez pendant l'extraction des données... merci.
 					echo "<table class='boireaus' summary='Infos compte élève'>\n";
 					$alt=1;
 					$alt=$alt*(-1);
-					echo "<tr class='lig$alt'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
+					if(acces("/utilisateurs/edit_eleve.php", $_SESSION['statut'])) {
+						echo "<tr class='lig$alt'><th style='text-align: left;'>Compte&nbsp;:</th><td><a href='../utilisateurs/edit_eleve.php?critere_recherche=".preg_replace("/[^A-Za-z]/","%",ensure_ascii($tab_ele['nom']))."' title=\"Éditer le compte utilisateur de l'élève\">".$tab_ele['compte_utilisateur']['login']."</a></td></tr>";
+					}
+					else {
+						echo "<tr class='lig$alt'><th style='text-align: left;'>Compte&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['login']."</td></tr>";
+					}
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'><th style='text-align: left;'>Etat&nbsp;:</th><td>".$tab_ele['compte_utilisateur']['etat']."</td></tr>";
 					if(isset($tab_ele['compte_utilisateur']['DerniereConnexionEle'])) {
@@ -1521,7 +1526,12 @@ Patientez pendant l'extraction des données... merci.
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Dispose d'un compte:</th><td>";
 							if(in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe'))) {
-								echo $tab_ele['resp'][$i]['login'];
+								if(acces("/utilisateurs/edit_eleve.php", $_SESSION['statut'])) {
+									echo "<a href='../utilisateurs/edit_responsable.php?critere_recherche=".preg_replace("/[^A-Za-z]/","%",ensure_ascii($tab_ele['resp'][$i]['nom']))."' title=\"Éditer le compte utilisateur du responsable\">".$tab_ele['resp'][$i]['login']."</a>";
+								}
+								else {
+									echo $tab_ele['resp'][$i]['login'];
+								}
 							}
 							else {
 								echo "Oui";
