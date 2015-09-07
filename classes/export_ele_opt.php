@@ -341,8 +341,19 @@ $titre_page = "Export matières élèves";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
 
-if(acces("/classes/classes_const.php", $_SESSION['statut'])) {
-	echo "<p class='bold'><a href='classes_const.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if((isset($id_classe))) {
+	if(is_array($id_classe)) {
+		if(isset($id_classe[0])) {
+			$id_premiere_classe=$id_classe[0];
+		}
+	}
+	elseif((preg_match("/^$[0-9]*$/", $id_classe))&&($id_classe>0)) {
+		$id_premiere_classe=$id_classe;
+	}
+}
+
+if((acces("/classes/classes_const.php", $_SESSION['statut']))&&(isset($id_premiere_classe))) {
+	echo "<p class='bold'><a href='classes_const.php?id_classe=$id_premiere_classe'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
 elseif(acces("/classes/index.php", $_SESSION['statut'])) {
 	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
