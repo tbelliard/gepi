@@ -552,7 +552,7 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 	elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
 
 	if($upload_modele_ooo_autorise=='y') {
-		echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."'>\n";
+		echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' style='margin-top:1em;'>\n";
 		echo add_token_field();
 		echo "<p>Mettre en place un nouveau modèle&nbsp;:</p>\n";
 		echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
@@ -593,6 +593,11 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 				echo "<p>Des exemples de modèles sont disponibles&nbsp;: <a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo</a></p>\n";
 			echo "</li>\n";
 		echo "</ul>\n";
+
+		echo "<script type='text/javascript'>
+".js_checkbox_change_style()."
+".js_change_style_radio()."
+</script>";
 
 		if($_SESSION['statut']=='administrateur') {
 			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accès les utilisateurs selon leur statut.</p>\n";
