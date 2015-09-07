@@ -320,6 +320,10 @@ if($mode=="upload") {
 <p><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>
+		<p>Si vous sélectionnez des classes, les fiches seront triées par classe, puis par ordre alphabétique des noms et prénoms.<br />
+		Sinon, toutes les lignes du fichier fourni seront parcourues et traitées/affichées dans l'ordre du fichier.</p>
+	</li>
+	<li>
 		<p>Si vous effectuez le publipostage pour plusieurs profils différents sans fiche bienvenue insérée, la découpe risque de ne pas être pratique.<br />
 		Pour les élèves, il y a en effet 4 lignes, contre 5 pour les responsables.<br />
 		Il vaut mieux alors imprimer les fiches pour les élèves dans un premier temps et pour les responsables dans un deuxième temps.</p>
