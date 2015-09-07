@@ -171,7 +171,11 @@ if (isset($is_posted) and ($is_posted == '1')) {
 			if((isset($pers_id))&&(isset($tab_nom_prenom_resp))) {
 				$compte_resp_existe="n";
 				$test1_login=mysqli_query($GLOBALS["mysqli"], "SELECT login FROM resp_pers WHERE pers_id = '$pers_id'");
-				if(mysqli_num_rows($test1_login)>0) {$compte_resp_existe="y";}
+				if(mysqli_num_rows($test1_login)>0) {
+					$compte_resp_existe="y";
+					$lig_login=mysqli_fetch_object($test1_login);
+					$resp_login=$lig_login->login;
+				}
 
 				$sql="UPDATE resp_pers SET nom='$resp_nom',
 								prenom='$resp_prenom',
@@ -216,6 +220,86 @@ if (isset($is_posted) and ($is_posted == '1')) {
 						}
 					}
 				}
+
+				if(($_SESSION['statut']=='administrateur')&&(isset($_POST['login_sso']))&&(isset($resp_login))&&($resp_login!="")) {
+					$enregistrer_sso_corresp="y";
+					if($_POST['login_sso']!="") {
+						$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".$_POST['login_sso']."' AND login_gepi!='".$resp_login."';";
+						$res_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_sso)>0) {
+							$lig_sso=mysqli_fetch_object($res_sso);
+
+							$sql="SELECT * FROM utilisateurs WHERE login='".$lig_sso->login_gepi."';";
+							$test_user=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_user)>0) {
+								$lig_user=mysqli_fetch_object($test_user);
+								$msg.="ANOMALIE&nbsp;: La correspondance SSO proposée ".$_POST['login_sso']." est déjà attribuée ";
+								if($lig_user->statut=="eleve") {
+									$msg.=" à l'élève <a href='../utilisateurs/edit_eleve.php?filtrage=afficher&critere_recherche=".preg_replace("/[^A-Za-z]/","%",ensure_ascii($lig_user->nom))."' target='_blank'>".$lig_sso->login_gepi."</a>";
+								}
+								elseif($lig_user->statut=="responsable") {
+									$msg.=" au responsable <a href='../utilisateurs/edit_responsable.php?filtrage=afficher&critere_recherche_login=".$lig_sso->login_gepi."' target='_blank'>".$lig_sso->login_gepi."</a>";
+								}
+								else {
+									$msg.=" au personnel <a href='../utilisateurs/modify_user.php?user_login=".$lig_sso->login_gepi."' target='_blank'>".$lig_sso->login_gepi."</a>";
+								}
+								$msg.="<br />Vous devriez faire le ménage pour ne conserver qu'une seule association.<br />";
+								$enregistrer_sso_corresp="n";
+							}
+							else {
+
+								$sql="SELECT * FROM eleves WHERE login='".$lig_sso->login_gepi."';";
+								$test_user=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_user)>0) {
+									$lig_user=mysqli_fetch_object($test_user);
+									$msg.="ANOMALIE&nbsp;: La correspondance SSO proposée ".$_POST['login_sso']." est déjà attribuée ";
+									$msg.=" à l'élève <a href='modify_eleve.php?eleve_login=".$lig_sso->login_gepi."' target='_blank'>".$lig_sso->login_gepi."</a>";
+									$msg.="<br />Vous devriez faire le ménage pour ne conserver qu'une seule association.<br />";
+									$enregistrer_sso_corresp="n";
+								}
+								else {
+									$sql="SELECT * FROM resp_pers WHERE login='".$lig_sso->login_gepi."';";
+									$test_user=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($test_user)>0) {
+										$lig_user=mysqli_fetch_object($test_user);
+										$msg.="ANOMALIE&nbsp;: La correspondance SSO proposée ".$_POST['login_sso']." est déjà attribuée ";
+										$msg.=" au responsable <a href='../responsables/modify_resp.php?pers_id=".$lig_user->pers_id."' target='_blank'>".$lig_sso->login_gepi."</a>";
+										$msg.="<br />Vous devriez faire le ménage pour ne conserver qu'une seule association.<br />";
+										$enregistrer_sso_corresp="n";
+									}
+									else {
+										$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$lig_sso->login_gepi."';";
+										$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+										$msg.="Suppression d'une scorie&nbsp;:<br />La correspondance SSO proposée ".$_POST['login_sso']." était associée au login ".$lig_sso->login_gepi." qui n'existe plus dans la table 'utilisateurs'.<br />";
+									}
+								}
+							}
+						}
+					}
+
+					if($enregistrer_sso_corresp=="y") {
+						$sql="SELECT login_sso FROM sso_table_correspondance WHERE login_gepi='".$resp_login."';";
+						$res_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_sso)>0) {
+							$lig_sso=mysqli_fetch_object($res_sso);
+							if($lig_sso->login_sso!=$_POST['login_sso']) {
+								$sql="UPDATE sso_table_correspondance SET login_sso='".$_POST['login_sso']."' WHERE login_gepi='".$resp_login."';";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$update) {
+									$msg.="Erreur lors de la mise à jour de la correspondance SSO.<br />";
+								}
+							}
+						}
+						else {
+							$sql="INSERT INTO sso_table_correspondance SET login_sso='".$_POST['login_sso']."', login_gepi='".$resp_login."';";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								$msg.="Erreur lors de l'enregistrement de la correspondance SSO.<br />";
+							}
+						}
+					}
+				}
+
 			}
 
 			// On n'insère pas les saisies des champs adr1, adr2,... si une adresse existante a été sélectionnée:
@@ -494,7 +578,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		}
 
 		if($msg==""){
-			$msg="Enregistrement réussi.";
+			$msg="Enregistrement réussi (".strftime("Le %d/%m/%Y à %H:%M:%S").").";
 		}
 	}
 }
@@ -975,6 +1059,20 @@ echo "<td valign='top'>\n";
 	echo "</p>\n";
 
 	echo "<table>\n";
+
+	if((isset($compte_resp_existe))&&($compte_resp_existe=="y")&&(isset($resp_login))&&($_SESSION['statut']=='administrateur')&&(getSettingAOui('sso_cas_table'))) {
+		$sso_table_login_ent="";
+		if((isset($resp_login))&&($resp_login!='')) {
+			$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$resp_login'", 'login_sso');
+		}
+		elseif(isset($_POST['login_sso'])) {$sso_table_login_ent=$_POST['login_sso'];}
+		echo "
+		<tr>
+			<td style='text-align:left;'>Correspondance SSO&nbsp;:</td>
+			<td><input type='text' name='login_sso' id='login_sso' value='".$sso_table_login_ent."' /></td>
+		</tr>";
+	}
+
 	echo "<tr><td>Nom * : </td><td><input type=text size=50 name=resp_nom value = \"".$resp_nom."\" onchange='changement();' /></td></tr>\n";
 	echo "<tr><td>Prénom * : </td><td><input type=text size=50 name=resp_prenom value = \"".$resp_prenom."\" onchange='changement();' /></td></tr>\n";
 	echo "<tr><td>Civilité : </td><td>\n";
