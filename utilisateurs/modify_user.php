@@ -223,6 +223,63 @@ check_token();
 
 						$temoin_ajout_ou_modif_ok="y";
 					}
+
+					if((getSettingAOui('sso_cas_table'))&&(isset($_POST['login_sso']))) {
+						$enregistrer_sso_corresp="y";
+						if($_POST['login_sso']!="") {
+							$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".$_POST['login_sso']."' AND login_gepi!='".$_POST['new_login']."';";
+							$res_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_sso)>0) {
+								$lig_sso=mysqli_fetch_object($res_sso);
+
+								$sql="SELECT * FROM utilisateurs WHERE login='".$lig_sso->login_gepi."';";
+								$test_user=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_user)>0) {
+									$lig_user=mysqli_fetch_object($test_user);
+									$msg.="ANOMALIE&nbsp;: La correspondance SSO proposée ".$_POST['login_sso']." est déjà attribuée ";
+									if($lig_user->statut=="eleve") {
+										$msg.=" à l'élève <a href='edit_eleve.php?filtrage=afficher&critere_recherche=".preg_replace("/[^A-Za-z]/","%",ensure_ascii($lig_user->nom))."' target='_blank'>".$lig_sso->login_gepi."</a>";
+									}
+									elseif($lig_user->statut=="responsable") {
+										$msg.=" au responsable <a href='edit_responsable.php?filtrage=afficher&critere_recherche_login=".$lig_sso->login_gepi."' target='_blank'>".$lig_sso->login_gepi."</a>";
+									}
+									else {
+										$msg.=" au personnel <a href='modify_user.php?user_login=".$lig_sso->login_gepi."' target='_blank'>".$lig_sso->login_gepi."</a>";
+									}
+									$msg.="<br />Vous devriez faire le ménage pour ne conserver qu'une seule association.<br />";
+									$enregistrer_sso_corresp="n";
+								}
+								else {
+									$sql="DELETE FROM sso_table_correspondance WHERE login_gepi='".$lig_sso->login_gepi."';";
+									$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+									$msg.="Suppression d'une scorie&nbsp;:<br />La correspondance SSO proposée ".$_POST['login_sso']." était associée au login ".$lig_sso->login_gepi." qui n'existe plus dans la table 'utilisateurs'.<br />";
+								}
+							}
+						}
+
+						if($enregistrer_sso_corresp=="y") {
+							$sql="SELECT login_sso FROM sso_table_correspondance WHERE login_gepi='".$_POST['new_login']."';";
+							$res_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_sso)>0) {
+								$lig_sso=mysqli_fetch_object($res_sso);
+								if($lig_sso->login_sso!=$_POST['login_sso']) {
+									$sql="UPDATE sso_table_correspondance SET login_sso='".$_POST['login_sso']."' WHERE login_gepi='".$_POST['new_login']."';";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$update) {
+										$msg.="Erreur lors de la mise à jour de la correspondance SSO.<br />";
+									}
+								}
+							}
+							else {
+								$sql="INSERT INTO sso_table_correspondance SET login_sso='".$_POST['login_sso']."', login_gepi='".$_POST['new_login']."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$insert) {
+									$msg.="Erreur lors de l'enregistrement de la correspondance SSO.<br />";
+								}
+							}
+						}
+					}
+
 				}
 			}
 
@@ -879,6 +936,7 @@ if(($_SESSION['statut']=='administrateur')&&(getSettingAOui('sso_cas_table'))) {
 	if((isset($user_login))&&($user_login!='')) {
 		$sso_table_login_ent=get_valeur_champ('sso_table_correspondance', "login_gepi='$user_login'", 'login_sso');
 	}
+	elseif(isset($_POST['login_sso'])) {$sso_table_login_ent=$_POST['login_sso'];}
 	echo "
 <tr>
 	<td>Correspondance SSO&nbsp;:</td>
