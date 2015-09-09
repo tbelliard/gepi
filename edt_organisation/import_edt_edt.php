@@ -1664,7 +1664,14 @@ echo "</pre>";
 	</tr>
 	<tr>
 		<td>Jour</td>
-		<td>".$tab['jour']."</td>
+		<td>";
+		if($tab['jour']!="") {
+			$retour.=$tab['jour'];
+		}
+		else {
+			$retour.="<span style='color:red'>Jour non défini???<br />Pas d'enregistrement possible</span>";
+		}
+		$retour.="</td>
 	</tr>
 	<tr>
 		<td>Heure</td>
@@ -1763,6 +1770,10 @@ echo "</pre>";
 
 			$matiere=get_corresp_edt("matiere", $tab['mat_code']);
 			$classe=get_corresp_edt("classe", $tab['classe']);
+			if($debug_import_edt=="y") {
+				$lignes_ce_cours.="\$tab['classe']=".$tab['classe']."<br />";
+				$lignes_ce_cours.="classe=$classe<br />";
+			}
 			$groupes=get_corresp_edt("groupe", $tab['classe']);
 			$salle=get_corresp_edt("salle", $tab['salle']);
 			$prof=get_corresp_edt("prof", $tab['prof_nom']." ".$tab['prof_prenom']);
@@ -1787,14 +1798,17 @@ echo "</pre>";
 						$tab_classe[$tmp_tab[$loop]]=get_nom_classe($tmp_tab[$loop]);
 					}
 					if($groupes_aff!="") {$groupes_aff.=", ";}
-					$groupes_aff.=$tab_classe[$tmp_tab[$loop]];
+					//$groupes_aff.=$tab_classe[$tmp_tab[$loop]];
+					$groupes_aff.="<a href='../groupes/edit_class.php?id_classe=".$tmp_tab[$loop]."' title=\"Voir les enseignements de cette classe dans un nouvel onglet\" target='_blank'>".$tab_classe[$tmp_tab[$loop]].'</a>';
 				}
 			}
 
-			//$lignes_ce_cours.="matiere=$matiere<br />";
-			//$lignes_ce_cours.="classe=$classe<br />";
-			//$lignes_ce_cours.="groupes=$groupes<br />";
-			//$lignes_ce_cours.="salle=";
+			if($debug_import_edt=="y") {
+				$lignes_ce_cours.="matiere=$matiere<br />";
+				$lignes_ce_cours.="classe=$classe<br />";
+				$lignes_ce_cours.="groupes=$groupes<br />";
+				//$lignes_ce_cours.="salle=";
+			}
 			$salle_aff="";
 			if(isset($tab_salle_cours['indice'][$salle])) {
 				//$lignes_ce_cours.=$tab_salle_cours['indice'][$salle]['numero_salle'];
@@ -1882,7 +1896,7 @@ echo "</pre>";
 
 					while($lig_choix_prec=mysqli_fetch_object($res_choix_prec)) {
 						//$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes'].=get_info_grp($lig_choix_prec->id_groupe)."<br />";
-						$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes'].=$lig_choix_prec->name." <em style='font-size:small'>(".$lig_choix_prec->description.") (<span title='Groupe n°".$lig_choix_prec->id_groupe."'>".$lig_choix_prec->id_groupe."</span>)</em><br />";
+						$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['lignes'].=$lig_choix_prec->name." <em style='font-size:small'>(".$lig_choix_prec->description.") (<span title='Groupe n°".$lig_choix_prec->id_groupe."'><a href='../groupes/edit_group.php?id_groupe=".$lig_choix_prec->id_groupe."' target='_blank' title=\"Voir le groupe dans un nouvel onglet\">".$lig_choix_prec->id_groupe."</a></span>)</em><br />";
 
 						$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][]=$lig_choix_prec->id_groupe;
 					}
@@ -1999,6 +2013,8 @@ mysql>
 			$choix_a_faire="n";
 			if($prof!="") {
 				if($classe!="") {
+					$tmp_tab_id_groupe_proposes=array();
+
 					$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
 											j_groupes_professeurs jgp, 
 											j_groupes_matieres jgm
@@ -2009,11 +2025,27 @@ mysql>
 											jgp.login='$prof';";
 					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
 					$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_grp)>0) {
+					if(mysqli_num_rows($res_grp)==1) {
 						$lig=mysqli_fetch_object($res_grp);
 						//$current_group=get_group($lig->id_groupe);
 						$lignes_ce_cours.="<span style='color:blue'>".get_info_grp($lig->id_groupe)."</span><br />";
 						$edt_cours_id_groupe=$lig->id_groupe;
+					}
+					elseif(mysqli_num_rows($res_grp)>1) {
+
+						$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes semblent pouvoir convenir&nbsp;:<br />";
+						$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun0' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun0'>---</label><br />";
+
+						while($lig=mysqli_fetch_object($res_grp)) {
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
+
+							$tmp_tab_id_groupe_proposes[]=$lig->id_groupe;
+						}
+
+						$lignes_ce_cours.="</p>";
+						$cpt_indecis++;
+						$choix_a_faire="y";
+
 					}
 					else {
 
@@ -2032,6 +2064,8 @@ mysql>
 							for($loop=0;$loop<count($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe']);$loop++) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
 								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' value='".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'";
+
+								$tmp_tab_id_groupe_proposes[]=$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop];
 								/*
 								if($tab['details_cours']!="") {
 									$tmp_tab=explode("|", $tab['details_cours']);
@@ -2063,9 +2097,49 @@ mysql>
 							$cpt_indecis++;
 							$choix_a_faire="y";
 						}
+						/*
 						else {
 							$cpt_non_trouve++;
 						}
+						*/
+
+
+						// Essayer de jouer sur la classe et la matière
+						$cpt_grp_classe_matiere=0;
+						
+						// 20150909
+						// PROBLEME : On enregistre un EDT prof... avec $edt_cours_login_prof
+						//            Si, on met un groupe avec un autre prof, on va remplir l'EDT de $edt_cours_login_prof et pas celui de l'autre prof associé au groupe.
+						//            On fait un test à l'enregistrement et on gère... en espérant qu'il n'y a pas plusieurs profs associés à un groupe
+						$chaine_groupes_associes_a_classe_et_matiere="";
+						$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
+												j_groupes_matieres jgm
+											WHERE jgc.id_groupe=jgm.id_groupe AND 
+												jgc.id_classe='$classe' AND 
+												jgm.id_matiere='$matiere';";
+						if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
+						$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_grp)>0) {
+							while($lig=mysqli_fetch_object($res_grp)) {
+								if(!in_array($lig->id_groupe, $tmp_tab_id_groupe_proposes)) {
+									$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
+									$cpt_grp_classe_matiere++;
+								}
+							}
+
+							if($chaine_groupes_associes_a_classe_et_matiere!="") {
+								$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes associés à cette classe et cette matière, <strong style='color:red'>mais avec un autre professeur</strong>&nbsp;:<br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
+								$lignes_ce_cours.=$chaine_groupes_associes_a_classe_et_matiere;
+							}
+						}
+						
+
+						// Si $choix_a_faire=="n" et pas de groupe trouvé pour classe+matière, alors $cpt_non_trouve++;
+						if(($choix_a_faire=="n")&&($cpt_grp_classe_matiere==0)) {
+							$cpt_non_trouve++;
+						}
+
 					}
 				}
 				elseif("$groupes"!="") {
@@ -2075,13 +2149,31 @@ mysql>
 					print_r($tmp_tab);
 					echo "</pre>";
 					*/
+					$chaine_sql_id_classe="";
+					for($loop=0;$loop<count($tmp_tab);$loop++) {
+						if($loop>0) {$chaine_sql_id_classe.=" OR ";}
+						$chaine_sql_id_classe.=" jgc.id_classe='".$tmp_tab[$loop]."' ";
+					}
+					if($chaine_sql_id_classe!="") {
+						$chaine_sql_id_classe="(".$chaine_sql_id_classe.") AND ";
+					}
 
+					/*
 					$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
 											j_groupes_professeurs jgp, 
 											j_groupes_matieres jgm
 										WHERE jgc.id_groupe=jgp.id_groupe AND 
 											jgp.id_groupe=jgm.id_groupe AND 
 											jgc.id_classe='".$tmp_tab[0]."' AND 
+											jgm.id_matiere='$matiere' AND 
+											jgp.login='$prof';";
+					*/
+					$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
+											j_groupes_professeurs jgp, 
+											j_groupes_matieres jgm
+										WHERE jgc.id_groupe=jgp.id_groupe AND 
+											jgp.id_groupe=jgm.id_groupe AND 
+											".$chaine_sql_id_classe." 
 											jgm.id_matiere='$matiere' AND 
 											jgp.login='$prof';";
 					if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
@@ -2206,23 +2298,45 @@ mysql>
 					else {
 						//$lignes_ce_cours.="A FAIRE: Reessayer sans filtrer sur le prof2<br />";
 
-						$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
+						$cpt_grp_classe_matiere=0;
+						/*$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
 												j_groupes_matieres jgm
 											WHERE jgc.id_groupe=jgm.id_groupe AND 
 												jgc.id_classe='".$tmp_tab[0]."' AND 
 												jgm.id_matiere='$matiere';";
+						*/
+						$sql="SELECT DISTINCT jgc.id_groupe FROM j_groupes_classes jgc, 
+												j_groupes_matieres jgm
+											WHERE jgc.id_groupe=jgm.id_groupe AND 
+												".$chaine_sql_id_classe."
+												jgm.id_matiere='$matiere';";
 						if($debug_import_edt=="y") {$lignes_ce_cours.="$sql<br />";}
 						$res_grp_sans_filtrage_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_grp_sans_filtrage_prof)>0) {
+							/*
 							$current_classe_0=get_nom_classe($tmp_tab[0]);
 							$lignes_ce_cours.="Il existe un ou des groupes associés à la classe ".$current_classe_0.", mais pas avec le professeur ".civ_nom_prenom($prof)."<br />";
 							while($lig_grp_sans_filtrage_prof=mysqli_fetch_object($res_grp_sans_filtrage_prof)) {
 								$lignes_ce_cours.=get_info_grp($lig_grp_sans_filtrage_prof->id_groupe)."<br />";
 							}
 							$lignes_ce_cours.="Il se peut aussi que le groupe ".$tab['classe']." ait été associé par erreur à la classe de $current_classe_0.<br />Dans ce cas, vous devriez supprimer cette association et refaire une étape de rapprochements.<br />";
+							*/
+							$chaine_groupes_associes_a_classe_et_matiere="";
+							while($lig=mysqli_fetch_object($res_grp_sans_filtrage_prof)) {
+								$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
+							}
+
+							if($chaine_groupes_associes_a_classe_et_matiere!="") {
+								$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes associés à cette classe et cette matière, <strong style='color:red'>mais avec un autre professeur</strong>&nbsp;:<br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
+								$lignes_ce_cours.=$chaine_groupes_associes_a_classe_et_matiere;
+							}
+
 						}
 						if($debug_import_edt=="y") {$lignes_ce_cours.="DEBUG : ECHEC<br />";}
-						$cpt_non_trouve++;
+						if($cpt_grp_classe_matiere==0) {
+							$cpt_non_trouve++;
+						}
 					}
 				}
 				else {
@@ -2401,7 +2515,9 @@ mysql>
 										heuredeb_dec='".$edt_cours_heuredeb_dec."',
 										id_semaine='".$edt_cours_id_semaine."',
 										login_prof='".$edt_cours_login_prof."';";
-				//echo "$sql<br />";
+				if($debug_import_edt=="y") {
+					echo "$sql<br />";
+				}
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$insert) {
 					echo "<div style='color:red'>".$lignes_ce_cours."</div>";
@@ -2685,6 +2801,12 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 					$edt_cours_id_semaine="";
 					$edt_cours_login_prof="";
 
+					if($debug_import_edt=="y") {
+						echo "<pre>";
+						print_r($tab);
+						echo "</pre>";
+					}
+
 					$matiere=get_corresp_edt("matiere", $tab['mat_code']);
 					$classe=get_corresp_edt("classe", $tab['classe']);
 					$groupes=get_corresp_edt("groupe", $tab['classe']);
@@ -2762,44 +2884,93 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 						echo "<span style='color:red'>L'heure de début du cours n'a pas été identifiée.</span><br />";
 					}
 					else {
-						$sql="INSERT INTO edt_cours SET id_groupe='".$edt_cours_id_groupe."',
-												id_salle='".$edt_cours_id_salle."',
-												jour_semaine='".$edt_cours_jour_semaine."',
-												id_definie_periode='".$edt_cours_id_definie_periode."',
-												duree='".$edt_cours_duree."',
-												heuredeb_dec='".$edt_cours_heuredeb_dec."',
-												id_semaine='".$edt_cours_id_semaine."',
-												login_prof='".$edt_cours_login_prof."';";
-						//echo "$sql<br />";
-						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(!$insert) {
-							echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
-						}
-						else {
-							$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
-							$sql="UPDATE edt_lignes SET traitement='choix_effectue', details_cours='".$chaine_details_cours."' WHERE id='$id_ligne';";
-							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
-							$chaine_nom_edt=$tab['classe']."|".$tab['prof_nom']."|".$tab['prof_prenom']."|".$tab['mat_code'];
-							$sql="SELECT * FROM edt_corresp WHERE champ='choix_id_groupe' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."'";
+						if($edt_cours_login_prof!="") {
+							$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='".$edt_cours_id_groupe."' AND login='".$edt_cours_login_prof."';";
+							$test_prof_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_prof_grp)==0) {
+								echo "<span style='color:red'>Le groupe n°<a href='../groupes/edit_group.php?id_groupe=".$edt_cours_id_groupe."' target='_blank'>".$edt_cours_id_groupe."</a> (".get_info_grp($edt_cours_id_groupe).") n'est pas associé au professeur ".civ_nom_prenom($edt_cours_login_prof)." mentionné dans l'EDT.</span><br />";
+								$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='".$edt_cours_id_groupe."';";
+								$test_prof_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test_prof_grp)==1) {
+									$lig_prof_grp=mysqli_fetch_object($test_prof_grp);
+									$edt_cours_login_prof=$lig_prof_grp->login;
+									echo "Enregistrement du cours pour ".civ_nom_prenom($edt_cours_login_prof)." (<em>qui pour sa part est associé au groupe n°<a href='../groupes/edit_group.php?id_groupe=".$edt_cours_id_groupe."' target='_blank'>".$edt_cours_id_groupe."</a></em>).<br />";
+								}
+								elseif(mysqli_num_rows($test_prof_grp)>1) {
+									$lig_prof_grp=mysqli_fetch_object($test_prof_grp);
+									$edt_cours_login_prof=$lig_prof_grp->login;
+									echo "Enregistrement du cours pour ".civ_nom_prenom($edt_cours_login_prof)." (<em>premier des ".mysqli_num_rows($test_prof_grp)." professeurs associés au groupe n°<a href='../groupes/edit_group.php?id_groupe=".$edt_cours_id_groupe."' target='_blank'>".$edt_cours_id_groupe."</a></em>).<br />";
+								}
+							}
+						}
+
+						// Vérification
+						$enregistrer_ce_cours="y";
+						if($edt_cours_login_prof!="") {
+							// Il faudrait tester qu'il n'y a pas d'intersection de créneaux->A FAIRE
+							// et tester si on essaye de saisir un cours semaine A ou B alors qu'un cours toutes semaines existe->FAIT
+							$sql="SELECT * FROM edt_cours WHERE jour_semaine='".$edt_cours_jour_semaine."' AND 
+												id_definie_periode='".$edt_cours_id_definie_periode."' AND 
+												heuredeb_dec='".$edt_cours_heuredeb_dec."' AND 
+												(id_semaine='".$edt_cours_id_semaine."' OR id_semaine='' OR id_semaine='0') AND 
+												login_prof='".$edt_cours_login_prof."';";
 							//echo "$sql<br />";
+							if($debug_import_edt=="y") {
+								echo "$sql<br />";
+							}
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
-							if(mysqli_num_rows($test)==0) {
-								$sql="INSERT INTO edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."';";
-								//echo "$sql<br />";
-								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test)>0) {
+								$lig_cours=mysqli_fetch_object($test);
+								echo "<span style='color:red'>".civ_nom_prenom($edt_cours_login_prof)." a déjà cours (".get_info_grp($lig_cours->id_groupe).") le ".$edt_cours_jour_semaine." en ".$tab_creneaux['indice'][$edt_cours_id_definie_periode]['nom_definie_periode']." <a href='../edt/index2.php?login_prof=".$edt_cours_login_prof."&id_classe=&type_affichage=prof&login_eleve=&affichage=semaine&mode=afficher_edt&afficher_sem_AB=y".add_token_in_url()."' target='_blank'><img src='../images/icons/edt_semAB.png' class='icone16' alt='EDT seul' /></a></span><br />";
+								//num_semaine_annee=37|2015&
+								$enregistrer_ce_cours="n";
+							}
+						}
+
+						if($enregistrer_ce_cours=="y") {
+							$sql="INSERT INTO edt_cours SET id_groupe='".$edt_cours_id_groupe."',
+													id_salle='".$edt_cours_id_salle."',
+													jour_semaine='".$edt_cours_jour_semaine."',
+													id_definie_periode='".$edt_cours_id_definie_periode."',
+													duree='".$edt_cours_duree."',
+													heuredeb_dec='".$edt_cours_heuredeb_dec."',
+													id_semaine='".$edt_cours_id_semaine."',
+													login_prof='".$edt_cours_login_prof."';";
+							//echo "$sql<br />";
+							if($debug_import_edt=="y") {
+								echo "$sql<br />";
+							}
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								echo "<span style='color:red'>Erreur lors de la création du cours : $sql</span><br />";
 							}
 							else {
-								$lig_edt_corresp=mysqli_fetch_object($test);
-								$sql="UPDATE edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."' WHERE id='".$lig->id."';";
-								//echo "$sql<br />";
+								$chaine_details_cours=$edt_cours_id_groupe."|".$edt_cours_id_salle."|".$edt_cours_jour_semaine."|".$edt_cours_id_definie_periode."|".$edt_cours_duree."|".$edt_cours_heuredeb_dec."|".$edt_cours_id_semaine."|".$edt_cours_login_prof;
+								$sql="UPDATE edt_lignes SET traitement='choix_effectue', details_cours='".$chaine_details_cours."' WHERE id='$id_ligne';";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
-								enregistre_corresp_EDT_classe_matiere_GEPI_id_groupe($edt_cours_id_groupe, $tab['classe'], $tab['mat_code']);
+								$chaine_nom_edt=$tab['classe']."|".$tab['prof_nom']."|".$tab['prof_prenom']."|".$tab['mat_code'];
+								$sql="SELECT * FROM edt_corresp WHERE champ='choix_id_groupe' AND nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."'";
+								//echo "$sql<br />";
+								$test=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($test)==0) {
+									$sql="INSERT INTO edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."', nom_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $chaine_nom_edt)."';";
+									//echo "$sql<br />";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								}
+								else {
+									$lig_edt_corresp=mysqli_fetch_object($test);
+									$sql="UPDATE edt_corresp SET traitement='choix_id_groupe', nom_gepi='".$edt_cours_id_groupe."' WHERE id='".$lig->id."';";
+									//echo "$sql<br />";
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 
+									enregistre_corresp_EDT_classe_matiere_GEPI_id_groupe($edt_cours_id_groupe, $tab['classe'], $tab['mat_code']);
+
+								}
+
+								$nb_cours_enregistres++;
 							}
-
-							$nb_cours_enregistres++;
 						}
 					}
 				}
