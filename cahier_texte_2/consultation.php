@@ -435,7 +435,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
         }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
-		echo "$sql<br />";
+		//echo "$sql<br />";
 		$appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
         $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
