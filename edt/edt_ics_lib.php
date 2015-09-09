@@ -2493,7 +2493,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 						$ajout_sql
 						$avec_contrainte_semaine
 						ec.id_definie_periode=ecr.id_definie_periode 
-					ORDER BY heuredebut_definie_periode;";
+					ORDER BY heuredebut_definie_periode, id_semaine;";
 
 
 		//echo "<div style='margin-left:1000px'>";
