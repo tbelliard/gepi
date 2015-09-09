@@ -475,6 +475,8 @@ elseif($mode=='publiposter') {
 	echo "</pre>";
 	*/
 
+	// Pour ne pas imprimer deux fiches pour un parent de 2 enfants.
+	$tab_deja=array();
 	if((isset($classe))&&(count($classe)>1)) {
 		$compteur=0;
 		$compteur_pages_imprimees=0;
@@ -519,6 +521,9 @@ elseif($mode=='publiposter') {
 						if($tab[$tabindice['uid']]=="") {
 							$afficher="n";
 						}
+						elseif(in_array($tab[$tabindice['uid']], $tab_deja)) {
+							$afficher="n";
+						}
 						else {
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$tab[$tabindice['uid']]."';";
 							//echo "$sql<br />";
@@ -530,6 +535,7 @@ elseif($mode=='publiposter') {
 					}
 
 					if($afficher=="y") {
+						$tab_deja[]=$tab[$tabindice['uid']];
 
 						$tab_cle_courante[]=$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
 						$tab_courant[$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]]=$tab;
@@ -719,6 +725,9 @@ elseif($mode=='publiposter') {
 					if($tab[$tabindice['uid']]=="") {
 						$afficher="n";
 					}
+					elseif(in_array($tab[$tabindice['uid']], $tab_deja)) {
+						$afficher="n";
+					}
 					else {
 						$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$tab[$tabindice['uid']]."';";
 						//echo "$sql<br />";
@@ -730,6 +739,7 @@ elseif($mode=='publiposter') {
 				}
 
 				if($afficher=="y") {
+					$tab_deja[]=$tab[$tabindice['uid']];
 					echo "
 	<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 		<tr>
