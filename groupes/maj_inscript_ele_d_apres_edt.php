@@ -348,13 +348,19 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					echo $lig_ele->nom." ".$lig_ele->prenom." (".$lig_ele->date_naiss.") (".$lig_ele->n_national.")";
 
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
-					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					if($lig_ele->n_national!="") {
+						$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					}
+					else {
+						$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
+					}
+					//echo "$sql<br />";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
 						$reserves_sur_maj++;
 					}
-					else {
+					elseif(mysqli_num_rows($res_nn)==1) {
 						$lig_nn=mysqli_fetch_object($res_nn);
 
 						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
@@ -415,7 +421,10 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 						$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
 						if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
 						$tab_ele_regroupement_edt['classe'][]=$classe;
-
+					}
+					else {
+						echo " <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
+						$reserves_sur_maj++;
 					}
 					$cpt_ele++;
 				}
@@ -991,12 +1000,18 @@ elseif($action=="comparer") {
 
 // Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
 
-					$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					if($lig_ele->n_national!="") {
+						$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+					}
+					else {
+						$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
+					}
+					//echo "$sql<br />";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE non trouvé dans la table 'eleves'</span>";
 					}
-					else {
+					elseif(mysqli_num_rows($res_nn)==1) {
 						$lig_nn=mysqli_fetch_object($res_nn);
 
 						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
@@ -1018,6 +1033,9 @@ elseif($action=="comparer") {
 						$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
 						if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
 						$tab_ele_regroupement_edt['classe'][]=$classe;
+					}
+					else {
+						echo " <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
 					}
 					echo "<br />";
 
