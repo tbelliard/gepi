@@ -91,6 +91,13 @@ if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($a
 $date_debut_disc=isset($_POST['date_debut_disc']) ? $_POST['date_debut_disc'] : (isset($_SESSION['date_debut_disc']) ? $_SESSION['date_debut_disc'] : $date_debut_tmp);
 $date_fin_disc=isset($_POST['date_fin_disc']) ? $_POST['date_fin_disc'] : (isset($_SESSION['date_fin_disc']) ? $_SESSION['date_fin_disc'] : "$jour/$mois/$annee");
 
+if(isset($_POST['date_debut_disc'])) {
+	$_SESSION['date_debut_disc']=$_POST['date_debut_disc'];
+}
+if(isset($_POST['date_fin_disc'])) {
+	$_SESSION['date_fin_disc']=$_POST['date_fin_disc'];
+}
+
 // ===================== entete Gepi ======================================//
 require_once("../lib/header.inc.php");
 // ===================== fin entete =======================================//
