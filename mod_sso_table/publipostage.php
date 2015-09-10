@@ -321,6 +321,12 @@ if($mode=="upload") {
 
 				echo "
 		<p><input type='submit' value='Valider' /></p>
+
+		<p style='margin-top:1em;'>
+			<a href='javascript:cocher_tous_checkbox()'>Tout cocher</a> / 
+			<a href='javascript:decocher_tous_checkbox()'>Tout décocher</a>
+		</p>
+
 		</div>
 	</fieldset>
 </form>
@@ -363,6 +369,30 @@ if($mode=="upload") {
 			if(document.getElementById('classe_'+i)) {
 				document.getElementById('classe_'+i).checked=false;
 				checkbox_change('classe_'+i);
+			}
+		}
+	}
+
+	function cocher_tous_checkbox() {
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			id_champ=champs_input[i].getAttribute('id');
+			type=champs_input[i].getAttribute('type');
+			if(type==\"checkbox\"){
+				champs_input[i].checked=true;
+				checkbox_change(id_champ);
+			}
+		}
+	}
+
+	function decocher_tous_checkbox() {
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			id_champ=champs_input[i].getAttribute('id');
+			type=champs_input[i].getAttribute('type');
+			if(type==\"checkbox\"){
+				champs_input[i].checked=false;
+				checkbox_change(id_champ);
 			}
 		}
 	}
