@@ -87,6 +87,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 
 <hr />
 
+<a name='publipostage'></a>
 <h2>Publipostage</h2>
 <div style='margin-left:3em;'>
 	<p>Vous pouvez ici imprimer les logins et mots de passe destinés aux utilisateurs.<br />

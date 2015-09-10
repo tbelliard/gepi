@@ -129,7 +129,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 if($mode!='publiposter') {
-	echo "<p class='bold'><a href='./index.php?ctrl=cvsent'>Retour</a></p>";
+	echo "<p class='bold'><a href='./index.php?ctrl=cvsent#publipostage'>Retour</a></p>";
 }
 
 if($mode=="upload") {
@@ -271,6 +271,13 @@ if($mode=="upload") {
 				sort($tab_classe);
 				sort($tab_profil);
 
+				$url_connexion_ent=getSettingValue("url_connexion_ent");
+				if(getSettingAOui("inclure_url_connexion_ent")) {
+					$checked_inclure_url_connexion_ent=" checked";
+				}
+				else {
+					$checked_inclure_url_connexion_ent="";
+				}
 				echo "<form action='publipostage.php' enctype='multipart/form-data' method='post' target='_blank'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
@@ -278,6 +285,7 @@ if($mode=="upload") {
 		<div style='margin-left:3em;'>
 		<input type='hidden' name='mode' value='publiposter' />
 		<p style='text-indent:-3em;margin-left:3em;'>Paramètres du publipostage&nbsp;:<br />
+		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
 		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em></p>";
@@ -370,6 +378,20 @@ elseif($mode=='publiposter') {
 
 	//debug_var();
 
+	if(isset($_POST['inclure_url_connexion_ent'])) {
+		saveSetting('inclure_url_connexion_ent', 'y');
+		$inclure_url_connexion_ent="y";
+	}
+	else {
+		saveSetting('inclure_url_connexion_ent', 'n');
+		$inclure_url_connexion_ent="n";
+	}
+
+	if(isset($_POST['url_connexion_ent'])) {
+		saveSetting('url_connexion_ent', $_POST['url_connexion_ent']);
+	}
+	$url_connexion_ent=getSettingValue('url_connexion_ent');
+
 	$tempdir=get_user_temp_directory();
 	if($tempdir=="") {
 		echo "<p style='color:red'>Dossier temporaire de l'utilisateur non valide.</p>";
@@ -383,7 +405,7 @@ elseif($mode=='publiposter') {
 
 	if(!$fp){
 		echo "<p style='color:red'>Impossible d'ouvrir le fichier CSV !</p>";
-		echo "<p><a href='index.php'>Retour</a></p>";
+		echo "<p><a href='index.php?ctrl=cvsent#publipostage'>Retour</a></p>";
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -623,7 +645,15 @@ elseif($mode=='publiposter') {
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
 				<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
-			</tr>
+			</tr>";
+				if($inclure_url_connexion_ent=="y") {
+					echo "
+			<tr>
+				<td>URL </td>
+				<td class='bold'>".$url_connexion_ent."</td>
+			</tr>";
+				}
+				echo "
 			<tr>
 				<td>Login </td>
 				<td class='bold'>".$tab[$tabindice['login']]."</td>
@@ -745,7 +775,15 @@ elseif($mode=='publiposter') {
 		<tr>
 			<td style='width:8em;'>À l'attention de </td>
 			<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
-		</tr>
+		</tr>";
+					if($inclure_url_connexion_ent=="y") {
+						echo "
+			<tr>
+				<td>URL </td>
+				<td class='bold'>".$url_connexion_ent."</td>
+			</tr>";
+					}
+					echo "
 		<tr>
 			<td>Login </td>
 			<td class='bold'>".$tab[$tabindice['login']]."</td>
