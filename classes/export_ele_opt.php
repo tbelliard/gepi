@@ -730,6 +730,8 @@ elseif(!isset($choix_matieres)) {
 
 	echo "</ul>\n";
 
+	echo "<div id='fixe'><input type='submit' value='Valider' /></div>\n";
+
 	echo "<p><input type='submit' value='Valider' /></p>\n";
 	echo "</form>\n";
 
