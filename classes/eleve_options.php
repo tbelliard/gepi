@@ -382,6 +382,7 @@ if(mysqli_num_rows($res_sig)>0) {
 echo "<table border='1' cellpadding='5' cellspacing='0' class='boireaus'>\n";
 echo "<tr align='center'>\n";
 echo "<th><b>Matière</b></th>\n";
+echo "<th><b>Classes</b></th>\n";
 //=========================
 $j = 1;
 $chaine_coche="";
@@ -481,6 +482,7 @@ while ($i < $nombre_ligne) {
 		echo "<br /><span style='font-size:xx-small;'>$description_groupe</span>";
 	}
 	echo "</td>\n";
+	echo "<td>".$liste_classes_du_groupe."</td>";
 	$j = 1;
 	while ($j < $nb_periode) {
 		$tmp_ele_grp=get_eleves_from_groupe($id_groupe,$j);
@@ -676,6 +678,9 @@ while ($i < $nombre_ligne) {
 }
 
 echo "<tr>\n";
+echo "<th>\n";
+echo "&nbsp;";
+echo "</th>\n";
 echo "<th>\n";
 echo "&nbsp;";
 echo "</th>\n";
