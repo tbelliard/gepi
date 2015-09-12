@@ -465,7 +465,7 @@ $result .= "<br />";
 $result .= "<strong>Ajout d'un champ mode pour l'ouverture exceptionnelle de modification/saisie d'appréciation du bulletin en période partiellement close. :</strong><br />";
 $requete = $mysqli->query("SHOW COLUMNS FROM matieres_app_delais LIKE 'mode';");
 if (!$requete->num_rows) {
-    $requete2 = $mysqli->query("ALTER TABLE matieres_app_delais ADD mode VARCHAR(100) NOT NULL;");
+    $requete2 = $mysqli->query("ALTER TABLE matieres_app_delais ADD mode VARCHAR(100) NOT NULL DEFAULT '';");
     if ($requete2 ) {
 		$result .= msj_ok("SUCCES !");
 	}
