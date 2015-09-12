@@ -202,7 +202,14 @@
 
 	<?php if ($data['modifier'] == NULL) { ?>
 	<p><a href="edt_calendrier.php?calendrier=ok&amp;new_periode=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> AJOUT PONCTUEL</a></p>
-	<p><a href="edt_calendrier.php?calendrier=ok&amp;full_calendar=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> GENERATION DES 36 SEMAINES</a></p>
+
+	<?php
+		if(getSettingAOui('edt_full_calendar')) {
+			echo '
+	<p><a href="edt_calendrier.php?calendrier=ok&amp;full_calendar=ok"><img src="../images/icons/add.png" alt="" class="back_link" /> GENERATION DES 36 SEMAINES</a></p>';
+		}
+	?>
+
 	<?php 
 		if (getSettingValue("active_module_absence")=='2') {
 			echo "<p><a href='edt_calendrier.php?maj_dates_mod_abs2=y".add_token_in_url()."'>Mettre à jour les dates de fin de périodes pour le module Absences, d'après les dates de périodes de cours ci-dessous</a>.</p>";
