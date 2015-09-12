@@ -104,8 +104,12 @@ if (!strstr($ua, "MSIE 6.0")) {
             <li><a href="./index.php?action=propagation" >Gestion des propagations</a></li>
             <li><a href="./transferer_edt.php" >Gestion des remplacements</a></li>
             <li><a href="./ajouter_salle.php">Gestion des salles</a></li>
-            <li><a href="./edt_calendrier.php">Gestion du calendrier</a></li>
-            <li><a href="./index.php?action=calendriermanager">Gestion du calendrier version 2</a></li>
+            <li><a href="./edt_calendrier.php">Gestion du calendrier</a></li>';
+                if(getSettingAOui('edt_calendrier_v2')) {
+                    echo '
+            <li><a href="./index.php?action=calendriermanager">Gestion du calendrier version 2</a></li>';
+                }
+        echo '
             <li><a href="./admin_config_semaines.php?action=visualiser">Définir les types de semaines</a></li>
             <li><a href="./admin_horaire_ouverture.php?action=visualiser">Définir les horaires d\'ouverture</a></li>
             <li><a href="./admin_periodes_absences.php?action=visualiser">Définir la journée type</a></li>
