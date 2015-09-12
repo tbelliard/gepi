@@ -2,6 +2,7 @@
 
 // Passer à y pour afficher des infos de debugage
 $debug_edt="n";
+$debug_edt="y";
 
 // Pouvoir régler l'opacité des couleurs de cours
 $opacity_couleur=0.5;
@@ -3340,6 +3341,64 @@ function affiche_abs2_sur_edt2() {
 	}
 
 	return $html;
+}
+
+function DimanchePaques ($annee) {
+	//Calcul de la date de Pâques grégorienne en calendrier grégorien (1583-) (Algorithme de Butcher)'
+	// $annee=2006;
+	
+	$n = $annee % 19; // Reste Année / 19
+	// return $n ;
+	$c = (int)($annee / 100); // Année \ 100
+	// return $c ;
+	$u = $annee % 100; // Reste Année / 100
+	// return $u ;
+	$s = (int)($c / 4); // Entier C / 4
+	// return $s ;
+	$t = $c % 4 ; // reste C / 4
+	// return $t ;
+	$p = (int)(($c + 8)/25); // Entier (C + 8)/25
+	// return $p ;
+	$q = (int)(($c-$p+1)/3); // Entier (c - p + 1)/3
+	// return $q ;
+	$e = (19*$n + $c - $s - $q + 15) % 30; // Reste (19 n + c - s - q + 15) / 30
+	// return $e ;
+	$b = (int)($u / 4); // entier u/4
+	// return $b ;
+	$d = $u % 4; // reste u/4
+	// return $d ;
+	$L = (32 + 2*$t + 2*$b - $e - $d) % 7; // Reste (32 + 2 t + 2 b - e – d)/7
+	// return $L ;
+	$h = (int)(($n + 11*$e + 22*$L)/451); // Entier (n + 11 e + 22 L)/451
+	// return $h ;
+	$mois = (int)(($e + $L - 7*$h +114)/31); // Entier (e + L - 7 h +114)/31
+	$samedi = ($e + $L - 7*$h +114) % 31; // Reste (e + L - 7 h +114)/31
+	$dimanche = mktime(0,0,0,$mois,$samedi+1,$annee);
+	return ($dimanche);
+}
+
+function LundiPaques ($annee) {
+	$lundi = DimanchePaques ($annee) + (24*3600);
+	return $lundi ; 
+}
+
+function Ascension($annee) {
+	$ascension = DimanchePaques ($annee) + (24*3600)*39;
+	return $ascension ; 
+}
+
+function VendrediAscension($annee) {
+	$vendrediAscension = Ascension($annee) + (24*3600);
+	return $vendrediAscension ; 
+}
+
+function Pentecote($annee) {
+	$pentecote = DimanchePaques ($annee) + (24*3600)*50;
+	return $pentecote ;
+}
+function JourSuivant($jour) {
+	$jour = $jour + (24*3600);
+	return $jour ;
 }
 
 ?>

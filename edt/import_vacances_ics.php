@@ -140,7 +140,7 @@ $titre_page = "Import vacances";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 echo "<p class='bold'>
 	<a href='../edt_organisation/edt_calendrier.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">
@@ -301,18 +301,78 @@ elseif($mode=="telech") {
 		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"1er mai|01/05/".$annee_1."|02/05/".$annee_1."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 1er mai (<em>Fête du travail</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_1er_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_1er_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 	$cpt++;
 
-	$ts_8_mai=mktime(0,0,0,5,1,$annee_1);
+	$ts_8_mai=mktime(0,0,0,5,8,$annee_1);
 	echo "
-		<p><input type='checkbox' name='date_vacances[]' id='date_vacances_$cpt' value=\"8 mai|08/05/".$annee_1."|09/05/".$annee_1."\" onchange=\"checkbox_change(this.id); changement();\" /><label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 8 mai (<em>Fête de la victoire de 1945</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_8_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_8_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
+		<p><input type='checkbox' 
+					name='date_vacances[]' 
+					id='date_vacances_$cpt' "
+	   . "value=\"8 mai|08/05/".$annee_1."|09/05/".$annee_1."\" "
+	   . "onchange=\"checkbox_change(this.id); changement();\" />"
+	   . "<label for='date_vacances_$cpt' id='texte_date_vacances_$cpt'> 8 mai (<em>Fête de la victoire de 1945</em>)&nbsp;: Du ".strftime("%A %d/%m/%Y", $ts_8_mai)." <span style='font-size:xx-small; font-style:italic;'>(inclus)</span> au ".strftime("%A %d/%m/%Y", $ts_8_mai+24*3600)." <span style='font-size:xx-small; font-style:italic;'>(exclus)</span></label></p>";
 	$cpt++;
 
+?>
+<p style='margin-top:1em;'>Dates à jour non fixe&nbsp;:</p>
+<p>
+	On utilise l'<a href='https://fr.wikipedia.org/wiki/Calcul_de_la_date_de_P%C3%A2ques_selon_la_m%C3%A9thode_de_Meeus#cite_ref-13'>algorithme de Butcher</a> 
+	pour calculer le samedi de Pâques puis on calcule les autres dates.
+</p>
+<p>
+	<input type='checkbox' 
+		   name='date_vacances[]' 
+		   id='date_vacances_<?php echo $cpt; ?>' 
+		   value="Pâques|<?php echo strftime('%d/%m/%Y', LundiPaques($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(LundiPaques($annee_1))); ?>" 
+		   onchange="checkbox_change(this.id); changement();" />
+	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
+		Lundi de Pâques : <?php echo strftime('%d %B %Y', LundiPaques($annee_1)); ?>
+	</label>
+</p>
+<?php $cpt++; ?>
+<p>
+	<input type='checkbox' 
+		   name='date_vacances[]' 
+		   id='date_vacances_<?php echo $cpt; ?>' 
+		   value="Ascension|<?php echo strftime('%d/%m/%Y', Ascension($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(Ascension($annee_1))); ?>" 
+		   onchange="checkbox_change(this.id); changement();" />
+	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
+		Ascension : <?php echo strftime('%d %B %Y', Ascension($annee_1)); ?>
+	</label>
+</p>
+<?php $cpt++; ?>
+<p>
+	<input type='checkbox' 
+		   name='date_vacances[]' 
+		   id='date_vacances_<?php echo $cpt; ?>' 
+		   value="Vendredi suivant l'Ascension|<?php echo strftime('%d/%m/%Y', VendrediAscension($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(VendrediAscension($annee_1))); ?>" 
+		   onchange="checkbox_change(this.id); changement();" />
+	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
+		Vendredi de l'Ascension : <?php echo strftime('%d %B %Y', VendrediAscension($annee_1)); ?>
+	</label>
+</p>
+<?php $cpt++; ?>
+<p>
+	<input type='checkbox' 
+		   name='date_vacances[]' 
+		   id='date_vacances_<?php echo $cpt; ?>' 
+		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',Pentecote($annee_1)); ?>" 
+		   onchange="checkbox_change(this.id); changement();" />
+	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
+		Lundi de Pentecôte : <?php echo strftime('%d %B %Y', Pentecote($annee_1)); ?>
+	</label>
+</p>
+<?php $cpt++; ?>
+	
+<p style='margin-top:1em;'>
+	<a href='javascript:tout_cocher(true)'>Tout cocher</a>
+	- 
+	<a href='javascript:tout_cocher(false)'>Tout décocher</a>
+</p>
+<?php
 	echo "
-		<p style='margin-top:1em;'><a href='javascript:tout_cocher(true)'>Tout cocher</a> - <a href='javascript:tout_cocher(false)'>Tout décocher</a></p>
-
 		<p style='margin-top:1em;'>Choisir ces dates pour toutes les classes existantes&nbsp;: <input type='submit' value='Enregistrer' /></p>
-
-		<p style='color:red;text-indent:-4.8em; margin-left:4.8em; margin-top:1em;'>A FAIRE&nbsp;: Pour permettre d'import des dates qui ne sont pas fixes&nbsp;: Générer un ICS avec les dates de Pentecote, Ascension, lundi Pâques,... pour les prochaines années et l'héberger par exemple chez Sylogix ou sur http://gepi.mutualibre.org à moins qu'il n'y ait moyen de calculer sans erreur ces dates.</p>
-
+<!--
+		<p style='color:red;text-indent:-4.8em; margin-left:4.8em; margin-top:1em;'>A FAIRE&nbsp;: Pour permettre l'import des dates qui ne sont pas fixes&nbsp;: Générer un ICS avec les dates de Pentecote, Ascension, lundi Pâques,... pour les prochaines années et l'héberger par exemple chez Sylogix ou sur http://gepi.mutualibre.org à moins qu'il n'y ait moyen de calculer sans erreur ces dates.</p>
+-->
 		<!--
 			Pâques
 				dimanche 5 avril 2015
@@ -327,8 +387,8 @@ elseif($mode=="telech") {
 				dimanche 15 mai 2016
 				dimanche 4 juin 2017
 		-->
-
-		<input type='hidden' name='enregistrer_vacances' value='y' /></p>
+		
+		<p><input type='hidden' name='enregistrer_vacances' value='y' /></p>
 		<script type='text/javascript'>
 			".js_checkbox_change_style()."
 			for(i=0;i<$cpt;i++) {
