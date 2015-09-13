@@ -1075,6 +1075,14 @@ for($i=0;$i<10;$i++){
 
 		// Enseignement
 		echo "<td class='norme' style='text-align:left;'>";
+
+		// Faut-il juste mettre en évidence les anomalies ou aussi donner le regroupement associé?
+		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$group["id"]."';";
+		$test_regroup_edt=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_regroup_edt)>1) {
+			echo "<div style='float:right; width:16px; margin-left:5px;'><img src='../images/icons/flag2.gif' class='icone16' alt='Anomalie' title=\"ANOMALIE : Le groupe est associé à plus d'un regroupement EDT.\nVous devriez éditer le groupe et corriger.\" /></div>";
+		}
+
 		echo "<strong>";
 		if ($total == "1") {
 			echo "<a href='edit_group.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "&amp;mode=groupe' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Modifier l'enseignement de ".$group['matiere']['matiere']."\">";
