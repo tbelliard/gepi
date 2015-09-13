@@ -1016,16 +1016,17 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 $sql="SELECT 1=1 FROM edt_corresp2;";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)>0) {
+	$chaine_anomalie_corresp_edt="";
 
 	$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='$id_groupe';";
 	$res_edt=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_edt)>0) {
 		$lig_edt=mysqli_fetch_object($res_edt);
 		//onclick=\"return confirm_abandon (this, change, '$themessage')\"
-		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt."</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></p>";
+		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt."</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
 	}
 	else {
-		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Aucun regroupement EDT n'est associé à ce groupe Gepi</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Associer.\"><img src='../images/edit16.png' class='icone16' alt='Associer' /></a>.</p>";
+		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Aucun regroupement EDT n'est associé à ce groupe Gepi</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Associer.\"><img src='../images/edit16.png' class='icone16' alt='Associer' /></a>.";
 	}
 
 	$texte_infobulle="";
@@ -1039,14 +1040,18 @@ if(mysqli_num_rows($test)>0) {
 	}
 	if(count($tab_assoc)>1) {
 		$texte_infobulle.="<p style='color:red; text-indent:-6em; margin-left:6em;'>ANOMALIE&nbsp;: Le groupe/enseignement Gepi est associé à ".count($tab_assoc)." regroupements EDT (<em>";
+		$chaine_anomalie_corresp_edt="<img src='../images/icons/flag2.gif' alt='Anomalie' class='icone16' title=\"ANOMALIE : Le groupe/enseignement Gepi est associé\n                     à ".count($tab_assoc)." regroupements EDT:\n";
 		for($loop=0;$loop<count($tab_assoc);$loop++) {
 			if($loop>0) {
 				$texte_infobulle.=", ";
 			}
 			$texte_infobulle.=$tab_assoc[$loop];
+			$chaine_anomalie_corresp_edt.="                        - ".$tab_assoc[$loop]."\n";
 		}
 		$texte_infobulle.="</em>).<br />Il ne devrait y en avoir qu'un.<br />Choisissez ci-dessous le bon et validez.</p>";
+		$chaine_anomalie_corresp_edt.="Il ne devrait y en avoir qu'un.\" />";
 	}
+	echo $chaine_anomalie_corresp_edt."</p>";
 
 	$lignes_options="
 			<option value=''>---</option>";

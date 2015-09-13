@@ -147,6 +147,10 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[1] = "SELECT * FROM eleves WHERE ereno='$cible1'";
     $req[1] = "UPDATE eleves SET ereno='' WHERE ereno='$cible1'";
 
+	$mess[] = "Table engagements_user :";
+	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
+
     break;
 
 
@@ -233,6 +237,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 
 		$nombre_req++;
 	}
+
+	$mess[] = "Table engagements_user :";
+	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
+	$nombre_req++;
 
     break;
 
@@ -413,6 +422,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
 	$mess[] = "Table jointure élève/cpe :";
 	$test_nb[] = "SELECT * FROM j_eleves_cpe WHERE e_login ='$cible1'";
 	$req[] = "DELETE FROM j_eleves_cpe WHERE e_login ='$cible1'";
+	$nombre_req++;
+
+	$mess[] = "Table engagements_user :";
+	$test_nb[] = "SELECT * FROM engagements_user WHERE login ='$cible1'";
+	$req[] = "DELETE FROM engagements_user WHERE e_login ='$cible1'";
 	$nombre_req++;
 
     break;

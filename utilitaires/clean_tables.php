@@ -1964,6 +1964,93 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="12")) or (isset($_GET['maj'
 	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
 
 	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
+	echo "<input type='hidden' name='maj' value='13' />\n";
+	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
+
+	echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+	echo "</form>\n";
+
+	echo script_suite_submit();
+
+/*
+	echo "<hr />\n";
+	echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+*/
+
+}
+
+elseif ((isset($_POST['maj']) and (($_POST['maj'])=="13")) or (isset($_GET['maj']) and (($_GET['maj'])=="13"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<h2 align=\"center\">Etape 13/$total_etapes</h2>\n";
+
+	$tab_engagements=get_tab_engagements();
+
+	$texte_info_action="<h2>Suppression des engagements incorrects</h2>\n";
+
+	$sql="select * from engagements_user;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		$texte_info_action.="<p>Aucun engagement n'est saisi.</p>\n";
+	}
+	else {
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT * FROM eleves WHERE login='".$lig->login."';";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				if($lig->id_type=='id_classe') {
+					$sql="SELECT * FROM j_eleves_classes WHERE login='".$lig->login."' AND id_classe='".$lig->valeur."';";
+					$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res3)==0) {
+						$lig2=mysqli_fetch_object($res2);
+						$texte_info_action.="Suppression d'un engagement (<em>".$tab_engagements['id_engagement'][$lig->id_engagement]['nom']."</em>) en classe de ".get_nom_classe($lig->valeur)." pour ".$lig2->prenom." ".$lig2->nom."&nbsp;: ";
+						$sql="DELETE FROM engagements_user WHERE id='".$lig->id."';";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$del) {
+							$texte_info_action.="<span style='color:red'>ERREUR</span>";
+						}
+						else {
+							$texte_info_action.="<span style='color:green'>SUCCES</span>";
+						}
+						$texte_info_action.=".<br />\n";
+					}
+				}
+			}
+			else {
+				$sql="SELECT * FROM resp_pers WHERE login='".$lig->login."';";
+				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res2)==0) {
+					$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login."';";
+					$res3=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res3)==0) {
+						$texte_info_action.="Suppression d'un engagement (<em>".$tab_engagements['id_engagement'][$lig->id_engagement]['nom']."</em>) en classe de ".get_nom_classe($lig->valeur)." pour une personne qui n'est plus dans la base (".$lig->login.")&nbsp;: ";
+						$sql="DELETE FROM engagements_user WHERE id='".$lig->id."';";
+						$del=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$del) {
+							$texte_info_action.="<span style='color:red'>ERREUR</span>";
+						}
+						else {
+							$texte_info_action.="<span style='color:green'>SUCCES</span>";
+						}
+						$texte_info_action.=".<br />\n";
+					}
+				}
+			}
+		}
+	}
+
+	echo $texte_info_action;
+	update_infos_action_nettoyage($id_info, $texte_info_action);
+
+	//=====================================
+
+	echo "<form action=\"clean_tables.php\" name='formulaire' method=\"post\">\n";
+	echo add_token_field();
+	echo "<input type=\"hidden\" name='mode_auto' value='$mode_auto' />\n";
+
+	echo "<input type='hidden' name='is_confirmed' value='yes' />\n";
 	echo "<input type='hidden' name='maj' value='check_jec_jep_point' />\n";
 	echo "<input type=\"hidden\" name=\"id_info\" value=\"$id_info\" />\n";
 
@@ -3680,6 +3767,7 @@ else {
 		echo "<a href='clean_tables.php?maj=10".add_token_in_url()."'>Tables concernant les comptes élèves et responsables</a><br />\n";
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=12".add_token_in_url()."'>Supprimer les adresses responsables non associées</a><br />\n";
+		echo "<a href='clean_tables.php?maj=13".add_token_in_url()."'>Supprimer les engagements incohérents</a> (<em>élèves partis, ou association avec une classe dnas laquelle l'élève n'est pas/plus inscrit</em>)<br />\n";
 		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
 		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
