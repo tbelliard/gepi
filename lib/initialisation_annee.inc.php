@@ -51,6 +51,8 @@ $liste_tables_del_etape_eleves = array(
 "j_eleves_professeurs",
 "j_eleves_regime",
 
+"engagements_user",
+
 // Logs des mises à jour sconet
 "log_maj_sconet",
 
@@ -205,6 +207,9 @@ $liste_tables_del_etape_resp = array(
 "resp_adr",
 "tempo2",
 "tempo",
+
+"engagements_user",
+
 "log_maj_sconet"
 );
 
