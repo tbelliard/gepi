@@ -140,7 +140,7 @@ $titre_page = "Import vacances";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 echo "<p class='bold'>
 	<a href='../edt_organisation/edt_calendrier.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">

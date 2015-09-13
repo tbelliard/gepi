@@ -2,7 +2,6 @@
 
 // Passer à y pour afficher des infos de debugage
 $debug_edt="n";
-$debug_edt="y";
 
 // Pouvoir régler l'opacité des couleurs de cours
 $opacity_couleur=0.5;
