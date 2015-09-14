@@ -1236,7 +1236,7 @@ Professeur(s) : ".$groups[$id_groupe_courant]['profs']['proflist_string']."\">".
 						}
 					}
 					elseif(($AbsProfGroupesClasseSeulement=="yes")&&(count($groups[$id_groupe_courant]['classes']['list'])>1)) {
-						echo "Ce n'est pas un groupe classe et<br />vous ne souhaitez pas proposer au remplacement<br />les groupes/enseignements<br />qui ne sont pas des groupes classe.";
+						echo "Ce n'est pas un groupe classe et<br /><span title=\"Cela peut être modifié dans\nGestion des modules/Remplacements.\">vous ne souhaitez pas proposer au remplacement</span><br />les groupes/enseignements<br />qui ne sont pas des groupes classe.";
 					}
 				}
 				else {
@@ -1326,7 +1326,7 @@ echo "
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir envoyer la proposition à tous les professeurs de la classe (cas du professeur privé d'un cours parce qu'une sortie est organisée pour la classe).</li>
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Proposer de relancer les propositions par mail pour le cas où les propositions sont saisies sans mail dans un premier temps.</li>
 	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Réduire/masquer les jours passés.</li>
-	<li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir ne pas proposer de remplacement pour des cours qui ne sont pas en classe entière.</li>
+	<!--li><em style='color:red;'>A FAIRE&nbsp;:</em> Pouvoir ne pas proposer de remplacement pour des cours qui ne sont pas en classe entière.</li-->
 </ul>
 
 <script type='text/javascript'>
