@@ -112,6 +112,8 @@ $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 				"OPTION_11",
 				"OPTION_12"*/
 
+$debug_import_edt="n";
+
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
@@ -245,24 +247,41 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 
 	//echo "plop";
 
+	$ts0=time();
+	//echo "ts0=$ts0<br />";
+
 	// Test pour vérifier que l'on a bien une correspondance
 	$sql="SELECT 1=1 FROM edt_corresp2 ec2, edt_tempo et WHERE ec2.nom_groupe_edt=et.col1 AND et.id='".$_GET['id_edt_tempo']."' AND ec2.id_groupe='".$_GET['id_groupe']."';";
-	//echo "$sql<br />";
+	echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
 		echo "<p style='color:red'>L'identifiant de groupe Gepi et celui EDT ne correspondent pas.</p>";
 	}
 	else {
+		$ts=time();
+		//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+		$tab_corresp_classe=array();
+		$sql="select * from edt_corresp where champ='classe';";
+		$res_corresp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_corresp_classe)>0) {
+			while($lig_corresp_classe=mysqli_fetch_object($res_corresp_classe)) {
+				$tab_corresp_classe[]=$lig_corresp_classe->nom_edt;
+			}
+		}
+
 		echo "<p style='color:green'>L'identifiant de groupe Gepi et celui EDT correspondent.</p>";
 
 		// Problème: On peut avoir plusieurs regroupements EDT associés à un id_groupe selon ce qui a été sélectionné dans l'import EDT
 		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."';";
 		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]';";
-		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND (nom_groupe_edt LIKE '[%]' OR nom_groupe_edt LIKE '%<%>%') AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
 		// Si on a plusieurs enregistrements, ça ne convient pas.
-		//echo "$sql<br />";
+		echo "$sql<br />";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-		//echo "$sql<br />";
+		$ts=time();
+		//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
 		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p style='color:red'>Aucun regroupement EDT n'est associé au groupe Gepi n°".$_GET['id_groupe'].".</p>";
 		}
@@ -270,6 +289,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			echo "<p style='color:red'>Plusieurs regroupements EDT sont associés au groupe Gepi n°".$_GET['id_groupe'].".<br />Vous devez commencer par supprimer la ou les associations en trop.<br />Les regroupements associés sont&nbsp;:<br />";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$sql="SELECT id FROM edt_tempo WHERE col1='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_grp->nom_groupe_edt)."';";
+				echo "$sql<br />";
 				$res_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_id)>0) {
 					$lig_id=mysqli_fetch_object($res_id);
@@ -290,17 +310,67 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			echo "<p style='margin-left:3em;text-indent:-3em;'>Le ou les groupes suivants sont associés à ce nom de regroupement d'élèves EDT&nbsp;:<br />";
 
 			$lig_grp=mysqli_fetch_object($res_grp);
+
+			/*
 			//echo "\$lig_grp->nom_groupe_edt=$lig_grp->nom_groupe_edt<br />";
 			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
 			//echo "\$current_nom_groupe=$current_nom_groupe<br />";
+			*/
+
+			$nom_groupe_edt=$lig_grp->nom_groupe_edt;
+			$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+
+			//$chaine_nom_groupe="";
+			/*
+			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
 
 			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
 				WHERE (groupes like '$current_nom_groupe' OR 
 					groupes like '$current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe');";
-			//echo "$sql<br />";
+
+			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+				WHERE (groupes like '$current_nom_groupe' OR 
+					groupes like '$current_nom_groupe, %' OR 
+					groupes like '%, $current_nom_groupe, %' OR 
+					groupes like '%, $current_nom_groupe');";
+			echo "$sql<br />";
+			*/
+
+
+			//$sql="";
+			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+				WHERE (";
+			$tmp_tab_nom_groupe=explode(",", $lig_grp->nom_groupe_edt);
+			$loop2=0;
+			for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
+				$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+					if($loop2>0) {
+						$sql.=" OR ";
+					}
+					$sql.="classe like '$current_nom_groupe' OR 
+						classe like '$current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe'";
+					$sql.=" OR groupes like '$current_nom_groupe' OR 
+						groupes like '$current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe'";
+					$loop2++;
+				}
+			}
+			$sql.=");";
+			if($debug_import_edt=="y") {
+				echo "$sql<br />";
+			}
+
 			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			$ts=time();
+			//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
 			if(mysqli_num_rows($res_ele)==0) {
 				echo "<p style='color:plum'>Le regroupement EDT est vide.</p>";
 				// Faut-il vider le groupe Gepi?
@@ -356,6 +426,10 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					}
 					//echo "$sql<br />";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$ts=time();
+					//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
 						$reserves_sur_maj++;
@@ -470,6 +544,8 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					}
 				}
 
+				$ts=time();
+				//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
 
 				echo "<p class='bold' style='margin-top:1em;'>Mise à jour du groupe en période $num_periode&nbsp;: ";
 				$update = update_group($_GET['id_groupe'], $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
@@ -540,8 +616,6 @@ $titre_page = "EDT : Inscriptions Eleves";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
-
-$debug_import_edt="n";
 
 echo "<p class='bold'><a href='../classes/index.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 /*
@@ -1015,7 +1089,7 @@ elseif($action=="comparer") {
 			*/
 
 			//$sql="";
-			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+			$sql="SELECT id,nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
 				WHERE (";
 			$tmp_tab_nom_groupe=explode(",", $lig->nom_groupe_edt);
 			$loop2=0;
@@ -1085,6 +1159,7 @@ elseif($action=="comparer") {
 						elseif(mysqli_num_rows($res_nn)==1) {
 							$lig_nn=mysqli_fetch_object($res_nn);
 
+							$tab_ele_regroupement_edt['id_edt_eleves_lignes'][]=$lig_ele->id;
 							$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
 							$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
 							$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
@@ -1151,7 +1226,8 @@ elseif($action=="comparer") {
 			<th>Matière</th>
 			<th>Jour</th>
 			<th>Heure</th>
-			<th>Alternance</th>
+			<th>Alternance</th>".(($debug_import_edt=="y") ? "
+			<th>Debug</th>" : "")."
 		</tr>";
 								while($lig_edt_lig=mysqli_fetch_object($res_edt_lig)) {
 									$details_lignes.="
@@ -1160,7 +1236,8 @@ elseif($action=="comparer") {
 			<td>$lig_edt_lig->mat_code</td>
 			<td>$lig_edt_lig->jour</td>
 			<td>$lig_edt_lig->h_debut</td>
-			<td>$lig_edt_lig->alternance</td>
+			<td>$lig_edt_lig->alternance</td>".(($debug_import_edt=="y") ? "
+			<td>".$lig_edt_lig->classe."</td>" : "")."
 		</tr>";
 								}
 								$details_lignes.="
@@ -1206,7 +1283,9 @@ elseif($action=="comparer") {
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
+							<th>Debug classe</th>
+							<th>Debug groupes</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1248,7 +1327,9 @@ elseif($action=="comparer") {
 									}
 									echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
 								}
-								echo "</td>
+								echo "</td>".(($debug_import_edt=="y") ? "
+							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe")."</td>
+							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes")."</td>" : "")."
 						</tr>";
 							}
 							echo "
@@ -1268,7 +1349,9 @@ elseif($action=="comparer") {
 							<th class='text' title='Trier suivant cette colonne'>Nom</th>
 							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
 							<th class='text' title='Trier suivant cette colonne'>INE</th>
-							<th class='text' title='Trier suivant cette colonne'>Classe</th>
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
+							<th>Debug classe</th>
+							<th>Debug groupes</th>" : "")."
 						</tr>
 						</thead>
 						<tbody>";
@@ -1314,11 +1397,35 @@ elseif($action=="comparer") {
 							<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
 							<td>";
 
+								if ($debug_import_edt=="y") {
+									$debug_edt_eleves_lignes_classe="";
+									$debug_edt_eleves_lignes_groupes="";
+									$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.n_national=e.no_gep AND e.no_gep!='' AND e.login='".$current_login_ele."';";
+									$res_debug_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_debug_ele)>0) {
+										$lig_debug_ele=mysqli_fetch_object($res_debug_ele);
+										$debug_edt_eleves_lignes_classe=$lig_debug_ele->classe;
+										$debug_edt_eleves_lignes_groupes=$lig_debug_ele->groupes;
+									}
+									else {
+										$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.nom=e.nom AND eel.prenom=e.prenom AND e.login='".$current_login_ele."';";
+										//$debug_edt_eleves_lignes_classe.=$sql."<br />";
+										$res_debug_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_debug_ele)==1) {
+											$lig_debug_ele=mysqli_fetch_object($res_debug_ele);
+											$debug_edt_eleves_lignes_classe=$lig_debug_ele->classe;
+											$debug_edt_eleves_lignes_groupes=$lig_debug_ele->groupes;
+										}
+									}
+								}
+
 								if(!isset($tab_nom_classe[$current_ele['classe']])) {
 									$tab_nom_classe[$current_ele['classe']]=get_nom_classe($current_ele['classe']);
 								}
 								echo $tab_nom_classe[$current_ele['classe']];
-								echo "</td>
+								echo "</td>".(($debug_import_edt=="y") ? "
+							<td>$debug_edt_eleves_lignes_classe</td>
+							<td>$debug_edt_eleves_lignes_groupes</td>" : "")."
 						</tr>";
 							}
 							echo "
@@ -1463,7 +1570,7 @@ elseif($action=="editer_ec2") {
 				while($lig2=mysqli_fetch_object($res2)) {
 					echo "
 				<tr class='white_hover'>
-					<td><label for='suppr_$cpt' id='texte_suppr_$cpt'>$lig->nom_groupe_edt</label></td>
+					<td><label for='suppr_$cpt' id='texte_suppr_$cpt'>".htmlentities($lig->nom_groupe_edt)."</label></td>
 					<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr_$cpt')\" /></td>
 					<td><label for='suppr_$cpt'>$lig2->mat_code_edt</label></td>
 					<td style='text-align:left'><a href='../groupes/edit_group.php?id_groupe=".$lig2->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig2->id_groupe)."</a><a name='id_groupe_".$lig2->id_groupe."'></a></td>
