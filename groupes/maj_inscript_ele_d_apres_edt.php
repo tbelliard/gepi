@@ -112,6 +112,8 @@ $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 				"OPTION_11",
 				"OPTION_12"*/
 
+$debug_import_edt="n";
+
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
@@ -245,24 +247,41 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 
 	//echo "plop";
 
+	$ts0=time();
+	//echo "ts0=$ts0<br />";
+
 	// Test pour vérifier que l'on a bien une correspondance
 	$sql="SELECT 1=1 FROM edt_corresp2 ec2, edt_tempo et WHERE ec2.nom_groupe_edt=et.col1 AND et.id='".$_GET['id_edt_tempo']."' AND ec2.id_groupe='".$_GET['id_groupe']."';";
-	//echo "$sql<br />";
+	echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
 		echo "<p style='color:red'>L'identifiant de groupe Gepi et celui EDT ne correspondent pas.</p>";
 	}
 	else {
+		$ts=time();
+		//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
+		$tab_corresp_classe=array();
+		$sql="select * from edt_corresp where champ='classe';";
+		$res_corresp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_corresp_classe)>0) {
+			while($lig_corresp_classe=mysqli_fetch_object($res_corresp_classe)) {
+				$tab_corresp_classe[]=$lig_corresp_classe->nom_edt;
+			}
+		}
+
 		echo "<p style='color:green'>L'identifiant de groupe Gepi et celui EDT correspondent.</p>";
 
 		// Problème: On peut avoir plusieurs regroupements EDT associés à un id_groupe selon ce qui a été sélectionné dans l'import EDT
 		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."';";
 		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]';";
-		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
+		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND (nom_groupe_edt LIKE '[%]' OR nom_groupe_edt LIKE '%<%>%') AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
 		// Si on a plusieurs enregistrements, ça ne convient pas.
-		//echo "$sql<br />";
+		echo "$sql<br />";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
-		//echo "$sql<br />";
+		$ts=time();
+		//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
 		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p style='color:red'>Aucun regroupement EDT n'est associé au groupe Gepi n°".$_GET['id_groupe'].".</p>";
 		}
@@ -270,6 +289,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			echo "<p style='color:red'>Plusieurs regroupements EDT sont associés au groupe Gepi n°".$_GET['id_groupe'].".<br />Vous devez commencer par supprimer la ou les associations en trop.<br />Les regroupements associés sont&nbsp;:<br />";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$sql="SELECT id FROM edt_tempo WHERE col1='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_grp->nom_groupe_edt)."';";
+				echo "$sql<br />";
 				$res_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_id)>0) {
 					$lig_id=mysqli_fetch_object($res_id);
@@ -290,17 +310,67 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			echo "<p style='margin-left:3em;text-indent:-3em;'>Le ou les groupes suivants sont associés à ce nom de regroupement d'élèves EDT&nbsp;:<br />";
 
 			$lig_grp=mysqli_fetch_object($res_grp);
+
+			/*
 			//echo "\$lig_grp->nom_groupe_edt=$lig_grp->nom_groupe_edt<br />";
 			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
 			//echo "\$current_nom_groupe=$current_nom_groupe<br />";
+			*/
+
+			$nom_groupe_edt=$lig_grp->nom_groupe_edt;
+			$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig_grp->nom_groupe_edt));
+
+			//$chaine_nom_groupe="";
+			/*
+			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
 
 			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
 				WHERE (groupes like '$current_nom_groupe' OR 
 					groupes like '$current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe');";
-			//echo "$sql<br />";
+
+			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+				WHERE (groupes like '$current_nom_groupe' OR 
+					groupes like '$current_nom_groupe, %' OR 
+					groupes like '%, $current_nom_groupe, %' OR 
+					groupes like '%, $current_nom_groupe');";
+			echo "$sql<br />";
+			*/
+
+
+			//$sql="";
+			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+				WHERE (";
+			$tmp_tab_nom_groupe=explode(",", $lig_grp->nom_groupe_edt);
+			$loop2=0;
+			for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
+				$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+					if($loop2>0) {
+						$sql.=" OR ";
+					}
+					$sql.="classe like '$current_nom_groupe' OR 
+						classe like '$current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe'";
+					$sql.=" OR groupes like '$current_nom_groupe' OR 
+						groupes like '$current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe'";
+					$loop2++;
+				}
+			}
+			$sql.=");";
+			if($debug_import_edt=="y") {
+				echo "$sql<br />";
+			}
+
 			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			$ts=time();
+			//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
 			if(mysqli_num_rows($res_ele)==0) {
 				echo "<p style='color:plum'>Le regroupement EDT est vide.</p>";
 				// Faut-il vider le groupe Gepi?
@@ -356,6 +426,10 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					}
 					//echo "$sql<br />";
 					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$ts=time();
+					//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
+
 					if(mysqli_num_rows($res_nn)==0) {
 						echo " <span style='color:red'>INE ".$lig_ele->n_national." non trouvé dans la table 'eleves'</span>";
 						$reserves_sur_maj++;
@@ -470,6 +544,8 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					}
 				}
 
+				$ts=time();
+				//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
 
 				echo "<p class='bold' style='margin-top:1em;'>Mise à jour du groupe en période $num_periode&nbsp;: ";
 				$update = update_group($_GET['id_groupe'], $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
@@ -540,8 +616,6 @@ $titre_page = "EDT : Inscriptions Eleves";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 //debug_var();
-
-$debug_import_edt="n";
 
 echo "<p class='bold'><a href='../classes/index.php'> <img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 /*
@@ -856,16 +930,16 @@ elseif($action=="upload") {
 
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?action=comparer'>Rechercher les modifications d'appartenance aux groupes/enseignements</a>.</p>";
 
-	echo "<p style='color:red'><em>A FAIRE&nbsp;:</em> Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
-	Rechercher les élèves non matchés entre 'edt_eleves_lignes.n_national' et 'eleves.no_gep'.</p>";
+	echo "<!--p style='color:red'><em>A FAIRE&nbsp;:</em> Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
+	Rechercher les élèves non matchés entre 'edt_eleves_lignes.n_national' et 'eleves.no_gep'.</p-->";
 
 	require("../lib/footer.inc.php");
 	die();
 }
 elseif($action=="comparer") {
 
-	echo "<p style='color:red'><em>A FAIRE&nbsp;:</em> Commencer par Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
-	Rechercher les élèves non matchés entre 'edt_eleves_lignes.n_national' et 'eleves.no_gep'.</p>";
+	echo "<!--p style='color:red'><em>A FAIRE&nbsp;:</em> Commencer par Repérer les élèves avec N_NATIONAL vide... qu'il va falloir rapprocher.<br />
+	Rechercher les élèves non matchés entre 'edt_eleves_lignes.n_national' et 'eleves.no_gep'.</p-->";
 
 	if(!isset($num_periode)) {
 		echo "<h2>Choix de la période</h2>";
@@ -945,6 +1019,15 @@ elseif($action=="comparer") {
 		die();
 	}
 
+	$tab_corresp_classe=array();
+	$sql="select * from edt_corresp where champ='classe';";
+	$res_corresp_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_corresp_classe)>0) {
+		while($lig_corresp_classe=mysqli_fetch_object($res_corresp_classe)) {
+			$tab_corresp_classe[]=$lig_corresp_classe->nom_edt;
+		}
+	}
+
 	$sql="TRUNCATE edt_tempo;";
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -957,6 +1040,9 @@ elseif($action=="comparer") {
 	$chaine_js_div="";
 	while($lig=mysqli_fetch_object($res)) {
 		$sql="INSERT INTO edt_tempo set col1='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->nom_groupe_edt)."';";
+		if($debug_import_edt=="y") {
+			echo "$sql<br />";
+		}
 		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 		$current_id_temp=mysqli_insert_id($GLOBALS["mysqli"]);
 
@@ -965,6 +1051,9 @@ elseif($action=="comparer") {
 		echo "<a name='regroupement_$current_id_temp'></a>";
 		echo "<p class='bold'>Regroupement d'élèves ".$lig->nom_groupe_edt."</p>";
 		$sql="SELECT DISTINCT id_groupe FROM edt_corresp2 WHERE nom_groupe_edt='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig->nom_groupe_edt)."';";
+		if($debug_import_edt=="y") {
+			echo "$sql<br />";
+		}
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)==0) {
 			echo "<p>Aucun groupe n'est associé au nom EDT ".$lig->nom_groupe_edt.".</p>";
@@ -986,6 +1075,10 @@ elseif($action=="comparer") {
 			echo "</p>";
 
 			$nom_groupe_edt=$lig->nom_groupe_edt;
+			$nom_groupe_edt_clean=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
+
+			//$chaine_nom_groupe="";
+			/*
 			$current_nom_groupe=preg_replace("/\[/", "", preg_replace("/\]/", "", $lig->nom_groupe_edt));
 
 			$sql="SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
@@ -993,302 +1086,383 @@ elseif($action=="comparer") {
 					groupes like '$current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe, %' OR 
 					groupes like '%, $current_nom_groupe');";
-			//echo "$sql<br />";
-			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_ele)==0) {
-				echo "<p>Aucun élève n'a dans ses groupes le nom EDT ".$current_nom_groupe.".</p>";
-			}
-			else {
-				$tab_ele_regroupement_edt=array();
-				echo "<p style='margin-left:3em;text-indent:-3em;'>Le ou les élèves suivants ont dans leurs groupes le nom EDT ".$current_nom_groupe."&nbsp;:<br />";
-				$cpt_ele=0;
-				while($lig_ele=mysqli_fetch_object($res_ele)) {
-					echo $lig_ele->nom." ".$lig_ele->prenom." (".$lig_ele->date_naiss.") (".$lig_ele->n_national.")";
+			*/
 
-// Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
-
-					if($lig_ele->n_national!="") {
-						$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
+			//$sql="";
+			$sql="SELECT id,nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+				WHERE (";
+			$tmp_tab_nom_groupe=explode(",", $lig->nom_groupe_edt);
+			$loop2=0;
+			for($loop=0;$loop<count($tmp_tab_nom_groupe);$loop++) {
+				$current_nom_groupe=trim(preg_replace("/\[/", "", preg_replace("/\]/", "", $tmp_tab_nom_groupe[$loop])));
+				if(!in_array($current_nom_groupe, $tab_corresp_classe)) {
+					if($loop2>0) {
+						//$chaine_nom_groupe.=", ";
+						//$sql.=" UNION ";
+						$sql.=" OR ";
 					}
-					else {
-						$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
-					}
-					//echo "$sql<br />";
-					$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
-					if(mysqli_num_rows($res_nn)==0) {
-						echo " <span style='color:red'>INE non trouvé dans la table 'eleves'</span>";
-					}
-					elseif(mysqli_num_rows($res_nn)==1) {
-						$lig_nn=mysqli_fetch_object($res_nn);
-
-						$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
-						$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
-						$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
-						$tab_ele_regroupement_edt['prenom'][]=$lig_ele->prenom;
-						$tab_ele_regroupement_edt['date_naiss'][]=$lig_ele->date_naiss;
-						$tab_ele_regroupement_edt['n_national'][]=$lig_ele->n_national;
-
-						/*
-						$classes="";
-						$tmp_tab=get_class_from_ele_login($lig_nn->login);
-						if(isset($tmp_tab['liste_nbsp'])) {$classes=$tmp_tab['liste_nbsp'];}
-						*/
-						$id_classe="";
-						$classe="";
-						$tmp_tab=get_class_periode_from_ele_login($lig_nn->login);
-						if(isset($tmp_tab['periode'][$num_periode]['id_classe'])) {$id_classe=$tmp_tab['periode'][$num_periode]['id_classe'];}
-						$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
-						if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
-						$tab_ele_regroupement_edt['classe'][]=$classe;
-					}
-					else {
-						echo " <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
-					}
-					echo "<br />";
-
-					$cpt_ele++;
+					/*
+					$sql="(SELECT nom,prenom,date_naiss,sexe,n_national,groupes FROM edt_eleves_lignes 
+						WHERE (groupes like '$current_nom_groupe' OR 
+							groupes like '$current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe, %' OR 
+							groupes like '%, $current_nom_groupe'))";
+					*/
+					/*
+					$sql.="groupes like '$current_nom_groupe' OR 
+						groupes like '$current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe'";
+					*/
+					$sql.="classe like '$current_nom_groupe' OR 
+						classe like '$current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe, %' OR 
+						classe like '%, $current_nom_groupe'";
+					$sql.=" OR groupes like '$current_nom_groupe' OR 
+						groupes like '$current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe, %' OR 
+						groupes like '%, $current_nom_groupe'";
+					$loop2++;
 				}
-				echo "</p>";
-				echo "<p class='bold'>Effectif : $cpt_ele</p>";
+			}
+			$sql.=");";
+			if($debug_import_edt=="y") {
+				echo "$sql<br />";
+			}
+			if($loop2>0) {
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_ele)==0) {
+					//echo "<p>Aucun élève n'a dans ses groupes le nom EDT ".$current_nom_groupe.".</p>";
+					//echo "<p>Aucun élève n'a dans ses groupes le nom EDT ".$chaine_nom_groupe.".</p>";
+					echo "<p>Aucun élève n'a dans ses groupes le nom EDT ".$nom_groupe_edt.".</p>";
+				}
+				else {
+					$tab_ele_regroupement_edt=array();
+					echo "<p style='margin-left:3em;text-indent:-3em;'>Le ou les élèves suivants ont dans leurs groupes le nom EDT ".$current_nom_groupe."&nbsp;:<br />";
+					$cpt_ele=0;
+					while($lig_ele=mysqli_fetch_object($res_ele)) {
+						echo $lig_ele->nom." ".$lig_ele->prenom." (".$lig_ele->date_naiss.") (".$lig_ele->n_national.")";
 
-				foreach($tab_ele_grp as $current_id_groupe => $current_tab_ele) {
-					$tab_test_association_grp_classe=array();
+	// Si $lig_ele->n_national est vide, il faut tenter d'identifier autrement l'élève (nom, prénom, date de naissance).
 
-					$diff=array_diff($current_tab_ele['list'], $tab_ele_regroupement_edt['login']);
-					$diff2=array_diff($tab_ele_regroupement_edt['login'], $current_tab_ele['list']);
-					if((count($diff)==0)&&(count($diff2)==0)) {
-						echo "<p style='color:blue; margin-top:1em;'>Le groupe ".$tab_info_grp[$current_id_groupe]." est à jour.</p>";
-					}
-					else {
-						$temoin_bull_ou_cn_non_vide=0;
-
-						$temoin_differences++;
-						echo "<p style='color:red; margin-top:1em;'>Différences pour <a href='../groupes/edit_group.php?id_groupe=$current_id_groupe' target='_blank' title=\"Voir le groupe dans un nouvel onglet.\">".$tab_info_grp[$current_id_groupe]."</a> <a href='../groupes/edit_eleves.php?id_groupe=$current_id_groupe' title=\"Voir/modifier les élèves inscrits dans ce groupe.\" target='_blank'><img src='../images/group16.png' class='icone16' alt='Élèves' /></a></p>";
-						/*
-						echo "<pre>";
-						print_r($diff);
-						echo "
-						</pre>";
-						echo "<pre>";
-						print_r($diff2);
-						echo "
-						</pre>";
-						*/
-
-						//==================================
-						$details_lignes="";
-						$sql="SELECT * FROM edt_lignes WHERE classe='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_edt)."' ORDER BY mat_code, prof_nom, prof_prenom, jour, h_debut;";
-						//$details_lignes.="<br />$sql<br />";
-						$res_edt_lig=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_edt_lig)>0) {
-							$details_lignes.="<table id='table_lignes_edt_".$current_id_temp."_".$current_id_groupe."' class='boireaus boireaus_alt' title=\"Lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé\" style='display:none'>
-	<tr>
-		<th>Prof</th>
-		<th>Matière</th>
-		<th>Jour</th>
-		<th>Heure</th>
-		<th>Alternance</th>
-	</tr>";
-							while($lig_edt_lig=mysqli_fetch_object($res_edt_lig)) {
-								$details_lignes.="
-	<tr>
-		<td>$lig_edt_lig->prof_nom $lig_edt_lig->prof_prenom</td>
-		<td>$lig_edt_lig->mat_code</td>
-		<td>$lig_edt_lig->jour</td>
-		<td>$lig_edt_lig->h_debut</td>
-		<td>$lig_edt_lig->alternance</td>
-	</tr>";
-							}
-							$details_lignes.="
-</table>";
-						}
-						//==================================
-
-						echo "<table class='boireaus boireaus_alt'>
-	<thead>
-		<tr>
-			<th>Regroupement EDT<br />
-				<!--a href='#' onclick='return false' onmouseover=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', '')\" onmouseout=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', 'none')\">".$current_nom_groupe."</a-->
-
-				<a name='regroupement_".$current_id_temp."_groupe_".$current_id_groupe."'></a>
-
-				<a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".$current_nom_groupe."</a>
-
-				".$details_lignes."</th>
-
-			<th>Enseignement Gepi<br />".$tab_info_grp[$current_id_groupe];
-						if(isset($tab_prof_grp[$current_id_groupe]["users"])) {
-							echo "<br />";
-							$cpt_prof=0;
-							foreach($tab_prof_grp[$current_id_groupe]["users"] as $tab_prof){
-								if($cpt_prof>0){echo ", ";}
-								echo casse_mot($tab_prof['prenom'],'majf2')." ".my_strtoupper($tab_prof['nom']);
-
-								echo affiche_lien_edt_prof($tab_prof["login"], $tab_prof["prenom"]." ".$tab_prof["nom"]);
-							}
-						}
-						echo "</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td style='vertical-align:top;'>
-				<table class='boireaus boireaus_alt2 resizable sortable'>
-					<thead>
-					<tr>
-						<th class='text' title='Trier suivant cette colonne'></th>
-						<th class='text' title='Trier suivant cette colonne'>Nom</th>
-						<th class='text' title='Trier suivant cette colonne'>Prénom</th>
-						<th class='text' title='Trier suivant cette colonne'>INE</th>
-						<th class='text' title='Trier suivant cette colonne'>Classe</th>
-					</tr>
-					</thead>
-					<tbody>";
-						for($loop=0;$loop<count($tab_ele_regroupement_edt['login']);$loop++) {
-							$temoin="";
-							if(in_array($tab_ele_regroupement_edt['login'][$loop], $diff2)) {
-								$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />";
-								
-								if((isset($tab_ele_regroupement_edt['date_sortie'][$loop]))&&($tab_ele_regroupement_edt['date_sortie'][$loop]!="")) {
-									$temoin.="<img src='../images/icons/retour_sso.png' class='icone16' alt='Départ' ";
-									$temoin.="title=\"L'élève a quitté l'établissement le ".formate_date($tab_ele_regroupement_edt['date_sortie'][$loop])."\" ";
-									$temoin.="/>";
-								}
-								
-/*
-echo "<pre>";
-print_r($tab_ele_regroupement_edt);
-echo "</pre>";
-*/
-							}
-							echo "
-					<tr>
-						<td>".$temoin."</td>
-						<td><a href='../eleves/visu_eleve.php?ele_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$tab_ele_regroupement_edt['nom'][$loop]."</a></td>
-						<td>".$tab_ele_regroupement_edt['prenom'][$loop]."</td>
-						<td><a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$tab_ele_regroupement_edt['n_national'][$loop]."</a></td>
-						<td>".$tab_ele_regroupement_edt['classe'][$loop];
-							if($tab_ele_regroupement_edt['id_classe'][$loop]!="") {
-								if(!isset($tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]])) {
-									$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$current_id_groupe' AND id_classe='".$tab_ele_regroupement_edt['id_classe'][$loop]."';";
-									//echo "$sql<br />";
-									$test_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($test_grp_clas)==0) {
-										$tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]]=" <img src='../images/icons/flag2.gif' class='icone16' alt='ATTENTION' title=\"Cette classe n'est pas associée au groupe Gepi.\" />";
-									}
-									else {
-										$tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]]="";
-									}
-								}
-								echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
-							}
-							echo "</td>
-					</tr>";
-						}
-						echo "
-					</tbody>
-				</table>
-				<p>Effectif&nbsp;: ".count($tab_ele_regroupement_edt['login'])."</p>
-			</td>
-			<td style='vertical-align:top;'>
-				<div id='div_suppr_assoc_".$current_id_groupe."_".$current_id_temp."' style='float:right; width:10em;'>
-					<a href='#' onclick=\"suppr_assoc_regroupement_edt($current_id_groupe, $current_id_temp);return false;\" title=\"Si l'association entre le regroupement d'élèves EDT et le groupe Gepi vous semble erroné, vous pouvez supprimer l'association.\nLors de la prochaine mise à jour de l'emploi du temps dans Gepi d'après le EXP_COURS.xml de EDT, une nouvelle association vous sera proposée.\" target='_blank'>Supprimer l'association</a>
-				</div>
-
-				<table class='boireaus boireaus_alt2 resizable sortable'>
-					<thead>
-					<tr>
-						<th class='text' title='Trier suivant cette colonne'></th>
-						<th class='text' title='Trier suivant cette colonne'>Nom</th>
-						<th class='text' title='Trier suivant cette colonne'>Prénom</th>
-						<th class='text' title='Trier suivant cette colonne'>INE</th>
-						<th class='text' title='Trier suivant cette colonne'>Classe</th>
-					</tr>
-					</thead>
-					<tbody>";
-						foreach($current_tab_ele['users'] as $current_login_ele => $current_ele) {
-							$temoin="";
-							if(in_array($current_login_ele, $diff)) {
-								$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' ";
-								/*
-								if((isset($current_ele['date_sortie']))&&($current_ele['date_sortie']!="")) {
-									$temoin.="title=\"L'élève a quitté l'établissement le ".$current_ele['date_sortie']."\" ";
-								}
-								*/
-								$temoin.="/>";
-/*
-echo "<pre>";
-print_r($current_ele);
-echo "</pre>";
-*/
-								if (!test_before_eleve_removal($current_login_ele, $current_id_groupe, $num_periode)) {
-									if(($acces_prepa_conseil_edit_limite=="y")&&($current_ele['classe']!="")) {
-										$temoin.="<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$current_login_ele."&id_classe=".$current_ele['classe']."&periode1=".$num_periode."&periode2=".$num_periode."' target='_blank'>";
-										$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
-										$temoin.="</a>";
-									}
-									else {
-										$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
-									}
-									$temoin_bull_ou_cn_non_vide++;
-								}
-
-								$nb_notes_cn=nb_notes_ele_dans_tel_enseignement($current_login_ele, $current_id_groupe, $num_periode);
-								if($nb_notes_cn>0) {
-									$temoin.="<img src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
-									$temoin_bull_ou_cn_non_vide++;
-								}
-
-							}
-							echo "
-					<tr>
-						<td>".$temoin."</td>
-						<td><a href='../eleves/visu_eleve.php?ele_login=".$current_ele['login']."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$current_ele['nom']."</a></td>
-						<td>".$current_ele['prenom']."</td>
-						<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
-						<td>";
-
-							if(!isset($tab_nom_classe[$current_ele['classe']])) {
-								$tab_nom_classe[$current_ele['classe']]=get_nom_classe($current_ele['classe']);
-							}
-							echo $tab_nom_classe[$current_ele['classe']];
-							echo "</td>
-					</tr>";
-						}
-						echo "
-					</tbody>
-				</table>
-				<p>Effectif&nbsp;: ".count($current_tab_ele['users'])."</p>
-
-				<!--p style='color:red'>AJOUTER UN LIEN ou CHECKBOX pour mettre à jour l'enseignement Gepi d'après le regroupement EDT (id_tempo=$current_id_temp et id_groupe=$current_id_groupe)<br />
-				Si le bulletin ou le carnet de notes ne sont pas vides, ne pas permettre la désinscription.</p-->
-
-				<p>";
-						$sql="SELECT MAX(p.num_periode) AS maxper FROM j_groupes_classes jgc, periodes p WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='$current_id_groupe';";
-						$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_per)==0) {
-							$maxper=$num_periode;
+						if($lig_ele->n_national!="") {
+							$sql="SELECT login, date_sortie FROM eleves WHERE no_gep='".$lig_ele->n_national."';";
 						}
 						else {
-							$lig_per=mysqli_fetch_object($res_per);
-							$maxper=$lig_per->maxper;
+							$sql="SELECT login, date_sortie FROM eleves WHERE nom='".$lig_ele->nom."' AND prenom='".$lig_ele->prenom."';";
 						}
+						//echo "$sql<br />";
+						$res_nn=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_nn)==0) {
+							echo " <span style='color:red'>INE non trouvé dans la table 'eleves'</span>";
+						}
+						elseif(mysqli_num_rows($res_nn)==1) {
+							$lig_nn=mysqli_fetch_object($res_nn);
 
-						for($loop_per=$num_periode;$loop_per<=$maxper;$loop_per++) {
+							$tab_ele_regroupement_edt['id_edt_eleves_lignes'][]=$lig_ele->id;
+							$tab_ele_regroupement_edt['login'][]=$lig_nn->login;
+							$tab_ele_regroupement_edt['date_sortie'][]=$lig_nn->date_sortie;
+							$tab_ele_regroupement_edt['nom'][]=$lig_ele->nom;
+							$tab_ele_regroupement_edt['prenom'][]=$lig_ele->prenom;
+							$tab_ele_regroupement_edt['date_naiss'][]=$lig_ele->date_naiss;
+							$tab_ele_regroupement_edt['n_national'][]=$lig_ele->n_national;
+
+							/*
+							$classes="";
+							$tmp_tab=get_class_from_ele_login($lig_nn->login);
+							if(isset($tmp_tab['liste_nbsp'])) {$classes=$tmp_tab['liste_nbsp'];}
+							*/
+							$id_classe="";
+							$classe="";
+							$tmp_tab=get_class_periode_from_ele_login($lig_nn->login);
+							if(isset($tmp_tab['periode'][$num_periode]['id_classe'])) {$id_classe=$tmp_tab['periode'][$num_periode]['id_classe'];}
+							$tab_ele_regroupement_edt['id_classe'][]=$id_classe;
+							if(isset($tmp_tab['periode'][$num_periode]['classe'])) {$classe=$tmp_tab['periode'][$num_periode]['classe'];}
+							$tab_ele_regroupement_edt['classe'][]=$classe;
+						}
+						else {
+							echo " <span style='color:red'>Plusieurs élèves trouvés dans la table 'eleves' pour cet INE (???)</span>";
+						}
+						echo "<br />";
+
+						$cpt_ele++;
+					}
+					echo "</p>";
+					echo "<p class='bold'>Effectif : $cpt_ele</p>";
+
+					foreach($tab_ele_grp as $current_id_groupe => $current_tab_ele) {
+						$tab_test_association_grp_classe=array();
+
+						$diff=array_diff($current_tab_ele['list'], $tab_ele_regroupement_edt['login']);
+						$diff2=array_diff($tab_ele_regroupement_edt['login'], $current_tab_ele['list']);
+						if((count($diff)==0)&&(count($diff2)==0)) {
+							echo "<p style='color:blue; margin-top:1em;'>Le groupe ".$tab_info_grp[$current_id_groupe]." est à jour.</p>";
+						}
+						else {
+							$temoin_bull_ou_cn_non_vide=0;
+
+							$temoin_differences++;
+							echo "<p style='color:red; margin-top:1em;'>Différences pour <a href='../groupes/edit_group.php?id_groupe=$current_id_groupe' target='_blank' title=\"Voir le groupe dans un nouvel onglet.\">".$tab_info_grp[$current_id_groupe]."</a> <a href='../groupes/edit_eleves.php?id_groupe=$current_id_groupe' title=\"Voir/modifier les élèves inscrits dans ce groupe.\" target='_blank'><img src='../images/group16.png' class='icone16' alt='Élèves' /></a></p>";
+							/*
+							echo "<pre>";
+							print_r($diff);
 							echo "
-					<a href='#' target=\"_blank\" onclick=\"maj_composition_groupe($current_id_groupe, $current_id_temp, $loop_per);return false;\">Mettre à jour en période $loop_per</a><br />";
+							</pre>";
+							echo "<pre>";
+							print_r($diff2);
+							echo "
+							</pre>";
+							*/
+
+							//==================================
+							$details_lignes="";
+							$sql="SELECT * FROM edt_lignes WHERE classe='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_groupe_edt)."' ORDER BY mat_code, prof_nom, prof_prenom, jour, h_debut;";
+							//$details_lignes.="<br />$sql<br />";
+							$res_edt_lig=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_edt_lig)>0) {
+								$details_lignes.="<table id='table_lignes_edt_".$current_id_temp."_".$current_id_groupe."' class='boireaus boireaus_alt' title=\"Lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé\" style='display:none'>
+		<tr>
+			<th>Prof</th>
+			<th>Matière</th>
+			<th>Jour</th>
+			<th>Heure</th>
+			<th>Alternance</th>".(($debug_import_edt=="y") ? "
+			<th>Debug</th>" : "")."
+		</tr>";
+								while($lig_edt_lig=mysqli_fetch_object($res_edt_lig)) {
+									$details_lignes.="
+		<tr>
+			<td>$lig_edt_lig->prof_nom $lig_edt_lig->prof_prenom</td>
+			<td>$lig_edt_lig->mat_code</td>
+			<td>$lig_edt_lig->jour</td>
+			<td>$lig_edt_lig->h_debut</td>
+			<td>$lig_edt_lig->alternance</td>".(($debug_import_edt=="y") ? "
+			<td>".$lig_edt_lig->classe."</td>" : "")."
+		</tr>";
+								}
+								$details_lignes.="
+	</table>";
+							}
+							//==================================
+
+							echo "<table class='boireaus boireaus_alt'>
+		<thead>
+			<tr>
+				<th>Regroupement EDT<br />
+					<!--a href='#' onclick='return false' onmouseover=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', '')\" onmouseout=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', 'none')\">".$current_nom_groupe."</a-->
+
+					<a name='regroupement_".$current_id_temp."_groupe_".$current_id_groupe."'></a>
+
+					<!--a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".$current_nom_groupe."</a-->
+
+					<a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".$nom_groupe_edt_clean."</a>
+
+					".$details_lignes."</th>
+
+				<th>Enseignement Gepi<br />".$tab_info_grp[$current_id_groupe];
+							if(isset($tab_prof_grp[$current_id_groupe]["users"])) {
+								echo "<br />";
+								$cpt_prof=0;
+								foreach($tab_prof_grp[$current_id_groupe]["users"] as $tab_prof){
+									if($cpt_prof>0){echo ", ";}
+									echo casse_mot($tab_prof['prenom'],'majf2')." ".my_strtoupper($tab_prof['nom']);
+
+									echo affiche_lien_edt_prof($tab_prof["login"], $tab_prof["prenom"]." ".$tab_prof["nom"]);
+								}
+							}
+							echo "</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td style='vertical-align:top;'>
+					<table class='boireaus boireaus_alt2 resizable sortable'>
+						<thead>
+						<tr>
+							<th class='text' title='Trier suivant cette colonne'></th>
+							<th class='text' title='Trier suivant cette colonne'>Nom</th>
+							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
+							<th class='text' title='Trier suivant cette colonne'>INE</th>
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
+							<th>Debug classe</th>
+							<th>Debug groupes</th>" : "")."
+						</tr>
+						</thead>
+						<tbody>";
+							for($loop=0;$loop<count($tab_ele_regroupement_edt['login']);$loop++) {
+								$temoin="";
+								if(in_array($tab_ele_regroupement_edt['login'][$loop], $diff2)) {
+									$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' />";
+								
+									if((isset($tab_ele_regroupement_edt['date_sortie'][$loop]))&&($tab_ele_regroupement_edt['date_sortie'][$loop]!="")) {
+										$temoin.="<img src='../images/icons/retour_sso.png' class='icone16' alt='Départ' ";
+										$temoin.="title=\"L'élève a quitté l'établissement le ".formate_date($tab_ele_regroupement_edt['date_sortie'][$loop])."\" ";
+										$temoin.="/>";
+									}
+								
+	/*
+	echo "<pre>";
+	print_r($tab_ele_regroupement_edt);
+	echo "</pre>";
+	*/
+								}
+								echo "
+						<tr>
+							<td>".$temoin."</td>
+							<td><a href='../eleves/visu_eleve.php?ele_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$tab_ele_regroupement_edt['nom'][$loop]."</a></td>
+							<td>".$tab_ele_regroupement_edt['prenom'][$loop]."</td>
+							<td><a href='../eleves/modify_eleve.php?eleve_login=".$tab_ele_regroupement_edt['login'][$loop]."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$tab_ele_regroupement_edt['n_national'][$loop]."</a></td>
+							<td>".$tab_ele_regroupement_edt['classe'][$loop];
+								if($tab_ele_regroupement_edt['id_classe'][$loop]!="") {
+									if(!isset($tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]])) {
+										$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_groupe='$current_id_groupe' AND id_classe='".$tab_ele_regroupement_edt['id_classe'][$loop]."';";
+										//echo "$sql<br />";
+										$test_grp_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($test_grp_clas)==0) {
+											$tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]]=" <img src='../images/icons/flag2.gif' class='icone16' alt='ATTENTION' title=\"Cette classe n'est pas associée au groupe Gepi.\" />";
+										}
+										else {
+											$tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]]="";
+										}
+									}
+									echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
+								}
+								echo "</td>".(($debug_import_edt=="y") ? "
+							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe")."</td>
+							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes")."</td>" : "")."
+						</tr>";
+							}
+							echo "
+						</tbody>
+					</table>
+					<p>Effectif&nbsp;: ".count($tab_ele_regroupement_edt['login'])."</p>
+				</td>
+				<td style='vertical-align:top;'>
+					<div id='div_suppr_assoc_".$current_id_groupe."_".$current_id_temp."' style='float:right; width:10em;'>
+						<a href='#' onclick=\"suppr_assoc_regroupement_edt($current_id_groupe, $current_id_temp);return false;\" title=\"Si l'association entre le regroupement d'élèves EDT et le groupe Gepi vous semble erroné, vous pouvez supprimer l'association.\nLors de la prochaine mise à jour de l'emploi du temps dans Gepi d'après le EXP_COURS.xml de EDT, une nouvelle association vous sera proposée.\" target='_blank'>Supprimer l'association</a>
+					</div>
+
+					<table class='boireaus boireaus_alt2 resizable sortable'>
+						<thead>
+						<tr>
+							<th class='text' title='Trier suivant cette colonne'></th>
+							<th class='text' title='Trier suivant cette colonne'>Nom</th>
+							<th class='text' title='Trier suivant cette colonne'>Prénom</th>
+							<th class='text' title='Trier suivant cette colonne'>INE</th>
+							<th class='text' title='Trier suivant cette colonne'>Classe</th>".(($debug_import_edt=="y") ? "
+							<th>Debug classe</th>
+							<th>Debug groupes</th>" : "")."
+						</tr>
+						</thead>
+						<tbody>";
+							foreach($current_tab_ele['users'] as $current_login_ele => $current_ele) {
+								$temoin="";
+								if(in_array($current_login_ele, $diff)) {
+									$temoin="<img src='../images/icons/ico_attention.png' class='icone16' alt='Attention' ";
+									/*
+									if((isset($current_ele['date_sortie']))&&($current_ele['date_sortie']!="")) {
+										$temoin.="title=\"L'élève a quitté l'établissement le ".$current_ele['date_sortie']."\" ";
+									}
+									*/
+									$temoin.="/>";
+	/*
+	echo "<pre>";
+	print_r($current_ele);
+	echo "</pre>";
+	*/
+									if (!test_before_eleve_removal($current_login_ele, $current_id_groupe, $num_periode)) {
+										if(($acces_prepa_conseil_edit_limite=="y")&&($current_ele['classe']!="")) {
+											$temoin.="<a href='../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$current_login_ele."&id_classe=".$current_ele['classe']."&periode1=".$num_periode."&periode2=".$num_periode."' target='_blank'>";
+											$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+											$temoin.="</a>";
+										}
+										else {
+											$temoin.="<img src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+										}
+										$temoin_bull_ou_cn_non_vide++;
+									}
+
+									$nb_notes_cn=nb_notes_ele_dans_tel_enseignement($current_login_ele, $current_id_groupe, $num_periode);
+									if($nb_notes_cn>0) {
+										$temoin.="<img src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+										$temoin_bull_ou_cn_non_vide++;
+									}
+
+								}
+								echo "
+						<tr>
+							<td>".$temoin."</td>
+							<td><a href='../eleves/visu_eleve.php?ele_login=".$current_ele['login']."' target='_blank' title=\"Voir la fiche/classeur élève avec ses onglets.\">".$current_ele['nom']."</a></td>
+							<td>".$current_ele['prenom']."</td>
+							<td><a href='../eleves/modify_eleve.php?eleve_login=".$current_login_ele."' target='_blank' title=\"Voir/modifier la fiche de cet(te) élève.\">".$current_ele['no_gep']."</a></td>
+							<td>";
+
+								if ($debug_import_edt=="y") {
+									$debug_edt_eleves_lignes_classe="";
+									$debug_edt_eleves_lignes_groupes="";
+									$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.n_national=e.no_gep AND e.no_gep!='' AND e.login='".$current_login_ele."';";
+									$res_debug_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_debug_ele)>0) {
+										$lig_debug_ele=mysqli_fetch_object($res_debug_ele);
+										$debug_edt_eleves_lignes_classe=$lig_debug_ele->classe;
+										$debug_edt_eleves_lignes_groupes=$lig_debug_ele->groupes;
+									}
+									else {
+										$sql="SELECT eel.* FROM edt_eleves_lignes eel, eleves e WHERE eel.nom=e.nom AND eel.prenom=e.prenom AND e.login='".$current_login_ele."';";
+										//$debug_edt_eleves_lignes_classe.=$sql."<br />";
+										$res_debug_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_debug_ele)==1) {
+											$lig_debug_ele=mysqli_fetch_object($res_debug_ele);
+											$debug_edt_eleves_lignes_classe=$lig_debug_ele->classe;
+											$debug_edt_eleves_lignes_groupes=$lig_debug_ele->groupes;
+										}
+									}
+								}
+
+								if(!isset($tab_nom_classe[$current_ele['classe']])) {
+									$tab_nom_classe[$current_ele['classe']]=get_nom_classe($current_ele['classe']);
+								}
+								echo $tab_nom_classe[$current_ele['classe']];
+								echo "</td>".(($debug_import_edt=="y") ? "
+							<td>$debug_edt_eleves_lignes_classe</td>
+							<td>$debug_edt_eleves_lignes_groupes</td>" : "")."
+						</tr>";
+							}
+							echo "
+						</tbody>
+					</table>
+					<p>Effectif&nbsp;: ".count($current_tab_ele['users'])."</p>
+
+					<!--p style='color:red'>AJOUTER UN LIEN ou CHECKBOX pour mettre à jour l'enseignement Gepi d'après le regroupement EDT (id_tempo=$current_id_temp et id_groupe=$current_id_groupe)<br />
+					Si le bulletin ou le carnet de notes ne sont pas vides, ne pas permettre la désinscription.</p-->
+
+					<p>";
+							$sql="SELECT MAX(p.num_periode) AS maxper FROM j_groupes_classes jgc, periodes p WHERE p.id_classe=jgc.id_classe AND jgc.id_groupe='$current_id_groupe';";
+							$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_per)==0) {
+								$maxper=$num_periode;
+							}
+							else {
+								$lig_per=mysqli_fetch_object($res_per);
+								$maxper=$lig_per->maxper;
+							}
+
+							for($loop_per=$num_periode;$loop_per<=$maxper;$loop_per++) {
+								echo "
+						<a href='#' target=\"_blank\" onclick=\"maj_composition_groupe($current_id_groupe, $current_id_temp, $loop_per);return false;\">Mettre à jour en période $loop_per</a><br />";
+							}
+							echo "
+					</p>
+					<div id='div_rapport_maj_groupe_".$current_id_groupe."_".$current_id_temp."'>
+						Groupe n°$current_id_groupe
+					</div>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>";
+
 						}
-						echo "
-				</p>
-				<div id='div_rapport_maj_groupe_".$current_id_groupe."_".$current_id_temp."'>
-					Groupe n°$current_id_groupe
-				</div>
-
-			</td>
-		</tr>
-	</tbody>
-</table>";
-
 					}
 				}
 			}
@@ -1396,7 +1570,7 @@ elseif($action=="editer_ec2") {
 				while($lig2=mysqli_fetch_object($res2)) {
 					echo "
 				<tr class='white_hover'>
-					<td><label for='suppr_$cpt' id='texte_suppr_$cpt'>$lig->nom_groupe_edt</label></td>
+					<td><label for='suppr_$cpt' id='texte_suppr_$cpt'>".htmlentities($lig->nom_groupe_edt)."</label></td>
 					<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr_$cpt')\" /></td>
 					<td><label for='suppr_$cpt'>$lig2->mat_code_edt</label></td>
 					<td style='text-align:left'><a href='../groupes/edit_group.php?id_groupe=".$lig2->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig2->id_groupe)."</a><a name='id_groupe_".$lig2->id_groupe."'></a></td>
