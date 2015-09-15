@@ -1023,7 +1023,7 @@ if(mysqli_num_rows($test)>0) {
 	if(mysqli_num_rows($res_edt)>0) {
 		$lig_edt=mysqli_fetch_object($res_edt);
 		//onclick=\"return confirm_abandon (this, change, '$themessage')\"
-		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Regroupement EDT associé&nbsp;: ".$lig_edt->nom_groupe_edt."</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
+		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Regroupement EDT associé&nbsp;: ".htmlentities($lig_edt->nom_groupe_edt)."</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Editer l'association à un regroupement EDT.\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a>";
 	}
 	else {
 		echo "<p style='margin-top:1em;'><span id='span_regroupement_edt_associe'>Aucun regroupement EDT n'est associé à ce groupe Gepi</span> <a href='maj_inscript_ele_d_apres_edt.php?action=editer_ec3&amp;id_groupe=".$id_groupe."' onclick=\"afficher_div('div_regroupement_edt','y',10,10);return false;\" title=\"Associer.\"><img src='../images/edit16.png' class='icone16' alt='Associer' /></a>.";
@@ -1045,7 +1045,7 @@ if(mysqli_num_rows($test)>0) {
 			if($loop>0) {
 				$texte_infobulle.=", ";
 			}
-			$texte_infobulle.=$tab_assoc[$loop];
+			$texte_infobulle.=htmlentities($tab_assoc[$loop]);
 			$chaine_anomalie_corresp_edt.="                        - ".$tab_assoc[$loop]."\n";
 		}
 		$texte_infobulle.="</em>).<br />Il ne devrait y en avoir qu'un.<br />Choisissez ci-dessous le bon et validez.</p>";
@@ -1063,7 +1063,7 @@ if(mysqli_num_rows($test)>0) {
 			$selected=" selected";
 		}
 		$lignes_options.="
-				<option value='$lig->id'$selected>$lig->nom_edt</option>";
+				<option value='$lig->id'$selected>".htmlentities($lig->nom_edt)."</option>";
 	}
 
 	$texte_infobulle.="
