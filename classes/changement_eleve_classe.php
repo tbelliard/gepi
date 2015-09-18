@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -738,6 +738,56 @@ Evitez les 'fantaisies';o).</p>
 		// Prof principal à modifier?
 		$ancre_login_eleve=my_ereg_replace("[^A-Za-z0-9_]","",$login_eleve);
 		$gepi_prof_suivi=ucfirst(retourne_denomination_pp($id_future_classe));
+
+		$sql="SELECT professeur, COUNT(professeur) FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jep.login=jec.login AND jec.id_classe='$id_future_classe' AND professeur in (SELECT login FROM j_groupes_professeurs jgp, j_groupes_classes jgc WHERE jgp.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_future_classe') GROUP BY professeur ORDER BY COUNT(professeur) DESC;";
+		$res_pp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_pp)>0) {
+			$lig_pp=mysqli_fetch_object($res_pp);
+
+			$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE login='$login_eleve' AND id_classe='$id_future_classe';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				// Ca ne devrait pas arriver sauf si l'élèves fait T1: 3D -> T2: 3E -> T3: 3D
+				$sql="UPDATE j_eleves_professeurs SET professeur='$lig_pp->professeur' WHERE login='$login_eleve' AND id_classe='$id_future_classe';";
+				//echo "$sql<br />";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($update) {
+					echo "<p>Mise à jour du $gepi_prof_suivi vers ".civ_nom_prenom($lig_pp->professeur)."</p>";
+				}
+			}
+			else {
+				$sql="INSERT INTO j_eleves_professeurs SET login='$login_eleve', professeur='$lig_pp->professeur', id_classe='$id_future_classe';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($insert) {
+					echo "<p>Mise à jour du $gepi_prof_suivi vers ".civ_nom_prenom($lig_pp->professeur)."</p>";
+				}
+			}
+		}
+
+		$sql="SELECT cpe_login, COUNT(cpe_login) FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE jecpe.e_login=jec.login AND jec.id_classe='$id_future_classe' GROUP BY cpe_login ORDER BY COUNT(cpe_login) DESC;";
+		$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_cpe)>0) {
+			$lig_cpe=mysqli_fetch_object($res_cpe);
+
+			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE e_login='$login_eleve';";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				$sql="UPDATE j_eleves_cpe SET cpe_login='$lig_cpe->cpe_login' WHERE e_login='$login_eleve';";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($update) {
+					echo "<p>Mise à jour du CPE vers ".civ_nom_prenom($lig_cpe->cpe_login)."</p>";
+				}
+			}
+			else {
+				$sql="INSERT INTO j_eleves_cpe SET e_login='$login_eleve', cpe_login='$lig_cpe->cpe_login';";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($insert) {
+					echo "<p>Mise à jour du CPE vers ".civ_nom_prenom($lig_cpe->cpe_login)."</p>";
+				}
+			}
+		}
+
 		echo "<p>N'oubliez pas de contrôler/corriger les associations CPE et ".$gepi_prof_suivi." pour cet élève: <a href='classes_const.php?id_classe=$id_future_classe#$ancre_login_eleve'>$classe_future</a></p>\n";
 
 
