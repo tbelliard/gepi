@@ -193,7 +193,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	$engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : array();
 	$engagement_resp=isset($_POST['engagement_resp']) ? $_POST['engagement_resp'] : array();
 
-	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="" && (!isset($_POST['engagement_ele'])) && (!isset($_POST['engagement_resp']))) {
+	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="" && (!isset($_POST['engagement_ele'])) && (!isset($_POST['engagement_resp'])) && (!isset($_POST['prof_suivi']))) {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(message non enregitré)";
 		$record = 'no';
 	}
@@ -330,6 +330,17 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 					$t_login_destinataires[]=$un_parent['login'];
 				}
 			}
+
+		// Les PP
+		if (isset($_POST['prof_suivi'])) {
+			$r_sql="SELECT DISTINCT professeur FROM j_eleves_professeurs;";
+			$R_pp=mysqli_query($GLOBALS["mysqli"], $r_sql);
+			while ($un_pp=mysqli_fetch_assoc($R_pp)) {
+				if(!in_array($un_pp['professeur'], $t_login_destinataires)) {
+					$t_login_destinataires[]=$un_pp['professeur'];
+				}
+			}
+		}
 
 		// Engagements élèves
 		if (count($engagement_ele)>0) {
@@ -828,6 +839,11 @@ Pour information, le <?php echo retourne_denomination_pp($classe['id']);?> de la
 <?php
 echo "</td></tr>\n";
 
+echo "<tr>\n";
+echo "<td><input type=\"checkbox\" id=\"prof_suivi\" name=\"prof_suivi\" value=\"y\"";
+if (isset($_POST['prof_suivi'])) {echo " checked";}
+echo " /><label for='prof_suivi' style='cursor: pointer;'> Déposer le message pour les \"".getSettingValue('gepi_prof_suivi')."\" actuellement associés aux classes.</label><br /><br />\n";
+echo "</td></tr>\n";
 
 if(getSettingAOui('active_mod_engagements')) {
 	$tab_engagements=get_tab_engagements();
