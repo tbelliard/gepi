@@ -527,6 +527,7 @@ elseif($mode=='publiposter') {
 	echo "</pre>";
 	*/
 
+	$compteur_pages_imprimees=0;
 	// Pour ne pas imprimer deux fiches pour un parent de 2 enfants.
 	$tab_deja=array();
 	if((isset($classe))&&(count($classe)>1)) {
@@ -877,6 +878,10 @@ elseif($mode=='publiposter') {
 			}
 			$compteur++;
 		}
+	}
+
+	if($compteur_pages_imprimees==0) {
+		echo "<p style='color:red'>Aucune fiche n'a été imprimée.<br />Revoyez les critères ou contrôlez votre fichier.</p>";
 	}
 }
 elseif($mode=='enregistrer_correspondances') {
