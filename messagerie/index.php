@@ -191,7 +191,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	$engagement_ele=isset($_POST['engagement_ele']) ? $_POST['engagement_ele'] : array();
 	$engagement_resp=isset($_POST['engagement_resp']) ? $_POST['engagement_resp'] : array();
 
-	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="" && count($_POST['engagement_ele'])==0 && count($_POST['engagement_resp'])==0) {
+	if ($statuts_destinataires=="_" && $_POST['id_classe']=="" && $_POST['login_destinataire']=="" && $_POST['matiere_destinataire']=="" && $_POST['eleves_id_classe']=="" && $_POST['parents_id_classe']=="" && (!isset($_POST['engagement_ele'])) && (!isset($_POST['engagement_resp']))) {
 		$msg_erreur = "ATTENTION : aucun destinataire saisi.<br />(message non enregitré)";
 		$record = 'no';
 	}
