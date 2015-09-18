@@ -677,12 +677,12 @@ Evitez les 'fantaisies';o).</p>
 					if(mysqli_num_rows($res_ccn)>0) {
 						// Provoquer le recalcul des moyennes de conteneurs sur l'ancienne et la nouvelle classe
 						$arret = 'no';
-						affiche_debug("Ancien: mise_a_jour_moyennes_conteneurs($group, $current_periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);<br />");
+						affiche_debug("Ancien: mise_a_jour_moyennes_conteneurs(\$group, $current_periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);<br />");
 						mise_a_jour_moyennes_conteneurs($group, $current_periode_num,$lig_ccn->id_cahier_notes,$lig_ccn->id_cahier_notes,$arret);
 						recherche_enfant2($lig_ccn->id_cahier_notes, $group, $current_periode_num, $lig_ccn->id_cahier_notes);
 						if(($id_grp_fut[$i]!='')&&(isset($group_fut))&&(isset($id_racine_fut))) {
 							$arret = 'no';
-							affiche_debug("Futur: mise_a_jour_moyennes_conteneurs($group_fut, $current_periode_num,$id_racine_fut,$id_racine_fut,$arret);<br />");
+							affiche_debug("Futur: mise_a_jour_moyennes_conteneurs(\$group_fut, $current_periode_num,$id_racine_fut,$id_racine_fut,$arret);<br />");
 							mise_a_jour_moyennes_conteneurs($group_fut, $current_periode_num,$id_racine_fut,$id_racine_fut,$arret);
 							recherche_enfant2($id_racine_fut, $group_fut, $current_periode_num, $id_racine_fut);
 						}
