@@ -768,7 +768,7 @@ if($_SESSION['statut']=="responsable") {
 		<select name='id_classe' id='id_classe' style='width:5em;' 
 			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
 						document.getElementById('type_affichage_classe').checked=true;
-					}\">
+					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 	if(count($tab_classes)==0) {
 		echo_selon_mode("
@@ -793,7 +793,7 @@ if($_SESSION['statut']=="responsable") {
 		<select name='login_eleve' id='login_eleve' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
 						document.getElementById('type_affichage_eleve').checked=true;
-					}\">
+					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 		for($loop=0;$loop<count($tab_ele);$loop+=2) {
 			$selected="";
@@ -831,7 +831,7 @@ elseif($_SESSION['statut']=="eleve") {
 	}
 	else {
 		echo_selon_mode("<label for='type_affichage_classe'>classe de </label>
-		<select name='id_classe' onchange=\"document.getElementById('type_affichage_classe').checked=true;document.getElementById('type_affichage_eleve').checked=false;\">");
+		<select name='id_classe' onchange=\"document.getElementById('type_affichage_classe').checked=true;document.getElementById('type_affichage_eleve').checked=false;document.getElementById('form_envoi').submit();\">");
 		foreach($tab_classes_ele['classe'] as $current_id_classe => $tab_clas) {
 			$current_nom_classe=$tab_clas['classe'];
 			$selected="";
@@ -882,7 +882,7 @@ else {
 			onchange=\"if(document.getElementById('login_prof').options[document.getElementById('login_prof').selectedIndex].value!='') {
 						document.getElementById('type_affichage_prof').checked=true;
 						document.getElementById('id_classe').selectedIndex=0;
-					}\">
+					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 		$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -910,7 +910,7 @@ else {
 			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
 						document.getElementById('type_affichage_classe').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
-					}\">
+					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 	//$sql="SELECT DISTINCT p.id_classe, c.classe FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY c.classe;";
 	//$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -953,7 +953,7 @@ else {
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
-					}\">
+					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
 			while($lig=mysqli_fetch_object($res)) {
 				$selected="";
@@ -970,7 +970,7 @@ else {
 
 	if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe', 'professeur')))&&(getSettingValue('active_module_absence')=='2')) {
 		echo_selon_mode("
-		 <select name='affichage_complementaire_sur_edt' id='affichage_complementaire_sur_edt' title=\"Affichage complémentaire\">
+		 <select name='affichage_complementaire_sur_edt' id='affichage_complementaire_sur_edt' title=\"Affichage complémentaire\" onchange=\"document.getElementById('form_envoi').submit();\">
 		 	<option value=''".((!isset($affichage_complementaire_sur_edt))||($affichage_complementaire_sur_edt=="") ? " selected" : "").">---</option>
 		 	<option value='absences2'".((isset($affichage_complementaire_sur_edt))&&($affichage_complementaire_sur_edt=="absences2") ? " selected" : "").">Absences</option>
 		</select>");
@@ -994,7 +994,7 @@ else {
 //=======================================
 echo_selon_mode("
 		<p>
-			Semaine choisie&nbsp;: <select name='num_semaine_annee'>
+			Semaine choisie&nbsp;: <select name='num_semaine_annee' onchange=\"document.getElementById('form_envoi').submit();\">
 				<option value=''></option>");
 
 if(strftime("%m")>=8) {
@@ -1030,7 +1030,7 @@ for($n=1;$n<28;$n++) {
 echo_selon_mode("
 			</select><br />
 
-			Afficher <select name='affichage'>
+			Afficher <select name='affichage' onchange=\"document.getElementById('form_envoi').submit();\">
 				<option value='semaine'>semaine</option>");
 if(in_array("lundi" , $tab_jour)) {
 	echo_selon_mode("
@@ -1101,6 +1101,12 @@ if((isset($login_ele_prec))&&($login_ele_prec!="")) {
 		echo "
 		<a href='".$_SERVER['PHP_SELF']."?login_eleve=".$login_ele_prec."&amp;display_date=$display_date&amp;affichage=jour".$complement_liens_edt2."' title=\"Voir la page pour $nom_prenom_ele_prec\"><img src=\"../images/arrow_left.png\" class='icone16' alt=\"$nom_prenom_ele_prec\" /></a> ";
 	}
+}
+
+//https://127.0.0.1/steph/gepi_git_trunk/edt/index2.php?login_prof=BOIREAUS&id_classe=&type_affichage=prof&login_eleve=&num_semaine_annee=38|2015&affichage=semaine&mode=afficher_edt&afficher_sem_AB=y&csrf_alea=gHJVdqiyp4K8qlok7d5lN3ZMwvu6KGW578OZ2ov
+$afficher_sem_AB=isset($_POST['afficher_sem_AB']) ? $_POST['afficher_sem_AB'] : (isset($_GET['afficher_sem_AB']) ? $_GET['afficher_sem_AB'] : "n");
+if($afficher_sem_AB=="y") {
+	$info_edt.=" <span title='Avec affichage des semaines A et B'>(A/B)</span>";
 }
 
 //echo $info_eleve;
