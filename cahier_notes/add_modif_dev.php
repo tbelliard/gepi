@@ -778,7 +778,7 @@ $explication_ramener_sur_referentiel_case_cochee="C'est le mode normal de calcul
 On fait la somme des notes et on divise par le nombre de notes.
 
 Cette explication est un chouia plus complexe si tous les coefficients de toutes les évaluations ne sont pas égaux:
-C'est la somme des note*coef divisée par la somme des coefficients.";
+C'est la somme des (note*coef) divisée par la somme des coefficients.";
 
 if($interface_simplifiee=="y"){
 	// Récupérer les paramètres à afficher.
@@ -801,7 +801,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_nom_court=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -809,7 +809,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -819,7 +819,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_nom_complet=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -827,7 +827,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -837,7 +837,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_description=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description :</td>\n";
 		echo "<td>\n";
 		echo "<textarea name='description' rows='2' cols='40' onchange=\"changement();\">".$description."</textarea>\n";
 		echo "</td>\n";
@@ -845,7 +845,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='description' value='$description' />\n";
 		echo "</td>\n";
@@ -855,7 +855,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_coef=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "</td>\n";
@@ -863,29 +863,60 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td>Coefficient:</td>\n";
+		echo "<td>Coefficient : </td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'coef' size='4' value = \"".$coef."\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
-
-
-	if($aff_note_autre_que_referentiel=='y'){
-		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-			echo "<tr>\n";
-			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
-    		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\" "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
-			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
-			echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
-			echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
+	
+	
+	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			?>
+<tr>
+	<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>
+	<td>
+		<input type='text' 
+			   name = 'note_sur' 
+			   id='note_sur' 
+			   size='4' 
+			   value = "<?php echo $note_sur; ?>"
+			   onfocus="javascript:this.select()" 
+			   onkeydown="clavier_2(this.id,event,1,100);" 
+			   onchange="changement();" 
+			   autocomplete="off" 
+			   title="Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction." />
+	</td>
+</tr>
+<tr>
+	<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>
+		Ramener la note sur <?php echo getSettingValue("referentiel_note"); ?>
+		<br />lors du calcul de la moyenne :
+	</td>
+	<td>
+		<input type='checkbox' 
+			   name='ramener_sur_referentiel' 
+			   value='V' 
+			   onchange="changement();"
+			   <?php if ($ramener_sur_referentiel == 'V') {echo " checked ='checked' ";} ?>
+			   />
+		<br />
+		<span style="font-size: x-small;">
+			Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+				Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20
+			</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+				Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
+			</span>
+		</span>
+		<br />
+		<br />
+	</td>
+</tr>
+			<?php
 	} else {
 		echo "<tr style='display:none;'>\n";
 		echo "<td>Note sur :</td>\n";
@@ -899,7 +930,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_date=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" ";
 		if($aff_date_ele_resp!='y'){
@@ -919,7 +950,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'display_date' size='10' value = \"".$display_date."\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -928,7 +959,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_date_ele_resp=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
@@ -938,7 +969,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='date_ele_resp' size='10' value = \"".$date_ele_resp."\" />\n";
 		echo "</td>\n";
@@ -948,7 +979,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_boite=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation :</td>\n";
 		echo "<td>\n";
 
 		echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
