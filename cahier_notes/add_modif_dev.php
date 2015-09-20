@@ -652,46 +652,52 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-
-echo "<form enctype=\"multipart/form-data\" name= \"form_choix_dev\" action=\"add_modif_dev.php\" method=\"post\">\n";
-echo add_token_field();
+?>
+<form enctype="multipart/form-data" 
+	  name= "form_choix_dev" 
+	  action="add_modif_dev.php" 
+	  method="post">
+<?php echo add_token_field(); ?>
+	<div class='norme'>
+		<p class=bold>
+<?php 
 if ($mode_navig == 'retour_saisie') {
-    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+?>
+			<a href='./saisie_notes.php?id_conteneur=<?php echo $id_retour; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+				<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+				Retour
+			</a>
+<?php
 } else {
-    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+?>
+			<a href='index.php?id_racine=<?php echo $id_racine; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+				<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+				Retour
+			</a>
+<?php
 }
-
-// Interface simplifiée
-//$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");
 
 $interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : getPref($_SESSION['login'],'add_modif_dev_simpl','n'));
 
-
 //echo "<a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur";
-echo " | <a href='add_modif_dev.php?id_conteneur=$id_conteneur";
-if(isset($mode_navig)){
-	echo "&amp;mode_navig=$mode_navig";
-}
-if(isset($id_devoir)){
-	echo "&amp;id_devoir=$id_devoir";
-}
-if(isset($id_retour)){
-	echo "&amp;id_retour=$id_retour";
-}
+?>
+			| 
+			<a href='add_modif_dev.php?id_conteneur=<?php echo $id_conteneur; ?>
+<?php if(isset($mode_navig)){ ?>&amp;mode_navig=<?php echo $mode_navig; ?><?php } ?>
+<?php if(isset($id_devoir)){ ?>&amp;id_devoir=<?php echo $id_devoir; ?><?php } ?>
+<?php if(isset($id_retour)){ ?>&amp;id_retour=<?php echo $id_retour; ?><?php } ?>
+				&amp;
+<?php 
 //if($interface_simplifiee!=""){
-if($interface_simplifiee=="y"){
-	echo "&amp;interface_simplifiee=n";
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface complète</a>\n";
-}
-else{
-	echo "&amp;interface_simplifiee=y";
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface simplifiée</a>\n";
-}
-
-echo "\n";
-
-echo " | <a href='../gestion/config_prefs.php#add_modif_dev' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer l'interface simplifiée</a>";
-
+if($interface_simplifiee=="y"){ ?>interface_simplifiee=n' <?php } else { ?>interface_simplifiee=y' <?php } ?>
+				onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+<?php if($interface_simplifiee=="y"){ ?>Interface complète <?php } else { ?>Interface simplifiée <?php } ?>
+			|
+			<a href='../gestion/config_prefs.php#add_modif_dev' 
+			   onclick=\"return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+			   Paramétrer l'interface simplifiée
+			</a>
+<?php
 $sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_racine' ORDER BY date, nom_court, nom_complet;";
 $res_cd=mysqli_query($GLOBALS["mysqli"], $sql);
 $chaine="";
@@ -702,7 +708,7 @@ if(mysqli_num_rows($res_cd)>0) {
 	while ($lig_cd=mysqli_fetch_object($res_cd)) {
 		$chaine.="<option value='".$lig_cd->id."'";
 		if(($id_devoir)&&($lig_cd->id==$id_devoir)) {
-			$chaine.=" selected";
+			$chaine.=" selected='selected' ";
 			$index_num_devoir=$cpt_dev;
 		}
 		$chaine.=">".$lig_cd->nom_court;
@@ -711,25 +717,31 @@ if(mysqli_num_rows($res_cd)>0) {
 		$cpt_dev++;
 	}
 	if((($id_devoir)&&($cpt_dev>1))||
-	((!$id_devoir)&&($cpt_dev>0))) {
-		echo " | Période $periode_num&nbsp;: <select id='id_devoir' name='id_devoir' onchange=\"confirm_changement_devoir(change, '$themessage');\">\n";
-		if(!$id_devoir) {echo "<option value='' selected>---</option>";}
-		echo $chaine;
-		echo "</select>\n";
-		echo "<input type='hidden' name='id_conteneur' value=\"$id_conteneur\" />\n";
-		echo "<input type='submit' id='validation_form_choix_dev' value=\"Changer d'évaluation\" />\n";
-		if($interface_simplifiee=="y"){
-			echo "<input type='hidden' name='interface_simplifiee' value=\"y\" />\n";
-		}
-		else {
-			echo "<input type='hidden' name='interface_simplifiee' value=\"n\" />\n";
-		}
+	((!$id_devoir)&&($cpt_dev>0))) { 
+?>
+			| 
+			Période <?php echo $periode_num; ?>&nbsp;: 
+			<select id='id_devoir' 
+					name='id_devoir' 
+					onchange="confirm_changement_devoir(change, '$themessage');">
+<?php if(!$id_devoir) { ?>
+				<option value='' selected='selected' >---</option>
+<?php } ?>
+				<?php echo $chaine; ?>
+			</select>
+			<input type='hidden' name='id_conteneur' value="<?php echo $id_conteneur; ?>" />
+			<input type='submit' id='validation_form_choix_dev' value="Changer d'évaluation" />
+<?php if($interface_simplifiee=="y"){ ?>
+			<input type='hidden' name='interface_simplifiee' value=\"y\" />
+<?php } else { ?>
+			<input type='hidden' name='interface_simplifiee' value='n' />
+<?php }
 		$temoin_champ_changement_dev="y";
 	}
-}
-echo "</p>\n";
-if($temoin_champ_changement_dev=="y") {
-	echo "<script type='text/javascript'>
+} ?>
+		</p>
+<?php if($temoin_champ_changement_dev=="y") { ?>
+<script type='text/javascript'>
 	document.getElementById('validation_form_choix_dev').style.display='none';
 
 	// Initialisation
@@ -751,11 +763,12 @@ if($temoin_champ_changement_dev=="y") {
 			}
 		}
 	}
-</script>\n";
-}
-echo "</div>\n";
-echo "</form>\n";
+</script>
+<?php } ?>
+	</div>
+</form>
 
+<?php
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
 echo add_token_field();
 
@@ -911,9 +924,35 @@ if($interface_simplifiee=="y"){
 			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
 				Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
 			</span>
+			<br />
+			Exemple avec 3 notes coefficientées : 
+			<span style='color:blueviolet'>18/20 coef 3</span> ; 
+			<span style='color:orange'>4/10 coef 1</span> ;
+			<span style='color:green'>1/5 coef 2</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+				Case cochée : moyenne
+				= <span style='color:blueviolet'>(18/20)*3</span>
+				+ <span style='color:orange'>4/10</span>
+				+ <span style='color:green'>(1/5)*2</span> 
+				= <span style='color:blueviolet'>(18/20)*3</span>
+				+ <span style='color:orange'>48/20</span>
+				+ <span style='color:green'>(4/20)*2</span>
+				= 70/120 ≈ 11,67
+			</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+				Case non cochée : moyenne = (
+				<span style='color:blueviolet'>18*3</span>
+				+ <span style='color:orange'>4</span>
+				+ <span style='color:green'>1*2</span>
+				) / (
+				<span style='color:blueviolet'>20*3</span>
+				+ <span style='color:orange'>10</span>
+				+ <span style='color:green'>5*2</span>
+				) = 60/80 = 15
+			</span>
 		</span>
-		<br />
-		<br />
 	</td>
 </tr>
 			<?php
@@ -1088,18 +1127,85 @@ else{
 	// Note autre que sur 20
 	// =====
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-	    echo "<h3 class='gepi'>Notation</h3>\n";
-	    echo "<div style='margin-left:2em;'>\n";
-	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
-	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
-		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
-		echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
-		echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
-		echo "</td>";
-		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
-		echo "</td></tr></table>\n";
-		echo "</div>\n";
+		?>
+<h3 class='gepi'>Notation</h3>
+<div style='margin-left:2em;'>
+	<table summary='Referentiel'>
+		<tr>
+			<td>Note sur : </td>
+			<td>
+				<input type='text' 
+					   name = 'note_sur' 
+					   id='note_sur' 
+					   size='4' 
+					   value = "<?php echo $note_sur; ?>" 
+					   onfocus="javascript:this.select()" 
+					   onkeydown="clavier_2(this.id,event,1,100);" 
+					   onchange="changement();" 
+					   autocomplete="off" 
+					   title="Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction." />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ramener la note sur <?php echo getSettingValue("referentiel_note"); ?> lors du calcul de la moyenne : 
+				<br />
+				<span style="font-size: x-small;">
+					Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5
+					<br />
+					<span title=\"$explication_ramener_sur_referentiel_case_cochee\">
+						Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20
+					</span>
+					<br />
+					<span title="$explication_ramener_sur_referentiel_case_non_cochee">
+						Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
+					</span>
+					<br />
+				
+					Exemple avec 3 notes coefficientées : 
+					<span style='color:blueviolet'>18/20 coef 3</span> ; 
+					<span style='color:orange'>4/10 coef 1</span> ;
+					<span style='color:green'>1/5 coef 2</span>
+					<br />
+					<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+						Case cochée : moyenne
+						= <span style='color:blueviolet'>(18/20)*3</span>
+						+ <span style='color:orange'>4/10</span>
+						+ <span style='color:green'>(1/5)*2</span> 
+						= <span style='color:blueviolet'>(18/20)*3</span>
+						+ <span style='color:orange'>48/20</span>
+						+ <span style='color:green'>(4/20)*2</span>
+						= 70/120 ≈ 11,67
+					</span>
+					<br />
+					<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+						Case non cochée : moyenne = (
+						<span style='color:blueviolet'>18*3</span>
+						+ <span style='color:orange'>4</span>
+						+ <span style='color:green'>1*2</span>
+						) / (
+						<span style='color:blueviolet'>20*3</span>
+						+ <span style='color:orange'>10</span>
+						+ <span style='color:green'>5*2</span>
+						) = 60/80 = 15
+					</span>
+					</span>
+				</span>
+				<br />
+			</td>
+			<td>
+				<input type='checkbox' 
+					   name='ramener_sur_referentiel' 
+					   value='V' 
+					   onchange="changement();" 
+						   <?php if ($ramener_sur_referentiel == 'V') {echo " checked = 'checked' ";} ?>
+					   />
+				<br />
+			</td>
+		</tr>
+	</table>
+</div>
+		<?php
 	} else {
 		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
 		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
