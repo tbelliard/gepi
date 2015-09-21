@@ -768,16 +768,23 @@ if(mysqli_num_rows($res_cd)>0) {
 	</div>
 </form>
 
-<?php
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
-echo add_token_field();
+<form enctype="multipart/form-data" name= "formulaire" action="add_modif_dev.php" method="post">
 
-echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlspecialchars("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
-echo "</div>";
+<?php echo add_token_field(); ?>
+
+	<p class='bold'> 
+		Classe : <?php echo $nom_classe; ?>
+		|
+		Matière : <?php echo htmlspecialchars("$matiere_nom ($matiere_nom_court)"); ?>
+		| 
+		Période : <?php echo $nom_periode[$periode_num]; ?>
+		<input type="submit" name='ok' value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+</div>
 
 
-echo "<h2 class='gepi'>Configuration de l'évaluation :</h2>\n";
-
+<h2 class='gepi'>Configuration de l'évaluation :</h2>
+<?php 
 require('cc_lib.php');
 $explication_ramener_sur_referentiel_case_non_cochee="Ce mode de calcul n'est pas un calcul de moyenne.
 Cela peut néanmoins être utile pour des notes qui correspondraient à plusieurs petits contrôles destinés à ne former qu'une seule note.
@@ -808,28 +815,56 @@ if($interface_simplifiee=="y"){
 	$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
 	$aff_display_parents=getPref($_SESSION['login'],'add_modif_dev_display_parents','n');
 	$aff_display_parents_app=getPref($_SESSION['login'],'add_modif_dev_display_parents_app','n');
+ ?>
+<div align='center'>
+	<table class='boireaus boireaus_alt' border='1'>
+		<caption class="invisible">Paramètres du devoir</caption>
 
-	echo "<div align='center'>\n";
-	echo "<table class='boireaus boireaus_alt' border='1' summary='Parametres du devoir'>\n";
+<?php
+/*if($aff_nom_court=='y'){ ?>
+		<tr>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='text' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php echo $nom_court; ?>"
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
+<?php } else { ?>
+		<tr style='display:none;'>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='hidden' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php $nom_court; ?>" 
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
+<?php } 
+*/?>
 
-	if($aff_nom_court=='y'){
-		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>\n";
-		echo "<td>\n";
-		echo "<input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
-	else{
-		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>\n";
-		echo "<td>\n";
-		echo "<input type='hidden' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
+
+		<tr<?php if($aff_nom_court!='y'){ ?> style='display:none;' <?php } ?>>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='<?php if($aff_nom_court=='y'){ ?>text<?php } else { ?>hidden<?php } ?>' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php echo $nom_court; ?>"
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
 
 
+
+
+<?php 
 	if($aff_nom_complet=='y'){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet :</td>\n";
