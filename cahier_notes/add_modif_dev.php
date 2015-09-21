@@ -959,7 +959,7 @@ if($interface_simplifiee=="y"){
 			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
 				Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
 			</span>
-			<br />
+			<span style="display: block;font-size: .7em;"><br /></span>
 			Exemple avec 3 notes coefficientées : 
 			<span style='color:blueviolet'>18/20 coef 3</span> ; 
 			<span style='color:orange'>4/10 coef 1</span> ;
@@ -968,24 +968,24 @@ if($interface_simplifiee=="y"){
 			<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
 				Case cochée : moyenne
 				= <span style='color:blueviolet'>(18/20)*3</span>
-				+ <span style='color:orange'>4/10</span>
+				+ <span style='color:red'>4/10</span>
 				+ <span style='color:green'>(1/5)*2</span> 
 				= <span style='color:blueviolet'>(18/20)*3</span>
-				+ <span style='color:orange'>48/20</span>
+				+ <span style='color:red'>8/20</span>
 				+ <span style='color:green'>(4/20)*2</span>
-				= 70/120 ≈ 11,67
+				= 70/120 ≈ 11,67/20
 			</span>
 			<br />
 			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
 				Case non cochée : moyenne = (
 				<span style='color:blueviolet'>18*3</span>
-				+ <span style='color:orange'>4</span>
+				+ <span style='color:red'>4</span>
 				+ <span style='color:green'>1*2</span>
 				) / (
 				<span style='color:blueviolet'>20*3</span>
-				+ <span style='color:orange'>10</span>
+				+ <span style='color:red'>10</span>
 				+ <span style='color:green'>5*2</span>
-				) = 60/80 = 15
+				) = 60/80 = 15/20
 			</span>
 		</span>
 	</td>
@@ -1195,34 +1195,33 @@ else{
 					<span title="$explication_ramener_sur_referentiel_case_non_cochee">
 						Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
 					</span>
-					<br />
-				
+					<span style="display: block;font-size: .7em;"><br /></span>				
 					Exemple avec 3 notes coefficientées : 
 					<span style='color:blueviolet'>18/20 coef 3</span> ; 
-					<span style='color:orange'>4/10 coef 1</span> ;
+					<span style='color:red'>4/10 coef 1</span> ;
 					<span style='color:green'>1/5 coef 2</span>
 					<br />
 					<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
 						Case cochée : moyenne
 						= <span style='color:blueviolet'>(18/20)*3</span>
-						+ <span style='color:orange'>4/10</span>
+						+ <span style='color:red'>4/10</span>
 						+ <span style='color:green'>(1/5)*2</span> 
 						= <span style='color:blueviolet'>(18/20)*3</span>
-						+ <span style='color:orange'>48/20</span>
+						+ <span style='color:red'>8/20</span>
 						+ <span style='color:green'>(4/20)*2</span>
-						= 70/120 ≈ 11,67
+						= 70/120 ≈ 11,67/20
 					</span>
 					<br />
 					<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
 						Case non cochée : moyenne = (
 						<span style='color:blueviolet'>18*3</span>
-						+ <span style='color:orange'>4</span>
+						+ <span style='color:red'>4</span>
 						+ <span style='color:green'>1*2</span>
 						) / (
 						<span style='color:blueviolet'>20*3</span>
-						+ <span style='color:orange'>10</span>
+						+ <span style='color:red'>10</span>
 						+ <span style='color:green'>5*2</span>
-						) = 60/80 = 15
+						) = 60/80 = 15/20
 					</span>
 					</span>
 				</span>
