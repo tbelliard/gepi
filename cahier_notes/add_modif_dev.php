@@ -766,7 +766,7 @@ echo "</div>";
 echo "<h2 class='gepi'>Configuration de l'évaluation :</h2>\n";
 
 require('cc_lib.php');
-$explication_ramener_sur_referentiel_case_cochee="Ce mode de calcul n'est pas un calcul de moyenne.
+$explication_ramener_sur_referentiel_case_non_cochee="Ce mode de calcul n'est pas un calcul de moyenne.
 Cela peut néanmoins être utile pour des notes qui correspondraient à plusieurs petits contrôles destinés à ne former qu'une seule note.
 Il conviendra de placer tous ces contrôles dans un(e) ".getSettingValue('gepi_denom_boite')." particulier distinct des autres évaluations.
 
@@ -774,7 +774,7 @@ A noter: Il est également possible de saisir des $nom_cc
               plutôt que d'utiliser la présente solution.
               Voir le lien $nom_cc sur la ligne de liens
               sous l'entête dans votre carnet de notes.";
-$explication_ramener_sur_referentiel_case_non_cochee="C'est le mode normal de calcul d'une moyenne:
+$explication_ramener_sur_referentiel_case_cochee="C'est le mode normal de calcul d'une moyenne:
 On fait la somme des notes et on divise par le nombre de notes.
 
 Cette explication est un chouia plus complexe si tous les coefficients de toutes les évaluations ne sont pas égaux:
