@@ -652,46 +652,52 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-
-echo "<form enctype=\"multipart/form-data\" name= \"form_choix_dev\" action=\"add_modif_dev.php\" method=\"post\">\n";
-echo add_token_field();
+?>
+<form enctype="multipart/form-data" 
+	  name= "form_choix_dev" 
+	  action="add_modif_dev.php" 
+	  method="post">
+<?php echo add_token_field(); ?>
+	<div class='norme'>
+		<p class=bold>
+<?php 
 if ($mode_navig == 'retour_saisie') {
-    echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+?>
+			<a href='./saisie_notes.php?id_conteneur=<?php echo $id_retour; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+				<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+				Retour
+			</a>
+<?php
 } else {
-    echo "<div class='norme'><p class=bold><a href='index.php?id_racine=$id_racine' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+?>
+			<a href='index.php?id_racine=<?php echo $id_racine; ?>' onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+				<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+				Retour
+			</a>
+<?php
 }
-
-// Interface simplifiée
-//$interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : "");
 
 $interface_simplifiee=isset($_POST['interface_simplifiee']) ? $_POST['interface_simplifiee'] : (isset($_GET['interface_simplifiee']) ? $_GET['interface_simplifiee'] : getPref($_SESSION['login'],'add_modif_dev_simpl','n'));
 
-
 //echo "<a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur";
-echo " | <a href='add_modif_dev.php?id_conteneur=$id_conteneur";
-if(isset($mode_navig)){
-	echo "&amp;mode_navig=$mode_navig";
-}
-if(isset($id_devoir)){
-	echo "&amp;id_devoir=$id_devoir";
-}
-if(isset($id_retour)){
-	echo "&amp;id_retour=$id_retour";
-}
+?>
+			| 
+			<a href='add_modif_dev.php?id_conteneur=<?php echo $id_conteneur; ?>
+<?php if(isset($mode_navig)){ ?>&amp;mode_navig=<?php echo $mode_navig; ?><?php } ?>
+<?php if(isset($id_devoir)){ ?>&amp;id_devoir=<?php echo $id_devoir; ?><?php } ?>
+<?php if(isset($id_retour)){ ?>&amp;id_retour=<?php echo $id_retour; ?><?php } ?>
+				&amp;
+<?php 
 //if($interface_simplifiee!=""){
-if($interface_simplifiee=="y"){
-	echo "&amp;interface_simplifiee=n";
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface complète</a>\n";
-}
-else{
-	echo "&amp;interface_simplifiee=y";
-	echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Interface simplifiée</a>\n";
-}
-
-echo "\n";
-
-echo " | <a href='../gestion/config_prefs.php#add_modif_dev' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer l'interface simplifiée</a>";
-
+if($interface_simplifiee=="y"){ ?>interface_simplifiee=n' <?php } else { ?>interface_simplifiee=y' <?php } ?>
+				onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+<?php if($interface_simplifiee=="y"){ ?>Interface complète <?php } else { ?>Interface simplifiée <?php } ?>
+			|
+			<a href='../gestion/config_prefs.php#add_modif_dev' 
+			   onclick=\"return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+			   Paramétrer l'interface simplifiée
+			</a>
+<?php
 $sql="SELECT * FROM cn_devoirs WHERE id_racine='$id_racine' ORDER BY date, nom_court, nom_complet;";
 $res_cd=mysqli_query($GLOBALS["mysqli"], $sql);
 $chaine="";
@@ -702,7 +708,7 @@ if(mysqli_num_rows($res_cd)>0) {
 	while ($lig_cd=mysqli_fetch_object($res_cd)) {
 		$chaine.="<option value='".$lig_cd->id."'";
 		if(($id_devoir)&&($lig_cd->id==$id_devoir)) {
-			$chaine.=" selected";
+			$chaine.=" selected='selected' ";
 			$index_num_devoir=$cpt_dev;
 		}
 		$chaine.=">".$lig_cd->nom_court;
@@ -711,25 +717,31 @@ if(mysqli_num_rows($res_cd)>0) {
 		$cpt_dev++;
 	}
 	if((($id_devoir)&&($cpt_dev>1))||
-	((!$id_devoir)&&($cpt_dev>0))) {
-		echo " | Période $periode_num&nbsp;: <select id='id_devoir' name='id_devoir' onchange=\"confirm_changement_devoir(change, '$themessage');\">\n";
-		if(!$id_devoir) {echo "<option value='' selected>---</option>";}
-		echo $chaine;
-		echo "</select>\n";
-		echo "<input type='hidden' name='id_conteneur' value=\"$id_conteneur\" />\n";
-		echo "<input type='submit' id='validation_form_choix_dev' value=\"Changer d'évaluation\" />\n";
-		if($interface_simplifiee=="y"){
-			echo "<input type='hidden' name='interface_simplifiee' value=\"y\" />\n";
-		}
-		else {
-			echo "<input type='hidden' name='interface_simplifiee' value=\"n\" />\n";
-		}
+	((!$id_devoir)&&($cpt_dev>0))) { 
+?>
+			| 
+			Période <?php echo $periode_num; ?>&nbsp;: 
+			<select id='id_devoir' 
+					name='id_devoir' 
+					onchange="confirm_changement_devoir(change, '$themessage');">
+<?php if(!$id_devoir) { ?>
+				<option value='' selected='selected' >---</option>
+<?php } ?>
+				<?php echo $chaine; ?>
+			</select>
+			<input type='hidden' name='id_conteneur' value="<?php echo $id_conteneur; ?>" />
+			<input type='submit' id='validation_form_choix_dev' value="Changer d'évaluation" />
+<?php if($interface_simplifiee=="y"){ ?>
+			<input type='hidden' name='interface_simplifiee' value=\"y\" />
+<?php } else { ?>
+			<input type='hidden' name='interface_simplifiee' value='n' />
+<?php }
 		$temoin_champ_changement_dev="y";
 	}
-}
-echo "</p>\n";
-if($temoin_champ_changement_dev=="y") {
-	echo "<script type='text/javascript'>
+} ?>
+		</p>
+<?php if($temoin_champ_changement_dev=="y") { ?>
+<script type='text/javascript'>
 	document.getElementById('validation_form_choix_dev').style.display='none';
 
 	// Initialisation
@@ -751,20 +763,28 @@ if($temoin_champ_changement_dev=="y") {
 			}
 		}
 	}
-</script>\n";
-}
-echo "</div>\n";
-echo "</form>\n";
+</script>
+<?php } ?>
+	</div>
+</form>
 
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_dev.php\" method=\"post\">\n";
-echo add_token_field();
+<form enctype="multipart/form-data" name= "formulaire" action="add_modif_dev.php" method="post">
 
-echo "<p class='bold'> Classe : $nom_classe | Matière : ".htmlspecialchars("$matiere_nom ($matiere_nom_court)")."| Période : $nom_periode[$periode_num] <input type=\"submit\" name='ok' value=\"Enregistrer\" style=\"font-variant: small-caps;\" /></p>\n";
-echo "</div>";
+<?php echo add_token_field(); ?>
+
+	<p class='bold'> 
+		Classe : <?php echo $nom_classe; ?>
+		|
+		Matière : <?php echo htmlspecialchars("$matiere_nom ($matiere_nom_court)"); ?>
+		| 
+		Période : <?php echo $nom_periode[$periode_num]; ?>
+		<input type="submit" name='ok' value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+</div>
 
 
-echo "<h2 class='gepi'>Configuration de l'évaluation :</h2>\n";
-
+<h2 class='gepi'>Configuration de l'évaluation :</h2>
+<?php 
 require('cc_lib.php');
 $explication_ramener_sur_referentiel_case_non_cochee="Ce mode de calcul n'est pas un calcul de moyenne.
 Cela peut néanmoins être utile pour des notes qui correspondraient à plusieurs petits contrôles destinés à ne former qu'une seule note.
@@ -778,7 +798,7 @@ $explication_ramener_sur_referentiel_case_cochee="C'est le mode normal de calcul
 On fait la somme des notes et on divise par le nombre de notes.
 
 Cette explication est un chouia plus complexe si tous les coefficients de toutes les évaluations ne sont pas égaux:
-C'est la somme des note*coef divisée par la somme des coefficients.";
+C'est la somme des (note*coef) divisée par la somme des coefficients.";
 
 if($interface_simplifiee=="y"){
 	// Récupérer les paramètres à afficher.
@@ -795,31 +815,59 @@ if($interface_simplifiee=="y"){
 	$aff_boite=getPref($_SESSION['login'],'add_modif_dev_boite','y');
 	$aff_display_parents=getPref($_SESSION['login'],'add_modif_dev_display_parents','n');
 	$aff_display_parents_app=getPref($_SESSION['login'],'add_modif_dev_display_parents_app','n');
+ ?>
+<div align='center'>
+	<table class='boireaus boireaus_alt' border='1'>
+		<caption class="invisible">Paramètres du devoir</caption>
 
-	echo "<div align='center'>\n";
-	echo "<table class='boireaus boireaus_alt' border='1' summary='Parametres du devoir'>\n";
+<?php
+/*if($aff_nom_court=='y'){ ?>
+		<tr>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='text' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php echo $nom_court; ?>"
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
+<?php } else { ?>
+		<tr style='display:none;'>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='hidden' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php $nom_court; ?>" 
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
+<?php } 
+*/?>
 
-	if($aff_nom_court=='y'){
-		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
-		echo "<td>\n";
-		echo "<input type='text' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
-	else{
-		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom court:</td>\n";
-		echo "<td>\n";
-		echo "<input type='hidden' name = 'nom_court' size='40' value = \"".$nom_court."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-	}
+
+		<tr<?php if($aff_nom_court!='y'){ ?> style='display:none;' <?php } ?>>
+			<td style='background-color: #aae6aa; font-weight: bold;'>Nom court :</td>
+			<td>
+				<input type='<?php if($aff_nom_court=='y'){ ?>text<?php } else { ?>hidden<?php } ?>' 
+					   name = 'nom_court' 
+					   size='40' 
+					   value = "<?php echo $nom_court; ?>"
+					   onfocus="javascript:this.select()" 
+					   onchange="changement();" />
+			</td>
+		</tr>
 
 
+
+
+<?php 
 	if($aff_nom_complet=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -827,7 +875,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Nom complet :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'nom_complet' size='40' value = \"".$nom_complet."\" onfocus=\"javascript:this.select()\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -837,7 +885,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_description=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description :</td>\n";
 		echo "<td>\n";
 		echo "<textarea name='description' rows='2' cols='40' onchange=\"changement();\">".$description."</textarea>\n";
 		echo "</td>\n";
@@ -845,7 +893,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Description :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='description' value='$description' />\n";
 		echo "</td>\n";
@@ -855,7 +903,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_coef=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Coefficient :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'coef' id='coef' size='4' value = \"".$coef."\" onkeydown=\"clavier_2(this.id,event,0,10);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier le coefficient à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		echo "</td>\n";
@@ -863,29 +911,86 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td>Coefficient:</td>\n";
+		echo "<td>Coefficient : </td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'coef' size='4' value = \"".$coef."\" />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	}
-
-
-	if($aff_note_autre_que_referentiel=='y'){
-		if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-			echo "<tr>\n";
-			echo "<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>\n";
-	   		echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
-    		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\" "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
-			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
-			echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
-			echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
+	
+	
+	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
+			?>
+<tr>
+	<td style='background-color: #aae6aa; font-weight: bold;'>Note sur : </td>
+	<td>
+		<input type='text' 
+			   name = 'note_sur' 
+			   id='note_sur' 
+			   size='4' 
+			   value = "<?php echo $note_sur; ?>"
+			   onfocus="javascript:this.select()" 
+			   onkeydown="clavier_2(this.id,event,1,100);" 
+			   onchange="changement();" 
+			   autocomplete="off" 
+			   title="Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction." />
+	</td>
+</tr>
+<tr>
+	<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>
+		Ramener la note sur <?php echo getSettingValue("referentiel_note"); ?>
+		<br />lors du calcul de la moyenne :
+	</td>
+	<td>
+		<input type='checkbox' 
+			   name='ramener_sur_referentiel' 
+			   value='V' 
+			   onchange="changement();"
+			   <?php if ($ramener_sur_referentiel == 'V') {echo " checked ='checked' ";} ?>
+			   />
+		<br />
+		<span style="font-size: x-small;">
+			Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+				Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20
+			</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+				Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
+			</span>
+			<span style="display: block;font-size: .7em;"><br /></span>
+			Exemple avec 3 notes coefficientées : 
+			<span style='color:blueviolet'>18/20 coef 3</span> ; 
+			<span style='color:orange'>4/10 coef 1</span> ;
+			<span style='color:green'>1/5 coef 2</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+				Case cochée : moyenne
+				= <span style='color:blueviolet'>(18/20)*3</span>
+				+ <span style='color:red'>4/10</span>
+				+ <span style='color:green'>(1/5)*2</span> 
+				= <span style='color:blueviolet'>(18/20)*3</span>
+				+ <span style='color:red'>8/20</span>
+				+ <span style='color:green'>(4/20)*2</span>
+				= 70/120 ≈ 11,67/20
+			</span>
+			<br />
+			<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+				Case non cochée : moyenne = (
+				<span style='color:blueviolet'>18*3</span>
+				+ <span style='color:red'>4</span>
+				+ <span style='color:green'>1*2</span>
+				) / (
+				<span style='color:blueviolet'>20*3</span>
+				+ <span style='color:red'>10</span>
+				+ <span style='color:green'>5*2</span>
+				) = 60/80 = 15/20
+			</span>
+		</span>
+	</td>
+</tr>
+			<?php
 	} else {
 		echo "<tr style='display:none;'>\n";
 		echo "<td>Note sur :</td>\n";
@@ -899,7 +1004,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_date=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" ";
 		if($aff_date_ele_resp!='y'){
@@ -919,7 +1024,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name = 'display_date' size='10' value = \"".$display_date."\" onchange=\"changement();\" />\n";
 		echo "</td>\n";
@@ -928,7 +1033,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_date_ele_resp=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables :</td>\n";
 		echo "<td>\n";
 		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" onchange=\"changement();\" AutoComplete=\"off\" title=\"Vous pouvez modifier la date à l'aide des flèches Up et Down du pavé de direction.\" />\n";
 		//echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
@@ -938,7 +1043,7 @@ if($interface_simplifiee=="y"){
 	}
 	else{
 		echo "<tr style='display:none;'>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables :</td>\n";
 		echo "<td>\n";
 		echo "<input type='hidden' name='date_ele_resp' size='10' value = \"".$date_ele_resp."\" />\n";
 		echo "</td>\n";
@@ -948,7 +1053,7 @@ if($interface_simplifiee=="y"){
 
 	if($aff_boite=='y'){
 		echo "<tr>\n";
-		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation:</td>\n";
+		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Emplacement de l'évaluation :</td>\n";
 		echo "<td>\n";
 
 		echo "<select size='1' name='id_emplacement' onchange=\"changement();\">\n";
@@ -1057,18 +1162,84 @@ else{
 	// Note autre que sur 20
 	// =====
 	if(getSettingValue("note_autre_que_sur_referentiel")=="V") {
-	    echo "<h3 class='gepi'>Notation</h3>\n";
-	    echo "<div style='margin-left:2em;'>\n";
-	    echo "<table summary='Referentiel'><tr><td>Note sur : </td>";
-	    echo "<td><input type='text' name = 'note_sur' id='note_sur' size='4' value = \"".$note_sur."\" onfocus=\"javascript:this.select()\" onkeydown=\"clavier_2(this.id,event,1,100);\" onchange=\"changement();\" autocomplete=\"off\" title=\"Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction.\" /></td></tr>\n";
-	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
-		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
-		echo "<span title=\"$explication_ramener_sur_referentiel_case_cochee\">Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20</span><br />\n";
-		echo "<span title=\"$explication_ramener_sur_referentiel_case_non_cochee\">Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span></span><br /><br />\n";
-		echo "</td>";
-		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V' onchange=\"changement();\""; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
-		echo "</td></tr></table>\n";
-		echo "</div>\n";
+		?>
+<h3 class='gepi'>Notation</h3>
+<div style='margin-left:2em;'>
+	<table summary='Referentiel'>
+		<tr>
+			<td>Note sur : </td>
+			<td>
+				<input type='text' 
+					   name = 'note_sur' 
+					   id='note_sur' 
+					   size='4' 
+					   value = "<?php echo $note_sur; ?>" 
+					   onfocus="javascript:this.select()" 
+					   onkeydown="clavier_2(this.id,event,1,100);" 
+					   onchange="changement();" 
+					   autocomplete="off" 
+					   title="Vous pouvez modifier la valeur à l'aide des flèches Up et Down du pavé de direction." />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Ramener la note sur <?php echo getSettingValue("referentiel_note"); ?> lors du calcul de la moyenne : 
+				<br />
+				<span style="font-size: x-small;">
+					Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5
+					<br />
+					<span title=\"$explication_ramener_sur_referentiel_case_cochee\">
+						Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20
+					</span>
+					<br />
+					<span title="$explication_ramener_sur_referentiel_case_non_cochee">
+						Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20
+					</span>
+					<span style="display: block;font-size: .7em;"><br /></span>				
+					Exemple avec 3 notes coefficientées : 
+					<span style='color:blueviolet'>18/20 coef 3</span> ; 
+					<span style='color:red'>4/10 coef 1</span> ;
+					<span style='color:green'>1/5 coef 2</span>
+					<br />
+					<span title="<?php echo $explication_ramener_sur_referentiel_case_cochee ?> " style="cursor: pointer">
+						Case cochée : moyenne
+						= <span style='color:blueviolet'>(18/20)*3</span>
+						+ <span style='color:red'>4/10</span>
+						+ <span style='color:green'>(1/5)*2</span> 
+						= <span style='color:blueviolet'>(18/20)*3</span>
+						+ <span style='color:red'>8/20</span>
+						+ <span style='color:green'>(4/20)*2</span>
+						= 70/120 ≈ 11,67/20
+					</span>
+					<br />
+					<span title="<?php echo $explication_ramener_sur_referentiel_case_non_cochee ?>" style="cursor: pointer">
+						Case non cochée : moyenne = (
+						<span style='color:blueviolet'>18*3</span>
+						+ <span style='color:red'>4</span>
+						+ <span style='color:green'>1*2</span>
+						) / (
+						<span style='color:blueviolet'>20*3</span>
+						+ <span style='color:red'>10</span>
+						+ <span style='color:green'>5*2</span>
+						) = 60/80 = 15/20
+					</span>
+					</span>
+				</span>
+				<br />
+			</td>
+			<td>
+				<input type='checkbox' 
+					   name='ramener_sur_referentiel' 
+					   value='V' 
+					   onchange="changement();" 
+						   <?php if ($ramener_sur_referentiel == 'V') {echo " checked = 'checked' ";} ?>
+					   />
+				<br />
+			</td>
+		</tr>
+	</table>
+</div>
+		<?php
 	} else {
 		echo "<input type='hidden' name = 'note_sur' value = '".$note_sur."' />\n";
 		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = '$ramener_sur_referentiel' />\n";
