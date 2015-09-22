@@ -631,4 +631,21 @@ if(mysqli_num_rows($query)==0) {
 	$result .= msj_present("Ajout déjà fait");
 }
 
+$result .= "&nbsp;-> Passage en INT(11) du champ id_cours de la table 'edt_cours'<br />";
+$query = mysqli_query($mysqli, "ALTER TABLE edt_cours CHANGE id_cours id_cours INT( 11 ) NOT NULL;");
+if ($query) {
+	$result .= msj_ok("Ok !");
+	// L'auto_increment saute avec le changement ci-dessus.
+	$result .= "&nbsp;-> Vérification de l'auto_increment sur le champ id_cours de la table 'edt_cours'<br />";
+	$query = mysqli_query($mysqli, "ALTER TABLE edt_cours CHANGE id_cours id_cours INT( 11 ) NOT NULL AUTO_INCREMENT;");
+	if ($query) {
+		$result .= msj_ok("Ok !");
+	} else {
+		$result .= msj_erreur();
+	}
+
+} else {
+	$result .= msj_erreur();
+}
+
 ?>

@@ -1539,7 +1539,10 @@ Vous pouvez choisir&nbsp;:</p>
 elseif($action=="valider_remplir_edt_cours") {
 	check_token(false);
 
-	$sql="TRUNCATE TABLE edt_cours;";
+	//$sql="TRUNCATE TABLE edt_cours;";
+	$sql="DELETE FROM edt_cours;";
+	// Le TRUNCATE fait repartir l'auto_increment à 1... et on risque de ré-attribuer un id_cours si on fait plusieurs remplissages dans l'année.
+	// Et on aura alors des choses bizarres par exemple dans mod_abs2 avec a_saisies.id_edt_emplacement_cours=edt_cours.id_cours
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$utiliser_choix_prec=isset($_GET['utiliser_choix_prec']) ? "y" : "n";
