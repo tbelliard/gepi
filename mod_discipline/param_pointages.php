@@ -479,7 +479,7 @@ $titre_page = "Discipline: Définition des pointages";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 ".((getSettingAOui('active_mod_disc_pointage')) ? " | <a href='saisie_pointages.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Pointer de ".$mod_disc_terme_menus_incidents."</a>" : "")."
