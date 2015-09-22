@@ -171,14 +171,20 @@ if ($recommencer != 'non' AND is_numeric($recommencer)) {
 
 	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
 	if ($truncate_cours == "oui") {
-		$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+		//$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+		// Le TRUNCATE fait repartir l'auto_increment à 1... et on risque de ré-attribuer un id_cours si on fait plusieurs remplissages dans l'année.
+		// Et on aura alors des choses bizarres par exemple dans mod_abs2 avec a_saisies.id_edt_emplacement_cours=edt_cours.id_cours
+		$vider_table = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours");
     }
 
 }elseif($recommencer == 'non' AND is_numeric($recommencer)){
 
 	// On vérifie que la demande d'effacement des cours précédents soit bien cochée
 	if ($truncate_cours == "oui") {
-		$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+		//$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+		// Le TRUNCATE fait repartir l'auto_increment à 1... et on risque de ré-attribuer un id_cours si on fait plusieurs remplissages dans l'année.
+		// Et on aura alors des choses bizarres par exemple dans mod_abs2 avec a_saisies.id_edt_emplacement_cours=edt_cours.id_cours
+		$vider_table = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours");
     }
 
 }
@@ -265,7 +271,10 @@ if ($action == "upload_file") {
         } else {
             // A partir de là, on vide la table edt_cours
             if ($truncate_cours == "oui") {
-                $vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+                //$vider_table = mysqli_query($GLOBALS["mysqli"], "TRUNCATE TABLE edt_cours");
+			// Le TRUNCATE fait repartir l'auto_increment à 1... et on risque de ré-attribuer un id_cours si on fait plusieurs remplissages dans l'année.
+			// Et on aura alors des choses bizarres par exemple dans mod_abs2 avec a_saisies.id_edt_emplacement_cours=edt_cours.id_cours
+			$vider_table = mysqli_query($GLOBALS["mysqli"], "DELETE FROM edt_cours");
             }
             // On ouvre alors toutes les lignes de tous les champs
             $tableau = array();
