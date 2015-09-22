@@ -9513,6 +9513,12 @@ function acces_cdt_eleve($login_user, $login_eleve) {
 				$retour=true;
 			}
 		}
+		elseif($statut=="autre") {
+			if(acces("/cahier_texte/see_all.php", $statut)) {
+				// Dans le cas statut autre, le test est fait sur $_SESSION['login'] dans acces()
+				$retour=true;
+			}
+		}
 		elseif($statut=="administrateur") {
 			$retour=true;
 		}

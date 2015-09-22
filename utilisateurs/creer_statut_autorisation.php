@@ -36,7 +36,12 @@ $autorise[3] = array('/mod_absences/gestion/voir_absences_viescolaire.php',
 $autorise[4] = array('/mod_absences/gestion/select.php',
 						'/mod_absences/gestion/ajout_abs.php',
 						'/mod_absences/lib/liste_absences.php');
-$autorise[5] = array('/cahier_texte/see_all.php');
+if(getSettingValue('GepiCahierTexteVersion')=="2") {
+	$autorise[5] = array('/cahier_texte/see_all.php', '/cahier_texte_2/see_all.php');
+}
+else {
+	$autorise[5] = array('/cahier_texte/see_all.php');
+}
 $autorise[6] = array('/cahier_texte_admin/visa_ct.php');
 $autorise[7] = array('/edt_organisation/index_edt.php');
 //$autorise[8] = array('/tous_les_edt');

@@ -337,9 +337,16 @@ class class_page_accueil_autre {
   private function cahierTexte(){
 	$this->b=0;
 	if (getSettingValue("active_cahiers_texte")=='y') {
-	  $this->creeNouveauItem("/cahier_texte/see_all.php",
-			  "Cahier de textes",
-			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+		if (getSettingValue("GepiCahierTexteVersion")=='2') {
+			$url_cdt_see_all="/cahier_texte_2/see_all.php";
+		}
+		else {
+			$url_cdt_see_all="/cahier_texte/see_all.php";
+		}
+		  $this->creeNouveauItem($url_cdt_see_all,
+				  "Cahier de textes",
+				  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+
 	  $this->creeNouveauItem("/cahier_texte_admin/visa_ct.php",
 			  "Visa des cahiers de textes",
 			  "Permet de viser les cahiers de textes" );
