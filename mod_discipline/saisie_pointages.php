@@ -179,7 +179,8 @@ if((isset($_POST['validation_saisie']))&&(isset($id_creneau))&&(isset($tab_crene
 		// Trouver les dates de début et fin de la période courante pour calculer le nombre de pointages sur la période... et le total
 		//$ts=gmstrftime("%s");
 		$ts=gmmktime (12, 0, 0, $mois_date_sp, $jour_date_sp, $annee_date_sp);
-		$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+		//$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+		$sql="SELECT e.* FROM edt_calendrier e, periodes p WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts AND e.numero_periode=p.num_periode AND p.id_classe='$id_classe';";
 		//echo htmlentities($sql)."<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
@@ -204,12 +205,18 @@ if((isset($_POST['validation_saisie']))&&(isset($id_creneau))&&(isset($tab_crene
 		//$ts=gmstrftime("%s");
 		$ts=gmmktime (12, 0, 0, $mois_date_sp, $jour_date_sp, $annee_date_sp);
 		$current_group=get_group($id_groupe, array('classes', 'periodes', 'eleves'));
+		/*
+		echo "<pre>";
+		print_r($current_group);
+		echo "</pre>";
+		*/
 		for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
 			$current_id_classe=$current_group["classes"]["list"][$loop];
 
 			$tab_pp[$current_id_classe]=get_tab_prof_suivi($current_id_classe);
 
-			$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+			//$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+			$sql="SELECT e.* FROM edt_calendrier e, periodes p WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts AND e.numero_periode=p.num_periode AND p.id_classe='$current_id_classe';";
 			//echo htmlentities($sql)."<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
@@ -217,6 +224,8 @@ if((isset($_POST['validation_saisie']))&&(isset($id_creneau))&&(isset($tab_crene
 				while($lig=mysqli_fetch_assoc($res)) {
 					$tab_per[$current_id_classe]=$lig;
 					$numero_periode[$current_id_classe]=$lig['numero_periode'];
+
+					//echo "Test de \$current_group[\"eleves\"][".$lig['numero_periode']."][\"telle_classe\"][$current_id_classe]<br />";
 
 					// Dans le cas $mode=='groupe', pour trouver la classe de l'élève, faire un relevé dès ce stade pour ne pas faire une requête par élève
 					if(!isset($current_group["eleves"][$lig['numero_periode']]["telle_classe"][$current_id_classe])) {
@@ -1003,22 +1012,27 @@ if(($mode=="groupe")||($mode=="classe")) {
 			// Trouver les dates de début et fin de la période courante pour calculer le nombre de pointages sur la période... et le total
 			//$ts=gmstrftime("%s");
 			$ts=gmmktime (12, 0, 0, $mois, $jour, $annee);
-			$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+			//$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+			$sql="SELECT e.* FROM edt_calendrier e, periodes p WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts AND e.numero_periode=p.num_periode AND p.id_classe='$id_classe';";
 			//echo htmlentities($sql)."<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				// On ne fait en principe qu'un seul tour dans la boucle
+				$tab_num_periode_passee=array();
 				while($lig=mysqli_fetch_assoc($res)) {
-					$tab_per[$id_classe]=$lig;
+					if(!in_array($lig['numero_periode'] ,$tab_num_periode_passee)) {
+						$tab_per[$id_classe]=$lig;
 
-					$sql="SELECT sp.* FROM sp_saisies sp, j_eleves_classes jec WHERE sp.login=jec.login AND jec.periode='".$tab_per[$id_classe]['numero_periode']."' AND date_sp>='".$tab_per[$id_classe]['jourdebut_calendrier']." ".$tab_per[$id_classe]['heuredebut_calendrier']."' AND date_sp<='".$tab_per[$id_classe]['jourfin_calendrier']." ".$tab_per[$id_classe]['heurefin_calendrier']."' ORDER BY sp.login, sp.id_type;";
-					//echo "$sql<br />";
-					$res_sp=mysqli_query($GLOBALS["mysqli"], $sql);
-					while($lig_sp=mysqli_fetch_object($res_sp)) {
-						if(!isset($tab_totaux_per[$lig_sp->login][$lig_sp->id_type])) {
-							$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]=0;
+						$sql="SELECT sp.* FROM sp_saisies sp, j_eleves_classes jec WHERE sp.login=jec.login AND jec.periode='".$tab_per[$id_classe]['numero_periode']."' AND date_sp>='".$tab_per[$id_classe]['jourdebut_calendrier']." ".$tab_per[$id_classe]['heuredebut_calendrier']."' AND date_sp<='".$tab_per[$id_classe]['jourfin_calendrier']." ".$tab_per[$id_classe]['heurefin_calendrier']."' ORDER BY sp.login, sp.id_type;";
+						//echo "$sql<br />";
+						$res_sp=mysqli_query($GLOBALS["mysqli"], $sql);
+						while($lig_sp=mysqli_fetch_object($res_sp)) {
+							if(!isset($tab_totaux_per[$lig_sp->login][$lig_sp->id_type])) {
+								$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]=0;
+							}
+							$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]++;
 						}
-						$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]++;
+						$tab_num_periode_passee[]=$lig['numero_periode'];
 					}
 				}
 			}
@@ -1032,22 +1046,34 @@ if(($mode=="groupe")||($mode=="classe")) {
 			for($loop=0;$loop<count($current_group["classes"]["list"]);$loop++) {
 				$current_id_classe=$current_group["classes"]["list"][$loop];
 
-				$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+				//$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
+				$sql="SELECT e.* FROM edt_calendrier e, periodes p WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts AND e.numero_periode=p.num_periode AND p.id_classe='$current_id_classe';";
 				//echo htmlentities($sql)."<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					// On ne fait en principe qu'un seul tour dans la boucle
+					// Sauf si on a un remplissage bizarre de edt_calendrier avec des classes dans deux types de périodes... associées toutes les deux à une période de cours (ce qui devrait être interdit dans la page de remplissage de edt_calendrier)
+					$tab_num_periode_passee=array();
 					while($lig=mysqli_fetch_assoc($res)) {
-						$tab_per[$current_id_classe]=$lig;
+						if(!in_array($lig['numero_periode'] ,$tab_num_periode_passee)) {
 
-						$sql="SELECT sp.* FROM sp_saisies sp, j_eleves_classes jec WHERE sp.login=jec.login AND jec.periode='".$tab_per[$current_id_classe]['numero_periode']."' AND date_sp>='".$tab_per[$current_id_classe]['jourdebut_calendrier']." ".$tab_per[$current_id_classe]['heuredebut_calendrier']."' AND date_sp<='".$tab_per[$current_id_classe]['jourfin_calendrier']." ".$tab_per[$current_id_classe]['heurefin_calendrier']."';";
-						//echo "$sql<br />";
-						$res_sp=mysqli_query($GLOBALS["mysqli"], $sql);
-						while($lig_sp=mysqli_fetch_object($res_sp)) {
-							if(!isset($tab_totaux_per[$lig_sp->login][$lig_sp->id_type])) {
-								$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]=0;
+							/*
+							echo "<pre>";
+							print_r($lig);
+							echo "</pre>";
+							*/
+							$tab_per[$current_id_classe]=$lig;
+
+							$sql="SELECT sp.* FROM sp_saisies sp, j_eleves_classes jec WHERE sp.login=jec.login AND jec.id_classe='$current_id_classe' AND jec.periode='".$tab_per[$current_id_classe]['numero_periode']."' AND date_sp>='".$tab_per[$current_id_classe]['jourdebut_calendrier']." ".$tab_per[$current_id_classe]['heuredebut_calendrier']."' AND date_sp<='".$tab_per[$current_id_classe]['jourfin_calendrier']." ".$tab_per[$current_id_classe]['heurefin_calendrier']."';";
+							//echo "$sql<br />";
+							$res_sp=mysqli_query($GLOBALS["mysqli"], $sql);
+							while($lig_sp=mysqli_fetch_object($res_sp)) {
+								if(!isset($tab_totaux_per[$lig_sp->login][$lig_sp->id_type])) {
+									$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]=0;
+								}
+								$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]++;
 							}
-							$tab_totaux_per[$lig_sp->login][$lig_sp->id_type]++;
+							$tab_num_periode_passee[]=$lig['numero_periode'];
 						}
 					}
 				}
