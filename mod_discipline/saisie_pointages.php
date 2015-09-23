@@ -1012,7 +1012,7 @@ if(($mode=="groupe")||($mode=="classe")) {
 					$tab_per[$id_classe]=$lig;
 
 					$sql="SELECT sp.* FROM sp_saisies sp, j_eleves_classes jec WHERE sp.login=jec.login AND jec.periode='".$tab_per[$id_classe]['numero_periode']."' AND date_sp>='".$tab_per[$id_classe]['jourdebut_calendrier']." ".$tab_per[$id_classe]['heuredebut_calendrier']."' AND date_sp<='".$tab_per[$id_classe]['jourfin_calendrier']." ".$tab_per[$id_classe]['heurefin_calendrier']."' ORDER BY sp.login, sp.id_type;";
-					echo "$sql<br />";
+					//echo "$sql<br />";
 					$res_sp=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig_sp=mysqli_fetch_object($res_sp)) {
 						if(!isset($tab_totaux_per[$lig_sp->login][$lig_sp->id_type])) {
