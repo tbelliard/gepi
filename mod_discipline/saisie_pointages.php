@@ -210,7 +210,7 @@ if((isset($_POST['validation_saisie']))&&(isset($id_creneau))&&(isset($tab_crene
 			$tab_pp[$current_id_classe]=get_tab_prof_suivi($current_id_classe);
 
 			$sql="SELECT e.* FROM edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$current_id_classe;%' OR classe_concerne_calendrier LIKE '$current_id_classe;%') AND etabferme_calendrier='1' AND '$ts'<fin_calendrier_ts AND '$ts'>debut_calendrier_ts;";
-			echo htmlentities($sql)."<br />";
+			//echo htmlentities($sql)."<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				// On ne fait en principe qu'un seul tour dans la boucle
