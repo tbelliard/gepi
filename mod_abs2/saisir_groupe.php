@@ -533,6 +533,7 @@ foreach($eleve_col as $eleve) {
 	}
 	$afficheEleve[$elv]['position'] = $eleve_col->getPosition();
 	$afficheEleve[$elv]['id'] = $eleve->getId();
+	$afficheEleve[$elv]['login'] = $eleve->getLogin();
 	$afficheEleve[$elv]['nom'] = $eleve->getNom();
 	$afficheEleve[$elv]['prenom'] = $eleve->getPrenom();
 	$afficheEleve[$elv]['civilite'] = $eleve->getCivilite();
@@ -1634,6 +1635,10 @@ if ($eleve['creneau_courant'] == $i) { ?>
 ?>
 						<td class="commentaire">
 							<?php
+								if(getSettingAOui("active_mod_discipline")) {
+									echo "<div style='float:right;width:16px;'><a href='../mod_discipline/saisie_incident.php?creer_incident=y&amp;ele_login[0]=".$eleve['login']."&amp;qualite[0]=Responsable".add_token_in_url()."' target='_blank' title=\"Déclarer un incident disciplinaire.\" target=\"_blank\"><img src='../images/icons/balance_justice.png' class='icone16' alt='Incident' /></a></div>";
+								}
+
 								if((getSettingAOui("active_mod_alerte"))&&(check_mae($_SESSION['login']))) {
 									echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[".$designation_classe_groupe_ou_aid."]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a></div>";
 								}

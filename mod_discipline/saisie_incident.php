@@ -300,8 +300,7 @@ $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_
 $display_heure=isset($_POST['display_heure']) ? $_POST['display_heure'] : (isset($_GET['display_heure']) ? $_GET['display_heure'] : NULL);
 $nature=isset($_POST['nature']) ? $_POST['nature'] : (isset($_GET['nature']) ? $_GET['nature'] : NULL);
 
-$qualite=isset($_POST['qualite']) ? $_POST['qualite'] : NULL;
-
+$qualite=isset($_POST['qualite']) ? $_POST['qualite'] : (isset($_GET['qualite']) ? $_GET['qualite'] : NULL);
 
 $categ_u=isset($_POST['categ_u']) ? $_POST['categ_u'] : (isset($_GET['categ_u']) ? $_GET['categ_u'] : NULL);
 $u_login=isset($_POST['u_login']) ? $_POST['u_login'] : (isset($_GET['u_login']) ? $_GET['u_login'] : array());
@@ -358,6 +357,45 @@ if (($change_declarant=='Changer') && isset($_POST['choixProf']) && ($_POST['cho
         $test=mysqli_query($GLOBALS["mysqli"], $sql);
         $msg .= " - Primo-déclarant modifié";
     }
+}
+
+
+$creer_incident=isset($_POST['creer_incident']) ? $_POST['creer_incident'] : (isset($_GET['creer_incident']) ? $_GET['creer_incident'] : NULL);
+if(isset($creer_incident)) {
+	check_token();
+
+	$annee = strftime("%Y");
+	$mois = strftime("%m");
+	$jour = strftime("%d");
+
+	$display_heure=strftime("%H:%M");
+
+	$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
+										date='$annee-$mois-$jour',
+										heure='$display_heure',
+										nature='',
+										description='',
+										id_lieu='',
+										message_id='';";
+	//echo "$sql<br />\n";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(!$res) {
+		$msg.="ERREUR lors de l'enregistrement de l'".$mod_disc_terme_incident."&nbsp;:".$sql."<br />\n";
+	}
+	else {
+		$id_incident=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
+		$msg.="Enregistrement de l'".$mod_disc_terme_incident." n°".$id_incident." effectué.<br />\n";
+
+		$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[0]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[0])))."';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$res) {
+			$msg.="ERREUR lors de l'enregistrement de ".$ele_login[0]."<br />\n";
+		}
+
+	}
+
+	$step="2";
 }
 
 if($etat_incident!='clos') {
@@ -1812,7 +1850,7 @@ if(isset($id_incident) ) {
             <input type='hidden' name='id_incident' value='<?php echo $id_incident; ?>' />
         </p>
         <p class='center'>
-            <input type='submit' name='enregistrer_qualite' value='Enregistrer' />
+            <input type='submit' name='enregistrer_qualite' id='enregistrer_qualite' value='Enregistrer' />
             <?php echo add_token_field(TRUE); ?>
         </p>
  <?php	
@@ -2543,7 +2581,7 @@ elseif($step==2) {
                            size='10' 
                            value="<?php echo $display_date; ?>" 
                            onkeydown="clavier_date_plus_moins(this.id,event);" 
-                           onchange='changement()' />
+                           onchange="changement();document.getElementById('enregistrer_qualite').style.display='none';" />
                     <?php
                     echo img_calendrier_js("display_date", "img_bouton_display_date");
                     ?>
@@ -2606,7 +2644,7 @@ elseif($step==2) {
                            value="<?php echo $display_heure; ?>" 
                            onkeydown="clavier_heure(this.id,event);" 
                            AutoComplete="off" 
-                           onchange='changement()' />
+                           onchange='changement();document.getElementById('enregistrer_qualite').style.display='none';' />
 
 <?php
 		choix_heure('display_heure','div_choix_heure');
@@ -2639,7 +2677,7 @@ elseif($step==2) {
 			echo ">\n";
 
 			//echo "<select name='choix_lieu' id='choix_lieu' onchange=\"maj_lieu('lieu_incident','choix_lieu');changement();\">\n";
-			echo "<select name='id_lieu' id='id_lieu' onchange='changement()'>\n";
+			echo "<select name='id_lieu' id='id_lieu' onchange=\"changement();document.getElementById('enregistrer_qualite').style.display='none';\">\n";
 			echo "<option value=''>---</option>\n";
 			while($lig_lieu=mysqli_fetch_object($res_lieu)) {
 				echo "<option value=\"$lig_lieu->id\"";
@@ -2710,6 +2748,7 @@ elseif($step==2) {
                            name='nature' 
                            id='nature' 
                            size='30' 
+                           onchange="document.getElementById('enregistrer_qualite').style.display='none';"
                            value="<?php echo $nature; ?>" />
                     <div id='div_completion_nature' class='infobulle_corps'></div>
                     
@@ -3106,7 +3145,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
                                        name='mesure_prise_<?php echo $i; ?>[]' 
                                        id='mesure_prise_<?php echo $i; ?>_<?php echo $loop; ?>' 
                                        value="<?php echo $tab_id_mes_prise[$loop]; ?>" 
-                                       onchange='changement();'
+                                       onchange="changement();document.getElementById('enregistrer_qualite').style.display='none';"
                                            <?php if(in_array($tab_id_mes_prise[$loop],$tab_mes_eleve)) {echo "checked='checked' ";} ?> />
                                 <label for='mesure_prise_<?php echo $i; ?>_<?php echo $loop; ?>' style='cursor:pointer;'>
                                     &nbsp;<?php echo $tab_mes_prise[$loop]; ?></label>
@@ -3145,7 +3184,7 @@ setTimeout('comptage_caracteres_textarea()', 1000);
                                        name='mesure_demandee_<?php echo $i; ?>[]'
                                        id='mesure_demandee_<?php echo $i; ?>_<?php echo $loop; ?>' 
                                        value="<?php echo $tab_id_mes_demandee[$loop]; ?>" 
-                                       onchange='changement(); check_coche_mes_demandee(<?php echo $i; ?>);'
+                                       onchange="changement(); check_coche_mes_demandee(<?php echo $i; ?>);document.getElementById('enregistrer_qualite').style.display='none';"
                                            <?php if(in_array($tab_id_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}; ?>
                                        />
                                 <label for='mesure_demandee_<?php echo $i; ?>_<?php echo $loop; ?>' 
