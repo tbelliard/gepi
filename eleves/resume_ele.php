@@ -679,7 +679,7 @@ if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login']
 	$html.="</div>";
 
 	echo "
-<div id='div_cdt' style='float:left; width:".$largeur_cdt."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['cdt'].";' title=\"Dans ce cadre, les travaux à faire pour la date choisie sont affichés.\nPour consulter les comptes-rendus de séance, cliquez sur la loupe en haut à droite de ce cadre CDT.\">".$html."</div>";
+<div id='div_cdt' style='float:left; width:".$largeur_cdt."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['cdt'].";' title=\"Dans ce cadre, les travaux à faire pour la date choisie sont affichés.\nPour consulter les comptes-rendus de séance, cliquez sur la loupe en haut à droite dans ce cadre CDT.\">".$html."</div>";
 }
 //=================================
 
