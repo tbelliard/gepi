@@ -1770,7 +1770,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				$html.="<hr />Et ".$nb_jours_travaux." travail à faire pour les jours qui suivent en ";
 			}
 			else {
-				$html.="<hr />Et ".$nb_jours_travaux." travaux à faire pour les jours qui suivent.<br />";
+				$html.="<hr />Et ".$nb_jours_travaux." travaux à faire pour les jours qui suivent en ";
 			}
 
 			$cpt_tmp=0;
@@ -1789,7 +1789,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$html.=$current_matiere_cdt;
+				$html.="<span title=\"Pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\">".$current_matiere_cdt."</span>";
 
 				$cpt_tmp++;
 			}
