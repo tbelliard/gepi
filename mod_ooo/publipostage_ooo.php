@@ -406,12 +406,13 @@ $titre_page = "Modèle Open Office - Publipostage";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<p class='bold'><a href='../accueil.php";
-echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+?>
 
-if(!isset($num_fich)) {
-	echo "</p>\n";
+<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
+<?php if(!isset($num_fich)) { ?>
+	</p>
+<?php 
 	if(isset($_FILES['monfichier'])) {
 		check_token(false);
 
@@ -423,19 +424,30 @@ if(!isset($num_fich)) {
 		$monfichiertmp_name=$t['tmp_name'];
 
 		$upload_modele_ooo_autorise="n";
-		if($_SESSION['statut']=='administrateur') {$upload_modele_ooo_autorise="y";}
-		elseif(($_SESSION['statut']=='scolarite')&&(getSettingValue('OOoUploadScol')=='yes')) {$upload_modele_ooo_autorise="y";}
-		elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('OOoUploadCpe')=='yes')) {$upload_modele_ooo_autorise="y";}
-		elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
-	
-		if($upload_modele_ooo_autorise!='y') {
-			echo "<p style='color:red'>Action non autorisée&nbsp;: Upload d'un modèle personnalisé.</p>\n";
+		if($_SESSION['statut']=='administrateur') {
+			$upload_modele_ooo_autorise="y";
+		}
+		elseif(($_SESSION['statut']=='scolarite')&&(getSettingValue('OOoUploadScol')=='yes')) {
+			$upload_modele_ooo_autorise="y";
+		}
+		elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('OOoUploadCpe')=='yes')) {
+			$upload_modele_ooo_autorise="y";
+		}
+		elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {
+			$upload_modele_ooo_autorise="y";
+		}	
+		if($upload_modele_ooo_autorise!='y') { 
+?>
+	<p style='color:red'>Action non autorisée&nbsp;: Upload d'un modèle personnalisé.</p>
+<?php
 			tentative_intrusion(1, "Tentative non autorisée d'upload d'un modèle OOo (".$monfichiername.")");
 		}
 		else {
 
 			if ($monfichiername=="") {
-				echo "<p style='color:red'>Pas de fichier indiqué ! Il faut recommencer...</p>\n";
+?>
+	<p style='color:red'>Pas de fichier indiqué ! Il faut recommencer...</p>
+<?php
 			}
 			else {
 				$fichiercopie=mb_strtolower($monfichiername);
@@ -453,7 +465,11 @@ if(!isset($num_fich)) {
 						if(!file_exists($path_user)) {
 							$creation=mkdir($path_user);
 							if(!$creation) {
-								echo "<p style='color:red;'>ERREUR lors de la création du dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
+?>
+	<p style='color:red;'>
+		ERREUR lors de la création du dossier de modèle openDocument pour <?php echo $login_user[$i] ?>
+	</p>
+<?php
 								$temoin_erreur="y";
 							}
 						}
@@ -605,9 +621,13 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 	}
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre modèle</a>";
+?>
+	| <a href='<?php echo $_SERVER['PHP_SELF']; ?>'>Choisir un autre modèle</a>
+<?php
 	if((!isset($id_classe))&&(!isset($id_groupe))) {
-		echo "</p>\n";
+?>
+</p>
+<?php
 	
 		$tab_file=get_tab_file($path);
 	
@@ -617,7 +637,9 @@ else {
 		$sql="SELECT MAX(num_periode) AS maxper FROM periodes p, classes c WHERE c.id=p.id_classe;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
-			echo "<p style='colore:red'>Aucune classe avec période(s) n'a été trouvée.</p>";
+?>
+<p style='colore:red'>Aucune classe avec période(s) n'a été trouvée.</p>
+<?php
 			require_once("../lib/footer.inc.php");
 			die();
 		}
@@ -638,118 +660,218 @@ else {
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
-			echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form1'>\n";
-			echo "<fieldset class='fieldset_opacite50'>\n";
-			echo "<p>Pour quelle(s) classe(s) souhaitez-vous imprimer le document <b>".$tab_file[$num_fich]."</b>&nbsp;?";
-			echo " <a href=\"javascript:cocher_decocher('id_classe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_classe_', false)\">décocher</a> toutes les classes\n";
-			echo "</p>\n";
+?>
+<form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form1'>
+	<fieldset class='fieldset_opacite50'>
+		<p>
+			Pour quelle(s) classe(s) souhaitez-vous imprimer le document 
+			<strong><?php echo $tab_file[$num_fich]; ?></strong>&nbsp;?
+			<a href="javascript:cocher_decocher('id_classe_', true)">
+				Cocher
+			</a>
+			/
+			<a href="javascript:cocher_decocher('id_classe_', false)">
+				décocher
+			</a>
+			toutes les classes
+			<input type='hidden' name='num_fich' value='<?php echo $num_fich; ?>' />
+		</p>
+<?php
 			echo add_token_field();
-			echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
 			$nombreligne=mysqli_num_rows($res);
 			$nbcol=3;
 			$nb_par_colonne=round($nombreligne/$nbcol);
-
-			echo "<table width='100%' summary=\"Tableau de choix des classes\">\n";
-			echo "<tr valign='top' align='center'>\n";
-			echo "<td align='left'>\n";
-
+?>
+		<table width='100%' summary="Tableau de choix des classes">
+			<tr valign='top' align='center'>
+				<td align='left'>
+<?php
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 				if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
-					echo "</td>\n";
-					echo "<td align='left'>\n";
+?>
+				</td>
+				<td align='left'>
+<?php
 				}
+?>
+					<input type='checkbox' 
+						   name='id_classe[]' 
+						   id='id_classe_<?php echo $cpt; ?>' 
+						   value='<?php echo $lig->id; ?>'
+						   onchange="checkbox_change('id_classe_<?php echo $cpt; ?>')"
+						   />
+					<label for='id_classe_<?php echo $cpt; ?>'>
+						<span id='texte_id_classe_<?php echo $cpt; ?>'><?php echo $lig->classe; ?></span>
+					</label>
+					<br />
 
-				echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt' value='$lig->id' ";
-				echo "onchange=\"checkbox_change('id_classe_$cpt')\" ";
-				echo "/><label for='id_classe_$cpt'><span id='texte_id_classe_$cpt'>$lig->classe</span></label><br />\n";
-
+<?php
 				$cpt++;
 			}
-			echo "</td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
-
-			echo "<p style='text-indent:-3em; margin-left:3em;'>Extraire les élèves inscrits dans les classes choisies&nbsp;:<br />
-	<input type='radio' name='num_periode' id='num_periode_nimporte' value='nimporte' checked /><label for='num_periode_nimporte' id='texte_num_periode_nimporte'>Quelle que soit la période</label><br />";
+?>
+				</td>
+			</tr>
+		</table>
+		<p style='text-indent:-3em; margin-left:3em;'>
+			Extraire les élèves inscrits dans les classes choisies&nbsp;:
+			<br />
+			<input type='radio' name='num_periode' id='num_periode_nimporte' value='nimporte' checked='checked' />
+			<label for='num_periode_nimporte' id='texte_num_periode_nimporte'>Quelle que soit la période</label>
+			<br />
+<?php
 			for($loop=1;$loop<=$maxper;$loop++) {
-				echo "
-	<input type='radio' name='num_periode' id='num_periode_$loop' value='$loop' /><label for='num_periode_$loop' id='texte_num_periode_$loop'>Période $loop</label><br />";
+?>
+			<input type='radio' name='num_periode' id='num_periode_<?php echo $loop; ?>' value='<?php echo $loop; ?>' />
+			<label for='num_periode_<?php echo $loop; ?>' id='texte_num_periode_<?php echo $loop; ?>'>
+				Période <?php echo $loop; ?>
+			</label>
+			<br />
+<?php
 			}
-			echo "
-</p>";
-
-			echo "
-<p>
-	<input type='radio' name='mode_pub' id='mode_pub' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub' id='texte_mode_pub' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
-	ou<br />
-	<input type='radio' name='mode_pub' id='mode_pub2' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub2' id='texte_mode_pub2'>Générer un fichier par classe sélectionnée.</label><br />
-	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper' value='y' onchange=\"checkbox_change(this.id); check_choix_zip('');\" /><label for='zipper' id='texte_zipper'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
-</p>";
-
-			echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit' /><input type='button' value='Envoyer' id='bouton_submit_js' onclick=\"valider_publipostage('form1', 'id_classe_')\" style='display:none;' /></p>\n";
-			echo "</fieldset>\n";
-			echo "</form>\n";
-
+?>
+		</p>
+		<p>
+			<input type='radio' name='mode_pub' id='mode_pub' 
+				   value='' checked=checked'' 
+				   onchange="change_style_radio();" />
+			<label for='mode_pub' id='texte_mode_pub' style='font-weight:bold;'>
+				Générer un seul fichier même si vous sélectionnez plusieurs classes
+			</label>
+			<br />ou<br />
+			<input type='radio' name='mode_pub' id='mode_pub2' value='un_fichier_par_selection' 
+				   onchange="change_style_radio();" />
+			<label for='mode_pub2' id='texte_mode_pub2'>
+				Générer un fichier par classe sélectionnée.
+			</label>
+			<br />
+			<span style='margin-left:2em;'>
+				<input type='checkbox' name='zipper' id='zipper' value='y' 
+					   onchange="checkbox_change(this.id); check_choix_zip('');" />
+				<label for='zipper' id='texte_zipper'>
+					Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.
+				</label>
+			</span>
+			<br />
+		</p>
+		<p class='center'>
+			<input type='submit' value='Envoyer' id='bouton_submit' />
+			<input type='button' value='Envoyer' id='bouton_submit_js'
+				   onclick="valider_publipostage('form1', 'id_classe_')" style='display:none;'
+				   />
+		</p>
+	</fieldset>
+</form>
+<?php
 			$cpt_js=$cpt;
 		}
 
 		if($_SESSION['statut']=='professeur') {
 			$groups=get_groups_for_prof($_SESSION['login']);
 			if(count($groups)>0) {
-				echo "Ou";
-				echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form2'>\n";
-				echo "<fieldset class='fieldset_opacite50'>\n";
-				echo "<p>Pour quel enseignement souhaitez-vous imprimer le document ".$tab_file[$num_fich]."&nbsp;?";
-				echo " <a href=\"javascript:cocher_decocher('id_groupe_', true)\">Cocher</a> / <a href=\"javascript:cocher_decocher('id_groupe_', false)\">décocher</a> tous les enseignements\n";
-				echo "</p>\n";
+?>
+Ou
+<?php
+/* <form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form1'>*/
+?>
+<form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form2'>
+	<fieldset class='fieldset_opacite50'>
+		<p>
+			Pour quel enseignement souhaitez-vous imprimer le document
+			<strong><?php echo $tab_file[$num_fich]; ?></strong>&nbsp;?
+			<a href="javascript:cocher_decocher('id_groupe_', true)">Cocher</a>
+			/
+			<a href="javascript:cocher_decocher('id_groupe_', false)">décocher</a>
+			tous les enseignements
+			<input type='hidden' name='num_fich' value='<?php echo $num_fich; ?>' />
+		</p>
+		<table width='100%' summary="Tableau de choix des classes">
+			<tr valign='top' align='center'>
+				<td align='left'>
+<?php
 				echo add_token_field();
-				echo "<input type='hidden' name='num_fich' value='$num_fich' />\n";
 
 				$nombreligne=mysqli_num_rows($res);
 				$nbcol=3;
 				$nb_par_colonne=round($nombreligne/$nbcol);
-	
-				echo "<table width='100%' summary=\"Tableau de choix des classes\">\n";
-				echo "<tr valign='top' align='center'>\n";
-				echo "<td align='left'>\n";
 
 				for($i=0;$i<count($groups);$i++) {
 					$current_group=$groups[$i];
 
 					if(($i>0)&&(round($i/$nb_par_colonne)==$i/$nb_par_colonne)){
-						echo "</td>\n";
-						echo "<td align='left'>\n";
+?>
+				</td>
+				<td align='left'>
+<?php
 					}
-					echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$i' value='".$current_group['id']."' ";
-					echo "onchange=\"checkbox_change('id_groupe_$i')\" ";
-					echo "/><label for='id_groupe_$i'><span id='texte_id_groupe_$i'>".$current_group['name']." (<i>".$current_group['classlist_string']."</i>)</span></label><br />\n";
+?>
+					<input type='checkbox' name='id_groupe[]' id='id_groupe_<?php echo $i; ?>' 
+						   value='<?php echo $current_group['id']; ?>'
+						   onchange="checkbox_change('id_groupe_<?php echo $i; ?>')"
+						   />
+					<label for='id_groupe_<?php echo $i; ?>'>
+						<span id='texte_id_groupe_<?php echo $i; ?>'>
+							<?php echo $current_group['name']; ?>
+							(<i><?php echo $current_group['classlist_string']; ?></i>)
+						</span>
+					</label>
+					<br />
+<?php
 				}
-				echo "</td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
+?>
+				</td>
+			</tr>
+		</table>
+		<p style='text-indent:-3em; margin-left:3em;'>
+			Extraire les élèves inscrits dans les classes choisies&nbsp;:
+			<br />
+			<input type='radio' name='num_periode' id='num_periode2_nimporte' value='nimporte' checked='checked' />
+			<label for='num_periode2_nimporte' id='texte_num_periode2_nimporte'>
+				Quelle que soit la période
+			</label>
+			<br />
+			
+<?php
 
-				echo "<p style='text-indent:-3em; margin-left:3em;'>Extraire les élèves inscrits dans les classes choisies&nbsp;:<br />
-	<input type='radio' name='num_periode' id='num_periode2_nimporte' value='nimporte' checked /><label for='num_periode2_nimporte' id='texte_num_periode2_nimporte'>Quelle que soit la période</label><br />";
 				for($loop=1;$loop<=$maxper;$loop++) {
-					echo "
-	<input type='radio' name='num_periode' id='num_periode2_$loop' value='$loop' /><label for='num_periode2_$loop' id='texte_num_periode2_$loop'>Période $loop</label><br />";
+?>
+			<input type='radio' name='num_periode' id='num_periode2_<?php echo $loop; ?>' 
+				   value='<?php $loop; ?>' />
+			<label for='num_periode2_<?php echo $loop; ?>' id='texte_num_periode2_<?php echo $loop; ?>'>
+				Période <?php echo $loop; ?></label><br />
+<?php
 				}
-				echo "
-</p>";
-
-				echo "
-<p>
-	<input type='radio' name='mode_pub' id='mode_pub3' value='' checked onchange=\"change_style_radio();\" /><label for='mode_pub3' id='texte_mode_pub3' style='font-weight:bold;'>Générer un seul fichier même si vous sélectionnez plusieurs classes</label><br />
-	ou<br />
-	<input type='radio' name='mode_pub' id='mode_pub4' value='un_fichier_par_selection' onchange=\"change_style_radio();\" /><label for='mode_pub4' id='texte_mode_pub4'>Générer un fichier par classe sélectionnée.</label><br />
-	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper2' value='y' onchange=\"checkbox_change(this.id); check_choix_zip('2');\" /><label for='zipper2' id='texte_zipper2'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
-</p>";
-
-				echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit2' /><input type='button' value='Envoyer' id='bouton_submit_js2' onclick=\"valider_publipostage2('form2', 'id_groupe_')\" style='display:none;' /></p>\n";
-				echo "</fieldset>\n";
-				echo "</form>\n";
+?>
+		</p>
+		<p>
+			<input type='radio' name='mode_pub' id='mode_pub3' value='' 
+				   checked='checked' onchange="change_style_radio();" />
+			<label for='mode_pub3' id='texte_mode_pub3' style='font-weight:bold;'>
+				Générer un seul fichier même si vous sélectionnez plusieurs classes
+			</label>
+			<br />ou<br />
+			<input type='radio' name='mode_pub' id='mode_pub4' value='un_fichier_par_selection' 
+				   onchange="change_style_radio();" />
+			<label for='mode_pub4' id='texte_mode_pub4'>Générer un fichier par classe sélectionnée.</label>
+			<br />
+			<span style='margin-left:2em;'>
+				<input type='checkbox' name='zipper' id='zipper2' value='y' 
+					   onchange="checkbox_change(this.id); check_choix_zip('2');" />
+				<label for='zipper2' id='texte_zipper2'>
+					Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.
+				</label>
+			</span>
+			<br />
+		</p>
+		<p class='center'>
+			<input type='submit' value='Envoyer' id='bouton_submit2' />
+			<input type='button' value='Envoyer' id='bouton_submit_js2' 
+				   onclick="valider_publipostage('form2', 'id_groupe_')" style='display:none;' />
+		</p>
+	</fieldset>
+</form>
+<?php
 
 				if(count($groups)>$cpt_js) {
 					$cpt_js=count($groups);
@@ -758,12 +880,13 @@ else {
 			}
 		}
 
-		echo "<script type='text/javascript'>
-".js_checkbox_change_style()."
-".js_change_style_radio()."
-
+?>
+<script type='text/javascript'>
+<?php
+		echo js_checkbox_change_style()." ".js_change_style_radio()
+?>
 function cocher_decocher(prefixe_id, mode) {
-	for (var k=0;k<$cpt_js;k++) {
+	for (var k=0;k<<?php echo $cpt_js; ?>;k++) {
 		if(document.getElementById(prefixe_id+k)){
 			document.getElementById(prefixe_id+k).checked=mode;
 			checkbox_change(prefixe_id+k);
@@ -786,7 +909,7 @@ if(document.getElementById('bouton_submit_js2')) {
 
 function valider_publipostage(form_id, prefixe_id) {
 	var envoyer='n';
-	for(k=0;k<$cpt_js;k++) {
+	for(k=0;k<<?php echo $cpt_js; ?>;k++) {
 		if(document.getElementById(prefixe_id+k)){
 			if(document.getElementById(prefixe_id+k).checked==true) {
 				envoyer='y';
@@ -819,21 +942,40 @@ function check_choix_zip(num) {
 
 </script>
 
-<p style='margin-top:1em; margin-left:3.5em; text-indent:-3.5em; line-height: 1.5em;'><em>Note&nbsp;:</em> Si vous générez un fichier par classe, imprimer les fichiers un par un peut être fastidieux.<br />
-Vous pouvez effectuer l'impression en ligne de commande.<br />
-Téléchargez le Zip, extrayez le dans un nouveau dossier et de là&nbsp;:<br />
-Vers l'imprimante par défaut&nbsp;:<br />
-&nbsp;&nbsp;&nbsp;<span style='color:white; background-color:black'>libreoffice -p *.ods</span><br />
-Ou vers une imprimante particulière (<em>nommée Toshiba_estudio dans l'exemple qui suit</em>)&nbsp;:<br />
-&nbsp;&nbsp;&nbsp;<span style='color:white; background-color:black; padding:3px;'>libreoffice --pt Toshiba_estudio *.ods</span><br />
-Voir l'aide <a href='https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr'>https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr</a> pour plus de détails.</p>\n";
+<p style='margin-top:1em; margin-left:3.5em; text-indent:-3.5em; line-height: 1.5em;'>
+	<em>Note&nbsp;:</em> 
+	Si vous générez un fichier par classe, imprimer les fichiers un par un peut être fastidieux.
+	<br />
+	Vous pouvez effectuer l'impression en ligne de commande.<br />
+	Téléchargez le Zip, extrayez le dans un nouveau dossier et de là&nbsp;:<br />
+	Vers l'imprimante par défaut&nbsp;:<br />
+	&nbsp;&nbsp;&nbsp;
+	<span style='color:white; background-color:black'>libreoffice -p *.ods</span>
+	<br />
+	Ou vers une imprimante particulière (<em>nommée Toshiba_estudio dans l'exemple qui suit</em>)&nbsp;:
+	<br />
+	&nbsp;&nbsp;&nbsp;
+	<span style='color:white; background-color:black; padding:3px;'>
+		libreoffice --pt Toshiba_estudio *.ods
+	</span>
+	<br />
+	Voir l'aide 
+	<a href='https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr'>
+		https://help.libreoffice.org/Common/Starting_the_Software_With_Parameters/fr
+	</a> 
+	pour plus de détails.
+</p>
+<?php
 
 	}
 	else {
-		echo " | <a href='".$_SERVER['PHP_SELF']."?num_fich=$num_fich'>Choisir une autre classe ou enseignement</a>";
-		echo "</p>\n";
-
-		echo "PLOP";
+?>
+	| <a href='".$_SERVER['PHP_SELF']."?num_fich=$num_fich'>Choisir une autre classe ou enseignement</a>
+</p>
+<p>
+	PLOP
+</p>
+<?php
 	}
 }
 
