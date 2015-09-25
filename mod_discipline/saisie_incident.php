@@ -343,6 +343,59 @@ if(isset($id_incident)) {
 
 $msg="";
 
+$suppr_incident=isset($_POST['suppr_incident']) ? $_POST['suppr_incident'] : (isset($_GET['suppr_incident']) ? $_GET['suppr_incident'] : NULL);
+if((isset($suppr_incident))&&(preg_match("/^[0-9]*$/", $suppr_incident))&&($etat_incident!="clos")) {
+	check_token();
+
+	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."' AND id_incident='".$suppr_incident."';";
+	$test_declarant_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_declarant_incident)>0) {
+		$suppr_possible="y";
+
+		// On vérifie qu'il n'y a pas de sanction associée
+		$sql="SELECT 1=1 FROM s_sanctions WHERE id_incident='".$suppr_incident."';";
+		$test_sanction_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_sanction_incident)>0) {
+			$suppr_possible="n";
+			$msg.="Suppression impossible&nbsp;: Une ou des sanctions sont associées à l'incident.<br />Commencez par supprimer les sanctions associées.<br />";
+			$id_incident=$suppr_incident;
+			$step=2;
+		}
+
+		// On vérifie qu'il n'y a pas de mesure associée
+		$sql="SELECT 1=1 FROM s_traitement_incident WHERE id_incident='".$suppr_incident."';";
+		$test_mesure_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_mesure_incident)>0) {
+			$suppr_possible="n";
+			$msg.="Suppression impossible&nbsp;: Une ou des mesures sont associées à l'incident.<br />Commencez par supprimer les mesures associées.<br />";
+			$id_incident=$suppr_incident;
+			$step=2;
+		}
+
+		if($suppr_possible=="y") {
+			$sql="DELETE FROM s_protagonistes WHERE id_incident='".$suppr_incident."';";
+			$del_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$del_prot) {
+				$msg.="Erreur lors de la suppression du ou des protagonistes de l'incident.<br />";
+				$id_incident=$suppr_incident;
+				$step=2;
+			}
+			else {
+				$sql="DELETE FROM s_incidents WHERE id_incident='".$suppr_incident."';";
+				$del_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$del_prot) {
+					$msg.="Erreur lors de la suppression de l'incident n°".$suppr_incident.".<br />";
+					$id_incident=$suppr_incident;
+					$step=2;
+				}
+				else {
+					$msg.="Incident n°".$suppr_incident." supprimé.<br />";
+				}
+			}
+		}
+	}
+}
+
 // on change le déclarant si demandé
 if (($change_declarant=='Changer') && isset($_POST['choixProf']) && ($_POST['choixProf']!= '0') && ($etat_incident!='clos')) {
     check_token();
@@ -370,12 +423,20 @@ if(isset($creer_incident)) {
 
 	$display_heure=strftime("%H:%M");
 
+	$id_lieu="";
+	$sql="SELECT id FROM s_lieux_incidents WHERE lieu='Classe';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig_lieu=mysqli_fetch_object($res);
+		$id_lieu=$lig_lieu->id;
+	}
+
 	$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
 										date='$annee-$mois-$jour',
 										heure='$display_heure',
 										nature='',
 										description='',
-										id_lieu='',
+										id_lieu='$id_lieu',
 										message_id='';";
 	//echo "$sql<br />\n";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -384,7 +445,7 @@ if(isset($creer_incident)) {
 	}
 	else {
 		$id_incident=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-		$msg.="Enregistrement de l'".$mod_disc_terme_incident." n°".$id_incident." effectué.<br />\n";
+		$msg.="Création de l'".$mod_disc_terme_incident." n°".$id_incident." effectuée.<br />N'oubliez pas de préciser l'incident.<br />\n";
 
 		$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[0]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[0])))."';";
 		//echo "$sql<br />\n";
@@ -1280,6 +1341,15 @@ if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapp
         Imprimer le rapport d'<?php echo $mod_disc_terme_incident;?>
     </a>
 <?php
+}
+
+// 20150925: Lien de suppression de l'incident
+if((isset($id_incident))&&(preg_match("/^[0-9]*$/", $id_incident))&&($etat_incident!="clos")) {
+	$sql="SELECT 1=1 FROM s_incidents WHERE declarant='".$_SESSION['login']."' AND id_incident='".$id_incident."';";
+	$test_declarant_incident=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test_declarant_incident)>0) {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?suppr_incident=".$id_incident."".add_token_in_url()."'>Supprimer cet incident</a>";
+	}
 }
 
 if(acces("/mod_discipline/aide.php", $_SESSION['statut'])) {
