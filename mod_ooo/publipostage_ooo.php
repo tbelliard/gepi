@@ -1,8 +1,7 @@
 <?php
 /*
- * $Id$
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -51,10 +50,12 @@ $path=$nom_dossier_modele_a_utiliser.$_SESSION['login'];
 $num_fich=isset($_POST['num_fich']) ? $_POST['num_fich'] : (isset($_GET['num_fich']) ? $_GET['num_fich'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
+$id_AID=isset($_POST['id_AID']) ? $_POST['id_AID'] : NULL;
+
 
 $mode_pub=isset($_POST['mode_pub']) ? $_POST['mode_pub'] : (isset($_GET['mode_pub']) ? $_GET['mode_pub'] : "");
 
-if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
+if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID)))) {
 	if(!isset($msg)) {
 		$msg="";
 	}
@@ -155,6 +156,11 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 				}
 
 			}
+		}
+		else if (isset($id_AID)) {
+			
+			include_once 'extractions/extrait_AID.php';
+
 		}
 		else {
 			for($i=0;$i<count($id_groupe);$i++) {
@@ -314,6 +320,11 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 				}
 			}
 		}
+		else if (isset($id_AID)) {
+			
+			include_once 'extractions/extrait_AID_1_fichier.php';
+
+		}
 		else {
 			for($i=0;$i<count($id_groupe);$i++) {
 				$current_group=get_group($id_groupe[$i]);
@@ -402,6 +413,8 @@ elseif(isset($_GET['suppr_fich'])) {
 }
 
 //**************** EN-TETE *****************
+$style_specifique="mod_ooo/publipostage";
+
 $titre_page = "Modèle Open Office - Publipostage";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
@@ -772,9 +785,6 @@ else {
 			if(count($groups)>0) {
 ?>
 Ou
-<?php
-/* <form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form1'>*/
-?>
 <form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form2'>
 	<fieldset class='fieldset_opacite50'>
 		<p>
@@ -880,7 +890,21 @@ Ou
 			}
 		}
 
+		// Il y a sûrement mieux pour ouvrir les droits
+		if($_SESSION['statut']=='professeur') {
+			global $mysqli;
+			$sql = "SELECT * FROM `j_aid_utilisateurs` WHERE `id_utilisateur` LIKE '".$_SESSION['login']."' "
+			   . "ORDER BY indice_aid ASC , id_aid ASC";
+			//echo $sql."<br />";
+			$res = mysqli_query($mysqli, $sql);
+			if($res->num_rows) {
+				$nb_aid = $res->num_rows;
+				include_once 'publipostage_ooo_choix_AID.php';
+			}
+		}
 ?>
+
+
 <script type='text/javascript'>
 <?php
 		echo js_checkbox_change_style()." ".js_change_style_radio()
