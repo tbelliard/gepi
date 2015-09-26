@@ -147,4 +147,17 @@ function datemysql_to_jj_mois_aaaa ($date,$motif,$inverse) {
 	$les_mois = array("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre");
 	return $jour." ".$les_mois[$mois-1]." ".$annee;
 }
+
+
+function get_AID ($id_aid) {
+	global $mysqli;
+	$sqlAID = "SELECT a.nom , c.nom_complet AS nom_famille FROM `aid` as a , `aid_config` as c "
+	   . "WHERE a.id LIKE '".$id_aid."' "
+	   . "AND a.indice_aid = c.	indice_aid ";
+	//echo $sqlAID ."<br />";
+	$resAID = mysqli_query($mysqli, $sqlAID);
+	return $resAID;
+}
+
+
 ?>

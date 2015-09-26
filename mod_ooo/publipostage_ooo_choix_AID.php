@@ -43,11 +43,16 @@ $nbcol=3;
 $nb_par_colonne=round($nombreligne/$nbcol);
 
 while ($obj = $res->fetch_object()) {
+	/*
 	$sqlAID = "SELECT a.nom , c.nom_complet AS nom_famille FROM `aid` as a , `aid_config` as c "
 	   . "WHERE a.id LIKE '".$obj->id_aid."' "
 	   . "AND a.indice_aid = c.	indice_aid ";
 	//echo $sqlAID ."<br />";
 	$resAID = mysqli_query($mysqli, $sqlAID);
+	 * 
+	 */
+	$resAID = get_AID ($obj->id_aid);
+	
 	$AIDactif = $resAID->fetch_object();
 ?>
 				<p>
@@ -74,27 +79,6 @@ while ($obj = $res->fetch_object()) {
 			</div>
 		</div>
 		
-		<p style='text-indent:-3em; margin-left:3em;'>
-			Extraire les élèves inscrits dans les classes choisies&nbsp;:
-			<br />
-			<input type='radio' name='num_periode' id='num_periode2_nimporte' value='nimporte' checked='checked' />
-			<label for='num_periode2_nimporte' id='texte_num_periode2_nimporte'>
-				Quelle que soit la période
-			</label>
-			<br />
-			
-<?php
-
-				for($loop=1;$loop<=$maxper;$loop++) {
-?>
-			<input type='radio' name='num_periode' id='num_periode2_<?php echo $loop; ?>' 
-				   value='<?php $loop; ?>' />
-			<label for='num_periode2_<?php echo $loop; ?>' id='texte_num_periode2_<?php echo $loop; ?>'>
-				Période <?php echo $loop; ?></label><br />
-<?php
-				}
-?>
-		</p>
 		
 		<p>
 			<input type='radio' name='mode_pub' id='mode_pub5' value='' 

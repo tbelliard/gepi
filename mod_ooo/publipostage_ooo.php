@@ -943,7 +943,7 @@ function valider_publipostage(form_id, prefixe_id) {
 	}
 
 	if(envoyer=='n') {
-		alert('Aucun groupe ou classe n\'a été sélectionné.');
+		alert('Aucun groupe, AID ou classe n\'a été sélectionné.');
 	}
 	else {
 		document.getElementById(form_id).submit();
