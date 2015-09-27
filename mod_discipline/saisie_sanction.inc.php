@@ -340,7 +340,7 @@ else {
 	
 		echo "<ol>\n";
 		echo "<li>Cocher cette case pour traiter un report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange=\"changement();\" /></li>\n";
-		echo "<li>Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' changement();\">\n";
+		echo "<li>Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' onchange=\"changement(); if(this.selectedIndex!=0) {document.getElementById('report_demande').checked=true;} else {document.getElementById('report_demande').checked=false;}\">\n";
 		echo "<option value=''>---</option>\n";
 		echo "<option value='absent'>Absent</option>\n";
 		echo "<option value='aucun_motif'>Aucun motif</option>\n";
