@@ -2834,14 +2834,37 @@ new Ajax.Autocompleter (
                     </script>
 
 <?php
+			$tab_nature=array();
+			$temoin_categories_definies="n";
 			if($DisciplineNaturesRestreintes!=1) {
 				$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
+				$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_nat)>0) {
+					while($lig_nat=mysqli_fetch_object($res_nat)) {
+						$tab_nature['categorie']['_SANS_CATEGORIE_DEFINIE_'][]=$lig_nat->nature;
+					}
+				}
 			}
 			else {
-				$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
+				//$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
+				//$sql="(SELECT DISTINCT sn.*, sc.categorie FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie, sn.nature) UNION (SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature);";
+				$sql="SELECT DISTINCT sn.*, sc.categorie FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie, sn.nature;";
+				$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_nat)>0) {
+					$temoin_categories_definies="y";
+					while($lig_nat=mysqli_fetch_object($res_nat)) {
+						$tab_nature['categorie'][$lig_nat->categorie][]=$lig_nat->nature;
+					}
+				}
+				$sql="SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature;";
+				$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_nat)>0) {
+					while($lig_nat=mysqli_fetch_object($res_nat)) {
+						$tab_nature['categorie']['_SANS_CATEGORIE_DEFINIE_'][]=$lig_nat->nature;
+					}
+				}
 			}
-			$res_nat=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_nat)>0) {
+			if(count($tab_nature)>0) {
 ?>
                     <a href='#' 
                        onclick="cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;">
@@ -2849,17 +2872,35 @@ new Ajax.Autocompleter (
                     </a>
                     
 <?php	
-				$texte="<table class='boireaus' style='margin: auto; border:1px;' summary=\"Choix d'une nature\">\n";
-				$alt2=1;
-				while($lig_nat=mysqli_fetch_object($res_nat)) {
-					$alt2=$alt2*(-1);
-					$texte.="<tr class='lig$alt2' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
-					$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');changement();return false;\">".$lig_nat->nature."</a></td>\n";
-					$texte.="</tr>\n";
+				$texte="<table class='boireaus boireaus_alt' style='margin: auto; border:1px;' summary=\"Choix d'une nature\">\n";
+				$categorie_prec="";
+				foreach($tab_nature['categorie'] as $current_categorie => $tmp_tab_nature) {
+					if($temoin_categories_definies=="n") {
+						for($loop=0;$loop<count($tmp_tab_nature);$loop++) {
+							$texte.="<tr onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+							$texte.="<td><a href='#' onclick=\"document.getElementById('nature').value='".preg_replace("/'/", "\'", $tmp_tab_nature[$loop])."';cacher_div('div_choix_nature');changement();return false;\">".$tmp_tab_nature[$loop]."</a></td>\n";
+							$texte.="</tr>\n";
+						}
+					}
+					else {
+						if($current_categorie!=$categorie_prec) {
+							if($current_categorie=="_SANS_CATEGORIE_DEFINIE_") {
+								$current_categorie="Autres";
+							}
+							$texte.="<tr>\n";
+							$texte.="<th>".$current_categorie."</th>\n";
+							$texte.="</tr>\n";
+						}
+						for($loop=0;$loop<count($tmp_tab_nature);$loop++) {
+							$texte.="<tr onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+							$texte.="<td><a href='#' onclick=\"document.getElementById('nature').value='".preg_replace("/'/", "\'", $tmp_tab_nature[$loop])."';cacher_div('div_choix_nature');changement();return false;\">".$tmp_tab_nature[$loop]."</a></td>\n";
+							$texte.="</tr>\n";
+						}
+					}
 				}
 				$texte.="</table>\n";
 	
-				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'".$mod_disc_terme_incident,"",$texte,"",14,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'".$mod_disc_terme_incident,"",$texte,"",20,0,'y','y','n','n');
 
 ?>
                     <a href='#' 
