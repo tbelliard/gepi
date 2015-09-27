@@ -747,7 +747,7 @@ else {
 	<span style='margin-left:2em;'><input type='checkbox' name='zipper' id='zipper2' value='y' onchange=\"checkbox_change(this.id); check_choix_zip('2');\" /><label for='zipper2' id='texte_zipper2'>Dans ce deuxième cas, zipper l'ensemble de ces fichiers en une seule archive ZIP.</span></label><br />
 </p>";
 
-				echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit2' /><input type='button' value='Envoyer' id='bouton_submit_js2' onclick=\"valider_publipostage2('form2', 'id_groupe_')\" style='display:none;' /></p>\n";
+				echo "<p class='center'><input type='submit' value='Envoyer' id='bouton_submit2' /><input type='button' value='Envoyer' id='bouton_submit_js2' onclick=\"valider_publipostage('form2', 'id_groupe_')\" style='display:none;' /></p>\n";
 				echo "</fieldset>\n";
 				echo "</form>\n";
 
