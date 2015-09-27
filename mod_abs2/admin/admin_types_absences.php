@@ -319,7 +319,7 @@ echo add_token_field();
     $type = new AbsenceEleveType();
     $i = '1';
     foreach ($type_collection as $type) { ?>
-        <tr>
+        <tr onmouseover="this.style.backgroundColor='white';" onmouseout="this.style.backgroundColor='';">
 	  <td><?php echo $type->getNom(); ?></td>
 	  <td><?php echo $type->getCommentaire(); ?></td>
 	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
@@ -349,10 +349,10 @@ echo add_token_field();
 			echo " ";
 		}
 	  ?></td>
-          <td><a href="admin_types_absences.php?action=modifier&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce type ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=monter&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=descendre&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=modifier&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>' ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=monter&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="Monter le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=descendre&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="Descendre le type '<?php echo preg_replace("/\"/"," ",$type->getNom());?>'" border="0" alt="" /></a></td>
         </tr>
      <?php } ?>
     </table>
