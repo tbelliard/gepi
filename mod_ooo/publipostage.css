@@ -1,0 +1,23 @@
+
+/* 
+    Created on : 25 sept. 2015, 21:11:28
+    Author     : bouguin
+*/
+
+.tableau_03 {
+	display:table;
+	width:100%; 
+	margin:0 auto; 
+	padding:.5em;
+}
+
+.colonne03 {
+   display:table-cell;
+   width: 33%;
+}
+
+.colonne03 + .colonne03 {
+   display:table-cell;
+   width: 33%;
+}
+   
