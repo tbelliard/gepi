@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
 *
 * This file is part of GEPI.
 *
@@ -166,7 +166,7 @@ $tab_nature=array();
 //$sql = "(SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie) UNION (SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature);";
 //$sql = "(SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature) UNION (SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie);";
 // Il y a un problème de tri avec UNION SELECT... je passe à deux requêtes
-$sql = "SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie;";
+$sql = "SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie, sn.nature;";
 //echo "$sql<br />";
 $res = mysqli_query($GLOBALS["mysqli"], $sql);
 
