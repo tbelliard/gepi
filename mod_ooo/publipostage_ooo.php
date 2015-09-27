@@ -105,7 +105,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
 							$tab_eleves_OOo[$nb_eleve]=array();
-
+/**
 							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
 							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
 							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
@@ -123,6 +123,13 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 							$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
 
 							$nb_eleve++;
+							
+ * 
+ */
+							
+							$nb_eleve_actuel=$nb_eleve;
+							include 'lib/charge_tableau.php';
+							$tab_eleves_OOo[$nb_eleve_actuel]['classe']=$classe;
 						}
 					}
 				}
@@ -177,11 +184,12 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 				}
 				else {
 					$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_groupes jeg WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe[$i]'".$sql_ajout_jeg." ORDER BY e.nom, e.prenom;";
+					// echo $sqlElv.'<br />';
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
 							$tab_eleves_OOo[$nb_eleve]=array();
-
+/*
 							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
 							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
 							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
@@ -197,6 +205,13 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 							$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
 
 							$nb_eleve++;
+ * 
+ */
+							$nb_eleve_actuel=$nb_eleve;
+							include 'lib/charge_tableau.php';
+							$tab_eleves_OOo[$nb_eleve_actuel]['classe']=$current_group['classlist_string'];
+							
+							
 						}
 					}
 				}
@@ -297,7 +312,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
 							$tab_eleves_OOo[$nb_eleve]=array();
-
+/*
 							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
 							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
 							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
@@ -315,6 +330,12 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 							$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
 
 							$nb_eleve++;
+ * 
+ */
+							
+							$nb_eleve_actuel=$nb_eleve;
+							include 'lib/charge_tableau.php';
+							$tab_eleves_OOo[$nb_eleve_actuel]['classe']=$classe;
 						}
 					}
 				}
@@ -339,7 +360,7 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 					if(mysqli_num_rows($res)>0) {
 						while($lig=mysqli_fetch_object($res)) {
 							$tab_eleves_OOo[$nb_eleve]=array();
-
+/*
 							$tab_eleves_OOo[$nb_eleve]['login']=$lig->login;
 							$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
 							$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
@@ -355,6 +376,12 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe))||(isset($id_AID
 							$tab_eleves_OOo[$nb_eleve]['classe']=$current_group['classlist_string'];
 
 							$nb_eleve++;
+ * 
+ */
+							
+							$nb_eleve_actuel=$nb_eleve;
+							include 'lib/charge_tableau.php';
+							$tab_eleves_OOo[$nb_eleve_actuel]['classe']=$current_group['classlist_string'];
 						}
 					}
 				}
