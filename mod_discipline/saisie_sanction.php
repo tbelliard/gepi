@@ -69,6 +69,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 	$autre_protagoniste_meme_sanction=isset($_POST['autre_protagoniste_meme_sanction']) ? $_POST['autre_protagoniste_meme_sanction'] : array();
 
+	$message_mail="";
+
 	$id_nature_sanction=$_POST['traitement'];
 	$sql="SELECT * FROM s_types_sanctions2 WHERE id_nature='".$id_nature_sanction."';";
 	$res_ns=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -86,7 +88,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$heure_debut_main=isset($_POST['heure_debut_main']) ? $_POST['heure_debut_main'] : '00:00';
 			$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 			$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
-            $materiel=isset($_POST['materiel']) ? $_POST['materiel'] : NULL;
+			$materiel=isset($_POST['materiel']) ? $_POST['materiel'] : NULL;
 		
 			$report_demande=isset($_POST['report_demande']) ? $_POST['report_demande'] : NULL;
 			$choix_motif_report=isset($_POST['choix_motif_report']) ? $_POST['choix_motif_report'] : NULL;
@@ -155,6 +157,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 					if(!$res) {
 						$msg.="Erreur lors de l'insertion des informations de report dans 's_reports'.<br />";
 					}
+					else {
+						$message_mail.="La $nature_sanction n°$id_sanction initialement prévue le ".$ancienne_date." pour une durée de ".$ancienne_duree."H est reportée à une date ultérieure (motif: ".$choix_motif_report.").\n";
+					}
 				}
 		
 				// Modification???
@@ -176,7 +181,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
 						//par defaut la liste déroulante
 						if ($heure_debut_main !='00:00') {
-						   $heure_debut=$heure_debut_main;
+							$heure_debut=$heure_debut_main;
 						}
 						//$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N' WHERE id_sanction='$id_sanction';";
 						$sql="UPDATE s_retenues SET date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel' WHERE id_sanction='$id_sanction';";
@@ -184,6 +189,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
+						}
+						else {
+							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue à $heure_debut pour une durée de $duree_retenue\nLieu: $lieu_retenue\nMatériel: $materiel\n";
 						}
 					}
 				}
@@ -203,12 +211,15 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
 					//par defaut la liste déroulante
 					if ($heure_debut_main !='00:00') {
-						   $heure_debut=$heure_debut_main;
+						$heure_debut=$heure_debut_main;
 					}
 					//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
 					$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($res) {
+						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." à $heure_debut pour une durée de ".$duree_retenue."H.\nTravail: $travail\nLieu: $lieu_retenue\nMatériel: $materiel\n";
+					}
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
@@ -232,6 +243,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$sql="INSERT INTO s_retenues SET id_sanction='$tmp_id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', materiel='$materiel';";
 							//echo "$sql<br />\n";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($res) {
+								$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe")."\n";
+							}
 						}
 					}
 				}
@@ -359,6 +373,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 						if(!$update) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
+						else {
+							$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est mise à jour du $date_debut à $heure_debut au $date_fin à $heure_fin.\nNombre de jours: $nombre_jours\nQualification des faits: $qualidication_faits\nTravail: $travail\nLieu: $lieu_exclusion\nMatériel: $materiel\nSignataire: $signataire\n";
+						}
 					}
 				}
 			}
@@ -375,11 +392,14 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$sql="INSERT INTO s_exclusions SET id_sanction='$id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($res) {
+						$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie du $date_debut à $heure_debut au $date_fin à $heure_fin.\nNombre de jours: $nombre_jours\nQualification des faits: $qualidication_faits\nTravail: $travail\nLieu: $lieu_exclusion\nMatériel: $materiel\nSignataire: $signataire\n";
+					}
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
 					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
-						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
+						$sql="INSERT INTO s_sanctions SET login='".$autre_protagoniste_meme_sanction[$loop]."', id_nature_sanction='$id_nature_sanction', nature='".addslashes($nature_sanction)."', id_incident='$id_incident', saisie_par='".$_SESSION['login']."';";
 						//echo "$sql<br />\n";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(!$res) {
@@ -392,6 +412,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$sql="INSERT INTO s_exclusions SET id_sanction='$tmp_id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 							//echo "$sql<br />\n";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($res) {
+								$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe")."\n";
+							}
 						}
 					}
 				}
@@ -473,6 +496,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($res) {
+						$message_mail.="Un $nature_sanction supplémentaire (sanction n°$id_sanction) a été donné à ".get_nom_prenom_eleve($ele_login, "avec_classe")." a été définie pour le $date_retour à $heure_retour.\nTravail: $travail\n";
+					}
 				}
 
 				if(count($autre_protagoniste_meme_sanction)>0) {
@@ -491,6 +517,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$sql="INSERT INTO s_travail SET id_sanction='$tmp_id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
 							//echo "$sql<br />\n";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+							if($res) {
+								$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe")." a été définie pour le $date_retour à $heure_retour.\nTravail: $travail\n";
+							}
 						}
 					}
 				}
@@ -538,6 +567,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 								//$msg.="Erreur lors de la mise à jour de la sanction '$type_sanction' n°$id_sanction.<br />";
 								$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 							}
+							else {
+								$message_mail.="Sanction ($nature_sanction) (type $id_nature_sanction) (n°$id_sanction) mise à jour pour ".get_nom_prenom_eleve($ele_login, "avec_classe")."\nDescription: $description\n";
+							}
 						}
 					}
 				}
@@ -557,6 +589,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 						if(!$res) {
 							//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$id_sanction.<br />";
 							$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
+						}
+						else {
+							$message_mail.="Sanction ($nature_sanction) (type $id_nature_sanction) (n°$id_sanction) a été donnée à ".get_nom_prenom_eleve($ele_login, "avec_classe")."\nDescription: $description\n";
 						}
 					}
 
@@ -579,6 +614,9 @@ if(isset($_POST['enregistrer_sanction'])) {
 									//$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$tmp_id_sanction.<br />";
 									$msg.="Erreur lors de l'enregistrement de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$tmp_id_sanction.<br />";
 								}
+								else {
+									$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe")."\n";
+								}
 							}
 						}
 					}
@@ -587,7 +625,103 @@ if(isset($_POST['enregistrer_sanction'])) {
 		}
 	}
 
+	if($message_mail!="") {
+		//20150925
+		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+		if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+			$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+		}
 
+		if($envoi_mail_actif=='y') {
+			$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident';";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig_incident=mysqli_fetch_object($res);
+				$nature=$lig_incident->nature;
+
+				$message_id_incident=$lig_incident->message_id;
+				if($message_id_incident=="") {
+					$message_id_incident=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".mb_substr(md5(microtime()),0,6);
+					$sql="UPDATE s_incidents SET message_id='$message_id_incident' WHERE id_incident='$id_incident';";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+
+				$references_mail=$message_id_incident;
+				//$tab_param_mail['message_id']=$message_id;
+				//$tab_param_mail['references']=$message_id;
+
+				$tab_alerte_mail=array();
+				if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+					$tab_alerte_mail[]=$_SESSION['email'];
+				}
+				if($lig_incident->declarant!=$_SESSION['login']) {
+					$current_mail=get_valeur_champ("utilisateurs", "login='".$lig_incident->declarant."'", "email");
+					if((!in_array($current_mail, $tab_alerte_mail))&&(check_mail($current_mail))) {
+						$tab_alerte_mail[]=$current_mail;
+					}
+				}
+
+				$info_classe_prot="";
+				$liste_protagonistes_responsables="";
+				$tab_alerte_classe=array();
+				$sql="SELECT login FROM s_protagonistes WHERE id_incident='$id_incident' AND qualite='responsable';";
+				$res_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_prot)) {
+					while($lig_prot=mysqli_fetch_object($res_prot)) {
+				
+						if(getSettingValue('mod_disc_sujet_mail_sans_nom_eleve')!="n") {
+							if($liste_protagonistes_responsables!="") {$liste_protagonistes_responsables.=", ";}
+							$liste_protagonistes_responsables.=$lig_prot->login;
+							//echo "\$liste_protagonistes_responsables=$liste_protagonistes_responsables<br />";
+						}
+
+						// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
+						// NON
+						$sql="SELECT DISTINCT id_classe, c.classe FROM j_eleves_classes jec, classes c WHERE jec.login='$lig_prot->login' AND jec.id_classe=c.id ORDER BY periode DESC LIMIT 1;";
+						$res_clas_prot=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_clas_prot)>0) {
+							$lig_clas_prot=mysqli_fetch_object($res_clas_prot);
+							if((!in_array($lig_clas_prot->id_classe,$tab_alerte_classe))&&(!in_array($lig_clas_prot->id_classe,$tab_alerte_mail))) {
+								$tab_alerte_classe[]=$lig_clas_prot->id_classe;
+							}
+
+							$info_classe_prot="[$lig_clas_prot->classe]";
+						}
+					}
+				}
+
+
+				if(count($tab_alerte_classe)>0) {
+					$tab_param_mail=array();
+					$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
+
+					if($destinataires!="") {
+						//$texte_mail=$message_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
+			
+						$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+
+						$headers = "";
+						if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
+							$headers.="Reply-to:".$_SESSION['email']."\r\n";
+							$tab_param_mail['replyto']=$_SESSION['email'];
+						}
+
+						// Non: Il ne faut pas prendre le message_id de l'incident pour un nouveau message... il faut le mettre seulement en référence
+						//if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+						if(isset($references_mail)) {
+							$headers .= "References: $references_mail\r\n";
+							$tab_param_mail['references']=$references_mail;
+						}
+
+						$texte_mail="Bonjour,\n\n".$message_mail."\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
+						// On envoie le mail
+						$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers, "plain", $tab_param_mail);
+					}
+				}
+			}
+		}
+	}
 
 	if(isset($id_sanction)) {
 		$temoin_modif_fichier=0;
