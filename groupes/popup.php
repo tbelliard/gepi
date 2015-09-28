@@ -354,9 +354,16 @@ if($gepi_prof_suivi==""){
 	//echo "<p>".rawurldecode($_GET['chaine'])."</p>";
 
 	if(acces("/groupes/get_csv.php", $_SESSION['statut'])) {
-		echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/get_csv.php?id_groupe=$id_groupe";
-		if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
-		echo "' title=\"Exporter la liste des élèves au format CSV (tableur)\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>\n";
+		if(preg_match("/^[0-9]*$/", $id_groupe)) {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/get_csv.php?id_groupe=$id_groupe";
+			if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+			echo "' title=\"Exporter la liste des élèves au format CSV (tableur)\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>\n";
+		}
+		elseif(isset($id_classe)) {
+			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/get_csv.php?id_classe=$id_classe";
+			if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+			echo "' title=\"Exporter la liste des élèves au format CSV (tableur)\"><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>\n";
+		}
 	}
 
 	$tabmail=array();
