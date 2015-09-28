@@ -13653,4 +13653,35 @@ function get_valeur_champ($table, $critere, $champ) {
 
 	return $retour;
 }
+
+function my_file_get_contents($url) {
+	global $gepiPath;
+
+	if(file_exists($gepiPath."/secure/proxy.php")) {
+		require($gepiPath."/secure/proxy.php");
+		if((isset($ProxyServer))&&(isset($ProxyPort))) {
+			$tmp_context_proxy=array(
+			'http'=>array(
+					'proxy'=>"tcp:$ProxyServer:$ProxyPort",
+					'request_fulluri' => true,
+				),
+			'https'=>array(
+					'proxy'=>"tcp:$ProxyServer:$ProxyPort",
+					'request_fulluri' => true,
+				)
+			);
+			$context_proxy=stream_context_create($tmp_context_proxy);
+		}
+	}
+
+
+	if(isset($context_proxy)) {
+		$content=file_get_contents($url, false, $context_proxy);
+	}
+	else {
+		$content=file_get_contents($url);
+	}
+
+	return $content;
+}
 ?>

@@ -193,7 +193,7 @@ elseif($mode=="telech") {
 		die();
 	}
 */
-	$content=file_get_contents("http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics");
+	$content=my_file_get_contents("http://cache.media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_".mb_strtoupper($zone).".ics");
 	$temp_perso="../temp/".get_user_temp_directory();
 	if(!file_put_contents($temp_perso."/fichier_vacances_scolaires.ics", $content)) {
 		echo "<p style='color:red'>Échec de l'écriture du fichier temporaire.</p>";
