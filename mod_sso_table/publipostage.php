@@ -274,9 +274,11 @@ if($mode=="upload") {
 				$url_connexion_ent=getSettingValue("url_connexion_ent");
 				if(getSettingAOui("inclure_url_connexion_ent")) {
 					$checked_inclure_url_connexion_ent=" checked";
+					$style_inclure_url_connexion_ent=" style='font-weight:bold;'";
 				}
 				else {
 					$checked_inclure_url_connexion_ent="";
+					$style_inclure_url_connexion_ent="";
 				}
 				echo "<form action='publipostage.php' enctype='multipart/form-data' method='post' target='_blank'>
 	<fieldset class='fieldset_opacite50'>
@@ -285,7 +287,7 @@ if($mode=="upload") {
 		<div style='margin-left:3em;'>
 		<input type='hidden' name='mode' value='publiposter' />
 		<p style='text-indent:-3em;margin-left:3em;'>Paramètres du publipostage&nbsp;:<br />
-		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
+		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'$style_inclure_url_connexion_ent> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
 		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
 		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em></p>";
