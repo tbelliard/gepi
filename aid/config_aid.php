@@ -57,6 +57,11 @@ $bull_simplifie = isset($_POST["bull_simplifie"]) ? $_POST["bull_simplifie"] : '
 $activer_outils_comp = isset($_POST["activer_outils_comp"]) ? $_POST["activer_outils_comp"] : 'n';
 $feuille_presence = isset($_POST["feuille_presence"]) ? $_POST["feuille_presence"] : 'n';
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
+
+$indice_aid = isset($indice_aid) ? $indice_aid : (isset($_SESSION["indice_aid"]) ? $_SESSION["indice_aid"] : NULL);
+$_SESSION["indice_aid"] = $indice_aid;
+
+$mysqli = $GLOBALS["mysqli"];
 // ========== fin initialisation ===================
 
 if (isset($is_posted) and ($is_posted == "1")) {
@@ -157,6 +162,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 $titre_page = "Gestion des AID";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+// echo "Indice ".$indice_aid;
 
 ?>
 
@@ -205,24 +211,6 @@ function checkFormElementInRange(formulaire,champ,vmin,vmax){
 <?php
 if (isset($indice_aid)) {
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-	/*
-    $reg_nom = @old_mysql_result($call_data, 0, "nom");
-    $reg_nom_complet = @old_mysql_result($call_data, 0, "nom_complet");
-    $note_max = @old_mysql_result($call_data, 0, "note_max");
-    $order_display1 = @old_mysql_result($call_data, 0, "order_display1");
-    $order_display2 = @old_mysql_result($call_data, 0, "order_display2");
-    $type_note = @old_mysql_result($call_data, 0, "type_note");
-    $display_begin = @old_mysql_result($call_data, 0, "display_begin");
-    $display_end = @old_mysql_result($call_data, 0, "display_end");
-    $message = @old_mysql_result($call_data, 0, "message");
-    $display_nom = @old_mysql_result($call_data, 0, "display_nom");
-    $display_bulletin = @old_mysql_result($call_data, 0, "display_bulletin");
-    $autoriser_inscript_multiples = @old_mysql_result($call_data, 0, "autoriser_inscript_multiples");
-    $bull_simplifie = @old_mysql_result($call_data, 0, "bull_simplifie");
-    $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
-    $feuille_presence = @old_mysql_result($call_data, 0, "feuille_presence");
-	 * 
-	 */
 	$obj_data = $call_data->fetch_object();
 	$reg_nom = $obj_data->nom;
     $reg_nom_complet = $obj_data->nom_complet;
@@ -265,179 +253,193 @@ if (isset($indice_aid)) {
 }
 ?>
 
-<!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements(this, 'reg_nom_complet') && (emptyFormElements(this, 'reg_nom')) && checkFormElementInRange(this, 'order_display2', 0, 100))"-->
-<!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements(this, 'reg_nom_complet') &amp;&amp; (emptyFormElements(this, 'reg_nom')) &amp;&amp;s checkFormElementInRange(this, 'order_display2', 0, 100))"-->
-<!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') && (emptyFormElements('formulaire', 'reg_nom')) && checkFormElementInRange('formulaire', 'order_display2', 0, 100))"-->
 <form enctype="multipart/form-data" name="formulaire" action="config_aid.php" method="post" onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
 
 <?php
 echo add_token_field();
 ?>
-<div class='norme'><p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-
-<input type="submit" value="Enregistrer" /><br />
-
-<br /><b>Configuration des AID (Activités Inter-Disciplinaires) :</b>
-
-<hr />
-
-Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
-
-<br />Nom complet : <input type="text" name="reg_nom_complet" size="40" <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}?> />
-
-<br /><br />Choisissez le nom abrégé de l'AID (par exemple T.P.E.) :
-
-<br />Nom : <input type="text" name="reg_nom" size="20" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> />
-
-<hr />
-
-Type de notation :  <br />
-
-<input type="radio" name="type_note" id="type_note_every" value="every" <?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> /><label for='type_note_every'> Une note pour chaque période</label>
-
-<input type="radio" name="type_note" id="type_note_last" value="last" <?php if ($type_note == "last") { echo ' checked="checked"';} ?> /><label for='type_note_last'> Une note uniquement pour la dernière période</label>
-
-<input type="radio" name="type_note" id="type_note_no" value="no" <?php if ($type_note == "no") { echo ' checked="checked"';} ?> onclick="mise_a_zero()" /><label for='type_note_no'> Pas de note</label>
-
-<hr />
-
-
+<div class='norme'>
+	<p class="bold">
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid ?>" />
+		<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>
+		<br />
+		<strong>Configuration des AID (Activités Inter-Disciplinaires) :</strong>
+		<hr />
+		Choisissez le nom complet de l'AID (par exemple Travaux Personnels Encadrés) :
+		<br />
+		Nom complet : 
+		<input type="text" 
+			   name="reg_nom_complet" 
+			   size="40"
+				   <?php if (isset($reg_nom_complet)) { echo "value=\"".$reg_nom_complet."\"";}
+				   ?> 
+			   />
+		<br /><br />
+		Choisissez le nom abrégé de l'AID (par exemple T.P.E.) :
+		<br />
+		Nom : 
+		<input type="text" 
+			   name="reg_nom" 
+			   size="20" 
+				   <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> 
+			   />
+		<hr />
+		Type de notation :
+		<br />
+		<input type="radio" name="type_note" id="type_note_every" value="every" 
+			<?php if (($type_note == "every") or ($type_note == "")) { echo ' checked="checked"';} ?> 
+			   />
+		<label for='type_note_every'> Une note pour chaque période</label>
+		<input type="radio" name="type_note" id="type_note_last" value="last" 
+			<?php if ($type_note == "last") { echo ' checked="checked"';} ?> />
+		<label for='type_note_last'> Une note uniquement pour la dernière période</label>
+		<input type="radio" name="type_note" id="type_note_no" value="no" 
+			<?php if ($type_note == "no") { echo ' checked="checked"';} ?> 
+			   onclick="mise_a_zero()" />
+		<label for='type_note_no'> Pas de note</label>
+		<hr />
 
 <?php
 
 $query_max_periode = mysqli_query($GLOBALS["mysqli"], "SELECT max(num_periode) max FROM periodes");
 
-//$max_periode = old_mysql_result($query_max_periode, 0, "max")+1;
 $obj_periode = $query_max_periode->fetch_object();
 $max_periode = $obj_periode->max+1;
-   
-echo "Durée de l'AID : ";
-
-if ($max_periode == '1') {
-
-   echo " <font color='red'>Attention, aucune période n'est actuellement définie (commencez par créer une ou plusieurs classes sur une ou plusieurs périodes).</font>";
-
-   $max_periode = '2';
-
-} echo "<br /> L'aid débute à la période";
-
-echo "<SELECT name=\"display_begin\">";
-
-$i = 1;
-
-while ($i < $max_periode) {
-
-    echo "<option"; if ($display_begin==$i) {echo ' selected="selected"';} echo ">$i";
-
-    $i++;
-
-}
-
 ?>
-
-</SELECT>
-
-(incluse) jusqu'à la période
-
-<SELECT name="display_end">
-
+		Durée de l'AID :
+<?php
+if ($max_periode == '1') {
+?>
+		<span style="color:red;">
+			Attention, aucune période n'est actuellement définie 
+			(commencez par créer une ou plusieurs classes sur une ou plusieurs périodes).
+		</span>";
+<?php
+   $max_periode = '2';
+}
+?>
+		<br />
+		L'aid débute à la période;
+		<select name="display_begin">
 <?php
 
 $i = 1;
 
 while ($i < $max_periode) {
-
-    echo "<option"; if ($display_end==$i) {echo ' selected="selected"';} echo ">$i";
-
+?>
+			<option <?php if ($display_begin==$i) {echo ' selected="selected"';} ?>  ><?php echo $i ?>
+<?php
     $i++;
-
 }
 
 ?>
+		</select>
+		(incluse) jusqu'à la période
+		<select name="display_end">
+<?php
 
-</SELECT>
+$i = 1;
 
-(incluse).
-
-
-
-<hr />
-
-Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
-
-<br />Note maximum : <input type="text" name="note_max" size="4" <?php if ($note_max) { echo "value=\"".$note_max."\"";}?> onBlur="verif_type_note()" />
-
-<hr />
-
-Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :<br />
-
-<input type="radio" name="display_nom" id='display_nom_y' value="y" <?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> /><label for='display_nom_n'> Oui</label>
-
-<input type="radio" name="display_nom" id='display_nom_n' value="n" <?php if ($display_nom == "n") { echo ' checked="checked"';} ?> /><label for='display_nom_n'> Non</label>
-
-<hr />
-
-Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :<br />
-
-<input type="text" name="message" size="40" maxlength="40" <?php if ($message) { echo "value=\"".$message."\"";}?> /><br />
-<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
-
-<hr />
-
-<p>Place de la case réservée à cette aid dans le bulletin final :</p>
-<p>
-<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" <?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"';;} ?> />
-<label for="orderDisplay1Y"> En début du bulletin</label>
-<input type="radio"id="orderDisplay1N" name="order_display1" value="e" <?php if ($order_display1 == "e") { echo ' checked="checked"';;} ?> />
-<label for="orderDisplay1N"> En fin de bulletin</label>
-</p>
-
-
-
-
-
-<br />
-
-Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
-
-<input type="text" name="order_display2" size="1" <?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";}?> />
-
-<hr />
-
-<p><b>Affichage :  </b></p>
-<p>
-<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" <?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
-<label for="display_Bulletin">L'AID apparaît dans le bulletin officiel</label>
-</p>
-<p>
-<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' <?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
-<label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
-</p>
-
-<hr />
-
-<p><b>Inscriptions multiples :  </b></p>
-<p>
-Par d&eacute;faut, un &eacute;l&egrave;ve ne peut &ecirc;tre inscrit dans plus d'un AID par cat&eacute;gorie d'AID.
-<br />Cependant, dans certains cas, il peut &ecirc;tre utile d'autoriser l'inscription d'un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.</p>
-<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" <?php if ($autoriser_inscript_multiples == "y") { echo ' checked="checked"';} ?> />
-<label for="autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
-</p>
-
-<hr />
+while ($i < $max_periode) {
+?>
+			<option <?php  if ($display_end==$i) {echo ' selected="selected"';} ?>  ><?php echo $i ?>
+<?php
+    $i++;
+}
+?>
+		</select>
+		(incluse).
+		<hr />
+		Choisissez le cas échéant la note maximum sur laquelle est notée l'AID :
+		<br />
+		Note maximum : 
+		<input type="text" name="note_max" size="4" 
+			<?php if ($note_max) { echo "value=\"".$note_max."\"";}?> 
+			   onBlur="verif_type_note()" />
+		<hr />
+		Dans le bulletin final, le titre complet apparaît et précède l'appréciation dans la case appréciation :
+		<br />
+		<input type="radio" name="display_nom" id='display_nom_y' value="y" 
+			<?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> />
+		<label for='display_nom_n'> Oui</label>
+		<input type="radio" name="display_nom" id='display_nom_n' value="n" 
+			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
+		<label for='display_nom_n'> Non</label>
+		<hr />
+		Dans le bulletin final, le message suivant précède le titre complet dans la case appréciation :
+		<br />
+		<input type="text" name="message" size="40" maxlength="40" 
+			<?php if ($message) { echo "value=\"".$message."\"";}?> />
+		<br />
+		<span style='font-size:small;'>(Ce message prendra de la place dans la case appréciation sur le bulletin)</span>
+		<hr />
+	</p>
+	<p>Place de la case réservée à cette aid dans le bulletin final :</p>
+	<p>
+		<input type="radio" id="orderDisplay1Y" name="order_display1" value="b" 
+			<?php if (($order_display1 == "b") or (!$order_display1)) { echo ' checked="checked"' ;} ?> />
+		<label for="orderDisplay1Y"> En début du bulletin</label>
+		<input type="radio" id="orderDisplay1N" name="order_display1" value="e" 
+			<?php if ($order_display1 == "e") { echo ' checked="checked"';} ?> />
+		<label for="orderDisplay1N"> En fin de bulletin</label>
+	</p>
+	<p>
+		Position par rapport aux autres aid (entrez un nombre entre 1 et 100) :
+		<input type="text" name="order_display2" size="1" 
+			<?php if (isset($order_display2)) { echo "value=\"".$order_display2."\"";} ?> />
+	</p>
+	<hr />
+	<p><strong>Affichage :  </strong></p>
+	<p>
+		<input type="checkbox" id="display_Bulletin" name="display_bulletin" value="y" 
+			<?php if ($display_bulletin == "y") { echo ' checked="checked"';} ?> />
+		<label for="display_Bulletin">L'AID apparaît dans le bulletin officiel</label>
+	</p>
+	<p>
+		<input type="checkbox" id="bullSimplifie" name="bull_simplifie" value='y' 
+			<?php if ($bull_simplifie == "y") { echo ' checked="checked"';} ?> />
+		<label for="bullSimplifie">L'AID appara&icirc;t dans le bulletin simplifi&eacute;.</label>
+	</p>
+	<hr />
+	<p><strong>Inscriptions multiples :  </strong></p>
+	<p>
+		Par d&eacute;faut, un &eacute;l&egrave;ve ne peut &ecirc;tre inscrit dans plus d'un AID par cat&eacute;gorie d'AID.
+		<br />
+		Cependant, dans certains cas, il peut &ecirc;tre utile d'autoriser l'inscription 
+		d'un &eacute;l&egrave;ve &agrave; plusieurs AID d'une m&ecirc;me cat&eacute;gorie.
+	</p>
+	<p>
+		<input type="checkbox" id="autoriser_inscript_multiples" name="autoriser_inscript_multiples" value="y" 
+			<?php if ($autoriser_inscript_multiples == "y") { echo ' checked="checked"';} ?> />
+		<label for="autoriser_inscript_multiples">Autoriser les inscriptions multiples</label>
+	</p>
+	<hr />
 <?php
 // si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
-$test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
+$test_plugin = sql_query1("SELECT ouvert FROM plugins WHERE nom='gestion_autorisations_publications'");
 
-if ((getSettingValue("active_mod_gest_aid")=="y") and ($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != $indice_aid)) {
+//if ((getSettingValue("active_mod_gest_aid")=="y") and ($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != $indice_aid)) {
+if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
-<p><b>Ajout/suppression de "super-gestionnaires"</b></p>
-<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de g&eacute;rer les AIDs de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)</p>
+	<p>
+		<strong>Ajout/suppression de "super-gestionnaires"</strong>
+	</p>
+	<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous 
+		des utilisateurs (professeurs ou CPE) ayant le droit de g&eacute;rer les AIDs 
+		de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)
+	</p>
 <?php
-$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_super_gestionnaires j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
+$sql_liste_data = "SELECT u.login, u.prenom, u.nom "
+   . "FROM utilisateurs u, j_aidcateg_super_gestionnaires j "
+   . "WHERE (j.indice_aid='".$indice_aid."' AND u.login=j.id_utilisateur AND (statut='professeur' or statut='cpe'))  "
+   . "ORDER BY u.nom, u.prenom";
+// echo $sql_liste_data;
+$call_liste_data = mysqli_query($GLOBALS["mysqli"], $sql_liste_data);
 $nombre = mysqli_num_rows($call_liste_data);
-if ($nombre !=0)
-    echo "<table border=0>";
+if ($nombre !=0){
+?>
+	<table border=0>
+<?php
 $i = "0";
 // while ($i < $nombre) {
 while ($obj_liste_data = $call_liste_data->fetch_object()) {
@@ -447,15 +449,32 @@ while ($obj_liste_data = $call_liste_data->fetch_object()) {
     $nom_prof =  $obj_liste_data->nom;
     // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
     $prenom_prof = $obj_liste_data->prenom;
-    echo "<tr><td><b>";
-    echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_gestionnaire_".$login_gestionnaire."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
-
+?>
+		<tr>
+			<td>
+				<strong>
+					<?php echo $nom_prof." ". $prenom_prof; ?>
+				</strong>
+			</td>
+			<td>
+				<input type="checkbox" 
+					   name="delete_gestionnaire_<?php echo $login_gestionnaire; ?>" 
+					   value="y" />
+				(cocher pour supprimer)
+			</td>
+		</tr>
+<?php
     $i++;
 }
-if ($nombre !=0)
-    echo "</table>";
-echo "<select size=1 name=reg_gestionnaire_login>\n";
-echo "<option value=''>(aucun)</option>\n";
+//if ($nombre !=0)
+?>
+	</table>
+<?php
+}
+?>
+	<select size=1 name=reg_gestionnaire_login>
+		<option value=''>(aucun)</option>
+<?php
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
@@ -467,23 +486,39 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
     $nom_el = $obj_call_prof->nom;
     // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
     $prenom_el = $obj_call_prof->prenom;
-    echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+?>
+		<option value="<?php echo $login_prof; ?>"><?php echo $nom_el; ?> <?php echo $prenom_el; ?></option>
+<?php
     $i++;
 }
 ?>
-</select>
-<hr />
+	</select>
+	<hr />
 <?php } ?>
-
-<p><b>Outils complémentaires de gestion des AIDs :</b></p>
-<p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
-(<em>attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire, trombinoscope,...</em>).
-<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Consulter l'aide</a>.</p>
-<p>
-<!--  onclick="javascript:Element.show('outils_comp');" -->
-<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" onchange="js_adapte_outil_comp()" <?php if ($activer_outils_comp=='y') echo " checked"; ?> /><label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label><br />
-<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" onchange="js_adapte_outil_comp()" <?php if ($activer_outils_comp=='n') echo " checked"; ?> /><label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
-</p>
+	<p>
+		<strong>Outils complémentaires de gestion des AIDs :</strong>
+	</p>
+	<p>
+		En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
+		(<em>attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, 
+			un public destinataire, trombinoscope,...
+		</em>).
+		<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">
+			Consulter l'aide
+		</a>.
+	</p>
+	<p>
+		<!--  onclick="javascript:Element.show('outils_comp');" -->
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_y" value="y" 
+			   onchange="js_adapte_outil_comp()" 
+				   <?php if ($activer_outils_comp=='y') echo " checked='checked' "; ?> />
+		<label for='activer_outils_comp_y'>&nbsp;Activer les outils compl&eacute;mentaires</label>
+		<br />
+		<input type="radio" name="activer_outils_comp" id="activer_outils_comp_n" value="n" 
+			   onchange="js_adapte_outil_comp()" 
+				   <?php if ($activer_outils_comp=='n') echo " checked='checked' "; ?> />
+		<label for='activer_outils_comp_n'>&nbsp;Désactiver les outils compl&eacute;mentaires</label>
+	</p>
 <script type="text/javascript">
 function js_adapte_outil_comp() {
 	if(document.getElementById('activer_outils_comp_y').checked==true) {
@@ -495,19 +530,25 @@ function js_adapte_outil_comp() {
 }
 </script>
 <?php if ($activer_outils_comp=='y') {?>
-    <div id="outils_comp">
+	<div id="outils_comp">
 <?php } else { ?>
     <div id="outils_comp" style="display:none;">
 <?php } ?>
-<hr />
-<p><b>Modification des fiches projet : </b></p>
-<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (<em>professeurs ou CPE</em>) ayant le droit de modifier les fiches projet (<em>documentaliste,...</em>)
-même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.</p>
+		<hr />
+		<p>
+			<strong>Modification des fiches projet : </strong>
+		</p>
+		<p>
+			En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs 
+			(<em>professeurs ou CPE</em>) ayant le droit de modifier les fiches projet (<em>documentaliste,...</em>)
+			même lorsque l'administrateur a désactivé cette possibilité pour les professeurs responsables.
+		</p>
 <?php
 $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_utilisateurs j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
 $nombre = mysqli_num_rows($call_liste_data);
-if ($nombre !=0)
-    echo "<table border=0>";
+if ($nombre !=0) { ?>
+		<table border=0>
+<?php
 $i = "0";
 // while ($i < $nombre) {
 while ($obj_call_data = $call_liste_data->fetch_object()) {
@@ -517,15 +558,24 @@ while ($obj_call_data = $call_liste_data->fetch_object()) {
     $nom_prof = $obj_call_data->nom;
     // $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
     $prenom_prof = $obj_call_data->prenom;
-    echo "<tr><td><b>";
-    echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_".$login_prof."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
-
+?>
+			<tr>
+				<td>
+					<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>
+				</td>
+				<td> <input type="checkbox" name="delete_<?php echo $login_prof; ?>" value="y" />
+					(cocher pour supprimer)
+				</td>
+			</tr>
+<?php
     $i++;
 }
-if ($nombre !=0)
-    echo "</table>";
-echo "<select size=1 name=reg_prof_login>\n";
-echo "<option value=''>(aucun)</option>\n";
+//if ($nombre !=0) ?>
+		</table>
+<?php } ?>
+		<select size=1 name=reg_prof_login>
+			<option value=''>(aucun)</option>
+<?php
 $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
 $nombreligne = mysqli_num_rows($call_prof);
 $i = "0" ;
@@ -537,7 +587,9 @@ while ($obj_call_prof = $call_prof->fetch_object()) {
     $nom_el = $obj_call_prof->nom;
     // $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
     $prenom_el = $obj_call_prof->prenom;
-    echo "<option value=\"".$login_gestionnaire."\">".$nom_el." ".$prenom_el."</option>\n";
+?>
+			<option value="<?php echo $login_gestionnaire; ?>"><?php echo $nom_el; ?> <?php echo $prenom_el; ?></option>
+<?php
     $i++;
 }
 
