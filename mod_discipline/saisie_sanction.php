@@ -1214,6 +1214,8 @@ if(isset($odt)&&
 	$TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 } //fin Ooo
 
+$avec_js_et_css_edt="y";
+
 $utilisation_prototype="ok";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -1860,8 +1862,34 @@ elseif($mode=='ajout') {
 
 	echo add_token_field(true);
 
-	echo "<p class='bold'>Ajout d'une ".$mod_disc_terme_sanction." pour ".p_nom($ele_login);
+	$current_identite_ele=p_nom($ele_login);
+	echo "<p class='bold'>Ajout d'une ".$mod_disc_terme_sanction." pour ".$current_identite_ele;
 	echo infobulle_photo($ele_login);
+
+	if((getSettingAOui('autorise_edt_tous'))||
+		((getSettingAOui('autorise_edt_admin'))&&($_SESSION['statut']=='administrateur'))
+	) {
+
+		$titre_infobulle="EDT de ".$current_identite_ele;
+		$texte_infobulle="";
+		$tabdiv_infobulle[]=creer_div_infobulle('edt_eleve',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+		echo " <a href='../edt_organisation/index_edt.php?login_edt=".$ele_login."&amp;type_edt_2=eleve&amp;no_entete=y&amp;no_menu=y&amp;lien_refermer=y' onclick=\"affiche_edt_en_infobulle();return false;\" title=\"Emploi du temps de ".$current_identite_ele."\" target='_blank'><img src='../images/icons/edt.png' class='icone16' alt='EDT' /></a>
+
+<style type='text/css'>
+	.lecorps {
+		margin-left:0px;
+	}
+</style>
+
+<script type='text/javascript'>
+	function affiche_edt_en_infobulle() {
+		new Ajax.Updater($('edt_eleve_contenu_corps'),'../edt_organisation/index_edt.php?login_edt=".$ele_login."&type_edt_2=eleve&no_entete=y&no_menu=y&mode_infobulle=y',{method: 'get'});
+		afficher_div('edt_eleve','y',-20,20);
+	}
+</script>\n";
+	}
+
 	echo " (<em>".$mod_disc_terme_incident." n°$id_incident</em>)&nbsp;:</p>\n";
 
 	echo "<blockquote>\n";
