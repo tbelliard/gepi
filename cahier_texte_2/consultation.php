@@ -420,7 +420,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
 			//if(isset($id_classe_courante)) {
 
-	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct, ct.special " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -473,6 +473,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
             $id_groupe_devoirs = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
             $_id_sequence = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id_sequence');
             $matiere_devoirs = old_mysql_result($appel_devoirs_cahier_texte,$ind, 'description');
+            $special_devoirs = old_mysql_result($appel_devoirs_cahier_texte,$ind, 'special');
             //$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
             $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u 
                                                       WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login)
@@ -515,6 +516,10 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 
 			if($CDTPeutPointerTravailFait) {
                  $content.="<div id='div_etat_travail_".$id_devoirs."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$selected_eleve->login."', '".$id_devoirs."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+			}
+
+			if($special_devoirs=="controle") {
+				$content.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
 			}
 
             $content .= $aff_titre_seq.$content_ini;
@@ -603,7 +608,7 @@ echo "<div class=\"centre_cont_texte\">\n";
           if ($selected_eleve) {
 			// On détermine la période active, pour ne pas avoir de duplication des entrées
 			// Le DISTINCT est quand même utile parce que si plusieurs périodes sont ouvertes en saisie, on a une multiplication des retours par le nombre de périodes ouvertes en saisie
-	         $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct, ct.special " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -618,7 +623,7 @@ echo "<div class=\"centre_cont_texte\">\n";
 	             ct.date_ct < '$jour_suivant'
 	            );";
           } else {
-	         $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct, ct.special " .
 	             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
 	             "ct.id_groupe = jgc.id_groupe and " .
 	             "g.id = jgc.id_groupe and " .
@@ -630,7 +635,7 @@ echo "<div class=\"centre_cont_texte\">\n";
           }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
 		//echo "$sql<br /><br />";
-			$appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
+		$appel_devoirs_cahier_texte = mysqli_query($GLOBALS["mysqli"], $sql);
           $nb_devoirs_cahier_texte = mysqli_num_rows($appel_devoirs_cahier_texte);
           $ind = 0;
           if ($nb_devoirs_cahier_texte != 0) {
@@ -673,6 +678,7 @@ echo "<div class=\"centre_cont_texte\">\n";
               $id_groupe_devoirs  = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id');
               $matiere_devoirs    = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'description');
               $_id_sequence       = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'id_sequence');
+              $special_devoirs       = old_mysql_result($appel_devoirs_cahier_texte, $ind, 'special');
 
               $test_prof = "SELECT nom, prenom,u.login FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$id_groupe_devoirs."' and u.login=j.login) ORDER BY nom, prenom";
               $res_prof = sql_query($test_prof);
@@ -693,9 +699,14 @@ echo "<div class=\"centre_cont_texte\">\n";
                 $aff_titre_seq  = '<p class="bold"> - <em>' . $rep_seq["titre"] . '</em> - </p>';
               }
 
+		$temoin_controle="";
+		if($special_devoirs=="controle") {
+			$temoin_controle.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $date_devoirs)."\" /></div>";
+		}
+
 // Correction Régis : ajout de class pour gérer la mise en page
               $content = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n
-                  <h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>".$aff_titre_seq."\n<div class='txt_gauche'>\n".$content;
+                  <h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>".$aff_titre_seq."\n<div class='txt_gauche'>\n".$temoin_controle.$content;
               // fichier joint
               $content .= affiche_docs_joints($id_devoirs,"t");
               $content .="</div>\n</div>\n";
@@ -838,7 +849,7 @@ $td = date("d",$i);
           $notice = mysqli_fetch_object($res_notices);
 
           $req_devoirs =
-              "select 't' type, contenu, date_ct, id_ct, id_sequence
+              "select 't' type, contenu, date_ct, id_ct, id_sequence, special
               from ct_devoirs_entry
               where (contenu != ''
               and id_groupe = '".$id_groupe."'
@@ -918,6 +929,11 @@ $td = date("d",$i);
 
 				if($CDTPeutPointerTravailFait) {
 					echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+				}
+
+
+				if($not_dev->special=="controle") {
+					echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
 				}
              }
 

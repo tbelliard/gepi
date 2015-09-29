@@ -1583,7 +1583,8 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	global $tab_etat_travail_fait,
 	$image_etat,
 	$texte_etat_travail,
-	$class_color_fond_notice;
+	$class_color_fond_notice,
+	$gepiPath;
 
 	$html="";
 
@@ -1663,7 +1664,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 		$html.="Aucun travail à faire pour le $display_date.";
 
 		// On affiche aussi le nombre de travaux pour les jours suivants
-		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
+		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe, cde.special FROM ct_devoirs_entry cde, 
 					j_eleves_groupes jeg, 
 					j_eleves_classes jec, 
 					j_groupes_matieres jgm
@@ -1686,7 +1687,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				$html.="<hr />Mais ".$nb_jours_travaux." travail à faire pour les jours qui suivent en ";
 			}
 			else {
-				$html.="<hr />Mais ".$nb_jours_travaux." travaux à faire pour les jours qui suivent.<br />";
+				$html.="<hr />Mais ".$nb_jours_travaux." travaux à faire pour les jours qui suivent en ";
 			}
 
 			$cpt_tmp=0;
@@ -1705,7 +1706,11 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$html.=$current_matiere_cdt;
+				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
+				$html.="<span title=\"Pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				if($lig->special=="controle") {
+					$html.="<img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le $date_courante\" />";
+				}
 
 				$cpt_tmp++;
 			}
@@ -1733,10 +1738,16 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				$temoin_travail_fait_ou_non="<div id='div_etat_travail_".$lig->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$login_eleve."', '".$lig->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 			}
 
+			$temoin_controle="";
+			if($lig->special=="controle") {
+				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+			}
+
 			//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
 			$html.="
 		<div style='border:1px solid black; margin:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50'>
 		<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non."
+			".$temoin_controle."
 			<p class=\"bold\">".$current_matiere_cdt."</p>
 			".$lig->contenu."
 			".affiche_docs_joints($lig->id_ct,"t")."
@@ -1747,7 +1758,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 
 		// 20150327
 		// On affiche aussi le nombre de travaux pour les jours suivants
-		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe FROM ct_devoirs_entry cde, 
+		$sql="SELECT DISTINCT cde.date_ct, cde.id_groupe, cde.special FROM ct_devoirs_entry cde, 
 					j_eleves_groupes jeg, 
 					j_eleves_classes jec, 
 					j_groupes_matieres jgm
@@ -1789,7 +1800,11 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 					$html.=", ";
 				}
 
-				$html.="<span title=\"Pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\">".$current_matiere_cdt."</span>";
+				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
+				$html.="<span title=\"Pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				if($lig->special=="controle") {
+					$html.="<img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le $date_courante\" />";
+				}
 
 				$cpt_tmp++;
 			}
@@ -1899,10 +1914,15 @@ function travaux_a_faire_cdt_cours($id_cours, $login_eleve, $id_classe) {
 					$temoin_travail_fait_ou_non="<div id='div_etat_travail_".$lig->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$login_eleve."', '".$lig->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 				}
 
+				$temoin_controle="";
+				if($lig->special=="controle") {
+					$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
+				}
+
 				//background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";
 				$html.="
 			<div style='border:1px solid black; margin:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig_cours->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50'>
-			<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non."
+			<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non.$temoin_controle."
 				".$lig->contenu."
 				".affiche_docs_joints($lig->id_ct,"t")."
 			</div>

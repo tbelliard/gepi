@@ -67,6 +67,8 @@ $doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 
+$controle = isset($_POST["controle"]) ? $_POST["controle"] :(isset($_GET["controle"]) ? $_GET["controle"] : "");
+
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid_prime = isset($_SESSION['uid_prime']) ? $_SESSION['uid_prime'] : 1;
@@ -239,6 +241,12 @@ $ctTravailAFaire->setDateVisibiliteEleve($date_visibilite_eleve);
 
 //enregistrement de l'objet
 $ctTravailAFaire->save();
+
+
+$sql="UPDATE ct_devoirs_entry SET special='$controle' WHERE id_ct='$id_devoir';";
+//echo "$sql<br />";
+$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
 
 //traitement de telechargement de documents joints
 if (!empty($doc_file['name'][0])) {

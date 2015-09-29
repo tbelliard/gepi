@@ -264,5 +264,7 @@ echo "</table>\n<hr />";
 $edt_avec_semAB="y";
 require_once("../edt_organisation/cdt_voir_view.php");
 
+echo "<script type='text/javascript'>".js_checkbox_change_style()."</script>";
+
 require("../lib/footer.inc.php");
 ?>

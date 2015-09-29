@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2012 Josselin Jacquard
+ * Copyright 2009-2015 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -394,6 +394,8 @@ echo "</legend>\n";
 echo "<div id=\"dupplication_notice\" style='display: none;'></div>\n";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>\n";
 
+//debug_var();
+
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_devoir.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementDevoirCallback})\" style=\"width: 100%;\">\n";
 echo add_token_field();
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
@@ -483,6 +485,26 @@ echo "<script type='text/javascript'>
 				$message_visibilite.="\nCette notice ne sera donc visible qu'à compter du ".strftime("%d/%m/%Y",$today-getSettingValue('delai_devoirs')*24*3600);
 				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"$message_visibilite\" title=\"$message_visibilite\" />\n";
 			}
+
+			if(isset($id_devoir)) {
+				$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE id_ct='$id_devoir' AND special='controle';";
+				$res_special=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res_special)>0) {
+					$checked_controle=" checked";
+					$style_controle=" style='font-weight:bold'";
+				}
+				else {
+					$checked_controle="";
+					$style_controle="";
+				}
+			}
+			else {
+				$checked_controle="";
+				$style_controle="";
+			}
+
+			echo " <input type='checkbox' name='controle' id='controle' value='controle'$checked_controle onchange=\"checkbox_change(this.id);\" /><label for='controle' id='texte_controle' title=\"Cocher la case si la séance comportera un contrôle/évaluation.\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_controle>Contrôle</label>";
+
 		?>
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='passer_devoir' /> <input type="hidden" name="date_devoir"

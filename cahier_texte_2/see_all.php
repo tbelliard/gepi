@@ -558,6 +558,8 @@ if(($id_groupe=='Toutes_matieres')&&
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_visibilite_eleve']=$lig->date_visibilite_eleve;
+					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['special']=$lig->special;
+					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_ct']=$lig->date_ct;
 					//echo " <span style='color:green'>\$tab_dev[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
 					$cpt++;
 				}
@@ -676,6 +678,10 @@ if(($id_groupe=='Toutes_matieres')&&
 
 							if($CDTPeutPointerTravailFait) {
 								$lignes_date_courante.="<div id='div_etat_travail_".$value['id_ct']."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$value['id_ct']."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+							}
+
+							if($value['special']=="controle") {
+								$lignes_date_courante.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
 							}
 
 							$lignes_date_courante.=$value['contenu'];
@@ -875,7 +881,7 @@ else {
 	$ts_limite_dev=getSettingValue("end_bookings");
 }
 $req_devoirs =
-	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
+	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve, special
 	from ct_devoirs_entry
 	where (contenu != ''
 	and id_groupe = '".$id_groupe."'
@@ -1031,6 +1037,12 @@ while (true) {
 
 		if(($type_notice=='devoir')&&($CDTPeutPointerTravailFait)) {
 			echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+		}
+
+		if($type_notice=='devoir') {
+			if($not_dev->special=="controle") {
+				echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
+			}
 		}
 
 		echo "$content\n</div>\n";

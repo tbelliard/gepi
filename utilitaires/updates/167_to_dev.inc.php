@@ -82,4 +82,17 @@ if ($query) {
 	$result .= msj_erreur();
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'special' à la table 'ct_devoirs_entry'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM ct_devoirs_entry LIKE 'special';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE ct_devoirs_entry ADD special varchar(20) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
