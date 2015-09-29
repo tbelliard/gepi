@@ -133,9 +133,16 @@ else {
 }
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+
+if ($_SESSION['statut'] == 'professeur') {
+	$retour = 'index2.php';
+} else {
+	$retour = 'index.php';
+}
 ?>
 <p class="bold">
-<a href="index.php?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+	
+<a href="<?php echo $retour; ?>?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
 <?php
 	if ($action == "modif_aid") {
