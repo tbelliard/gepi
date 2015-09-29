@@ -191,7 +191,13 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 						else {
-							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue à $heure_debut pour une durée de $duree_retenue\nLieu: $lieu_retenue\nMatériel: $materiel\n";
+							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue à $heure_debut pour une durée de $duree_retenue\n";
+							if($lieu_retenue!="") {
+								$message_mail.="Lieu: $lieu_retenue\n";
+							}
+							if($materiel!="") {
+								$message_mail.="Matériel: $materiel\n";
+							}
 						}
 					}
 				}
@@ -218,7 +224,27 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($res) {
-						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." à $heure_debut pour une durée de ".$duree_retenue."H.\nTravail: $travail\nLieu: $lieu_retenue\nMatériel: $materiel\n";
+						if(preg_match("/^[0-9]/", $heure_debut)) {
+							$heure_debut_descr="à ".$heure_debut;
+						}
+						else {
+							$heure_debut_descr="à ".$heure_debut;
+							$tmp_h=get_mysql_heure($heure_debut);
+							if($tmp_h!="") {
+								$heure_debut_descr="en ".$heure_debut;
+								$heure_debut_descr.=" (".$tmp_h.")";
+							}
+						}
+						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." ".$heure_debut_descr." pour une durée de ".$duree_retenue."H.\n";
+						if($travail!="") {
+							$message_mail.="Travail: $travail\n";
+						}
+						if($lieu_retenue!="") {
+							$message_mail.="Lieu: $lieu_retenue\n";
+						}
+						if($materiel!="") {
+							$message_mail.="Matériel: $materiel\n";
+						}
 					}
 				}
 
@@ -374,7 +400,44 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 						else {
-							$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est mise à jour du $date_debut à $heure_debut au $date_fin à $heure_fin.\nNombre de jours: $nombre_jours\nQualification des faits: $qualidication_faits\nTravail: $travail\nLieu: $lieu_exclusion\nMatériel: $materiel\nSignataire: $signataire\n";
+
+							if(preg_match("/^[0-9]/", $heure_debut)) {
+								$heure_debut_descr="à ".$heure_debut;
+							}
+							else {
+								$heure_debut_descr="à ".$heure_debut;
+								$tmp_h=get_mysql_heure($heure_debut);
+								if($tmp_h!="") {
+									$heure_debut_descr="en ".$heure_debut;
+									$heure_debut_descr.=" (".$heure_debut.")";
+								}
+							}
+
+							if(preg_match("/^[0-9]/", $heure_fin)) {
+								$heure_fin_descr="à ".$heure_fin;
+							}
+							else {
+								$heure_fin_descr="à ".$heure_fin;
+								$tmp_h=get_mysql_heure($heure_fin, "fin");
+								if($tmp_h!="") {
+									$heure_fin_descr="en ".$heure_fin;
+									$heure_fin_descr.=" (fin de créneau ".$tmp_h.")";
+								}
+							}
+
+							$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est mise à jour du $date_debut ".$heure_debut_descr." au $date_fin ".$heure_fin_descr.".\nNombre de jours: $nombre_jours\nQualification des faits: $qualification_faits\n";
+							if($travail!="") {
+								$message_mail.="Travail: $travail\n";
+							}
+							if($lieu_exclusion!="") {
+								$message_mail.="Lieu: $lieu_exclusion\n";
+							}
+							if($materiel!="") {
+								$message_mail.="Matériel: $materiel\n";
+							}
+							if($signataire!="") {
+								$message_mail.="Signataire: $signataire\n";
+							}
 						}
 					}
 				}
@@ -393,7 +456,45 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($res) {
-						$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie du $date_debut à $heure_debut au $date_fin à $heure_fin.\nNombre de jours: $nombre_jours\nQualification des faits: $qualidication_faits\nTravail: $travail\nLieu: $lieu_exclusion\nMatériel: $materiel\nSignataire: $signataire\n";
+						if(preg_match("/^[0-9]/", $heure_debut)) {
+							$heure_debut_descr="à ".$heure_debut;
+						}
+						else {
+							$heure_debut_descr="à ".$heure_debut;
+							$tmp_h=get_mysql_heure($heure_debut);
+							if($tmp_h!="") {
+								$heure_debut_descr="en ".$heure_debut;
+								$heure_debut_descr.=" (".$tmp_h.")";
+							}
+						}
+
+						if(preg_match("/^[0-9]/", $heure_fin)) {
+							$heure_fin_descr="à ".$heure_fin;
+						}
+						else {
+							$heure_fin_descr="à ".$heure_fin;
+							$tmp_h=get_mysql_heure($heure_fin);
+							if($tmp_h!="") {
+								$heure_fin_descr="en ".$heure_fin;
+								$heure_fin_descr.=" (".$tmp_h.")";
+							}
+						}
+
+						$message_mail.="Une $nature_sanction (type $type_exclusion) (sanction n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie du $date_debut ".$heure_debut_descr." au $date_fin ".$heure_fin_descr.".\nNombre de jours: $nombre_jours\nQualification des faits: $qualification_faits\n";
+						if($travail!="") {
+							$message_mail.="Travail: $travail\n";
+						}
+						if($lieu_exclusion!="") {
+							$message_mail.="Lieu: $lieu_exclusion\n";
+						}
+						/*
+						if($materiel!="") {
+							$message_mail.="Matériel: $materiel\n";
+						}
+						*/
+						if($signataire!="") {
+							$message_mail.="Signataire: $signataire\n";
+						}
 					}
 				}
 
@@ -497,7 +598,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($res) {
-						$message_mail.="Un $nature_sanction supplémentaire (sanction n°$id_sanction) a été donné à ".get_nom_prenom_eleve($ele_login, "avec_classe")." a été définie pour le $date_retour à $heure_retour.\nTravail: $travail\n";
+						$message_mail.="Un $nature_sanction supplémentaire (sanction n°$id_sanction) a été donné à ".get_nom_prenom_eleve($ele_login, "avec_classe")." a été définie pour le $date_retour à $heure_retour.\n";
+							if($travail!="") {
+								$message_mail.="Travail: $travail\n";
+							}
 					}
 				}
 
@@ -921,7 +1025,7 @@ if(isset($odt)&&
 			if(mysqli_num_rows($res_sanction)==0) {
 				$num_courrier="";
 				$type_exclusion="";
-				$qualidication_faits="";
+				$qualification_faits="";
 				$duree_exclusion="";
 				$date_debut="";
 				$date_fin="";
