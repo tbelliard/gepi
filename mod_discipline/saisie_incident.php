@@ -1451,6 +1451,36 @@ if((isset($id_incident))&&
 }
 
 if(isset($id_incident) ) {
+
+	// 20150929: Si des sanctions ont été saisies, en faire la liste, avec lien...
+	//
+	//liste_sanctions($id_incident, $ele_login)
+	$tab_protagonistes_avec_sanction=get_protagonistes_avec_sanction($id_incident);
+	if(count($tab_protagonistes_avec_sanction)>0) {
+		echo "<div id='s_sanctions_prot' style='float:right; border: 1px solid black; background-color: white; width: 10em; margin-left:0.5em;'>
+	<p>Une ou des ".$mod_disc_terme_sanction."s sont définies pour le ou les élèves suivants&nbsp;:<br />";
+		for($loop=0;$loop<count($tab_protagonistes_avec_sanction);$loop++) {
+
+			$tmp_texte=liste_sanctions($id_incident,$tab_protagonistes_avec_sanction[$loop]);
+			if($tmp_texte!="") {
+				// On aura peut-être des blagues à régler là avec p_nom() quand on aura des protagonistes non élèves
+				$current_identite_ele=get_nom_prenom_eleve($tab_protagonistes_avec_sanction[$loop]);
+				//$texte="<p class='bold'>".$current_identite_ele."</p>\n".$tmp_texte;
+				$texte=$tmp_texte;
+
+				$tabdiv_infobulle[]=creer_div_infobulle("sanctions_incident_prot_".$loop,ucfirst($mod_disc_terme_sanction)."s ".$current_identite_ele,"",$texte,"",44,0,'y','y','n','n');
+
+				echo "<a href='#'";
+				//cacher_toutes_les_infobulles();
+				echo " onmouseover=\"delais_afficher_div('sanctions_incident_prot_".$loop."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onclick='return false;'";
+				echo ">".$current_identite_ele."</a><br />";
+			}
+		}
+		echo "</p>
+</div>";
+	}
+
 	// ===== Pour les CPE, on ajoute la possibilité de changer le déclarant =====
     if($_SESSION['statut']=='cpe' && $step== '2') {
         if (getSettingAOui('DisciplineCpeChangeDeclarant')) {

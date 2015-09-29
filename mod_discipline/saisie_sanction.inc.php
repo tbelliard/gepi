@@ -186,7 +186,7 @@ else {
 		$duree_retenue=1;
 		$lieu_retenue="";
 		$travail="";
-        $materiel="";
+		$materiel="";
 		if(isset($id_sanction)) {
 			$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
 			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -197,7 +197,7 @@ else {
 				$duree_retenue=$lig_sanction->duree;
 				$lieu_retenue=$lig_sanction->lieu;
 				$travail=$lig_sanction->travail;
-                $materiel=$lig_sanction->materiel;
+				$materiel=$lig_sanction->materiel;
 			}
 		}
 
@@ -207,7 +207,7 @@ else {
 			if(mysqli_num_rows($res_travail_mesure_demandee)>0) {
 				$lig_travail_mesure_demandee=mysqli_fetch_object($res_travail_mesure_demandee);
 				$travail=$lig_travail_mesure_demandee->travail;
-                $materiel=$lig_travail_mesure_demandee->materiel;
+				$materiel=$lig_travail_mesure_demandee->materiel;
 			}
 		}
 
@@ -255,7 +255,7 @@ else {
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Durée&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
-		echo "<input type='text' name='duree_retenue' id='duree_retenue' size='2' value='$duree_retenue' onchange='changement();' /> en heures\n";
+		echo "<input type='text' name='duree_retenue' id='duree_retenue' size='2' value='$duree_retenue' onchange='changement();' onkeydown=\"clavier_2(this.id,event,0,10)\" /> en heures\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
