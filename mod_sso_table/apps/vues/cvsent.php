@@ -87,6 +87,7 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 
 <hr />
 
+<a name='publipostage'></a>
 <h2>Publipostage</h2>
 <div style='margin-left:3em;'>
 	<p>Vous pouvez ici imprimer les logins et mots de passe destinés aux utilisateurs.<br />
@@ -99,6 +100,41 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 			<input type='file'  name='fichier'  />
 
 		<input type='submit' value='Téléchargement' />
+		</p>
+	</fieldset>
+	</form>
+
+	<!--
+	<?php
+		// ET ZUT ! CETTE PARTIE N'EST PAS INTERPRETEE
+
+		$sql="CREATE TABLE IF NOT EXISTS tempo2_sso ( col1 varchar(100) NOT NULL default '', col2 TEXT NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
+		$sql="SELECT * FROM tempo2_sso;";
+		$res_ts=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ts)>0) {
+			echo "<br />
+	<form action=\"publipostage.php\" enctype='multipart/form-data' method=\"post\">
+	<fieldset class='fieldset_opacite50'>
+		<input type='hidden' name='mode' value='derniers_parents_et_eleves_inscrits' />
+		<p class=\"title-page\">Vous pouvez aussi imprimer les fiches des derniers rapprochements effectués (<em>élèves ou responsables</em>)</p>
+		<p>
+			<input type='submit' value='Valider' />
+		</p>
+	</fieldset>
+	</form>";
+		}
+	?>
+	-->
+
+	<br />
+	<form action="publipostage.php" enctype='multipart/form-data' method="post">
+	<fieldset class='fieldset_opacite50'>
+		<input type='hidden' name='mode' value='derniers_parents_et_eleves_inscrits' />
+		<p class="title-page">Si vous venez d'effectuer des rapprochements (<em>élèves ou responsables</em>), vous pouvez aussi ne générer des fiches que pour les nouveaux rapprochés (<em>sans fournir à nouveau le csv</em>).</p>
+		<p>
+			<input type='submit' value='Valider' />
 		</p>
 	</fieldset>
 	</form>
