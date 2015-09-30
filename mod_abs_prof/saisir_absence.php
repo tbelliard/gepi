@@ -86,6 +86,8 @@ $description=isset($_POST['description']) ? $_POST['description'] : NULL;
 
 $id_absence=isset($_POST['id_absence']) ? $_POST['id_absence'] : (isset($_GET['id_absence']) ? $_GET['id_absence'] : NULL);
 
+//debug_var();
+
 if((isset($login_user))&&
 (isset($display_date_debut))&&
 (isset($display_heure_debut))&&
@@ -135,7 +137,7 @@ if((isset($login_user))&&
 	}
 
 	if(check_heure($display_heure_fin)) {
-		$heure_fin=get_mysql_heure($display_heure_fin);
+		$heure_fin=get_mysql_heure($display_heure_fin, "fin");
 	}
 	else {
 		$msg.= "ATTENTION : L'heure de début d'absence (<em>$display_heure_debut</em>) n'est pas valide.<br />";
@@ -250,6 +252,7 @@ if((isset($id_absence))&&(!is_array($id_absence))) {
 
 		$titre=$lig->titre;
 		$description=$lig->description;
+		unset($login_user);
 		$login_user[]=$lig->login_user;
 	}
 }
@@ -337,6 +340,11 @@ if((isset($tab_id_absence))&&(count($tab_id_absence)>1)) {
 
 	echo "<p>Ou contrôler/modifier la saisie pour l'absence de&nbsp;:</p>
 	<ul>";
+	/*
+	echo "<pre>";
+	print_r($tab_id_absence);
+	echo "</pre>";
+	*/
 	for($loop=0;$loop<count($tab_id_absence);$loop++) {
 		echo "
 		<li><a href='saisir_absence.php?id_absence=".$tab_id_absence[$loop]['id_absence']."&amp;login_user[]=".$tab_id_absence[$loop]['login_user']."'>".civ_nom_prenom($tab_id_absence[$loop]['login_user'])."</a></li>";
