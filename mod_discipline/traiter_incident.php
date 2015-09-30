@@ -280,7 +280,12 @@ if(!isset($id_incident)) {
 	//$sql="SELECT si.* FROM s_incidents si WHERE 1";
 
 	if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
-		$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident";
+		if($id_classe_incident=="") {
+			$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident";
+		}
+		else {
+			$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_classes jec WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident AND sp.login=jec.login AND jec.id_classe='$id_classe_incident' ";
+		}
 	}
 	else {
 		if($id_classe_incident=="") {
@@ -329,9 +334,12 @@ if(!isset($id_incident)) {
 													jgp.id_groupe=jgc.id_groupe AND
 													jgc.id_classe=jec.id_classe AND
 													jgp.login='".$_SESSION['login']."'";
-		
+				if($id_classe_incident!="") {
+					$ajout_sql2.=" AND jec.id_classe='".$id_classe_incident."'";
+				}
+
 				$ajout2_sql.=$ajout_sql;
-		
+
 				$sql.=$ajout2_sql;
 				$sql2.=$ajout2_sql;
 				if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
@@ -350,7 +358,11 @@ if(!isset($id_incident)) {
 													jgp.login='".$_SESSION['login']."'";
 		
 				$ajout2_sql.=$ajout_sql;
-		
+
+				if($id_classe_incident!="") {
+					$ajout_sql2.=" AND jeg.login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe_incident."') ";
+				}
+
 				$sql.=$ajout2_sql;
 				$sql2.=$ajout2_sql;
 				if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
@@ -361,9 +373,13 @@ if(!isset($id_incident)) {
 
 			// Pour qu'un professeur principal puisse consulter les incidents mettant en cause ses élèves
 			$ajout2_sql=" UNION (SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE sp.id_incident=si.id_incident AND sp.login=jep.login AND jep.professeur='".$_SESSION['login']."'";
-	
+
+			if($id_classe_incident!="") {
+				$ajout2_sql.=" AND sp.login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe_incident."') ";
+			}
+
 			$ajout2_sql.=$ajout_sql;
-	
+
 			$sql.=$ajout2_sql;
 			$sql2.=$ajout2_sql;
 			if($incidents_clos!="y") {$sql.=" AND si.etat!='clos'";}
