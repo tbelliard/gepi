@@ -118,7 +118,7 @@ elseif($mode=="enregistrer_correspondances") {
 //$utilisation_tablekit="ok";
 
 //**************** EN-TETE *****************
-if($mode!="publiposter") {
+if(($mode!="publiposter")&&($mode!="publiposter2")) {
 	$titre_page = "SSO : Publipostage";
 }
 //echo "<div class='noprint'>\n";
@@ -885,6 +885,495 @@ elseif($mode=='publiposter') {
 	if($compteur_pages_imprimees==0) {
 		echo "<p style='color:red'>Aucune fiche n'a été imprimée.<br />Revoyez les critères ou contrôlez votre fichier.</p>";
 	}
+}
+elseif($mode=="derniers_parents_et_eleves_inscrits") {
+
+	echo "<h2>Dernières correspondances inscrites</h2>";
+
+	$sql="SELECT * FROM tempo2_sso ts, sso_table_import sti WHERE ts.col2=sti.uid;";
+	$res_ts=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ts)==0) {
+		echo "<p style='color:red'>Aucune correspondance n'est conservée dans la table 'tempo2_sso'.</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$tab_classe=array();
+	$tab_profil=array();
+	$compteur=0;
+	while($lig_ts=mysqli_fetch_object($res_ts)) {
+		if(!in_array($lig_ts->classe, $tab_classe)) {
+			$tab_classe[]=$lig_ts->classe;
+		}
+
+		if(!in_array($lig_ts->statut, $tab_profil)) {
+			$tab_profil[]=$lig_ts->statut;
+		}
+	}
+
+
+	sort($tab_classe);
+	sort($tab_profil);
+
+	$url_connexion_ent=getSettingValue("url_connexion_ent");
+	if(getSettingAOui("inclure_url_connexion_ent")) {
+		$checked_inclure_url_connexion_ent=" checked";
+		$style_inclure_url_connexion_ent=" style='font-weight:bold;'";
+	}
+	else {
+		$checked_inclure_url_connexion_ent="";
+		$style_inclure_url_connexion_ent="";
+	}
+	echo "<form action='publipostage.php' enctype='multipart/form-data' method='post' target='_blank'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<h2>Publipostage</h2>
+		<div style='margin-left:3em;'>
+		<input type='hidden' name='mode' value='publiposter2' />
+		<p style='text-indent:-3em;margin-left:3em;'>Paramètres du publipostage&nbsp;:<br />
+		<input type='checkbox' name='inclure_url_connexion_ent' id='inclure_url_connexion_ent' value='y' onchange=\"checkbox_change(this.id)\"$checked_inclure_url_connexion_ent /><label for='inclure_url_connexion_ent' id='texte_inclure_url_connexion_ent'$style_inclure_url_connexion_ent> Inclure l'URL de connexion <input type='text' name='url_connexion_ent' value='".$url_connexion_ent."' /> dans le tableau des informations Login, mot de passe.</label><br />
+		<input type='checkbox' name='fiche_bienvenue' id='fiche_bienvenue' value='y' onchange=\"checkbox_change(this.id)\" /><label for='fiche_bienvenue' id='texte_fiche_bienvenue'> Inclure la fiche bienvenue sous les informations Login, mot de passe.</label><br />
+		<input type='checkbox' name='mot_de_passe_deja_modifie' id='mot_de_passe_deja_modifie' value='n' onchange=\"checkbox_change(this.id)\" /><label for='mot_de_passe_deja_modifie' id='texte_mot_de_passe_deja_modifie'> Ne pas imprimer les fiches pour lesquelles le mot de passe a déjà été modifié.</label><br />
+		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(la chaine testée est '<span style='color:green'>Mot de passe déjà modifié par utilisateur</span>')</em></p>";
+
+	if(count($tab_profil)>0) {
+		echo "
+		<p style='text-indent:-3em;margin-left:3em;'>Profils&nbsp;:";
+		for($loop=0;$loop<count($tab_profil);$loop++) {
+			echo "<br />
+			<input type='checkbox' name='profil[]' id='profil_$loop' value=\"".$tab_profil[$loop]."\" onchange=\"checkbox_change(this.id)\" /><label for='profil_$loop' id='texte_profil_$loop'>".$tab_profil[$loop]."</label>";
+		}
+		echo "
+		</p>";
+	}
+
+	if(count($tab_classe)>0) {
+		echo "
+		<p style='text-indent:-3em;margin-left:3em;'>Classes&nbsp;:";
+		for($loop=0;$loop<count($tab_classe);$loop++) {
+			$info_classe=$tab_classe[$loop];
+			if($info_classe=="") {
+				$info_classe="<span style='color:red'>Aucune classe (<em>parents ou élèves de l'année passée?</em>)</span>";
+			}
+			echo "<br />
+			<input type='checkbox' name='classe[]' id='classe_$loop' value=\"".$tab_classe[$loop]."\" onchange=\"checkbox_change(this.id)\" /><label for='classe_$loop' id='texte_classe_$loop'>".$info_classe."</label>";
+		}
+	echo "
+			<br />
+			<a href='javascript:cocher_toutes_classes($loop)'>Cocher toutes les classes</a> / 
+			<a href='javascript:decocher_toutes_classes($loop)'>Décocher toutes les classes</a>
+		</p>";
+	}
+
+	echo "
+		<p><input type='submit' value='Valider' /></p>
+
+		<p style='margin-top:1em;'>
+			<a href='javascript:cocher_tous_checkbox()'>Tout cocher</a> / 
+			<a href='javascript:decocher_tous_checkbox()'>Tout décocher</a>
+		</p>
+
+		</div>
+	</fieldset>
+</form>
+
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Si vous sélectionnez des classes, les fiches seront triées par classe, puis par ordre alphabétique des noms et prénoms.<br />
+		Sinon, toutes les lignes du fichier fourni seront parcourues et traitées/affichées dans l'ordre du fichier.</p>
+	</li>
+	<li>
+		<p>Si vous effectuez le publipostage pour plusieurs profils différents sans fiche bienvenue insérée, la découpe risque de ne pas être pratique.<br />
+		Pour les élèves, il y a en effet 4 lignes, contre 5 pour les responsables.<br />
+		Il vaut mieux alors imprimer les fiches pour les élèves dans un premier temps et pour les responsables dans un deuxième temps.</p>
+		<p>Avec fiche bienvenue en revanche, un saut de page est inséré si bien que le problème ci-dessus ne se présente plus.</p>
+	</li>";
+
+	if(acces("/gestion/modify_impression.php", $_SESSION['statut'])) {
+		echo "
+	<li>
+		<p><a href='../gestion/modify_impression.php' target='_blank'>Contrôler/Modifier les fiches bienvenue</a>.</p>
+	</li>";
+	}
+
+	echo "
+</ul>
+
+<script type='text/javascript'>
+	function cocher_toutes_classes(num) {
+		for(i=0;i<num;i++) {
+			if(document.getElementById('classe_'+i)) {
+				document.getElementById('classe_'+i).checked=true;
+				checkbox_change('classe_'+i);
+			}
+		}
+	}
+
+	function decocher_toutes_classes(num) {
+		for(i=0;i<num;i++) {
+			if(document.getElementById('classe_'+i)) {
+				document.getElementById('classe_'+i).checked=false;
+				checkbox_change('classe_'+i);
+			}
+		}
+	}
+
+	function cocher_tous_checkbox() {
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			id_champ=champs_input[i].getAttribute('id');
+			type=champs_input[i].getAttribute('type');
+			if(type==\"checkbox\"){
+				champs_input[i].checked=true;
+				checkbox_change(id_champ);
+			}
+		}
+	}
+
+	function decocher_tous_checkbox() {
+		champs_input=document.getElementsByTagName('input');
+		for(i=0;i<champs_input.length;i++){
+			id_champ=champs_input[i].getAttribute('id');
+			type=champs_input[i].getAttribute('type');
+			if(type==\"checkbox\"){
+				champs_input[i].checked=false;
+				checkbox_change(id_champ);
+			}
+		}
+	}
+
+	".js_checkbox_change_style()."
+</script>";
+
+}
+elseif($mode=="publiposter2") {
+
+	//debug_var();
+
+	if(isset($_POST['inclure_url_connexion_ent'])) {
+		saveSetting('inclure_url_connexion_ent', 'y');
+		$inclure_url_connexion_ent="y";
+	}
+	else {
+		saveSetting('inclure_url_connexion_ent', 'n');
+		$inclure_url_connexion_ent="n";
+	}
+
+	if(isset($_POST['url_connexion_ent'])) {
+		saveSetting('url_connexion_ent', $_POST['url_connexion_ent']);
+	}
+	$url_connexion_ent=getSettingValue('url_connexion_ent');
+
+	$fiche_bienvenue=isset($_POST['fiche_bienvenue']) ? $_POST['fiche_bienvenue'] : "n";
+	$mot_de_passe_deja_modifie=isset($_POST['mot_de_passe_deja_modifie']) ? $_POST['mot_de_passe_deja_modifie'] : "y";
+	$classe=isset($_POST['classe']) ? $_POST['classe'] : NULL;
+	$profil=isset($_POST['profil']) ? $_POST['profil'] : NULL;
+
+	$Impression=getSettingValue('Impression');
+	$ImpressionFicheParent=getSettingValue('ImpressionFicheParent');
+	$ImpressionFicheEleve=getSettingValue('ImpressionFicheEleve');
+
+	$ImpressionNombre=getSettingValue('ImpressionNombre');
+	$ImpressionNombreParent=getSettingValue('ImpressionNombreParent');
+	$ImpressionNombreEleve=getSettingValue('ImpressionNombreEleve');
+	//echo "\$ImpressionNombreEleve=$ImpressionNombreEleve<br />";
+
+	$impression_nombre_global=100;
+	if(isset($profil)) {
+		for($loop=0;$loop<count($profil);$loop++) {
+			//echo "\$profil[$loop]=$profil[$loop]<br />";
+			if(((mb_strtolower($profil[$loop])=="parent")||(mb_strtolower($profil[$loop])=="tuteur")||(mb_strtolower($profil[$loop])=="responsable"))&&($ImpressionNombreParent<$impression_nombre_global)) {
+				$impression_nombre_global=$ImpressionNombreParent;
+			}
+			elseif((mb_strtolower($profil[$loop])=="eleve")&&($ImpressionNombreEleve<$impression_nombre_global)) {
+				$impression_nombre_global=$ImpressionNombreEleve;
+			}
+			//echo "\$impression_nombre_global=$impression_nombre_global<br />";
+		}
+	}
+
+	if($impression_nombre_global==100) {
+		$impression_nombre_global=1;
+	}
+	elseif($impression_nombre_global<=0) {
+		$impression_nombre_global=1;
+	}
+
+	$compteur_pages_imprimees=0;
+	// Pour ne pas imprimer deux fiches pour un parent de 2 enfants.
+	$tab_deja=array();
+	if((isset($classe))&&(count($classe)>1)) {
+		$compteur=0;
+		$compteur_pages_imprimees=0;
+
+		for($loop=0;$loop<count($classe);$loop++) {
+			$tab_cle_courante=array();
+			$tab_courant=array();
+
+			$sql="SELECT * FROM tempo2_sso ts, sso_table_import sti WHERE ts.col2=sti.uid AND sti.classe='".$classe[$loop]."';";
+			$res_ts=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_ts)>0) {
+				while($lig_ts=mysqli_fetch_assoc($res_ts)) {
+					$afficher="y";
+					if((isset($profil))&&(!in_array($lig_ts['statut'], $profil))) {
+						$afficher="n";
+					}
+					elseif(in_array($lig_ts['uid'], $tab_deja)) {
+						$afficher="n";
+					}
+					else {
+						$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$lig_ts['uid']."';";
+						//echo "$sql<br />";
+						$test_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_sso)==0) {
+							$afficher="n";
+						}
+						else {
+							$tmp_tab=explode("|", $lig_ts['col1']);
+							if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/", $tmp_tab[2]))) {
+								$afficher="n";
+							}
+						}
+					}
+
+					if($afficher=="y") {
+						$tab_deja[]=$lig_ts['uid'];
+
+						$tab_cle_courante[]=$lig_ts['nom']." ".$lig_ts['prenom'];
+						$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]=$lig_ts;
+
+						$tmp_tab=explode("|", $lig_ts['col1']);
+						$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['login_ent']=$tmp_tab[1];
+						$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['pass_ent']=$tmp_tab[2];
+
+						if((mb_strtolower($lig_ts['statut'])=='tuteur')||
+						(mb_strtolower($lig_ts['statut'])=='parent')||
+						(mb_strtolower($lig_ts['statut'])=='responsable')) {
+							$sql="SELECT * FROM sso_table_import WHERE (pere='".$lig_ts['uid']."' OR mere='".$lig_ts['uid']."' OR  tuteur1='".$lig_ts['uid']."' OR tuteur2='".$lig_ts['uid']."') AND classe='".$classe[$loop]."';";
+							$test_enfant=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($test_enfant)>0) {
+								$lig_enfant=mysqli_fetch_object($test_enfant);
+								$chaine_tmp=$lig_enfant->nom." ".$lig_enfant->prenom;
+								while($lig_enfant=mysqli_fetch_object($test_enfant)) {
+									$chaine_tmp.=", ".$lig_enfant->nom." ".$lig_enfant->prenom;
+								}
+								$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['enfant']=$chaine_tmp;
+							}
+						}
+
+					}
+					$compteur++;
+				}
+			}
+
+			sort($tab_cle_courante);
+			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
+				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
+				echo "
+		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
+			<tr>
+				<td style='width:8em;'>À l'attention de </td>
+				<td class='bold'>".$tab['nom']." ".$tab['prenom']."</td>
+			</tr>";
+				if($inclure_url_connexion_ent=="y") {
+					echo "
+			<tr>
+				<td>URL </td>
+				<td class='bold'>".$url_connexion_ent."</td>
+			</tr>";
+				}
+				echo "
+			<tr>
+				<td>Login </td>
+				<td class='bold'>".$tab['login_ent']."</td>
+			</tr>
+			<tr>
+				<td>Mot de passe </td>
+				<td class='bold'>".$tab['pass_ent']."</td>
+			</tr>";
+
+				if((isset($tab['enfant']))&&($tab['enfant']!='')) {
+					echo "
+			<tr>
+				<td>Responsable de </td>
+				<td>".$tab['enfant']."</td>
+			</tr>";
+				}
+
+				if(isset($tab['classe'])) {
+					echo "
+			<tr>
+				<td>Classe de </td>
+				<td>".$tab['classe']."</td>
+			</tr>";
+				}
+
+				echo "
+		</table>";
+
+				if($fiche_bienvenue=="y") {
+					if((mb_strtolower($tab['statut'])=='tuteur')||
+					(mb_strtolower($tab['statut'])=='parent')||
+					(mb_strtolower($tab['statut'])=='responsable')) {
+						$page=$ImpressionFicheParent;
+					}
+					elseif((mb_strtolower($tab['statut'])=='eleve')||(mb_strtolower($tab['statut'])=='élève')) {
+						$page=$ImpressionFicheEleve;
+					}
+					else {
+						$page=$Impression;
+					}
+
+					echo $page;
+
+					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+						echo "<p class='saut'></p>";
+					}
+				}
+				else {
+					echo "<p>&nbsp;</p>";
+				}
+				$compteur_pages_imprimees++;
+			}
+		}
+	}
+	else {
+		$compteur_pages_imprimees=0;
+		$compteur=0;
+
+		$sql="SELECT * FROM tempo2_sso ts, sso_table_import sti WHERE ts.col2=sti.uid ORDER BY sti.classe, sti.nom, sti.prenom;";
+		$res_ts=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_ts)>0) {
+			while($lig_ts=mysqli_fetch_assoc($res_ts)) {
+				$afficher="y";
+				if((isset($profil))&&(!in_array($lig_ts['statut'], $profil))) {
+					$afficher="n";
+				}
+				elseif(in_array($lig_ts['uid'], $tab_deja)) {
+					$afficher="n";
+				}
+				else {
+					$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_sso='".$lig_ts['uid']."';";
+					//echo "$sql<br />";
+					$test_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_sso)==0) {
+						$afficher="n";
+					}
+					else {
+						$tmp_tab=explode("|", $lig_ts['col1']);
+						if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/", $tmp_tab[2]))) {
+							$afficher="n";
+						}
+					}
+				}
+
+				if($afficher=="y") {
+					$tab_deja[]=$lig_ts['uid'];
+
+					$tab_cle_courante[]=$lig_ts['nom']." ".$lig_ts['prenom'];
+					$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]=$lig_ts;
+
+					$tmp_tab=explode("|", $lig_ts['col1']);
+					$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['login_ent']=$tmp_tab[1];
+					$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['pass_ent']=$tmp_tab[2];
+
+					if((mb_strtolower($lig_ts['statut'])=='tuteur')||
+					(mb_strtolower($lig_ts['statut'])=='parent')||
+					(mb_strtolower($lig_ts['statut'])=='responsable')) {
+						$sql="SELECT * FROM sso_table_import WHERE (pere='".$lig_ts['uid']."' OR mere='".$lig_ts['uid']."' OR  tuteur1='".$lig_ts['uid']."' OR tuteur2='".$lig_ts['uid']."');";
+						//echo "$sql<br />";
+						$test_enfant=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test_enfant)>0) {
+							$lig_enfant=mysqli_fetch_object($test_enfant);
+							$chaine_tmp=$lig_enfant->nom." ".$lig_enfant->prenom;
+							while($lig_enfant=mysqli_fetch_object($test_enfant)) {
+								$chaine_tmp.=", ".$lig_enfant->nom." ".$lig_enfant->prenom;
+							}
+							$tab_courant[$lig_ts['nom']." ".$lig_ts['prenom']]['enfant']=$chaine_tmp;
+						}
+					}
+				}
+				$compteur++;
+			}
+
+			for($loop_cle=0;$loop_cle<count($tab_cle_courante);$loop_cle++) {
+				$tab=$tab_courant[$tab_cle_courante[$loop_cle]];
+				echo "
+		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
+			<tr>
+				<td style='width:8em;'>À l'attention de </td>
+				<td class='bold'>".$tab['nom']." ".$tab['prenom']."</td>
+			</tr>";
+				if($inclure_url_connexion_ent=="y") {
+					echo "
+			<tr>
+				<td>URL </td>
+				<td class='bold'>".$url_connexion_ent."</td>
+			</tr>";
+				}
+				echo "
+			<tr>
+				<td>Login </td>
+				<td class='bold'>".$tab['login_ent']."</td>
+			</tr>
+			<tr>
+				<td>Mot de passe </td>
+				<td class='bold'>".$tab['pass_ent']."</td>
+			</tr>";
+
+				if((isset($tab['enfant']))&&($tab['enfant']!='')) {
+					echo "
+			<tr>
+				<td>Responsable de </td>
+				<td>".$tab['enfant']."</td>
+			</tr>";
+				}
+
+				if(isset($tab['classe'])) {
+					echo "
+			<tr>
+				<td>Classe de </td>
+				<td>".$tab['classe']."</td>
+			</tr>";
+				}
+
+				echo "
+		</table>";
+
+				if($fiche_bienvenue=="y") {
+					if((mb_strtolower($tab['statut'])=='tuteur')||
+					(mb_strtolower($tab['statut'])=='parent')||
+					(mb_strtolower($tab['statut'])=='responsable')) {
+						$page=$ImpressionFicheParent;
+					}
+					elseif((mb_strtolower($tab['statut'])=='eleve')||(mb_strtolower($tab['statut'])=='élève')) {
+						$page=$ImpressionFicheEleve;
+					}
+					else {
+						$page=$Impression;
+					}
+
+					echo $page;
+
+					if(($compteur_pages_imprimees+1)%$impression_nombre_global==0) {
+						echo "<p class='saut'></p>";
+					}
+				}
+				else {
+					echo "<p>&nbsp;</p>";
+				}
+				$compteur_pages_imprimees++;
+			}
+
+		}
+
+	}
+
+	if($compteur_pages_imprimees==0) {
+		echo "<p style='color:red'>Aucune fiche n'a été imprimée.<br />Revoyez les critères ou contrôlez votre fichier.</p>";
+	}
+
 }
 elseif($mode=='enregistrer_correspondances') {
 	echo "<h2>Fin du traitement demandé</h2>

@@ -103,6 +103,12 @@ class CvsentCtrl extends Controleur {
     }
 
     private function traite_file($file) {
+
+	$tab_corresp=array();
+
+	$sql="TRUNCATE tempo2_sso;";
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+
         $data = new ImportModele();
         $this->verif_file($file);
         if (is_null($this->erreurs_lignes)) {
@@ -117,6 +123,12 @@ class CvsentCtrl extends Controleur {
                      $value= ensure_utf8($value);
              }
              
+/*
+// DEBUG : 20150929
+echo "<pre>";
+print_r($this->ligne);
+echo "</pre>";
+*/
                 // On charge la table temporaire
                 //$this->ligne[0] : rne
                 //$this->ligne[1] : uid
@@ -133,10 +145,22 @@ class CvsentCtrl extends Controleur {
                 //$this->ligne[12] : uid tuteur2
                 // si on a un élève, il a un père ou une mère ou un tuteur 1 ou un tuteur 2
                 if ($this->ligne[9] != "" || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
+                // DEBUG : 20150929
+                //if ((((mb_strtolower($this->ligne[3])=='eleve')||(mb_strtolower($this->ligne[3])=='tuteur'))&&($this->ligne[2] != "")) || $this->ligne[10] != "" || $this->ligne[11] != "" || $this->ligne[12] != "") {
+                // NON : le $recherche est utilisé pour voir si le statut est élève ou non.
+                //       Avec $recherche=true, on effectue une recherche dans cherche_login() avec statut LIKE 'eleve'
                     $recherche = TRUE;
                 } else {
                     $recherche = FALSE;
                 }
+
+// DEBUG : 20150929
+//echo "\$recherche=$recherche<br />";
+                /*
+                echo "$statut<pre>";
+                print_r($this->ligne);
+                echo "</pre><hr />";
+                */
                 $this->res = $data->cherche_login($this->ligne, $statut, $recherche);
                 if (mysqli_num_rows($this->res) == 1) {
                     // on a un seul utilisateur dans Gepi
@@ -146,7 +170,13 @@ class CvsentCtrl extends Controleur {
                     // Pour les autres cas, il faut attendre que la table soit remplie
                     $login_gepi = '';
                 }
-                $data->ligne_table_import($this->ligne, $login_gepi);
+// DEBUG : 20150929
+//echo "\$login_gepi=$login_gepi<br />";
+                // On n'inscrit pas un élève ou parent d'un ancien élève plus dans aucune classe cette année... sinon, l'association avec le petit frère va être refusée avec le login_sso UNIQUE/INDEX
+                if($this->ligne[2] != "") {
+                    $data->ligne_table_import($this->ligne, $login_gepi);
+                    $tab_corresp[$this->ligne[1]]=$login_gepi."|".$this->ligne[6]."|".$this->ligne[7];
+                }
             }
 
             // regrouper dans un seul enregistrement les UID présents plusieurs fois
@@ -236,6 +266,8 @@ class CvsentCtrl extends Controleur {
                     }
                 }
                 // on enregistre
+// DEBUG : 20150929
+//echo "\$data->met_a_jour_ent(".$login.", ".$this->row['uid'].")<br />";
                 $data->met_a_jour_ent($login, $this->row['uid']);
             }
 
@@ -266,8 +298,23 @@ class CvsentCtrl extends Controleur {
             // On récupère tous les membres de l'ENT ayant un login Gepi
             $this->res = $data->get_gepi_ent();
             if (mysqli_num_rows($this->res) != 0) {
+                // ON REUTILISE LA VARIABLE $this->ligne POUR AUTRE CHOSE
                 while ($this->ligne = mysqli_fetch_array($this->res)) {
-                    $this->messages = $this->get_message($data->get_error($this->ligne['login'], $this->ligne['uid'], $this->ecriture));
+                    $tmp_code_error=$data->get_error($this->ligne['login'], $this->ligne['uid'], $this->ecriture);
+                    $this->messages = $this->get_message($tmp_code_error);
+                    // DEBUG : 20150930
+                    //echo "\$data->get_error(".$this->ligne['login'].", ".$this->ligne['uid'].", ".$this->ecriture.")<br />";
+
+                        //$sql="INSERT INTO tempo2_sso SET col1='".$this->ligne[6]."', col2='".$this->ligne['uid']."';";
+                        //echo "$sql<br />";
+                    if(($this->ecriture)&&(($tmp_code_error=="3")||($tmp_code_error=="5"))) {
+                        //$sql="INSERT INTO tempo2_sso SET col1='".$this->ligne['login']."', col2='".$this->ligne['uid']."';";
+                        //$sql="INSERT INTO tempo2_sso SET col1='".$this->ligne[6]."', col2='".$this->ligne['uid']."';";
+                        $sql="INSERT INTO tempo2_sso SET col1='".$tab_corresp[$this->ligne['uid']]."', col2='".$this->ligne['uid']."';";
+                        //echo "$sql<br />";
+                        $insert=mysqli_query($GLOBALS["mysqli"], $sql);
+                    }
+
                     if ($_POST["choix"] == "erreur" && $this->messages[0] == "message_red") {
                         $this->table[] = array('login_gepi' => $this->ligne['login'], 'login_sso' => $this->ligne['uid'], 'couleur' => $this->messages[0], 'message' => $this->messages[1]);
                     } else if ($_POST["choix"] != "erreur") {
@@ -376,6 +423,7 @@ class CvsentCtrl extends Controleur {
             case 3:
                 $this->class = "message_orange";
                 $this->message = 'L\'utilisateur existe mais son compte n\'est pas paramétré pour le sso. Il faut corriger absolument pour que la correspondance fonctionne.';
+                // DEBUG 20150929 : Enregistrer dans une table tempo2 pour permettre une génération publipostage juste pour ces comptes
                 break;
             case 5:
                 $this->class = "message_red";
@@ -384,6 +432,7 @@ class CvsentCtrl extends Controleur {
             default:
                 $this->class = "message_green";
                 $this->message = 'La correspondance est mise en place.';
+                // DEBUG 20150929 : Enregistrer dans une table tempo2 pour permettre une génération publipostage juste pour ces comptes
         }
         return array($this->class, $this->message);
     }
