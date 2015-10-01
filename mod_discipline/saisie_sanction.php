@@ -191,7 +191,19 @@ if(isset($_POST['enregistrer_sanction'])) {
 							$msg.="Erreur lors de la mise à jour de la ".$mod_disc_terme_sanction." '$nature_sanction' n°$id_sanction.<br />";
 						}
 						else {
-							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue à $heure_debut pour une durée de $duree_retenue\n";
+							if(preg_match("/^[0-9]/", $heure_debut)) {
+								$heure_debut_descr="à ".$heure_debut;
+							}
+							else {
+								$heure_debut_descr="à ".$heure_debut;
+								$tmp_h=get_mysql_heure($heure_debut);
+								if($tmp_h!="") {
+									$heure_debut_descr="en ".$heure_debut;
+									$heure_debut_descr.=" (".$tmp_h.")";
+								}
+							}
+
+							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue $heure_debut_descr pour une durée de $duree_retenue\n";
 							if($lieu_retenue!="") {
 								$message_mail.="Lieu: $lieu_retenue\n";
 							}
