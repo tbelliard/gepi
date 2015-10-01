@@ -139,7 +139,7 @@ if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_ed
 			$msg="L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.<br />";
 
 			if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
-				echo "Regroupement EDT associé&nbsp;: <span style='color:red'>L'identifiant nom_edt choisi ".$_POST['id_nom_edt']." n'existe pas.</span>";
+				echo "Regroupement EDT associé&nbsp;: <span style='color:red'>L'identifiant nom_edt choisi ".htmlentities($_POST['id_nom_edt'])." n'existe pas.</span>";
 				die();
 			}
 		}
@@ -156,7 +156,7 @@ if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_ed
 				$msg="Association enregistrée.<br />";
 
 				if((isset($_POST['mode_js']))&&($_POST['mode_js']='y')) {
-					echo "Regroupement EDT associé&nbsp;: ".$lig_edt->nom_edt;
+					echo "Regroupement EDT associé&nbsp;: ".htmlentities($lig_edt->nom_edt);
 					die();
 				}
 			}
@@ -252,7 +252,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 
 	// Test pour vérifier que l'on a bien une correspondance
 	$sql="SELECT 1=1 FROM edt_corresp2 ec2, edt_tempo et WHERE ec2.nom_groupe_edt=et.col1 AND et.id='".$_GET['id_edt_tempo']."' AND ec2.id_groupe='".$_GET['id_groupe']."';";
-	echo "$sql<br />";
+	//echo "$sql<br />";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
 		echo "<p style='color:red'>L'identifiant de groupe Gepi et celui EDT ne correspondent pas.</p>";
@@ -278,7 +278,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 		//$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND nom_groupe_edt LIKE '[%]' AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
 		$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$_GET['id_groupe']."' AND (nom_groupe_edt LIKE '[%]' OR nom_groupe_edt LIKE '%<%>%') AND nom_groupe_edt IN (SELECT col1 FROM edt_tempo);";
 		// Si on a plusieurs enregistrements, ça ne convient pas.
-		echo "$sql<br />";
+		//echo "$sql<br />";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		$ts=time();
 		//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
@@ -289,7 +289,7 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 			echo "<p style='color:red'>Plusieurs regroupements EDT sont associés au groupe Gepi n°".$_GET['id_groupe'].".<br />Vous devez commencer par supprimer la ou les associations en trop.<br />Les regroupements associés sont&nbsp;:<br />";
 			while($lig_grp=mysqli_fetch_object($res_grp)) {
 				$sql="SELECT id FROM edt_tempo WHERE col1='".mysqli_real_escape_string($GLOBALS["mysqli"], $lig_grp->nom_groupe_edt)."';";
-				echo "$sql<br />";
+				//echo "$sql<br />";
 				$res_id=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_id)>0) {
 					$lig_id=mysqli_fetch_object($res_id);
@@ -1237,7 +1237,7 @@ elseif($action=="comparer") {
 			<td>$lig_edt_lig->jour</td>
 			<td>$lig_edt_lig->h_debut</td>
 			<td>$lig_edt_lig->alternance</td>".(($debug_import_edt=="y") ? "
-			<td>".$lig_edt_lig->classe."</td>" : "")."
+			<td>".htmlentities($lig_edt_lig->classe)."</td>" : "")."
 		</tr>";
 								}
 								$details_lignes.="
@@ -1249,13 +1249,13 @@ elseif($action=="comparer") {
 		<thead>
 			<tr>
 				<th>Regroupement EDT<br />
-					<!--a href='#' onclick='return false' onmouseover=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', '')\" onmouseout=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', 'none')\">".$current_nom_groupe."</a-->
+					<!--a href='#' onclick='return false' onmouseover=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', '')\" onmouseout=\"affiche_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."', 'none')\">".htmlentities($current_nom_groupe)."</a-->
 
 					<a name='regroupement_".$current_id_temp."_groupe_".$current_id_groupe."'></a>
 
 					<!--a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".$current_nom_groupe."</a-->
 
-					<a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".$nom_groupe_edt_clean."</a>
+					<a href='#regroupement_".$current_id_temp."_groupe_".$current_id_groupe."' onclick=\"alterne_affichage_tableau_lignes_edt('table_lignes_edt_".$current_id_temp."_".$current_id_groupe."');return false;\" title=\"Afficher/masquer les lignes correspondant à ce regroupement EDT dans le dernier fichier EDT_COURS.xml importé.\">".htmlentities($nom_groupe_edt_clean)."</a>
 
 					".$details_lignes."</th>
 
@@ -1328,8 +1328,8 @@ elseif($action=="comparer") {
 									echo $tab_test_association_grp_classe[$tab_ele_regroupement_edt['id_classe'][$loop]];
 								}
 								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe")."</td>
-							<td>".get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes")."</td>" : "")."
+							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "classe"))."</td>
+							<td>".htmlentities(get_valeur_champ('edt_eleves_lignes', "id='".$tab_ele_regroupement_edt['id_edt_eleves_lignes'][$loop]."'", "groupes"))."</td>" : "")."
 						</tr>";
 							}
 							echo "
@@ -1424,8 +1424,8 @@ elseif($action=="comparer") {
 								}
 								echo $tab_nom_classe[$current_ele['classe']];
 								echo "</td>".(($debug_import_edt=="y") ? "
-							<td>$debug_edt_eleves_lignes_classe</td>
-							<td>$debug_edt_eleves_lignes_groupes</td>" : "")."
+							<td>".htmlentities($debug_edt_eleves_lignes_classe)."</td>
+							<td>".htmlentities($debug_edt_eleves_lignes_groupes)."</td>" : "")."
 						</tr>";
 							}
 							echo "
