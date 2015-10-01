@@ -335,7 +335,7 @@ if(!isset($id_incident)) {
 													jgc.id_classe=jec.id_classe AND
 													jgp.login='".$_SESSION['login']."'";
 				if($id_classe_incident!="") {
-					$ajout_sql2.=" AND jec.id_classe='".$id_classe_incident."'";
+					$ajout2_sql.=" AND jec.id_classe='".$id_classe_incident."'";
 				}
 
 				$ajout2_sql.=$ajout_sql;
@@ -360,7 +360,7 @@ if(!isset($id_incident)) {
 				$ajout2_sql.=$ajout_sql;
 
 				if($id_classe_incident!="") {
-					$ajout_sql2.=" AND jeg.login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe_incident."') ";
+					$ajout2_sql2.=" AND jeg.login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe_incident."') ";
 				}
 
 				$sql.=$ajout2_sql;
@@ -490,7 +490,7 @@ if(!isset($id_incident)) {
 	echo add_token_field();
 	echo "<p align='left'><input type='checkbox' name='incidents_clos' id='incidents_clos' value='y'";
 	if($incidents_clos=="y") {echo " checked='checked'";}
-	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les ".$mod_disc_terme_incident."s clos</label>";
+	echo " /><label for='incidents_clos' style='cursor:pointer;' onclick='formulaire.submit()'> Afficher les ".$mod_disc_terme_incident."s clos</label>";
 
 	// 20130716
 	$sql_test_mes_incidents="SELECT 1=1 FROM s_incidents si, s_protagonistes sp WHERE si.declarant='".$_SESSION['login']."' AND si.id_incident=sp.id_incident LIMIT 1;";
@@ -501,11 +501,11 @@ if(!isset($id_incident)) {
 		echo "<br />\n";
 		echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
 		if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
-		echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'".$mod_disc_terme_incident."s</label>\n";
+		echo " /><label for='declarant_incident2' style='cursor:pointer;' onclick='formulaire.submit()'> Ne voir que mes déclarations d'".$mod_disc_terme_incident."s</label>\n";
 	}
 	echo "</p>\n";
 
-	echo "<div style='float: right; border: 1px solid black;'>";
+	echo "<div style='float: right; border: 1px solid black; padding=.2em;'>";
 	echo "<a href='javascript:afficher_tous_les_incidents()' title=\"Afficher tous ces incidents\">".$nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche." ".$mod_disc_terme_incident.(($nb_incidents_en_tout_avec_criteres_choisis_hors_limitation_de_tranche>1) ? "s" : "")."</a>";
 	if($chaine_criteres!="") {echo " avec le(s) critère(s) choisi(s)";}
 	echo "</div>\n";
