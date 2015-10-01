@@ -752,7 +752,7 @@ function get_cours_prof($login, $jour, $timestamp="") {
 					jour_semaine='".$jour."' AND 
 					ec.id_definie_periode=ecr.id_definie_periode";
 	if($timestamp!="") {
-		$sql.="		 AND (id_semaine='0' OR id_semaine='".get_type_semaine(strftime('%U', $timestamp))."')";
+		$sql.="		 AND (id_semaine='0' OR id_semaine='".get_type_semaine(strftime('%V', $timestamp))."')";
 	}
 	$sql.="		ORDER BY ecr.heuredebut_definie_periode;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -775,7 +775,7 @@ function get_cours_prof2($login, $jour, $timestamp="") {
 					jour_semaine='".$jour."' AND 
 					ec.id_definie_periode=ecr.id_definie_periode";
 	if($timestamp!="") {
-		$sql.="		 AND (id_semaine='0' OR id_semaine='".get_type_semaine(strftime('%U', $timestamp))."')";
+		$sql.="		 AND (id_semaine='0' OR id_semaine='".get_type_semaine(strftime('%V', $timestamp))."')";
 	}
 	$sql.="		ORDER BY ecr.heuredebut_definie_periode;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
