@@ -249,7 +249,7 @@
              
             $afficheTitle='';
             if (isset ($tab['title']) && $tab['title'] !='') {
-              $afficheTitle= ' title=\''.$tab['title'].'\'';
+              $afficheTitle= ' title="'.$tab['title'].'"';
             }
 
 		if(isset($tab['sous_menu'])) {

@@ -30,7 +30,7 @@
 			foreach ($tbs_CSS as $value) {
 				if ($value!="") {
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
-					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media] and (max-width: 800px)\" />\n";
+					// echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media] and (max-width: 800px)\" />\n";
 				}
 			}
 			unset($value);

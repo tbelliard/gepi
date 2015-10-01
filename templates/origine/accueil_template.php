@@ -493,14 +493,14 @@
 <!-- fin RSS	-->
 
 <!-- Début du pied -->
-	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
+<!-- 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 
 	<script type='text/javascript'>
 		var ele=document.getElementById('EmSize');
 		var em2px=ele.offsetLeft
 		//alert('1em == '+em2px+'px');
 	</script>
-
+ -->
 
 <?php
 	//if (count($tbs_nom_connecte)) {
@@ -614,10 +614,11 @@
 	}
 ?>
 
+<!-- 
 	<script type='text/javascript'>
 		temporisation_chargement='ok';
 	</script>
-
+ -->
 	<script type='text/javascript'>
 	cacher_div('personnes_connectees');
 	</script>

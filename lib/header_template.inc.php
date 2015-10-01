@@ -287,7 +287,7 @@ if(isset($accessibilite)) {
 }
 
 // Feuilles de styles du telephone
-$tbs_CSS[]=array("fichier"=> $gepiPath."/css/style_telephone.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"handheld" , "title"=>"");
+// $tbs_CSS[]=array("fichier"=> $gepiPath."/css/style_telephone.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"handheld" , "title"=>"");
 
 if (isset($style_screen_ajout))  {
 
