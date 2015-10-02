@@ -1,11 +1,11 @@
 <?php
 /**
- * Fonction basée sur l'api mysqli et
+ * Fonction basÃ©e sur l'api mysqli et
  * simulant la fonction mysql_result()
  * Copyright 2014 Marc Leygnac
  *
- * @param type $result résultat après requête
- * @param integer $row numéro de la ligne
+ * @param type $result rÃ©sultat aprÃ¨s requete
+ * @param integer $row numÃ©ro de la ligne
  * @param string/integer $field indice ou nom du champ
  * @return type valeur du champ ou false si erreur
  */
@@ -14,7 +14,7 @@ function old_mysql_result($result,$row,$field=0) {
 	if ($row>=mysqli_num_rows($result)) return false;
 	if (is_string($field) && !(strpos($field,".")===false)) {
 		// si $field est de la forme table.field ou alias.field
-		// on convertit $field en indice numérique
+		// on convertit $field en indice numÃ©rique
 		$t_field=explode(".",$field);
 		$field=-1;
 		$t_fields=mysqli_fetch_fields($result);
