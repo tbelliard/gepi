@@ -125,12 +125,20 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
     }
 }
 
+
+
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
+// if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+// if (!suivi_ariane($_SESSION['chemin_retour'],$titre_page))
+$fil = "";
+if ($indice_aid != NULL) $fil = $_SERVER['PHP_SELF']."?indice_aid=".$indice_aid;
+if (!suivi_ariane($fil ,$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-
+//debug_var();
 echo "<p class=bold>";
 if ($_SESSION['statut']=="administrateur")
     echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";

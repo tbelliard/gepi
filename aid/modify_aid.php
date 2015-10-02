@@ -240,6 +240,7 @@ $style_specifique = "aid/style_aid";
 $titre_page = "Gestion des $nom_aid | Modifier les $nom_aid";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
+// debug_var();
 
 
 // On affiche un select avec la liste des aid de cette catégorie
