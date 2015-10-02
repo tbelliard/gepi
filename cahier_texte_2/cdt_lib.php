@@ -683,6 +683,7 @@ require_once("'.$pref_arbo.'/entete.php");
 				$tab_notices[$date_notice][$cpt]['id_ct']=$lig->id_ct;
 				$tab_notices[$date_notice][$cpt]['id_login']=$lig->id_login;
 				$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu;
+				$tab_notices[$date_notice][$cpt]['date_ct']=$lig->date_ct;
 				//echo " <span style='color:red'>\$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu</span><br />";
 				$cpt++;
 			}
@@ -713,6 +714,8 @@ require_once("'.$pref_arbo.'/entete.php");
 					$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
 					$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
 					$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
+					$tab_dev[$date_dev][$cpt]['special']=$lig->special;
+					$tab_dev[$date_dev][$cpt]['date_ct']=$lig->date_ct;
 					//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
 					$cpt++;
 				}
@@ -732,7 +735,7 @@ require_once("'.$pref_arbo.'/entete.php");
 	}
 
 	function devoirs_tel_jour($id_classe, $date_jour, $afficher_enseignement_sans_devoir="y") {
-		global $color_fond_notices;
+		global $color_fond_notices, $gepiPath;
 
 		$dossier_documents="";
 		$mode="";
@@ -796,7 +799,13 @@ require_once("'.$pref_arbo.'/entete.php");
 					for($k=0;$k<count($tab_dates);$k++) {
 						if(isset($tab_dev[$tab_dates[$k]])) {
 							foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
-								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%; background-color:".$color_fond_notices['t']."'>".$value['contenu'];
+								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%; background-color:".$color_fond_notices['t']."'>";
+
+								if($value['special']=="controle") {
+									$retour.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
+								}
+
+								$retour.=$value['contenu'];
 								$adj=my_affiche_docs_joints($value['id_ct'],"t");
 								if($adj!='') {
 									$retour.="<div style='border: 1px dashed black'>\n";

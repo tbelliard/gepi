@@ -21,6 +21,8 @@
  */
 
 function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_fond_notices) {
+	global $gepiPath;
+
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["t"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
 	echo("<strong>&nbsp;A faire pour le :</strong>\n");
@@ -80,6 +82,17 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 	} else {
 		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 	}
+
+	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde WHERE cde.id_ct='".$devoir->getIdCt()."';";
+	//$html_balise.="$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		if($lig->special=="controle") {
+			$html_balise .= " <img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" />";
+		}
+	}
+
 	$html_balise .= '</div>';
 	echo($html_balise);
 	echo "<br/>";
