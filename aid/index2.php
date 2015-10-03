@@ -126,6 +126,12 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
 }
 
 
+// On va chercher les aid déjà existantes, et on les affiche.
+if (!isset($order_by)) {$order_by = "numero,nom";}
+$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
+$nombreligne = mysqli_num_rows($calldata);
+
+
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
@@ -139,34 +145,36 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
-echo "<p class=bold>";
-if ($_SESSION['statut']=="administrateur")
-    echo "<a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-else
-    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-  if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
-    echo "|<a href=\"add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=$indice_aid\">Ajouter un(e) $nom_aid</a>|<a href=\"add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=$indice_aid\">Ajouter des $nom_aid à la chaîne</a>|";
-  }
-  if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
-    echo "<a href=\"export_csv_aid.php?indice_aid=$indice_aid\">Importation de données depuis un fichier vers GEPI</a>|";
-}
-echo "</p>";
-
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y"))
-    echo "<br /><p class=\"medium\">Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page <b><i>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></i></b>.</p>";
-
-echo "<p class=\"center\">";
-echo "<input type=\"submit\" name=\"Valider\" />";
-echo "</p>";
-//echo "<p class=\"medium\">";
-// On va chercher les aid déjà existantes, et on les affiche.
-if (!isset($order_by)) {$order_by = "numero,nom";}
-$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
-$nombreligne = mysqli_num_rows($calldata);
-
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
-	//<table border='1' cellpadding='5' class='boireaus'>
 ?>
+<p class="bold">
+<?php if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) { ?>
+	<!-- | -->
+	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>">
+		Ajouter un(e) <?php echo $nom_aid; ?>
+	</a>
+	|
+	<a href="add_aid.php?action=add_aid&amp;mode=multiple&amp;indice_aid=<?php echo $indice_aid; ?>">
+		Ajouter des <?php echo $nom_aid; ?> à la chaîne
+	</a>
+<?php }
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) { ?>
+	|
+	<a href="export_csv_aid.php?indice_aid=<?php echo $indice_aid; ?>">
+		Importation de données depuis un fichier vers GEPI
+	</a>
+<?php } ?>
+</p>
+<?php if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { ?>
+<p class="medium">
+	Les droits d'accès aux différents champs sont configurables pour l'ensemble des AID dans la page 
+	<strong><em>Gestion des AID -> <a href='./config_aid_fiches_projet.php'>Configurer les fiches projet</a></em></strong>
+	.
+</p>
+<?php } ?>
+<p class="center">
+	<input type="submit" name="Valider" />
+</p>
+<?php if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { ?>
 <form action="index2.php" name="form1" method="post">
 <?php } ?>
 	<table class='boireaus'>
@@ -189,7 +197,9 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5)
   // En tete de la colonne "Ajouter, supprimer des gestionnairess"
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
   if (getSettingValue("active_mod_gest_aid")=="y")
-    echo "<th>&nbsp;</th>";
+?>
+			<th>&nbsp;</th>
+<?php
 // colonne publier la fiche
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
 ?>
@@ -285,9 +295,7 @@ while ($i < $nombreligne){
     // Première colonne du numéro de l'AID
 ?>
 		<tr class='lig<?php echo $alt; ?>'>
-<?php
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
-?>
+<?php if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
 			<td class='medium'><strong><?php echo $aid_num; ?></strong></td>
 <?php
 	}
@@ -313,7 +321,7 @@ while ($i < $nombreligne){
 					<strong><?php echo $aid_nom; ?></strong>
 				</a>
 			</td>
-<?php	} else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
+<?php } else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
 			<td class='medium'>
 				<strong>><?php echo $aid_nom; ?></strong>>
 			</td>
@@ -440,9 +448,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
 		<input type="hidden" name="is_posted" value="y" />
 	</p>
-<?php
-	echo add_token_field();
-?>
+	<?php echo add_token_field(); ?>
 </form>
 <script type='text/javascript'>
   function CocheColonne(i) {
