@@ -48,10 +48,12 @@ $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice
 $feuille_presence = sql_query1("select feuille_presence from aid_config where indice_aid='".$indice_aid."'");
 
 //**************** EN-TETE *********************
-if ((isset($_GET['action'])) and ($_GET['action'] == "liste_presence"))
+if ((isset($_GET['action'])) and ($_GET['action'] == "liste_presence")) {
     unset ($titre_page);
-else
+}
+else {
     $titre_page = "Outils de visualisation ".$nom_projet;
+}
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -210,6 +212,13 @@ if ((isset($_GET['action'])) and ($_GET['action']=="liste_projet")) {
 
 // Affichage de la feuille de présence
 if ((isset($_GET['action'])) and ($_GET['action']=="liste_presence")) {
+	
+	
+    echo "<p class='bold noprint'>";
+    echo "<a href=\"./index_fiches.php?indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+    echo "</p>";
+
+	
     $nom_aid = sql_query1("SELECT nom FROM aid_config WHERE indice_aid = '$indice_aid'");
     if (!isset($_GET['aid_id']))
         $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY nom");
