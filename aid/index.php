@@ -66,29 +66,47 @@ if (isset($_POST['sup'])) {
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des AID";
+if (!suivi_ariane($_SERVER['PHP_SELF'] ,$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold>";
-echo "<a href=\"../accueil_admin.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
-echo "| <a href=\"config_aid.php\">Ajouter une catégorie d'AID</a> |";
+?>
+<p class="bold" style="margin-top: .5em;">
+	<!-- <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a> -->
+	<!-- | -->
+	<a href="config_aid.php">Ajouter une catégorie d'AID</a>
+	<!-- | -->
+
+<?php
 $test_outils_comp = sql_query1("select count(outils_complementaires) from aid_config where outils_complementaires='y'");
 if ($test_outils_comp != 0) {
-    echo " <a href=\"config_aid_fiches_projet.php\">Configurer les fiches projet</a> |";
-}
-echo "</p><p class=\"medium\">";
+?>
+	|
+	<a href="config_aid_fiches_projet.php">Configurer les fiches projet</a>
+<?php } ?>
+</p>
+<!-- <p class="medium"> -->
+<?php
 
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config ORDER BY order_display1, order_display2, nom");
 $nb_aid = mysqli_num_rows($call_data);
 if ($nb_aid == 0) {
-   echo "<p class='grand'>Il n'y a actuellement aucune catégorie d'AID</p>";
+?>
+<p class='grand'>Il n'y a actuellement aucune catégorie d'AID</p>
+<?php
 } else {
-    echo "<form action=\"index.php\" name=\"formulaire\" method=\"post\">";
-    echo "<table class='boireaus' border='1' cellpadding='3' summary=\"Catégories d'AID\">\n";
-    echo "<tr><th><p>Nom - Modifications</p></th>\n";
-    echo "<th><p>Liste des aid de la catégorie</p></th>\n";
-    echo "<th><p>Nom complet de l'AID</p></th>\n";
-    echo "<th><p><input type=\"submit\" name=\"sup\" value=\"Supprimer\" /></p></th></tr>\n";
+?>
+<form action="index.php" name="formulaire" method="post">
+	<table class='boireaus'>
+		<caption class="invisible">Catégories d'AID</caption>
+		<tr>
+			<th>Nom - Modifications</th>
+			<th>Liste des aid de la catégorie</th>
+			<th>Nom complet de l'AID</th>
+			<th><input type="submit" name="sup" value="Supprimer" /></th>
+		</tr>
+<?php
 
     $i=0;
 	$alt=1;
@@ -97,23 +115,41 @@ if ($nb_aid == 0) {
         $nom_complet_aid = @old_mysql_result($call_data, $i, "nom_complet");
         $indice_aid = @old_mysql_result($call_data, $i, "indice_aid");
         $outils_complementaires  = @old_mysql_result($call_data, $i, "outils_complementaires");
-        if ($outils_complementaires=='y')
-            $display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
-        else
+        if ($outils_complementaires=='y') {
+			$display_outils = "<br /><span class='small'>(Outils complémentaires activés)</span>";
+		} else {
             $display_outils="";
-        if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))
+		}
+		
+        if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
             $display_trombino = "<br /><span class='small'>(Gestion des accès élèves au trombinoscope)</span>";
-        else
+        } else {
             $display_trombino="";
-
+        }
+		
 		$alt=$alt*(-1);
-        echo "<tr class='lig$alt'><td><p><a href='config_aid.php?indice_aid=$indice_aid'>$nom_aid</a> $display_outils $display_trombino</p></td>";
-        echo "<td><p><a href='index2.php?indice_aid=$indice_aid'>Liste des aid de la catégorie</a></p></td>";
-        echo "<td><p>$nom_complet_aid</p></td>";
-        echo "<td><center><p><input type=\"checkbox\" name=\"sup".$indice_aid."\" /></p></center></td></tr>";
+?>
+		<tr class='lig<?php echo $alt; ?>'>
+			<td>
+				<a href='config_aid.php?indice_aid=<?php echo $indice_aid; ?>'><?php echo $nom_aid; ?></a>
+				<?php echo $display_outils; ?> <?php echo $display_trombino; ?>
+			</td>
+			<td>
+				<a href='index2.php?indice_aid=<?php echo $indice_aid; ?>'>Liste des aid de la catégorie</a>
+			</td>
+			<td>
+				<?php echo $nom_complet_aid; ?>
+			</td>
+			<td class="center">
+				<input type="checkbox" name="sup<?php echo $indice_aid; ?>" />
+			</td>
+		</tr>
+<?php
         $i++;
     }
-    echo "</table></form>";
+?>
+	</table>
+</form>
+<?php
 }
 require("../lib/footer.inc.php");
-?>
