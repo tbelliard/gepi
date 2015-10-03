@@ -693,30 +693,36 @@ foreach ($results as $traitement) {
 		$sql="SELECT a_saisie_id FROM j_traitements_saisies WHERE a_traitement_id='".$traitement->getPrimaryKey()."';";
 		$res_saisies=mysqli_query($mysqli, $sql);
 		if(mysqli_num_rows($res_saisies)>0) {
-			echo "<span style='color:red' title=\"Saisie supprimée.\">";
-			$cpt_saisie_cachees=0;
-			while($lig_saisie=mysqli_fetch_object($res_saisies)) {
-				if($cpt_saisie_cachees>0) {
-					echo " - ";
-					$chaine_saisies_supprimees.=" - ";
-				}
-				$chaine_saisies_supprimees.=" <a href='visu_saisie.php?id_saisie=$lig_saisie->a_saisie_id' title='Voir la saisie supprimée n°$lig_saisie->a_saisie_id' style='color:red'>$lig_saisie->a_saisie_id</a>";
-
-				$saisie_suppr = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($lig_saisie->a_saisie_id);
-				if ($saisie_suppr != null) {
-					//echo $saisie_suppr->getEleve()->getLogin();
-					echo ($saisie_suppr->getEleve()->getCivilite().' '.$saisie_suppr->getEleve()->getNom().' '.$saisie_suppr->getEleve()->getPrenom());
-					if ($utilisateur->getAccesFicheEleve($saisie_suppr->getEleve())) {
-						echo "<br /><a href='../eleves/visu_eleve.php?ele_login=".$saisie_suppr->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' style='color:red'>";
-						echo ' (voir fiche)';
-						echo "</a>";
+			// Vérifier que ce n'est pas un marqueur d'appel:
+			$sql="SELECT 1=1 FROM a_saisies a_s, j_traitements_saisies jts WHERE jts.a_traitement_id='".$traitement->getPrimaryKey()."' AND a_s.id=jts.a_saisie_id AND a_s.eleve_id IS NOT NULL;";
+			//echo "$sql<br />";
+			$test_marqueur_appel=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($test_marqueur_appel)>0) {
+				echo "<span style='color:red' title=\"Saisie supprimée.\">";
+				$cpt_saisie_cachees=0;
+				while($lig_saisie=mysqli_fetch_object($res_saisies)) {
+					if($cpt_saisie_cachees>0) {
+						echo " - ";
+						$chaine_saisies_supprimees.=" - ";
 					}
+					$chaine_saisies_supprimees.=" <a href='visu_saisie.php?id_saisie=$lig_saisie->a_saisie_id' title='Voir la saisie supprimée n°$lig_saisie->a_saisie_id' style='color:red'>$lig_saisie->a_saisie_id</a>";
+
+					$saisie_suppr = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($lig_saisie->a_saisie_id);
+					if ($saisie_suppr != null) {
+						//echo $saisie_suppr->getEleve()->getLogin();
+						echo ($saisie_suppr->getEleve()->getCivilite().' '.$saisie_suppr->getEleve()->getNom().' '.$saisie_suppr->getEleve()->getPrenom());
+						if ($utilisateur->getAccesFicheEleve($saisie_suppr->getEleve())) {
+							echo "<br /><a href='../eleves/visu_eleve.php?ele_login=".$saisie_suppr->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' style='color:red'>";
+							echo ' (voir fiche)';
+							echo "</a>";
+						}
+					}
+
+
+					$cpt_saisie_cachees++;
 				}
-
-
-				$cpt_saisie_cachees++;
+				echo "</span>";
 			}
-			echo "</span>";
 		}
     }
 
