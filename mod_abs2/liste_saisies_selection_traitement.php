@@ -511,33 +511,34 @@ if ($saisies_col->haveToPaginate()) {
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
 echo "par page";
-echo ' | <input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
+echo ' | <input type="checkbox" name="filter_saisies_supprimees" id="filter_saisies_supprimees" onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
 echo '/>';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '<font color="red">';}
-echo 'supprimées';
+echo '<label for="filter_saisies_supprimees">supprimées</label>';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '</font>';}
 
-echo ' | <input type="checkbox" name="filter_saisies_globalement_manquement"  onchange="submit()" value="y"';
+echo ' | <input type="checkbox" name="filter_saisies_globalement_manquement" id="filter_saisies_globalement_manquement" onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo "checked='checked'";}
 echo '/>';
 if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo '<font color="red">';}
-echo 'manquement';
+echo '<label for="filter_saisies_globalement_manquement">manquement</label>';
 if (getFiltreRechercheParam('filter_saisies_globalement_manquement') == 'y') {echo '</font>';}
 
-echo ' | <input type="checkbox" name="filter_saisies_globalement_non_justifiees"  onchange="submit()" value="y"';
+echo ' | <input type="checkbox" name="filter_saisies_globalement_non_justifiees" id="filter_saisies_globalement_non_justifiees" onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo "checked='checked'";}
 echo '/>';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo '<font color="red">';}
-echo 'non justifiées';
+echo '<label for="filter_saisies_globalement_non_justifiees">non justifiées</label>';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_justifiees') == 'y') {echo '</font>';}
 
-echo ' | <input type="checkbox" name="filter_saisies_globalement_non_notifiees"  onchange="submit()" value="y"';
+echo ' | <input type="checkbox" name="filter_saisies_globalement_non_notifiees" id="filter_saisies_globalement_non_notifiees" onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo "checked='checked'";}
 echo '/>';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo '<font color="red">';}
-echo 'non notifiéés';
+echo '<label for="filter_saisies_globalement_non_notifiees">non notifiéés</label>';
 if (getFiltreRechercheParam('filter_saisies_globalement_non_notifiees') == 'y') {echo '</font>';}
+
 if (getFiltreRechercheParam('filter_recherche_saisie_a_rattacher') == 'oui' && $traitement != null) {
     echo " | filtre actif : recherche de saisies a rattacher au traitement n° ";
     echo "<a href='./visu_traitement.php?id_traitement=".$traitement->getId()."";
