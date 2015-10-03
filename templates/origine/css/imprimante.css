@@ -1,0 +1,36 @@
+
+/* 
+    Created on : 3 oct. 2015, 19:54:55
+    Author     : bouguin
+*/
+.no_print {
+	display: none;
+}
+
+.ariane {
+	display: none;
+}
+
+input[type=submit] {
+	display: none;
+}
+
+.headerMessage {
+	display: none;
+}
+
+#bandeau {
+	display: block;
+}
+#bandeau h1 {
+	text-align: center;
+}
+#bandeau a {
+	display: none;
+}
+#bandeau #bd_colonne_droite {
+	display: none;
+}
+#bandeau p {
+	display: none;
+}

@@ -63,6 +63,7 @@ include_once 'header_template.inc.php';
 
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/bandeau.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/imprimante.css" media="print" />
 	
 
 <!-- corrections internet Exploreur -->

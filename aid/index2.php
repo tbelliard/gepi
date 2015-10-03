@@ -146,7 +146,7 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 ?>
-<p class="bold">
+<p class="bold noprint">
 <?php if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) { ?>
 	<!-- | -->
 	<a href="add_aid.php?action=add_aid&amp;mode=unique&amp;indice_aid=<?php echo $indice_aid; ?>">
@@ -171,11 +171,11 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) { ?>
 	.
 </p>
 <?php } ?>
-<p class="center">
-	<input type="submit" name="Valider" />
-</p>
 <?php if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) { ?>
 <form action="index2.php" name="form1" method="post">
+	<p class="center">
+		<input type="submit" name="Valider" />
+	</p>
 <?php } ?>
 	<table class='boireaus'>
 		<tr>
@@ -187,19 +187,25 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) { ?>
 			</th>
 <?php
 // En tete de la colonne "Ajouter, supprimer des professeurs"
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5)
-  if(!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')))
-    echo "<th>&nbsp;</th>";
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
+	if(!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))) {
+?>
+			<th class="noprint">&nbsp;</th>
+<?php
+	}
+}
 // En tete de la colonne "Ajouter, supprimer des élèves"
 ?>
-			<th>&nbsp;</th>
+			<th class="noprint">&nbsp;</th>
 <?php
   // En tete de la colonne "Ajouter, supprimer des gestionnairess"
-if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10)
-  if (getSettingValue("active_mod_gest_aid")=="y")
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) {
+  if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
-			<th>&nbsp;</th>
+			<th class="noprint">&nbsp;</th>
 <?php
+	}
+}
 // colonne publier la fiche
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outils_comp == "y")) {
 ?>
@@ -209,63 +215,75 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 					partie publique
 				</a>
 				<br />
-				<a href="javascript:CocheColonne(1);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(1);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(1);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(1);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>					
+				</span>
 			</th>
 			<th class="small" style="font-weight: normal;">
 				Les élèves reponsables peuvent modifier la fiche (*)<br />
-				<a href="javascript:CocheColonne(2);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(2);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(2);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(2);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>					
+				</span>
 			</th>
 			<th class="small" style="font-weight: normal;">
 				Les professeurs reponsables peuvent modifier la fiche (*)<br />
-				<a href="javascript:CocheColonne(3);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(3);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(3);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(3);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>					
+				</span>
 			</th>
 			<th class="small" style="font-weight: normal;">
 				Les CPE peuvent modifier la fiche (*)<br />
-				<a href="javascript:CocheColonne(4);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(4);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(4);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(4);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>				
+				</span>
 			</th>
 			<th class="small" style="font-weight: normal;">
 				Le lien "adresse publique" est visible sur la partie publique<br />
-				<a href="javascript:CocheColonne(5);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(5);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(5);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(5);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>				
+				</span>
 			</th>
 			<th class="small" style="font-weight: normal;">
 				Le lien "adresse publique" est accompagné d'une message "En construction"<br />
-				<a href="javascript:CocheColonne(6);changement();">
-					<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
-				</a>
-				/
-				<a href="javascript:DecocheColonne(6);changement();">
-					<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
-				</a>
+				<span class="noprint">
+					<a href="javascript:CocheColonne(6);changement();">
+						<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' />
+					</a>
+					/
+					<a href="javascript:DecocheColonne(6);changement();">
+						<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' />
+					</a>				
+				</span>
 			</th>
 <?php
 }
@@ -331,7 +349,7 @@ while ($i < $nombreligne){
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
 		if (!((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y'))) {
 ?>
-			<td class='medium'>
+			<td class='medium noprint'>
 				<a href='modify_aid.php?flag=prof&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
 					Ajouter, supprimer des professeurs
 				</a>
@@ -342,7 +360,7 @@ while ($i < $nombreligne){
     // colonne "Ajouter, supprimer des élèves"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
 ?>
-			<td class='medium'>
+			<td class='medium noprint'>
 				<a href='modify_aid.php?flag=eleve&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
 					Ajouter, supprimer des élèves
 				</a>
@@ -352,7 +370,7 @@ while ($i < $nombreligne){
 	if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10) {
 	   if (getSettingValue("active_mod_gest_aid")=="y") {
 ?>
-			<td class='medium'>
+			<td class='medium noprint'>
 				<a href='modify_aid.php?flag=prof_gest&amp;aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'>
 					Ajouter, supprimer des gestionnaires
 				</a>
@@ -419,16 +437,17 @@ while ($i < $nombreligne){
 <?php
     }
     // colonne "Supprimer"
-    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) 
+    if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)  {
 ?>
 			<td class='medium'>
-				<a href='../lib/confirm_query.php?liste_cible=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid ?>&amp;action=del_aid<?php echo add_token_in_url() ?>'>
+				<a class="noprint" href='../lib/confirm_query.php?liste_cible=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid ?>&amp;action=del_aid<?php echo add_token_in_url() ?>'>
 					supprimer
 				</a>
 			</td>
 		</tr>
 <?php
-$i++;
+	}
+	$i++;
 }
 
 ?>
