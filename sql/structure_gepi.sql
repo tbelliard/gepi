@@ -4,8 +4,35 @@ DROP TABLE IF EXISTS `absences`;
 CREATE TABLE `absences` (`login` varchar(50) NOT NULL default '', `periode` int(11) NOT NULL default '0', `nb_absences` char(2) NOT NULL default '', `non_justifie` char(2) NOT NULL default '', `nb_retards` char(2) NOT NULL default '', `appreciation` text NOT NULL, PRIMARY KEY  (`login`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `absences_gep`;
 CREATE TABLE `absences_gep` ( `id_seq` char(2) NOT NULL default '', `type` char(1) NOT NULL default '', PRIMARY KEY  (`id_seq`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS `aid`;
-CREATE TABLE `aid` (`id` varchar(100) NOT NULL default '', `nom` varchar(100) NOT NULL default '', `numero` varchar(8) NOT NULL default '0', `indice_aid` int(11) NOT NULL default '0', `perso1` varchar(255) NOT NULL default '', `perso2` varchar(255) NOT NULL default '', `perso3` varchar(255) NOT NULL default '', `productions` varchar(100) NOT NULL default '', `resume` text NOT NULL, `famille` smallint(6) NOT NULL default '0', `mots_cles` varchar(255) NOT NULL default '', `adresse1` varchar(255) NOT NULL default '', `adresse2` varchar(255) NOT NULL default '', `public_destinataire` varchar(50) NOT NULL default '', `contacts` text NOT NULL, `divers` text NOT NULL, `matiere1` varchar(100) NOT NULL default '', `matiere2` varchar(100) NOT NULL default '', eleve_peut_modifier ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , prof_peut_modifier ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , cpe_peut_modifier ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , fiche_publique ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , affiche_adresse1 ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , en_construction ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n', PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE `aid` (`id` varchar(100) NOT NULL default '', 
+`nom` varchar(100) NOT NULL default '', 
+`numero` varchar(8) NOT NULL default '0', 
+`indice_aid` int(11) NOT NULL default '0', 
+`perso1` varchar(255) NOT NULL default '', 
+`perso2` varchar(255) NOT NULL default '', 
+`perso3` varchar(255) NOT NULL default '', 
+`productions` varchar(100) NOT NULL default '', 
+`resume` text NOT NULL, 
+`famille` smallint(6) NOT NULL default '0', 
+`mots_cles` varchar(255) NOT NULL default '', 
+`adresse1` varchar(255) NOT NULL default '', 
+`adresse2` varchar(255) NOT NULL default '', 
+`public_destinataire` varchar(50) NOT NULL default '', 
+`contacts` text NOT NULL, 
+`divers` text NOT NULL, 
+`matiere1` varchar(100) NOT NULL default '', 
+`matiere2` varchar(100) NOT NULL default '', 
+`eleve_peut_modifier` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
+`prof_peut_modifier` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
+`cpe_peut_modifier` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
+`fiche_publique` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
+`affiche_adresse1` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
+`en_construction` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n', 
+`sous_groupe` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n',
+PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS `aid_appreciations`;
 CREATE TABLE `aid_appreciations` ( `login` varchar(50) NOT NULL default '', `id_aid` varchar(100) NOT NULL default '', `periode` int(11) NOT NULL default '0', `appreciation` text NOT NULL, `statut`  char(10) NOT NULL default '', `note` float default NULL, `indice_aid` int(11) NOT NULL default '0', PRIMARY KEY  (`login`,`id_aid`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS `aid_config`;
@@ -1265,3 +1292,10 @@ id_fichier INT( 11 ) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS aid_sous_groupes;
+CREATE TABLE IF NOT EXISTS aid_sous_groupes  (
+id INT(11) unsigned NOT NULL auto_increment,
+aid varchar(100) NOT NULL ,
+parent varchar(100) NOT NULL ,
+PRIMARY KEY ( id )
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;

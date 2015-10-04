@@ -50,13 +50,13 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
 debug_var();
 if(!isset($mess)) {$mess="";}
 
-$is_posted = isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($is_posted) ? $is_posted : NULL);
+// $is_posted = isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($is_posted) ? $is_posted : NULL);
 
 if (isset($is_posted) and ($is_posted =="1")) {
 	check_token();
 
     //  On regarde si une aid porte déjà le même nom
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')");
     $count = mysqli_num_rows($test);
 
     // On calcule le nouveau id pour l'aid à insérer.
@@ -77,7 +77,7 @@ if (isset($is_posted) and ($is_posted =="1")) {
        //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
        die();
     } else {
-       $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$new_id', nom='$reg_nom', numero='$reg_num', indice_aid='$indice_aid'");
+       $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$new_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid'");
        if (!$reg_data) {
           $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
           header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
@@ -102,15 +102,16 @@ if (isset($is_posted) and ($is_posted =="1")) {
 } else
 if (isset($is_posted) and ($is_posted =="2")) {
 	check_token();
+	$sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 // On vérifie d'abord que le nom n'est pas déjà utilisé :
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
+    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')");
     $count = mysqli_num_rows($test);
     $flag = 0;
     if ($count != "0") {
         $aid_id_test = old_mysql_result($test, 0, "id");
         if ($aid_id_test != $aid_id) {$flag = 1;}
     }
-	$sql="UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')";
+	$sql="UPDATE aid SET nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe' WHERE (id = '$aid_id' and indice_aid='$indice_aid')";
 	
     $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg_data) {
@@ -133,7 +134,7 @@ if (isset($is_posted) and ($is_posted =="2")) {
 	$mode = isset($mode) ? $mode : "";
 	$action = isset($action) ? $action : "";
 	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
-	$sousGroupe = isset($sousGroupe) ? $sousGroupe : "";
+	$sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 	
 	$id_aid_prec=-1;
 	$id_aid_suiv=-1;
@@ -167,16 +168,11 @@ if (isset($is_posted) and ($is_posted =="2")) {
 	if ($action == "modif_aid") {
 		$sql = "SELECT * FROM aid where (id = '".$aid_id."' and indice_aid='".$indice_aid."')";
 		$calldata = mysqli_query($GLOBALS["mysqli"], $sql)->fetch_object();
-		//$aid_nom = old_mysql_result($calldata, 0, "nom");
 		$aid_nom = $calldata->nom;	
-		//$aid_num = old_mysql_result($calldata, 0, "numero");	
 		$aid_num = $calldata->numero;
-		
+		$sous_groupe = $calldata->sous_groupe;		
 		$nouveau = "Entrez le nouveau nom à la place de l'ancien : ";
 	}
-	
-	$reg_nom = isset($reg_nom) ? $reg_nom : (isset($aid_nom) ? $aid_nom : "" );
-	$reg_num = isset($reg_num) ? $reg_num : (isset($aid_num) ? $aid_num : "" );
 }
 
 //**************** EN-TETE *********************
@@ -246,7 +242,7 @@ if ($_SESSION['statut'] == 'professeur') {
 		</label>
 		<input type="text" 
 			   id="aidRegNom" 
-			   name="reg_nom" 
+			   name="aid_nom" 
 			   size="100" 
 				<?php echo " value=\"".$aid_nom."\"";?>/>
 	</p>
@@ -254,16 +250,16 @@ if ($_SESSION['statut'] == 'professeur') {
 		<label for="aidRegNum">
 			Numéro (fac.) : 
 		</label>
-		<input type="text" id="aidRegNum" name="reg_num" size="4" <?php echo " value=\"".$aid_num."\""; ?> />
+		<input type="text" id="aidRegNum" name="aid_num" size="4" <?php echo " value=\"".$aid_num."\""; ?> />
 	</p>
 
 	<p>
 		<label for="sousGroupe">sous-groupe d'un autre AID</label>
 		<input type="checkbox"
-			   name='sousGroupe'
-			   id='sousGroupe'
+			   name='sous_groupe'
+			   id='sous_groupe'
 			   value="y"
-				<?php if ($sousGroupe) echo " checked='checked' "; ?>  
+				<?php if ($sous_groupe=='y') {echo " checked='checked' ";} ?>  
 			   />
 	</p>
 	<p class="center">
