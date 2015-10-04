@@ -47,7 +47,10 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
     die();
 }
 
+debug_var();
 if(!isset($mess)) {$mess="";}
+
+$is_posted = isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($is_posted) ? $is_posted : NULL);
 
 if (isset($is_posted) and ($is_posted =="1")) {
 	check_token();
@@ -71,7 +74,7 @@ if (isset($is_posted) and ($is_posted =="1")) {
     $test_id = mysqli_num_rows( mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid WHERE id = '$new_id'"));
     if ($test_id != 0) {
        $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
-       header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+       //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
        die();
     } else {
        $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$new_id', nom='$reg_nom', numero='$reg_num', indice_aid='$indice_aid'");
@@ -87,16 +90,16 @@ if (isset($is_posted) and ($is_posted =="1")) {
               $msg=$msg." Attention, plusieurs AID portant le même nom existaient déja !";
           }
           $mess = rawurlencode($msg);
-          header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+          //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
           die();
        } else if ($mode == "multiple") {
           $msg = "AID enregistrée !" ;
           $mess = rawurlencode($msg);
-          header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
+          //header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
           die();
        }
     }
-}
+} else
 if (isset($is_posted) and ($is_posted =="2")) {
 	check_token();
 // On vérifie d'abord que le nom n'est pas déjà utilisé :
@@ -107,7 +110,9 @@ if (isset($is_posted) and ($is_posted =="2")) {
         $aid_id_test = old_mysql_result($test, 0, "id");
         if ($aid_id_test != $aid_id) {$flag = 1;}
     }
-    $reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')");
+	$sql="UPDATE aid SET nom='$reg_nom', numero='$reg_num' WHERE (id = '$aid_id' and indice_aid='$indice_aid')";
+	
+    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
     if (!$reg_data) {
         $msg = "Erreur lors de l'enregistrement des données";
     } else {
@@ -119,9 +124,59 @@ if (isset($is_posted) and ($is_posted =="2")) {
         }
         $mess = rawurlencode($msg);
 
-        header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+        //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
         die();
     }
+} else {
+	// on remplit tous les champs pour n'avoir qu'un affichage
+	$aid_id = isset($aid_id) ? $aid_id : "";
+	$mode = isset($mode) ? $mode : "";
+	$action = isset($action) ? $action : "";
+	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
+	$sousGroupe = isset($sousGroupe) ? $sousGroupe : "";
+	
+	$id_aid_prec=-1;
+	$id_aid_suiv=-1;
+	$temoin_tmp=0;
+	$aid_nom = "";		
+	$aid_num = "";
+	$nouveau = "Entrez un nom : ";
+
+	if ($mode ) {
+		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY numero , nom";
+		//echo "$sql<br />";
+		$res_aid_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_aid_tmp)>0){
+			while($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
+				if($lig_aid_tmp->id==$aid_id){
+					$temoin_tmp=1;
+					if($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
+						$id_aid_suiv=$lig_aid_tmp->id;
+					}
+					else{
+						$id_aid_suiv=-1;
+					}
+				}
+				if($temoin_tmp==0){
+					$id_aid_prec=$lig_aid_tmp->id;
+				}
+			}
+		}
+	}
+	
+	if ($action == "modif_aid") {
+		$sql = "SELECT * FROM aid where (id = '".$aid_id."' and indice_aid='".$indice_aid."')";
+		$calldata = mysqli_query($GLOBALS["mysqli"], $sql)->fetch_object();
+		//$aid_nom = old_mysql_result($calldata, 0, "nom");
+		$aid_nom = $calldata->nom;	
+		//$aid_num = old_mysql_result($calldata, 0, "numero");	
+		$aid_num = $calldata->numero;
+		
+		$nouveau = "Entrez le nouveau nom à la place de l'ancien : ";
+	}
+	
+	$reg_nom = isset($reg_nom) ? $reg_nom : (isset($aid_nom) ? $aid_nom : "" );
+	$reg_num = isset($reg_num) ? $reg_num : (isset($aid_num) ? $aid_num : "" );
 }
 
 //**************** EN-TETE *********************
@@ -139,119 +194,92 @@ if ($_SESSION['statut'] == 'professeur') {
 } else {
 	$retour = 'index.php';
 }
+
 ?>
 <p class="bold">
-	
-<a href="<?php echo $retour; ?>?indice_aid=<?php echo $indice_aid; ?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
+	<a href="<?php echo $retour; ?>?indice_aid=<?php echo $indice_aid; ?>">
+		<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+		Retour
+	</a>
 
 <?php
 	if ($action == "modif_aid") {
-		//$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-		//$aid_nom = old_mysql_result($calldata, 0, "nom");
-		//$aid_num = old_mysql_result($calldata, 0, "numero");
 
-		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY id";
-		//echo "$sql<br />";
-		$res_aid_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_aid_tmp)>0){
-			$id_aid_prec=-1;
-			$id_aid_suiv=-1;
-			$temoin_tmp=0;
-			while($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
-				if($lig_aid_tmp->id==$aid_id){
-					$temoin_tmp=1;
-					if($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
-						$id_aid_suiv=$lig_aid_tmp->id;
-					}
-					else{
-						$id_aid_suiv=-1;
-					}
-				}
-				if($temoin_tmp==0){
-					$id_aid_prec=$lig_aid_tmp->id;
-				}
-			}
-		}
 
 		if($id_aid_prec!=-1) {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?action=modif_aid&amp;aid_id=$id_aid_prec&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID précédent</a>";
+?>
+	|
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?action=modif_aid&amp;aid_id=<?php echo $id_aid_prec; ?>&amp;indice_aid=<?php echo $indice_aid; ?>' 
+	   onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+		AID précédent
+	</a>
+<?php
 		}
 		if($id_aid_suiv!=-1) {
-			echo " | <a href='".$_SERVER['PHP_SELF']."?action=modif_aid&amp;aid_id=$id_aid_suiv&amp;indice_aid=$indice_aid' onclick=\"return confirm_abandon (this, change, '$themessage')\">AID suivant</a>";
+?>
+	|
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?action=modif_aid&amp;aid_id=<?php echo $id_aid_suiv; ?>&amp;indice_aid=<?php echo $indice_aid; ?>'
+	   onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')">
+		AID suivant
+	</a>
+<?php
 		}
 	}
 ?>
 
 </p>
 
-<?php if ($action == "add_aid") { ?>
+<form enctype="multipart/form-data" action="add_aid.php" method="post">
 
-    <form enctype="multipart/form-data" action="add_aid.php" method="post">
+
+
+
+    <p><?php echo $nouveau; ?></p>
 
 	<?php
 		echo add_token_field();
 	?>
-    <div class='norme'>
 
-    <p><label for="aidRegNom">Nom : <input type="text" id="aidRegNom" name="reg_nom" size="100" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> /></label></p>
+    <p>
+		<label for="aidRegNom">
+			Nom : 
+		</label>
+		<input type="text" 
+			   id="aidRegNom" 
+			   name="reg_nom" 
+			   size="100" 
+				<?php echo " value=\"".$aid_nom."\"";?>/>
+	</p>
+	<p>
+		<label for="aidRegNum">
+			Numéro (fac.) : 
+		</label>
+		<input type="text" id="aidRegNum" name="reg_num" size="4" <?php echo " value=\"".$aid_num."\""; ?> />
+	</p>
 
-    <p><label for="aidRegNum">Numéro (fac.) : <input type="text" id="aidRegNom" name="reg_num" size="4" <?php if (isset($reg_num)) { echo "value=\"".$reg_num."\"";}?> /></label></p>
+	<p>
+		<label for="sousGroupe">sous-groupe d'un autre AID</label>
+		<input type="checkbox"
+			   name='sousGroupe'
+			   id='sousGroupe'
+			   value="y"
+				<?php if ($sousGroupe) echo " checked='checked' "; ?>  
+			   />
+	</p>
+	<p class="center">
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<input type="hidden" name="mode" value="<?php echo $mode; ?>" />
+		<input type="hidden" name="is_posted" value="<?php echo $is_posted; ?>" />
+		<input type="submit" value="Enregistrer" />
+	</p>
+</form>
 
-    </div>
-
-    <input type="hidden" name="is_posted" value="1" />
-
-    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
-
-    <input type="hidden" name="mode" value="<?php echo $mode;?>" />
-
-    <input type="submit" value="Enregistrer" />
-
-    </form>
-
-<?php }
-
-
-
-if ($action == "modif_aid") { ?>
-
-    <p>Entrez le nouveau nom à la place de l'ancien : </p>
-
-    <form enctype="multipart/form-data" action="add_aid.php" method="post">
-	<?php
-		echo add_token_field();
-
-		$calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-
-		$aid_nom = old_mysql_result($calldata, 0, "nom");
-		
-		$aid_num = old_mysql_result($calldata, 0, "numero");
-	?>
-
-
-
-    <p><label for="aidRegNom">Nom : <input type="text" id="aidRegNom" name="reg_nom" size="100" <?php echo "value=\"".$aid_nom."\"";?> /></label></p>
-
-    <p><label for="aidRegNum">Numéro (fac.) : <input type="text" id="aidRegNum" name="reg_num" size="4" <?php echo "value=\"".$aid_num."\"";?> /></label></p>
-
-    <input type="hidden" name="is_posted" value="2" />
-
-    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
-
-    <input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
-
-    <input type="submit" value="Enregistrer" />
-
-    </form>
-
-<?php }
-
-echo "
 <script type='text/javascript'>
 if(document.getElementById('aidRegNom')) {
 	document.getElementById('aidRegNom').focus();
 }
-</script>";
+</script>
 
+<?php 
 require("../lib/footer.inc.php");
-?>

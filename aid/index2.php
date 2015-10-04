@@ -144,7 +144,7 @@ if (!suivi_ariane($fil ,$titre_page))
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+// debug_var();
 ?>
 <p class="bold noprint">
 <?php if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) { ?>
