@@ -1165,15 +1165,15 @@ function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL,$tab_extra=NU
 	$nb_class_par_colonne=round($nombreligne/$nbcol);
 
 	echo "<table width='100%' summary=\"Tableau de choix\">\n";
-	echo "<tr valign='top' align='center'>\n";
-	echo "<td align='left'>\n";
+	echo "<tr style='text-align:center; vertical-align: top;'>\n";
+	echo "<td style='text-align:left' >\n";
 
 	$i = 0;
 	while ($i < $nombreligne){
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
-			echo "<td align='left'>\n";
+			echo "<td style='text-align:left' >\n";
 		}
 
 		//echo "<br />\n";
@@ -2520,21 +2520,22 @@ function liste_checkbox_utilisateurs($tab_statuts, $tab_user_preselectionnes=arr
 		$nbcol=3;
 		$nb_par_colonne=round($nombreligne/$nbcol);
 
-		$retour.="<table width='100%' summary=\"Tableau de choix des utilisateurs\">\n";
-		$retour.="<tr valign='top' align='center'>\n";
-		$retour.="<td align='left'>\n";
+		$retour.="<table style ='width:100%;'>\n";
+		$retour.="<caption class='invisible'>Tableau de choix des utilisateurs</caption>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
 
 		$cpt=0;
 		$statut_prec="";
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 				$retour.="</td>\n";
-				$retour.="<td align='left'>\n";
+				$retour.="<td style='text-align:left' >\n";
 			}
 
 			if($lig->statut!=$statut_prec) {
 				if($avec_titre_statut=="y") {
-					$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+					$retour.="<p><strong>".ucfirst($lig->statut)."</strong><br />\n";
 				}
 				$statut_prec=$lig->statut;
 			}
@@ -2588,14 +2589,14 @@ function liste_checkbox_matieres($tab_matieres_preselectionnees=array(), $nom_ch
 		$nb_par_colonne=round($nombreligne/$nbcol);
 
 		$retour.="<table width='100%' summary=\"Tableau de choix des matieres\">\n";
-		$retour.="<tr valign='top' align='center'>\n";
-		$retour.="<td align='left'>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
 
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 				$retour.="</td>\n";
-				$retour.="<td align='left'>\n";
+				$retour.="<td style='text-align:left' >\n";
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->matiere' ";
@@ -2870,8 +2871,8 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 	$nb_class_par_colonne=round($nombreligne/$nbcol);
 
 	echo "<table width='100%' summary=\"Tableau de choix\">\n";
-	echo "<tr valign='top' align='center'>\n";
-	echo "<td align='left'>\n";
+	echo "<tr style='text-align:center; vertical-align: top;'>\n";
+	echo "<td style='text-align:left' >\n";
 
 	$i = 0;
 	$chaine_var_js="var tab_id_$nom_func_tout_cocher=new Array(";
@@ -2879,7 +2880,7 @@ function tab_liste_checkbox($tab_txt, $tab_nom_champ, $tab_id_champ, $tab_valeur
 
 		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 			echo "</td>\n";
-			echo "<td align='left'>\n";
+			echo "<td style='text-align:left' >\n";
 		}
 
 		//echo "<br />\n";
@@ -3363,15 +3364,15 @@ function liste_checkbox_eleves_classe($id_classe, $num_periode="", $tab_eleves_p
 		$nb_par_colonne=round($nombreligne/$nbcol);
 
 		$retour.="<table width='100%' summary=\"Tableau de choix des élèves\">\n";
-		$retour.="<tr valign='top' align='center'>\n";
-		$retour.="<td align='left'>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
 
 		$cpt=0;
 		$statut_prec="";
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 				$retour.="</td>\n";
-				$retour.="<td align='left'>\n";
+				$retour.="<td style='text-align:left' >\n";
 			}
 
 			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->login' ";
@@ -3659,19 +3660,19 @@ function liens_user($page_lien, $nom_var_login, $tab_statuts, $autres_parametres
 		$nb_par_colonne=round($nombreligne/$nbcol);
 
 		$retour.="<table width='100%' summary=\"Tableau de choix des utilisateurs\">\n";
-		$retour.="<tr valign='top' align='center'>\n";
-		$retour.="<td align='left'>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
 
 		$cpt=0;
 		$statut_prec="";
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 				$retour.="</td>\n";
-				$retour.="<td align='left'>\n";
+				$retour.="<td style='text-align:left' >\n";
 			}
 
 			if($lig->statut!=$statut_prec) {
-				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$retour.="<p><strong>".ucfirst($lig->statut)."</strong><br />\n";
 				$statut_prec=$lig->statut;
 			}
 
@@ -3704,19 +3705,19 @@ function liste_radio_utilisateurs($tab_statuts, $login_user_preselectionne="", $
 		$nb_par_colonne=round($nombreligne/$nbcol);
 
 		$retour.="<table width='100%' summary=\"Tableau de choix de l'utilisateur\">\n";
-		$retour.="<tr valign='top' align='center'>\n";
-		$retour.="<td align='left'>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
 
 		$cpt=0;
 		$statut_prec="";
 		while($lig=mysqli_fetch_object($res)) {
 			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 				$retour.="</td>\n";
-				$retour.="<td align='left'>\n";
+				$retour.="<td style='text-align:left' >\n";
 			}
 
 			if($lig->statut!=$statut_prec) {
-				$retour.="<p><b>".ucfirst($lig->statut)."</b><br />\n";
+				$retour.="<p><strong>".ucfirst($lig->statut)."</strong><br />\n";
 				$statut_prec=$lig->statut;
 			}
 

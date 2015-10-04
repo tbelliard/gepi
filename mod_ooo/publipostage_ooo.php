@@ -373,13 +373,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'] ,"Publipostage")) {
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-?>
 
-<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
-
-<?php if(!isset($num_fich)) { ?>
-	</p>
-<?php 
+if(!isset($num_fich)) { 
 	if(isset($_FILES['monfichier'])) {
 		check_token(false);
 
@@ -434,7 +429,7 @@ require_once("../lib/header.inc.php");
 							if(!$creation) {
 ?>
 	<p style='color:red;'>
-		ERREUR lors de la création du dossier de modèle openDocument pour <?php echo $login_user[$i] ?>
+		ERREUR lors de la création du dossier de modèle openDocument pour <?php echo $login_user[$i]; ?>
 	</p>
 <?php
 								$temoin_erreur="y";
@@ -444,7 +439,11 @@ require_once("../lib/header.inc.php");
 						if($temoin_erreur=="n") {
 							if(!file_exists($path_user."/index.html")) {
 								if(!creation_index_redir_login($path_user,1)) {
-									echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument pour ".$login_user[$i]."</p>\n";
+?>
+	<p style='color:red;'>
+		ERREUR lors de la création d'un index dans votre dossier de modèle openDocument pour <?php echo $login_user[$i]; ?>
+	</p>
+<?php
 								}
 							}
 
@@ -456,28 +455,22 @@ require_once("../lib/header.inc.php");
 					$cible[]=$path."/".$fichiercopie;
 				}
 
-				/*
-				if (!move_uploaded_file($monfichiertmp_name,$cible)) {
-					echo "<p style='color:red'>Erreur de copie<br />\n";
-					echo "Origine     : $monfichiername <br />\n";
-					echo "Destination : $cible<br />";
-					echo "La copie ne s'est pas effectuée !\n Vérifiez la taille du fichier (max 512ko)</p>\n";
-				}
-				else {
-					echo "<p style='color:red;'>Le fichier $cible a été copié correctement.</p>\n";
-				}
-				*/
-
 				$nb_copies=0;
 				for($i=0;$i<count($cible);$i++) {
 					$res_copy=copy($monfichiertmp_name , $cible[$i]);
-					if(!$res_copy) {echo "<p style='color:red'>Echec de la mise en place du fichier ".$cible[$i]."</p>";}
+					if(!$res_copy) {
+?>
+	<p style='color:red'>Echec de la mise en place du fichier <?php echo $cible[$i]; ?></p>
+<?php						
+					}
 					else {
 						$nb_copies++;
 					}
 				}
 				if($nb_copies>0) {
-					echo "<p style='color:red'>Fichier mis en place pour $nb_copies utilisateur(s).</p>\n";
+?>
+	<p style='color:red'>Fichier mis en place pour <?php echo $nb_copies; ?> utilisateur(s).</p>
+<?php						
 				}
 			}
 		}
@@ -488,7 +481,10 @@ require_once("../lib/header.inc.php");
 	
 		if(count($tab_file)==0) {
 			$upload_modele_ooo_autorise="n";
-			echo "<p style='color:red;'>Vous n'avez aucun modèle.";
+?>
+	<p style='color:red;'>
+		Vous n'avez aucun modèle.
+<?php						
 
 			if($_SESSION['statut']=='administrateur') {$upload_modele_ooo_autorise="y";}
 			elseif(($_SESSION['statut']=='scolarite')&&(getSettingValue('OOoUploadScol')=='yes')) {$upload_modele_ooo_autorise="y";}
@@ -496,27 +492,52 @@ require_once("../lib/header.inc.php");
 			elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
 
 			if($upload_modele_ooo_autorise!="y") {
-				echo "<br />\n";
-				echo "Et vous n'avez pas l'autorisation d'uploader vos modèles.";
+?>
+		<br />
+		Et vous n'avez pas l'autorisation d'uploader vos modèles.
+<?php						
 			}
-
-			echo "</p>\n";
+?>
+	</p>
+<?php						
 		}
 		else {
 			// Lister les modèles existants
-			echo "<p>Utiliser le modèle&nbsp;:<br />";
+?>
+	<p class='fieldset_opacite50' style="margin: .2em; padding: .5em;">
+		Utiliser le modèle&nbsp;:
+		<br />
+<?php	
 			for($i=0;$i<count($tab_file);$i++) {
-				echo "<a href='".$_SERVER['PHP_SELF']."?num_fich=$i' title=\"Effectuer un publipostage OOo avec ce fichier modèle\">".$tab_file[$i]." <img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a> - <a href='mes_modeles/".$_SESSION['login']."/".$tab_file[$i]."' target='_blank' title=\"Éditer le fichier ".$tab_file[$i]."
-pour (par exemple) modifier/améliorer ce modèle
-et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' width='16' height='16' alt='Éditer' /></a> - <a href='".$_SERVER['PHP_SELF']."?suppr_fich=$i".add_token_in_url()."' title=\"Supprimer le fichier ".$tab_file[$i]."\"><img src='../images/delete16.png' width='16' height='16' alt='Supprimer' /></a><br />";
+?>
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?num_fich=<?php echo $i; ?>' 
+	   title="Effectuer un publipostage OOo avec ce fichier modèle">
+	   <?php echo $tab_file[$i]; ?>
+	   <img src='../images/icons/print.png' class='icone16' alt='Imprimer' />
+	</a> - 
+	<a href='mes_modeles/<?php echo $_SESSION['login']; ?>/<?php echo $tab_file[$i]; ?>' 
+	   target='_blank' 
+	   title="Éditer le fichier <?php echo $tab_file[$i]; ?> pour (par exemple) modifier/améliorer ce modèle et le proposer au publipostage par la suite.">
+		<img src='../images/edit16.png' class='icone16' alt='Éditer' />
+	</a> - 
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?suppr_fich=<?php echo $i; ?><?php echo add_token_in_url(); ?>' 
+	   title="Supprimer le fichier <?php echo $tab_file[$i]; ?>">
+		<img src='../images/delete16.png' class='icone16' alt='Supprimer' />
+	</a>
+	<br />
+<?php						
 			}
-			echo "</p>\n";
+?>
+	</p>
+<?php	
 		}
 	}
 	else {
 		$creation=mkdir($path);
 		if(!$creation) {
-			echo "<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle openDocument</p>\n";
+?>
+	<p style='color:red;'>ERREUR lors de la création de votre dossier de modèle openDocument</p>
+<?php	
 			require_once("../lib/footer.inc.php");
 			die();
 		}
@@ -524,7 +545,9 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 	
 	if(!file_exists($path."/index.html")) {
 		if(!creation_index_redir_login($path,1)) {
-			echo "<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument</p>\n";
+?>
+	<p style='color:red;'>ERREUR lors de la création d'un index dans votre dossier de modèle openDocument</p>
+<?php	
 		}
 	}
 
@@ -535,53 +558,77 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 	elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
 
 	if($upload_modele_ooo_autorise=='y') {
-		echo "<form method='post' ENCTYPE='multipart/form-data' action='".$_SERVER['PHP_SELF']."' style='margin-top:1em;'>\n";
+?>
+	<form method='post' 
+		  enctype='multipart/form-data' 
+		  action='<?php echo $_SERVER['PHP_SELF']; ?>' 
+		  style='margin-top:1em;'>
+		<fieldset class='fieldset_opacite50'>
+<?php	
 		echo add_token_field();
-		echo "<p>Mettre en place un nouveau modèle&nbsp;:</p>\n";
-		echo "<INPUT TYPE=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"512000\">";
+?>
+		<p>
+			Mettre en place un nouveau modèle&nbsp;:
+			<input type="hidden"
+				   name="MAX_FILE_SIZE"
+				   value="512000" />
+		</p>
+<?php	
 	
 		if($_SESSION['statut']=='administrateur') {
-			echo "<p>Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;? ";
-			echo "<a href='javascript:cocher_decocher(true)'>Tout cocher</a> / <a href='javascript:cocher_decocher(false)'>Tout décocher</a>\n";
-			echo "</p>\n";
-
+?>
+		<p>
+			Pour quel(s) utilisateur(s) souhaitez-vous mettre en place le modèle&nbsp;?
+			<a href='javascript:cocher_decocher(true)'>Tout cocher</a> / 
+			<a href='javascript:cocher_decocher(false)'>Tout décocher</a>
+		</p>
+<?php	
 			echo liste_checkbox_utilisateurs(array('administrateur', 'scolarite', 'cpe', 'professeur'), array($_SESSION['login']));
-
 		}
-	
-		echo "<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier' value='il a cliqué le bougre'></p>\n";
-		echo "<p class='center'><input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
-		echo "</form>\n";
-
-		echo "<p><i>NOTES&nbsp;:</i></p>\n";
-		echo "<ul>\n";
-			echo "<li>\n";
-				echo "<p style='margin-left:3em;'>Le fichier fourni peut utiliser les champs suivants&nbsp;:</p>\n";
-				echo "<ul style='margin-left:3em;'>\n";
-				echo "<li>[eleves.nom]</li>\n";
-				echo "<li>[eleves.prenom]</li>\n";
-				echo "<li>[eleves.sexe]</li>\n";
-				echo "<li>[eleves.date_nais]</li>\n";
+?>
+		<p>Fichier modèle&nbsp;:&nbsp;<input type='file' name='monfichier'></p>
+		<p class='center'><input type='submit' name='btn' value='Envoyer' /></p>
+		</fieldset>
+	</form>
+	<p>
+		<em>NOTES&nbsp;:</em>
+	</p>
+	<ul>
+		<li>
+			Le fichier fourni peut utiliser les champs suivants&nbsp;:
+			<ul style='margin-left:3em;'>
+				<li>[eleves.nom]</li>
+				<li>[eleves.prenom]</li>
+				<li>[eleves.sexe]</li>
+				<li>[eleves.date_nais]</li>
+<?php
 				if(getSettingValue('ele_lieu_naissance')=="y") {
-					echo "<li>[eleves.lieu_nais]</li>\n";
+?>
+				<li>[eleves.lieu_nais]</li>
+<?php
 				}
-				echo "<li>[eleves.classe]</li>\n";
-				echo "<li>[eleves.ine]</li>\n";
-				echo "<li>[eleves.elenoet]</li>\n";
-				echo "<li>[eleves.ele_id]</li>\n";
-				echo "<li>[eleves.login]</li>\n";
-				echo "</ul>\n";
-			echo "</li>\n";
-			echo "<li>\n";
-				echo "<p>Des exemples de modèles sont disponibles&nbsp;: <a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo</a></p>\n";
-			echo "</li>\n";
-		echo "</ul>\n";
-
-		echo "<script type='text/javascript'>
-".js_checkbox_change_style()."
-".js_change_style_radio()."
+?>
+				<li>[eleves.classe]</li>
+				<li>[eleves.ine]</li>
+				<li>[eleves.elenoet]</li>
+				<li>[eleves.ele_id]</li>
+				<li>[eleves.login]</li>
+			</ul>
+		</li>
+		<li>
+			Des exemples de modèles sont disponibles&nbsp;: 
+			<a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>
+				http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo
+			</a>
+		</li>
+	</ul>
+	
+	<script type='text/javascript'>
+<?php echo js_checkbox_change_style(); ?>
+<?php echo js_change_style_radio(); ?>
 </script>";
 
+<?php
 		if($_SESSION['statut']=='administrateur') {
 			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accès les utilisateurs selon leur statut.</p>\n";
 		}
@@ -589,11 +636,11 @@ et le proposer au publipostage par la suite.\"><img src='../images/edit16.png' w
 }
 else {
 ?>
-	| <a href='<?php echo $_SERVER['PHP_SELF']; ?>'>Choisir un autre modèle</a>
+<p class='bold'><a href='<?php echo $_SERVER['PHP_SELF']; ?>'>Choisir un autre modèle</a></p>
 <?php
 	if((!isset($id_classe))&&(!isset($id_groupe))) {
 ?>
-</p>
+
 <?php
 	
 		$tab_file=get_tab_file($path);
@@ -628,7 +675,11 @@ else {
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 ?>
-<form method='post' enctype='multipart/form-data' action='<?php echo $_SERVER['PHP_SELF']; ?>' id='form1'>
+<form class='fieldset_opacite50'
+	  method='post' 
+	  enctype='multipart/form-data' 
+	  action='<?php echo $_SERVER['PHP_SELF']; ?>' 
+	  id='form1' >
 	<fieldset class='fieldset_opacite50'>
 		<p>
 			Pour quelle(s) classe(s) souhaitez-vous imprimer le document 
@@ -650,16 +701,17 @@ else {
 			$nbcol=3;
 			$nb_par_colonne=round($nombreligne/$nbcol);
 ?>
-		<table width='100%' summary="Tableau de choix des classes">
-			<tr valign='top' align='center'>
-				<td align='left'>
+		<table style ='width:100%;' >
+			<caption class="invisible">Tableau de choix des classes</caption>
+			<tr style='text-align:center; vertical-align: top;' >
+				<td style='text-align:left' >
 <?php
 			$cpt=0;
 			while($lig=mysqli_fetch_object($res)) {
 				if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
 ?>
 				</td>
-				<td align='left'>
+				<td style='text-align:left' >
 <?php
 				}
 ?>
@@ -700,8 +752,10 @@ else {
 ?>
 		</p>
 		<p>
-			<input type='radio' name='mode_pub' id='mode_pub' 
-				   value='' checked=checked'' 
+			<input type='radio' 
+				   name='mode_pub' 
+				   id='mode_pub' 
+				   value='' checked='checked' 
 				   onchange="change_style_radio();" />
 			<label for='mode_pub' id='texte_mode_pub' style='font-weight:bold;'>
 				Générer un seul fichier même si vous sélectionnez plusieurs classes
@@ -750,9 +804,10 @@ Ou
 			tous les enseignements
 			<input type='hidden' name='num_fich' value='<?php echo $num_fich; ?>' />
 		</p>
-		<table width='100%' summary="Tableau de choix des classes">
-			<tr valign='top' align='center'>
-				<td align='left'>
+		<table style="width:100%">
+			<caption class="invisible">Tableau de choix des classes</caption>
+			<tr style='text-align:center; vertical-align: top;'>
+				<td style='text-align:left' >
 <?php
 				echo add_token_field();
 
@@ -766,7 +821,7 @@ Ou
 					if(($i>0)&&(round($i/$nb_par_colonne)==$i/$nb_par_colonne)){
 ?>
 				</td>
-				<td align='left'>
+				<td style='text-align:left' >
 <?php
 					}
 ?>
