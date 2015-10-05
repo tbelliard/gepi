@@ -47,94 +47,59 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
     die();
 }
 
-debug_var();
 if(!isset($mess)) {$mess="";}
 
 // $is_posted = isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($is_posted) ? $is_posted : NULL);
 
-if (isset($is_posted) and ($is_posted =="1")) {
-	check_token();
+$aid_id = isset($aid_id) ? $aid_id : "";
+$mode = isset($mode) ? $mode : "";
+$action = isset($action) ? $action : "";
+$sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 
-    //  On regarde si une aid porte déjà le même nom
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')");
-    $count = mysqli_num_rows($test);
-
-    // On calcule le nouveau id pour l'aid à insérer.
-    $call_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid order by 'id'");
-    $count_id = mysqli_num_rows($call_id);
-    $i = 0;
-    $new_id = 0;
-    while ($i < $count_id) {
-       $id = old_mysql_result($call_id, $i, 'id');
-       while ($new_id <= $id) $new_id++;
-       $i++;
-    }
-
-    // Vérification ultime avant d'enregistrer
-    $test_id = mysqli_num_rows( mysqli_query($GLOBALS["mysqli"], "SELECT id FROM aid WHERE id = '$new_id'"));
-    if ($test_id != 0) {
-       $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
-       //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-       die();
-    } else {
-       $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO aid SET id = '$new_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid'");
-       if (!$reg_data) {
-          $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
-          header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-          die();
-       } elseif ($mode == "unique") {
-          $msg = "AID enregistrée !";
-          if ($count == "1") {
-              $msg=$msg." Attention, une AID portant le même nom existait déja !";
-          } else if ($count > 1) {
-              $msg=$msg." Attention, plusieurs AID portant le même nom existaient déja !";
-          }
-          $mess = rawurlencode($msg);
-          //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-          die();
-       } else if ($mode == "multiple") {
-          $msg = "AID enregistrée !" ;
-          $mess = rawurlencode($msg);
-          //header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
-          die();
-       }
-    }
-} else
-if (isset($is_posted) and ($is_posted =="2")) {
-	check_token();
-	$sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
-// On vérifie d'abord que le nom n'est pas déjà utilisé :
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')");
-    $count = mysqli_num_rows($test);
-    $flag = 0;
-    if ($count != "0") {
-        $aid_id_test = old_mysql_result($test, 0, "id");
-        if ($aid_id_test != $aid_id) {$flag = 1;}
-    }
-	$sql="UPDATE aid SET nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe' WHERE (id = '$aid_id' and indice_aid='$indice_aid')";
+if (isset($is_posted) && $is_posted) {
 	
-    $reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
-    if (!$reg_data) {
-        $msg = "Erreur lors de l'enregistrement des données";
-    } else {
-        $msg = "AID enregistrée !" ;
-        if ($flag == "1") {
-            $msg=$msg." Attention, une AID portant le même nom existait déja !";
-        } else if ($count > 1) {
-            $msg=$msg." Attention, plusieurs AID portant le même nom existaient déja !";
-        }
-        $mess = rawurlencode($msg);
-
-        //header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
-        die();
-    }
+	//  On regarde si une aid porte déjà le même nom
+	$sql_test = "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')";
+	$test = mysqli_query($GLOBALS["mysqli"],$sql_test );
+	$count = mysqli_num_rows($test);
+	check_token();
+	if (isset($is_posted) and ($is_posted =="1")) { // nouveau
+		// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
+		$sql = "SELECT CAST( aid.id AS SIGNED INTEGER ) AS idAid FROM aid ORDER BY idAid DESC ";
+		$result = mysqli_query($GLOBALS["mysqli"],$sql);
+		$aid_id = $result->fetch_object()->idAid + 1;		
+	} else {
+		$count--;
+	}
+	$sql = "INSERT INTO aid "
+	   . "SET id = '$aid_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid', sous_groupe='$sous_groupe'"
+	   . "ON DUPLICATE KEY "
+	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe'";
+	$reg_data = mysqli_query($GLOBALS["mysqli"], $sql); 
+	if (!$reg_data) {
+	   $mess = rawurlencode("Erreur lors de l'enregistrement des données.".$sql);
+	   header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+	   die();
+	}
+	if ($count == "1") {
+		$msg=$msg." Attention, une AID portant le même nom existait déja !<br />";
+	} else if ($count > 1) {
+		$msg=$msg." Attention, plusieurs AID portant le même nom existaient déja !<br />";
+	}
+	if ($mode == "multiple") {
+	   $msg .= "AID enregistrée !" ;
+	   $mess = rawurlencode($msg);
+	   header("Location: add_aid.php?action=add_aid&mode=multiple&msg=$mess&indice_aid=$indice_aid");
+	   die();
+	} else{
+		$msg .= "AID enregistrée !";
+		
+		$mess = rawurlencode($msg);
+		header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
+		die();
+	 }
 } else {
 	// on remplit tous les champs pour n'avoir qu'un affichage
-	$aid_id = isset($aid_id) ? $aid_id : "";
-	$mode = isset($mode) ? $mode : "";
-	$action = isset($action) ? $action : "";
-	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
-	$sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 	
 	$id_aid_prec=-1;
 	$id_aid_suiv=-1;
@@ -142,8 +107,9 @@ if (isset($is_posted) and ($is_posted =="2")) {
 	$aid_nom = "";		
 	$aid_num = "";
 	$nouveau = "Entrez un nom : ";
+	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
 
-	if ($mode ) {
+	if ("modif_aid" == $action) {
 		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY numero , nom";
 		//echo "$sql<br />";
 		$res_aid_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -183,6 +149,9 @@ else {
 	$titre_page = "Gestion des AID | Ajouter Une AID";
 }
 require_once("../lib/header.inc.php");
+
+
+// debug_var();
 //**************** FIN EN-TETE *****************
 
 if ($_SESSION['statut'] == 'professeur') {
@@ -254,7 +223,7 @@ if ($_SESSION['statut'] == 'professeur') {
 	</p>
 
 	<p>
-		<label for="sousGroupe">sous-groupe d'un autre AID</label>
+		<label for="sous_groupe">sous-groupe d'un autre AID</label>
 		<input type="checkbox"
 			   name='sous_groupe'
 			   id='sous_groupe'
@@ -269,6 +238,7 @@ if ($_SESSION['statut'] == 'professeur') {
 		<input type="hidden" name="is_posted" value="<?php echo $is_posted; ?>" />
 		<input type="submit" value="Enregistrer" />
 	</p>
+	<div id="aidParent"></div>
 </form>
 
 <script type='text/javascript'>
