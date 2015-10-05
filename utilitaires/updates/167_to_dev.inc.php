@@ -112,12 +112,13 @@ $result .= "<br />";
 $result .= "<strong>Ajout d'une table 'aid_sous_groupes' :</strong><br />";
 $test = sql_query1("SHOW TABLES LIKE 'aid_sous_groupes'");
 if ($test == -1) {
-	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS aid_sous_groupes  (
-id INT(11) unsigned NOT NULL auto_increment,
-aid varchar(100) NOT NULL ,
-parent varchar(100) NOT NULL ,
-PRIMARY KEY ( id )
-) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS aid_sous_groupes  "
+	   . "(id INT(11) unsigned NOT NULL auto_increment, "
+	   . "aid varchar(100) NOT NULL , "
+	   . "parent varchar(100) NOT NULL , "
+	   . "PRIMARY KEY ( id ), "
+	   . "UNIQUE KEY `aid` (`aid`)) "
+	   . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}

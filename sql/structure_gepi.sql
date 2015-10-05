@@ -1297,5 +1297,6 @@ CREATE TABLE IF NOT EXISTS aid_sous_groupes  (
 id INT(11) unsigned NOT NULL auto_increment,
 aid varchar(100) NOT NULL ,
 parent varchar(100) NOT NULL ,
-PRIMARY KEY ( id )
+PRIMARY KEY ( id ), 
+UNIQUE KEY `aid` (`aid`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
