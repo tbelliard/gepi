@@ -294,6 +294,13 @@ else {
 				$nom_classe[$tab_r[$loop]['id_classe']]=get_nom_classe($tab_r[$loop]['id_classe']);
 		}
 
+		if(($id_groupe!="")&&($id_groupe!="0")) {
+			$chaine_info_grp=get_info_grp($tab_r[$loop]['id_groupe']);
+		}
+		else {
+			$chaine_info_grp=get_info_aid($tab_r[$loop]['id_aid']);
+		}
+
 		echo "
 				<tr>
 					<td>
@@ -305,7 +312,7 @@ else {
 					<td>".$tab_r[$loop]['commentaire_prof']."</td>
 					<td>".$tab_r[$loop]['commentaire_validation']."</td>
 					<td>".$tab_r[$loop]['salle']."</td>
-					<td style='font-size:small'>".get_info_grp($tab_r[$loop]['id_groupe'])."</td>
+					<td style='font-size:small'>".$chaine_info_grp."</td>
 					<td>";
 		if($tab_r[$loop]['info_famille']=="oui") {
 			$checked=" checked";

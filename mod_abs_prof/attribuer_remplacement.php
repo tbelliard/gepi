@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -96,12 +96,14 @@ if((isset($_POST['is_posted']))) {
 
 				$id_absence=$lig->id_absence;
 				$id_groupe=$lig->id_groupe;
+				$id_aid=$lig->id_aid;
 				$id_classe=$lig->id_classe;
 				$id_creneau=$lig->id_creneau;
 				$jour=$lig->jour;
 				$login_user=$lig->login_user;
 
 				$sql="SELECT * FROM abs_prof_remplacement WHERE id_absence='".$id_absence."' AND 
+												id_aid='".$id_aid."' AND 
 												id_groupe='".$id_groupe."' AND 
 												id_classe='".$id_classe."' AND 
 												jour='".$jour."' AND 
@@ -151,6 +153,7 @@ if((isset($_POST['is_posted']))) {
 													utilisateurs u 
 												WHERE apr.id_absence='".$id_absence."' AND 
 															apr.id_groupe='".$id_groupe."' AND 
+															apr.id_aid='".$id_aid."' AND 
 															apr.id_classe='".$id_classe."' AND 
 															apr.jour='".$jour."' AND 
 															apr.id_creneau='".$id_creneau."' AND 
@@ -181,6 +184,13 @@ if((isset($_POST['is_posted']))) {
 
 								$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
 
+								if(($id_groupe!="")&&($id_groupe!="0")) {
+									$chaine_info_grp=get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "");
+								}
+								else {
+									$chaine_info_grp=get_info_aid($id_absence,array('nom_general_complet', 'classes', 'profs'), "");
+								}
+
 								$designation_user=civ_nom_prenom($login_user);
 								$subject = "[GEPI]: Remplacement attribué à ".$designation_user;
 								$texte_mail="Bonjour ".$designation_user.",
@@ -188,7 +198,7 @@ if((isset($_POST['is_posted']))) {
 Le remplacement suivant vous est attribué:
 
 ".get_nom_classe($id_classe)." le ".formate_date($date_debut_r,"n","complet")." en ".$info_creneau."
-".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "").".
+".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".$chaine_info_grp.".
 
 Merci.
 
@@ -249,6 +259,7 @@ if((isset($_GET['annuler_remplacement']))) {
 		$lig=mysqli_fetch_object($res);
 		$id_absence=$lig->id_absence;
 		$id_groupe=$lig->id_groupe;
+		$id_aid=$lig->id_aid;
 		$id_classe=$lig->id_classe;
 		$id_creneau=$lig->id_creneau;
 		$jour=$lig->jour;
@@ -291,6 +302,13 @@ if((isset($_GET['annuler_remplacement']))) {
 
 			$date_debut_r=substr($jour, 0, 4)."-".substr($jour, 4, 2)."-".substr($jour, 6, 2)." 08:00:00";
 
+			if(($id_groupe!="")&&($id_groupe!="0")) {
+				$chaine_info_grp=get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "");
+			}
+			else {
+				$chaine_info_grp=get_info_aid($id_absence,array('nom_general_complet', 'classes', 'profs'), "");
+			}
+
 			$designation_user=civ_nom_prenom($login_user);
 			$subject = "[GEPI]: Remplacement annulé";
 			$texte_mail="Bonjour ".$designation_user.",
@@ -298,7 +316,7 @@ if((isset($_GET['annuler_remplacement']))) {
 Le *remplacement* que vous deviez effectuer est *annulé*:
 
 ".get_nom_classe($id_classe)." le ".formate_date($date_debut_r,"n","complet")." en ".$info_creneau."
-".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".get_info_grp($id_groupe,array('description', 'matieres', 'classes', 'profs'), "").".
+".$chaine_commentaire_validation.$chaine_salle."en remplacement de ".$chaine_info_grp.".
 
 Si d'autres professeurs sont intéressés, le remplacement du cours reste bienvenu.
 
@@ -422,11 +440,12 @@ if($mode=="") {
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			//if(check_proposition_remplacement_validee2($lig->id)=="") {
-			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_aid, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
 				// Créneau sans remplacement programmé
 				$tab_propositions_avec_reponse_positive[$cpt]['id']=$lig->id;
 				$tab_propositions_avec_reponse_positive[$cpt]['id_absence']=$lig->id_absence;
 				$tab_propositions_avec_reponse_positive[$cpt]['id_groupe']=$lig->id_groupe;
+				$tab_propositions_avec_reponse_positive[$cpt]['id_aid']=$lig->id_aid;
 				$tab_propositions_avec_reponse_positive[$cpt]['id_classe']=$lig->id_classe;
 				$tab_propositions_avec_reponse_positive[$cpt]['jour']=$lig->jour;
 				$tab_propositions_avec_reponse_positive[$cpt]['id_creneau']=$lig->id_creneau;
@@ -464,12 +483,13 @@ else {
 		$cpt=0;
 		while($lig=mysqli_fetch_object($res)) {
 			//if(check_proposition_remplacement_validee2($lig->id)=="") {
-			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_aid, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
 				// Créneau sans remplacement programmé
 				//$tab_remplacements[]=$lig->id;
 				$tab_remplacements[$cpt]['id']=$lig->id;
 				$tab_remplacements[$cpt]['id_absence']=$lig->id_absence;
 				$tab_remplacements[$cpt]['id_groupe']=$lig->id_groupe;
+				$tab_remplacements[$cpt]['id_aid']=$lig->id_aid;
 				$tab_remplacements[$cpt]['id_classe']=$lig->id_classe;
 				$tab_remplacements[$cpt]['jour']=$lig->jour;
 				$tab_remplacements[$cpt]['id_creneau']=$lig->id_creneau;
@@ -560,7 +580,12 @@ for($loop=0;$loop<count($tab_r);$loop++) {
 		//echo "<span style='color:green'>".$id_cours_creneau."</span><br />";
 
 		echo get_nom_classe($tab_r[$loop]['id_classe'])."&nbsp;: ".formate_date($tab_r[$loop]['date_debut_r'], "n", "complet")." de ".$tab_creneau[$tab_r[$loop]['id_creneau']]['debut_court']." à ".$tab_creneau[$tab_r[$loop]['id_creneau']]['fin_court']." (<em>".$tab_creneau[$tab_r[$loop]['id_creneau']]['nom_creneau']."</em>)";
-		echo " (<em style='font-size:x-small;'>remplacement de ".get_info_grp($tab_r[$loop]['id_groupe'])."</em>)";
+		if(($tab_r[$loop]['id_groupe']!="")&&($tab_r[$loop]['id_groupe']!="0")) {
+			echo " (<em style='font-size:x-small;'>remplacement de ".get_info_grp($tab_r[$loop]['id_groupe'])."</em>)";
+		}
+		else {
+			echo " (<em style='font-size:x-small;'>remplacement de ".get_info_aid($tab_r[$loop]['id_aid'])."</em>)";
+		}
 		echo "<br />";
 
 
@@ -650,6 +675,7 @@ if($mode=="") {
 			$tab_remplacements_a_venir_valides[$cpt]['id']=$lig->id;
 			$tab_remplacements_a_venir_valides[$cpt]['id_absence']=$lig->id_absence;
 			$tab_remplacements_a_venir_valides[$cpt]['id_groupe']=$lig->id_groupe;
+			$tab_remplacements_a_venir_valides[$cpt]['id_aid']=$lig->id_aid;
 			$tab_remplacements_a_venir_valides[$cpt]['id_classe']=$lig->id_classe;
 			$tab_remplacements_a_venir_valides[$cpt]['jour']=$lig->jour;
 			$tab_remplacements_a_venir_valides[$cpt]['id_creneau']=$lig->id_creneau;
@@ -678,7 +704,12 @@ if($mode=="") {
 <ul>";
 	for($loop=0;$loop<count($tab_r);$loop++) {
 		echo "<li style='margin-bottom:0.5em;'>".get_nom_classe($tab_r[$loop]['id_classe'])."&nbsp;: ".formate_date($tab_r[$loop]['date_debut_r'], "n", "complet")." de ".$tab_creneau[$tab_r[$loop]['id_creneau']]['debut_court']." à ".$tab_creneau[$tab_r[$loop]['id_creneau']]['fin_court']." (<em>".$tab_creneau[$tab_r[$loop]['id_creneau']]['nom_creneau']."</em>)";
-		echo " (<em style='font-size:x-small;'>remplacement de ".get_info_grp($tab_r[$loop]['id_groupe'])."</em>)";
+		if(($tab_r[$loop]['id_groupe']!="")&&($tab_r[$loop]['id_groupe']!="0")) {
+			echo " (<em style='font-size:x-small;'>remplacement de ".get_info_grp($tab_r[$loop]['id_groupe'])."</em>)";
+		}
+		else {
+			echo " (<em style='font-size:x-small;'>remplacement de ".get_info_aid($tab_r[$loop]['id_aid'])."</em>)";
+		}
 		echo "<br />";
 
 		if(!isset($civ_nom_prenom[$tab_r[$loop]['login_user']])) {
