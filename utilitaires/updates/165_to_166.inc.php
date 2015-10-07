@@ -191,6 +191,7 @@ if ($test == -1) {
 id int(11) NOT NULL AUTO_INCREMENT,
 id_absence INT(11) NOT NULL,
 id_groupe INT(11) NOT NULL,
+id_aid INT(11) NOT NULL,
 id_classe INT(11) NOT NULL,
 jour CHAR(8) NOT NULL,
 id_creneau INT(11) NOT NULL,

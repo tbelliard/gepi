@@ -3289,12 +3289,17 @@ function test_reponses_favorables_propositions_remplacement() {
 
 	$retour="";
 
+	$test_champ=mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'id_aid';"));
+	if ($test_champ==0) {
+		$query = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE abs_prof_remplacement ADD id_aid INT(11) NOT NULL AFTER id_groupe;");
+	}
+
 	$nb=0;
 	$sql="SELECT * FROM abs_prof_remplacement WHERE date_fin_r>='".strftime('%Y-%m-%d %H:%M:%S')."' AND reponse='oui';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
-			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+			if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_aid, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
 				$nb++;
 			}
 		}

@@ -381,6 +381,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 				$cpt_aid_prof++;
 			}
 		}
+		$tab_aid['profs']['proflist_string']=$tab_aid['proflist_string'];
 
 		$tab_aid['classes']=array();
 		$tab_aid['classlist_string']="";
@@ -458,5 +459,27 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 	return $tab_aid;
 }
 
+function get_info_aid($id_aid, $tab_infos=array('nom_general_complet', 'classes', 'profs'), $mode="html") {
+	$aid=get_tab_aid($id_aid);
+
+	$retour="";
+	if(isset($aid['nom_aid'])) {
+		$retour=$aid['nom_aid'];
+		if($mode=="html") {
+			if(in_array('nom_general_court', $tab_infos)) {$retour.=" (<em>".$aid['nom_general_court']."</em>)";}
+			if(in_array('nom_general_complet', $tab_infos)) {$retour.=" (<em>".$aid['nom_general_complet']."</em>)";}
+			if(in_array('classes', $tab_infos)) {$retour.=" en ".$aid['classlist_string'];}
+			if(in_array('profs', $tab_infos)) {$retour.=" (<em>".$aid['profs']['proflist_string']."</em>)";}
+		}
+		else {
+			if(in_array('nom_general_court', $tab_infos)) {$retour.=" (".$aid['nom_general_court'].")";}
+			if(in_array('nom_general_complet', $tab_infos)) {$retour.=" (".$aid['nom_general_complet'].")";}
+			if(in_array('classes', $tab_infos)) {$retour.=" en ".$aid['classlist_string'];}
+			if(in_array('profs', $tab_infos)) {$retour.=" (".$aid['profs']['proflist_string'].")";}
+		}
+	}
+
+	return $retour;
+}
 
 ?>

@@ -61,6 +61,11 @@ if(!getSettingAOui('active_mod_abs_prof')) {
 	die();
 }
 
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM abs_prof_remplacement LIKE 'id_aid';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE abs_prof_remplacement ADD id_aid INT(11) NOT NULL AFTER id_groupe;");
+}
+
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 if((isset($mode))&&($mode=="suppr_abs")&&(isset($_POST['suppr_abs']))) {
@@ -512,19 +517,17 @@ if(($_SESSION['statut']=="administrateur")||
 
 		$tab_remplacements=array();
 		//$sql="SELECT * FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
-		$sql="SELECT DISTINCT id_absence, id_classe, id_groupe, jour, id_creneau FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
+		$sql="SELECT DISTINCT id_absence, id_classe, id_groupe, id_aid, jour, id_creneau FROM abs_prof_remplacement WHERE date_debut_r<'".strftime('%Y-%m-%d %H:%M:%S')."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
 			$tab_remplacements_creneaux_testes=array();
 			while($lig=mysqli_fetch_object($res)) {
-				//if(check_proposition_remplacement_validee2($lig->id)=="") {
-				if(!in_array($lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau ,$tab_remplacements_creneaux_testes)) {
-					if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
+				if(!in_array($lig->id_absence."|".$lig->id_groupe."|".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau ,$tab_remplacements_creneaux_testes)) {
+					if(check_proposition_remplacement_validee($lig->id_absence, $lig->id_groupe, $lig->id_aid, $lig->id_classe, $lig->jour, $lig->id_creneau)=="") {
 						// Créneau sans remplacement programmé
-						//$tab_remplacements[]=$lig->id;
-						$tab_remplacements[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
+						$tab_remplacements[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
 					}
-					$tab_remplacements_creneaux_testes[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
+					$tab_remplacements_creneaux_testes[]=$lig->id_absence."|".$lig->id_groupe."|".$lig->id_aid."|".$lig->id_classe."|".$lig->jour."|".$lig->id_creneau;
 				}
 			}
 		}
@@ -643,11 +646,16 @@ elseif($_SESSION['statut']=="professeur") {
 			*/
 
 			$nom_classe=get_nom_classe($tab[$loop]['id_classe']);
-			$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			if(($tab[$loop]['id_groupe']!="")&&($tab[$loop]['id_groupe']!="0")) {
+				$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			}
+			else {
+				$info_groupe=get_info_aid($tab[$loop]['id_aid'], array('nom_general_complet', 'classes', 'profs'));
+			}
 
 
 			// Ne pas proposer de répondre à un remplacement déjà attribué
-			$attribue_a=check_proposition_remplacement_validee($tab[$loop]['id_absence'], $tab[$loop]['id_groupe'], $tab[$loop]['id_classe'], $tab[$loop]['jour'], $tab[$loop]['id_creneau']);
+			$attribue_a=check_proposition_remplacement_validee($tab[$loop]['id_absence'], $tab[$loop]['id_groupe'], $tab[$loop]['id_aid'], $tab[$loop]['id_classe'], $tab[$loop]['jour'], $tab[$loop]['id_creneau']);
 
 			if($attribue_a=="") {
 				echo "
@@ -702,10 +710,15 @@ elseif($_SESSION['statut']=="professeur") {
 			*/
 
 			$nom_classe=get_nom_classe($tab[$loop]['id_classe']);
-			$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			if(($tab[$loop]['id_groupe']!="")&&($tab[$loop]['id_groupe']!="0")) {
+				$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			}
+			else {
+				$info_groupe=get_info_aid($tab[$loop]['id_aid'], array('nom_general_complet', 'classes', 'profs'));
+			}
 
 			// Ne pas proposer de répondre à un remplacement déjà attribué
-			$attribue_a=check_proposition_remplacement_validee($tab[$loop]['id_absence'], $tab[$loop]['id_groupe'], $tab[$loop]['id_classe'], $tab[$loop]['jour'], $tab[$loop]['id_creneau']);
+			$attribue_a=check_proposition_remplacement_validee($tab[$loop]['id_absence'], $tab[$loop]['id_groupe'], $tab[$loop]['id_aid'], $tab[$loop]['id_classe'], $tab[$loop]['jour'], $tab[$loop]['id_creneau']);
 
 			if($attribue_a=="") {
 				if($tab[$loop]['reponse']=='oui') {
@@ -775,7 +788,12 @@ elseif($_SESSION['statut']=="professeur") {
 			*/
 
 			$nom_classe=get_nom_classe($tab[$loop]['id_classe']);
-			$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			if(($tab[$loop]['id_groupe']!="")&&($tab[$loop]['id_groupe']!="0")) {
+				$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			}
+			else {
+				$info_groupe=get_info_aid($tab[$loop]['id_aid'], array('nom_general_complet', 'classes', 'profs'));
+			}
 
 			$info_salle="";
 			if($tab[$loop]['salle']!="") {
@@ -816,7 +834,12 @@ elseif($_SESSION['statut']=="professeur") {
 			*/
 
 			$nom_classe=get_nom_classe($tab[$loop]['id_classe']);
-			$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			if(($tab[$loop]['id_groupe']!="")&&($tab[$loop]['id_groupe']!="0")) {
+				$info_groupe=get_info_grp($tab[$loop]['id_groupe'], array('description', 'matieres', 'classes', 'profs'));
+			}
+			else {
+				$info_groupe=get_info_aid($tab[$loop]['id_aid'], array('nom_general_complet', 'classes', 'profs'));
+			}
 
 			$info_salle="";
 			if($tab[$loop]['salle']!="") {

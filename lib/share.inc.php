@@ -10714,6 +10714,7 @@ function get_tab_id_cours($id_cours) {
 	$tab=array();
 
 	$sql="SELECT * FROM edt_cours WHERE id_cours='$id_cours';";
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
@@ -10725,6 +10726,7 @@ function get_tab_id_cours($id_cours) {
 		$tab['nom_definie_periode']=$tab_h['nom_definie_periode'];
 		$tab['id_semaine']=$lig->id_semaine;
 		$tab['id_groupe']=$lig->id_groupe;
+		$tab['id_aid']=$lig->id_aid;
 	}
 	return $tab;
 }
@@ -12307,6 +12309,7 @@ function get_tab_propositions_remplacements($login_user, $mode="", $info_famille
 			$tab[$cpt]['login_prof_abs']=$tab_infos_absence[$lig->id_absence]['login_prof_abs'];
 
 			$tab[$cpt]['id_groupe']=$lig->id_groupe;
+			$tab[$cpt]['id_aid']=$lig->id_aid;
 			$tab[$cpt]['id_classe']=$lig->id_classe;
 			$tab[$cpt]['jour']=$lig->jour;
 			$tab[$cpt]['id_creneau']=$lig->id_creneau;
@@ -12328,10 +12331,10 @@ function get_tab_propositions_remplacements($login_user, $mode="", $info_famille
 	return $tab;
 }
 
-function check_proposition_remplacement_validee($id_absence, $id_groupe, $id_classe, $jour, $id_creneau) {
+function check_proposition_remplacement_validee($id_absence, $id_groupe, $id_aid, $id_classe, $jour, $id_creneau) {
 	$retour="";
 
-	$sql="SELECT * FROM abs_prof_remplacement WHERE id_absence='$id_absence' AND id_groupe='$id_groupe' AND id_classe='$id_classe' AND jour='$jour' AND id_creneau='$id_creneau' AND validation_remplacement='oui';";
+	$sql="SELECT * FROM abs_prof_remplacement WHERE id_absence='$id_absence' AND id_groupe='$id_groupe' AND id_aid='$id_aid' AND id_classe='$id_classe' AND jour='$jour' AND id_creneau='$id_creneau' AND validation_remplacement='oui';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		$lig=mysqli_fetch_object($res);
