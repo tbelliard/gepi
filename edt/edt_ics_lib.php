@@ -3269,8 +3269,8 @@ function affiche_abs2_sur_edt2() {
 						$chaine_mise_en_exergue="";
 						$chaine_mise_en_exergue="onmouseover=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='2px solid lime'\" onmouseout=\"document.getElementById('div_fond_abs_".$cpt_abs."').style.border='0px solid red'\" ";
 
-						// Fond : Opacité 50
-						$html.="<div id='div_fond_abs_".$cpt_abs."' style='position:absolute; top:".ceil($y)."px; left:".ceil($x)."px; width:".($largeur_jour-$marge_secu)."px; height:".floor($y_fin-$y)."px; opacity:0.5; ".$bgcolor." border:1px solid red; z-index:3000;' ".$chaine_mise_en_exergue." title=\"Saisie n°".$current_abs['id']."
+						// Fond : Opacité 80
+						$html.="<div id='div_fond_abs_".$cpt_abs."' style='position:absolute; top:".ceil($y)."px; left:".ceil($x)."px; width:".($largeur_jour-$marge_secu)."px; height:".floor($y_fin-$y)."px; opacity:0.8; ".$bgcolor." border:1px solid red; z-index:3000;' ".$chaine_mise_en_exergue." title=\"Saisie n°".$current_abs['id']."
 	Du ".formate_date($current_abs['debut_abs'],"y","court")." au ".formate_date($current_abs['fin_abs'],"y","court")."\"></div>";
 						//<a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_abs['id']."' target='_blank'>".$current_abs['id']."</a>
 
