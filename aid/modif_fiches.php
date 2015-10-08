@@ -38,10 +38,24 @@ if (!checkAccess()) {
     die();
 }
 
+//debug_var();
+
+include_once 'fonctions_aid.php';
+global $mysqli;
+$javascript_specifique = "aid/aid_ajax";
+
 // Initialisation des variables
-$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
-$aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ? $_GET["aid_id"] : NULL);
-$annee = isset($_POST["annee"]) ? $_POST["annee"] : (isset($_GET["annee"]) ? $_GET["annee"] : '');
+//$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
+$indice_aid = \filter_input(\INPUT_POST, 'indice_aid') ? \filter_input(\INPUT_POST, 'indice_aid') : (\filter_input(\INPUT_GET, 'indice_aid') ? \filter_input(\INPUT_GET, 'indice_aid') : NULL);
+//$aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ? $_GET["aid_id"] : NULL);
+$aid_id = \filter_input(\INPUT_POST, 'aid_id') ? \filter_input(\INPUT_POST, 'aid_id') : (\filter_input(\INPUT_GET, 'aid_id') ? \filter_input(\INPUT_GET, 'aid_id') : NULL);
+//$annee = isset($_POST["annee"]) ? $_POST["annee"] : (isset($_GET["annee"]) ? $_GET["annee"] : '');
+$annee = \filter_input(\INPUT_POST, 'annee') ? \filter_input(\INPUT_POST, 'annee') : (\filter_input(\INPUT_GET, 'annee') ? \filter_input(\INPUT_GET, 'annee') : NULL);
+
+/* @var $sous_groupe integer */
+$sous_groupe = \filter_input(\INPUT_POST, 'sous_groupe');
+/* @var $parent integer */
+$parent = \filter_input(\INPUT_POST, 'parent');
 
 // Vérification de la validité de $indice_aid et $aid_id
 if (!VerifAidIsAcive($indice_aid,$aid_id,$annee)) {
@@ -78,13 +92,15 @@ if (isset($_POST["is_posted"])) {
 	check_token();
 
     // La personne connectée a-t-telle le droit d'enregistrer ?
-    if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee))
+    if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee)) {
         die();
+	}
     $msg = "";
-    if ($annee=='')
-        $sql_aid = "update aid set ";
-    else
-        $sql_aid = "update archivage_aids set ";
+    if ($annee=='') {
+		$sql_aid = "UPDATE aid SET ";
+	} else {
+        $sql_aid = "UPDATE archivage_aids SET ";
+	}
 
     $met_virgule='n';
     // Résumé
@@ -94,7 +110,7 @@ if (isset($_POST["is_posted"])) {
         $reg_resume = mb_substr($reg_resume,0,597)."...";
         $msg .= "Erreur : Votre résumé excède 600 caractères.<br />";
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "resume = '".$reg_resume."'";
       $met_virgule='y';
     }
@@ -102,11 +118,11 @@ if (isset($_POST["is_posted"])) {
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'divers','W',$annee)) and (isset($_POST["reg_divers"]))) {
       $reg_divers = isset($_POST["reg_divers"]) ? $_POST["reg_divers"] : NULL;
       if (mb_strlen($reg_divers) > 600) {
-        if ($msg != "") $msg .= "<br />";
+        if ($msg != "")  {$msg .= "<br />";}
         $msg .= "Erreur : le champs divers excède 600 caractères.<br />";
         $reg_divers = mb_substr($reg_divers,0,597)."...";
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "divers = '".$reg_divers."'";
       $met_virgule='y';
     }
@@ -114,11 +130,11 @@ if (isset($_POST["is_posted"])) {
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'contacts','W',$annee)) and (isset($_POST["reg_contacts"]))) {
       $reg_contacts = isset($_POST["reg_contacts"]) ? $_POST["reg_contacts"] : NULL;
       if (mb_strlen($reg_contacts) > 600) {
-        if ($msg != "") $msg .= "<br />";
+        if ($msg != "") {$msg .= "<br />";}
         $msg .= "Erreur : le champs \"Contacts Extérieurs\" excède 600 caractères.<br />";
         $reg_contacts = mb_substr($reg_contacts,0,597)."...";
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y'){ $sql_aid .=",";}
       $sql_aid .= "contacts = '".$reg_contacts."'";
       $met_virgule='y';
 
@@ -132,16 +148,17 @@ if (isset($_POST["is_posted"])) {
         $temp = "p".$i;
         if (isset($_POST[$temp])) {
             $nb_cases++;
-            if ($nb_cases <= $nb_max_cases)
+            if ($nb_cases <= $nb_max_cases){
                 $reg_productions .= $_POST[$temp]."|";
+			}
         }
         $i++;
       }
       if ($nb_cases > $nb_max_cases) {
-        if ($msg != "") $msg .= "<br />";
+        if ($msg != "") {$msg .= "<br />";}
         $msg .= "Erreur : vous devez cocher au maximum ".$nb_max_cases." items pour caractériser votre projet.";
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "productions = '".$reg_productions."'";
       $met_virgule='y';
     }
@@ -156,7 +173,7 @@ if (isset($_POST["is_posted"])) {
         }
         $i++;
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "public_destinataire = '".$reg_public."'";
       $met_virgule='y';
     }
@@ -166,52 +183,54 @@ if (isset($_POST["is_posted"])) {
       $k = 0;
       while ($k < 5) {
         $temp = "mc".$k;
-        if ((isset($_POST[$temp])) and (trim($_POST[$temp]) != ""))
+        if ((isset($_POST[$temp])) and (trim($_POST[$temp]) != "")) {
             $reg_mots_cles .= $_POST[$temp]."|";
+		}
         $k++;
       }
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";
+		}
       $sql_aid .= "mots_cles = '".$reg_mots_cles."'";
       $met_virgule='y';
     }
 
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1','W',$annee)) and (isset($_POST["reg_adresse1"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "adresse1 = '".$_POST["reg_adresse1"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse2','W',$annee)) and (isset($_POST["reg_adresse2"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "adresse2 = '".$_POST["reg_adresse2"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'famille','W',$annee)) and (isset($_POST["reg_famille"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "famille = '".$_POST["reg_famille"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere1','W',$annee)) and (isset($_POST["reg_discipline1"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "matiere1 = '".$_POST["reg_discipline1"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'matiere2','W',$annee)) and (isset($_POST["reg_discipline2"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "matiere2 = '".$_POST["reg_discipline2"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','W',$annee)) and (isset($_POST["reg_perso1"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "perso1 = '".$_POST["reg_perso1"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','W',$annee)) and (isset($_POST["reg_perso2"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "perso2 = '".$_POST["reg_perso2"]."'";
       $met_virgule='y';
     }
     if ((VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','W',$annee)) and (isset($_POST["reg_perso3"]))) {
-      if ($met_virgule=='y') $sql_aid .=",";
+      if ($met_virgule=='y') {$sql_aid .=",";}
       $sql_aid .= "perso3 = '".$_POST["reg_perso3"]."'";
       $met_virgule='y';
     }
@@ -273,35 +292,56 @@ if (isset($_POST["is_posted"])) {
         $met_virgule='y';
     }
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'affiche_adresse1','W',$annee)) {
-        if (isset($_POST["reg_affiche_adresse1"]))
+        if (isset($_POST["reg_affiche_adresse1"])){
             $reg_affiche_adresse1 = "y";
-        else
+		}
+        else{
             $reg_affiche_adresse1 = "n";
-        if ($met_virgule=='y') $sql_aid .=",";
+		}
+        if ($met_virgule=='y') {$sql_aid .=",";}
         $sql_aid .= "affiche_adresse1 = '".$reg_affiche_adresse1."'";
         $met_virgule='y';
     }
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'en_construction','W',$annee)) {
-        if (isset($_POST["reg_en_construction"]))
+        if (isset($_POST["reg_en_construction"])) {
             $reg_en_construction = "y";
-        else
-            $reg_en_construction = "n";
-        if ($met_virgule=='y') $sql_aid .=",";
+		}
+        else {
+            $reg_en_construction = "n";}
+        if ($met_virgule=='y') {$sql_aid .=",";}
         $sql_aid .= "en_construction = '".$reg_en_construction."'";
         $met_virgule='y';
     }
+	
+	// Sous-groupe de
+	if ($met_virgule=='y') {$sql_aid .=",";}
+	if ($sous_groupe ==="y") {
+		$sql_aid .= " sous_groupe = 'y' ";
+		Sauve_sous_groupe ($aid_id, $parent);
+	} else {
+		$sql_aid .= " sous_groupe = 'n' ";
+		Efface_sous_groupe($aid_id);
+	}
+    $met_virgule='y';
+	
     // Fin de la requête
-    if ($annee=='')
-        $sql_aid .= " where (id = '".$aid_id."' and indice_aid='".$indice_aid."')";
-    else
-        $sql_aid .= " where (id = '".$aid_id."' and id_type_aid='".$indice_aid."'  and annee='".$annee."')";
+    if ($annee=='') {
+        $sql_aid .= " WHERE (id = '".$aid_id."' AND indice_aid='".$indice_aid."')";
+    }
+    else {
+        $sql_aid .= " WHERE (id = '".$aid_id."' AND id_type_aid='".$indice_aid."' AND annee='".$annee."')";
+    }
+	
+	//echo $sql_aid;
 
     $enr_aid = sql_query($sql_aid);
-    if ($msg != "") $msg .= "<br />";
-    if (!$enr_aid)
+    if ($msg != "")  {$msg .= "<br />";}
+    if (!$enr_aid) {
         $msg .= "Erreur lors de l'enregistrement !";
-    else
+    }
+    else {
         $msg .= "Enregistrement réussi !";
+    }
 
 
 }
@@ -314,35 +354,39 @@ else {
 }
 
 $aid_nom = old_mysql_result($call_data_projet, 0, "nom");
-$reg_resume = @old_mysql_result($call_data_projet,0,"resume");
-$reg_contacts = @old_mysql_result($call_data_projet,0,"contacts");
-$reg_divers = @old_mysql_result($call_data_projet,0,"divers");
-$reg_famille = @old_mysql_result($call_data_projet,0,"famille");
-$reg_discipline1 = @old_mysql_result($call_data_projet,0,"matiere1");
-$reg_discipline2 = @old_mysql_result($call_data_projet,0,"matiere2");
-$reg_adresse1 = @old_mysql_result($call_data_projet,0,"adresse1");
-$reg_productions = @old_mysql_result($call_data_projet,0,"productions");
-$reg_public = @old_mysql_result($call_data_projet,0,"public_destinataire");
-$reg_mots_cles = @old_mysql_result($call_data_projet,0,"mots_cles");
-$reg_adresse2 = @old_mysql_result($call_data_projet,0,"adresse2");
-$reg_num = @old_mysql_result($call_data_projet,0,"numero");
-$reg_fiche_publique = @old_mysql_result($call_data_projet,0,"fiche_publique");
-$reg_affiche_adresse1 = @old_mysql_result($call_data_projet,0,"affiche_adresse1");
-$reg_en_construction = @old_mysql_result($call_data_projet,0,"en_construction");
+$reg_resume = old_mysql_result($call_data_projet,0,"resume");
+$reg_contacts = old_mysql_result($call_data_projet,0,"contacts");
+$reg_divers = old_mysql_result($call_data_projet,0,"divers");
+$reg_famille = old_mysql_result($call_data_projet,0,"famille");
+$reg_discipline1 = old_mysql_result($call_data_projet,0,"matiere1");
+$reg_discipline2 = old_mysql_result($call_data_projet,0,"matiere2");
+$reg_adresse1 = old_mysql_result($call_data_projet,0,"adresse1");
+$reg_productions = old_mysql_result($call_data_projet,0,"productions");
+$reg_public = old_mysql_result($call_data_projet,0,"public_destinataire");
+$reg_mots_cles = old_mysql_result($call_data_projet,0,"mots_cles");
+$reg_adresse2 = old_mysql_result($call_data_projet,0,"adresse2");
+$reg_num = old_mysql_result($call_data_projet,0,"numero");
+$reg_fiche_publique = old_mysql_result($call_data_projet,0,"fiche_publique");
+$reg_affiche_adresse1 = old_mysql_result($call_data_projet,0,"affiche_adresse1");
+$reg_en_construction = old_mysql_result($call_data_projet,0,"en_construction");
 if ($annee=='') {
-  $reg_perso1 = @old_mysql_result($call_data_projet,0,"perso1");
-  $reg_perso2 = @old_mysql_result($call_data_projet,0,"perso2");
-  $reg_perso3 = @old_mysql_result($call_data_projet,0,"perso3");
-  $reg_eleve_peut_modifier = @old_mysql_result($call_data_projet,0,"eleve_peut_modifier");
-  $reg_prof_peut_modifier = @old_mysql_result($call_data_projet,0,"prof_peut_modifier");
-  $reg_cpe_peut_modifier = @old_mysql_result($call_data_projet,0,"cpe_peut_modifier");
+  $reg_perso1 = old_mysql_result($call_data_projet,0,"perso1");
+  $reg_perso2 = old_mysql_result($call_data_projet,0,"perso2");
+  $reg_perso3 = old_mysql_result($call_data_projet,0,"perso3");
+  $reg_eleve_peut_modifier = old_mysql_result($call_data_projet,0,"eleve_peut_modifier");
+  $reg_prof_peut_modifier = old_mysql_result($call_data_projet,0,"prof_peut_modifier");
+  $reg_cpe_peut_modifier = old_mysql_result($call_data_projet,0,"cpe_peut_modifier");
 } else {
-  $eleves_resp = @old_mysql_result($call_data_projet,0,"eleves_resp");
-  $eleves = @old_mysql_result($call_data_projet,0,"eleves");
-  $responsables = @old_mysql_result($call_data_projet,0,"responsables");
+  $eleves_resp = old_mysql_result($call_data_projet,0,"eleves_resp");
+  $eleves = old_mysql_result($call_data_projet,0,"eleves");
+  $responsables = old_mysql_result($call_data_projet,0,"responsables");
 }
 
 $style_specifique = "aid/style_fiche";
+
+$sous_groupe_de = Extrait_info_parent ($aid_id) ? Extrait_info_parent ($aid_id)->fetch_object()->id : NULL;
+//print_r($sous_groupe_de->fetch_object()->id);
+$res_parents=Extrait_aid_sur_indice_aid ($indice_aid);
 
 //**************** EN-TETE *********************
 if ($action == "visu")
@@ -384,33 +428,48 @@ obj.checked = false;
 }
 
 </script>
+<?php } ?>
+<p class=bold>
 <?php
-}
-
-echo "<p class=bold>";
-if ($_SESSION['retour']!='')
-echo "<a href=\"".$_SESSION['retour']."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if ($_SESSION['retour']!='') { ?>
+	<a href="<?php echo $_SESSION['retour']; ?>">
+		<img src='../images/icons/back.png' alt='Retour' class='back_link'/>
+		Retour
+	</a>
+<?php }
 if ($action == "visu") {
     if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,"","",$annee)) {
-        echo " | <a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;annee=$annee&amp;action=modif'>Modifier la fiche</a>";
-    }
+?>
+	| <a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;annee=<?php echo $annee; ?>&amp;action=modif'>
+		Modifier la fiche
+	</a>  
+<?php }
 } else {
-    echo " | <a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;annee=$annee&amp;action=visu'>Visualiser la fiche</a>";
-}
-echo "</p>\n";
-// Nom du projet
-echo "<p class='grand'>projet ".$nom_projet." : ".$aid_nom."</p>\n";
+?>
+	| <a href='modif_fiches.php?aid_id=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>&amp;annee=<?php echo $annee; ?>&amp;action=visu'>
+		Visualiser la fiche
+	</a>
+<?php } ?>
+</p>
+<!-- Nom du projet -->
+<p class='grand'>
+	projet <?php echo $nom_projet; ?> : <?php echo $aid_nom; ?>
+</p>
+<?php
 
 // Début du formulaire
-If ($action != "visu") {
-    echo "<form action=\"modif_fiches.php\" name=\"form\" method=\"post\">\n";
+If ($action != "visu") { ?>
+<form action="modif_fiches.php" name="form" method="post">
+	<?php
 	echo add_token_field();
-}
+} ?>
 
-echo "<div class='bloc'>";
+	<div class='bloc'>
 
-// Elèves responsables
-echo "<span class = 'bold'>Elèves responsables du projet :</span>\n";
+<!-- Elèves responsables -->
+<p class = 'bold'>
+	Elèves responsables du projet :
+<?php
 if ($annee=='') {
   // appel de la liste des élèves de l'AID :
   $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
@@ -422,19 +481,21 @@ if ($annee=='') {
   while ($i < $nombre) {
     $login_eleve = old_mysql_result($call_liste_data, $i, "login");
     $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
+    $prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
     $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-    $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
-    echo "$nom_eleve $prenom_eleve ($classe_eleve)";
-    if ($i < $nombre-1) echo " - ";
+    $classe_eleve = old_mysql_result($call_classe, '0', "classe");
+    echo $nom_eleve." ".$prenom_eleve." (".$classe_eleve.")";
+    if ($i < $nombre-1) {echo " - "; }
     $i++;
  }
 } else {
    echo $eleves_resp;
-}
-
-// Professeurs responsables
-echo "\n<br /><span class = 'bold'>Professeurs responsables du projet : </span>\n";
+} ?>
+</p>
+<!-- Professeurs responsables -->
+<p class = 'bold' style="margin-bottom: 1em">
+	Professeurs responsables du projet : 
+<?php
 if ($annee=='') {
   // appel de la liste des professeurs de l'AID :
   $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT e.login, e.nom, e.prenom
@@ -446,55 +507,94 @@ if ($annee=='') {
   while ($i < $nombre) {
     $login_eleve = old_mysql_result($call_liste_data, $i, "login");
     $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
-    $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
+    $prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
     echo $nom_eleve." ".$prenom_eleve;
-    if ($i < $nombre-1) echo " - ";
+    if ($i < $nombre-1) {echo " - ";}
   $i++;
   }
 } else {
   echo $responsables;
-}
-
+} ?>
+</p>
+<?php
 if ($annee=='') {
  // perso1
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','W',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlspecialchars($reg_perso1)."\" size=\"40\" />";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
+    echo "<input type=\"text\" name=\"reg_perso1\" value=\"".htmlspecialchars($reg_perso1)."\" size=\"40\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso1','R',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
-    echo htmlspecialchars($reg_perso1)."\n";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso1")." : </span>\n";
+    echo htmlspecialchars($reg_perso1)."</p>\n";
   }
  }
  // perso2
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','W',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlspecialchars($reg_perso2)."\" size=\"40\" />";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
+    echo "<input type=\"text\" name=\"reg_perso2\" value=\"".htmlspecialchars($reg_perso2)."\" size=\"40\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso2','R',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
-    echo htmlspecialchars($reg_perso2)."\n";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso2")." : </span>\n";
+    echo htmlspecialchars($reg_perso2)."</p>\n";
   }
  }
  // perso3
  If ($action != "visu") {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','W',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
-    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlspecialchars($reg_perso3)."\" size=\"40\" />";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
+    echo "<input type=\"text\" name=\"reg_perso3\" value=\"".htmlspecialchars($reg_perso3)."\" size=\"40\" /></p>\n";
   }
  } else {
   if (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'perso3','R',$annee)) {
-    echo "<br /><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
-    echo htmlspecialchars($reg_perso3)."\n";
+    echo "<p><span class = 'bold'>".LibelleChampAid("perso3")." : </span>\n";
+    echo htmlspecialchars($reg_perso3)."</p>\n";
   }
  }
 }
-echo "</div>\n";
+?>
+	</div>
+	<div class='bloc'>
+		<p title="Cochez pour affecter un parent puis choisissez le parent">
+			<label for="sous_groupe">
+				Sous-groupe d'un autre AID
+			</label>
+			<input type="checkbox"
+				   name='sous_groupe'
+				   id='sous_groupe'
+				   value="y"
+					<?php if (a_parent($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>  
+				   onchange="afficher_cacher_parent();"
+				   />
+		
+		<span id="aidParent">
+		
+<?php if((Categorie_a_enfants ($indice_aid) != NULL) && Categorie_a_enfants ($indice_aid)->num_rows){ ?>
+			<select name="parent" id="choix_parent">
+				<option value="" 
+						<?php if (!$sous_groupe_de) {echo " selected='selected' ";} ?>
+						>
+					Aucun parent
 
+				<?php while ($parent = $res_parents->fetch_object()){ ?>
+				<option value="<?php echo $parent->id; ?>" 
+						<?php if ($parent->id == $sous_groupe_de) {echo " selected='selected' ";} ?>
+						>
+					<?php echo $parent->nom; ?>
+				</option>
+				<?php } ?>
+			</select>
+<?php } ?>
+		
+		</span>
+		</p>
+	
+	
+	</div>
+<?php
 // Partie réservée à l'admin
 if ($_SESSION["statut"]=="administrateur") {
     echo "<div class='bloc'>\n";
@@ -932,14 +1032,25 @@ If ($action != "visu") {
 echo "</div>\n";
 
 
-if ($action != "visu") {
-    echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />";
-    echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />";
-    echo "<input type=\"hidden\" name=\"action\" value=\"".$action."\" />";
-    echo "<input type=\"hidden\" name=\"annee\" value=\"".$annee."\" />";
-    echo "<input type=\"hidden\" name=\"is_posted\" value=\"yes\" />";
-    echo "<center><div id = \"fixe\"><input type=\"submit\" value=\"Enregistrer\" /></div></center>";
-    echo "</form>";
-}
+if ($action != "visu") { ?>
+	<p>
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<input type="hidden" name="action" value="<?php echo $action; ?>" />
+		<input type="hidden" name="annee" value="<?php echo $annee; ?>" />
+		<input type="hidden" name="is_posted" value="yes" />
+	</p>
+	<div class="center" id = "fixe">
+		<p>
+			<input type="submit" value="Enregistrer" />
+		</p>
+	</div>
+</form>
+
+
+<script type='text/javascript'>
+	afficher_cacher_parent();
+</script>
+<?php }
 include "../lib/footer.inc.php";
 ?>

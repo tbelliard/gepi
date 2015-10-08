@@ -56,6 +56,9 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
     die();
 }
 
+include_once 'fonctions_aid.php';
+global $mysqli;
+
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
 	check_token();
 
