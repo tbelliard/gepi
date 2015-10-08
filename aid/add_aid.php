@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -47,7 +47,9 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
     die();
 }
 
+include_once 'fonctions_aid.php';
 $mysqli = $GLOBALS["mysqli"];
+$javascript_specifique = "aid/aid_ajax";
 
 if(!isset($mess)) {$mess="";}
 
@@ -58,40 +60,34 @@ $mode = isset($mode) ? $mode : "";
 $action = isset($action) ? $action : "";
 $sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 $parent = isset($parent) ? $parent : "";
+$sous_groupe_de =isset($sous_groupe_de) ? $sous_groupe_de : NULL;
 
 if (isset($is_posted) && $is_posted) {
-	if ("y" == $sous_groupe) {
-		$sql_parent = "INSERT INTO `aid_sous_groupes` (aid , parent) VALUES ('".$aid_id."','".$parent."')"
-		   . "ON DUPLICATE KEY "
-		   . "UPDATE parent='".$parent."' ;";
-		$reg_parent = mysqli_query($mysqli, $sql_parent); 
+	if ("n" == $sous_groupe) {
+		Efface_sous_groupe($aid_id);
+		//die($aid_id);
+	}
+	if ("y" == $sous_groupe || $sous_groupe_de != NULL) {
+		$reg_parent = Sauve_sous_groupe($aid_id, $parent);
 		if (!$reg_parent) {
-		   $mess = rawurlencode("Erreur lors de l'enregistrement des données.".$sql_parent);
+		   $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 		   header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 		   die();
 		}
 	}
 	
 	//  On regarde si une aid porte déjà le même nom
-	$sql_test = "SELECT * FROM aid WHERE (nom='$aid_nom' and indice_aid='$indice_aid')";
-	$test = mysqli_query($mysqli,$sql_test );
-	$count = mysqli_num_rows($test);
+	$count = mysqli_num_rows(Extrait_aid_sur_nom($aid_nom , $indice_aid));
 	check_token();
 	if (isset($is_posted) and ($is_posted =="1")) { // nouveau
 		// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
-		$sql = "SELECT CAST( aid.id AS SIGNED INTEGER ) AS idAid FROM aid ORDER BY idAid DESC ";
-		$result = mysqli_query($mysqli,$sql);
-		$aid_id = $result->fetch_object()->idAid + 1;		
+		$aid_id = Dernier_id ($ordre = DESC) + 1;	
 	} else {
 		$count--;
 	}
-	$sql = "INSERT INTO aid "
-	   . "SET id = '$aid_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid', sous_groupe='$sous_groupe'"
-	   . "ON DUPLICATE KEY "
-	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe'";
-	$reg_data = mysqli_query($mysqli, $sql); 
+	$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe);
 	if (!$reg_data) {
-	   $mess = rawurlencode("Erreur lors de l'enregistrement des données.".$sql);
+	   $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 	   header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
 	   die();
 	}
@@ -124,9 +120,7 @@ if (isset($is_posted) && $is_posted) {
 	$is_posted = (isset($action) && $action == "modif_aid") ? 2 : ((isset($action) && $action == "add_aid") ? 1 : "" );
 
 	if ("modif_aid" == $action) {
-		$sql="SELECT id FROM aid where indice_aid='$indice_aid' ORDER BY numero , nom";
-		//echo "$sql<br />";
-		$res_aid_tmp=mysqli_query($mysqli, $sql);
+		$res_aid_tmp = Extrait_aid_sur_indice_aid ($indice_aid);
 		if(mysqli_num_rows($res_aid_tmp)>0){
 			while($lig_aid_tmp=mysqli_fetch_object($res_aid_tmp)){
 				if($lig_aid_tmp->id==$aid_id){
@@ -144,25 +138,20 @@ if (isset($is_posted) && $is_posted) {
 			}
 		}
 	}
+	$res_parents=Extrait_aid_sur_indice_aid ($indice_aid);
 	
 	if ($action == "modif_aid") {
-		$sql = "SELECT * FROM aid where (id = '".$aid_id."' and indice_aid='".$indice_aid."')";
-		$calldata = mysqli_query($mysqli, $sql)->fetch_object();
+		$calldata = Extrait_aid_sur_id ($aid_id, $indice_aid)->fetch_object();
 		$aid_nom = $calldata->nom;	
 		$aid_num = $calldata->numero;
 		$sous_groupe = $calldata->sous_groupe;		
 		$nouveau = "Entrez le nouveau nom à la place de l'ancien : ";
-		$sous_groupe_de = NULL;
 		if ('y' == $sous_groupe) {
-			$sql = "SELECT parent FROM `aid_sous_groupes` WHERE `aid` LIKE '".$aid_id."'";
-			//echo $sql.'<br />';
-			$res_groupe_de=mysqli_query($mysqli, $sql);
+			$res_groupe_de=Extrait_parent ($aid_id);
 			if ($res_groupe_de->num_rows) {
 				$sous_groupe_de = $res_groupe_de->fetch_object()->parent;
 			}
 		}
-		$sql2 = "SELECT `id` , `nom` , `numero` FROM `aid` WHERE `indice_aid`='".$indice_aid."' ORDER BY `nom` ASC ";
-		$res_parents=mysqli_query($mysqli, $sql2);
 	}
 }
 
@@ -247,7 +236,7 @@ if ($_SESSION['statut'] == 'professeur') {
 		<input type="text" id="aidRegNum" name="aid_num" size="4" <?php echo " value=\"".$aid_num."\""; ?> />
 	</p>
 
-	<p title="Pour affecter un parent, cochez la case, enregistrez puis revenez choisir le parent">
+	<p title="Cochez pour affecter un parent puis choisissez le parent">
 		<label for="sous_groupe">
 			Sous-groupe d'un autre AID
 		</label>
@@ -256,13 +245,13 @@ if ($_SESSION['statut'] == 'professeur') {
 			   id='sous_groupe'
 			   value="y"
 				<?php if ($sous_groupe=='y') {echo " checked='checked' ";} ?>  
-			   onchange="afficher_cacher_parent('');"
+			   onchange="afficher_cacher_parent();"
 			   />
 	</p>
 	
 	<div id="aidParent">
 		
-<?php if(isset($res_parents) && $res_parents->num_rows){ ?>
+<?php if((isset($res_parents) && $res_parents->num_rows)){ ?>
 	<select name="parent" id="choix_parent">
 		<option value="" 
 				<?php if (!$sous_groupe_de) {echo " selected='selected' ";} ?>

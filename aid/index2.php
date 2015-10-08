@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrunn, Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -52,6 +52,11 @@ if ($indice_aid =='') {
     header("Location: index.php");
     die();
 }
+
+include_once 'fonctions_aid.php';
+$javascript_specifique = "aid/aid_ajax";
+global $mysqli;
+
 $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @old_mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
@@ -61,8 +66,8 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($_POST["
 
     // Enregistrement des données
     // On va chercher les aid déjà existantes
-    $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid'");
-    $nombreligne = mysqli_num_rows($calldata);
+	
+	$nombreligne = mysqli_num_rows(Extrait_aid_sur_indice_aid ($indice_aid));
     $i = 0;
     $msg_inter = "";
     while ($i < $nombreligne){
@@ -131,7 +136,10 @@ if (!isset($order_by)) {$order_by = "numero,nom";}
 $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY $order_by");
 $nombreligne = mysqli_num_rows($calldata);
 
-
+$trouve_parent = 0;
+$sql = "SELECT 1=1 FROM aid WHERE indice_aid='".$indice_aid."' AND sous_groupe='y' ";
+$trouve_parent = $mysqli->query($sql)->num_rows;
+$trouve_parent = Categorie_a_enfants ($indice_aid)->num_rows;
 
 //**************** EN-TETE *********************
 $titre_page = "Gestion des ".$nom_aid;
@@ -291,6 +299,10 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and ($activer_outil
 if (NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) {
 ?>
 			<th>&nbsp;</th>
+<?php }
+if ($trouve_parent > 0) {
+?>
+			<th class="small">Sous-groupe de</th>
 <?php } ?>
 		</tr>
 <?php
@@ -444,12 +456,20 @@ while ($i < $nombreligne){
 					supprimer
 				</a>
 			</td>
-		</tr>
 <?php
 	}
+	if ($trouve_parent > 0) {
+?>
+			<td>
+				<?php if (Extrait_info_parent ($aid_id) && Extrait_info_parent ($aid_id)->num_rows) {
+					echo Extrait_info_parent ($aid_id)->fetch_object()->nom;
+				} ?>
+			</td>
+<?php } ?>
+		</tr>
+<?php
 	$i++;
 }
-
 ?>
 	</table>
 <?php

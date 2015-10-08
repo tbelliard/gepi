@@ -494,7 +494,11 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $test_nb[6] = "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_aid='$cible1' and indice_aid='$cible3')";
     $req[6] = "DELETE FROM j_aid_utilisateurs_gest WHERE (id_aid='$cible1' and indice_aid='$cible3')";
 
-    $nombre_req = 7;
+    $mess[7] = "Table de jointure Aid/Aid parent :";
+    $test_nb[7] = "SELECT * FROM aid_sous_groupes WHERE (aid='$cible1')";
+    $req[7] = "DELETE FROM aid_sous_groupes WHERE (aid='$cible1')";
+
+    $nombre_req = 8;
 
     break;
     case "retire_eleve":
