@@ -21,6 +21,22 @@
  */
 
 
+function Get_famille_aid ($indice_aid) {
+	global $mysqli;
+	$sql = "SELECT * FROM aid_config WHERE indice_aid='".$indice_aid."' ;";
+	$retour = mysqli_query($mysqli, $sql); 
+	return $retour;
+}
+
+function Multiples_possible ($indice_aid) {
+	$famille = Get_famille_aid ($indice_aid);
+	$retour = FALSE;
+	if ($famille && ($famille->fetch_object()->autoriser_inscript_multiples === 'y')) {
+		$retour = \TRUE;
+	}
+	return $retour;
+}
+
 function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe) {
 	global $mysqli;
 	$sql = "INSERT INTO aid "

@@ -353,7 +353,7 @@ while ($i < $nombreligne){
 			</td>
 <?php } else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) { ?>
 			<td class='medium'>
-				<strong>><?php echo $aid_nom; ?></strong>>
+				<strong><?php echo $aid_nom; ?></strong>
 			</td>
 <?php 
 	}

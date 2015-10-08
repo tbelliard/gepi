@@ -236,38 +236,39 @@ if ($_SESSION['statut'] == 'professeur') {
 		<input type="text" id="aidRegNum" name="aid_num" size="4" <?php echo " value=\"".$aid_num."\""; ?> />
 	</p>
 
-	<p title="Cochez pour affecter un parent puis choisissez le parent">
-		<label for="sous_groupe">
-			Sous-groupe d'un autre AID
-		</label>
-		<input type="checkbox"
-			   name='sous_groupe'
-			   id='sous_groupe'
-			   value="y"
-				<?php if ($sous_groupe=='y') {echo " checked='checked' ";} ?>  
-			   onchange="afficher_cacher_parent();"
-			   />
-	</p>
-	
-	<div id="aidParent">
+	<div <?php if (!Multiples_possible ($indice_aid)) {echo " style='display:none;'";} ?> >
+		<p title="Cochez pour affecter un parent puis choisissez le parent">
+			<label for="sous_groupe">
+				Sous-groupe d'un autre AID
+			</label>
+			<input type="checkbox"
+				   name='sous_groupe'
+				   id='sous_groupe'
+				   value="y"
+					<?php if ($sous_groupe=='y') {echo " checked='checked' ";} ?>  
+				   onchange="afficher_cacher_parent();"
+				   />
+		</p>
+
+		<div id="aidParent" >
 		
 <?php if((isset($res_parents) && $res_parents->num_rows)){ ?>
-	<select name="parent" id="choix_parent">
-		<option value="" 
-				<?php if (!$sous_groupe_de) {echo " selected='selected' ";} ?>
-				>
-			Aucun parent
+			<select name="parent" id="choix_parent">
+				<option value="" 
+						<?php if (!$sous_groupe_de) {echo " selected='selected' ";} ?>
+						>
+					Aucun parent
 
-		<?php while ($parent = $res_parents->fetch_object()){ ?>
-		<option value="<?php echo $parent->id; ?>" 
-				<?php if ($parent->id == $sous_groupe_de) {echo " selected='selected' ";} ?>
-				>
-			<?php echo $parent->nom; ?>
-		</option>
-		<?php } ?>
-	</select>
+				<?php while ($parent = $res_parents->fetch_object()){ ?>
+				<option value="<?php echo $parent->id; ?>" 
+						<?php if ($parent->id == $sous_groupe_de) {echo " selected='selected' ";} ?>
+						>
+					<?php echo $parent->nom; ?>
+				</option>
+				<?php } ?>
+			</select>
 <?php } ?>
-		
+		</div>
 	</div>
 	
 	<p class="center">
