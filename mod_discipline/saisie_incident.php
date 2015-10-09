@@ -1075,12 +1075,14 @@ $headers);
 					}
 				}
 
+				/*
 				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 				}
-	
+
 				if($envoi_mail_actif=='y') {
+				*/
 					//echo "\$envoi_mail_actif=$envoi_mail_actif<br />";
 
 					//echo "plip";
@@ -1182,11 +1184,10 @@ $headers);
 							//if($destinataires=="") {
 							//	$destinataires=getSettingValue("gepiAdminAdress");
 							//}
-	
+
+							$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
+							$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 							if($destinataires!="") {
-								$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
-						
-								$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 
 								$headers = "";
 								if((isset($_SESSION['email']))&&(check_mail($_SESSION['email']))) {
@@ -1198,12 +1199,36 @@ $headers);
 								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
 
 								// On envoie le mail
-								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers, "plain", $tab_param_mail);
+								$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+								if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+									$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+								}
 
+								if($envoi_mail_actif=='y') {
+									$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers, "plain", $tab_param_mail);
+
+									if($envoi) {
+										$msg.="Mail envoyé.<br />";
+									}
+								}
+							}
+
+							if(getSettingAOui('active_mod_alerte')) {
+								$nb_msg=0;
+								$destinataires_mod_alerte=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature, "mod_alerte");
+								for($loop=0;$loop<count($destinataires_mod_alerte);$loop++) {
+									$retour_mod_alerte=enregistre_message($subject, $texte_mail, $_SESSION['login'], $destinataires_mod_alerte[$loop]);
+									if($retour_mod_alerte!="") {
+										$nb_msg++;
+									}
+								}
+								if($nb_msg>0) {
+									$msg.="$nb_msg destinataire(s) du message déposé dans le module Alerte.<br />";
+								}
 							}
 						}
 					}
-				}
+				//}
 			}
 		}
 	}

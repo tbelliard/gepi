@@ -95,4 +95,17 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'type' à la table 's_alerte_mail'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_alerte_mail LIKE 'type';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE s_alerte_mail ADD type VARCHAR(50) NOT NULL DEFAULT 'mail' AFTER adresse;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
