@@ -10585,6 +10585,7 @@ function get_tab_infos_evenement($id_ev) {
 		$tab['date_debut']=$obj_ev->date_debut;
 		$tab['texte_avant']=$obj_ev->texte_avant;
 		$tab['texte_apres']=$obj_ev->texte_apres;
+		$tab['texte_apres_ele_resp']=$obj_ev->texte_apres_ele_resp;
 
 		//$tab_u=array();
 		$sql="SELECT * FROM d_dates_evenements_utilisateurs WHERE id_ev='$obj_ev->id_ev';";
