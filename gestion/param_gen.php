@@ -2495,7 +2495,7 @@ echo add_token_field();
 		<input type="radio" 
 			   name="phpmailer_securite" 
 			   id="phpmailer_securite_tls" 
-			   value="" 
+			   value="tls" 
 			   <?php
 				if(getSettingValue('phpmailer_securite')=="tls") {echo "checked='checked'";}
 			   ?>
@@ -2507,7 +2507,7 @@ echo add_token_field();
 		<input type="radio" 
 			   name="phpmailer_securite" 
 			   id="phpmailer_securite_ssl" 
-			   value="" 
+			   value="ssl" 
 			   <?php
 				if(getSettingValue('phpmailer_securite')=="ssl") {echo "checked='checked'";}
 			   ?>
