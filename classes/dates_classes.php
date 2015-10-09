@@ -787,7 +787,13 @@ echo "
 
 					<table border=\"0\" width = \"100%\" cellspacing=\"1\" cellpadding=\"1\" >
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
+								<div style='float:right; width:7em;'>
+									<noscript>
+										<input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_sans_javascript1\" />
+									</noscript>
+									<input type=\"button\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_avec_javascript1\" onclick=\"check_et_valide_form()\" />
+								</div>
 								<span class='grand'>".$titre_mess." <span style='font-weight:bold; font-style:italic;'>(Interface 1)</span> - 
 								<!--a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('aide','y',100,100);\" onmouseout=\"cacher_div('aide');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a-->
 								<span id='span_lien_js_evenement_modif' style='display:none'><a href='dates_classes2.php";
@@ -802,7 +808,7 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Type de l'événement&nbsp;:</i>
 							</td>
 						</tr>
@@ -815,7 +821,7 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<p><i>L'événement sera affiché à compter de la date&nbsp;: 
 								<input type='text' name='display_date_debut' id='display_date_debut' size='10' value=\"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" onchange='changement2()' AutoComplete=\"off\" />
 								".img_calendrier_js("display_date_debut", "img_bouton_display_date_debut")."<br />
@@ -823,7 +829,7 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Statut(s) des destinataires de l'événement&nbsp;:</i>
 							</td>
 						</tr>
@@ -845,12 +851,12 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Classes concernées par l'événement&nbsp;:</i>
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">";
+							<td colspan=\"5\">";
 
 $tab_salle=get_tab_salle_cours();
 
@@ -1015,7 +1021,7 @@ echo "
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Texte affiché avant les dates&nbsp;:</i>";
 $oCKeditor = new CKeditor('../ckeditor/');
 $oCKeditor->editor('texte_avant',$texte_avant);
@@ -1023,7 +1029,7 @@ echo "
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Texte affiché après les dates pour les personnels&nbsp;:</i>";
 $oCKeditor2 = new CKeditor('../ckeditor/');
 $oCKeditor2->editor('texte_apres',$texte_apres);
@@ -1031,7 +1037,7 @@ echo "
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\">
+							<td colspan=\"5\">
 								<i>Texte affiché après les dates pour les élèves et responsables&nbsp;:<br />
 								(<em>sous réserve qu'ils soient concernés par cet événement</em>)</i>";
 $oCKeditor3 = new CKeditor('../ckeditor/');
@@ -1040,7 +1046,7 @@ echo "
 							</td>
 						</tr>
 						<tr>
-							<td colspan=\"4\" align=\"center\"> 
+							<td colspan=\"5\" align=\"center\"> 
 								<input type='hidden' name='ok' value='y' />
 								<noscript>
 									<input type=\"submit\" value=\"Enregistrer\" style=\"font-variant: small-caps;\" name=\"button_ok_sans_javascript\" />
