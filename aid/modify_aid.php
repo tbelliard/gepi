@@ -92,16 +92,19 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
 
 // On appelle les informations de l'aid pour les afficher :
 $call_data = Get_famille_aid ($indice_aid);
-$nom_aid = @old_mysql_result($call_data, 0, "nom");
-$activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
-$autoriser_inscript_multiples = @old_mysql_result($call_data, 0, "autoriser_inscript_multiples");
+$nom_aid = old_mysql_result($call_data, 0, "nom");
+$activer_outils_comp = old_mysql_result($call_data, 0, "outils_complementaires");
+$autoriser_inscript_multiples = old_mysql_result($call_data, 0, "autoriser_inscript_multiples");
+
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
 	check_token();
 
     // Les élèves responsable : à chercher parmi les élèves de l'AID
     // On commence par supprimer les élèves responsables
-    sql_query("DELETE FROM j_aid_eleves_resp WHERE id_aid='$aid_id' AND indice_aid='$indice_aid'");
+    // sql_query("DELETE FROM j_aid_eleves_resp WHERE id_aid='$aid_id' AND indice_aid='$indice_aid'");
+	Supprime_eleve_responsable($aid_id, $indice_aid);
+	
     // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
     $call_eleves = Eleve_deja_membre ($aid_id, $indice_aid);
     $nombre = mysqli_num_rows($call_eleves);
@@ -116,11 +119,16 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     }
 
     // On commence par vérifier que l'élève n'est pas déjà présent dans cette liste, ni dans aucune.
-    if ($autoriser_inscript_multiples == 'y')
-      $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-    else
-      $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
-    $test2 = mysqli_num_rows($test);
+    if ($autoriser_inscript_multiples == 'y') {
+		$filtre =  " AND id_aid='".$aid_id."' ";
+	}
+    else {
+		$filtre =  "";
+	}
+	$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$reg_add_eleve_login."' AND indice_aid='".$indice_aid."'".$filtre.")";
+	echo $sql;
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	$test2 = mysqli_num_rows($test);
 	$msg = "";
     if ($test2 != "0") {
         $msg = "L'élève que vous avez tenté d'ajouter appartient déjà à une AID";
@@ -138,11 +146,12 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
         if(isset($_POST['eleves_sans_photos'])){
 		    		$_SESSION['eleves_sans_photos']="y";
-			  } else unset($_SESSION['eleves_sans_photos']);
+			  } else {unset($_SESSION['eleves_sans_photos']);}
     }
 }
 
-if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
+$toutes_aid = \filter_input(\INPUT_POST, 'toutes_aids');
+if ($toutes_aid == "y") {
 	check_token();
 
     $msg = "";
@@ -157,7 +166,7 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @old_mysql_result($calldata, $i, "id");
+        $aid_id = old_mysql_result($calldata, $i, "id");
         // Y-a-il des profs responsables
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs WHERE id_aid = '$aid_id' and indice_aid='$indice_aid'");
         if ($test1 == 0) {
@@ -170,7 +179,7 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
         $i++;
     }
     $flag = "prof";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') {$msg = "Les modifications ont été enregistrées.";}
 }
 
 if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
@@ -193,7 +202,7 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
      }
     }
     $flag = "prof";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') {$msg = "Les modifications ont été enregistrées.";}
 }
 
 
@@ -212,7 +221,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
     $nombreligne = mysqli_num_rows($calldata);
     $i = 0;
     while ($i < $nombreligne){
-        $aid_id = @old_mysql_result($calldata, $i, "id");
+        $aid_id = old_mysql_result($calldata, $i, "id");
         // Y-a-il des profs responsables
         $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE id_aid = '$aid_id' and indice_aid='$indice_aid'");
         if ($test1 == 0) {
@@ -225,7 +234,7 @@ if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
         $i++;
     }
     $flag = "prof_gest";
-    if ($msg == '') $msg = "Les modifications ont été enregistrées.";
+    if ($msg == '') {$msg = "Les modifications ont été enregistrées.";}
 }
 
 $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
@@ -442,8 +451,8 @@ if ($flag == "prof") { ?>
 	<select name="liste_aids[]" size="6" multiple>
 <?php
       while ($i < $nombreligne){
-        $aid_id = @old_mysql_result($calldata, $i, "id");
-        $aid_nom = @old_mysql_result($calldata, $i, "nom");
+        $aid_id = old_mysql_result($calldata, $i, "id");
+        $aid_nom = old_mysql_result($calldata, $i, "nom");
 ?>
 		<option value="<?php $aid_id; ?>"><?php $aid_nom; ?></option>
 <?php
@@ -479,7 +488,7 @@ if ($flag == "prof_gest") { ?>
     while ($i < $nombre) {
         $login_prof = old_mysql_result($call_liste_data, $i, "login");
         $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
+        $prenom_prof = old_mysql_result($call_liste_data, $i, "prenom");
     ?>
 		<tr>
 			<td>
@@ -598,26 +607,44 @@ if ($flag == "eleve") {
 		}
 		else {
 			$s = "";
-		}
-    echo "<tr><td>\n";
-    echo $nombre." élève".$s.".\n</td><td></td>";
+		} 
+?>
+		<tr>
+			<td>
+				<?php echo $nombre; ?> élève<?php echo $s; ?>
+			</td>
+			<td>
+				
+			</td>
+<?php 
     if ($activer_outils_comp == "y") {
-      echo "<td>Elève responsable (*)</td>";
+?>
+			<td>Elève responsable (*)</td>
+<?php 
     }
-    echo "</tr>\n";
+?>
+		</tr>
+<?php 
     $i = "0";
     while ($i < $nombre) {
         $vide = 0;
         $login_eleve = old_mysql_result($call_liste_data, $i, "login");
         $nom_eleve = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_eleve = @old_mysql_result($call_liste_data, $i, "prenom");
+        $prenom_eleve = old_mysql_result($call_liste_data, $i, "prenom");
         $eleve_resp = sql_query1("select login from j_aid_eleves_resp where id_aid='$aid_id' and login ='$login_eleve' and indice_aid='$indice_aid'");
         $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$login_eleve' and j.id_classe = c.id) order by j.periode DESC");
-        $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
+        $classe_eleve = old_mysql_result($call_classe, '0', "classe");
         $v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
-        echo "<tr><td>\n";
-        echo "<strong>$nom_eleve $prenom_eleve</strong>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
-
+?>
+		<tr>
+			<td>
+				<strong><?php echo $nom_eleve; ?> <?php echo $prenom_eleve; ?></strong>, <?php echo $classe_eleve ; ?>
+			</td>
+			<td>
+				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_eleve; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_eleve_aid<?php echo add_token_in_url(); ?>'>
+					<img src="../images/icons/delete.png" title="Supprimer cet élève" alt="Supprimer" />
+				</a>
+<?php 
 		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
 		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
 			$info="<div align='center'>\n";
@@ -632,22 +659,30 @@ if ($flag == "eleve") {
 			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve'.$v_elenoet,$titre,"",$info,"",14,0,'y','y','n','n');
 
 			if($photo!="") {
-				echo "<a href='#' onmouseover=\"afficher_div('info_popup_eleve".$v_elenoet."','y',30,-200);\"";
-				echo " onmouseout=\"cacher_div('info_popup_eleve".$v_elenoet."');\">";
-				echo "<img src='../images/icons/buddy.png' alt='Photo élève' />";
-				echo "</a>";
-			} else {
-				echo "<img src='../images/icons/buddy_no.png' alt='Pas de photo' />";
+?>
+				<a href='#' 
+				   onmouseover="afficher_div('info_popup_eleve?<?php echo $v_elenoet; ?>','y',30,-200);"
+				   onmouseout="cacher_div('info_popup_eleve<?php echo $v_elenoet; ?>');">
+					<img src='../images/icons/buddy.png' alt='Photo élève' />
+				</a>
+<?php } else { ?>
+				<img src='../images/icons/buddy_no.png' alt='Pas de photo' />
+<?php 
 			}
 		}
-
-        echo "</td>";
+?>
+			</td>
+<?php 
         if ($activer_outils_comp == "y") {
-            echo "<td><center><input type=\"checkbox\" name=\"".$login_eleve."_resp\" value=\"y\" ";
-            if ($eleve_resp!=-1) echo " checked ";
-        echo "/></center></td>";
-        }
-        echo "</tr>\n";
+?>
+			<td class="center">
+				<input type="checkbox" name="<?php echo $login_eleve; ?>_resp" value="y"
+					   <?php if ($eleve_resp!=-1) {echo " checked = 'checked' ";} ?>
+					   />
+			</td>
+<?php } ?>
+		</tr>
+<?php 
     $i++;
     }
 ?>
@@ -655,33 +690,41 @@ if ($flag == "eleve") {
 <?php
 
     if ($vide == 1) {
-        echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
+?>
+	<p style="color: red;">Il n'y a pas actuellement d'élèves dans cette AID !</p>
+<?php 
     }
-    if ($autoriser_inscript_multiples == 'y')
-      $requete = "SELECT distinct e.login, e.nom, e.prenom, e.elenoet
-						FROM eleves e LEFT JOIN j_aid_eleves j ON
-						(e.login = j.login  and
-  						j.id_aid = '$aid_id')  WHERE j.login is null order by e.nom, e.prenom";
-    else
-        $requete = "SELECT e.login, e.nom, e.prenom, e.elenoet
-						FROM eleves e LEFT JOIN j_aid_eleves j ON
-						(e.login = j.login  and
-						j.indice_aid = '$indice_aid') WHERE j.login is null order by e.nom, e.prenom";
-    $call_eleve = mysqli_query($GLOBALS["mysqli"], $requete);
-    $nombreligne = mysqli_num_rows($call_eleve);
+	
+    if ($autoriser_inscript_multiples == 'y') {
+		$parent = a_parent ($aid_id, $indice_aid) ? Extrait_parent ($aid_id)->fetch_object()->parent : NULL;
+		$call_eleve = Extrait_eleves_sur_aid_id ($aid_id, $parent);
+    } else {
+		$call_eleve = Extrait_eleves_sur_indice_aid ($indice_aid);
+	}
+	
+    // $nombreligne = mysqli_num_rows($call_eleve);
+    $nombreligne = $call_eleve->num_rows;
     if ($nombreligne != 0) {
 
         if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
-            echo "<br />Ci-dessous, lister uniquement les élèves sans photographie <input type=\"checkbox\" name=\"eleves_sans_photos\" value=\"y\" ";
-            if(isset($_SESSION['eleves_sans_photos'])) echo " checked ";
-            echo "/>";
-        }
-
-        echo "<br />\n<p><span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>\n";
-        echo "<a href=\"modify_aid_new.php?id_aid=".$aid_id."&amp;indice_aid=".$indice_aid."\">Lister les élèves par classe</a>\n";
-        echo "<br /><select size=\"1\" name=\"reg_add_eleve_login\">";
-        //echo "<option value=''><p>(aucun)</p></option>";
-        echo "<option value=''>(aucun)</option>\n";
+?>
+	<p>Ci-dessous, lister uniquement les élèves sans photographie 
+		<input type="checkbox" name="eleves_sans_photos" value="y"
+<?php 
+            if(isset($_SESSION['eleves_sans_photos'])) {echo " checked = 'checked' ";}
+?>
+			   />
+	</p>
+<?php } ?>
+	<p>
+		<span class = 'bold'>Ajouter un élève à la liste de l'AID :</span>
+		<a href="modify_aid_new.php?id_aid=<?php echo $aid_id; ?>&amp;indice_aid=<?php echo $indice_aid; ?>">
+			Lister les élèves par classe
+		</a>
+	</p>
+	<select size="1" name="reg_add_eleve_login">
+		<option value=''>(aucun)</option>
+<?php 
         $i = "0" ;
         while ($i < $nombreligne) {
             $eleve = old_mysql_result($call_eleve, $i, 'login');
@@ -689,33 +732,46 @@ if ($flag == "eleve") {
             $prenom_el = old_mysql_result($call_eleve, $i, 'prenom');
             $v_elenoet=old_mysql_result($call_eleve, $i, 'elenoet');
             $photo=nom_photo($v_elenoet);
-            if (isset($_SESSION['eleves_sans_photos']) and ($photo!=""))
+            if (isset($_SESSION['eleves_sans_photos']) and ($photo!="")) {
                 $affiche_ligne = "no";
-            else
+            } else {
                 $affiche_ligne = "yes";
+			}
             if ($affiche_ligne == "yes") {
             $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '$eleve' and j.id_classe = c.id) order by j.periode DESC");
             $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
-	        echo "<option value=\"".$eleve."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')." $classe_eleve</option>\n";
-            }
+?>
+		<option value="<?php echo $eleve; ?>">
+			<?php echo my_strtoupper($nom_el); ?>
+			<?php echo casse_mot($prenom_el,'majf2'); ?>
+			<?php echo $classe_eleve; ?>
+		</option>
+<?php            }
         $i++;
         }
         ?>
-        </select>
+	</select>
 
 
-<?php } else {
-        echo "<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
+<?php } else { ?>
+	<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
+<?php
     }
     ?>
-    <input type="hidden" name="add_eleve" value="yes" />
-    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
-    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
-    <input type="submit" value='Enregistrer' />
-    </form>
-    <?php if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo "<br /><br /><br /><br /><br />"; // Pour que les trombines des derniers élèves s'affichent correctement.
+	<p>
+		<input type="hidden" name="add_eleve" value="yes" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
+		<input type="submit" value='Enregistrer' />
+	</p>
+</form>
+    <?php if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
+		echo "<p><br /><br /><br /><br /><br /></p>";
+	} // Pour que les trombines des derniers élèves s'affichent correctement.
     if ($activer_outils_comp == "y") {?>
-    <p><br />(*) Les &eacute;l&egrave;ves responsables peuvent par exemple acc&eacute;der dans certaines conditions &agrave; l'&eacute;dition des fiches AID.
+<p>
+	(*) Les élèves responsables peuvent par exemple accéder dans certaines conditions à l'édition des fiches AID.
+</p>
     <?php }
 
 }

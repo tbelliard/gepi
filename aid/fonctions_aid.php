@@ -32,7 +32,7 @@ function Multiples_possible ($indice_aid) {
 	$famille = Get_famille_aid ($indice_aid);
 	$retour = FALSE;
 	if ($famille && ($famille->fetch_object()->autoriser_inscript_multiples === 'y')) {
-		$retour = \TRUE;
+		$retour = TRUE;
 	}
 	return $retour;
 }
@@ -178,7 +178,6 @@ function Eleve_deja_membre ($aid_id, $indice_aid) {
 	return $retour;	
 }
 
-
 function Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve) {
 	global $mysqli;
 	$sql = "INSERT INTO j_aid_eleves_resp "
@@ -186,3 +185,43 @@ function Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve) {
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
+
+function Supprime_eleve_responsable($aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "DELETE FROM j_aid_eleves_resp WHERE id_aid='".$aid_id."' AND indice_aid='".$indice_aid."'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Extrait_eleves_sur_aid_id ($aid_id, $sous_groupe = NULL) {
+	global $mysqli;
+	if ($sous_groupe !== NULL) {
+		$filtre =" INNER JOIN j_aid_eleves j2 ON ( e.login = j2.login "
+		   . "AND j2.id_aid = '".$sous_groupe."' ) ";
+	} else {
+		$filtre ="";
+	}
+	$sql = "SELECT distinct e.login, e.nom, e.prenom, e.elenoet "
+	   . "FROM eleves e "
+	   . "LEFT JOIN j_aid_eleves j "
+	   . "ON (e.login = j.login  AND j.id_aid = '".$aid_id."') ".$filtre;
+	$sql .= "WHERE j.login is null "
+	   . "ORDER by e.nom, e.prenom";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Extrait_eleves_sur_indice_aid ($indice_aid) {
+	global $mysqli;
+	$sql = "SELECT e.login, e.nom, e.prenom, e.elenoet "
+	   . "FROM eleves e "
+	   . "LEFT JOIN j_aid_eleves j "
+	   . "ON (e.login = j.login  AND j.indice_aid = '".$indice_aid."') "
+	   . "WHERE j.login is null "
+	   . "ORDER by e.nom, e.prenom";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+
+

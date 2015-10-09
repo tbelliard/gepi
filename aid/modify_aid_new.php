@@ -44,21 +44,26 @@ if (!checkAccess()) {
     die();
 }
 
+include_once 'fonctions_aid.php';
+global $mysqli;
+
 //Initialisation des variables
-$id_aid = isset($_GET["id_aid"]) ? $_GET["id_aid"] : (isset($_POST["id_aid"]) ? $_POST["id_aid"] : NULL);
-$indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
-$aff_liste_m = (isset($_GET["classe"]) AND is_numeric($_GET["classe"])) ? $_GET["classe"] : (isset($_POST["classe"]) ? $_POST["classe"] : NULL);
-$choix_aid = isset($_GET["choix_aid"]) ? $_GET["choix_aid"] : (isset($_POST["choix_aid"]) ? $_POST["choix_aid"] : NULL);
-$id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : (isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : NULL);
-$eleve = isset($_GET["eleve"]) ? $_GET["eleve"] : (isset($_POST["eleve"]) ? $_POST["eleve"] : NULL);
-$action = isset($_GET["action"]) ? $_GET["action"] : (isset($_POST["action"]) ? $_POST["action"] : NULL);
+$id_aid = \filter_input(\INPUT_POST, 'id_aid') ? \filter_input(\INPUT_POST, 'id_aid') : (\filter_input(\INPUT_GET, 'id_aid') ? \filter_input(\INPUT_GET, 'id_aid') : NULL);
+$indice_aid = \filter_input(\INPUT_POST, 'indice_aid') ? \filter_input(\INPUT_POST, 'indice_aid') : (\filter_input(\INPUT_GET, 'indice_aid') ? \filter_input(\INPUT_GET, 'indice_aid') : NULL);
+$aff_liste_m = \filter_input(\INPUT_POST, 'classe') ? \filter_input(\INPUT_POST, 'classe') : (\filter_input(\INPUT_GET, 'classe') ? \filter_input(\INPUT_GET, 'classe') : NULL);
+$choix_aid = \filter_input(\INPUT_POST, 'choix_aid') ? \filter_input(\INPUT_POST, 'choix_aid') : (\filter_input(\INPUT_GET, 'choix_aid') ? \filter_input(\INPUT_GET, 'choix_aid') : NULL);
+$id_eleve = \filter_input(\INPUT_POST, 'id_eleve') ? \filter_input(\INPUT_POST, 'id_eleve') : (\filter_input(\INPUT_GET, 'id_eleve') ? \filter_input(\INPUT_GET, 'id_eleve') : NULL);
+$eleve = \filter_input(\INPUT_POST, 'eleve') ? \filter_input(\INPUT_POST, 'eleve') : (\filter_input(\INPUT_GET, 'eleve') ? \filter_input(\INPUT_GET, 'eleve') : NULL);
+$action = \filter_input(\INPUT_POST, 'action') ? \filter_input(\INPUT_POST, 'action') : (\filter_input(\INPUT_GET, 'action') ? \filter_input(\INPUT_GET, 'action') : NULL);
+
 $aff_infos_g = "";
 $aff_classes_g = "";
 $aff_aid_d = "";
 $aff_classes_m = "";
-$autoriser_inscript_multiples = sql_query1("select autoriser_inscript_multiples from aid_config where indice_aid='".$indice_aid."'");
 
-
+$autoriser_inscript_multiples = Multiples_possible ($indice_aid);
+$sous_groupe = a_parent ($id_aid, $indice_aid) ? Extrait_parent ($id_aid)->fetch_object()->parent : NULL;
+$msg = '';
 //+++++++++++++++++ CSS AID++++++++
 $style_specifique = "aid/style_aid";
 //+++++++++++++++++ AJAX AID ++++++
@@ -72,12 +77,6 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
     die();
 }
 
-
-//**************** EN-TETE **************************************
-$titre_page = "Gestion des élèves dans les AID";
-require_once("../lib/header.inc.php");
-//**************** FIN EN-TETE **********************************
-
 	//================ TRAITEMENT des entrées ===================
 	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
 		check_token(false);
@@ -85,29 +84,50 @@ require_once("../lib/header.inc.php");
 		// Cas de la classe entière
 		if ($id_eleve == "tous") {
 			// On récupère tous les login de cette classe
-			$req_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$aff_liste_m."' ORDER BY login");
+			
+			if (isset($sous_groupe) && $sous_groupe !== null) {
+				$filtre = " INNER JOIN j_aid_eleves j2 ON ( e.login = j2.login "
+				   . "AND j2.id_aid = '".$sous_groupe."' ) ";
+			} else {
+				$filtre ="";
+			}
+			
+			$sql_login = "SELECT DISTINCT e.login FROM j_eleves_classes e ".$filtre;
+			$sql_login .= "WHERE e.id_classe = '".$aff_liste_m."' ORDER BY e.login";
+			$req_login = mysqli_query($GLOBALS["mysqli"], $sql_login);
 			$nbre_login = mysqli_num_rows($req_login);
 			for($i=0; $i<$nbre_login; $i++){
 				$rep_log_eleve[$i]["login"] = old_mysql_result($req_login, $i, "login");
 				// On teste si cet élève n'est pas déjà membre de l'AID
-        if ($autoriser_inscript_multiples == 'y')
-  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
-        else
-  				$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM j_aid_eleves WHERE indice_aid = '".$indice_aid."' AND id_aid = '".$id_aid."' AND login = '".$rep_log_eleve[$i]["login"]."'") OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
+				if (!$autoriser_inscript_multiples) {
+					$sql_verif = "SELECT DISTINCT login "
+					   . "FROM j_aid_eleves "
+					   . "WHERE indice_aid = '".$indice_aid."' "
+					   . "AND login = '".$rep_log_eleve[$i]["login"]."'";
+        		} else {
+					$sql_verif = "SELECT DISTINCT login "
+					   . "FROM j_aid_eleves "
+					   . "WHERE indice_aid = '".$indice_aid."' "
+					   . "AND id_aid = '".$id_aid."' "
+					   . "AND login = '".$rep_log_eleve[$i]["login"]."'";
+				} 
+				$req_verif = mysqli_query($GLOBALS["mysqli"], $sql_verif) OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
 				$verif = mysqli_num_rows($req_verif);
 				if ($verif === 0) {
-					$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
+					$sql = "INSERT INTO j_aid_eleves "
+					   . "SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'";
+					$req_ajout = mysqli_query($GLOBALS["mysqli"], $sql);
 				}else {
-					// on ne fait rien
+					$msg .= $rep_log_eleve[$i]["login"]." est déjà dans la table.".'<br />';
 				}
 			}
-		}else {
-		// On intègre cet élève dans la base s'il n'y est pas déjà
-		// Pour l'instant on récupère son login à partir de id_eleve
-		$rep_log_eleve = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
-		// On vérifie s'il n'est pas déjà membre de cet aid
-		// Par cette méthode, on ne peut enregistrer deux fois le même
-		$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
+		} else {
+			// On intègre cet élève dans la base s'il n'y est pas déjà
+			// Pour l'instant on récupère son login à partir de id_eleve
+			$rep_log_eleve = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
+			// On vérifie s'il n'est pas déjà membre de cet aid
+			// Par cette méthode, on ne peut enregistrer deux fois le même
+			$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
 		}// fin du else
 	}
 
@@ -127,6 +147,14 @@ require_once("../lib/header.inc.php");
 		}
 	} //if isset($action...
 
+	
+
+//**************** EN-TETE **************************************
+$titre_page = "Gestion des élèves dans les AID";
+require_once("../lib/header.inc.php");
+//**************** FIN EN-TETE **********************************
+
+	
 // Affichage du retour
 	// On récupère l'indice de l'aid en question
 	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
@@ -156,11 +184,18 @@ if (isset($aff_liste_m)) {
 	$aff_nom_classe = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT classe FROM classes WHERE id = '".$aff_liste_m."'"));
 
 	// Récupérer la liste des élèves de la classe en question
-	$req_ele = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe
-					FROM j_eleves_classes jec, eleves e
-					WHERE id_classe = '".$aff_liste_m."'
-					AND jec.login = e.login ORDER BY nom, prenom")
-						OR DIE('Erreur dans la requête $req_ele : '.mysqli_error($GLOBALS["mysqli"]));
+	if (isset($sous_groupe) && $sous_groupe !== null) {
+		$filtre = " INNER JOIN j_aid_eleves j2 ON ( e.login = j2.login "
+		   . "AND j2.id_aid = '".$sous_groupe."' ) ";
+	} else {
+		$filtre ="";
+	}
+	
+	$sql="SELECT DISTINCT e.login, e.id_eleve, nom, prenom, sexe "
+	   . "FROM j_eleves_classes jec, eleves e ".$filtre;
+	$sql .="WHERE id_classe = '".$aff_liste_m."' "
+	   . "AND jec.login = e.login ORDER BY nom, prenom";
+	$req_ele = mysqli_query($GLOBALS["mysqli"], $sql) OR die('Erreur dans la requête $req_ele : '.mysqli_error($GLOBALS["mysqli"]));
 	$nbre_ele_m = mysqli_num_rows($req_ele);
 
 	$aff_classes_m .= "
@@ -194,7 +229,7 @@ if (isset($aff_liste_m)) {
 			$aff_ele_m[$b]["sexe"] = old_mysql_result($req_ele, $b, "sexe");
 
 			// On vérifie que cet élève n'est pas déjà membre de l'AID
-			if ($autoriser_inscript_multiples == 'y')
+			if ($autoriser_inscript_multiples)
   			$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' and id_aid='$id_aid' AND indice_aid = '".$indice_aid."'");
   		else
   			$req_verif = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_aid_eleves WHERE login = '".$aff_ele_m[$b]["login"]."' AND indice_aid = '".$indice_aid."'");
