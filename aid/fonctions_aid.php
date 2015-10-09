@@ -139,5 +139,50 @@ function Categorie_a_enfants ($indice_aid) {
 	return $retour;
 }
 		
-			
-			
+function Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "SELECT * FROM j_aid_utilisateurs "
+	   . "WHERE (id_utilisateur = '$reg_prof_login' AND id_aid = '$aid_id' AND indice_aid='$indice_aid')";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "INSERT INTO j_aid_utilisateurs "
+	   . "SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+		
+function Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "SELECT * FROM j_aid_utilisateurs_gest "
+	   . "WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;
+}
+
+function Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Eleve_deja_membre ($aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "SELECT * FROM j_aid_eleves "
+	   . "WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+
+function Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve) {
+	global $mysqli;
+	$sql = "INSERT INTO j_aid_eleves_resp "
+	   . "SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}

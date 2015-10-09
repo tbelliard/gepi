@@ -24,16 +24,6 @@ require_once("../lib/initialisations.inc.php");
 //extract($_GET, EXTR_OVERWRITE);
 //extract($_POST, EXTR_OVERWRITE);
 
-// Initialisation des variables
-$flag = isset($_GET["flag"]) ? $_GET["flag"] : (isset($_POST["flag"]) ? $_POST["flag"] : NULL);
-$aid_id = isset($_GET["aid_id"]) ? $_GET["aid_id"] : (isset($_POST["aid_id"]) ? $_POST["aid_id"] : NULL);
-$indice_aid = isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : (isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : NULL);
-$add_eleve = isset($_POST["add_eleve"]) ? $_POST["add_eleve"] : NULL;
-$add_prof = isset($_POST["add_prof"]) ? $_POST["add_prof"] : NULL;
-$add_prof_gest = isset($_POST["add_prof_gest"]) ? $_POST["add_prof_gest"] : NULL;
-$reg_prof_login = isset($_POST["reg_prof_login"]) ? $_POST["reg_prof_login"] : NULL;
-$reg_add_eleve_login = isset($_POST["reg_add_eleve_login"]) ? $_POST["reg_add_eleve_login"] : NULL;
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -44,11 +34,22 @@ if ($resultat_session == 'c') {
     die();
 }
 
-
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
+
+//debug_var();
+
+// Initialisation des variables
+$flag = filter_input(INPUT_GET,'flag') ? filter_input(INPUT_GET,'flag') : (filter_input(INPUT_POST, 'flag') ? filter_input(INPUT_POST, 'flag') : NULL);
+$aid_id = filter_input(INPUT_GET,'aid_id') ? filter_input(INPUT_GET,'aid_id') : (filter_input(INPUT_POST, 'aid_id') ? filter_input(INPUT_POST, 'aid_id') : NULL);
+$indice_aid = filter_input(INPUT_GET,'indice_aid') ? filter_input(INPUT_GET,'indice_aid') : (filter_input(INPUT_POST, 'indice_aid') ? filter_input(INPUT_POST, 'indice_aid') : NULL);
+$add_eleve = filter_input(INPUT_POST, 'add_eleve') ? filter_input(INPUT_POST, 'add_eleve') : NULL;
+$add_prof = filter_input(INPUT_POST, 'add_prof') ? filter_input(INPUT_POST, 'add_prof') : NULL;
+$add_prof_gest = filter_input(INPUT_POST, 'add_prof_gest') ? filter_input(INPUT_POST, 'add_prof_gest') : NULL;
+$reg_prof_login = filter_input(INPUT_POST, 'reg_prof_login') ? filter_input(INPUT_POST, 'reg_prof_login') : NULL ;
+$reg_add_eleve_login = filter_input(INPUT_POST, 'reg_add_eleve_login') ? filter_input(INPUT_POST, 'reg_add_eleve_login') : NULL ;
 
 // Vérification du niveau de gestion des AIDs
 if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
@@ -61,15 +62,13 @@ global $mysqli;
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
 	check_token();
-
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
-    $test2 = mysqli_num_rows($test);
+	$test2 = Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
         $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
     } else {
         if ($reg_prof_login != '') {
-            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
+			$reg_data = mysqli_query($GLOBALS["mysqli"], Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid));
             if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
         }
     }
@@ -78,15 +77,13 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
 	check_token();
-
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-    $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
-    $test2 = mysqli_num_rows($test);
+    $test2 = Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid)->num_rows;
     if ($test2 != "0") {
         $msg = "L'utilisateur que vous avez tenté d'ajouter appartient déjà à la liste des gestionnaires de cette AID";
     } else {
         if ($reg_prof_login != '') {
-            $reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_utilisateurs_gest SET id_utilisateur= '$reg_prof_login', id_aid = '$aid_id', indice_aid='$indice_aid'");
+            $reg_data = mysqli_query($GLOBALS["mysqli"], Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid));
             if (!$reg_data) { $msg = "Erreur lors de l'ajout de l'utilisateur !"; } else { $msg = "L'utilisateur a bien été ajouté !"; }
         }
     }
@@ -94,7 +91,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
 }
 
 // On appelle les informations de l'aid pour les afficher :
-$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
+$call_data = Get_famille_aid ($indice_aid);
 $nom_aid = @old_mysql_result($call_data, 0, "nom");
 $activer_outils_comp = @old_mysql_result($call_data, 0, "outils_complementaires");
 $autoriser_inscript_multiples = @old_mysql_result($call_data, 0, "autoriser_inscript_multiples");
@@ -104,15 +101,16 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 
     // Les élèves responsable : à chercher parmi les élèves de l'AID
     // On commence par supprimer les élèves responsables
-    sql_query("delete from j_aid_eleves_resp where id_aid='$aid_id' and indice_aid='$indice_aid'");
+    sql_query("DELETE FROM j_aid_eleves_resp WHERE id_aid='$aid_id' AND indice_aid='$indice_aid'");
     // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
-    $call_eleves = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')");
+    $call_eleves = Eleve_deja_membre ($aid_id, $indice_aid);
     $nombre = mysqli_num_rows($call_eleves);
     $i = "0";
     while ($i < $nombre) {
         $login_eleve = old_mysql_result($call_eleves, $i, "login");
         if (isset($_POST[$login_eleve."_resp"])) {
-            sql_query("insert into j_aid_eleves_resp set id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
+            //sql_query("INSERT INTO j_aid_eleves_resp SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
+			Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve);
         }
         $i++;
     }
@@ -123,6 +121,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
     else
       $test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_aid_eleves WHERE (login='$reg_add_eleve_login' and indice_aid='$indice_aid')");
     $test2 = mysqli_num_rows($test);
+	$msg = "";
     if ($test2 != "0") {
         $msg = "L'élève que vous avez tenté d'ajouter appartient déjà à une AID";
     } else {
@@ -247,11 +246,12 @@ require_once("../lib/header.inc.php");
 
 
 // On affiche un select avec la liste des aid de cette catégorie
-if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)
+if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5) {
     $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
-else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
+}
+else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1) {
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";
-
+}
 
 $query = mysqli_query($GLOBALS["mysqli"], $sql) OR DIE('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]));
 $nbre = mysqli_num_rows($query);
@@ -282,71 +282,105 @@ for($a = 0; $a < $nbre; $a++){
 		}
 	}
 }
-
-echo '<form action="modify_aid.php" method="post" name="autre_aid">
-<p class="bold"><a href="index2.php?indice_aid='.$indice_aid.'">
-	<img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a>&nbsp;|&nbsp;'.$aff_precedent.'
+?>
+<form action="modify_aid.php" method="post" name="autre_aid">
+	<p class="bold">
+		<a href="index2.php?indice_aid=<?php echo $indice_aid; ?>">
+			<img src="../images/icons/back.png" alt="Retour" class="back_link" />
+			Retour
+		</a>&nbsp;|&nbsp;<?php echo $aff_precedent; ?>
 		<select name="aid_id" onchange="document.autre_aid.submit();">
-	';
-
+<?php
 // On recommence le query
 $query = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Erreur dans la requête select * from aid : '.mysqli_error($GLOBALS["mysqli"]), E_USER_ERROR);
 while($infos = mysqli_fetch_array($query)){
 	// On affiche la liste des "<option>"
 	if ($aid_id == $infos["id"]) {
-		$selected = ' selected="selected"';
+		$selected = ' selected="selected" ';
 	}else{
 		$selected = '';
 	}
-	echo '<option value="'.$infos["id"].'"'.$selected.'>&nbsp;'.$infos["nom"].'&nbsp;</option>'."\n";
+?>
+			<option value="<?php echo $infos["id"]; ?>"<?php echo $selected; ?>>
+				&nbsp;<?php echo $infos["nom"]; ?>&nbsp;
+			</option>
+<?php
 }
-echo '
+?>
 		</select>
-		<input type="hidden" name="indice_aid" value="'.$indice_aid.'" />
-		<input type="hidden" name="flag" value="'.$flag.'" />'.$aff_suivant.'
-</p>
-	</form>';
+		
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="flag" value="<?php echo $flag; ?>" /><?php echo $aff_suivant; ?>
+		
+	</p>
+</form>
+<?php
 
 
 if ($flag == "prof") { ?>
-   <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
-   <?php
+<p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
+<?php
     $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
-    echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
+?>
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+<?php
 
 	echo add_token_field();
 
     if ($nombre !=0) {
-    ?>
-        <p class='bold'>Liste des professeurs responsables :</p>
-        Les noms des professeurs ci-dessous figurent (selon le param&eacute;trage) sur les bulletins officiels et/ou les bulletins simplifi&eacute;s.<br />
-        <?php
-        if ($activer_outils_comp == "y")
-              echo "De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).";
-        echo "<hr /><table class=\"aid_tableau\" border=\"0\" summary=''>\n";
+	?>
+	<p class='bold'>Liste des professeurs responsables :</p>
+	<p>
+		Les noms des professeurs ci-dessous figurent (selon le paramétrage) 
+		sur les bulletins officiels et/ou les bulletins simplifiés.
+	</p>
+<?php
+        if ($activer_outils_comp == "y") {
+?>
+	<p>
+		De plus ces professeurs peuvent modifier les fiches projet (si l'administrateur a activé cette possibilité).
+	</p>
+	<?php } ?>
+	<hr />
+	<table class="aid_tableau">
+<?php
     }
     $i = "0";
     while ($i < $nombre) {
         $login_prof = old_mysql_result($call_liste_data, $i, "login");
         $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
-        $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
-        echo "<tr><td><b>";
-        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
-        echo "</tr>";
+        $prenom_prof = old_mysql_result($call_liste_data, $i, "prenom");
+?>
+		<tr>
+			<td>
+				<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>>
+			</td>
+			<td>
+				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_prof_aid<?php echo add_token_in_url(); ?>'>
+					<font size=2>
+					<img src="../images/icons/delete.png" title="Supprimer ce professeur" alt="Supprimer" />
+					</font>
+				</a>
+			</td>
+		</tr>
+<?php
     $i++;
     }
 
-    if ($nombre == 0) {
-        echo "<h4 style=\"color: red;\">Il n'y a pas actuellement de professeur responsable !</h4>";
+    if ($nombre !=0) {
+?>
+	</table>
+<?php
     } else {
-        echo "</table>";
+?>
+	<h4 style="color: red;">Il n'y a pas actuellement de professeur responsable !</h4>
+<?php
     }
-    ?>
-    <p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
-    <select size=1 name="reg_prof_login">
-    <!--option value=''><p>(aucun)</p></option-->
-    <option value=''>(aucun)</option>
+?>
+	<p class='bold'>Ajouter un professeur responsable à la liste de l'AID :</p>
+	<select size=1 name="reg_prof_login">
+		<option value=''>(aucun)</option>
     <?php
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'autre') order by nom");
     $nombreligne = mysqli_num_rows($call_prof);
@@ -355,98 +389,125 @@ if ($flag == "prof") { ?>
         $login_prof = old_mysql_result($call_prof, $i, 'login');
         $nom_el = old_mysql_result($call_prof, $i, 'nom');
         $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
-
-        echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
-    $i++;
+?>
+		<option value="<?php echo $login_prof; ?>">
+			<?php echo my_strtoupper($nom_el); ?> <?php echo casse_mot($prenom_el,'majf2'); ?>
+		</option>
+<?php
+		$i++;
     }
     ?>
-    </select>
-    <input type="hidden" name="add_prof" value="yes" />
-    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
-    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
-    <input type="submit" value='Enregistrer' />
-    </form>
-
-    <?php
+	</select>
+	<p>
+		<input type="hidden" name="add_prof" value="yes" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="submit" value='Enregistrer' />
+	</p>
+</form>
+<?php
     if ($nombre != 0) {
-    ?>
-      <form enctype="multipart/form-data" action="modify_aid.php" method="post">
-      <hr /><H2>Affecter cette liste aux Aids sans professeur responsable</H2>
-      Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
-      <?php
-		echo add_token_field();
-
-      echo "<input type=\"hidden\" name=\"toutes_aids\" value=\"y\" />\n";
-      echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
-      echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
-      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sans professeur\" />\n";
-      echo "</form>";
-      ?>
-      <form enctype="multipart/form-data" action="modify_aid.php" method="post">
-      <hr /><H2>Affecter cette liste aux Aids s&eacute;lectionn&eacute;es</H2>
-      <?php
-		echo add_token_field();
-
-      echo "<input type=\"hidden\" name=\"selection_aids\" value=\"y\" />\n";
-      echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
-      echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
+?>
+<hr />
+<h2>Affecter cette liste aux Aids sans professeur responsable</h2>
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+	<p>
+		Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés 
+		à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
+	</p>
+	<?php echo add_token_field(); ?>
+	<p>
+		<input type="hidden" name="toutes_aids" value="y" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<br />
+		<input type="submit" value="Affecter la liste aux Aids sans professeur" />
+	</p>
+</form>
+<hr />
+<h2>Affecter cette liste aux Aids sélectionnées</h2>
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+	<?php echo add_token_field(); ?>
+	<p>
+		<input type="hidden" name="selection_aids" value="y" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+	</p>
+<?php
       // On appelle toutes les aids de la catégorie
       $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
       $nombreligne = mysqli_num_rows($calldata);
       $i = 0;
-      echo "<select name=\"liste_aids[]\" size=\"6\" multiple>\n";
+?>
+	<select name="liste_aids[]" size="6" multiple>
+<?php
       while ($i < $nombreligne){
         $aid_id = @old_mysql_result($calldata, $i, "id");
         $aid_nom = @old_mysql_result($calldata, $i, "nom");
-        echo "<option value=\"$aid_id\">$aid_nom</option>\n";
+?>
+		<option value="<?php $aid_id; ?>"><?php $aid_nom; ?></option>
+<?php
         $i++;
       }
-      echo "</select>";
+?>
+	</select>
+	<p>Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID 
+		seront également affectés à toutes les AIDs sélectionnèes ci-dessus.
+	</p>
+	<p><input type="submit" value="Affecter la liste aux Aids sélectionnées ci-dessus" /></p>
 
-      echo "<br />Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID seront également affectés à toutes les AIDs s&eacute;lectionn&eacute;es ci-dessus.<br />";
-      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sélectionnées ci-dessus\" />\n";
-      echo "</form>";
-
+</form>
+<?php
    }
-
 }
 
 if ($flag == "prof_gest") { ?>
-   <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
-   <?php
-    echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
-
-	echo add_token_field();
-
-    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
+<p class='grand'><?php echo "$nom_aid  $aid_nom"; ?></p>
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+	<?php echo add_token_field();
+	$call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysqli_num_rows($call_liste_data);
     if ($nombre !=0) {
     ?>
-        Les gestionnaires peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans cette AID.
-        <p class='bold'>Liste des utilisateurs gestionnaires :</p>
-        <?php
-        echo "<hr /><table class=\"aid_tableau\" border=\"0\" summary=''>\n";
+	<p>Les gestionnaires peuvent ajouter ou supprimer des &eacute;l&egrave;ves dans cette AID.</p>
+	<p class='bold'>Liste des utilisateurs gestionnaires :</p>
+	<hr />
+	<table class="aid_tableau" >
+    <?php
     }
     $i = "0";
     while ($i < $nombre) {
         $login_prof = old_mysql_result($call_liste_data, $i, "login");
         $nom_prof = old_mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @old_mysql_result($call_liste_data, $i, "prenom");
-        echo "<tr><td><b>";
-        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_gest_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
-        echo "</tr>";
+    ?>
+		<tr>
+			<td>
+				<strong>
+					<?php echo $nom_prof; ?> <?php echo $prenom_prof; ?>
+				</strong>
+			</td>
+			<td>
+				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_gest_aid<?php echo add_token_in_url(); ?>'>
+					<img src="../images/icons/delete.png" title="Supprimer ce professeur" alt="Supprimer" />
+				</a>
+			</td>
+		</tr>
+    <?php
     $i++;
     }
 
-    if ($nombre == 0) {
-        echo "<h4 style=\"color: red;\">Il n'y a pas actuellement d'utilisateur gestionnaire !</h4>";
-    } else {
-        echo "</table>";
+    if ($nombre != 0) { ?>
+	</table>
+    <?php
+    } else { ?>
+	<h4 style="color: red;">Il n'y a pas actuellement d'utilisateur gestionnaire !</h4>
+    <?php
     }
     ?>
     <p class='bold'>Ajouter un utilisateur à la liste des gestionnaires de l'AID :</p>
     <select size=1 name="reg_prof_login">
-    <option value=''>(aucun)</option>
+		<option value=''>(aucun)</option>
     <?php
     $call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' or statut = 'cpe' or statut = 'scolarite') order by nom, prenom");
     $nombreligne = mysqli_num_rows($call_prof);
@@ -454,32 +515,45 @@ if ($flag == "prof_gest") { ?>
     while ($i < $nombreligne) {
         $login_prof = old_mysql_result($call_prof, $i, 'login');
         $nom_el = old_mysql_result($call_prof, $i, 'nom');
-        $prenom_el = old_mysql_result($call_prof, $i, 'prenom');
-        echo "<option value=\"".$login_prof."\">".my_strtoupper($nom_el)." ".casse_mot($prenom_el,'majf2')."</option>\n";
+        $prenom_el = old_mysql_result($call_prof, $i, 'prenom'); 
+		?>
+		<option value="<?php echo $login_prof; ?>">
+			<?php echo my_strtoupper($nom_el); ?>
+			<?php echo casse_mot($prenom_el,'majf2'); ?>
+		</option>
+		<?php
     $i++;
     }
     ?>
     </select>
-    <input type="hidden" name="add_prof_gest" value="yes" />
-    <input type="hidden" name="aid_id" value="<?php echo $aid_id;?>" />
-    <input type="hidden" name="indice_aid" value="<?php echo $indice_aid;?>" />
-    <input type="submit" value='Enregistrer' />
-    </form>
+	<p>
+		<input type="hidden" name="add_prof_gest" value="yes" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="submit" value='Enregistrer' />		
+	</p>
+</form>
 
     <?php
     if ($nombre != 0) {
     ?>
-      <form enctype="multipart/form-data" action="modify_aid.php" method="post">
-      <hr /><H2>Affecter cette liste aux Aids sans gestionnaire</H2>
-      Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de gestionnaire.
-      <?php
-		echo add_token_field();
-
-      echo "<input type=\"hidden\" name=\"toutes_aids_gest\" value=\"y\" />\n";
-      echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
-      echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
-      echo "<br /><input type=\"submit\" value=\"Affecter la liste aux Aids sans gestionnaire\" />\n";
-      echo "</form>";
+<hr />
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+	<h2>Affecter cette liste aux Aids sans gestionnaire</h2>
+	<p>
+		Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront également affectés 
+		à toutes les AIDs de cette catégorie n'ayant pas encore de gestionnaire.	
+	</p>
+	<?php echo add_token_field(); ?>
+	<p>
+		<input type="hidden" name="toutes_aids_gest" value="y" />
+		<input type="hidden" name="indice_aid" value="<?php echo $indice_aid; ?>" />
+		<input type="hidden" name="aid_id" value="<?php echo $aid_id; ?>" />
+		<br />
+		<input type="submit" value="Affecter la liste aux Aids sans gestionnaire" />	
+	</p>
+</form>
+	<?php 
    }
 }
 
@@ -501,12 +575,12 @@ if ($flag == "eleve") {
     <hr />
     <?php
     $vide = 1;
-    // Ajout d'un tableau
-echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
-
-	echo add_token_field();
-
-	echo "<table class=\"aid_tableau\" border=\"0\" summary=''>";
+    // Ajout d'un tableau ← Pourquoi un tableau ? Régis
+?>
+<form enctype="multipart/form-data" action="modify_aid.php" method="post">
+	<?php echo add_token_field(); ?>
+	<table class="aid_tableau">
+    <?php
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
 							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
@@ -542,7 +616,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         $classe_eleve = @old_mysql_result($call_classe, '0', "classe");
         $v_elenoet=old_mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
-        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
+        echo "<strong>$nom_eleve $prenom_eleve</strong>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
 
 		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
 		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
@@ -576,8 +650,9 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         echo "</tr>\n";
     $i++;
     }
-
-    echo "</table>";
+?>
+	</table>
+<?php
 
     if ($vide == 1) {
         echo "<br /><p style=\"color: red;\">Il n'y a pas actuellement d'élèves dans cette AID !</p>";
