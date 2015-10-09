@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -141,13 +141,11 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 		$total_profs = array_unique($total_profs);
 
 		$p = 0;
-		echo "<table class='boireaus'>\n";
-		$alt=1;
+		echo "<table class='boireaus boireaus_alt'>\n";
 		$temoin_nettoyage_requis='n';
 		foreach($total_profs as $prof_login) {
-			$alt=$alt*(-1);
 			if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
-				echo "<tr class='lig$alt'>\n";
+				echo "<tr>\n";
 				echo "<td>\n";
 				echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
 				echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
@@ -190,7 +188,7 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 				$p++;
 			}
 			else {
-				echo "<tr class='lig$alt'>\n";
+				echo "<tr>\n";
 				echo "<td>\n";
 				echo "&nbsp;&nbsp;";
 				echo "</td>\n";
@@ -212,6 +210,20 @@ function afficher_liste_profs_du_groupe($reg_matiere) {
 		if($temoin_nettoyage_requis!='n') {
 			echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
 		}
+
+		echo "<br />
+<a href='#' onclick=\"cocher_tous_profs_de_la_matiere(true);return false;\">Cocher</a> / <a href='#' onclick=\"cocher_tous_profs_de_la_matiere(false);return false;\">décocher</a> tous les professeurs ci-dessus.
+<script type='text/javascript'>
+	function cocher_tous_profs_de_la_matiere(mode) {
+		for(i=0;i<$p;i++) {
+			if(document.getElementById('prof_'+i)) {
+				document.getElementById('prof_'+i).checked=mode;
+				checkbox_change(i);
+				changement();
+			}
+		}
+	}
+</script>";
 
 		if ($mode == "groupe") {
 			echo "<br />
@@ -1162,7 +1174,6 @@ function checkbox_change(cpt) {
 ";
 
 echo js_checkbox_change_style('checkbox_change_divers');
-echo js_checkbox_change_style('checkbox_change_classe');
 echo js_checkbox_change_style('checkbox_change_visibilite');
 
 echo "
