@@ -744,6 +744,7 @@ $tab_abs=array();
 // A FAIRE : Pouvoir choisir ce que l'on veut faire apparaitre (absences, retards,...)
 //$sql="SELECT a.*, e.login FROM a_agregation_decompte a, eleves e WHERE a.eleve_id=e.id_eleve AND e.login='".$login_ele."' ORDER BY date_demi_jounee;";
 $sql="SELECT a.*, e.login FROM a_agregation_decompte a, eleves e WHERE a.eleve_id=e.id_eleve AND (a.manquement_obligation_presence>'0' OR a.retards>'0') AND e.login='".$login_ele."' ORDER BY date_demi_jounee;";
+//echo "$sql<br />";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p style='color:red'>Aucun enregistrement pour $login_ele.</p>";
@@ -813,6 +814,8 @@ $tab_jfr[6]="samedi";
 $tab_jfr[7]="dimanche";
 
 echo "<!--div id='div_details_date' style='float:right; width:30em;'></div-->
+
+<!--p style='color:red'>A FAIRE : Ajouter des liens vers tel ou tel onglet de mod_abs2</p-->
 
 <table class='boireaus boireaus_alt' align='center'>
 	<thead>
