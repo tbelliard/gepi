@@ -38,7 +38,7 @@ if (!checkAccess()) {
 
 $indice_aid = $_GET["indice_aid"];
 // Vérification de la validité de $indice_aid et $aid_id
-if (!VerifAidIsAcive($indice_aid,"")) {
+if (!VerifAidIsActive($indice_aid,"")) {
     echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
     die();
 }

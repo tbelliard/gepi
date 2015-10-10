@@ -220,7 +220,7 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
  * @param string $annee l'année de recherche (année courante si vide)
  * @return boolean 
  */
-function VerifAidIsAcive($indice_aid,$aid_id,$annee='') {
+function VerifAidIsActive($indice_aid,$aid_id,$annee='') {
     if ($annee=='')
       $test_active = sql_query1("SELECT indice_aid FROM aid_config WHERE outils_complementaires = 'y' and indice_aid='".$indice_aid."'");
     else

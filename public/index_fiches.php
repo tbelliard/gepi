@@ -125,12 +125,12 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
 
 // Vérification de la validité de $indice_aid et $aid_id
 if ($annee_courante) {
-  if (!VerifAidIsAcive($indice_aid,"",""))  {
+  if (!VerifAidIsActive($indice_aid,"",""))  {
     echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
     die();
   }
 } else {
-  if (!VerifAidIsAcive($indice_aid,"","y"))  {
+  if (!VerifAidIsActive($indice_aid,"","y"))  {
     echo "<p>* Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
     die();
   }
