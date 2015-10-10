@@ -239,7 +239,7 @@ if ($_SESSION['statut'] == 'professeur') {
 	<div <?php if (!Multiples_possible ($indice_aid)) {echo " style='display:none;'";} ?> >
 		<p title="Cochez pour affecter un parent puis choisissez le parent">
 			<label for="sous_groupe">
-				Sous-groupe d'un autre AID
+				Sous-groupe d'une autre AID
 			</label>
 			<input type="checkbox"
 				   name='sous_groupe'
