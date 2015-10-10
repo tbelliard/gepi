@@ -68,7 +68,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
         $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
     } else {
         if ($reg_prof_login != '') {
-			$reg_data = mysqli_query($GLOBALS["mysqli"], Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid));
+			$reg_data = Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid);
             if (!$reg_data) { $msg = "Erreur lors de l'ajout du professeur !"; } else { $msg = "Le professeur a bien été ajouté !"; }
         }
     }
@@ -106,14 +106,14 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 	Supprime_eleve_responsable($aid_id, $indice_aid);
 	
     // Les élèves responsable sont à sélectionner parmi les élèves de l'AID
-    $call_eleves = Eleve_deja_membre ($aid_id, $indice_aid);
+    $call_eleves = Extrait_eleves_deja_membres ($aid_id, $indice_aid);
     $nombre = mysqli_num_rows($call_eleves);
     $i = "0";
     while ($i < $nombre) {
         $login_eleve = old_mysql_result($call_eleves, $i, "login");
         if (isset($_POST[$login_eleve."_resp"])) {
             //sql_query("INSERT INTO j_aid_eleves_resp SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'");
-			Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve);
+			Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve);
         }
         $i++;
     }
@@ -363,7 +363,7 @@ if ($flag == "prof") { ?>
 ?>
 		<tr>
 			<td>
-				<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>>
+				<strong><?php echo $nom_prof." ".$prenom_prof; ?></strong>
 			</td>
 			<td>
 				<a href='../lib/confirm_query.php?liste_cible=<?php echo $login_prof; ?>&amp;liste_cible2=<?php echo $aid_id; ?>&amp;liste_cible3=<?php echo $indice_aid; ?>&amp;action=del_prof_aid<?php echo add_token_in_url(); ?>'>

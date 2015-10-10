@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
+/*===== aid_config =====*/
 function Get_famille_aid ($indice_aid) {
 	global $mysqli;
 	$sql = "SELECT * FROM aid_config WHERE indice_aid='".$indice_aid."' ;";
@@ -36,6 +36,8 @@ function Multiples_possible ($indice_aid) {
 	}
 	return $retour;
 }
+
+/*===== aid =====*/
 
 function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe) {
 	global $mysqli;
@@ -84,6 +86,26 @@ function Dernier_id ($ordre = DESC) {
 	return $retour;
 }
 
+function a_parent ($aid_id, $indice_aid = NULL) {
+	global $mysqli;	
+	$retour = FALSE;
+	$filtre = $indice_aid ? " AND indice_aid='".$indice_aid."' " : "";
+	$sql = "SELECT * FROM aid WHERE id=".$aid_id.$filtre." AND sous_groupe='y' ";
+	$return = mysqli_query($mysqli, $sql);
+	if ($return && $return->num_rows) {
+		$retour = TRUE;
+	}
+	return $retour;
+}
+
+function Categorie_a_enfants ($indice_aid) {
+	global $mysqli;
+	$sql = "SELECT * FROM aid WHERE indice_aid='".$indice_aid."' AND sous_groupe='y' ";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;
+}
+
+/*===== aid_sous_groupes =====*/
 
 function Sauve_sous_groupe ($aid_id, $parent) {
 	global $mysqli;
@@ -98,18 +120,6 @@ function Efface_sous_groupe($aid_id) {
 	global $mysqli;
 	$sql = "DELETE FROM `aid_sous_groupes` WHERE `aid` = '".$aid_id."' ;";
 	$retour = mysqli_query($mysqli, $sql);
-	return $retour;
-}
-
-function a_parent ($aid_id, $indice_aid = NULL) {
-	global $mysqli;	
-	$retour = FALSE;
-	$filtre = $indice_aid ? " AND indice_aid='".$indice_aid."' " : "";
-	$sql = "SELECT * FROM aid WHERE id=".$aid_id.$filtre." AND sous_groupe='y' ";
-	$return = mysqli_query($mysqli, $sql);
-	if ($return && $return->num_rows) {
-		$retour = TRUE;
-	}
 	return $retour;
 }
 
@@ -131,13 +141,8 @@ function Extrait_info_parent ($aid_id) {
 	}
 	return $retour;
 }
-			
-function Categorie_a_enfants ($indice_aid) {
-	global $mysqli;
-	$sql = "SELECT * FROM aid WHERE indice_aid='".$indice_aid."' AND sous_groupe='y' ";
-	$retour = mysqli_query($mysqli, $sql);
-	return $retour;
-}
+
+/*===== j_aid_utilisateurs =====*/
 		
 function Prof_deja_membre ($reg_prof_login, $aid_id, $indice_aid) {
 	global $mysqli;
@@ -154,7 +159,9 @@ function Sauve_prof_membre ($reg_prof_login, $aid_id, $indice_aid) {
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
-		
+
+/* ===== j_aid_utilisateurs_gest =====*/
+
 function Prof_deja_gestionnaire ($reg_prof_login, $aid_id, $indice_aid) {
 	global $mysqli;
 	$sql = "SELECT * FROM j_aid_utilisateurs_gest "
@@ -170,25 +177,25 @@ function Sauve_prof_gestionnaire ($reg_prof_login, $aid_id, $indice_aid) {
 	return $retour;	
 }
 
-function Eleve_deja_membre ($aid_id, $indice_aid) {
+/* ===== j_aid_eleves =====*/
+
+function Eleve_est_deja_membre ($login, $indice_aid, $id_aid = NULL) {
+	global $mysqli;
+	$sql = "SELECT DISTINCT login "
+	   . "FROM j_aid_eleves "
+	   . "WHERE indice_aid = '".$indice_aid."' "
+	   . "AND login = '".$login."' ";
+	if ($id_aid !== NULL){
+		$sql .= "AND id_aid = '".$id_aid."' ";
+	}
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Extrait_eleves_deja_membres ($aid_id, $indice_aid) {
 	global $mysqli;
 	$sql = "SELECT * FROM j_aid_eleves "
 	   . "WHERE (indice_aid='$indice_aid' and id_aid='$aid_id')";
-	$retour = mysqli_query($mysqli, $sql);
-	return $retour;	
-}
-
-function Sauve_eleve_membre($aid_id, $indice_aid, $login_eleve) {
-	global $mysqli;
-	$sql = "INSERT INTO j_aid_eleves_resp "
-	   . "SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'";
-	$retour = mysqli_query($mysqli, $sql);
-	return $retour;	
-}
-
-function Supprime_eleve_responsable($aid_id, $indice_aid) {
-	global $mysqli;
-	$sql = "DELETE FROM j_aid_eleves_resp WHERE id_aid='".$aid_id."' AND indice_aid='".$indice_aid."'";
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
@@ -223,5 +230,29 @@ function Extrait_eleves_sur_indice_aid ($indice_aid) {
 	return $retour;	
 }
 
+function Sauve_eleve_membre($id_aid, $indice_aid, $login_eleve) {
+	global $mysqli;
+	$sql = "INSERT INTO j_aid_eleves "
+	   . "SET login='".$login_eleve."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+/*===== j_aid_eleves_resp =====*/
+
+function Supprime_eleve_responsable($aid_id, $indice_aid) {
+	global $mysqli;
+	$sql = "DELETE FROM j_aid_eleves_resp WHERE id_aid='".$aid_id."' AND indice_aid='".$indice_aid."'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
+
+function Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve) {
+	global $mysqli;
+	$sql = "INSERT INTO j_aid_eleves_resp "
+	   . "SET id_aid='$aid_id', login='$login_eleve', indice_aid='$indice_aid'";
+	$retour = mysqli_query($mysqli, $sql);
+	return $retour;	
+}
 
 

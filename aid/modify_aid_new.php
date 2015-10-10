@@ -100,25 +100,15 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
 				$rep_log_eleve[$i]["login"] = old_mysql_result($req_login, $i, "login");
 				// On teste si cet élève n'est pas déjà membre de l'AID
 				if (!$autoriser_inscript_multiples) {
-					$sql_verif = "SELECT DISTINCT login "
-					   . "FROM j_aid_eleves "
-					   . "WHERE indice_aid = '".$indice_aid."' "
-					   . "AND login = '".$rep_log_eleve[$i]["login"]."'";
+					$req_verif = Eleve_est_deja_membre ($rep_log_eleve[$i]["login"], $indice_aid);
         		} else {
-					$sql_verif = "SELECT DISTINCT login "
-					   . "FROM j_aid_eleves "
-					   . "WHERE indice_aid = '".$indice_aid."' "
-					   . "AND id_aid = '".$id_aid."' "
-					   . "AND login = '".$rep_log_eleve[$i]["login"]."'";
+					$req_verif = Eleve_est_deja_membre ($rep_log_eleve[$i]["login"], $indice_aid, $id_aid);
 				} 
-				$req_verif = mysqli_query($GLOBALS["mysqli"], $sql_verif) OR die ('Erreur requête1 : '.mysqli_error($GLOBALS["mysqli"]).'.');
-				$verif = mysqli_num_rows($req_verif);
+				$verif = $req_verif->num_rows;
 				if ($verif === 0) {
-					$sql = "INSERT INTO j_aid_eleves "
-					   . "SET login='".$rep_log_eleve[$i]["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'";
-					$req_ajout = mysqli_query($GLOBALS["mysqli"], $sql);
+					$req_ajout = Sauve_eleve_membre($id_aid, $indice_aid, $rep_log_eleve[$i]["login"]);
 				}else {
-					$msg .= $rep_log_eleve[$i]["login"]." est déjà dans la table.".'<br />';
+					$msg .= get_nom_prenom_eleve($rep_log_eleve[$i]["login"])." est déjà dans la table.".'<br />';
 				}
 			}
 		} else {
@@ -127,7 +117,7 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$id_aid) <= 0) {
 			$rep_log_eleve = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT login FROM eleves WHERE id_eleve = '".$id_eleve."'"));
 			// On vérifie s'il n'est pas déjà membre de cet aid
 			// Par cette méthode, on ne peut enregistrer deux fois le même
-			$req_ajout = mysqli_query($GLOBALS["mysqli"], "INSERT INTO j_aid_eleves SET login='".$rep_log_eleve["login"]."', id_aid='".$id_aid."', indice_aid='".$indice_aid."'");
+			$req_ajout = Sauve_eleve_membre($id_aid, $indice_aid, $rep_log_eleve["login"]);
 		}// fin du else
 	}
 
@@ -157,8 +147,11 @@ require_once("../lib/header.inc.php");
 	
 // Affichage du retour
 	// On récupère l'indice de l'aid en question
-	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
-
+	$aff_infos_g .= "<p class=\"aid_a\">"
+	   . "<a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">"
+	   . "<img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour"
+	   . "</a>"
+	   . "</p>";
 
 //Affichage du nom et des précisions sur l'AID en question
 	$req_aid = mysqli_query($GLOBALS["mysqli"], "SELECT nom FROM aid WHERE id = '".$id_aid."'");
@@ -201,7 +194,7 @@ if (isset($aff_liste_m)) {
 	$aff_classes_m .= "
 		<p class=\"red\">Classe de ".$aff_nom_classe["classe"]." : </p>
 
-	<table class=\"aid_tableau\" summary=\"Liste des &eacute;l&egrave;ves\">
+	<table class=\"aid_tableau\" summary=\"Liste des élèves\">
 	";
 		// Ligne paire, ligne impaire (inutile dans un premier temps), on s'en sert pour faire ladifférence avec une ligne vide.
 			$aff_tr_css = "aid_lignepaire";
@@ -303,9 +296,9 @@ if (isset($aff_liste_m)) {
 	<img src="../images/info.png" alt="Plus d'infos..." Title="Plus d'infos..." />
 </a>
 	<div id="aid_aide" style="display: none;">
-	Pour acc&eacute;l&eacute;rer la proc&eacute;dure, en cliquant sur une classe,
-	vous avez acc&egrave;s &agrave; la liste de ses &eacute;l&egrave;ves.<br />
-	Vous pouvez int&eacute;grer tous ces &eacute;l&egrave;ves en cliquant sur [Toute la classe].<br />
+	Pour accélérer la procédure, en cliquant sur une classe,
+	vous avez accès à la liste de ses élèves.<br />
+	Vous pouvez intégrer tous ces élèves en cliquant sur [Toute la classe].<br />
 	<hr />
 	</div>
 
