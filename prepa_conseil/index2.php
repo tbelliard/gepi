@@ -773,26 +773,35 @@ display_div_coloriser();
 	//echo "</p><strong>Visualiser les notes par classe :</strong><br />";
 	echo "</p>\n";
 	echo "<strong>Visualiser les moyennes par classe :</strong><br />";
-	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-	//$appel_donnees = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
-	if($_SESSION['statut']=='scolarite'){
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+	unset($sql);
+	if($_SESSION['statut']=='scolarite') {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
-	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes"){
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
+	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
 	elseif($_SESSION['statut'] == 'professeur' and getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes") {
-		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe");
+		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
 	}
-	elseif($_SESSION['statut']=='cpe'){
-		$appel_donnees=mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
+	elseif($_SESSION['statut']=='cpe') {
+		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
 			jec.id_classe=c.id AND
 			jec.periode=p.num_periode AND
 			jecpe.e_login=jec.login AND
 			jecpe.cpe_login='".$_SESSION['login']."'
-			ORDER BY classe");
+			ORDER BY classe";
 	}
+	elseif($_SESSION['statut']=='autre') {
+		// Statut autre
+		$sql="SELECT DISTINCT c.* FROM classes c  ORDER BY c.classe";
+	}
+	if(!isset($sql)) {
+		echo "<p style='color:red'>Vous semblez n'avoir accès à aucune classe&nbsp;???</p>";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	$appel_donnees = mysqli_query($GLOBALS["mysqli"], $sql);
 	$lignes = mysqli_num_rows($appel_donnees);
 
 	if($lignes==0){

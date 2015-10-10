@@ -5,6 +5,34 @@
 
 Gepi-master (Version de développement)
 ===========================
+Discipline:
+- Possibilité de signaler des saisies d'incidents (aux utilisateurs suivant telle ou telle classe) par mod_alerte et non plus seulement par mail.
+- Affichage de la liste des sanctions depuis la saisie/modif d'incident.
+- Envoi de mails lors de la saisie de sanction et indication de sanction effectuée ou non.
+- Amélioration du tri des natures d'incident proposées.
+- Possibilité pour un utilisateur de supprimer un incident qu'il a déclaré si l'incident n'est rattaché à aucune mesure ni sanction.
+- Pointage de menus incidents: Possibilité de définir des seuils pour envoi de mail, message sur les pointages de menus incidents.
+
+Absences2:
+- Ajout de liens de création d'incident de puis mod_abs2 Saisir groupe.
+
+Cahiers de textes:
+- Possibilité d'ajouter un témoin 'contrôle' dans les travaux à faire du CDT.
+- Page résumé/simplifiée élève : Précision des dates de travaux futurs en title.
+
+Carnet de notes:
+- Affichage du nombre de notes inférieures/supérieures à 10.
+- Accès en statut autre à la Visualisation des moyennes de carnets de notes (ajout d'un droit).
+
+Bulletins:
+- Accès en statut autre au Tableau récapitulatif des moyennes d'une classe dans le cas où l'utilisateur a accès aux bulletins simplifiés ou non.
+
+Panneau d'affichage:
+- Possibilité de déposer un message pour les professeurs principaux.
+
+Général:
+- Possibilité de prendre en compte un secure/proxy.php pour file_get_contents()
+- Automatisation du changement de PP et de CPE lors du changement de classe.
 
 Gepi-1.6.7 (24/08/2015)
 ===========================

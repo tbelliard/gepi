@@ -33,6 +33,7 @@ if (getSettingValue("statuts_prives") != "y") {
 	trigger_error('Impossible d\'accéder à ce module de Gepi.', E_USER_ERROR);
 }
 
+//debug_var();
 
 // ========================================= Variables ============================
 $action = isset($_POST["action"]) ? $_POST["action"] : NULL;
@@ -58,8 +59,10 @@ function verifChecked($id){
 	for($i = 1 ; $i < $iter ; $i++){
 		// On récupère les droits de ce statut privé
 		$sql_ds = "SELECT autorisation FROM droits_speciaux WHERE id_statut = '".$id."' AND nom_fichier = '".$autorise[$i][0]."'";
+		//echo "\$sql_ds=$sql_ds<br />";
 		$query_ds = mysqli_query($GLOBALS["mysqli"], $sql_ds) OR trigger_error('Erreur dans la fonction verifChecked ', E_USER_ERROR);
 		$count = mysqli_num_rows($query_ds);
+		//echo "\$count=$count<br />";
 		if ($count >= 1) {
 			$rep = old_mysql_result($query_ds, 0,"autorisation");
 		}else{
@@ -99,9 +102,10 @@ if ($action == 'ajouter') {
 
 		$msg .= "<h3 class='red'>Ce statut priv&eacute; existe d&eacute;j&agrave; !</h3>";
 
-	}else{
+	} else{
 
 		$sql = "INSERT INTO droits_statut (id, nom_statut) VALUES ('', '".$insert_statut."')";
+		//echo "$sql<br />";
 		$enregistre = mysqli_query($GLOBALS["mysqli"], $sql) OR trigger_error('Impossible d\'enregistrer ce nouveau statut', E_USER_WARNING);
 		$cherche_id = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_statut WHERE nom_statut = '".$insert_statut."'");
 		$last_id = old_mysql_result($cherche_id, 0,"id");
@@ -161,79 +165,90 @@ if ($action == 'modifier') {
 	for($a = 0; $a < $nbre; $a++){
 
 		$b = old_mysql_result($query, $a, "id");
+		//$current_statut = old_mysql_result($query, $a, "nom_statut");
+		//echo "<br />Statut n°$b : $current_statut<br />";
 
 		$test[$a][0] = isset($_POST["suppr|".$b]) ? $_POST["suppr|".$b] : NULL;
 		$test[$a][1] = isset($_POST["ne|".$b]) ? $_POST["ne|".$b] : NULL;
-		$test[$a][2] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
-		$test[$a][3] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
-		$test[$a][4] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
-		$test[$a][5] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
-		$test[$a][6] = isset($_POST["cdt_visa|".$b]) ? $_POST["cdt_visa|".$b] : NULL;
-		$test[$a][7] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
-		$test[$a][8] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
-		$test[$a][9] = isset($_POST["pa|".$b]) ? $_POST["pa|".$b] : NULL;
-		$test[$a][10] = isset($_POST["ve|".$b]) ? $_POST["ve|".$b] : NULL;
-		$test[$a][11] = isset($_POST["vre|".$b]) ? $_POST["vre|".$b] : NULL;
-		$test[$a][12] = isset($_POST["vee|".$b]) ? $_POST["vee|".$b] : NULL;
-		$test[$a][13] = isset($_POST["vne|".$b]) ? $_POST["vne|".$b] : NULL;
-		$test[$a][14] = isset($_POST["vbe|".$b]) ? $_POST["vbe|".$b] : NULL;
-		$test[$a][15] = isset($_POST["vae|".$b]) ? $_POST["vae|".$b] : NULL;
-		$test[$a][16] = isset($_POST["anna|".$b]) ? $_POST["anna|".$b] : NULL;
-		$test[$a][17] = isset($_POST["tr|".$b]) ? $_POST["tr|".$b] : NULL;
-		$test[$a][18] = isset($_POST["dsi|".$b]) ? $_POST["dsi|".$b] : NULL;
-		$test[$a][19] = isset($_POST["abs|".$b]) ? $_POST["abs|".$b] : NULL;
-        $test[$a][20] = isset($_POST["abs_saisie|".$b]) ? $_POST["abs_saisie|".$b] : NULL;
-        $test[$a][21] = isset($_POST["abs_bilan|".$b]) ? $_POST["abs_bilan|".$b] : NULL;
-        $test[$a][22] = isset($_POST["abs_totaux|".$b]) ? $_POST["abs_totaux|".$b] : NULL;
-        $test[$a][23] = isset($_POST["bul_print|".$b]) ? $_POST["bul_print|".$b] : NULL;
-        $test[$a][24] = isset($_POST["visu_equipes_peda|".$b]) ? $_POST["visu_equipes_peda|".$b] : NULL;
-        $test[$a][25] = isset($_POST["visu_listes_ele|".$b]) ? $_POST["visu_listes_ele|".$b] : NULL;
-        $test[$a][26] = isset($_POST["listes_ele_csv|".$b]) ? $_POST["listes_ele_csv|".$b] : NULL;
+		$test[$a][2] = isset($_POST["moy_cn|".$b]) ? $_POST["moy_cn|".$b] : NULL;
+		$test[$a][3] = isset($_POST["bs|".$b]) ? $_POST["bs|".$b] : NULL;
+		$test[$a][4] = isset($_POST["va|".$b]) ? $_POST["va|".$b] : NULL;
+		$test[$a][5] = isset($_POST["sa|".$b]) ? $_POST["sa|".$b] : NULL;
+		$test[$a][6] = isset($_POST["cdt|".$b]) ? $_POST["cdt|".$b] : NULL;
+		$test[$a][7] = isset($_POST["cdt_visa|".$b]) ? $_POST["cdt_visa|".$b] : NULL;
+		$test[$a][8] = isset($_POST["ee|".$b]) ? $_POST["ee|".$b] : NULL;
+		$test[$a][9] = isset($_POST["te|".$b]) ? $_POST["te|".$b] : NULL;
+		$test[$a][10] = isset($_POST["pa|".$b]) ? $_POST["pa|".$b] : NULL;
+		$test[$a][11] = isset($_POST["ve|".$b]) ? $_POST["ve|".$b] : NULL;
+		$test[$a][12] = isset($_POST["vre|".$b]) ? $_POST["vre|".$b] : NULL;
+		$test[$a][13] = isset($_POST["vee|".$b]) ? $_POST["vee|".$b] : NULL;
+		$test[$a][14] = isset($_POST["vne|".$b]) ? $_POST["vne|".$b] : NULL;
+		$test[$a][15] = isset($_POST["vbe|".$b]) ? $_POST["vbe|".$b] : NULL;
+		$test[$a][16] = isset($_POST["vae|".$b]) ? $_POST["vae|".$b] : NULL;
+		$test[$a][17] = isset($_POST["anna|".$b]) ? $_POST["anna|".$b] : NULL;
+		$test[$a][18] = isset($_POST["tr|".$b]) ? $_POST["tr|".$b] : NULL;
+		$test[$a][19] = isset($_POST["dsi|".$b]) ? $_POST["dsi|".$b] : NULL;
+		$test[$a][20] = isset($_POST["abs|".$b]) ? $_POST["abs|".$b] : NULL;
+		$test[$a][21] = isset($_POST["abs_saisie|".$b]) ? $_POST["abs_saisie|".$b] : NULL;
+		$test[$a][22] = isset($_POST["abs_bilan|".$b]) ? $_POST["abs_bilan|".$b] : NULL;
+		$test[$a][23] = isset($_POST["abs_totaux|".$b]) ? $_POST["abs_totaux|".$b] : NULL;
+		$test[$a][24] = isset($_POST["bul_print|".$b]) ? $_POST["bul_print|".$b] : NULL;
+		$test[$a][25] = isset($_POST["visu_equipes_peda|".$b]) ? $_POST["visu_equipes_peda|".$b] : NULL;
+		$test[$a][26] = isset($_POST["visu_listes_ele|".$b]) ? $_POST["visu_listes_ele|".$b] : NULL;
+		$test[$a][27] = isset($_POST["listes_ele_csv|".$b]) ? $_POST["listes_ele_csv|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {
 			// On supprime le statut demandé
 			$sql_d = "DELETE FROM droits_statut WHERE id = '".$b."'";
+			//echo "$sql_d<br />";
 			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
 			// Il faut aussi effacer toutes les références à ce statut dans les autres tables
 			$sql_d = "DELETE FROM droits_utilisateurs WHERE id_statut = '".$b."'";
+			//echo "$sql_d<br />";
 			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut du : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
 			$sql_d = "DELETE FROM droits_speciaux WHERE id_statut = '".$b."'";
+			//echo "$sql_d<br />";
 			$query_d = mysqli_query($GLOBALS["mysqli"], $sql_d) OR trigger_error('Impossible de supprimer ce statut ds : '.mysqli_error($GLOBALS["mysqli"]), E_USER_NOTICE);
 
-		}else{
-                  // On va vérifier les droits un par un
-                  // ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
-                  // cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
+		}
+		else {
+			// On va vérifier les droits un par un
+			// ne = notes élèves ; bs = bulletins simplifiés ; va = voir absences ; sa = saisir absences
+			// cdt = cahier de textes ; ee = emploi du temps des élèves ; te = tous les emplois du temps
 
-                  for($m = 1 ; $m < $iter ; $m++){
+			for($m = 1 ; $m < $iter ; $m++){
 
-                    $nbre2 = count($autorise[$m]);
-                    // On vérifie si le droit est coché ou non
-                    if ($test[$a][$m] == 'on') {
-                      $vf = 'V';
-                    }else{
-                      $vf = 'F';
-                    }
-                    // On n'oublie pas de mettre à jour tous les fichiers adéquats
-                    for($i = 0 ; $i < $nbre2 ; $i++){
-                      //$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
-                      //$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
-                      $query_select = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
-                      $result = mysqli_fetch_array($query_select);
-                      if (!empty ($result)){
-                        $query_maj = mysqli_query($GLOBALS["mysqli"], "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'");
-                      }else{
-                        $query_maj = mysqli_query($GLOBALS["mysqli"], "INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')");
-                      }
+				$nbre2 = count($autorise[$m]);
+				// On vérifie si le droit est coché ou non
+				if ($test[$a][$m] == 'on') {
+					$vf = 'V';
+				}else{
+					$vf = 'F';
+				}
+				// On n'oublie pas de mettre à jour tous les fichiers adéquats
+				for($i = 0 ; $i < $nbre2 ; $i++){
+					//$sql_maj = "UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+					//$query_maj = mysql_query($sql_maj) OR trigger_error("Mauvaise mise à jour  : ".mysql_error(), E_USER_WARNING);
+					$sql="SELECT id FROM droits_speciaux WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+					//echo "$sql<br />";
+					$query_select = mysqli_query($GLOBALS["mysqli"], $sql);
+					$result = mysqli_fetch_array($query_select);
+					if (!empty ($result)){
+						$sql="UPDATE droits_speciaux SET autorisation = '".$vf."' WHERE id_statut = '".$b."' AND nom_fichier = '".$autorise[$m][$i]."'";
+					}else{
+						$sql="INSERT INTO `droits_speciaux` VALUES ('','".$b."','".$autorise[$m][$i]."','".$vf."')";
+					}
+					//echo "$sql<br />";
+					$query_maj = mysqli_query($GLOBALS["mysqli"], $sql);
 
-                      if (!$query_maj) {
-			$msg3 .= '<span class="red">Erreur</span>';
-                      }
-                    }
-                  } // for($m = 1 ; $m < $iter ; $m++){
+					if (!$query_maj) {
+						$msg3 .= '<span class="red">Erreur</span>';
+					}
+				}
+			} // for($m = 1 ; $m < $iter ; $m++){
 		}
 	}
 //print_r($test);
@@ -271,30 +286,39 @@ if ($query) {
 		}
 	}
 
-	while($rep = mysqli_fetch_array($query)){
+	while($rep = mysqli_fetch_array($query)) {
 
+		/*
+		echo "<pre>";
+		print_r($rep);
+		echo "</pre>";
+		*/
 		// On vérifie s'il faut le cocher par défaut ou pas
 		$checked = verifChecked($rep["id"]);
+		/*
+		echo "<pre>";
+		print_r($checked);
+		echo "</pre>";
+		*/
+		// On affiche les droits des statuts personnalisés verticalement
 
-	// On affiche les droits des statuts personnalisés verticalement
+		for($b = 0 ; $b <= $iter ; $b++){
 
-	for($b = 0 ; $b <= $iter ; $b++){
+			if ($b == 0) {
 
-		if ($b == 0) {
+				$aff_tableau2[$b] .= '<td style="font-weight: bold; color: red;">'.$rep["nom_statut"].'</td>';
 
-			$aff_tableau2[$b] .= '<td style="font-weight: bold; color: red;">'.$rep["nom_statut"].'</td>';
+			}elseif($b == $iter){
 
-		}elseif($b == $iter){
+				// On ajoute une ligne pour la suppression
+				$aff_tableau2[$b] .= '<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>';
 
-			// On ajoute une ligne pour la suppression
-			$aff_tableau2[$b] .= '<td><input type="checkbox" name="suppr|'.$rep["id"].'" /></td>';
+			}else{
 
-		}else{
+				$aff_tableau2[$b] .= '<td><input type="checkbox" name="'.$menu_accueil[$b][2].'|'.$rep["id"].'"'.$checked[$b].' /></td>';
 
-			$aff_tableau2[$b] .= '<td><input type="checkbox" name="'.$menu_accueil[$b][2].'|'.$rep["id"].'"'.$checked[$b].' /></td>';
-
+			}
 		}
-	}
 
 	}
 	for($b = 0 ; $b <= $iter ; $b++){

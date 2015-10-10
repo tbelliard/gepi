@@ -143,7 +143,7 @@ if (isset($id_classe)) {
 
 	// ===========================================
 	// Ajout lien classe précédente / classe suivante
-	if($_SESSION['statut']=='scolarite'){
+	if($_SESSION['statut']=='scolarite') {
 		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	elseif($_SESSION['statut']=='professeur'){
@@ -168,6 +168,10 @@ if (isset($id_classe)) {
 			jecpe.e_login=jec.login AND
 			jecpe.cpe_login='".$_SESSION['login']."'
 			ORDER BY classe";
+	}
+	else {
+		// Autres
+		$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe";
 	}
 	$chaine_options_classes="";
 
@@ -574,6 +578,10 @@ display_div_coloriser();
 	}
 	elseif($_SESSION['statut'] == 'cpe'){
 		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+	}
+	else {
+		// Autres
+		$appel_donnees = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id ORDER BY classe");
 	}
 
 	$lignes = mysqli_num_rows($appel_donnees);
