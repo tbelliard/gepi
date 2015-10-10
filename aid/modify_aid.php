@@ -646,7 +646,7 @@ if ($flag == "eleve") {
 				</a>
 <?php 
 		// Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
-		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {
+		if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) && (getSettingValue("active_module_trombinoscopes")=='y')) {
 			$info="<div align='center'>\n";
 			if($v_elenoet!="") {
 				$photo=nom_photo($v_elenoet);
@@ -656,12 +656,14 @@ if ($flag == "eleve") {
 				}
 			}
 			$info.="</div>\n";
+			$titre = $nom_eleve." ".$prenom_eleve;
+			$titre ="";
 			$tabdiv_infobulle[]=creer_div_infobulle('info_popup_eleve'.$v_elenoet,$titre,"",$info,"",14,0,'y','y','n','n');
 
 			if($photo!="") {
 ?>
 				<a href='#' 
-				   onmouseover="afficher_div('info_popup_eleve?<?php echo $v_elenoet; ?>','y',30,-200);"
+				   onmouseover="afficher_div('info_popup_eleve<?php echo $v_elenoet; ?>','y',30,-200);"
 				   onmouseout="cacher_div('info_popup_eleve<?php echo $v_elenoet; ?>');">
 					<img src='../images/icons/buddy.png' alt='Photo élève' />
 				</a>
