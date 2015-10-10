@@ -39,12 +39,14 @@ function Multiples_possible ($indice_aid) {
 
 /*===== aid =====*/
 
-function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe) {
+function Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe, $inscrit_direct) {
 	global $mysqli;
 	$sql = "INSERT INTO aid "
-	   . "SET id = '$aid_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid', sous_groupe='$sous_groupe'"
+	   . "SET id = '$aid_id', nom='$aid_nom', numero='$aid_num', indice_aid='$indice_aid', "
+	   . "sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct' "
 	   . "ON DUPLICATE KEY "
-	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe'";
+	   . "UPDATE nom='$aid_nom', numero='$aid_num', sous_groupe='$sous_groupe', inscrit_direct='$inscrit_direct'";
+	//die($sql) ;
 	$retour = mysqli_query($mysqli, $sql); 
 	return $retour;
 }
@@ -90,7 +92,9 @@ function a_parent ($aid_id, $indice_aid = NULL) {
 	global $mysqli;	
 	$retour = FALSE;
 	$filtre = $indice_aid ? " AND indice_aid='".$indice_aid."' " : "";
-	$sql = "SELECT * FROM aid WHERE id=".$aid_id.$filtre." AND sous_groupe='y' ";
+	$sql = "SELECT * FROM aid "
+	   . "WHERE id=".$aid_id.$filtre." "
+	   . "AND sous_groupe='y' ";
 	$return = mysqli_query($mysqli, $sql);
 	if ($return && $return->num_rows) {
 		$retour = TRUE;
@@ -100,8 +104,24 @@ function a_parent ($aid_id, $indice_aid = NULL) {
 
 function Categorie_a_enfants ($indice_aid) {
 	global $mysqli;
-	$sql = "SELECT * FROM aid WHERE indice_aid='".$indice_aid."' AND sous_groupe='y' ";
+	$sql = "SELECT * FROM aid "
+	   . "WHERE indice_aid='".$indice_aid."' "
+	   . "AND sous_groupe='y' ";
 	$retour = mysqli_query($mysqli, $sql);
+	return $retour;
+}
+
+function Eleve_inscrit_direct($aid_id, $indice_aid = NULL) {
+	global $mysqli;
+	$retour = FALSE;
+	$filtre = $indice_aid ? " AND indice_aid='".$indice_aid."' " : "";
+	$sql = "SELECT * FROM aid "
+	   . "WHERE id=".$aid_id.$filtre." "
+	   . "AND inscrit_direct='y' ";
+	$return = mysqli_query($mysqli, $sql);
+	if ($return && $return->num_rows) {
+		$retour = TRUE;
+	}
 	return $retour;
 }
 
@@ -188,6 +208,7 @@ function Eleve_est_deja_membre ($login, $indice_aid, $id_aid = NULL) {
 	if ($id_aid !== NULL){
 		$sql .= "AND id_aid = '".$id_aid."' ";
 	}
+	echo $sql;
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
@@ -254,5 +275,7 @@ function Sauve_eleve_responsable($aid_id, $indice_aid, $login_eleve) {
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
+
+
 
 

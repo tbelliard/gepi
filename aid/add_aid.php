@@ -61,6 +61,7 @@ $action = isset($action) ? $action : "";
 $sous_groupe = isset($sous_groupe) ? $sous_groupe : "n";
 $parent = isset($parent) ? $parent : "";
 $sous_groupe_de =isset($sous_groupe_de) ? $sous_groupe_de : NULL;
+$inscrit_direct =isset($inscrit_direct) ? $inscrit_direct : NULL;
 
 if (isset($is_posted) && $is_posted) {
 	if ("n" == $sous_groupe) {
@@ -81,11 +82,12 @@ if (isset($is_posted) && $is_posted) {
 	check_token();
 	if (isset($is_posted) and ($is_posted =="1")) { // nouveau
 		// On calcule le nouveau id pour l'aid à insérer → Plus gros id + 1
-		$aid_id = Dernier_id ($ordre = DESC) + 1;	
+		$aid_id = Dernier_id ($ordre = "DESC") + 1;	
 	} else {
 		$count--;
 	}
-	$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe);
+//if ($inscrit_direct) die ($inscrit_direct);
+	$reg_data = Sauve_definition_aid ($aid_id , $aid_nom , $aid_num , $indice_aid , $sous_groupe , $inscrit_direct);
 	if (!$reg_data) {
 	   $mess = rawurlencode("Erreur lors de l'enregistrement des données.");
 	   header("Location: index2.php?msg=$mess&indice_aid=$indice_aid");
@@ -269,6 +271,18 @@ if ($_SESSION['statut'] == 'professeur') {
 			</select>
 <?php } ?>
 		</div>
+		
+		<p>
+			<label for="inscrit_direct">
+				Un élève peut s'inscrire directement
+			</label>
+			<input type="checkbox"
+				   name='inscrit_direct'
+				   id='inscrit_direct'
+				   value="y"
+					<?php if (eleve_inscrit_direct($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>
+				   />
+		</p>
 	</div>
 	
 	<p class="center">

@@ -142,5 +142,18 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'inscrit_direct' à la table 'aid' :</strong><br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid LIKE 'inscrit_direct';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE aid ADD `inscrit_direct` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 
 ?>

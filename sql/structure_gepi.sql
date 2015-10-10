@@ -31,6 +31,7 @@ CREATE TABLE `aid` (`id` varchar(100) NOT NULL default '',
 `affiche_adresse1` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' , 
 `en_construction` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n', 
 `sous_groupe` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n',
+`inscrit_direct` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n',
 PRIMARY KEY  (`id`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS `aid_appreciations`;

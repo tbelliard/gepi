@@ -756,7 +756,7 @@ if ($flag == "eleve") {
 
 
 <?php } else { ?>
-	<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>";
+	<p>Tous les élèves de la base ont une AID. Impossible d'ajouter un élève à cette AID !</p>
 <?php
     }
     ?>

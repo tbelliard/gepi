@@ -45,34 +45,38 @@ global $mysqli;
 $javascript_specifique = "aid/aid_ajax";
 
 // Initialisation des variables
-//$indice_aid = isset($_POST["indice_aid"]) ? $_POST["indice_aid"] : (isset($_GET["indice_aid"]) ? $_GET["indice_aid"] : NULL);
 $indice_aid = \filter_input(\INPUT_POST, 'indice_aid') ? \filter_input(\INPUT_POST, 'indice_aid') : (\filter_input(\INPUT_GET, 'indice_aid') ? \filter_input(\INPUT_GET, 'indice_aid') : NULL);
-//$aid_id = isset($_POST["aid_id"]) ? $_POST["aid_id"] : (isset($_GET["aid_id"]) ? $_GET["aid_id"] : NULL);
 $aid_id = \filter_input(\INPUT_POST, 'aid_id') ? \filter_input(\INPUT_POST, 'aid_id') : (\filter_input(\INPUT_GET, 'aid_id') ? \filter_input(\INPUT_GET, 'aid_id') : NULL);
-//$annee = isset($_POST["annee"]) ? $_POST["annee"] : (isset($_GET["annee"]) ? $_GET["annee"] : '');
 $annee = \filter_input(\INPUT_POST, 'annee') ? \filter_input(\INPUT_POST, 'annee') : (\filter_input(\INPUT_GET, 'annee') ? \filter_input(\INPUT_GET, 'annee') : NULL);
-
-/* @var $sous_groupe integer */
 $sous_groupe = \filter_input(\INPUT_POST, 'sous_groupe');
-/* @var $parent integer */
 $parent = \filter_input(\INPUT_POST, 'parent');
+$inscrit_direct = \filter_input(\INPUT_POST, 'inscrit_direct');
+$eleve_s_inscrit = \filter_input(\INPUT_POST, 'eleve_s_inscrit');
 
 // Vérification de la validité de $indice_aid et $aid_id
-if (!VerifAidIsAcive($indice_aid,$aid_id,$annee)) {
+if (!VerifAidIsActive($indice_aid,$aid_id,$annee)) {
+	echo $aid_id.' '.$indice_aid;
     echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
     die();
 }
+
+if ($_SESSION['statut'] === "eleve" && $eleve_s_inscrit) {
+	Sauve_eleve_membre($aid_id, $indice_aid, $_SESSION['login']);
+}
+
 // Gestion du lien retour
-if (isset($_GET["retour"])) {
-    if ($_GET["retour"]=='') $_SESSION['retour']='';
+$retour = \filter_input(\INPUT_GET, 'retour');
+if ($retour != NULL) {
+    if ($retour == '') {$_SESSION['retour']='';}
     else
-    $_SESSION['retour']= $_GET["retour"]."?indice_aid=".$indice_aid;
-    if ($_GET["retour"]=="annees_anterieures_accueil.php") $_SESSION['retour'] .= "&amp;annee_scolaire=".$annee;
-    if ($_GET["retour"]=="index_fiches.php") $_SESSION['retour'] .= "&amp;action=liste_projet";
+    {$_SESSION['retour']= $retour."?indice_aid=".$indice_aid;}
+    if ($retour=="annees_anterieures_accueil.php") {$_SESSION['retour'] .= "&amp;annee_scolaire=".$annee;}
+    if ($retour=="index_fiches.php") {$_SESSION['retour'] .= "&amp;action=liste_projet";}
 }
 // Par défaut, on revient à index_fiches.php.
-if (!isset($_SESSION['retour'])) $_SESSION['retour'] = "index_fiches.php?indice_aid=".$indice_aid."&amp;action=liste_projet";
- $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : "visu");
+if (!$retour) {$retour = "index_fiches.php?indice_aid=".$indice_aid."&amp;action=liste_projet";}
+// $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : "visu");
+$action = \filter_input(\INPUT_POST, 'action') ? \filter_input(\INPUT_POST, 'action') : (\filter_input(\INPUT_GET, 'action') ? \filter_input(\INPUT_GET, 'action') : "visu");
 if ($annee=='') {
     $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
 }
@@ -321,6 +325,15 @@ if (isset($_POST["is_posted"])) {
 	} else {
 		$sql_aid .= " sous_groupe = 'n' ";
 		Efface_sous_groupe($aid_id);
+	}
+    $met_virgule='y';
+	
+	// inscription directe
+	if ($met_virgule=='y') {$sql_aid .=",";}
+	if ($inscrit_direct ==="y") {
+		$sql_aid .= " inscrit_direct = 'y' ";
+	} else {
+		$sql_aid .= " inscrit_direct = 'n' ";
 	}
     $met_virgule='y';
 	
@@ -592,8 +605,42 @@ if ($annee=='') {
 		
 		</span>
 		</p>
-	
-	
+		<p>
+			<label for="inscrit_direct">
+				Un élève peut s'inscrire directement
+			</label>
+			<input type="checkbox"
+				   name='inscrit_direct'
+				   id='inscrit_direct'
+				   value="y"
+					<?php if (eleve_inscrit_direct($aid_id, $indice_aid)) {echo " checked='checked' ";} ?>  
+				   onchange="afficher_cacher_parent();"
+				   />
+		</p>
+	</div>
+<?php } elseif ($_SESSION['statut'] == 'eleve' 
+   && Multiples_possible ($indice_aid) 
+   && eleve_inscrit_direct($aid_id, $indice_aid)) { 
+	$login = $_SESSION['login'] ?>
+	<div class='bloc' >
+		<form  action="modif_fiches.php" name="form" method="post">
+			<p>
+				<label for="eleve_s_inscrit">
+					Je suis inscrit à cette activité
+				</label>
+				<input type="checkbox"
+					   name='eleve_s_inscrit'
+					   id='eleve_s_inscrit'
+					   value="y"
+						<?php if (Eleve_est_deja_membre ($login, $indice_aid, $aid_id)->num_rows) {echo " checked='checked' ";} ?>
+					   />
+				<input type='hidden' name="indice_aid" value="<?php echo $indice_aid; ?>" />
+				<input type='hidden' name="aid_id" value="<?php echo $aid_id; ?>" />
+			</p>
+			<p>
+				<input type="submit" value="Enregistrer" />
+			</p>
+		</form>
 	</div>
 <?php
 }
