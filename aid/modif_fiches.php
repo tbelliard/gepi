@@ -556,7 +556,8 @@ if ($annee=='') {
  }
 }
 ?>
-	</div>
+	</div>	
+<?php if (($_SESSION['statut'] != 'eleve') && ($_SESSION['statut'] != 'responsable')){ ?>
 	<div class='bloc' <?php if (!Multiples_possible ($indice_aid)) {echo " style='display:none;'";} ?> >
 		<p title="Cochez pour affecter un parent puis choisissez le parent">
 			<label for="sous_groupe">
@@ -595,6 +596,7 @@ if ($annee=='') {
 	
 	</div>
 <?php
+}
 // Partie réservée à l'admin
 if ($_SESSION["statut"]=="administrateur") {
     echo "<div class='bloc'>\n";
