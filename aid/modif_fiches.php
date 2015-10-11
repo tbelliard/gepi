@@ -931,7 +931,7 @@ echo "</div>\n";
 echo "<div class='bloc'>\n";
 If ($action != "visu") {
   If (VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'adresse1',"W",$annee)) {
-    echo "<span class = 'bold'>Indiquez éventuellemenet ci-dessous un <b>lien public de type internet</B> qui donne accès à la production :</span>\n";
+    echo "<span class = 'bold'>Indiquez éventuellement ci-dessous un <strong>lien public de type internet</strong> qui donne accès à la production :</span>\n";
     echo "<br /><input type=\"text\" name=\"reg_adresse1\" value=\"".htmlspecialchars($reg_adresse1)."\" size=\"50\" />\n";
   }
 } else {

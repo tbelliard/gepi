@@ -126,7 +126,7 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 		$filtre =  "";
 	}
 	$sql = "SELECT * FROM j_aid_eleves WHERE (login='".$reg_add_eleve_login."' AND indice_aid='".$indice_aid."'".$filtre.")";
-	echo $sql;
+	//echo $sql;
 	$test = mysqli_query($GLOBALS["mysqli"], $sql);
 	$test2 = mysqli_num_rows($test);
 	$msg = "";

@@ -208,7 +208,7 @@ function Eleve_est_deja_membre ($login, $indice_aid, $id_aid = NULL) {
 	if ($id_aid !== NULL){
 		$sql .= "AND id_aid = '".$id_aid."' ";
 	}
-	echo $sql;
+	//echo $sql;
 	$retour = mysqli_query($mysqli, $sql);
 	return $retour;	
 }
