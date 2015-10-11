@@ -730,7 +730,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
 	$cpt_sous_menu++;
 	
-	if(getSettingAOui('GepiListePersonnelles') || 1==1) {
+	if(getSettingAOui('GepiListePersonnelles')) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes personnelles");
 		$cpt_sous_menu++;
 	}

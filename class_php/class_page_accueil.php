@@ -2232,7 +2232,7 @@ if(getSettingAOui('active_bulletins')) {
 	global $mysqli;
 	$this->b=0;
 	  
-	if (getSettingAOui("GepiListePersonnelles") || 1==1) {
+	if (getSettingAOui("GepiListePersonnelles")) {
 		$this->creeNouveauItem("/mod_listes_perso/index.php", "Listes personnelles", "Créer et imprimer des listes personnelles");
 	}
 	if ($this->b>0){

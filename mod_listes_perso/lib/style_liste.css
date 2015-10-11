@@ -4,3 +4,20 @@
     Author     : bouguin
 */
 
+.colAdmin {
+   display: table-cell;
+   padding-top: 0.5em;
+   padding-right: 0.5em;
+   padding-bottom: 0.5em;
+   padding-left: 0.5em;
+   vertical-align: middle;
+   border:none;
+   font-size: larger;
+}
+
+.colAdmin:first-child {
+   width:3em; 
+   text-align: center; 
+   font-weight: normal;
+}
+

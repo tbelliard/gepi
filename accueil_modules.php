@@ -405,7 +405,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	$nouveauItem->chemin='/mod_listes_perso/index_admin.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->choix_icone('active_listes_perso') ;
+		$nouveauItem->choix_icone('GepiListePersonnelles') ;
 		$nouveauItem->titre="Listes personnelles" ;
 		$nouveauItem->expli="Donner l'accès à la création de listes personnelles aux enseignants, CPE, scolarité." ;
 		$menuPage[]=$nouveauItem;

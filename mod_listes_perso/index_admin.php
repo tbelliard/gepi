@@ -51,14 +51,28 @@ if ($utilisateur == null) {
 	die();
 }
 
-//On vérifie si le module est activé
-//if (getSettingValue("active_module_liste_perso")!='y') {
-if (getSettingAOui("active_module_liste_perso")) {
-    //die("Le module n'est pas activé.");
-}
+$sauver = filter_input(INPUT_POST, 'sauver') ==="enregistrer" ? TRUE : FALSE ;
+$ouvre = filter_input(INPUT_POST, 'ouvre') ? filter_input(INPUT_POST, 'ouvre') : 'n';
 
 //==============================================
-$style_specifique[] = "mod_listes_perso/lib/liste_style";
+include_once 'lib/fonction_listes.php';
+//==============================================
+
+if ($sauver) {
+	if (EnregistreDroitListes($ouvre)) {
+		if (DroitSurListeOuvert()) {
+			$msg = "<span class='vert'>Les enseignants peuvent créer des listes personnelles</span>";
+		} else {
+			$msg = "Les enseignants n'ont pas accès aux listes personnelles";
+		}
+	}
+}
+
+$droit = DroitSurListeOuvert();
+
+//==============================================
+$style_specifique[] = "mod_listes_perso/lib/style_liste";
+$javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
 $titre_page = "Ouverture des listes personnelles";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -69,6 +83,38 @@ require_once("../lib/header.inc.php");
 ?>
 
 <h2>Ouverture du module <em>Listes personnelles</em></h2>
+<form action="index_admin.php" method="post" name="formulaire" id="formulaire">
+	<fieldset class="tableau">
+		<p>
+			<span class="colonne colAdmin colGaucheAdmin" >
+				<input type="radio" 
+					   id="ouvreDroit" 
+					   name="ouvre"
+					   <?php if($droit) {echo " checked='checked' ";} ?>
+					   value="y" />
+			</span>
+			<span class="colonne colAdmin" >
+				<label for="ouvreDroit">Ouvrir les droits de créer des listes personnelles</label>
+			</span>
+		</p>
+		<p>
+			<span class="colonne colAdmin colGaucheAdmin">
+				<input type="radio" 
+					   id="fermeDroit" 
+					   name="ouvre"
+					   <?php if(!$droit) {echo " checked='checked' ";} ?>
+					   value="n" />
+			</span>
+			<span class="colonne colAdmin" >
+				<label for="fermeDroit">Interdire la création de listes personnelles</label>
+			</span>
+		</p>
+		<p>
+			<input type="submit" name="sauver" id="sauver" value="enregistrer" />
+		</p>		
+	</fieldset>
+</form>
+
 
 <?php
 require_once("../lib/footer.inc.php");
