@@ -729,9 +729,16 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 
 	$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/statistiques/index.php' , "texte"=>"Statistiques");
 	$cpt_sous_menu++;
+	
+	if(getSettingAOui('GepiListePersonnelles') || 1==1) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_listes_perso/index.php' , "texte"=>"Listes personnelles");
+		$cpt_sous_menu++;
+	}
+	
 
 	$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 	$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+
 
 	$compteur_menu++;
 

@@ -129,14 +129,14 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-$result .= "&nbsp;-> Ajout d'un champ 'sous_groupe' à la table 'aid' :</strong><br />";
+$result .= "<strong>&nbsp;-> Ajout d'un champ 'sous_groupe' à la table 'aid' :</strong><br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid LIKE 'sous_groupe';"));
 if ($test_champ==0) {
 	$query = mysqli_query($mysqli, "ALTER TABLE aid ADD `sous_groupe` ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n';");
 	if ($query) {
 			$result .= msj_ok("Ok !");
 	} else {
-			$result .= msj_erreur();
+			$result .= msj_erreur("Échec de l'ajout de champ");
 	}
 } else {
 	$result .= msj_present("Le champ existe déjà");
@@ -154,6 +154,35 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
+   
+$result .= "<strong>&nbsp;-> Ouverture des droits pour /mod_listes_perso/index.php</strong><br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM droits WHERE id LIKE '/mod_listes_perso/index.php'"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "INSERT INTO droits "
+	   . "VALUES ('/mod_listes_perso/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Listes personnelles', '');");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur("Échec de la création des droits");
+	}
+} else {
+	$result .= msj_present("Le droit existe déjà");
+}
+
+$result .= "<strong>&nbsp;-> Ouverture des droits pour /mod_listes_perso/index_admin.php</strong><br />";
+$test_champ=mysqli_query($mysqli, "SELECT * FROM droits WHERE id LIKE '/mod_listes_perso/index_admin.php'")->num_rows;
+echo($test_champ);
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "INSERT INTO droits "
+	   . "VALUES ('/mod_listes_perso/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Listes personnelles', '');");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur("Échec de la création des droits");
+	}
+} else {
+	$result .= msj_present("Le droit existe déjà");
+} 
 
 $result .= "<br />";
 $result .= "<strong>Ajout d'une table 's_sanctions_check' :</strong><br />";
