@@ -48,8 +48,8 @@ include_once 'fonctions_aid.php';
 global $mysqli;
 
 //Initialisation des variables
-$id_aid = \filter_input(\INPUT_POST, 'id_aid') ? \filter_input(\INPUT_POST, 'id_aid') : (\filter_input(\INPUT_GET, 'id_aid') ? \filter_input(\INPUT_GET, 'id_aid') : NULL);
-$indice_aid = \filter_input(\INPUT_POST, 'indice_aid') ? \filter_input(\INPUT_POST, 'indice_aid') : (\filter_input(\INPUT_GET, 'indice_aid') ? \filter_input(\INPUT_GET, 'indice_aid') : NULL);
+$id_aid = \filter_input(\INPUT_POST, 'id_aid') !== NULL ? \filter_input(\INPUT_POST, 'id_aid') : (\filter_input(\INPUT_GET, 'id_aid') !== NULL ? \filter_input(\INPUT_GET, 'id_aid') : NULL);
+$indice_aid = \filter_input(\INPUT_POST, 'indice_aid') !== NULL ? \filter_input(\INPUT_POST, 'indice_aid') : (\filter_input(\INPUT_GET, 'indice_aid') !== NULL ? \filter_input(\INPUT_GET, 'indice_aid') : NULL);
 $aff_liste_m = \filter_input(\INPUT_POST, 'classe') ? \filter_input(\INPUT_POST, 'classe') : (\filter_input(\INPUT_GET, 'classe') ? \filter_input(\INPUT_GET, 'classe') : NULL);
 $choix_aid = \filter_input(\INPUT_POST, 'choix_aid') ? \filter_input(\INPUT_POST, 'choix_aid') : (\filter_input(\INPUT_GET, 'choix_aid') ? \filter_input(\INPUT_GET, 'choix_aid') : NULL);
 $id_eleve = \filter_input(\INPUT_POST, 'id_eleve') ? \filter_input(\INPUT_POST, 'id_eleve') : (\filter_input(\INPUT_GET, 'id_eleve') ? \filter_input(\INPUT_GET, 'id_eleve') : NULL);

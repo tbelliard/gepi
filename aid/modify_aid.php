@@ -43,8 +43,8 @@ if (!checkAccess()) {
 
 // Initialisation des variables
 $flag = filter_input(INPUT_GET,'flag') ? filter_input(INPUT_GET,'flag') : (filter_input(INPUT_POST, 'flag') ? filter_input(INPUT_POST, 'flag') : NULL);
-$aid_id = filter_input(INPUT_GET,'aid_id') ? filter_input(INPUT_GET,'aid_id') : (filter_input(INPUT_POST, 'aid_id') ? filter_input(INPUT_POST, 'aid_id') : NULL);
-$indice_aid = filter_input(INPUT_GET,'indice_aid') ? filter_input(INPUT_GET,'indice_aid') : (filter_input(INPUT_POST, 'indice_aid') ? filter_input(INPUT_POST, 'indice_aid') : NULL);
+$aid_id = filter_input(INPUT_GET,'aid_id') !== NULL ? filter_input(INPUT_GET,'aid_id') : (filter_input(INPUT_POST, 'aid_id') !== NULL ? filter_input(INPUT_POST, 'aid_id') : NULL);
+$indice_aid = filter_input(INPUT_GET,'indice_aid') !== NULL ? filter_input(INPUT_GET,'indice_aid') : (filter_input(INPUT_POST, 'indice_aid') !== NULL ? filter_input(INPUT_POST, 'indice_aid') : NULL);
 $add_eleve = filter_input(INPUT_POST, 'add_eleve') ? filter_input(INPUT_POST, 'add_eleve') : NULL;
 $add_prof = filter_input(INPUT_POST, 'add_prof') ? filter_input(INPUT_POST, 'add_prof') : NULL;
 $add_prof_gest = filter_input(INPUT_POST, 'add_prof_gest') ? filter_input(INPUT_POST, 'add_prof_gest') : NULL;
@@ -444,20 +444,21 @@ if ($flag == "prof") { ?>
 	</p>
 <?php
       // On appelle toutes les aids de la catégorie
-      $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
-      $nombreligne = mysqli_num_rows($calldata);
+
+      // $calldata = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid WHERE indice_aid='$indice_aid' ORDER BY numero, nom");
+      // $nombreligne = mysqli_num_rows($calldata);
+	  $calldata = Extrait_aid_sur_indice_aid ($indice_aid);
+	  $nombreligne = $calldata->num_rows;
       $i = 0;
 ?>
 	<select name="liste_aids[]" size="6" multiple>
 <?php
-      while ($i < $nombreligne){
-        $aid_id = old_mysql_result($calldata, $i, "id");
-        $aid_nom = old_mysql_result($calldata, $i, "nom");
+while($obj = $calldata->fetch_object()){
 ?>
-		<option value="<?php $aid_id; ?>"><?php $aid_nom; ?></option>
+		<option value="<?php echo $obj->id; ?>"><?php echo $obj->nom; ?></option>
 <?php
-        $i++;
-      }
+	$i++;
+}
 ?>
 	</select>
 	<p>Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste de cette AID 
