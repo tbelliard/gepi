@@ -4,6 +4,7 @@
     Author     : bouguin
 */
 
+/*===== page administrateur =====*/
 .colAdmin {
    display: table-cell;
    padding-top: 0.5em;
@@ -21,3 +22,92 @@
    font-weight: normal;
 }
 
+/*===== page enseignant =====*/
+ 
+
+.menu_entete_liste {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.menu_liste {
+    display: inline;
+    list-style: none; /* pour enlever les puces sur IE7 */
+    margin: 10px;
+    text-align: center;
+}
+
+.menu_liste a {
+    display: inline-block;
+    width: 15em;
+    padding: 5px 10px;
+    margin-bottom: 0px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    background: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+} 
+
+.menu_actif a {
+    color: #000;
+}
+
+#tableau {
+    padding: 5px 10px;
+    margin-top: 0px;
+    background: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    min-height: 10em;
+} 
+
+#affichage {
+    padding: 5px 10px;
+    margin-top: 0px;
+    background: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    min-height: 30em;
+} 
+
+#eleves {
+    padding: 5px 10px;
+    margin-top: 0px;
+    background: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    min-height: 20em;
+} 
+
+#construction {
+    padding: 5px 10px;
+    margin-top: 0px;
+    background: #ddd;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 10px;
+    min-height: 10em;
+} 
+
+#cache {
+   display: none;
+}
+
+#montre {
+   display: block;
+}
+
+.actif {
+    background: #333;
+}

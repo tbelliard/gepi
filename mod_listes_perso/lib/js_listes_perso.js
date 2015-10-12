@@ -21,14 +21,21 @@
 
 function afficher_cacher(id)
 {
-    if(document.getElementById(id).style.visibility=="hidden")
+    if(document.getElementById(id).style.display==="block")
     {
-        document.getElementById(id).style.visibility="visible";
+        document.getElementById(id).style.display="none";
     }
     else
     {
-        document.getElementById(id).style.visibility="hidden";
+        document.getElementById(id).style.display="block";
     }
     return true;
 }
-
+function masque(id)
+{
+   document.getElementById(id).style.display="none";   
+}
+function affiche(id)
+{
+   document.getElementById(id).style.display="block";
+}

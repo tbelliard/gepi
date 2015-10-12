@@ -69,7 +69,8 @@ if ($utilisateur->getStatut()!=="cpe"
 
 
 //==============================================
-$style_specifique[] = "mod_listes_perso/lib/liste_style";
+$style_specifique[] = "mod_listes_perso/lib/style_liste";
+$javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
 $titre_page = "Listes personnelles";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -77,7 +78,53 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>
-<p>Petit texte de présentation du module...</p>
 
+<ul class="menu_entete_liste">
+    <li class="menu_liste"
+		id='menu_lien_tableau'
+		onclick=" affiche('tableau'); masque('construction'); masque('eleves'); masque('affichage'); "
+		>
+		<a href="#lien_tableau">Listes perso</a>
+	</li>
+    <li class="menu_liste"
+		id='menu_affichage'
+		onclick=" masque('construction'); masque('tableau'); masque('eleves');affiche('affichage'); "
+		>
+		<a href="#lien_affichage">Affichage</a>
+	</li>
+    <li class="menu_liste" 
+		id='menu_eleves'
+		onclick="affiche('eleves'); masque('tableau'); masque('affichage'); masque('construction'); "
+		>
+		<a href="#lien_eleves">Choix élèves</a>
+	</li>
+    <li class="menu_liste" 
+		id='menu_construction'
+		onclick="affiche('construction'); masque('tableau'); masque('affichage'); masque('eleves'); "
+		>
+		<a href="#lien_construction">Construction</a>
+	</li>
+</ul>
+
+<div id="tableau" style="display:block;">
+	<p><a id='lien_tableau'></a>0</p>
+</div>
+<div id="affichage" style="display:block;">
+	<p><a id='lien_affichage'></a>1</p>
+</div>
+
+<div id="eleves" style="display:block;">
+	<p><a id='lien_eleves'></a>2</p>
+</div>
+
+<div id="construction" style="display:block;">
+	<p><a id='lien_construction'></a> 3</p>
+</div>
+
+<script type="text/javascript" >
+	afficher_cacher("affichage");
+	afficher_cacher("eleves");
+	afficher_cacher("construction");			
+</script>
 <?php
 require_once("../lib/footer.inc.php");
