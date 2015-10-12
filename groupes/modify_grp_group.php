@@ -163,6 +163,39 @@ if((isset($mode))&&($mode=='valider_creation_grp_groupes')) {
 	}
 }
 
+if((isset($mode))&&($mode=='valider_modification_grp_groupes')) {
+	check_token();
+
+	$mode="modifier_grp_groupes";
+
+	$nom_court=remplace_accents($nom_court, "all");
+
+	if(($nom_court=="")||(!preg_match("/^[A-Za-z]/", $nom_court))) {
+		$msg.="Le nom court est invalide.<br />";
+	}
+	else {
+		if (isset($NON_PROTECT["description"])){
+			$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
+		}
+		else {
+			$description="";
+		}
+
+		$sql="UPDATE grp_groupes SET nom_court='$nom_court', 
+							nom_complet='$nom_complet', 
+							description='$description'
+						WHERE id='$id_grp_groupe';";
+		//echo "$sql<br />";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$update) {
+			$msg.="Erreur lors de la mise à jour du $groupe_de_groupes.<br />";
+		}
+		else {
+			$msg.="$groupe_de_groupes mis à jour.<br />";
+		}
+	}
+}
+
 if(isset($id_grp_groupe)) {
 	$sql="SELECT * FROM grp_groupes WHERE id='$id_grp_groupe';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
