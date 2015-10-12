@@ -165,7 +165,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='form_passage_a_un_autre_groupe' method='post'>
-<p class='bold'><a href='accueil.php' title=\"Retour à l'accueil\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+<p class='bold'><a href='../accueil.php' title=\"Retour à l'accueil\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(!isset($id_grp_groupe)) {
 	echo "</p>
