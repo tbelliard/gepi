@@ -253,6 +253,16 @@ if($mode=="upload") {
 						$tab=explode(";", ensure_utf8($ligne));
 
 						if(isset($tabindice['classe'])) {
+
+							if((isset($tabindice['nom enfant']))&&(isset($tabindice['prenom enfant']))&&($tab[$tabindice['classe']]=="")) {
+								$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['nom enfant']])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['prenom enfant']])."';";
+								$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
+								if(mysqli_num_rows($res_classe)==1) {
+									$lig_classe=mysqli_fetch_object($res_classe);
+									$tab[$tabindice['classe']]=$lig_classe->classe;
+								}
+							}
+
 							if(!in_array($tab[$tabindice['classe']], $tab_classe)) {
 								$tab_classe[]=$tab[$tabindice['classe']];
 							}
@@ -564,6 +574,15 @@ elseif($mode=='publiposter') {
 						$afficher="n";
 					}
 
+					if((isset($tabindice['nom enfant']))&&(isset($tabindice['prenom enfant']))&&($tab[$tabindice['classe']]=="")) {
+						$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['nom enfant']])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['prenom enfant']])."';";
+						$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($res_classe)==1) {
+							$lig_classe=mysqli_fetch_object($res_classe);
+							$tab[$tabindice['classe']]=$lig_classe->classe;
+						}
+					}
+
 					if($tab[$tabindice['classe']]!=$classe[$loop]) {
 						$afficher="n";
 					}
@@ -571,6 +590,12 @@ elseif($mode=='publiposter') {
 					if(($mot_de_passe_deja_modifie!="y")&&(preg_match("/Mot de passe déjà modifié par utilisateur/i", $tab[$tabindice['mot de passe']]))) {
 						$afficher="n";
 					}
+
+					/*
+					echo "afficher=$afficher<pre>";
+					print_r($tab);
+					echo "</pre>";
+					*/
 
 					if(($afficher=="y")&&(isset($tabindice["uid"]))) {
 						if($tab[$tabindice['uid']]=="") {
@@ -774,6 +799,15 @@ elseif($mode=='publiposter') {
 				$afficher="y";
 				if((isset($profil))&&(isset($tabindice['profil']))&&(!in_array($tab[$tabindice['profil']], $profil))) {
 					$afficher="n";
+				}
+
+				if((isset($tabindice['nom enfant']))&&(isset($tabindice['prenom enfant']))&&($tab[$tabindice['classe']]=="")) {
+					$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['nom enfant']])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $tab[$tabindice['prenom enfant']])."';";
+					$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($res_classe)==1) {
+						$lig_classe=mysqli_fetch_object($res_classe);
+						$tab[$tabindice['classe']]=$lig_classe->classe;
+					}
 				}
 
 				if((isset($classe))&&(isset($tabindice['classe']))&&(!in_array($tab[$tabindice['classe']], $classe))) {
