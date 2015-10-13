@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -326,6 +326,8 @@ $titre_page = ucfirst($groupes_de_groupes);
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE **********************************
 
+//debug_var();
+
 //echo "id_classe=$id_classe<br />";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -535,6 +537,75 @@ if($id_class_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_c
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	elseif(($mode=="modifier_grp_groupes")&&(isset($id_grp_groupe))) {
+
+	// =================================
+	$chaine_options_grp_groupe="";
+	$sql="SELECT * FROM grp_groupes ORDER BY nom_court, nom_complet;";
+	$res_grp_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp_tmp)>0){
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		$cpt_grp=0;
+		$num_grp=-1;
+		while($lig_grp_tmp=mysqli_fetch_object($res_grp_tmp)) {
+			if($lig_grp_tmp->id==$id_grp_groupe){
+				// Index du grp_groupe dans les <option>
+				$num_grp=$cpt_grp;
+
+				$chaine_options_grp_groupe.="<option value='$lig_grp_tmp->id' selected='true'>$lig_grp_tmp->nom_court</option>\n";
+				$temoin_tmp=1;
+				if($lig_grp_tmp=mysqli_fetch_object($res_grp_tmp)){
+					$chaine_options_grp_groupe.="<option value='$lig_grp_tmp->id'>$lig_grp_tmp->nom_court</option>\n";
+					$id_grp_suiv=$lig_grp_tmp->id;
+				}
+				else{
+					$id_grp_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_grp_groupe.="<option value='$lig_grp_tmp->id'>$lig_grp_tmp->nom_court</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$id_grp_prec=$lig_grp_tmp->id;
+			}
+			$cpt_grp++;
+		}
+	}
+	// =================================
+	if($id_grp_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_grp_groupe=$id_grp_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ensemble préc.</a>";}
+	if($chaine_options_grp_groupe!="") {
+
+		echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_grp(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_grp_groupe_champ_select').selectedIndex=$num_grp;
+			}
+		}
+	}
+</script>\n";
+
+		echo " | <select name='id_grp_groupe' id='id_grp_groupe_champ_select' onchange=\"confirm_changement_grp(change, '$themessage');\">\n";
+		echo $chaine_options_grp_groupe;
+		echo "</select>\n";
+		echo "<input type='hidden' name='mode' value='modifier_grp_groupes' />";
+	}
+	if($id_grp_suiv!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_grp_groupe=$id_grp_suiv' onclick=\"return confirm_abandon (this, change, '$themessage')\">Ensemble suiv.</a>";}
+
 		echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Index $groupes_de_groupes</a></p>
 </form>";
 
