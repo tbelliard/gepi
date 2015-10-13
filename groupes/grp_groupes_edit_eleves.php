@@ -280,9 +280,17 @@ if(!isset($id_grp_groupe)) {
 			<span title=\"Modifier le élèves inscrits dans des enseignements du $groupe_de_groupes n°$lig->id_grp_groupe
 
 ".$current_grp_groupes['description']."\">".$current_grp_groupes['nom_court']." (<em style='font-size:small'>".$current_grp_groupes['nom_complet']."</em>)</span>
-			<br />
+			<br />";
+		if(count($current_grp_groupes['groupes'])>1) {
+			echo "
 			<a href='repartition_ele_grp.php?id_grp_groupe=$lig->id_grp_groupe'>Répartir les élèves entre les groupes</a><br />
-			ou modifier les inscriptions pour un des groupes suivants&nbsp;:
+			ou modifier les inscriptions pour un des groupes suivants&nbsp;:";
+		}
+		else {
+			echo "
+			Modifier les inscriptions pour un des groupes suivants&nbsp;:";
+		}
+		echo "
 		</p>
 		<ul>";
 		foreach($current_grp_groupes['groupes'] as $cpt => $current_group) {
