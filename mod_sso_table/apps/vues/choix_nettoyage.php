@@ -30,10 +30,10 @@ if (basename($_SERVER["SCRIPT_NAME"])==basename(__File__)){
 <p class="title-page">Attention , Une fois leur correspondance nettoyée les utilisateurs ne pourront plus se connecter en SSO avec ce module</p>
 <form action="index.php?ctrl=nettoyage&action=choix" enctype='multipart/form-data' method="post">
 <p>
-	<input type="radio" name="choix" value="vidage_complet" checked="checked" />Vider complètement la table de correspondances<br/>
-	<input type="radio" name="choix" value="anciens_comptes" />Supprimer de la table les comptes n'existant plus dans Gepi<br/>
-	<input type="radio" name="choix" value="profil" />Supprimer les correspondances pour un profil (enseignant,eleve,tuteur....) <br/>
-    <input type="radio" name="choix" value="classe" />Supprimer les correspondances pour une classe<br/>
+	<input type="radio" name="choix" id="choix_vidage_complet" value="vidage_complet" onchange="change_style_radio()" checked="checked" /><label for="choix_vidage_complet" id="texte_choix_vidage_complet" style="font-weight:bold;"> Vider complètement la table de correspondances</label><br/>
+	<input type="radio" name="choix" id="choix_anciens_comptes" value="anciens_comptes" onchange="change_style_radio()" /><label for="choix_anciens_comptes" id="texte_choix_anciens_comptes"> Supprimer de la table les comptes n'existant plus dans Gepi</label><br/>
+	<input type="radio" name="choix" id="choix_profil" value="profil" onchange="change_style_radio()" /><label for="choix_profil" id="texte_choix_profil"> Supprimer les correspondances pour un profil (<em>enseignant, eleve, tuteur,...</em>)</label><br/>
+    <input type="radio" name="choix" id="choix_classe" value="classe" onchange="change_style_radio()" /><label for="choix_classe" id="texte_choix_classe"> Supprimer les correspondances pour une classe</label><br/>
 </p>
 <input type='submit' value='Vider la table' />
 </form>

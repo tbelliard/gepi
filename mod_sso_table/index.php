@@ -54,6 +54,9 @@ require_once("../lib/header.inc.php");
 
 echo "
 <script type='text/javascript'>
+	".js_checkbox_change_style()."
+	".js_change_style_radio()."
+
 	function delete_corresp_sso(login, correspondance) {
 		new Ajax.Updater($('td_'+correspondance),'ajax_sso_corresp.php?delete='+login+'&csrf_alea=".add_token_in_js_func()."',{method: 'get'});
 	}
