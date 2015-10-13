@@ -52,6 +52,12 @@ $utilisation_tablekit= "ok";
 require_once("../lib/header.inc.php");
 // **************** FIN EN-TETE *****************
 
+echo "
+<script type='text/javascript'>
+	function delete_corresp_sso(login, correspondance) {
+		new Ajax.Updater($('td_'+correspondance),'ajax_sso_corresp.php?delete='+login+'&csrf_alea=".add_token_in_js_func()."',{method: 'get'});
+	}
+</script>";
 
 $root = dirname(__FILE__) . DIRECTORY_SEPARATOR ;
 set_include_path('.' .
@@ -75,5 +81,5 @@ catch(Exception $e) {
      . "<strong>Fichier</strong> " . $e->getFile() . "<br />"
      . "<strong>Ligne</strong> " . $e->getLine() . "<br />";
 }
- 
+
 ?>
