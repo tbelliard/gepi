@@ -39,3 +39,25 @@ function affiche(id)
 {
    document.getElementById(id).style.display="block";
 }
+function activer(id)
+{
+   if (!document.getElementById(id).classList.contains('div_actif'))
+   {
+	 document.getElementById(id).classList.add('div_actif');
+   }
+   if (!document.getElementById('menu_lien_'+id).classList.contains('lien_actif'))
+   {
+	 document.getElementById('menu_lien_'+id).classList.add('lien_actif');
+   }
+}
+function desactiver(id)
+{
+   if (document.getElementById(id).classList.contains('div_actif'))
+   {
+	 document.getElementById(id).classList.remove('div_actif');
+   }
+   if (document.getElementById('menu_lien_'+id).classList.contains('lien_actif'))
+   {
+	 document.getElementById('menu_lien_'+id).classList.remove('lien_actif');
+   }
+}

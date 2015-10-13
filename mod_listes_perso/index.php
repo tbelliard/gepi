@@ -82,49 +82,98 @@ require_once("../lib/header.inc.php");
 <ul class="menu_entete_liste">
     <li class="menu_liste"
 		id='menu_lien_tableau'
-		onclick=" affiche('tableau'); masque('construction'); masque('eleves'); masque('affichage'); "
+		onclick=" affiche('tableau'); activer('tableau');
+			masque('construction'); desactiver('construction');
+			masque('eleves'); desactiver('eleves');
+			masque('affichage'); desactiver('affichage'); "
 		>
 		<a href="#lien_tableau">Listes perso</a>
 	</li>
     <li class="menu_liste"
-		id='menu_affichage'
-		onclick=" masque('construction'); masque('tableau'); masque('eleves');affiche('affichage'); "
+		id='menu_lien_affichage'
+		onclick=" masque('construction'); desactiver('construction');
+			masque('tableau'); desactiver('tableau');
+			masque('eleves');desactiver('eleves');
+			affiche('affichage'); activer ('affichage'); "
 		>
-		<a href="#lien_affichage">Affichage</a>
+		<a href="#lien_affichage">Modifier</a>
 	</li>
     <li class="menu_liste" 
-		id='menu_eleves'
-		onclick="affiche('eleves'); masque('tableau'); masque('affichage'); masque('construction'); "
+		id='menu_lien_eleves'
+		onclick="affiche('eleves'); activer ('eleves');
+			masque('tableau'); desactiver('tableau');
+			masque('affichage');desactiver('affichage');
+			masque('construction'); desactiver ('construction'); "
 		>
-		<a href="#lien_eleves">Choix élèves</a>
+		<a href="#lien_eleves">Élèves</a>
 	</li>
     <li class="menu_liste" 
-		id='menu_construction'
-		onclick="affiche('construction'); masque('tableau'); masque('affichage'); masque('eleves'); "
+		id='menu_lien_construction'
+		onclick="affiche('construction');  activer('construction');
+			masque('tableau'); desactiver ('tableau');
+			masque('affichage');  desactiver('affichage');
+			masque('eleves');  desactiver('eleves'); "
 		>
 		<a href="#lien_construction">Construction</a>
 	</li>
 </ul>
 
-<div id="tableau" style="display:block;">
-	<p><a id='lien_tableau'></a>0</p>
+<div id="tableau" class="div_construit" style="display:block;">
+	<p><a id='lien_tableau'></a></p>
+	<form action="index.php" name="formChoixTableau" method="post">
+		<fieldset>
+			<legend>Choix de la liste</legend>
+			<select name="tableauChoisi" 
+					id="tableauChoisi"
+					onchange="this.form.submit()" >
+				<option value="">Choisissez une liste</option>
+				<option value="1">choix2</option>
+			</select>
+			<input type="submit" id="sauveChoixTableau" name="sauveChoixTableau" value="Afficher" />
+		</fieldset>
+	</form>
 </div>
-<div id="affichage" style="display:block;">
-	<p><a id='lien_affichage'></a>1</p>
+<script type="text/javascript" >
+	document.getElementById('sauveChoixTableau').classList.add('invisible');
+</script>
+
+<div id="affichage" class="div_construit" style="display:block;">
+	<p><a id='lien_affichage'></a></p>
+	<form action="index.php" name="formSauveTableau" method="post">
+		<fieldset class="center">
+			<legend>Modifier et sauvegarder</legend>
+			<input type="submit" id="sauveChoixTableau" name="sauveTableau" value="Sauvegarder" />
+			<input type="reset" id="reinitialiseTableau" name="reinitialiseTableau" value="Réinitialiser" />
+		</fieldset>
+	</form>
 </div>
 
-<div id="eleves" style="display:block;">
-	<p><a id='lien_eleves'></a>2</p>
+<div id="eleves" class="div_construit" style="display:block;">
+	<p><a id='lien_eleves'></a></p>
+	<form action="index.php" name="formAjouteEleve" method="post">
+		<fieldset class="center">
+			<legend>Ajouter des membres à la liste</legend>
+		</fieldset>
+	</form>
 </div>
 
-<div id="construction" style="display:block;">
-	<p><a id='lien_construction'></a> 3</p>
+<div id="construction" class="div_construit" style="display:block;">
+	<p><a id='lien_construction'></a></p>
+	<form action="index.php" name="formAjouteColonne" method="post">
+		<fieldset class="center">
+			<legend>Ajouter/supprimer des colonnes</legend>
+		</fieldset>
+	</form>
+</div>
+<div id="laListe" class="div_construit" style="display:block;">
+	
 </div>
 
 <script type="text/javascript" >
 	afficher_cacher("affichage");
 	afficher_cacher("eleves");
-	afficher_cacher("construction");			
+	afficher_cacher("construction");
+	activer("tableau");
 </script>
 <?php
 require_once("../lib/footer.inc.php");
