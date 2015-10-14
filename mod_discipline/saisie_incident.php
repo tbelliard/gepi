@@ -60,6 +60,8 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 
 require('sanctions_func_lib.php');
 
+//debug_var();
+
 // Paramètre pour autoriser ou non une zone de saisie de commentaires pour un incident
 $autorise_commentaires_mod_disc = getSettingValue("autorise_commentaires_mod_disc");
 
@@ -905,93 +907,110 @@ $headers);
 						$texte_mail.=$msg_suppr_doc_joint;
 
 						$msg_doc_joint="";
-						unset($document_joint);
-						$document_joint=isset($_FILES["document_joint_".$i]) ? $_FILES["document_joint_".$i] : NULL;
-						if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
-							/*
-							foreach($document_joint as $key => $value) {
-								echo "\$document_joint[$key]=$value<br />";
-							}
-							// Image PNM
-							$document_joint[name]=
-							$document_joint[type]=image/x-portable-anymap
-							$document_joint[tmp_name]=/tmp/php0zquJ4
-							$document_joint[error]=0
-							$document_joint[size]=69472
-							*/
+						//unset($document_joint);
+						$tab_document_joint=isset($_FILES["document_joint_".$i]) ? $_FILES["document_joint_".$i] : NULL;
+						if((isset($tab_document_joint))&&(isset($tab_document_joint['tmp_name']))&&(is_array($tab_document_joint['tmp_name']))&&(count($tab_document_joint['tmp_name'])>0)) {
+						//foreach($tab_document_joint as $document_joint) {
+							//if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
+							for($ii=0;$ii<count($tab_document_joint['tmp_name']);$ii++) {
 
-							//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
-							if(!is_uploaded_file($document_joint['tmp_name'])) {
-								$msg.="L'upload du fichier a échoué.<br />\n";
-							}
-							else{
-								if(!file_exists($document_joint['tmp_name'])) {
-									if($document_joint['name']!="") {
-										$extension_tmp=mb_substr(strrchr($document_joint['name'],'.'),1);
-										if(!in_array($extension, $AllowedFilesExtensions)) {
-											$msg.="Vous avez proposé : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisée.<br />\n";
+								unset($document_joint);
+								$document_joint['tmp_name']=$tab_document_joint['tmp_name'][$ii];
+								$document_joint['name']=$tab_document_joint['name'][$ii];
+								$document_joint['type']=$tab_document_joint['type'][$ii];
+
+								/*
+								foreach($document_joint as $key => $value) {
+									echo "\$document_joint[$key]=$value<br />";
+								}
+								// Image PNM
+								$document_joint[name]=
+								$document_joint[type]=image/x-portable-anymap
+								$document_joint[tmp_name]=/tmp/php0zquJ4
+								$document_joint[error]=0
+								$document_joint[size]=69472
+								*/
+
+								//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
+								if($document_joint['name']=="") {
+									// Aucun fichier n'a ete fourni
+									// Vaut-il mieux tester $tab_document_joint['error'][$ii]? ou la valeur 4 correspond-elle à !is_uploaded_file?
+									// http://php.net/manual/fr/features.file-upload.errors.php
+									// UPLOAD_ERR_NO_FILE
+									// Valeur : 4. Aucun fichier n'a été téléchargé.
+								}
+								elseif(!is_uploaded_file($document_joint['tmp_name'])) {
+									$msg.="L'upload du fichier a échoué.<br />\n";
+								}
+								else{
+									if(!file_exists($document_joint['tmp_name'])) {
+										if($document_joint['name']!="") {
+											$extension_tmp=mb_substr(strrchr($document_joint['name'],'.'),1);
+											if(!in_array($extension, $AllowedFilesExtensions)) {
+												$msg.="Vous avez proposé : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisée.<br />\n";
+											}
+											else {
+												$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+											}
 										}
 										else {
 											$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+											$msg.="Il se peut que l'extension du fichier proposé ne soit pas autorisée.<br />\n";
+											$msg.="Les types autorisés sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
 										}
 									}
+							/*
+	echo "<pre>
+	envoi_mail($subject, 
+	$texte_mail, 
+	$destinataires, 
+	$headers);
+	</pre>";
+	*/
 									else {
-										$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
-										$msg.="Il se peut que l'extension du fichier proposé ne soit pas autorisée.<br />\n";
-										$msg.="Les types autorisés sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
-									}
-								}
-						/*
-echo "<pre>
-envoi_mail($subject, 
-$texte_mail, 
-$destinataires, 
-$headers);
-</pre>";
-*/
-								else {
-									$source_file=$document_joint['tmp_name'];
-									$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
-									if(!file_exists($dossier_courant)) {
-										if($discipline_droits_mkdir=="") {
-											mkdir($dossier_courant, 0770, true);
+										$source_file=$document_joint['tmp_name'];
+										$dossier_courant="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
+										if(!file_exists($dossier_courant)) {
+											if($discipline_droits_mkdir=="") {
+												mkdir($dossier_courant, 0770, true);
+											}
+											else {
+												@mkdir("../$dossier_documents_discipline");
+												@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
+												@mkdir("../$dossier_documents_discipline/incident_".$id_incident."/mesures");
+												@mkdir($dossier_courant);
+											}
+										}
+
+										if(strstr($document_joint['name'],".")) {
+											$extension_fichier=substr(strrchr($document_joint['name'],'.'),1);
+											$nom_fichier_sans_extension=preg_replace("/.$extension_fichier$/","",$document_joint['name']);
+
+											$dest_file=$dossier_courant."/".remplace_accents($nom_fichier_sans_extension, "all").".".$extension_fichier;
 										}
 										else {
-											@mkdir("../$dossier_documents_discipline");
-											@mkdir("../$dossier_documents_discipline/incident_".$id_incident);
-											@mkdir("../$dossier_documents_discipline/incident_".$id_incident."/mesures");
-											@mkdir($dossier_courant);
+											// Pas d'extension dans le nom de fichier fourni
+											$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
 										}
-									}
 
-									if(strstr($document_joint['name'],".")) {
-										$extension_fichier=substr(strrchr($document_joint['name'],'.'),1);
-										$nom_fichier_sans_extension=preg_replace("/.$extension_fichier$/","",$document_joint['name']);
-
-										$dest_file=$dossier_courant."/".remplace_accents($nom_fichier_sans_extension, "all").".".$extension_fichier;
-									}
-									else {
-										// Pas d'extension dans le nom de fichier fourni
-										$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
-									}
-
-									$res_copy=copy("$source_file" , "$dest_file");
-									if(!$res_copy) {
-										$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";
-									}
-									else {
-										$url_racine_gepi=getSettingValue('url_racine_gepi');
-										if($url_racine_gepi) {
-											$msg_doc_joint.="\nAjout d'un document : ".$url_racine_gepi.preg_replace("#^..#", "", $dest_file)."\n";
+										$res_copy=copy("$source_file" , "$dest_file");
+										if(!$res_copy) {
+											$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";
 										}
 										else {
-											$msg_doc_joint.="\nAjout d'un document : ".remplace_accents($document_joint['name'], "all")."\n";
+											$url_racine_gepi=getSettingValue('url_racine_gepi');
+											if($url_racine_gepi) {
+												$msg_doc_joint.="\nAjout d'un document : ".$url_racine_gepi.preg_replace("#^..#", "", $dest_file)."\n";
+											}
+											else {
+												$msg_doc_joint.="\nAjout d'un document : ".remplace_accents($document_joint['name'], "all")."\n";
+											}
 										}
 									}
 								}
 							}
+							$texte_mail.=$msg_doc_joint;
 						}
-						$texte_mail.=$msg_doc_joint;
 
 						if(count($mesure_demandee)>0) {
 							if (isset($NON_PROTECT["travail_pour_mesure_demandee_".$i])){
@@ -3443,12 +3462,28 @@ setTimeout('comptage_caracteres_textarea()', 1000);
                                 </table>
 <?php
 					}
+
+					$chaine_volume_upload="Les valeurs pouvant limiter le téléversement de fichiers vers le serveur sont les suivantes:\n      upload_max_filesize=".ini_get('upload_max_filesize')."\n      post_max_size=".ini_get('post_max_size');
 ?>
+                                <div title="Attention à ne pas envoyer un trop gros volume de documents d'un coup.
+Le paramétrage serveur ne permet pas forcément la réception de gros volumes.
+<?php echo $chaine_volume_upload;?>">
                                 <input type="file" 
                                        size="15" 
-                                       name="document_joint_<?php echo $i; ?>" 
-                                       id="document_joint_<?php echo $i; ?>" />
+                                       name="document_joint_<?php echo $i; ?>[]" 
+                                       id="document_joint_<?php echo $i; ?>[]" />
                                 <br />
+                                <input type="file" 
+                                       size="15" 
+                                       name="document_joint_<?php echo $i; ?>[]" 
+                                       id="document_joint_<?php echo $i; ?>[]" />
+                                <br />
+                                <input type="file" 
+                                       size="15" 
+                                       name="document_joint_<?php echo $i; ?>[]" 
+                                       id="document_joint_<?php echo $i; ?>[]" />
+                                <br />
+                                </div>
                             </td>
                         </tr>
 <?php
