@@ -73,7 +73,12 @@ fieldset {
 
 #laListe{
     min-height: 20em;   
-} 
+}
+
+#cadre_laListe{
+    min-height: 20em;   
+}
+
 #cache {
    display: none;
 }

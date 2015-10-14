@@ -44,6 +44,7 @@ function activer(id)
    if (!document.getElementById(id).classList.contains('div_actif'))
    {
 	 document.getElementById(id).classList.add('div_actif');
+	 affiche(id);
    }
    if (!document.getElementById('menu_lien_'+id).classList.contains('lien_actif'))
    {
@@ -55,6 +56,7 @@ function desactiver(id)
    if (document.getElementById(id).classList.contains('div_actif'))
    {
 	 document.getElementById(id).classList.remove('div_actif');
+	 masque(id);
    }
    if (document.getElementById('menu_lien_'+id).classList.contains('lien_actif'))
    {

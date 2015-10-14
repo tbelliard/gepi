@@ -59,15 +59,63 @@ if (getSettingAOui("active_module_liste_perso")) {
 }
 if ($utilisateur->getStatut()!=="cpe" 
    && $utilisateur->getStatut()!=="scolarite" 
-   && $utilisateur->getStatut()!=="professeur")  {
+   && $utilisateur->getStatut()!=="professeur") {
 	header("Location: ../logout.php?auto=1");
 	die("Vous n'avez pas les droits pour cette page.");
 }
 
+include_once 'lib/fonction_listes.php';
 
-	
+// a bouger vers définition de la base et ùise à jour
+verifieTableCree();
+
+//==============================================
+//Choix liste
+//==============================================
+//$flag = filter_input(INPUT_POST, '') ? filter_input(INPUT_POST, '') : NULL;
+$nouvelleListe = filter_input(INPUT_POST, 'nouvelleListe') === 'Nouvelle liste' ? TRUE : NULL;
+$tableauChoisi = filter_input(INPUT_POST, 'tableauChoisi') ? filter_input(INPUT_POST, 'tableauChoisi') : NULL;
+if ($nouvelleListe) {
+	$idListe = "";
+	unset($_SESSION['liste_perso']);
+} elseif ($tableauChoisi) {
+	$idListe = $tableauChoisi;
+	unset($_SESSION['liste_perso']);
+} else {
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
+}
+chargeListe($idListe);
 
 
+
+//==============================================
+//Définition de liste
+//==============================================
+$sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sauvegarde' ? TRUE : FALSE;
+$supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
+
+if ($sauveDefinitionListe) {
+	unset($_SESSION['liste_perso']);
+}
+
+$idListe = filter_input(INPUT_POST, 'idListe') ? filter_input(INPUT_POST, 'idListe') : (isset($_SESSION['liste_perso']['idListe']) ? $_SESSION['liste_perso']['idListe'] : '');
+$nomListe = filter_input(INPUT_POST, 'nomListe') ? filter_input(INPUT_POST, 'nomListe') : (isset($_SESSION['liste_perso']['nomListe']) ? $_SESSION['liste_perso']['nomListe'] : FALSE);
+$sexeListe = filter_input(INPUT_POST, 'sexeListe') ? TRUE : (isset($_SESSION['liste_perso']['sexeListe']) ? $_SESSION['liste_perso']['sexeListe'] : FALSE);
+$classeListe = filter_input(INPUT_POST, 'classeListe') ? TRUE : (isset($_SESSION['liste_perso']['classeListe']) ? $_SESSION['liste_perso']['classeListe'] : FALSE);
+$nbColonneListe = filter_input(INPUT_POST, 'nbColonneListe') ? filter_input(INPUT_POST, 'nbColonneListe') : (isset($_SESSION['liste_perso']['nbColonneListe']) ? $_SESSION['liste_perso']['nbColonneListe'] : 0);
+$photoListe = filter_input(INPUT_POST, 'photoListe') ? filter_input(INPUT_POST, 'photoListe') : (isset($_SESSION['liste_perso']['photo']) ? $_SESSION['liste_perso']['photo'] : 0);
+
+if ($sauveDefinitionListe) {
+	if (strlen($nomListe)) {
+		sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe);
+	}
+}
+
+
+
+
+
+debug_var();
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -130,6 +178,7 @@ require_once("../lib/header.inc.php");
 				<option value="1">choix2</option>
 			</select>
 			<input type="submit" id="sauveChoixTableau" name="sauveChoixTableau" value="Afficher" />
+			<input type="submit" id="nouvelleListe" name="nouvelleListe" value="Nouvelle liste" />
 		</fieldset>
 	</form>
 </div>
@@ -142,7 +191,7 @@ require_once("../lib/header.inc.php");
 	<form action="index.php" name="formSauveTableau" method="post">
 		<fieldset class="center">
 			<legend>Modifier et sauvegarder</legend>
-			<input type="submit" id="sauveChoixTableau" name="sauveTableau" value="Sauvegarder" />
+			<input type="submit" id="sauveTableau" name="sauveTableau" value="Sauvegarder" />
 			<input type="reset" id="reinitialiseTableau" name="reinitialiseTableau" value="Réinitialiser" />
 		</fieldset>
 	</form>
@@ -160,13 +209,61 @@ require_once("../lib/header.inc.php");
 <div id="construction" class="div_construit" style="display:block;">
 	<p><a id='lien_construction'></a></p>
 	<form action="index.php" name="formAjouteColonne" method="post">
-		<fieldset class="center">
-			<legend>Ajouter/supprimer des colonnes</legend>
+		<fieldset>
+			<p>
+				<legend>Ajouter/supprimer des colonnes</legend>
+				<input type="text" 
+					   maxlength="50" 
+					   placeholder="Nom de la nouvelle liste" 
+					   name="nomListe" 
+					   value="<?php if ($_SESSION['liste_perso']['nom']) {echo $_SESSION['liste_perso']['nom'];} ?>"
+					   />
+				Afficher les colonnes :
+				<label for="sexeListe">Sexe</label>
+				<input type="checkbox" 
+					   name="sexeListe" 
+					   id="sexeListe" 
+					   value=1
+					   <?php if (isset($_SESSION['liste_perso']['sexe']) && $_SESSION['liste_perso']['sexe']) {echo " checked='checked' ";} ?>
+					   />
+				<label for="classeListe">Classe</label>
+				<input type="checkbox" 
+					   name="classeListe" 
+					   id="classeListe" 
+					   value=1
+					   <?php if ($_SESSION['liste_perso']['classe']) {echo " checked='checked' ";} ?>
+					   />
+				<label for="photoListe">Photos</label>
+				<input type="checkbox" 
+					   name="photoListe" 
+					   id="photoListe" 
+					   value=1
+					   <?php if ($_SESSION['liste_perso']['photo']) {echo " checked='checked' ";} ?>
+					   />
+				<label for="nbColonneListe">Nombre de colonnes</label>
+				<input type="text" 
+					   maxlength="2"
+					   name="nbColonneListe" 
+					   id="nbColonneListe"
+					   value="<?php echo count($_SESSION['liste_perso']['colonnes']); ?>"
+					   size="1"
+					   />
+				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe ?>" />
+				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Sauvegarder" />
+			</p>
+			<p>
+				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Supprimer" />
+			</p>
 		</fieldset>
 	</form>
 </div>
 <div id="laListe" class="div_construit" style="display:block;">
+	<form action="index.php" name="formAjouteColonne" method="post">
+		<fieldset id="cadre_laListe">
+			<legend></legend>
 	
+		</fieldset>
+	</form>
 </div>
 
 <script type="text/javascript" >
@@ -176,4 +273,13 @@ require_once("../lib/header.inc.php");
 	activer("tableau");
 </script>
 <?php
+if ($nouvelleListe) {
+?>
+<script type="text/javascript" >
+	desactiver("tableau");
+	activer("construction");
+</script>
+<?php
+}
+
 require_once("../lib/footer.inc.php");

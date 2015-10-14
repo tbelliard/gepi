@@ -21,6 +21,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+function verifieTableCree() {
+	global $mysqli;
+	global $dbDb;
+	
+	// echo "création de mod_listes_perso_definition"."<br />" ;
+	$sql_def = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_definition` ("
+	   . "`id` int(11) NOT NULL auto_increment, "
+	   . "`nom` varchar(50) NOT NULL default '', "
+	   . "`sexe` BOOLEAN default true, "
+	   . "`classe` BOOLEAN default true, "
+	   . "`photo` BOOLEAN default true, "
+	   . "PRIMARY KEY  (`id`) "
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+	$query_def = mysqli_query($mysqli, $sql_def);
+	if (!$query_def) {
+		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql_def."<br />" ;
+	}
+	
+	// echo "création de mod_listes_perso_colonnes"."<br />" ;
+	$sql_col = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_colonnes` ("
+	   . "`id` int(11) NOT NULL auto_increment, "
+	   . "`id_def` int(11) NOT NULL, "
+	   . "`titre` varchar(30) NOT NULL default '', "
+	   . "PRIMARY KEY  (`id`) "
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+	$query_col = mysqli_query($mysqli, $sql_col);
+	if (!$query_col) {
+		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql_col."<br />" ;
+	}
+
+	// echo "création de mod_listes_perso_contenu"."<br />" ;	
+}
+
 function EnregistreDroitListes($ouvre) {
 	global $mysqli;
 	$sql = "INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('GepiListePersonnelles', '".$ouvre."') "
@@ -41,4 +76,43 @@ function DroitSurListeOuvert() {
 	return $retour;
 }
 
+function chargeListe($id) {
+	if (!$id) {
+		nouvelleListe($id);
+	} else {
+		litBase($id);
+	}
+}
 
+function nouvelleListe($id) {
+	$_SESSION['liste_perso']['id'] = $id;
+	$_SESSION['liste_perso']['nom'] = '';
+	$_SESSION['liste_perso']['sexe'] = FALSE;
+	$_SESSION['liste_perso']['classe'] = FALSE;
+	$_SESSION['liste_perso']['photo'] = FALSE;
+	$_SESSION['liste_perso']['colonnes'] = array();
+}
+
+function litBase($id) {
+	echo 'On lit la base pour '.$id;
+}
+
+function sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe) {
+	global $mysqli;
+	$sql = "INSERT INTO `mod_listes_perso_definition` "
+	   . "SET  "
+	   . "`nom`= '$nomListe', "
+	   . "`sexe`= '$sexeListe', "
+	   . "`classe`= '$classeListe', "
+	   . "`photo`= '$photoListe' ";
+	if (strlen((string)$idListe) !== 0) {$sql .= ", `id`=$idListe ";}
+	$sql .= ";";
+	
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;
+}
