@@ -3191,13 +3191,14 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 																	j_eleves_classes jec, 
 																	j_groupes_professeurs jgp 
 																WHERE sam.id_classe=c.id AND 
-																	sam.destinataire='professeur' AND 
+																	sam.destinataire='professeurs' AND 
 																	jec.id_classe=sam.id_classe AND 
 																	jec.login=jeg.login AND 
 																	jeg.id_groupe=jgp.id_groupe AND 
 																	jgp.login='".$_SESSION['login']."'
 																ORDER BY c.classe)";
 		$qualite="professeur";
+		//echo $sql;
 		if(is_pp($_SESSION['login'])) {
 			$sql2="(SELECT DISTINCT c.classe, sam.id_classe, sam.destinataire FROM s_alerte_mail sam, 
 																	classes c, 
