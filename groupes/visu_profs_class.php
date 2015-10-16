@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -588,145 +588,40 @@ if(isset($id_classe)){
 	}
 </script>\n";
 
+			$sql="SELECT * FROM j_scol_classes jsc, utilisateurs u WHERE jsc.login=u.login AND u.etat='actif';";
+			//echo "$sql<br />";
+			$res_scol=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_scol)>0) {
+				$cpt_scol=0;
+				$chaine_title_scol="";
+				while($lig_scol=mysqli_fetch_object($res_scol)) {
+					if(($lig_scol->email!="")&&(check_mail($lig_scol->email))&&(!in_array($lig_scol->email,$tabmail2))) {
+						if($chaine_mail!="") {
+							$chaine_mail.=",";
+						}
+						if($chaine_title_scol!="") {
+							$chaine_title_scol.=", ";
+						}
+						$chaine_mail.=$lig_scol->email;
+						$tabmail2[]=$lig_scol->email;
+						$chaine_title_scol.=$lig_scol->civilite." ".$lig_scol->nom." ".$lig_scol->prenom;
+						$cpt_scol++;
+					}
+				}
+				if($cpt_scol>0) {
+					echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe (<em title=\"".$chaine_title_scol."\">comptes scolarité inclus</em>)</a>.</p>
+	<script type='text/javascript'>
+		if(document.getElementById('span_mail')) {
+			document.getElementById('span_mail').innerHTML=document.getElementById('span_mail').innerHTML+\" <a href='mailto:$chaine_mail?".rawurlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI] classe ".$classe['classe'])."' title='Envoyer un mail à tous les membres de l équipe, comptes scolarité inclus'><img src='../images/icons/courrier_envoi.png' class='icone16' alt='Mail' />(*)</a>\";
+		}
+	</script>\n";
+				}
+			}
+
 		}
 
 		//echo "</div>";
 
-		/*
-		unset($tabmail);
-		$tabmail=array();
-
-		echo "<table class='boireaus' border='1' summary='Equipe'>\n";
-		$alt=1;
-
-		// Liste des CPE:
-		$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
-		$result_cpe=mysql_query($sql);
-		if(mysql_num_rows($result_cpe)>0){
-			while($lig_cpe=mysql_fetch_object($result_cpe)){
-				$alt=$alt*(-1);
-				echo "<tr class='lig$alt white_hover' valign='top'><td>VIE SCOLAIRE</td>\n";
-
-				$sql="SELECT DISTINCT nom,prenom FROM eleves e,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jec.e_login=e.login AND jecl.id_classe='$id_classe' AND jec.cpe_login='$lig_cpe->cpe_login'";
-				$result_eleve=mysql_query($sql);
-				$nb_eleves=mysql_num_rows($result_eleve);
-				echo "<td><a href='javascript:ouvre_popup(\"VIE_SCOLAIRE\",\"$id_classe\");'>".$nb_eleves." ";
-		if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
-		echo "</a></td>\n";
-				
-
-				echo "<td>";
-				if($lig_cpe->email!=""){
-					echo "<a href='mailto:$lig_cpe->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>".my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2')."</a>";
-					$tabmail[]=$lig_cpe->email;
-				}
-				else{
-					echo my_strtoupper($lig_cpe->nom)." ".casse_mot($lig_cpe->prenom,'majf2');
-				}
-				echo "</td></tr>\n";
-			}
-		}
-		//echo "</table>\n";
-
-		echo "<tr><td colspan='3' class='infobulle_corps'>&nbsp;</td></tr>\n";
-		//echo "<br />\n";
-
-		//echo "<table border='0'>\n";
-		//$sql="SELECT jgm.id_matiere,jgm.id_groupe FROM j_groupes_classes jgc, j_groupes_matieres jgm WHERE jgc.id_groupe=jgm.id_groupe AND jgc.id_classe='$id_classe' ORDER BY jgc.priorite, jgm.id_matiere";
-		$sql="SELECT m.nom_complet,jgm.id_groupe, g.name, g.description FROM j_groupes_classes jgc, j_groupes_matieres jgm, matieres m, groupes g WHERE jgc.id_groupe=jgm.id_groupe AND m.matiere=jgm.id_matiere AND jgc.id_classe='$id_classe' AND g.id=jgc.id_groupe ORDER BY jgc.priorite, m.matiere";
-		//echo "$sql<br />";
-		$result_grp=mysql_query($sql);
-		while($lig_grp=mysql_fetch_object($result_grp)){
-
-			// Récupération des effectifs du groupe...
-			// ... parmi les membres de la classe
-			$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
-			$res_eleves=mysql_query($sql);
-			$nb_eleves=mysql_num_rows($res_eleves);
-
-			// Le groupe est-il composé uniquement d'élèves de la classe?
-			$sql="SELECT * FROM j_groupes_classes jgc WHERE jgc.id_groupe='$lig_grp->id_groupe'";
-			$res_nb_class_grp=mysql_query($sql);
-			$nb_class_grp=mysql_num_rows($res_nb_class_grp);
-
-			// Matière correspondant au groupe:
-			$alt=$alt*(-1);
-			echo "<tr class='lig$alt white_hover' valign='top'>\n";
-			echo "<td>\n";
-			//echo htmlspecialchars($lig_grp->nom_complet);
-			echo "<span title=\"Matière : $lig_grp->nom_complet\">".htmlspecialchars($lig_grp->name)."<br /><span style='font-size: x-small;'>".htmlspecialchars($lig_grp->description)."</span></span>\n";
-			echo "</td>\n";
-			echo "<td>";
-
-			if($nb_class_grp>1){
-				// Effectif...
-				// ... pour tout le groupe
-				$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$lig_grp->id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
-				$res_tous_eleves_grp=mysql_query($sql);
-				$nb_tous_eleves_grp=mysql_num_rows($res_tous_eleves_grp);
-			}
-
-			echo "<a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"$id_classe\");'";
-			if($nb_class_grp>1){
-				echo " title=\"Dans ce groupe de $nb_tous_eleves_grp élèves, $nb_eleves élèves sont en ".$classe['classe']."\"";
-			}
-			echo ">".$nb_eleves." ";
-			if ($nb_eleves > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
-			echo "</a>\n";
-
-			if($nb_class_grp>1){
-				echo " sur <a href='javascript:ouvre_popup(\"$lig_grp->id_groupe\",\"\");' title='Groupe de $nb_tous_eleves_grp élèves'>".$nb_tous_eleves_grp." ";
-				if ($nb_tous_eleves_grp > 1) { echo $gepiSettings['denomination_eleves'];} else { echo $gepiSettings['denomination_eleve'];}
-				echo "</a>\n";
-			}
-			echo "</td>\n";
-
-
-			// Professeurs
-			echo "<td>";
-			$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$lig_grp->id_groupe' AND u.login=jgp.login";
-			//echo "$sql<br />";
-			$result_prof=mysql_query($sql);
-			while($lig_prof=mysql_fetch_object($result_prof)){
-				if($lig_prof->email!=""){
-					echo "<a href='mailto:$lig_prof->email?".urlencode("subject=[GEPI] classe=".$classe['classe'])."'>".my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2')."</a>";
-					$tabmail[]=$lig_prof->email;
-				}
-				else{
-					echo my_strtoupper($lig_prof->nom)." ".casse_mot($lig_prof->prenom,'majf2');
-				}
-
-				// Le prof est-il PP d'au moins un élève de la classe?
-				$sql="SELECT * FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$lig_prof->login'";
-				//echo " (<i>$sql</i>)\n";
-				$res_pp=mysql_query($sql);
-				if(mysql_num_rows($res_pp)>0){
-
-					echo " (<i>".$gepi_prof_suivi."</i>)";
-				}
-				echo "<br />\n";
-			}
-			echo "</td>\n";
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
-
-		$chaine_mail="";
-		if(count($tabmail)>0){
-			unset($tabmail2);
-			$tabmail2=array();
-			//$tabmail=array_unique($tabmail);
-			//sort($tabmail);
-			$chaine_mail=$tabmail[0];
-			for ($i=1;$i<count($tabmail);$i++) {
-				if((isset($tabmail[$i]))&&(!in_array($tabmail[$i],$tabmail2))) {
-					$chaine_mail.=",".$tabmail[$i];
-					$tabmail2[]=$tabmail[$i];
-				}
-			}
-			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI] classe ".$classe['classe'])."'>mail à tous les membres de l'équipe</a>.</p>\n";
-		}
-		*/
 	}
 }
 else {
