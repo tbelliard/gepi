@@ -712,9 +712,11 @@ foreach ($results as $traitement) {
 	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de ".$eleve->getNom().' '.$eleve->getPrenom()."'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
-	echo "<a href='liste_traitements.php?filter_classe[]=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
-	echo ($eleve->getClasse()->getNom());
-	echo "</a>";
+	if($eleve->getClasse()!=NULL) {
+		echo "<a href='liste_traitements.php?filter_classe[]=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>";
+		echo ($eleve->getClasse()->getNom());
+		echo "</a>";
+	}
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
