@@ -743,16 +743,24 @@ foreach ($results as $traitement) {
 	}
 	$cpt_eleve_col=0;
 	foreach ($eleve_col as $eleve) {
+		/*
+		echo "<pre>";
+		print_r($eleve);
+		echo "</pre>";
+		*/
 		$ligne_traitement[$cpt_traitement].="
 			<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>
 				<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>
 					<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>
 						<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de ".$eleve->getNom().' '.$eleve->getPrenom()."'> 
 							".($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom())."
-						</a>
+						</a>";
+		if($eleve->getClasse()!=NULL) {
+			$ligne_traitement[$cpt_traitement].="
 						<a href='liste_traitements.php?filter_classe[]=".$eleve->getClasse()->getId()."&order=asc_eleve' style='display: block; height: 100%;' title = 'Uniquement les absences de la classe ".$eleve->getClasse()->getNom()."'>
 							".($eleve->getClasse()->getNom())."
 						</a>";
+		}
 		if ($utilisateur->getAccesFicheEleve($eleve)) {
 			$ligne_traitement[$cpt_traitement].="
 						<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>
