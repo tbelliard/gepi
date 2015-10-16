@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2013 Josselin Jacquard
+ * Copyright 2009-2015 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -80,6 +80,9 @@ if ($uid_post==$uid_prime) {
 		$contenu_cor = str_replace("\\r","",$contenu_cor);
 		$contenu_cor = str_replace("\\n","",$contenu_cor);
 		//$contenu_cor = stripslashes($contenu_cor);
+
+		$contenu_cor=a_href_target_blank($contenu_cor);
+
 		if ($contenu_cor == "" or $contenu_cor == "<br>") {$contenu_cor = "...";}
 	
 		$sql="INSERT INTO ct_private_entry SET date_ct='$date_devoir', heure_entry='".strftime("%H:%M:%S")."', id_login='".$_SESSION['login']."', id_groupe='$id_groupe', contenu='<b>COPIE DE SAUVEGARDE</b><br />$contenu_cor';";
@@ -167,6 +170,8 @@ if($url_absolues_gepi!="") {
 }
 //=============================
 $contenu_cor=cdt_copie_fichiers_archive_vers_cdt_courant($contenu_cor, "devoir", $id_groupe);
+
+$contenu_cor=a_href_target_blank($contenu_cor);
 
 // 20130727
 if($ctTravailAFaire->getContenu()!=$contenu_cor) {

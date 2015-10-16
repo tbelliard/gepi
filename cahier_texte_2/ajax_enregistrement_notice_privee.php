@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2015 Josselin Jacquard, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -112,6 +112,8 @@ if($url_absolues_gepi!="") {
 	$contenu_cor=cdt_changer_chemin_absolu_en_relatif($contenu_cor);
 }
 //=============================
+
+$contenu_cor=a_href_target_blank($contenu_cor);
 
 $ctNoticePrivee->setContenu($contenu_cor);
 $ctNoticePrivee->setDateCt($date_ct);

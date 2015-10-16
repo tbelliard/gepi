@@ -13688,4 +13688,20 @@ function my_file_get_contents($url) {
 
 	return $content;
 }
+
+/** Fonction destinée à insérer un target="_blank" dans les <a href> 
+ * pour passer outre les filtrages HTMLPurifier.
+ *
+ * @param string $texte Le texte à traiter
+ * @param string $target La cible du lien (_blank par défaut)
+ * @return string La chaine corrigée
+ */
+function a_href_target_blank($texte, $target="_blank") {
+	$contenu_cor=$texte;
+	if(preg_match('|<a href=|i', $contenu_cor)) {
+		$contenu_cor=preg_replace('|<a href=|i', '<a target="'.$target.'" href=', $contenu_cor);
+	}
+	return $contenu_cor;
+}
+
 ?>
