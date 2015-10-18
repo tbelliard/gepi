@@ -90,6 +90,11 @@ PRIMARY KEY (id)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $create_table=mysqli_query($GLOBALS["mysqli"], $sql);
 
+$acces_prepa_conseil_edit_limite="y";
+if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
+	$acces_prepa_conseil_edit_limite="n";
+}
+
 /*
 
 				"NOM",
