@@ -3418,7 +3418,7 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 
 							// $id_classe=$tab_ele['periodes'][$index_per]['id_classe']
 
-							echo "<td style='text-align:center;'><a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&amp;logineleve=".$ele_login."&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp' target='_blank'>$lig_ant2->nom_periode</a></td>\n";
+							echo "<td style='text-align:center;'><a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=".$id_classe."&amp;logineleve=".$ele_login."&amp;annee_scolaire=".$lig_ant->annee."&amp;num_periode=".$lig_ant2->num_periode."&amp;mode=bull_simp' onclick=\"ajax_annee_anterieure_bull_simp('".$ele_login."', ".$id_classe.", '".$lig_ant->annee."', ".$lig_ant2->num_periode.");return false;\" target='_blank'>$lig_ant2->nom_periode</a></td>\n";
 							$cpt++;
 						}
 					}
@@ -3448,7 +3448,9 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 
 					echo "Année-scolaire <a href='../mod_annees_anterieures/popup_annee_anterieure.php?logineleve=".$ele_login."&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
 					if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
-					echo "' target='_blank'>$tab_annees[$i]</a>";
+					echo "' target='_blank'";
+					echo " onclick=\"ajax_annee_anterieure_avis('".$ele_login."', '".$tab_annees[$i]."');return false;\"";
+					echo ">".$tab_annees[$i]."</a>";
 					//echo "<br />\n";
 
 					echo "</td>\n";
@@ -3457,6 +3459,9 @@ Vous pourrez choisir d'afficher ou non les informations concernant les éventuel
 				}
 				echo "</table>\n";
 				//echo "</p>\n";
+
+				// 20151018
+				echo "<div id='div_mod_annee_anterieure'></div>";
 			}
 
 			echo "</div>\n";

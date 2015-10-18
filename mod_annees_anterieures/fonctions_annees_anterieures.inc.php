@@ -13,6 +13,9 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 
 	//global $gepiPath;
 	global $gecko;
+	global $mode_js;
+
+	//echo "mode_js=$mode_js<br />";
 
 	//echo "$annee_scolaire=$annee_scolaire<br />";
 
@@ -109,7 +112,12 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				else {
 					echo "ine=$ine";
 				}
-				echo "&amp;annee_scolaire=$annee_precedente&amp;num_periode=$derniere_periode_annee_precedente&amp;mode=bull_simp'><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> ";
+				echo "&amp;annee_scolaire=$annee_precedente&amp;num_periode=$derniere_periode_annee_precedente&amp;mode=bull_simp'";
+				// 20151018
+				if((isset($mode_js))&&($mode_js=="y")) {
+					echo " onclick=\"ajax_annee_anterieure_bull_simp('".$logineleve."', ".$id_classe.", '".$annee_precedente."', 1);return false;\"";
+				}
+				echo "><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> ";
 			}
 			echo "<b>$annee_scolaire</b>";
 			if($annee_suivante!=""){
@@ -121,7 +129,12 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				else {
 					echo "ine=$ine";
 				}
-				echo "&amp;annee_scolaire=$annee_suivante&amp;num_periode=1&amp;mode=bull_simp'><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>";
+				echo "&amp;annee_scolaire=$annee_suivante&amp;num_periode=1&amp;mode=bull_simp'";
+				// 20151018
+				if((isset($mode_js))&&($mode_js=="y")) {
+					echo " onclick=\"ajax_annee_anterieure_bull_simp('".$logineleve."', ".$id_classe.", '".$annee_suivante."', 1);return false;\"";
+				}
+				echo "><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>";
 			}
 
 			echo "</li>\n";
@@ -140,7 +153,12 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 					else {
 						echo "ine=$ine";
 					}
-					echo "&amp;annee_scolaire=$annee_scolaire&amp;num_periode=$lig_periode->num_periode&amp;mode=bull_simp'>P".$lig_periode->num_periode."</a>";
+					echo "&amp;annee_scolaire=$annee_scolaire&amp;num_periode=$lig_periode->num_periode&amp;mode=bull_simp'";
+					// 20151018
+					if((isset($mode_js))&&($mode_js=="y")) {
+						echo " onclick=\"ajax_annee_anterieure_bull_simp('".$logineleve."', ".$id_classe.", '".$annee_scolaire."', ".$lig_periode->num_periode.");return false;\"";
+					}
+					echo ">P".$lig_periode->num_periode."</a>";
 				}
 				else{
 					if($gecko){
@@ -355,6 +373,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 	global $gecko;
 	global $id_classe;
+	global $mode_js;
 
 	// Tableau des avis de conseils de classes
 	$sql="SELECT * FROM eleves WHERE login='$logineleve';";
@@ -416,13 +435,23 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 		if($annee_precedente!=""){
 			echo "<a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve&amp;annee_scolaire=$annee_precedente&amp;mode=avis_conseil";
 			if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
-			echo "'><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> \n";
+			echo "'";
+			// 20151018
+			if((isset($mode_js))&&($mode_js=="y")) {
+				echo " onclick=\"ajax_annee_anterieure_avis('".$logineleve."', '".$annee_precedente."');return false;\"";
+			}
+			echo "><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> \n";
 		}
 		echo "<b>$annee_scolaire</b>\n";
 		if($annee_suivante!=""){
 			echo " <a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve&amp;annee_scolaire=$annee_suivante&amp;mode=avis_conseil";
 			if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
-			echo "'><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>\n";
+			echo "'";
+			// 20151018
+			if((isset($mode_js))&&($mode_js=="y")) {
+				echo " onclick=\"ajax_annee_anterieure_avis('".$logineleve."', '".$annee_suivante."');return false;\"";
+			}
+			echo "><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>\n";
 		}
 		echo "</li>\n";
 		echo "</ul>\n";

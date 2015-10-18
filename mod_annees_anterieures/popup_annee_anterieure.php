@@ -264,6 +264,9 @@ $style_specifique="mod_annees_anterieures/annees_anterieures";
 // ============================================================================
 // ============================================================================
 // On va écrire la section HEAD
+
+$mode_js=isset($_POST['mode_js']) ? $_POST['mode_js'] : (isset($_GET['mode_js']) ? $_GET['mode_js'] : NULL);
+if(!isset($mode_js)) {
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -275,117 +278,119 @@ $style_specifique="mod_annees_anterieures/annees_anterieures";
 <META HTTP-EQUIV="Expires" CONTENT="0" />
 <meta HTTP-EQUIV="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;sessionid=<?php echo session_id();?>" />
 <title><?php echo getSettingValue("gepiSchoolName"); ?> : base de données élèves</title>
-<?php $style = getSettingValue("gepi_stylesheet");
-if (empty($style)) $style = "style";
-?>
-<link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/<?php echo $style;?>.css" />
+	<?php $style = getSettingValue("gepi_stylesheet");
+	if (empty($style)) $style = "style";
+	?>
+	<link rel="stylesheet" type="text/css" href="<?php echo($gepiPath); ?>/<?php echo $style;?>.css" />
 
-<!-- Gestion de l'expiration des session - Patrick Duthilleul -->
-<script type="text/javascript" language="JavaScript">
-<!--
-var debut=new Date()
-function show_message_deconnexion(){
-  var seconds_before_alert = 180;
-  var seconds_int_betweenn_2_msg = 30;
+	<!-- Gestion de l'expiration des session - Patrick Duthilleul -->
+	<script type="text/javascript" language="JavaScript">
+	<!--
+	var debut=new Date()
+	function show_message_deconnexion(){
+	  var seconds_before_alert = 180;
+	  var seconds_int_betweenn_2_msg = 30;
 
-  var digital=new Date()
-  var seconds=(digital-debut)/1000
-  if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
-    var seconds_reste = Math.floor(<?php echo (getSettingValue("sessionMaxLength"))*60; ?> - seconds);
-    now=new Date()
-    var hrs=now.getHours();
-    var mins=now.getMinutes();
-    var secs=now.getSeconds();
+	  var digital=new Date()
+	  var seconds=(digital-debut)/1000
+	  if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
+	    var seconds_reste = Math.floor(<?php echo (getSettingValue("sessionMaxLength"))*60; ?> - seconds);
+	    now=new Date()
+	    var hrs=now.getHours();
+	    var mins=now.getMinutes();
+	    var secs=now.getSeconds();
 
-    var heure = hrs + " H " + mins + "' " + secs + "'' ";
-    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
-  }
-  setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
-}
-//-->
-</script>
-
-<?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
-   echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
-} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
-   echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
-} else {
-   echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
-   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
-}
-// Couleur de fond des pages
-if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
-
-
-if(isset($style_specifique)){
-	// Il faudrait filtrer le contenu de la variable...
-	// ne doit contenir que certains types de caractères et se terminer par .css
-	// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
-		// Styles spécifiques à une page:
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+	    var heure = hrs + " H " + mins + "' " + secs + "'' ";
+	    alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+	  }
+	  setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 	}
-}
+	//-->
+	</script>
 
-if(isset($javascript_specifique)){
-	// Il faudrait filtrer le contenu de la variable...
-	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
-	if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
-		// Javascript spécifique à une page:
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
+	<?php if (isset($niveau_arbo) and ($niveau_arbo == 0)) {
+	   echo "<script src=\"lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+	   echo "<LINK REL=\"SHORTCUT ICON\" href=\"./favicon.ico\" />\n";
+	} else if (isset($niveau_arbo) and ($niveau_arbo == 2)) {
+	   echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+	   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../../favicon.ico\" />\n";
+	} else {
+	   echo "<script src=\"../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+	   echo "<LINK REL=\"SHORTCUT ICON\" href=\"../favicon.ico\" />\n";
 	}
-}
+	// Couleur de fond des pages
+	if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
 
-
-if(isset($style_screen_ajout)){
-	// Styles paramétrables depuis l'interface:
-	if($style_screen_ajout=='y'){
-		// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
-		// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
-		echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+	if(isset($style_specifique)){
+		// Il faudrait filtrer le contenu de la variable...
+		// ne doit contenir que certains types de caractères et se terminer par .css
+		// Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0){
+			// Styles spécifiques à une page:
+			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$style_specifique.css' />\n";
+		}
 	}
+
+	if(isset($javascript_specifique)){
+		// Il faudrait filtrer le contenu de la variable...
+		// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0){
+			// Javascript spécifique à une page:
+			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/$javascript_specifique.js' />\n";
+		}
+	}
+
+
+
+	if(isset($style_screen_ajout)){
+		// Styles paramétrables depuis l'interface:
+		if($style_screen_ajout=='y'){
+			// La variable $style_screen_ajout se paramètre dans le /lib/global.inc
+			// C'est une sécurité... il suffit de passer la variable à 'n' pour désactiver ce fichier CSS et éventuellement rétablir un accès après avoir imposé une couleur noire sur noire
+			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
+		}
+	}
+
+
+	//===================================
+	// Pour aérer les infobulles si jamais Javascript n'est pas actif.
+	// Sinon, avec le position:absolute, les div se superposent.
+	$posDiv_infobulle=0;
+	// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
+
+	$tabdiv_infobulle=array();
+	$tabid_infobulle=array();
+
+	// Choix de l'unité pour les dimensions des DIV: em, px,...
+	$unite_div_infobulle="em";
+	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
+
+	echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
+	echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
+
+	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+	echo "<script type='text/javascript'>
+		temporisation_chargement='n';
+	</script>\n";
+
+	//===================================
+
+	echo "</head>\n";
+
+	//**************** EN-TETE *****************
+	//$titre_page = "Consultation des données antérieures";
+	//**************** FIN EN-TETE *****************
+
+	//echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>\n";
+
+	echo "<!-- ************************* -->
+	<!-- Début du corps de la page -->
+	<!-- ************************* -->\n";
+
+	echo "<body onLoad='show_message_deconnexion()'>\n";
 }
 
-
-//===================================
-// Pour aérer les infobulles si jamais Javascript n'est pas actif.
-// Sinon, avec le position:absolute, les div se superposent.
-$posDiv_infobulle=0;
-// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
-
-$tabdiv_infobulle=array();
-$tabid_infobulle=array();
-
-// Choix de l'unité pour les dimensions des DIV: em, px,...
-$unite_div_infobulle="em";
-// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
-
-echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
-echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
-
-// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
-echo "<script type='text/javascript'>
-	temporisation_chargement='n';
-</script>\n";
-
-//===================================
-
-echo "</head>\n";
-
-//**************** EN-TETE *****************
-//$titre_page = "Consultation des données antérieures";
-//**************** FIN EN-TETE *****************
-
-//echo "<div class='norme'><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a>\n";
-
-echo "<!-- ************************* -->
-<!-- Début du corps de la page -->
-<!-- ************************* -->\n";
-
-echo "<body onLoad='show_message_deconnexion()'>\n";
 echo "<div id='container'>\n";
 
 // ============================================================================
@@ -412,8 +417,9 @@ if((!isset($logineleve))||(($mode!='bull_simp')&&($mode!='avis_conseil'))) {
 	tab_choix_anterieure($logineleve);
 }
 else{
-	//echo "<div style='float:right; width:3em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'>Retour</a></div>\n";
-	echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";
+	if(!isset($mode_js)) {
+		echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";
+	}
 
 	if($mode=='bull_simp'){
 		echo "<h2 align='center'>Bulletin simplifié d'une année antérieure</h2>\n";

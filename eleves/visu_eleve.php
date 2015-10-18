@@ -61,6 +61,10 @@ if (getSettingValue("active_module_absence")=='2') {
 	$dojo=true;
 }
 $style_specifique[] = "eleves/visu_eleve";
+if (getSettingAOui("active_annees_anterieures")) {
+	$style_specifique[]="mod_annees_anterieures/annees_anterieures";
+	$javascript_specifique[] = "mod_annees_anterieures/annees_anterieures";
+}
 
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
