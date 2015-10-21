@@ -49,6 +49,7 @@ if($gepi_denom_mention=="") {
 	$gepi_denom_mention="mention";
 }
 
+//debug_var();
 if (isset($is_posted) and ($is_posted == '1')) {
 	check_token();
 
@@ -573,17 +574,22 @@ echo add_token_field();
 ?>
 <p>Nom court de la classe&nbsp;: <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe&nbsp;: <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (<em>chef d'établissement ou son représentant</em>)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
 ?>
-<p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
+<p>Fonction du signataire sus-nommé (<em>ex.: "Proviseur"</em>)&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation" value="<?php echo $ects_fonction_signataire_attestation;?>" onchange='changement()' /></p>
 <?php
 }
 
-$gepi_prof_suivi_classe=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+if(isset($id_classe)) {
+	$gepi_prof_suivi_classe=getParamClasse($id_classe, 'gepi_prof_suivi', getSettingValue('gepi_prof_suivi'));
+}
+else {
+	$gepi_prof_suivi_classe=getSettingValue('gepi_prof_suivi');
+}
 ?>
-<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
+<p>Formule à insérer sur les bulletins (<em>cette formule sera suivie des nom et prénom de la personne désignée ci_dessus</em>)&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
 
 <p style='margin-top:1em;'><b>Dénomination du professeur chargé du suivi des élèves&nbsp;:</b><br />
 <input type="text" name="gepi_prof_suivi" id='gepi_prof_suivi' value="<?php echo $gepi_prof_suivi_classe; ?>" onchange='changement()' />
