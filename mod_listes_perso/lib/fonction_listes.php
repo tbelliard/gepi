@@ -21,6 +21,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+//=========================================================================================================
+//Création provisoire des tables
+//=========================================================================================================
 function verifieTableCree() {
 	global $mysqli;
 	global $dbDb;
@@ -45,6 +48,7 @@ function verifieTableCree() {
 	   . "`id` int(11) NOT NULL auto_increment, "
 	   . "`id_def` int(11) NOT NULL, "
 	   . "`titre` varchar(30) NOT NULL default '', "
+	   . "`placement` int(11) NOT NULL, "
 	   . "PRIMARY KEY  (`id`) "
 	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
 	$query_col = mysqli_query($mysqli, $sql_col);
@@ -56,6 +60,7 @@ function verifieTableCree() {
 	// echo "création de mod_listes_perso_contenu"."<br />" ;	
 }
 
+//=========================================================================================================
 function EnregistreDroitListes($ouvre) {
 	global $mysqli;
 	$sql = "INSERT INTO `setting` (`NAME`, `VALUE`) VALUES ('GepiListePersonnelles', '".$ouvre."') "
@@ -76,6 +81,8 @@ function DroitSurListeOuvert() {
 	return $retour;
 }
 
+//=========================================================================================================
+
 function chargeListe($id) {
 	if (!$id) {
 		nouvelleListe($id);
@@ -91,28 +98,120 @@ function nouvelleListe($id) {
 	$_SESSION['liste_perso']['classe'] = FALSE;
 	$_SESSION['liste_perso']['photo'] = FALSE;
 	$_SESSION['liste_perso']['colonnes'] = array();
+	$_SESSION['liste_perso']['nbColonne'] = 0 ;
 }
 
 function litBase($id) {
-	echo 'On lit la base pour '.$id;
+	$donnees = chargeTableau($id);
+	if ($donnees) {
+		$_SESSION['liste_perso']['colonnes'] = LitColonnes($id);
+		$liste = $donnees->fetch_object();
+		$_SESSION['liste_perso']['nom'] = $liste->nom;
+		$_SESSION['liste_perso']['sexe'] = $liste->sexe;
+		$_SESSION['liste_perso']['classe'] = $liste->classe;
+		$_SESSION['liste_perso']['photo'] = $liste->photo;
+		$_SESSION['liste_perso']['nbColonne'] = $_SESSION['liste_perso']['colonnes']->num_rows;
+		$_SESSION['liste_perso']['id'] = $liste->id;
+	}
 }
 
 function sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe) {
 	global $mysqli;
 	$sql = "INSERT INTO `mod_listes_perso_definition` "
-	   . "SET  "
+	   . "SET "
 	   . "`nom`= '$nomListe', "
 	   . "`sexe`= '$sexeListe', "
 	   . "`classe`= '$classeListe', "
 	   . "`photo`= '$photoListe' ";
 	if (strlen((string)$idListe) !== 0) {$sql .= ", `id`=$idListe ";}
-	$sql .= ";";
-	
+	$sql .= "ON DUPLICATE KEY UPDATE "
+	   . "`nom`= '$nomListe', "
+	   . "`sexe`= '$sexeListe', "
+	   . "`classe`= '$classeListe', "
+	   . "`photo`= '$photoListe' "
+	   . ";";	
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
 		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
 		echo $sql."<br />" ;
 		return FALSE;
 	}
+	creeColonnes($idListe, $nbColonneListe);
 	return TRUE;
 }
+
+function chargeTableau($idListe = NULL) {
+	global $mysqli;
+	$sql = "SELECT * FROM `mod_listes_perso_definition` " ;
+	if ($idListe !== NULL) {
+		$sql .= "WHERE `id` LiKE '$idListe' ;" ;
+	}
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de la lecture de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return $query;
+}
+
+function DonneeEnPostOuSession($enPost, $enSession, $defaut=NULL) {
+	$retour = filter_input(INPUT_POST, $enPost) ? filter_input(INPUT_POST, $enPost) : (isset($_SESSION['liste_perso'][$enSession]) ? $_SESSION['liste_perso'][$enSession] : $defaut);
+	return $retour;
+}
+
+function CreeColonnes($idListe, $nouveauNombre) {
+	global $mysqli;
+	$colonnes = LitColonnes($idListe);
+	$ancienNombre = $colonnes->num_rows;
+	for($i=0;$i<($nouveauNombre-$ancienNombre);$i++) {
+		$place = $ancienNombre + 1 + $i;
+		$sql = "INSERT INTO `mod_listes_perso_colonnes` "
+		   . "SET "
+		   . "`id_def` = '$idListe', "
+		   . "`titre` = '', "
+		   . "`placement` = '$place' " ;
+		//echo $sql."<br />" ;
+		$query = mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de la lecture de la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;			
+		}
+	}
+}
+
+function LitColonnes($idListe) {
+	global $mysqli;
+	$sql = "SELECT * FROM `mod_listes_perso_colonnes` WHERE `id_def` = '$idListe' " ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de la lecture de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return $query;
+}
+
+function SauveTitreColonne() {
+	global $mysqli;
+	$titre = filter_input(INPUT_POST, 'titre');
+	$id = filter_input(INPUT_POST, 'id');
+	//$id_def = filter_input(INPUT_POST, 'id_def');
+	$sql = "UPDATE  `mod_listes_perso_colonnes` "
+	   . "SET titre = '$titre' "
+	   . "WHERE id = $id" ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;
+	
+}
+
+

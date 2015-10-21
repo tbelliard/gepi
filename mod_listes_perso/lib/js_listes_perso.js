@@ -63,3 +63,25 @@ function desactiver(id)
 	 document.getElementById('menu_lien_'+id).classList.remove('lien_actif');
    }
 }
+
+function inverse(col)
+{
+   affiche('saisie'+col);
+   masque('vision'+col);
+   // document.getElementById('entree'+col).focus();
+   setFocus('entree'+col);
+}
+
+function setFocus(id) {
+   // var tValue = document.forms[0].elements["iSaisie"].value;
+   // document.forms[0].elements["iSaisie"].value = "";
+   // document.forms[0].elements["iSaisie"].focus( );
+   // document.forms[0].elements["iSaisie"].value = tValue;
+   
+   var tValue = document.getElementById(id).value;
+   document.getElementById(id).value = "";
+   document.getElementById(id).focus();
+   document.getElementById(id).value = tValue;
+}
+
+

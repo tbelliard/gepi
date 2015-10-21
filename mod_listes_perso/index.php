@@ -66,56 +66,89 @@ if ($utilisateur->getStatut()!=="cpe"
 
 include_once 'lib/fonction_listes.php';
 
-// a bouger vers définition de la base et ùise à jour
+// a bouger vers définition de la base et mise à jour
 verifieTableCree();
 
+$idListe = NULL;
+$nomListe = NULL;
+$sexeListe = NULL;
+$classeListe = NULL;
+$nbColonneListe = NULL;
+$photoListe = NULL;
+//$colonnes = array();
+
 //==============================================
-//Choix liste
+// Action demandée
 //==============================================
-//$flag = filter_input(INPUT_POST, '') ? filter_input(INPUT_POST, '') : NULL;
-$nouvelleListe = filter_input(INPUT_POST, 'nouvelleListe') === 'Nouvelle liste' ? TRUE : NULL;
 $tableauChoisi = filter_input(INPUT_POST, 'tableauChoisi') ? filter_input(INPUT_POST, 'tableauChoisi') : NULL;
-if ($nouvelleListe) {
+$nouvelleListe = filter_input(INPUT_POST, 'nouvelleListe') === 'Nouvelle liste' ? TRUE : NULL;
+$sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sauvegarder' ? TRUE : FALSE;
+$supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
+$sauveTitreColonne = filter_input(INPUT_POST, 'action') === 'sauveTitreColonne' ? TRUE : FALSE;
+
+if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = "";
 	unset($_SESSION['liste_perso']);
-} elseif ($tableauChoisi) {
-	$idListe = $tableauChoisi;
+
+} elseif ($tableauChoisi) { //===== Choix d'une liste =====
+	if ((int)$tableauChoisi === -1) {
+		$idListe = '';
+	} else {
+		$idListe = $tableauChoisi;
+	}
 	unset($_SESSION['liste_perso']);
-} else {
-	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
-}
-chargeListe($idListe);
+	
+	//charger définition de liste
 
-
-
-//==============================================
-//Définition de liste
-//==============================================
-$sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sauvegarde' ? TRUE : FALSE;
-$supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
-
-if ($sauveDefinitionListe) {
+} elseif ($sauveDefinitionListe) { //===== Création/modification d'une liste =====
 	unset($_SESSION['liste_perso']);
-}
-
-$idListe = filter_input(INPUT_POST, 'idListe') ? filter_input(INPUT_POST, 'idListe') : (isset($_SESSION['liste_perso']['idListe']) ? $_SESSION['liste_perso']['idListe'] : '');
-$nomListe = filter_input(INPUT_POST, 'nomListe') ? filter_input(INPUT_POST, 'nomListe') : (isset($_SESSION['liste_perso']['nomListe']) ? $_SESSION['liste_perso']['nomListe'] : FALSE);
-$sexeListe = filter_input(INPUT_POST, 'sexeListe') ? TRUE : (isset($_SESSION['liste_perso']['sexeListe']) ? $_SESSION['liste_perso']['sexeListe'] : FALSE);
-$classeListe = filter_input(INPUT_POST, 'classeListe') ? TRUE : (isset($_SESSION['liste_perso']['classeListe']) ? $_SESSION['liste_perso']['classeListe'] : FALSE);
-$nbColonneListe = filter_input(INPUT_POST, 'nbColonneListe') ? filter_input(INPUT_POST, 'nbColonneListe') : (isset($_SESSION['liste_perso']['nbColonneListe']) ? $_SESSION['liste_perso']['nbColonneListe'] : 0);
-$photoListe = filter_input(INPUT_POST, 'photoListe') ? filter_input(INPUT_POST, 'photoListe') : (isset($_SESSION['liste_perso']['photo']) ? $_SESSION['liste_perso']['photo'] : 0);
-
-if ($sauveDefinitionListe) {
+	
+	//charger définition de liste
+	$idListe = DonneeEnPostOuSession('idListe', 'id', '');
+	$nomListe = DonneeEnPostOuSession('nomListe', 'nom',FALSE);
+	$sexeListe = DonneeEnPostOuSession('sexeListe', 'sexe',FALSE);
+	$classeListe = DonneeEnPostOuSession('classeListe', 'classe',FALSE);
+	$photoListe = DonneeEnPostOuSession('photoListe', 'photo',0);
+	$colonnes = isset($_SESSION['liste_perso']['colonnes']) ? $_SESSION['liste_perso']['colonnes'] : NULL;
+	$nbColonneListe = DonneeEnPostOuSession('nbColonneListe', 'nbColonne',0);
+	
 	if (strlen($nomListe)) {
 		sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe, $nbColonneListe);
+		//===== On met tout en session =====
+		$_SESSION['liste_perso']['id'] = $idListe;
+		$_SESSION['liste_perso']['nom'] = $nomListe;
+		$_SESSION['liste_perso']['sexe'] = $sexeListe;
+		$_SESSION['liste_perso']['classe'] = $classeListe;
+		$_SESSION['liste_perso']['nbColonne'] = $nbColonneListe;
+		$_SESSION['liste_perso']['photo'] = $photoListe;
+		$colonnes = LitColonnes($idListe);
+		$_SESSION['liste_perso']['colonnes'] = $colonnes;
 	}
+	
+} elseif ($supprimerDefinitionListe) { //===== Suppression d'une liste =====
+		
+} elseif ($sauveTitreColonne) { //===== Un titre de colonne a changé =====
+	SauveTitreColonne();
+	$idListe = filter_input(INPUT_POST, 'id_def');
+} else { //===== Sinon on vérifie s'il y a une liste en mémoire
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
 }
 
+//==============================================
+//Charge tableau
+//==============================================
+chargeListe($idListe);
 
+$idListe = $_SESSION['liste_perso']['id'] ;
+$nomListe = $_SESSION['liste_perso']['nom'] ;
+$sexeListe = $_SESSION['liste_perso']['sexe'] ;
+$classeListe = $_SESSION['liste_perso']['classe'] ;
+$nbColonneListe = $_SESSION['liste_perso']['nbColonne'] ;
+$photoListe = $_SESSION['liste_perso']['photo'] ;
+$colonnes = $_SESSION['liste_perso']['colonnes'] ;
 
-
-
-debug_var();
+// debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
+// var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -174,8 +207,14 @@ require_once("../lib/header.inc.php");
 			<select name="tableauChoisi" 
 					id="tableauChoisi"
 					onchange="this.form.submit()" >
-				<option value="">Choisissez une liste</option>
-				<option value="1">choix2</option>
+				<option value="-1">Choisissez une liste</option>
+<?php
+$tableau = chargeTableau();
+while ($obj = $tableau->fetch_object()) { ?>
+				<option value="<?php echo $obj->id; ?>"
+						<?php if ($obj->id === $idListe) { echo " selected='selected' "; } ?>
+						><?php echo $obj->nom; ?></option>
+<?php }	?>		
 			</select>
 			<input type="submit" id="sauveChoixTableau" name="sauveChoixTableau" value="Afficher" />
 			<input type="submit" id="nouvelleListe" name="nouvelleListe" value="Nouvelle liste" />
@@ -205,65 +244,130 @@ require_once("../lib/header.inc.php");
 		</fieldset>
 	</form>
 </div>
-
 <div id="construction" class="div_construit" style="display:block;">
 	<p><a id='lien_construction'></a></p>
 	<form action="index.php" name="formAjouteColonne" method="post">
 		<fieldset>
-			<p>
-				<legend>Ajouter/supprimer des colonnes</legend>
+			<legend>Ajouter/supprimer des colonnes</legend>
+			<p class="colonne colG65">
+				<input type="hidden"
+					   name="idListe"
+					   value="<?php if ($idListe) {echo $idListe;} ?>"
+					   />
 				<input type="text" 
 					   maxlength="50" 
 					   placeholder="Nom de la nouvelle liste" 
 					   name="nomListe" 
-					   value="<?php if ($_SESSION['liste_perso']['nom']) {echo $_SESSION['liste_perso']['nom'];} ?>"
+					   value="<?php if ($nomListe) {echo $nomListe;} ?>"
 					   />
 				Afficher les colonnes :
-				<label for="sexeListe">Sexe</label>
+				<label for="sexeListe">Sexe&nbsp;→</label>
 				<input type="checkbox" 
 					   name="sexeListe" 
 					   id="sexeListe" 
 					   value=1
-					   <?php if (isset($_SESSION['liste_perso']['sexe']) && $_SESSION['liste_perso']['sexe']) {echo " checked='checked' ";} ?>
+					   <?php if (isset($sexeListe) && $sexeListe) {echo " checked='checked' ";} ?>
 					   />
-				<label for="classeListe">Classe</label>
+				<label for="classeListe">Classe&nbsp;→</label>
 				<input type="checkbox" 
 					   name="classeListe" 
 					   id="classeListe" 
 					   value=1
-					   <?php if ($_SESSION['liste_perso']['classe']) {echo " checked='checked' ";} ?>
+					   <?php if ($classeListe) {echo " checked='checked' ";} ?>
 					   />
-				<label for="photoListe">Photos</label>
+				<label for="photoListe">Photos&nbsp;→</label>
 				<input type="checkbox" 
 					   name="photoListe" 
 					   id="photoListe" 
 					   value=1
-					   <?php if ($_SESSION['liste_perso']['photo']) {echo " checked='checked' ";} ?>
+					   <?php if ($photoListe) {echo " checked='checked' ";} ?>
 					   />
+			</p>
+			<p class="colonne colC20">
 				<label for="nbColonneListe">Nombre de colonnes</label>
 				<input type="text" 
 					   maxlength="2"
 					   name="nbColonneListe" 
 					   id="nbColonneListe"
-					   value="<?php echo count($_SESSION['liste_perso']['colonnes']); ?>"
+					   value="<?php if(isset($colonnes) && $colonnes) {echo $colonnes->num_rows;} else {echo 0;} ?>"
 					   size="1"
 					   />
-				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe ?>" />
-				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Sauvegarder" />
 			</p>
-			<p>
-				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Supprimer" />
+			<p class="colonne colD15">
+				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
+				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Sauvegarder" />
+				<input type="submit" 
+					   id="supprimeDefinitionListe" 
+					   name="supprimeDefinitionListe" 
+					   value="Supprimer"
+					   title="Supprimer la liste"
+					   />
 			</p>
 		</fieldset>
 	</form>
 </div>
 <div id="laListe" class="div_construit" style="display:block;">
-	<form action="index.php" name="formAjouteColonne" method="post">
+	<?php //<form action="index.php" name="formModifieTableau" method="post"> ?>
 		<fieldset id="cadre_laListe">
-			<legend></legend>
-	
+			<table id="tableauListe">
+				<caption>
+					<input id="sauveDonneesTableau" 
+						   type="submit" 
+						   name="sauveDonneesTableau" 
+						   value="<?php echo $nomListe; ?>"
+						   title="Sauvrgarder le tableau"
+						   />
+				</caption>
+				<tr>
+					<th>Nom Prénom</th>
+<?php if ($sexeListe) { ?>
+					<th>Sexe</th>	
+<?php } ?>
+<?php if ($classeListe) { ?>
+					<th>Classe</th>	
+<?php } ?>
+<?php if ($photoListe) { ?>
+					<th>Photo</th>	
+<?php }
+if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
+	while ($colonne = $colonnes->fetch_object()) {
+?>	
+					<th onclick="inverse('<?php echo $colonne->id; ?>')">
+						<form action="index.php" 
+							  name="formModifieTitre" 
+							  method="post" 
+							  id="formModifieTitre<?php echo $colonne->id; ?>" 
+							  style="margin: 0;padding: 0;">
+							<span name="enSaisie" 
+								  class="invisible" 
+								  id="saisie<?php echo $colonne->id; ?>"
+								  >
+								<input type="text" 
+									   name="titre" 
+									   value="<?php echo $colonne->titre; ?>"
+									   id="entree<?php echo $colonne->id; ?>"
+									   onblur="this.form.submit()"
+									   />
+								<input type="hidden" name="id" value="<?php echo $colonne->id; ?>" />
+								<input type="hidden" name="id_def" value="<?php echo $colonne->id_def; ?>" />
+								<input type="hidden" name="action" value="sauveTitreColonne" />
+							</span>
+							<span name="enVision" 
+								  id="vision<?php echo $colonne->id; ?>"
+								  style="cursor:pointer;"
+								  >
+								<?php echo $colonne->titre; ?>
+							</span>
+						</form>
+					</th>		
+<?php 	
+	}
+}
+?>				
+				</tr>
+			</table>
 		</fieldset>
-	</form>
+	<?php //</form> ?>
 </div>
 
 <script type="text/javascript" >

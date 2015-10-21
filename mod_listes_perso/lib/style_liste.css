@@ -105,3 +105,46 @@ fieldset {
 .div_actif {
     background: #ccc;
 }
+
+ .colG65 {
+    width: 70%;
+}
+colC20 {
+    width: 25%;
+    text-align: center;
+}
+.colD15 {
+    width: 10%;
+    text-align: right;
+}
+
+#tableauListe {
+    width: 100%;
+    border-width: 1;
+    border-style: solid;
+    border-color: #bbb;
+    border-left-color: #888;
+    border-bottom-color: #888;
+}
+
+#tableauListe th{
+    border-width: 1;
+    border-style: solid;
+    border-color: #bbb;
+    border-left-color: #888;
+    border-bottom-color: #888;
+}
+
+#tableauListe th input{
+   background: #ccc;
+   border-style: none;
+   font-weight: bold;
+   border-radius:.5em;
+   padding: .1em .5em;
+   text-align: center;
+}
+
+
+
+
+
