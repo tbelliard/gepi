@@ -175,11 +175,16 @@ class CvsentCtrl extends Controleur {
 
 				// On a un parent
 				if ((!$recherche)&&(isset($ligne_entete[13]))&&($ligne_entete[13]=='prenom enfant')&&(isset($this->ligne[13]))&&($this->ligne[13]!="")&&(isset($ligne_entete[14]))&&($ligne_entete[14]=='nom enfant')&&(isset($this->ligne[14]))&&($this->ligne[14]!="")) {
-					$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[14])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[13])."';";
-					$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
-					if(mysqli_num_rows($res_classe)==1) {
-						$lig_classe=mysqli_fetch_object($res_classe);
-						$this->ligne[2]=$lig_classe->classe;
+					// Parent avec enfant, mais sans classe... est-ce un bug de l'export ou un élève de l'an dernier.
+					// On peut récupérer la classe si l'élève est toujours dans l'établissement, mais ne va-t-il pas y avoir un doublon parent dans l'export CSV?
+					// Deux lignes parent pour l'élève sans classe pour une ligne et avec classe pour l'autre ? Va-t-on récupérer/retenir le bon?
+					if(getSettingAOui('mod_sso_table_tenter_classe_vide')) {
+						$sql="SELECT DISTINCT classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.nom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[14])."' AND e.prenom='".mysqli_real_escape_string($GLOBALS['mysqli'], $this->ligne[13])."';";
+						$res_classe=mysqli_query($GLOBALS['mysqli'], $sql);
+						if(mysqli_num_rows($res_classe)==1) {
+							$lig_classe=mysqli_fetch_object($res_classe);
+							$this->ligne[2]=$lig_classe->classe;
+						}
 					}
 				}
 
