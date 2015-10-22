@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -123,6 +123,94 @@ $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
+
+if((isset($_POST['mode']))&&($_POST['mode']=="cherche_eleve")) {
+	$nom_ele=isset($_POST['nom_ele']) ? $_POST['nom_ele'] : NULL;
+	$prenom_ele=isset($_POST['prenom_ele']) ? $_POST['prenom_ele'] : NULL;
+
+	if((isset($nom_ele))&&(isset($prenom_ele))) {
+		//$sql="SELECT * FROM eleves WHERE nom LIKE '%".mysqli_real_escape_string($GLOBALS['mysqli'], $nom_ele)."%' AND prenom LIKE '%".mysqli_real_escape_string($GLOBALS['mysqli'], $prenom_ele)."%' ORDER BY nom, prenom;";
+		$sql="SELECT * FROM eleves WHERE nom LIKE '%".preg_replace("/[^A-Za-z]/u", "%", $nom_ele)."%' AND prenom LIKE '%".preg_replace("/[^A-Za-z]/u", "%", $prenom_ele)."%' ORDER BY nom, prenom;";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			echo "<p style='color:red'>Aucun élève trouvé.</p>";
+		}
+		else {
+			echo "<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Nom</th>
+		<th>Prénom</th>
+		<th>Naissance</th>
+		<th>INE</th>
+		<th>Classes</th>
+	</tr>";
+			while($lig=mysqli_fetch_object($res)){
+				echo "
+	<tr style='text-align: center;'>
+		<td>".$lig->nom."</td>
+		<td>".$lig->prenom."</td>
+		<td>".formate_date($lig->naissance)."</td>
+		<td>";
+				if($lig->no_gep!=""){
+					//echo '<a href=\'#\' onClick=\"document.getElementById(document.getElementById(\'ine_recherche\').value).value=\''.$lig->no_gep.'\';cacher_div(\'div_search\');return false;\">'.$lig->no_gep.'</a>';
+					echo '<a href=\'#\' onClick="corrige_ine(\''.$lig->no_gep.'\');return false;">'.$lig->no_gep.'</a>';
+				}
+				else{
+					echo "<span style='color:red'>Non renseigné</span>";
+				}
+				echo "</td>
+		<td>".get_chaine_liste_noms_classes_from_ele_login($lig->login)."</td>
+	</tr>";
+			}
+			echo "</table>";
+		}
+	}
+	else {
+		echo "<p style='color:red'>Nom ou prénom non transmis.</p>";
+	}
+
+	die();
+}
+
+// 20151021
+if($action=="corrige_ine_eleve") {
+	check_token();
+
+	//debug_var();
+
+	$edt_eleves_lignes_id=isset($_POST['edt_eleves_lignes_id']) ? $_POST['edt_eleves_lignes_id'] : NULL;
+	$ine_corrige=isset($_POST['ine_corrige']) ? $_POST['ine_corrige'] : NULL;
+	$nom_eleve=isset($_POST['nom_eleve']) ? $_POST['nom_eleve'] : array();
+	$prenom_eleve=isset($_POST['prenom_eleve']) ? $_POST['prenom_eleve'] : array();
+
+	if(!isset($edt_eleves_lignes_id)) {
+		$msg.="Aucun identifiant élève de la table 'edt_eleves_lignes' n'a été transmis.<br />";
+	}
+	elseif(!isset($ine_corrige)) {
+		$msg.="Le tableau des INE potentiellement corrigés n'a pas été transmis.<br />";
+	}
+	else {
+		$msg.="Prise en compte des corrections d'INE&nbsp;: <br />";
+		for($loop=0;$loop<count($edt_eleves_lignes_id);$loop++) {
+			if((isset($ine_corrige[$loop]))&&($ine_corrige[$loop]!="")) {
+				$msg.="Mise à jour de l'INE pour ".$prenom_eleve[$loop]." ".$nom_eleve[$loop]." (".$ine_corrige[$loop].")&nbsp;: ";
+				$sql="UPDATE edt_eleves_lignes SET n_national='".$ine_corrige[$loop]."' WHERE id='".$edt_eleves_lignes_id[$loop]."';";
+				//$msg.="$sql<br />";
+				$update=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($update) {
+					$msg.="<span style='color:green'>OK</span>";
+				}
+				else {
+					$msg.="<span style='color:red'>ECHEC</span>";
+				}
+				$msg.="<br />";
+			}
+		}
+	}
+
+	$action="comparer";
+}
 
 if((isset($_POST['valider_ec3']))&&(isset($id_groupe))&&(isset($_POST['id_nom_edt']))) {
 	check_token();
@@ -932,6 +1020,204 @@ elseif($action=="upload") {
 	echo "</span>";
 
 	echo "<p>$cpt élève(s) trouvés dans ce fichier.</p>";
+
+
+
+	echo creer_div_infobulle("div_search","Formulaire de recherche dans la table 'eleves'","","<p>Saisir une portion du nom à rechercher...</p>
+<form name='recherche' action='".$_SERVER['PHP_SELF']."' method='post'>
+<input type='hidden' name='ine_recherche' id='ine_recherche' value='' />
+<table border='0' summary='Recherche'>
+	<tr>
+		<th>Nom: </th>
+		<td><input type='text' name='nom_ele' id='nom_ele' value='' onBlur='get_eleves(this.form)' /></td>
+		<td rowspan='2'><input type='button' name='chercher' value='Chercher' onClick='get_eleves(this.form)' /></td>
+	</tr>
+	<tr>
+		<th>Prénom: </th>
+		<td><input type='text' name='prenom_ele' id='prenom_ele' value='' onBlur='get_eleves(this.form)' /></td>
+	</tr>
+</table>
+</form>
+
+<div id='div_resultat' style='margin: 1px;'></div>
+
+","",32,0,"y","y","n","n");
+
+	$cpt=0;
+	$chaine_ine_pb="";
+	//$tab_ine_pb=array();
+	$tab_ine_pb_id=array();
+
+	//$sql="SELECT DISTINCT id, nom, prenom, n_national, date_naiss, classe FROM edt_eleves_lignes WHERE n_national NOT IN (SELECT no_gep FROM eleves);";
+	$sql="SELECT DISTINCT id, nom, prenom, n_national, date_naiss, classe FROM edt_eleves_lignes WHERE classe!='' AND n_national NOT IN (SELECT no_gep FROM eleves);";
+	$res_ine_non_trouve=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ine_non_trouve)>0) {
+
+		$chaine_ine_pb.="<p>Voici la liste des élèves concernés&nbsp;:</p>
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th>Nom</th>
+				<th>Prénom</th>
+				<th>Naissance</th>
+				<th>INE (EDT)</th>
+				<th>Classe</th>
+				<th>INE corrigé</th>
+				<th>Chercher</th>
+			</tr>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res_ine_non_trouve)) {
+			$chaine_ine_pb.="
+			<tr>
+				<td>
+					$lig->nom
+					<input type='hidden' name='nom_eleve[$cpt]' id='nom_eleve_$cpt' value=\"".$lig->nom."\" />
+					<input type='hidden' name='edt_eleves_lignes_id[$cpt]' id='edt_eleves_lignes_id_$cpt' value=\"".$lig->id."\" />
+				</td>
+				<td>
+					$lig->prenom
+					<input type='hidden' name='prenom_eleve[$cpt]' id='prenom_eleve_$cpt' value=\"".$lig->prenom."\" />
+				</td>
+				<td>
+					$lig->date_naiss
+				</td>
+				<td>
+					$lig->n_national
+				</td>
+				<td>
+					$lig->classe
+				</td>
+				<td>
+					<input type='text' name='ine_corrige[$cpt]' id='ine_corrige_$cpt' value='' onchange=\"changement()\" />
+				</td>
+				<td>
+					<a href='#' onClick=\"prepare_form_recherche_ele_ine($cpt);return false;\">
+						<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' />
+					</a>
+				</td>
+			</tr>";
+			/*
+			if($lig->n_national!="") {
+				$tab_ine_pb[]=$lig->n_national;
+			}
+			*/
+			$tab_ine_pb_id[]=$lig->id;
+			$cpt++;
+		}
+		$chaine_ine_pb.="
+		</table>";
+	}
+
+	$chaine_ine_pb_complement="";
+	// Cas GALLIER, GALLIER-GENTES inscrite deux fois dans Sconet et le principal adjoint a conservé dans sa base EDT la mauvaise élève (celle qui dans Sconet a une date de sortie renseignée)
+	$sql="SELECT DISTINCT id, nom, prenom, n_national, date_naiss, classe FROM edt_eleves_lignes WHERE classe!='' AND n_national NOT IN (SELECT no_gep FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login);";
+	$res_ine_non_trouve=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ine_non_trouve)>0) {
+		while($lig=mysqli_fetch_object($res_ine_non_trouve)) {
+			//if(!in_array($lig->n_national, $tab_ine_pb)) {
+			if(!in_array($lig->id, $tab_ine_pb_id)) {
+				$chaine_ine_pb_complement.="
+			<tr>
+				<td>
+					$lig->nom
+					<input type='hidden' name='nom_eleve[$cpt]' id='nom_eleve_$cpt' value=\"".$lig->nom."\" />
+					<input type='hidden' name='edt_eleves_lignes_id[$cpt]' id='edt_eleves_lignes_id_$cpt' value=\"".$lig->id."\" />
+				</td>
+				<td>
+					$lig->prenom
+					<input type='hidden' name='prenom_eleve[$cpt]' id='prenom_eleve_$cpt' value=\"".$lig->prenom."\" />
+				</td>
+				<td>
+					$lig->date_naiss
+				</td>
+				<td>
+					$lig->n_national
+				</td>
+				<td>
+					$lig->classe
+				</td>
+				<td>
+					<input type='text' name='ine_corrige[$cpt]' id='ine_corrige_$cpt' value='' onchange=\"changement()\" />
+				</td>
+				<td>
+					<a href='#' onClick=\"prepare_form_recherche_ele_ine($cpt);return false;\">
+						<img src='../images/icons/chercher.png' width='16' height='16' alt='Chercher' />
+					</a>
+				</td>
+			</tr>";
+				/*
+				if($lig->n_national!="") {
+					$tab_ine_pb[]=$lig->n_national;
+				}
+				*/
+				$cpt++;
+			}
+		}
+
+		if($chaine_ine_pb_complement!="") {
+			$chaine_ine_pb.="<p>Un ou des élèves du fichiers EDT correspondent à des élèves qui ne sont pas/plus dans des classes dans Gepi.<br />Certains rapprochements sont peut-être nécessaires.<br />Sinon, il faut (re)mettre l'élève dans la classe dans Gepi.</p>
+		<p>Voici la liste des élèves concernés&nbsp;:</p>
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th>Nom</th>
+				<th>Prénom</th>
+				<th>Naissance</th>
+				<th>INE (EDT)</th>
+				<th>Classe</th>
+				<th>INE corrigé</th>
+				<th>Chercher</th>
+			</tr>".$chaine_ine_pb_complement."
+		</table>";
+		}
+	}
+
+	if($cpt>0) {
+		echo "
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_correction_ine' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='action' value='corrige_ine_eleve' />
+
+		<p style='color:red'>Un ou des INE du XML importé n'ont pas été trouvés dans la table 'eleves'.<br />
+		Cela peut arriver dans plusieurs cas&nbsp;:</p>
+		<ul>
+			<li>Vous avez mis à jour la liste des élèves dans EDT sans effectuer le même ajout d'élève dans Gepi (<em>ou sans prendre en compte un export XML de Sconet pour procéder à une mise à jour non manuelle</em>).</li>
+			<li>La liste des élèves dans EDT n'est pas à jour (<em>INE non renseigné dans EDT, ou mauvais INE (l'INE peut changer dans les premiers jours de l'arrivée d'un élève dans l'établissement par exemple dans le cas où il vient d'une autre académie)</em>).</li>
+		</ul>";
+
+		echo $chaine_ine_pb;
+
+		echo "<p><input type='submit' value=\"Prendre en compte les corrections pour les INE non vides\" /></p>
+		<p>Il est recommandé de faire le rapprochement avant rechercher les modifications d'appartenance aux groupes/enseignements.</p>
+	</fieldset>
+</form>
+
+<script type='text/javascript'>
+	function prepare_form_recherche_ele_ine(cpt) {
+		document.getElementById('nom_ele').value=document.getElementById('nom_eleve_'+cpt).value;
+		document.getElementById('prenom_ele').value=document.getElementById('prenom_eleve_'+cpt).value;
+		document.getElementById('ine_recherche').value='ine_corrige_'+cpt;
+
+		// On fait le nettoyage pour ne pas laisser les traces d'une précédente requête:
+		document.getElementById('div_resultat').innerHTML='';
+		afficher_div('div_search','y',-500,0);
+	}
+
+	function get_eleves(f) {
+		nom_ele=document.getElementById('nom_ele').value;
+		prenom_ele=document.getElementById('prenom_ele').value;
+		new Ajax.Updater($('div_resultat'),'".$_SERVER['PHP_SELF']."',{method: 'post',
+		parameters: {
+			nom_ele: nom_ele,
+			prenom_ele: prenom_ele,
+			mode: 'cherche_eleve'
+		}});
+	}
+	function corrige_ine(ine) {
+		document.getElementById(document.getElementById('ine_recherche').value).value=ine;
+		cacher_div('div_search');
+	}
+</script>";
+	}
 
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?action=comparer'>Rechercher les modifications d'appartenance aux groupes/enseignements</a>.</p>";
 
