@@ -56,10 +56,26 @@ function verifieTableCree() {
 		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
 		echo $sql_col."<br />" ;
 	}
+	// echo "création de mod_listes_perso_eleves"."<br />" ;
+	$sql_elv = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_eleves` ("
+	   . "`id` int(11) NOT NULL auto_increment, "
+	   . "`id_def` int(11) NOT NULL, "
+	   . "`login` varchar(50) NOT NULL default '', "
+	   . "PRIMARY KEY  (`id`), "
+	   . "INDEX combinaison (`id_def`, `login`) "
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+	$query_elv = mysqli_query($mysqli, $sql_elv);
+	if (!$query_elv) {
+		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql_elv."<br />" ;
+	}
 
-	// echo "création de mod_listes_perso_contenu"."<br />" ;	
+	// echo "création de mod_listes_perso_contenus"."<br />" ;	
 }
 
+
+//=========================================================================================================
+//                                     Générales
 //=========================================================================================================
 function EnregistreDroitListes($ouvre) {
 	global $mysqli;
@@ -81,8 +97,13 @@ function DroitSurListeOuvert() {
 	return $retour;
 }
 
+function DonneeEnPostOuSession($enPost, $enSession, $defaut=NULL) {
+	$retour = filter_input(INPUT_POST, $enPost) ? filter_input(INPUT_POST, $enPost) : (isset($_SESSION['liste_perso'][$enSession]) ? $_SESSION['liste_perso'][$enSession] : $defaut);
+	return $retour;
+}
 //=========================================================================================================
-
+//                                      Listes
+//=========================================================================================================
 function chargeListe($id) {
 	if (!$id) {
 		nouvelleListe($id);
@@ -156,11 +177,10 @@ function chargeTableau($idListe = NULL) {
 	return $query;
 }
 
-function DonneeEnPostOuSession($enPost, $enSession, $defaut=NULL) {
-	$retour = filter_input(INPUT_POST, $enPost) ? filter_input(INPUT_POST, $enPost) : (isset($_SESSION['liste_perso'][$enSession]) ? $_SESSION['liste_perso'][$enSession] : $defaut);
-	return $retour;
-}
 
+//=========================================================================================================
+//                                      Colonnes
+//=========================================================================================================
 function CreeColonnes($idListe, $nouveauNombre) {
 	global $mysqli;
 	$colonnes = LitColonnes($idListe);
@@ -210,8 +230,78 @@ function SauveTitreColonne() {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	return TRUE;
-	
+	return TRUE;	
 }
 
 
+//=========================================================================================================
+//                                      Élèves
+//=========================================================================================================
+
+function ChargeClasses() {
+	global $utilisateur;
+	$classe_col = $utilisateur->getClasses();
+	var_dump($classe_col);
+}
+
+function ChargeEleves($idListe) {
+	global $mysqli;
+	$sql = "SELECT * FROM mod_listes_perso_eleves "
+	   . "WHERE `id_def` = '$idListe' ";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	if ($query->num_rows) {
+		while ($id = $query->fetch_object()) {
+			$listeId[] = $id->login;
+		}
+			$eleve_choisi_col = new PropelCollection();
+			foreach ($listeId as $elv) {
+				$query = EleveQuery::create();
+				$query->findByLogin($elv);
+				$eleve = $query->findOne();
+				$eleve_choisi_col->add($eleve);
+			}		
+		return $eleve_choisi_col;
+	} else {
+		return NULL;
+	}	
+}
+
+function EnregistreElevesChoisis($idElevesChoisis, $idListe) {
+	global $mysqli;
+	foreach ($idElevesChoisis as $idEleve) {
+		$sql = "INSERT INTO mod_listes_perso_eleves "
+		   . "SET `id_def` = '$idListe', "
+		   . "`login` = '$idEleve' "
+		   . "ON DUPLICATE KEY UPDATE `login` = '$idEleve' ";
+		//echo $sql."<br />" ;
+		$query = mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+function SupprimeEleve($login, $idListe) {
+	global $mysqli;
+	$sql = "DELETE FROM `mod_listes_perso_eleves` "
+	   . "WHERE `login` = '$login' "
+	   . "AND `id_def` = '$idListe'" ;	
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	// TODO : il faudra supprimer aussi les données des colonnes
+	return TRUE;
+}

@@ -120,7 +120,7 @@ colC20 {
 
 #tableauListe {
     width: 100%;
-    border-width: 1;
+    border-width: 1px;
     border-style: solid;
     border-color: #bbb;
     border-left-color: #888;
@@ -128,7 +128,7 @@ colC20 {
 }
 
 #tableauListe th{
-    border-width: 1;
+    border-width: 1px;
     border-style: solid;
     border-color: #bbb;
     border-left-color: #888;
@@ -145,6 +145,13 @@ colC20 {
 }
 
 
+#tableauListe td{
+    border-width: 1px;
+    border-style: solid;
+    border-color: #bbb;
+    border-left-color: #888;
+    border-bottom-color: #888;
+}
 
 
 

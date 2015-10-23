@@ -72,16 +72,24 @@ function inverse(col)
    setFocus('entree'+col);
 }
 
-function setFocus(id) {
-   // var tValue = document.forms[0].elements["iSaisie"].value;
-   // document.forms[0].elements["iSaisie"].value = "";
-   // document.forms[0].elements["iSaisie"].focus( );
-   // document.forms[0].elements["iSaisie"].value = tValue;
-   
+function setFocus(id)
+{   
    var tValue = document.getElementById(id).value;
    document.getElementById(id).value = "";
    document.getElementById(id).focus();
    document.getElementById(id).value = tValue;
 }
+
+function supprime(login, nom, prenom)
+{
+   var r = confirm("Voulez-vous vraiment supprimer "+nom+' '+prenom+' ('+login+')');
+   if (r === true) {
+	 //alert ("on supprime "+login+" → "+'formSupprimeEleve'+login);
+	 document.getElementById('formSupprimeEleve'+login).submit();
+	 //alert ("on a supprimé "+login);
+   }
+}
+
+
 
 

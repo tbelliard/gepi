@@ -75,6 +75,12 @@ $sexeListe = NULL;
 $classeListe = NULL;
 $nbColonneListe = NULL;
 $photoListe = NULL;
+
+// $id_groupe = isset($_SESSION['liste_perso']['id_groupe']) ? $_SESSION['liste_perso']['id_groupe'] : NULL;
+// $id_aid = isset($_SESSION['liste_perso']['id_aid']) ? $_SESSION['liste_perso']['id_aid'] : NULL;
+$id_groupe = NULL;
+$id_aid = NULL;
+
 //$colonnes = array();
 
 //==============================================
@@ -85,6 +91,10 @@ $nouvelleListe = filter_input(INPUT_POST, 'nouvelleListe') === 'Nouvelle liste' 
 $sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sauvegarder' ? TRUE : FALSE;
 $supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
 $sauveTitreColonne = filter_input(INPUT_POST, 'action') === 'sauveTitreColonne' ? TRUE : FALSE;
+$chargeEleves = filter_input(INPUT_POST, 'action') === 'choixEleves' ? TRUE : FALSE;
+//Je n'ai pas trouvé d'équivalent à filter_input pour un tableau :( Régis 
+$idElevesChoisis = isset($_POST['elevesChoisis']) && count($_POST['elevesChoisis']) ? $_POST['elevesChoisis'] : NULL;
+$supprimeEleve = filter_input(INPUT_POST, 'eleveASupprimer') ? filter_input(INPUT_POST, 'eleveASupprimer') : NULL;
 
 if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = "";
@@ -130,7 +140,58 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 } elseif ($sauveTitreColonne) { //===== Un titre de colonne a changé =====
 	SauveTitreColonne();
 	$idListe = filter_input(INPUT_POST, 'id_def');
-} else { //===== Sinon on vérifie s'il y a une liste en mémoire
+	
+} elseif ($chargeEleves) { //===== On charge les élèves =====
+	$eleve_col = new PropelCollection();
+	$id_groupe = (int)filter_input(INPUT_POST, 'id_groupe') != -1 ? filter_input(INPUT_POST, 'id_groupe') : NULL;
+	if ($id_groupe !==NULL ) {
+		$id_aid = NULL;
+		
+		//TODO : à mettre dans une fonction
+		if ($utilisateur->getStatut() == "professeur") {
+			$current_groupe = GroupeQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_groupe);
+		} else {
+			$current_groupe = GroupeQuery::create()->findPk($id_groupe);
+		}
+		
+		$query = EleveQuery::create();
+		$query->useJEleveGroupeQuery()->filterByGroupe($current_groupe)->endUse();
+		$query->where('Eleve.DateSortie is NULL')
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct();
+		$eleve_col = $query->find();
+		
+	} else {
+		//TODO : à mettre dans une fonction
+		$id_aid = (int)filter_input(INPUT_POST, 'id_aid') != -1 ? filter_input(INPUT_POST, 'id_aid') : NULL;
+		if ($id_aid !==NULL ) {
+			$current_aid = AidDetailsQuery::create()->findPk($id_aid);
+			
+			$query = EleveQuery::create();
+			$query->useJAidElevesQuery()
+			   ->filterByIdAid($current_aid->getId())
+			   ->endUse()
+			   ->where('Eleve.DateSortie is NULL')
+			   ->orderBy('Eleve.Nom','asc')
+			   ->orderBy('Eleve.Prenom','asc')
+			   ->distinct();
+			$eleve_col = $query->find();
+		} else {
+			if(count($idElevesChoisis)) {
+				// TODO : enregistrer les élèves et mettre tout ça dans des fonctions
+				EnregistreElevesChoisis($idElevesChoisis, $_SESSION['liste_perso']['id']);
+			}
+		}
+	}
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+	
+	   
+} elseif ($supprimeEleve) {
+	SupprimeEleve($supprimeEleve, $_SESSION['liste_perso']['id']);
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+}
+else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
 }
 
@@ -138,6 +199,11 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 //Charge tableau
 //==============================================
 chargeListe($idListe);
+$eleve_choisi_col = ChargeEleves($idListe);
+
+
+$groupe_col = $utilisateur->getGroupes();
+$aid_col = $utilisateur->getAidDetailss();
 
 $idListe = $_SESSION['liste_perso']['id'] ;
 $nomListe = $_SESSION['liste_perso']['nom'] ;
@@ -148,7 +214,7 @@ $photoListe = $_SESSION['liste_perso']['photo'] ;
 $colonnes = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-// var_dump($_POST);
+var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -241,6 +307,54 @@ while ($obj = $tableau->fetch_object()) { ?>
 	<form action="index.php" name="formAjouteEleve" method="post">
 		<fieldset class="center">
 			<legend>Ajouter des membres à la liste</legend>
+			<p>
+				<input type="hidden" name="action" value="choixEleves"/>
+				<label for="id_groupe">Groupe : </label>
+				<select id="id_groupe" name="id_groupe" class="small"<?php
+					if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('abs2_saisie_prof_decale'))&&(!getSettingAOui('abs2_saisie_prof_decale_journee'))) {
+						echo " onchange=\"document.forms['form_choix_groupe'].submit();\"";
+					}
+				?>>
+					<option value='-1'>choisissez un groupe</option>
+<?php
+foreach ($groupe_col as $group) {	
+	var_dump($group);
+?>
+					<option value='<?php echo $group->getId(); ?>'>
+						<?php echo $group->getNameAvecClasses(); ?>
+					</option>
+<?php } ?>
+				</select>
+				
+<?php if (isset ($aid_col) && !$aid_col->isEmpty()) { ?>
+				<label for="id_aid">AID : </label>
+				<select id="id_aid" name="id_aid" class="small">
+					<option value='-1'>choisissez une aid</option>
+<?php foreach ($aid_col as $aid) { ?>
+					<option value='<?php echo $aid->getPrimaryKey(); ?>'>
+						<?php echo $aid->getNom(); ?>
+					</option>
+<?php } ?>
+				</select>
+<?php } ?>
+				<button type="submit">Valider</button>
+				
+			</p>
+<?php if (isset ($eleve_col) && !$eleve_col->isEmpty()) { ?>
+			<p>
+				<input type="hidden" name="lastIdGroupe" value="<?php echo $id_groupe; ?>" />
+				<input type="hidden" name="lastIdAID" value="<?php echo $id_aid; ?>" />
+				<select multiple="multiple" id="elevesChoisis" name="elevesChoisis[]" size="5">
+					<option value='-1'>choisissez un ou des élèves</option>
+<?php foreach ($eleve_col as $eleve) { ?>
+					<option value='<?php echo $eleve->getLogin(); ?>'>
+						<?php echo $eleve->getNom(); ?> <?php echo $eleve->getPrenom(); ?>
+					</option>
+<?php } ?>		
+					
+				</select>
+			</p>
+<?php } ?>
 		</fieldset>
 	</form>
 </div>
@@ -307,67 +421,124 @@ while ($obj = $tableau->fetch_object()) { ?>
 	</form>
 </div>
 <div id="laListe" class="div_construit" style="display:block;">
-	<?php //<form action="index.php" name="formModifieTableau" method="post"> ?>
-		<fieldset id="cadre_laListe">
-			<table id="tableauListe">
-				<caption>
-					<input id="sauveDonneesTableau" 
-						   type="submit" 
-						   name="sauveDonneesTableau" 
-						   value="<?php echo $nomListe; ?>"
-						   title="Sauvrgarder le tableau"
-						   />
-				</caption>
-				<tr>
-					<th>Nom Prénom</th>
+	<fieldset id="cadre_laListe">
+		<table id="tableauListe">
+			<caption>
+				<input id="sauveDonneesTableau" 
+					   type="submit" 
+					   name="sauveDonneesTableau" 
+					   value="<?php echo $nomListe; ?>"
+					   title="Sauvrgarder le tableau"
+					   />
+			</caption>
+			<tr>
+				<th>Nom Prénom</th>
 <?php if ($sexeListe) { ?>
-					<th>Sexe</th>	
+				<th>Sexe</th>	
 <?php } ?>
 <?php if ($classeListe) { ?>
-					<th>Classe</th>	
+				<th>Classe</th>	
 <?php } ?>
 <?php if ($photoListe) { ?>
-					<th>Photo</th>	
+				<th>Photo</th>	
 <?php }
 if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	while ($colonne = $colonnes->fetch_object()) {
 ?>	
-					<th onclick="inverse('<?php echo $colonne->id; ?>')">
-						<form action="index.php" 
-							  name="formModifieTitre" 
-							  method="post" 
-							  id="formModifieTitre<?php echo $colonne->id; ?>" 
-							  style="margin: 0;padding: 0;">
-							<span name="enSaisie" 
-								  class="invisible" 
-								  id="saisie<?php echo $colonne->id; ?>"
-								  >
-								<input type="text" 
-									   name="titre" 
-									   value="<?php echo $colonne->titre; ?>"
-									   id="entree<?php echo $colonne->id; ?>"
-									   onblur="this.form.submit()"
-									   />
-								<input type="hidden" name="id" value="<?php echo $colonne->id; ?>" />
-								<input type="hidden" name="id_def" value="<?php echo $colonne->id_def; ?>" />
-								<input type="hidden" name="action" value="sauveTitreColonne" />
-							</span>
-							<span name="enVision" 
-								  id="vision<?php echo $colonne->id; ?>"
-								  style="cursor:pointer;"
-								  >
-								<?php echo $colonne->titre; ?>
-							</span>
-						</form>
-					</th>		
+				<th onclick="inverse('<?php echo $colonne->id; ?>')"
+					title="Cliquer sur le titre de la colonne pour le modifier">
+					<form action="index.php" 
+						  name="formModifieTitre" 
+						  method="post" 
+						  id="formModifieTitre<?php echo $colonne->id; ?>" 
+						  style="margin: 0;padding: 0;">
+						<span class="invisible" 
+							  id="saisie<?php echo $colonne->id; ?>"
+							  >
+							<input type="text" 
+								   name="titre" 
+								   value="<?php echo $colonne->titre; ?>"
+								   id="entree<?php echo $colonne->id; ?>"
+								   onblur="this.form.submit()"
+								   />
+							<input type="hidden" name="id" value="<?php echo $colonne->id; ?>" />
+							<input type="hidden" name="id_def" value="<?php echo $colonne->id_def; ?>" />
+							<input type="hidden" name="action" value="sauveTitreColonne" />
+						</span>
+						<span id="vision<?php echo $colonne->id; ?>"
+							  style="cursor:pointer;"
+							  >
+							<?php echo $colonne->titre; ?>
+						</span>
+					</form>
+				</th>		
 <?php 	
 	}
 }
 ?>				
-				</tr>
-			</table>
-		</fieldset>
-	<?php //</form> ?>
+			</tr>
+<?php if (isset($eleve_choisi_col) && $eleve_choisi_col) {
+	 foreach ($eleve_choisi_col as $elv_choisi) { ?>
+			<tr>
+				<td>
+					<form action="index.php" 
+						  name="formSupprimeEleve" 
+						  method="post" 
+						  id="formSupprimeEleve<?php echo $elv_choisi->getLogin(); ?>" 
+						  style="margin: 0;padding: 0;padding-left: .5em;">
+						<img src="../images/bulle_rouge.png" 
+							 onclick="supprime('<?php echo $elv_choisi->getLogin(); ?>', '<?php echo $elv_choisi->getNom(); ?>', '<?php echo $elv_choisi->getPrenom(); ?>'), false" 
+							 style="cursor:pointer;"
+							 title="supprimer <?php echo $elv_choisi->getNom(); ?> <?php echo $elv_choisi->getPrenom(); ?>"
+							  />
+					<?php echo $elv_choisi->getNom(); ?> <?php echo $elv_choisi->getPrenom(); ?>
+						<input type="submit" name="supprimeEleve" id="supprime_<?php echo $elv_choisi->getLogin(); ?>" value="supprimer" />
+						<input type="hidden" name="eleveASupprimer" value="<?php echo $elv_choisi->getLogin(); ?>" />
+<script type="text/javascript" >
+	masque('supprime_<?php echo $elv_choisi->getLogin(); ?>');
+</script>		
+					</form>
+				</td>				
+<?php if ($sexeListe) { ?>
+				<td class="center"><?php echo $elv_choisi->getSexe(); ?></td>	
+<?php } ?>
+				
+<?php if ($classeListe) { ?>
+				<td class="center"><?php echo $elv_choisi->getClasse()->getNom(); ?></td>	
+<?php } ?>
+				
+<?php if ($photoListe) { ?>
+				<td class="center">
+<?php if ($elv_choisi->getElenoet()) { ?>
+					<img src="../photos/eleves/<?php echo $elv_choisi->getElenoet(); ?>.jpg" style="width: 64px;"/>
+<?php } ?>
+				</td>		
+<?php } ?>
+		
+		
+
+<?php
+if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
+	for($i=0;$i<$colonnes->num_rows;$i++) { ?>
+				<td></td>
+<?php }	
+} ?>		
+						
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			</tr>
+<?php 	 }
+} ?>
+		</table>
+		<?php if (isset($eleve_choisi_col))  {echo '<p>'.$eleve_choisi_col->count().' élèves</p>';} else {echo '<p>0 élève choisi</p>';} ?> 
+	</fieldset>
 </div>
 
 <script type="text/javascript" >
@@ -378,6 +549,22 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 </script>
 <?php
 if ($nouvelleListe) {
+?>
+<script type="text/javascript" >
+	desactiver("tableau");
+	activer("construction");
+</script>
+<?php
+}
+if ($chargeEleves) {
+?>
+<script type="text/javascript" >
+	desactiver("tableau");
+	activer("eleves");
+</script>
+<?php
+}
+if ($sauveDefinitionListe) {
 ?>
 <script type="text/javascript" >
 	desactiver("tableau");
