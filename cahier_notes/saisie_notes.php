@@ -97,6 +97,8 @@ if ($id_devoir)  {
 	$nom_devoir = $obj_devoir->nom_court;
 	$ramener_sur_referentiel_dev_choisi=$obj_devoir->ramener_sur_referentiel;
 	$note_sur_dev_choisi=$obj_devoir->note_sur;
+	// 20151024
+	$date_devoir = $obj_devoir->date;
 
 	$sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
 	$query = mysqli_query($GLOBALS["mysqli"], $sql);
@@ -668,6 +670,8 @@ while ($obj_dev=$appel_dev->fetch_object()) {
 	$facultatif[$j] = $obj_dev->facultatif;
 	$display_parents[$j] = $obj_dev->display_parents;
 	$date_visibilite_ele_resp[$j] = $obj_dev->date_ele_resp;
+	// 20151024
+	$date_dev[$j] = $obj_dev->date;
 	$date = $obj_dev->date;
 	$annee = mb_substr($date,0,4);
 	$mois =  mb_substr($date,5,2);
@@ -1100,6 +1104,17 @@ if ($order_by != "classe") {
 	}
 }
 
+// 20151024
+if (($id_devoir!=0)&&(isset($date_devoir))) {
+	$tmp_liste_eleves=$liste_eleves;
+	unset($liste_eleves);
+	foreach($tmp_liste_eleves as $eleve) {
+		if((!isset($eleve["date_sortie"]))||($eleve["date_sortie"]=="0000-00-00 00:00:00")||($eleve["date_sortie"]>$date_devoir)) {
+			$liste_eleves[$eleve['login']]=$tmp_liste_eleves[$eleve['login']];
+		}
+	}
+}
+
 $prev_classe = null;
 
 $tab_graph=array();
@@ -1115,8 +1130,11 @@ foreach ($liste_eleves as $eleve) {
 
 	$k=0;
 	while ($k < $nb_dev) {
-		$note_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')");
-		
+		$sql="SELECT * FROM cn_notes_devoirs WHERE (login='$eleve_login[$i]' AND id_devoir='$id_dev[$k]')";
+		$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
+
+		// 20151024: Pour des explications
+		$eleve_title="";
 		if($note_query){
 			if(mysqli_num_rows($note_query)>0){
 				$obj_note_query=$note_query->fetch_object();
@@ -1124,23 +1142,42 @@ foreach ($liste_eleves as $eleve) {
 				$eleve_note = $obj_note_query->note;
 				$eleve_comment = $obj_note_query->comment;
 			}
-			else{
+			else {
 				$eleve_statut = "";
 				$eleve_note = "";
 				$eleve_comment = "";
+
+				// 20151024
+				//echo "$sql<br />";
+				if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
+					$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+				}
 			}
 		}
 		else{
 			$eleve_statut = "";
 			$eleve_note = "";
 			$eleve_comment = "";
+
+			// 20151024
+			if((isset($eleve["date_sortie"]))&&($eleve["date_sortie"]!="0000-00-00 00:00:00")&&($eleve["date_sortie"]<$date_dev[$k])) {
+				$eleve_title="Élève sorti de l'établissement (".formate_date($eleve["date_sortie"]).") avant la date du devoir (".formate_date($date_dev[$k]).").";
+			}
 		}
 		if ($eleve_comment != '') { $nocomment[$k]='no'; }
 		$eleve_login_note = $eleve_login[$i]."_note";
 		$eleve_login_comment = $eleve_login[$i]."_comment";
 		if ($id_dev[$k] != $id_devoir) {
 			$mess_note[$i][$k] = '';
-			$mess_note[$i][$k] =$mess_note[$i][$k]."<td class=cn bgcolor=$couleur_devoirs><center><b>";
+			$mess_note[$i][$k] =$mess_note[$i][$k]."<td class='cn'";
+			// 20151024
+			if($eleve_title=="") {
+				$mess_note[$i][$k].=" bgcolor='$couleur_devoirs'";
+			}
+			else {
+				$mess_note[$i][$k].=" bgcolor='orange' title=\"".$eleve_title."\"";
+			}
+			$mess_note[$i][$k].="><center><b>";
 			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 				$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_statut;
 				$mess_note_pdf[$i][$k] = $eleve_statut;
@@ -1784,7 +1821,9 @@ $i = 0;
 $pointer = 0;
 $tot_data_pdf = 1;
 $tab_ele_notes=array();
-$nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
+// 20151024
+//$nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
+$nombre_lignes = count($liste_eleves);
 while($i < $nombre_lignes) {
 	$pointer++;
 	$tot_data_pdf++;
