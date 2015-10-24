@@ -71,6 +71,20 @@ function verifieTableCree() {
 	}
 
 	// echo "création de mod_listes_perso_contenus"."<br />" ;	
+	$sql_contenus = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_contenus` ("
+	   . "`id` int(11) NOT NULL auto_increment, "
+	   . "`id_def` int(11) NOT NULL, "
+	   . "`login` varchar(50) NOT NULL default '', "
+	   . "`colonne` int(11) NOT NULL, "
+	   . "`contenu` varchar(50) NOT NULL default '', "
+	   . "PRIMARY KEY (`id`), "
+	   . "INDEX contenu (`id_def`, `login`, `contenu`)"
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+	$query_contenus = mysqli_query($mysqli, $sql_contenus);
+	if (!$query_contenus) {
+		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql_contenus."<br />" ;
+	}
 }
 
 
@@ -265,7 +279,7 @@ function ChargeEleves($idListe) {
 				$query->findByLogin($elv);
 				$eleve = $query->findOne();
 				$eleve_choisi_col->add($eleve);
-			}		
+			}
 		return $eleve_choisi_col;
 	} else {
 		return NULL;
@@ -305,3 +319,63 @@ function SupprimeEleve($login, $idListe) {
 	// TODO : il faudra supprimer aussi les données des colonnes
 	return TRUE;
 }
+
+
+function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NULL ) {
+	global $mysqli;
+	$sql = "INSERT INTO `mod_listes_perso_contenus` "
+	   . "SET "
+	   . "`contenu` = '$contenu', "
+	   . "`colonne` = '$idColonne', "
+	   . "`login` = '$login', "
+	   . "`id_def` = '$idListe' " ;	
+	if ($id !== NULL) {
+		$sql .= ", `id` = '$id' " ;
+	}
+	$sql .= "ON DUPLICATE KEY UPDATE "
+	   . "`contenu` = '$contenu'";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;
+}
+
+function ChargeColonnesEleves($idListe, $eleve_choisi_col) {
+	$tableauRetour = array();
+	foreach ($eleve_choisi_col as $elv) {
+		$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
+	}
+	return $tableauRetour;
+}
+
+function ChargeCasesEleves($idListe, $elv) {
+	global $mysqli;
+	$tableauRetour = array();
+	$sql = "SELECT * FROM `mod_listes_perso_contenus` "
+	   . "WHERE `id_def` = '$idListe' "
+	   . "AND `login` = '".$elv->getLogin()."' ";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	if ($query->num_rows) {
+		while ($case = $query->fetch_object()) {
+			$tableauRetour[$case->colonne]['contenu'] = $case->contenu;
+			$tableauRetour[$case->colonne]['id'] = $case->id;
+		}
+
+	}
+	return $tableauRetour;
+	
+}
+
+
+
+

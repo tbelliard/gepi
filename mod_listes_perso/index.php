@@ -92,6 +92,7 @@ $sauveDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Sa
 $supprimerDefinitionListe = filter_input(INPUT_POST, 'sauveDefinitionListe') === 'Supprimer' ? TRUE : FALSE;
 $sauveTitreColonne = filter_input(INPUT_POST, 'action') === 'sauveTitreColonne' ? TRUE : FALSE;
 $chargeEleves = filter_input(INPUT_POST, 'action') === 'choixEleves' ? TRUE : FALSE;
+$sauveModifieCaseColonne = filter_input(INPUT_POST, 'action') === 'sauveModifieCaseColonne' ? TRUE : FALSE;
 //Je n'ai pas trouvé d'équivalent à filter_input pour un tableau :( Régis 
 $idElevesChoisis = isset($_POST['elevesChoisis']) && count($_POST['elevesChoisis']) ? $_POST['elevesChoisis'] : NULL;
 $supprimeEleve = filter_input(INPUT_POST, 'eleveASupprimer') ? filter_input(INPUT_POST, 'eleveASupprimer') : NULL;
@@ -185,10 +186,18 @@ if ($nouvelleListe) { //===== Nouvelle liste =====
 		}
 	}
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
-	
-	   
-} elseif ($supprimeEleve) {
+} 
+elseif ($supprimeEleve) {
 	SupprimeEleve($supprimeEleve, $_SESSION['liste_perso']['id']);
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+} 
+elseif ($sauveModifieCaseColonne) {
+	$login = filter_input(INPUT_POST, 'login');
+	$idDef= filter_input(INPUT_POST, 'id_def');
+	$idColonne = filter_input(INPUT_POST, 'id_col');
+	$contenu = filter_input(INPUT_POST, 'contenu');
+	$id = filter_input(INPUT_POST, 'id');
+	ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 }
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
@@ -200,7 +209,7 @@ else { //===== Sinon on vérifie s'il y a une liste en mémoire
 //==============================================
 chargeListe($idListe);
 $eleve_choisi_col = ChargeEleves($idListe);
-
+$donneesTableau = ChargeColonnesEleves($idListe, $eleve_choisi_col);
 
 $groupe_col = $utilisateur->getGroupes();
 $aid_col = $utilisateur->getAidDetailss();
@@ -214,7 +223,7 @@ $photoListe = $_SESSION['liste_perso']['photo'] ;
 $colonnes = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-var_dump($_POST);
+// var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -317,8 +326,7 @@ while ($obj = $tableau->fetch_object()) { ?>
 				?>>
 					<option value='-1'>choisissez un groupe</option>
 <?php
-foreach ($groupe_col as $group) {	
-	var_dump($group);
+foreach ($groupe_col as $group) {
 ?>
 					<option value='<?php echo $group->getId(); ?>'>
 						<?php echo $group->getNameAvecClasses(); ?>
@@ -424,12 +432,7 @@ foreach ($groupe_col as $group) {
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">
 			<caption>
-				<input id="sauveDonneesTableau" 
-					   type="submit" 
-					   name="sauveDonneesTableau" 
-					   value="<?php echo $nomListe; ?>"
-					   title="Sauvrgarder le tableau"
-					   />
+				<?php echo $nomListe; ?>
 			</caption>
 			<tr>
 				<th>Nom Prénom</th>
@@ -487,10 +490,10 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 						  id="formSupprimeEleve<?php echo $elv_choisi->getLogin(); ?>" 
 						  style="margin: 0;padding: 0;padding-left: .5em;">
 						<img src="../images/bulle_rouge.png" 
-							 onclick="supprime('<?php echo $elv_choisi->getLogin(); ?>', '<?php echo $elv_choisi->getNom(); ?>', '<?php echo $elv_choisi->getPrenom(); ?>'), false" 
+							 onclick="supprime('<?php echo $elv_choisi->getLogin(); ?>', '<?php echo $elv_choisi->getNom(); ?>', '<?php echo $elv_choisi->getPrenom(); ?>'); return(false)" 
 							 style="cursor:pointer;"
 							 title="supprimer <?php echo $elv_choisi->getNom(); ?> <?php echo $elv_choisi->getPrenom(); ?>"
-							  />
+							 alt="Supprimer" />
 					<?php echo $elv_choisi->getNom(); ?> <?php echo $elv_choisi->getPrenom(); ?>
 						<input type="submit" name="supprimeEleve" id="supprime_<?php echo $elv_choisi->getLogin(); ?>" value="supprimer" />
 						<input type="hidden" name="eleveASupprimer" value="<?php echo $elv_choisi->getLogin(); ?>" />
@@ -499,42 +502,77 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 </script>		
 					</form>
 				</td>				
-<?php if ($sexeListe) { ?>
+<?php	if ($sexeListe) { ?>
 				<td class="center"><?php echo $elv_choisi->getSexe(); ?></td>	
-<?php } ?>
+<?php	} ?>
 				
-<?php if ($classeListe) { ?>
+<?php	if ($classeListe) { ?>
 				<td class="center"><?php echo $elv_choisi->getClasse()->getNom(); ?></td>	
-<?php } ?>
+<?php	} ?>
 				
-<?php if ($photoListe) { ?>
+<?php	if ($photoListe) { ?>
 				<td class="center">
-<?php if ($elv_choisi->getElenoet()) { ?>
-					<img src="../photos/eleves/<?php echo $elv_choisi->getElenoet(); ?>.jpg" style="width: 64px;"/>
-<?php } ?>
+<?php		if ($elv_choisi->getElenoet()) { ?>
+					<img src="../photos/eleves/<?php echo $elv_choisi->getElenoet(); ?>.jpg" style="width: 64px;" alt=""/>
+<?php		} ?>
 				</td>		
-<?php } ?>
-		
-		
-
-<?php
-if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
-	for($i=0;$i<$colonnes->num_rows;$i++) { ?>
-				<td></td>
-<?php }	
-} ?>		
+<?php	}
+		if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
+			$i=1;
+			foreach ($colonnes as $colonne) {
+				$contenuCase = '';
+				$idCase = '';
+				if(isset($donneesTableau[$elv_choisi->getLogin()][$colonne['id']]['contenu'])) {
+					$contenuCase = $donneesTableau[$elv_choisi->getLogin()][$colonne['id']]['contenu'];
+				}
+				if(isset($donneesTableau[$elv_choisi->getLogin()][$colonne['id']]['id'])) {
+					$idCase = $donneesTableau[$elv_choisi->getLogin()][$colonne['id']]['id'];
+				}
+				?>
+				<td  onclick="inverse('<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>'); " >
+					<form action="index.php" 
+						  name="formModifieColonneEleve" 
+						  method="post" 
+						  id="formModifieColonneEleve<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
+						  style="margin: 0;padding: 0;padding-left: .5em;">
+						<span class="invisible" 
+							  id="saisie<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
+							  >
+							<img src="../images/bulle_rouge.png" 
+								 onclick="supprimeContenu('<?php echo $idCase; ?>'); return(false)" 
+								 style="cursor:pointer;"
+								 title="supprimer "
+								 alt="Supprimer"
+								  />
+							<input type="text" 
+								   name="contenu" 
+								   value="<?php echo $contenuCase; ?>"
+								   id="entree<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
+								   onblur="this.form.submit()"
+								   />
+							<input type="hidden" name="id" value="<?php echo $idCase; ?>" />
+							<input type="hidden" name="id_col" value="<?php echo $colonne['id']; ?>" />
+							<input type="hidden" name="id_def" value="<?php echo $colonne['id_def']; ?>" />
+							<input type="hidden" name="login" value="<?php echo $elv_choisi->getLogin(); ?>" />
+							<input type="hidden" name="action" value="sauveModifieCaseColonne" />
+						</span>
+							<!-- <?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?> -->
+						<span id="vision<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
+							  style="cursor:pointer;"
+							  >
+							<?php echo $contenuCase; ?>
+						</span>
+					</form>
 						
-				
-				
-				
-				
-				
-				
-				
-				
-				
+<script type="text/javascript" >
+	//masque('supprime_<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>');
+</script>		
+				</td>
+<?php			$i++;
+			}	
+		} ?>	
 			</tr>
-<?php 	 }
+<?php }
 } ?>
 		</table>
 		<?php if (isset($eleve_choisi_col))  {echo '<p>'.$eleve_choisi_col->count().' élèves</p>';} else {echo '<p>0 élève choisi</p>';} ?> 
