@@ -700,8 +700,12 @@ Demandez à l'administrateur de revalider la fiche de l'élève dans
 			$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
 			$color_hier = ($compter_hier >= 1) ? ' style="background-color: red; text-align: center; color: white; font-weight: bold;"' : '';
 			$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
-
-			$ligne_courante.="<td".$color_hier.">".$aff_compter_hier."</td>\n";
+//20151025
+			$ligne_courante.="<td".$color_hier.">";
+			$ligne_courante.='<a style="font-size:88%;color:white;" href="#" onClick="javascript:document.getElementById(\'absences_du_jour\').action=\'absences_du_jour.php#ancre_id_eleve_'.$eleve->getId().'\';showwindow(\'visu_saisies_ele_jour.php?date_jour='.$Yesterday.'&id_eleve='.$eleve->getId().'&menu=false\',\'Voir les saisies du '.formate_date($Yesterday).' pour '.preg_replace("/'/"," ",$eleve->getNom()).' '.preg_replace("/'/"," ",$eleve->getPrenom()).'\');return false" title="Voir les saisies du '.formate_date($Yesterday).' pour '.preg_replace("/'/"," ",$eleve->getNom()).' '.preg_replace("/'/"," ",$eleve->getPrenom()).'">';
+			$ligne_courante.=$aff_compter_hier;
+			$ligne_courante.="</a>\n";
+			$ligne_courante.="</td>\n";
 			$ligne_courante.="<td>";
 
 			$ligne_courante.="<a name='ancre_login_eleve_".$eleve->getLogin()."'></a>";
