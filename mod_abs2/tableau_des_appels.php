@@ -441,7 +441,7 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 	foreach ($abs_col as $absenceSaisie) {
         if($absenceSaisie->getEleve()!=null && (
                 $absenceSaisie->getEleve()->isEleveSorti($dt_debut_creneau)
-                || $absenceSaisie->getEleve()->getClasse($classe->getPeriodeNote($dt_debut_creneau)) != $classe) //on teste la péridoe de l'élève qu'on va afficher
+                || $absenceSaisie->getEleve()->getClasse($classe->getPeriodeNote($dt_debut_creneau)) != $classe) //on teste la période de l'élève qu'on va afficher
             ) {
             continue;
         }
@@ -465,14 +465,14 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
 
 		// 20150710
 		echo '<a  style="color: '.$absenceSaisie->getColor().';" href="visu_saisie.php?id_saisie='.$absenceSaisie->getPrimaryKey().'" onClick="javascript:document.getElementById(\'choix_du_creneau\').action=\'tableau_des_appels.php#ancre_classe_'.$classe->getId().'\';showwindow_tda(\'visu_saisie.php?id_saisie='.$absenceSaisie->getPrimaryKey().'&menu=false\',\'Modifier,traiter ou notifier une saisie\');return false;" title="Voir la saisie n°'.$absenceSaisie->getPrimaryKey().'
-		Du '.get_date_heure_from_mysql_date($absenceSaisie->getDebutAbs()).' au '.get_date_heure_from_mysql_date($absenceSaisie->getFinAbs()).'">';
+Du '.get_date_heure_from_mysql_date($absenceSaisie->getDebutAbs()).' au '.get_date_heure_from_mysql_date($absenceSaisie->getFinAbs()).'">';
 
 	    if($num_saisie==1){
                 echo ('<b>S</b>aisie '.$num_saisie); 
             }else{
                 echo ($num_saisie);
             }           
-	    echo "</a>";	    
+	    echo "</a>";
 	    $current_eleve=$absenceSaisie->getEleve()->getId();
             $num_saisie++;
         if($abs_col->isLast()){
