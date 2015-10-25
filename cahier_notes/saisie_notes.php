@@ -1197,11 +1197,21 @@ foreach ($liste_eleves as $eleve) {
 			}
 			$mess_note[$i][$k] =$mess_note[$i][$k]."</b></center></td>\n";
 			if ($eleve_comment != '') {
-				$mess_comment[$i][$k] = "<td class=cn>".$eleve_comment."</td>\n";
+				$mess_comment[$i][$k] = "<td class='cn'";
+				// 20151024
+				if($eleve_title!="") {
+					$mess_comment[$i][$k].=" bgcolor='orange' title=\"".$eleve_title."\"";
+				}
+				$mess_comment[$i][$k].=">".$eleve_comment."</td>\n";
 				$mess_comment_pdf[$i][$k] = ($eleve_comment);
 
 			} else {
-				$mess_comment[$i][$k] = "<td class=cn>&nbsp;</td>\n";
+				$mess_comment[$i][$k] = "<td class='cn'";
+				// 20151024
+				if($eleve_title!="") {
+					$mess_comment[$i][$k].=" bgcolor='orange' title=\"".$eleve_title."\"";
+				}
+				$mess_comment[$i][$k].=">&nbsp;</td>\n";
 				$mess_comment_pdf[$i][$k] = "";
 			}
 		} else {
