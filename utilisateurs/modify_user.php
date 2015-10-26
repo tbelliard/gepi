@@ -1127,7 +1127,13 @@ if(($user_statut == "professeur")&&(isset($user_nom))&&(isset($user_prenom))) {
 
 if (getSettingValue("statuts_prives") == "y") {
 	if ($user_statut == "autre") {
-		echo "<a href='creer_statut.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Préciser le statut 'autre'</a>";
+		$sql="SELECT nom_statut FROM droits_statut ds, droits_utilisateurs du WHERE ds.id=du.id_statut AND du.login_user='".$user_login."';";
+		$res_statut_personnalise=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_statut_personnalise)>0) {
+			$lig_statut_personnalise=mysqli_fetch_object($res_statut_personnalise);
+			echo " (<em>".$lig_statut_personnalise->nom_statut."</em>) ";
+		}
+		echo "<a href='creer_statut.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Préciser/modifier le statut 'autre'</a>";
 	}
 }
 ?>
