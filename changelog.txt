@@ -5,6 +5,9 @@
 
 Gepi-master (Version de développement)
 ===========================
+Librairies:
+- Mise à jour de PHPMailer (https://github.com/PHPMailer/PHPMailer) en version 5.2.13
+
 Discipline:
 - Possibilité de signaler des saisies d'incidents (aux utilisateurs suivant telle ou telle classe) par mod_alerte et non plus seulement par mail.
 - Affichage de la liste des sanctions depuis la saisie/modif d'incident.
@@ -15,6 +18,7 @@ Discipline:
 
 Absences2:
 - Ajout de liens de création d'incident de puis mod_abs2 Saisir groupe.
+- Accès à la liste des saisies de la veille pour tel élève depuis la colonne Veille dans Absences du jour.
 
 Cahiers de textes:
 - Possibilité d'ajouter un témoin 'contrôle' dans les travaux à faire du CDT.
@@ -29,6 +33,9 @@ Bulletins:
 
 Panneau d'affichage:
 - Possibilité de déposer un message pour les professeurs principaux.
+
+Publipostage OOo:
+- Possibilité d'autoriser tel utilisateur en particulier à uploader des modèles.
 
 Général:
 - Possibilité de prendre en compte un secure/proxy.php pour file_get_contents()
@@ -49,7 +56,7 @@ En administrateur ou gestionnaire de la catégorie d'AID, on crée de nouvelles 
 Gepi-1.6.7 (24/08/2015)
 ===========================
 Librairies:
-- Ajout de PHPMailer (https://github.com/PHPMailer/PHPMailer)
+- Ajout de PHPMailer (https://github.com/PHPMailer/PHPMailer) 5.2.9
 
 AID:
 - Possibilité de visualiser en popup les élèves d'un AID depuis Mes_listes.
