@@ -1105,6 +1105,7 @@ echo "		}
 	echo "</th>\n";
 	
 	if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {
+		$chaine_tmp="";
 		echo "<th>Déclarant\n";
 		echo "<br />\n";
 		echo "<select name='declarant_incident' onchange=\"document.getElementById('declarant_incident2').checked=false;document.formulaire.submit();\">\n";
