@@ -71,15 +71,23 @@ if(isset($form_id_sanction)) {
 
 		if($marquer_sanction_effectuee_possible=="y") {
 			if(isset($sanction_effectuee[$form_id_sanction[$i]])) {
-				$sql="UPDATE s_sanctions SET effectuee='O' WHERE id_sanction='".$form_id_sanction[$i]."';";
+				$value="O";
 			}
 			else {
-				$sql="UPDATE s_sanctions SET effectuee='N' WHERE id_sanction='".$form_id_sanction[$i]."';";
+				$value="N";
 			}
+			$sql="UPDATE s_sanctions SET effectuee='$value' WHERE id_sanction='".$form_id_sanction[$i]."';";
 			//echo "$sql<br />\n";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
 				$msg.="ERREUR lors de la mise à jour du statut de la sanction n°".$form_id_sanction[$i].".<br />\n";
+			}
+			else {
+				if($value=="O") {
+					$sql="DELETE s_sanctions_check WHERE id_sanction='".$form_id_sanction[$i]."';";
+					//echo "$sql<br />\n";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
 			}
 		}
 		else {
