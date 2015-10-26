@@ -70,7 +70,8 @@ if((isset($_GET['modif_sanction']))&&($_GET['modif_sanction']=="etat_effectuee")
 	check_token();
 
 	if((in_array($_SESSION['statut'], array('administrateur', 'scolarite', 'cpe')))||
-	(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($_GET['id_sanction'], $_SESSION['login'])))) {
+	(($_SESSION['statut']=='professeur')&&(sanction_saisie_par($_GET['id_sanction'], $_SESSION['login'])))||
+	(($_SESSION['statut']=='professeur')&&(sanction_check_delegue($_GET['id_sanction'], $_SESSION['login'])))) {
 		$sql="SELECT effectuee FROM s_sanctions WHERE id_sanction='".$_GET['id_sanction']."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -93,6 +94,10 @@ if((isset($_GET['modif_sanction']))&&($_GET['modif_sanction']=="etat_effectuee")
 			elseif($valeur_alt=="O") {
 				echo "<span style='color:green'>O</span>";
 				$statut_sanction="effectuée";
+
+				// On ne laisse pas de délégation de validation une fois la sanction effectuée.
+				$sql="DELETE FROM s_sanctions_check WHERE id_sanction='".$_GET['id_sanction']."';";
+				$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			elseif($valeur_alt=="N") {
 				echo "<span style='color:red'>N</span>";

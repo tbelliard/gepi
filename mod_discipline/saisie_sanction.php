@@ -89,10 +89,11 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 			$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
 			$materiel=isset($_POST['materiel']) ? $_POST['materiel'] : NULL;
-		
+
 			$report_demande=isset($_POST['report_demande']) ? $_POST['report_demande'] : NULL;
 			$choix_motif_report=isset($_POST['choix_motif_report']) ? $_POST['choix_motif_report'] : NULL;
-		
+
+			$deleguer_check=isset($_POST['deleguer_check']) ? $_POST['deleguer_check'] : NULL;
 
 			$duree_retenue=preg_replace("/[^0-9.]/","",preg_replace("/,/",".",$duree_retenue));
 			if($duree_retenue=="") {
@@ -210,6 +211,48 @@ if(isset($_POST['enregistrer_sanction'])) {
 							if($materiel!="") {
 								$message_mail.="Matériel: $materiel\n";
 							}
+
+							if(isset($deleguer_check)) {
+								$sql="SELECT * FROM s_sanctions_check WHERE id_sanction='$id_sanction';";
+								$res_deleguer_check=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_deleguer_check)==0) {
+									if($deleguer_check!="") {
+										$sql="INSERT INTO s_sanctions_check SET id_sanction='$id_sanction', login='".$deleguer_check."';";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert) {
+											$msg.="Erreur lors de l'enregistrement de la délégation du pointage effectuée/non_effectuée.<br />";
+										}
+										else {
+											$message_mail.="\n\nLa validation de l'état effectuée ou non de la ".$mod_disc_terme_sanction." est déléguée à ".civ_nom_prenom($deleguer_check)."\n";
+										}
+									}
+								}
+								else {
+									if($deleguer_check=="") {
+										$sql="DELETE FROM s_sanctions_check WHERE id_sanction='$id_sanction';";
+										$del=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$del) {
+											$msg.="Erreur lors de la suppression de la délégation du pointage effectuée/non_effectuée.<br />";
+										}
+										else {
+											$message_mail.="\n\nSuppression de la délégation de la validation de l'état effectuée ou non de la ".$mod_disc_terme_sanction."\n";
+										}
+									}
+									else {
+										$lig_deleguer_check=mysqli_fetch_object($res_deleguer_check);
+										if($lig_deleguer_check->login!=$deleguer_check) {
+											$sql="UPDATE s_sanctions_check SET login='".$deleguer_check."' WHERE id_sanction='$id_sanction';";
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(!$update) {
+												$msg.="Erreur lors de la mise à jour de la délégation du pointage effectuée/non_effectuée.<br />";
+											}
+											else {
+												$message_mail.="\n\nLa validation de l'état effectuée ou non de la ".$mod_disc_terme_sanction." est maintenant déléguée à ".civ_nom_prenom($deleguer_check)."\n";
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -257,6 +300,17 @@ if(isset($_POST['enregistrer_sanction'])) {
 						if($materiel!="") {
 							$message_mail.="Matériel: $materiel\n";
 						}
+
+						if($deleguer_check!="") {
+							$sql="INSERT INTO s_sanctions_check SET id_sanction='$id_sanction', login='".$deleguer_check."';";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								$msg.="Erreur lors de l'enregistrement de la délégation du pointage effectuée/non_effectuée.<br />";
+							}
+							else {
+								$message_mail.="\n\nLa validation de l'état effectuée ou non de la ".$mod_disc_terme_sanction." est déléguée à ".civ_nom_prenom($deleguer_check)."\n";
+							}
+						}
 					}
 				}
 
@@ -282,7 +336,16 @@ if(isset($_POST['enregistrer_sanction'])) {
 							//echo "$sql<br />\n";
 							$res=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($res) {
-								$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe")."\n";
+								$designation_autre_protagoniste=get_nom_prenom_eleve($autre_protagoniste_meme_sanction[$loop], "avec_classe");
+								$message_mail.="Même sanction (n°".$tmp_id_sanction.") pour ".$designation_autre_protagoniste."\n";
+
+								if($deleguer_check!="") {
+									$sql="INSERT INTO s_sanctions_check SET id_sanction='$tmp_id_sanction', login='".$deleguer_check."';";
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$insert) {
+										$msg.="Erreur lors de l'enregistrement de la délégation du pointage effectuée/non_effectuée pour ".$designation_autre_protagoniste.".<br />";
+									}
+								}
 							}
 						}
 					}

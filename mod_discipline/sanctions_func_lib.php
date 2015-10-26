@@ -2195,4 +2195,15 @@ function get_protagonistes_avec_sanction($id_incident) {
 	return $retour;
 }
 
+function sanction_check_delegue($id_sanction, $login) {
+	$sql="SELECT 1=1 FROM s_sanctions_check WHERE id_sanction='$id_sanction' AND login='".$login."';";
+	//echo "$sql<br />";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
 ?>

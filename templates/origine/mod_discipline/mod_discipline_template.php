@@ -124,6 +124,109 @@
 
 	  }
 	}
+
+	$sql="SELECT ssc.*, ss.*, sr.*, si.etat FROM s_sanctions_check ssc, s_sanctions ss, s_retenues sr, s_incidents si WHERE ssc.login='".$_SESSION['login']."' AND ss.id_sanction=ssc.id_sanction AND ss.id_sanction=sr.id_sanction AND ss.id_incident=si.id_incident AND si.etat!='clos' ORDER BY date, heure_debut;";
+	//echo "$sql<br />";
+	$res_sanction=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res_sanction)>0) {
+		require_once("sanctions_func_lib.php");
+		echo "<div align='center'>
+	<div class='fieldset_opacite50' style='margin:1em; width:70%; text-align:center;'>
+		<p>La validation de l'état effectué ou non d'une ou plusieurs retenues (<em>ou ".$mod_disc_terme_sanction." assimilée</em>) vous est déléguée.<br />
+		Lorsque la retenue aura été effectuée, signalez-le aux CPE, déclarant... en cliquant dans la colonne <strong>Effectuée</strong></p>";
+
+		$retour="<div align='center'>";
+		$retour.="<table class='boireaus boireaus_alt' border='1' summary='Retenues déléguées' style='margin:2px; text-align:center;'>\n";
+		$retour.="<tr>\n";
+		$retour.="<th>Élève</th>\n";
+		$retour.="<th>Nature</th>\n";
+		$retour.="<th>Date</th>\n";
+		$retour.="<th>Heure</th>\n";
+		$retour.="<th>Durée</th>\n";
+		$retour.="<th>Lieu</th>\n";
+		$retour.="<th>Travail</th>\n";
+		$retour.="<th>Effectuée</th>\n";
+		$retour.="</tr>\n";
+		while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+			$id_incident=$lig_sanction->id_incident;
+			$etat_incident=$lig_sanction->etat;
+
+			$retour.="<tr>\n";
+			$retour.="<td>".get_nom_prenom_eleve($lig_sanction->login, 'avec_classe')."</td>\n";
+			if(($etat_incident!='clos')&&(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre'))) {
+				$retour.="<td><a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident&amp;ele_login=$ele_login'>".ucfirst($lig_sanction->nature)."</a></td>\n";
+			}
+			else {
+				$retour.="<td>".ucfirst($lig_sanction->nature)."</td>\n";
+			}
+			$retour.="<td>".formate_date($lig_sanction->date)."</td>\n";
+			$retour.="<td>$lig_sanction->heure_debut</td>\n";
+			$retour.="<td>$lig_sanction->duree</td>\n";
+			$retour.="<td>$lig_sanction->lieu</td>\n";
+			//$retour.="<td>".nl2br($lig_sanction->travail)."</td>\n";
+		
+			$retour.="<td>";
+
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+				$texte="Aucun travail";
+			}
+			else {
+				$texte=nl2br($lig_sanction->travail);
+				if($tmp_doc_joints!="") {
+					if($texte!="") {$texte.="<br />";}
+					$texte.=$tmp_doc_joints;
+				}
+			}
+
+			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+
+			$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
+			$retour.="</td>\n";
+
+			// Sanction effectuée
+			if($etat_incident=='clos') {
+				$retour.="<td>";
+				if($lig_sanction->effectuee=="O") {$retour.="<span style='color:green'>O</span>";} else {$retour.="<span style='color:red'>N</span>";}
+				$retour.="</td>\n";
+			}
+			else {
+				$retour.="<td title=\"Cliquez pour marquer la sanction comme effectuée ou non effectuée\"";
+				if($lig_sanction->effectuee=="O") {
+					$valeur_alt="N";
+				}
+				else {
+					$valeur_alt="O";
+				}
+
+				$retour.="<a href='#' onclick=\"maj_etat_sanction_effectuee_ou_non($lig_sanction->id_sanction, '$valeur_alt')\">";
+				$retour.="<span id='span_sanction_effectuee_".$lig_sanction->id_sanction."'>";
+				if($lig_sanction->effectuee=="O") {
+					$retour.="<span style='color:green'> O </span>";
+				}
+				else {
+					$retour.="<span style='color:red'> N </span>";
+				}
+				$retour.="</span>";
+				$retour.="</a>";
+				$retour.="</td>\n";
+			}
+			$retour.="</tr>\n";
+		}
+		$retour.="</table>\n";
+		$retour.="</div>\n";
+		echo $retour;
+
+		echo "<script type='text/javascript'>
+	function maj_etat_sanction_effectuee_ou_non(id_sanction) {
+		new Ajax.Updater($('span_sanction_effectuee_'+id_sanction),'ajax_discipline.php?id_sanction='+id_sanction+'&modif_sanction=etat_effectuee".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
+
+		echo "
+	</div>
+</div>";
+	}
 ?>
 
 <!-- Fin menu	général -->
@@ -157,7 +260,7 @@ Un professeur ne peut modifier que les <?php echo $mod_disc_terme_incident;?>s (
   <li>
 	<p>
 	  <em style='color:red'>A FAIRE:</em>
-	  Permettre d'archiver les <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s d'une année et vider les tables <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
+	  Permettre d'archiver les <?php echo $mod_disc_terme_incident;?>s/<?php echo $mod_disc_terme_sanction;?>s d'une année.
 	</p>
   </li>
 </ul>

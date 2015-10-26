@@ -187,6 +187,7 @@ else {
 		$lieu_retenue="";
 		$travail="";
 		$materiel="";
+		$deleguer_check="";
 		if(isset($id_sanction)) {
 			$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
 			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -198,6 +199,13 @@ else {
 				$lieu_retenue=$lig_sanction->lieu;
 				$travail=$lig_sanction->travail;
 				$materiel=$lig_sanction->materiel;
+
+				$sql="SELECT * FROM s_sanctions_check WHERE id_sanction='$id_sanction';";
+				$res_sanction_check=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_sanction_check)>0) {
+					$lig_sanction_check=mysqli_fetch_object($res_sanction_check);
+					$deleguer_check=$lig_sanction_check->login;
+				}
 			}
 		}
 
@@ -292,6 +300,28 @@ else {
 		echo "</tr>\n";
 
 		$alt=$alt*(-1);
+		echo "<tr class='lig$alt' title=\"Déléguer à un professeur la validation du statut effectué ou non de la ".$mod_disc_terme_sanction.".\nCas d'une sanction effectuée dans une salle de classe.\">\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Déléguer&nbsp;: </td>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo "<select name='deleguer_check' id='deleguer_check' onchange='changement();' />\n";
+		$sql="SELECT DISTINCT login, civilite, nom, prenom FROM utilisateurs WHERE etat='actif' AND statut='professeur' ORDER BY nom, prenom;";
+		//echo "$sql<br />";
+		$res_deleguer_check=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_deleguer_check)>0) {
+			echo "<option value=''>---</option>\n";
+			while($lig_deleguer_check=mysqli_fetch_object($res_deleguer_check)) {
+				echo "<option value=\"$lig_deleguer_check->login\"";
+				if($lig_deleguer_check->login==$deleguer_check) {
+					echo " selected='true'";
+				}
+				echo ">".$lig_deleguer_check->civilite." ".$lig_deleguer_check->nom." ".$lig_deleguer_check->prenom."</option>\n";
+			}
+			echo "</select>\n";
+		}
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
@@ -323,11 +353,11 @@ else {
 	
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
-		echo "<td>\n";
-        echo "Matériel à apporter\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>\n";
+		echo "Matériel à apporter&nbsp;:\n";
 		echo "</td>\n";
 		echo "<td>\n";
-        echo "<input type='text' name='materiel' onchange='changement();' value='$materiel' />\n";
+		echo "<input type='text' name='materiel' onchange='changement();' value='$materiel' />\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 	

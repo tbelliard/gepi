@@ -119,6 +119,7 @@ $liste_tables_del_etape_eleves = array(
 "s_reports",
 "s_retenues",
 "s_sanctions",
+"s_sanctions_check",
 "s_traitement_incident",
 "s_travail",
 "s_travail_mesure",

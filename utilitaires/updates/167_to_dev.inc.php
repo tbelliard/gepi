@@ -155,5 +155,25 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 's_sanctions_check' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_sanctions_check'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_sanctions_check (
+			id INT(11) NOT NULL auto_increment,
+			id_sanction INT(11) NOT NULL,
+			etat varchar(100) NOT NULL ,
+			login varchar(50) NOT NULL ,
+			PRIMARY KEY ( id )
+			) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>
