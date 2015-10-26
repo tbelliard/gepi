@@ -386,6 +386,10 @@ if(!isset($num_fich)) {
 		$monfichiertmp_name=$t['tmp_name'];
 
 		$upload_modele_ooo_autorise="n";
+		if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+			$upload_modele_ooo_autorise="y";
+		}
+		/*
 		if($_SESSION['statut']=='administrateur') {
 			$upload_modele_ooo_autorise="y";
 		}
@@ -397,7 +401,8 @@ if(!isset($num_fich)) {
 		}
 		elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {
 			$upload_modele_ooo_autorise="y";
-		}	
+		}
+		*/
 		if($upload_modele_ooo_autorise!='y') { 
 ?>
 	<p style='color:red'>Action non autorisée&nbsp;: Upload d'un modèle personnalisé.</p>
@@ -552,10 +557,15 @@ if(!isset($num_fich)) {
 	}
 
 	$upload_modele_ooo_autorise="n";
+	if(acces_upload_modele_ooo($_SESSION['login'], $_SESSION['statut'])) {
+		$upload_modele_ooo_autorise="y";
+	}
+	/*
 	if($_SESSION['statut']=='administrateur') {$upload_modele_ooo_autorise="y";}
 	elseif(($_SESSION['statut']=='scolarite')&&(getSettingValue('OOoUploadScol')=='yes')) {$upload_modele_ooo_autorise="y";}
 	elseif(($_SESSION['statut']=='cpe')&&(getSettingValue('OOoUploadCpe')=='yes')) {$upload_modele_ooo_autorise="y";}
 	elseif(($_SESSION['statut']=='professeur')&&(getSettingValue('OOoUploadProf')=='yes')) {$upload_modele_ooo_autorise="y";}
+	*/
 
 	if($upload_modele_ooo_autorise=='y') {
 ?>

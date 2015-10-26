@@ -13704,4 +13704,31 @@ function a_href_target_blank($texte, $target="_blank") {
 	return $contenu_cor;
 }
 
+/** Fonction destinée à indiquer si un utilisateur a le droit ou non d'uploader ses propres modèles
+ *
+ * @param string $login Le login de l'utilisateur
+ * @param string $statut Statut de l'utilisateur
+ * @return boolean Droit ou non d'uploader ses propres modèles
+ */
+function acces_upload_modele_ooo($login, $statut="") {
+	$retour=false;
+
+	if($statut=="") {
+		$statut=get_valeur_champ("utilisateurs", "login='".$login."'", "statut");
+	}
+
+	if($statut=='administrateur') {$retour=true;}
+	elseif(($statut=='scolarite')&&(getSettingAOui('OOoUploadScol'))) {$retour=true;}
+	elseif(($statut=='cpe')&&(getSettingAOui('OOoUploadCpe'))) {$retour=true;}
+	elseif(($statut=='professeur')&&(getSettingAOui('OOoUploadProf'))) {$retour=true;}
+
+	if((!$retour)&&($login!="")) {
+		// On teste si un droit spécifique a été donné à cet utilisateur en particulier
+		if(getPref($login, 'AccesOOoUpload', false)) {
+			$retour=true;
+		}
+	}
+
+	return $retour;
+}
 ?>

@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,7 +53,7 @@ if (!checkAccess()) {
 $msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	check_token();
-    if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg.= "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 
 	if (isset($_POST['fb_dezip_ooo'])) {
 		if (!saveSetting("fb_dezip_ooo", $_POST['fb_dezip_ooo'])) {
@@ -62,9 +62,66 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	}
 }
 
+if ((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
+	check_token();
+
+	if (isset($_POST['OOoUploadProf'])) {
+		$value="yes";
+	}
+	else {
+		$value="no";
+	}
+	if (!saveSetting("OOoUploadProf", $value)) {
+		$msg .= "Erreur lors de l'enregistrement de OOoUploadProf !";
+	}
+
+	if (isset($_POST['OOoUploadCpe'])) {
+		$value="yes";
+	}
+	else {
+		$value="no";
+	}
+	if (!saveSetting("OOoUploadCpe", $value)) {
+		$msg .= "Erreur lors de l'enregistrement de OOoUploadCpe !";
+	}
+
+	if (isset($_POST['OOoUploadScol'])) {
+		$value="yes";
+	}
+	else {
+		$value="no";
+	}
+	if (!saveSetting("OOoUploadScol", $value)) {
+		$msg .= "Erreur lors de l'enregistrement de OOoUploadScol !";
+	}
+
+	$login_user=isset($_POST['login_user']) ? $_POST['login_user'] : array();
+	$tab_autorise=array();
+	$sql="SELECT login FROM preferences WHERE name='AccesOOoUpload' AND value LIKE 'y%';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			if(!in_array($lig->login, $login_user)) {
+				$sql="DELETE FROM preferences WHERE name='AccesOOoUpload' AND login='".$lig->login."';";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			else {
+				$tab_autorise[]=$lig->login;
+			}
+		}
+	}
+
+	for($loop=0;$loop<count($login_user);$loop++) {
+		if(!in_array($login_user[$loop], $tab_autorise)) {
+			$sql="INSERT INTO preferences SET name='AccesOOoUpload', value='y', login='".$login_user[$loop]."';";
+			$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}
+}
+
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg.= "Les modifications ont été enregistrées !";
-  $post_reussi=TRUE;
+	$msg.= "Les modifications ont été enregistrées !";
+	$post_reussi=TRUE;
 }
 // header
 //$titre_page = "Gestion du module modèle Open Office";
