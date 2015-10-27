@@ -98,8 +98,8 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 
 		if(getSettingAOui('phpmailer_smtp_auth')) {
 			$mail->SMTPAuth=true;
-			$mail->Username=getSettingAOui('phpmailer_smtp_username');
-			$mail->Password=getSettingAOui('phpmailer_smtp_password');
+			$mail->Username=getSettingValue('phpmailer_smtp_username');
+			$mail->Password=getSettingValue('phpmailer_smtp_password');
 		}
 
 		$mail->SMTPSecure=getSettingValue('phpmailer_securite');
