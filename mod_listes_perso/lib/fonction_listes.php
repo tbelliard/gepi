@@ -316,10 +316,9 @@ function SupprimeEleve($login, $idListe) {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	// TODO : il faudra supprimer aussi les données des colonnes
+	SupprimeToutesColonnes($login, $idListe) ;
 	return TRUE;
 }
-
 
 function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NULL ) {
 	global $mysqli;
@@ -374,6 +373,20 @@ function ChargeCasesEleves($idListe, $elv) {
 	}
 	return $tableauRetour;
 	
+}
+
+function SupprimeToutesColonnes($elv, $idListe) {
+	global $mysqli;
+	$sql = "DELETE FROM `mod_listes_perso_contenus` "
+	   . "WHERE `login` = '$elv' AND `id_def` = '$idListe';";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;
 }
 
 
