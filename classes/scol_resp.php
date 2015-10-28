@@ -260,7 +260,7 @@ else{
 		echo "<input type='hidden' name='action' value='reg_scolresp' />\n";
 		echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
 
-		echo "<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em'><em>NOTES&nbsp;:</em> Seuls les comptes actifs sont présentés ici.<br />";
+		echo "<p style='margin-top:1em; margin-left:4.5em; text-indent:-4.5em'><em>NOTES&nbsp;:</em> Seuls les comptes actifs sont présentés ci-dessus.<br />";
 		$sql="SELECT DISTINCT u.login, civilite, nom, prenom, statut FROM utilisateurs u, j_scol_classes jsc WHERE u.login=jsc.login ORDER BY u.nom, u.prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test)>0) {
