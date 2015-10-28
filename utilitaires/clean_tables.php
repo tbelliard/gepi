@@ -2205,11 +2205,11 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
 
 	if (isset($_POST['is_confirmed']) and $_POST['is_confirmed'] == "yes") {
-		if($_POST['maj']=='check_jec_jep_point') {
-			$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		if((isset($_POST['maj']))&&($_POST['maj']=='check_jec_jep_point')) {
+			$texte_info_action="<h2 align=\"center\">Etape 13/$total_etapes<br />Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
 		}
 		else {
-			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+			$texte_info_action="<h2>Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
 		}
 		echo $texte_info_action;
 		update_infos_action_nettoyage($id_info, $texte_info_action);
@@ -2242,10 +2242,10 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_cpe=mysqli_num_rows($test);
 		if($nb_pb_cpe>0){
-			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
+			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves qui ne sont affectés dans aucune classe&nbsp;: ";
 			$cpt_ele_cpe=0;
 			while($lig=mysqli_fetch_object($test)){
-				if($cpt_ele_cpe>0){echo ", ";}
+				if($cpt_ele_cpe>0){$texte_info_action.=", ";}
 				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
 				$info=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2258,8 +2258,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				}
 				//echo "<!-- eleve=$eleve -->\n";
 
-				if($cpt_ele_cpe>0) {$texte_info_action.=", ";}
-
 				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login';";
 				//echo "<!-- $sql -->\n";
 				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2267,7 +2265,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 					$texte_info_action.=$eleve;
 				}
 				else{
-					$texte_info_action.="<span style='color:red;'>$eleve</span>\n";;
+					$texte_info_action.="<span style='color:red;'>$eleve</span>\n";
 				}
 				$cpt_ele_cpe++;
 			}
@@ -2275,6 +2273,56 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
+
+		// Suppression des associations élèves/cpe pour des comptes non cpe
+		$sql="SELECT * FROM j_eleves_cpe jec WHERE cpe_login NOT IN (SELECT login FROM utilisateurs u WHERE u.statut='cpe');";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_cpe=mysqli_num_rows($test);
+		if($nb_pb_cpe>0){
+			$texte_info_action="<p>Suppression d'associations CPE/Elève pour un ou des élèves associés à un compte qui n'est pas ou plus CPE&nbsp;: ";
+			$cpt_ele_cpe=0;
+			while($lig=mysqli_fetch_object($test)){
+				if($cpt_ele_cpe>0) {$texte_info_action.=", ";}
+				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->e_login';";
+				//echo "<!-- $sql -->\n";
+				$info=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($info)>0) {
+					$lig2=mysqli_fetch_object($info);
+					$eleve=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
+				}
+				else {
+					$eleve=$lig->e_login;
+				}
+				//echo "<!-- eleve=$eleve -->\n";
+
+				$sql="SELECT u.nom,u.prenom FROM utilisateurs u WHERE login='$lig->cpe_login';";
+				//echo "<!-- $sql -->\n";
+				$info=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($info)>0) {
+					$lig2=mysqli_fetch_object($info);
+					$cpe=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
+				}
+				else {
+					$cpe=$lig->cpe_login;
+				}
+				//echo "<!-- eleve=$eleve -->\n";
+
+				$sql="DELETE FROM j_eleves_cpe WHERE e_login='$lig->e_login' AND cpe_login='$lig->cpe_login';";
+				//echo "<!-- $sql -->\n";
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($nettoyage){
+					$texte_info_action.=$eleve."|".$cpe;
+				}
+				else{
+					$texte_info_action.="<span style='color:red;'>$eleve|$cpe</span>\n";
+				}
+				$cpt_ele_cpe++;
+			}
+			$texte_info_action.=".</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
 
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2284,7 +2332,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			if($nettoyage){
-				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";;
+				$texte_info_action="<p>$nb_pb_pp erreur(s) nettoyée(s) dans la table 'j_eleves_professeurs'.</p>\n";
 			}
 			else{
 				$texte_info_action="<p style='color:red; font-weight:bold;'>Erreur lors du nettoyage de la table 'j_eleves_professeurs'.</p>\n";
@@ -2301,7 +2349,7 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$texte_info_action="<p>Suppression d'associations Professeur/Elève pour un ou des élèves qui ne sont affectés dans aucune classe: ";
 			$cpt_ele_pp=0;
 			while($lig=mysqli_fetch_object($test)){
-				if($cpt_ele_pp>0){echo ", ";}
+				if($cpt_ele_pp>0){$texte_info_action.=", ";}
 				$sql="SELECT e.nom,e.prenom FROM eleves e WHERE login='$lig->login';";
 				$info=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($info)>0) {
@@ -2311,8 +2359,6 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				else {
 					$eleve=$lig->login;
 				}
-
-				if($cpt_ele_pp>0) {$texte_info_action.=", ";}
 
 				$sql="DELETE FROM j_eleves_professeurs WHERE login='$lig->login';";
 				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2325,6 +2371,60 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 				$cpt_ele_pp++;
 			}
 			$texte_info_action.=".</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
+		// Suppression des associations classes/scol pour des comptes non scolarité
+		$sql="SELECT DISTINCT login FROM j_scol_classes jsc WHERE login NOT IN (SELECT login FROM utilisateurs u WHERE u.statut='scolarite');";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_scol=mysqli_num_rows($test);
+		if($nb_pb_scol>0){
+			$texte_info_action="<p>Suppression d'associations Scolarité/Classe pour un ou des comptes qui ne sont pas ou plus Scolarité&nbsp;: ";
+			$cpt_scol=0;
+			while($lig=mysqli_fetch_object($test)){
+				if($cpt_scol>0) {$texte_info_action.=", ";}
+				$sql="SELECT u.nom,u.prenom FROM utilisateurs u WHERE login='$lig->login';";
+				//echo "<!-- $sql -->\n";
+				$info=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($info)>0) {
+					$lig2=mysqli_fetch_object($info);
+					$scol=ucfirst(mb_strtolower($lig2->prenom))." ".mb_strtoupper($lig2->nom);
+				}
+				else {
+					$scol=$lig->login;
+				}
+
+				$sql="DELETE FROM j_scol_classes WHERE login='$lig->login';";
+				//echo "<!-- $sql -->\n";
+				$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
+				if($nettoyage){
+					$texte_info_action.=$scol;
+				}
+				else{
+					$texte_info_action.="<span style='color:red;'>$scol</span>\n";
+				}
+				$cpt_scol++;
+			}
+			$texte_info_action.=".</p>\n";
+			echo $texte_info_action;
+			update_infos_action_nettoyage($id_info, $texte_info_action);
+		}
+
+		// Suppression des associations classes/scol pour des classes qui n'existent pas ou plus
+		$sql="SELECT DISTINCT id_classe FROM j_scol_classes jsc WHERE id_classe NOT IN (SELECT id FROM classes);";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_scol=mysqli_num_rows($test);
+		if($nb_pb_scol>0){
+			$texte_info_action="<p>Suppression d'associations Scolarité/Classe pour des classes qui n'existent pas ou plus&nbsp;: ";
+			$sql="DELETE FROM j_scol_classes WHERE id_classe NOT IN (SELECT id FROM classes);";
+			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($delete) {
+				$texte_info_action.="<span style='color:green;'>$nb_pb_scol association(s) supprimée(s)</span>\n";
+			}
+			else {
+				$texte_info_action.="<span style='color:red;'>echec de la suppression de $nb_pb_scol association(s)</span>\n";
+			}
 			echo $texte_info_action;
 			update_infos_action_nettoyage($id_info, $texte_info_action);
 		}
@@ -2353,9 +2453,9 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 		//=====================================
 
 	} else {
-		echo "<h2>Vérification des tables 'j_eleves_cpe' et 'j_eleves_professeurs'</h2>\n";
+		echo "<h2>Vérification des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'</h2>\n";
 
-		echo "<p>La procédure suivante vérifie la présence d'enregistrements aberrants dans les tables 'j_eleves_cpe' et 'j_eleves_professeurs'.</p>\n";
+		echo "<p>La procédure suivante vérifie la présence d'enregistrements aberrants dans les tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'.</p>\n";
 
 		flush();
 
@@ -2396,6 +2496,17 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 			$temoin_pb="y";
 		}
 
+		$sql="SELECT * FROM j_eleves_cpe jec WHERE cpe_login NOT IN (SELECT login FROM utilisateurs u WHERE u.statut='cpe');";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_cpe=mysqli_num_rows($test);
+		if($nb_pb_cpe==0) {
+			echo "<p>Aucun enregistrement dans la table 'j_eleves_cpe' n'est associé à un compte non CPE.</p>\n";
+		}
+		else {
+			echo "<p><b>$nb_pb_cpe</b> enregistrements de la table 'j_eleves_cpe' correspond(ent) des comptes non CPE.</p>\n";
+			$temoin_pb="y";
+		}
+
 		$sql="SELECT * FROM j_eleves_professeurs WHERE login='' OR professeur='';";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
 		$nb_pb_pp=mysqli_num_rows($test);
@@ -2417,18 +2528,40 @@ elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') 
 
 		$sql="SELECT jep.login FROM j_eleves_professeurs jep LEFT JOIN j_eleves_classes jec ON jep.login=jec.login WHERE jec.login is NULL;";
 		$test=mysqli_query($GLOBALS["mysqli"], $sql);
-		$nb_pb_cpe=mysqli_num_rows($test);
-		if($nb_pb_cpe==0){
+		$nb_pb_pp=mysqli_num_rows($test);
+		if($nb_pb_pp==0){
 			echo "<p>Aucun enregistrement dans la table 'j_eleves_professeurs' n'associe un élève non scolarisé à un $gepi_prof_suivi.</p>\n";
 		}
-		elseif($nb_pb_cpe==1){
-			echo "<p><b>$nb_pb_cpe</b> enregistrement dans la table 'j_eleves_professeurs' associe un élève non scolarisé à un $gepi_prof_suivi.<br />Cet enregistrement peut perturber la désignation de $gepi_prof_suivi.<br />Vous devrier le supprimer.</p>\n";
+		elseif($nb_pb_pp==1){
+			echo "<p><b>$nb_pb_pp</b> enregistrement dans la table 'j_eleves_professeurs' associe un élève non scolarisé à un $gepi_prof_suivi.<br />Cet enregistrement peut perturber la désignation de $gepi_prof_suivi.<br />Vous devrier le supprimer.</p>\n";
 			$temoin_pb="y";
 		}
 		else{
-			echo "<p><b>$nb_pb_cpe</b> enregistrements dans la table 'j_eleves_professeurs' associent des élèves non scolarisés à un ou des $gepi_prof_suivi.<br />\n";
+			echo "<p><b>$nb_pb_pp</b> enregistrements dans la table 'j_eleves_professeurs' associent des élèves non scolarisés à un ou des $gepi_prof_suivi.<br />\n";
 			echo "Ces enregistrements peuvent perturber la désignation de $gepi_prof_suivi.<br />\n";
 			echo "Vous devrier les supprimer.</p>\n";
+			$temoin_pb="y";
+		}
+
+		$sql="SELECT DISTINCT login FROM j_scol_classes jsc WHERE login NOT IN (SELECT login FROM utilisateurs u WHERE u.statut='scolarite');";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_scol=mysqli_num_rows($test);
+		if($nb_pb_scol==0){
+			echo "<p>Aucun enregistrement dans la table 'j_scol_classes' n'est associé à un compte non scolarité.</p>\n";
+		}
+		else {
+			echo "<p><b>$nb_pb_scol</b> enregistrements de la table 'j_scol_classes' correspond(ent) des comptes non scolarité.</p>\n";
+			$temoin_pb="y";
+		}
+
+		$sql="SELECT DISTINCT id_classe FROM j_scol_classes jsc WHERE id_classe NOT IN (SELECT id FROM classes);";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		$nb_pb_scol=mysqli_num_rows($test);
+		if($nb_pb_scol==0){
+			echo "<p>Aucun enregistrement dans la table 'j_scol_classes' n'est associé à des classes qui n'existent pas ou plus.</p>\n";
+		}
+		else {
+			echo "<p><b>$nb_pb_scol</b> enregistrements de la table 'j_scol_classes' correspond(ent) des classes qui n'existent pas ou plus.</p>\n";
 			$temoin_pb="y";
 		}
 
@@ -3768,7 +3901,7 @@ else {
 		echo "<a href='clean_tables.php?maj=11".add_token_in_url()."'>Tables concernant les grilles PDF.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=12".add_token_in_url()."'>Supprimer les adresses responsables non associées</a><br />\n";
 		echo "<a href='clean_tables.php?maj=13".add_token_in_url()."'>Supprimer les engagements incohérents</a> (<em>élèves partis, ou association avec une classe dnas laquelle l'élève n'est pas/plus inscrit</em>)<br />\n";
-		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe et j_eleves_professeurs.</a><br />\n";
+		echo "<a href='clean_tables.php?maj=check_jec_jep_point".add_token_in_url()."'>Contrôle des tables j_eleves_cpe, j_eleves_professeurs et j_scol_classes.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=verif_interclassements".add_token_in_url()."'>Vérification des interclassements (<em>collation,...</em>).</a><br />\n";
 		echo "<a href='clean_tables.php?maj=corrige_ordre_matieres_professeurs".add_token_in_url()."'>Vérification de l'ordre des matières pour les professeurs.</a><br />\n";
 		echo "<a href='clean_tables.php?maj=controle_categories_matieres".add_token_in_url()."'>Vérification des catégories de matières.</a><br />\n";
@@ -3896,11 +4029,11 @@ else {
 	
 		echo "<hr />\n";
 	
-		echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La présence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe' et 'j_eleves_professeurs' pouvait être affecté.</p>\n";
+		echo "<p>Gepi a un temps contenu un bug sur le format des login.<br />La présence de 'point' dans un nom de login par exemple pouvait provoquer des dysfonctionnements.<br />Le contenu des tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes' pouvait être affecté.</p>\n";
 		echo "<p><b>Il est vivement recommandé de faire une sauvegarde de la base avant d'effectuer cette opération !</b></p>\n";
 		echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 		echo add_token_field();
-		echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe' et 'j_eleves_professeurs'\" /></center>\n";
+		echo "<center><input type=submit value=\"Contrôler les tables 'j_eleves_cpe', 'j_eleves_professeurs' et 'j_scol_classes'\" /></center>\n";
 		echo "<input type='hidden' name='action' value='check_jec_jep_point' />\n";
 		echo "</form>\n";
 	
