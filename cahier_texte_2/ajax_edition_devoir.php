@@ -288,6 +288,7 @@ if (!$ctTravailAFaire->isNew()) {
 					{ onComplete:
 						function(transport) {
 							getWinEditionNotice().updateWidth();
+							initWysiwyg();
 						}
 					}
 				);
