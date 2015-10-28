@@ -128,7 +128,7 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		*/
 
 		// From
-		if(isset($tab_param_mail['from'])) {
+		if((isset($tab_param_mail['from']))&&(check_mail($tab_param_mail['from']))) {
 			$mail->From = $tab_param_mail['from'];
 			if(isset($tab_param_mail['from_name'])) {
 				$mail->FromName = $tab_param_mail['from_name'];
