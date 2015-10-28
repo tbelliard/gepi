@@ -57,6 +57,8 @@ $nouveaux_seulement=isset($_GET["nouveaux_seulement"]) ? $_GET["nouveaux_seuleme
 // 20121115
 $u_login=isset($_POST['u_login']) ? $_POST['u_login'] : (isset($_GET['u_login']) ? $_GET['u_login'] : NULL);
 
+$envoi_mail=isset($_POST['envoi_mail']) ? $_POST['envoi_mail'] : (isset($_GET['envoi_mail']) ? $_GET['envoi_mail'] : NULL);
+
 //comme il y a une redirection pour une page Csv ou PDF, il ne faut pas envoyer les entêtes dans ces 2 cas
 if (!(($mode_impression=='csv') or ($mode_impression=='pdf'))) {
 	//**************** EN-TETE *****************************
@@ -813,6 +815,7 @@ while ($p < $nb_users) {
 						*/
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
+						//echo "$sql<br />";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
 						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_adr_resp)==0) {
@@ -918,7 +921,7 @@ width:".$largeur1."%;\n";
 						}
 
 						//echo "<br />".$classe_resp;
-	
+
 						echo "</span></td></tr>\n";
 
 						$texte_email.="Responsable de $liste_elv_resp_non_html\n";
@@ -945,16 +948,47 @@ width:".$largeur1."%;\n";
 					}
 
 					echo "<tr><td>Adresse de courriel : </td><td><span class = \"bold\">";
-					if($user_email!='') {echo "<a href='mailto:$user_email?subject=".rawurlencode($sujet_mail)."&amp;body=".rawurlencode($texte_email)."'>".$user_email."</a>";}
+					if($user_email!='') {echo "<a href='mailto:$user_email?subject=".rawurlencode($sujet_mail)."&amp;body=".rawurlencode($texte_email)."' title=\"Rédiger un mail à l'attention de cet utilisateur.\">".$user_email."</a>";}
 					echo "&nbsp;</span></td></tr>\n";
 					echo "</table>\n";
-	
+
 					if($affiche_adresse_resp=='y') {
 						echo "</div>\n";
 	
 						echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
 					}
+
+					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+					}
 	
+					if($envoi_mail_actif=='y') {
+						if((isset($envoi_mail))&&($envoi_mail=="y")&&(check_mail($user_email))) {
+							$tab_param_mail['destinataire']=$user_email;
+							$texte_email="A l'attention de $user_prenom $user_nom<br />\n";
+							$texte_email.="Identifiant  : $user_login<br />\n";
+							if(isset($new_password)) {
+								$texte_email.="Mot de passe : $new_password<br />\n";
+							}
+
+							$texte_email.=$impression;
+
+							$sujet_mail = "[GEPI] Compte Gepi";
+
+							$headers = "";
+
+							// On envoie le mail
+							$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html", $tab_param_mail);
+							if($envoi) {
+								echo "<div style='float:right; width:5em; text-align:center; color:green;' class='fieldset_opacite50 noprint'>Mail envoyé</div>";
+							}
+							else {
+								echo "<div style='float:right; width:5em; text-align:center; color:red;' class='fieldset_opacite50 noprint'>Echec de l'envoi du mail</div>";
+							}
+						}
+					}
+
 					// La fiche bienvenue:
 					echo $impression;
 	
@@ -1183,6 +1217,7 @@ width:".$largeur1."%;\n";
 						*/
 	
 						$sql="SELECT ra.*,rp.nom,rp.prenom,rp.civilite FROM resp_adr ra, resp_pers rp WHERE rp.adr_id=ra.adr_id AND rp.login='$user_login';";
+						//echo "$sql<br />";
 						$res_adr_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_adr_resp)==0) {
 							$ligne1="<font color='red'><b>ADRESSE MANQUANTE</b></font>";

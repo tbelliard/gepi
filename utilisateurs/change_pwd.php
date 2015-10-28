@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -35,32 +35,33 @@ if ($resultat_session == 'c') {
 	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
 $mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : NULL;
 $ine_password=isset($_POST["ine_password"]) ? $_POST["ine_password"] : NULL;
 $ine_password=my_ereg_replace("[^A-Za-z0-9]","",$ine_password);
+$envoi_mail=isset($_POST["envoi_mail"]) ? $_POST["envoi_mail"] : NULL;
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 	check_token();
 
-    $user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");
-    if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
-        // Mot de passe comportant des lettres et des chiffres
-        $flag = 0;
+	$user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");
+	if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
+		// Mot de passe comportant des lettres et des chiffres
+		$flag = 0;
 	}
-    else {
-        // Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
-        $flag = 1;
+	else {
+		// Mot de passe comportant des lettres et des chiffres et au moins un caractère spécial
+		$flag = 1;
 	}
 
 	if(($mdp_INE=='y')&&($user_statut=='eleve')&&($ine_password!="")) {
@@ -83,6 +84,35 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$msg = "Erreur lors de l'enregistrement du mot de passe !";
 		} else {
 			$msg="Le mot de passe a été changé ($user_login:$ine_password) !";
+
+			if(isset($envoi_mail)) {
+				$tab_user=get_infos_from_login_utilisateur($user_login);
+				$user_email=$tab_user["email"];
+				$user_nom=$tab_user["nom"];
+				$user_prenom=$tab_user["prenom"];
+				if(check_mail($user_email)) {
+					$tab_param_mail['destinataire']=$user_email;
+					$texte_email="A l'attention de $user_prenom $user_nom<br />\n";
+					$texte_email.="Identifiant  : $user_login<br />\n";
+					$texte_email.="Mot de passe : $ine_password<br />\n";
+
+					$impression = getSettingValue("ImpressionFicheEleve");
+					$texte_email.=$impression;
+
+					$sujet_mail = "[GEPI] Compte Gepi";
+
+					$headers = "";
+
+					// On envoie le mail
+					$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html", $tab_param_mail);
+					if($envoi) {
+						$msg.="<br />Mail envoyé à destination de ".$user_email.".<br />";
+					}
+					else {
+						$msg.="<br />Echec de l'envoi de mail à destination de ".$user_email.".<br />";
+					}
+				}
+			}
 		}
 	}
 	else {
@@ -99,7 +129,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $NON_PROTECT['password'],'');
 			} else {
 				// On est en mode base de données
-                                $reg_data = Session::change_password_gepi($user_login,$NON_PROTECT['password']);
+				$reg_data = Session::change_password_gepi($user_login,$NON_PROTECT['password']);
 			}
 
 			//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
@@ -111,6 +141,41 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				$msg = "Erreur lors de l'enregistrement du mot de passe !";
 			} else {
 				$msg="Le mot de passe a été changé !";
+
+				if(isset($envoi_mail)) {
+					$tab_user=get_infos_from_login_utilisateur($user_login);
+					$user_email=$tab_user["email"];
+					$user_nom=$tab_user["nom"];
+					$user_prenom=$tab_user["prenom"];
+					if(check_mail($user_email)) {
+						$tab_param_mail['destinataire']=$user_email;
+						$texte_email="A l'attention de $user_prenom $user_nom<br />\n";
+						$texte_email.="Identifiant  : $user_login<br />\n";
+						$texte_email.="Mot de passe : ".$NON_PROTECT['password']."<br />\n";
+
+						if ($user_statut == "responsable") {
+							$impression = getSettingValue("ImpressionFicheParent");
+						} elseif ($user_statut == "eleve") {
+							$impression = getSettingValue("ImpressionFicheEleve");
+						} else {
+							$impression = getSettingValue("Impression");
+						}
+						$texte_email.=$impression;
+
+						$sujet_mail = "[GEPI] Compte Gepi";
+
+						$headers = "";
+
+						// On envoie le mail
+						$envoi = envoi_mail($sujet_mail, $texte_email, $user_email, $headers, "html", $tab_param_mail);
+						if($envoi) {
+							$msg.="<br />Mail envoyé à destination de ".$user_email.".<br />";
+						}
+						else {
+							$msg.="<br />Echec de l'envoi de mail à destination de ".$user_email.".<br />";
+						}
+					}
+				}
 			}
 		}
 	}
@@ -118,11 +183,12 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 // On appelle les informations de l'utilisateur
 if (isset($user_login) and ($user_login!='')) {
-    $call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,auth_mode FROM utilisateurs WHERE login='".$user_login."'");
-    $auth_mode = old_mysql_result($call_user_info, "0", "auth_mode");
-    $user_statut = old_mysql_result($call_user_info, "0", "statut");
-    $user_nom = old_mysql_result($call_user_info, "0", "nom");
-    $user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+	$call_user_info = mysqli_query($GLOBALS["mysqli"], "SELECT nom,prenom,statut,auth_mode,email FROM utilisateurs WHERE login='".$user_login."'");
+	$auth_mode = old_mysql_result($call_user_info, "0", "auth_mode");
+	$user_statut = old_mysql_result($call_user_info, "0", "statut");
+	$user_nom = old_mysql_result($call_user_info, "0", "nom");
+	$user_prenom = old_mysql_result($call_user_info, "0", "prenom");
+	$user_email = old_mysql_result($call_user_info, "0", "email");
 }
 
 //**************** EN-TETE *****************
@@ -182,6 +248,15 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 	echo "<th>Prénom&nbsp;: </th>\n";
 	echo "<td>$user_prenom</td>\n";
 	echo "</tr>\n";
+
+	echo "<tr class='lig1'>\n";
+	echo "<th>Email&nbsp;: </th>\n";
+	echo "<td><a href=\"mailto:".$user_email."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
+	$tmp_date=getdate();
+	if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+	echo ",%0d%0aCordialement.' title=\"Rédiger un mail à l'attention de cet utilisateur.\">";
+	echo $user_email."</a></td>\n";
+	echo "</tr>\n";
 	echo "</table>\n";
 
     echo "<p>Il est fortement conseillé de ne pas choisir un mot de passe trop simple.
@@ -209,7 +284,11 @@ if (mb_strtoupper($user_login) != mb_strtoupper($_SESSION['login'])) {
 	</tr>
 </table>
 <input type='hidden' name='valid' value=\"yes\" />
-<input type='hidden' name='user_login' value='".$user_login."' />\n";
+<input type='hidden' name='user_login' value='".$user_login."' />";
+
+	if(check_mail($user_email)) {
+		echo "<input type='checkbox' name='envoi_mail' id='envoi_mail' value='y' /><label for='envoi_mail'> Envoyer les informations par mail</label>\n";
+	}
 
 	echo "<br /><center><input type='submit' value='Enregistrer' tabindex='3' /></center>";
 

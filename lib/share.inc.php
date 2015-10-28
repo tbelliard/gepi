@@ -6196,15 +6196,16 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 		foreach($tab_champs_utilisateur as $key => $value) {
 			$tab[$value]=$lig->$value;
 		}
-        unset ($key, $value);
+		unset ($key, $value);
 		$res->close();
 		
 		if($tab['statut']=='responsable') {
-			$sql = "SELECT pers_id FROM resp_pers WHERE login='$login';";
+			$sql = "SELECT pers_id, mel FROM resp_pers WHERE login='$login';";
 			$res = mysqli_query($mysqli, $sql);
 			if($res->num_rows > 0) {
 				$lig=$res->fetch_object();
 				$tab['pers_id']=$lig->pers_id;
+				$tab['mel']=$lig->mel;
 
 				if(in_array('enfants', $tab_champs)) {
 					// A compléter
@@ -6222,7 +6223,7 @@ function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
 				foreach($tab_champs_eleve as $key => $value) {
 					$tab[$value]=$lig->$value;
 				}
-                unset ($key, $value);
+				unset ($key, $value);
 
 				if(in_array('parents', $tab_champs)) {
 					// A compléter

@@ -1119,29 +1119,31 @@ echo "<td valign='top'>\n";
 	echo "<tr><td>Tel.professionnel : </td><td><input type='text' size='15' name='tel_prof' value=\"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
 
 	echo "<tr>\n";
-	echo "<td>Mel : </td><td>\n";
+	echo "<td style='vertical-align:top;'>Mel : </td><td>\n";
 	if(isset($compte_resp_existe)&&($compte_resp_existe=="y")&&(getSettingValue('mode_email_resp')=='mon_compte')) {
 		// Faudrait-il quand même permettre la saisie en mode mon_compte si le mail est vide?
 		// Pour permettre une récupération de mot de passe?
 
-		echo "<input type='text' size='46' name='mel' value=\"".$resp_u_email."\" onchange='changement();' />";
+		echo "<input type='text' size='46' name='mel' id='mel' value=\"".$resp_u_email."\" onchange='changement();' />";
 
 		if((isset($mel_resp_pers))&&($mel_resp_pers!=$resp_u_email)&&($mel_resp_pers!="")) {
-			$precision_sur_mails="<br />(<em>'$resp_u_email' saisi par le responsable et '$mel_resp_pers' dans la table resp_pers</em>)";
+			$precision_sur_mails="<br />(<em style='font-size:small;'>'$resp_u_email'<a href='#' onclick=\"document.getElementById('mel').value='$resp_u_email';changement();return false;\" title=\"Prendre cette adresse mail pour le champ ci-dessus.\n\nN'oubliez pas d'enregistrer ensuite pour valider ce choix.\"><img src='../images/up.png' class='icone16' alt='Choix mel' /></a> saisi par le responsable<br />dans <strong>Gérer mon compte</strong><br />et '$mel_resp_pers' dans la table resp_pers (saisi ici ou dans Sconet)";
+			$precision_sur_mails.="<br />Le choix de paramétrage de l'établissement consiste à utiliser plutôt l'email saisi par l'utilisateur que celui éventuellement fourni lors de l'inscription dans l'établissement.<br />Cliquez sur <strong>Enregistrer</strong> pour valider la prise en compte du mot de passe saisi par l'utilisateur dans Gérer mon compte.</em>)";
 		}
 	}
 	else {
-		echo "<input type='text' size='46' name='mel' value=\"".$mel."\" onchange='changement();' />";
+		echo "<input type='text' size='46' name='mel' id='mel' value=\"".$mel."\" onchange='changement();' />";
 
 		if((isset($resp_u_email))&&($mel!=$resp_u_email)&&($resp_u_email!="")) {
-			$precision_sur_mails="<br />(<em>'$resp_u_email' saisi par le responsable et '$mel' dans la table resp_pers</em>)";
+			$precision_sur_mails="<br />(<em>'$resp_u_email'<a href='#' onclick=\"document.getElementById('mel').value='$resp_u_email';changement();return false;\" title=\"Prendre cette adresse mail pour le champ ci-dessus.\n\nN'oubliez pas d'enregistrer ensuite pour valider ce choix.\"><img src='../images/up.png' class='icone16' alt='Choix mel' /></a> saisi par le responsable et '$mel' dans la table resp_pers</em>)";
+			$precision_sur_mails="<br />(<em>'$resp_u_email'<a href='#' onclick=\"document.getElementById('mel').value='$resp_u_email';changement();return false;\" title=\"Prendre cette adresse mail pour le champ ci-dessus.\"><img src='../images/up.png' class='icone16' alt='Choix mel' /></a> saisi par le responsable<br />dans <strong>Gérer mon compte</strong><br />et '$mel' dans la table resp_pers (saisi ici ou dans Sconet)</em>)";
 		}
 	}
 	if($mel!='') {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$mel."?subject=".getSettingValue('gepiPrefixeSujetMail')."GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-		echo ",%0d%0aCordialement.'>";
+		echo ",%0d%0aCordialement.' title=\"Envoyer un mail à ce responsable.\">";
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
