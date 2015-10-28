@@ -349,6 +349,7 @@ if (!$ctCompteRendu->isNew() || isset($info)) {
 					{ onComplete:
 						function(transport) {
 							getWinEditionNotice().updateWidth();
+							initWysiwyg();
 						}
 					}
 				);
