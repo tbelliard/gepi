@@ -232,6 +232,7 @@ Cordialement.
 				$email_destinataires="";
 
 				$sql="SELECT DISTINCT u.login, u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$corriger_app_id_groupe';";
+				//echo "$sql<br />";
 				$req=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($req)>0) {
 					//$tab_email_destinataire=array();
@@ -290,6 +291,7 @@ Cordialement.
 				//else {
 			if($envoi_mail_actif=='y') {
 				if($email_destinataires!="") {
+
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$corriger_app_login_eleve' AND periode='$corriger_app_num_periode');";
 					$req=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($req)>0) {
@@ -322,13 +324,17 @@ Cordialement.
 						$email_declarant="";
 						$nom_declarant="";
 						$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+						//echo "$sql<br />";
 						$req=mysqli_query($mysqli, $sql);
 						if(mysqli_num_rows($req)>0) {
 							$lig_u=mysqli_fetch_object($req);
-							$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
-							$email_declarant=$lig_u->email;
-							$tab_param_mail['from']=$lig_u->email;
-							$tab_param_mail['from_name']=$nom_declarant;
+							if(check_mail($lig_u->email)) {
+								$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+								$email_declarant=$lig_u->email;
+								//echo "\$email_declarant=$email_declarant<br />";
+								$tab_param_mail['from']=$lig_u->email;
+								$tab_param_mail['from_name']=$nom_declarant;
+							}
 						}
 
 						$sujet_mail="Correction d'appréciation";
@@ -354,6 +360,12 @@ Cordialement.
 						$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 						//$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 						$texte_mail=$salutation.",\n\n".$texte_mail;
+
+						/*
+						echo "<pre>";
+						print_r($tab_param_mail);
+						echo "</pre>";
+						*/
 
 						$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header,"plain",$tab_param_mail);
 					}
