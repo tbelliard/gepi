@@ -130,6 +130,9 @@ elseif (($_SESSION['statut']=='scolarite')&&(!getSettingAOui('AccesModifApprecia
 	return false;
 	die();
 }
+elseif ($_SESSION['statut']=='scolarite') {
+	$envoi_mail_correction_autrui="y";
+}
 /*
 else {
 	// On devrait même déconnecter et mettre une tentative_intrusion()
@@ -158,7 +161,8 @@ if (in_array($corriger_app_login_eleve, $current_group["eleves"][$corriger_app_n
 
 		if($_SESSION['statut']=='scolarite') {
 			$valider_modif="y";
-			$envoi_mail_correction_autrui="y";
+			// L'envoi ou non de mail est défini plus haut pour ce cas
+			//$envoi_mail_correction_autrui="y";
 		}
 		elseif($pp_avec_droit_modif=="y") {
 			$valider_modif="y";
@@ -222,7 +226,7 @@ Cordialement.
 				$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 			}
 
-			if($envoi_mail_actif=='y') {
+			//if($envoi_mail_actif=='y') {
 				$email_destinataires="";
 
 				$sql="SELECT DISTINCT u.login, u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$corriger_app_id_groupe';";
@@ -246,7 +250,8 @@ Cordialement.
 					}
 				}
 
-				if($email_destinataires=="") {
+				//if($email_destinataires=="") {
+					// Au cas où l'envoi de mail foirerait, on met toujours un message:
 					// On met un message en page d'accueil
 					for($loop=0;$loop<count($tab_login_destinataire);$loop++) {
 						$r_sql = "INSERT INTO messages
@@ -278,9 +283,10 @@ Cordialement.
 						}
 						*/
 					}
-				}
-				else {
-
+				//}
+				//else {
+			if($envoi_mail_actif=='y') {
+				if($email_destinataires!="") {
 					$sql="SELECT id_classe FROM j_eleves_classes WHERE (login='$corriger_app_login_eleve' AND periode='$corriger_app_num_periode');";
 					$req=mysqli_query($mysqli, $sql);
 					if(mysqli_num_rows($req)>0) {
