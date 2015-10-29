@@ -96,6 +96,8 @@ $sauveModifieCaseColonne = filter_input(INPUT_POST, 'action') === 'sauveModifieC
 //Je n'ai pas trouvé d'équivalent à filter_input pour un tableau :( Régis 
 $idElevesChoisis = isset($_POST['elevesChoisis']) && count($_POST['elevesChoisis']) ? $_POST['elevesChoisis'] : NULL;
 $supprimeEleve = filter_input(INPUT_POST, 'eleveASupprimer') ? filter_input(INPUT_POST, 'eleveASupprimer') : NULL;
+$supprimeColonne = filter_input(INPUT_POST, 'supprimeColonne') === 'Supprimer' ? TRUE : FALSE;
+$deplaceColonne = filter_input(INPUT_POST, 'deplaceColonne') === 'Déplacer' ? TRUE : FALSE;
 
 if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = "";
@@ -200,6 +202,17 @@ elseif ($sauveModifieCaseColonne) {
 	ModifieCaseColonneEleve($login, $idDef, $idColonne, $contenu, $id);
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 }
+elseif ($supprimeColonne) { //===== On supprime une colonne
+	$idCol = filter_input(INPUT_POST, 'colonneASupprime') ? filter_input(INPUT_POST, 'colonneASupprime') : NULL;
+	$liste = filter_input(INPUT_POST, 'idListe') ? filter_input(INPUT_POST, 'idListe') : NULL;
+	if ($idCol !== NULL) {
+		SupprimeColonne($liste, $idCol);
+	}
+	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
+}
+elseif ($deplaceColonne) { //===== On déplace une colonne
+	DeplaceColonne();
+}
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
 }
@@ -221,9 +234,10 @@ $classeListe = $_SESSION['liste_perso']['classe'] ;
 $nbColonneListe = $_SESSION['liste_perso']['nbColonne'] ;
 $photoListe = $_SESSION['liste_perso']['photo'] ;
 $colonnes = $_SESSION['liste_perso']['colonnes'] ;
+$colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-// var_dump($_POST);
+var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -245,15 +259,6 @@ require_once("../lib/header.inc.php");
 		>
 		<a href="#lien_tableau">Listes perso</a>
 	</li>
-    <li class="menu_liste"
-		id='menu_lien_affichage'
-		onclick=" masque('construction'); desactiver('construction');
-			masque('tableau'); desactiver('tableau');
-			masque('eleves');desactiver('eleves');
-			affiche('affichage'); activer ('affichage'); "
-		>
-		<a href="#lien_affichage">Modifier</a>
-	</li>
     <li class="menu_liste" 
 		id='menu_lien_eleves'
 		onclick="affiche('eleves'); activer ('eleves');
@@ -272,8 +277,17 @@ require_once("../lib/header.inc.php");
 		>
 		<a href="#lien_construction">Construction</a>
 	</li>
+    <li class="menu_liste"
+		id='menu_lien_affichage'
+		onclick=" masque('construction'); desactiver('construction');
+			masque('tableau'); desactiver('tableau');
+			masque('eleves');desactiver('eleves');
+			affiche('affichage'); activer ('affichage'); "
+		>
+		<a href="#lien_affichage">Modifier</a>
+	</li>
 </ul>
-
+<!-- Choix de la liste ou création d'une liste -->
 <div id="tableau" class="div_construit" style="display:block;">
 	<p><a id='lien_tableau'></a></p>
 	<form action="index.php" name="formChoixTableau" method="post">
@@ -300,22 +314,13 @@ while ($obj = $tableau->fetch_object()) { ?>
 	document.getElementById('sauveChoixTableau').classList.add('invisible');
 </script>
 
-<div id="affichage" class="div_construit" style="display:block;">
-	<p><a id='lien_affichage'></a></p>
-	<form action="index.php" name="formSauveTableau" method="post">
-		<fieldset class="center">
-			<legend>Modifier et sauvegarder</legend>
-			<input type="submit" id="sauveTableau" name="sauveTableau" value="Sauvegarder" />
-			<input type="reset" id="reinitialiseTableau" name="reinitialiseTableau" value="Réinitialiser" />
-		</fieldset>
-	</form>
-</div>
-
+<!-- Ajout des élèves à la liste -->
 <div id="eleves" class="div_construit" style="display:block;">
 	<p><a id='lien_eleves'></a></p>
 	<form action="index.php" name="formAjouteEleve" method="post">
 		<fieldset class="center">
 			<legend>Ajouter des membres à la liste</legend>
+			<span <?php if ($idListe === NULL ||$idListe === "" ) { echo "class='invisible' ";} ?>>
 			<p>
 				<input type="hidden" name="action" value="choixEleves"/>
 				<label for="id_groupe">Groupe : </label>
@@ -363,15 +368,22 @@ foreach ($groupe_col as $group) {
 				</select>
 			</p>
 <?php } ?>
+			</span>
 		</fieldset>
 	</form>
 </div>
+
+<!-- Ajouter des colonnes -->
 <div id="construction" class="div_construit" style="display:block;">
 	<p><a id='lien_construction'></a></p>
-	<form action="index.php" name="formAjouteColonne" method="post">
-		<fieldset>
-			<legend>Ajouter/supprimer des colonnes</legend>
-			<p class="colonne colG65">
+	<fieldset>
+		<legend>Ajouter des colonnes / supprimer la liste</legend>
+		<form action="index.php" 
+			  name="formAjouteColonne" 
+			  method="post"
+			  style="display:table; width:100%;"
+			  >
+			<p class=" colG65" <?php if ($idListe === NULL ||$idListe === "" ) { echo "style='display:none;' ";} ?>>
 				<input type="hidden"
 					   name="idListe"
 					   value="<?php if ($idListe) {echo $idListe;} ?>"
@@ -405,7 +417,7 @@ foreach ($groupe_col as $group) {
 					   <?php if ($photoListe) {echo " checked='checked' ";} ?>
 					   />
 			</p>
-			<p class="colonne colC20">
+			<p class=" colC20" <?php if ($idListe === NULL ||$idListe === "" ) { echo "style='display:none;' ";} ?>>
 				<label for="nbColonneListe">Nombre de colonnes</label>
 				<input type="text" 
 					   maxlength="2"
@@ -415,7 +427,7 @@ foreach ($groupe_col as $group) {
 					   size="1"
 					   />
 			</p>
-			<p class="colonne colD15">
+			<p class=" colD15" <?php if ($idListe === NULL ||$idListe === "" ) { echo "style='display:none;' ";} ?>>
 				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
 				<input type="submit" id="sauveDefinitionListe" name="sauveDefinitionListe" value="Sauvegarder" />
 				<input type="submit" 
@@ -423,11 +435,76 @@ foreach ($groupe_col as $group) {
 					   name="supprimeDefinitionListe" 
 					   value="Supprimer"
 					   title="Supprimer la liste"
+					   style="margin-top: 1em;"
 					   />
 			</p>
-		</fieldset>
-	</form>
+		</form>
+	</fieldset>
 </div>
+
+<!-- Supprimer des colonnes -->
+<div id="affichage" class="div_construit" style="display:block;">
+	<p><a id='lien_affichage'></a></p>
+	<fieldset class="center" style="display:inline;">
+		<legend>Supprimer des colonnes</legend>
+		<span <?php if ($idListe === NULL ||$idListe === "" ) { echo "class='invisible' ";} ?>>
+		<form action="index.php" name="formSupprimeColonne" method="post">
+			<p>
+				<select id="colonneASupprime" name="colonneASupprime">
+					<option value='-1'>choisissez la colonne à supprimer</option>		
+<?php
+if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
+	while ($col = $colonnes->fetch_object()) {
+?>
+					<option value="<?php echo $col->id; ?>"><?php echo $col->titre; ?></option>
+<?php
+	}
+	$colonnes->data_seek(0);
+}
+?>
+				</select>
+				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
+				<input type="submit" id="supprimeColonne" name="supprimeColonne" value="Supprimer" />
+			</p>
+		</form>
+			</span>
+	</fieldset>
+	<fieldset class="center" style="display:inline;">
+		<legend>Déplacer une colonne</legend>
+			<span <?php if ($idListe === NULL ||$idListe === "" ) { echo "class='invisible' ";} ?>>
+		<form action="index.php" name="formBougeColonne" method="post">
+			<p>
+				<select id="colonneABouge" name="colonneABouge">
+					<option value='-1'>choisissez la colonne à déplacer</option>		
+<?php
+if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
+	while ($col = $colonnes->fetch_object()) {
+?>
+					<option value="<?php echo $col->id; ?>"><?php echo $col->titre; ?></option>
+<?php
+	}
+	$colonnes->data_seek(0);
+}
+?>
+				</select>
+				<label for="newPlace">Nouvelle place</label>
+				<input type="number" 
+					   id="newPlace" 
+					   name="newPlace" 
+					   style="width:4em;" 
+					   min="0" 
+					   max="<?php echo $colonnes->num_rows; ?>"
+					   />
+				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
+				<input type="submit" id="deplaceColonne" name="deplaceColonne" value="Déplacer" />
+			</p>
+		</form>
+			</span>
+	</fieldset>
+</div>
+
+
+
 <div id="laListe" class="div_construit" style="display:block;">
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">
@@ -454,7 +531,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 						  name="formModifieTitre" 
 						  method="post" 
 						  id="formModifieTitre<?php echo $colonne->id; ?>" 
-						  style="margin: 0;padding: 0;">
+						  style="margin: 0;padding: 0; display: inline;">
 						<span class="invisible" 
 							  id="saisie<?php echo $colonne->id; ?>"
 							  >
@@ -466,7 +543,11 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 								   />
 							<input type="hidden" name="id" value="<?php echo $colonne->id; ?>" />
 							<input type="hidden" name="id_def" value="<?php echo $colonne->id_def; ?>" />
-							<input type="hidden" name="action" value="sauveTitreColonne" />
+							<input type="hidden" 
+								   name="action" 
+								   id="sauveSupprimeCol<?php echo $colonne->id; ?>" 
+								   value="sauveTitreColonne" />
+							
 						</span>
 						<span id="vision<?php echo $colonne->id; ?>"
 							  style="cursor:pointer;"
@@ -580,9 +661,9 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 </div>
 
 <script type="text/javascript" >
-	afficher_cacher("affichage");
 	afficher_cacher("eleves");
 	afficher_cacher("construction");
+	afficher_cacher("affichage");
 	activer("tableau");
 </script>
 <?php
@@ -610,5 +691,14 @@ if ($sauveDefinitionListe) {
 </script>
 <?php
 }
+if ($supprimeColonne) {
+?>
+<script type="text/javascript" >
+	desactiver("tableau");
+	activer("affichage");
+</script>	
+<?php
+}
+
 
 require_once("../lib/footer.inc.php");

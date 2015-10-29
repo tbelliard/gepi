@@ -90,6 +90,17 @@ function supprime(login, nom, prenom)
    }
 }
 
+function supprimeColonne(id, titre)
+{
+   var r = confirm("Voulez-vous vraiment supprimer '"+titre+"'");
+   if (r === true) {
+	 alert ("on supprime "+id);
+	 document.getElementById('sauveSupprimeCol'+id).value = "supprimeColonne";
+	 document.getElementById('formModifieTitre'+id).submit();
+   }
+   
+}
+
 
 
 

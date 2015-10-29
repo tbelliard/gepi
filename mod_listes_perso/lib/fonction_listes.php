@@ -218,7 +218,7 @@ function CreeColonnes($idListe, $nouveauNombre) {
 
 function LitColonnes($idListe) {
 	global $mysqli;
-	$sql = "SELECT * FROM `mod_listes_perso_colonnes` WHERE `id_def` = '$idListe' " ;
+	$sql = "SELECT * FROM `mod_listes_perso_colonnes` WHERE `id_def` = '$idListe' ORDER BY `placement` ASC " ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -246,6 +246,51 @@ function SauveTitreColonne() {
 	}
 	return TRUE;	
 }
+
+function DeplaceColonne($id, $newPlace) {
+	return TRUE;
+	global $mysqli;
+	// récupérer la place de la colonne
+	// 
+	$sql = "" ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;	
+}
+
+function SupprimeColonne($idListe, $colonne) {
+	global $mysqli;
+	SupprimeColonnePourElv($idListe, $colonne);
+	$sql = "DELETE FROM `mod_listes_perso_colonnes` WHERE `id` = '$colonne' ;" ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	// Mettre à jour les numéros de rang de colonnes
+	return TRUE;
+}
+
+function SupprimeColonnePourElv($idListe, $colonne) {
+	global $mysqli;
+	$sql = "DELETE FROM `mod_listes_perso_contenus` WHERE `id_def` = '$idListe' AND `colonne` = '$colonne' ;" ;
+	echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;
+}
+
 
 
 //=========================================================================================================
@@ -345,9 +390,12 @@ function ModifieCaseColonneEleve($login, $idListe,$idColonne ,$contenu, $id = NU
 
 function ChargeColonnesEleves($idListe, $eleve_choisi_col) {
 	$tableauRetour = array();
-	foreach ($eleve_choisi_col as $elv) {
-		$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
+	if (count($eleve_choisi_col)) {
+		foreach ($eleve_choisi_col as $elv) {
+			$tableauRetour[$elv->getLogin()] = ChargeCasesEleves($idListe, $elv);
+		}
 	}
+	
 	return $tableauRetour;
 }
 
@@ -378,7 +426,10 @@ function ChargeCasesEleves($idListe, $elv) {
 function SupprimeToutesColonnes($elv, $idListe) {
 	global $mysqli;
 	$sql = "DELETE FROM `mod_listes_perso_contenus` "
-	   . "WHERE `login` = '$elv' AND `id_def` = '$idListe';";
+	   . "WHERE `id_def` = '$idListe' ";
+	if ($elv !== NULL) {
+		$sql .= "AND `login` = '$elv' ";
+	}
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -388,6 +439,7 @@ function SupprimeToutesColonnes($elv, $idListe) {
 	}
 	return TRUE;
 }
+
 
 
 
