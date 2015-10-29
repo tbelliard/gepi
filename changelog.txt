@@ -16,6 +16,7 @@ Discipline:
 - Possibilité pour un utilisateur de supprimer un incident qu'il a déclaré si l'incident n'est rattaché à aucune mesure ni sanction.
 - Pointage de menus incidents: Possibilité de définir des seuils pour envoi de mail, message sur les pointages de menus incidents.
 - Possibilité de déléguer à un professeur le pointage du statut effectué ou non d'une sanction (cas d'une sanction effectuée dans la salle d'un professeur).
+- Possibilité pour un enseignant de limiter aux élèves de ses groupes l'envoi de courriel lors des déclarations d'incidents
 
 Absences2:
 - Ajout de liens de création d'incident de puis mod_abs2 Saisir groupe.

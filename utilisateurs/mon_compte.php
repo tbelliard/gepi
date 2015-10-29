@@ -372,20 +372,6 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 												$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
 											if (!$redim_OK) $msg .= "<br /> Echec du redimensionnement de la photo.";
 										}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 								}
 								else {
 									if($msg!="") {$msg.="<br />";}
@@ -490,20 +476,6 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 													$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
 												if (!$redim_OK) $msg .= "<br /> Echec du redimensionnement de la photo.";
 												}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 										}
 										else {
 											if($msg!="") {$msg.="<br />";}
@@ -1327,6 +1299,23 @@ if(isset($_POST['mod_discipline_travail_par_defaut'])) {
 	}
 }
 
+//===== Discipline : Professeur limite à ses groupes
+if ($_SESSION['statut'] === 'professeur') {
+	$moduleDiscipline = filter_input(INPUT_POST, 'module') === 'discipline' ? TRUE : FALSE;
+	$limiteAGroupe = filter_input(INPUT_POST, 'limiteAGroupe') ? filter_input(INPUT_POST, 'limiteAGroupe') : "n";
+	
+	if ($moduleDiscipline && $limiteAGroupe) {
+		savePref($_SESSION['login'], 'limiteAGroupe', $limiteAGroupe);
+		$msg.="Module discipline -> ";
+		if ($limiteAGroupe === 'y') {
+			$msg.="seul les courriels de vos groupes vous seront envoyés.<br />";
+		} else {
+			$msg.="vous recevrez tous les courriels des classes dont vous avez des élèves.<br />";
+		}
+		
+	}
+}
+
 
 
 $tab_statuts_barre=array('professeur', 'cpe', 'scolarite', 'administrateur');
@@ -1687,7 +1676,7 @@ $titre_page = "Gérer son compte";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-// debug_var();
+debug_var();
 
 // On initialise un flag pour savoir si l'utilisateur est 'éditable' ou non.
 // Cela consiste à déterminer s'il s'agit d'un utilisateur local ou LDAP, et dans
@@ -3074,6 +3063,7 @@ if ((getSettingValue('active_mod_discipline')!='n')&&(in_array($_SESSION['statut
 	echo "background-color: white; ";
 	echo "'>Module Discipline et sanctions</legend>\n";
 	echo "<p>Lors de la saisie de travail à faire, le texte par défaut proposé sera&nbsp;: <br />\n";
+	echo "<input type='hidden' name='module' value='discipline' />\n";
 	echo "<input type='text' name='mod_discipline_travail_par_defaut' value='$mod_discipline_travail_par_defaut' size='30' tabindex='$tabindex' /><br />\n";
 	$tabindex++;
 
@@ -3248,6 +3238,24 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 	else {
 		echo "<p>Vous n'êtes destinataire, en tant que $qualite, d'aucun mail signalant des incidents.<br />Si vous pensez que c'est une erreur, contactez l'administrateur.</p>";
 	}
+	
+	if($_SESSION['statut']=='professeur') {
+		if(getPref($_SESSION['login'], 'mod_discipline_mail_que_groupe', "")=="y") {
+			
+		}
+?>
+		<p>
+			
+			<input type="checkbox" 
+				   name="limiteAGroupe" 
+				   id='limiteAGroupe'
+				   <?php if(getPref($_SESSION['login'], 'limiteAGroupe', "y")) {echo "checked = 'checked' ";} ?>
+				   value="y"
+				   />
+			<label for="limiteAGroupe">Limiter les courriels aux élèves que j'ai effectivement en cours</label>
+		</p>
+<?php
+	}
 
 	echo "<p style='margin-top:1em;'>Dans le cas où vous recevez des signalements par mail, vous pouvez restreindre les catégories d'incidents pour lesquelles vous souhaitez être informé&nbsp;: <br />\n";
 	$tab_id_categories_exclues=array();
@@ -3280,7 +3288,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 
 		echo "<input type='checkbox' id='mod_disc_mail_cat_incluse_NC' name='mod_disc_mail_cat_incluse_NC' value='y' onchange=\"checkbox_change('mod_disc_mail_cat_incluse_NC')\" ";
 		if(getPref($_SESSION['login'], 'mod_discipline_natures_non_categorisees_exclues_mail', "")!="y") {
-			echo "checked ";
+			echo "checked = 'checked' ";
 		}
 			echo " tabindex='$tabindex' ";
 			$tabindex++;

@@ -283,7 +283,7 @@ function recherche_utilisateur($rech_nom,$page) {
 	}
 }
 
-
+global $id_incident;
 $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET['id_incident']) ? $_GET['id_incident'] : NULL);
 
 $return_url=isset($_POST['return_url']) ? $_POST['return_url'] : (isset($_GET['return_url']) ? $_GET['return_url'] : NULL);
@@ -1094,17 +1094,6 @@ $headers);
 					}
 				}
 
-				/*
-				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-				}
-
-				if($envoi_mail_actif=='y') {
-				*/
-					//echo "\$envoi_mail_actif=$envoi_mail_actif<br />";
-
-					//echo "plip";
 					check_token();
 
 					$temoin_envoyer_mail="y";

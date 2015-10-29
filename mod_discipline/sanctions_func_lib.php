@@ -1102,19 +1102,19 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					if($lig->destinataire=='cpe') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
 					}
 					elseif($lig->destinataire=='professeurs') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
 					}
 					elseif($lig->destinataire=='pp') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.id_classe=jep.id_classe AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.id_classe=jep.id_classe AND jec.login=jep.login AND jep.professeur=u.login AND u.email!='';";
 					}
 					elseif($lig->destinataire=='administrateur') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u WHERE u.statut='administrateur' AND u.email!='';";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u WHERE u.statut='administrateur' AND u.email!='';";
 					}
 					elseif($lig->destinataire=='scolarite') {
-						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.email!='';";
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.email!='';";
 					}
 					elseif($lig->destinataire=='mail') {
 						$temoin=true;
@@ -1125,6 +1125,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 					if ($temoin) { //Cas d'une adresse mail autre
 						$tab_dest[] = $adresse_sup;
 					} else {
+						
 						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)>0) {
 							while($lig2=mysqli_fetch_object($res2)) {
@@ -1141,6 +1142,19 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 									if($mod_discipline_natures_non_categorisees_exclues_mail=="y") {
 										$ajouter_mail="n";
 									}
+								}
+								
+								// si prof, il faut vérifier au besoin, si l'élève (un des élèves) est bien dans un des groupes d'enseignement
+								if(($lig2->statut ==='professeur') && (getPref($lig2->login, 'limiteAGroupe', "y"))) {
+									global $id_incident;
+									$protagonistes = get_protagonistes($id_incident);
+									if(!ElvGroupeProf($lig2->login, $protagonistes)) {
+										$ajouter_mail="n";
+										// echo ('<br />un prof '.$lig2->login.' ne recevra pas un courriel<br />');
+									} else {
+										// echo ('<br />un prof '.$lig2->login.' va recevoir un courriel<br />');
+									}
+									
 								}
 
 								if($ajouter_mail!="n") {
@@ -1328,42 +1342,24 @@ function get_protagonistes($id_incident,$roles=array(),$statuts=array()) {
 	}
 	return $retour;
 }
-/*
-function get_documents_joints($id, $type) {
-	global $dossier_documents_discipline;
-	// $type: mesure ou sanction
-	$tab_file=array();
 
-	if(($type=="mesure")||($type=="sanction")) {
-		if($type=="mesure") {
-			$sql="SELECT id_incident FROM s_traitement_incident WHERE id='$id';";
-		}
-		else {
-			$sql="SELECT id_incident FROM s_sanctions WHERE id_sanction='$id';";
-		}
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)>0) {
-			$lig=mysql_fetch_object($res);
-			$id_incident=$lig->id_incident;
-
-			if(file_exists("../$dossier_documents_discipline/incident_".$id_incident."/".$type."_".$id)) {
-				$handle=opendir($path);
-				$n=0;
-				while ($file = readdir($handle)) {
-					if (($file != '.') and ($file != '..') and ($file != 'remove.txt')
-					and ($file != '.htaccess') and ($file != '.htpasswd') and ($file != 'index.html')) {
-						$tab_file[] = $file;
-					}
-				}
-				closedir($handle);
-				sort($tab_file);
-			}
+function ElvGroupeProf ($profLogin, $protagonistes) {
+	global $mysqli;
+	foreach ($protagonistes as $protagoniste) {
+		$sql="SELECT e.* FROM j_eleves_groupes e "
+		   . "INNER JOIN j_groupes_professeurs p "
+		   . "ON e.id_groupe = p.id_groupe "
+		   . "WHERE e.login = '$protagoniste' "
+		   . "AND p.login = '$profLogin' ";
+		// echo "$sql<br />";
+		$res=mysqli_query($mysqli, $sql);
+		if ($res->num_rows) {
+			return TRUE;
 		}
 	}
-
-	return $tab_file;
+	return FALSE;
 }
-*/
+
 function get_documents_joints($id, $type, $login_ele="") {
 	// $type: mesure ou sanction
 	// $login_ele doit être non vide pour les mesures
