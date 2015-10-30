@@ -35,6 +35,7 @@ function verifieTableCree() {
 	   . "`sexe` BOOLEAN default true, "
 	   . "`classe` BOOLEAN default true, "
 	   . "`photo` BOOLEAN default true, "
+	   . "`propriétaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste', "
 	   . "PRIMARY KEY  (`id`) "
 	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
 	$query_def = mysqli_query($mysqli, $sql_def);
@@ -157,7 +158,8 @@ function sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe
 	   . "`nom`= '$nomListe', "
 	   . "`sexe`= '$sexeListe', "
 	   . "`classe`= '$classeListe', "
-	   . "`photo`= '$photoListe' ";
+	   . "`photo`= '$photoListe', "
+	   . "`proprietaire`= '".$_SESSION['login']."' ";
 	if (strlen((string)$idListe) !== 0) {$sql .= ", `id`=$idListe ";}
 	$sql .= "ON DUPLICATE KEY UPDATE "
 	   . "`nom`= '$nomListe', "
@@ -177,9 +179,10 @@ function sauveDefListe($idListe,$nomListe, $sexeListe, $classeListe, $photoListe
 
 function chargeTableau($idListe = NULL) {
 	global $mysqli;
-	$sql = "SELECT * FROM `mod_listes_perso_definition` " ;
+	$proprietaire = $_SESSION['login'];
+	$sql = "SELECT * FROM `mod_listes_perso_definition` WHERE `proprietaire` = '$proprietaire' " ;
 	if ($idListe !== NULL) {
-		$sql .= "WHERE `id` LiKE '$idListe' ;" ;
+		$sql .= "AND `id` LiKE '$idListe' ;" ;
 	}
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
@@ -190,6 +193,22 @@ function chargeTableau($idListe = NULL) {
 	}
 	return $query;
 }
+
+function Dernier_id() {
+	global $mysqli;
+	$proprietaire = $_SESSION['login'];
+	$sql = "SELECT MAX(id) as id FROM `mod_listes_perso_definition` WHERE `proprietaire` = '$proprietaire' " ;
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de la lecture de la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	$last_id = $query->fetch_object()->id;
+	return $last_id;
+}
+	
 
 
 //=========================================================================================================

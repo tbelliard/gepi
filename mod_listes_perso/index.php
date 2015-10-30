@@ -102,7 +102,8 @@ $deplaceColonne = filter_input(INPUT_POST, 'deplaceColonne') === 'Déplacer' ? T
 if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = "";
 	unset($_SESSION['liste_perso']);
-
+	sauveDefListe($idListe,"", "n", "n", "n", 0);
+	$idListe = Dernier_id();
 } elseif ($tableauChoisi) { //===== Choix d'une liste =====
 	if ((int)$tableauChoisi === -1) {
 		$idListe = '';
@@ -211,7 +212,7 @@ elseif ($supprimeColonne) { //===== On supprime une colonne
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 }
 elseif ($deplaceColonne) { //===== On déplace une colonne
-	DeplaceColonne();
+	DeplaceColonne(1,2);
 }
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
