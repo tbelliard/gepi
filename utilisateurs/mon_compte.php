@@ -1676,7 +1676,7 @@ $titre_page = "Gérer son compte";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 // On initialise un flag pour savoir si l'utilisateur est 'éditable' ou non.
 // Cela consiste à déterminer s'il s'agit d'un utilisateur local ou LDAP, et dans
@@ -3245,11 +3245,14 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 		}
 ?>
 		<p>
-			
 			<input type="checkbox" 
 				   name="limiteAGroupe" 
 				   id='limiteAGroupe'
-				   <?php if(getPref($_SESSION['login'], 'limiteAGroupe', "y")) {echo "checked = 'checked' ";} ?>
+				   <?php 
+				      if(getPref($_SESSION['login'], 'limiteAGroupe', "y")) {echo "checked = 'checked' ";} 
+				      echo " tabindex='$tabindex' ";
+				      $tabindex++;
+				   ?>
 				   value="y"
 				   />
 			<label for="limiteAGroupe">Limiter les courriels aux élèves que j'ai effectivement en cours</label>
