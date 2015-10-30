@@ -212,7 +212,10 @@ elseif ($supprimeColonne) { //===== On supprime une colonne
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 }
 elseif ($deplaceColonne) { //===== On déplace une colonne
-	DeplaceColonne(1,2);
+	$colonneABouge = filter_input(INPUT_POST, 'colonneABouge');
+	$newPlace = filter_input(INPUT_POST, 'newPlace');
+	$idListe = filter_input(INPUT_POST, 'idListe');
+	DeplaceColonne($colonneABouge, $newPlace, $idListe);
 }
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
@@ -238,7 +241,7 @@ $colonnes = $_SESSION['liste_perso']['colonnes'] ;
 $colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-// var_dump($_POST);
+var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";

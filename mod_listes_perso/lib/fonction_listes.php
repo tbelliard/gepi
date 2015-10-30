@@ -266,11 +266,15 @@ function SauveTitreColonne() {
 	return TRUE;	
 }
 
-function DeplaceColonne($id, $newPlace) {
-	return TRUE;
+function DeplaceColonne($id, $newPlace, $idListe) {
 	global $mysqli;
 	// récupérer la place de la colonne
-	// 
+	$anciennePlace = PlaceColonne($id, $idListe);
+	echo $anciennePlace.'<br />';
+	
+	
+	
+	return TRUE;
 	$sql = "" ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
@@ -282,8 +286,27 @@ function DeplaceColonne($id, $newPlace) {
 	return TRUE;	
 }
 
+function PlaceColonne($id) {
+	global $mysqli;
+	$sql = "SELECT `placement` FROM `mod_listes_perso_colonnes` "
+	   . "WHERE id = $id ";
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	$place = $query->fetch_object()->placement;
+	return $place;
+}
+
 function SupprimeColonne($idListe, $colonne) {
 	global $mysqli;
+	// récupérer la place de la colonne
+	//echo $idListe."→".$colonne;
+	$anciennePlace = PlaceColonne($colonne);	
+	//echo $idListe."→".$colonne;
 	SupprimeColonnePourElv($idListe, $colonne);
 	$sql = "DELETE FROM `mod_listes_perso_colonnes` WHERE `id` = '$colonne' ;" ;
 	//echo $sql."<br />" ;
@@ -294,7 +317,27 @@ function SupprimeColonne($idListe, $colonne) {
 		return FALSE;
 	}
 	// Mettre à jour les numéros de rang de colonnes
+	crementePlace($idListe, $anciennePlace, -1);
 	return TRUE;
+}
+
+function crementePlace($idListe, $debut, $deplacement) {
+	global $mysqli;
+	$sql = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement + ($deplacement)) "
+	   . "WHERE `id_def` = $idListe ";
+	if($deplacement < 0) {
+		$sql .= "AND `placement` > $debut " ;
+	} else {
+		$sql .= "AND `placement` < $debut " ;
+	}
+	//echo $sql."<br />" ;
+	$query = mysqli_query($mysqli, $sql);
+	if (!$query) {
+		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+		echo $sql."<br />" ;
+		return FALSE;
+	}
+	return TRUE;	
 }
 
 function SupprimeColonnePourElv($idListe, $colonne) {
