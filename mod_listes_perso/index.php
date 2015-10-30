@@ -237,7 +237,7 @@ $colonnes = $_SESSION['liste_perso']['colonnes'] ;
 $colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-var_dump($_POST);
+// var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -288,7 +288,7 @@ require_once("../lib/header.inc.php");
 	</li>
 </ul>
 <!-- Choix de la liste ou création d'une liste -->
-<div id="tableau" class="div_construit" style="display:block;">
+<div id="tableau" class="div_construit">
 	<p><a id='lien_tableau'></a></p>
 	<form action="index.php" name="formChoixTableau" method="post">
 		<fieldset>
@@ -315,7 +315,7 @@ while ($obj = $tableau->fetch_object()) { ?>
 </script>
 
 <!-- Ajout des élèves à la liste -->
-<div id="eleves" class="div_construit" style="display:block;">
+<div id="eleves" class="div_construit">
 	<p><a id='lien_eleves'></a></p>
 	<form action="index.php" name="formAjouteEleve" method="post">
 		<fieldset class="center">
@@ -374,7 +374,7 @@ foreach ($groupe_col as $group) {
 </div>
 
 <!-- Ajouter des colonnes -->
-<div id="construction" class="div_construit" style="display:block;">
+<div id="construction" class="div_construit">
 	<p><a id='lien_construction'></a></p>
 	<fieldset>
 		<legend>Ajouter des colonnes / supprimer la liste</legend>
@@ -443,7 +443,7 @@ foreach ($groupe_col as $group) {
 </div>
 
 <!-- Supprimer des colonnes -->
-<div id="affichage" class="div_construit" style="display:block;">
+<div id="affichage" class="div_construit">
 	<p><a id='lien_affichage'></a></p>
 	<fieldset class="center" style="display:inline;">
 		<legend>Supprimer des colonnes</legend>
@@ -505,7 +505,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 
 
 
-<div id="laListe" class="div_construit" style="display:block;">
+<div id="laListe" class="div_tableauListe" style="display:block;">
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">
 			<caption>
@@ -571,6 +571,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 						  id="formSupprimeEleve<?php echo $elv_choisi->getLogin(); ?>" 
 						  style="margin: 0;padding: 0;padding-left: .5em;">
 						<img src="../images/bulle_rouge.png" 
+							 class="imageSupprime"
 							 onclick="supprime('<?php echo $elv_choisi->getLogin(); ?>', '<?php echo $elv_choisi->getNom(); ?>', '<?php echo $elv_choisi->getPrenom(); ?>'); return(false)" 
 							 style="cursor:pointer;"
 							 title="supprimer <?php echo $elv_choisi->getNom(); ?> <?php echo $elv_choisi->getPrenom(); ?>"
@@ -619,7 +620,8 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 						<span class="invisible" 
 							  id="saisie<?php echo $elv_choisi->getLogin(); ?>_<?php echo $colonne['id_def'] ; ?>_<?php echo $colonne['id']; ?>"
 							  >
-							<img src="../images/bulle_rouge.png" 
+							<img src="../images/bulle_rouge.png"
+								 class="imageSupprime"
 								 onclick="supprimeContenu('<?php echo $idCase; ?>'); return(false)" 
 								 style="cursor:pointer;"
 								 title="supprimer "
