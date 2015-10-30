@@ -3249,7 +3249,7 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 				   name="limiteAGroupe" 
 				   id='limiteAGroupe'
 				   <?php 
-				      if(getPref($_SESSION['login'], 'limiteAGroupe', "y")) {echo "checked = 'checked' ";} 
+				      if(getPref($_SESSION['login'], 'limiteAGroupe', "") == "y") {echo "checked = 'checked' ";} 
 				      echo " tabindex='$tabindex' ";
 				      $tabindex++;
 				   ?>
