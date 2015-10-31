@@ -708,12 +708,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AccesStatConnexionRespScolarite';
-$texteItem="a accès aux statistiques de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+$texteItem="a accès aux statistiques de connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AccesDetailConnexionRespScolarite';
-$texteItem="a accès au détail de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+$texteItem="a accès au détail de connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1106,12 +1106,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AccesStatConnexionRespCpe';
-$texteItem="a accès aux statistiques de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+$texteItem="a accès aux statistiques de connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='AccesDetailConnexionRespCpe';
-$texteItem="a accès au détail de connexion des des responsables d'".$gepiSettings['denomination_eleves'].".";
+$texteItem="a accès au détail de connexion des responsables d'".$gepiSettings['denomination_eleves'].".";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
