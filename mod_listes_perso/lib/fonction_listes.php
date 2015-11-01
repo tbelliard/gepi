@@ -266,16 +266,10 @@ function SauveTitreColonne() {
 	return TRUE;	
 }
 
-function DeplaceColonne($id, $newPlace, $idListe) {
+function HightPlace($idListe) {
 	global $mysqli;
-	// récupérer la place de la colonne
-	$anciennePlace = PlaceColonne($id, $idListe);
-	echo $anciennePlace.'<br />';
-	
-	
-	
-	return TRUE;
-	$sql = "" ;
+	$sql = "SELECT MAX(placement) AS place FROM `mod_listes_perso_colonnes` "
+	   . "WHERE id_def = $idListe ";
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -283,7 +277,63 @@ function DeplaceColonne($id, $newPlace, $idListe) {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	return TRUE;	
+	$retour = intval($query->fetch_object()->place);
+	return $retour;
+}
+
+function AvanceColonne($idColonne, $idListe) {
+	global $mysqli;
+	$anciennePlace = PlaceColonne($idColonne);
+	$lastPlace = HightPlace($idListe);
+	if ($anciennePlace < $lastPlace) {
+		$sql = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement - 1) "
+		   . "WHERE `id_def` = $idListe "
+		   . "AND placement = ($anciennePlace+1) ";
+		//echo $sql."<br />" ;
+		$query = mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;
+		}
+		$sqlCol = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement + 1) "
+		   . "WHERE `id` = $idColonne ";
+		//echo $sql."<br />" ;
+		$queryCol = mysqli_query($mysqli, $sqlCol);
+		if (!$queryCol) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sqlCol."<br />" ;
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+function ReculeColonne($idColonne, $idListe) {
+	global $mysqli;
+	$anciennePlace = PlaceColonne($idColonne);
+	if ($anciennePlace > 1) {
+		$sql = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement + 1) "
+		   . "WHERE `id_def` = $idListe "
+		   . "AND placement = ($anciennePlace-1) ";
+		//echo $sql."<br />" ;
+		$query = mysqli_query($mysqli, $sql);
+		if (!$query) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sql."<br />" ;
+			return FALSE;
+		}
+		$sqlCol = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement - 1) "
+		   . "WHERE `id` = $idColonne ";
+		//echo $sql."<br />" ;
+		$queryCol = mysqli_query($mysqli, $sqlCol);
+		if (!$queryCol) {
+			echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
+			echo $sqlCol."<br />" ;
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 function PlaceColonne($id) {
@@ -297,16 +347,17 @@ function PlaceColonne($id) {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	$place = $query->fetch_object()->placement;
+	$place = NULL;
+	if ($query->num_rows) {
+		$place = intval($query->fetch_object()->placement);
+	}
 	return $place;
 }
 
 function SupprimeColonne($idListe, $colonne) {
 	global $mysqli;
 	// récupérer la place de la colonne
-	//echo $idListe."→".$colonne;
-	$anciennePlace = PlaceColonne($colonne);	
-	//echo $idListe."→".$colonne;
+	$anciennePlace = PlaceColonne($colonne);
 	SupprimeColonnePourElv($idListe, $colonne);
 	$sql = "DELETE FROM `mod_listes_perso_colonnes` WHERE `id` = '$colonne' ;" ;
 	//echo $sql."<br />" ;
@@ -326,9 +377,9 @@ function crementePlace($idListe, $debut, $deplacement) {
 	$sql = "UPDATE `mod_listes_perso_colonnes` SET placement = (placement + ($deplacement)) "
 	   . "WHERE `id_def` = $idListe ";
 	if($deplacement < 0) {
-		$sql .= "AND `placement` > $debut " ;
-	} else {
-		$sql .= "AND `placement` < $debut " ;
+		$sql .= "AND `placement` >= $debut " ;
+	} elseif($deplacement > 0) {
+		$sql .= "AND `placement` =< $debut " ;
 	}
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
@@ -343,7 +394,7 @@ function crementePlace($idListe, $debut, $deplacement) {
 function SupprimeColonnePourElv($idListe, $colonne) {
 	global $mysqli;
 	$sql = "DELETE FROM `mod_listes_perso_contenus` WHERE `id_def` = '$idListe' AND `colonne` = '$colonne' ;" ;
-	echo $sql."<br />" ;
+	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
 		echo "Erreur lors de l'écriture dans la base ".mysqli_error($mysqli)."<br />" ;
@@ -352,8 +403,6 @@ function SupprimeColonnePourElv($idListe, $colonne) {
 	}
 	return TRUE;
 }
-
-
 
 //=========================================================================================================
 //                                      Élèves

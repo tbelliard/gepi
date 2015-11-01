@@ -97,7 +97,8 @@ $sauveModifieCaseColonne = filter_input(INPUT_POST, 'action') === 'sauveModifieC
 $idElevesChoisis = isset($_POST['elevesChoisis']) && count($_POST['elevesChoisis']) ? $_POST['elevesChoisis'] : NULL;
 $supprimeEleve = filter_input(INPUT_POST, 'eleveASupprimer') ? filter_input(INPUT_POST, 'eleveASupprimer') : NULL;
 $supprimeColonne = filter_input(INPUT_POST, 'supprimeColonne') === 'Supprimer' ? TRUE : FALSE;
-$deplaceColonne = filter_input(INPUT_POST, 'deplaceColonne') === 'Déplacer' ? TRUE : FALSE;
+$reculeColonne = filter_input(INPUT_POST, 'deplaceColonne') === '-1' ? TRUE : FALSE;
+$avanceColonne = filter_input(INPUT_POST, 'deplaceColonne') === '1' ? TRUE : FALSE;
 
 if ($nouvelleListe) { //===== Nouvelle liste =====
 	$idListe = "";
@@ -211,11 +212,15 @@ elseif ($supprimeColonne) { //===== On supprime une colonne
 	}
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : NULL;
 }
-elseif ($deplaceColonne) { //===== On déplace une colonne
-	$colonneABouge = filter_input(INPUT_POST, 'colonneABouge');
-	$newPlace = filter_input(INPUT_POST, 'newPlace');
+elseif ($avanceColonne) {
+	$idColonneABouge = filter_input(INPUT_POST, 'colonneABouge');
 	$idListe = filter_input(INPUT_POST, 'idListe');
-	DeplaceColonne($colonneABouge, $newPlace, $idListe);
+	AvanceColonne($idColonneABouge, $idListe);
+}
+elseif ($reculeColonne) {
+	$idColonneABouge = filter_input(INPUT_POST, 'colonneABouge');
+	$idListe = filter_input(INPUT_POST, 'idListe');
+	ReculeColonne($idColonneABouge, $idListe);
 }
 else { //===== Sinon on vérifie s'il y a une liste en mémoire
 	$idListe = isset($_SESSION['liste_perso']['id']) ? $_SESSION['liste_perso']['id'] : '';
@@ -241,7 +246,7 @@ $colonnes = $_SESSION['liste_perso']['colonnes'] ;
 $colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
-var_dump($_POST);
+// var_dump($_POST);
 //==============================================
 $style_specifique[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
@@ -467,6 +472,8 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 }
 ?>
 				</select>
+			</p>
+			<p>
 				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
 				<input type="submit" id="supprimeColonne" name="supprimeColonne" value="Supprimer" />
 			</p>
@@ -475,7 +482,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	</fieldset>
 	<fieldset class="center" style="display:inline;">
 		<legend>Déplacer une colonne</legend>
-			<span <?php if ($idListe === NULL ||$idListe === "" ) { echo "class='invisible' ";} ?>>
+		<span <?php if ($idListe === NULL ||$idListe === "" ) { echo "class='invisible' ";} ?>>
 		<form action="index.php" name="formBougeColonne" method="post">
 			<p>
 				<select id="colonneABouge" name="colonneABouge">
@@ -491,19 +498,14 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 }
 ?>
 				</select>
-				<label for="newPlace">Nouvelle place</label>
-				<input type="number" 
-					   id="newPlace" 
-					   name="newPlace" 
-					   style="width:4em;" 
-					   min="0" 
-					   max="<?php echo $colonnes->num_rows; ?>"
-					   />
+			</p>
+			<p>
 				<input type="hidden" id="idListe" name="idListe" value="<?php echo $idListe; ?>" />
-				<input type="submit" id="deplaceColonne" name="deplaceColonne" value="Déplacer" />
+				<button type="submit" id="reculeColonne" name="deplaceColonne" value="-1">← reculer d'une colonne ←</button>
+				<button type="submit" id="avanceColonne" name="deplaceColonne" value="1">→ avancer d'une colonne →</button>
 			</p>
 		</form>
-			</span>
+		</span>
 	</fieldset>
 </div>
 
