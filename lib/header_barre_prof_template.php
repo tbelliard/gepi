@@ -64,21 +64,21 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
 
 				$tmp_mes_classes_pp[$key_id_classe]="";
-				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
-                $res = mysqli_query($mysqli, $sql);
-                if($res->num_rows > 0) {
-                    while($lig = $res->fetch_object()) {
-                        if($tmp_mes_classes_pp[$key_id_classe]!='') {
-                            $tmp_mes_classes_pp[$key_id_classe].=", ";
-                        }
-                        $tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom : ".retourne_denomination_pp($key_id_classe)." de la ".$value_tab_classe['classe']."\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
-                    }                        
-                }                
-                $res->close();
+				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' AND jec.id_classe=jep.id_classe ORDER BY u.nom,u.prenom;";
+				$res = mysqli_query($mysqli, $sql);
+				if($res->num_rows > 0) {
+					while($lig = $res->fetch_object()) {
+						if($tmp_mes_classes_pp[$key_id_classe]!='') {
+							$tmp_mes_classes_pp[$key_id_classe].=", ";
+						}
+						$tmp_mes_classes_pp[$key_id_classe].="<span title=\"$lig->civilite $lig->nom $lig->prenom : ".retourne_denomination_pp($key_id_classe)." de la ".$value_tab_classe['classe']."\">".$lig->nom." ".mb_substr($lig->prenom,0,1)."</span>";
+					}
+				}
+				$res->close();
 			}
 		}
 	}
-    
+
 	// Pour permettre d'utiliser le module EdT avec les autres modules
 	$groupe_abs = $groupe_text = '';
 	if (getSettingValue("autorise_edt_tous") == "y") {
