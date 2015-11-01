@@ -62,7 +62,7 @@ $utiliserMenuBarreLight=((getSettingValue("utiliserMenuBarre") == 'light') || (g
 				$tmp_mes_classes[$key_id_classe]=$value_tab_classe['classe'];
 
 				$tmp_mes_classes_pp[$key_id_classe]="";
-				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' ORDER BY u.nom,u.prenom;";
+				$sql="SELECT DISTINCT u.nom,u.prenom,u.civilite FROM utilisateurs u, j_eleves_classes jec, j_eleves_professeurs jep WHERE u.login=jep.professeur AND jep.login=jec.login AND jec.id_classe='$key_id_classe' AND jec.id_classe=jep.id_classe ORDER BY u.nom,u.prenom;";
 				$res = mysqli_query($mysqli, $sql);
 				if($res->num_rows > 0) {
 					while($lig = $res->fetch_object()) {
