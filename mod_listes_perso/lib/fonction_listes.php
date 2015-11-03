@@ -105,9 +105,11 @@ function DroitSurListeOuvert() {
 	$retour = FALSE;
 	$sql = "SELECT `VALUE` FROM `setting` WHERE `NAME`='GepiListePersonnelles' ";
 	$query = mysqli_query($mysqli, $sql);
-	$valeur = $query->fetch_object()->VALUE;
-	if ($query->num_rows && $valeur === 'y') {
-		$retour = TRUE;
+	if ($query->num_rows) {
+		$valeur = $query->fetch_object()->VALUE;
+		if ($valeur === 'y') {
+			$retour = TRUE;
+		}
 	}
 	return $retour;
 }
