@@ -308,11 +308,13 @@ require_once("../lib/header.inc.php");
 				<option value="-1">Choisissez une liste</option>
 <?php
 $tableau = chargeTableau();
-while ($obj = $tableau->fetch_object()) { ?>
+if ($tableau->num_rows) {
+	while ($obj = $tableau->fetch_object()) { ?>
 				<option value="<?php echo $obj->id; ?>"
 						<?php if ($obj->id === $idListe) { echo " selected='selected' "; } ?>
 						><?php echo $obj->nom; ?></option>
-<?php }	?>		
+<?php }
+ }?>		
 			</select>
 			<input type="submit" id="sauveChoixTableau" name="sauveChoixTableau" value="Afficher" />
 			<input type="submit" id="nouvelleListe" name="nouvelleListe" value="Nouvelle liste" />
