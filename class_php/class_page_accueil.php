@@ -93,8 +93,8 @@ class class_page_accueil {
 	    $sql = "SELECT login
 			FROM j_groupes_professeurs
 			WHERE login = '".$this->loginUtilisateur."'";
-        $resultat = mysqli_query($mysqli, $sql);  
-		$this->test_prof_matiere = $resultat->num_rows; 
+        $resultat1 = mysqli_query($mysqli, $sql);  
+		$this->test_prof_matiere = $resultat1->num_rows; 
     
 
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
@@ -115,78 +115,80 @@ class class_page_accueil {
 
 /***** Outils d'administration *****/
 	$this->verif_exist_ordre_menu('bloc_administration');
-	if ($this->administration())
-	$this->chargeAutreNom('bloc_administration');
+	if ($this->administration()){
+	$this->chargeAutreNom('bloc_administration');}
 
 /***** Outils de gestion des absences vie scolaire *****/
 	$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
-	if ($this->absences_vie_scol())
-	$this->chargeAutreNom('bloc_absences_vie_scol');
+	if ($this->absences_vie_scol()){
+	$this->chargeAutreNom('bloc_absences_vie_scol');}
 
 /***** Outils de gestion des absences par les professeurs *****/
 	$this->verif_exist_ordre_menu('bloc_absences_professeur');
-	if ($this->absences_profs())
-	$this->chargeAutreNom('bloc_absences_professeur');
+	if ($this->absences_profs()){
+	$this->chargeAutreNom('bloc_absences_professeur');}
 
 /***** Saisie ***********/
 	$this->verif_exist_ordre_menu('bloc_saisie');
-	if ($this->saisie())
-	$this->chargeAutreNom('bloc_saisie');
+	if ($this->saisie()){
+	$this->chargeAutreNom('bloc_saisie');}
 
 /***** Cahier de texte CPE ***********/
 	$this->verif_exist_ordre_menu('bloc_Cdt_CPE');
 	if ($this->cahierTexteCPE()){
-	  $this->chargeAutreNom('bloc_Cdt_CPE');
-	}
+	  $this->chargeAutreNom('bloc_Cdt_CPE');}
 
 /***** Cahier de texte CPE Restreint ***********/
 	$this->verif_exist_ordre_menu('bloc_Cdt_CPE_Restreint');
 	if ($this->cahierTexteCPE_Restreint()){
-	  $this->chargeAutreNom('bloc_Cdt_CPE_Restreint');
-	}
+	  $this->chargeAutreNom('bloc_Cdt_CPE_Restreint');}
 
 /***** Visa Cahier de texte Scolarite ***********/
 	$this->verif_exist_ordre_menu('bloc_Cdt_Visa');
 	if ($this->cahierTexte_Visa()){
-	  $this->chargeAutreNom('bloc_Cdt_Visa');
-	}
+	  $this->chargeAutreNom('bloc_Cdt_Visa');}
 
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
-	if ($this->trombinoscope())
-	$this->chargeAutreNom('bloc_trombinoscope');
+	if ($this->trombinoscope()){
+	$this->chargeAutreNom('bloc_trombinoscope');}
 
 /***** Outils de relevé de notes *****/
 	$this->verif_exist_ordre_menu('bloc_releve_notes');
-	if ($this->releve_notes())
-	$this->chargeAutreNom('bloc_releve_notes');
+	if ($this->releve_notes()){
+	$this->chargeAutreNom('bloc_releve_notes');}
 
 /***** Outils de relevé ECTS *****/
 	$this->verif_exist_ordre_menu('bloc_releve_ects');
-	if ($this->releve_ECTS())
-	$this->chargeAutreNom('bloc_releve_ects');
+	if ($this->releve_ECTS()){
+	$this->chargeAutreNom('bloc_releve_ects');}
+
+/***** Listes personnelles *****/
+	$this->verif_exist_ordre_menu('bloc_listes_personnelles');
+	  if ($this->listesPerso()){
+	  $this->chargeAutreNom('bloc_listes_personnelles');}
 
 /***** Emploi du temps *****/
 	//if (getSettingAOui('autorise_edt_tous')){
 	  $this->verif_exist_ordre_menu('bloc_emploi_du_temps');
-	  if ($this->emploiDuTemps())
-	  $this->chargeAutreNom('bloc_emploi_du_temps');
+	  if ($this->emploiDuTemps()){
+	  $this->chargeAutreNom('bloc_emploi_du_temps');}
 	//}
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
 // Informations famille
 	$this->verif_exist_ordre_menu('bloc_infos_famille');
-	if ($this->infosFamille())
-	$this->chargeAutreNom('bloc_infos_famille');
+	if ($this->infosFamille()){
+	$this->chargeAutreNom('bloc_infos_famille');}
 // Cahier de textes
 	$this->verif_exist_ordre_menu('bloc_cahier_texte_famille');
-	if ($this->cahierTexteFamille())
-	$this->chargeAutreNom('bloc_cahier_texte_famille');
+	if ($this->cahierTexteFamille()){
+	$this->chargeAutreNom('bloc_cahier_texte_famille');}
 // Relevés de notes
 	$this->verif_exist_ordre_menu('bloc_carnet_notes_famille');
-	if ($this->releveNotesFamille())
-	$this->chargeAutreNom('bloc_carnet_notes_famille');
+	if ($this->releveNotesFamille()){
+	$this->chargeAutreNom('bloc_carnet_notes_famille');}
 // Relevés de notes cumulées
     if ('eleve' == $this->statutUtilisateur) {
         $result = FALSE;
@@ -2219,8 +2221,23 @@ if(getSettingAOui('active_bulletins')) {
 			  "Voir et viser les cahiers de textes");
 	}
 
-	if ($this->b>0)
-	  $this->creeNouveauTitre('accueil',"Visa CDT",'images/icons/document.png');
+	if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Visa CDT",'images/icons/document.png');
+	}
+
+  }
+  
+  
+  protected function listesPerso(){
+	global $mysqli;
+	$this->b=0;
+	  
+	if (getSettingAOui("GepiListePersonnelles")) {
+		$this->creeNouveauItem("/mod_listes_perso/index.php", "Listes personnelles", "Créer et imprimer des listes personnelles");
+	}
+	if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Listes personnelles",'images/icons/document.png');
+	}
 
   }
 
@@ -2282,6 +2299,7 @@ if(getSettingAOui('active_bulletins')) {
             }
 	}
   }
+  
 }
 
 ?>

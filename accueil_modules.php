@@ -58,205 +58,6 @@ $tab[3] = "scolarite";
 $tab[4] = "eleve";
 $tab[5] = "secours";
 
-/*
-function acces($id,$statut) {
-    $tab_id = explode("?",$id);
-    $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-    $droit = @old_mysql_result($query_droits, 0, $statut);
-    if ($droit == "V") {
-        return "1";
-    } else {
-        return "0";
-    }
-}
-*/
-
-/*
-function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_,$key_setting) {
-    if (acces($chemin_,$statut_)==1)  {
-        $temp = mb_substr($chemin_,1);
-        echo "<tr>\n";
-        //echo "<td width=30%><a href=$temp>$titre_</a></span>";
-        echo "<td>\n";
-		if($key_setting!='') {
-			$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)>0) {
-				echo "<img src='images/enabled.png' width='20' height='20' title='Module actif' alt='Module actif' />\n";
-			}
-			else {
-				echo "<img src='images/disabled.png' width='20' height='20' title='Module inactif' alt='Module inactif' />\n";
-			}
-		}
-		else {
-			echo "<img src='images/icons/ico_question.png' width='19' height='19' title='Etat inconnu' alt='Etat inconnu' />\n";
-		}
-        echo "</td>\n";
-        echo "<td width='30%'><a href=$temp>$titre_</a>";
-        echo "</td>\n";
-        echo "<td>$expli_</td>\n";
-        echo "</tr>\n";
-    }
-}
-*/
-/*
-$titre_page = "Accueil - Administration des modules";
-$racine_gepi = 'yes';
-*/
-/*
-
-
-<p class=bold><a href="./accueil.php"><img src='./images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
-
-
-if (isset($msg)) { echo "<font color='red' size=2>$msg</font>"; }
-echo "<center>";
-*/
-/*
-$key_setting=array('active_cahiers_texte',
-'active_carnets_notes');
-$chemin = array(
-"/cahier_texte_admin/index.php",
-"/cahier_notes_admin/index.php");
-
-$chemin[] = "/mod_absences/admin/index.php";
-$key_setting[]='active_module_absence%';
-$chemin[] = "/mod_abs2/admin/index.php";
-$key_setting[]='active_module_absence%';
-$chemin[] = "/edt_organisation/edt.php";
-$key_setting[]='autorise_edt%';
-
-$chemin[] = "/mod_trombinoscopes/trombinoscopes_admin.php";
-$key_setting[]='active_module_trombinoscopes';
-$chemin[] = "/mod_notanet/notanet_admin.php";
-$key_setting[]='active_notanet';
-$chemin[] = "/mod_inscription/inscription_admin.php";
-$key_setting[]='active_inscription';
-$chemin[] = "/cahier_texte_admin/rss_cdt_admin.php";
-$key_setting[]='rss_cdt_eleve';
-
-$titre = array(
-"Cahier de textes",
-"Carnets de notes");
-$titre[] = "Absences";
-$titre[] = "Absences 2";
-$titre[] = "Emploi du temps";
-$titre[] = "Trombinoscope";
-$titre[] = "Notanet/Fiches Brevet";
-$titre[] = "Inscription";
-$titre[] = "<img src=\"images/icons/rss.png\" alt='rss' />&nbsp;-&nbsp;Flux rss";
-
-$expli = array(
-"Pour gérer les cahiers de texte, (configuration générale, ...)",
-"Pour gérer les carnets de notes (configuration générale, ...)");
-$expli[] = "Pour gérer le module absences";
-$expli[] = "Pour gérer le module absences 2 (en cours de developpement)";
-$expli[] = "Pour gérer l'ouverture de l'emploi du temps de Gepi.";
-$expli[] = "Pour gérer le module trombinoscope";
-$expli[] = "Pour gérer le module Notanet/Fiches Brevet";
-$expli[] = "Pour gérer simplement les inscriptions des ".$gepiSettings['denomination_professeurs']." par exemple à des stages ou bien des interventions dans les collèges";
-$expli[] = "Gestion des flux rss des cahiers de textes produits par Gepi";
-
-// AUtorisation des statuts personnalisés
-// Années antérieures
-$chemin[] = "/utilisateurs/creer_statut_admin.php";
-$titre[] = "Créer des statuts personnalisés";
-$expli[] = "Définir des statuts supplémentaires en personnalisant les droits d'accès.";
-$key_setting[]='statuts_prives';
-
-// Années antérieures
-$chemin[] = "/mod_annees_anterieures/admin.php";
-$titre[] = "Années antérieures";
-$expli[] = "Pour gérer le module Années antérieures";
-$key_setting[]='active_annees_anterieures';
-
-// Module ateliers
-$chemin[] = "/mod_ateliers/ateliers_config.php";
-$titre[] = "Ateliers";
-$expli[] = "Gestion et mise en place d'ateliers de type conférences (gestion des ateliers, des intervenants, des inscriptions...).";
-$key_setting[]='active_ateliers';
-
-// Module discipline
-$chemin[] = "/mod_discipline/discipline_admin.php";
-$titre[] = "Discipline";
-$expli[] = "Pour gérer le module Discipline.";
-$key_setting[]='active_mod_discipline';
-
-//Module modèle Open_Office
-$chemin[] = "/mod_ooo/ooo_admin.php";
-$titre[] = "Modèle openDocument";
-$expli[] = "Pour gérer les modèles Open Office de Gepi.";
-$key_setting[]='active_mod_ooo';
-
-//Module ECTS
-$chemin[] = "/mod_ects/ects_admin.php";
-$titre[] = "Saisie ECTS";
-$expli[] = "Pour gérer les crédits ECTS attribués pour chaque enseignement.";
-$key_setting[]='active_mod_ects';
-
-//Module Plugins
-$chemin[] = "/mod_plugins/index.php";
-$titre[] = "Gérer les plugins";
-$expli[] = "Interface d'administration des plugins personnels de l'établissement.";
-$key_setting[]='';
-
-//Module Génèse des classes
-$chemin[] = "/mod_genese_classes/admin.php";
-$titre[] = "Génèse des classes";
-$expli[] = "Pour gérer le module Génèse des classes.";
-$key_setting[]='active_mod_genese_classes';
-
-//Module Epreuve blanche
-$chemin[] = "/mod_epreuve_blanche/admin.php";
-$titre[] = "Epreuves blanches";
-$expli[] = "Pour gérer des épreuves blanches (anonymat des copies,...).";
-$key_setting[]='active_mod_epreuve_blanche';
-
-//Module Examen blanc
-$chemin[] = "/mod_examen_blanc/admin.php";
-$titre[] = "Examens blancs";
-$expli[] = "Pour gérer des examens blancs.";
-$key_setting[]='active_mod_examen_blanc';
-
-//Module "Admissions Post-Bac"
-$chemin[] = "/mod_apb/admin.php";
-$titre[] = "Admissions Post-Bac";
-$expli[] = "Pour gérer l'export XML vers la plateforme 'Admissions post-bac'.";
-$key_setting[]='active_mod_apb';
-
-//Module "Admissions Post-Bac"
-$chemin[] = "/mod_gest_aid/admin.php";
-$titre[] = "Gestionnaires d'AID";
-$expli[] = "Pour ouvrir la possibilité de définir des gestionnaires pour chaque AID.";
-$key_setting[]='active_mod_gest_aid';
-
-$nb_ligne = count($chemin);
-//
-// Outils d'administration
-//
-$affiche = 'no';
-for ($i=0;$i<$nb_ligne;$i++) {
-    if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
-}
-if ($affiche=='yes') {
-    //echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-    echo "<table class='menu' summary='Administration des modules'>\n";
-    echo "<tr>\n";
-    echo "<th colspan='3'><img src='./images/icons/control-center.png' alt='Admin modules' class='link'/> - Administration des modules</th>\n";
-    echo "</tr>\n";
-    for ($i=0;$i<$nb_ligne;$i++) {
-        affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut'],$key_setting[$i]);
-    }
-    echo "</table>\n";
-}
-
-</center>
-
-	require("./lib/footer.inc.php");
-	*/
-?>
-	
-<?php
 // ====== Inclusion des balises head et du bandeau =====
  //$msg = "Essai message";
 
@@ -595,6 +396,18 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$nouveauItem->choix_icone('active_mod_engagements') ;
 		$nouveauItem->titre="Engagements" ;
 		$nouveauItem->expli="Pour gérer le module Engagements (délégués de classe, représentants de parents,...)" ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
+// Listes personnelles
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_listes_perso/index_admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('GepiListePersonnelles') ;
+		$nouveauItem->titre="Listes personnelles" ;
+		$nouveauItem->expli="Donner l'accès à la création de listes personnelles aux enseignants, CPE, scolarité." ;
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
