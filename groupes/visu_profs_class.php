@@ -703,13 +703,14 @@ else {
 	}
 
 	// Tableau des PP
+	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 	echo "<a name='liste_pp'></a>
 <div align='center'>
 	<table class='boireaus boireaus_alt'>
 		<tr>
 			<th>Classe</th>
 			<th>
-				<div style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>
+				<div style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter la liste des ".$gepi_prof_suivi." au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>
 				".ucfirst(getSettingValue('gepi_prof_suivi'))."
 			</th>
 		</tr>";
