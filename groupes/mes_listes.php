@@ -86,10 +86,18 @@ if($_SESSION['statut']=='professeur') {
 	echo "<p>Sélectionnez l'enseignement et la période pour lesquels vous souhaitez télécharger un fichier CSV des ".$gepiSettings['denomination_eleves']."&nbsp;:</p>\n";
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	//$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classe c WHERE
+	/*
 	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp WHERE
 		jgp.login = '".$_SESSION['login']."' AND
 		g.id=jgp.id_groupe
 		ORDER BY g.description";
+	*/
+	$sql="SELECT DISTINCT g.id,g.description FROM groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classes c WHERE
+		jgp.login = '".$_SESSION['login']."' AND 
+		g.id=jgp.id_groupe AND 
+		jgp.id_groupe=jgc.id_groupe AND 
+		jgc.id_classe=c.id
+		ORDER BY g.description, c.classe;";
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	if(mysqli_num_rows($res_grp)==0){
