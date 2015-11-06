@@ -714,6 +714,19 @@ div.info_abs {
 #menu_barre li.plus {
 	border-bottom: #$couleur_infobulle_fond_entete 1px solid; 
 }
+/*=====================================================*/
+/* Utilisation des couleurs d'info bulles pour les listes personnelles */
+.div_actif {
+	background-color: #$couleur_infobulle_fond_entete;
+}
+.menu_liste a {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+.lien_actif a {
+	background-color: #$couleur_infobulle_fond_entete;
+}
+/*=====================================================*/
+
 ");
 				fclose($fich);
 			}
