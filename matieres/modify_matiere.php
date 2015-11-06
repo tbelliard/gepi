@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -245,15 +245,16 @@ $themessage = 'Des modifications ont été effectuées. Voulez-vous vraiment qui
 $titre_page = "Gestion des matières | Modifier une matière";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE ****************************
-?>
-<form enctype="multipart/form-data" action="modify_matiere.php" method=post>
-<p class=bold><a href="index.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=submit value=Enregistrer></input>
-</p>
-<?php
-echo add_token_field();
+
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
     $call_data = mysqli_query($GLOBALS["mysqli"], "SELECT nom_complet, priority, categorie_id, code_matiere from matieres WHERE matiere='".$_GET['current_matiere']."'");
+    if(mysqli_num_rows($call_data)==0) {
+        echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p style='color:red'>La matière proposée n'existe pas.</p>";
+        require("../lib/footer.inc.php");
+        die();
+    }
     $lig_matiere=mysqli_fetch_object($call_data);
     $matiere_nom_complet = $lig_matiere->nom_complet;
     $matiere_priorite = $lig_matiere->priority;
@@ -267,6 +268,12 @@ if (isset($_GET['current_matiere'])) {
     $matiere_cat_id = "0";
     $code_matiere="";
 }
+?>
+<form enctype="multipart/form-data" action="modify_matiere.php" method=post>
+<p class="bold"><a href="index.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type="submit" value="Enregistrer"></input>
+</p>
+<?php
+echo add_token_field();
 ?>
 
 <div style='float:right; width: 20em; border: 1px solid black; margin-left: 1em; padding:2px;' class='fieldset_opacite50'>
