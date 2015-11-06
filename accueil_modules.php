@@ -150,7 +150,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	$nouveauItem->chemin='/mod_abs_prof/index_admin.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
-		$nouveauItem->choix_icone('active_module_absence',"mod_abs_prof") ;
+		$nouveauItem->choix_icone("active_mod_abs_prof") ;
 		$nouveauItem->titre="Absences/remplacements professeurs" ;
 		$nouveauItem->expli="Pour gérer le module des saisie des absences et remplacements ponctuels de professeurs" ;
 		$menuPage[]=$nouveauItem;
