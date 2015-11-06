@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2009-2011 Josselin Jacquard
+ * Copyright 2009-2015 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -56,7 +56,7 @@ if ($type == 'CahierTexteTravailAFaire') {
 }
 
 if ($ctCompteRendu == null) {
-	echo ("Erreur duplacation denotice : pas de notice trouvée.");
+	echo ("Erreur duplication de notice : pas de notice trouvée.");
 	die();
 }
 $groupe = GroupePeer::retrieveByPK($id_groupe);
@@ -71,6 +71,20 @@ $nouveauCompteRendu->setGroupe($groupe);
 $nouveauCompteRendu->setDateCt($date_duplication);
 
 $nouveauCompteRendu->save();
+/*
+$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+fwrite($f, "Copie de la notice $id_ct de type $type : Id de la nouvelle notice : ".$nouveauCompteRendu->getIdCt()."\n");
+fclose($f);
+*/
+if ($type == 'CahierTexteTravailAFaire') {
+	$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE special='controle' AND id_ct='$id_ct';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		$sql="UPDATE ct_devoirs_entry SET special='controle' WHERE id_ct='".$nouveauCompteRendu->getIdCt()."';";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+
 $utilisateur->clearAllReferences();
 echo("Duplication effectuée");
 ?>
