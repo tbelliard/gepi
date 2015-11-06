@@ -247,21 +247,26 @@ $ctTravailAFaire->setDateVisibiliteEleve($date_visibilite_eleve);
 //enregistrement de l'objet
 $ctTravailAFaire->save();
 
-
+// Lors de l'enregistrement d'une nouvelle notice, on n'a pas encore de $id_devoir
+$id_devoir=$ctTravailAFaire->getIdCt();
 $sql="UPDATE ct_devoirs_entry SET special='$controle' WHERE id_ct='$id_devoir';";
 //echo "$sql<br />";
+/*
+$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+fwrite($f, $sql."\n");
+fclose($f);
+*/
 $update=mysqli_query($GLOBALS["mysqli"], $sql);
-
 
 //traitement de telechargement de documents joints
 if (!empty($doc_file['name'][0])) {
 	require_once("traite_doc.php");
 	$total_max_size = getSettingValue("total_max_size");
 	$max_size = getSettingValue("max_size");
-        $multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
-        if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
-            mkdir('../documents/'.$multi);
-        }
+	$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+	if ((isset($multisite) && $multisite == 'y') && is_dir('../documents/'.$multi) === false){
+		mkdir('../documents/'.$multi);
+	}
 	$dest_dir = '../documents/'.$multi.'cl_dev'.$ctTravailAFaire->getIdCt();
 
 	//il y a au plus trois documents joints dans l'interface de saisie
