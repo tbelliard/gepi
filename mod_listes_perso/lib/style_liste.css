@@ -173,6 +173,10 @@ colC20 {
    #tableau {
 	 display: none;
    }
+   
+   #eleves {
+	 display: none;
+   }
 
    .div_construit {
 	 display:none;
@@ -186,6 +190,18 @@ colC20 {
 	 display:none;
    }
    
+   #eleves fieldset {
+	 display: none;
+   }
+   
+   #construction fieldset {
+	 display: none;
+   }
+   
+   #affichage fieldset {
+	 display: none;
+   }
+   
    .imageSupprime {
 	 display:none;
    }
@@ -194,5 +210,10 @@ colC20 {
 	 font-weight : bold;
 	 padding-bottom: .5em;
    }
+   
+   tableauListe {
+	 height: 100%;
+   }
+   
 }
 
