@@ -24,10 +24,12 @@
 //=========================================================================================================
 //Création provisoire des tables
 //=========================================================================================================
+
+/*
 function verifieTableCree() {
 	global $mysqli;
 	global $dbDb;
-	
+ * 
 	// echo "création de mod_listes_perso_definition"."<br />" ;
 	$sql_def = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_definition` ("
 	   . "`id` int(11) NOT NULL auto_increment, "
@@ -35,7 +37,7 @@ function verifieTableCree() {
 	   . "`sexe` BOOLEAN default true, "
 	   . "`classe` BOOLEAN default true, "
 	   . "`photo` BOOLEAN default true, "
-	   . "`propriétaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste', "
+	   . "`proprietaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste', "
 	   . "PRIMARY KEY  (`id`) "
 	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
 	$query_def = mysqli_query($mysqli, $sql_def);
@@ -87,6 +89,8 @@ function verifieTableCree() {
 		echo $sql_contenus."<br />" ;
 	}
 }
+ * 
+ */
 
 
 //=========================================================================================================

@@ -1311,3 +1311,44 @@ login varchar(50) NOT NULL ,
 PRIMARY KEY ( id )
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS `mod_listes_perso_definition`;
+CREATE TABLE IF NOT EXISTS `mod_listes_perso_definition` (
+`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
+`nom` varchar(50) NOT NULL default '' COMMENT 'Nom de la liste',
+`sexe` BOOLEAN default true COMMENT 'Affichage ou non du sexe des élèves ',
+`classe` BOOLEAN default true COMMENT 'Affichage ou non de la classe des élèves',
+`photo` BOOLEAN default true COMMENT 'Affichage ou non de la photo',
+`proprietaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste',
+PRIMARY KEY  (`id`)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : création';
+
+DROP TABLE IF EXISTS `mod_listes_perso_colonnes`;
+CREATE TABLE IF NOT EXISTS `mod_listes_perso_colonnes` (
+`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique', 
+`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',
+`titre` varchar(30) NOT NULL default '' COMMENT 'Titre de la colonne',
+`placement` int(11) NOT NULL COMMENT 'Place de la colonne dans le tableau',
+PRIMARY KEY  (`id`)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : Définition des colonnes' ;
+
+DROP TABLE IF EXISTS `mod_listes_perso_eleves`;
+CREATE TABLE IF NOT EXISTS `mod_listes_perso_eleves` (
+`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
+`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',
+`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves',
+PRIMARY KEY  (`id`),
+INDEX combinaison (`id_def`, `login`)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : élèves de la liste' ;
+
+DROP TABLE IF EXISTS `mod_listes_perso_contenus`;
+CREATE TABLE IF NOT EXISTS `mod_listes_perso_contenus` (
+`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
+`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',
+`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves',
+`colonne` int(11) NOT NULL COMMENT 'identifiant de la colonne',
+`contenu` varchar(50) NOT NULL default '' COMMENT 'contenu de la cellule',
+PRIMARY KEY (`id`),
+INDEX contenu (`id_def`, `login`, `contenu`)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : contenu du tableau' ;
+
+

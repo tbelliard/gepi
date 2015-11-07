@@ -205,4 +205,152 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
-?>
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'mod_listes_perso_definition' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mod_listes_perso_definition'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `mod_listes_perso_definition` ("
+	   . "`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
+	   . "`nom` varchar(50) NOT NULL default '' COMMENT 'Nom de la liste',"
+	   . "`sexe` BOOLEAN default true COMMENT 'Affichage ou non du sexe des élèves',"
+	   . "`classe` BOOLEAN default true COMMENT 'Affichage ou non de la classe des élèves',"
+	   . "`photo` BOOLEAN default true COMMENT 'Affichage ou non de la photo',"
+	   . "`propriétaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste',"
+	   . "PRIMARY KEY  (`id`)"
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : création';");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+	$colonnes= array(array('titre'=>'nom','def'=>"`nom` varchar(50) NOT NULL default '' COMMENT 'Nom de la liste'") ,
+		array('titre'=>'sexe','def'=>"`sexe` BOOLEAN default true COMMENT 'Affichage ou non du sexe des élèves'") ,
+		array('titre'=>'classe','def'=>"`classe` BOOLEAN default true COMMENT 'Affichage ou non de la classe des élèves'") ,
+		array('titre'=>'photo','def'=>"`photo` BOOLEAN default true COMMENT 'Affichage ou non de la photo'") ,
+		array('titre'=>'proprietaire','def'=>"`proprietaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste'"));
+	foreach($colonnes as $colonne) {
+		$testCol = mysqli_query($mysqli, "SHOW COLUMNS FROM mod_listes_perso_definition LIKE '".$colonne['titre']."'");
+		if (!$testCol->num_rows) {
+			$result_inter = traite_requete("ALTER TABLE `mod_listes_perso_definition` ADD ".$colonne['def'].";");
+			if ($result_inter == '') {
+				$result .= msj_ok("création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_definition`");
+			} else {
+				$result .= msj_erreur("ECHEC création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_definition !");
+			}
+		}
+	}	
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'mod_listes_perso_colonnes' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mod_listes_perso_colonnes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `mod_listes_perso_colonnes` ("
+	   . "`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	   . "`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',"
+	   . "`titre` varchar(30) NOT NULL default '' COMMENT 'Titre de la colonne',"
+	   . "`placement` int(11) NOT NULL COMMENT 'Place de la colonne dans le tableau',"
+	   . "PRIMARY KEY  (`id`)"
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : Définition des colonnes' ;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+	$colonnes= array(array('titre'=>'id_def','def'=>"`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste'"),
+		array('titre'=>'titre','def'=>"`titre` varchar(30) NOT NULL default '' COMMENT 'Titre de la colonne'") ,
+		array('titre'=>'placement','def'=>"`placement` int(11) NOT NULL COMMENT 'Place de la colonne dans le tableau'" ));
+	foreach($colonnes as $colonne) {
+		$testCol = mysqli_query($mysqli, "SHOW COLUMNS FROM mod_listes_perso_colonnes LIKE '".$colonne['titre']."'");
+		if (!$testCol->num_rows) {
+			$result_inter = traite_requete("ALTER TABLE `mod_listes_perso_colonnes` ADD ".$colonne['def'].";");
+			if ($result_inter == '') {
+				$result .= msj_ok("création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_colonnes`");
+			} else {
+				$result .= msj_erreur("ECHEC création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_colonnes` !");
+			}
+		}
+	}	
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'mod_listes_perso_eleves' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mod_listes_perso_eleves'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `mod_listes_perso_eleves` ("
+	   . "`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
+	   . "`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',"
+	   . "`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves',"
+	   . "PRIMARY KEY  (`id`),"
+	   . "INDEX combinaison (`id_def`, `login`)"
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : élèves de la liste' ;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+	$colonnes= array(array('titre'=>'id_def','def'=>"`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste'"),
+		array('titre'=>'login','def'=>"`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves'"));
+	foreach($colonnes as $colonne) {
+		$testCol = mysqli_query($mysqli, "SHOW COLUMNS FROM mod_listes_perso_eleves LIKE '".$colonne['titre']."'");
+		//echo $testCol->num_rows." → SHOW COLUMNS FROM mod_listes_perso_eleves LIKE '".$colonne['titre']."'<br />";
+		if (!$testCol->num_rows) {
+			$result_inter = traite_requete("ALTER TABLE `mod_listes_perso_eleves` ADD ".$colonne['def']." ;");
+			if ($result_inter == '') {
+				$result .= msj_ok("création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_eleves`");
+			} else {
+				$result .= msj_erreur("ECHEC création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_eleves` !");
+			}
+		}
+	}	
+}
+
+$result .= "<br />";
+$result .= "<strong>Ajout d'une table 'mod_listes_perso_contenus' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mod_listes_perso_contenus'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS `mod_listes_perso_contenus` ("
+	   . "`id` int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
+	   . "`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste',"
+	   . "`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves',"
+	   . "`colonne` int(11) NOT NULL COMMENT 'identifiant de la colonne',"
+	   . "`contenu` varchar(50) NOT NULL default '' COMMENT 'contenu de la cellule',"
+	   . "PRIMARY KEY (`id`),INDEX contenu (`id_def`, `login`, `contenu`)"
+	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : contenu du tableau'");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+	$colonnes= array(array('titre'=>'id_def','def'=>"`id_def` int(11) NOT NULL COMMENT 'identifiant de la liste'"),
+		array('titre'=>'login','def'=>"`login` varchar(50) NOT NULL default '' COMMENT 'identifiant des élèves'"),
+		array('titre'=>'colonne','def'=>"`colonne` int(11) NOT NULL COMMENT 'identifiant de la colonne'"),
+		array('titre'=>'contenu','def'=>"`contenu` varchar(50) NOT NULL default '' COMMENT 'contenu de la cellule'"));
+	foreach($colonnes as $colonne) {
+		$testCol = mysqli_query($mysqli, "SHOW COLUMNS FROM mod_listes_perso_contenus LIKE '".$colonne['titre']."'");
+		//echo $testCol->num_rows." → SHOW COLUMNS FROM mod_listes_perso_contenus LIKE '".$colonne['titre']."'<br />";
+		if (!$testCol->num_rows) {
+			$result_inter = traite_requete("ALTER TABLE `mod_listes_perso_contenus` ADD ".$colonne['def']." ;");
+			if ($result_inter == '') {
+				$result .= msj_ok("création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_contenus`");
+			} else {
+				$result .= msj_erreur("ECHEC création du champ `".$colonne['titre']."` dans la table `mod_listes_perso_contenus` !");
+			}
+		}
+	}	
+}
+
+
+
