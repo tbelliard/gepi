@@ -67,7 +67,7 @@ if ($utilisateur->getStatut()!=="cpe"
 include_once 'lib/fonction_listes.php';
 
 // a bouger vers définition de la base et mise à jour
-verifieTableCree();
+//verifieTableCree();
 
 $idListe = NULL;
 $nomListe = NULL;
