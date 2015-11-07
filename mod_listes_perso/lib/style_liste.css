@@ -158,6 +158,10 @@ colC20 {
    
 
 @media print {
+   .center {
+	 text-align:center;
+   }
+   
    #container {
 	 width: 100%;
    }
