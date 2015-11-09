@@ -72,7 +72,8 @@ fieldset {
 } 
 
 #laListe{
-    min-height: 20em;   
+    min-height: 20em;
+    display:block;
 }
 
 #cadre_laListe{
@@ -158,8 +159,22 @@ colC20 {
    
 
 @media print {
+   ul {
+	 display: none;
+   }
+   
+   input {
+	 display:none;
+   }
+	 
    .center {
 	 text-align:center;
+   }
+   
+   div {
+	  border-width: 1px;
+	  border-style: solid;
+	  border-color: #bbb;
    }
    
    #container {
@@ -181,12 +196,16 @@ colC20 {
    #eleves {
 	 display: none;
    }
-
-   .div_construit {
-	 display:none;
+   
+   #construction {
+	 display: none;
    }
    
-   input {
+   #affichage {
+	 display: none;
+   }
+
+   .div_construit {
 	 display:none;
    }
    
@@ -218,6 +237,18 @@ colC20 {
    tableauListe {
 	 height: 100%;
    }
+
+   #laListe{
+	  min-height: 0em;
+   }
+
+   #cadre_laListe{
+	  min-height: 0em;   
+   }
    
+   table {
+overflow: visible !important;
+}
+
 }
 

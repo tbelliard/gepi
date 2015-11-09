@@ -513,12 +513,13 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 
 
 
-<div id="laListe" class="div_tableauListe" style="display:block;">
+<div id="laListe" class="div_tableauListe">
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">
 			<caption>
 				<?php echo $nomListe; ?>
 			</caption>
+			<thead>
 			<tr>
 				<th>Nom Prénom</th>
 <?php if ($sexeListe) { ?>
@@ -569,6 +570,9 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 }
 ?>				
 			</tr>
+				
+			</thead>
+			<tbody>
 <?php if (isset($eleve_choisi_col) && $eleve_choisi_col) {
 	 foreach ($eleve_choisi_col as $elv_choisi) { ?>
 			<tr>
@@ -665,6 +669,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 			</tr>
 <?php }
 } ?>
+			</tbody>
 		</table>
 		<?php if (isset($eleve_choisi_col))  {echo '<p>'.$eleve_choisi_col->count().' élèves</p>';} else {echo '<p>0 élève choisi</p>';} ?> 
 	</fieldset>
