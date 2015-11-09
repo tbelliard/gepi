@@ -702,7 +702,11 @@ elseif($mode=='publiposter') {
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
-				<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
+				<td class='bold'>";
+				//echo $tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
+				//echo "<a href='../eleves/recherche.php?rech_nom=".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."&statut[0]=eleve&statut[1]=responsable&is_posted_recherche=y' style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+				echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+				echo "</td>
 			</tr>";
 				if($inclure_url_connexion_ent=="y") {
 					echo "
@@ -841,7 +845,10 @@ elseif($mode=='publiposter') {
 	<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 		<tr>
 			<td style='width:8em;'>À l'attention de </td>
-			<td class='bold'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</td>
+			<td class='bold'>";
+				//echo $tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']];
+					echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab[$tabindice['nom']])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab[$tabindice['nom']]." ".$tab[$tabindice['prenom']]."</a>";
+					echo "</td>
 		</tr>";
 					if($inclure_url_connexion_ent=="y") {
 						echo "
@@ -916,6 +923,21 @@ elseif($mode=='publiposter') {
 		}
 	}
 
+	echo "<form action='../eleves/recherche.php' method='post' id='form_rech_ele' target='_blank'>
+	".add_token_field()."
+	<input type='hidden' name='is_posted_recherche' id='is_posted_recherche' value='y' />
+	<input type='hidden' name='statut[0]' id='statut_0' value='eleve' />
+	<input type='hidden' name='statut[1]' id='statut_1' value='responsable' />
+	<input type='hidden' name='rech_nom' id='rech_nom' value='' />
+	<input type='hidden' name='rech_prenom' id='rech_prenom' value='' />
+</form>
+<script type='text/javascript'>
+	function cherche_ele_resp(rech_nom) {
+		document.getElementById('rech_nom').value=rech_nom;
+		document.getElementById('form_rech_ele').submit();
+	}
+</script>";
+
 	if($compteur_pages_imprimees==0) {
 		echo "<p style='color:red'>Aucune fiche n'a été imprimée.<br />Revoyez les critères ou contrôlez votre fichier.</p>";
 	}
@@ -925,6 +947,7 @@ elseif($mode=="derniers_parents_et_eleves_inscrits") {
 	echo "<h2>Dernières correspondances inscrites</h2>";
 
 	$sql="SELECT * FROM tempo2_sso ts, sso_table_import sti WHERE ts.col2=sti.uid;";
+	//echo "$sql<br />";
 	$res_ts=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_ts)==0) {
 		echo "<p style='color:red'>Aucune correspondance n'est conservée dans la table 'tempo2_sso'.</p>";
@@ -1208,7 +1231,9 @@ elseif($mode=="publiposter2") {
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
-				<td class='bold'>".$tab['nom']." ".$tab['prenom']."</td>
+				<td class='bold'>";
+				echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab['nom'])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab['nom']." ".$tab['prenom']."</a>";
+				echo "</td>
 			</tr>";
 				if($inclure_url_connexion_ent=="y") {
 					echo "
@@ -1337,7 +1362,9 @@ elseif($mode=="publiposter2") {
 		<table style='page-break-inside: avoid; width:30em;' class='boireaus'>
 			<tr>
 				<td style='width:8em;'>À l'attention de </td>
-				<td class='bold'>".$tab['nom']." ".$tab['prenom']."</td>
+				<td class='bold'>";
+				echo "<a href=\"#\" onclick=\"cherche_ele_resp('".preg_replace("/[^A-Za-z]/","%",$tab['nom'])."');return false;\" style='text-decoration:none; color:black;' target='_blank'>".$tab['nom']." ".$tab['prenom']."</a>";
+				echo "</td>
 			</tr>";
 				if($inclure_url_connexion_ent=="y") {
 					echo "
@@ -1403,6 +1430,21 @@ elseif($mode=="publiposter2") {
 		}
 
 	}
+
+	echo "<form action='../eleves/recherche.php' method='post' id='form_rech_ele' target='_blank'>
+	".add_token_field()."
+	<input type='hidden' name='is_posted_recherche' id='is_posted_recherche' value='y' />
+	<input type='hidden' name='statut[0]' id='statut_0' value='eleve' />
+	<input type='hidden' name='statut[1]' id='statut_1' value='responsable' />
+	<input type='hidden' name='rech_nom' id='rech_nom' value='' />
+	<input type='hidden' name='rech_prenom' id='rech_prenom' value='' />
+</form>
+<script type='text/javascript'>
+	function cherche_ele_resp(rech_nom) {
+		document.getElementById('rech_nom').value=rech_nom;
+		document.getElementById('form_rech_ele').submit();
+	}
+</script>";
 
 	if($compteur_pages_imprimees==0) {
 		echo "<p style='color:red'>Aucune fiche n'a été imprimée.<br />Revoyez les critères ou contrôlez votre fichier.</p>";
