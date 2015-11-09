@@ -215,7 +215,7 @@ if ($test == -1) {
 	   . "`sexe` BOOLEAN default true COMMENT 'Affichage ou non du sexe des élèves',"
 	   . "`classe` BOOLEAN default true COMMENT 'Affichage ou non de la classe des élèves',"
 	   . "`photo` BOOLEAN default true COMMENT 'Affichage ou non de la photo',"
-	   . "`propriétaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste',"
+	   . "`proprietaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste',"
 	   . "PRIMARY KEY  (`id`)"
 	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : création';");
 	if ($result_inter == '') {
