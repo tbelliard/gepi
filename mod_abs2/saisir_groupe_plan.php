@@ -808,12 +808,13 @@ if(count($tab_regimes)>0) {
 }
 
 //==============================================
-$style_specifique[] = "templates/origine/css/bandeau";
+//$style_specifique[] = "templates/origine/css/bandeau";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$style_specifique[] = "mod_abs2/lib/saisie_smart_large";
-$style_specifique[] = "templates/origine/css/accueil";
-$style_specifique[] = "style_screen_ajout";
+//$style_specifique[] = "mod_abs2/lib/saisie_smart_large";
+//$style_specifique[] = "templates/origine/css/accueil";
+//$style_specifique[] = "style_screen_ajout";
+
 $CSS_smartphone = "mod_abs2/lib/saisie_smart_mini";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -827,37 +828,11 @@ $_SESSION['cacher_header'] = "y";
 $tbs_last_connection = "";
 
 //**************** EN-TETE *****************
-require_once("../lib/header_template.inc.php");
+//require_once("../lib/header_template.inc.php");
+require_once("../lib/header.inc.php");
 //include("../templates/origine/bandeau_template.php");
 ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
-<head>
-<!-- on inclut l'entête -->
-<?php 
-include('../templates/origine/header_template.php');
-//include("../templates/origine/bandeau_template.php");
-
-//debug_var();
-?>
-
-<!-- corrections internet Exploreur -->
-	<!--[if lte IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie.css' media='screen' />
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/bandeau_ie.css' media='screen' />
-	<![endif]-->
-	<!--[if lte IE 6]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie6.css' media='screen' />
-	<![endif]-->
-	<!--[if IE 7]>
-		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie7.css' media='screen' />
-	<![endif]-->
-
-<!-- Fin des styles -->
-
-
-</head>
 
 <!-- ******************************************** -->
 <!-- Appelle les sous-modèles                     -->
@@ -869,13 +844,8 @@ include('../templates/origine/header_template.php');
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
 
-<!-- on inclut le bandeau -->
-	<?php include('../templates/origine/bandeau_template.php');?>
-
-<div id='container'>
 
 <?php 
 //**************** FIN EN-TETE *****************
@@ -883,7 +853,6 @@ include('../templates/origine/header_template.php');
 include('menu_abs2.inc.php');
 //===========================
 ?>
-<a id='haut_de_page'></a>
 <div class='css-panes' id='containDiv'>
 
 <div style='float:right; width:20px'>

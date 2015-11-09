@@ -66,8 +66,8 @@ include_once 'header_template.inc.php';
 	<link rel="stylesheet" type="text/css" href="<?php echo $racineGepi;?>/templates/origine/css/imprimante.css" media="print" />
 	
 	<?php
-	if (isset($tbs_CSS && count($tbs_CSS)) {
-			foreach ($tbs_CSS as $value) {
+	if (isset($tbs_CSS_spe) && count($tbs_CSS_spe)) {
+			foreach ($tbs_CSS_spe as $value) {
 				if ($value!="") {
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
 					// echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media] and (max-width: 800px)\" />\n";
