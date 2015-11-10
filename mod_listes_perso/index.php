@@ -529,7 +529,10 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	<p>Cliquez dans les entêtes de colonnes pour créer leur titre ou le modifier.</p>
 	<p>Cliquez dans les cellules pour en modifier le contenu.</p>
 	<p>Cliquez en dehors pour enregistrer.</p>
-	<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permette de supprimer une ligne ou le contenu d'une cellule.</p>
+	<p>
+		Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' />
+		permettent de supprimer une ligne ou le contenu d'une cellule.
+	</p>
 </div>
 
 <div id="laListe" class="div_tableauListe">

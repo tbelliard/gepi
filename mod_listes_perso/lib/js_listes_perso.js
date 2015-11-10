@@ -113,7 +113,7 @@ function afficheAide()
    f.document.write("<p>Cliquez dans les entêtes de colonnes pour créer leur titre ou le modifier.</p>");
    f.document.write("<p>Cliquez dans les cellules pour en modifier le contenu.</p>");
    f.document.write("<p>Cliquez en dehors pour enregistrer.</p>");
-   f.document.write("<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permette de supprimer une ligne ou le contenu d'une cellule.</p>");
+   f.document.write("<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permettent de supprimer une ligne ou le contenu d'une cellule.</p>");
    f.document.write("</body>");
    f.document.close();
    
