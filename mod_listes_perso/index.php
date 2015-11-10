@@ -295,6 +295,14 @@ require_once("../lib/header.inc.php");
 		>
 		<a href="#lien_affichage">Modifier</a>
 	</li>
+	</li>
+    <li class="menu_liste"
+		id='menu_lien_aide'
+		onclick="afficheAide(); return false;"
+		title="Ouvre un popup"
+		>
+		<span>Aide</span>
+	</li>
 </ul>
 <!-- Choix de la liste ou création d'une liste -->
 <div id="tableau" class="div_construit">
@@ -467,7 +475,7 @@ foreach ($groupe_col as $group) {
 if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	while ($col = $colonnes->fetch_object()) {
 ?>
-					<option value="<?php echo $col->id; ?>"><?php echo $col->titre; ?></option>
+					<option <?php if(!$col->titre) {echo " style='color:red;' "; } ?> value="<?php echo $col->id; ?>"><?php if($col->titre) {echo $col->titre;} else {echo "Colonne non nommée";} ?></option>
 <?php
 	}
 	$colonnes->data_seek(0);
@@ -493,7 +501,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	while ($col = $colonnes->fetch_object()) {
 ?>
-					<option value="<?php echo $col->id; ?>"><?php echo $col->titre; ?></option>
+					<option <?php if(!$col->titre) {echo " style='color:red;' "; } ?> value="<?php echo $col->id; ?>"><?php if($col->titre) {echo $col->titre;} else {echo "Colonne non nommée";} ?></option>
 <?php
 	}
 	$colonnes->data_seek(0);
@@ -511,7 +519,18 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	</fieldset>
 </div>
 
+<!-- Aide -->
 
+<div id="aide" class="div_aide">
+	<p><strong>Listes perso</strong> → choisir une liste ou en créer une nouvelle.</p>
+	<p><strong>Construction</strong> → donner un nom à la liste, choisir les colonnes prédéfinies, déterminer le nombre de colonnes libres puis en ajouter au besoin. Il est aussi possible de supprimer définitivement la liste</p>
+	<p><strong>Élèves</strong> → ajouter des élèves en les choisissant dans ses listes.</p>
+	<p><strong>Modifier</strong> → supprimer les colonnes ou modifier leurs places.</p>
+	<p>Cliquez dans les entêtes de colonnes pour créer leur titre ou le modifier.</p>
+	<p>Cliquez dans les cellules pour en modifier le contenu.</p>
+	<p>Cliquez en dehors pour enregistrer.</p>
+	<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permette de supprimer une ligne ou le contenu d'une cellule.</p>
+</div>
 
 <div id="laListe" class="div_tableauListe">
 	<fieldset id="cadre_laListe">
@@ -676,6 +695,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 </div>
 
 <script type="text/javascript" >
+	afficher_cacher("aide");
 	afficher_cacher("eleves");
 	afficher_cacher("construction");
 	afficher_cacher("affichage");
