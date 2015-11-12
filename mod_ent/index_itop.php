@@ -3282,7 +3282,7 @@ if($mode=="consult_responsables") {
 	$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
-		echo "<p>Aucun rapprochement élève n'est enregistré.</p>\n";
+		echo "<p>Aucun rapprochement responsable n'est enregistré.</p>\n";
 
 		require("../lib/footer.inc.php");
 		die();
