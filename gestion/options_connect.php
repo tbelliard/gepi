@@ -924,6 +924,7 @@ echo "
 
 $checked_argos_bordeaux="";
 $checked_netcollege="";
+$checked_lea="";
 $checked_aucun="";
 
 if($afficher_liaison_ent=="argos_bordeaux") {
@@ -932,15 +933,19 @@ if($afficher_liaison_ent=="argos_bordeaux") {
 elseif($afficher_liaison_ent=="netcollege") {
 	$checked_netcollege=" checked";
 }
+elseif($afficher_liaison_ent=="lea") {
+	$checked_lea=" checked";
+}
 if($afficher_liaison_ent=="") {
 	$checked_aucun=" checked";
 }
 
 echo "<a name='liaison_ent'></a>\n";
 echo "<h3 class='gepi'>ENT</h3>\n";
-echo "<p>Cette section concerne des dispositifs spécifiques à deux Espaces Numériques de Travail.<br />
+echo "<p>Cette section concerne des dispositifs spécifiques à trois Espaces Numériques de Travail.<br />
 L'ENT Argos dans une mouture spécifique à l'académie de Bordeaux d'une part,<br />
-Et l'ENT NetCollege.</p>\n";
+L'ENT NetCollege.<br />
+Et l'ENT LEA.</p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 	<fieldset id='fieldset_ent' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
 	<legend style='border: 1px solid grey; background-color: white;'>ENT</legend>
@@ -948,6 +953,7 @@ echo "<form action=\"options_connect.php\" name=\"form_ent\" method=\"post\">
 		<p>Faire apparaitre le menu <strong>Liaison ENT</strong> dans la page d'accueil administrateur&nbsp;:<br />
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_argos_bordeaux\" value=\"argos_bordeaux\"$checked_argos_bordeaux /><label for='afficher_liaison_ent_argos_bordeaux'>Liaison ENT pour l'ENT Argos de Bordeaux</label><br />
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_netcollege\" value=\"netcollege\"$checked_netcollege /><label for='afficher_liaison_ent_netcollege'>Liaison ENT pour l'ENT Netcollege</label><br />
+		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_lea\" value=\"lea\"$checked_lea /><label for='afficher_liaison_ent_lea'>Liaison ENT pour l'ENT LEA</label><br />
 		<input type=\"radio\" name=\"afficher_liaison_ent\" id=\"afficher_liaison_ent_aucun\" value=\"\"$checked_aucun /><label for='afficher_liaison_ent_aucun'>Ne pas afficher le menu <strong>Liaison ENT</strong></label><br />
 		<em style='font-size:x-small'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dans ce dernier cas, si <strong>Utiliser la table de correspondance SSO</strong> est coché ci-dessus dans le formulaire <strong>Modes d'authentification</strong>,<br />
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c'est une entrée <strong>Correspondances identifiants SSO</strong> qui sera proposée<br />
