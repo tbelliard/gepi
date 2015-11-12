@@ -2768,8 +2768,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			<span id='tout_cocher_decocher' style='display:none;'>
 				<br />
 				<a href=\"javascript:tout_cocher()\" title='Tout cocher'><img src='../images/enabled.png' width='20' height='20' /></a>
+<!--
 				/
 				<a href=\"javascript:cocher_tous_les_resp_avec_login_et_eleve_associe()\" title='Cocher les responsables avec login et élève associé'><img src='../images/icons/wizard.png' width='20' height='20' /></a>
+-->
 				/
 				<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
 			</span>
