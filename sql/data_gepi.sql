@@ -1288,4 +1288,4 @@ INSERT INTO droits SET id='/aid/popup.php', administrateur='V', professeur='V', 
 INSERT INTO droits SET id='/init_xml2/traite_xml_edt.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Import des enseignements via un Export XML EDT', statut='';
 INSERT INTO droits SET id='/mod_sso_table/traite_export_csv.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Export CSV', statut='';
 INSERT INTO droits SET id='/mod_sso_table/publipostage.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Publipostage', statut='';
-
+INSERT INTO droits SET id='/mod_ent/index_lea.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Rapprochement des comptes ENT/GEPI : ENT LEA', statut='';
