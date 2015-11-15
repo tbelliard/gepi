@@ -25,12 +25,13 @@ $variables_non_protegees = 'yes';
 
 //$niveau_arbo=1;
 
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-
 // Témoin destiné à ne pas enregistrer dans les logs les accès à la page sans être logué.
 // Une mauvaise déconnexion peut provoquer énormément d'alertes et de mail (toutes les minutes potentiellement)
 $pas_acces_a_une_page_sans_etre_logue="y";
+$temoin_pas_d_update_session_table_log="y";
+
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
