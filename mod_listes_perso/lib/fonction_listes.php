@@ -21,77 +21,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//=========================================================================================================
-//Création provisoire des tables
-//=========================================================================================================
-
-/*
-function verifieTableCree() {
-	global $mysqli;
-	global $dbDb;
- * 
-	// echo "création de mod_listes_perso_definition"."<br />" ;
-	$sql_def = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_definition` ("
-	   . "`id` int(11) NOT NULL auto_increment, "
-	   . "`nom` varchar(50) NOT NULL default '', "
-	   . "`sexe` BOOLEAN default true, "
-	   . "`classe` BOOLEAN default true, "
-	   . "`photo` BOOLEAN default true, "
-	   . "`proprietaire` VARCHAR( 50 ) NOT NULL COMMENT 'Nom du créateur de la liste', "
-	   . "PRIMARY KEY  (`id`) "
-	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
-	$query_def = mysqli_query($mysqli, $sql_def);
-	if (!$query_def) {
-		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
-		echo $sql_def."<br />" ;
-	}
-	
-	// echo "création de mod_listes_perso_colonnes"."<br />" ;
-	$sql_col = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_colonnes` ("
-	   . "`id` int(11) NOT NULL auto_increment, "
-	   . "`id_def` int(11) NOT NULL, "
-	   . "`titre` varchar(30) NOT NULL default '', "
-	   . "`placement` int(11) NOT NULL, "
-	   . "PRIMARY KEY  (`id`) "
-	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
-	$query_col = mysqli_query($mysqli, $sql_col);
-	if (!$query_col) {
-		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
-		echo $sql_col."<br />" ;
-	}
-	// echo "création de mod_listes_perso_eleves"."<br />" ;
-	$sql_elv = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_eleves` ("
-	   . "`id` int(11) NOT NULL auto_increment, "
-	   . "`id_def` int(11) NOT NULL, "
-	   . "`login` varchar(50) NOT NULL default '', "
-	   . "PRIMARY KEY  (`id`), "
-	   . "INDEX combinaison (`id_def`, `login`) "
-	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
-	$query_elv = mysqli_query($mysqli, $sql_elv);
-	if (!$query_elv) {
-		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
-		echo $sql_elv."<br />" ;
-	}
-
-	// echo "création de mod_listes_perso_contenus"."<br />" ;	
-	$sql_contenus = "CREATE TABLE IF NOT EXISTS `mod_listes_perso_contenus` ("
-	   . "`id` int(11) NOT NULL auto_increment, "
-	   . "`id_def` int(11) NOT NULL, "
-	   . "`login` varchar(50) NOT NULL default '', "
-	   . "`colonne` int(11) NOT NULL, "
-	   . "`contenu` varchar(50) NOT NULL default '', "
-	   . "PRIMARY KEY (`id`), "
-	   . "INDEX contenu (`id_def`, `login`, `contenu`)"
-	   . ") ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;";
-	$query_contenus = mysqli_query($mysqli, $sql_contenus);
-	if (!$query_contenus) {
-		echo "Erreur lors de la création de la base ".mysqli_error($mysqli)."<br />" ;
-		echo $sql_contenus."<br />" ;
-	}
-}
- * 
- */
-
 
 //=========================================================================================================
 //                                     Générales
@@ -188,8 +117,9 @@ function chargeTableau($idListe = NULL) {
 	$proprietaire = $_SESSION['login'];
 	$sql = "SELECT * FROM `mod_listes_perso_definition` WHERE `proprietaire` = '$proprietaire' " ;
 	if ($idListe !== NULL) {
-		$sql .= "AND `id` LiKE '$idListe' ;" ;
+		$sql .= "AND `id` LiKE '$idListe' " ;
 	}
+	$sql .= "ORDER BY nom ASC ;" ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
@@ -197,7 +127,7 @@ function chargeTableau($idListe = NULL) {
 		echo $sql."<br />" ;
 		return FALSE;
 	}
-	return $query;
+	return $query; 
 }
 
 function Dernier_id() {

@@ -155,7 +155,11 @@ colC20 {
     border-left-color: #888;
     border-bottom-color: #888;
 }
-   
+
+.photoElv{
+  width: 64px;
+}
+ 
 
 @media print {
    .center {
@@ -218,6 +222,12 @@ colC20 {
    tableauListe {
 	 height: 100%;
    }
+   
+  .photoElv{
+    width: 40px;
+  }
+   
+   
    
 }
 
