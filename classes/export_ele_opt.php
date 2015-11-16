@@ -454,6 +454,8 @@ elseif(!isset($choix_periodes)) {
 	echo "<li>\n";
 	echo "<input type='radio' name='choix_periodes' id='choix_periodes_certaines' onchange='display_div_liste_periodes()' value='certaines' /><label for='choix_periodes_certaines'> Certaines périodes seulement</label>\n";
 
+	echo "<div id='fixe'><input type='submit' value='Valider' /></div>\n";
+
 	echo "<div id='div_liste_periodes' style='margin-left: 2em;'>\n";
 
 	echo "<div id='div_coche_lot' style='float: right; width: 20em;'></div>\n";
@@ -634,11 +636,13 @@ elseif(!isset($choix_matieres)) {
 	echo "<div id='div_coche_lot' style='float: right; width: 20em;'></div>\n";
 
 	$tab_id_matiere=array();
+	$tab_id_matiere_inverse=array();
 	$tab_liste_index_grp_matiere=array();
 	$cpt=0;
 	for($i=0;$i<count($id_classe);$i++) {
 		//$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id=jgc.id_groupe and jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
-		$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
+		//$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
+		$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgm.id_matiere, jgc.priorite, g.name";
 		//echo "$sql<br />";
 		$call_group = mysqli_query($GLOBALS["mysqli"], $sql);
 		$nombre_ligne = mysqli_num_rows($call_group);
@@ -709,7 +713,9 @@ elseif(!isset($choix_matieres)) {
 					echo "</tr>\n";
 
 					$tab_liste_index_grp_matiere[$lig_grp->id_matiere][]=$cpt;
-					if(!in_array($lig_grp->id_matiere, $tab_id_matiere)) {$tab_id_matiere[]=$lig_grp->id_matiere;}
+					if(!in_array($lig_grp->id_matiere, $tab_id_matiere)) {
+						$tab_id_matiere[]=$lig_grp->id_matiere;
+					}
 
 					$cpt++;
 				}
@@ -723,6 +729,9 @@ elseif(!isset($choix_matieres)) {
 
 	echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les enseignements</p>\n";
 
+	if(isset($_SESSION['export_csv_liste_matieres'])) {
+		echo "<p><a href='#' onclick=\"utiliser_meme_selection_matieres();return false;\">Utiliser la même sélection de matières que lors du précédent export</a>.</p>";
+	}
 
 	echo "</div>\n";
 
@@ -738,6 +747,8 @@ elseif(!isset($choix_matieres)) {
 	$chaine_div_coche_lot="Pour toutes les classes,<br />";
 
 	for($j=0;$j<count($tab_id_matiere);$j++) {
+		$tab_id_matiere_inverse[$tab_id_matiere[$j]]=$j;
+
 		$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>décocher</a> $tab_id_matiere[$j]<br />";
 
 		for($k=0;$k<count($tab_liste_index_grp_matiere[$tab_id_matiere[$j]]);$k++) {
@@ -757,6 +768,11 @@ elseif(!isset($choix_matieres)) {
 		}
 	}
 	$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les enseignements";
+
+
+	if(isset($_SESSION['export_csv_liste_matieres'])) {
+		$chaine_div_coche_lot.="<p><a href='javascript:utiliser_meme_selection_matieres()'>Utiliser la même sélection de matières que lors du précédent export</a>.</p>";
+	}
 
 	echo "<script type='text/javascript'>
 	document.getElementById('div_liste_enseignements').style.display='none';
@@ -779,7 +795,7 @@ elseif(!isset($choix_matieres)) {
 ";
 
 	for($j=0;$j<count($tab_id_matiere);$j++) {
-		echo "		".$chaine_array_index[$j];
+		echo "		".$chaine_array_index[$j]."\n";
 	}
 
 	echo "
@@ -833,8 +849,34 @@ elseif(!isset($choix_matieres)) {
 				document.getElementById('label_groupe_'+num).style.fontWeight='normal';
 			}
 		}
+	}";
+
+
+	if(isset($_SESSION['export_csv_liste_matieres'])) {
+		echo "
+		function utiliser_meme_selection_matieres() {
+			ModifToutesCases(false);
+
+			var tab_matiere=new Array(";
+		$tmp_tab=explode(";", $_SESSION['export_csv_liste_matieres']);
+		$cpt=0;
+		for($loop=0;$loop<count($tmp_tab);$loop++) {
+			if(($tmp_tab[$loop]!="")&&(isset($tab_id_matiere_inverse[$tmp_tab[$loop]]))) {
+				if($cpt>0) {
+					echo ",";
+				}
+				echo "'".$tab_id_matiere_inverse[$tmp_tab[$loop]]."'";
+				$cpt++;
+			}
+		}
+		echo ");
+			for(loop=0;loop<tab_matiere.length;loop++) {
+				coche_lot(tab_matiere[loop],true);
+			}
+		}";
 	}
 
+	echo "
 </script>\n";
 
 }
@@ -855,6 +897,7 @@ elseif(!isset($choix_donnees)) {
 	echo "<input type='hidden' name='max_per' value='$max_per' />\n";
 	echo "<input type='hidden' name='choix_matieres' value='$choix_matieres' />\n";
 
+	$chaine_liste_matieres=";";
 	for($i=0;$i<count($id_classe);$i++) {
 		echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 
@@ -863,7 +906,19 @@ elseif(!isset($choix_donnees)) {
 			if(isset($_POST['id_groupe_'.$id_classe[$i]])) {
 				$tmp_grp=$_POST['id_groupe_'.$id_classe[$i]];
 				for($loop=0;$loop<count($tmp_grp);$loop++) {
-					echo "<input type='hidden' name='id_groupe_".$id_classe[$i]."[]' value='$tmp_grp[$loop]' />\n";
+					echo "<input type='hidden' name='id_groupe_".$id_classe[$i]."[]' value='".$tmp_grp[$loop]."' />\n";
+
+					$sql="SELECT id_matiere FROM j_groupes_matieres WHERE id_groupe='".$tmp_grp[$loop]."';";
+					//echo "$sql<br />";
+					$test_mat=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_mat)>0) {
+						$lig_mat=mysqli_fetch_object($test_mat);
+						if(!preg_match('/;'.$lig_mat->id_matiere.';/', $chaine_liste_matieres)) {
+							$chaine_liste_matieres.=$lig_mat->id_matiere.";";
+							//echo "\$chaine_liste_matieres=$chaine_liste_matieres<br />";
+						}
+					}
+
 				}
 			}
 		}
@@ -880,6 +935,14 @@ elseif(!isset($choix_donnees)) {
 				}
 			}
 		}
+	}
+
+	//echo "\$chaine_liste_matieres=$chaine_liste_matieres<br />";
+	if(($choix_matieres=='certaines')&&($chaine_liste_matieres!=";")) {
+		$_SESSION['export_csv_liste_matieres']=$chaine_liste_matieres;
+	}
+	elseif(isset($_SESSION['export_csv_liste_matieres'])) {
+		unset($_SESSION['export_csv_liste_matieres']);
 	}
 
 	if(in_array($_SESSION['statut'], array('administrateur', 'scolarite'))) {

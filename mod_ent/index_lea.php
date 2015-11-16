@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -34,10 +34,10 @@ if ($resultat_session == 'c') {
 }
 
 
-$sql="SELECT 1=1 FROM droits WHERE id='/mod_ent/index_itop.php';";
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_ent/index_lea.php';";
 $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
-$sql="INSERT INTO droits SET id='/mod_ent/index_itop.php',
+$sql="INSERT INTO droits SET id='/mod_ent/index_lea.php',
 administrateur='V',
 professeur='F',
 cpe='F',
@@ -46,7 +46,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Rapprochement des comptes ENT/GEPI : ENT ITOP',
+description='Rapprochement des comptes ENT/GEPI : ENT LEA',
 statut='';";
 $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 }
@@ -76,7 +76,7 @@ function formate_date2($chaine, $from, $to) {
 	return $retour;
 }
 
-function echo_debug_itop($chaine) {
+function echo_debug_lea($chaine) {
 	$debug="n";
 	if($debug=="y") {
 		echo $chaine;
@@ -188,7 +188,8 @@ if(isset($_POST['recherche'])) {
 					$chaine.="; text-align: center;'>";
 
 					$chaine.="<td>";
-					$chaine.="$lig->nom";
+					//$chaine.="$lig->nom";
+					$chaine.="<a href='../eleves/modify_eleve.php?eleve_login=".$lig->login."' title=\"Voir la fiche élève dans un nouvel onglet\" target='_blank'>$lig->nom</a>";
 					$chaine.="</td>";
 
 					$chaine.="<td>";
@@ -213,7 +214,7 @@ if(isset($_POST['recherche'])) {
 						$chaine.="<a href='#' onClick=\"document.getElementById(document.getElementById('login_recherche').value).value='$lig->login';cacher_div('div_search');return false;\">$lig->login</a>";
 					}
 					else{
-						$chaine.="<span style='color:red'>Non renseigné</span>";
+						$chaine.="<span style='color:red' title=\"Le compte utilisateur n'a peut-être pas été créé.\">Non renseigné</span>";
 					}
 					$chaine.="</td>";
 
@@ -270,7 +271,8 @@ if(isset($_POST['recherche'])) {
 					$chaine.="; text-align: center;'>";
 
 					$chaine.="<td>";
-					$chaine.="$lig->nom";
+					//$chaine.="$lig->nom";
+					$chaine.="<a href='../responsables/modify_resp.php?pers_id=".$lig->pers_id."' title=\"Voir la fiche responsable dans un nouvel onglet\" target='_blank'>$lig->nom</a>";
 					$chaine.="</td>";
 
 					$chaine.="<td>";
@@ -293,7 +295,7 @@ if(isset($_POST['recherche'])) {
 						$chaine.="<a href='#' onClick=\"document.getElementById(document.getElementById('login_recherche').value).value='$lig->login';cacher_div('div_search');return false;\">$lig->login</a>";
 					}
 					else{
-						$chaine.="<span style='color:red'>Non renseigné</span>";
+						$chaine.="<span style='color:red' title=\"Le compte utilisateur n'a peut-être pas été créé.\">Non renseigné</span>";
 					}
 					$chaine.="</td>";
 
@@ -350,7 +352,8 @@ if(isset($_POST['recherche'])) {
 					$chaine.="; text-align: center;'>";
 
 					$chaine.="<td>";
-					$chaine.="$lig->nom";
+					//$chaine.="$lig->nom";
+					$chaine.="<a href='../utilisateurs/modify_user.php?user_login=".$lig->login."' title=\"Voir la fiche utilisateur dans un nouvel onglet\" target='_blank'>$lig->nom</a>";
 					$chaine.="</td>";
 
 					$chaine.="<td>";
@@ -395,6 +398,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 	else {
 		$ligne_tempo2=array();
 		$sql="SELECT * FROM tempo2_sso;";
+		echo_debug_lea("$sql<br />");
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		while($lig=mysqli_fetch_object($res)) {
 			$ligne_tempo2[$lig->col1]=$lig->col2;
@@ -407,31 +411,36 @@ if(isset($_POST['enregistrement_eleves'])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
 					$sql="SELECT login FROM eleves WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_'.$ligne[$loop]])."';";
+					echo_debug_lea("$sql<br />");
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 						$msg.="Le login élève Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 					}
 					else {
-						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
+						echo_debug_lea("$sql<br />");
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0) {
 							$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+							echo_debug_lea("$sql<br />");
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
+								echo_debug_lea("$sql<br />");
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
-									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+									$msg.="Erreur lors de l'insertion de l'association ".$tab[5]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
 								else {
 									$nb_reg++;
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								echo_debug_lea("$sql<br />");
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update) {
-									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+									$msg.="Erreur lors de la mise à jour de l'association ".$tab[5]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
 								else {
 									$nb_reg++;
@@ -440,7 +449,7 @@ if(isset($_POST['enregistrement_eleves'])) {
 						}
 						else {
 							$lig=mysqli_fetch_object($test);
-							$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
+							$msg.="L'UID $tab[5] est déjà associé à $lig->login_gepi<br />\n";
 						}
 					}
 				}
@@ -452,11 +461,11 @@ if(isset($_POST['enregistrement_eleves'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
-					echo_debug_itop("$sql<br />");
+					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
+					echo_debug_lea("$sql<br />");
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
-						$naissance=(isset($tab[5])) ? $tab[5] : "";
+						$naissance=(isset($tab[2])) ? $tab[2] : "";
 						if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
 						/*
@@ -468,18 +477,18 @@ if(isset($_POST['enregistrement_eleves'])) {
 						}
 						*/
 						// Les accents ne sont pas correctement interprétés
-						$nom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[1]);
-						$prenom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[2]);
+						$nom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[0]);
+						$prenom_remplacement=preg_replace("/[^A-Za-z]/","%",$tab[1]);
 						if($naissance!="") {
 							$sql="SELECT * FROM eleves WHERE nom LIKE '".$nom_remplacement."' AND prenom LIKE '".$prenom_remplacement."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
 						}
 						else {
 							$sql="SELECT * FROM eleves WHERE nom LIKE '".$nom_remplacement."' AND prenom LIKE '".$prenom_remplacement."' ORDER BY naissance;";
 						}
-						echo_debug_itop("$sql<br />");
+						echo_debug_lea("$sql<br />");
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==0) {
-							$msg.="Aucun enregistrement dans la table 'eleves' pour ".$tab[1]." ".$tab[2]." !<br />\n";
+							$msg.="Aucun enregistrement dans la table 'eleves' pour ".$tab[0]." ".$tab[1]." !<br />\n";
 							$nb_pas_dans_eleves++;
 						}
 						elseif(mysqli_num_rows($res)==1) {
@@ -487,25 +496,25 @@ if(isset($_POST['enregistrement_eleves'])) {
 							$lig=mysqli_fetch_object($res);
 
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$lig->login';";
-							echo_debug_itop("$sql<br />");
+							echo_debug_lea("$sql<br />");
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
-								echo_debug_itop("$sql<br />");
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
+								echo_debug_lea("$sql<br />");
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
-									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
+									$msg.="Erreur lors de l'insertion de l'association ".$tab[5]." &gt; ".$lig->login."<br />\n";
 								}
 								else {
 									$nb_reg++;
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' WHERE login_gepi='$lig->login';";
-								echo_debug_itop("$sql<br />");
+								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."' WHERE login_gepi='$lig->login';";
+								echo_debug_lea("$sql<br />");
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update) {
-									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
+									$msg.="Erreur lors de la mise à jour de l'association ".$tab[5]." &gt; ".$lig->login."<br />\n";
 								}
 								else {
 									$nb_reg++;
@@ -514,12 +523,12 @@ if(isset($_POST['enregistrement_eleves'])) {
 						}
 						else {
 							// On ne doit pas arriver là
-							$msg.="Plusieurs enregistrements dans la table 'eleves' pour ".$tab[1]." ".$tab[2]." !<br />\n";
+							$msg.="Plusieurs enregistrements dans la table 'eleves' pour ".$tab[0]." ".$tab[1]." !<br />\n";
 						}
 					}
 					else {
 						$lig=mysqli_fetch_object($test);
-						$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
+						$msg.="L'UID $tab[5] est déjà associé à $lig->login_gepi<br />\n";
 					}
 				}
 				else {
@@ -548,6 +557,8 @@ if(isset($_POST['enregistrement_responsables'])) {
 
 	$nb_reg=0;
 
+	//debug_var();
+
 	if(!isset($ligne)) {
 		$msg="Aucun enregistrement d'association n'a été demandée.<br />";
 	}
@@ -559,136 +570,180 @@ if(isset($_POST['enregistrement_responsables'])) {
 		}
 		else {
 
-			// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-			$tabchamps = array("Guid", "Nom", "Prénom", "Prenom", "Profil", "Groupe", "Guid_Enfant1", "Guid_Enfant2", "Guid_Enfant3");
-
-			$ligne_entete=mysqli_fetch_object($res);
-			$en_tete=explode(";", trim($ligne_entete->col2));
-
-			$tabindice=array();
-
-			// On range dans tabindice les indices des champs retenus
-			for ($k = 0; $k < count($tabchamps); $k++) {
-				for ($i = 0; $i < count($en_tete); $i++) {
-					if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
-						$tabindice[$tabchamps[$k]] = $i;
-					}
-				}
+			$ligne_tempo2=array();
+			$sql="SELECT * FROM tempo2_sso;";
+			echo_debug_lea("$sql<br />");
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig=mysqli_fetch_object($res)) {
+				$ligne_tempo2[$lig->col1]=$lig->col2;
 			}
 
-			if((!isset($tabindice['Nom']))||((!isset($tabindice['Prénom']))&&(!isset($tabindice['Prenom'])))||(!isset($tabindice['Guid']))||(!isset($tabindice['Guid_Enfant1']))||(!isset($tabindice['Profil']))) {
-				$msg="La ligne d'entête ne comporte pas un des champs indispensables (<em>Guid, Nom, Prénom, Profil, Guid_enfant1</em>).<br />";
-			}
-			else {
-				$ligne_tempo2=array();
-				$sql="SELECT * FROM tempo2_sso;";
-				$res=mysqli_query($GLOBALS["mysqli"], $sql);
-				while($lig=mysqli_fetch_object($res)) {
-					$ligne_tempo2[$lig->col1]=$lig->col2;
-				}
+			for($loop=0;$loop<count($ligne);$loop++) {
+				// On a eu un choix de login
+				if((isset($_POST['login_'.$ligne[$loop]]))&&($_POST['login_'.$ligne[$loop]]!='')) {
+					if(isset($ligne_tempo2[$ligne[$loop]])) {
+						$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-				for($loop=0;$loop<count($ligne);$loop++) {
-					// On a eu un choix de login
-					if((isset($_POST['login_'.$ligne[$loop]]))&&($_POST['login_'.$ligne[$loop]]!='')) {
-						if(isset($ligne_tempo2[$ligne[$loop]])) {
-							$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
+						$guid_courant=$tab[5];
+						$nom_courant=$tab[0];
+						$prenom_courant=$tab[1];
 
-							$guid_courant=$tab[$tabindice['Guid']];
-							$nom_courant=$tab[$tabindice['Nom']];
-							$prenom_courant=$tab[$tabindice['Prénom']];
-
-							$sql="SELECT login FROM resp_pers WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_'.$ligne[$loop]])."';";
+						$sql="SELECT login FROM resp_pers WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_'.$ligne[$loop]])."';";
+						echo_debug_lea("$sql<br />");
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
+							$msg.="Le login responsable Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
+						}
+						else {
+							$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+							echo_debug_lea("$sql<br />");
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
-								$msg.="Le login responsable Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
-							}
-							else {
-								$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+								$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								echo_debug_lea("$sql<br />");
 								$test=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(mysqli_num_rows($test)==0) {
-									$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-									$test=mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($test)==0) {
-										$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
-										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-										if(!$insert) {
-											$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
-										}
-										else {
-											$nb_reg++;
-										}
+									$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+									echo_debug_lea("$sql<br />");
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$insert) {
+										$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 									}
 									else {
-										$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
-										$update=mysqli_query($GLOBALS["mysqli"], $sql);
-										if(!$update) {
-											$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
-										}
-										else {
-											$nb_reg++;
-										}
+										$nb_reg++;
 									}
 								}
 								else {
-									$lig=mysqli_fetch_object($test);
-									$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
+									$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+									echo_debug_lea("$sql<br />");
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(!$update) {
+										$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+									}
+									else {
+										$nb_reg++;
+									}
 								}
 							}
-						}
-						else {
-							$msg.="Aucun enregistrement pour la ligne $loop<br />";
+							else {
+								$lig=mysqli_fetch_object($test);
+								$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
+							}
 						}
 					}
 					else {
-						if(isset($ligne_tempo2[$ligne[$loop]])) {
-							$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
+						$msg.="Aucun enregistrement pour la ligne $loop<br />";
+					}
+				}
+				else {
+					if(isset($ligne_tempo2[$ligne[$loop]])) {
+						$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-							$guid_courant=$tab[$tabindice['Guid']];
-							$nom_courant=$tab[$tabindice['Nom']];
-							$prenom_courant=$tab[$tabindice['Prénom']];
+						$uid_courant=$tab[5];
+						$nom_courant=$tab[0];
+						$prenom_courant=$tab[1];
 
-							$guid_enfant1="";
-							$guid_enfant2="";
-							$guid_enfant3="";
-							if(isset($tab[$tabindice['Guid_Enfant1']])) {
-								$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
-							}
-							if(isset($tab[$tabindice['Guid_Enfant2']])) {
-								$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
-							}
-							if(isset($tab[$tabindice['Guid_Enfant3']])) {
-								$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
-							}
+						$sql="SELECT rp.* FROM resp_pers rp, utilisateurs u WHERE u.login=rp.login AND rp.nom LIKE '".preg_replace("/[^A-Za-z]/", "%", $nom_courant)."' AND rp.prenom LIKE '".preg_replace("/[^A-Za-z]/", "%", $prenom_courant)."';";
+						echo_debug_lea("$sql<br />");
+						$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_resp)==1) {
+							$lig_resp=mysqli_fetch_object($res_resp);
 
-							$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$lig_resp->login."';";
+							echo_debug_lea("$sql<br />");
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$lig_resp->login."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $uid_courant)."';";
+								echo_debug_lea("$sql<br />");
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$insert) {
+									$msg.="Erreur lors de l'insertion de l'association ".$uid_courant." &gt; ".$lig_resp->login."<br />\n";
+								}
+								else {
+									$nb_reg++;
+								}
+							}
+							else {
+								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $uid_courant)."' WHERE login_gepi='".$lig_resp->login."';";
+								echo_debug_lea("$sql<br />");
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(!$update) {
+									$msg.="Erreur lors de la mise à jour de l'association ".$uid_courant." &gt; ".$lig_resp->login."<br />\n";
+								}
+								else {
+									$nb_reg++;
+								}
+							}
 
-								$chaine="";
-								if($guid_enfant1!="") {
-									$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant1)."'";
-								}
-								if($guid_enfant2!="") {
-									if($chaine!="") {$chaine.=" OR ";}
-									$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant2)."'";
-								}
-								if($guid_enfant3!="") {
-									if($chaine!="") {$chaine.=" OR ";}
-									$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant3)."'";
-								}
+						}
+						else {
+							$msg.="Anomalie pour ".$ligne_tempo2[$ligne[$loop]]."<br />";
+						}
 
-								$cpt_resp=0;
-								$tab_resp=array();
-								$tab_resp_login=array();
-								if($chaine!="") {
-									$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
-									echo_debug_itop("$sql<br />");
-									$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-									if(mysqli_num_rows($res_ele)>0) {
-										$cpt_ele=0;
-										while($lig_ele=mysqli_fetch_object($res_ele)) {
-											$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_courant)."' AND rp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_courant)."' AND rp.login!='';";
-											echo_debug_itop("$sql<br />");
+						/*
+						$guid_enfant1="";
+						$guid_enfant2="";
+						$guid_enfant3="";
+						if(isset($tab[$tabindice['Guid_Enfant1']])) {
+							$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
+						}
+						if(isset($tab[$tabindice['Guid_Enfant2']])) {
+							$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
+						}
+						if(isset($tab[$tabindice['Guid_Enfant3']])) {
+							$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
+						}
+
+						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
+
+							$chaine="";
+							if($guid_enfant1!="") {
+								$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant1)."'";
+							}
+							if($guid_enfant2!="") {
+								if($chaine!="") {$chaine.=" OR ";}
+								$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant2)."'";
+							}
+							if($guid_enfant3!="") {
+								if($chaine!="") {$chaine.=" OR ";}
+								$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant3)."'";
+							}
+
+							$cpt_resp=0;
+							$tab_resp=array();
+							$tab_resp_login=array();
+							if($chaine!="") {
+								$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
+								echo_debug_lea("$sql<br />");
+								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_ele)>0) {
+									$cpt_ele=0;
+									while($lig_ele=mysqli_fetch_object($res_ele)) {
+										$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_courant)."' AND rp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_courant)."' AND rp.login!='';";
+										echo_debug_lea("$sql<br />");
+										$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_resp)>0) {
+											while($lig_resp=mysqli_fetch_object($res_resp)) {
+												if(!in_array($lig_resp->login, $tab_resp_login)) {
+													$tab_resp_login[]=$lig_resp->login;
+													$tab_resp[$cpt_resp]['login']=$lig_resp->login;
+													$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
+													$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
+													$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
+													$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
+													$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
+													$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
+
+													$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
+													$cpt_resp++;
+												}
+											}
+										}
+										else {
+											$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
+											echo_debug_lea("$sql<br />");
 											$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($res_resp)>0) {
 												while($lig_resp=mysqli_fetch_object($res_resp)) {
@@ -701,83 +756,60 @@ if(isset($_POST['enregistrement_responsables'])) {
 														$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
 														$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
 														$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
-
 														$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
 														$cpt_resp++;
 													}
 												}
 											}
-											else {
-												$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.login!='';";
-												echo_debug_itop("$sql<br />");
-												$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
-												if(mysqli_num_rows($res_resp)>0) {
-													while($lig_resp=mysqli_fetch_object($res_resp)) {
-														if(!in_array($lig_resp->login, $tab_resp_login)) {
-															$tab_resp_login[]=$lig_resp->login;
-															$tab_resp[$cpt_resp]['login']=$lig_resp->login;
-															$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
-															$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
-															$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
-															$tab_resp[$cpt_resp]['resp_legal']=$lig_resp->resp_legal;
-															$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
-															$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
-															$tab_resp[$cpt_resp]['info'].=" (Légal ".$lig_resp->resp_legal.")";
-															$cpt_resp++;
-														}
-													}
-												}
-											}
 										}
 									}
-									/*
-									echo "<pre>";
-									print_r($tab_resp);
-									echo "</pre>";
-									*/
-									if(count($tab_resp)==1) {
-										// Un seul responsable correspond
-										$lig=mysqli_fetch_object($res);
+								}
+								//echo "<pre>";
+								//print_r($tab_resp);
+								//echo "</pre>";
+								if(count($tab_resp)==1) {
+									// Un seul responsable correspond
+									$lig=mysqli_fetch_object($res);
 
-										$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$tab_resp_login[0]."';";
-										$test=mysqli_query($GLOBALS["mysqli"], $sql);
-										if(mysqli_num_rows($test)==0) {
-											$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
-											$insert=mysqli_query($GLOBALS["mysqli"], $sql);
-											if(!$insert) {
-												$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
-											}
-											else {
-												$nb_reg++;
-											}
+									$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='".$tab_resp_login[0]."';";
+									$test=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($test)==0) {
+										$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$tab_resp_login[0]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."';";
+										$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$insert) {
+											$msg.="Erreur lors de l'insertion de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
 										}
 										else {
-											$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."' WHERE login_gepi='".$tab_resp_login[0]."';";
-											$update=mysqli_query($GLOBALS["mysqli"], $sql);
-											if(!$update) {
-												$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
-											}
-											else {
-												$nb_reg++;
-											}
+											$nb_reg++;
 										}
 									}
 									else {
-										$msg.="Responsable ".$nom_courant." ".$prenom_courant." non identifié.<br />\n";
+										$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_courant)."' WHERE login_gepi='".$tab_resp_login[0]."';";
+										$update=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(!$update) {
+											$msg.="Erreur lors de la mise à jour de l'association ".$guid_courant." &gt; ".$tab_resp_login[0]."<br />\n";
+										}
+										else {
+											$nb_reg++;
+										}
 									}
 								}
 								else {
-									$msg.="Aucun élève associé n'a été trouvé.<br />\n";
+									$msg.="Responsable ".$nom_courant." ".$prenom_courant." non identifié.<br />\n";
 								}
 							}
 							else {
-								$lig=mysqli_fetch_object($test);
-								$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
+								$msg.="Aucun élève associé n'a été trouvé.<br />\n";
 							}
 						}
 						else {
-							$msg.="Aucun enregistrement pour la ligne $loop<br />";
+							$lig=mysqli_fetch_object($test);
+							$msg.="Le GUID $guid_courant est déjà associé à $lig->login_gepi<br />\n";
 						}
+						*/
+					}
+					else {
+						$msg.="Aucun enregistrement pour la ligne $loop<br />";
 					}
 				}
 			}
@@ -822,26 +854,26 @@ if(isset($_POST['enregistrement_personnels'])) {
 						$msg.="Le login de personnel Gepi ".$_POST['login_'.$ligne[$loop]]." proposé n'existe pas.<br />\n";
 					}
 					else {
-						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+						$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 						$test=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($test)==0) {
 							$sql="SELECT * FROM sso_table_correspondance WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='".$_POST['login_'.$ligne[$loop]]."', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
-									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+									$msg.="Erreur lors de l'insertion de l'association ".$tab[5]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
 								else {
 									$nb_reg++;
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
+								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."' WHERE login_gepi='".$_POST['login_'.$ligne[$loop]]."';";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update) {
-									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
+									$msg.="Erreur lors de la mise à jour de l'association ".$tab[5]." &gt; ".$_POST['login_'.$ligne[$loop]]."<br />\n";
 								}
 								else {
 									$nb_reg++;
@@ -850,7 +882,7 @@ if(isset($_POST['enregistrement_personnels'])) {
 						}
 						else {
 							$lig=mysqli_fetch_object($test);
-							$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
+							$msg.="Le GUID $tab[5] est déjà associé à $lig->login_gepi<br />\n";
 						}
 					}
 				}
@@ -862,11 +894,11 @@ if(isset($_POST['enregistrement_personnels'])) {
 				if(isset($ligne_tempo2[$ligne[$loop]])) {
 					$tab=explode(";", $ligne_tempo2[$ligne[$loop]]);
 
-					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+					$sql="SELECT * FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)==0) {
 
-						$sql="SELECT * FROM utilisateurs WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[2])."' AND statut!='eleve' AND statut!='responsable';";
+						$sql="SELECT * FROM utilisateurs WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND statut!='eleve' AND statut!='responsable';";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==1) {
 							// Un seul élève correspond
@@ -875,20 +907,20 @@ if(isset($_POST['enregistrement_personnels'])) {
 							$sql="SELECT 1=1 FROM sso_table_correspondance WHERE login_gepi='$lig->login';";
 							$test=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test)==0) {
-								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+								$sql="INSERT INTO sso_table_correspondance SET login_gepi='$lig->login', login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$insert) {
-									$msg.="Erreur lors de l'insertion de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
+									$msg.="Erreur lors de l'insertion de l'association ".$tab[5]." &gt; ".$lig->login."<br />\n";
 								}
 								else {
 									$nb_reg++;
 								}
 							}
 							else {
-								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' WHERE login_gepi='$lig->login';";
+								$sql="UPDATE sso_table_correspondance SET login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."' WHERE login_gepi='$lig->login';";
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$update) {
-									$msg.="Erreur lors de la mise à jour de l'association ".$tab[0]." &gt; ".$lig->login."<br />\n";
+									$msg.="Erreur lors de la mise à jour de l'association ".$tab[5]." &gt; ".$lig->login."<br />\n";
 								}
 								else {
 									$nb_reg++;
@@ -896,16 +928,16 @@ if(isset($_POST['enregistrement_personnels'])) {
 							}
 						}
 						elseif(mysqli_num_rows($res)==0) {
-							$msg.="Aucun enregistrement dans la table 'utilisateurs' pour ".$tab[1]." ".$tab[2]." !<br />\n";
+							$msg.="Aucun enregistrement dans la table 'utilisateurs' pour ".$tab[0]." ".$tab[1]." !<br />\n";
 						}
 						else {
 							// On ne doit pas arriver là
-							$msg.="Plusieurs enregistrements dans la table 'utilisateurs' pour ".$tab[1]." ".$tab[2]." !<br />\n";
+							$msg.="Plusieurs enregistrements dans la table 'utilisateurs' pour ".$tab[0]." ".$tab[1]." !<br />\n";
 						}
 					}
 					else {
 						$lig=mysqli_fetch_object($test);
-						$msg.="Le GUID $tab[0] est déjà associé à $lig->login_gepi<br />\n";
+						$msg.="Le GUID $tab[5] est déjà associé à $lig->login_gepi<br />\n";
 					}
 				}
 				else {
@@ -984,7 +1016,7 @@ if(isset($_POST['enregistrement_saisie_manuelle'])) {
 			$mode="consult_eleves";
 		}
 		elseif($statut_compte=='responsable') {
-			$mode="consult_eleves";
+			$mode="consult_responsables";
 		}
 		else {
 			$mode="consult_personnels";
@@ -1052,6 +1084,7 @@ if($mode=='suppr_scories') {
 	$mode="";
 }
 
+/*
 if($mode=='valider_forcer_logins_mdp_responsables') {
 	check_token();
 
@@ -1069,36 +1102,6 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 		$etat_compte_force="inactif";
 	}
 
-	/*
-		echo "<pre>";
-		print_r($ligne);
-		echo "</pre>";
-
-		Posté depuis le formulaire:
-			Array
-			(
-				[col1] => pers_id choisi
-				[0] => 1510775
-				[49] => 1432901
-				[50] => 1432902
-				[106] => 1432905
-			)
-
-		Enregistré préalablement dans la table tempo4;
-		mysql> select * from tempo4 where col1='0' or col1='49' or col1='50' or col1='106';
-		+------+----------------------+----------------------------------+------+
-		| col1 | col2                 | col3                             | col4 |
-		+------+----------------------+----------------------------------+------+
-		| 0    | denis.XXXX1          | 64ce0ed8cXXXXXXXXXXXXXXXXXXXXXXX |      |
-		| 49   | christelle.XXXXXXXX1 | e5e610953XXXXXXXXXXXXXXXXXXXXXXX |      |
-		| 50   | joel.XXXXXXXXX       | f8bad8df0XXXXXXXXXXXXXXXXXXXXXXX |      |
-		| 106  | ludovic.XXXXXX       | fac5cb6f2XXXXXXXXXXXXXXXXXXXXXXX |      |
-		+------+----------------------+----------------------------------+------+
-		4 rows in set (0.01 sec)
-
-		mysql> 
-	*/
-
 	$tab_tempo4=array();
 	$sql="SELECT * FROM tempo4;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1112,7 +1115,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 	foreach($ligne as $id_col1 => $pers_id) {
 		if($pers_id!="") {
 			$sql="SELECT * FROM resp_pers WHERE pers_id='$pers_id';";
-			echo_debug_itop("$sql<br />");
+			echo_debug_lea("$sql<br />");
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				$msg.="ERREUR : Le responsable n°$pers_id n'existe pas dans la table 'resp_pers'.<br />";
@@ -1127,7 +1130,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 				}
 				else {
 					$sql="SELECT * FROM utilisateurs WHERE login='".$tab_tempo4[$id_col1]['login']."';";
-					echo_debug_itop("$sql<br />");
+					echo_debug_lea("$sql<br />");
 					$test_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_u)>0) {
 
@@ -1140,7 +1143,7 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										etat='$etat_compte_force',
 										auth_mode='$auth_mode'
 										WHERE  login='".$tab_tempo4[$id_col1]['login']."';";
-							echo_debug_itop("$sql<br />");
+							echo_debug_lea("$sql<br />");
 							//echo "$sql<br />";
 							$update=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($update) {
@@ -1173,11 +1176,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 					else {
 						if($lig->login!="") {
 							$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
-							echo_debug_itop("$sql<br />");
+							echo_debug_lea("$sql<br />");
 							$test_u=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_u)>0) {
 								$sql="DELETE FROM utilisateurs WHERE login='".$lig->login."' AND statut='responsable';";
-								echo_debug_itop("$sql<br />");
+								echo_debug_lea("$sql<br />");
 								$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 								if(!$menage) {
 									$msg.="ERREUR : La suppression de l'ancien compte d'utilisateur $lig->login associé au responsable n°$pers_id (<em>$lig->nom $lig->prenom</em>) a échoué.<br />";
@@ -1195,11 +1198,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 												auth_mode='$auth_mode', 
 												statut='responsable', 
 												etat='$etat_compte_force';";
-									echo_debug_itop("$sql<br />");
+									echo_debug_lea("$sql<br />");
 									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
 										$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-										echo_debug_itop("$sql<br />");
+										echo_debug_lea("$sql<br />");
 										$update=mysqli_query($GLOBALS["mysqli"], $sql);
 										if($update) {
 
@@ -1245,11 +1248,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 											auth_mode='$auth_mode', 
 											statut='responsable', 
 											etat='$etat_compte_force';";
-								echo_debug_itop("$sql<br />");
+								echo_debug_lea("$sql<br />");
 								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($insert) {
 									$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-									echo_debug_itop("$sql<br />");
+									echo_debug_lea("$sql<br />");
 									$update=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($update) {
 
@@ -1288,11 +1291,11 @@ if($mode=='valider_forcer_logins_mdp_responsables') {
 										auth_mode='$auth_mode', 
 										statut='responsable', 
 										etat='$etat_compte_force';";
-							echo_debug_itop("$sql<br />");
+							echo_debug_lea("$sql<br />");
 							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 							if($insert) {
 								$sql="UPDATE resp_pers SET login='".$tab_tempo4[$id_col1]['login']."' WHERE pers_id='$pers_id';";
-								echo_debug_itop("$sql<br />");
+								echo_debug_lea("$sql<br />");
 								$update=mysqli_query($GLOBALS["mysqli"], $sql);
 								if($update) {
 
@@ -1375,7 +1378,7 @@ if($mode=='valider_forcer_mdp_eleves') {
 	foreach($ligne as $id_col1 => $login_gepi) {
 		if($login_gepi!="") {
 			$sql="SELECT * FROM eleves WHERE login='$login_gepi';";
-			echo_debug_itop("$sql<br />");
+			echo_debug_lea("$sql<br />");
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)==0) {
 				$msg.="ERREUR : In n'existe pas d'élève dans la table 'eleves' qui soit associé au login $login_gepi.<br />";
@@ -1390,7 +1393,7 @@ if($mode=='valider_forcer_mdp_eleves') {
 				}
 				else {
 					$sql="SELECT * FROM utilisateurs WHERE login='".$tab_tempo4[$id_col1]['login']."';";
-					echo_debug_itop("$sql<br />");
+					echo_debug_lea("$sql<br />");
 					$test_u=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_u)==0) {
 						$msg.="ERREUR : L'élève $login_gepi (<em>$lig->nom $lig->prenom</em>) n'a pas de compte dans la table 'utilisateurs'.<br />";
@@ -1403,7 +1406,7 @@ if($mode=='valider_forcer_mdp_eleves') {
 											salt='', 
 											change_mdp='n' 
 										WHERE login='".$tab_tempo4[$id_col1]['login']."';";
-						echo_debug_itop("$sql<br />");
+						echo_debug_lea("$sql<br />");
 						//echo "$sql<br />";
 						$update=mysqli_query($GLOBALS["mysqli"], $sql);
 						if($update) {
@@ -1437,9 +1440,9 @@ if($mode=='valider_forcer_mdp_eleves') {
 	unset($mode);
 	$mode="";
 }
-
+*/
 //**************** EN-TETE *****************
-$titre_page = "ENT ITOP : Rapprochement";
+$titre_page = "ENT LEA : Rapprochement";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
@@ -1493,7 +1496,7 @@ if((!isset($mode))||($mode=="")) {
 	echo "
 </p>
 
-<h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes ENT LEA/GEPI</h2>
 
 <div style='margin-left:4em;'>
 <p><a href='".$_SERVER['PHP_SELF']."?mode=saisie_manuelle'>Saisir manuellement une association</a></p>
@@ -1545,13 +1548,14 @@ if((!isset($mode))||($mode=="")) {
 	echo "
 </ul>";
 
+/*
 	//======================================================================
 	// Fiches bienvenue Elèves
 	//﻿Nom;Prénom;Login;Numéro de jointure;Mot de passe;Email;Classe;Etat;Date de désactivation
 	//DUPRE;Thomas;thomas.dupre;MENESR$12345;mdp&*;Thomas.DUPRE@ent27.fr;6 A;Actif
 	echo "<p> ou générer des Fiches Bienvenue&nbsp;:</p>
 <ul>";
-
+*/
 	$sql="SELECT 1=1 FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_corresp_ele=mysqli_num_rows($res);
@@ -1559,11 +1563,13 @@ if((!isset($mode))||($mode=="")) {
 		echo "
 	<li>Aucune association élève n'est encore enregistrée.</li>";
 	}
+/*
 	else {
 		echo "
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_eleves'>Générer les Fiches Bienvenue élèves</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
 
+*/
 	//===================================================
 	// Fiches bienvenue Responsables
 	//$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom LIMIT 1;";
@@ -1574,11 +1580,12 @@ if((!isset($mode))||($mode=="")) {
 		echo "
 	<li>Aucune association responsable n'est encore enregistrée.</li>";
 	}
+/*
 	else {
 		echo "
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_responsables'>Générer les Fiches Bienvenue responsables</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
 	}
-
+*/
 	//===================================================
 	// Fiches bienvenue Personnels
 	//$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' LIMIT 1;";
@@ -1589,6 +1596,7 @@ if((!isset($mode))||($mode=="")) {
 		echo "
 	<li>Aucune association n'est encore enregistrée pour les personnels de l'établissement.</li>";
 	}
+/*
 	else {
 		echo "
 	<li><a href='".$_SERVER['PHP_SELF']."?mode=publipostage_personnels'>Générer les Fiches Bienvenue personnels</a> (<em>".mysqli_num_rows($res)." association(s) enregistrée(s)</em>)</li>";
@@ -1597,7 +1605,7 @@ if((!isset($mode))||($mode=="")) {
 	echo "
 </ul>
 <p>Cette rubrique permet de fournir les fichiers CSV de rénitialisation de mots de passe générés par l'ENT, ou les CSV des nouveaux élèves.</p>";
-
+*/
 	//===================================================
 	// Scories:
 	$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_gepi NOT IN (SELECT login FROM utilisateurs);";
@@ -1853,7 +1861,7 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 
 	echo "<p><em>NOTES&nbsp;:</em></p>
 <ul>
-	<li>
+	<!--li>
 		<p>Les CSV réclamés dans les pages d'importation sont accessibles en suivant le cheminement suivant&nbsp;:<br />
 		Se connecter avec un compte administrateur de l'ENT.<br />
 		Menu Administration puis Gérer les utilisateurs puis Outils puis Traitement en masse puis Action (<em>Choisir Exportation SSO au format CSV</em>) puis dans Profil sélectionner le profil (<em>Elève, Parent,...</em>)<br />
@@ -1861,7 +1869,7 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 	</li>
 	<li>
 		<p>Les CSV pour les Fiches bienvenue peuvent aussi être ceux des nouveaux élèves ou parents<br />(<em>[V2]CLG-".getSettingValue('gepiSchoolName')."-ac-ROUEN - [".getSettingValue('gepiSchoolRne')."] - [ANNEEMOISJOURHEURE].xlsx<br />ou ".getSettingValue('gepiSchoolRne')."_CSV_ANNEEMOISJOURHEURE.zip</em>).</p>
-	</li>
+	</li-->
 	<li>
 		<p>Votre base compte des utilisateurs des statuts suivants avec les modes d'authentification suivants&nbsp;:</p>
 		<table class='boireaus boireaus_alt'>
@@ -1897,7 +1905,9 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 	</li>
 </ul>
 
-</div>
+</div>";
+/*
+echo "
 
 <h2>Forcer les logins des responsables (<em>expérimental</em>)</h2>
 
@@ -1996,6 +2006,7 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 	<p><br /></p>
 
 </div>\n";
+*/
 
 	require("../lib/footer.inc.php");
 	die();
@@ -2003,10 +2014,10 @@ Vous devriez effectuer un <a href='../utilitaires/clean_tables.php'>Nettoyage de
 
 //==================================================================================
 if($mode=="saisie_manuelle") {
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>
 
-<h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes ENT LEA/GEPI</h2>
 
 <p>Saisir manuellement une association Login_gepi / Guid&nbsp;:</p>
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
@@ -2028,19 +2039,19 @@ if($mode=="saisie_manuelle") {
 //==================================================================================
 if($mode=="import_eleves") {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
-		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+		echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>";
 
 	if(!isset($csv_file)) {
 		echo "
-<h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
 		".add_token_field()."
 		<input type='hidden' name='mode' value='import_eleves' />
 		<input type=\"file\" size=\"65\" name=\"csv_file\" style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); padding:5px; margin:5px;' /><br />
-		<input type=\"checkbox\" id=\"exclure_classes_anormales\" name=\"exclure_classes_anormales\" value=\"y\" checked /><label for='exclure_classes_anormales'>Exclure les classes nommées BASE20XXXXXX (<em>plus précisément contenant la chaine 'BASE20'</em>)</label><br />
+		<!--input type=\"checkbox\" id=\"exclure_classes_anormales\" name=\"exclure_classes_anormales\" value=\"y\" checked /><label for='exclure_classes_anormales'>Exclure les classes nommées BASE20XXXXXX (<em>plus précisément contenant la chaine 'BASE20'</em>)</label><br /-->
 		<input type='submit' value='Envoyer' />
 	</fieldset>
 </form>
@@ -2050,15 +2061,20 @@ if($mode=="import_eleves") {
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-	Guid;Nom;Prénom;Profil;Classes;Groupe;Naissance<br />
-	f73d0f72-0958-4b8f-85f7-a58a96d95220;DISSOIR;Alain;National_1;0310000Z$1L1;16/06/1987<br />
+	Nom;Prenom;Date de naissance;Sexe;Division;Login;<br />
+	DISSOIRE;Alain;16/06/1987;M.;cn=3166$2 PMA1,ou=groups,dc=ent,dc=pentila,dc=com;adissoir;<br />
 	...<br />
+
+<!--
 	Le CSV peut être obtenu dans l'ENT de la façon suivante&nbsp;:<br />
 	Se connecter avec un compte administrateur de l'ENT.<br />
 	Menu <strong>Administration</strong> puis <strong>Gérer les utilisateurs</strong>, puis <strong>Outils</strong>, puis <strong>Traitement en masse</strong>, puis <strong>Action</strong> (<em>Choisir Exportation SSO au format CSV</em>), puis dans <strong>Profil</strong> sélectionner le profil <em>Elève</em>, puis <strong>Traiter cette action</strong> et enfin <strong>Valider</strong>.<br />
 	Après une minute ou deux, le fichier est généré dans l'espace <strong>Documents</strong>.
-</li>
-	<li>Il peut arriver que le CSV fourni contienne des élèves de l'année précédente.<br />
+-->
+
+	</li>
+
+	<!--li>Il peut arriver que le CSV fourni contienne des élèves de l'année précédente.<br />
 	La classe est alors par exemple&nbsp;: BASE2011-2012<br />
 	Proposer d'effectuer un rapprochement pour des élèves qui ne sont plus là n'est pas souhaitable.<br />
 	Vous pouvez aussi avoir un même élève qui apparaît avec deux lignes dans le fichier&nbsp;:<br />
@@ -2066,7 +2082,7 @@ if($mode=="import_eleves") {
 	et une ligne avec le GUID de cette année (<em>c'est celui qu'il faut retenir</em>).</li>
 	<li>Il est recommandé d'envoyer deux fois le même CSV.<br />
 	La première fois pour prendre en compte les élèves correctement identifiés.<br />
-	La deuxième pour voir quels élèves du CSV n'ont pas été associés à un login Gepi.</li>
+	La deuxième pour voir quels élèves du CSV n'ont pas été associés à un login Gepi.</li-->
 </ul>\n";
 	}
 	else {
@@ -2080,7 +2096,7 @@ if($mode=="import_eleves") {
 			die();
 		}
 
-		$motif_nom_fichier="ExportSSO_Eleve_";
+		$motif_nom_fichier="Export_CSV_eleves";
 		echo "<p>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
 		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
 			echo "<br />
@@ -2114,7 +2130,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 ","",32,0,"y","y","n","n");
 
 		echo "
-<h2>Rapprochement des comptes élèves ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes élèves ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
@@ -2137,7 +2153,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th rowspan='2'>Login Gepi</th>
 	</tr>
 	<tr>
-		<th>Guid</th>
+		<th>Login</th>
 		<th>Nom</th>
 		<th>Prénom</th>
 		<th>Profil</th>
@@ -2171,13 +2187,13 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				if(!preg_match("/^Guid;/i", trim($ligne))) {
+				if(!preg_match("/^Nom;/i", trim($ligne))) {
 
 					// Si un élève a déjà une association enregistrée, ne pas proposer de refaire l'association.
 					// Juste stocker ce qui est déjà associé et l'afficher dans un 2è tableau.
 					// Pouvoir supprimer une association du 2è tableau (ou voir dans mode=consult_eleves)
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[6])."';";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
@@ -2197,7 +2213,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						else {
 							// ANOMALIE
 
-							$naissance=(isset($tab[5])) ? $tab[5] : "";
+							$classe=preg_replace("/,.*/", "", preg_replace("/^cn=[0-9]*\\$/", "", $tab[4]));
+							$naissance=(isset($tab[2])) ? $tab[2] : "";
 							if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
 							echo "
@@ -2208,11 +2225,11 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
                  SCORIES : Supprimer ces scories.
            en page d'index, et refaire ensuite une importation.\">
 		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
+		<td>".$tab[5]."</td>
 		<td>".$tab[0]."</td>
 		<td>".$tab[1]."</td>
-		<td>".$tab[2]."</td>
-		<td>".$tab[3]."</td>
-		<td>".preg_replace("/".getSettingValue('gepiSchoolRne')."\\$/", "", $tab[4])."</td>
+		<td>eleve</td>
+		<td>".$classe."</td>
 		<td>".$naissance."</td>
 		<td></td>
 	</tr>";
@@ -2221,11 +2238,16 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 					}
 					elseif((!isset($_POST['exclure_classes_anormales']))||(!preg_match("/BASE20/", $tab[4]))) {
-						$naissance=(isset($tab[5])) ? $tab[5] : "";
+
+//Nom;Prenom;Date de naissance;Sexe;Division;Login;
+//SALOMON;Marvin;04/07/1999;M.;cn=3166$2 PMA1,ou=groups,dc=ent,dc=pentila,dc=com;msalom;
+
+						$classe=preg_replace("/,.*/", "", preg_replace("/^cn=[0-9]*\\$/", "", $tab[4]));
+						$naissance=(isset($tab[2])) ? $tab[2] : "";
 						if(!preg_match("#[0-9]{2}/[0-9]{2}/[0-9]{4}#", $naissance)) {$naissance="";}
 
-						if(in_array_i($tab[1]." ".$tab[2], $tab_nom_prenom_deja_aff)) {
-							$chaine_tmp=$cpt."_".remplace_accents($tab[1]." ".$tab[2],"all");
+						if(in_array_i($tab[0]." ".$tab[1], $tab_nom_prenom_deja_aff)) {
+							$chaine_tmp=$cpt."_".remplace_accents($tab[0]." ".$tab[1],"all");
 							$tab_doublon_possible[]=$chaine_tmp;
 							$ancre_doublon_ou_pas="<a name='doublon_possible_$chaine_tmp'></a>";
 							$style_css=" style='background-color:red' title=\"Il existe au moins un homonyme dans le CSV.
@@ -2237,25 +2259,25 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							$ancre_doublon_ou_pas="";
 							$style_css="";
 						}
-						$tab_nom_prenom_deja_aff[]=$tab[1]." ".$tab[2];
+						$tab_nom_prenom_deja_aff[]=$tab[0]." ".$tab[1];
 
 						$alt=$alt*(-1);
 						echo "
 	<tr class='lig$alt white_hover'$style_css>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
-		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
-		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
-		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>
-		<td><label for='ligne_$cpt'>".preg_replace("/".getSettingValue('gepiSchoolRne')."\\$/", "", $tab[4])."</label></td>
+		<td><label for='ligne_$cpt'>".$tab[5]."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[0]."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[1]."</span></label></td>
+		<td><label for='ligne_$cpt'>eleve</label></td>
+		<td><label for='ligne_$cpt'>".$classe."</label></td>
 		<td><label for='ligne_$cpt'>".$naissance."</label></td>";
 
 						// Recherche dans la table eleves de personnes pouvant correspondre à la ligne courante du CSV.
 						if($naissance!="") {
-							$sql="SELECT * FROM eleves WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[2])."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
+							$sql="SELECT * FROM eleves WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND naissance='".formate_date2($naissance, "jj/mm/aaaa", "aaaammjj")."'";
 						}
 						else {
-							$sql="SELECT * FROM eleves WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[2])."' ORDER BY naissance;";
+							$sql="SELECT * FROM eleves WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' ORDER BY naissance;";
 						}
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==1) {
@@ -2487,11 +2509,11 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 //==================================================================================
 if($mode=="consult_eleves") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
  | <a href='".$_SERVER['PHP_SELF']."?mode=import_eleves'>Importer un CSV élève</a>
 </p>
 
-<h2>Rapprochement actuels des comptes élèves ENT ITOP/GEPI</h2>
+<h2>Rapprochement actuels des comptes élèves ENT LEA/GEPI</h2>
 ";
 
 	$sql="SELECT e.*, s.* FROM eleves e, sso_table_correspondance s WHERE s.login_gepi=e.login ORDER BY e.nom, e.prenom";
@@ -2632,12 +2654,12 @@ if($mode=="import_responsables") {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>";
 
 	if(!isset($csv_file)) {
 		echo "
-<h2>Rapprochement des comptes responsables ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes responsables ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
@@ -2653,13 +2675,19 @@ if($mode=="import_responsables") {
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li>Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-	﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3<br />
-	f7ebe441-14e0-4c48-b9ec-53e603829fb3;DISSOIR;Amar;National_2;;;f73d0f72-0958-4b8f-85f7-a58a96d95220<br />
+	Nom;Prenom;Date de naissance;Sexe;Division;Login;<br />
+	DISSOIRE;Alain;01/01/1970;M.;;adissoir<br />
+	...<br />
+	<br />
+	La valeur de la date de naissance est facultative parce que non prise compte, mais la colonne doit exister.
+
+<!--
 	...<br />
 	Le CSV peut être obtenu dans l'ENT de la façon suivante&nbsp;:<br />
 	Se connecter avec un compte administrateur de l'ENT.<br />
 	Menu <strong>Administration</strong> puis <strong>Gérer les utilisateurs</strong>, puis <strong>Outils</strong>, puis <strong>Traitement en masse</strong>, puis <strong>Action</strong> (<em>Choisir Exportation SSO au format CSV</em>), puis dans <strong>Profil</strong> sélectionner le profil <em>Parent</em>, puis <strong>Traiter cette action</strong> et enfin <strong>Valider</strong>.<br />
 	Après une minute ou deux, le fichier est généré dans l'espace <strong>Documents</strong>.
+-->
 
 	</li>
 	<li>Il est recommandé d'envoyer une première fois le CSV, d'enregistrer les associations correctement détectées (<em>en contrôlant tout de même les éventuels doublons repérés</em>).<br />
@@ -2678,7 +2706,7 @@ if($mode=="import_responsables") {
 			die();
 		}
 
-		$motif_nom_fichier="ExportSSO_Parent_";
+		$motif_nom_fichier="Export_CSV_parent";
 		echo "<p>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
 		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
 			echo "<br />
@@ -2688,41 +2716,10 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		echo "</p>\n";
 
 
-		// 20131014
-		// ﻿Guid;Nom;Prénom;Profil;Classes;Groupe;Guid_Enfant1;Guid_Enfant2;Guid_Enfant3
-
-		// Lire la ligne d'entête pour repérer les indices des colonnes recherchées
-		$tabchamps = array("Guid", "Nom", "Prénom", "Prenom", "Profil", "Groupe", "Guid_Enfant1", "Guid_Enfant2", "Guid_Enfant3");
-
 		// Lecture de la ligne 1 et la mettre dans $temp
 		$ligne_entete=trim(fgets($fp,4096));
 		//echo "$ligne_entete<br />";
 		$en_tete=explode(";", $ligne_entete);
-
-		$tabindice=array();
-
-		// On range dans tabindice les indices des champs retenus
-		for ($k = 0; $k < count($tabchamps); $k++) {
-			//echo "<br /><p style='text-indent:-4em;margin-left:4em'>Recherche du champ ".$tabchamps[$k]."<br />";
-			for ($i = 0; $i < count($en_tete); $i++) {
-				//echo "\$en_tete[$i]=$en_tete[$i]<br />";
-				//echo casse_mot(remplace_accents($en_tete[$i]),'min')."<br />";
-				//echo casse_mot(remplace_accents($tabchamps[$k]), 'min')."<br />";
-				if (casse_mot(remplace_accents($en_tete[$i]),'min') == casse_mot(remplace_accents($tabchamps[$k]), 'min')) {
-					$tabindice[$tabchamps[$k]] = $i;
-					//echo "\$tabindice[$tabchamps[$k]]=$i<br />";
-				}
-			}
-		}
-		if((!isset($tabindice['Nom']))||((!isset($tabindice['Prénom']))&&(!isset($tabindice['Prenom'])))||(!isset($tabindice['Guid']))||(!isset($tabindice['Guid_Enfant1']))||(!isset($tabindice['Profil']))) {
-			echo "<p style='color:red'>La ligne d'entête ne comporte pas un des champs indispensables (<em>Guid, Nom, Prénom, Profil, Guid_enfant1</em>).</p>";
-			require("../lib/footer.inc.php");
-			die();
-		}
-
-		if(!isset($tabindice['Prénom'])) {
-			$tabindice['Prénom']=$tabindice['Prenom'];
-		}
 
 		$sql="TRUNCATE tempo2_sso;";
 		$menage=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -2754,7 +2751,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		$tab_lignes_sans_eleve_associe=array();
 
 		echo "
-<h2>Rapprochement des comptes responsables ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes responsables ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
@@ -2771,24 +2768,25 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 			<span id='tout_cocher_decocher' style='display:none;'>
 				<br />
 				<a href=\"javascript:tout_cocher()\" title='Tout cocher'><img src='../images/enabled.png' width='20' height='20' /></a>
+<!--
 				/
 				<a href=\"javascript:cocher_tous_les_resp_avec_login_et_eleve_associe()\" title='Cocher les responsables avec login et élève associé'><img src='../images/icons/wizard.png' width='20' height='20' /></a>
+-->
 				/
 				<a href=\"javascript:tout_decocher()\" title='Tout décocher'><img src='../images/disabled.png' width='20' height='20' /></a>
 			</span>
 		</th>
-		<th colspan='6'>Informations ENT</th>
+		<th colspan='4'>Informations ENT</th>
 		<th rowspan='2'>Login Gepi</th>
 	</tr>
 	<tr>
-		<th>Guid</th>
+		<th>Uid</th>
 		<th>Nom</th>
 		<th>Prénom</th>
 		<th>Profil</th>
-		<th>Groupe</th>
-		<th>Enfants</th>
-	</tr>
-";
+		<!--th>Groupe</th>
+		<th>Enfants</th-->
+	</tr>";
 
 		//$tab_login_associe_a_un_guid=array();
 		$tab_guid_associe_a_un_login=array();
@@ -2816,13 +2814,13 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				if(!preg_match("/^Guid;/i", trim($ligne))) {
+				if(!preg_match("/^Nom;/i", trim($ligne))) {
 
 					// Si un élève a déjà une association enregistrée, ne pas proposer de refaire l'association.
 					// Juste stocker ce qui est déjà associé et l'afficher dans un 2è tableau.
 					// Pouvoir supprimer une association du 2è tableau (ou voir dans mode=consult_eleves)
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[$tabindice['Guid']])."';";
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
@@ -2842,28 +2840,16 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						else {
 							// ANOMALIE
 
-							$guid_courant=$tab[$tabindice['Guid']];
-							$nom_courant=$tab[$tabindice['Nom']];
-							$prenom_courant=$tab[$tabindice['Prénom']];
-							$profil_courant=$tab[$tabindice['Profil']];
+							$uid_courant=$tab[5];
+							$nom_courant=$tab[0];
+							$prenom_courant=$tab[1];
+							$profil_courant="responsable";
 
 							$groupe_courant="";
-							if(isset($tab[$tabindice['Groupe']])) {
-								$groupe_courant=$tab[$tabindice['Groupe']];
-							}
 
 							$guid_enfant1="";
 							$guid_enfant2="";
 							$guid_enfant3="";
-							if(isset($tab[$tabindice['Guid_Enfant1']])) {
-								$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
-							}
-							if(isset($tab[$tabindice['Guid_Enfant2']])) {
-								$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
-							}
-							if(isset($tab[$tabindice['Guid_Enfant3']])) {
-								$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
-							}
 
 							echo "
 	<tr class='white_hover' style='background-color:red' title=\"ANOMALIE : Le login actuellement enregistré $current_login_gepi 
@@ -2873,7 +2859,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
                  SCORIES : Supprimer ces scories.
            en page d'index, et refaire ensuite une importation.\">
 		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
-		<td>".$guid_courant."</td>
+		<td>".$uid_courant."</td>
 		<td>".$nom_courant."</td>
 		<td>".$prenom_courant."</td>
 		<td>".$profil_courant."</td>
@@ -2895,28 +2881,16 @@ print_r($tab);
 echo "</pre></td>
 </tr>";
 */
-						$guid_courant=$tab[$tabindice['Guid']];
-						$nom_courant=$tab[$tabindice['Nom']];
-						$prenom_courant=$tab[$tabindice['Prénom']];
-						$profil_courant=$tab[$tabindice['Profil']];
+						$uid_courant=$tab[5];
+						$nom_courant=$tab[0];
+						$prenom_courant=$tab[1];
+						$profil_courant="responsable";
 
 						$groupe_courant="";
-						if(isset($tab[$tabindice['Groupe']])) {
-							$groupe_courant=$tab[$tabindice['Groupe']];
-						}
 
 						$guid_enfant1="";
 						$guid_enfant2="";
 						$guid_enfant3="";
-						if(isset($tab[$tabindice['Guid_Enfant1']])) {
-							$guid_enfant1=$tab[$tabindice['Guid_Enfant1']];
-						}
-						if(isset($tab[$tabindice['Guid_Enfant2']])) {
-							$guid_enfant2=$tab[$tabindice['Guid_Enfant2']];
-						}
-						if(isset($tab[$tabindice['Guid_Enfant3']])) {
-							$guid_enfant3=$tab[$tabindice['Guid_Enfant3']];
-						}
 
 						if(in_array_i($nom_courant." ".$prenom_courant, $tab_nom_prenom_deja_aff)) {
 							$chaine_tmp=$cpt."_".remplace_accents($nom_courant." ".$prenom_courant,"all");
@@ -2937,14 +2911,17 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 						echo "
 	<tr id='tr_$cpt' class='lig$alt white_hover'$style_css>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
-		<td><label for='ligne_$cpt'>".$guid_courant."</label></td>
+		<td><label for='ligne_$cpt'>".$uid_courant."</label></td>
 		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$nom_courant."</span></label></td>
 		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$prenom_courant."</span></label></td>
+<!--
 		<td><label for='ligne_$cpt'>".$profil_courant."</label></td>
 		<td><label for='ligne_$cpt'>".$groupe_courant."</label></td>
+-->
 		<td><label for='ligne_$cpt'>";
 
 						$chaine="";
+						/*
 						if($guid_enfant1!="") {
 							$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant1)."'";
 						}
@@ -2956,15 +2933,42 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							if($chaine!="") {$chaine.=" OR ";}
 							$chaine.="s.login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $guid_enfant3)."'";
 						}
+						*/
 
 						$temoin_eleve_associe="n";
 						$tab_resp=array();
 						$tab_resp_login=array();
 						$cpt_resp=0;
+
+
+						$sql="SELECT rp.* FROM resp_pers rp, utilisateurs u WHERE u.login=rp.login AND rp.nom LIKE '".preg_replace("/[^A-Za-z]/", "%", $nom_courant)."' AND rp.prenom LIKE '".preg_replace("/[^A-Za-z]/", "%", $prenom_courant)."';";
+						echo_debug_lea("$sql<br />");
+						$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_resp)>0) {
+							while($lig_resp=mysqli_fetch_object($res_resp)) {
+								if(!in_array($lig_resp->login, $tab_resp_login)) {
+									$tab_resp_login[]=$lig_resp->login;
+									$tab_resp[$cpt_resp]['login']=$lig_resp->login;
+									$tab_resp[$cpt_resp]['civilite']=$lig_resp->civilite;
+									$tab_resp[$cpt_resp]['nom']=$lig_resp->nom;
+									$tab_resp[$cpt_resp]['prenom']=$lig_resp->prenom;
+									$tab_resp[$cpt_resp]['info']=$lig_resp->civilite." ".casse_mot($lig_resp->nom,'maj')." ".casse_mot($lig_resp->prenom,'majf2');
+									$tab_resp[$cpt_resp]['info'].=" (N° ".$lig_resp->pers_id.")";
+
+									//$tab_resp[$cpt_resp]['enfants']=get_enfants_from_resp_login($lig_resp->login, 'avec_classe');
+
+									$cpt_resp++;
+								}
+							}
+
+
+						}
+/*
+
 						// Si la chaine est vide, proposer un champ TEXT
 						if($chaine!="") {
 							$sql="SELECT e.* FROM eleves e, sso_table_correspondance s WHERE ($chaine) AND e.login=s.login_gepi ORDER BY e.nom, e.prenom;";
-							echo_debug_itop("$sql<br />");
+							echo_debug_lea("$sql<br />");
 							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($res_ele)>0) {
 								$temoin_eleve_associe="y";
@@ -2976,7 +2980,7 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									if(isset($tab_classe['liste_nbsp'])) {echo " (<em>".$tab_classe['liste_nbsp']."</em>)";}
 
 									$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r WHERE r.pers_id=rp.pers_id AND r.ele_id='$lig_ele->ele_id' AND rp.nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $nom_courant)."' AND rp.prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prenom_courant)."' AND rp.login!='';";
-									echo_debug_itop("$sql<br />");
+									echo_debug_lea("$sql<br />");
 									$res_resp=mysqli_query($GLOBALS["mysqli"], $sql);
 									if(mysqli_num_rows($res_resp)>0) {
 										while($lig_resp=mysqli_fetch_object($res_resp)) {
@@ -3017,17 +3021,18 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 									}
 									$cpt_ele++;
 								}
-								/*
-								if($cpt_ele==0) {
-									$tab_lignes_sans_eleve_associe[]=$cpt;
-								}
-								*/
 							}
 							else {
 								$tab_lignes_sans_eleve_associe[]=$cpt;
 							}
 						}
+*/
+
 						echo "</label></td>\n";
+
+
+
+
 
 						if(count($tab_resp)==0) {
 							echo "
@@ -3272,11 +3277,11 @@ Pouvoir trier par classe<br /></p>
 //==================================================================================
 if($mode=="consult_responsables") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
  | <a href='".$_SERVER['PHP_SELF']."?mode=import_responsables'>Importer un CSV responsable</a>
 </p>
 
-<h2>Rapprochement actuels des comptes responsables ENT ITOP/GEPI</h2>
+<h2>Rapprochement actuels des comptes responsables ENT LEA/GEPI</h2>
 ";
 
 	$sql="SELECT rp.*, s.* FROM resp_pers rp, sso_table_correspondance s WHERE s.login_gepi=rp.login ORDER BY rp.nom, rp.prenom";
@@ -3312,14 +3317,13 @@ if($mode=="consult_responsables") {
 		</tr>
 
 		<tr>
-			<th>Guid</th>
+			<th>Uid ENT</th>
 			<th>Login</th>
 			<th title=\"Pour une connexion via un ENT, le champ auth_mode doit en principe avoir pour valeur 'sso'\">Auth_mode</th>
 			<th>Nom</th>
 			<th>Prénom</th>
 			<th>Responsable de</th>
-		</tr>
-";
+		</tr>";
 
 	$cpt=0;
 	$alt=1;
@@ -3425,12 +3429,12 @@ if($mode=="consult_responsables") {
 if($mode=="import_personnels") {
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>";
 
 	if(!isset($csv_file)) {
 		echo "
-<h2>Rapprochement des comptes ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
 	<fieldset style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\");'>
@@ -3446,9 +3450,11 @@ if($mode=="import_personnels") {
 <p style='text-indent:-4em; margin-left:4em;'><em>NOTES&nbsp;:</em></p>
 <ul>
 	<li> Le fichier CSV attendu doit avoir le format suivant&nbsp;:<br />
-	Guid;Nom;Prénom;Profil;Classes;Groupe<br />
-	f73d0f72-0958-4b8f-85f7-a58a96d95220;BACQUET;Michel;National_3;;<br />
-	...</li>
+	Nom;Prenom;Date de naissance;Sexe;Division;Login;<br />
+	DISSOIRE;Alain;01/01/1970;M.;;adissoir<br />
+	...<br />
+	<br />
+	La valeur de la date de naissance est facultative parce que non prise compte, mais la colonne doit exister.</li>
 	<li>Il est recommandé d'envoyer une première fois le CSV, d'enregistrer les associations correctement détectées (<em>en contrôlant tout de même les éventuels doublons repérés</em>).<br />
 	Puis, envoyer à nouveau le même fichier pour traiter les indéterminés restants.<br />
 	Le deuxième envoi permet aussi de repérer ce qui n'a pas été enregistré au premier envoi.</li>
@@ -3465,7 +3471,7 @@ if($mode=="import_personnels") {
 			die();
 		}
 
-		$motif_nom_fichier="ExportSSO_Professeur_";
+		$motif_nom_fichier="Export_CSV_professeurs";
 		echo "<p>Le fichier fourni se nomme <strong>".$csv_file['name']."</strong>";
 		if(!preg_match("/$motif_nom_fichier/", $csv_file['name'])) {
 			echo "<br />
@@ -3499,7 +3505,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 ","",32,0,"y","y","n","n");
 
 		echo "
-<h2>Rapprochement des comptes de personnels ENT ITOP/GEPI</h2>
+<h2>Rapprochement des comptes de personnels ENT LEA/GEPI</h2>
 
 <form action='".$_SERVER['PHP_SELF']."' method='post' name='form_import' enctype='multipart/form-data'>
 ".add_token_field()."
@@ -3522,7 +3528,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		<th rowspan='2'>Login Gepi</th>
 	</tr>
 	<tr>
-		<th>Guid</th>
+		<th>Uid ENT</th>
 		<th>Nom</th>
 		<th>Prénom</th>
 		<th>Profil</th>
@@ -3541,9 +3547,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 			if($ligne!='') {
 				$tab=explode(";", ensure_utf8($ligne));
-				if(!preg_match("/^Guid;/i", trim($ligne))) {
+				if(!preg_match("/^Nom;/i", trim($ligne))) {
 
-					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."';";
+					$sql="SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[5])."';";
 					$test=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test)>0) {
 						$cpt_deja_enregistres++;
@@ -3571,10 +3577,11 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
                  SCORIES : Supprimer ces scories.
            en page d'index, et refaire ensuite une importation.\">
 		<td><!--input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" /--></td>
+		<td>".$tab[5]."</td>
 		<td>".$tab[0]."</td>
 		<td>".$tab[1]."</td>
-		<td>".$tab[2]."</td>
-		<td>".$tab[3]."</td>
+		<td></td>
+		<td>"."</td>
 		<td></td>
 	</tr>";
 
@@ -3583,8 +3590,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					}
 					else {
 
-						if(in_array_i($tab[1]." ".$tab[2], $tab_nom_prenom_deja_aff)) {
-							$chaine_tmp=$cpt."_".remplace_accents($tab[1]." ".$tab[2],"all");
+						if(in_array_i($tab[0]." ".$tab[1], $tab_nom_prenom_deja_aff)) {
+							$chaine_tmp=$cpt."_".remplace_accents($tab[0]." ".$tab[1],"all");
 							$tab_doublon_possible[]=$chaine_tmp;
 							$ancre_doublon_ou_pas="<a name='doublon_possible_$chaine_tmp'></a>";
 							$style_css=" style='background-color:red' title=\"Il existe au moins un homonyme dans le CSV.
@@ -3596,18 +3603,18 @@ si cela ne fonctionne pas, corriger l'association élève en mettant le GUID de 
 							$ancre_doublon_ou_pas="";
 							$style_css="";
 						}
-						$tab_nom_prenom_deja_aff[]=$tab[1]." ".$tab[2];
+						$tab_nom_prenom_deja_aff[]=$tab[0]." ".$tab[1];
 
 						$alt=$alt*(-1);
 						echo "
 	<tr class='lig$alt white_hover'$style_css>
 		<td><input type='checkbox' name='ligne[]' id='ligne_$cpt' value='$cpt' onchange=\"change_graisse($cpt)\" />$ancre_doublon_ou_pas</td>
-		<td><label for='ligne_$cpt'>".$tab[0]."</label></td>
-		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[1]."</span></label></td>
-		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[2]."</span></label></td>
-		<td><label for='ligne_$cpt'>".$tab[3]."</label></td>";
+		<td><label for='ligne_$cpt'>".$tab[5]."</label></td>
+		<td><label for='ligne_$cpt'><span id='nom_$cpt'>".$tab[0]."</span></label></td>
+		<td><label for='ligne_$cpt'><span id='prenom_$cpt'>".$tab[1]."</span></label></td>
+		<td><label for='ligne_$cpt'>"."</label></td>";
 
-						$sql="SELECT * FROM utilisateurs WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[2])."' AND statut!='eleve' AND statut!='responsable' ORDER BY statut;";
+						$sql="SELECT * FROM utilisateurs WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[0])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab[1])."' AND statut!='eleve' AND statut!='responsable' ORDER BY statut;";
 						$res=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res)==1) {
 							// Un seul personnel correspond
@@ -3811,11 +3818,11 @@ Veuillez contrôler manuellement s'il s'agit ou non de doublons&nbsp;:<br />";
 //==================================================================================
 if($mode=="consult_personnels") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
  | <a href='".$_SERVER['PHP_SELF']."?mode=import_personnels'>Importer un CSV personnels</a>
 </p>
 
-<h2>Rapprochement actuels des comptes de personnels ENT ITOP/GEPI</h2>
+<h2>Rapprochement actuels des comptes de personnels ENT LEA/GEPI</h2>
 ";
 
 	$sql="SELECT u.*, s.* FROM utilisateurs u, sso_table_correspondance s WHERE s.login_gepi=u.login AND u.statut!='eleve' AND u.statut!='responsable' ORDER BY u.nom, u.prenom";
@@ -3944,7 +3951,7 @@ if($mode=="consult_personnels") {
 //==================================================================================
 if($mode=="publipostage_eleves") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -4309,7 +4316,7 @@ $impression";
 //==================================================================================
 if($mode=="publipostage_responsables") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -4719,7 +4726,7 @@ $impression";
 //==================================================================================
 if($mode=="publipostage_personnels") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -4985,9 +4992,10 @@ $impression";
 }
 
 //==================================================================================
+/*
 if($mode=="forcer_logins_mdp_responsables") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
@@ -5150,12 +5158,6 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 						$classe_courante=$tab[$tabindice['Classe']];
 					}
 
-					/*
-					if($tab[11]!=$classe_precedente) {
-						$cpt=0;
-						$classe_precedente=$tab[11];
-					}
-					*/
 					if(!isset($tab_classe_parent[$classe_courante])) {
 						$cpt=0;
 					}
@@ -5239,11 +5241,11 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 		$style_css="";
 		$nb_comptes_login_deja_ok=0;
 		foreach($tab_classe_parent as $classe => $tab_parent) {
-			/*
-			echo "<pre>";
-			print_r($tab_parent);
-			echo "</pre>";
-			*/
+			
+			//echo "<pre>";
+			//print_r($tab_parent);
+			//echo "</pre>";
+			
 			for($loop=0;$loop<count($tab_parent);$loop++) {
 				$rowspan="";
 				$sql="SELECT * FROM resp_pers WHERE nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_parent[$loop]['nom'])."' AND prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $tab_parent[$loop]['prenom'])."';";
@@ -5352,12 +5354,6 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 					$cpt++;
 					$cpt_resp=0;
 					while($lig_resp=mysqli_fetch_object($res_resp)) {
-						/*
-						if($cpt_resp>0) {
-							echo "
-	<tr>";
-						}
-						*/
 						echo "
 	<tr>";
 						$tab_ele=get_enfants_from_pers_id($lig_resp->pers_id, 'avec_classe');
@@ -5427,10 +5423,8 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
-	/*
-	document.getElementById('bouton_button_import').style.display='';
-	document.getElementById('bouton_submit_import').style.display='none';
-	*/
+	//document.getElementById('bouton_button_import').style.display='';
+	//document.getElementById('bouton_submit_import').style.display='none';
 
 	function tout_cocher() {
 		var i;
@@ -5476,7 +5470,7 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 //==================================================================================
 if($mode=="forcer_mdp_eleves") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>
 </p>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
@@ -5636,11 +5630,10 @@ if($mode=="forcer_mdp_eleves") {
 		$style_css="";
 		$nb_comptes_login_deja_ok=0;
 		foreach($tab_eleve as $key => $eleve_courant) {
-			/*
-			echo "<pre>";
-			print_r($eleve_courant);
-			echo "</pre>";
-			*/
+			
+			//echo "<pre>";
+			//print_r($eleve_courant);
+			//echo "</pre>";
 
 			//==============================================================
 			echo "
@@ -5691,10 +5684,8 @@ Suivez ce lien pour contrôler et créer un compte pour cet élève.\"><img src=
 
 <script type='text/javascript'>
 	document.getElementById('tout_cocher_decocher').style.display='';
-	/*
-	document.getElementById('bouton_button_import').style.display='';
-	document.getElementById('bouton_submit_import').style.display='none';
-	*/
+	//document.getElementById('bouton_button_import').style.display='';
+	//document.getElementById('bouton_submit_import').style.display='none';
 
 	function tout_cocher() {
 		var i;
@@ -5753,7 +5744,7 @@ Suivez ce lien pour contrôler et créer un compte pour cet élève.\"><img src=
 
 if($mode=="envoi_mail_logins_mdp") {
 	echo "
- | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT ITOP</a>";
+ | <a href='".$_SERVER['PHP_SELF']."'>Index rapprochement ENT LEA</a>";
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -5954,12 +5945,6 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 				//if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
 				if((!preg_match("/^Nom;Pr/i", trim($ligne)))&&(isset($tab[11]))&&(isset($tab[12]))&&(!preg_match("/^BASE20/",$tab[11]))&&($tab[12]=='Actif')) {
 					if(($_POST['toutes_les_classes']=="y")||(in_array($tab[11], $_POST['classe']))) {
-						/*
-						if($tab[11]!=$classe_precedente) {
-							$cpt=0;
-							$classe_precedente=$tab[11];
-						}
-						*/
 						if(!isset($tab_classe_parent[$tab[11]])) {
 							$cpt=0;
 						}
@@ -5994,11 +5979,9 @@ Vous seriez-vous trompé de fichier&nbsp;?</span>";
 
 		$tab_envoi_reussi=array();
 		foreach($tab_classe_parent as $classe => $tab_parent) {
-			/*
-			echo "<pre>";
-			print_r($tab_parent);
-			echo "</pre>";
-			*/
+			//echo "<pre>";
+			//print_r($tab_parent);
+			//echo "</pre>";
 			for($loop=0;$loop<count($tab_parent);$loop++) {
 				$chaine="<table>
 	<tr>
@@ -6069,7 +6052,7 @@ $impression";
 	require("../lib/footer.inc.php");
 	die();
 }
-
+*/
 //==================================================================================
 
 echo "<p style='color:red'>Mode non encore développé</p>\n";

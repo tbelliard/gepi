@@ -101,6 +101,21 @@ function supprimeColonne(id, titre)
    
 }
 
-
-
-
+function afficheAide()
+{
+   f=open("",'aide','width=600,height=400,toolbar=no,scrollbars=no,resizable=yes,location=no,directories=0');
+   f.document.write("<title>Listes personnelles → Aide</title>");
+   f.document.write("<body style='background-color: #eeeeee;'>");
+   f.document.write("<p><strong>Listes perso</strong> → choisir une liste ou en créer une nouvelle.</p>");
+   f.document.write("<p><strong>Construction</strong> → donner un nom à la liste, choisir les colonnes prédéfinies, déterminer le nombre de colonnes libres puis en ajouter au besoin. Il est aussi possible de supprimer définitivement la liste</p>");
+   f.document.write("<p><strong>Élèves</strong> → ajouter des élèves en les choisissant dans ses listes.</p>");
+   f.document.write("<p><strong>Modifier</strong> → supprimer les colonnes ou modifier leurs places.</p>");
+   f.document.write("<p>Cliquez dans les entêtes de colonnes pour créer leur titre ou le modifier.</p>");
+   f.document.write("<p>Cliquez dans les cellules pour en modifier le contenu.</p>");
+   f.document.write("<p>Cliquez en dehors pour enregistrer.</p>");
+   f.document.write("<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permette de supprimer une ligne ou le contenu d'une cellule.</p>");
+   f.document.write("</body>");
+   f.document.close();
+   
+   
+}
