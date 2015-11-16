@@ -1593,6 +1593,18 @@ autre='F',
 description='SSO table : Publipostage',
 statut='';";
 
+$tab_req[]="INSERT INTO droits SET id='/mod_ent/index_lea.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Rapprochement des comptes ENT/GEPI : ENT LEA',
+statut='';";
+
 $tab_req[] = "INSERT INTO droits SET id='/mod_abs2/visu_saisies_ele_jour.php',
 administrateur='V',
 professeur='F',
