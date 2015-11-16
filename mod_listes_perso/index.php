@@ -257,7 +257,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>
-
+<div class="noprint">
 <ul class="menu_entete_liste">
     <li class="menu_liste"
 		id='menu_lien_tableau'
@@ -332,7 +332,6 @@ if ($tableau->num_rows) {
 <script type="text/javascript" >
 	document.getElementById('sauveChoixTableau').classList.add('invisible');
 </script>
-
 <!-- Ajout des élèves à la liste -->
 <div id="eleves" class="div_construit">
 	<p><a id='lien_eleves'></a></p>
@@ -391,7 +390,6 @@ foreach ($groupe_col as $group) {
 		</fieldset>
 	</form>
 </div>
-
 <!-- Ajouter des colonnes -->
 <div id="construction" class="div_construit">
 	<p><a id='lien_construction'></a></p>
@@ -460,7 +458,6 @@ foreach ($groupe_col as $group) {
 		</form>
 	</fieldset>
 </div>
-
 <!-- Supprimer des colonnes -->
 <div id="affichage" class="div_construit">
 	<p><a id='lien_affichage'></a></p>
@@ -534,7 +531,7 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 		permettent de supprimer une ligne ou le contenu d'une cellule.
 	</p>
 </div>
-
+</div>
 <div id="laListe" class="div_tableauListe">
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">
