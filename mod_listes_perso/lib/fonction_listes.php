@@ -188,8 +188,9 @@ function chargeTableau($idListe = NULL) {
 	$proprietaire = $_SESSION['login'];
 	$sql = "SELECT * FROM `mod_listes_perso_definition` WHERE `proprietaire` = '$proprietaire' " ;
 	if ($idListe !== NULL) {
-		$sql .= "AND `id` LiKE '$idListe' ;" ;
+		$sql .= "AND `id` LiKE '$idListe' " ;
 	}
+	$sql .= "ORDER BY `nom` ASC ;" ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {
