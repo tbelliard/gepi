@@ -111,7 +111,9 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		phpCAS::handleLogoutRequests(false);
 	}
 	// Authentification
-	phpCAS::forceAuthentication();
+	if(!getSettingAOui("setNoCasServerValidation")) {
+		phpCAS::forceAuthentication();
+	}
 
 	// Initialisation de la session, avec blocage de l'initialisation de la
 	// session php ainsi que des tests de timeout et update de logs,

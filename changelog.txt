@@ -7,6 +7,7 @@ Gepi-master (Version de développement)
 ===========================
 Librairies:
 - Mise à jour de PHPMailer (https://github.com/PHPMailer/PHPMailer) en version 5.2.13
+- HTMLPurifier : Mise à jour en 4.7.0
 
 Discipline:
 - Possibilité de signaler des saisies d'incidents (aux utilisateurs suivant telle ou telle classe) par mod_alerte et non plus seulement par mail.
@@ -42,6 +43,10 @@ Publipostage OOo:
 Général:
 - Possibilité de prendre en compte un secure/proxy.php pour file_get_contents()
 - Automatisation du changement de PP et de CPE lors du changement de classe.
+- Ajout d'une option pour désactiver la vérification du certificat SSL lors des requêtes CAS.
+  Jusqu'à la version 1.6.8, la vérification n'était pas imposée.
+  Elle l'est maintenant.
+  Si vos connexions CAS sont perturbées, modifiez le paramétrage dans Gestion générale/Options de connexion.
 
 AID :
 - Si l'AID autorise le multi-inscription, on peut choisir de limiter aux inscrits à une autre AID de la même catégorie :
