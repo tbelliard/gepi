@@ -1647,22 +1647,25 @@ foreach ($liste_eleves as $eleve_login) {
 
 		$num_per1=0;
 		$id_premiere_classe="";
+		$nom_derniere_classe="";
 		$current_id_classe=array();
-		$sql="SELECT id_classe,periode FROM j_eleves_classes WHERE login='$eleve_login' ORDER BY periode;";
+		$sql="SELECT id_classe, classe, periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id ORDER BY periode;";
 		$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_classe)>0) {
 			$lig_classe=mysqli_fetch_object($res_classe);
 			$id_premiere_classe=$lig_classe->id_classe;
 			$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
+			$nom_derniere_classe=$lig_classe->classe;
 			$num_per1=$lig_classe->periode;
 			$num_per2=$num_per1;
 			while($lig_classe=mysqli_fetch_object($res_classe)) {
 				$current_id_classe[$lig_classe->periode]=$lig_classe->id_classe;
 				$num_per2=$lig_classe->periode;
+				$nom_derniere_classe=$lig_classe->classe;
 			}
 		}
 
-		$designation_eleve=preg_replace("/'/", " ", "$eleve_nom $eleve_prenom");
+		$designation_eleve=preg_replace("/'/", " ", $eleve_nom." ".$eleve_prenom." (".$nom_derniere_classe.")");
 		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
 			//echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
 			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$designation_eleve','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
@@ -1718,7 +1721,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 		$k=1;
 		$alt=1;
-		$designation_eleve=preg_replace("/'/", " ", "$eleve_nom $eleve_prenom");
+		$designation_eleve=preg_replace("/'/", " ", $eleve_nom." ".$eleve_prenom." (".$nom_derniere_classe.")");
 		while ($k < $nb_periode) {
 
 			$alt=$alt*(-1);
