@@ -66,7 +66,7 @@
 	</div>
 
 <!-- identification -->
-	<form action='login.php' method='post' >
+	<form action='login.php' id='form_login' method='post' onsubmit="verif_saisie_login(true)">
 		<input type='hidden' name='auth_sso_secours' value='[onshow.auth_sso_secours]' />
 		<div id ='identification'>
 				
@@ -109,6 +109,7 @@
 <!-- Bouton valider -->				
 				<p class='droite' title="Envoyer les identifiants">
 					<input type='submit' name='submit' id='soumettre' value='Valider' tabindex='3' />
+					<input type='button' name='submit2' id='soumettre2' value='Valider' tabindex='4' onclick="verif_saisie_login(false)" style='display:none' />
 				</p>
 									
 <!-- Mot de passe oublié -->
@@ -202,7 +203,33 @@
 	</div> 
 
 
-		
+	<script type='text/javascript'>
+		//alert('plip');
+		document.getElementById('soumettre').style.display='none';
+		document.getElementById('soumettre2').style.display='';
+		function verif_saisie_login(mode) {
+			//alert('plop');
+			if(document.getElementById('login').value=="") {
+				alert('Le login ne peut pas être vide.');
+				return false;
+			}
+			else {
+				if(document.getElementById('no_anti_inject_password').value=="") {
+					alert('Le mot de passe ne peut pas être vide.');
+					return false;
+				}
+				else {
+					//alert('ee')
+					if(mode==true) {
+						document.getElementById('form_login').submit();
+					}
+					else {
+						return true;
+					}
+				}
+			}
+		}
+	</script>
 
 </body>
 </html>
