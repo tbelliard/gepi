@@ -100,7 +100,9 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 
 	// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
 	// été trouvé par le client CAS.
-	phpCAS::setNoCasServerValidation();
+	if(getSettingAOui("setNoCasServerValidation")) {
+		phpCAS::setNoCasServerValidation();
+	}
 
 	// On a une demande de logout envoyée par le serveur CAS :
 	//   il faut initialiser la session tout de suite, pour pouvoir la détruire complètement
@@ -111,9 +113,7 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		phpCAS::handleLogoutRequests(false);
 	}
 	// Authentification
-	if(!getSettingAOui("setNoCasServerValidation")) {
 		phpCAS::forceAuthentication();
-	}
 
 	// Initialisation de la session, avec blocage de l'initialisation de la
 	// session php ainsi que des tests de timeout et update de logs,
