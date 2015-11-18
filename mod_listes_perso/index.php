@@ -248,7 +248,7 @@ $colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
 // var_dump($_POST);
 //==============================================
-$style_specifique[] = "mod_listes_perso/lib/style_liste";
+$style_specifique2[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
 $titre_page = "Listes personnelles";
 $utilisation_jsdivdrag = "non";

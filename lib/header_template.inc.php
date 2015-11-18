@@ -258,7 +258,7 @@ if(isset($style_specifique)) {
 	foreach($style_specifique as $current_style_specifique) {
 	  if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
 		//// Styles spécifiques à une page:
-		$tbs_CSS_spe[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
+		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 
 	  }
 
@@ -269,6 +269,16 @@ if(isset($style_specifique)) {
 	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
 	}
   }
+}
+if(isset($style_specifique2)) {
+	foreach($style_specifique2 as $current_style_specifique) {
+		if(mb_strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+			// Styles spécifiques à une page chargé en dernier
+			$tbs_CSS_spe[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"all" , "title"=>"");
+
+	  }
+		
+	}
 }
 
 // vérifie si on est dans le modules absences
