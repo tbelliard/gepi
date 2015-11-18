@@ -19,6 +19,35 @@ $avec_rapport_effectif="y";
 
 $alt=1;
 
+$tab_statuts_signalement_faute_autorise=array('administrateur', 'professeur', 'cpe', 'scolarite');
+$afficher_signalement_faute="n";
+if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
+	if(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
+	elseif(($_SESSION['statut']=='professeur')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
+		// Tester si le prof est pp de la classe
+		if(is_pp($_SESSION['login'],$id_classe)) {$afficher_signalement_faute="y";}
+	}
+	elseif(($_SESSION['statut']=='scolarite')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(mb_substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
+}
+
+if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+	// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
+
+	if((!isset($necessaire_signalement_fautes_insere))||($necessaire_signalement_fautes_insere=="n")) {
+		lib_signalement_fautes();
+	}
+	global $signalement_id_groupe;
+
+	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+}
+
 // données requises :
 //- $total : nombre total d'élèves
 //- $periode1 : numéro de la première période à afficher
@@ -158,7 +187,11 @@ if($avec_rapport_effectif=="y") {
 if($affiche_colonne_moy_classe!='n') {
 	echo "<td width=\"$larg_col2\" align=\"center\" class='bull_simpl'>Classe</td>\n";
 }
-echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td></tr>\n";
+echo "<td width=\"$larg_col5\" class='bull_simpl'>$bull_intitule_app</td>";
+if($afficher_signalement_faute=='y') {
+	echo "<td class='bull_simpl noprint'>Signaler</td>\n";
+}
+echo "</tr>\n";
 
 // Récupération des noms de categories
 $get_cat = mysqli_query($GLOBALS["mysqli"], "SELECT id FROM matieres_categories");
@@ -293,6 +326,9 @@ for($j=0;$j<$nombre_groupes;$j++) {
 				echo "<tr>\n";
 				echo "<td colspan='" . $nb_total_cols . "'>\n";
 				echo "<p style='padding: 0; margin:0; font-size: 10px;'>".$cat_names[$prev_cat_id]."</p></td>\n";
+				if($afficher_signalement_faute=='y') {
+					echo "<td class='bull_simpl noprint'>-</td>\n";
+				}
 				echo "</tr>\n";
 			}
 		}
@@ -310,10 +346,29 @@ for($j=0;$j<$nombre_groupes;$j++) {
 		//echo" width=\"$larg_col1\" class='bull_simpl'><b>$current_matiere_nom_complet</b>";
 		echo " width=\"$larg_col1\" class='bull_simpl'><b>".htmlspecialchars($current_matiere_nom_complet)."</b>";
 		$k = 0;
+		$liste_email_profs_du_groupe="";
+		$liste_profs_du_groupe="";
 		while ($k < count($current_matiere_professeur_login)) {
 			echo "<br /><i>".affiche_utilisateur($current_matiere_professeur_login[$k],$id_classe)."</i>";
+
+			if($k>0) {$liste_profs_du_groupe.="|";}
+			$liste_profs_du_groupe.=$current_matiere_professeur_login[$k];
+
+			$tmp_mail=retourne_email($current_matiere_professeur_login[$k]);
+			if($tmp_mail!='') {
+				if($liste_email_profs_du_groupe!='') {
+					$liste_email_profs_du_groupe.=", ";
+				}
+				$liste_email_profs_du_groupe.=$tmp_mail;
+			}
+
 			$k++;
 		}
+
+		if(!isset($signalement_id_groupe[$current_group['id']])) {
+			echo "<input type='hidden' name='signalement_id_groupe[".$current_group['id']."]' id='signalement_id_groupe_grp_".$current_group['id']."' value=\"".$current_group['name']." (".$current_group['name']." en ".$current_group['classlist_string'].")\" />\n";
+		}
+
 		echo "</td>\n";
 
 		//====================
@@ -425,6 +480,8 @@ for($j=0;$j<$nombre_groupes;$j++) {
 					else{
 						echo nl2br($current_grp_appreciation[$nb]);
 					}
+
+					echo "<textarea name='appreciation_grp_".$current_group['id']."[$nb]' id='appreciation_grp_".$current_group['id']."_$nb' style='display:none;'>".$current_grp_appreciation[$nb]."</textarea>\n";
 				}
 				//======================================
 			} else {
@@ -432,7 +489,35 @@ for($j=0;$j<$nombre_groupes;$j++) {
 			}
 
 
-			echo "</td></tr>\n";
+			echo "</td>";
+			if($afficher_signalement_faute=='y') {
+				echo "<td class='bull_simpl noprint'>";
+
+				if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='O') {
+					echo "-";
+				}
+				else {
+					//echo affiche_lien_proposition_ou_correction_appreciation($current_eleve_login, $current_id_eleve, $current_eleve_prenom, $current_eleve_nom, $current_group, $id_classe, $nb, $liste_profs_du_groupe, $tab_mes_groupes, $tab_afficher_liens_modif_app);
+
+					// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
+					// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
+					//if($afficher_signalement_faute=='y') {
+						echo "<a href=\"mailto:$liste_email_profs_du_groupe?Subject=[Gepi]: Signaler un problème/faute&body=Bonjour,Je pense que vous avez commis une faute de frappe pour l appréciation sur le groupe dans l enseignement n°".$current_group['id'].".Cordialement.-- ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."\"";
+						if($envoi_mail_actif!='n') {
+							//echo " onclick=\"alert('plop');return false;\"";
+							echo " onclick=\"signaler_une_faute_classe('".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
+						}
+						echo " title=\"Signaler une faute de frappe, d'orthographe ou autre...
+Si vous vous apercevez que ce collègue a fait une erreur,
+vous pouvez lui envoyer un mail pour l'alerter.
+Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
+
+						echo "<span id='signalement_effectue_groupe_".$current_group['id']."_$nb'></span>";
+					//}
+				}
+				echo "</td>\n";
+			}
+			echo "</tr>\n";
 			$print_tr = 'yes';
 			$nb++;
 		}
@@ -596,9 +681,17 @@ if($display_moy_gen=="y") {
 
 					}
 				}
-				echo "</td>\n</tr>\n";
+				echo "</td>\n";
+				if($afficher_signalement_faute=='y') {
+					echo "<td class='bull_simpl noprint'>-</td>\n";
+				}
+				echo "</tr>\n";
 			} else {
-				echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>-</td>\n</tr>\n";
+				echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>-</td>\n";
+				if($afficher_signalement_faute=='y') {
+					echo "<td class='bull_simpl noprint'>-</td>\n";
+				}
+				echo "</tr>\n";
 			}
 			$nb++;
 			$print_tr = 'yes';
@@ -725,122 +818,113 @@ while ($nb < $periode2+1) {
 echo "</table>\n";
 }
 
-/*
-function affiche_aid_simple($affiche_rang, $test_coef,$indice_aid,$aid_id,$current_eleve_login,$periode1,$periode2,$id_classe,$style_bulletin) {
-	$nb_periodes = $periode2 - $periode1 + 1;
-	$call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
-	$AID_NOM = @old_mysql_result($call_data, 0, "nom");
-	$note_max = @old_mysql_result($call_data, 0, "note_max");
-	$type_note = @old_mysql_result($call_data, 0, "type_note");
-	$display_begin = @old_mysql_result($call_data, 0, "display_begin");
-	$display_end = @old_mysql_result($call_data, 0, "display_end");
-	$bull_simplifie = @old_mysql_result($call_data, 0, "bull_simplifie");
-	// On vérifie que cet AID soit autorisée à l'affichage dans le bulletin simplifié
-	if ($bull_simplifie == "n") {
-		return "";
-	}
 
-	$aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
-	$aid_nom = @old_mysql_result($aid_nom_query, 0, "nom");
-	//------
-	// On regarde maintenant quelle sont les profs responsables de cette AID
-	$aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id' and indice_aid='$indice_aid')");
-	$nb_lig = mysql_num_rows($aid_prof_resp_query);
-	$n = '0';
-	while ($n < $nb_lig) {
-		$aid_prof_resp_login[$n] = old_mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
-		$n++;
-	}
-	//------
-	// On appelle l'appréciation de l'élève, et sa note le cas échéant
-	//------
-	$nb=$periode1;
-	while($nb < $periode2+1) {
-		$current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$nb' and id_aid='$aid_id' and indice_aid='$indice_aid')");
-		$eleve_aid_app[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
-		if ($eleve_aid_app[$nb] == '') {$eleve_aid_app[$nb] = ' -';}
-		$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
-		$periode_max = mysql_num_rows($periode_query);
-		$last_periode_aid = min($periode_max,$display_end);
-		if (($type_note == 'every') or (($type_note == 'last') and ($nb == $last_periode_aid))) {
-			$current_eleve_aid_note[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "note");
-			$current_eleve_aid_statut[$nb] = @old_mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
-			if ($note_max != 20) {
-				$eleve_aid_app[$nb] = "(note sur ".$note_max.") ".$eleve_aid_app[$nb];
-			}
-			if ($current_eleve_aid_note[$nb] != '') $current_eleve_aid_note[$nb]=number_format($current_eleve_aid_note[$nb],1, ',', ' ');
-			$aid_note_min_query = mysql_query("SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
+//========================================================
+echo "<div id='div_signaler_faute_grp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>
+	<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_signaler_faute_grp')\">
+		<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
+			<a href='#' onClick=\"cacher_div('div_signaler_faute_grp');return false;\">
+				<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />
+			</a>
+		</div>
 
-			$aid_note_min[$nb] = @old_mysql_result($aid_note_min_query, 0, "note_min");
-			if ($aid_note_min[$nb] == '') {$aid_note_min[$nb] = '-';}
-			$aid_note_max_query = mysql_query("SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
+		<div id='titre_entete_signaler_faute_grp'></div>
+	</div>
 
-			$aid_note_max[$nb] = @old_mysql_result($aid_note_max_query, 0, "note_max");
-			if ($aid_note_max[$nb] == '') {$aid_note_max[$nb] = '-';}
+	<div id='corps_signaler_faute_grp' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>
+		<form name='form_signalement_faute_grp' id='form_signalement_faute_grp' action ='../lib/ajax_signaler_faute.php' method='post' target='_blank'>
+			<input type='hidden' name='signalement_app_grp' id='signalement_app_grp' value='y' />
+			<input type='hidden' name='signalement_id_groupe_grp' id='signalement_id_groupe_grp' value='' />
+			<input type='hidden' name='signalement_num_periode_grp' id='signalement_num_periode_grp' value='' />
+			<input type='hidden' name='signalement_id_classe_grp' id='signalement_id_classe_grp' value='$id_classe' />
+			<input type='hidden' name='suppression_possible_grp' id='signalement_suppression_possible_grp' value='oui' />
 
-			$aid_note_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$nb' and j.periode='$nb' and a.indice_aid='$indice_aid')");
+			<div id='div_signalement_message_grp'></div>
 
-			$aid_note_moyenne[$nb] = @old_mysql_result($aid_note_moyenne_query, 0, "moyenne");
-			if ($aid_note_moyenne[$nb] == '') {
-				$aid_note_moyenne[$nb] = '-';
-			} else {
-				$aid_note_moyenne[$nb]=number_format($aid_note_moyenne[$nb],1, ',', ' ');
-			}
-		} else {
-			$current_eleve_aid_statut[$nb] = '-';
-			$current_eleve_aid_note[$nb] = '-';
-			$aid_note_min[$nb] = '-';
-			$aid_note_max[$nb] = '-';
-			$aid_note_moyenne[$nb] = '-';
-		}
-		$nb++;
-	}
-	//------
-	// On affiche l'appréciation aid :
-	//------
+			<input type='button' onclick='valider_signalement_faute_classe()' name='Envoyer' value='Envoyer' />
+			".add_token_field()."
+		</form>
+	</div>
+</div>\n";
+//========================================================
 
-	echo "<tr><td ";
-	if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-	echo " class='$style_bulletin'><b>$AID_NOM : $aid_nom</b><br /><i>";
-	$n = '0';
-	while ($n < $nb_lig) {
-		echo affiche_utilisateur($aid_prof_resp_login[$n],$id_classe)."<br />";
-		$n++;
-	}
-	echo "</i></td>";
-	if ($test_coef != 0) {
-		echo "<td ";
-		if ($nb_periodes > 1) echo " rowspan= ".$nb_periodes;
-		echo " align=\"center\"><p class='".$style_bulletin."'>-</p></td>";
-	}
-	$nb=$periode1;
-	$print_tr = 'no';
-	while ($nb < $periode2+1) {
-		if ($print_tr == 'yes') echo "<tr>";
-		echo "<td align=\"center\" class='$style_bulletin'>$aid_note_moyenne[$nb]</td>";
-		echo "<td align=\"center\" class='$style_bulletin'><b>";
-		if ($current_eleve_aid_statut[$nb] == '') {
-			if ($current_eleve_aid_note[$nb] != '') {
-				echo $current_eleve_aid_note[$nb];
-			} else {
-				echo "-";
-			}
-		} else if ($current_eleve_aid_statut[$nb] != 'other'){
-			echo "$current_eleve_aid_statut[$nb]";
-		} else {
-			echo "-";
-		}
-		echo "</b></td>";
-		if ($affiche_rang == 'y') echo "<td align=\"center\" class='".$style_bulletin."'>-</td>";
+//========================================================
+echo "<script type='text/javascript'>
+// <![CDATA[
 
-		echo "<td class='$style_bulletin'>$eleve_aid_app[$nb]</td></tr>";
-		$print_tr = 'yes';
-		$nb++;
-	}
+function signaler_une_faute_classe(id_groupe, liste_profs_du_groupe, num_periode) {
 
+document.getElementById('titre_entete_signaler_faute_grp').innerHTML='Signaler un problème/faute pour le groupe n°'+id_groupe+' période '+num_periode;
+document.getElementById('signalement_id_groupe_grp').value=id_groupe;
 
-	//------
+document.getElementById('signalement_num_periode_grp').value=num_periode;
+
+info_groupe=''
+if(document.getElementById('signalement_id_groupe_grp_'+id_groupe)) {
+	info_groupe=document.getElementById('signalement_id_groupe_grp_'+id_groupe).value;
+}
+
+message='Bonjour,\\n\\nL\'appréciation de le groupe classe de l\'enseignement n°'+id_groupe+' ('+info_groupe+') en période n°'+num_periode+' présente un problème ou une faute:\\n';
+message=message+'================================\\n';
+// Le champ textarea n'existe que si une appréciation a été enregistrée
+if(document.getElementById('appreciation_grp_'+id_groupe+'_'+num_periode)) {
+	//message=message+addslashes(document.getElementById('appreciation_grp_'+id_groupe+'_'+num_periode).innerHTML);
+	message=message+document.getElementById('appreciation_grp_'+id_groupe+'_'+num_periode).innerHTML;
+}
+//alert('document.getElementById(\'appreciation_grp_'+id_groupe+'_'+num_periode+').innerHTML');
+message=message+'\\n================================\\n'
+";
+if(getSettingValue('url_racine_gepi')!="") {
+	echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe;\n";
+	echo "		message=message+'\\n'";
+}
+echo "
+message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
+
+//alert('message='+message);
+
+document.getElementById('div_signalement_message_grp').innerHTML='<textarea name=\'signalement_message_grp\' id=\'signalement_message_grp\' cols=\'50\' rows=\'11\'></textarea>';
+
+document.getElementById('signalement_message_grp').innerHTML=message;
+";
+
+if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
+	echo "		afficher_div('div_signaler_faute_grp','n',0,0);\n";
+}
+else {
+	echo "		afficher_div('div_signaler_faute_grp','y',100,100);\n";
+}
+
+echo "
+}
+
+function valider_signalement_faute_classe() {
+signalement_id_groupe=document.getElementById('signalement_id_groupe_grp').value;
+
+signalement_message=document.getElementById('signalement_message_grp').value;
+
+signalement_num_periode=document.getElementById('signalement_num_periode_grp').value;
+signalement_id_classe=document.getElementById('signalement_id_classe_grp').value;
+
+//alert(signalement_message);
+
+document.getElementById('signalement_effectue_groupe_'+signalement_id_groupe+'_'+signalement_num_periode).innerHTML=\"<img src='../images/spinner.gif' />\";
+
+new Ajax.Updater($('signalement_effectue_groupe_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?a=a&".add_token_in_url(false)."',{method: 'post',
+parameters: {
+	signalement_app_grp: 'y',
+	signalement_id_groupe: signalement_id_groupe,
+	signalement_id_classe: signalement_id_classe,
+	signalement_num_periode: signalement_num_periode,
+	no_anti_inject_signalement_message: signalement_message,
+	suppression_possible:'oui'
+}});
+
+cacher_div('div_signaler_faute_grp');
 
 }
-*/
+//]]>
+</script>\n";
+//========================================================
+
 ?>

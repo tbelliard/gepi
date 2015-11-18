@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -170,6 +170,12 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		$_POST['may_import_user_profile'] = "no";
 	}
 	saveSetting("may_import_user_profile", $_POST['may_import_user_profile']);
+
+	if (isset($_POST['setNoCasServerValidation'])) {
+		saveSetting("setNoCasServerValidation", "yes");
+	} else {
+		saveSetting("setNoCasServerValidation", "no");
+	}
 
 	if (isset($_POST['sso_scribe'])) {
 	    if ($_POST['sso_scribe'] != "yes") {
@@ -789,6 +795,14 @@ if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted
 
 
 echo "<p><strong>Options supplémentaires :</strong></p>\n";
+
+echo "<p><input type='checkbox' name='setNoCasServerValidation' value='yes' id='label_setNoCasServerValidation'";
+if (getSettingAOui("setNoCasServerValidation")) echo " checked ";
+if (!$cas_setup_valid) echo " disabled";
+echo " /> <label for='label_setNoCasServerValidation' style='cursor: pointer;'>Ne pas vérifier le certificat SSL pour la requête CAS.<br /><em>(avec un certificat autosigné, la vérification peut poser problème; mais désactiver la vérification peut réduire la sécurité; vous ne devriez utiliser cette option que pour contrôler si un problème de certificat SSL empêche la connexion)</em><br />";
+if (!$cas_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_cas.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
+echo "</p>\n";
 
 echo "<p><input type='checkbox' name='may_import_user_profile' value='yes' id='label_import_user_profile'";
 if (getSettingValue("may_import_user_profile")=='yes' && $ldap_setup_valid) echo " checked ";
