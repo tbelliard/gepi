@@ -1017,6 +1017,7 @@ while($lig_type=mysqli_fetch_object($res_types)) {
 	$tab_types[$lig_type->id]['manquement_obligation_presence']=$lig_type->manquement_obligation_presence;
 }
 
+$check_mae=check_mae($_SESSION['login']);
 if (TRUE == $_SESSION['showJournee']) {
 	include 'lib/saisir_groupe_journee.php';
 } else {
@@ -1025,6 +1026,60 @@ if ($eleve_col->isEmpty()) {
     <p>Aucun créneau selectionné</p>
 <?php
 } else {
+	if((getSettingAOui("active_mod_discipline"))&&(isset($afficheEleve['0']['creneau_courant']))) {
+
+		$indice_creneau_courant=$afficheEleve['0']['creneau_courant'];
+		if(isset($col_creneaux[$indice_creneau_courant])) {
+			$id_definie_periode=$col_creneaux[$indice_creneau_courant]->getPrimaryKey();
+			$tab_creneau_courant=get_info_id_definie_periode($id_definie_periode);
+			if(isset($tab_creneau_courant['heuredebut_definie_periode'])) {
+				$sql="SELECT sr.*, ssc.login AS login_prof, ss.login AS login_ele FROM s_retenues sr, s_sanctions ss, s_sanctions_check ssc WHERE sr.id_sanction=ss.id_sanction AND ss.id_sanction=ssc.id_sanction AND ssc.login='".$_SESSION['login']."' AND sr.date='".strftime("%Y-%m-%d")."' ORDER BY sr.heure_debut;";
+				//echo "$sql<br />";
+				$test_retenue=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($test_retenue)>0) {
+					$lignes_retenue="";
+					while($lig_retenue=mysqli_fetch_object($test_retenue)) {
+						$retenue_a_prendre_en_compte="n";
+						if($tab_creneau_courant['nom_definie_periode']==$lig_retenue->heure_debut) {
+							$retenue_a_prendre_en_compte="y";
+						}
+						elseif(preg_match("/^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/", $lig_retenue->heure_debut)) {
+							if(($lig_retenue->heure_debut>=$tab_creneau_courant['heuredebut_definie_periode'])&&($lig_retenue->heure_debut<$tab_creneau_courant['heurefin_definie_periode'])) {
+								$retenue_a_prendre_en_compte="y";
+							}
+						}
+						elseif(preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/", $lig_retenue->heure_debut)) {
+							if(($lig_retenue->heure_debut.":00">=$tab_creneau_courant['heuredebut_definie_periode'])&&($lig_retenue->heure_debut.":00"<$tab_creneau_courant['heurefin_definie_periode'])) {
+								$retenue_a_prendre_en_compte="y";
+							}
+						}
+						elseif(preg_match("/^[0-9]{1,2}h[0-9]{0,2}[m]{0,1}/i", $lig_retenue->heure_debut)) {
+							$tmp_hdeb=preg_replace("/h.*/i", "", $lig_retenue->heure_debut).":".preg_replace("/m.*/i", "", preg_replace("/^[0-9]{1,2}h/i", "", $lig_retenue->heure_debut)).":00";
+							if(($tmp_hdeb>=$tab_creneau_courant['heuredebut_definie_periode'])&&($tmp_hdeb<$tab_creneau_courant['heurefin_definie_periode'])) {
+								$retenue_a_prendre_en_compte="y";
+							}
+						}
+
+						if($retenue_a_prendre_en_compte=="y") {
+							$designation_eleve=get_nom_prenom_eleve($lig_retenue->login_ele, "avec_classe");
+							$lignes_retenue.=$designation_eleve." <em>(".formate_date($lig_retenue->date).", ".$lig_retenue->heure_debut." (".$lig_retenue->duree."h))</em>";
+							if((getSettingAOui("active_mod_alerte"))&&($check_mae)) {
+								$lignes_retenue.="&nbsp;<a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[Retenue]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a>";
+							}
+							$lignes_retenue.="<br />";
+						}
+					}
+
+					if($lignes_retenue!="") {
+						echo "<div style='color:red; text-align:center; margin:1em; padding:0.5em;' class='fieldset_opacite50'><p>Une ou des retenues vous ont été attribuées sur le créneau courant pour le ou les élèves suivants&nbsp;:<br />";
+						echo $lignes_retenue;
+						echo "</p>";
+						echo "</div>";
+					}
+				}
+			}
+		}
+	}
 ?>
     <div>
 		<form method="post" action="enregistrement_saisie_groupe.php" id="liste_absence_eleve">
@@ -1639,7 +1694,7 @@ if ($eleve['creneau_courant'] == $i) { ?>
 									echo "<div style='float:right;width:16px;'><a href='../mod_discipline/saisie_incident.php?creer_incident=y&amp;ele_login[0]=".$eleve['login']."&amp;qualite[0]=Responsable".add_token_in_url()."' target='_blank' title=\"Déclarer un incident disciplinaire.\" target=\"_blank\"><img src='../images/icons/balance_justice.png' class='icone16' alt='Incident' /></a></div>";
 								}
 
-								if((getSettingAOui("active_mod_alerte"))&&(check_mae($_SESSION['login']))) {
+								if((getSettingAOui("active_mod_alerte"))&&($check_mae)) {
 									echo "<div style='float:right;width:16px;'><a href='../mod_alerte/form_message.php?mode=rediger_message&sujet=[".$designation_classe_groupe_ou_aid."]: ".$designation_eleve."&message=Bonjour' target='_blank' title=\"Déposer une alerte dans le module d'alerte.\"><img src='../images/icons/$icone_deposer_alerte' class='icone16' alt='Alerter' /></a></div>";
 								}
 							?>

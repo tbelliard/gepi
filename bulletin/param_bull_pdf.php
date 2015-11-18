@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -20,6 +20,9 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+// On indique qu'il faut creer des variables non protégées (voir fonction cree_variables_non_protegees())
+$variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -127,6 +130,16 @@ if(isset($_POST['valide_modif_model'])) {
 // FIN Christian renvoye vers le fichier PDF bulletin
 //===================================================
 
+if(isset($_POST['param_communs_pdf_html'])) {
+	check_token();
+	if (isset($NON_PROTECT['bull_formule_bas'])) {
+		$imp = traitement_magic_quotes($NON_PROTECT['bull_formule_bas']);
+		if (!saveSetting("bull_formule_bas", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_formule_bas !";
+			$reg_ok = 'no';
+		}
+	}
+}
 
 //===================================================
 // Modif Christian pour les variable PDF
@@ -939,6 +952,7 @@ function DecocheCheckbox() {
 		$nb_ligne = 1;
 		$bgcolor = "#DEDEDE";
 		echo "<form name=\"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%\">\n";
+		echo "<fieldset class='fieldset_opacite50'>";
 		echo add_token_field();
 		echo "<h3>Options gestion des modèles d'impression PDF</h3>\n";
 		echo "<table cellpadding=\"8\" cellspacing=\"0\" width=\"100%\" border=\"0\" summary=\"Tableau des options d'impression par classe\">\n";
@@ -991,11 +1005,25 @@ function DecocheCheckbox() {
 		*/
 
 		echo "<center><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" style=\"font-variant: small-caps;\"/></center>";
+		echo "</fieldset>";
 		echo "</form>";
+
+
+
+		echo "<form name=\"formulaire2\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" style=\"width: 100%\">
+	<fieldset class='fieldset_opacite50' style='margin-top:1em;'>
+		".add_token_field()."
+		<h3>Paramètres communs aux bulletins PDF et HTML</h3>
+		<input type='hidden' name='param_communs_pdf_html' value='y' />
+		<label for='no_anti_inject_bull_formule_bas' style='cursor: pointer;'>Formule figurant en bas de chaque bulletin :</label>
+		<input type='text' name='no_anti_inject_bull_formule_bas' id='no_anti_inject_bull_formule_bas' size='100' value='".getSettingValue("bull_formule_bas")."' />
+		<center><input type=\"submit\" name=\"ok2\" value=\"Enregistrer\" style=\"font-variant: small-caps;\"/></center>
+	</fieldset>
+</form>";
+
 
 	}
 	//=========================================================
-
 
 
 	unset($nom_model_bulletin_ecrased);
