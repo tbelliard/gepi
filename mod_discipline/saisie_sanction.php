@@ -874,6 +874,27 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$tab_param_mail=array();
 					$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
 
+					$sql="SELECT DISTINCT u.login, u.email, u.nom, u.prenom, u.civilite FROM utilisateurs u, s_sanctions_check ssc, s_sanctions ss WHERE u.login=ssc.login AND ssc.id_sanction=ss.id_sanction AND ss.id_incident='$id_incident';";
+					//echo "$sql<br />";
+					$res_ssc=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ssc)>0) {
+						// Normalement, on ne fait qu'un tour dans la boucle
+						while($lig_ssc=mysqli_fetch_object($res_ssc)) {
+							if((check_mail($lig_ssc->email))&&(!preg_match("/^$lig_ssc->email$/", $lig_ssc->email))&&(!preg_match("/^$lig_ssc->email,/", $lig_ssc->email))&&(!preg_match("/ $lig_ssc->email$/", $lig_ssc->email))&&(!preg_match("/ $lig_ssc->email,/", $lig_ssc->email))) {
+								if($destinataires!="") {
+									$destinataires.=", ";
+								}
+								$destinataires.=$lig_ssc->email;
+								$tab_param_mail['destinataire'][]=$lig_ssc->email;
+							}
+
+							$contenu_cor=mysqli_real_escape_string($GLOBALS['mysqli'], "Le pointage du fait qu'une sanction a été effectuée vous a été délégué.<br />Vous pourrez effectuer ce pointage dans le <a href='$gepiPath/mod_discipline/index.php'>module Discipline</a>");
+							$id_message=set_message2($contenu_cor,time(),time()+3600*24*7,time()+3600*24*7,"_",$lig_ssc->login);
+							//echo "\$id_message=$id_message<br />";
+							ajout_bouton_supprimer_message($contenu_cor,$id_message);
+						}
+					}
+
 					if($destinataires!="") {
 						//$texte_mail=$message_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
 			
@@ -2136,3 +2157,4 @@ echo "<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
 ?>
+
