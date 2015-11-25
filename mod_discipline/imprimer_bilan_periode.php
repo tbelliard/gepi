@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -133,8 +133,12 @@ if (isset($eleve)) {
 			$tab_eleves_OOo[$nb_eleve]['ville']=getSettingValue('gepiSchoolCity');
 			$tab_eleves_OOo[$nb_eleve]['tel']=getSettingValue('gepiSchoolTel');
 			$tab_eleves_OOo[$nb_eleve]['fax']=getSettingValue('gepiSchoolFax');
+			$tab_eleves_OOo[$nb_eleve]['email']=getSettingValue('gepiSchoolEmail');
+			$tab_eleves_OOo[$nb_eleve]['rne']=getSettingValue('gepiSchoolRne');
 
 			$tab_eleves_OOo[$nb_eleve]['acad']=getSettingValue('gepiSchoolAcademie');
+
+			// 20151125: A COMPLETER: Récupérer les infos parents pour pouvoir générer une ou deux fiches avec adresse selon que l'adresse est la même ou non
 
 			// id_type_avertissement
 			$tab_eleves_OOo[$nb_eleve]['ita']=array();
