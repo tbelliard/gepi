@@ -11038,7 +11038,7 @@ function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
 		foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
 			$retour.="
 	<tr>
-		<td><input type='checkbox' id='id_type_avertissement_$key' name='id_type_avertissement[]' value='$key' onchange=\"checkbox_change('id_type_avertissement_$key')\" ";
+		<td><input type='checkbox' id='id_type_avertissement_$key' name='id_type_avertissement[]' value='$key' onchange=\"checkbox_change('id_type_avertissement_$key'); changement();\" ";
 			if((isset($tab['id_type_avertissement'][$periode]))&&(in_array($key, $tab['id_type_avertissement'][$periode]))) {
 				$retour.="checked ";
 			}
