@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -244,8 +244,13 @@ if((isset($periode))&&(isset($login_ele))) {
 
 		//$tab_avertissement_fin_periode=get_tab_avertissement($login_ele, $periode);
 
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
-	<fieldset class='fieldset_opacite50'>
+		$lien_suppl="";
+		if(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
+			$lien_suppl="\n"."<div style='float:right; width:16px; margin:3px;'><a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' onclick=\"return confirm_abandon(this, change, '$themessage');\" title=\"Accès aux onglets élève\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a></div>";
+		}
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_saisie_avt'>
+	<fieldset class='fieldset_opacite50'>".$lien_suppl."
 		<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
