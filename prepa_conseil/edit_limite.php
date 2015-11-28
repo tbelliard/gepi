@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -63,6 +63,7 @@ if(!getSettingAOui('active_bulletins')) {
 // $choix_edit=4
 //    - Affichage du bulletin des avis sur la classe
 
+//debug_var();
 
 // Vérification sur $id_classe
 if(!isset($id_classe)) {
@@ -270,6 +271,9 @@ $choix_edit == "2") {
 	}
 }
 
+//==============================================
+// RESTRICTIONS AUX AFFICHAGES SELON CHOIX OU STATUT:
+//==============================================
 $affiche_colonne_moy_classe="y";
 if((($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseEleve')))||
 (($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleColonneMoyClasseResp')))) {
@@ -279,6 +283,29 @@ if((isset($_POST['pas_de_colonne_moy_classe']))&&($_POST['pas_de_colonne_moy_cla
 	$affiche_colonne_moy_classe="n";
 }
 //echo "\$affiche_colonne_moy_classe=$affiche_colonne_moy_classe<br />";
+//==============================================
+$pas_de_moy_gen=isset($_POST['pas_de_moy_gen']) ? $_POST['pas_de_moy_gen'] : (isset($_GET['pas_de_moy_gen']) ? $_GET['pas_de_moy_gen'] : "n");
+if($pas_de_moy_gen=='y') {
+	$affiche_moy_gen="n";
+}
+if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
+	$affiche_moy_gen="n";
+}
+elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenResp'))) {
+	$affiche_moy_gen="n";
+}
+//==============================================
+$pas_de_moy_cat=isset($_POST['pas_de_moy_cat']) ? $_POST['pas_de_moy_cat'] : (isset($_GET['pas_de_moy_cat']) ? $_GET['pas_de_moy_cat'] : "n");
+if($pas_de_moy_cat=='y') {
+	$affiche_moy_cat="n";
+}
+if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatEleve'))) {
+	$affiche_moy_cat="n";
+}
+elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatResp'))) {
+	$affiche_moy_cat="n";
+}
+//==============================================
 
 // debug_var();
 // On a passé les barrières, on passe au traitement

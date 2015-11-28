@@ -133,6 +133,38 @@
 
 <br />
 
+  <form action="index_admin.php" id="form3" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
+<?php
+	echo add_token_field();
+?>
+	
+	<h2 class="colleHaut">Paramètres divers</h2>
+
+	<p style='margin-top:1em;'>Si vous ne souhaitez pas afficher la moyenne générale en conseil de classe, mais que vous souhaitez permettre un calcul de moyenne générale pour les personnels, il ne faut pas afficher les moyennes générales par défaut sur les bulletins simplifiés.<br />
+	Vous pouvez effectuer ce choix ici&nbsp;:<br />
+	<input type='checkbox' name='bullNoMoyGenParDefaut' id='bullNoMoyGenParDefaut' value='yes' <?php
+	if(getSettingAOui("bullNoMoyGenParDefaut")) {echo "checked ";}
+	?>/><label for='bullNoMoyGenParDefaut'> Ne pas afficher la ligne des moyennes générales par défaut</label></p>
+
+	<p><input type='checkbox' name='bullNoMoyCatParDefaut' id='bullNoMoyCatParDefaut' value='yes' <?php
+	if(getSettingAOui("bullNoMoyCatParDefaut")) {echo "checked ";}
+	?>/><label for='bullNoMoyCatParDefaut'> Ne pas afficher la ligne des moyennes de catégories par défaut</label></p>
+
+	<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	<ul>
+		<li><p>N'oubliez pas de paramétrer l'autorisation/interdiction d'accès pour les élèves/responsables dans Gestion générale/Droits d'accès.</p></li>
+		<li><p>Pour les graphes, vous pouvez choisir de ne pas afficher la moyenne générale via le Paramétrage des graphes.</p></li>
+	</ul>
+
+	<p class="center">
+	  <input type="hidden" name="is_posted" value="param_divers" />
+	  <input type="submit" value="Enregistrer" />
+	</p>
+
+</form>
+
+<br />
+
   <form action="index_admin.php" id="form2" method="post" style='border: 1px solid grey; background-image: url("../images/background/opacite50.png")'>
 <?php
 	echo add_token_field();

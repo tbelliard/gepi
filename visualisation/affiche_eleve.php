@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -267,6 +267,11 @@ if(isset($_POST['parametrage_affichage'])) {
 
 	if(isset($_POST['affiche_mgen'])) {savePref($_SESSION['login'],'graphe_affiche_mgen',$_POST['affiche_mgen']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_mgen','non');}
+
+	if(isset($_POST['bull_simp_affiche_mgen'])) {savePref($_SESSION['login'],'graphe_bull_simp_affiche_mgen',$_POST['bull_simp_affiche_mgen']);}
+	else{savePref($_SESSION['login'],'graphe_bull_simp_affiche_mgen','n');}
+	if(isset($_POST['bull_simp_affiche_moy_cat'])) {savePref($_SESSION['login'],'graphe_bull_simp_affiche_moy_cat',$_POST['bull_simp_affiche_moy_cat']);}
+	else{savePref($_SESSION['login'],'graphe_bull_simp_affiche_moy_cat','n');}
 
 	if(isset($_POST['affiche_minmax'])) {savePref($_SESSION['login'],'graphe_affiche_minmax',$_POST['affiche_minmax']);}
 	else{savePref($_SESSION['login'],'graphe_affiche_minmax','non');}
@@ -1188,6 +1193,42 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	if(isset($_POST['bull_simp_affiche_moy_cat'])) {
+		$bull_simp_affiche_moy_cat=$_POST['bull_simp_affiche_moy_cat'];
+	}
+	else{
+		$pref_bull_simp_affiche_moy_cat=getPref($_SESSION['login'],'graphe_bull_simp_affiche_moy_cat','');
+		if(($pref_bull_simp_affiche_moy_cat=='y')||($pref_bull_simp_affiche_moy_cat=='n')) {
+			$bull_simp_affiche_moy_cat=$pref_bull_simp_affiche_moy_cat;
+		}
+		else {
+			if(getSettingValue('graphe_bull_simp_affiche_moy_cat')) {
+				$bull_simp_affiche_moy_cat=getSettingValue('graphe_bull_simp_affiche_moy_cat');
+			}
+			else{
+				$bull_simp_affiche_moy_cat="n";
+			}
+		}
+	}
+
+	if(isset($_POST['bull_simp_affiche_mgen'])) {
+		$bull_simp_affiche_mgen=$_POST['bull_simp_affiche_mgen'];
+	}
+	else{
+		$pref_bull_simp_affiche_mgen=getPref($_SESSION['login'],'graphe_bull_simp_affiche_mgen','');
+		if(($pref_bull_simp_affiche_mgen=='y')||($pref_bull_simp_affiche_mgen=='n')) {
+			$bull_simp_affiche_mgen=$pref_bull_simp_affiche_mgen;
+		}
+		else {
+			if(getSettingValue('graphe_bull_simp_affiche_mgen')) {
+				$bull_simp_affiche_mgen=getSettingValue('graphe_bull_simp_affiche_mgen');
+			}
+			else{
+				$bull_simp_affiche_mgen="n";
+			}
+		}
+	}
+
 	if(isset($_POST['affiche_moy_classe'])) {
 		$affiche_moy_classe=$_POST['affiche_moy_classe'];
 	}
@@ -1690,11 +1731,16 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			*/
 
+			$complement_title_validation_param="";
+			if($_SESSION['statut']=='scolarite') {
+				$complement_title_validation_param="\n(notamment dans la session courante),\nmais ils ne serviront pas de référence pour les autres utilisateurs";
+			}
+
 			echo "<h2>Paramétrage de l'affichage du graphique</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_parametrage_affichage' method='post'>\n";
 			echo add_token_field();
-			echo "<p align='center'><input type='submit' name='Valider' value='Valider' /></p>\n";
+			echo "<p align='center'><input type='submit' name='Valider' value='Valider' title=\"Les paramètres courants deviendront vos paramètres préférés".$complement_title_validation_param.".\" /></p>\n";
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 			echo "<input type='hidden' name='is_posted' value='y' />\n";
@@ -1731,13 +1777,45 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 			//===========================
 
-			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
-			echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
-			if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
-			if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked />";
+			$affiche_param_moy_gen="y";
+			if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
+				$affiche_param_moy_gen="n";
+			}
+			elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenResp'))) {
+				$affiche_param_moy_gen="n";
+			}
+
+			if($affiche_param_moy_gen=="y") {
+				if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
+				//echo "<tr valign='top'><td><label for='affiche_mgen' style='cursor: pointer;'>Afficher la moyenne générale:</label></td><td><input type='checkbox' name='affiche_mgen' id='affiche_mgen' value='oui'$checked /></td></tr>\n";
+				echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td>";
+				if($affiche_mgen=='oui') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<input type='radio' name='affiche_mgen' id='affiche_mgen_oui' value='oui'$checked /><label for='affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
+				if($affiche_mgen!='oui') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<label for='affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='affiche_mgen' id='affiche_mgen_non' value='non'$checked />";
+
+				echo "<tr valign='top'><td>Afficher la moyenne générale sur les bulletins simplifiés ouverts depuis les graphes&nbsp;:</td><td>";
+				if($bull_simp_affiche_mgen!='n') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<input type='radio' name='bull_simp_affiche_mgen' id='bull_simp_affiche_mgen_oui' value='y'$checked /><label for='bull_simp_affiche_mgen_oui' style='cursor: pointer;'> Oui </label>/";
+				if($bull_simp_affiche_mgen=='n') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<label for='bull_simp_affiche_mgen_non' style='cursor: pointer;'> Non </label><input type='radio' name='bull_simp_affiche_mgen' id='bull_simp_affiche_mgen_non' value='n'$checked />";
+			}
+
+			$affiche_param_moy_cat="y";
+			if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatEleve'))) {
+				$affiche_param_moy_cat="n";
+			}
+			elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatResp'))) {
+				$affiche_param_moy_cat="n";
+			}
+
+			if($affiche_param_moy_cat=="y") {
+				echo "<tr valign='top'><td>Afficher la moyenne générale sur les bulletins simplifiés ouverts depuis les graphes&nbsp;:</td><td>";
+				if($bull_simp_affiche_moy_cat!='n') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<input type='radio' name='bull_simp_affiche_moy_cat' id='bull_simp_affiche_moy_cat_oui' value='y'$checked /><label for='bull_simp_affiche_moy_cat_oui' style='cursor: pointer;'> Oui </label>/";
+				if($bull_simp_affiche_moy_cat=='n') {$checked=" checked='yes'";} else {$checked="";}
+				echo "<label for='bull_simp_affiche_moy_cat_non' style='cursor: pointer;'> Non </label><input type='radio' name='bull_simp_affiche_moy_cat' id='bull_simp_affiche_moy_cat_non' value='n'$checked />";
+			}
 
 			$sql="SELECT DISTINCT coef FROM j_groupes_classes WHERE id_classe='$id_classe' AND coef!='0.0';";
 			$test_coef_non_nul=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1973,7 +2051,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($_SESSION['statut']=='scolarite') {
 				//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
 				echo "<input type='hidden' name='save_params' value='' />\n";
-				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramètres dans la base' />\n";
+				echo "<input type='button' onClick=\"document.forms['form_parametrage_affichage'].save_params.value='y';document.forms['form_parametrage_affichage'].submit();\" name='Enregistrer' value='Enregistrer les paramètres dans la base' title=\"Ce seront les paramètres par défaut pour une personne qui re-prendrait les paramètres par défaut (cf.ci-dessous).\" />\n";
 				echo "<br />\n";
 			}
 
@@ -1982,7 +2060,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				echo "<input type='hidden' name='restriction_id_groupe' value='$restriction_id_groupe' />\n";
 			}
 
-			echo "<input type='submit' name='Valider' value='Valider' /></p>\n";
+			echo "<input type='submit' name='Valider' value='Valider' title=\"Les paramètres courants deviendront vos paramètres préférés".$complement_title_validation_param.".\" /></p>\n";
 
 			echo "</form>\n";
 
@@ -2376,12 +2454,30 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 		$affiche_mgen="non";
 	}
 
+	if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
+		$affiche_mgen="non";
+		$bull_simp_affiche_mgen="n";
+	}
+	elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenResp'))) {
+		$affiche_mgen="non";
+		$bull_simp_affiche_mgen="n";
+	}
+
+	if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatEleve'))) {
+		$bull_simp_affiche_moy_cat="n";
+	}
+	elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatResp'))) {
+		$bull_simp_affiche_moy_cat="n";
+	}
+
 	//========================
 	// PARAMETRES D'AFFICHAGE
 	//========================
 
 
 	echo "<input type='hidden' name='affiche_mgen' value='$affiche_mgen' />\n";
+	echo "<input type='hidden' name='bull_simp_affiche_mgen' value='$bull_simp_affiche_mgen' />\n";
+	echo "<input type='hidden' name='bull_simp_affiche_moy_cat' value='$bull_simp_affiche_moy_cat' />\n";
 	echo "<input type='hidden' name='affiche_minmax' value='$affiche_minmax' />\n";
 	echo "<input type='hidden' name='affiche_moy_annuelle' value='$affiche_moy_annuelle' />\n";
 	echo "<input type='hidden' name='type_graphe' value='$type_graphe' />\n";
@@ -3129,8 +3225,20 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 	if((isset($eleve1))&&(($acces_bull_simp=="y")||($acces_visu_eleve))) {
 		echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
 		if($acces_bull_simp=="y") {
+
+			$chaine_ajout_param_edit_limite="";
+			if($bull_simp_affiche_mgen=="n") {
+				$pas_de_moy_gen="y";
+				$chaine_ajout_param_edit_limite.="&pas_de_moy_gen=y";
+			}
+
+			if($bull_simp_affiche_moy_cat=="n") {
+				$pas_de_moy_cat="y";
+				$chaine_ajout_param_edit_limite.="&pas_de_moy_cat=y";
+			}
+
 			if($choix_periode=='toutes_periodes') {
-				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode&couleur_alterne=y".$chaine_ajout_param_edit_limite."\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
 				//echo "affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');";
 				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 	le bulletin simplifié de toutes les périodes.\">";
@@ -3138,7 +3246,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				echo "</a>";
 			}
 			else {
-				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+				echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie&couleur_alterne=y".$chaine_ajout_param_edit_limite."\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
 				//echo "affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');";
 				echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 	le bulletin simplifié de la période $num_periode_choisie.\">";
@@ -3446,6 +3554,23 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 		}
 		//========================================
 
+		// Pour forcer la non-extraction/stockage des moy gen:
+		if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
+			$affiche_mgen="non";
+			$bull_simp_affiche_mgen="n";
+		}
+		elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenResp'))) {
+			$affiche_mgen="non";
+			$bull_simp_affiche_mgen="n";
+		}
+
+		if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatEleve'))) {
+			$bull_simp_affiche_moy_cat="n";
+		}
+		elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatResp'))) {
+			$bull_simp_affiche_moy_cat="n";
+		}
+
 		// Séries:
 		if($choix_periode=="periode") {
 			$nb_series=2;
@@ -3533,16 +3658,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				die();
 			}
 
-			$mgen[1]=$moy_gen_eleve[$indice_eleve1];
-			if(preg_match("/^[0-9.,]*$/", $mgen[1])) {
-				$mgen[1]=round(preg_replace('/,/', '.', $mgen[1]),1);
-			}
-
-
-			// On recherche l'élève2 et on récupère la moyenne générale 2:
 			$indice_eleve2=-1;
-			//echo "\$eleve2=$eleve2<br />";
-			// 20121205
 			if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
 				for($loop=0;$loop<count($current_eleve_login);$loop++) {
 					if($current_eleve_login[$loop]==$eleve2) {
@@ -3550,33 +3666,54 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 						break;
 					}
 				}
-
-				$mgen[2]=$moy_gen_eleve[$indice_eleve2];
-			}
-			elseif($eleve2=='moyclasse') {
-				$mgen[2]=$moy_generale_classe;
-				//$mgen[2]=5;
-			}
-			elseif($eleve2=='moymin') {
-				$mgen[2]=$moy_min_classe;
-			}
-			elseif($eleve2=='moymax') {
-				$mgen[2]=$moy_max_classe;
-			}
-			// 20121205
-			elseif($eleve2=='rang_eleve') {
-				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-				(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
-				(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
-					$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
-				}
-				else {
-					$mgen[2]="-";
-				}
 			}
 
-			if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
-				$mgen[2]=round(preg_replace('/,/', '.', $mgen[2]),1);
+			if($affiche_mgen!="non") {
+				$mgen[1]=$moy_gen_eleve[$indice_eleve1];
+				if(preg_match("/^[0-9.,]*$/", $mgen[1])) {
+					$mgen[1]=round(preg_replace('/,/', '.', $mgen[1]),1);
+				}
+
+
+				// On recherche l'élève2 et on récupère la moyenne générale 2:
+				$indice_eleve2=-1;
+				//echo "\$eleve2=$eleve2<br />";
+				// 20121205
+				if(($eleve2!='moyclasse')&&($eleve2!='moymin')&&($eleve2!='moymax')&&($eleve2!='rang_eleve')) {
+					for($loop=0;$loop<count($current_eleve_login);$loop++) {
+						if($current_eleve_login[$loop]==$eleve2) {
+							$indice_eleve2=$loop;
+							break;
+						}
+					}
+
+					$mgen[2]=$moy_gen_eleve[$indice_eleve2];
+				}
+				elseif($eleve2=='moyclasse') {
+					$mgen[2]=$moy_generale_classe;
+					//$mgen[2]=5;
+				}
+				elseif($eleve2=='moymin') {
+					$mgen[2]=$moy_min_classe;
+				}
+				elseif($eleve2=='moymax') {
+					$mgen[2]=$moy_max_classe;
+				}
+				// 20121205
+				elseif($eleve2=='rang_eleve') {
+					if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+					(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangParent')))||
+					(($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesGraphRangEleve')))) {
+						$mgen[2]=get_rang_eleve($eleve1, $id_classe, $periode_num, "n", "y");
+					}
+					else {
+						$mgen[2]="-";
+					}
+				}
+
+				if(preg_match("/^[0-9.,]*$/", $mgen[2])) {
+					$mgen[2]=round(preg_replace('/,/', '.', $mgen[2]),1);
+				}
 			}
 
 			// On remplit $liste_matieres, $serie[1], les tableaux d'appréciations et on génère les infobulles
@@ -4554,7 +4691,12 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				}
 				else {
 					// Moyenne générale de l'élève $eleve1 sur la période $cpt
-					$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
+					if($affiche_mgen=="oui") {
+						$mgen[$cpt]=$moy_gen_eleve[$indice_eleve1];
+					}
+					else {
+						$mgen[$cpt]="-";
+					}
 
 					// DEBUG
 					//echo "\$mgen[$cpt]=$mgen[$cpt]<br />";
@@ -5285,9 +5427,21 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 			echo "<p align='center'>";
 
 			if($acces_bull_simp=="y") {
+
+				$chaine_ajout_param_edit_limite="";
+				if($bull_simp_affiche_mgen=="n") {
+					$pas_de_moy_gen="y";
+					$chaine_ajout_param_edit_limite.="&pas_de_moy_gen=y";
+				}
+
+				if($bull_simp_affiche_moy_cat=="n") {
+					$pas_de_moy_cat="y";
+					$chaine_ajout_param_edit_limite.="&pas_de_moy_cat=y";
+				}
+
 				if($choix_periode=='toutes_periodes') {
 					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"sauve_desactivation_infobulle();afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');restaure_desactivation_infobulle();return false;\" target=\"_blank\">";
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode&couleur_alterne=y".$chaine_ajout_param_edit_limite."\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
 					//echo "affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');";
 					echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 le bulletin simplifié de toutes les périodes.\">";
@@ -5297,7 +5451,7 @@ le bulletin simplifié de toutes les périodes.\">";
 					echo "</a>";
 				}
 				else {
-					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
+					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie&couleur_alterne=y".$chaine_ajout_param_edit_limite."\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); ";
 					//echo "affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');";
 					echo "return false;\" target=\"_blank\" title=\"Voir en infobulle dans la page courante
 le bulletin simplifié de la période $num_periode_choisie.\">";
@@ -5773,6 +5927,7 @@ function complete_textarea_avis(num) {
 
 echo "<script type='text/javascript'>
 	// <![CDATA[
+	// Fonction non utilisée parce que les appels aux liens de correction dans le bulletin affiché par ajax ont tendance à merdouiller.
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
 		//document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
 

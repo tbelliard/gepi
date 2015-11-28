@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -278,6 +278,43 @@ if (isset($id_classe)) {
 	echo "<td>\n";
 
 		echo "<table border='0' summary=\"Affichages supplémentaires\">\n";
+
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_moy_gen\" id=\"aff_moy_gen\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_moy_gen'])) {
+			if($_SESSION['vtn_pref_aff_moy_gen']=='y') {
+				echo "checked";
+			}
+		}
+		elseif(!getSettingAOui('bullNoMoyGenParDefaut')) {
+			echo "checked";
+		}
+		echo " /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_moy_gen' style='cursor:pointer;'>\n";
+		echo "Afficher les moyennes générales<br /><em>(sous réserve que les coefficients ne soient pas tous nuls)</em>";
+		echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_moy_cat\" id=\"aff_moy_cat\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_moy_cat'])) {
+			if($_SESSION['vtn_pref_aff_moy_cat']=='y') {
+				echo "checked";
+			}
+		}
+		elseif(!getSettingAOui('bullNoMoyCatParDefaut')) {
+			echo "checked";
+		}
+		echo " /></td>\n";
+		echo "<td>\n";
+		echo "<label for='aff_moy_cat' style='cursor:pointer;'>\n";
+		echo "Afficher les moyennes de catégories<br /><em>(sous réserve que le paramétrage des catégories soit fait et que les coefficients ne soient pas tous nuls)</em>";
+		echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
 		echo "<tr>\n";
 		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" value='y' ";
 		if(isset($_SESSION['vtn_pref_aff_abs'])) {
@@ -295,6 +332,7 @@ if (isset($id_classe)) {
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
+
 		echo "<tr>\n";
 		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" value='y' ";
 		if(isset($_SESSION['vtn_pref_aff_reg'])) {

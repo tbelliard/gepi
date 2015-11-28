@@ -75,6 +75,30 @@ if(isset($_POST['is_posted'])) {
 		$nettoyage=mysqli_query($GLOBALS["mysqli"], $sql);
 		if (!$nettoyage) {$msg = "Erreur lors du \"vidage\" de la table 'absences'.";} else {$msg = "La table 'absences' a été vidée.";}
 	}
+
+	if($_POST['is_posted']=="param_divers") {
+		if (isset($_POST['bullNoMoyGenParDefaut'])) {
+			if(!saveSetting('bullNoMoyGenParDefaut', "yes")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoMoyGenParDefaut'.<br />";
+			}
+		}
+		else {
+			if(!saveSetting('bullNoMoyGenParDefaut', "no")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoMoyGenParDefaut'.<br />";
+			}
+		}
+
+		if (isset($_POST['bullNoMoyCatParDefaut'])) {
+			if(!saveSetting('bullNoMoyCatParDefaut', "yes")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoMoyCatParDefaut'.<br />";
+			}
+		}
+		else {
+			if(!saveSetting('bullNoMoyCatParDefaut', "no")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoMoyCatParDefaut'.<br />";
+			}
+		}
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')){
