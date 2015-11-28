@@ -2,7 +2,7 @@
 
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireaus Régis Bouguin
+* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Régis Bouguin
 *
 * This file is part of GEPI.
 *
@@ -758,8 +758,8 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$nom_cc))
 <?php echo $contenu;?>
 
 </div>
-<div id='note_bas_page' style="background: rgba(225, 225, 225, 1); padding: .3em 2em;">
-    <?php echo $nom_cc ;?> : regroupement de plusieurs évaluations en une seule qui sera ensuite intégré dans le carnet de notes
+<div id='note_bas_page' style="background: rgba(225, 225, 225, 1); padding: .3em 2em;" class="infobulle_entete">
+    <?php echo $nom_cc ;?> : regroupement de plusieurs évaluations en une seule qui sera ensuite intégrée dans le carnet de notes
 </div>
 
 <?php
