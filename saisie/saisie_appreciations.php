@@ -41,6 +41,8 @@ if (!checkAccess()) {
 	die();
 }
 
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
 
 // Initialisation
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
@@ -1832,6 +1834,9 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 	<?php
 		echo $chaine_date_conseil_classe."<br />";
 		if($proposer_liens_enregistrement=='y') {
+			if(getSettingAOui('aff_temoin_check_serveur')) {
+				temoin_check_srv();
+			}
 			echo "
 		<input type='submit' value='Enregistrer' /><br />
 

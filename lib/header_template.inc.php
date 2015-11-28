@@ -414,7 +414,7 @@ if (isset($titre_page)) {
 
 
 	$tbs_aff_temoin_check_serveur="n";
-	if((getSettingAOui('aff_temoin_check_serveur'))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+	if((getSettingAOui('aff_temoin_check_serveur'))&&(!isset($aff_temoin_serveur_hors_entete))&&($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 		// insert into setting set name='aff_temoin_check_serveur', value='y';
 		$tbs_aff_temoin_check_serveur="y";
 	}
