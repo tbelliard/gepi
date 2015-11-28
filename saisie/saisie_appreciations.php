@@ -1906,7 +1906,9 @@ echo "<script type='text/javascript'>
 			}
 
 			if(div_note_aff=='y') {
+				fermer_div_notes();
 				afficher_div(id_div_notes,'y',20,20);
+				// A FAIRE: Ajouter un test: si le positionnement a échoué et qu'on est hors fenêtre repositionner.
 			}
 		}
 	}
