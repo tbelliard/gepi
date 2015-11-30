@@ -33,6 +33,8 @@ Carnet de notes:
 
 Bulletins:
 - Accès en statut autre au Tableau récapitulatif des moyennes d'une classe dans le cas où l'utilisateur a accès aux bulletins simplifiés ou non.
+- Ajout d'un formulaire de paramètres communs aux bulletins HTML et PDF.
+- Possibilité d'imprimer le bulletin des appréciations/synthèse sur les groupes intercalés ou en recto/verso des bulletins élèves.
 
 Panneau d'affichage:
 - Possibilité de déposer un message pour les professeurs principaux.
