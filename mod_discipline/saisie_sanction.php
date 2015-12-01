@@ -311,6 +311,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 								$message_mail.="\n\nLa validation de l'état effectuée ou non de la ".$mod_disc_terme_sanction." est déléguée à ".civ_nom_prenom($deleguer_check)."\n";
 							}
 						}
+
+						// Ménage:
+						$sql="DELETE FROM messagerie WHERE sujet LIKE '% (incident n°".$id_incident.")';";
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -570,6 +574,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 						if($signataire!="") {
 							$message_mail.="Signataire: $signataire\n";
 						}
+
+						// Ménage:
+						$sql="DELETE FROM messagerie WHERE sujet LIKE '% (incident n°".$id_incident.")';";
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -674,9 +682,13 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if($res) {
 						$message_mail.="Un $nature_sanction supplémentaire (sanction n°$id_sanction) a été donné à ".get_nom_prenom_eleve($ele_login, "avec_classe")." a été définie pour le $date_retour à $heure_retour.\n";
-							if($travail!="") {
-								$message_mail.="Travail: $travail\n";
-							}
+						if($travail!="") {
+							$message_mail.="Travail: $travail\n";
+						}
+
+						// Ménage:
+						$sql="DELETE FROM messagerie WHERE sujet LIKE '% (incident n°".$id_incident.")';";
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 				}
 
@@ -772,6 +784,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 						else {
 							$message_mail.="Sanction ($nature_sanction) (type $id_nature_sanction) (n°$id_sanction) a été donnée à ".get_nom_prenom_eleve($ele_login, "avec_classe")."\nDescription: $description\n";
 						}
+
+						// Ménage:
+						$sql="DELETE FROM messagerie WHERE sujet LIKE '% (incident n°".$id_incident.")';";
+						$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					}
 
 					if(count($autre_protagoniste_meme_sanction)>0) {

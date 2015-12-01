@@ -1185,6 +1185,9 @@ $headers);
 	
 						//echo "\$texte_mail=$texte_mail<br />";
 	
+						$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
+						$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+
 						if(count($tab_alerte_classe)>0) {
 							$tab_param_mail=array();
 							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature);
@@ -1193,8 +1196,6 @@ $headers);
 							//	$destinataires=getSettingValue("gepiAdminAdress");
 							//}
 
-							$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
-							$subject = "[GEPI][".ucfirst($mod_disc_terme_incident)." n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 							if($destinataires!="") {
 
 								$headers = "";
@@ -1220,19 +1221,20 @@ $headers);
 									}
 								}
 							}
+						}
 
-							if(getSettingAOui('active_mod_alerte')) {
-								$nb_msg=0;
-								$destinataires_mod_alerte=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature, "mod_alerte");
-								for($loop=0;$loop<count($destinataires_mod_alerte);$loop++) {
-									$retour_mod_alerte=enregistre_message($subject, $texte_mail, $_SESSION['login'], $destinataires_mod_alerte[$loop]);
-									if($retour_mod_alerte!="") {
-										$nb_msg++;
-									}
+						if(getSettingAOui('active_mod_alerte')) {
+							$nb_msg=0;
+							$subject.=" (incident n°".$id_incident.")";
+							$destinataires_mod_alerte=get_destinataires_mail_alerte_discipline($tab_alerte_classe, $nature, "mod_alerte");
+							for($loop=0;$loop<count($destinataires_mod_alerte);$loop++) {
+								$retour_mod_alerte=enregistre_message($subject, $texte_mail, $_SESSION['login'], $destinataires_mod_alerte[$loop]);
+								if($retour_mod_alerte!="") {
+									$nb_msg++;
 								}
-								if($nb_msg>0) {
-									$msg.="$nb_msg destinataire(s) du message déposé dans le module Alerte.<br />";
-								}
+							}
+							if($nb_msg>0) {
+								$msg.="$nb_msg destinataire(s) du message déposé dans le module Alerte.<br />";
 							}
 						}
 					}

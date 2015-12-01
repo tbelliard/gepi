@@ -1098,11 +1098,15 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 		$temoin=false;
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$tab_id_classe[$i]."' AND type='".$type."';";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					if($lig->destinataire=='cpe') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.email!='';";
+					}
+					elseif($lig->destinataire=='tous_cpe') {
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u WHERE u.statut='cpe' AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
 					}
 					elseif($lig->destinataire=='professeurs') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login,u.statut FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.email!='';";
@@ -1121,11 +1125,11 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 						$adresse_sup = $lig->adresse;
 					}
 
-					//echo $sql;
+					//echo "$sql<br />";
 					if ($temoin) { //Cas d'une adresse mail autre
 						$tab_dest[] = $adresse_sup;
 					} else {
-						
+						//echo "$sql<br />";
 						$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res2)>0) {
 							while($lig2=mysqli_fetch_object($res2)) {
@@ -1181,11 +1185,15 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe, $nature="", $t
 		$retour=array();
 		for($i=0;$i<count($tab_id_classe);$i++) {
 			$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$tab_id_classe[$i]."' AND type='".$type."';";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
 				while($lig=mysqli_fetch_object($res)) {
 					if($lig->destinataire=='cpe') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_cpe jecpe, j_eleves_classes jec WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jecpe.e_login AND jecpe.cpe_login=u.login AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
+					}
+					elseif($lig->destinataire=='tous_cpe') {
+						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u WHERE u.statut='cpe' AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
 					}
 					elseif($lig->destinataire=='professeurs') {
 						$sql="SELECT DISTINCT u.nom,u.prenom,u.email,u.login FROM utilisateurs u, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp WHERE jec.id_classe='".$tab_id_classe[$i]."' AND jec.login=jeg.login AND jeg.id_groupe=jgp.id_groupe AND jgp.login=u.login AND u.login NOT IN (SELECT value FROM mod_alerte_divers WHERE name='login_exclus');";
@@ -1240,16 +1248,16 @@ function get_login_declarant_incident($id_incident) {
 	global $mod_disc_terme_incident;
 
 	$retour="";
-    //$sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI, s_sanctions SS WHERE SI.id_incident='$id_incident' AND SI.id_incident=SS.id_incident;";
-    $sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI WHERE SI.id_incident='$id_incident';";
-		//echo $sql_declarant;
-		$res_declarant=mysqli_query($GLOBALS["mysqli"], $sql_declarant);
-        if(mysqli_num_rows($res_declarant)>0) {
+	//$sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI, s_sanctions SS WHERE SI.id_incident='$id_incident' AND SI.id_incident=SS.id_incident;";
+	$sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI WHERE SI.id_incident='$id_incident';";
+	//echo $sql_declarant;
+	$res_declarant=mysqli_query($GLOBALS["mysqli"], $sql_declarant);
+	if(mysqli_num_rows($res_declarant)>0) {
 		$lig_declarant=mysqli_fetch_object($res_declarant);
-		  $retour= $lig_declarant->declarant;	
-		} else {
-		  $retour=ucfirst($mod_disc_terme_incident).' inconnu';
-		}
+		$retour= $lig_declarant->declarant;	
+	} else {
+		$retour=ucfirst($mod_disc_terme_incident).' inconnu';
+	}
 	return $retour;
 }
 
