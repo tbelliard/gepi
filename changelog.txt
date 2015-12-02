@@ -10,18 +10,26 @@ Librairies:
 - HTMLPurifier : Mise à jour en 4.7.0
 
 Discipline:
-- Possibilité de signaler des saisies d'incidents (aux utilisateurs suivant telle ou telle classe) par mod_alerte et non plus seulement par mail.
+- Possibilité de signaler des saisies d'incidents (aux utilisateurs suivant 
+  telle ou telle classe) par mod_alerte et non plus seulement par mail.
+- Possibilité de déposer/envoyer les messages à tous les CPE plutôt que 
+  seulement à celui chargé du suivi de l'élève.
 - Affichage de la liste des sanctions depuis la saisie/modif d'incident.
 - Envoi de mails lors de la saisie de sanction et indication de sanction effectuée ou non.
 - Amélioration du tri des natures d'incident proposées.
-- Possibilité pour un utilisateur de supprimer un incident qu'il a déclaré si l'incident n'est rattaché à aucune mesure ni sanction.
-- Pointage de menus incidents: Possibilité de définir des seuils pour envoi de mail, message sur les pointages de menus incidents.
-- Possibilité de déléguer à un professeur le pointage du statut effectué ou non d'une sanction (cas d'une sanction effectuée dans la salle d'un professeur).
-- Possibilité pour un enseignant de limiter aux élèves de ses groupes l'envoi de courriel lors des déclarations d'incidents
+- Possibilité pour un utilisateur de supprimer un incident qu'il a déclaré si 
+  l'incident n'est rattaché à aucune mesure ni sanction.
+- Pointage de menus incidents: Possibilité de définir des seuils pour envoi de 
+  mail, message sur les pointages de menus incidents.
+- Possibilité de déléguer à un professeur le pointage du statut effectué ou non
+  d'une sanction (cas d'une sanction effectuée dans la salle d'un professeur).
+- Possibilité pour un enseignant de limiter aux élèves de ses groupes l'envoi 
+  de courriel lors des déclarations d'incidents
 
 Absences2:
 - Ajout de liens de création d'incident de puis mod_abs2 Saisir groupe.
-- Accès à la liste des saisies de la veille pour tel élève depuis la colonne Veille dans Absences du jour.
+- Accès à la liste des saisies de la veille pour tel élève depuis la colonne 
+  Veille dans Absences du jour.
 
 Cahiers de textes:
 - Possibilité d'ajouter un témoin 'contrôle' dans les travaux à faire du CDT.
@@ -32,9 +40,11 @@ Carnet de notes:
 - Accès en statut autre à la Visualisation des moyennes de carnets de notes (ajout d'un droit).
 
 Bulletins:
-- Accès en statut autre au Tableau récapitulatif des moyennes d'une classe dans le cas où l'utilisateur a accès aux bulletins simplifiés ou non.
+- Accès en statut autre au Tableau récapitulatif des moyennes d'une classe dans 
+  le cas où l'utilisateur a accès aux bulletins simplifiés ou non.
 - Ajout d'un formulaire de paramètres communs aux bulletins HTML et PDF.
-- Possibilité d'imprimer le bulletin des appréciations/synthèse sur les groupes intercalés ou en recto/verso des bulletins élèves.
+- Possibilité d'imprimer le bulletin des appréciations/synthèse sur les groupes 
+  intercalés ou en recto/verso des bulletins élèves.
 
 Panneau d'affichage:
 - Possibilité de déposer un message pour les professeurs principaux.
@@ -48,16 +58,19 @@ Général:
 - Ajout d'une option pour désactiver la vérification du certificat SSL lors des requêtes CAS.
   Jusqu'à la version 1.6.8, la vérification n'était pas imposée.
   Elle l'est maintenant.
-  Si vos connexions CAS sont perturbées, modifiez le paramétrage dans Gestion générale/Options de connexion.
+  Si vos connexions CAS sont perturbées, modifiez le paramétrage dans Gestion 
+  générale/Options de connexion.
 
 AID :
-- Si l'AID autorise le multi-inscription, on peut choisir de limiter aux inscrits à une autre AID de la même catégorie :
+- Si l'AID autorise le multi-inscription, on peut choisir de limiter aux 
+  inscrits à une autre AID de la même catégorie :
 Exemple :
 En administrateur, on crée une "catégorie d'AID" → 'Association Sportive'
    On coche Inscriptions multiples :
 En administrateur ou gestionnaire de la catégorie d'AID, on crée une AID → Licenciers
    On saisie tous les membres de l'association sportive
-En administrateur ou gestionnaire de la catégorie d'AID, on crée de nouvelles AID en cochant Sous-groupe d'une autre AID puis en choisissant Licenciers
+En administrateur ou gestionnaire de la catégorie d'AID, on crée de nouvelles AID 
+en cochant Sous-groupe d'une autre AID puis en choisissant Licenciers
    Lors de la saisie des membres, seuls les membres de Licenciers sont proposés
 - Si le droit est ouvert, un élève peut s'inscrire dans une AID
 

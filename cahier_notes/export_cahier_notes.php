@@ -3,7 +3,7 @@
  * Export du carnet de notes
  * 
  * 
- * @copyright Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * @copyright Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * @license GNU/GPL, 
  * @package Carnet_de_notes
  * @subpackage export
@@ -60,17 +60,14 @@ if (!checkAccess()) {
     die();
 }
 
-
 //On vérifie si le module est activé
 if (getSettingValue("active_carnets_notes")!='y') {
     die("Le module n'est pas activé.");
 }
 
-
-
 unset($id_racine);
 $id_racine=isset($_POST["id_racine"]) ? $_POST["id_racine"] : (isset($_GET["id_racine"]) ? $_GET["id_racine"] : NULL);
-$type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
+$type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : (isset($_GET["type_export"]) ? $_GET["type_export"] : NULL);
 
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
@@ -324,7 +321,8 @@ if(!isset($type_export)) {
 	die();
 }
 
-check_token(false);
+//check_token(false);
+check_token();
 
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_cn";
@@ -917,21 +915,170 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	require_once("../lib/header.inc.php");
 	//**************** FIN EN-TETE *****************
 
+	//debug_var();
+
 	$titre=htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")";
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
-    echo "<div class='norme'><p class='bold'>\n";
+    echo "<div class='norme'>\n";
+	echo "<form enctype=\"multipart/form-data\" id= \"form1\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+	echo add_token_field();
+	echo "<p class='bold'>";
     echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
-	echo "</div>\n";
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num' title=\"Retour au carnet de notes de l'enseignement indiqué.\"> ".htmlspecialchars($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+	//echo "</div>\n";
 
+if($_SESSION['statut']=='professeur') {
+	$login_prof_groupe_courant=$_SESSION["login"];
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	//if(isset($current_group)) { echo "DEBUG 2 : ".$current_group['classlist_string']."<br />";}
+
+	$debug_group_prec_suiv="n";
+	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+
+		$tmp_groups=array();
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+				$tmp_groups[]=$tab_groups[$loop];
+			}
+			elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
+				$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
+			}
+		}
+
+		$nb_groupes_suivies=count($tmp_groups);
+
+		if($debug_group_prec_suiv=="y") {echo "<p>Groupe actuellement affiché : $id_groupe<br />";}
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+
+		$id_ccn_grp_prec=0;
+		$id_ccn_grp_suiv=0;
+
+		$temoin_tmp=0;
+		$chaine_info_debug_id_groupe="";
+		for($loop=0;$loop<count($tmp_groups);$loop++) {
+
+			if($debug_group_prec_suiv=="y") {echo "Groupe n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";$chaine_info_debug_id_groupe=" (id_groupe : ".$tmp_groups[$loop]['id'].")";}
+
+			if((!isset($tmp_groups[$loop]["visibilite"]["cahier_notes"]))||($tmp_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
+				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				if($tmp_groups[$loop]["nb_periode"]>=$periode_num) {
+
+					// 20151202
+					/*
+					$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='".."' AND periode='".."';";
+					$res_ccn=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_ccn)>0) {
+						$lig_ccn=mysqli_fetch_object($res_ccn);
+						$id_cahier_notes=$lig_ccn->id_cahier_notes;
+					}
+					else {
+						// Créer le cahier de notes et récupérer l'id_cahier_notes
+					}
+					*/
+					$tmp_current_id_carnet_notes=creer_carnet_notes($tmp_groups[$loop]['id'], $periode_num);
+					// Si le carnet de notes existe:
+					if($tmp_current_id_carnet_notes) {
+						if($tmp_groups[$loop]['id']==$id_groupe) {
+							$num_groupe=$loop;
+
+							if($debug_group_prec_suiv=="y") {echo "Le groupe n°$loop dans la boucle est le groupe courant : ".$tmp_groups[$loop]['id']."<br />";}
+
+							//$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+							$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+
+							$temoin_tmp=1;
+							if($debug_group_prec_suiv=="y") {echo "On teste \$tmp_groups[$loop+1]<br />";}
+							if(isset($tmp_groups[$loop+1])){
+								$id_grp_suiv=$tmp_groups[$loop+1]['id'];
+								$id_ccn_grp_suiv=creer_carnet_notes($tmp_groups[$loop+1]['id'], $periode_num);
+								if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=".$tmp_groups[$loop+1]['id']."<br />";}
+							}
+							else{
+								$id_grp_suiv=0;
+								$id_ccn_grp_suiv=0;
+								if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=0<br />";}
+							}
+						}
+						else {
+							//$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+							$chaine_options_classes.="<option value='".$tmp_current_id_carnet_notes."'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+						}
+	
+						if($temoin_tmp==0){
+							$id_grp_prec=$tmp_groups[$loop]['id'];
+							$id_ccn_grp_prec=$tmp_current_id_carnet_notes;
+							if($debug_group_prec_suiv=="y") {echo "Le groupe précédent est temporairement le n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";}
+						}
+					}
+				}
+			}
+		}
+
+		// =================================
+
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_racine').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			//echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
+			echo "<input type='hidden' name='type_export' id='type_export' value='$type_export' />\n";
+			echo "Période $periode_num&nbsp;:";
+			if((isset($id_ccn_grp_prec))&&($id_ccn_grp_prec!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-left.png
+				//echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent'><img src='../images/icons/back.png' class='icone16' alt='Groupe précédent' /></a>\n";
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_ccn_grp_prec&type_export=$type_export".add_token_in_url()."' title='Groupe précédent'><img src='../images/icons/back.png' class='icone16' alt='Groupe précédent' /></a>\n";
+			}
+			echo "<label for='id_racine' class='invisible' >Changer de groupe</label>\n";
+			echo "<select name='id_racine' id='id_racine' onchange=\"confirm_changement_classe(change, '$themessage');\" title=\"N'apparaissent ici que les enseignements pour lesquels le carnet de notes existe\n(le carnet de notes pour un enseignement n'est créé pour telle période qu'une fois la période ouverte).\">\n";
+			echo $chaine_options_classes;
+			echo "</select>\n";
+			if((isset($id_ccn_grp_suiv))&&($id_ccn_grp_suiv!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-right.png
+				//echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant'><img src='../images/icons/forward.png' class='icone16' alt='Groupe suivant' /></a>\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_ccn_grp_suiv&type_export=$type_export".add_token_in_url()."' title='Groupe suivant'><img src='../images/icons/forward.png' class='icone16' alt='Groupe suivant' /></a>\n";
+			}
+			//echo " | \n";
+		}
+	}
+	// =================================
+}
+	echo "</form>
+</div>";
 
 	echo "<h2>$titre</h2>\n";
 
 	echo "<p>Télécharger: <a href='$chemin_temp/$nom_fic'>$nom_fic</a></p>\n";
-
-	
 
 	// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre à l'admin de faire le ménage.
 	echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialité, il est recommandé de supprimer le fichier du serveur après récupération du fichier ci-dessus.<br />\n";
