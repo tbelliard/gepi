@@ -1,10 +1,8 @@
 <?php
 /**
  * Copie des Notes
-*
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
-*
- * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * @copyright Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 
  * @license GNU/GPL
  * @package Carnet_de_notes
@@ -158,7 +156,7 @@ if((isset($id_groupe_dest))&&(isset($periode_num_dest))) {
 			$id_cn_dest=creer_carnet_notes($id_groupe_dest, $periode_num_dest);
 
 			if(!$id_cn_dest) {
-				$msg.="Echec de la création/récupération du carnet de notes sur la période $periode_num_dest pour le groupe n°$id_groupe_dest.<br />";
+				$msg.="Echec de la création/récupération du carnet de notes sur la période $periode_num_dest pour le groupe n°$id_groupe_dest.<br />Cela peut arriver par exemple si la période n'est pas ouverte en saisie pour la ou les classes associées au groupe.<br />";
 			}
 			else {
 				// Récupération des infos du devoir d'origine
