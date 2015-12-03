@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -54,6 +54,9 @@ if (!checkAccess()) {
 if (getSettingValue("active_carnets_notes")!='y') {
 	die("Le module n'est pas activé.");
 }
+
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
 
 require('cc_lib.php');
 
@@ -658,6 +661,13 @@ echo "<input type='hidden' name='id_eval' value='$id_eval' />\n";
 echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
 
 echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
+
+echo "<div id='fixe'>";
+if(getSettingAOui('aff_temoin_check_serveur')) {
+	temoin_check_srv();
+}
+echo "<input type='submit' value='Enregistrer' /></div>";
+
 echo "</form>\n";
 
 //================================================
