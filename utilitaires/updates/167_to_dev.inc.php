@@ -352,5 +352,17 @@ if ($test == -1) {
 	}	
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'SaisiePP' à la table 'engagements'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM engagements LIKE 'SaisiePP';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE engagements ADD SaisiePP VARCHAR(10) NOT NULL AFTER SaisieCpe;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 

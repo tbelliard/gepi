@@ -52,6 +52,9 @@ Panneau d'affichage:
 Publipostage OOo:
 - Possibilité d'autoriser tel utilisateur en particulier à uploader des modèles.
 
+Engagements:
+- Possibilité de déléguer la saisie de certains engagements aux professeurs principaux.
+
 Général:
 - Possibilité de prendre en compte un secure/proxy.php pour file_get_contents()
 - Automatisation du changement de PP et de CPE lors du changement de classe.

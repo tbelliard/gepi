@@ -107,6 +107,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$ConcerneResponsable=isset($_POST['ConcerneResponsable']) ? $_POST['ConcerneResponsable'] : array();
 	$SaisieScol=isset($_POST['SaisieScol']) ? $_POST['SaisieScol'] : array();
 	$SaisieCpe=isset($_POST['SaisieCpe']) ? $_POST['SaisieCpe'] : array();
+	$SaisiePP=isset($_POST['SaisiePP']) ? $_POST['SaisiePP'] : array();
 
 	$nb_modif=0;
 	for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
@@ -170,6 +171,13 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 					$ajout_sql.=", SaisieCpe='no'";
 				}
 
+				if((isset($SaisiePP[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisiePP']!='yes')) {
+					$ajout_sql.=", SaisiePP='yes'";
+				}
+				elseif((!isset($SaisiePP[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')) {
+					$ajout_sql.=", SaisiePP='no'";
+				}
+
 				if($ajout_sql!="") {
 					$sql="UPDATE engagements SET id='".$tab_engagements['indice'][$loop]['id']."'";
 					$sql.=$ajout_sql;
@@ -220,6 +228,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$AjoutEngagementResp=isset($_POST['AjoutEngagementResp']) ? $_POST['AjoutEngagementResp'] : "";
 	$AjoutEngagementSaisieCpe=isset($_POST['AjoutEngagementSaisieCpe']) ? $_POST['AjoutEngagementSaisieCpe'] : "";
 	$AjoutEngagementSaisieScol=isset($_POST['AjoutEngagementSaisieScol']) ? $_POST['AjoutEngagementSaisieScol'] : "";
+	$AjoutEngagementSaisiePP=isset($_POST['AjoutEngagementSaisiePP']) ? $_POST['AjoutEngagementSaisiePP'] : "";
 	if($AjoutEngagementNom!="") {
 		$sql="SELECT 1=1 FROM engagements WHERE nom='".$AjoutEngagementNom."';";
 		//echo "$sql<br />";
@@ -246,6 +255,9 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 			}
 			if($AjoutEngagementSaisieCpe=='yes') {
 				$sql.=", SaisieCpe='yes'";
+			}
+			if($AjoutEngagementSaisiePP=='yes') {
+				$sql.=", SaisiePP='yes'";
 			}
 			$sql.=";";
 			//echo "$sql<br />";
