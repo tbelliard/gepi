@@ -10175,7 +10175,12 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				}
 				*/
 			}
-			$retour.=$lig->texte_apres;
+			if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+				$retour.=$lig->texte_apres;
+			}
+			else {
+				$retour.=$lig->texte_apres_ele_resp;
+			}
 		}
 		elseif($lig->type=='conseil_de_classe') {
 
@@ -10512,7 +10517,12 @@ Cliquer pour saisir l'avis du conseil de classe,\n pour accéder aux bulletins, 
 </table>";
 
 			}
-			$retour.=$lig->texte_apres;
+			if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+				$retour.=$lig->texte_apres;
+			}
+			else {
+				$retour.=$lig->texte_apres_ele_resp;
+			}
 
 		}
 	}
