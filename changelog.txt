@@ -45,6 +45,7 @@ Bulletins:
 - Ajout d'un formulaire de paramètres communs aux bulletins HTML et PDF.
 - Possibilité d'imprimer le bulletin des appréciations/synthèse sur les groupes 
   intercalés ou en recto/verso des bulletins élèves.
+- Possibilité de définir un seuil pour le témoin d'évolution de la moyenne dans les bulletins PDF.
 
 Panneau d'affichage:
 - Possibilité de déposer un message pour les professeurs principaux.

@@ -395,6 +395,9 @@ if(isset($_POST['param_communs_pdf_html'])) {
 
 	$evolution_moyenne_periode_precedente=isset($_GET['evolution_moyenne_periode_precedente']) ? $_GET['evolution_moyenne_periode_precedente'] : (isset($_POST['evolution_moyenne_periode_precedente']) ? $_POST['evolution_moyenne_periode_precedente'] : 'n');
 
+	// 20151201
+	$evolution_moyenne_periode_precedente_seuil=isset($_GET['evolution_moyenne_periode_precedente_seuil']) ? $_GET['evolution_moyenne_periode_precedente_seuil'] : (isset($_POST['evolution_moyenne_periode_precedente_seuil']) ? $_POST['evolution_moyenne_periode_precedente_seuil'] : 0);
+
 	$moyennes_annee=isset($_GET['moyennes_annee']) ? $_GET['moyennes_annee'] : (isset($_POST['moyennes_annee']) ? $_POST['moyennes_annee'] : 'n');
 
 	if (empty($_GET['active_coef_sousmoyene']) and empty($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = ''; }
@@ -1571,6 +1574,11 @@ function DecocheCheckbox() {
 					echo "checked='checked' ";
 				}
 				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Pour chaque enseignement, indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>) par rapport à la période précédente.</label><br />\n";
+
+				// 20151201
+				echo $decalage_gauche;
+				echo $decalage_gauche;
+				echo "<input name='evolution_moyenne_periode_precedente_seuil' id='evolution_moyenne_periode_precedente_seuil' style='border: 1px solid #74748F;' type='text' size='3' value='$evolution_moyenne_periode_precedente_seuil' />&nbsp;Décalage minimal pour considérer qu'il y a une évolution de la moyenne<br /><em>(mettez par exemple 0.5 si un décalage inférieur à 0.5 point ne doit pas considéré comme une évolution de la moyenne).</em></br />";
 
 			?>
 			<br />
