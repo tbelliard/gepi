@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -399,7 +399,7 @@ else{
 										//$tmp_commentaire=my_ereg_replace("&#039;","'",html_entity_decode($commentaire[$i]));
 										//$sql="insert into commentaires_types values('','".addslashes($tmp_commentaire)."','$num_periode[$j]','$id_classe')";
 										//$sql="insert into commentaires_types values('','".addslashes($commentaire_courant)."','$num_periode[$j]','$id_classe')";
-										$sql="insert into commentaires_types values('','".$commentaire_courant."','$num_periode[$j]','$id_classe')";
+										$sql="insert into commentaires_types values('','".trim($commentaire_courant)."','$num_periode[$j]','$id_classe')";
 										//=========================
 										//echo "sql=$sql<br />";
 										$resultat_insertion_commentaire=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -894,7 +894,7 @@ function tout_decocher(){
 
 									//$sql="insert into commentaires_types values('','$ligne_commentaires_source->commentaire','$num_periode[$i]','$id_dest_classe[$j]')";
 
-									$commentaire_courant=traitement_magic_quotes(corriger_caracteres($ligne_commentaires_source->commentaire));
+									$commentaire_courant=trim(traitement_magic_quotes(corriger_caracteres($ligne_commentaires_source->commentaire)));
 
 									$sql="insert into commentaires_types values('','$commentaire_courant','$num_periode[$i]','$id_dest_classe[$j]')";
 
