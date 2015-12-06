@@ -446,7 +446,7 @@ L'accès est également possible dans le menu horizontal sous l'entête si la ba
 }
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
-elseif(!isset($valide_select_eleves)) {
+elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 
 	//debug_var();
 
@@ -796,7 +796,7 @@ elseif(!isset($valide_select_eleves)) {
 	echo "</div>\n";
 	//===========================================
 
-		echo "<p><input type='checkbox' name='intercaler_app_classe' id='intercaler_app_classe' value='y' onchange='checkbox_change(this.id)' /> <label for='intercaler_app_classe' id='texte_intercaler_app_classe' style='cursor: pointer;'>Intercaler les appréciations professeurs sur les \"groupes classes\" <em style='color:red'>(expérimental)</em></label></p>\n";
+		echo "<p><input type='checkbox' name='intercaler_app_classe' id='intercaler_app_classe' value='y' onchange='checkbox_change(this.id)' /> <label for='intercaler_app_classe' id='texte_intercaler_app_classe' style='cursor: pointer;'>Intercaler les appréciations professeurs sur les \"groupes classes\" <em style='color:red'>(expérimental (en PDF seulement pour le moment, et mise en page très perfectible))</em></label></p>\n";
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
@@ -2602,6 +2602,7 @@ else {
 
 
 				// Boucle élèves de la classe $id_classe pour la période $periode_num
+				$compteur_ele_classe_courante_periode_courante=0;
 				for($i=0;$i<count($current_eleve_login);$i++) {
 					// Réinitialisation pour ne pas récupérer des infos de l'élève précédent
 					unset($tab_ele);
@@ -3575,8 +3576,13 @@ else {
 						}
 
 						$nb_bulletins_edites++;
+
+						$compteur_ele_classe_courante_periode_courante++;
 					}
 				}
+
+
+
 			}
 		}
 	}
@@ -3911,6 +3917,12 @@ else {
 				*/
 				//======================================
 
+				/*
+				echo "\$tab_bulletin[$id_classe][$periode_num]['selection_eleves']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['selection_eleves']);
+				echo "</pre>";
+				*/
+
 				//$compteur=0;
 				for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
 					if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
@@ -4057,6 +4069,66 @@ if($mode_bulletin=="html") {
 	flush();
 }
 //==============================
+
+if((isset($mode_bulletin))&&($compteur_bulletins==0)&&(isset($intercaler_app_classe))) {
+	$compteur_bulletins=0;
+	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+		$id_classe=$tab_id_classe[$loop_classe];
+		$classe=get_class_from_id($id_classe);
+
+		if($mode_bulletin=="html") {
+			echo "<script type='text/javascript'>
+document.getElementById('td_classe').innerHTML='".$classe."';
+</script>\n";
+		}
+
+		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+
+			$periode_num=$tab_periode_num[$loop_periode_num];
+
+			//==============================
+			if($mode_bulletin=="html") {
+				$motif="Classe_".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif avant");
+				flush();
+				echo "<script type='text/javascript'>
+document.getElementById('td_periode').innerHTML='".$periode_num."';
+</script>\n";
+			}
+			//==============================
+
+			if($mode_bulletin=="html") {
+				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+				echo "<h2>Classe de ".$classe."</h2>\n";
+				echo "<p><b>Période $periode_num</b></p>\n";
+
+				echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
+				echo "</div>\n";
+			}
+
+			if($mode_bulletin=="html") {
+				// Saut de page si jamais ce n'est pas le premier bulletin
+				if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+				bulletin_html_classe($tab_bulletin[$id_classe][$periode_num]);
+			}
+			else {
+				bulletin_pdf_classe($tab_bulletin[$id_classe][$periode_num]);
+			}
+
+			if($mode_bulletin=="html") {
+				echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+			}
+
+			$compteur_bulletins++;
+
+			if($mode_bulletin=="html") {
+				flush();
+			}
+
+		}
+	}
+}
 
 if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
 	echo "<div id='remarques_bas_de_page' style='display:none;'>

@@ -9538,7 +9538,7 @@ fclose($f);
 }
 
 function bulletin_html_classe($tab_bull) {
-
+	echo "<p>Bulletin de classe HTML non encore implémenté.</p>";
 }
 
 ?>
