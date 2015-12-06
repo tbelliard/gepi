@@ -365,7 +365,7 @@ Il faut mettre en place cette police sur votre machine pour obtenir les cases co
 A défaut, vous pouvez opter pour un autre mode d'affichage en créant votre propre modèle.<br />
 Quelques ressources&nbsp;:
 <ul style='margin-left:4em;'>
-	<li><a href=''>http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc)</a></li>
+	<li><a href='http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'>http://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc)</a></li>
 	<li>
 		Les champs tests sur les cases cochées pour les avertissements nécessitent que vous sachiez quel est l'identifiant de chaque sanction.<br />
 		Pour information, sur votre Gepi, la liste est la suivante&nbsp;:
