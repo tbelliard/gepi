@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /* $Id: $
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -130,6 +130,15 @@ $mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
 if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 $mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
+
+if(preg_match("/^[AEIOUY]/i", ensure_ascii($mod_disc_terme_avertissement_fin_periode))) {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="d'";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="l'";
+}
+else {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="de ";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="le ";
+}
 ?>
 	  <legend class="invisible">Activation</legend>
 	  <input type="radio"
@@ -192,7 +201,7 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 onchange='changement()'
 			<?php if (getSettingValue("mod_disc_acces_avertissements")!='n') echo " checked='checked'"; ?> />
 	  <label for='mod_disc_acces_avertissements_y' style='cursor: pointer;'>
-		Permettre l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>
+		Permettre l'accès à la saisie <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?>
 	  </label>
 	  <br />
 	  <input type="radio"
@@ -202,10 +211,21 @@ if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement
 			 onchange='changement()'
 			<?php if (getSettingValue("mod_disc_acces_avertissements")=='n') echo " checked='checked'"; ?> />
 	  <label for='mod_disc_acces_avertissements_n' style='cursor: pointer;'>
-		Interdire l'accès à la saisie d'<?php echo $mod_disc_terme_avertissement_fin_periode;?>
+		Interdire l'accès à la saisie <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?>
 	  </label>
 
-	  <p style='text-indent:-4em;margin-left:4em;'><em>NOTE&nbsp;:</em> Les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> sont faits pour être saisis indépendamment du bulletin.<br />
+	  <br />&nbsp;<br />
+	  <input type='checkbox'
+			 name='mod_disc_avertissement_impression_parents_separes'
+			 id='mod_disc_avertissement_impression_parents_separes'
+			 value='y'
+		 onchange='changement();'
+		   <?php if (getSettingAOui("mod_disc_avertissement_impression_parents_separes")) echo " checked='checked'";?> />
+	  <label for='mod_disc_avertissement_impression_parents_separes' style='cursor: pointer;'>
+	  Pour les parents séparés, imprimer deux documents lors des impressions <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?>.
+	  </label>
+
+	  <p style='text-indent:-4em;margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> sont faits pour être saisis indépendamment du bulletin.<br />
 	  Ils n'apparaitront pas sur les bulletins, mais vous pourrez les imprimer depuis le module Discipline, ou depuis la page d'impression des bulletins.<br />
 	  La saisie se fait depuis le module Discipline, ou depuis les pages permettant la saisie des avis de conseil de classe.<br />
 	  Si vous ne souhaitez pas utiliser les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> vous pouvez interdire l'accès à la saisie ici.</p>

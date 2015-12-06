@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -106,6 +106,11 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 	$mod_disc_acces_avertissements=isset($_POST['mod_disc_acces_avertissements']) ? $_POST['mod_disc_acces_avertissements'] : "y";
 	if (!saveSetting("mod_disc_acces_avertissements", $mod_disc_acces_avertissements)) {
 		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_acces_avertissements\" !<br />";
+	}
+
+	$mod_disc_avertissement_impression_parents_separes=isset($_POST['mod_disc_avertissement_impression_parents_separes']) ? $_POST['mod_disc_avertissement_impression_parents_separes'] : "n";
+	if (!saveSetting("mod_disc_avertissement_impression_parents_separes", $mod_disc_avertissement_impression_parents_separes)) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_avertissement_impression_parents_separes\" !<br />";
 	}
 }
 

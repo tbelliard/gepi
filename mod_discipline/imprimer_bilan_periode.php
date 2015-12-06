@@ -94,80 +94,180 @@ if (isset($eleve)) {
 	for($loop=0;$loop<count($eleve);$loop++) {
 		$tab=explode("|", $eleve[$loop]);
 		if(isset($tab[2])) {
-			$tab_eleves_OOo[$nb_eleve]=array();
-
 			$current_id_classe=$tab[0];
 			$current_periode=$tab[1];
+
 			$current_eleve_login=$tab[2];
 
 			$classe=get_nom_classe($current_id_classe);
 
 			$tab_current_ele=get_info_eleve($current_eleve_login, $current_periode);
 
-			$tab_eleves_OOo[$nb_eleve]['nom']=$tab_current_ele['nom'];
-			$tab_eleves_OOo[$nb_eleve]['prenom']=$tab_current_ele['prenom'];
-			$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
-
-			$tab_eleves_OOo[$nb_eleve]['periode']=array();
-			$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
+			$tmp_tab_pers_id=array();
+			$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND e.login='".$current_eleve_login."' AND e.ele_id=r.ele_id AND (resp_legal='1' OR resp_legal='2') ORDER BY resp_legal;";
+			//echo "$sql<br />";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res)>0) {
+				$cpt_resp=0;
 				while($lig=mysqli_fetch_object($res)) {
-					if($lig->num_periode==$current_periode) {
-						$tab_eleves_OOo[$nb_eleve]['per'][$lig->num_periode]="X";
-						// Nom de la période
-						$tab_eleves_OOo[$nb_eleve]['nomper']=$lig->nom_periode;
+					$tmp_tab_pers_id[$cpt_resp]=get_info_responsable("", $lig->pers_id);
+					$cpt_resp++;
+				}
+			}
+
+/*
+			// Mettre à jour la liste des variables dans:
+			http://www.sylogix.org/projects/gepi/wiki/Mod_discipline_OOo_avertissements
+
+			//get_info_responsable($login_resp, $pers_id="")
+			//get_adresse_responsable($pers_id, $login_resp="");
+
+			$tab_adresse['adr_id']=$lig->adr_id;
+			$tab_adresse['adr1']=$lig->adr1;
+			$tab_adresse['adr2']=$lig->adr2;
+			$tab_adresse['adr3']=$lig->adr3;
+			$tab_adresse['cp']=$lig->cp;
+			$tab_adresse['commune']=$lig->commune;
+			$tab_adresse['pays']=$lig->pays;
+
+			$tab_adresse['en_ligne']=$lig->adr1;
+*/
+			$tmp_tab_info_parent=array();
+			if(getSettingAOui('mod_disc_avertissement_impression_parents_separes')) {
+				// On fera peut-être deux tours pour l'élève courant
+				if(count($tmp_tab_pers_id)>1) {
+					if(responsables_adresses_separees($current_eleve_login)) {
+						// On va faire deux tours pour l'élève courant
+
+						$tmp_tab_info_parent[0]['designation_resp']=$tmp_tab_pers_id[0]['civ_denomination'];
+						$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
+
+						$tmp_tab_info_parent[1]['designation_resp']=$tmp_tab_pers_id[1]['civ_denomination'];
+						$tmp_tab_info_parent[1]['adresse']=$tmp_tab_pers_id[1]['adresse'];
+
 					}
 					else {
-						$tab_eleves_OOo[$nb_eleve]['per'][$lig->num_periode]="";
+						// On ne va faire qu'un tour pour l'élève courant
+						if($tmp_tab_pers_id[0]['nom']!=$tmp_tab_pers_id[1]['nom']) {
+							$designation_resp=$tmp_tab_pers_id[0]['civilite']." ".$tmp_tab_pers_id[0]['nom']." ".$tmp_tab_pers_id[0]['prenom']." et ".$tmp_tab_pers_id[1]['civilite']." ".$tmp_tab_pers_id[1]['nom']." ".$tmp_tab_pers_id[1]['prenom'];
+						}
+						else {
+							$designation_resp=$tmp_tab_pers_id[0]['civilite']." et ".$tmp_tab_pers_id[1]['civilite']." ".$tmp_tab_pers_id[0]['nom']." ".$tmp_tab_pers_id[0]['prenom'];
+						}
+						$tmp_tab_info_parent[0]['designation_resp']=$designation_resp;
+						$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
 					}
 				}
-			}
-
-			$tab_eleves_OOo[$nb_eleve]['annee']=getSettingValue('gepiYear');
-
-			$tab_eleves_OOo[$nb_eleve]['etab']=getSettingValue('gepiSchoolName');
-			$tab_eleves_OOo[$nb_eleve]['adr1']=getSettingValue('gepiSchoolAdress1');
-			$tab_eleves_OOo[$nb_eleve]['adr2']=getSettingValue('gepiSchoolAdress2');
-			$tab_eleves_OOo[$nb_eleve]['cp']=getSettingValue('gepiSchoolZipCode');
-			$tab_eleves_OOo[$nb_eleve]['ville']=getSettingValue('gepiSchoolCity');
-			$tab_eleves_OOo[$nb_eleve]['tel']=getSettingValue('gepiSchoolTel');
-			$tab_eleves_OOo[$nb_eleve]['fax']=getSettingValue('gepiSchoolFax');
-			$tab_eleves_OOo[$nb_eleve]['email']=getSettingValue('gepiSchoolEmail');
-			$tab_eleves_OOo[$nb_eleve]['rne']=getSettingValue('gepiSchoolRne');
-
-			$tab_eleves_OOo[$nb_eleve]['acad']=getSettingValue('gepiSchoolAcademie');
-
-			// 20151125: A COMPLETER: Récupérer les infos parents pour pouvoir générer une ou deux fiches avec adresse selon que l'adresse est la même ou non
-
-			// id_type_avertissement
-			$tab_eleves_OOo[$nb_eleve]['ita']=array();
-
-			$tmp_tab=array();
-			$sql="SELECT * FROM s_avertissements WHERE login_ele='".$current_eleve_login."' AND periode='".$current_periode."';";
-			$res=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res)>0) {
-				while($lig=mysqli_fetch_object($res)) {
-					$tmp_tab[]=$lig->id_type_avertissement;
+				else {
+					$tmp_tab_info_parent[0]['designation_resp']=$tmp_tab_pers_id[0]['civ_denomination'];
+					$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
 				}
 			}
-
-			foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
-				if(in_array($key, $tmp_tab)) {
-					$tab_eleves_OOo[$nb_eleve]['ita'][$key]="X";
+			else {
+				// On ne fera qu'un tour pour l'élève courant même si les parents sont séparés
+				if(responsables_adresses_separees($current_eleve_login)) {
+					$tmp_tab_info_parent[0]['designation_resp']=$tmp_tab_pers_id[0]['civ_denomination'];
+					$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
+				}
+				elseif(count($tmp_tab_pers_id)>1) {
+					if($tmp_tab_pers_id[0]['nom']!=$tmp_tab_pers_id[1]['nom']) {
+						$designation_resp=$tmp_tab_pers_id[0]['civilite']." ".$tmp_tab_pers_id[0]['nom']." ".$tmp_tab_pers_id[0]['prenom']." et ".$tmp_tab_pers_id[1]['civilite']." ".$tmp_tab_pers_id[1]['nom']." ".$tmp_tab_pers_id[1]['prenom'];
+					}
+					else {
+						$designation_resp=$tmp_tab_pers_id[0]['civilite']." et ".$tmp_tab_pers_id[1]['civilite']." ".$tmp_tab_pers_id[0]['nom']." ".$tmp_tab_pers_id[0]['prenom'];
+					}
+					$tmp_tab_info_parent[0]['designation_resp']=$designation_resp;
+					$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
 				}
 				else {
-					$tab_eleves_OOo[$nb_eleve]['ita'][$key]="";
+					$tmp_tab_info_parent[0]['designation_resp']=$tmp_tab_pers_id[0]['civ_denomination'];
+					$tmp_tab_info_parent[0]['adresse']=$tmp_tab_pers_id[0]['adresse'];
 				}
 			}
 
-			// [eleves.sc.116A; if [val]='MS'; then X ; else '']
+			for($loop_resp=0;$loop_resp<count($tmp_tab_info_parent);$loop_resp++) {
+				$tab_eleves_OOo[$nb_eleve]=array();
 
-			$nb_eleve++;
+				$tab_eleves_OOo[$nb_eleve]['nom']=$tab_current_ele['nom'];
+				$tab_eleves_OOo[$nb_eleve]['prenom']=$tab_current_ele['prenom'];
+				$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+
+				$tab_eleves_OOo[$nb_eleve]['periode']=array();
+				$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						if($lig->num_periode==$current_periode) {
+							$tab_eleves_OOo[$nb_eleve]['per'][$lig->num_periode]="X";
+							// Nom de la période
+							$tab_eleves_OOo[$nb_eleve]['nomper']=$lig->nom_periode;
+						}
+						else {
+							$tab_eleves_OOo[$nb_eleve]['per'][$lig->num_periode]="";
+						}
+					}
+				}
+
+				$tab_eleves_OOo[$nb_eleve]['suivi_par']=getParamClasse($current_id_classe,'suivi_par',"");
+				$tab_eleves_OOo[$nb_eleve]['suivi_par_alt']=getParamClasse($current_id_classe,'suivi_par_alt',"");
+				$tab_eleves_OOo[$nb_eleve]['suivi_par_alt_fonction']=getParamClasse($current_id_classe,'suivi_par_alt_fonction',"");
+
+				$tab_eleves_OOo[$nb_eleve]['annee']=getSettingValue('gepiYear');
+
+				$tab_eleves_OOo[$nb_eleve]['etab']=getSettingValue('gepiSchoolName');
+				$tab_eleves_OOo[$nb_eleve]['adr1']=getSettingValue('gepiSchoolAdress1');
+				$tab_eleves_OOo[$nb_eleve]['adr2']=getSettingValue('gepiSchoolAdress2');
+				$tab_eleves_OOo[$nb_eleve]['cp']=getSettingValue('gepiSchoolZipCode');
+				$tab_eleves_OOo[$nb_eleve]['ville']=getSettingValue('gepiSchoolCity');
+				$tab_eleves_OOo[$nb_eleve]['tel']=getSettingValue('gepiSchoolTel');
+				$tab_eleves_OOo[$nb_eleve]['fax']=getSettingValue('gepiSchoolFax');
+				$tab_eleves_OOo[$nb_eleve]['email']=getSettingValue('gepiSchoolEmail');
+				$tab_eleves_OOo[$nb_eleve]['rne']=getSettingValue('gepiSchoolRne');
+
+				$tab_eleves_OOo[$nb_eleve]['acad']=getSettingValue('gepiSchoolAcademie');
+
+				// 20151125: A COMPLETER: Récupérer les infos parents pour pouvoir générer une ou deux fiches avec adresse selon que l'adresse est la même ou non
+
+				// id_type_avertissement
+				$tab_eleves_OOo[$nb_eleve]['ita']=array();
+
+				$tmp_tab=array();
+				$sql="SELECT * FROM s_avertissements WHERE login_ele='".$current_eleve_login."' AND periode='".$current_periode."';";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res)>0) {
+					while($lig=mysqli_fetch_object($res)) {
+						$tmp_tab[]=$lig->id_type_avertissement;
+					}
+				}
+
+				foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
+					if(in_array($key, $tmp_tab)) {
+						$tab_eleves_OOo[$nb_eleve]['ita'][$key]="X";
+					}
+					else {
+						$tab_eleves_OOo[$nb_eleve]['ita'][$key]="";
+					}
+				}
+
+				// [eleves.sc.116A; if [val]='MS'; then X ; else '']
+
+				$tab_eleves_OOo[$nb_eleve]['designation_resp']=$tmp_tab_info_parent[$loop_resp]['designation_resp'];
+				$tab_eleves_OOo[$nb_eleve]['resp_adr1']=$tmp_tab_info_parent[$loop_resp]['adresse']['adr1'];
+				$tab_eleves_OOo[$nb_eleve]['resp_adr2']=$tmp_tab_info_parent[$loop_resp]['adresse']['adr2'];
+				$tab_eleves_OOo[$nb_eleve]['resp_adr3']=$tmp_tab_info_parent[$loop_resp]['adresse']['adr3'];
+				$tab_eleves_OOo[$nb_eleve]['resp_cp']=$tmp_tab_info_parent[$loop_resp]['adresse']['cp'];
+				$tab_eleves_OOo[$nb_eleve]['resp_commune']=$tmp_tab_info_parent[$loop_resp]['adresse']['commune'];
+				$tab_eleves_OOo[$nb_eleve]['resp_pays']=$tmp_tab_info_parent[$loop_resp]['adresse']['pays'];
+
+				$nb_eleve++;
+			}
 		}
 	}
 
 	/*
+[eleves;block=begin]
+[eleves;block=end]
+
 	echo "<pre>";
 	print_r($tab_eleves_OOo);
 	echo "</pre>";
