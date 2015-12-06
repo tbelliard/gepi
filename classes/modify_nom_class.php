@@ -188,7 +188,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -292,7 +292,7 @@ if (isset($is_posted) and ($is_posted == '1')) {
 
 			// =========================
 			// 20121027
-			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi');
+			$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
 			for($loop=0;$loop<count($tab_param);$loop++) {
 				$tmp_name=$tab_param[$loop];
 				if(!saveParamClasse($id_classe, $tmp_name, $$tmp_name)) {
@@ -501,7 +501,7 @@ if (isset($id_classe)) {
 	// =========================
 	// 20121027
 	// Paramètres enregistrés dans la table 'classes_param':
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		$$tmp_name=getParamClasse($id_classe, $tmp_name, "");
@@ -544,7 +544,7 @@ if (isset($id_classe)) {
 	$rn_abs_2='n';
 	// =========================
 	// 20121027
-	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode');
+	$tab_param=array('rn_aff_classe_nom','rn_app', 'rn_moy_classe', 'rn_moy_min_max_classe', 'rn_retour_ligne','rn_rapport_standard_min_font', 'rn_adr_resp', 'rn_bloc_obs', 'rn_col_moy', 'rn_type_par_defaut', 'bull_prefixe_periode', 'gepi_prof_suivi', 'suivi_par_alt', 'suivi_par_alt_fonction');
 	for($loop=0;$loop<count($tab_param);$loop++) {
 		$tmp_name=$tab_param[$loop];
 		/*
@@ -574,7 +574,8 @@ echo add_token_field();
 ?>
 <p>Nom court de la classe&nbsp;: <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe&nbsp;: <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
-<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (<em>chef d'établissement ou son représentant</em>)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
+
+<p style='margin-top:1em;'>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (<em>chef d'établissement ou son représentant</em>)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>
 <?php
 if ($gepiSettings['active_mod_ects'] == "y") {
 ?>
@@ -590,6 +591,13 @@ else {
 }
 ?>
 <p>Formule à insérer sur les bulletins (<em>cette formule sera suivie des nom et prénom de la personne désignée ci_dessus</em>)&nbsp;:<br /> <input type=text size=80 name=reg_formule value = "<?php echo $formule; ?>"  onchange='changement()' /></p>
+
+<p style='margin-top:1em;'>Désignation alternative de la personne suivant la classe (<em>chef d'établissement ou son représentant</em>) pouvant être utilisée dans des publipostages OOo&nbsp;: <br />
+<input type='text' size='30' name='suivi_par_alt' value = "<?php echo $suivi_par_alt; ?>"  onchange='changement()' /><br />
+Fonction associée (<em>chef, adjoint</em>)&nbsp;:<br />
+<input type='text' size='30' name='suivi_par_alt_fonction' value = "<?php echo $suivi_par_alt_fonction; ?>"  onchange='changement()' />
+</p>
+
 
 <p style='margin-top:1em;'><b>Dénomination du professeur chargé du suivi des élèves&nbsp;:</b><br />
 <input type="text" name="gepi_prof_suivi" id='gepi_prof_suivi' value="<?php echo $gepi_prof_suivi_classe; ?>" onchange='changement()' />
