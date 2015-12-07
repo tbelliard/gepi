@@ -234,7 +234,7 @@ function creeCSV($donnees, $justifications) {
   $date = date("d-m-Y_H-i");
   $nom_fic = "Justifications_".$date.".csv";
   send_file_download_headers('text/x-csv',$nom_fic);
-  $fd = '"Nom Prénom";"Classe";"Retards";"1/2 journées non justifiées";"1/2 journées justifiées"';
+  $fd = '"Nom Prénom";"Classe";"Demi-journées";"Retards";"1/2 journées non justifiées";"1/2 journées justifiées"';
   foreach ($justifications as $justifie) {
 	$fd .= ';"'.$justifie->getNom().'"';
   }
@@ -245,6 +245,7 @@ function creeCSV($donnees, $justifications) {
 	  $fd .= '"'.$donnee['nom'].' '.$donnee['prenom'].'"';
 	  $fd .= ';"'.$donnee['classe'].'"';
 	  $fd .= ';"'.$donnee['retards'].'"';
+	  $fd .= ';"'.$donnee['demi_journees'].'"';
 	  $fd .= ';"'.$donnee['non_justifiees'].'"';
 	  $fd .= ';"'.$donnee['justifiees'].'"';
 	  foreach ($donnee['traitement'] as $justifie) {
@@ -629,6 +630,9 @@ include('menu_bilans.inc.php');
 		Retards
 	  </th>
 	  <th class="number" title ="Cliquez pour trier sur la colonne">
+		1/2 journées
+	  </th>
+	  <th class="number" title ="Cliquez pour trier sur la colonne">
 		1/2 journées non justifiées
 	  </th>
 	  <th class="number" title ="Cliquez pour trier sur la colonne">
@@ -655,6 +659,10 @@ foreach ($donnees as $donnee) { ?>
 	  
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['retards']; ?>
+	  </td>
+	  
+	  <td style="border:1px groove #aaaaaa;text-align: center;">
+		<?php echo $donnee['demi_journees']; ?>
 	  </td>
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['non_justifiees']; ?>
