@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -106,6 +106,7 @@ if($_SESSION['statut']=='professeur') {
 		die();
 	}
 	else {
+		echo "<div style='margin-left:3em;'>\n";
 		$message_erreur="";
 		echo "<table>\n";
 		while($lig_grp=mysqli_fetch_object($res_grp)){
@@ -167,7 +168,7 @@ if($_SESSION['statut']=='professeur') {
 		}
 		echo "</table>\n";
 		echo $message_erreur;
-
+		echo "</div>\n";
 		echo "<br />\n";
 
 		$groups=get_groups_for_prof($_SESSION['login']);
@@ -177,6 +178,7 @@ if($_SESSION['statut']=='professeur') {
 			echo "<fieldset style='border: 1px solid grey;background-image: url(\"../images/background/opacite50.png\");'>\n";
 			//echo "<legend style='border: 1px solid grey;background-color: white;'></legend>\n";
 			echo "<p class='bold'>Listes personnalisées&nbsp;:</p>\n";
+			echo "<div style='margin-left:3em;'>\n";
 
 			echo "<select name='id_groupe' id='id_groupe' onchange='update_champs_periode()'>\n";
 			foreach($groups as $current_group) {
@@ -291,6 +293,7 @@ if($_SESSION['statut']=='professeur') {
 			echo "<input type='hidden' name='mode' value='personnalise' />\n";
 
 			echo "<input type='submit' value='Exporter' />\n";
+			echo "</div>\n";
 			echo "</fieldset>\n";
 			echo "</form>\n";
 		}
@@ -301,6 +304,7 @@ if($_SESSION['statut']=='professeur') {
 	$res_aid_config=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_aid_config)>0) {
 		echo "<p style='margin-top:1em;'>Sélectionnez un AID&nbsp;:</p>
+<div style='margin-left:3em;'>
 <ul>";
 		while($lig_aid_config=mysqli_fetch_object($res_aid_config)) {
 			echo "
@@ -332,10 +336,33 @@ if($_SESSION['statut']=='professeur') {
 	</li>";
 		}
 		echo "
-</ul>";
+</ul>
+</div>";
 	}
 	echo "
 <p><br /></p>";
+
+
+	echo "<p class='bold'>Listes classes&nbsp;:</p><div style='margin-left:3em;'>\n";
+	$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY c.classe;";
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_classe)>0) {
+		echo "<table>";
+		while($lig_classe=mysqli_fetch_object($res_classe)) {
+			echo "<tr><td><strong>$lig_classe->classe&nbsp;:</strong> </td>";
+			$sql="SELECT p.* FROM periodes p WHERE p.id_classe='".$lig_classe->id."' ORDER BY p.num_periode;";
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			$cpt=0;
+			while($lig_per=mysqli_fetch_object($res_per)) {
+				if($cpt>0) {echo "<td> - </td>";}
+				echo "<td><a href='get_csv.php?id_classe=".$lig_classe->id."&amp;periode_num=".$lig_per->num_periode."' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
+				$cpt++;
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>";
+	}
+	echo "</div>\n";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -668,7 +695,6 @@ if(mysqli_num_rows($res_aid_config)>0) {
 echo "
 </ul>
 <p><br /></p>";
-
 
 require("../lib/footer.inc.php");
 ?>
