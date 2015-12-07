@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001-2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -65,6 +65,9 @@ if(isset($_POST['activation_desactivation'])) {
 
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_fichiers_signature", $_POST['activer'])) {$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";}
+		else {
+			$msg = "Enregistrement du paramètre activation/désactivation effectué !";
+		}
 	}
 }
 
@@ -675,7 +678,9 @@ if($mode=='choix_fichier') {
 		<input type='submit' value='Supprimer les fichiers cochés' />
 
 	</fieldset>
-</form>\n";
+</form>
+
+<p style='margin-top:1em;'><em>NOTE&nbsp;:</em> N'oubliez pas de choisir ensuite <a href='".$_SERVER['PHP_SELF']."?mode=choix_assoc_fichier_user_classe' onclick=\"return confirm_abandon(this, change, '$themessage');\">à quelles quelle(s) classe(s) vous souhaitez associer telle signature</a>.</p>\n";
 
 	require("../lib/footer.inc.php");
 	die();
