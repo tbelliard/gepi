@@ -143,6 +143,7 @@ function traiteEleve($eleve,$date_debut, $date_fin, $justifie_col, $donneeBrut, 
 	if ($eleveNbAbs['demi_journees'] > 0 || $eleveNbAbs['retards'] > 0 ) {
 	  $eleveNbAbs['non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin)->count();
 	  $eleveNbAbs['justifiees'] = $eleveNbAbs['demi_journees'] - $eleveNbAbs['non_justifiees']; 
+	  $donnees[$eleve_id]['login'] = $eleve->getLogin();
 	  $donnees[$eleve_id]['nom'] = $eleve->getNom();
 	  $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
 	  $donnees[$eleve_id]['classe'] = $eleve->getClasse();
@@ -647,11 +648,20 @@ include('menu_bilans.inc.php');
 	
 	
 	
-<?php if (count($donnees)) {
+<?php 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
+if (count($donnees)) {
 foreach ($donnees as $donnee) { ?>
 	<tr class='white_hover'>
 	  <td style ="border:1px groove #aaaaaa;">
-		<?php echo $donnee['nom']." ".$donnee['prenom']; ?>
+		<?php 
+			if($acces_visu_eleve) {
+				echo "<span style='display:none;'>".$donnee['nom']." ".$donnee['prenom']."</span>";
+				echo "<div style='float:right; width:16px;'><a href='../eleves/visu_eleve.php?ele_login=".$donnee['login']."&onglet=absences' target='_blank' title=\"Voir la fiche élève dans un nouvel onglet.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a></div>";
+			}
+			echo $donnee['nom']." ".$donnee['prenom']; 
+		?>
 	  </td>
 	  <td style="border:1px groove #aaaaaa;text-align: center;">
 		<?php echo $donnee['classe']; ?>
