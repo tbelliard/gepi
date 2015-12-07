@@ -2313,7 +2313,24 @@ if(isset($_GET['mode'])) {
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 
 		$nom_fic=$chaine_titre."_".$now;
+/*
+// 20151207
+echo "<pre>";
+print_r($ligne1);
+echo "</pre>";
 
+echo "<pre>";
+print_r($ligne1_csv);
+echo "</pre>";
+
+echo "<pre>";
+print_r($col);
+echo "</pre>";
+
+echo "<pre>";
+print_r($col_csv);
+echo "</pre>";
+*/
 		// Filtrer les caractères dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
 		$nom_fic.=".pdf";
@@ -2782,6 +2799,12 @@ if(($aff_rang)&&($aff_rang=='y')) {
 if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
 }
+if(($aff_moy_cat)&&($aff_moy_cat=='y')) {
+	echo "&amp;aff_moy_cat=$aff_moy_cat";
+}
+if(($aff_moy_gen)&&($aff_moy_gen=='y')) {
+	echo "&amp;aff_moy_gen=$aff_moy_gen";
+}
 
 if($utiliser_coef_perso=='y') {
 	echo "&amp;utiliser_coef_perso=y";
@@ -2833,6 +2856,12 @@ if(($aff_rang)&&($aff_rang=='y')) {
 }
 if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
+}
+if(($aff_moy_cat)&&($aff_moy_cat=='y')) {
+	echo "&amp;aff_moy_cat=$aff_moy_cat";
+}
+if(($aff_moy_gen)&&($aff_moy_gen=='y')) {
+	echo "&amp;aff_moy_gen=$aff_moy_gen";
 }
 
 if($utiliser_coef_perso=='y') {
