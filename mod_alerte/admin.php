@@ -201,7 +201,7 @@ if (isset($_POST['is_posted3'])) {
 	$cpt_comptes_exclus_supprimes=0;
 	for($loop=0;$loop<count($tab_user_mae);$loop++) {
 		if(!in_array($tab_user_mae[$loop], $login_user)) {
-			$sql="DELETE FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$login_user[$loop]."';";
+			$sql="DELETE FROM mod_alerte_divers WHERE name='login_exclus' AND value='".$tab_user_mae[$loop]."';";
 			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($delete) {
 				$cpt_comptes_exclus_supprimes++;
