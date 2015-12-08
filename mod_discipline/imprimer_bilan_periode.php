@@ -103,6 +103,13 @@ if (isset($eleve)) {
 
 			$tab_current_ele=get_info_eleve($current_eleve_login, $current_periode);
 
+			// Espace par défaut pour placer si nécessaire la date à la main dans le document
+			$date_conseil_de_classe="                 ";
+			$tab_ev_conseil_classe=get_tab_date_dernier_evenement_telle_classe($current_id_classe, 'conseil_de_classe');
+			if(isset($tab_ev_conseil_classe['slashdate_ev'])) {
+				$date_conseil_de_classe=$tab_ev_conseil_classe['slashdate_ev'];
+			}
+
 			$tmp_tab_pers_id=array();
 			$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND e.login='".$current_eleve_login."' AND e.ele_id=r.ele_id AND (resp_legal='1' OR resp_legal='2') ORDER BY resp_legal;";
 			//echo "$sql<br />";
@@ -191,6 +198,8 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['nom']=$tab_current_ele['nom'];
 				$tab_eleves_OOo[$nb_eleve]['prenom']=$tab_current_ele['prenom'];
 				$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
+
+				$tab_eleves_OOo[$nb_eleve]['date_conseil_de_classe']=$date_conseil_de_classe;
 
 				$tab_eleves_OOo[$nb_eleve]['periode']=array();
 				$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";

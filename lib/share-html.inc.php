@@ -4815,4 +4815,27 @@ function affiche_date_prochain_conseil_de_classe_classe($id_classe) {
 
 	return $chaine_date_conseil_classe;
 }
+
+function affiche_date_dernier_conseil_de_classe_classe($id_classe) {
+	$chaine_date_conseil_classe="";
+
+	$current_ev=get_tab_date_dernier_evenement_telle_classe($id_classe, 'conseil_de_classe');
+
+	if(isset($current_ev['id_ev'])) {
+		if($chaine_date_conseil_classe=="") {
+			$chaine_date_conseil_classe="<p align='center' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+		}
+		$lieu_conseil_de_classe="";
+		if(isset($current_ev['lieu']['designation_complete'])) {
+			$lieu_conseil_de_classe=" (".$current_ev['lieu']['designation_complete'].")";
+		}
+		$chaine_date_conseil_classe.=" ".$current_ev['classe']."&nbsp;<span style='font-size:small;' title=\"Date du prochain conseil de classe pour la\n".$current_ev['classe']." : ".$current_ev['slashdate_heure_ev'].$lieu_conseil_de_classe."\">(".$current_ev['slashdate_ev'].")</span>";
+	}
+
+	if($chaine_date_conseil_classe!="") {
+		$chaine_date_conseil_classe.="</p>";
+	}
+
+	return $chaine_date_conseil_classe;
+}
 ?>

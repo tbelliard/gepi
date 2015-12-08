@@ -13742,4 +13742,21 @@ function acces_upload_modele_ooo($login, $statut="") {
 
 	return $retour;
 }
+
+function get_tab_date_dernier_evenement_telle_classe($id_classe, $type) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement<=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement DESC LIMIT 1;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab=$lig;
+			$tab['slashdate_ev']=formate_date($lig['date_evenement']);
+			$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+			$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+		}
+	}
+	return $tab;
+}
+
 ?>

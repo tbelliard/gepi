@@ -195,8 +195,11 @@ if((isset($periode))&&(isset($login_ele))) {
 				if(acces("/mod_discipline/imprimer_bilan_periode.php", $_SESSION['statut'])) {
 					$tmp_tab_clas=get_class_periode_from_ele_login($login_ele);
 					if(isset($tmp_tab_clas['periode'][$periode]['id_classe'])) {
-						$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
-						$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele' target='_blank'>Imprimer ".$prefixe_mod_disc_terme_avertissement_fin_periode_le.$mod_disc_terme_avertissement_fin_periode."</a><br />";
+						$tab_av_ele=get_tab_avertissement($login_ele, $periode);
+						if((isset($tab_av_ele['periode'][$periode]))&&(count($tab_av_ele['periode'][$periode])>0)) {
+							$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
+							$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele' target='_blank'>Imprimer ".$prefixe_mod_disc_terme_avertissement_fin_periode_le.$mod_disc_terme_avertissement_fin_periode."</a><br />";
+						}
 					}
 				}
 			}
