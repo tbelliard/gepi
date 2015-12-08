@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -163,7 +163,8 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 			$tab_lien=array();
 
 			while($lig_ele=mysqli_fetch_object($res_ele)) {
-				$tab_txt[]=casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom);
+				//$tab_txt[]=casse_mot($lig_ele->prenom,'majf2')." ".my_strtoupper($lig_ele->nom);
+				$tab_txt[]=my_strtoupper($lig_ele->nom)." ".casse_mot($lig_ele->prenom,'majf2');
 				$tab_lien[]=$_SERVER['PHP_SELF']."?ele_login=".$lig_ele->login."&amp;id_classe=".$id_classe;
 			}
 

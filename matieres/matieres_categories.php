@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -117,6 +117,7 @@ if (isset($_POST['action'])) {
 		check_token();
 
 		$tab_priorites_categories=array();
+		$tab_priorites_categories2=array();
 		$temoin_pb_ordre_categories="n";
 		foreach($_POST as $key => $value) {
 			if(preg_match("/^priority_/", $key)) {
@@ -130,13 +131,48 @@ if (isset($_POST['action'])) {
 				$sql="UPDATE matieres_categories SET priority = '" . $value . "' WHERE id = '".$cat_id."';";
 				//echo "$sql<br />";
 				$res = mysqli_query($GLOBALS["mysqli"], $sql);
-
 				if (!$res) $msg .= "Erreur lors de la mise à jour de la catégorie.";
+
+				$tab_priorites_categories2[$cat_id]=$value;
 			}
 		}
 
+		if(isset($_POST['forcer_ordre_categories_toutes_classes'])) {
+			$sql="SELECT id FROM classes;";
+			//echo "$sql<br />";
+			$res_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_clas)>0) {
+				while($lig_clas=mysqli_fetch_object($res_clas)) {
+					foreach($tab_priorites_categories2 as $cat_id => $priorite) {
+						$sql="SELECT * FROM j_matieres_categories_classes WHERE classe_id='".$lig_clas->id."' AND categorie_id='".$cat_id."';";
+						//echo "$sql<br />";
+						$res_cat_clas=mysqli_query($GLOBALS["mysqli"], $sql);
+						if (mysqli_num_rows($res_cat_clas)==0) {
+							$sql="INSERT INTO j_matieres_categories_classes SET classe_id='".$lig_clas->id."', categorie_id='".$cat_id."', priority='".$priorite."';";
+							//echo "$sql<br />";
+							$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$insert) {
+								$msg.="Erreur lors de la définition de l'ordre de la catégorie n°".$cat_id." pour la classe ".get_nom_classe($lig_clas->id)."<br />";
+							}
+						} else {
+							$sql="UPDATE j_matieres_categories_classes SET priority='".$priorite."' WHERE (classe_id='".$lig_clas->id."' and categorie_id='".$cat_id."');";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$update) {
+								$msg.="Erreur lors de la mise à jour de l'ordre de la catégorie n°".$cat_id." pour la classe ".get_nom_classe($lig_clas->id)."<br />";
+							}
+						}
+					}
+				}
+			}
+		}
+
+
 		if($temoin_pb_ordre_categories=="y") {
 			$msg.="<br /><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Des mesures ont été prises pour imposer des ordres différents, mais il se peut que l'ordre ne vous convienne pas.<br />\n";
+		}
+		else {
+			$msg.="Modifications enregistrées.<br />";
 		}
     } elseif ($_POST['action'] == "delete") {
         // On teste d'abord l'ID
@@ -368,6 +404,7 @@ if (isset($_GET['action'])) {
     echo "</table>\n";
 
 	echo "
+	<p><input type='checkbox' name='forcer_ordre_categories_toutes_classes' id='forcer_ordre_categories_toutes_classes' value='y' /><label for='forcer_ordre_categories_toutes_classes'> Imposer cet ordre de catégories pour toutes les classes.</label></p>
 	<center><input type='submit' name='enregistrer' value=\"Modifier l'ordre des catégories\" /></center>
 	<input type=hidden name='is_posted' value='yes' />
 	<input type=hidden name='action' value='modif_ordre_categories' />

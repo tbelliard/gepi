@@ -66,7 +66,7 @@
 	</div>
 
 <!-- identification -->
-	<form action='login.php' id='form_login' method='post' onsubmit="verif_saisie_login(true)">
+	<form action='login.php' id='form_login' name='form_login' method='post' onsubmit="verif_saisie_login(true)">
 		<input type='hidden' name='auth_sso_secours' value='[onshow.auth_sso_secours]' />
 		<div id ='identification'>
 				
@@ -205,8 +205,15 @@
 
 	<script type='text/javascript'>
 		//alert('plip');
-		document.getElementById('soumettre').style.display='none';
-		document.getElementById('soumettre2').style.display='';
+		//document.getElementById('soumettre').style.display='none';
+		//document.getElementById('soumettre2').style.display='';
+		// J'obtiens 
+		/*
+		Horodatage : 19/11/2015 10:30:21
+		Erreur : TypeError: document.getElementById(...).submit is not a function
+		Fichier source : https://127.0.0.1/steph/gepi_git_trunk/login.php?auth_sso_secours=y
+		Ligne : 236
+		*/
 		function verif_saisie_login(mode) {
 			//alert('plop');
 			if(document.getElementById('login').value=="") {
@@ -219,9 +226,14 @@
 					return false;
 				}
 				else {
+					//alert('plop plip');
 					//alert('ee')
 					//if(mode==true) {
-						document.getElementById('form_login').submit();
+						//document.getElementById('form_login').submit();
+						//my_form=document.forms['form_login'];
+						//my_form.submit();
+						document.getElementById("form_login").submit();
+						//alert('plaf');
 					/*
 					}
 					else {

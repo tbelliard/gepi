@@ -163,6 +163,8 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					log_ajax_app($sql);
 					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					$insertion_ou_maj_tempo="n";
+					// Pour effacer le spinner
+					echo "";
 				}
 			}
 	
@@ -174,12 +176,30 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					$sql="UPDATE matieres_appreciations_tempo SET appreciation = '".$appreciation."' WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'";
 					log_ajax_app($sql);
 					$miseajour = mysqli_query($GLOBALS["mysqli"], $sql);
+					// Pour remplacer le spinner
+					if($miseajour) {
+						echo "<img src='../images/enabled.png' class='icone16' alt='Enregistrement temp effectué' title=\"L'enregistrement de sécurité dans une table temporaire a été effectué.\nEn cas de problème lors de l'enregistrement final, vous pourrez restaurer cette appréciation depuis la table temporaire.\" />";
+					}
+					else {
+						echo "<img src='../images/disabled.png' class='icone16' alt=\"Erreur\" title=\"Erreur lors de l'enregistrement de sécurité dans une table temporaire.\nVous devriez contrôler ce qui a pu se produire.\" />";
+					}
 				} else {
 					//sinon on crée une nouvelle appréciation si l'appréciation n'est pas vide
 					if ($appreciation != "") {
 						$sql="INSERT INTO matieres_appreciations_tempo SET login = '".$verif_var1[0]."', id_groupe = '".$var2."', periode = '".$verif_var1[1]."', appreciation = '".$appreciation."'";
 						log_ajax_app($sql);
 						$sauvegarde = mysqli_query($GLOBALS["mysqli"], $sql);
+						// Pour remplacer le spinner
+						if($sauvegarde) {
+							echo "<img src='../images/enabled.png' class='icone16' alt='Enregistrement temp effectué' title=\"L'enregistrement de sécurité dans une table temporaire a été effectué.\nEn cas de problème lors de l'enregistrement final, vous pourrez restaurer cette appréciation depuis la table temporaire.\" />";
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone16' alt=\"Erreur\" title=\"Erreur lors de l'enregistrement de sécurité dans une table temporaire.\nVous devriez contrôler ce qui a pu se produire.\" />";
+						}
+					}
+					else {
+						// Pour effacer le spinner
+						echo "";
 					}
 				}
 			}

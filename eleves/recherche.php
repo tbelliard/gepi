@@ -38,6 +38,14 @@ if (!checkAccess()) {
 	die();
 }
 
+$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+
+if($_SESSION['statut']=='professeur') {
+	if(!getSettingAOui('GepiAccesGestElevesProf')) {
+		$acces_visu_eleve="n";
+	}
+}
+
 function extract_utilisateurs($tab_login) {
 	global $cpt_pers, $tab_result_recherche, $acces_modify_user, $gepiPath;
 
@@ -347,6 +355,7 @@ if(isset($is_posted_recherche)) {
 
 	$statut=isset($_POST['statut']) ? $_POST['statut'] : array();
 	if(count($statut)>0) {
+		/*
 		$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
 
 		if($_SESSION['statut']=='professeur') {
@@ -354,6 +363,7 @@ if(isset($is_posted_recherche)) {
 				$acces_visu_eleve="n";
 			}
 		}
+		*/
 
 		//$compteur_personnes_trouvees=0;
 

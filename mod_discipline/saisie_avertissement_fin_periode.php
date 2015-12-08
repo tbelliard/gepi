@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -57,6 +57,15 @@ if(!getSettingAOui('active_mod_discipline')) {
 $mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 
+if(preg_match("/^[AEIOUY]/i", ensure_ascii($mod_disc_terme_avertissement_fin_periode))) {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="d'";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="l'";
+}
+else {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="de ";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="le ";
+}
+
 $login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : NULL);
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
 $mode_js=isset($_POST['mode_js']) ? $_POST['mode_js'] : (isset($_GET['mode_js']) ? $_GET['mode_js'] : "n");
@@ -78,7 +87,7 @@ if((isset($periode))&&(isset($login_ele))) {
 	if($_SESSION['statut']=='professeur') {
 		if((!getSettingAOui('saisieDiscProfPAvt'))||(!is_pp($_SESSION['login'], "", $login_ele))) {
 			$mess=rawurlencode("Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir les ".$mod_disc_terme_avertissement_fin_periode."s !");
-			tentative_intrusion(1, "Tentative d'accès à la saisie de $mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
+			tentative_intrusion(1, "Tentative d'accès à la saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
 		}
@@ -86,7 +95,7 @@ if((isset($periode))&&(isset($login_ele))) {
 	elseif($_SESSION['statut']=='scolarite') {
 		if(!getSettingAOui('GepiRubConseilScol')) {
 			$mess=rawurlencode("Vous n'êtes pas autorisé à saisir l'avis du bulletin !");
-			tentative_intrusion(1, "Tentative d'accès à la saisie de $mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
+			tentative_intrusion(1, "Tentative d'accès à la saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
 		}
@@ -101,7 +110,7 @@ if((isset($periode))&&(isset($login_ele))) {
 		}
 		else {
 			$mess=rawurlencode("Vous n'êtes pas CPE de ".get_nom_prenom_eleve($login_ele)." ou bien vous n'êtes pas autorisé à saisir les ".$mod_disc_terme_avertissement_fin_periode."s !");
-			tentative_intrusion(1, "Tentative d'accès à la saisie de $mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
+			tentative_intrusion(1, "Tentative d'accès à la saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour l'élève ".get_nom_prenom_eleve($login_ele).".");
 			header("Location: ../accueil.php?msg=$mess");
 			die();
 		}
@@ -151,7 +160,7 @@ if((isset($periode))&&(isset($login_ele))) {
 						//echo "$sql<br />";
 						$del=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$del) {
-							$msg.="Erreur lors de la suppression de l'avertissement.";
+							$msg.="Erreur lors de la suppression de ".$mod_disc_terme_avertissement_fin_periode.".";
 							$nb_err++;
 						}
 					}
@@ -174,7 +183,7 @@ if((isset($periode))&&(isset($login_ele))) {
 						//echo "$sql<br />";
 						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$insert) {
-							$msg.="Erreur lors de l'enregistrement de l'avertissement.";
+							$msg.="Erreur lors de l'enregistrement de ".$mod_disc_terme_avertissement_fin_periode.".";
 							$nb_err++;
 						}
 					}
@@ -186,8 +195,11 @@ if((isset($periode))&&(isset($login_ele))) {
 				if(acces("/mod_discipline/imprimer_bilan_periode.php", $_SESSION['statut'])) {
 					$tmp_tab_clas=get_class_periode_from_ele_login($login_ele);
 					if(isset($tmp_tab_clas['periode'][$periode]['id_classe'])) {
-						$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
-						$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele'>Imprimer l'".$mod_disc_terme_avertissement_fin_periode."</a><br />";
+						$tab_av_ele=get_tab_avertissement($login_ele, $periode);
+						if((isset($tab_av_ele['periode'][$periode]))&&(count($tab_av_ele['periode'][$periode])>0)) {
+							$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
+							$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele' target='_blank'>Imprimer ".$prefixe_mod_disc_terme_avertissement_fin_periode_le.$mod_disc_terme_avertissement_fin_periode."</a><br />";
+						}
 					}
 				}
 			}
@@ -244,8 +256,13 @@ if((isset($periode))&&(isset($login_ele))) {
 
 		//$tab_avertissement_fin_periode=get_tab_avertissement($login_ele, $periode);
 
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
-	<fieldset class='fieldset_opacite50'>
+		$lien_suppl="";
+		if(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
+			$lien_suppl="\n"."<div style='float:right; width:16px; margin:3px;'><a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' onclick=\"return confirm_abandon(this, change, '$themessage');\" title=\"Accès aux onglets élève\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a></div>";
+		}
+
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_saisie_avt'>
+	<fieldset class='fieldset_opacite50'>".$lien_suppl."
 		<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
@@ -303,7 +320,7 @@ else {
 	if(!acces_saisie_avertissement_fin_periode("")) {
 		echo "</p>
 
-<p style='color:red'>Vous n'avez pas accès à la saisie d'".$mod_disc_terme_avertissement_fin_periode.".</p>";
+<p style='color:red'>Vous n'avez pas accès à la saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode.".</p>";
 
 		require("../lib/footer.inc.php");
 		die();

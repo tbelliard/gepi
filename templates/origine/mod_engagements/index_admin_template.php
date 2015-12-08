@@ -3,7 +3,7 @@
 /*
 * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Eric Lebrun, Regis Bouguin, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Eric Lebrun, Regis Bouguin, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -135,6 +135,7 @@
 
   <form action="index_admin.php" id="form2" method="post" class='fieldset_opacite50'>
 <?php
+	$gepi_prof_suivi=ucfirst(getSettingValue('gepi_prof_suivi'));
 	echo add_token_field();
 ?>
 	<input type="hidden" name="is_posted" value="2" />
@@ -152,7 +153,7 @@
 				<th style='color:black;' rowspan='2'>Lié à une classe</th>
 				<th style='color:black;' rowspan='2'>Conseil de classe</th>
 				<th style='color:black;' colspan='2'>Statuts visés</th>
-				<th style='color:black;' colspan='2'>Statuts saisie</th>
+				<th style='color:black;' colspan='3'>Statuts saisie</th>
 				<th style='color:black;' rowspan='2'>Supprimer cet engagement</th>
 			</tr>
 			<tr>
@@ -160,6 +161,7 @@
 				<th style='color:black;'>Responsable</th>
 				<th style='color:black;'>Scolarité</th>
 				<th style='color:black;'>Cpe</th>
+				<th style='color:black;'><?php echo $gepi_prof_suivi;?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -189,6 +191,10 @@
 					if($tab_engagements['indice'][$loop]['SaisieCpe']=="yes") {
 						$checked_SaisieCpe=" checked";
 					}
+					$checked_SaisiePP="";
+					if($tab_engagements['indice'][$loop]['SaisiePP']=="yes") {
+						$checked_SaisiePP=" checked";
+					}
 
 					echo "
 			<tr>
@@ -202,6 +208,7 @@
 				<td><input type='checkbox' name='ConcerneResponsable[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_ConcerneResponsable /></td>
 				<td><input type='checkbox' name='SaisieScol[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisieScol /></td>
 				<td><input type='checkbox' name='SaisieCpe[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisieCpe /></td>
+				<td><input type='checkbox' name='SaisiePP[".$tab_engagements['indice'][$loop]['id']."]' value=\"yes\"$checked_SaisiePP /></td>
 				<td><input type='checkbox' name='suppr[]' value=\"".$tab_engagements['indice'][$loop]['id']."\" /></td>
 			</tr>";
 				}
@@ -232,7 +239,7 @@
 			<td><input type='checkbox' name='AjoutEngagementConseilClasse' id='AjoutEngagementConseilClasse' value='yes' /><label for='AjoutEngagementConseilClasse'>Oui</label></td>
 		</tr>
 		<tr>
-			<td>Statuts visés/concernés&nbsp;:</td>
+			<td style='vertical-align:top'>Statuts visés/concernés&nbsp;:</td>
 			<td>
 				<input type="checkbox" 
 				name="AjoutEngagementEle" 
@@ -251,7 +258,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>Statuts effectuant la saisie/désignation&nbsp;:</td>
+			<td style='vertical-align:top'>Statuts effectuant la saisie/désignation&nbsp;:</td>
 			<td>
 				<input type="checkbox" 
 				name="AjoutEngagementSaisieScol" 
@@ -267,6 +274,14 @@
 				value="yes" 
 				onchange='changement();' />
 				<label for='EngagementSaisieCpe'>Cpe</label>
+				<br />
+
+				<input type="checkbox" 
+				name="AjoutEngagementSaisiePP" 
+				id='EngagementSaisiePP' 
+				value="yes" 
+				onchange='changement();' />
+				<label for='EngagementSaisiePP'><?php echo $gepi_prof_suivi;?></label>
 			</td>
 		</tr>
 	</table>

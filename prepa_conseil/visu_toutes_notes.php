@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -117,6 +117,9 @@ $aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] : (isset($_GET['aff_abs'
 $aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] : (isset($_GET['aff_reg']) ? $_GET['aff_reg'] : NULL);
 $aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] : (isset($_GET['aff_doub']) ? $_GET['aff_doub'] : NULL);
 $aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] : (isset($_GET['aff_rang']) ? $_GET['aff_rang'] : NULL);
+
+$aff_moy_gen = isset($_POST['aff_moy_gen']) ? $_POST['aff_moy_gen'] : (isset($_GET['aff_moy_gen']) ? $_GET['aff_moy_gen'] : NULL);
+$aff_moy_cat = isset($_POST['aff_moy_cat']) ? $_POST['aff_moy_cat'] : (isset($_GET['aff_moy_cat']) ? $_GET['aff_moy_cat'] : NULL);
 
 //echo "\$aff_rang=$aff_rang<br />";
 //echo "\$aff_reg=$aff_reg<br />";
@@ -328,9 +331,13 @@ if(($temoin_note_sup10=="y")||($temoin_note_bonus=="y")) {
 }
 
 // On regarde si on doit afficher les moyennes des catégories de matières
-$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
-if ($affiche_categories == "y") {
-	$affiche_categories = true;
+if(isset($aff_moy_cat)) {
+	$affiche_categories = sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$id_classe."'");
+	if ($affiche_categories == "y") {
+		$affiche_categories = true;
+	} else {
+		$affiche_categories = false;
+	}
 } else {
 	$affiche_categories = false;
 }
@@ -1664,83 +1671,53 @@ if ($ligne_supl >= 1) {
 	//================================================================================================
 
 	// La moyenne générale des élèves (dernière colonne... ou avant-dernière dans le cas année_entière)
-	$nb_col++;
+	if($aff_moy_gen) {
+		$nb_col++;
 
-	// Pour affichage des moyennes de périodes précédentes
-	if((isset($num_p1))&&(isset($num_p2))) {
-		for($loop=$num_p1;$loop<$num_p2;$loop++) {
-			if($loop>$num_p1) {$nb_col++;}
+		// Pour affichage des moyennes de périodes précédentes
+		if((isset($num_p1))&&(isset($num_p2))) {
+			for($loop=$num_p1;$loop<$num_p2;$loop++) {
+				if($loop>$num_p1) {$nb_col++;}
 	
-			//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
-			if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
+				//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+				if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
 		
-			$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-			if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
-			$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
-			$ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale P$loop")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale P$loop\" />";
-			$ligne1[$nb_col].="</a>";
-			$ligne1_csv[$nb_col] = "Moyenne générale P$loop";
-			$j = '0';
-			while($j < $nb_lignes_tableau) {
+				$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
+				if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+				$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
+				$ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale P$loop")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale P$loop\" />";
+				$ligne1[$nb_col].="</a>";
+				$ligne1_csv[$nb_col] = "Moyenne générale P$loop";
+				$j = '0';
+				while($j < $nb_lignes_tableau) {
 
-//				if($referent=='une_periode') {
-					//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
-					if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
-						$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
-						$tmp_moy_gen_ele=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$indice_j_ele];
-						if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
-							$col[$nb_col][$j+$ligne_supl] = number_format($tmp_moy_gen_ele,1, ',', ' ');
-							//$col[$nb_col][$j+$ligne_supl] = $tmp_moy_gen_ele;
+	//				if($referent=='une_periode') {
+						//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+						if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
+							$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
+							$tmp_moy_gen_ele=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$indice_j_ele];
+							if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
+								$col[$nb_col][$j+$ligne_supl] = number_format($tmp_moy_gen_ele,1, ',', ' ');
+								//$col[$nb_col][$j+$ligne_supl] = $tmp_moy_gen_ele;
+							}
+							else {
+								$col[$nb_col][$j+$ligne_supl] = '/';
+							}
 						}
 						else {
 							$col[$nb_col][$j+$ligne_supl] = '/';
 						}
-					}
-					else {
-						$col[$nb_col][$j+$ligne_supl] = '/';
-					}
-/*
+					$j++;
 				}
-				else {
-					// En mode annee, on fait les calculs
-					if ($total_coef_eleve[$j+$ligne_supl] > 0) {
-		
-						$col[$nb_col][$j+$ligne_supl] = number_format($total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl],1, ',', ' ');
-		
-		
-						if($current_eleve_login[$j]==$ele_login_debug) {
-							$lignes_debug.="<b>Moyenne de l'élève=</b>".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
-						}
-		
-		
-						// A REVOIR: IL FAUDRAIT CALCULER LES MOYENNES GENERALES DE CLASSE COMME MOYENNES DES MOYENNES GENERALES DES ELEVES
-						// C'est presque le cas: les tableaux $total_points_classe et $total_points_classe sont des totaux effectués pour chaque élève en prenant les coef non bricolés.
-						//$moy_classe_point +=$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl];
-						//$moy_classe_point+=$total_points_classe[$j+$ligne_supl]/$total_coef_classe[$j+$ligne_supl];
-						$moy_classe_point+=$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
-						$moy_classe_effectif++;
-		
-						//$moy_classe_min = min($moy_classe_min,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
-						//$moy_classe_max = max($moy_classe_max,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
-						$moy_classe_min = min($moy_classe_min,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
-						$moy_classe_max = max($moy_classe_max,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
-					} else {
-						$col[$nb_col][$j+$ligne_supl] = '/';
-					}
-				}
-*/
-				$j++;
-			}
 	
 	
-			// Lignes moyennes des dernières colonnes:
-			//if($referent=='une_periode') {
+				// Lignes moyennes des dernières colonnes:
 				$col[$nb_col][0] = "-";
-		
+	
 				$tmp_moy_gen_classe=$tab_moy['periodes'][$loop]['moy_generale_classe'];
 				$moy_classe_min=$tab_moy['periodes'][$loop]['moy_min_classe'];
 				$moy_classe_max=$tab_moy['periodes'][$loop]['moy_max_classe'];
-		
+	
 				if(($tmp_moy_gen_classe=='')||($tmp_moy_gen_classe=='-')) {
 					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
 					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
@@ -1750,15 +1727,181 @@ if ($ligne_supl >= 1) {
 					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_classe_min,1, ',', ' ');
 					$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_classe_max,1, ',', ' ');
 				}
-/*
+
+			}
+		}
+
+		if(($referent!="une_periode")&&($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes")) {
+			// On est en mode annee_entiere (avec ou sans affichage des moyennes de périodes précédentes)
+			// On va calculer les moyennes pour chaque élève comme (MoyGenEleP1+MoyGenEleP2+MoyGenEleP3)/3
+
+			$moy_annee_somme_moy_gen_ele=array();
+			$moy_annee_nb_moy_gen_ele=array();
+			$moy_annee_moy_moy_gen_ele=array();
+			$j=0;
+			while($j < $nb_lignes_tableau) {
+				$moy_annee_somme_moy_gen_ele[$j]=0;
+				$moy_annee_nb_moy_gen_ele[$j]=0;
+				$j++;
+			}
+
+			for($loop=$num_p1bis;$loop<$num_p2bis;$loop++) {
+				$j=0;
+				//echo "\$loop=$loop<br />";
+				while($j < $nb_lignes_tableau) {
+					if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
+						//echo $current_eleve_login[$j]."<br />";
+						$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
+						$tmp_moy_gen_ele=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$indice_j_ele];
+						if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
+							$moy_annee_somme_moy_gen_ele[$j]+=$tmp_moy_gen_ele;
+							$moy_annee_nb_moy_gen_ele[$j]++;
+						}
+					}
+					$j++;
+				}
+			}
+
+			$moy_annee_somme_toutes_moy_gen_ele=0;
+			$moy_annee_nb_toutes_moy_gen_ele=0;
+			$moy_annee_moy_max_moy_gen_ele=-1;
+			$moy_annee_moy_min_moy_gen_ele=100;
+			$j=0;
+			while($j < $nb_lignes_tableau) {
+				if($moy_annee_nb_moy_gen_ele[$j]==0) {
+					$moy_annee_moy_moy_gen_ele[$j]="/";
+				}
+				else {
+					$moy_tmp=$moy_annee_somme_moy_gen_ele[$j]/$moy_annee_nb_moy_gen_ele[$j];
+					$moy_annee_moy_moy_gen_ele[$j]=number_format($moy_tmp,1, ',', ' ');;
+
+					$moy_annee_somme_toutes_moy_gen_ele+=$moy_tmp;
+					$moy_annee_nb_toutes_moy_gen_ele++;
+
+					if($moy_tmp>$moy_annee_moy_max_moy_gen_ele) {
+						$moy_annee_moy_max_moy_gen_ele=$moy_tmp;
+					}
+					if($moy_tmp<$moy_annee_moy_min_moy_gen_ele) {
+						$moy_annee_moy_min_moy_gen_ele=$moy_tmp;
+					}
+				}
+				$j++;
+			}
+			$moy_annee_moy_classe_moy_gen_ele="/";
+			if($moy_annee_nb_toutes_moy_gen_ele>0) {
+				$moy_annee_moy_classe_moy_gen_ele=number_format($moy_annee_somme_toutes_moy_gen_ele/$moy_annee_nb_toutes_moy_gen_ele,1, ',', ' ');;
+			}
+
+			if($moy_annee_moy_max_moy_gen_ele==-1) {
+				$moy_annee_moy_max_moy_gen_ele="/";
 			}
 			else {
-				$col[$nb_col][0] = "-";
+				$moy_annee_moy_max_moy_gen_ele=number_format($moy_annee_moy_max_moy_gen_ele,1, ',', ' ');;
+			}
+
+			if($moy_annee_moy_min_moy_gen_ele==100) {
+				$moy_annee_moy_min_moy_gen_ele="/";
+			}
+			else {
+				$moy_annee_moy_min_moy_gen_ele=number_format($moy_annee_moy_min_moy_gen_ele,1, ',', ' ');;
+			}
+		}
+
+		if($referent!='une_periode') {
+			if(isset($avec_moy_gen_periodes_precedentes)) {
+				$nb_col++;
+			}
+
+			//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
+			if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
+	
+			$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
+			if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+			$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
+			$ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
+			$ligne1[$nb_col].="</a>";
+			$ligne1_csv[$nb_col] = "Moyenne générale";
+			$j = '0';
+
+
+
+			for($y=0;$y<$nb_lignes_tableau+$ligne_supl;$y++) {
+				my_echo("\$col[1][$y]=".$col[1][$y]."<br />");
+			}
+
+			while($j < $nb_lignes_tableau) {
+
+				if($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes") {
+					$col[$nb_col][$j+$ligne_supl] = $moy_annee_moy_moy_gen_ele[$j];
+				}
+				else {
+					//echo "\$total_coef_eleve[$j+$ligne_supl]=".$total_coef_eleve[$j+$ligne_supl]."<br />";
+					// En mode annee, on fait les calculs
+					if ($total_coef_eleve[$j+$ligne_supl] > 0) {
+
+						// 20140527: Il faudrait un autre mode de calcul
+						$col[$nb_col][$j+$ligne_supl] = number_format($total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl],1, ',', ' ');
+						//$col[$nb_col][$j+$ligne_supl] = $total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
+
+						my_echo("\$col[$nb_col][$j+$ligne_supl]=".$col[$nb_col][$j+$ligne_supl]."<br />");
+
+						if($current_eleve_login[$j]==$ele_login_debug) {
+							$lignes_debug.="<b>Moyenne de l'élève=</b>".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
+						}
+
+						// 20140527: Il faudrait un autre mode de calcul
+						// A REVOIR: IL FAUDRAIT CALCULER LES MOYENNES GENERALES DE CLASSE COMME MOYENNES DES MOYENNES GENERALES DES ELEVES
+						// C'est presque le cas: les tableaux $total_points_classe et $total_points_classe sont des totaux effectués pour chaque élève en prenant les coef non bricolés.
+						//$moy_classe_point +=$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl];
+						//$moy_classe_point+=$total_points_classe[$j+$ligne_supl]/$total_coef_classe[$j+$ligne_supl];
+						$moy_classe_point+=$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
+						$moy_classe_effectif++;
+
+						//$moy_classe_min = min($moy_classe_min,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
+						//$moy_classe_max = max($moy_classe_max,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
+						if(($moy_classe_min!="-")&&($moy_classe_min!="")) {
+							//echo "\$moy_classe_min = min($moy_classe_min,".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl].")=".$moy_classe_min."<br />";
+							$moy_classe_min = min($moy_classe_min,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
+						}
+						else {
+							$moy_classe_min = $total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
+						}
+						$moy_classe_max = max($moy_classe_max,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
+					} else {
+						$col[$nb_col][$j+$ligne_supl] = '/';
+					}
+				}
+				$j++;
+			}
+
+
+			// Lignes moyennes des dernières colonnes:
+
+			//echo "\$nb_col=$nb_col<br />";
+			//echo "\$moy_classe_point=$moy_classe_point<br />";
+			//echo "\$moy_classe_min=$moy_classe_min<br />";
+
+			$col[$nb_col][0] = "-";
+
+			if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
+				$col[$nb_col][1] = "-";
+			}
+			my_echo("\$col[$nb_col][0]=".$col[$nb_col][0]."<br />");
+			my_echo("\$col[$nb_col][1]=".$col[$nb_col][1]."<br />");
+
+
+			if($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes") {
+				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = $moy_annee_moy_classe_moy_gen_ele;
+				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = $moy_annee_moy_min_moy_gen_ele;
+				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = $moy_annee_moy_max_moy_gen_ele;
+			}
+			else {
 				if ($moy_classe_point == 0) {
 					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
 					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
 					$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
 				} else {
+					// 20140527: Il faudrait un autre mode de calcul
 					// A REVOIR: IL FAUDRAIT CALCULER LES MOYENNES GENERALES DE CLASSE COMME MOYENNES DES MOYENNES GENERALES DES ELEVES
 					$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_classe_point/$moy_classe_effectif,1, ',', ' ');
 					$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_classe_min,1, ',', ' ');
@@ -1766,13 +1909,33 @@ if ($ligne_supl >= 1) {
 				}
 			}
 
+
+
+
+			$corr=0;
+			// Ajout d'une ligne de décalage si il y a une ligne de coeff
+			if($col[1][0]=="Coefficient") {
+				//$b_inf=1;
+				//$b_sup=$nb_lignes_tableau+1;
+				//$corr=1;
+				$corr++;
+			}
+			// Ajout d'une ligne de décalage si il y a une ligne mode_moy
+			//if($temoin_note_sup10=='y') {
+			if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
+				$corr++;
+			}
+
+
+
+
 			// Colonne rang (en fin de tableau (dernière colonne) dans le cas Année entière)
-			if (($aff_rang) and ($referent!="une_periode")) {
+			if (($aff_rang) and ($aff_rang=='y') and ($referent!="une_periode")) {
 				// Calculer le rang dans le cas année entière
 				//$nb_col++;
 
 				// Préparatifs
-		
+
 				// Initialisation d'un tableau pour les rangs et affectation des valeurs réindexées dans un tableau temporaire
 				my_echo("<table>");
 				my_echo("<tr>");
@@ -1783,34 +1946,39 @@ if ($ligne_supl >= 1) {
 				unset($rg);
 				while($k < $nb_lignes_tableau) {
 					$rg[$k]=$k;
-		
+	
 					if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-						$tmp_tab[$k]=my_ereg_replace(",",".",$col[$nb_col][$k+1]);
+						//$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+1]);
+						$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+$corr]);
 						my_echo("<tr>");
-						my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
+						//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
+						my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k]</td>");
 						my_echo("</tr>");
 					}
 					else {
 						my_echo("<tr>");
-						my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
+						//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
+						my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k] --</td>");
 						my_echo("</tr>");
 						$tmp_tab[$k]="?";
 					}
-		
+	
 					$k++;
 				}
 					my_echo("</table>");
+				//my_echo("PLOP");
 				my_echo("</td>");
-		
+	
 				array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
-		
+	
 				my_echo("<td>");
 					my_echo("<table>");
 				$k=0;
 				while($k < $nb_lignes_tableau) {
 					if(isset($rg[$k])) {
-						my_echo("<tr><td>\$rg[$k]+1=".($rg[$k]+1)."</td><td>".$col[1][$rg[$k]+1]."</td></tr>");
-		
+						//my_echo("<tr><td>\$rg[$k]+1=".($rg[$k]+1)."</td><td>".$col[1][$rg[$k]+1]."</td></tr>");
+						my_echo("<tr><td>\$rg[$k]+$corr=".($rg[$k]+$corr)."</td><td>".$col[1][$rg[$k]+$corr]."</td></tr>");
+	
 					}
 					$k++;
 				}
@@ -1818,359 +1986,62 @@ if ($ligne_supl >= 1) {
 				my_echo("</td>");
 				my_echo("</tr>");
 				my_echo("</table>");
-		
+	
 				// On ajoute une colonne
 				$nb_col++;
-		
+	
 				// Initialisation de la colonne ajoutée
 				$j=1;
 				while($j <= $nb_lignes_tableau) {
 					$col[$nb_col][$j]="-";
 					$j++;
 				}
-		
+
 				// Affectation des rangs dans la colonne ajoutée
 				$k=0;
 				while($k < $nb_lignes_tableau) {
 					if(isset($rg[$k])) {
-						$col[$nb_col][$rg[$k]+1]=$k+1;
+						//$col[$nb_col][$rg[$k]+1]=$k+1;
+						//$col[$nb_col][$rg[$k]+1]=$k+$corr;
+						$col[$nb_col][$rg[$k]+$corr]=$k+1;
+						//$col[$nb_col][$rg[$k]+$corr]=$k+1;
 					}
 					$k++;
 				}
-		
+
+				/*
+				echo "\$ligne_supl=$ligne_supl<br />";
+				echo "\$col[$nb_col]<br />";
+				echo "<pre>";
+				print_r($col[$nb_col]);
+				echo "</pre>";
+				*/
+
 				// Remplissage de la ligne de titre
 				//$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
-		
+	
 				$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
 						"document.getElementById('sens_tri').value='inverse';".
 						"document.forms['formulaire_tri'].submit();\">".
 						"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />".
 						"</a>";
-		
+	
 				$ligne1_csv[$nb_col] = "Rang de l'élève";
-		
+	
 				// Remplissage de la ligne coefficients
 				$col[$nb_col][0] = "-";
-		
+	
 				// Remplissage des lignes Moyenne générale, minimale et maximale
 				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
 				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
 				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
 			}
-*/
 
 		}
-	}
-
-	if(($referent!="une_periode")&&($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes")) {
-		// On est en mode annee_entiere (avec ou sans affichage des moyennes de périodes précédentes)
-		// On va calculer les moyennes pour chaque élève comme (MoyGenEleP1+MoyGenEleP2+MoyGenEleP3)/3
-
-		$moy_annee_somme_moy_gen_ele=array();
-		$moy_annee_nb_moy_gen_ele=array();
-		$moy_annee_moy_moy_gen_ele=array();
-		$j=0;
-		while($j < $nb_lignes_tableau) {
-			$moy_annee_somme_moy_gen_ele[$j]=0;
-			$moy_annee_nb_moy_gen_ele[$j]=0;
-			$j++;
-		}
-
-		for($loop=$num_p1bis;$loop<$num_p2bis;$loop++) {
-			$j=0;
-			//echo "\$loop=$loop<br />";
-			while($j < $nb_lignes_tableau) {
-				if(isset($tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])])) {
-					//echo $current_eleve_login[$j]."<br />";
-					$indice_j_ele=$tab_moy['periodes'][$loop]['tab_login_indice'][my_strtoupper($current_eleve_login[$j])];
-					$tmp_moy_gen_ele=$tab_moy['periodes'][$loop]['moy_gen_eleve'][$indice_j_ele];
-					if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
-						$moy_annee_somme_moy_gen_ele[$j]+=$tmp_moy_gen_ele;
-						$moy_annee_nb_moy_gen_ele[$j]++;
-					}
-				}
-				$j++;
-			}
-		}
-
-		$moy_annee_somme_toutes_moy_gen_ele=0;
-		$moy_annee_nb_toutes_moy_gen_ele=0;
-		$moy_annee_moy_max_moy_gen_ele=-1;
-		$moy_annee_moy_min_moy_gen_ele=100;
-		$j=0;
-		while($j < $nb_lignes_tableau) {
-			if($moy_annee_nb_moy_gen_ele[$j]==0) {
-				$moy_annee_moy_moy_gen_ele[$j]="/";
-			}
-			else {
-				$moy_tmp=$moy_annee_somme_moy_gen_ele[$j]/$moy_annee_nb_moy_gen_ele[$j];
-				$moy_annee_moy_moy_gen_ele[$j]=number_format($moy_tmp,1, ',', ' ');;
-
-				$moy_annee_somme_toutes_moy_gen_ele+=$moy_tmp;
-				$moy_annee_nb_toutes_moy_gen_ele++;
-
-				if($moy_tmp>$moy_annee_moy_max_moy_gen_ele) {
-					$moy_annee_moy_max_moy_gen_ele=$moy_tmp;
-				}
-				if($moy_tmp<$moy_annee_moy_min_moy_gen_ele) {
-					$moy_annee_moy_min_moy_gen_ele=$moy_tmp;
-				}
-			}
-			$j++;
-		}
-		$moy_annee_moy_classe_moy_gen_ele="/";
-		if($moy_annee_nb_toutes_moy_gen_ele>0) {
-			$moy_annee_moy_classe_moy_gen_ele=number_format($moy_annee_somme_toutes_moy_gen_ele/$moy_annee_nb_toutes_moy_gen_ele,1, ',', ' ');;
-		}
-
-		if($moy_annee_moy_max_moy_gen_ele==-1) {
-			$moy_annee_moy_max_moy_gen_ele="/";
-		}
-		else {
-			$moy_annee_moy_max_moy_gen_ele=number_format($moy_annee_moy_max_moy_gen_ele,1, ',', ' ');;
-		}
-
-		if($moy_annee_moy_min_moy_gen_ele==100) {
-			$moy_annee_moy_min_moy_gen_ele="/";
-		}
-		else {
-			$moy_annee_moy_min_moy_gen_ele=number_format($moy_annee_moy_min_moy_gen_ele,1, ',', ' ');;
-		}
-	}
-
-	if($referent!='une_periode') {
-		if(isset($avec_moy_gen_periodes_precedentes)) {
-			$nb_col++;
-		}
-
-		//if(isset($note_sup_10)) {$col[$nb_col][1]='-';}
-		if($temoin_note_sup10=='y') {$col[$nb_col][1]='-';}
-	
-		$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-		if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
-		$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
-		$ligne1[$nb_col].="<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Moyenne générale\" />";
-		$ligne1[$nb_col].="</a>";
-		$ligne1_csv[$nb_col] = "Moyenne générale";
-		$j = '0';
-
-
-
-		for($y=0;$y<$nb_lignes_tableau+$ligne_supl;$y++) {
-			my_echo("\$col[1][$y]=".$col[1][$y]."<br />");
-		}
-
-		while($j < $nb_lignes_tableau) {
-
-			if($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes") {
-				$col[$nb_col][$j+$ligne_supl] = $moy_annee_moy_moy_gen_ele[$j];
-			}
-			else {
-				//echo "\$total_coef_eleve[$j+$ligne_supl]=".$total_coef_eleve[$j+$ligne_supl]."<br />";
-				// En mode annee, on fait les calculs
-				if ($total_coef_eleve[$j+$ligne_supl] > 0) {
-
-					// 20140527: Il faudrait un autre mode de calcul
-					$col[$nb_col][$j+$ligne_supl] = number_format($total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl],1, ',', ' ');
-					//$col[$nb_col][$j+$ligne_supl] = $total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
-
-					my_echo("\$col[$nb_col][$j+$ligne_supl]=".$col[$nb_col][$j+$ligne_supl]."<br />");
-
-					if($current_eleve_login[$j]==$ele_login_debug) {
-						$lignes_debug.="<b>Moyenne de l'élève=</b>".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
-					}
-
-					// 20140527: Il faudrait un autre mode de calcul
-					// A REVOIR: IL FAUDRAIT CALCULER LES MOYENNES GENERALES DE CLASSE COMME MOYENNES DES MOYENNES GENERALES DES ELEVES
-					// C'est presque le cas: les tableaux $total_points_classe et $total_points_classe sont des totaux effectués pour chaque élève en prenant les coef non bricolés.
-					//$moy_classe_point +=$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl];
-					//$moy_classe_point+=$total_points_classe[$j+$ligne_supl]/$total_coef_classe[$j+$ligne_supl];
-					$moy_classe_point+=$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
-					$moy_classe_effectif++;
-
-					//$moy_classe_min = min($moy_classe_min,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
-					//$moy_classe_max = max($moy_classe_max,$total_points[$j+$ligne_supl]/$total_coef[$j+$ligne_supl]);
-					if(($moy_classe_min!="-")&&($moy_classe_min!="")) {
-						//echo "\$moy_classe_min = min($moy_classe_min,".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl].")=".$moy_classe_min."<br />";
-						$moy_classe_min = min($moy_classe_min,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
-					}
-					else {
-						$moy_classe_min = $total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl];
-					}
-					$moy_classe_max = max($moy_classe_max,$total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl]);
-				} else {
-					$col[$nb_col][$j+$ligne_supl] = '/';
-				}
-			}
-			$j++;
-		}
-
-
-		// Lignes moyennes des dernières colonnes:
-
-		//echo "\$nb_col=$nb_col<br />";
-		//echo "\$moy_classe_point=$moy_classe_point<br />";
-		//echo "\$moy_classe_min=$moy_classe_min<br />";
-
-		$col[$nb_col][0] = "-";
-
-		if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
-			$col[$nb_col][1] = "-";
-		}
-		my_echo("\$col[$nb_col][0]=".$col[$nb_col][0]."<br />");
-		my_echo("\$col[$nb_col][1]=".$col[$nb_col][1]."<br />");
-
-
-		if($mode_calcul_moy_annee=="moyenne_des_moy_gen_periodes") {
-			$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = $moy_annee_moy_classe_moy_gen_ele;
-			$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = $moy_annee_moy_min_moy_gen_ele;
-			$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = $moy_annee_moy_max_moy_gen_ele;
-		}
-		else {
-			if ($moy_classe_point == 0) {
-				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
-				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
-				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
-			} else {
-				// 20140527: Il faudrait un autre mode de calcul
-				// A REVOIR: IL FAUDRAIT CALCULER LES MOYENNES GENERALES DE CLASSE COMME MOYENNES DES MOYENNES GENERALES DES ELEVES
-				$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = number_format($moy_classe_point/$moy_classe_effectif,1, ',', ' ');
-				$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_classe_min,1, ',', ' ');
-				$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_classe_max,1, ',', ' ');
-			}
-		}
-
-
-
-
-		$corr=0;
-		// Ajout d'une ligne de décalage si il y a une ligne de coeff
-		if($col[1][0]=="Coefficient") {
-			//$b_inf=1;
-			//$b_sup=$nb_lignes_tableau+1;
-			//$corr=1;
-			$corr++;
-		}
-		// Ajout d'une ligne de décalage si il y a une ligne mode_moy
-		//if($temoin_note_sup10=='y') {
-		if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
-			$corr++;
-		}
-
-
-
-
-		// Colonne rang (en fin de tableau (dernière colonne) dans le cas Année entière)
-		if (($aff_rang) and ($aff_rang=='y') and ($referent!="une_periode")) {
-			// Calculer le rang dans le cas année entière
-			//$nb_col++;
-
-			// Préparatifs
-
-			// Initialisation d'un tableau pour les rangs et affectation des valeurs réindexées dans un tableau temporaire
-			my_echo("<table>");
-			my_echo("<tr>");
-			my_echo("<td>");
-				my_echo("<table>");
-			unset($tmp_tab);
-			$k=0;
-			unset($rg);
-			while($k < $nb_lignes_tableau) {
-				$rg[$k]=$k;
-	
-				if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-					//$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+1]);
-					$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+$corr]);
-					my_echo("<tr>");
-					//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
-					my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k]</td>");
-					my_echo("</tr>");
-				}
-				else {
-					my_echo("<tr>");
-					//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
-					my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k] --</td>");
-					my_echo("</tr>");
-					$tmp_tab[$k]="?";
-				}
-	
-				$k++;
-			}
-				my_echo("</table>");
-			//my_echo("PLOP");
-			my_echo("</td>");
-	
-			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
-	
-			my_echo("<td>");
-				my_echo("<table>");
-			$k=0;
-			while($k < $nb_lignes_tableau) {
-				if(isset($rg[$k])) {
-					//my_echo("<tr><td>\$rg[$k]+1=".($rg[$k]+1)."</td><td>".$col[1][$rg[$k]+1]."</td></tr>");
-					my_echo("<tr><td>\$rg[$k]+$corr=".($rg[$k]+$corr)."</td><td>".$col[1][$rg[$k]+$corr]."</td></tr>");
-	
-				}
-				$k++;
-			}
-				my_echo("</table>");
-			my_echo("</td>");
-			my_echo("</tr>");
-			my_echo("</table>");
-	
-			// On ajoute une colonne
-			$nb_col++;
-	
-			// Initialisation de la colonne ajoutée
-			$j=1;
-			while($j <= $nb_lignes_tableau) {
-				$col[$nb_col][$j]="-";
-				$j++;
-			}
-
-			// Affectation des rangs dans la colonne ajoutée
-			$k=0;
-			while($k < $nb_lignes_tableau) {
-				if(isset($rg[$k])) {
-					//$col[$nb_col][$rg[$k]+1]=$k+1;
-					//$col[$nb_col][$rg[$k]+1]=$k+$corr;
-					$col[$nb_col][$rg[$k]+$corr]=$k+1;
-					//$col[$nb_col][$rg[$k]+$corr]=$k+1;
-				}
-				$k++;
-			}
-
-			/*
-			echo "\$ligne_supl=$ligne_supl<br />";
-			echo "\$col[$nb_col]<br />";
-			echo "<pre>";
-			print_r($col[$nb_col]);
-			echo "</pre>";
-			*/
-
-			// Remplissage de la ligne de titre
-			//$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
-	
-			$ligne1[$nb_col] = "<a href='#' onclick=\"document.getElementById('col_tri').value='".$nb_col."';".
-					"document.getElementById('sens_tri').value='inverse';".
-					"document.forms['formulaire_tri'].submit();\">".
-					"<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />".
-					"</a>";
-	
-			$ligne1_csv[$nb_col] = "Rang de l'élève";
-	
-			// Remplissage de la ligne coefficients
-			$col[$nb_col][0] = "-";
-	
-			// Remplissage des lignes Moyenne générale, minimale et maximale
-			$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
-			$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
-			$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = "-";
-		}
-
 	}
 
 }
+
 /*
 echo "<p style='color:green'>";
 for($loop=0;$loop<$nb_lignes_tableau;$loop++) {
@@ -2442,7 +2313,24 @@ if(isset($_GET['mode'])) {
 		$now = gmdate('D, d M Y H:i:s') . ' GMT';
 
 		$nom_fic=$chaine_titre."_".$now;
+/*
+// 20151207
+echo "<pre>";
+print_r($ligne1);
+echo "</pre>";
 
+echo "<pre>";
+print_r($ligne1_csv);
+echo "</pre>";
+
+echo "<pre>";
+print_r($col);
+echo "</pre>";
+
+echo "<pre>";
+print_r($col_csv);
+echo "</pre>";
+*/
 		// Filtrer les caractères dans le nom de fichier:
 		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
 		$nom_fic.=".pdf";
@@ -2871,7 +2759,7 @@ if($vtn_coloriser_resultats=='y') {
 	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	//$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang');
-	$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang', 'avec_moy_gen_periodes_precedentes');
+	$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang', 'avec_moy_gen_periodes_precedentes', 'aff_moy_gen', 'aff_moy_cat');
 
 	for($loop=0;$loop<count($tab_pref);$loop++) {
 		$tmp_var=$tab_pref[$loop];
@@ -2910,6 +2798,12 @@ if(($aff_rang)&&($aff_rang=='y')) {
 }
 if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
+}
+if(($aff_moy_cat)&&($aff_moy_cat=='y')) {
+	echo "&amp;aff_moy_cat=$aff_moy_cat";
+}
+if(($aff_moy_gen)&&($aff_moy_gen=='y')) {
+	echo "&amp;aff_moy_gen=$aff_moy_gen";
 }
 
 if($utiliser_coef_perso=='y') {
@@ -2962,6 +2856,12 @@ if(($aff_rang)&&($aff_rang=='y')) {
 }
 if(($aff_date_naiss)&&($aff_date_naiss=='y')) {
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
+}
+if(($aff_moy_cat)&&($aff_moy_cat=='y')) {
+	echo "&amp;aff_moy_cat=$aff_moy_cat";
+}
+if(($aff_moy_gen)&&($aff_moy_gen=='y')) {
+	echo "&amp;aff_moy_gen=$aff_moy_gen";
 }
 
 if($utiliser_coef_perso=='y') {
@@ -3083,6 +2983,12 @@ echo "<input type='hidden' name='sens_tri' id='sens_tri' value='' />\n";
 echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
+if(isset($_POST['aff_moy_gen'])) {
+	echo "<input type='hidden' name='aff_moy_gen' value='y' />\n";
+}
+if(isset($_POST['aff_moy_cat'])) {
+	echo "<input type='hidden' name='aff_moy_cat' value='y' />\n";
+}
 if(isset($_POST['aff_abs'])) {
 	echo "<input type='hidden' name='aff_abs' value='".$_POST['aff_abs']."' />\n";
 }

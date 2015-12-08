@@ -73,6 +73,7 @@ if($gepi_denom_mention=="") {
 $generer_fichiers_pdf_archivage=isset($_POST['generer_fichiers_pdf_archivage']) ? $_POST['generer_fichiers_pdf_archivage'] : (isset($_GET['generer_fichiers_pdf_archivage']) ? $_GET['generer_fichiers_pdf_archivage'] : "n");
 
 $intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : (isset($_GET['intercaler_releve_notes']) ? $_GET['intercaler_releve_notes'] : NULL);
+$intercaler_app_classe=isset($_POST['intercaler_app_classe']) ? $_POST['intercaler_app_classe'] : (isset($_GET['intercaler_app_classe']) ? $_GET['intercaler_app_classe'] : NULL);
 
 //$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : NULL;
 $mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : NULL);
@@ -445,7 +446,7 @@ L'accès est également possible dans le menu horizontal sous l'entête si la ba
 }
 //======================================================
 //==============CHOIX DE LA SELECTION D'ELEVES==========
-elseif(!isset($valide_select_eleves)) {
+elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 
 	//debug_var();
 
@@ -794,6 +795,8 @@ elseif(!isset($valide_select_eleves)) {
 	echo "</blockquote>\n";
 	echo "</div>\n";
 	//===========================================
+
+		echo "<p><input type='checkbox' name='intercaler_app_classe' id='intercaler_app_classe' value='y' onchange='checkbox_change(this.id)' /> <label for='intercaler_app_classe' id='texte_intercaler_app_classe' style='cursor: pointer;'>Intercaler les appréciations professeurs sur les \"groupes classes\" <em style='color:red'>(expérimental (en PDF seulement pour le moment, et mise en page très perfectible))</em></label></p>\n";
 
 	// L'admin peut avoir accès aux bulletins, mais il n'a de toute façon pas accès au relevés de notes.
 	$sql="SELECT 1=1 FROM droits WHERE id='/cahier_notes/visu_releve_notes_bis.php' AND ".$_SESSION['statut']."='V';";
@@ -2297,7 +2300,6 @@ else {
 				}
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 				//========================================
 				//if($eff_classe>0) {
 					include("../lib/calcul_moy_gen.inc.php");
@@ -2312,6 +2314,13 @@ else {
 					flush();
 				}
 				//==============================
+
+				/*
+				echo "\$moy_cat_classe<pre>";
+				print_r($moy_cat_classe);
+				echo "</pre>";
+				die();
+				*/
 
 				//echo "\$affiche_categories=$affiche_categories<br />";
 				// $affiche_categories=1
@@ -2375,6 +2384,7 @@ else {
 
 				if(isset($current_eleve_rang)) {$tab_bulletin[$id_classe][$periode_num]['rang']=$current_eleve_rang;}
 				$tab_bulletin[$id_classe][$periode_num]['coef_eleve']=$current_coef_eleve;
+				$tab_bulletin[$id_classe][$periode_num]['coef']=$current_coef;
 
 				// Tableaux d'indice $i (correspondant à l'élève)
 				$tab_bulletin[$id_classe][$periode_num]['tot_points_eleve']=$tot_points_eleve;
@@ -2473,6 +2483,20 @@ else {
 
 				$tab_bulletin[$id_classe][$periode_num]['moy_cat_eleve']=$moy_cat_eleve;
 
+				// Catégories sans indice élève:
+				/*
+				foreach($categories as $cat) {
+					echo "\$moy_min_categorie[$cat]=".$moy_min_categorie[$cat]."<br />";
+					echo "\$moy_max_categorie[$cat]=".$moy_max_categorie[$cat]."<br />";
+					echo "\$moy_classe_categorie[$cat]=".$moy_classe_categorie[$cat]."<br />";
+				}
+				die();
+				*/
+				$tab_bulletin[$id_classe][$periode_num]['moy_min_categorie']=$moy_min_categorie;
+				$tab_bulletin[$id_classe][$periode_num]['moy_max_categorie']=$moy_max_categorie;
+				$tab_bulletin[$id_classe][$periode_num]['moy_classe_categorie']=$moy_classe_categorie;
+
+
 				// matieres_categories(id,nom_court,nom_complet,priority)
 				// j_matieres_categories_classes(categorie_id,classe_id,priority,affiche_moyenne)
 				// matieres(matiere,nom_complet,priority,categorie_id,matiere_aid,matiere_atelier)
@@ -2481,7 +2505,7 @@ else {
 					//echo "\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
 					//echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
 					if(isset($current_group[$j]['matiere']['matiere'])) {
-		                /*
+						/*
 						$sql="SELECT mc.id,
 									mc.nom_court,
 									mc.nom_complet,
@@ -2495,7 +2519,7 @@ else {
 									jmcc.categorie_id=mc.id AND
 									m.matiere='".$current_group[$j]['matiere']['matiere']."'
 								ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
-		                */
+						*/
 								//ORDER BY jmcc.categorie_id, jmcc.priority, mc.priority;";
 						$sql="SELECT mc.id,
 									mc.nom_court,
@@ -2504,15 +2528,15 @@ else {
 									jmcc.affiche_moyenne
 								FROM j_matieres_categories_classes jmcc,
 									matieres_categories mc,
-		                            j_groupes_classes jgc
+									j_groupes_classes jgc
 								WHERE jmcc.classe_id='$id_classe' AND
-		                              jgc.id_classe=jmcc.classe_id AND
-		                              jgc.categorie_id=jmcc.categorie_id AND
+									jgc.id_classe=jmcc.classe_id AND
+									jgc.categorie_id=jmcc.categorie_id AND
 									jmcc.categorie_id=mc.id AND
 									jgc.id_groupe='".$current_group[$j]['id']."'
 								ORDER BY mc.priority, jmcc.priority, jmcc.categorie_id;";
-		                //echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
-		                //echo "$sql<br />";
+						//echo "\$current_group[$j]['matiere']['matiere']=".$current_group[$j]['matiere']['matiere']."<br />";
+						//echo "$sql<br />";
 						$res_cat=mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if(mysqli_num_rows($res_cat)>0) {
@@ -2524,10 +2548,34 @@ else {
 							$tab_bulletin[$id_classe][$periode_num]['priority'][$j]=$lig_cat->priority;
 							$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne'][$j]=$lig_cat->affiche_moyenne;
 						}
+
+						if(isset($intercaler_app_classe)) {
+							$sql="SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group[$j]["id"] . "' AND periode='$periode_num')";
+							$current_grp_appreciation_query = mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($current_grp_appreciation_query)>0) {
+								$lig_grp_app=mysqli_fetch_object($current_grp_appreciation_query);
+								$tab_bulletin[$id_classe][$periode_num]['app_grp'][$j]=$lig_grp_app->appreciation;
+							}
+							else {
+								$tab_bulletin[$id_classe][$periode_num]['app_grp'][$j]="-";
+							}
+						}
+
 					}
 				}
 
-
+				if(isset($intercaler_app_classe)) {
+					$sql="SELECT * FROM synthese_app_classe WHERE (id_classe='$id_classe' AND periode='$periode_num');";
+					//echo "$sql<br />";
+					$res_current_synthese=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_current_synthese)>0) {
+						$lig_synthese_classe=mysqli_fetch_object($res_current_synthese);
+						$tab_bulletin[$id_classe][$periode_num]['synthese_classe']=$lig_synthese_classe->synthese;
+					}
+					else {
+						$tab_bulletin[$id_classe][$periode_num]['synthese_classe']="-";
+					}
+				}
 
 				if ($affiche_rang == 'y'){
 					for($j=0;$j<count($current_group);$j++) {
@@ -2554,6 +2602,7 @@ else {
 
 
 				// Boucle élèves de la classe $id_classe pour la période $periode_num
+				$compteur_ele_classe_courante_periode_courante=0;
 				for($i=0;$i<count($current_eleve_login);$i++) {
 					// Réinitialisation pour ne pas récupérer des infos de l'élève précédent
 					unset($tab_ele);
@@ -3527,8 +3576,13 @@ else {
 						}
 
 						$nb_bulletins_edites++;
+
+						$compteur_ele_classe_courante_periode_courante++;
 					}
 				}
+
+
+
 			}
 		}
 	}
@@ -3602,7 +3656,7 @@ else {
 					}
 				}
 				elseif(isset($classe)) {
-					$nom_fichier_bulletin.="_".$classe;
+					$nom_fichier_bulletin.="_".remplace_accents($classe, "all");
 				}
 			}
 			$nom_fichier_bulletin.='.pdf';
@@ -3863,6 +3917,12 @@ else {
 				*/
 				//======================================
 
+				/*
+				echo "\$tab_bulletin[$id_classe][$periode_num]['selection_eleves']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['selection_eleves']);
+				echo "</pre>";
+				*/
+
 				//$compteur=0;
 				for($i=0;$i<$tab_bulletin[$id_classe][$periode_num]['eff_classe'];$i++) {
 					if($tri_par_etab_orig=='n') {$rg[$i]=$i;}
@@ -4009,6 +4069,66 @@ if($mode_bulletin=="html") {
 	flush();
 }
 //==============================
+
+if((isset($mode_bulletin))&&($compteur_bulletins==0)&&(isset($intercaler_app_classe))) {
+	$compteur_bulletins=0;
+	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+		$id_classe=$tab_id_classe[$loop_classe];
+		$classe=get_class_from_id($id_classe);
+
+		if($mode_bulletin=="html") {
+			echo "<script type='text/javascript'>
+document.getElementById('td_classe').innerHTML='".$classe."';
+</script>\n";
+		}
+
+		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+
+			$periode_num=$tab_periode_num[$loop_periode_num];
+
+			//==============================
+			if($mode_bulletin=="html") {
+				$motif="Classe_".$id_classe."_".$periode_num;
+				decompte_debug($motif,"$motif avant");
+				flush();
+				echo "<script type='text/javascript'>
+document.getElementById('td_periode').innerHTML='".$periode_num."';
+</script>\n";
+			}
+			//==============================
+
+			if($mode_bulletin=="html") {
+				echo "<div class='noprint' style='background-color:white; border: 1px solid red;'>\n";
+				echo "<h2>Classe de ".$classe."</h2>\n";
+				echo "<p><b>Période $periode_num</b></p>\n";
+
+				echo "<p>Effectif de la classe: ".$tab_bulletin[$id_classe][$periode_num]['eff_classe']."</p>\n";
+				echo "</div>\n";
+			}
+
+			if($mode_bulletin=="html") {
+				// Saut de page si jamais ce n'est pas le premier bulletin
+				if($compteur_bulletins>0) {echo "<p class='saut'>&nbsp;</p>\n";}
+
+				bulletin_html_classe($tab_bulletin[$id_classe][$periode_num]);
+			}
+			else {
+				bulletin_pdf_classe($tab_bulletin[$id_classe][$periode_num]);
+			}
+
+			if($mode_bulletin=="html") {
+				echo "<div class='espacement_bulletins'><div align='center'>Espacement (non imprimé) entre les bulletins</div></div>\n";
+			}
+
+			$compteur_bulletins++;
+
+			if($mode_bulletin=="html") {
+				flush();
+			}
+
+		}
+	}
+}
 
 if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
 	echo "<div id='remarques_bas_de_page' style='display:none;'>

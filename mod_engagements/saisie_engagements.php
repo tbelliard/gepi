@@ -43,7 +43,7 @@ $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_engagements/saisie_engagements.php',
 administrateur='V',
-professeur='F',
+professeur='V',
 cpe='V',
 scolarite='V',
 eleve='F',
@@ -106,6 +106,23 @@ echo "</pre>";
 */
 
 //debug_var();
+
+if($_SESSION['statut']=='professeur') {
+	if(!is_pp($_SESSION['login'])) {
+		header("Location: ../accueil.php?msg=Vous n êtes PP d'aucune classe.");
+		die();
+	}
+
+	$tab_classes_pp=get_tab_prof_suivi("", $_SESSION['login']);
+	if(isset($id_classe)) {
+		for($loop=0;$loop<count($id_classe);$loop++) {
+			if(!in_array($id_classe[$loop], $tab_classes_pp)) {
+				header("Location: ../accueil.php?msg=Vous n êtes pas PP de la classe choisie (n°".$id_classe[$loop].").");
+				die();
+			}
+		}
+	}
+}
 
 if((isset($id_classe))&&(isset($_POST['is_posted']))&&($engagement_statut=='eleve')) {
 	check_token();
@@ -331,8 +348,15 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 
 	echo "<p class='bold'>Choix des classes&nbsp;:</p>\n";
 
-	// Liste des classes avec élève:
-	$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+	if($_SESSION['statut']=='professeur') {
+		// Liste des classes dont le prof est PP:
+		$sql="SELECT DISTINCT c.* FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe AND jep.login=jec.login AND jep.professeur='".$_SESSION['login']."') ORDER BY c.classe;";
+	}
+	else {
+		// Liste des classes avec élève:
+		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
+	}
+	//echo "$sql<br />";
 	$call_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$nb_classes=mysqli_num_rows($call_classes);
@@ -481,7 +505,8 @@ if($engagement_statut=="eleve") {
 					echo "<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
 					(($_SESSION['statut']=='cpe')&&(isset($tab_engagements['indice'][$loop]['SaisieCpe']))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&(isset($tab_engagements['indice'][$loop]['SaisieScol']))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					(($_SESSION['statut']=='scolarite')&&(isset($tab_engagements['indice'][$loop]['SaisieScol']))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
+					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_ele->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
@@ -599,7 +624,8 @@ else {
 					echo "<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
 					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
+					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($lig_resp->login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {
@@ -635,7 +661,8 @@ else {
 			<td>\n";
 					if(($_SESSION['statut']=='administrateur')||
 					(($_SESSION['statut']=='cpe')&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))||
-					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))
+					(($_SESSION['statut']=='scolarite')&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))||
+					(($_SESSION['statut']=='professeur')&&(isset($tab_engagements['indice'][$loop]['SaisiePP']))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes'))
 					) {
 						$checked="";
 						if((isset($tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))&&(in_array($current_login, $tab_engagements_classe['id_engagement_user'][$tab_engagements['indice'][$loop]['id']]))) {

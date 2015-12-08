@@ -131,7 +131,7 @@
 	if(mysqli_num_rows($res_sanction)>0) {
 		require_once("sanctions_func_lib.php");
 		echo "<div align='center'>
-	<div class='fieldset_opacite50' style='margin:1em; width:70%; text-align:center;'>
+	<div class='fieldset_opacite50' style='margin:1em; padding:0.5em; width:70%; text-align:center;'>
 		<p>La validation de l'état effectué ou non d'une ou plusieurs retenues (<em>ou ".$mod_disc_terme_sanction." assimilée</em>) vous est déléguée.<br />
 		Lorsque la retenue aura été effectuée, signalez-le aux CPE, déclarant... en cliquant dans la colonne <strong>Effectuée</strong></p>";
 

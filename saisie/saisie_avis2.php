@@ -38,11 +38,15 @@ if ($resultat_session == 'c') {
 	die();
 }
 
-include "../lib/bulletin_simple.inc.php";
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+include "../lib/bulletin_simple.inc.php";
+
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
 
 // On teste si un professeur peut saisir les avis
 if (($_SESSION['statut'] == 'professeur') and getSettingValue("GepiRubConseilProf")!='yes') {
@@ -1322,6 +1326,10 @@ if (isset($fiche)) {
 	<input type=hidden name=ind_eleve_login_suiv value="<?php echo "$ind_eleve_login_suiv";?>" />
 	<!--br /-->
 	<?php
+		if(getSettingAOui('aff_temoin_check_serveur')) {
+			temoin_check_srv();
+		}
+
 		if($ind_eleve_login_suiv!=0) {
 			echo "<input type='submit' NAME='ok1' value=\"Enregistrer et passer à l'élève suivant\" />\n";
 		}

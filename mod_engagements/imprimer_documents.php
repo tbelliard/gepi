@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -780,6 +780,14 @@ if(acces("/mod_engagements/index_admin.php", $_SESSION['statut'])) {
 
 if(acces("/mod_engagements/saisie_engagements.php", $_SESSION['statut'])) {
 	echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
+}
+elseif(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login']))) {
+	// Tester s'il y a des droits de saisie pour les PP
+	$sql="SELECT 1=1 FROM engagements WHERE SaisiePP='yes';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo " | <a href='saisie_engagements.php'>Saisir les engagements</a>";
+	}
 }
 
 $acces_imprimerConvocationConseilClasse=true;

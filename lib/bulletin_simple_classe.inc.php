@@ -14,6 +14,25 @@ global $affiche_colonne_moy_classe;
 // 20121209
 global $avec_moy_min_max_classe;
 
+global $affiche_moy_gen;
+global $affiche_moy_cat;
+
+if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenEleve'))) {
+	$affiche_moy_gen="n";
+}
+elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyGenResp'))) {
+	$affiche_moy_gen="n";
+}
+
+if(($_SESSION['statut']=='eleve')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatEleve'))) {
+	$affiche_moy_cat="n";
+}
+elseif(($_SESSION['statut']=='responsable')&&(!getSettingAOui('GepiAccesBulletinSimpleMoyCatResp'))) {
+	$affiche_moy_cat="n";
+}
+//echo "\$affiche_moy_gen=$affiche_moy_gen<br />";
+//echo "\$affiche_moy_cat=$affiche_moy_cat<br />";
+
 //global $avec_rapport_effectif;
 $avec_rapport_effectif="y";
 
@@ -69,6 +88,11 @@ global $display_moy_gen;
 //=========================
 
 global $affiche_deux_moy_gen;
+
+if($affiche_moy_gen=="n") {
+	$display_moy_gen="n";
+	$affiche_deux_moy_gen="n";
+}
 
 global $bull_simp_larg_tab,
 	$bull_simp_larg_col1,
@@ -639,46 +663,48 @@ if($display_moy_gen=="y") {
 				echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>\n";
 				foreach($categories as $cat_id) {
 
-					// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
-					// Tester si cette catégorie doit avoir sa moyenne affichée
-					$affiche_cat_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
-					if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
-						$affiche_cat_moyenne = false;
-					} else {
-						$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
-					}
-
-					if($affiche_cat_moyenne){
-						/*
-						//if ($total_cat_coef[$nb][$cat_id] != "0") {
-						//if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
-							//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
-							//$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
-							//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef_eleve[$nb][$cat_id],1, ',', ' ');
-							//echo "\$total_cat_coef_classe[$nb][$cat_id]=".$total_cat_coef_classe[$nb][$cat_id]."<br />";
-							if ($total_cat_coef_classe[$nb][$cat_id] != "0") {
-								$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef_classe[$nb][$cat_id],1, ',', ' ');
-							}
-							else{
-								$moy_classe="-";
-							}
-
-							//echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
-							echo $cat_names[$cat_id] . " - <b>$moy_classe</b><br />\n";
-						//}
-						*/
-						$moy_classe="-";
-						$loop_i=0;
-						while($loop_i<count($tab_moy['periodes'][$nb]['current_eleve_login'])) {
-							if(isset($tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id])) {
-								$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id];
-								break;
-							}
-							$loop_i++;
+					if($affiche_moy_cat!="n") {
+						// MODIF: boireaus 20070627 ajout du test et utilisation de $total_cat_coef_eleve, $total_cat_coef_classe
+						// Tester si cette catégorie doit avoir sa moyenne affichée
+						$affiche_cat_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
+						if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
+							$affiche_cat_moyenne = false;
+						} else {
+							$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
 						}
 
-						echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+						if($affiche_cat_moyenne){
+							/*
+							//if ($total_cat_coef[$nb][$cat_id] != "0") {
+							//if ($total_cat_coef_eleve[$nb][$cat_id] != "0") {
+								//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
+								//$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef[$nb][$cat_id],1, ',', ' ');
+								//$moy_eleve=number_format($total_cat_eleve[$nb][$cat_id]/$total_cat_coef_eleve[$nb][$cat_id],1, ',', ' ');
+								//echo "\$total_cat_coef_classe[$nb][$cat_id]=".$total_cat_coef_classe[$nb][$cat_id]."<br />";
+								if ($total_cat_coef_classe[$nb][$cat_id] != "0") {
+									$moy_classe=number_format($total_cat_classe[$nb][$cat_id]/$total_cat_coef_classe[$nb][$cat_id],1, ',', ' ');
+								}
+								else{
+									$moy_classe="-";
+								}
 
+								//echo $cat_names[$cat_id] . " - <b>$moy_eleve</b> (classe : " . $moy_classe . ")<br/>\n";
+								echo $cat_names[$cat_id] . " - <b>$moy_classe</b><br />\n";
+							//}
+							*/
+							$moy_classe="-";
+							$loop_i=0;
+							while($loop_i<count($tab_moy['periodes'][$nb]['current_eleve_login'])) {
+								if(isset($tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id])) {
+									$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id];
+									break;
+								}
+								$loop_i++;
+							}
+
+							echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+
+						}
 					}
 				}
 				echo "</td>\n";
@@ -696,6 +722,122 @@ if($display_moy_gen=="y") {
 			$nb++;
 			$print_tr = 'yes';
 		}
+	}
+}
+elseif(($affiche_categories)&&($affiche_moy_cat!="n")) {
+	echo "<tr>\n<td";
+	if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
+	echo ">\n<p class='bull_simpl'><b>Moyennes de catégories</b></p>\n</td>\n";
+	//====================
+	if($affiche_coef=='y'){
+		echo "<td";
+		if ($nb_periodes > 1) echo " rowspan=".$nb_periodes;
+		echo " align=\"center\">-</td>\n";
+	}
+	//====================
+
+	$nb=$periode1;
+	$print_tr = 'no';
+	while ($nb < $periode2+1) {
+		//=============================
+		//if($nb==$periode1){echo "<tr>\n";}
+		if($print_tr=='yes'){echo "<tr style='border-width: 5px;'>\n";}
+		//=============================
+
+		//=========================
+		if($nb==$periode1) {
+			if($nb==$periode2) {
+				$style_bordure_cell="border: 1px solid black";
+			}
+			else {
+				$style_bordure_cell="border: 1px solid black; border-bottom: 1px dashed black";
+			}
+		}
+		elseif($nb==$periode2) {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black;";
+		}
+		else {
+			$style_bordure_cell="border: 1px solid black; border-top: 1px dashed black; border-bottom: 1px dashed black;";
+		}
+		//=========================
+
+		if($avec_rapport_effectif=="y") {
+			$sql="SELECT 1=1 FROM j_eleves_classes WHERE periode='$nb' AND id_classe='$id_classe';";
+			$res_eff_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+			//echo "$sql<br />";
+			echo mysqli_num_rows($res_eff_classe).' él.';
+			echo "</td>\n";
+		}
+
+
+		if($affiche_colonne_moy_classe!='n') {
+			echo "<td class='bull_simpl' align=\"center\" style='$style_bordure_cell'>\n";
+			echo "-";
+			/*
+			if($avec_moy_min_max_classe=='y') {
+				echo "<span title=\"Moyenne générale minimale\">".nf($tab_moy['periodes'][$nb]['moy_min_classe'],2)."</span> ";
+			}
+			echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe'],2)."</span>";
+			if($avec_moy_min_max_classe=='y') {
+				echo " <span title=\"Moyenne générale maximale\">".nf($tab_moy['periodes'][$nb]['moy_max_classe'],2)."</span>";
+			}
+
+			if ($affiche_deux_moy_gen==1) {
+				echo "<br />\n";
+				echo "<i>";
+				echo "<span style='font-weight:bold' title=\"Moyenne des moyennes générales de la classe avec tous les coefficients à 1\">".nf($tab_moy['periodes'][$nb]['moy_generale_classe1'])."</span>";
+				echo "</i>\n";
+			}
+			*/
+			echo "</td>\n";
+		}
+
+		//if ($affiche_categories) {
+			echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>\n";
+			foreach($categories as $cat_id) {
+
+				if($affiche_moy_cat!="n") {
+					$affiche_cat_moyenne_query = mysqli_query($GLOBALS["mysqli"], "SELECT affiche_moyenne FROM j_matieres_categories_classes WHERE (classe_id = '".$id_classe."' and categorie_id = '".$cat_id."')");
+					if (mysqli_num_rows($affiche_cat_moyenne_query) == "0") {
+						$affiche_cat_moyenne = false;
+					} else {
+						$affiche_cat_moyenne = old_mysql_result($affiche_cat_moyenne_query, 0);
+					}
+
+					if($affiche_cat_moyenne){
+						$moy_classe="-";
+						$loop_i=0;
+						while($loop_i<count($tab_moy['periodes'][$nb]['current_eleve_login'])) {
+							if(isset($tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id])) {
+								$moy_classe=$tab_moy['periodes'][$nb]['moy_cat_classe'][$loop_i][$cat_id];
+								break;
+							}
+							$loop_i++;
+						}
+
+						echo $cat_names[$cat_id] . " - <b>".nf($moy_classe,2)."</b><br/>\n";
+
+					}
+				}
+			}
+			echo "</td>\n";
+			if($afficher_signalement_faute=='y') {
+				echo "<td class='bull_simpl noprint'>-</td>\n";
+			}
+			echo "</tr>\n";
+		/*
+		} else {
+			echo "<td class='bull_simpl' style='text-align:left; $style_bordure_cell'>-</td>\n";
+			if($afficher_signalement_faute=='y') {
+				echo "<td class='bull_simpl noprint'>-</td>\n";
+			}
+			echo "</tr>\n";
+		}
+		*/
+		$nb++;
+		$print_tr = 'yes';
 	}
 }
 
@@ -875,7 +1017,8 @@ if(document.getElementById('appreciation_grp_'+id_groupe+'_'+num_periode)) {
 message=message+'\\n================================\\n'
 ";
 if(getSettingValue('url_racine_gepi')!="") {
-	echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe;\n";
+	//echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe;\n";
+	echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION___';\n";
 	echo "		message=message+'\\n'";
 }
 echo "

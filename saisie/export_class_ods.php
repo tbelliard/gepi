@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -372,10 +372,131 @@ $titre=htmlspecialchars($current_group['name']." ".$current_group["classlist_str
 $titre.=" - EXPORT";
 
 // Mettre la ligne de liens de retour,...
-echo "<div class='norme'><p class='bold'>\n";
+echo "<div class='norme'>
+<form name='form1' action='".$_SERVER['PHP_SELF']."' method='post'>
+<p class='bold'>\n";
 echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")")." </a>|\n";
-echo "</div>\n";
+
+echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num' title=\"Retour à la saisie des notes et appréciations pour l'enseignement indiqué.\"> ".htmlspecialchars($current_group['name']." ".$current_group["classlist_string"]." (".$nom_periode.")")." </a>|\n";
+
+if($_SESSION['statut']=='professeur') {
+	$login_prof_groupe_courant=$_SESSION["login"];
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	//if(isset($current_group)) { echo "DEBUG 2 : ".$current_group['classlist_string']."<br />";}
+
+	$debug_group_prec_suiv="n";
+	if(!empty($tab_groups)) {
+
+		$chaine_options_classes="";
+
+		$num_groupe=-1;
+
+		$tmp_groups=array();
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			if((!isset($tab_groups[$loop]["visibilite"]["bulletins"]))||($tab_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				$tmp_groups[]=$tab_groups[$loop];
+			}
+			elseif(get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num)!="") {
+				$tab_anomalie_cn_pour_groupe_hors_cn[$tab_groups[$loop]['id']]=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
+			}
+		}
+
+		$nb_groupes_suivies=count($tmp_groups);
+
+		if($debug_group_prec_suiv=="y") {echo "<p>Groupe actuellement affiché : $id_groupe<br />";}
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		$chaine_info_debug_id_groupe="";
+		for($loop=0;$loop<count($tmp_groups);$loop++) {
+
+			if($debug_group_prec_suiv=="y") {echo "Groupe n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";$chaine_info_debug_id_groupe=" (id_groupe : ".$tmp_groups[$loop]['id'].")";}
+
+			if((!isset($tmp_groups[$loop]["visibilite"]["bulletins"]))||($tmp_groups[$loop]["visibilite"]["bulletins"]=='y')) {
+				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+				if($tmp_groups[$loop]["nb_periode"]>=$periode_num) {
+					if($tmp_groups[$loop]['id']==$id_groupe){
+						$num_groupe=$loop;
+
+						if($debug_group_prec_suiv=="y") {echo "Le groupe n°$loop dans la boucle est le groupe courant : ".$tmp_groups[$loop]['id']."<br />";}
+
+						$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='selected'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+
+						$temoin_tmp=1;
+						if($debug_group_prec_suiv=="y") {echo "On teste \$tmp_groups[$loop+1]<br />";}
+						if(isset($tmp_groups[$loop+1])){
+							$id_grp_suiv=$tmp_groups[$loop+1]['id'];
+							if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=".$tmp_groups[$loop+1]['id']."<br />";}
+						}
+						else{
+							$id_grp_suiv=0;
+							if($debug_group_prec_suiv=="y") {echo "\$id_grp_suiv=0<br />";}
+						}
+					}
+					else {
+						$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."'>".htmlspecialchars($tmp_groups[$loop]['description'])." (".$tmp_groups[$loop]['classlist_string'].")$chaine_info_debug_id_groupe</option>\n";
+					}
+	
+					if($temoin_tmp==0){
+						$id_grp_prec=$tmp_groups[$loop]['id'];
+						if($debug_group_prec_suiv=="y") {echo "Le groupe précédent est temporairement le n°$loop dans la boucle : ".$tmp_groups[$loop]['id']."<br />";}
+					}
+				}
+			}
+		}
+
+		// =================================
+
+		if(($chaine_options_classes!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_classe(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_groupe').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
+			echo "Période $periode_num&nbsp;:";
+			if((isset($id_grp_prec))&&($id_grp_prec!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-left.png
+				echo " <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num' title='Groupe précédent'><img src='../images/icons/back.png' class='icone16' alt='Groupe précédent' /></a>\n";
+			}
+			echo "<label for='id_groupe' class='invisible' >Changer de groupe</label>\n";
+			echo "<select name='id_groupe' id='id_groupe' onchange=\"confirm_changement_classe(change, '$themessage');\">\n";
+			echo $chaine_options_classes;
+			echo "</select>\n";
+			if((isset($id_grp_suiv))&&($id_grp_suiv!=0)) {
+				//onclick=\"return confirm_abandon (this, 'yes', '$themessage')\" 
+				//arrow-right.png
+				echo "<a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num' title='Groupe suivant'><img src='../images/icons/forward.png' class='icone16' alt='Groupe suivant' /></a>\n";
+			}
+			//echo " | \n";
+		}
+	}
+	// =================================
+}
+
+echo "</form>
+</div>\n";
 
 
 echo "<h2>$titre</h2>\n";

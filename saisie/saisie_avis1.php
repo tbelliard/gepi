@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -40,6 +40,10 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+// Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
+$aff_temoin_serveur_hors_entete="y";
+
 // initialisation
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :NULL);
 
@@ -1198,6 +1202,9 @@ $msg_acces_app_ele_resp\" />";
 					}
 					echo $chaine_date_conseil_classe."<br />";
 					//=========================
+					if(getSettingAOui('aff_temoin_check_serveur')) {
+						temoin_check_srv();
+					}
 				?>
 				<input type='submit' value='Enregistrer' title="Enregistrer les avis saisis" />
 

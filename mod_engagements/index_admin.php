@@ -107,6 +107,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$ConcerneResponsable=isset($_POST['ConcerneResponsable']) ? $_POST['ConcerneResponsable'] : array();
 	$SaisieScol=isset($_POST['SaisieScol']) ? $_POST['SaisieScol'] : array();
 	$SaisieCpe=isset($_POST['SaisieCpe']) ? $_POST['SaisieCpe'] : array();
+	$SaisiePP=isset($_POST['SaisiePP']) ? $_POST['SaisiePP'] : array();
 
 	$nb_modif=0;
 	for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
@@ -128,34 +129,53 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 					$ajout_sql.=", description='".$description[$tab_engagements['indice'][$loop]['id']]."'";
 				}
 
-				if(((isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']!='yes'))||
-				((!isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']=='yes'))) {
-					$ajout_sql.=", conseil_de_classe='".$conseil_de_classe[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']!='yes')) {
+					$ajout_sql.=", conseil_de_classe='yes'";
+				}
+				elseif((!isset($conseil_de_classe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['conseil_de_classe']=='yes')) {
+					$ajout_sql.=", conseil_de_classe='no'";
 				}
 
-				if(((isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']!='id_classe'))||
-				((!isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']=='id_classe'))) {
-					$ajout_sql.=", type='".$type[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']!='id_classe')) {
+					$ajout_sql.=", type='id_classe'";
+				}
+				elseif((!isset($type[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['type']=='id_classe')) {
+					$ajout_sql.=", type=''";
 				}
 
-				if(((isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']!='yes'))||
-				((!isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']=='yes'))) {
-					$ajout_sql.=", ConcerneEleve='".$ConcerneEleve[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']!='yes')) {
+					$ajout_sql.=", ConcerneEleve='yes'";
+				}
+				elseif((!isset($ConcerneEleve[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneEleve']=='yes')) {
+					$ajout_sql.=", ConcerneEleve='no'";
 				}
 
-				if(((isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']!='yes'))||
-				((!isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']=='yes'))) {
-					$ajout_sql.=", ConcerneResponsable='".$ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']!='yes')) {
+					$ajout_sql.=", ConcerneResponsable='yes'";
+				}
+				elseif((!isset($ConcerneResponsable[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['ConcerneResponsable']=='yes')) {
+					$ajout_sql.=", ConcerneResponsable='no'";
 				}
 
-				if(((isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']!='yes'))||
-				((!isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes'))) {
-					$ajout_sql.=", SaisieScol='".$SaisieScol[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']!='yes')) {
+					$ajout_sql.=", SaisieScol='yes'";
+				}
+				elseif((!isset($SaisieScol[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieScol']=='yes')) {
+					$ajout_sql.=", SaisieScol='no'";
 				}
 
-				if(((isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']!='yes'))||
-				((!isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes'))) {
-					$ajout_sql.=", SaisieCpe='".$SaisieCpe[$tab_engagements['indice'][$loop]['id']]."'";
+				if((isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']!='yes')) {
+					$ajout_sql.=", SaisieCpe='yes'";
+				}
+				elseif((!isset($SaisieCpe[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisieCpe']=='yes')) {
+					$ajout_sql.=", SaisieCpe='no'";
+				}
+
+				if((isset($SaisiePP[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisiePP']!='yes')) {
+					$ajout_sql.=", SaisiePP='yes'";
+				}
+				elseif((!isset($SaisiePP[$tab_engagements['indice'][$loop]['id']]))&&($tab_engagements['indice'][$loop]['SaisiePP']=='yes')) {
+					$ajout_sql.=", SaisiePP='no'";
 				}
 
 				if($ajout_sql!="") {
@@ -208,6 +228,7 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 	$AjoutEngagementResp=isset($_POST['AjoutEngagementResp']) ? $_POST['AjoutEngagementResp'] : "";
 	$AjoutEngagementSaisieCpe=isset($_POST['AjoutEngagementSaisieCpe']) ? $_POST['AjoutEngagementSaisieCpe'] : "";
 	$AjoutEngagementSaisieScol=isset($_POST['AjoutEngagementSaisieScol']) ? $_POST['AjoutEngagementSaisieScol'] : "";
+	$AjoutEngagementSaisiePP=isset($_POST['AjoutEngagementSaisiePP']) ? $_POST['AjoutEngagementSaisiePP'] : "";
 	if($AjoutEngagementNom!="") {
 		$sql="SELECT 1=1 FROM engagements WHERE nom='".$AjoutEngagementNom."';";
 		//echo "$sql<br />";
@@ -234,6 +255,9 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 			}
 			if($AjoutEngagementSaisieCpe=='yes') {
 				$sql.=", SaisieCpe='yes'";
+			}
+			if($AjoutEngagementSaisiePP=='yes') {
+				$sql.=", SaisiePP='yes'";
 			}
 			$sql.=";";
 			//echo "$sql<br />";

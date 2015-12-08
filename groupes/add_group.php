@@ -39,6 +39,8 @@ if (!checkAccess()) {
     die();
 }
 
+$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
+
 // Initialisation des variables utilisées dans le formulaire
 
 $reg_nom_groupe = '';
@@ -185,13 +187,35 @@ echo "</pre>";
 						}
 					}
 				}
-				elseif(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
+
+				if(isset($_POST['associer_tous_les_profs_de_l_etablissement'])) {
 					$sql="SELECT login FROM utilisateurs WHERE statut='professeur' AND etat='actif';";
 					$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($res_prof)>0) {
 						while($lig_prof=mysqli_fetch_object($res_prof)) {
 							if(!in_array($lig_prof->login, $reg_professeurs)) {
 								$reg_professeurs[]=$lig_prof->login;
+							}
+						}
+					}
+				}
+
+				if(isset($_POST['associer_pp_de_la_classe'])) {
+					for($loo=0;$loo<count($clazz);$loo++) {
+						$sql="SELECT DISTINCT u.login FROM utilisateurs u, 
+													j_eleves_professeurs jep, 
+													j_eleves_classes jec 
+											WHERE u.statut='professeur' AND 
+												u.etat='actif' AND
+												u.login=jep.professeur AND
+												jep.login=jec.login AND
+												jec.id_classe='".$clazz[$loo]."';";
+						$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_prof)>0) {
+							while($lig_prof=mysqli_fetch_object($res_prof)) {
+								if(!in_array($lig_prof->login, $reg_professeurs)) {
+									$reg_professeurs[]=$lig_prof->login;
+								}
 							}
 						}
 					}
@@ -560,12 +584,14 @@ if ($reg_matiere != null) {
 
 	if ($mode == "groupe") {
 		echo "<br />
+	<input type='checkbox' name='associer_pp_de_la_classe' id='associer_pp_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_pp_de_la_classe' id='texte_associer_pp_de_la_classe'> Associer à cet enseignement le ou les ".$gepi_prof_suivi." de la classe.</label><br />
 <input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la classe.</label><br />
 <input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
 ";
 	}
 	else {
 		echo "<br />
+	<input type='checkbox' name='associer_pp_de_la_classe' id='associer_pp_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_pp_de_la_classe' id='texte_associer_pp_de_la_classe'> Associer à cet enseignement le ou les ".$gepi_prof_suivi." de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
 <input type='checkbox' name='associer_tous_les_profs_de_la_classe' id='associer_tous_les_profs_de_la_classe' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_la_classe' id='texte_associer_tous_les_profs_de_la_classe'> Associer à cet enseignement tous les professeurs de la (<em>ou des</em>) classe(<em>s</em>).</label><br />
 <input type='checkbox' name='associer_tous_les_profs_de_l_etablissement' id='associer_tous_les_profs_de_l_etablissement' value='y' onchange=\"checkbox_change_divers(this.id)\" /><label for='associer_tous_les_profs_de_l_etablissement' id='texte_associer_tous_les_profs_de_l_etablissement'> Associer à cet enseignement tous les professeurs de l'établissement.</label><br />
 ";

@@ -6825,7 +6825,7 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 function temoin_check_srv($id_div_retour="retour_ping", $nom_js_func="check_srv", $nom_var="cpt_ping", $taille=10, $intervalle_temps=10) {
 	global $gepiPath;
 
-	echo "<div id='retour_ping' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes.
+	echo "<div id='retour_ping' class='noprint' style='width:".$taille."px; height:".$taille."px; background-color:red; border:1px solid black; float:left; margin:1px; display:none;' title=\"Témoin de réponse du serveur: Un test est effectué toutes les $intervalle_temps secondes.
 Si le témoin se maintient au rouge, c'est que le serveur n'est pas joignable.
 Vous devriez dans ce cas (pour vous prémunir d'une perte de ce qui a été saisi et pas encore enregistré), copier dans un Bloc-notes tout ce qui n'a pas encore été enregistré.
 Provoquer l'enregistrement/validation des données vers le serveur risque de se solder par un échec (si le serveur est indisponible, il ne recevra pas ce que vous enverrez et tout sera perdu).\"></div>\n";
@@ -10175,7 +10175,12 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 				}
 				*/
 			}
-			$retour.=$lig->texte_apres;
+			if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+				$retour.=$lig->texte_apres;
+			}
+			else {
+				$retour.=$lig->texte_apres_ele_resp;
+			}
 		}
 		elseif($lig->type=='conseil_de_classe') {
 
@@ -10512,7 +10517,12 @@ Cliquer pour saisir l'avis du conseil de classe,\n pour accéder aux bulletins, 
 </table>";
 
 			}
-			$retour.=$lig->texte_apres;
+			if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+				$retour.=$lig->texte_apres;
+			}
+			else {
+				$retour.=$lig->texte_apres_ele_resp;
+			}
 
 		}
 	}
@@ -11038,7 +11048,7 @@ function champs_checkbox_avertissements_fin_periode($login_ele, $periode) {
 		foreach($tab_type_avertissement_fin_periode['id_type_avertissement'] as $key => $value) {
 			$retour.="
 	<tr>
-		<td><input type='checkbox' id='id_type_avertissement_$key' name='id_type_avertissement[]' value='$key' onchange=\"checkbox_change('id_type_avertissement_$key')\" ";
+		<td><input type='checkbox' id='id_type_avertissement_$key' name='id_type_avertissement[]' value='$key' onchange=\"checkbox_change('id_type_avertissement_$key'); changement();\" ";
 			if((isset($tab['id_type_avertissement'][$periode]))&&(in_array($key, $tab['id_type_avertissement'][$periode]))) {
 				$retour.="checked ";
 			}
@@ -13732,4 +13742,21 @@ function acces_upload_modele_ooo($login, $statut="") {
 
 	return $retour;
 }
+
+function get_tab_date_dernier_evenement_telle_classe($id_classe, $type) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT dde.id_ev, ddec.date_evenement, ddec.id_classe, ddec.id_salle, c.classe FROM d_dates_evenements dde, d_dates_evenements_classes ddec, classes c WHERE ddec.id_ev=dde.id_ev AND ddec.date_evenement<=NOW() AND ddec.id_classe='".$id_classe."' AND dde.type='".$type."' AND c.id=ddec.id_classe ORDER BY date_evenement DESC LIMIT 1;";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab=$lig;
+			$tab['slashdate_ev']=formate_date($lig['date_evenement']);
+			$tab['slashdate_heure_ev']=formate_date($lig['date_evenement'], 'y');
+			$tab['lieu']=get_infos_salle_cours($lig['id_salle']);
+		}
+	}
+	return $tab;
+}
+
 ?>

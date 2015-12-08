@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -105,6 +105,21 @@ if (isset($_POST['is_posted'])) {
 						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 //                        echo "classe : ".$id_classe." - reg_formule".$per." : ".$_POST[$temp2]."</br>";
 					}
+
+
+					$temp2 ="nb_".$per."_reg_suivi_par_alt";
+					if ($_POST[$temp2] != '') {
+						$register = saveParamClasse($id_classe, 'suivi_par_alt', $_POST[$temp2]);
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+					}
+
+					$temp2 ="nb_".$per."_reg_suivi_par_alt_fonction";
+					if ($_POST[$temp2] != '') {
+						$register = saveParamClasse($id_classe, 'suivi_par_alt_fonction', $_POST[$temp2]);
+						if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
+					}
+
+
 					if (isset($_POST['nb_'.$per.'_reg_format'])) {
 						$tab = explode("_", $_POST['nb_'.$per.'_reg_format']);
 						$register = mysqli_query($GLOBALS["mysqli"], "UPDATE classes SET format_nom='".$tab[2]."' where id='".$id_classe."'");
@@ -211,6 +226,7 @@ if (isset($_POST['is_posted'])) {
 							if (!$register) $reg_ok = 'no'; else $reg_ok = 'yes' ;
 						}
 					}
+
 
 					if (isset($_POST['ects_fonction_signataire_attestation_'.$per])) {
 						if ($_POST['ects_fonction_signataire_attestation_'.$per]!='') {
@@ -967,6 +983,17 @@ while ($per < $max_periode) {
 			";
 		}
 		echo "
+	function cocher_classes_post_precedent_inverse() {
+		tout_cocher($per, true);";
+		for($loop=0;$loop<count($tab_id_cases_classes_postees_precedemment);+$loop++) {
+			echo "
+				if(document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."')){
+					document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."').checked=false;
+					change_style_classe('".preg_replace("/^case_/", "", $tab_id_cases_classes_postees_precedemment[$loop])."');
+				}
+			";
+		}
+		echo "
 	}";
 		}
 
@@ -974,7 +1001,10 @@ while ($per < $max_periode) {
 </script>\n";
 
 		if(count($tab_id_cases_classes_postees_precedemment)>0) {
-			echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a></p>";
+			echo "<p style='margin-top:1em;margin-bottom:1em;'>
+	<a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a><br />
+	<a href='javascript:cocher_classes_post_precedent_inverse()'>Effectuer la sélection de classes inverse de celle de l'opération précédente.</a>
+</p>";
 		}
 
 		?>
@@ -1018,7 +1048,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		?>
 
 		</table>
-		<p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;:
+		<p style='margin-top:1em;'>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;:
 		<br /><input type="text" size="30" name="<?php echo "nb_".$per."_reg_suivi_par"; ?>" value="" /></p>
         <?php if ($gepiSettings['active_mod_ects'] == "y") { ?>
             <p>Fonction du signataire sus-nommé (ex.: "Proviseur")&nbsp;: <br /><input type="text" size="40" name="ects_fonction_signataire_attestation_<?php echo $per;?>" value="" /></p>
@@ -1026,8 +1056,13 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 		<p>Formule à insérer sur les bulletins (cette formule sera suivie des nom et prénom de la personne désignée ci_dessus&nbsp;:
 		<br /><input type="text" size="80" name="<?php echo "nb_".$per."_reg_formule"; ?>" value="" /></p>
 
+		<p style='margin-top:1em;'>Désignation alternative de la personne suivant la classe (<em>chef d'établissement ou son représentant</em>) pouvant être utilisée dans des publipostages OOo&nbsp;: <br />
+		<input type='text' size='30' name="<?php echo "nb_".$per."_reg_suivi_par_alt"; ?>" value = ""  onchange='changement()' /><br />
+		Fonction associée (<em>chef, adjoint</em>)&nbsp;:<br />
+		<input type='text' size='30' name="<?php echo "nb_".$per."_reg_suivi_par_alt_fonction"; ?>" value = ""  onchange='changement()' />
+		</p>
 
-		<p><input type='checkbox' name='modifier_gepi_prof_suivi_<?php echo $per;?>' id='modifier_gepi_prof_suivi_<?php echo $per;?>' value='y' /><label for='modifier_gepi_prof_suivi_<?php echo $per;?>'>Modifier la dénomination du professeur chargé du suivi des élèves</label><br />
+		<p style='margin-top:1em;'><input type='checkbox' name='modifier_gepi_prof_suivi_<?php echo $per;?>' id='modifier_gepi_prof_suivi_<?php echo $per;?>' value='y' /><label for='modifier_gepi_prof_suivi_<?php echo $per;?>'>Modifier la dénomination du professeur chargé du suivi des élèves</label><br />
 		&nbsp;&nbsp;&nbsp;Dénomination du professeur chargé du suivi des élèves&nbsp;:<?php 
 				echo "
 			<input type='text' name='gepi_prof_suivi_".$per."' id='gepi_prof_suivi_".$per."' value=\"".getSettingValue('gepi_prof_suivi')."\" onchange=\"document.getElementById('modifier_gepi_prof_suivi_".$per."').checked=true;changement()\" />";
@@ -1129,6 +1164,7 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 	</select>
 	</td>
 	<td>
+		s'ils sont
 		<table class='boireaus' cellspacing='0'>
 			<?php
 				echo "<tr>\n";

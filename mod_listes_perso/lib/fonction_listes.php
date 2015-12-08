@@ -119,7 +119,7 @@ function chargeTableau($idListe = NULL) {
 	if ($idListe !== NULL) {
 		$sql .= "AND `id` LiKE '$idListe' " ;
 	}
-	$sql .= "ORDER BY nom ASC ;" ;
+	$sql .= "ORDER BY `nom` ASC ;" ;
 	//echo $sql."<br />" ;
 	$query = mysqli_query($mysqli, $sql);
 	if (!$query) {

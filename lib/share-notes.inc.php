@@ -871,29 +871,36 @@ function creer_carnet_notes($id_groupe, $periode_num) {
 		$nom_complet_matiere = $current_group["matiere"]["nom_complet"];
 		$nom_court_matiere = $current_group["matiere"]["matiere"];
 
-		// Création du conteneur
-		$sql="INSERT INTO cn_conteneurs SET id_racine='',
-				nom_court='".traitement_magic_quotes($current_group["description"])."',
-				nom_complet='". traitement_magic_quotes($nom_complet_matiere)."',
-				description = '',
-				mode = '".getPref($_SESSION['login'],'cnBoitesModeMoy', (getSettingValue('cnBoitesModeMoy')!="" ? getSettingValue('cnBoitesModeMoy') : 2))."', 
-				coef = '1.0',
-				arrondir = 's1',
-				ponderation = '0.0',
-				display_parents = '0',
-				display_bulletin = '1',
-				parent = '0'";
-		$reg = mysqli_query($GLOBALS["mysqli"], $sql);
-		if ($reg) {
-			$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
-
-			// Mise à jour du conteneur
-			$sql="UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine';";
+		$sql="SELECT 1=1 FROM j_groupes_classes jgc, periodes p WHERE jgc.id_classe=p.id_classe AND jgc.id_groupe='$id_groupe' AND p.num_periode='$periode_num' AND p.verouiller='N';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			return false;
+		}
+		else {
+			// Création du conteneur
+			$sql="INSERT INTO cn_conteneurs SET id_racine='',
+					nom_court='".traitement_magic_quotes($current_group["description"])."',
+					nom_complet='". traitement_magic_quotes($nom_complet_matiere)."',
+					description = '',
+					mode = '".getPref($_SESSION['login'],'cnBoitesModeMoy', (getSettingValue('cnBoitesModeMoy')!="" ? getSettingValue('cnBoitesModeMoy') : 2))."', 
+					coef = '1.0',
+					arrondir = 's1',
+					ponderation = '0.0',
+					display_parents = '0',
+					display_bulletin = '1',
+					parent = '0'";
 			$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+			if ($reg) {
+				$id_racine = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 
-			// Création du carnet de notes
-			$sql="INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine';";
-			$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+				// Mise à jour du conteneur
+				$sql="UPDATE cn_conteneurs SET id_racine='$id_racine', parent = '0' WHERE id='$id_racine';";
+				$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+
+				// Création du carnet de notes
+				$sql="INSERT INTO cn_cahier_notes SET id_groupe = '$id_groupe', periode = '$periode_num', id_cahier_notes='$id_racine';";
+				$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+			}
 		}
 	} else {
 		$id_racine = old_mysql_result($appel_cahier_notes, 0, 'id_cahier_notes');

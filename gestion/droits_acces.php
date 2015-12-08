@@ -1455,6 +1455,16 @@ $texteItem="a accès aux valeurs min/max des moyennes de la classe<br />(<em>sou
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesBulletinSimpleMoyGenEleve';
+$texteItem="a accès à sa moyenne générale sur le bulletin simplifié (<em>et aux moyennes min/max/... selon les paramétrages ci-dessus</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesBulletinSimpleMoyCatEleve';
+$texteItem="a accès à ses moyennes de catégories sur le bulletin simplifié (<em>et aux moyennes min/max/... selon les paramétrages ci-dessus</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesGraphEleve';
 $texteItem="a accès à la visualisation graphique de ses résultats<br />";
 $texteItem.= "<em>";
@@ -1558,6 +1568,12 @@ $texteItem="a accès aux absences des ".$gepiSettings['denomination_eleves']." d
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+/*
+$titreItem='abs2_ResponsablePeutJustifier';
+$texteItem="peut justifier les absences et retards pour les ".$gepiSettings['denomination_eleves']." dont il est responsable <em style='color:red'>(expérimental)</em>";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+*/
 //+++++++++++++++++++++++++++
 
 $titreItem='';
@@ -1688,6 +1704,16 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $titreItem='GepiAccesBulletinSimpleColonneMoyClasseMinMaxResp';
 $texteItem="a accès aux valeurs min/max des moyennes de la classe<br />(<em>sous réserve que l'accès aux bulletins simplifiés et à la colonne Moyenne de la classe soient donnés</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesBulletinSimpleMoyGenResp';
+$texteItem="a accès à la moyenne générale sur le bulletin simplifié des élèves dont il est responsable (<em>et aux moyennes min/max/... selon les paramétrages ci-dessus</em>)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesBulletinSimpleMoyCatResp';
+$texteItem="a accès aux moyennes de catégories sur le bulletin simplifié des élèves dont il est responsable (<em>et aux moyennes min/max/... selon les paramétrages ci-dessus</em>)";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

@@ -393,12 +393,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
 		echo "<table summary='Choix des élèves'>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" ";
+		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" onchange=\"change_style_radio()\" ";
 		if((!isset($_SESSION['choix_edit']))||($_SESSION['choix_edit']==1)) {
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
+		echo "<td><label for='choix_edit_1' id='texte_choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
 		if((getSettingAOui('GepiAccesPPTousElevesDeLaClasse'))&&(is_pp($_SESSION['login'], $id_classe))) {
 			// Tous les élèves vont être affichés
 		}
@@ -412,12 +412,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$indice = 1;
 		if ($nb_lignes > 1) {
 			echo "<tr>\n";
-			echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" ";
+			echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" onchange=\"change_style_radio()\" ";
 			if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==3)) {
 				echo "checked ";
 			}
 			echo "/></td>\n";
-			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".$gepi_prof_suivi." est :</label>\n";
+			echo "<td><label for='choix_edit_3' id='texte_choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".$gepi_prof_suivi." est :</label>\n";
 			echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
 			$i=0;
 			while ($i < $nb_lignes) {
@@ -438,12 +438,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 		echo "<tr>\n";
-		echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" ";
+		echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" onchange=\"change_style_radio()\" ";
 		if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==2)) {
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
+		echo "<td><label for='choix_edit_2' id='texte_choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
 		echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
 		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
@@ -523,12 +523,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</select></td></tr>\n";
 
 		echo "<tr>\n";
-		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" ";
+		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" onchange=\"change_style_radio()\" ";
 		if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==4)) {
 			echo "checked ";
 		}
 		echo "/></td>\n";
-		echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
+		echo "<td><label for='choix_edit_4' id='texte_choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
 		echo "</label></td></tr>\n";
 
 		echo "</table>\n";
@@ -562,8 +562,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		if((($_SESSION['statut']=='responsable')&&(getSettingAOui('GepiAccesBulletinSimpleClasseResp')))||
 			(($_SESSION['statut']=='eleve')&&(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')))) {
 			echo "<p>Afficher<br />\n";
-			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_2\" value=\"2\" checked /><label for='choix_edit_2'>Le bulletin simplifié de ".$prenom_eleve." ".$nom_eleve."</label><br />\n";
-			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_4\" value=\"4\" /><label for='choix_edit_4'>Le bulletin simplifié des appréciations sur le groupe-classe</label><br /><br />\n";
+			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_2\" value=\"2\" onchange=\"change_style_radio()\" checked /><label for='choix_edit_2'>Le bulletin simplifié de ".$prenom_eleve." ".$nom_eleve."</label><br />\n";
+			echo "<input type=\"radio\" name=\"choix_edit\" id=\"choix_edit_4\" value=\"4\" onchange=\"change_style_radio()\" /><label for='choix_edit_4'>Le bulletin simplifié des appréciations sur le groupe-classe</label><br /><br />\n";
 		}
 		else {
 			echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
@@ -736,34 +736,75 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<br />\n";
 
-	echo "<label for='couleur_alterne' style='cursor:pointer;'>\n";
-	echo "Couleurs de fond des lignes alternées&nbsp;: \n";
-	echo "</label>\n";
-	echo "<input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' ";
+	$checked_couleurs_alt="";
+	$style_couleurs_alt="";
 	if(isset($_SESSION['bull_simp_pref_couleur_alterne'])) {
 		if($_SESSION['bull_simp_pref_couleur_alterne']=='y') {
-			echo "checked";
+			$checked_couleurs_alt=" checked";
+			$style_couleurs_alt="font-weight:bold;";
 		}
 	}
 	else {
 		$couleur_alterne=getPref($_SESSION['login'], 'bull_simp_pref_couleur_alterne', 'n');
 		if($couleur_alterne=='y') {
-			echo "checked";
+			$checked_couleurs_alt=" checked";
+			$style_couleurs_alt="font-weight:bold;";
 		}
 	}
+
+	echo "<label for='couleur_alterne' id='texte_couleur_alterne' style='cursor:pointer;$style_couleurs_alt'>\n";
+	echo "Couleurs de fond des lignes alternées&nbsp;: \n";
+	echo "</label>\n";
+	echo "<input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' onchange=\"changement();checkbox_change(this.id);\"".$checked_couleurs_alt;
 	echo " />\n";
 
 	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 		echo "<br />\n";
-		echo "<label for='pas_de_colonne_moy_classe' style='cursor:pointer;'>\n";
+		echo "<label for='pas_de_colonne_moy_classe' id='texte_pas_de_colonne_moy_classe' style='cursor:pointer;'>\n";
 		echo "Ne pas afficher la colonne Moyenne de la classe&nbsp;: \n";
 		echo "</label>\n";
-		echo "<input type=\"checkbox\" name=\"pas_de_colonne_moy_classe\" id=\"pas_de_colonne_moy_classe\" value='y' ";
+		echo "<input type=\"checkbox\" name=\"pas_de_colonne_moy_classe\" id=\"pas_de_colonne_moy_classe\" value='y' onchange=\"changement();checkbox_change(this.id);\"";
+		echo " />\n";
+	}
+
+	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+		echo "<br />\n";
+		echo "<label for='pas_de_moy_gen' id='texte_pas_de_moy_gen' style='cursor:pointer;";
+		if(!getSettingAOui('bullNoMoyGenParDefaut')) {
+			echo "font-weight:bold;";
+		}
+		echo "'>\n";
+		echo "Ne pas afficher la ligne Moyenne générale&nbsp;: \n";
+		echo "</label>\n";
+		echo "<input type=\"checkbox\" name=\"pas_de_moy_gen\" id=\"pas_de_moy_gen\" value='y' onchange=\"changement();checkbox_change(this.id);\" ";
+		if(!getSettingAOui('bullNoMoyGenParDefaut')) {
+			echo "checked ";
+		}
+		echo " />\n";
+
+		echo "<br />\n";
+		echo "<label for='pas_de_moy_cat' id='texte_pas_de_moy_cat' style='cursor:pointer;";
+		if(!getSettingAOui('bullNoMoyCatParDefaut')) {
+			echo "font-weight:bold;";
+		}
+		echo "'>\n";
+		echo "Ne pas afficher les moyennes de catégories&nbsp;: \n";
+		echo "</label>\n";
+		echo "<input type=\"checkbox\" name=\"pas_de_moy_cat\" id=\"pas_de_moy_cat\" value='y' onchange=\"changement();checkbox_change(this.id);\" ";
+		if(!getSettingAOui('bullNoMoyCatParDefaut')) {
+			echo "checked ";
+		}
 		echo " />\n";
 	}
 
 	echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
 	echo "</form>\n";
+
+	echo "<script type='text/javascript'>
+	".js_change_style_radio("change_style_radio", "n", "n")."
+	".js_checkbox_change_style('checkbox_change', 'texte_', "n")."
+	change_style_radio();
+</script>";
 
 	//=================================
 	// 20121118

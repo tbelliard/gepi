@@ -199,10 +199,6 @@ colC20 {
 	  border-color: #bbb;
    }
    
-   #container {
-	 width: 100%;
-   }
-   
    #bandeau {
 	 display: none;
    }
@@ -254,10 +250,6 @@ colC20 {
    table caption {
 	 font-weight : bold;
 	 padding-bottom: .5em;
-   }
-   
-   tableauListe {
-	 height: 100%;
    }
 
    #laListe{

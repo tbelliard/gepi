@@ -248,7 +248,7 @@ $colonnes2 = $_SESSION['liste_perso']['colonnes'] ;
 // debug_var(); // Ne fonctionne pas, $_SESSION['liste_perso']['colonnes'] est un objet, non géré par debug_var()
 // var_dump($_POST);
 //==============================================
-$style_specifique[] = "mod_listes_perso/lib/style_liste";
+$style_specifique2[] = "mod_listes_perso/lib/style_liste";
 $javascript_specifique = "mod_listes_perso/lib/js_listes_perso";
 $titre_page = "Listes personnelles";
 $utilisation_jsdivdrag = "non";
@@ -257,7 +257,7 @@ require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
 ?>
-
+<div class="noprint">
 <ul class="menu_entete_liste">
     <li class="menu_liste"
 		id='menu_lien_tableau'
@@ -332,7 +332,6 @@ if ($tableau->num_rows) {
 <script type="text/javascript" >
 	document.getElementById('sauveChoixTableau').classList.add('invisible');
 </script>
-
 <!-- Ajout des élèves à la liste -->
 <div id="eleves" class="div_construit">
 	<p><a id='lien_eleves'></a></p>
@@ -391,7 +390,6 @@ foreach ($groupe_col as $group) {
 		</fieldset>
 	</form>
 </div>
-
 <!-- Ajouter des colonnes -->
 <div id="construction" class="div_construit">
 	<p><a id='lien_construction'></a></p>
@@ -460,7 +458,6 @@ foreach ($groupe_col as $group) {
 		</form>
 	</fieldset>
 </div>
-
 <!-- Supprimer des colonnes -->
 <div id="affichage" class="div_construit">
 	<p><a id='lien_affichage'></a></p>
@@ -529,9 +526,12 @@ if(isset($colonnes) && $colonnes && $colonnes->num_rows) {
 	<p>Cliquez dans les entêtes de colonnes pour créer leur titre ou le modifier.</p>
 	<p>Cliquez dans les cellules pour en modifier le contenu.</p>
 	<p>Cliquez en dehors pour enregistrer.</p>
-	<p>Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' /> permette de supprimer une ligne ou le contenu d'une cellule.</p>
+	<p>
+		Les points rouges <img src='../images/bulle_rouge.png' alt='image supprime' />
+		permettent de supprimer une ligne ou le contenu d'une cellule.
+	</p>
 </div>
-
+</div>
 <div id="laListe" class="div_tableauListe">
 	<fieldset id="cadre_laListe">
 		<table id="tableauListe">

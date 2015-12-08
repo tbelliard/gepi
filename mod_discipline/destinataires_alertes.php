@@ -59,6 +59,8 @@ else {
 	die();
 }
 
+//debug_var();
+
 require('sanctions_func_lib.php');
 
 if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
@@ -200,7 +202,7 @@ echo "</p>\n";
 	//Ajout Eric
 	$contenu_adresse = "";
 
-	$tab_statut=array('cpe', 'scolarite', 'pp', 'professeurs', 'administrateur', 'mail');
+	$tab_statut=array('cpe', 'tous_cpe', 'scolarite', 'pp', 'professeurs', 'administrateur', 'mail');
 
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus'>\n";
@@ -209,6 +211,7 @@ echo "</p>\n";
 	//$ligne_comptes_scol.="<td style='text-align:center; font-weight:bold;'>Comptes</td>\n";
 	$ligne_statuts.="<th style='text-align:center; font-weight:bold;'>Statuts</th>\n";
 	$ligne_statuts.="<th>CPE</th>\n";
+	$ligne_statuts.="<th>Tous les CPE</th>\n";
 	$ligne_statuts.="<th>Scolarité<br />responsable<br />de la classe</th>\n";
 	$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
 	$ligne_statuts.="<th>".$gepi_prof_suivi."</th>\n";
@@ -337,14 +340,15 @@ echo "</p>\n";
 
 			echo add_token_field();
 
-			$tab_statut=array('cpe', 'scolarite', 'pp', 'professeurs', 'administrateur');
+			$tab_statut=array('cpe', 'tous_cpe', 'scolarite', 'pp', 'professeurs', 'administrateur');
 
 			//echo "<table border='1'>\n";
 			echo "<table class='boireaus'>\n";
 			//#96C8F0
 			$ligne_statuts="<tr style='background-color:#FAFABE;'>\n";
 			$ligne_statuts.="<th style='text-align:center; font-weight:bold;'>Statuts</th>\n";
-			$ligne_statuts.="<th>CPE</th>\n";
+			$ligne_statuts.="<th title=\"CPE chargé du suivi de l'élève\">CPE</th>\n";
+			$ligne_statuts.="<th>Tous les CPE</th>\n";
 			$ligne_statuts.="<th>Scolarité<br />responsable<br />de la classe</th>\n";
 			$gepi_prof_suivi=ucfirst(getSettingValue("gepi_prof_suivi"));
 			$ligne_statuts.="<th>".$gepi_prof_suivi."</th>\n";

@@ -17,6 +17,8 @@ function ajaxAppreciations(eleveperiode, enseignement, textId){
 	// Il faudra envisager d'utiliser Ajax.Updater pour renvoyer une phrase de confirmation
 	//  ou alors résupérer un retour par Ajax.Request avec onSuccess ou onFailure
 	//alert(enseignement+' \n'+eleveperiode+' \n'+textId+' \n Essai = ' +essai+' \nContenu = '+contenu);
+
+	document.getElementById('div_verif_'+textId).innerHTML="<img src='../images/spinner.gif' class='icone16' alt='Enregistrement temp...' title='Enregistrement de l appréciation dans une table temporaire.' />";
 	new Ajax.Updater($('div_verif_'+textId),url,o_options);
 }
 

@@ -157,6 +157,15 @@ require_once("../lib/header.inc.php");
 	if($temoin_pb_ordre_categories=="y") {
 		echo "<p style='color:red; text-indent:-6em;padding-left:6em;'><strong>Anomalie&nbsp;:</strong> Les catégories de matières ne doivent pas avoir le même rang.<br />Cela risque de provoquer des problèmes sur les bulletins.<br />Vous devriez corriger les ordres de catégories de matières dans <a href='matieres_categories.php'".insert_confirm_abandon().">Editer les catégories de matières</a></p>\n";
 	}
+
+	$tab_mat_bull=array();
+	$sql="SELECT DISTINCT id_matiere FROM j_groupes_matieres WHERE id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletin' AND visible='n');";
+	$res_v=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_v)>0) {
+		while($lig_v=mysqli_fetch_object($res_v)) {
+			$tab_mat_bull[]=$lig_v->id_matiere;
+		}
+	}
 ?>
 
 <form enctype="multipart/form-data" action="index.php" method=post>
@@ -171,7 +180,7 @@ echo add_token_field();
 <tr>
     <th>
     <p class='bold'><a href='./index.php?orderby=m.matiere'<?php echo insert_confirm_abandon();?>>Identifiant matière</a><br />
-    <a href="javascript:afficher_masquer_matieres_sans_grp('afficher')"><img src="../images/icons/visible.png" width="19" height="16" title="Afficher les matières sans enseignement associé" alt="Afficher les matières sans enseignement associé" /></a> / <a href="javascript:afficher_masquer_matieres_sans_grp('masquer')"><img src="../images/icons/invisible.png" width="19" height="16" title="Masquer les matières sans enseignement associé" alt="Masquer les matières sans enseignement associé" /></a>
+    <a href="javascript:afficher_masquer_matieres_sans_grp('afficher')"><img src="../images/icons/visible.png" width="19" height="16" title="Afficher les matières sans enseignement associé" alt="Afficher les matières sans enseignement associé" /></a> / <a href="javascript:afficher_masquer_matieres_sans_grp('masquer')"><img src="../images/icons/invisible.png" width="19" height="16" title="Masquer les matières sans enseignement associé" alt="Masquer les matières sans enseignement associé" /></a> / <a href="javascript:modif_aff_bull()"><img src="../images/icons/bulletin_16.png" width="16" height="16" title="Afficher/Masquer les matières n'apparaissant pas sur les bulletins" alt="Afficher/Masquer les matières no_bull" /></a>
     </p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.nom_complet'<?php echo insert_confirm_abandon();?>>Nom complet</a></p></th>
     <th><p class='bold'><a href='./index.php?orderby=m.priority,m.nom_complet'<?php echo insert_confirm_abandon();?>>Ordre d'affichage<br />par défaut</a></p></th>
@@ -224,11 +233,15 @@ while ($i < $nombre_lignes){
 	$res_grp_associes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_grp_assoc=mysqli_num_rows($res_grp_associes);
 
+	$ajout_class="";
+	if(!in_array($current_matiere, $tab_mat_bull)) {
+		$ajout_class=" no_bull";
+	}
 	if($nb_grp_assoc==0) {
-		echo "<tr style='background-color:grey;' class='white_hover' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon()." style=\"color:#0000AA\">$current_matiere</a></td>\n";
+		echo "<tr style='background-color:grey;' class='white_hover".$ajout_class."' id='tr_sans_grp_assoc_$i'><td title=\"Aucun enseignement n'est associé à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon()." style=\"color:#0000AA\">$current_matiere</a></td>\n";
 	}
 	else {
-		echo "<tr class='lig$alt white_hover'><td title=\"$nb_grp_assoc enseignement(s) associé(s) à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
+		echo "<tr class='lig$alt white_hover".$ajout_class."'><td title=\"$nb_grp_assoc enseignement(s) associé(s) à cette matière\"><a href='modify_matiere.php?current_matiere=$current_matiere'".insert_confirm_abandon().">$current_matiere</a></td>\n";
 	}
     //echo "<td>$current_matiere_nom</td>";
     //echo "<td>".html_entity_decode($current_matiere_nom)."</td>";
@@ -306,6 +319,23 @@ function afficher_masquer_matieres_sans_grp(mode) {
 				document.getElementById('tr_sans_grp_assoc_'+i).style.display='none';
 			}
 		}
+	}
+}
+
+var aff_mat_no_bull="y";
+function modif_aff_bull() {
+	tab=document.getElementsByClassName('no_bull');
+	if(aff_mat_no_bull=="n") {
+		for(i=0;i<tab.length;i++) {
+			tab[i].style.display='';
+		}
+		aff_mat_no_bull="y";
+	}
+	else {
+		for(i=0;i<tab.length;i++) {
+			tab[i].style.display='none';
+		}
+		aff_mat_no_bull="n";
 	}
 }
 </script>
