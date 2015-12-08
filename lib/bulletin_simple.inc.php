@@ -1691,7 +1691,8 @@ echo "</form>\n";
 		message=message+'\\n================================\\n'
 ";
 		if(getSettingValue('url_racine_gepi')!="") {
-			echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			//echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
+			echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION___';\n";
 			echo "		message=message+'\\n'";
 		}
 		echo "

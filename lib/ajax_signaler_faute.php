@@ -123,6 +123,19 @@ else {
 			$tab_param_mail['replyto']=$email_utilisateur;
 		}
 
+		if((getSettingValue('url_racine_gepi')!="")&&(preg_match("/___URL_PAGE_CORRECTION___/", $signalement_message))) {
+			if(($signalement_login_eleve!="")&&($signalement_id_groupe!="")) {
+				$url_corrigee=getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe."#saisie_app_".$signalement_login_eleve;
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message);
+				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION___#", $url_corrigee, $signalement_message);
+			}
+			elseif($signalement_id_groupe!="") {
+				$url_corrigee=getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe;
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message);
+				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION___#", $url_corrigee, $signalement_message);
+			}
+		}
+
 		// On considère que le signalement est un succès, si le mail est envoyé pour au moins un destinataire
 		$temoin=false;
 		$temoin2=true;
@@ -145,7 +158,7 @@ else {
 			$date_fin=$date_debut+2*7*24*3600;
 			$date_decompte=$date_fin;
 
-			$contenu_cor="<strong>Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."</strong><br />".mysqli_real_escape_string($GLOBALS['mysqli'], nl2br($signalement_message));
+			$contenu_cor="<strong>Signalement par ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."</strong><br />".mysqli_real_escape_string($GLOBALS['mysqli'], nl2br($signalement_message_mod_alerte));
 
 			if(!set_message($contenu_cor,$date_debut,$date_fin,$date_decompte,$statuts_destinataires,$lig->login)) {
 				$temoin2=false;
