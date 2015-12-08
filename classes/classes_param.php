@@ -983,6 +983,17 @@ while ($per < $max_periode) {
 			";
 		}
 		echo "
+	function cocher_classes_post_precedent_inverse() {
+		tout_cocher($per, true);";
+		for($loop=0;$loop<count($tab_id_cases_classes_postees_precedemment);+$loop++) {
+			echo "
+				if(document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."')){
+					document.getElementById('".$tab_id_cases_classes_postees_precedemment[$loop]."').checked=false;
+					change_style_classe('".preg_replace("/^case_/", "", $tab_id_cases_classes_postees_precedemment[$loop])."');
+				}
+			";
+		}
+		echo "
 	}";
 		}
 
@@ -990,7 +1001,10 @@ while ($per < $max_periode) {
 </script>\n";
 
 		if(count($tab_id_cases_classes_postees_precedemment)>0) {
-			echo "<p style='margin-top:1em;margin-bottom:1em;'><a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a></p>";
+			echo "<p style='margin-top:1em;margin-bottom:1em;'>
+	<a href='javascript:cocher_classes_post_precedent()'>Effectuer la même sélection de classes qu'à l'opération précédente (<em>$liste_classes_postees_precedemment</em>).</a><br />
+	<a href='javascript:cocher_classes_post_precedent_inverse()'>Effectuer la sélection de classes inverse de celle de l'opération précédente.</a>
+</p>";
 		}
 
 		?>
