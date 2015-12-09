@@ -162,6 +162,9 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSI
 		$accueil_simpl=$pref_accueil_simpl;
 	}
 
+//echo "plop";
+//die();
+
 	//$_SERVER['HTTP_REFERER']=	https://127.0.0.1/steph/gepi-trunk/accueil_simpl_prof.php
 	//$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/accueil.php
 	if((($_SESSION['statut']=='professeur')&&((isset($_SERVER['HTTP_REFERER']))&&(preg_match("#$gepiPath/accueil_simpl_prof.php$#",$_SERVER['HTTP_REFERER']))&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")))||
@@ -182,11 +185,18 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='eleve')||($_SESSI
 			$msg=isset($_POST['msg']) ? $_POST['msg'] : (isset($_GET['msg']) ? $_GET['msg'] : NULL);
 
 			if($_SESSION['statut']=='professeur') {
+				$chaine_complement_url="";
 				if(isset($msg)) {
-					header("Location: ./accueil_simpl_prof.php?msg=$msg");
+					if(isset($_POST['supprimer_message'])) {
+						$chaine_complement_url="&supprimer_message=".$_POST['supprimer_message'].add_token_in_url(false);
+					}
+					header("Location: ./accueil_simpl_prof.php?msg=$msg".$chaine_complement_url);
 				}
 				else {
-					header("Location: ./accueil_simpl_prof.php");
+					if(isset($_POST['supprimer_message'])) {
+						$chaine_complement_url="?supprimer_message=".$_POST['supprimer_message'].add_token_in_url(false);
+					}
+					header("Location: ./accueil_simpl_prof.php".$chaine_complement_url);
 				}
 			}
 			else {
