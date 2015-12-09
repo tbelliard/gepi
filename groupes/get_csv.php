@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -74,10 +74,11 @@ if((isset($avec_naiss))&&($avec_naiss=='y')) {
 //echo "1 - \$id_groupe=$id_groupe<br />";
 
 //$periode_num = isset($_GET['periode_num']) ? $_GET['periode_num'] : 0;
-$periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : 1);
+//$periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : 1);
+$periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL);
 
 //if (!is_numeric($periode_num)) {$periode_num = 0;}
-if (!is_numeric($periode_num)) {$periode_num = 1;}
+//if (!is_numeric($periode_num)) {$periode_num = 1;}
 
 $_SESSION['mes_listes_periode_num']=$periode_num;
 
@@ -90,12 +91,14 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 
 if ($current_group) {
 	$nom_fic = $current_group["name"] . "-" . remplace_accents(preg_replace('/, /','~',$current_group["classlist_string"]),'all') . ".csv";
+	if ((!isset($periode_num))||(!is_numeric($periode_num))) {$periode_num="all";}
 } elseif(isset($id_aid)) {
 	if(!preg_match("/^[0-9]{1,}$/", $id_aid)) {
 		die("Indice AID '$id_aid' invalide.");
 	}
 	$tab_aid=get_tab_aid($id_aid);
 	$nom_fic=remplace_accents($tab_aid['nom_aid']."_".$tab_aid['nom_general_complet']."_periode_".$periode_num,"all") . ".csv";
+	if ((!isset($periode_num))||(!is_numeric($periode_num))) {$periode_num="all";}
 } else {
 	if($id_classe=='toutes') {
 		$classe = "Toutes_les_classes";
@@ -105,6 +108,8 @@ if ($current_group) {
 		$classe = get_nom_classe($id_classe);
 		$nom_fic = remplace_accents($classe,"all") . ".csv";
 	}
+
+	if ((!isset($periode_num))||(!is_numeric($periode_num))) {$periode_num = 1;}
 }
 
 //debug_var();
