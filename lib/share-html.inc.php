@@ -4444,6 +4444,11 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='secours')||
 		(($_SESSION['statut']=='professeur')&&(is_pp($_SESSION['login'], $id_classe)))) {
+			$acces_bull_index="y";
+			if(($_SESSION['statut']=='professeur')&&(!getSettingAOui('GepiProfImprBul'))) {
+				$acces_bull_index="n";
+			}
+
 			// Saisie de l'avis du conseil
 			$retour.="
 		<tr>
@@ -4493,7 +4498,15 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 				}
 				else {
 					$retour.="
-			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a></td>";
+			<td>";
+					$retour.="
+				<a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=4&id_classe=$id_classe&periode1=$current_num_periode&periode2=$current_num_periode&couleur_alterne=y' target='_blank'><img src='$gepiPath/images/icons/bulletin.png' class='icone32' alt='AppGrp' /></a>";
+					if($acces_bull_index=="y") {
+						$retour.="
+				<a href='$gepiPath/bulletin/bull_index.php?mode_bulletin=pdf&intercaler_releve_notes=y&rn_param_auto=y&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&&tab_id_classe[0]=$id_classe&tab_periode_num[0]=$current_num_periode&intercaler_app_classe=y' target='_blank'><img src='$gepiPath/images/icons/pdf32.png' class='icone32' alt='AppGrpPDF' /></a>";
+					}
+					$retour.="
+			</td>";
 				}
 			}
 			$retour.="
