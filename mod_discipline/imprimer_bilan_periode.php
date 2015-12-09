@@ -41,6 +41,8 @@ if (!checkAccess()) {
 
 require('sanctions_func_lib.php');
 
+$persoAutorise = TRUE;
+
 $msg="";
 
 // recupération des parametres

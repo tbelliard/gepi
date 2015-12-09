@@ -1,20 +1,24 @@
 <?php
 //debug_var();
 // suppression d'un message du panneau d'affichage
-if (isset($_POST['supprimer_message'])) {
+if ((isset($_POST['supprimer_message']))||(isset($_GET['supprimer_message']))) {
 	check_token();
-	
+
 	if(!isset($msg)) {
 		$msg="";
 	}
 
-	$r_sql="DELETE FROM `messages` WHERE id='".$_POST['supprimer_message']."' AND login_destinataire='".$_SESSION['login']."'";
-	$resultat = mysqli_query($mysqli, $r_sql);
-	if(!$resultat) {
-		$msg.="Erreur lors de la suppression du message.<br />";
-	}
-	else {
-		$msg.="Message supprimé ".strftime("%d/%m/%Y à %H:%M:%S").".<br />";
+	$supprimer_message=isset($_POST['supprimer_message']) ? $_POST['supprimer_message'] : (isset($_GET['supprimer_message']) ? $_GET['supprimer_message'] : NULL);
+	if((isset($supprimer_message))&&(preg_match("/^[0-9]{1,}$/" ,$supprimer_message))) {
+		$r_sql="DELETE FROM `messages` WHERE id='".$supprimer_message."' AND login_destinataire='".$_SESSION['login']."'";
+		$resultat = mysqli_query($mysqli, $r_sql);
+		if(!$resultat) {
+			$msg.="Erreur lors de la suppression du message.<br />";
+		}
+		else {
+			$msg.="Message supprimé ".strftime("%d/%m/%Y à %H:%M:%S").".<br />";
+		}
+		unset($supprimer_message);
 	}
 }
 

@@ -40,6 +40,7 @@ if (!checkAccess()) {
 	die();
 }
 
+$tab_noms_fichiers_OOo_reserves_modules_Gepi=array("avertissement_fin_periode.odt");
 
 include_once('./lib/lib_mod_ooo.php'); //les fonctions
 $nom_fichier_modele_ooo =''; //variable à initialiser à blanc pour inclure le fichier suivant et éviter une notice. Pour les autres inclusions, cela est inutile.
@@ -483,7 +484,7 @@ if(!isset($num_fich)) {
 	
 	if(file_exists($path)) {
 		$tab_file=get_tab_file($path);
-	
+
 		if(count($tab_file)==0) {
 			$upload_modele_ooo_autorise="n";
 ?>
@@ -509,11 +510,14 @@ if(!isset($num_fich)) {
 		else {
 			// Lister les modèles existants
 ?>
-	<p class='fieldset_opacite50' style="margin: .2em; padding: .5em;">
+	<div class='fieldset_opacite50'>
+	<p style="text-indent:-1.8em; margin-left: 2em; padding: .5em;">
 		Utiliser le modèle&nbsp;:
 		<br />
 <?php	
 			for($i=0;$i<count($tab_file);$i++) {
+				if(!in_array($tab_file[$i], $tab_noms_fichiers_OOo_reserves_modules_Gepi)) {
+
 ?>
 	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?num_fich=<?php echo $i; ?>' 
 	   title="Effectuer un publipostage OOo avec ce fichier modèle">
@@ -530,10 +534,30 @@ if(!isset($num_fich)) {
 		<img src='../images/delete16.png' class='icone16' alt='Supprimer' />
 	</a>
 	<br />
-<?php						
+<?php
+				}
+				else {
+?>
+	<span title="Modèle associé à un module Gepi.
+L'impression ne se fait pas depuis la page courante, mais depuis le module.">
+	   <?php echo $tab_file[$i]; ?>
+	</span> - 
+	<a href='mes_modeles/<?php echo $_SESSION['login']; ?>/<?php echo $tab_file[$i]; ?>' 
+	   target='_blank' 
+	   title="Éditer le fichier <?php echo $tab_file[$i]; ?> pour (par exemple) modifier/améliorer ce modèle et le proposer au publipostage par la suite.">
+		<img src='../images/edit16.png' class='icone16' alt='Éditer' />
+	</a> - 
+	<a href='<?php echo $_SERVER['PHP_SELF']; ?>?suppr_fich=<?php echo $i; ?><?php echo add_token_in_url(); ?>' 
+	   title="Supprimer le fichier <?php echo $tab_file[$i]; ?>">
+		<img src='../images/delete16.png' class='icone16' alt='Supprimer' />
+	</a>
+	<br />
+<?php
+				}
 			}
 ?>
 	</p>
+	</div>
 <?php	
 		}
 	}
@@ -636,7 +660,7 @@ if(!isset($num_fich)) {
 	<script type='text/javascript'>
 <?php echo js_checkbox_change_style(); ?>
 <?php echo js_change_style_radio(); ?>
-</script>";
+</script>
 
 <?php
 		if($_SESSION['statut']=='administrateur') {
