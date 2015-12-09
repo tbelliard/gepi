@@ -248,7 +248,8 @@ if($_SESSION['statut']=="eleve") {
 }
 elseif($_SESSION['statut']=="responsable") {
 	$tab_ele2=array();
-	$tab_ele=get_enfants_from_resp_login($_SESSION['login'], 'simple');
+	//$tab_ele=get_enfants_from_resp_login($_SESSION['login'], 'simple');
+	$tab_ele=get_enfants_from_resp_login($_SESSION['login'], 'simple', "yy");
 	for($loop=0;$loop<count($tab_ele);$loop+=2) {
 		$tab_ele2[]=$tab_ele[$loop];
 	}
