@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -499,6 +499,12 @@ if (isset($_POST['is_posted'])) {
 		if (isset($_POST['url_racine_gepi'])) {
 			if (!saveSetting("url_racine_gepi", $_POST['url_racine_gepi'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre url_racine_gepi !";
+			}
+		}
+
+		if (isset($_POST['url_racine_gepi_interne'])) {
+			if (!saveSetting("url_racine_gepi_interne", $_POST['url_racine_gepi_interne'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre url_racine_gepi_interne !";
 			}
 		}
 
@@ -1939,6 +1945,23 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 		<span class="cellTab plusPetit">
 			<?php
 				echo "<input type='text' name='url_racine_gepi' id='url_racine_gepi' value=\"".getSettingValue('url_racine_gepi')."\" onchange='changement()' size='30' />\n";
+			?>
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<span class="cellTab70">
+			<label for='url_racine_gepi_interne' style='cursor: pointer'>Adresse interne de la racine Gepi</label>
+			<br />
+			<span class='small'>
+				(<em>utilisé dans des envois de mails pour donner l'adresse d'une page en particulier<br />
+				Exemple&nbsp;: https://IP_SERVEUR/DOSSIER_GEPI<br />
+				Laisser vide si l'adresse interne d'accès à Gepi est la même que l'adresse externe</em>)&nbsp;:</label>
+			</span>
+		</span>
+		<span class="cellTab plusPetit">
+			<?php
+				echo "<input type='text' name='url_racine_gepi_interne' id='url_racine_gepi_interne' value=\"".getSettingValue('url_racine_gepi_interne')."\" onchange='changement()' size='30' />\n";
 			?>
 		</span>
 	</p>

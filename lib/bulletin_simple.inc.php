@@ -1693,10 +1693,14 @@ echo "</form>\n";
 		if(getSettingValue('url_racine_gepi')!="") {
 			//echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ".getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe='+id_groupe+'#saisie_app_'+eleve_login;\n";
 			echo "		message=message+'\\nAprès connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION___';\n";
-			echo "		message=message+'\\n'";
+			echo "		message=message+'\\n';";
+		}
+		if(getSettingValue('url_racine_gepi_interne')!="") {
+			echo "		message=message+'\\nDepuis le réseau de l\'établissement, après connexion dans Gepi, l\'adresse pour corriger est ___URL_PAGE_CORRECTION_INTERNE___';\n";
+			echo "		message=message+'\\n';";
 		}
 		echo "
-		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
+		message=message+'\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."';
 
 		//alert('message='+message);
 

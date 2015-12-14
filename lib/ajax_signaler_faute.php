@@ -123,16 +123,30 @@ else {
 			$tab_param_mail['replyto']=$email_utilisateur;
 		}
 
+		$signalement_message_mod_alerte=$signalement_message;
 		if((getSettingValue('url_racine_gepi')!="")&&(preg_match("/___URL_PAGE_CORRECTION___/", $signalement_message))) {
 			if(($signalement_login_eleve!="")&&($signalement_id_groupe!="")) {
 				$url_corrigee=getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe."#saisie_app_".$signalement_login_eleve;
-				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message);
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message_mod_alerte);
 				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION___#", $url_corrigee, $signalement_message);
 			}
 			elseif($signalement_id_groupe!="") {
 				$url_corrigee=getSettingValue('url_racine_gepi')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe;
-				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message);
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message_mod_alerte);
 				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION___#", $url_corrigee, $signalement_message);
+			}
+		}
+
+		if((getSettingValue('url_racine_gepi_interne')!="")&&(preg_match("/___URL_PAGE_CORRECTION_INTERNE___/", $signalement_message))) {
+			if(($signalement_login_eleve!="")&&($signalement_id_groupe!="")) {
+				$url_corrigee=getSettingValue('url_racine_gepi_interne')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe."#saisie_app_".$signalement_login_eleve;
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION_INTERNE___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message_mod_alerte);
+				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION_INTERNE___#", $url_corrigee, $signalement_message);
+			}
+			elseif($signalement_id_groupe!="") {
+				$url_corrigee=getSettingValue('url_racine_gepi_interne')."/saisie/saisie_appreciations.php?id_groupe=".$signalement_id_groupe;
+				$signalement_message_mod_alerte=preg_replace("#___URL_PAGE_CORRECTION_INTERNE___#", "<a href='".$url_corrigee."'>".$url_corrigee."</a>", $signalement_message_mod_alerte);
+				$signalement_message=preg_replace("#___URL_PAGE_CORRECTION_INTERNE___#", $url_corrigee, $signalement_message);
 			}
 		}
 
