@@ -343,6 +343,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 		$tab_aid['nom_general_court']="AID";
 		$tab_aid['nom_general_complet']="AID";
 		$tab_aid['nom_aid']="AID";
+		$tab_aid['profs']=array();
 		$tab_aid['proflist_string']="...";
 		$tab_aid['classes']=array();
 		$tab_aid['classlist_string']="";
