@@ -345,6 +345,7 @@ function get_tab_aid($id_aid, $order_by_ele="") {
 		$tab_aid['nom_aid']="AID";
 		$tab_aid['proflist_string']="...";
 		$tab_aid['classes']=array();
+		$tab_aid['classlist_string']="";
 	}
 	else {
 		$lig_aid=mysqli_fetch_object($res_aid);
