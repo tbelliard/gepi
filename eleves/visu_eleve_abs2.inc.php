@@ -1,12 +1,19 @@
 <?php
-
 /**
  * Affichage des saisies de Abs2 dans la fiche élève
  * 
  */
 $non_traitees=1;
 $tri='';
-$type_extrait = 1; // filtrer par manquement aux obligations scolaires
+
+//$type_extrait=(!isset($_POST['type_extrait'])) ? 1 : "";
+$type_extrait="";
+if(!isset($_POST['visu_eleve_abs2_is_posted'])) {
+	$type_extrait=1; // filtrer par manquement aux obligations scolaires
+}
+elseif(isset($_POST['type_extrait'])) {
+	$type_extrait=1;
+}
 
 //debug_var();
 
@@ -14,7 +21,7 @@ $type_extrait = 1; // filtrer par manquement aux obligations scolaires
 $eleve_id = $eleve->getId();
 $donnees[$eleve_id]['nom'] = $eleve->getNom();
 $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
-$donnees[$eleve_id]['classe'] = $eleve->getClasseNom();        
+$donnees[$eleve_id]['classe'] = $eleve->getClasseNom();
 $donnees[$eleve_id]['nbre_lignes_total'] = 0;
 
 $debutAnnee = NULL;
@@ -88,7 +95,7 @@ $eleve_id = $eleve->getId();
 //on initialise les donnees pour l'élève
 $donnees[$eleve_id]['nom'] = $eleve->getNom();
 $donnees[$eleve_id]['prenom'] = $eleve->getPrenom();
-$donnees[$eleve_id]['classe'] = $eleve->getClasseNom();        
+$donnees[$eleve_id]['classe'] = $eleve->getClasseNom();
 $donnees[$eleve_id]['nbre_lignes_total'] = 0;
 	
 // on récupère les saisies de l'élève
@@ -98,7 +105,7 @@ $saisie_query = AbsenceEleveSaisieQuery::create()
 if ($type_extrait == '1') {
 	$saisie_query->filterByManquementObligationPresence(true);
 }
-$saisie_query->orderByDebutAbs();    
+$saisie_query->orderByDebutAbs();
 $saisie_col = $saisie_query->find();
 
 // on traite les saisies et on stocke les informations dans un tableau
@@ -151,7 +158,7 @@ if($afficher_strictement_englobee!="y") {
 		$donnees[$eleve_id]['nbre_lignes_total']++;
 	  }
 	  // On ajoute la saisie
-	  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();               
+	  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
 	  if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
 		// On a déjà des saisies pour ce type, ce jour
 		if ($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] > $saisie->getDebutAbs('U')) {
@@ -190,7 +197,13 @@ if($afficher_strictement_englobee!="y") {
 
 	  if ($saisie->getCommentaire() !== '') {
 		// On met à jour le commentaire
-		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = $saisie->getCommentaire();
+		  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($saisie->getCommentaire());
+	  }
+
+	  if(trim($traitement->getCommentaire()) !== '') {
+		  if((!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))||(!in_array(stripslashes($traitement->getCommentaire()), $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires']))) {
+			  $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = stripslashes($traitement->getCommentaire());
+		  }
 	  }
 
 	  // On récupère le style css
@@ -234,8 +247,8 @@ if($afficher_strictement_englobee!="y") {
 
 	// On récupère le style css
 	$donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css'] = $type_css;
-  }        
-}  
+  }
+}
 
 // inclusion des éléments Dojo
 $javascript_footer_texte_specifique = '<script type="text/javascript">
@@ -268,6 +281,10 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	<input type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' style='font-size:small;' onchange="maj_afficher_strictement_englobee()" <?php
 		if($afficher_strictement_englobee=="y") {echo "checked ";}
 	?>/><label for='afficher_strictement_englobee' style='font-size:small; font-variant: normal;'>Afficher les saisies englobées</label>
+	<input type='checkbox' name='type_extrait' id='type_extrait' value='1' style='font-size:small;' onchange="maj_afficher_strictement_englobee()" <?php
+		if($type_extrait!="") {echo "checked ";}
+	?>/><label for='type_extrait' style='font-size:small; font-variant: normal;'>N'afficher que les manquements à l'obligation de présence</label>
+
   </h2>
 	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
 </form>
