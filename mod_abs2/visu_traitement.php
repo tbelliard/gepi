@@ -274,7 +274,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 			echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 		}
 		if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-			echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
+			echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
 			//echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
 			echo ' (voir fiche)';
 			echo "</a>";

@@ -443,7 +443,7 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
             if($current_eleve !=null) echo '<br/>';
             $num_saisie=1;
                if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche élève (ouverture sur l'onglet Responsable)\">";
+                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank' title=\"Voir la fiche élève (ouverture sur l'onglet Responsable)\">";
                     echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
                     echo "</a>";
                 } else {
@@ -508,7 +508,7 @@ $echo_str .= "abs.id_groupe=".$abs->getIdGroupe()." - ";
                     if($current_eleve !=null) echo '<br/>';
                     $num_saisie = 1;
                     if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-                        echo "<a style='color: " . $absenceSaisie->getColor() . ";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsable&amp;quitter_la_page=y' target='_blank'>";
+                        echo "<a style='color: " . $absenceSaisie->getColor() . ";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "&amp;onglet=responsables&amp;quitter_la_page=y' target='_blank'>";
                         echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom() . ' : ';
                         echo "</a>";
                     } else {
