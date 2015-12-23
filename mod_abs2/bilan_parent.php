@@ -237,11 +237,12 @@ $mois_precedent="";
           // On traite alors pour chaque créneau
           foreach ($creneau_col as $creneau) {
             $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
-            $abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
+            //$abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
             $tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
             $date_actuelle_heure_creneau = clone $dt_date_absence_eleve;
             $date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
-            if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+            //if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+            if ((($abs_col->isEmpty())&&($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty())) || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
       ?>
               <td> </td>        
       <?php
@@ -254,6 +255,15 @@ $mois_precedent="";
                   $priorite = get_priorite($abs);
                 }
               }
+
+                if(!$eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty()) {
+                 foreach ($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve) as $ret) {
+                    if (($ret->getTraitee() || $ret->getCreatedAt(null) < $current_minus_4) && get_priorite($ret) < $priorite) {
+                      $priorite = get_priorite($ret);
+                    }
+                  }
+                }
+
               switch ($priorite) {
                 case 1:
       ?>
@@ -420,12 +430,12 @@ $mois_precedent="";
               $date_actuelle_heure_creneau = clone $date_actuelle;
               $date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
               $abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $date_actuelle);
-              $abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
-              
+              //$abs_col->addCollection($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve));
               $tab_heure_fin = explode(":", $creneau->getHeurefinDefiniePeriode());
               $info_creneau_balise_title=$tab_heure[0]."h".$tab_heure[1]." à ".$tab_heure_fin[0]."h".$tab_heure_fin[1];
               
-              if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+              //if ($abs_col->isEmpty() || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+              if ((($abs_col->isEmpty())&&($eleve->getRetardsDuCreneau($creneau, $date_actuelle)->isEmpty())) || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
       ?>
                 <td></td>
       <?php
@@ -434,6 +444,13 @@ $mois_precedent="";
                 foreach ($abs_col as $abs) {
                   if ($abs->getTraitee() && get_priorite($abs) < $priorite) {
                     $priorite = get_priorite($abs);
+                  }
+                }
+                if(!$eleve->getRetardsDuCreneau($creneau, $date_actuelle)->isEmpty()) {
+                 foreach ($eleve->getRetardsDuCreneau($creneau, $date_actuelle) as $ret) {
+                    if ($ret->getTraitee() && get_priorite($ret) < $priorite) {
+                      $priorite = get_priorite($ret);
+                    }
                   }
                 }
                 switch ($priorite) {
