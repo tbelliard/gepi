@@ -110,9 +110,12 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 	$reg_prenom = trim($reg_prenom);
 	$reg_email = trim($reg_email);
 	if ($reg_resp1 == '(vide)') {$reg_resp1 = '';}
-	if (!my_ereg("^[0-9]{4}$", $birth_year)) {$birth_year = "1900";}
-	if (!my_ereg("^[0-9]{2}$", $birth_month)) {$birth_month = "01";}
-	if (!my_ereg("^[0-9]{2}$", $birth_day)) {$birth_day = "01";}
+	if (!preg_match ("/^[0-9]{4}$/", $birth_year)) {$birth_year = "1900";}
+	if(preg_match ("/^[1-9]{1}$/", $birth_month)) {$birth_month="0".$birth_month;}
+	elseif (!preg_match ("/^[0-9]{2}$/", $birth_month)) {$birth_month = "01";}
+	if(preg_match ("/^[1-9]{1}$/", $birth_day)) {$birth_day="0".$birth_day;}
+	elseif (!preg_match ("/^[0-9]{2}$/", $birth_day)) {$birth_day = "01";}
+
 	if ($format == '10') {
 		// YYYY-MM-DD
 		$reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
