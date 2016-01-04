@@ -1358,7 +1358,12 @@ function renvoie_liste_a($type, $alpha){
 // Fonction qui renvoie la liste des élèves d'une classe
 
 function renvoie_liste_classe($id_classe_post){
-	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysqli_error($GLOBALS["mysqli"]).'.');
+	//$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT login FROM j_eleves_classes WHERE id_classe = '".$id_classe_post."' AND periode = '1'") OR die ('Erreur : renvoie_liste_classe() : '.mysqli_error($GLOBALS["mysqli"]).'.');
+	$num_periode=cherche_periode_courante($id_classe_post);
+	if($num_periode=="") {
+		$num_periode=1;
+	}
+	$req_liste_login = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login FROM j_eleves_classes jec, eleves e WHERE id_classe = '".$id_classe_post."' AND periode = '$num_periode' AND e.login=jec.login ORDER BY e.nom,e.prenom;") OR die ('Erreur : renvoie_liste_classe() : '.mysqli_error($GLOBALS["mysqli"]).'.');
 	$nb_eleves = mysqli_num_rows($req_liste_login);
 
 	$rep_liste_eleves = array();
