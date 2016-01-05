@@ -3,6 +3,9 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-master (Version de développement)
+===========================
+
 Gepi-1.6.8 (05/01/2016)
 ===========================
 Librairies:

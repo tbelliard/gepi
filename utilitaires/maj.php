@@ -249,6 +249,10 @@ if (isset ($_POST['maj'])) {
         require 'updates/167_to_168.inc.php';
 	}
 
+	if (($force_maj == 'yes') or (quelle_maj("master"))) {
+        require 'updates/168_to_dev.inc.php';
+	}
+
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);
 	saveSetting("pb_maj", $pb_maj);

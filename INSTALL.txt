@@ -1,6 +1,7 @@
-Gepi-1.6.8 -- Procédure d'installation
+GEPI-master (version de développement)-- Procédure d'installation
 ==========================================
 
+Version de développement: NE PAS INSTALLER EN PRODUCTION !
 La branche stable actuelle est la 1.6.8
 
 ****************************************************
