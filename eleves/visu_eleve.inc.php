@@ -2859,7 +2859,13 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				}
 				else {
 					$sujet="Cahier de textes";
-					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n".$lignes_cdt_mail;
+					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n";
+					if(getSettingValue('url_racine_gepi')!="") {
+						$message.=preg_replace("#../documents/#", getSettingValue('url_racine_gepi')."/documents/", $lignes_cdt_mail);
+					}
+					else {
+						$message.=$lignes_cdt_mail;
+					}
 					$destinataire=$_POST['mail_dest'];
 					$tab_param_mail['destinataire']=$destinataire;
 					$header_suppl="";
