@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -39,7 +39,7 @@ $test=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',
 administrateur='V',
-professeur='F',
+professeur='V',
 cpe='V',
 scolarite='V',
 eleve='F',
@@ -60,6 +60,72 @@ if (!checkAccess()) {
 
 // debug_var();
 
+$mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
+if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
+
+$sql_classes="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+$option_toutes_classes="Toutes classes confondues";
+$sql_ele="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
+$sql_ele_responsable="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login AND sp.qualite='Responsable' ORDER BY e.nom, e.prenom;";
+if($_SESSION['statut']=="professeur") {
+	if(getSettingAOui('extractDiscProf')) {
+		$sql_classes="SELECT DISTINCT c.id, c.classe, c.nom_complet FROM classes c, 
+						j_groupes_classes jgc, 
+						j_groupes_professeurs jgp 
+						WHERE 
+						c.id=jgc.id_classe AND 
+						jgc.id_groupe=jgp.id_groupe AND 
+						jgp.login='".$_SESSION['login']."' 
+						ORDER BY classe, nom_complet;";
+		$option_toutes_classes="Toutes mes classes";
+		$sql_ele="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, 
+											s_protagonistes sp, 
+											j_eleves_groupes jeg, 
+											j_groupes_professeurs jgp 
+										WHERE e.login=sp.login AND 
+											e.login=jeg.login AND 
+											jeg.id_groupe=jgp.id_groupe AND 
+											jgp.login='".$_SESSION['login']."' 
+										ORDER BY e.nom, e.prenom;";
+		$sql_ele_responsable="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, 
+											s_protagonistes sp, 
+											j_eleves_groupes jeg, 
+											j_groupes_professeurs jgp 
+										WHERE e.login=sp.login AND 
+											e.login=jeg.login AND 
+											jeg.id_groupe=jgp.id_groupe AND 
+											jgp.login='".$_SESSION['login']."' AND 
+											sp.qualite='Responsable' 
+										ORDER BY e.nom, e.prenom;";
+	}
+	elseif(getSettingAOui('extractDiscProfP')) {
+		$sql_classes="SELECT DISTINCT c.id, c.classe, c.nom_complet FROM classes c, 
+						j_eleves_classes jec, 
+						j_eleves_professeurs jep 
+						WHERE 
+						c.id=jec.id_classe AND 
+						jec.login=jep.login AND 
+						jep.professeur='".$_SESSION['login']."' 
+						ORDER BY classe, nom_complet;";
+		$option_toutes_classes="Toutes mes classes";
+		$sql_ele="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, 
+											s_protagonistes sp, 
+											j_eleves_professeurs jep 
+										WHERE e.login=sp.login AND 
+											e.login=jep.login AND 
+											jep.professeur='".$_SESSION['login']."' 
+										ORDER BY e.nom, e.prenom;";
+		$sql_ele_responsable="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, 
+											s_protagonistes sp, 
+											j_eleves_professeurs jep 
+										WHERE e.login=sp.login AND 
+											e.login=jep.login AND 
+											jep.professeur='".$_SESSION['login']."' AND 
+											sp.qualite='Responsable' 
+										ORDER BY e.nom, e.prenom;";
+	}
+}
+
 include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
 $nom_fichier_modele_ooo =''; // variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
@@ -78,22 +144,23 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post' target=
 	<fieldset id='infosPerso' style='border: 1px solid grey; background-image: url(\"../images/background/opacite50.png\"); '>
 		<legend style='border: 1px solid grey; background-color: white; '>Choix de l'extraction</legend>
 
-		<p>Extraire les incidents&nbsp;:<br />
+		<p>Extraire les ".$mod_disc_terme_incident."s&nbsp;:<br />
 		<select name='id_classe_incident'>
-			<option value='' selected='true'>Toutes classes confondues</option>";
-$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
-$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			<option value='' selected='true'>$option_toutes_classes</option>";
+
+//$sql_classes="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql_classes);
 while($lig=mysqli_fetch_object($res)) {
 	echo "
 			<option value='$lig->id'>$lig->classe ($lig->nom_complet)</option>";
 }
 echo "
 		</select><br />
-		Uniquement les incidents concernant (<em>pas nécessairement en responsable</em>) l'élève suivant&nbsp;:<br />
+		Uniquement les ".$mod_disc_terme_incident."s concernant (<em>pas nécessairement en responsable</em>) l'élève suivant&nbsp;:<br />
 		<select name='protagoniste_incident'>
 			<option value='' selected='true'>Tous élèves confondus</option>";
-$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
-$res=mysqli_query($GLOBALS["mysqli"], $sql);
+//$sql_ele="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql_ele);
 while($lig=mysqli_fetch_object($res)) {
 	echo "
 			<option value='$lig->login'>".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2")."</option>";
@@ -111,7 +178,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post' target=
 	<fieldset class='fieldset_opacite50' style='margin-top:1em; '>
 		<legend style='border: 1px solid grey; background-color: white; '>Autre mode d'extraction</legend>
 
-		<p>Extraire les incidents";
+		<p>Extraire les ".$mod_disc_terme_incident."s";
 /*
 echo "&nbsp;:<br />
 		<select name='id_classe_incident'>
@@ -133,8 +200,8 @@ echo " concernant l'élève suivant (<em>en tant que responsable</em>)&nbsp;:<br
 
 //$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
 // A FAIRE: Permettre de choisir les 'qualite'
-$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login AND sp.qualite='Responsable' ORDER BY e.nom, e.prenom;";
-$res=mysqli_query($GLOBALS["mysqli"], $sql);
+//$sql_ele_responsable="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login AND sp.qualite='Responsable' ORDER BY e.nom, e.prenom;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql_ele_responsable);
 while($lig=mysqli_fetch_object($res)) {
 	echo "
 			<option value='$lig->login'>".casse_mot($lig->nom,"maj")." ".casse_mot($lig->prenom,"majf2")."</option>";
@@ -142,8 +209,8 @@ while($lig=mysqli_fetch_object($res)) {
 echo "
 		</select><br />
 		<input type='checkbox' name='avec_bloc_adresse_resp' id='avec_bloc_adresse_resp' value='y' /><label for='avec_bloc_adresse_resp' id='texte_avec_bloc_adresse_resp'> Avec le bloc adresse responsable/parent.</label><br />
-		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
-		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves' value='y' /><label for='cacher_autres_protagonistes_eleves' id='texte_cacher_autres_protagonistes_eleves'> Cacher ce qui concerne les autres protagonistes élèves des incidents extraits.</label><br />
+		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
+		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves' value='y' /><label for='cacher_autres_protagonistes_eleves' id='texte_cacher_autres_protagonistes_eleves'> Cacher ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
 
 		<!--input type='checkbox' name='debug' id='debug' value='y' /><label for='debug' id='texte_mode_test' style='color:red'> Debug pour contrôler les indices du tableau produit</label><br />
 
@@ -160,6 +227,8 @@ echo "
 </form>\n";
 
 	// A FAIRE: Permettre de choisir les 'qualite', des dates,...
+
+	echo "<p style='margin-top:1em; margin-left:5em; text-indent:-5em;'><em>NOTES&nbsp;:</em> Seuls les élèves avec $mod_disc_terme_incident déclaré sont proposés ici.<br />Les élèves ne sont pas nécessairement responsables de l'".$mod_disc_terme_incident.".<br />Ils peuvent être témoin, victime,...</p>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -192,6 +261,13 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	if($protagoniste_incident=="") {
 		echo "<p style='color:red'>Aucun protagoniste n'a été choisi.</p>";
 		die();
+	}
+
+	if($_SESSION['statut']=="professeur") {
+		if(!acces_extract_disc("", $protagoniste_incident)) {
+			echo "<p style='color:red'>Vous n'avez pas accès au protagoniste choisi ($protagoniste_incident).</p>";
+			die();
+		}
 	}
 
 	if((!isset($id_classe_incident))||($id_classe_incident=="")) {
@@ -620,7 +696,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	
 	$OOo->close();
 
-		die();
+	die();
 
 
 
@@ -648,13 +724,31 @@ if((!isset($id_classe_incident))||($id_classe_incident=="")) {
 }
 else {
 	$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp, j_eleves_classes jec WHERE sp.id_incident=si.id_incident AND jec.id_classe='$id_classe_incident' AND jec.login=sp.login";
+
+	if($_SESSION['statut']=="professeur") {
+		if(!acces_extract_disc($id_classe_incident, "")) {
+			echo "<p style='color:red'>Vous n'avez pas accès à la classe ".get_nom_classe($id_classe_incident).".</p>";
+			die();
+		}
+	}
+
 }
 
 $ajout_sql="";
 if($date_incident!="") {$ajout_sql.=" AND si.date='$date_incident'";$chaine_criteres.="&amp;date_incident=$date_incident";}
 if($heure_incident!="") {$ajout_sql.=" AND si.heure='$heure_incident'";$chaine_criteres.="&amp;heure_incident=$heure_incident";}
 if($nature_incident!="---") {$ajout_sql.=" AND si.nature='$nature_incident'";$chaine_criteres.="&amp;nature_incident=$nature_incident";}
-if($protagoniste_incident!="") {$ajout_sql.=" AND sp.login='$protagoniste_incident'";$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";}
+if($protagoniste_incident!="") {
+	$ajout_sql.=" AND sp.login='$protagoniste_incident'";$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";
+
+	if($_SESSION['statut']=="professeur") {
+		if(!acces_extract_disc("", $protagoniste_incident)) {
+			echo "<p style='color:red'>Vous n'avez pas accès au protagoniste choisi ($protagoniste_incident).</p>";
+			die();
+		}
+	}
+
+}
 
 //echo "\$declarant_incident=$declarant_incident<br />";
 

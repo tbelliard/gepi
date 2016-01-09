@@ -981,6 +981,19 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 		}
 		unset($nouveauItem);
 	}
+
+	if(($_SESSION['statut']=='professeur')&&(acces_extract_disc())) {
+		$nouveauItem = new itemGeneral();
+		$nouveauItem->chemin='/mod_discipline/mod_discipline_extraction_ooo.php?mode=choix';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Extraction ODS" ;
+			$nouveauItem->expli="Extraction ODS des ".$mod_disc_terme_incident."s et de leurs suites." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
+		}
+		unset($nouveauItem);
+	}
 }
 
 

@@ -936,7 +936,7 @@ statut='';";
 
 $tab_req[]="INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',
 administrateur='V',
-professeur='F',
+professeur='V',
 cpe='V',
 scolarite='V',
 eleve='F',
