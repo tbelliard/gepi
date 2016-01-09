@@ -65,5 +65,23 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "<strong>Ajout d'une table 'engagements_pages' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'engagements_pages'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS engagements_pages (
+		id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
+		page varchar(255) NOT NULL default '' COMMENT 'Page ou module',
+		id_type int(11) NOT NULL COMMENT 'identifiant du type d engagement',
+		PRIMARY KEY (id)
+		) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 
 ?>
