@@ -317,6 +317,10 @@ $mois_precedent="";
       <span style="background-color:aqua;">&nbsp;&nbsp;RJ&nbsp;&nbsp;</span>
               	Manquement aux obligations scolaires : Retard justifié
     </p>
+    <p>
+      <span style="background-color:yellow;">&nbsp;&nbsp;...&nbsp;&nbsp;</span>
+              	Saisie non encore traitée
+    </p>
 
     <!-- Absences totales -->
 
