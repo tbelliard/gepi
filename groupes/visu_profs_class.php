@@ -622,6 +622,49 @@ if(isset($id_classe)){
 
 		//echo "</div>";
 
+		$active_mod_engagements=getSettingAOui("active_mod_engagements");
+		if($active_mod_engagements) {
+			$tab_engagements=get_tab_engagements();
+			$tab_engagements_visu_profs_class=get_tab_engagements_telle_page("visu_profs_class");
+
+			if(count($tab_engagements_visu_profs_class)>0) {
+				echo "<p style='margin-top:1em;' class='bold'>Engagements pour cette classe&nbsp;:</p>
+<table class='boireaus boireaus_alt'>";
+				for($loop=0;$loop<count($tab_engagements_visu_profs_class);$loop++) {
+					$id_type_courant=$tab_engagements_visu_profs_class[$loop];
+					echo "
+	<tr>
+		<th>".$tab_engagements['id_engagement'][$id_type_courant]['nom']."</th>
+		<td>";
+
+					$tmp_tab_login_ele=array();
+					$tmp_tab_login_resp=array();
+					if(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']!="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']=="yes")) {
+						$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $id_classe, "responsable");
+					}
+					elseif(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']=="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']!="yes")) {
+						$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $id_classe, "eleve");
+					}
+					else {
+						$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $id_classe, "responsable");
+						$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $id_classe, "eleve");
+					}
+					for($loop2=0;$loop2<count($tmp_tab_login_ele);$loop2++) {
+						echo get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."<br />";
+					}
+					for($loop2=0;$loop2<count($tmp_tab_login_resp);$loop2++) {
+						echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+					}
+					echo "
+		</td>
+	</tr>";
+
+				}
+				echo "
+</table>";
+			}
+
+		}
 	}
 }
 else {
@@ -702,6 +745,26 @@ else {
 		echo "</table>\n";
 	}
 
+	$active_mod_engagements=getSettingAOui("active_mod_engagements");
+
+	if($active_mod_engagements) {
+		$tab_engagements=get_tab_engagements();
+		$tab_engagements_visu_profs_class=get_tab_engagements_telle_page("visu_profs_class");
+		/*
+		echo "<div style='float:left;width:600px; margin:1em; background:white;'>
+		<pre>";
+		print_r($tab_engagements);
+		echo "</pre>
+		</div>";
+		echo "<div style='float:left;width:600px; margin:1em; background:white;'>
+		<pre>";
+		print_r($tab_engagements_visu_profs_class);
+		echo "</pre>
+		</div>";
+		echo "<div style='clear:both'></div>";
+		*/
+	}
+
 	// Tableau des PP
 	$gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 	echo "<a name='liste_pp'></a>
@@ -712,7 +775,37 @@ else {
 			<th>
 				<div style='float:right; width:16px'><a href='".$_SERVER['PHP_SELF']."?export_prof_suivi=y&amp;export=csv' class='noprint' title=\"Exporter la liste des ".$gepi_prof_suivi." au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a></div>
 				".ucfirst(getSettingValue('gepi_prof_suivi'))."
-			</th>
+			</th>";
+	if($active_mod_engagements) {
+		/*
+		$indice_delegue_de_classe="";
+		$indice_suppleant_delegue_de_classe="";
+		$tab_engagements_ele=get_tab_engagements("eleve");
+		for($loop=0;$loop<count($tab_engagements_ele['indice']);$loop++) {
+			// A FAIRE: Pouvoir choisir les engagements à faire apparaitre ici
+			//Délégué de classe
+			//Suppléant délégué de classe
+			if($tab_engagements_ele['indice'][$loop]['nom']=="Suppléant délégué de classe") {
+				$indice_delegue_de_classe=$loop;
+				echo "
+			<th>".$tab_engagements_ele['indice'][$loop]['nom']."</th>";
+			}
+			elseif($tab_engagements_ele['indice'][$loop]['nom']=="Délégué de classe") {
+				$indice_suppleant_delegue_de_classe=$loop;
+				echo "
+			<th>".$tab_engagements_ele['indice'][$loop]['nom']."</th>";
+			}
+		}
+		*/
+
+		for($loop=0;$loop<count($tab_engagements_visu_profs_class);$loop++) {
+			$id_type_courant=$tab_engagements_visu_profs_class[$loop];
+			echo "
+			<th>".$tab_engagements['id_engagement'][$id_type_courant]['nom']."</th>";
+		}
+	}
+
+	echo "
 		</tr>";
 	$tab_pp=get_tab_prof_suivi();
 	foreach($tab_classe as $current_id_classe => $current_classe) {
@@ -728,7 +821,45 @@ else {
 				echo $designation_user;
 			}
 		}
-			echo "</td>
+		echo "</td>";
+
+		if($active_mod_engagements) {
+			for($loop=0;$loop<count($tab_engagements_visu_profs_class);$loop++) {
+				$id_type_courant=$tab_engagements_visu_profs_class[$loop];
+				echo "
+				<td>";
+				$tmp_tab_login_ele=array();
+				$tmp_tab_login_resp=array();
+				if(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']!="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']=="yes")) {
+					$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "responsable");
+				}
+				elseif(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']=="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']!="yes")) {
+					$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "eleve");
+				}
+				else {
+					$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "responsable");
+					$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "eleve");
+				}
+				for($loop2=0;$loop2<count($tmp_tab_login_ele);$loop2++) {
+					echo get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."<br />";
+				}
+				for($loop2=0;$loop2<count($tmp_tab_login_resp);$loop2++) {
+					echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+				}
+				echo "</td>";
+			}
+		}
+/*
+		if($indice_delegue_de_classe!="") {
+			echo "
+			<td>";
+			for() {
+			}
+			echo "</td>";
+		}
+*/
+
+		echo "
 		</tr>";
 	}
 	echo "

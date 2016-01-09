@@ -301,6 +301,54 @@
 
 <!-- ================================================ -->
 
+<?php
+	if(count($tab_engagements["indice"])>0) {
+		$tab_engagements_pages=get_tab_engagements_pages();
+		echo "<form name='' action='".$_SERVER['PHP_SELF']."' method='post'>
+	<fieldset class='fieldset_opacite50' style='margin-top:1em;'>
+		".add_token_field()."
+		<input type='hidden' name='is_posted' value='3' />
+		<table class='boireaus boireaus_alt'>
+			<thead>
+				<tr>
+					<th rowspan='2' style='color:black'>Engagement</th>
+					<th colspan='2' style='color:black'>Pages ou modules</th>
+				</tr>
+				<tr>
+					<th style='color:black'>Visu.équipe pédago</th>
+					<th style='color:black'>Visu.équipe pédago<br />par les élèves/parents</th>
+				</tr>
+			</thead>
+			<tbody>";
+		for($loop=0;$loop<count($tab_engagements["indice"]);$loop++) {
+			$checked_visu_profs_class="";
+			if((isset($tab_engagements_pages['id_type'][$tab_engagements["indice"][$loop]['id']]))&&(in_array("visu_profs_class", $tab_engagements_pages['id_type'][$tab_engagements["indice"][$loop]['id']]['pages']))) {
+				$checked_visu_profs_class="checked ";
+			}
+			$checked_visu_profs_eleve="";
+			if((isset($tab_engagements_pages['id_type'][$tab_engagements["indice"][$loop]['id']]))&&(in_array("visu_profs_eleve", $tab_engagements_pages['id_type'][$tab_engagements["indice"][$loop]['id']]['pages']))) {
+				$checked_visu_profs_eleve="checked ";
+			}
+			echo "
+				<tr>
+					<td>".$tab_engagements["indice"][$loop]['nom']."</td>
+					<td><input type='checkbox' name='visu_profs_class[".$tab_engagements["indice"][$loop]['id']."]' value='y' ".$checked_visu_profs_class."/></td>
+					<td><input type='checkbox' name='visu_profs_eleve[".$tab_engagements["indice"][$loop]['id']."]' value='y' ".$checked_visu_profs_eleve."/></td>
+				</tr>";
+		}
+		echo "
+			</tbody>
+		</table>
+		<p class='center'>
+			<input type='submit' value='Valider' />
+		</p>
+	</fieldset>
+</form>";
+	}
+?>
+
+<!-- ================================================ -->
+
 <!-- Début du pied -->
 	<div id='EmSize' style='visibility:hidden; position:absolute; left:1em; top:1em;'></div>
 

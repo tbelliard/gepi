@@ -5,6 +5,12 @@
 
 Gepi-master (Version de développement)
 ===========================
+Discipline:
+- Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
+  et professeur principal à l'export ODS des incidents.
+
+Engagements:
+- Possibilité d'afficher les engagements sur les pages Equipe pédago.
 
 Gepi-1.6.8 (05/01/2016)
 ===========================

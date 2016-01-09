@@ -1352,4 +1352,11 @@ PRIMARY KEY (`id`),
 INDEX contenu (`id_def`, `login`, `contenu`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : contenu du tableau' ;
 
+DROP TABLE IF EXISTS engagements_pages;
+CREATE TABLE IF NOT EXISTS engagements_pages (
+id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
+page varchar(255) NOT NULL default '' COMMENT 'Page ou module',
+id_type int(11) NOT NULL COMMENT 'identifiant du type d engagement',
+PRIMARY KEY (`id`)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
