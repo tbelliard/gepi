@@ -136,7 +136,8 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
 
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE';
-			$tabmatieres[122][0]='EDUCATION CIVIQUE';
+			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
+			$tabmatieres[122][0]='ENSEIGNEMENT MORAL ET CIVIQUE';
 
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
 
@@ -289,7 +290,8 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
 
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE';
-			$tabmatieres[122][0]='EDUCATION CIVIQUE';
+			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
+			$tabmatieres[122][0]='ENSEIGNEMENT MORAL ET CIVIQUE';
 
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
 
@@ -563,7 +565,8 @@ function tabmatieres($type_brevet){
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
 
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
-			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			//$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE ENSEIGNEMENT MORAL ET CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
 
@@ -721,7 +724,8 @@ function tabmatieres($type_brevet){
 
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 
-			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			//$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE ENSEIGNEMENT MORAL ET CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
 
@@ -862,7 +866,8 @@ function tabmatieres($type_brevet){
 
 			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 
-			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			//$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
+			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE ENSEIGNEMENT MORAL ET CIVIQUE';
 			//$tabmatieres[121][0]='HISTOIRE-GEOGRAPHIE';
 
 			//$tabmatieres[122][0]='EDUCATION CIVIQUE';
