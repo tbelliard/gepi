@@ -1545,10 +1545,8 @@ if ($test == -1) {
 
 // Modification Eric
 // ============= Insertion d'un champ pour le module discipline
-
-$sql = "SELECT commentaire FROM s_incidents LIMIT 1";
-$req_rank = mysqli_query($GLOBALS["mysqli"], $sql);
-if (!$req_rank){
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_incidents LIKE 'commentaire';"));
+if ($test_champ==0) {
     $sql_request = "ALTER TABLE `s_incidents` ADD `commentaire` TEXT NOT NULL ";
     $req_add_rank = mysqli_query($GLOBALS["mysqli"], $sql_request);
     if ($req_add_rank) {
