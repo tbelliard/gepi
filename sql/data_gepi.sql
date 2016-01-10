@@ -1189,7 +1189,7 @@ INSERT INTO droits VALUES ( '/matieres/matiere_ajax_lib.php', 'V', 'F', 'F', 'F'
 INSERT INTO setting SET name='gepi_en_production', value='y';
 INSERT INTO droits VALUES ('/gestion/gestion_infos_actions.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Gestion des actions en attente signalées en page d accueil.', '1');
 INSERT INTO droits SET id='/responsables/maj_import3.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Mise à jour Sconet',statut='';
-INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
+INSERT INTO droits SET id='/mod_discipline/mod_discipline_extraction_ooo.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Discipline : Extrait OOo des incidents',statut='';
 INSERT INTO droits SET id='/responsables/consult_maj_sconet.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Consultation des compte-rendus de mise à jour Sconet',statut='';
 INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_ter.php', 'F', 'F', 'F', 'F', 'V', 'V', 'F','F', 'Relevé de notes : accès parents et élèves', '1');
 INSERT INTO droits VALUES ('/utilisateurs/modif_par_lots.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F','F', 'Personnels : Traitements par lots', '1');

@@ -273,6 +273,116 @@ if((isset($_POST['is_posted']))&&($_POST['is_posted']==2)) {
 
 }
 
+if((isset($_POST['is_posted']))&&($_POST['is_posted']==3)) {
+	check_token();
+
+	$msg="";
+
+	$tab_engagements=get_tab_engagements();
+	$tab_engagements_pages=get_tab_engagements_pages();
+
+	/*
+	echo "<div style='float:left;width:600px; margin:1em; background:white;'>
+	<pre>";
+	print_r($tab_engagements);
+	echo "</pre>
+	</div>";
+	echo "<div style='float:left;width:600px; margin:1em; background:white;'>
+	<pre>";
+	print_r($tab_engagements_pages);
+	echo "</pre>
+	</div>";
+	echo "<div style='clear:both'></div>";
+	debug_var();
+	*/
+
+	$visu_profs_class=isset($_POST['visu_profs_class']) ? $_POST['visu_profs_class'] : array();
+	$visu_profs_eleve=isset($_POST['visu_profs_eleve']) ? $_POST['visu_profs_eleve'] : array();
+
+	$nb_modif=0;
+	for($loop=0;$loop<count($tab_engagements['indice']);$loop++) {
+		$current_id_engagement=$tab_engagements['indice'][$loop]['id'];
+
+		if(isset($visu_profs_class[$current_id_engagement])) {
+			if(!array_key_exists($current_id_engagement, $tab_engagements_pages['id_type'])) {
+				$sql="INSERT INTO engagements_pages SET page='visu_profs_class', id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement pour l'engagement n°$current_id_engagement.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+			elseif((!isset($tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))||(!in_array("visu_profs_class", $tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))) {
+				$sql="INSERT INTO engagements_pages SET page='visu_profs_class', id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement pour l'engagement n°$current_id_engagement.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+		}
+		else {
+			if((isset($tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))&&(in_array("visu_profs_class", $tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))) {
+				$sql="DELETE FROM engagements_pages WHERE page='visu_profs_class' AND id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$delete) {
+					$msg.="Erreur lors de la suppression de l'affichage de l'engagement n°$current_id_engagement sur 'visu_profs_class'.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+		}
+
+		if(isset($visu_profs_eleve[$current_id_engagement])) {
+			if(!array_key_exists($current_id_engagement, $tab_engagements_pages['id_type'])) {
+				$sql="INSERT INTO engagements_pages SET page='visu_profs_eleve', id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement pour l'engagement n°$current_id_engagement.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+			elseif((!isset($tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))||(!in_array("visu_profs_eleve", $tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))) {
+				$sql="INSERT INTO engagements_pages SET page='visu_profs_eleve', id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement pour l'engagement n°$current_id_engagement.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+		}
+		else {
+			if((isset($tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))&&(in_array("visu_profs_eleve", $tab_engagements_pages['id_type'][$current_id_engagement]["pages"]))) {
+				$sql="DELETE FROM engagements_pages WHERE page='visu_profs_eleve' AND id_type='".$current_id_engagement."';";
+				//echo "$sql<br />";
+				$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$delete) {
+					$msg.="Erreur lors de la suppression de l'affichage de l'engagement n°$current_id_engagement sur 'visu_profs_eleve'.<br />";
+				}
+				else {
+					$nb_modif++;
+				}
+			}
+		}
+	}
+
+	$msg.=$nb_modif." modification(s) enregistrée(s).<br />";
+}
+
 if (isset($_POST['is_posted']) and ($msg=='')){
 	$msg = "Les modifications ont été enregistrées !";
 	$post_reussi=TRUE;

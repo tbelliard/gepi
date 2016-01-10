@@ -1,7 +1,7 @@
 <?php
 /*
  *
- *  Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *  Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -328,6 +328,52 @@ if ($login_eleve == null and $_SESSION['statut'] == "responsable") {
 		}
 		// On a fini le traitement.
 		echo "</table>\n";
+
+
+		$active_mod_engagements=getSettingAOui("active_mod_engagements");
+		if($active_mod_engagements) {
+			$tab_engagements=get_tab_engagements();
+			$tab_engagements_visu_profs_class=get_tab_engagements_telle_page("visu_profs_class");
+
+			if(count($tab_engagements_visu_profs_class)>0) {
+				echo "<p style='margin-top:1em;' class='bold'>Engagements pour la classe de ".$lig_clas->nom_complet." (<i>".$lig_clas->classe."</i>) &nbsp;:</p>
+<table class='boireaus boireaus_alt'>";
+				for($loop=0;$loop<count($tab_engagements_visu_profs_class);$loop++) {
+					$id_type_courant=$tab_engagements_visu_profs_class[$loop];
+					echo "
+	<tr>
+		<th>".$tab_engagements['id_engagement'][$id_type_courant]['nom']."</th>
+		<td>";
+
+					$tmp_tab_login_ele=array();
+					$tmp_tab_login_resp=array();
+					if(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']!="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']=="yes")) {
+						$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $id_classe, "responsable");
+					}
+					elseif(($tab_engagements['id_engagement'][$id_type_courant]['ConcerneEleve']=="yes")&&($tab_engagements['id_engagement'][$id_type_courant]['ConcerneResponsable']!="yes")) {
+						$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $id_classe, "eleve");
+					}
+					else {
+						$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $id_classe, "responsable");
+						$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $id_classe, "eleve");
+					}
+					for($loop2=0;$loop2<count($tmp_tab_login_ele);$loop2++) {
+						echo get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."<br />";
+					}
+					for($loop2=0;$loop2<count($tmp_tab_login_resp);$loop2++) {
+						echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+					}
+					echo "
+		</td>
+	</tr>";
+
+				}
+				echo "
+</table>";
+			}
+
+		}
+
 	}
 }
 

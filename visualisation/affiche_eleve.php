@@ -979,10 +979,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo " | Proposer les élèves <select name='restriction_id_groupe' id='restriction_id_groupe' style='width:10em;' onchange=\"document.forms['form1'].submit();\">
 	<option value='' title=\"Proposer tous les élèves de la classe sans restriction d'enseignement\">tous les élèves</option>\n";
 			while($lig_restr_grp=mysqli_fetch_object($res_restr_grp)) {
+				$liste_profs_restr_grp="";
+				if(!isset($_SESSION['group_proflist'][$lig_restr_grp->id])) {
+					$tmp_grp_restr_grp=get_group($lig_restr_grp->id, array("profs"));
+					if(isset($tmp_grp_restr_grp["profs"]["proflist_string"])) {
+						$_SESSION['group_proflist'][$lig_restr_grp->id]=$tmp_grp_restr_grp["profs"]["proflist_string"];
+						$liste_profs_restr_grp=" (".$tmp_grp_restr_grp["profs"]["proflist_string"].")";
+					}
+					else {
+						$_SESSION['group_proflist'][$lig_restr_grp->id]="";
+					}
+				}
+				elseif($_SESSION['group_proflist'][$lig_restr_grp->id]!="") {
+					$liste_profs_restr_grp=" (".$_SESSION['group_proflist'][$lig_restr_grp->id].")";
+				}
+
 				// A FAIRE: Ne proposer que les groupes qui ne correspondent pas à l'effectif total de la classe.
 				echo "	<option value='$lig_restr_grp->id'";
 				if($lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
-				echo " title=\"Proposer les élèves de ".$lig_restr_grp->name." (".$lig_restr_grp->description.")\">de ".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
+				echo " title=\"Proposer les élèves de ".$lig_restr_grp->name." (".$lig_restr_grp->description.")".$liste_profs_restr_grp."\">de ".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";
 				echo "	<option value='-$lig_restr_grp->id'";
 				if("-".$lig_restr_grp->id==$restriction_id_groupe) {echo " selected";}
 				echo " style='color:red' title=\"Proposer tous les élèves sauf ceux inscrits en ".$lig_restr_grp->name." (".$lig_restr_grp->description.")\">ne suivant pas ".$lig_restr_grp->name." (".$lig_restr_grp->description.")"."</option>\n";

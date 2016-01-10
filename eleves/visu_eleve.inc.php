@@ -2859,7 +2859,13 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 				}
 				else {
 					$sujet="Cahier de textes";
-					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n".$lignes_cdt_mail;
+					$message="Bonjour(soir),\nVoici le contenu du cahier de textes pour pour la semaine choisie :\n";
+					if(getSettingValue('url_racine_gepi')!="") {
+						$message.=preg_replace("#../documents/#", getSettingValue('url_racine_gepi')."/documents/", $lignes_cdt_mail);
+					}
+					else {
+						$message.=$lignes_cdt_mail;
+					}
 					$destinataire=$_POST['mail_dest'];
 					$tab_param_mail['destinataire']=$destinataire;
 					$header_suppl="";
@@ -3114,9 +3120,9 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 						<strong>Etat périodique de l'absentéisme porté sur le bulletin</strong>
 						</br>
 						<em>Ce bilan est figé le jour de la bascule de l'état sur le bulletin";
-				if (getSettingValue("active_module_absence")=='2') {
-						echo "</br>
-						Il peut différer du bilan des saisies ci-dessous (justification tardive, ...)";
+						if (getSettingValue("active_module_absence")=='2') {
+							echo "</br>
+							Il peut différer du bilan des saisies ci-dessous (justification tardive, ...)";
 						}
 						echo "</em>
 						</caption>\n";
@@ -3270,7 +3276,8 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 
 			// A FAIRE: 20140418
 			$div_en_haut_a_droite.="<div style='float:right; width:4em; color:red; text-align:center;'>\n";
-			if (($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe')){
+			//if (($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe')){
+			if(acces_extract_disc("", $ele_login)) {
 				$div_en_haut_a_droite.="<a href='../mod_discipline/mod_discipline_extraction_ooo.php?protagoniste_incident=$ele_login' title=\"Exporter les ".$mod_disc_terme_incident."s au format ODT.\">ODT</a><br />";
 			}
 	

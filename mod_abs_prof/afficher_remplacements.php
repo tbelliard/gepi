@@ -294,7 +294,7 @@ else {
 				$nom_classe[$tab_r[$loop]['id_classe']]=get_nom_classe($tab_r[$loop]['id_classe']);
 		}
 
-		if(($id_groupe!="")&&($id_groupe!="0")) {
+		if(($tab_r[$loop]['id_groupe']!="")&&($tab_r[$loop]['id_groupe']!="0")) {
 			$chaine_info_grp=get_info_grp($tab_r[$loop]['id_groupe']);
 		}
 		else {

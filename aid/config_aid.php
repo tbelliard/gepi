@@ -361,7 +361,7 @@ while ($i < $max_periode) {
 		<br />
 		<input type="radio" name="display_nom" id='display_nom_y' value="y" 
 			<?php if (($display_nom == "y") or ($display_nom == "")) { echo ' checked="checked"';} ?> />
-		<label for='display_nom_n'> Oui</label>
+		<label for='display_nom_y'> Oui</label>
 		<input type="radio" name="display_nom" id='display_nom_n' value="n" 
 			<?php if ($display_nom == "n") { echo ' checked="checked"';} ?> />
 		<label for='display_nom_n'> Non</label>

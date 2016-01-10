@@ -5,6 +5,15 @@
 
 Gepi-master (Version de développement)
 ===========================
+Discipline:
+- Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
+  et professeur principal à l'export ODS des incidents.
+
+Engagements:
+- Possibilité d'afficher les engagements sur les pages Equipe pédago.
+
+Gepi-1.6.8 (05/01/2016)
+===========================
 Librairies:
 - Mise à jour de PHPMailer (https://github.com/PHPMailer/PHPMailer) en version 5.2.13
 - HTMLPurifier : Mise à jour en 4.7.0
@@ -25,6 +34,8 @@ Discipline:
   d'une sanction (cas d'une sanction effectuée dans la salle d'un professeur).
 - Possibilité pour un enseignant de limiter aux élèves de ses groupes l'envoi 
   de courriel lors des déclarations d'incidents
+- Possibilité de déposer, via Publipostage OOo, un fichier modèle avertissement_fin_periode.odt 
+  propre à tel ou tel utilisateur (par exemple pour y inclure la signature).
 
 Absences2:
 - Ajout de liens de création d'incident de puis mod_abs2 Saisir groupe.

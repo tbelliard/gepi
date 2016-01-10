@@ -4974,7 +4974,7 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
  * @return boolean 
  */
 function is_pp($login_prof,$id_classe="",$login_eleve="", $num_periode="", $login_resp="") {
-    global $mysqli;
+	global $mysqli;
 	$retour=FALSE;
 
 	if($login_eleve=='') {
@@ -12681,7 +12681,7 @@ function get_tab_engagements_user($login_user="", $id_classe='', $statut_concern
 	return $tab_engagements_user;
 }
 
-function get_tab_login_tel_engagement($id_engagement) {
+function get_tab_login_tel_engagement($id_engagement, $id_classe="", $statut="") {
 	/*
 	global $tab_engagements;
 
@@ -12691,7 +12691,38 @@ function get_tab_login_tel_engagement($id_engagement) {
 	*/
 
 	$tab_user=array();
-	$sql="SELECT DISTINCT eu.login FROM engagements_user eu WHERE eu.id_engagement='$id_engagement';";
+	if($id_classe=="") {
+		if($statut=="eleve") {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu, eleves e WHERE eu.id_engagement='$id_engagement' AND eu.login=e.login;";
+		}
+		elseif($statut=="responsable") {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu, resp_pers rp WHERE eu.id_engagement='$id_engagement' AND rp.login=eu.login;";
+		}
+		else {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu WHERE eu.id_engagement='$id_engagement';";
+		}
+	}
+	else {
+		if($statut=="eleve") {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu, j_eleves_classes jec WHERE eu.id_engagement='$id_engagement' AND eu.login=jec.login AND jec.id_classe='$id_classe';";
+		}
+		elseif($statut=="responsable") {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu, 
+									j_eleves_classes jec, 
+									eleves e, 
+									responsables2 r, 
+									resp_pers rp 
+								WHERE eu.id_engagement='$id_engagement' AND 
+									eu.login=rp.login AND 
+									rp.pers_id=r.pers_id AND 
+									r.ele_id=e.ele_id AND 
+									e.login=jec.login AND 
+									jec.id_classe='$id_classe';";
+		}
+		else {
+			$sql="SELECT DISTINCT eu.login FROM engagements_user eu, j_eleves_classes jec WHERE eu.id_engagement='$id_engagement' AND eu.login=jec.login AND jec.id_classe='$id_classe';";
+		}
+	}
 	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	$cpt=0;
@@ -12701,6 +12732,58 @@ function get_tab_login_tel_engagement($id_engagement) {
 	}
 
 	return $tab_user;
+}
+
+function get_tab_engagements_pages() {
+
+	$tab_engagements_pages=array();
+	$tab_engagements_pages['indice']=array();
+	$tab_engagements_pages['id_type']=array();
+	$tab_engagements_pages['page']=array();
+	$sql="SELECT * FROM engagements_pages ORDER BY id_type;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	$cpt=0;
+	while($lig=mysqli_fetch_assoc($res)) {
+		$tab_engagements_pages['indice'][$cpt]=$lig;
+		$tab_engagements_pages['id_type'][$lig['id_type']]["cpt"][]=$cpt;
+		$tab_engagements_pages['id_type'][$lig['id_type']]["pages"][]=$lig['page'];
+		$tab_engagements_pages['page'][$lig['page']]["cpt"][]=$cpt;
+		$tab_engagements_pages['page'][$lig['page']]["types"][]=$lig['id_type'];
+		$cpt++;
+	}
+	/*
+	echo "<pre>";
+	print_r($tab_engagements_pages);
+	echo "</pre>";
+	*/
+	return $tab_engagements_pages;
+}
+
+function get_tab_engagements_telle_page($page) {
+
+	$tab_engagements_pages=array();
+	$sql="SELECT * FROM engagements_pages WHERE page='".$page."' ORDER BY id_type;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_engagements_pages[]=$lig->id_type;
+	}
+
+	return $tab_engagements_pages;
+}
+
+function get_tab_engagements_pages_tel_id_type($id_type) {
+
+	$tab_engagements_pages=array();
+	$sql="SELECT * FROM engagements_pages WHERE id_type='".$id_type."' ORDER BY page;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_engagements_pages[]=$lig->page;
+	}
+
+	return $tab_engagements_pages;
 }
 
 function is_delegue_conseil_classe($login_user, $id_classe="") {
@@ -13759,4 +13842,64 @@ function get_tab_date_dernier_evenement_telle_classe($id_classe, $type) {
 	return $tab;
 }
 
+function acces_extract_disc($id_classe="", $login_ele="") {
+	if((!getSettingAOui('active_mod_ooo'))||(!acces("/mod_discipline/mod_discipline_extraction_ooo.php", $_SESSION['statut']))) {
+		return false;
+	}
+	else {
+		if (($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe')){
+			return true;
+		}
+		elseif($_SESSION['statut']=='professeur') {
+			if(getSettingAOui('extractDiscProf')) {
+				if($login_ele!="") {
+					if(is_prof_ele($_SESSION['login'], $login_ele)) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				elseif($id_classe!="") {
+					if(is_prof_classe($_SESSION['login'], $id_classe)) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					return true;
+				}
+			}
+			elseif(getSettingAOui('extractDiscProfP')) {
+				if($login_ele!="") {
+					if(is_pp($_SESSION['login'], "", $login_ele)) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				elseif($id_classe!="") {
+					if(is_pp($_SESSION['login'], $id_classe)) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					return true;
+				}
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+}
 ?>

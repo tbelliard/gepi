@@ -73,6 +73,15 @@ if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
 $mod_disc_terme_avertissement_fin_periode=getSettingValue('mod_disc_terme_avertissement_fin_periode');
 if($mod_disc_terme_avertissement_fin_periode=="") {$mod_disc_terme_avertissement_fin_periode="avertissement de fin de période";}
 
+if(preg_match("/^[AEIOUY]/i", ensure_ascii($mod_disc_terme_avertissement_fin_periode))) {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="d'";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="l'";
+}
+else {
+	$prefixe_mod_disc_terme_avertissement_fin_periode_de="de ";
+	$prefixe_mod_disc_terme_avertissement_fin_periode_le="le ";
+}
+
 //debug_var();
 /*
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
@@ -510,8 +519,8 @@ if(($_SESSION['statut']=='administrateur')||
 		if($_SESSION['statut']=='administrateur') {
 			$acces_ok="y";
 
-			$nouveauItem->titre="Définition des types d'".$mod_disc_terme_avertissement_fin_periode."s" ;
-			$nouveauItem->expli="Définir les types d'".$mod_disc_terme_avertissement_fin_periode."s." ;
+			$nouveauItem->titre="Définition des types ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode."s" ;
+			$nouveauItem->expli="Définir les types ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode."s." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 		}
@@ -969,6 +978,19 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 
+		}
+		unset($nouveauItem);
+	}
+
+	if(($_SESSION['statut']=='professeur')&&(acces_extract_disc())) {
+		$nouveauItem = new itemGeneral();
+		$nouveauItem->chemin='/mod_discipline/mod_discipline_extraction_ooo.php?mode=choix';
+		if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+		{
+			$nouveauItem->titre="Extraction ODS" ;
+			$nouveauItem->expli="Extraction ODS des ".$mod_disc_terme_incident."s et de leurs suites." ;
+			$nouveauItem->indexMenu=$a;
+			$menuPage[]=$nouveauItem;
 		}
 		unset($nouveauItem);
 	}

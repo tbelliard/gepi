@@ -2,7 +2,7 @@ GEPI-master -- Procédure de mise à jour
 ==========================================
 
 Version de développement: NE PAS INSTALLER EN PRODUCTION !
-La branche stable actuelle est la 1.6.7
+La branche stable actuelle est la 1.6.8
 
 *************
 Mise en garde

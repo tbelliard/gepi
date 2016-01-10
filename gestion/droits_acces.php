@@ -338,6 +338,11 @@ if(getSettingValue('active_mod_discipline')=='y') {
 		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+		$titreItem='extractDiscProf';
+		$texteItem="peut extraire au format ODS dans le module Discipline les incidents et sanctions pour les élèves de ses classes.";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 		$titreItem='imprDiscProfAvtOOo';
 		$texteItem="peut imprimer dans le module Discipline les '".$mod_disc_terme_avertissement_fin_periode."' pour les élèves de ses classes.";
 		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
@@ -448,6 +453,11 @@ if(getSettingAOui('active_mod_discipline')) {
 		
 		$titreItem='imprDiscProfPRapport';
 		$texteItem="peut imprimer dans le module Discipline les rapports pour les élèves des classes dont il est ".getSettingValue("gepi_prof_suivi").".";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+		$titreItem='extractDiscProfP';
+		$texteItem="peut extraire au format ODS dans le module Discipline les incidents et sanctions pour les élèves des classes dont il est ".getSettingValue("gepi_prof_suivi").".";
 		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
 

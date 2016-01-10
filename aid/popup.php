@@ -197,10 +197,20 @@ $tab_aid=get_tab_aid($id_aid, $orderby);
 
 
 	if(isset($periode_num)) {
-		$current_aid_ele_periode=$tab_aid['eleves'][$periode_num]['users'];
+		if(isset($tab_aid['eleves'][$periode_num]['users'])) {
+			$current_aid_ele_periode=$tab_aid['eleves'][$periode_num]['users'];
+		}
+		else {
+			$current_aid_ele_periode=array();
+		}
 	}
 	else {
-		$current_aid_ele_periode=$tab_aid['eleves']['all']['users'];
+		if(isset($tab_aid['eleves']['all']['users'])) {
+			$current_aid_ele_periode=$tab_aid['eleves']['all']['users'];
+		}
+		else {
+			$current_aid_ele_periode=array();
+		}
 	}
 	$nb_eleves=count($current_aid_ele_periode);
 	echo "<p>Effectif: $nb_eleves</p>\n";

@@ -415,8 +415,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		$reg_email = trim($reg_email);
 		if ($reg_resp1 == '(vide)') $reg_resp1 = '';
 		if (!preg_match ("/^[0-9]{4}$/", $birth_year)) {$birth_year = "1900";}
-		if (!preg_match ("/^[0-9]{2}$/", $birth_month)) {$birth_month = "01";}
-		if (!preg_match ("/^[0-9]{2}$/", $birth_day)) {$birth_day = "01";}
+		if(preg_match ("/^[1-9]{1}$/", $birth_month)) {$birth_month="0".$birth_month;}
+		elseif (!preg_match ("/^[0-9]{2}$/", $birth_month)) {$birth_month = "01";}
+		if(preg_match ("/^[1-9]{1}$/", $birth_day)) {$birth_day="0".$birth_day;}
+		elseif (!preg_match ("/^[0-9]{2}$/", $birth_day)) {$birth_day = "01";}
+
 		if ($format == '10') {
 			// YYYY-MM-DD
 			$reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
