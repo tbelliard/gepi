@@ -11,7 +11,7 @@ temp
 !/documents/archives/index.php
 !/documents/index.html
 *.log
-lib/standalone/HTMLPurifier/DefinitionCache/Serializer
+lib/standalone/HTMLPurifier/DefinitionCache/Serializer/*
 !lib/standalone/HTMLPurifier/DefinitionCache/Serializer/index.html
 mod_ooo/mes_modeles/*
 photos/eleves/*
