@@ -152,7 +152,7 @@ require_once("../mod_plugins/verif_version_plugins.php");
 $verif_version_plugins=verif_version_plugins(1,"\n");
 if ($verif_version_plugins!="") {
 	echo "\nListe des plugins :\n";
-	echo $verif_version_plugins(1,"\n";
+	echo $verif_version_plugins;
 	echo "\n\n";
 }
 
