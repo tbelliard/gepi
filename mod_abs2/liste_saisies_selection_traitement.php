@@ -69,8 +69,46 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
 
 if (isset($_POST["suppression_saisies"])) {
     AbsenceEleveSaisiePeer::disableVersioning();
-    $saisieCol = AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($_POST["select_saisie"])->find();
+	$select_saisie=isset($_POST["select_saisie"]) ? $_POST["select_saisie"] : NULL;
+	$select_saisie2=array();
+	if(isset($select_saisie)) {
+		for($loop=0;$loop<count($select_saisie);$loop++) {
+			$sql="SELECT a.*, e.login FROM a_saisies a, 
+								eleves e 
+							WHERE a.id='".$select_saisie[$loop]."' AND 
+								a.eleve_id=e.id_eleve AND 
+								a.id_groupe!='';";
+			//echo "$sql<br />";
+			$res=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+
+				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='".$lig->login."' AND id_groupe='".$lig->id_groupe."';";
+				//echo "$sql<br />";
+				$res2=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res2)==0) {
+					$ts=strftime("%Y-%m-%d %H:%M:%S");
+					$sql="UPDATE a_saisies SET deleted_by='".$_SESSION['login']."', 
+										updated_at='".$ts."', 
+										deleted_at='".$ts."' 
+									WHERE id='".$lig->id."';";
+					//echo "$sql<br />";
+					$update=mysqli_query($GLOBALS['mysqli'], $sql);
+				}
+				else {
+					$select_saisie2[$loop]=$select_saisie[$loop];
+				}
+			}
+			else {
+				$select_saisie2[$loop]=$select_saisie[$loop];
+			}
+		}
+	}
+
+    //$saisieCol = AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($_POST["select_saisie"])->find();
+    $saisieCol = AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($select_saisie2)->find();
     foreach($saisieCol as $saisie) {
+    	//echo "Suppression saisie n°".$saisie->getId()."<br />";
     	$saisie->delete();
     }
 	AbsenceEleveSaisiePeer::enableVersioning();
