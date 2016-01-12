@@ -1352,6 +1352,13 @@ PRIMARY KEY (`id`),
 INDEX contenu (`id_def`, `login`, `contenu`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Liste personnelle : contenu du tableau' ;
 
+DROP TABLE IF EXISTS modele_bulletin;
+CREATE TABLE IF NOT EXISTS modele_bulletin (
+id_model_bulletin INT( 11 ) NOT NULL ,
+nom VARCHAR( 255 ) NOT NULL ,
+valeur VARCHAR( 255 ) NOT NULL
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS engagements_pages;
 CREATE TABLE IF NOT EXISTS engagements_pages (
 id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
