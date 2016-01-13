@@ -1141,7 +1141,7 @@ PRIMARY KEY  (`id_definie_periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE ut
 			else
 			$result .= $result_inter."<br />";
 		} else {
-			$result .= msj_ok("La table inscription_j_login_items existe déjà.");
+			$result .= msj_present("La table inscription_j_login_items existe déjà.");
 		}
 
 		$req = sql_query1("SELECT VALUE FROM setting WHERE NAME = 'active_inscription'");

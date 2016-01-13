@@ -155,9 +155,8 @@ Exemples d'utilisation :
 require_once("../mod_plugins/verif_version_plugins.php");
 $verif_version_plugins=verif_version_plugins(1,"\n");
 if ($verif_version_plugins!="") {
-	echo "\nAttention ! le ou les plugins suivants :\n";
+	echo "\nListe des plugins :\n";
 	echo $verif_version_plugins;
-	echo "\nne semblent pas adaptés à la version courante de Gepi (".$gepiVersion.").";
 	echo "\n\n";
 }
 

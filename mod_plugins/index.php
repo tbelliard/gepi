@@ -245,10 +245,10 @@ echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons
  <table class="table" style="border-spacing: 5px;">
   <tr>
     <th>Plugin</th>
-    <th>Version Gepi</th>
     <th>Description</th>
     <th>Auteur</th>
     <th>Version</th>
+    <th>Version Gepi</th>
     <th>Installé ?</th>
     <th>Ouvert ?</th>
   </tr>
@@ -272,8 +272,9 @@ foreach($liste_plugins as $plugin){
     $xml = simplexml_load_file($plugin->getNom() . "/plugin.xml");
 	$versiongepi=$xml->versiongepi;
 	if ($versiongepi!=$gepiVersion) {
-		$versiongepi='<span style="color: red;font-weight:bold;">'.$versiongepi.'</span>';
+		//$versiongepi='<span style="color: red;font-weight:bold;">'.$versiongepi.'</span>';
 		$avertissement_version_gepi=true;
+		$versiongepi=">=".$versiongepi;
 		}
     // On teste s'il est ouvert
     if ($plugin->getOuvert() == 'y'){
@@ -284,10 +285,10 @@ foreach($liste_plugins as $plugin){
     echo '
     <tr>
       <td>'.str_replace("_", " ", $plugin->getNom()).'</td>
-      <td style="text-align: center;">'.$versiongepi.'</td>
       <td>'.$xml->description.'</td>
       <td>'.$xml->auteur.'</td>
       <td style="text-align: center;">'.$xml->version.'</td>
+      <td style="text-align: center;">'.$versiongepi.'</td>
       <td style="text-align: center;"><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller'.add_token_in_url().'" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
       <td style="text-align: center;">'.$aff_ouvert.'</td>
     </tr>';
@@ -298,11 +299,13 @@ foreach($liste_plugins as $plugin){
 </table>
 
 <?php
+/*
 if ($avertissement_version_gepi) {
 ?>
 <br/><span style="color: red;font-weight:bold;">Attention</span> : les plugins dont la version gepi est indiquée en rouge ne sont peut être pas adaptés à la version courante de Gepi (<?php echo $gepiVersion; ?>).
 <?php
 }
+*/
 ?>
 
 
