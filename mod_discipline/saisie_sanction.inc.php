@@ -147,7 +147,7 @@ else {
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
 
 		if((isset($ele_login))&&(isset($id_incident))) {
-			sanction_documents_joints($id_incident, $ele_login);
+			echo sanction_documents_joints($id_incident, $ele_login);
 		}
 
 		echo "</td>\n";
@@ -345,7 +345,7 @@ else {
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
 
 		if((isset($ele_login))&&(isset($id_incident))) {
-			sanction_documents_joints($id_incident, $ele_login);
+			echo sanction_documents_joints($id_incident, $ele_login);
 		}
 
 		echo "</td>\n";
@@ -554,7 +554,7 @@ else {
 		//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
 
 		if((isset($ele_login))&&(isset($id_incident))) {
-			sanction_documents_joints($id_incident, $ele_login);
+			echo sanction_documents_joints($id_incident, $ele_login);
 		}
 
 		echo "</td>\n";
@@ -692,7 +692,7 @@ else {
 			echo insere_lien_recherche_ajax_ele('textarea_description_sanction');
 
 			if((isset($ele_login))&&(isset($id_incident))) {
-				sanction_documents_joints($id_incident, $ele_login);
+				echo sanction_documents_joints($id_incident, $ele_login);
 			}
 
 			echo "</td>\n";

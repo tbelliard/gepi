@@ -1715,3 +1715,4 @@ INSERT INTO modele_bulletin VALUES (3,'ajout_cadre_blanc_photo','0');
 INSERT INTO modele_bulletin VALUES (3,'affiche_moyenne_mini_general','1');
 INSERT INTO modele_bulletin VALUES (3,'affiche_moyenne_maxi_general','1');
 INSERT INTO modele_bulletin VALUES (3,'affiche_date_edition','1');
+INSERT INTO droits SET id='/mod_discipline/ajout_travail_sanction.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Discipline: Ajout de travail pour une sanction', statut='';

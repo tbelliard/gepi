@@ -1617,6 +1617,8 @@ autre='F',
 description='Voir les saisies d absences pour un élève tel jour',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_discipline/ajout_travail_sanction.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Discipline: Ajout de travail pour une sanction', statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));
