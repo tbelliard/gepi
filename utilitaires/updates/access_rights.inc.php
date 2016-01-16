@@ -1617,6 +1617,9 @@ autre='F',
 description='Voir les saisies d absences pour un élève tel jour',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_listes_perso/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Listes personnelles', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_listes_perso/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Listes personnelles', '');";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

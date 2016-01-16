@@ -384,11 +384,20 @@ lieu VARCHAR( 255 ) NOT NULL
 
 		// Module année antérieure
 		$result .= "<br />Mise à jour de la table archivage_types_aid.<br />";
-		$result_inter = traite_requete("ALTER TABLE archivage_types_aid ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' AFTER display_bulletin");
-		if ($result_inter == '')
-		$result .= msj_ok("Le champ outils_complementaires de la table archivage_types_aid a été ajouté !");
-		else
-		$result .= $result_inter."<br />";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_types_aid LIKE 'outils_complementaires';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "ALTER TABLE archivage_types_aid ADD outils_complementaires ENUM( 'y', 'n' ) NOT NULL DEFAULT 'n' AFTER display_bulletin");
+			if ($query) {
+				$result .= msj_ok("Le champ outils_complementaires de la table archivage_types_aid a été ajouté !");
+			}
+			else {
+				$result .= msj_erreur("Erreur lors de l'ajout du champ outils_complementaires à la table archivage_types_aid !");
+			}
+		}
+		else {
+			$result .= msj_present("Le champ outils_complementaires de la table archivage_types_aid est déjà présent !");
+		}
+		$result .= "<br />";
 
 
 		$result .= "&nbsp;->Création de la absences_repas<br />";
