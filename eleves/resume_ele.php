@@ -888,8 +888,12 @@ if($affichage_div_edt=="y") {
 	$html.="<div style='font-weight:bold; font-size: large; min-height:28px;' class='fieldset_opacite50'>Aide</div>";
 
 	$html.="<p>Quelques indications sur la présente page&nbsp;:</p>
-<ul>
-	<li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>
+<ul>";
+        if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login'], $login_eleve))) {
+            $html.="
+                <li><p>Vous pouvez afficher les travaux à faire dans les jours qui viennent (<em>et pas juste pour le jour choisi</em>) dans telle matière en cliquant sur la matière correspondante dans l'emploi du temps.</p></li>";
+        }
+	$html.="
 	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>";
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		$html.="
