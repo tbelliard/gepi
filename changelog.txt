@@ -3,6 +3,16 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-master (Version de développement)
+===========================
+Discipline:
+- Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
+  et professeur principal à l'export ODS des incidents.
+
+Engagements:
+- Possibilité d'afficher les engagements sur les pages Equipe pédago.
+
+
 Gepi-1.6.8 (05/01/2016)
 ===========================
 Librairies:
@@ -80,6 +90,8 @@ en cochant Sous-groupe d'une autre AID puis en choisissant Licenciers
    Lors de la saisie des membres, seuls les membres de Licenciers sont proposés
 - Si le droit est ouvert, un élève peut s'inscrire dans une AID
 
+Accueil élèves et parents
+- en page résumé, ne pas afficher l'aide sur les devoirs si le module cahier de texte n'est pas ouvert.
 
 Gepi-1.6.7 (24/08/2015)
 ===========================
