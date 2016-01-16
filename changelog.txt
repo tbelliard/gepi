@@ -12,6 +12,9 @@ Discipline:
 Engagements:
 - Possibilité d'afficher les engagements sur les pages Equipe pédago.
 
+Accueil élèves et parents
+- en page résumé, ne pas afficher l'aide sur les devoirs si le module cahier de texte n'est pas ouvert.
+
 Gepi-1.6.8 (05/01/2016)
 ===========================
 Librairies:
