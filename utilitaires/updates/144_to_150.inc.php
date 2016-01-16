@@ -54,46 +54,72 @@
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les accès élèves et parents<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCahierTexteEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveParent', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCahierTexteParent', 'yes');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
+		$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GepiAccesReleveEleve : ";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveEleve';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('GepiAccesReleveEleve', 'yes');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
 		} else {
-			$result .= $result_inter;
+			$result .= msj_present("Paramètre déjà présent.");
 		}
-		$result_inter = '';
 
+
+		$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GepiAccesCahierTexteEleve : ";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteEleve';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('GepiAccesCahierTexteEleve', 'yes');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		} else {
+			$result .= msj_present("Paramètre déjà présent.");
+		}
+
+		$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GepiAccesReleveParent : ";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveParent';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('GepiAccesReleveParent', 'yes');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		} else {
+			$result .= msj_present("Paramètre déjà présent.");
+		}
+
+		$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GepiAccesCahierTexteParent : ";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCahierTexteParent';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('GepiAccesCahierTexteParent', 'yes');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
+		} else {
+			$result .= msj_present("Paramètre déjà présent.");
+		}
 
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'utilisation de l'outil de récupération de mot de passe<br/>";
 		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'enable_password_recovery'");
 		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('enable_password_recovery', 'no');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('enable_password_recovery', 'no');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
 		} else {
-			$result .= $result_inter;
+			$result .= msj_present("Paramètre déjà présent.");
 		}
-		$result_inter = '';
 
 
 		$result .= "&nbsp;->Ajout du champ password_ticket à la table utilisateurs<br />";
@@ -101,7 +127,7 @@
 		if ($test1 == 0) {
 			$query5 = mysqli_query($GLOBALS["mysqli"], "ALTER TABLE `utilisateurs` ADD `password_ticket` varchar(255) NOT NULL AFTER `date_verrouillage`");
 			if ($query5) {
-				$result .= msj_ok();
+				$result .= msj_ok("Ok !");
 			} else {
 				$result .= msj_erreur('!');
 			}
@@ -123,207 +149,127 @@
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à la fonction de réinitialisation du mot de passe perdu<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitProf'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitProf', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitScolarite'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitScolarite', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitCpe'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitCpe', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitAdmin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitAdmin', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiPasswordReinitParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiPasswordReinitParent', 'yes');");
-
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("GepiPasswordReinitProf", "GepiPasswordReinitScolarite", "GepiPasswordReinitCpe", "GepiPasswordReinitAdmin", "GepiPasswordReinitEleve", "GepiPasswordReinitParent");
+		$tmp_tab2=array("no", "no", "no", "no", "yes", "yes");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
+
 
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre autorisant l'accès public aux cahiers de texte<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'cahier_texte_acces_public'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('cahier_texte_acces_public', 'no');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
+		$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cahier_texte_acces_public : ";
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'cahier_texte_acces_public';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('cahier_texte_acces_public', 'no');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
 		} else {
-			$result .= $result_inter;
+			$result .= msj_present("Paramètre déjà présent.");
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès à l'équipe pédagogique d'un élève<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEmailEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailEleve', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCpePPEmailEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailEleve', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaParent', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesEquipePedaEmailParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesEquipePedaEmailParent', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesCpePPEmailParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesCpePPEmailParent', 'no');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("GepiAccesEquipePedaEleve", "GepiAccesEquipePedaEmailEleve", "GepiAccesCpePPEmailEleve", "GepiAccesEquipePedaParent", "GepiAccesEquipePedaEmailParent", "GepiAccesCpePPEmailParent");
+		$tmp_tab2=array("yes", "no", "no", "yes", "no", "no");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux bulletins simplifiés et relevés de notes<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleParent', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProf'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProf', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProfTousEleves'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfTousEleves', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesBulletinSimpleProfToutesClasses'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesBulletinSimpleProfToutesClasses', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesReleveProfTousEleves'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesReleveProfTousEleves', 'yes');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("GepiAccesBulletinSimpleEleve", "GepiAccesBulletinSimpleParent", "GepiAccesBulletinSimpleProf", "GepiAccesBulletinSimpleProfTousEleves", "GepiAccesBulletinSimpleProfToutesClasses", "GepiAccesReleveProfTousEleves");
+		$tmp_tab2=array("yes", "yes", "yes", "no", "no", "yes");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux moyennes par les professeurs<br/>";
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProf'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProf', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProfTousEleves'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProfTousEleves', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesMoyennesProfToutesClasses'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesMoyennesProfToutesClasses', 'yes');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("GepiAccesMoyennesProf", "GepiAccesMoyennesProfTousEleves", "GepiAccesMoyennesProfToutesClasses");
+		$tmp_tab2=array("yes", "yes", "yes");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les droits d'accès aux graphiques de visualisation (eleves et responsables)<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphEleve', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'GepiAccesGraphParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('GepiAccesGraphParent', 'yes');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("GepiAccesGraphEleve", "GepiAccesGraphParent");
+		$tmp_tab2=array("yes", "yes");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour les fiches d'information destinée aux nouveaux utilisateurs<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'ImpressionParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionParent', '');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'ImpressionEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionEleve', '');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombre'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombre', '1');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreParent'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreParent', '1');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'ImpressionNombreEleve'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('ImpressionNombreEleve', '1');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
+		$tmp_tab1=array("ImpressionParent", "ImpressionEleve", "ImpressionNombre", "ImpressionNombreParent", "ImpressionNombreEleve");
+		$tmp_tab2=array("", "", "1", "1", "1");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
 		}
-		$result_inter = '';
 
 		$result .= "&nbsp;->Ajout du champ show_email à la table utilisateurs<br />";
 		$test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM utilisateurs LIKE 'show_email'"));
@@ -550,82 +496,22 @@ PRIMARY KEY  (`adr_id`)
 		}
 
 		$result .= "&nbsp;->Ajout (si besoin) de paramètres par défaut pour la définition de la politique de sécurité<br/>";
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_admin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert_email_admin', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert_email_min_level'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert_email_min_level', '1');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_cumulated_level'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_cumulated_level', '3');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_email_admin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_email_admin', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_normal_block_user'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_normal_block_user', 'no');");
-
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_cumulated_level'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_cumulated_level', '2');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_email_admin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_email_admin', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert1_probation_block_user'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert1_probation_block_user', 'no');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_cumulated_level'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_cumulated_level', '7');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_email_admin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_email_admin', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_normal_block_user'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_normal_block_user', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_cumulated_level'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_cumulated_level', '5');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_email_admin'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_email_admin', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'security_alert2_probation_block_user'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('security_alert2_probation_block_user', 'yes');");
-
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'deverouillage_auto_periode_suivante'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('deverouillage_auto_periode_suivante', 'n');");
+		$tmp_tab1=array("security_alert_email_admin", "security_alert_email_min_level", "security_alert1_normal_cumulated_level", "security_alert1_normal_email_admin", "security_alert1_normal_block_user", "security_alert1_probation_cumulated_level", "security_alert1_probation_email_admin", "security_alert1_probation_block_user", "security_alert2_normal_cumulated_level", "security_alert2_normal_email_admin", "security_alert2_normal_block_user", "security_alert2_probation_cumulated_level", "security_alert2_probation_email_admin", "security_alert2_probation_block_user", "deverouillage_auto_periode_suivante");
+		$tmp_tab2=array("yes", "1", "3", "yes", "no", "2", "yes", "no", "7", "yes", "yes", "5", "yes", "yes", "n");
+		for($loop=0;$loop<count($tmp_tab1);$loop++) {
+			$result .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$tmp_tab1[$loop]." (".$tmp_tab2[$loop].") : ";
+			$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = '".$tmp_tab1[$loop]."';"));
+			if ($test_champ==0) {
+				$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('".$tmp_tab1[$loop]."', '".$tmp_tab2[$loop]."');");
+				if ($query) {
+						$result .= msj_ok("Ok !");
+				} else {
+						$result .= msj_erreur();
+				}
+			} else {
+				$result .= msj_present("Paramètre déjà présent.");
+			}
+		}
 
 		// Ajout Mod_absences
 		$result .= "&nbsp;->Création de la table vs_alerts_eleves<br />";
@@ -693,26 +579,18 @@ PRIMARY KEY  (`adr_id`)
 		}
 		// Fin Ajout Mod_absences
 
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
-		} else {
-			$result .= $result_inter;
-		}
-		$result_inter = '';
-
 		$result .= "&nbsp;->Ajout (si besoin) du paramètre sélectionnant la feuille de style à utiliser<br/>";
-		$req_test = mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'gepi_stylesheet'");
-		$res_test = mysqli_num_rows($req_test);
-		if ($res_test == 0)
-		$result_inter .= traite_requete("INSERT INTO setting VALUES ('gepi_stylesheet', 'style');");
-
-		if ($result_inter == '') {
-			$result .= msj_ok();
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT VALUE FROM setting WHERE NAME = 'gepi_stylesheet';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "INSERT INTO setting VALUES ('gepi_stylesheet', 'style');");
+			if ($query) {
+					$result .= msj_ok("Ok !");
+			} else {
+					$result .= msj_erreur();
+			}
 		} else {
-			$result .= $result_inter;
+			$result .= msj_present("Paramètre déjà présent.");
 		}
-		$result_inter = '';
 
 
 		$result .= "&nbsp;->Ajout du champ temp_dir à la table utilisateurs<br />";

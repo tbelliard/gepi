@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -210,6 +210,34 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 				}
 			}
 		}
+	}
+}
+
+if(isset($_POST['valider_saisie_travail'])) {
+	check_token();
+
+	$id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : NULL;
+	$id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : NULL;
+	$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : NULL;
+
+	if((!isset($id_incident))) {
+		$msg.="ERREUR : Numéro d'incident non défini.<br />";
+	}
+	elseif((!isset($id_sanction))) {
+		$msg.="ERREUR : Numéro de sanction non défini.<br />";
+	}
+	elseif((!isset($ele_login))) {
+		$msg.="ERREUR : Élève non choisi.<br />";
+	}
+	else {
+		// Vérifier si l'incident est ouvert
+
+
+
+
+		unset($id_incident);
+		unset($id_sanction);
+		unset($ele_login);
 	}
 }
 

@@ -1433,32 +1433,33 @@ function sanction_documents_joints($id_incident, $ele_login) {
 	global $id_sanction;
 	global $dossier_documents_discipline;
 
+	$retour="";
 	if((isset($id_sanction))&&($id_sanction!='')) {
 		$tab_doc_joints=get_documents_joints($id_sanction, "sanction", $ele_login);
 		if(count($tab_doc_joints)>0) {
 			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 
-			echo "<table class='boireaus' width='100%'>\n";
-			echo "<tr>\n";
-			echo "<th>Fichiers joints</th>\n";
-			echo "<th>Supprimer</th>\n";
-			echo "</tr>\n";
+			$retour.="<table class='boireaus' width='100%'>\n";
+			$retour.="<tr>\n";
+			$retour.="<th>Fichiers joints</th>\n";
+			$retour.="<th>Supprimer</th>\n";
+			$retour.="</tr>\n";
 			$alt3=1;
 			for($loop=0;$loop<count($tab_doc_joints);$loop++) {
 				$alt3=$alt3*(-1);
-				echo "<tr class='lig$alt3 white_hover'>\n";
-				echo "<td><a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a></td>\n";
-				echo "<td><input type='checkbox' name='suppr_doc_joint[]' value=\"$tab_doc_joints[$loop]\" /></td>\n";
+				$retour.="<tr class='lig$alt3 white_hover'>\n";
+				$retour.="<td><a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a></td>\n";
+				$retour.="<td><input type='checkbox' name='suppr_doc_joint[]' value=\"$tab_doc_joints[$loop]\" /></td>\n";
 				// PB: Est-ce qu'on ne risque pas de permettre d'aller supprimer des fichiers d'un autre incident?
 				//     Tester le nom de fichier et l'id_incident
 				//     Fichier en ../$dossier_documents_discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
-				echo "</tr>\n";
+				$retour.="</tr>\n";
 			}
-			echo "</table>\n";
+			$retour.="</table>\n";
 		}
 	}
 
-	echo "<p>Joindre un fichier&nbsp;: <input type=\"file\" size=\"15\" name=\"document_joint\" id=\"document_joint\" /><br />\n";
+	$retour.="<p>Joindre un fichier&nbsp;: <input type=\"file\" size=\"15\" name=\"document_joint\" id=\"document_joint\" /><br />\n";
 
 
 	$tab_doc_joints2=get_documents_joints($id_incident, "mesure", $ele_login);
@@ -1475,33 +1476,35 @@ function sanction_documents_joints($id_incident, $ele_login) {
 		}
 
 		if($temoin_deja_tous_joints=="n") {
-			//echo "Joindre&nbsp;:<br />\n";
+			//$retour.="Joindre&nbsp;:<br />\n";
 			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/mesures/".$ele_login;
 	
-			echo "<b>Fichiers proposés lors de la saisie des mesures demandées&nbsp;:</b>";
-			echo "<table class='boireaus' width='100%'>\n";
-			echo "<tr>\n";
-			echo "<th>Joindre</th>\n";
-			echo "<th>Fichier</th>\n";
-			echo "</tr>\n";
+			$retour.="<b>Fichiers proposés lors de la saisie des mesures demandées&nbsp;:</b>";
+			$retour.="<table class='boireaus' width='100%'>\n";
+			$retour.="<tr>\n";
+			$retour.="<th>Joindre</th>\n";
+			$retour.="<th>Fichier</th>\n";
+			$retour.="</tr>\n";
 			$alt3=1;
 			for($loop=0;$loop<count($tab_doc_joints2);$loop++) {
 				if((!isset($tab_doc_joints))||(!in_array($tab_doc_joints2[$loop],$tab_doc_joints))) {
 					$alt3=$alt3*(-1);
-					echo "<tr class='lig$alt3 white_hover'>\n";
-					echo "<td><input type='checkbox' name='ajouter_doc_joint[]' value=\"$tab_doc_joints2[$loop]\" ";
+					$retour.="<tr class='lig$alt3 white_hover'>\n";
+					$retour.="<td><input type='checkbox' name='ajouter_doc_joint[]' value=\"$tab_doc_joints2[$loop]\" ";
 					//if((!isset($tab_doc_joints))||(!in_array($tab_doc_joints2[$loop],$tab_doc_joints))) {
-						echo "checked ";
+						$retour.="checked ";
 					//}
-					echo "/>\n";
-					echo "</td>\n";
-					echo "<td><a href='$chemin/$tab_doc_joints2[$loop]' target='_blank'>$tab_doc_joints2[$loop]</a></td>\n";
-					echo "</tr>\n";
+					$retour.="/>\n";
+					$retour.="</td>\n";
+					$retour.="<td><a href='$chemin/$tab_doc_joints2[$loop]' target='_blank'>$tab_doc_joints2[$loop]</a></td>\n";
+					$retour.="</tr>\n";
 				}
 			}
-			echo "</table>\n";
+			$retour.="</table>\n";
 		}
 	}
+
+	return $retour;
 }
 
 function liste_doc_joints_sanction($id_sanction) {
@@ -1767,9 +1770,10 @@ function sanction_saisie_par($id_sanction, $login) {
 	}
 }
 
-function liste_sanctions($id_incident,$ele_login) {
+function liste_sanctions($id_incident, $ele_login) {
 	global $mod_disc_terme_incident;
 	global $mod_disc_terme_sanction;
+	global $gepiPath;
 
 	// Pour que les infobulles définies ici fonctionnent même si elles sont appelées depuis une autre infobulle
 	global $tabdiv_infobulle;
@@ -1777,7 +1781,7 @@ function liste_sanctions($id_incident,$ele_login) {
 
 	$retour="";
 
-	$sql="SELECT etat FROM s_incidents WHERE id_incident='$id_incident';";
+	$sql="SELECT etat, declarant FROM s_incidents WHERE id_incident='$id_incident';";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)==0) {
 		$retour="<p style='color:red;'>L'incident n°$id_incident n'existe pas???</p>\n";
@@ -1785,6 +1789,7 @@ function liste_sanctions($id_incident,$ele_login) {
 	else {
 		$lig_inc=mysqli_fetch_object($res);
 		$etat_incident=$lig_inc->etat;
+		$declarant=$lig_inc->declarant;
 
 		// Retenues
 		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
@@ -1836,14 +1841,41 @@ function liste_sanctions($id_incident,$ele_login) {
 				
 				$retour.="<td>";
 
+				// 20160108
+				$texte="";
+				if(($etat_incident!='clos')&&($_SESSION['login']==$declarant)) {
+					/*
+					$texte_ajout_travail="<form action='".$_SERVER['PHP_SELF']."' method='post' enctype='multipart/form-data'>
+	".add_token_field()."
+	<input type='hidden' name='valider_saisie_travail' value='y' />
+	<input type='hidden' name='id_incident' value='".$lig_sanction->id_incident."' />
+	<input type='hidden' name='id_sanction' value='".$lig_sanction->id_sanction."' />
+	<input type='hidden' name='ele_login' value='".$ele_login."' />
+	<p><textarea name='no_anti_inject_travail' id='textarea_nature_travail' cols='30' onchange='changement();'>".$lig_sanction->travail."</textarea></p>
+	".sanction_documents_joints($lig_sanction->id_incident, $ele_login)."
+	<p><input type='submit' value='Valider' /></p>
+</form>";
+					$tabdiv_infobulle[]=creer_div_infobulle("div_ajout_travail_sanction_".$lig_sanction->id_sanction,"Ajouter travail (".$mod_disc_terme_sanction." n°$lig_sanction->id_sanction)","",$texte_ajout_travail,"",50,0,'y','y','n','n',3);
+
+					$texte.="<div style='float:right; width:16px;'>
+	<a href='#' onclick=\"afficher_div('div_ajout_travail_sanction_".$lig_sanction->id_sanction."', 'y', 10, -40);return false;\" title=\"Ajouter du travail ou des documents.\"><img src='../images/icons/add.png' class='icone16' alt='+' /></a>
+</div>";
+					*/
+
+					$texte.="<div style='float:right; width:16px;'>
+	<a href=\"ajout_travail_sanction.php?id_sanction=".$lig_sanction->id_sanction."\" title=\"Ajouter du travail ou des documents.\"><img src='$gepiPath/images/icons/add.png' class='icone16' alt='+' /></a>
+</div>";
+				}
+
 				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
 				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
-					$texte="Aucun travail";
+					$texte.="Aucun travail";
 				}
 				else {
-					$texte=nl2br($lig_sanction->travail);
+					$texte_br=nl2br($lig_sanction->travail);
+					$texte.=$texte_br;
 					if($tmp_doc_joints!="") {
-						if($texte!="") {$texte.="<br />";}
+						if($texte_br!="") {$texte.="<br />";}
 						$texte.=$tmp_doc_joints;
 					}
 				}

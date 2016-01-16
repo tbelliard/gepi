@@ -154,35 +154,6 @@ if ($test_champ==0) {
 } else {
 	$result .= msj_present("Le champ existe déjà");
 }
-   
-$result .= "<strong>&nbsp;-> Ouverture des droits pour /mod_listes_perso/index.php</strong><br />";
-$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SELECT * FROM droits WHERE id LIKE '/mod_listes_perso/index.php'"));
-if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "INSERT INTO droits "
-	   . "VALUES ('/mod_listes_perso/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Listes personnelles', '');");
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur("Échec de la création des droits");
-	}
-} else {
-	$result .= msj_present("Le droit existe déjà");
-}
-
-$result .= "<strong>&nbsp;-> Ouverture des droits pour /mod_listes_perso/index_admin.php</strong><br />";
-$test_champ=mysqli_query($mysqli, "SELECT * FROM droits WHERE id LIKE '/mod_listes_perso/index_admin.php'")->num_rows;
-echo($test_champ);
-if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "INSERT INTO droits "
-	   . "VALUES ('/mod_listes_perso/index_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Listes personnelles', '');");
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur("Échec de la création des droits");
-	}
-} else {
-	$result .= msj_present("Le droit existe déjà");
-} 
 
 $result .= "<br />";
 $result .= "<strong>Ajout d'une table 's_sanctions_check' :</strong><br />";

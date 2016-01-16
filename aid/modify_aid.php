@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -592,14 +592,16 @@ if ($flag == "eleve") {
 	<table class="aid_tableau">
     <?php
     // appel de la liste des élèves de l'AID :
-    $call_liste_data = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
+    $sql="SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
 							FROM eleves e, j_aid_eleves j, j_eleves_classes jec, classes c
 							WHERE (j.id_aid = '$aid_id' and
 							e.login = j.login and
 							jec.id_classe = c.id and
 							jec.login = j.login AND
 							j.indice_aid = '$indice_aid')
-							ORDER BY c.classe, e.nom, e.prenom");
+							ORDER BY c.classe, e.nom, e.prenom";
+	//echo "$sql<br />";
+    $call_liste_data = mysqli_query($GLOBALS["mysqli"], $sql);
     $nombre = mysqli_num_rows($call_liste_data);
     // On affiche d'abord le nombre d'élèves
     		$s = "";
@@ -768,7 +770,13 @@ if ($flag == "eleve") {
 		<input type="submit" value='Enregistrer' />
 	</p>
 </form>
-    <?php if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
+    <?php 
+
+    if(($nombreligne>0)&&($autoriser_inscript_multiples != 'y')) {
+        echo "<p><em>NOTE&nbsp;:</em> Les élèves déjà inscrits dans un AID n'apparaissent pas dans le champ de sélection ci-dessus.</p>";
+    }
+
+    if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) {
 		echo "<p><br /><br /><br /><br /><br /></p>";
 	} // Pour que les trombines des derniers élèves s'affichent correctement.
     if ($activer_outils_comp == "y") {?>
@@ -776,6 +784,7 @@ if ($flag == "eleve") {
 	(*) Les élèves responsables peuvent par exemple accéder dans certaines conditions à l'édition des fiches AID.
 </p>
     <?php }
+
 
 }
 require ("../lib/footer.inc.php");
