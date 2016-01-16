@@ -174,7 +174,11 @@ colC20 {
     border-left-color: #888;
     border-bottom-color: #888;
 }
-   
+
+.photoElv{
+  width: 64px;
+}
+ 
 
 @media print {
    ul {
@@ -256,9 +260,13 @@ colC20 {
 	  min-height: 0em;   
    }
    
-   table {
-overflow: visible !important;
-}
+  .photoElv{
+	width: 40px;
+  }
+  
+  table {
+	overflow: visible !important;
+  }
 
 }
 
