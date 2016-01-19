@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -291,6 +291,7 @@ while($lig=mysqli_fetch_object($res_classe)){
 		$tab_classe[$cpt]=array();
 		$tab_classe[$cpt]['id']=$lig->id;
 		$tab_classe[$cpt]['classe']=$lig->classe;
+		$tab_classe[$cpt]['suivi_par']=$lig->suivi_par;
 
 		$lig_per=mysqli_fetch_object($res_per);
 		if($lig_per->max_per>$max_per) {$max_per=$lig_per->max_per;}
@@ -394,6 +395,18 @@ $tabdiv_infobulle[]=creer_div_infobulle('infobulle_choix_date2',$titre,"",$texte
 
 //=============================================
 
+$gepi_prof_suivi=ucfirst(getSettingValue('gepi_prof_suivi'));
+$tab_liste_pp=array();
+$tab_pp=get_tab_prof_suivi();
+foreach($tab_pp as $current_id_classe => $tab_pp_classe) {
+	$tab_liste_pp[$current_id_classe]="";
+	for($loop=0;$loop<count($tab_pp_classe);$loop++) {
+		if($loop>0) {
+			$tab_liste_pp[$current_id_classe].=", ";
+		}
+		$tab_liste_pp[$current_id_classe].=affiche_utilisateur($tab_pp_classe[$loop] ,$current_id_classe);
+	}
+}
 
 if($acces_app_ele_resp=='manuel') {
 	// Le mode global paramétré est 'manuel'
@@ -472,7 +485,11 @@ if($acces_app_ele_resp=='manuel') {
 		include "../lib/periodes.inc.php";
 		if(isset($nom_periode)) {
 			if(count($nom_periode)>0){
-				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<tr class='lig$alt white_hover' title=\"Classe suivie par ".$tab_classe[$j]['suivi_par'];
+				if((isset($tab_liste_pp[$id_classe]))&&($tab_liste_pp[$id_classe]!="")) {
+					echo "\n$gepi_prof_suivi : ".$tab_liste_pp[$id_classe];
+				}
+				echo "\">\n";
 				echo "<td>".$tab_classe[$j]['classe'];
 				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
 				echo "</td>\n";
@@ -724,7 +741,11 @@ elseif($acces_app_ele_resp=='date') {
 		include "../lib/periodes.inc.php";
 		if(isset($nom_periode)) {
 			if(count($nom_periode)>0){
-				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<tr class='lig$alt white_hover' title=\"Classe suivie par ".$tab_classe[$j]['suivi_par'];
+				if((isset($tab_liste_pp[$id_classe]))&&($tab_liste_pp[$id_classe]!="")) {
+					echo "\n$gepi_prof_suivi : ".$tab_liste_pp[$id_classe];
+				}
+				echo "\">\n";
 				echo "<td>".$tab_classe[$j]['classe'];
 				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
 				echo "</td>\n";
@@ -984,7 +1005,11 @@ elseif($acces_app_ele_resp=='periode_close') {
 		include "../lib/periodes.inc.php";
 		if(isset($nom_periode)) {
 			if(count($nom_periode)>0){
-				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<tr class='lig$alt white_hover' title=\"Classe suivie par ".$tab_classe[$j]['suivi_par'];
+				if((isset($tab_liste_pp[$id_classe]))&&($tab_liste_pp[$id_classe]!="")) {
+					echo "\n$gepi_prof_suivi : ".$tab_liste_pp[$id_classe];
+				}
+				echo "\">\n";
 				echo "<td>".$tab_classe[$j]['classe'];
 				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
 				echo "</td>\n";
