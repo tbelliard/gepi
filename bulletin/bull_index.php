@@ -961,7 +961,7 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 	*/
 	//=======================================
 
-
+	$acces_correction_app=acces_validation_correction_app();
 
 	if(count($tab_id_classe)>1) {
 		echo "<p>Pour toutes les classes";
@@ -1008,6 +1008,18 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 			echo "</table>\n";
 		}
 
+		// 20160119
+		$tab_app_correction=array();
+		$sql="SELECT mac.* FROM matieres_app_corrections mac, j_groupes_classes jgc WHERE jgc.id_groupe=mac.id_groupe AND jgc.id_classe='".$tab_id_classe[$i]."';";
+		$res_app_correction=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_app_correction)>0) {
+			while($lig_app_correction=mysqli_fetch_object($res_app_correction)) {
+				$tab_app_correction['periode'][$lig_app_correction->periode]['id_groupe'][$lig_app_correction->id_groupe][]=$lig_app_correction->login;
+				$tab_app_correction['id_groupe'][$lig_app_correction->id_groupe]['periode'][$lig_app_correction->periode][]=$lig_app_correction->login;
+				$tab_app_correction['login'][$lig_app_correction->login]['periode'][$lig_app_correction->periode][]=$lig_app_correction->id_groupe;
+			}
+		}
+
 		echo "<table class='boireaus' summary='Coefficients des enseignements de ".$classe_courante."'>\n";
 		echo "<tr>\n";
 		echo "<th>Enseignement</th>\n";
@@ -1024,6 +1036,22 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'>\n";
 				echo "<td style='font-weight:bold'>\n";
+
+				// 20160119
+				for($j=0;$j<count($tab_periode_num);$j++) {
+					$current_periode_tmp=$tab_periode_num[$j];
+					if(isset($tab_app_correction['id_groupe'][$tmp_current_group['id']]['periode'][$current_periode_tmp])) {
+						echo "<div style='float:right;width:16px;' title=\"Il y a une ou des propositions de correction d'appréciation\npour ".count($tab_app_correction['id_groupe'][$tmp_current_group['id']]['periode'][$current_periode_tmp])." élève(s) en période ".$current_periode_tmp.".\">";
+						if($acces_correction_app) {
+							echo "<a href='../saisie/validation_corrections.php' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a>";
+						}
+						else {
+							echo "<img src='../images/icons/flag2.gif' class='icone16' alt='Attention' />";
+						}
+						echo "</div>";
+					}
+				}
+
 				echo $tmp_current_group['name']."\n";
 				echo "</td>\n";
 
@@ -1135,7 +1163,21 @@ Le dépot de fichiers de signature pour les différents utilisateurs et classes 
 							jec.periode='".$tab_periode_num[$j]."';";
 				$test=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($test)>0) {
-					echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
+					echo "<td>";
+
+					// 20160119
+					if(isset($tab_app_correction['login'][$lig_ele->login]['periode'][$tab_periode_num[$j]])) {
+						echo "<div style='float:right;width:16px;' title=\"Il y a une ou des propositions de correction d'appréciation\npour ".count($tab_app_correction['login'][$lig_ele->login]['periode'][$tab_periode_num[$j]])." enseignement(s).\">";
+						if($acces_correction_app) {
+							echo "<a href='../saisie/validation_corrections.php' target='_blank'><img src='../images/icons/flag2.gif' class='icone16' alt='Attention' /></a>";
+						}
+						else {
+							echo "<img src='../images/icons/flag2.gif' class='icone16' alt='Attention' />";
+						}
+						echo "</div>";
+					}
+
+					echo "<input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
 					if(!isset($preselection_eleves)) {echo "checked ";}
 					//elseif((isset($preselection_eleves[$tab_periode_num[$j]]))&&(in_array($lig_ele->login,$preselection_eleves[$tab_periode_num[$j]]))) {echo "checked ";}
 					elseif((isset($preselection_eleves[$tab_periode_num[$j]]))&&(strstr($preselection_eleves[$tab_periode_num[$j]],"|".$lig_ele->login."|"))) {echo "checked ";}

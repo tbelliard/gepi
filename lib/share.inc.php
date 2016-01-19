@@ -13902,4 +13902,26 @@ function acces_extract_disc($id_classe="", $login_ele="") {
 		}
 	}
 }
+
+function acces_validation_correction_app() {
+
+	if($_SESSION['statut']=='professeur') {
+		if(!getSettingAOui('autoriser_valider_correction_app_pp')) {
+			return false;
+		}
+		elseif(!is_pp($_SESSION['login'])) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	elseif(acces("/saisie/validation_corrections.php", $_SESSION['statut'])) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 ?>
