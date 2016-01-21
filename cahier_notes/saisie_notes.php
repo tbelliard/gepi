@@ -2836,6 +2836,9 @@ foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
 		if(preg_match("/^[0-9]{1,}[,]{0,1}[0-9]{0,2}$/", $tmp_tab['note'])) {
 			$current_note=preg_replace("/,/", ".", $tmp_tab['note']);
 		}
+		elseif($tmp_tab['note']=="") {
+			$current_note="-";
+		}
 		else {
 			$current_note=$tmp_tab['note'];
 		}
