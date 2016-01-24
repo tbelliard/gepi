@@ -225,10 +225,59 @@ else {
 	  Pour les parents séparés, imprimer deux documents lors des impressions <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?>.
 	  </label>
 
-	  <p style='text-indent:-4em;margin-left:4em; margin-top:1em;'><em>NOTE&nbsp;:</em> Les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> sont faits pour être saisis indépendamment du bulletin.<br />
+	  <p style='text-indent:-4em;margin-left:4em; margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+	  <ul>
+	  	<li><p>Les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> sont faits pour être saisis indépendamment du bulletin.<br />
 	  Ils n'apparaitront pas sur les bulletins, mais vous pourrez les imprimer depuis le module Discipline, ou depuis la page d'impression des bulletins.<br />
 	  La saisie se fait depuis le module Discipline, ou depuis les pages permettant la saisie des avis de conseil de classe.<br />
-	  Si vous ne souhaitez pas utiliser les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> vous pouvez interdire l'accès à la saisie ici.</p>
+	  Si vous ne souhaitez pas utiliser les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> vous pouvez interdire l'accès à la saisie ici.</p></li>
+	  <li>
+	  	<p>Le modèle openDocument (<em title="Fichier OpenOffice.org ou LibreOffice">ODT/ODS</em>) est normalement mis en place pour tous les utilisateurs autorisés à imprimer les <?php echo $mod_disc_terme_avertissement_fin_periode."s";?> via le module <a href='../mod_ooo/gerer_modeles_ooo.php' target='_blank'>Modèles openDocument</a><br />
+		  Il est néanmoins possible d'utiliser des modèles différents pour tel ou tel utilisateur (<em>par exemple pour y inclure l'image d'une signature</em>) en déposant un fichier nommé <strong>avertissement_fin_periode.odt</strong> pour l'utilisateur, via le module <a href='../mod_ooo/publipostage_ooo.php' target='_blank'>Publipostage OOo</a></p>
+		  <p>Les champs autorisés dans le fichier modèle openDocument sont les suivants&nbsp;:</p>
+		  <ul>
+			<li>[eleves.nom]</li>
+			<li>[eleves.prenom]</li>
+			<li>[eleves.sexe]</li>
+			<li>[eleves.civilite]</li>
+			<li>[eleves.date_nais]</li>
+			<li>[eleves.login]</li>
+			<li>[eleves.classe]</li>
+			<li>[eleves.ine]</li>
+			<li>[eleves.doublant]</li>
+			<li>[eleves.regime]</li>
+			<li>[eleves.date_conseil_de_classe]</li>
+			<li>[eleves.suivi_par]</li>
+			<li>[eleves.suivi_par_alt]</li>
+			<li>[eleves.suivi_par_alt_fonction]</li>
+			<li>[eleves.titre_pp]</li>
+			<li>[eleves.pp]</li>
+			<li>[eleves.annee]</li>
+			<li>[eleves.etab]</li>
+			<li>[eleves.adr1]</li>
+			<li>[eleves.adr2]</li>
+			<li>[eleves.cp]</li>
+			<li>[eleves.ville]</li>
+			<li>[eleves.tel]</li>
+			<li>[eleves.fax]</li>
+			<li>[eleves.email]</li>
+			<li>[eleves.rne]</li>
+			<li>[eleves.acad]</li>
+			<li>[eleves.designation_resp]</li>
+			<li>[eleves.resp_adr1]</li>
+			<li>[eleves.resp_adr2]</li>
+			<li>[eleves.resp_adr3]</li>
+			<li>[eleves.resp_cp]</li>
+			<li>[eleves.resp_commune]</li>
+			<li>[eleves.resp_pays]</li>
+			<li>[eleves.periode]</li>
+			<li>[eleves.nom_per]</li>
+			<li>[eleves.per.1], [eleves.per.2], [eleves.per.3] contient un X si le numéro de période correspond à la période choisie.<br />
+			Utile pour les cases à cocher.</li>
+			<li>[eleves.ita.1; if [val]='X'; then X ; else ''] où 1 est l'identifiant du type de <?php echo $mod_disc_terme_avertissement_fin_periode;?></li>
+		  </ul>
+	  </li>
+	  </ul>
 	</fieldset>
 
 	<h2>Autoriser l'utilisation d'une zone commentaire dans la gestion des incidents</h2>
