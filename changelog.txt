@@ -5,6 +5,10 @@
 
 Gepi-master (Version de développement)
 ===========================
+Bulletins:
+- Validation de corrections en attente: Affichage de témoins dans la page de 
+  sélection des bulletins à imprimer.
+
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
   et professeur principal à l'export ODS des incidents.
@@ -14,6 +18,13 @@ Engagements:
 
 Accueil élèves et parents
 - en page résumé, ne pas afficher l'aide sur les devoirs si le module cahier de texte n'est pas ouvert.
+
+Statistiques:
+- Ajout de l'extraction des sous-groupes ne concernant qu'une classe.
+
+Général:
+- Affichage de l'identité de la personne qui suit la classe (chef, adjoint)
+  et du professeur principal dans diverses pages de choix de classes.
 
 Gepi-1.6.8 (05/01/2016)
 ===========================
