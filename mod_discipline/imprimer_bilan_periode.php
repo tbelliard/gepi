@@ -201,9 +201,18 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['prenom']=$tab_current_ele['prenom'];
 				$tab_eleves_OOo[$nb_eleve]['classe']=$classe;
 
+				$tab_eleves_OOo[$nb_eleve]['login']=$tab_current_ele['login'];
+				$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($tab_current_ele['naissance']);
+				$tab_eleves_OOo[$nb_eleve]['sexe']=$tab_current_ele['sexe'];
+				$tab_eleves_OOo[$nb_eleve]['civilite']=$tab_current_ele['civilite'];
+				$tab_eleves_OOo[$nb_eleve]['ine']=$tab_current_ele['no_gep'];
+				$tab_eleves_OOo[$nb_eleve]['doublant']=$tab_current_ele['doublant'];
+				$tab_eleves_OOo[$nb_eleve]['regime']=$tab_current_ele['regime'];
+
 				$tab_eleves_OOo[$nb_eleve]['date_conseil_de_classe']=$date_conseil_de_classe;
 
-				$tab_eleves_OOo[$nb_eleve]['periode']=array();
+				$tab_eleves_OOo[$nb_eleve]['periode']=$current_periode;
+				$tab_eleves_OOo[$nb_eleve]['per']=array();
 				$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
@@ -222,6 +231,17 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['suivi_par']=getParamClasse($current_id_classe,'suivi_par',"");
 				$tab_eleves_OOo[$nb_eleve]['suivi_par_alt']=getParamClasse($current_id_classe,'suivi_par_alt',"");
 				$tab_eleves_OOo[$nb_eleve]['suivi_par_alt_fonction']=getParamClasse($current_id_classe,'suivi_par_alt_fonction',"");
+
+				$tab_eleves_OOo[$nb_eleve]['titre_pp']=casse_mot(retourne_denomination_pp($current_id_classe), "majf2");
+				$tmp_tab_pp=get_tab_prof_suivi($current_id_classe);
+				$liste_pp="";
+				for($loop=0;$loop<count($tmp_tab_pp);$loop++) {
+					if($loop>0) {
+						$liste_pp.="";
+					}
+					$liste_pp.=affiche_utilisateur($tmp_tab_pp[$loop], $current_id_classe);
+				}
+				$tab_eleves_OOo[$nb_eleve]['pp']=$liste_pp;
 
 				$tab_eleves_OOo[$nb_eleve]['annee']=getSettingValue('gepiYear');
 
