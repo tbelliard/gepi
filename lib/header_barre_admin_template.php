@@ -167,7 +167,16 @@ include("menu_plugins.inc.php");
 		$menus .= '            <ul class="niveau3">'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/index.php" '.insert_confirm_abandon().'>Gestion resp.légaux</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php" '.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/responsables/infos_parents.php" title="Extraire les informations parents/élèves au format CSV.">Infos ele/resp</a></li>'."\n";
+
+		$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+		$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_resp)>0) {
+			$menus .= '                <li><a href="'.$gepiPath.'/responsables/synchro_mail.php" title="Les responsables peuvent avoir un mail défini dans Siècle/Sconet et un autre saisi par l\'utilisateur parent se connectant dans Gepi.">Synchro mail</a>'."\n";
+		}
+
 		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php" '.insert_confirm_abandon().' title="Consulter, rechercher, modifier des comptes d\'utilisateurs responsables/parents.">Comptes Resp.légaux</a></li>'."\n";
+
 		$menus .= '            </ul>'."\n";
 		$menus .= '        </li>'."\n";
 
