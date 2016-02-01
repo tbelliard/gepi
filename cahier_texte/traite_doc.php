@@ -138,6 +138,7 @@ Il pourra modifier ce paramétrage dans<br />
       die();
     }
     $nom_sans_ext = mb_substr(basename($doc_file['name'][$cpt_doc]),0,mb_strlen(basename($doc_file['name'][$cpt_doc]))-(mb_strlen($ext)+1));
+    $nom_sans_ext = remplace_accents($nom_sans_ext,"all");
     $nom_sans_ext = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $nom_sans_ext);
     if (strstr($nom_sans_ext, "..")) {
         return "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire. Veuillez signaler ce problème à l'administrateur du site";
