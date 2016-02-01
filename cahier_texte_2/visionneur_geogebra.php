@@ -66,7 +66,7 @@ require_once("../lib/header.inc.php");
 		$url_ggb=isset($_GET['url']) ? $_GET['url'] : NULL;
 
 		//echo "url_ggb=$url_ggb<br />";
-
+		// https://serveur/gepi/cahier_texte_2/visionneur_geogebra.php?url=../documents/cl35082/somme_des_mesures_des_angles_d_un_triangle.ggb
 		if(!isset($url_ggb)) {
 			echo "<p style='color:red'>Aucun fichier à afficher.</p>\n";
 			echo "</body>\n";
@@ -74,20 +74,47 @@ require_once("../lib/header.inc.php");
 			die();
 		}
 
-		if(!preg_match("/ggb/i", $url_ggb)) {
+		if(!preg_match("/\.ggb$/i", $url_ggb)) {
 			echo "<p style='color:red'>Le type du fichier est incorrect.</p>\n";
 			echo "</body>\n";
 			echo "</html>\n";
 			die();
 		}
 
+		$multi = (isset($multisite) && $multisite == 'y') ? $_COOKIE['RNE'].'/' : NULL;
+		if(isset($multisite) && $multisite == 'y') {
+			if((!preg_match("#^\.\./documents/$multi/cl[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/$multi/cl_dev[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/archives/$multi/[A-Za-z0-9_-]{1,}/documents/cl[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/archives/$multi/[A-Za-z0-9_-]{1,}/documents/cl_dev[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))) {
+				echo "<p style='color:red'>Le chemin du fichier est incorrect.</p>\n";
+				echo "</body>\n";
+				echo "</html>\n";
+				die();
+			}
+		}
+		else {
+			if((!preg_match("#^\.\./documents/cl[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/cl_dev[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/archives/etablissement/[A-Za-z0-9_-]{1,}/documents/cl[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))&&
+			(!preg_match("#^\.\./documents/archives/etablissement/[A-Za-z0-9_-]{1,}/documents/cl_dev[0-9]{1,}/[A-Za-z0-9_=-]{1,}\.ggb$#i", $url_ggb))) {
+				echo "<p style='color:red'>Le chemin du fichier est incorrect.</p>\n";
+				echo "</body>\n";
+				echo "</html>\n";
+				die();
+			}
+		}
+
 		//$url_ggb=$gepiPath.preg_replace("#\.\.#", "", $url_ggb);
+		$url_ggb0=$url_ggb;
+		//echo "url_ggb0=$url_ggb0<br />";
 
 		$debut_url=preg_replace("#cahier_texte_2/.*#","",$_SERVER['HTTP_REFERER']);
-		$url_ggb=$debut_url.preg_replace("#\.\.#", "", $url_ggb);
+		$url_ggb=$debut_url.preg_replace("#\.\./#", "", $url_ggb);
 		//echo "url_ggb=$url_ggb<br />";
 	?>
 
+<!--
 	<applet code="geogebra.GeoGebraApplet"  archive="geogebra.jar" 
 	  codebase="http://jars.geogebra.org/webstart/" 
 	  width="800" height="400">
@@ -95,6 +122,30 @@ require_once("../lib/header.inc.php");
 		  <param name="framePossible" value="false" />
 	Il faut installer un <a href='http://www.java.com'>plugin Java</a> (<em>1.5 ou plus récent</em>) pour visionner cette page.
 	</applet>
+-->
+
+<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"
+         codebase="http://www.geogebra.org/webstart/4.0/unsigned/"
+         width="1000" height="600" MAYSCRIPT>
+		  <param name="ggbBase64" value="<?php echo base64_encode(file_get_contents($url_ggb0));?>">
+		  <param name="framePossible" value="false" />
+	Il faut installer un <a href='http://www.java.com'>plugin Java</a> (<em>1.5 ou plus récent</em>) pour visionner cette page.
+</applet>
+
+<p><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>
+		<p>Votre navigateur va peut-être bloquer l'activation du plugin Java utilisé par GeoGebra.<br />
+		Un cadenas avec un point d'exclamation peut signaler cela en barre d'adresse de votre navigateur.<br />
+		Cliquez sur ce cadenas et désactivez temporairement la protection.<br />
+		Les figures géométriques proposées dans GeoGebra ne présentent pas de danger.</p>
+	</li>
+	<li>
+		<p>Vous pouvez zoomer dans la fenêtre de la figure GeoGebra en pressant la touche CTRL du clavier<br />
+et en faisant simultanément rouler la molette de la souris.</p>
+	</li>
+</ul>
+
 </div>
 </body>
 </html>
