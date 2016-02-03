@@ -276,6 +276,8 @@ else {
 			Utile pour les cases à cocher.</li>
 			<li>[eleves.ita.1; if [val]='X'; then X ; else ''] où 1 est l'identifiant du type de <?php echo $mod_disc_terme_avertissement_fin_periode;?></li>
 		  </ul>
+		  <em>Remarque&nbsp;:</em> [eleves.#] permet de numéroter les élèves extraits.<br />
+		  Pour plus de détails, voir <a href='http://www.tinybutstrong.com/manual.php' target='_blank'>http://www.tinybutstrong.com/manual.php</a> et notamment <a href='http://www.tinybutstrong.com/manual.php#php_mergeblock_counting' target='_blank'>http://www.tinybutstrong.com/manual.php#php_mergeblock_counting</a>
 	  </li>
 	  </ul>
 	</fieldset>
