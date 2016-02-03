@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -49,8 +49,12 @@ if (getSettingValue("GepiCahierTexteVersion") == '2') {
 	if(isset($_GET['login_eleve'])) {
 		$parametres_url.="login_eleve=".$_GET['login_eleve']."&";
 	}
+	if(isset($_GET['id_groupe'])) {
+		$parametres_url.="id_groupe=".$_GET['id_groupe']."&";
+	}
 	if($parametres_url!="") {
-		$parametres_url="?".substr($parametres_url,1);
+		//$parametres_url="?".substr($parametres_url,1);
+		$parametres_url="?".preg_replace("/&$/","",$parametres_url);
 	}
 	header("Location: ../cahier_texte_2/consultation.php".$parametres_url);
 	die();
