@@ -180,8 +180,16 @@ if($is_lcs_plugin=='yes') {
    * authentification lcs page LDAP
    */
   include LCS_PAGE_LDAP_INC_PHP;
-  list ($idpers,$login) = isauth();
-
+//  list ($idpers,$login) = isauth();
+  $login="";
+  if (! empty($_COOKIE["Lcs"])) {
+     # Search login
+     $file="/var/lib/php5/sess_".$_COOKIE['Lcs'];
+     if (is_readable($file)) {
+          $ch= mb_split('"',file_get_contents ($file));
+          $login=$ch[1];
+     }
+  }
 }
 
 $ldap_class = "/lib/LDAPServer.class.php";

@@ -1098,7 +1098,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		# L'initialisation ci-dessous n'est pas très propre, il faudra
 		# reprendre ça...
 		*/
-		global $login, $idpers;
+		global $login;
 
 		$DBAUTH = $GLOBALS['DBAUTH'];
 		$HTTP_COOKIE_VARS = $GLOBALS['HTTP_COOKIE_VARS'];
@@ -1108,8 +1108,7 @@ if (getSettingValue("sso_cas_table") == 'yes') {
 		$dbPass = $GLOBALS['dbPass'];
 		$dbDb = $GLOBALS['dbDb'];
 
-		//list ($idpers,$login) = isauth();
-		if ($idpers) {
+		if ($login!="") {
 			list($user, $groups)=people_get_variables($login, false);
 			#TODO: Utiliser les infos des lignes ci-dessous pour mettre à jour
 			# les informations de l'utilisateur dans la base.
