@@ -264,10 +264,11 @@ if (isset($_POST['classement'])) {
 	}
 }
 if (isset($_POST['installation_base'])) {
-            // Remise à zéro de la table des droits d'accès
+	// Remise à zéro de la table des droits d'accès
 	$result = "";
-        require '../../utilitaires/updates/access_rights.inc.php';
-	require '../../utilitaires/updates/mod_abs2.inc.php';
+	require '../../utilitaires/updates/access_rights.inc.php';
+	// Scorie:
+	//require '../../utilitaires/updates/mod_abs2.inc.php';
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
