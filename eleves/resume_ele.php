@@ -663,12 +663,15 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Absences</div>";
 
+	$html.="<p style='margin-top:1em'><a href='$url_abs'>Voir les absences et retards</a>.</p>";
+	/*
 	$html.="<p style='color:red'>Extraction des absences, dans cette page, non encore implémentée.<br />Passez par le menu 'Accueil'";
 	if($url_abs!="") {
 		$html.="<br />ou par le lien <a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a>";
 	}
 	$html.="<br />L'objectif à terme est d'afficher ici, juste les absences/retards du jour sélectionné... ou de la semaine en cours... ou des 7 derniers jours.";
 	$html.="</p>";
+	*/
 
 	echo "
 <div id='div_abs' style='float:left; width:".$largeur_abs."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['absences'].";'>".$html."</div>";
