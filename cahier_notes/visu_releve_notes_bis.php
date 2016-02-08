@@ -1118,7 +1118,13 @@ echo "</p>";
 		echo "<script type='text/javascript'>
 //<![CDATA[
 
-griser_lignes_specifiques_pdf();
+if((document.getElementById('releve_html'))&&(document.getElementById('releve_html').checked)) {
+	griser_lignes_specifiques_pdf();
+}
+else {
+	display_div_param_pdf();
+	griser_lignes_specifiques_html();
+}
 
 function CocheLigne(item) {
 	for (var i=0;i<".count($tab_id_classe).";i++) {
