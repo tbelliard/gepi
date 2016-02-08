@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -98,9 +98,14 @@ if((isset($id_classe))&&
 	$csv='"ID_ELEVE"';
 	for($loop=0;$loop<count($champ_eleve);$loop++) {
 		// Pour éviter les colonnes app et note ici
-		if(($champ_eleve[$loop]!='note')&&($champ_eleve[$loop]!='app')) {
+		if(($champ_eleve[$loop]!='note')&&($champ_eleve[$loop]!='app')&&($champ_eleve[$loop]!='etab_orig')) {
 			$csv.=';"'.strtoupper($champ_eleve[$loop]).'"';
 		}
+	}
+
+	//get_tab_etab_orig($login)
+	if(in_array("etab_orig", $champ_eleve)) {
+		$csv.=';"RNE_ORIG";"NOM_ETAB_ORIG";"NIVEAU_ETAB_ORIG";"TYPE_ETAB_ORIG";"CP_ETAB_ORIG";"VILLE_ETAB_ORIG"';
 	}
 
 	if(in_array("id_classe",$champ_autre)) {$csv.=';"ID_CLASSE"';}
@@ -174,6 +179,11 @@ if((isset($id_classe))&&
 							$tab_info_ele[$tmp_ele[$loop]]=array();
 							$tab_info_ele[$tmp_ele[$loop]]=mysqli_fetch_assoc($res_ele_info);
 
+							if(in_array("etab_orig", $champ_eleve)) {
+								$tab_etab_orig=get_tab_etab_orig($tmp_ele[$loop]);
+								$tab_info_ele[$tmp_ele[$loop]]['chaine_csv_etab_orig']=$tab_etab_orig['chaine_csv2'];
+							}
+
 							if(!isset($tab_id_csv_eleve[$tmp_ele[$loop]])) {
 								$tab_id_csv_eleve[$tmp_ele[$loop]]=$cpt;
 								$cpt++;
@@ -201,6 +211,18 @@ if((isset($id_classe))&&
 							$tab_info_ele[$lig_ele->login]=array();
 							$tab_info_ele[$lig_ele->login]=mysqli_fetch_assoc($res_ele_info);
 
+							if(in_array("etab_orig", $champ_eleve)) {
+								$tab_etab_orig=get_tab_etab_orig($lig_ele->login);
+								$tab_info_ele[$lig_ele->login]['chaine_csv_etab_orig']=$tab_etab_orig['chaine_csv2'];
+							}
+/*
+if($lig_ele->login=="toto") {
+echo "<pre>";
+print_r($tab_info_ele[$lig_ele->login]);
+echo "</pre>";
+die();
+}
+*/
 							if(!isset($tab_id_csv_eleve[$lig_ele->login])) {
 								$tab_id_csv_eleve[$lig_ele->login]=$cpt;
 								$cpt++;
@@ -324,6 +346,11 @@ if((isset($id_classe))&&
 										if(isset($tab_info_ele[$tab_ele[$m]][$champ_eleve[$loop]])) {
 											$csv.=';"'.$tab_info_ele[$tab_ele[$m]][$champ_eleve[$loop]].'"';
 										}
+									}
+
+									if(in_array("etab_orig", $champ_eleve)) {
+										//$csv.=';"'.$tab_info_ele[$tab_ele[$m]]['chaine_csv_etab_orig'].'"';
+										$csv.=';'.$tab_info_ele[$tab_ele[$m]]['chaine_csv_etab_orig'];
 									}
 
 									if(in_array("id_classe",$champ_autre)) {$csv.=';"'.$id_classe[$i].'"';}
@@ -1144,8 +1171,8 @@ elseif(!isset($choix_donnees)) {
 		}
 	}
 
-	$tab_champ_eleve=array('login', 'ele_id', 'elenoet', 'no_gep', 'nom', 'prenom', 'sexe', 'naissance', 'note', 'app');
-	$tab_descr_champ_eleve=array('Login', 'Identifiant ele_id', 'Identifiant elenoet', 'Identifiant national (INE)', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Moyenne du bulletin', 'Appréciation du bulletin');
+	$tab_champ_eleve=array('login', 'ele_id', 'elenoet', 'no_gep', 'nom', 'prenom', 'sexe', 'naissance', 'note', 'app', 'etab_orig');
+	$tab_descr_champ_eleve=array('Login', 'Identifiant ele_id', 'Identifiant elenoet', 'Identifiant national (INE)', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Moyenne du bulletin', 'Appréciation du bulletin', 'Établissement d origine');
 	$tab_incl_champ_eleve=array('sexe', 'naissance', 'note', 'app');
 
 	echo "<div style='float:left; width:30%'>\n";

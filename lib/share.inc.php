@@ -1110,11 +1110,11 @@ function genDateSelector($prefix, $day, $month, $year, $option)
  * @see tentative_intrusion()
  */
 function checkAccess() {
-    global $gepiPath;    
-    global $mysqli;
+	global $gepiPath;
+	global $mysqli;
 
-    if(!preg_match("/mon_compte.php/", $_SERVER['SCRIPT_NAME'])) {
-        if((isset($_SESSION['statut']))&&($_SESSION['statut']!="administrateur")&&(getSettingAOui('MailValideRequis'.ucfirst($_SESSION['statut'])))) {
+	if(!preg_match("/mon_compte.php/", $_SERVER['SCRIPT_NAME'])) {
+		if((isset($_SESSION['statut']))&&($_SESSION['statut']!="administrateur")&&(getSettingAOui('MailValideRequis'.ucfirst($_SESSION['statut'])))) {
 
 			$debug_test_mail="n";
 			if($debug_test_mail=="y") {
@@ -13924,4 +13924,37 @@ function acces_validation_correction_app() {
 	}
 }
 
+/**
+ * Retourne le tableau des informations sur l'établissement d'origine de l'élève
+ *
+ * @param string Login de l'élève
+ * @return array Tableau des infos établissement
+ */
+function get_tab_etab_orig($login) {
+	$tab=array();
+
+	$tab["id"]="";
+	$tab["rne"]="";
+	$tab["nom"]="";
+	$tab["niveau"]="";
+	$tab["type"]="";
+	$tab["cp"]="";
+	$tab["ville"]="";
+
+	$sql="SELECT et.* FROM etablissements et, j_eleves_etablissements jee, eleves e WHERE et.id=jee.id_etablissement AND jee.id_eleve=e.elenoet AND e.login='".$login."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab=mysqli_fetch_assoc($res);
+		$tab["rne"]=$tab['id'];
+	}
+
+	$chaine_csv=$tab["rne"].";".$tab["nom"].";".$tab["niveau"].";".$tab["type"].";".$tab["cp"].";".$tab["ville"];
+	$chaine_csv2='"'.$tab["rne"].'";"'.$tab["nom"].'";"'.$tab["niveau"].'";"'.$tab["type"].'";"'.$tab["cp"].'";"'.$tab["ville"].'"';
+
+	$tab["chaine_csv"]=$chaine_csv;
+	$tab["chaine_csv2"]=$chaine_csv2;
+
+	return $tab;
+}
 ?>
