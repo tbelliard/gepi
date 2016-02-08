@@ -341,7 +341,13 @@ if((isset($id_classe))&&
 									if(in_array("matiere_nom_complet",$champ_autre)) {$csv.=';"'.clean_string_csv($tab_grp[$tab_id_groupe[$k]]["matiere"]["nom_complet"]).'"';}
 		
 									for($loop=0;$loop<count($champ_enseignant);$loop++) {
-										$csv.=';"'.$tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]].'"';
+										// Cas d'un groupe sans prof
+										if(isset($tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]])) {
+											$csv.=';"'.$tab_prof[$tab_id_groupe[$k]][0][$champ_enseignant[$loop]].'"';
+										}
+										else {
+											$csv.=';""';
+										}
 									}
 		
 									$csv.=';"'.$tab_per[$j].'"';
