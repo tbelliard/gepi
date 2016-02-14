@@ -9,6 +9,9 @@ Bulletins:
 - Validation de corrections en attente: Affichage de témoins dans la page de 
   sélection des bulletins à imprimer.
 
+Absences2:
+- Affichage des manquements du jour sur la page d'accueil simplifiée parent.
+
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
   et professeur principal à l'export ODS des incidents.

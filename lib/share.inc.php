@@ -13957,4 +13957,23 @@ function get_tab_etab_orig($login) {
 
 	return $tab;
 }
+
+// renvoie la priorite d'affichage : 1:Retard Justifie ; 2 Absence Justifiee ; 3 Retard Non justifé ; 4 Absence non justifiée
+function get_priorite($abs) {
+	if ($abs->getJustifiee()) {
+		if ($abs->getRetard()) {
+			$priorite = 1;
+		} else {
+			$priorite = 2;
+		}
+	} else {
+		if ($abs->getRetard()) {
+			$priorite = 3;
+		} else {
+			$priorite = 4;
+		}
+	}
+	return($priorite);
+}
+
 ?>
