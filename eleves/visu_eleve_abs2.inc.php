@@ -9,11 +9,22 @@ $tri='';
 //$type_extrait=(!isset($_POST['type_extrait'])) ? 1 : "";
 $type_extrait="";
 if(!isset($_POST['visu_eleve_abs2_is_posted'])) {
-	$type_extrait=1; // filtrer par manquement aux obligations scolaires
+	if(isset($_SESSION['abs2_type_extrait'])) {
+		$type_extrait=$_SESSION['abs2_type_extrait'];
+	}
+	else {
+		$type_extrait=1; // filtrer par manquement aux obligations scolaires
+	}
 }
 elseif(isset($_POST['type_extrait'])) {
-	$type_extrait=1;
+	//$type_extrait=1;
+	$type_extrait=$_POST['type_extrait'];
 }
+else {
+	$type_extrait=1; // filtrer par manquement aux obligations scolaires
+}
+
+$_SESSION['abs2_type_extrait']=$type_extrait;
 
 //debug_var();
 
@@ -281,7 +292,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	<input type='checkbox' name='afficher_strictement_englobee' id='afficher_strictement_englobee' value='y' style='font-size:small;' onchange="maj_afficher_strictement_englobee()" <?php
 		if($afficher_strictement_englobee=="y") {echo "checked ";}
 	?>/><label for='afficher_strictement_englobee' style='font-size:small; font-variant: normal;'>Afficher les saisies englobées</label>
-	<input type='checkbox' name='type_extrait' id='type_extrait' value='1' style='font-size:small;' onchange="maj_afficher_strictement_englobee()" <?php
+	<input type='checkbox' name='type_extrait' id='type_extrait' value='1' style='font-size:small;' onchange="maj_type_extrait()" <?php
 		if($type_extrait!="") {echo "checked ";}
 	?>/><label for='type_extrait' style='font-size:small; font-variant: normal;'>N'afficher que les manquements à l'obligation de présence</label>
 
@@ -299,6 +310,8 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	<input type="hidden" name="date_absence_eleve_fin" value="<?php echo $finAnnee; ?>" />
 	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
 	<input type="hidden" name="afficher_strictement_englobee" id="afficher_strictement_englobee_annee" value="<?php echo $afficher_strictement_englobee;?>" />
+	<input type="hidden" name="date_absence_eleve_debut" value="<?php echo $debutAnnee; ?>" />
+	<input type="hidden" name="type_extrait" id="type_extrait_annee" value="<?php echo $type_extrait; ?>" />
   </p>
  <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="date">
 	  Année
@@ -320,6 +333,7 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
 	<input type="hidden" name="date_absence_eleve_fin" value="<?php echo $periode_note->getDateFin("d-m-Y"); ?>" />
 	<input type="hidden" name="visu_eleve_abs2_is_posted" value="y" />
 	<input type="hidden" name="afficher_strictement_englobee" id="afficher_strictement_englobee_p_<?php echo ($i+1);?>" value="<?php echo $afficher_strictement_englobee;?>" />
+	<input type="hidden" name="type_extrait" id="type_extrait_p_<?php echo ($i+1);?>" value="<?php echo $type_extrait; ?>" />
   </p>
  <button type="submit"  style="font-size:12px;" dojoType="dijit.form.Button" name="affichage" value="date">
 	  <?php echo $periode_note->getNomPeriode(); ?>
@@ -331,24 +345,41 @@ foreach($eleve->getPeriodeNotes() as $periode_note) {
   
 }
 $nb_per=$i;
+//echo "nb_per=$nb_per<br />";
 ?>
 
 <script type='text/javascript'>
 function maj_afficher_strictement_englobee() {
 	if(document.getElementById('afficher_strictement_englobee').checked==true) {
 		document.getElementById('afficher_strictement_englobee_annee').value='y';
-		for(j=1;j<<?php echo $nb_per;?>;j++) {
+		for(j=1;j<=<?php echo $nb_per;?>;j++) {
 			document.getElementById('afficher_strictement_englobee_p_'+j).value='y';
 		}
 	}
 	else {
 		document.getElementById('afficher_strictement_englobee_annee').value='n';
-		for(j=1;j<<?php echo $nb_per;?>;j++) {
+		for(j=1;j<=<?php echo $nb_per;?>;j++) {
 			document.getElementById('afficher_strictement_englobee_p_'+j).value='n';
 		}
 	}
 }
 maj_afficher_strictement_englobee();
+
+function maj_type_extrait() {
+	if(document.getElementById('type_extrait').checked==true) {
+		document.getElementById('type_extrait_annee').value='1';
+		for(j=1;j<=<?php echo $nb_per;?>;j++) {
+			document.getElementById('type_extrait_p_'+j).value='1';
+		}
+	}
+	else {
+		document.getElementById('type_extrait_annee').value='';
+		for(j=1;j<=<?php echo $nb_per;?>;j++) {
+			document.getElementById('type_extrait_p_'+j).value='';
+		}
+	}
+}
+maj_type_extrait();
 </script>
 
 

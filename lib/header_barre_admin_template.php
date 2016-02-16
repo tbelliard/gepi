@@ -83,7 +83,7 @@ include("menu_plugins.inc.php");
 		$menus .= '     <li><a href="'.$gepiPath.'/mod_serveur/test_serveur.php" '.insert_confirm_abandon().'>Config. serveur</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/droits_acces.php" '.insert_confirm_abandon().' title="Cette page permet de définir à quelles informations, à quels modules de Gepi,... les différents statuts (administrateur, scolarité, cpe, professeur, secours, élève, responsable, autre) ont droit d\'accéder.">Droits d\'accès</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/options_connect.php" '.insert_confirm_abandon().'>Options connexions</a></li>'."\n";
-		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().' title="Paramétrage de l\'interface simplifiée des professeurs et interfaces et dispositifs complémentaires pour les personnels (pas seulement professeurs).">Interface Profs</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/config_prefs.php" '.insert_confirm_abandon().' title="Paramétrage de l\'interface simplifiée des professeurs, parents, élèves et interfaces et dispositifs complémentaires pour les personnels.">Interfaces simplifiées et complémentaires</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_couleurs.php" '.insert_confirm_abandon().'>Couleurs</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_ordre_item.php" '.insert_confirm_abandon().'>Ordre des menus</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php" '.insert_confirm_abandon().'>Fiches Bienvenue</a></li>'."\n";
