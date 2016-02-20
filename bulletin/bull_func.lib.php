@@ -1706,12 +1706,32 @@ echo "</pre>";
 			//fwrite($fich,"\$tab_bull['note'][$j][$i]=".$tab_bull['note'][$j][$i]."\n");
 			$nb_matiere++;
 
+			// DEBUG 20160220
+			//echo "\$tab_bull['note'][$j][$i]=".$tab_bull['note'][$j][$i]."<br />";
+			//echo "\$tab_bull['groupe'][$j][\"matiere\"][\"categorie_id\"]=".$tab_bull['groupe'][$j]["matiere"]["categorie_id"]."<br />";
+			//echo "\$tab_bull['cat_id'][$j]=".$tab_bull['cat_id'][$j]."<br />";
+
+			// La catégorie associée à la matière dans Gestion des bases/Matières n'est pas forcément la catégorie associée pour telle classe à l'enseignement de la matière
+			// Dans Gestion des bases/Matières, on a la catégorie par défaut
+			// Dans Gestion des bases/Classes/<telle classe> Enseignements, on a la catégorie choisie pour la classe en particulier
+			/*
 			if(!in_array($tab_bull['groupe'][$j]["matiere"]["categorie_id"], $tab_bull['eleve'][$i]['cat_id'])) {
 				$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['groupe'][$j]["matiere"]["categorie_id"];
+			}
+			*/
+			if(!in_array($tab_bull['cat_id'][$j], $tab_bull['eleve'][$i]['cat_id'])) {
+				$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['cat_id'][$j];
 			}
 		}
 	}
 	$nb_categories_eleve_courant=count($tab_bull['eleve'][$i]['cat_id']);
+
+	// DEBUG 20160220
+	/*
+	echo "\$tab_bull['groupe'][0]<pre>";
+	print_r($tab_bull['groupe'][0]);
+	echo "</pre>";
+	*/
 
 	if(isset($tab_bull['eleve'][$i]['aid_b'])) {
 		$nb_matiere+=count($tab_bull['eleve'][$i]['aid_b']);
@@ -3483,6 +3503,14 @@ fclose($f);
 			//======================================================
 			fich_debug_bull("Apres les AID_B: \$Y_decal=$Y_decal\n");
 
+			//++++++++++++++++++++++++++++++
+			// DEBUG 20160220 categories de l eleve
+			/*
+			echo "\$tab_bull['eleve'][$i]['cat_id']<br /><pre>";
+			print_r($tab_bull['eleve'][$i]['cat_id']);
+			echo "</pre>";
+			*/
+			//++++++++++++++++++++++++++++++
 
 			// Compteur du nombre de matières dans la catégorie
 			$categorie_passe_count=0;
@@ -3753,6 +3781,9 @@ fclose($f);
 
 				//============================
 				// Modif: boireaus 20070828
+				//$Y_categ_cote=$Y_decal;
+				fich_debug_bull("\$tab_modele_pdf['active_regroupement_cote'][$classe_id]=".$tab_modele_pdf["active_regroupement_cote"][$classe_id]."\n");
+				fich_debug_bull("\$tab_modele_pdf['active_entete_regroupement'][$classe_id]=".$tab_modele_pdf["active_entete_regroupement"][$classe_id]."\n");
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1' or $tab_modele_pdf["active_entete_regroupement"][$classe_id]==='1') {
 					//if($matiere[$ident_eleve_aff][$id_periode][$m]['categorie']===$categorie_passe) {
 					/*
@@ -3772,6 +3803,7 @@ fclose($f);
 					*/
 					fich_debug_bull("\n");
 					fich_debug_bull("\$tab_bull['nom_cat_complet'][$m]=".$tab_bull['nom_cat_complet'][$m]."\n");
+					fich_debug_bull("\$tab_bull['cat_id'][$m]=".$tab_bull['cat_id'][$m]."\n");
 					fich_debug_bull("\$categorie_passe=$categorie_passe\n");
 
 					//if($tab_bull['nom_cat_complet'][$m]!=$categorie_passe) {
@@ -3781,6 +3813,7 @@ fclose($f);
 						$categorie_passe_count=0;
 
 						$Y_categ_cote=$Y_decal;
+						fich_debug_bull("\$Y_categ_cote=\$Y_decal=".$Y_decal."\n");
 					}
 					/*
 					else {
@@ -3883,6 +3916,8 @@ fclose($f);
 						$pdf->TextWithDirection($X_bloc_matiere-1,$placement,$text_s,'U');
 						$pdf->SetFont('DejaVu','',10);
 						$pdf->SetFillColor(0, 0, 0);
+
+						fich_debug_bull("On a écrit la catégorie sur le côté".$text_s."\n");
 					}
 				}
 
