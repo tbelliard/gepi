@@ -3841,10 +3841,11 @@ fclose($f);
 					$tab_bull['nom_cat_complet'][$m+1]='';
 				}
 
-// 20151129 A VOIR
 				if($tab_modele_pdf["active_regroupement_cote"][$classe_id]==='1') {
 					// On dessine/écrit la catégorie sur le côté quand la catégorie suivante change
-					if($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m+1] and $categorie_passe!='')
+					//if($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m+1] and $categorie_passe!='')
+					if(($tab_bull['nom_cat_complet'][$m]!=$tab_bull['nom_cat_complet'][$m+1])&&($categorie_passe!='')&&
+					(in_array($tab_bull['cat_id'][$m], $tab_bull['eleve'][$i]['cat_id'])))
 					{
 						//hauteur du regroupement hauteur des matier * nombre de matier de la catégorie
 						//$hauteur_regroupement=$espace_entre_matier*($categorie_passe_count+1);
@@ -3917,7 +3918,7 @@ fclose($f);
 						$pdf->SetFont('DejaVu','',10);
 						$pdf->SetFillColor(0, 0, 0);
 
-						fich_debug_bull("On a écrit la catégorie sur le côté".$text_s."\n");
+						fich_debug_bull("On a écrit la catégorie sur le côté ".$text_s."\n");
 					}
 				}
 
@@ -7028,7 +7029,7 @@ $pdf->Output($nom_releve,'I');
 function fich_debug_bull($texte){
 	$fichier_debug="/tmp/bulletin_pdf.txt";
 
-	// Passer la variable à "y" pour activer le remplissage du fichier de debug pour calcule_moyenne()
+	// Passer la variable à "y" pour activer le remplissage du fichier de debug
 	$local_debug="n";
 	if($local_debug=="y") {
 		$fich=fopen($fichier_debug,"a+");
