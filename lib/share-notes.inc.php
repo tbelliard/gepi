@@ -655,8 +655,11 @@ calcul_moy_med();
  * @param array $tab Tableau de notes à traiter
  * @return array Tableau de statistiques
  */
-function calcule_moy_mediane_quartiles($tab) {
+function calcule_moy_mediane_quartiles($tab, $note_sur=20) {
 	$tab2=array();
+
+	// 20160220
+	$note_moyenne=$note_sur/2;
 
 	/*
 	echo "<p>";
@@ -704,13 +707,13 @@ function calcule_moy_mediane_quartiles($tab) {
 		$max=max($tab2);
 
 		for($i=0;$i<count($tab2);$i++) {
-			if($tab2[$i]>=10) {
+			if($tab2[$i]>=$note_moyenne) {
 				if($tab_retour['supegal10']=="-") {
 					$tab_retour['supegal10']=0;
 				}
 				$tab_retour['supegal10']++;
 			}
-			elseif($tab2[$i]<10) {
+			elseif($tab2[$i]<$note_moyenne) {
 				if($tab_retour['inf10']=="-") {
 					$tab_retour['inf10']=0;
 				}
