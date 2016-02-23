@@ -1063,7 +1063,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 			$alt=1;
 			foreach($tab_sanction as $key => $value) {
 				$alt=$alt*(-1);
-				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".count($tab_sanction_non_effectuee[$key])."</td></tr>\n";
+				//$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".count($tab_sanction_non_effectuee[$key])."</td></tr>\n";
+				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".$tab_sanction_non_effectuee[$key]."</td></tr>\n";
 			}
 			$retour.="</table>\n";
 		}

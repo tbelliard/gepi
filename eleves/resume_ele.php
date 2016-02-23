@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -900,7 +900,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$html.="<p>Aucun(e) ".$mod_disc_terme_sanction." en qualité de responsable.</p>\n";
 	}
 
-	$html.="<p style='margin-top:1em;'><a href='#' onclick=\"afficher_div('div_disc_infobulle','y',-100,20);\">Voir en détail</a></p>";
+	$html.="<p style='margin-top:1em;'><a href='".$url_disc."' onclick=\"afficher_div('div_disc_infobulle','y',-100,20); return false;\">Voir en détail</a></p>";
 	/*
 	echo "<pre>";
 	print_r($tab_incidents_ele);
@@ -981,7 +981,7 @@ if($affichage_div_edt=="y") {
 	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>";
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		$html.="
-	<li><p>Si vous préférez ne pas utiliser cette page comme page d'accueil,<br />si vous préférez le menu classique, vous pouvez paramétrer ce choix dans <a href=''><img src='../images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p></li>";
+	<li><p>Si vous préférez ne pas utiliser cette page comme page d'accueil,<br />si vous préférez le menu classique, vous pouvez paramétrer ce choix dans <a href='../utilisateurs/mon_compte.php'><img src='../images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p></li>";
 	}
 	$html.="
 </ul>";
