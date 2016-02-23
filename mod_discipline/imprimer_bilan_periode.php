@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -298,7 +298,7 @@ if (isset($eleve)) {
    //les chemins contenant les données
    include_once("../mod_ooo/lib/chemin.inc.php");
    
-   $OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);	
+   $OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
    
    $OOo->MergeBlock('eleves',$tab_eleves_OOo);
    
@@ -321,7 +321,12 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if(getSettingAOui('active_mod_discipline')) {
+	echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
+else {
+	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+}
 
 if(!isset($periode)) {
 	// Choix de la (des?) période(s)
