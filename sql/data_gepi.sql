@@ -1289,3 +1289,8 @@ INSERT INTO droits SET id='/init_xml2/traite_xml_edt.php', administrateur='V', p
 INSERT INTO droits SET id='/mod_sso_table/traite_export_csv.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Export CSV', statut='';
 INSERT INTO droits SET id='/mod_sso_table/publipostage.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='SSO table : Publipostage', statut='';
 INSERT INTO droits SET id='/mod_ent/index_lea.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Rapprochement des comptes ENT/GEPI : ENT LEA', statut='';
+INSERT INTO setting SET name='active_mod_discipline', value='n';
+INSERT INTO setting SET name='commentaires_mod_disc_visible_eleve', value='no';
+INSERT INTO setting SET name='commentaires_mod_disc_visible_parent', value='no';
+INSERT INTO setting SET name='mod_disc_terme_avertissement_fin_periode', value='avertissement de fin de période';
+INSERT INTO setting SET name='mod_disc_acces_avertissements', value='n';
