@@ -709,10 +709,10 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 	$tab_mesure=array();
 	$zone_de_commentaire = "";
 	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
-	//echo "$sql<br />\n";
+	//$retour.="$sql<br />\n";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
-		$retour="<p class='bold'>Tableau des ".$mod_disc_terme_incident."s concernant ".p_nom($ele_login);
+		$retour.="<p class='bold'>Tableau des ".$mod_disc_terme_incident."s concernant ".p_nom($ele_login);
 		$retour.=$info_dates;
 		$retour.="</p>\n";
 		$retour.="<table class='boireaus' border='1' summary=\"Tableau des ".$mod_disc_terme_incident."s concernant $ele_login\">\n";
@@ -894,7 +894,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 						
 						//$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
 						$sql="SELECT * FROM s_sanctions s, s_types_sanctions2 sts WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' AND sts.id_nature=s.id_nature_sanction ORDER BY sts.nature;";
-						//echo "$sql<br />\n";
+						//$retour.="$sql<br />\n";
 						$res_suivi=mysqli_query($GLOBALS["mysqli"], $sql);
 						if(mysqli_num_rows($res_suivi)>0) {
 
@@ -939,6 +939,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 												$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]=1;
 											}
 										}
+										// 20160223
+										//$retour.="<span style='color:orange;'>\$tab_sanction_non_effectuee[".addslashes($lig_suivi->nature)."]=".$tab_sanction_non_effectuee[addslashes($lig_suivi->nature)]."</span><br />";
 									}
 								}
 
@@ -1055,6 +1057,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 		}
 		$retour.="</div>\n";
 
+		/*
+		// 20160223
+		echo "\$tab_sanction<pre>";
+		print_r($tab_sanction);
+		echo "</pre>";
+		echo "\$tab_sanction_non_effectuee<pre>";
+		print_r($tab_sanction_non_effectuee);
+		echo "</pre>";
+		*/
 		$retour.="<div style='float:left; width:33%;'>\n";
 		$retour.="<p style='font-weight: bold;'>".ucfirst($mod_disc_terme_sanction)."s</p>\n";
 		if(count($tab_sanction)>0) {
@@ -1063,6 +1074,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin, $restreindre
 			$alt=1;
 			foreach($tab_sanction as $key => $value) {
 				$alt=$alt*(-1);
+				// 20160223
 				//$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".count($tab_sanction_non_effectuee[$key])."</td></tr>\n";
 				$retour.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($value)."</td><td>".$tab_sanction_non_effectuee[$key]."</td></tr>\n";
 			}
