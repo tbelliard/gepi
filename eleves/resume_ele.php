@@ -811,7 +811,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$alt=1;
 		foreach($tab_sanctions_ele[$login_eleve] as $key => $tab) {
 			$alt=$alt*(-1);
-			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($tab['total'])."</td><td>".count($tab['non_effectuee'])."</td></tr>\n";
+			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($tab['total'])."</td><td>".$tab['non_effectuee']."</td></tr>\n";
 		}
 		$html.="</table>\n";
 	}
