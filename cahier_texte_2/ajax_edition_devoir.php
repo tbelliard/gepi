@@ -260,6 +260,8 @@ if(file_exists("./archives.php")) {
 
 echo "<a href=\"javascript:insere_texte_dans_ckeditor(document.getElementById('div_tableau_eleves').innerHTML)\" title='Insérer un tableau de la liste des élèves dans le texte de la notice'><img src='../images/icons/tableau.png' width='16' height='16' alt='Insérer un tableau de la liste des élèves dans le texte de la notice' /></a>";
 
+echo " <a href=\"#\" onclick=\"fen=window.open('../groupes/popup.php?id_groupe=".$groupe->getId()."&avec_icone_visu_ele=y','','width=400,height=400,menubar=yes,scrollbars=yes'); setTimeout('fen.focus()',500); return false;\" title='Afficher en popup la liste des élèves pour accéder aux fiches élèves (et vérifier par exemple les absences de tel élève,...)'><img src='../images/icons/ele_onglets.png' width='16' height='16' alt='Popup' /></a>";
+
 //echo "<br><br>\n";
 echo "<br />\n";
 // Retour aux notices d'aujourd'hui:
