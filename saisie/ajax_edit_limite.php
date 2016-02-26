@@ -44,7 +44,6 @@ if (!checkAccess()) {
     die();
 }
 
-
 // Ebauche de liste des variables reçues:
 // $choix_edit correspond au choix de ce qui doit être affiché:
 // Pour $choix_edit=1:
@@ -59,6 +58,8 @@ if (!checkAccess()) {
 // $choix_edit=4
 //    - Affichage du bulletin des avis sur la classe
 
+header('Content-Type: text/html; charset=utf-8');
+
 include "../lib/periodes.inc.php";
 include "../lib/bulletin_simple.inc.php";
 //include "../lib/bulletin_simple_bis.inc.php";
@@ -67,8 +68,6 @@ include "../lib/bulletin_simple.inc.php";
 include "../lib/bulletin_simple_classe.inc.php";
 //include "../lib/bulletin_simple_classe_bis.inc.php";
 //==============================
-
-header('Content-Type: text/html; charset=utf-8');
 
 //==============================
 // Dans le cas d'un appel via ajax, on ne met pas de header: affichage dans une infobulle
