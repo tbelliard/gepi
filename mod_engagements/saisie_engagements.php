@@ -366,6 +366,19 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 		die();
 	}
 
+	$gepi_prof_suivi=ucfirst(getSettingValue('gepi_prof_suivi'));
+	$tab_liste_pp=array();
+	$tab_pp=get_tab_prof_suivi();
+	foreach($tab_pp as $current_id_classe => $tab_pp_classe) {
+		$tab_liste_pp[$current_id_classe]="";
+		for($loop=0;$loop<count($tab_pp_classe);$loop++) {
+			if($loop>0) {
+				$tab_liste_pp[$current_id_classe].=", ";
+			}
+			$tab_liste_pp[$current_id_classe].=affiche_utilisateur($tab_pp_classe[$loop] ,$current_id_classe);
+		}
+	}
+
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
@@ -386,7 +399,11 @@ if((!isset($id_classe))||($engagement_statut=="")) {
 			echo "<td align='left'>\n";
 		}
 
-		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe</label>";
+		echo "<label id='label_tab_id_classe_$cpt' for='tab_id_classe_$cpt' style='cursor: pointer;'><input type='checkbox' name='id_classe[]' id='tab_id_classe_$cpt' value='$lig_clas->id' onchange='change_style_classe($cpt)' /> $lig_clas->classe";
+		if((isset($tab_liste_pp[$lig_clas->id]))&&($tab_liste_pp[$lig_clas->id]!="")) {
+			echo "<span style='font-size:xx-small' title=\"$gepi_prof_suivi\"> &nbsp;&nbsp;&nbsp;(".$tab_liste_pp[$lig_clas->id].")</span>";
+		}
+		echo "</label>";
 		echo "<br />\n";
 		$cpt++;
 	}

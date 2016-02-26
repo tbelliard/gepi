@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -24,6 +24,7 @@
 @set_time_limit(0);
 
 // Initialisations files
+require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
 // Resume session
@@ -380,6 +381,8 @@ $hauteur_div_sous_bandeau=20;
 // class='infobulle_corps'
 //=================================
 
+//echo "display_date=$display_date<br />";
+
 //=================================
 // Cadre EDT ou choix de la date à gauche
 if(((($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable'))&&((getSettingAOui('autorise_edt_eleve'))||(getSettingAOui('autorise_edt2_eleve'))))||
@@ -707,12 +710,93 @@ if((getSettingValue('active_module_absence')==2)&&(acces_abs_eleve($_SESSION['lo
 
 	$html.="<div style='font-weight:bold; font-size: large;' class='fieldset_opacite50'>Absences</div>";
 
-	$html.="<p style='color:red'>Extraction des absences, dans cette page, non encore implémentée.<br />Passez par le menu 'Accueil'";
-	if($url_abs!="") {
-		$html.="<br />ou par le lien <a href='$url_abs' title=\"Consulter le module Absences\"><img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /></a>";
+	$html.="<p class='bold' style='margin-top:1em;'>Journée du $display_date</p>";
+
+	$html_tab_abs="
+	<div style='margin-left:2em;'>
+	<table class='boireaus boireaus_alt'>";
+	//$query = EleveQuery::create();
+	//$eleve = $query->filterByLogin($login_eleve);
+	$eleve = EleveQuery::create()->findOneByLogin($login_eleve);
+
+	$creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+	$dt_date_absence_eleve = new DateTime(str_replace("/", ".", $display_date));
+
+	$nb_manquements_a_afficher=0;
+	foreach ($creneau_col as $creneau) {
+		if($creneau->getTypeCreneaux()=="cours") {
+			$bg="silver";
+		}
+		else {
+			$bg="gray";
+		}
+		$html_tab_abs.="
+		<tr>
+			<th style='border: 1px solid black; background-color: $bg;' title='De ".preg_replace("/:[0-9]*$/","",$creneau->getHeuredebutDefiniePeriode())." à ".preg_replace("/:[0-9]*$/","",$creneau->getHeurefinDefiniePeriode())."'>".$creneau->getNomDefiniePeriode()."</th>";
+
+		$abs_col = $eleve->getAbsenceEleveSaisiesDecompteDemiJourneesDuCreneau($creneau, $dt_date_absence_eleve);
+		$tab_heure = explode(":", $creneau->getHeuredebutDefiniePeriode());
+		$date_actuelle_heure_creneau = clone $dt_date_absence_eleve;
+		$date_actuelle_heure_creneau->setTime($tab_heure[0], $tab_heure[1], $tab_heure[2]);
+		if ((($abs_col->isEmpty())&&($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty())) || !EdtHelper::isEtablissementOuvert($date_actuelle_heure_creneau)) {
+			$html_tab_abs.="
+			<td style='width:3em;'> </td>";
+		} else {
+			$nb_manquements_a_afficher++;
+
+			$priorite = 5;
+			$current_minus_4 = new DateTime();
+			$current_minus_4->modify('-4 hours');
+				foreach ($abs_col as $abs) {
+				if (($abs->getTraitee() || $abs->getCreatedAt(null) < $current_minus_4) && get_priorite($abs) < $priorite) {
+					$priorite = get_priorite($abs);
+				}
+			}
+
+			if(!$eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve)->isEmpty()) {
+				foreach ($eleve->getRetardsDuCreneau($creneau, $dt_date_absence_eleve) as $ret) {
+					if (($ret->getTraitee() || $ret->getCreatedAt(null) < $current_minus_4) && get_priorite($ret) < $priorite) {
+						$priorite = get_priorite($ret);
+					}
+				}
+			}
+
+			switch ($priorite) {
+				case 1:
+					$html_tab_abs.='
+			<td style="background:aqua; width:3em;" title="Retard justifié">RJ</td>';
+				break;
+				case 2:
+					$html_tab_abs.='
+			<td style="background:blue; width:3em;" title="Absence justifiée">J</td>';
+				break;
+				case 3:
+					$html_tab_abs.='
+			<td style="background:fuchsia; width:3em;" title="Retard non justifié">RNJ</td>';
+				break;
+				case 4:
+					$html_tab_abs.='
+			<td style="background:red; width:3em;" title="Absence non justifiée">NJ</td>';
+				break;
+			}
+		}
+
+		$html_tab_abs.="
+		</tr>";
 	}
-	$html.="<br />L'objectif à terme est d'afficher ici, juste les absences/retards du jour sélectionné... ou de la semaine en cours... ou des 7 derniers jours.";
-	$html.="</p>";
+	$html_tab_abs.="
+		</tr>
+	</table>
+	</div>";
+
+	if($nb_manquements_a_afficher>0) {
+		$html.=$html_tab_abs;
+	}
+	else {
+		$html.="<p>Aucun manquement n'est enregistré pour le $display_date.</p>";
+	}
+
+	$html.="<p style='margin-top:1em'><a href='$url_abs'>Voir toutes les absences et retards</a>.</p>";
 
 	echo "
 <div id='div_abs' style='float:left; width:".$largeur_abs."px; min-height:".($y1+5)."px; margin-right:".$marge_droite."px; margin-bottom:".$marge_droite."px; border:1px solid black; padding: 5px; background-color:".$tab_couleur_onglet['absences'].";'>".$html."</div>";
@@ -808,7 +892,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$alt=1;
 		foreach($tab_sanctions_ele[$login_eleve] as $key => $tab) {
 			$alt=$alt*(-1);
-			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($tab['total'])."</td><td>".count($tab['non_effectuee'])."</td></tr>\n";
+			$html.="<tr class='lig$alt'><td>".stripslashes($key)."</td><td>".stripslashes($tab['total'])."</td><td>".$tab['non_effectuee']."</td></tr>\n";
 		}
 		$html.="</table>\n";
 	}
@@ -816,7 +900,7 @@ if((getSettingAOui('active_mod_discipline'))&&(acces_incidents_disc_eleve($_SESS
 		$html.="<p>Aucun(e) ".$mod_disc_terme_sanction." en qualité de responsable.</p>\n";
 	}
 
-	$html.="<p style='margin-top:1em;'><a href='#' onclick=\"afficher_div('div_disc_infobulle','y',-100,20);\">Voir en détail</a></p>";
+	$html.="<p style='margin-top:1em;'><a href='".$url_disc."' onclick=\"afficher_div('div_disc_infobulle','y',-100,20); return false;\">Voir en détail</a></p>";
 	/*
 	echo "<pre>";
 	print_r($tab_incidents_ele);
@@ -897,7 +981,7 @@ if($affichage_div_edt=="y") {
 	<li><p>Les images <img src='../images/icons/chercher.png' class='icone16' alt='Tout voir' /> en haut à droite dans les cadres affichés permettent d'accéder au module complet.</p></li>";
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		$html.="
-	<li><p>Si vous préférez ne pas utiliser cette page comme page d'accueil,<br />si vous préférez le menu classique, vous pouvez paramétrer ce choix dans <a href=''><img src='../images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p></li>";
+	<li><p>Si vous préférez ne pas utiliser cette page comme page d'accueil,<br />si vous préférez le menu classique, vous pouvez paramétrer ce choix dans <a href='../utilisateurs/mon_compte.php'><img src='../images/icons/buddy.png' class='icone16' alt='Mon compte' /> Gérer mon compte</a></p></li>";
 	}
 	$html.="
 </ul>";

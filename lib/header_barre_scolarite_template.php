@@ -325,6 +325,15 @@ Elles peuvent évoluer avec l\'ajout de notes, la modification de coefficients,.
 		$menus .= '                <li><a href="'.$gepiPath.'/responsables/index.php"'.insert_confirm_abandon().'>Gestion responsables</a></li>'."\n";
 		//$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import2.php"'.insert_confirm_abandon().'>Mise à jour Sconet</a></li>'."\n";
 		$menus .= '                <li><a href="'.$gepiPath.'/classes/acces_appreciations.php"'.insert_confirm_abandon().'>Accès appréciations</a></li>'."\n";
+
+		$menus .= '                <li><a href="'.$gepiPath.'/responsables/infos_parents.php" title="Extraire les informations parents/élèves au format CSV.">Infos ele/resp</a></li>'."\n";
+
+		$sql="SELECT 1=1 FROM utilisateurs WHERE statut='responsable';";
+		$test_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_resp)>0) {
+			$menus .= '                <li><a href="'.$gepiPath.'/responsables/synchro_mail.php" title="Les responsables peuvent avoir un mail défini dans Siècle/Sconet et un autre saisi par l\'utilisateur parent se connectant dans Gepi.">Synchro mail</a>'."\n";
+		}
+
 		$menus .= '            </ul>'."\n";
 		$menus .= '       </li>'."\n";
 		$menus .= '       <li><a href="'.$gepiPath.'/messagerie/index.php"'.insert_confirm_abandon().' title="Le Panneau d\'affichage permet de faire apparaître en page d\'accueil des messages destinés à certains utilisateurs ou catégories d\'utilisateurs à compter d\'une date à choisir et pour une durée à choisir également.">Panneau d\'affichage</a></li>'."\n";

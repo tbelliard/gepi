@@ -114,24 +114,6 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 
-//renvoi la priorite d'affichage : 1:Retard Justifie ; 2 Absence Justifiee ; 3 Retard Non justifé ; 4 Absence non justifiée
-function get_priorite($abs) {
-  if ($abs->getJustifiee()) {
-    if ($abs->getRetard()) {
-      $priorite = 1;
-    } else {
-      $priorite = 2;
-    }
-  } else {
-    if ($abs->getRetard()) {
-      $priorite = 3;
-    } else {
-      $priorite = 4;
-    }
-  }
-  return($priorite);
-}
-
 //On verifie que l'absence est un manquement et n'est pas incluse dans des crenaux fermes(mercredi après midi par exemple)
 function isAffichable($abs, $date, $eleve) {
   $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();

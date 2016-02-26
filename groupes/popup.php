@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -47,6 +47,9 @@ $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 $periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
 
 $avec_details=isset($_GET['avec_details']) ? $_GET['avec_details'] : "n";
+
+$avec_icone_visu_ele=isset($_POST['avec_icone_visu_ele']) ? $_POST['avec_icone_visu_ele'] : (isset($_GET['avec_icone_visu_ele']) ? $_GET['avec_icone_visu_ele'] : (isset($_SESSION['popup_avec_icone_visu_ele']) ? $_SESSION['popup_avec_icone_visu_ele'] : "n"));
+$_SESSION['popup_avec_icone_visu_ele']=$avec_icone_visu_ele;
 
 $msg="";
 
@@ -353,6 +356,8 @@ if($gepi_prof_suivi==""){
 	//echo "<p>".urldecode($_GET['chaine'])."</p>\n";
 	//echo "<p>".rawurldecode($_GET['chaine'])."</p>";
 
+	//echo "periode_num=$periode_num<br />";
+
 	if(acces("/groupes/get_csv.php", $_SESSION['statut'])) {
 		if(preg_match("/^[0-9]*$/", $id_groupe)) {
 			echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='../groupes/get_csv.php?id_groupe=$id_groupe";
@@ -406,6 +411,15 @@ if($gepi_prof_suivi==""){
 				$alt=$alt*(-1);
 				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
+
+				if($avec_icone_visu_ele=="y") {
+					echo "
+	<div style='float:left; width:16px' class='noprint'>
+		<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.'>
+			<img src='../images/icons/ele_onglets.png' class='icone16' alt='Visu_ele' />
+		</a>
+	</div>";
+				}
 
 				if($lig_eleve->email!=""){
 					echo "
@@ -511,8 +525,18 @@ if($gepi_prof_suivi==""){
 			$alt=1;
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
-                echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				echo "<tr valign='top' class='lig$alt white_hover'>\n";
 				echo "<td>\n";
+
+				if($avec_icone_visu_ele=="y") {
+					echo "
+	<div style='float:left; width:16px' class='noprint'>
+		<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.'>
+			<img src='../images/icons/ele_onglets.png' class='icone16' alt='Visu_ele' />
+		</a>
+	</div>";
+				}
+
 				if($lig_eleve->email!=""){
 					echo "
 	<div style='float:right; width:16px' class='noprint'>
@@ -629,6 +653,16 @@ if($gepi_prof_suivi==""){
 			while($lig_eleve=mysqli_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt white_hover'><td>";
+
+				if($avec_icone_visu_ele=="y") {
+					echo "
+	<div style='float:left; width:16px' class='noprint'>
+		<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y' title='Accéder à la consultation élève.'>
+			<img src='../images/icons/ele_onglets.png' class='icone16' alt='Visu_ele' />
+		</a>
+	</div>";
+				}
+
 				if($lig_eleve->email!=""){
 					echo "
 	<div style='float:right; width:16px' class='noprint'>

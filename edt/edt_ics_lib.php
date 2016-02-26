@@ -1589,12 +1589,15 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 	$html="";
 
 	$url_cdt="";
+	$url_cdt_prefixe="";
 	if($_SESSION['statut']=="responsable") {
 		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
 		//https://127.0.0.1/steph/gepi_git_trunk/cahier_texte_2/see_all.php?&year=2014&month=11&day=20&login_eleve=XXXXX&id_groupe=Toutes_matieres
+		$url_cdt_prefixe="../cahier_texte/consultation.php?login_eleve=".$login_eleve;
 	}
 	elseif($_SESSION['statut']=="eleve") {
 		$url_cdt="../cahier_texte/consultation.php?year=".strftime("%Y", $ts_display_date)."&month=".strftime("%m", $ts_display_date)."&day=".strftime("%d", $ts_display_date)."&login_eleve=".$login_eleve;
+		$url_cdt_prefixe="../cahier_texte/consultation.php?login_eleve=".$login_eleve;
 	}
 	elseif($_SESSION['statut']=="professeur") {
 		if (getSettingValue("GepiCahierTexteVersion") == '2') {
@@ -1707,7 +1710,13 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				}
 
 				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
-				$html.="<span title=\"Pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
+					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
+				}
+				else {
+					$html.="<span title=\"Travail à faire pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				}
+				//$html.="<span title=\"Pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
 				if($lig->special=="controle") {
 					$html.="<img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le $date_courante\" />";
 				}
@@ -1738,6 +1747,11 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				$temoin_travail_fait_ou_non="<div id='div_etat_travail_".$lig->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$login_eleve."', '".$lig->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 			}
 
+			$lien_cdt_tel_enseignement="";
+			if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
+				$lien_cdt_tel_enseignement="<div style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Voir le cahier de textes de cet enseignement.\"><img src='../images/icons/chercher.png' class='icone16' /></a></div>\n";
+			}
+
 			$temoin_controle="";
 			if($lig->special=="controle") {
 				$temoin_controle="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" /></div>";
@@ -1747,6 +1761,7 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 			$html.="
 		<div style='border:1px solid black; margin:3px; background-color:".$tab_couleur_matiere[$tab_group_edt[$lig->id_groupe]['matiere']['matiere']].";' class='fieldset_opacite50'>
 		<div id='div_travail_".$lig->id_ct."' style='padding:2px;' class='$class_color_fond_notice'>".$temoin_travail_fait_ou_non."
+			".$lien_cdt_tel_enseignement."
 			".$temoin_controle."
 			<p class=\"bold\">".$current_matiere_cdt."</p>
 			".$lig->contenu."
@@ -1801,7 +1816,12 @@ function travaux_a_faire_cdt_jour($login_eleve, $id_classe) {
 				}
 
 				$date_courante=strftime("%A %d/%m/%Y", $lig->date_ct);
-				$html.="<span title=\"Pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				if(($url_cdt_prefixe!="")&&($lig->id_groupe!="")&&($lig->id_groupe!=0)) {
+					$html.="<a href=\"".$url_cdt_prefixe."&id_groupe=".$lig->id_groupe."\" title=\"Travail à faire pour le ".$date_courante.".\n\nCliquer pour voir le cahier de textes de cet enseignement.\">".$current_matiere_cdt."</a>";
+				}
+				else {
+					$html.="<span title=\"Travail à faire pour le ".$date_courante."\">".$current_matiere_cdt."</span>";
+				}
 				if($lig->special=="controle") {
 					$html.="<img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le $date_courante\" />";
 				}

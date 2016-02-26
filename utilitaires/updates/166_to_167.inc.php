@@ -181,4 +181,20 @@ if ($query) {
 	$result .= msj_erreur();
 }
 
+$tmp_tab_setting1=array('active_mod_discipline', 'commentaires_mod_disc_visible_eleve', 'commentaires_mod_disc_visible_parent', 'mod_disc_terme_avertissement_fin_periode', 'mod_disc_acces_avertissements');
+$tmp_tab_setting2=array('n', 'no', 'no', 'avertissement de fin de période', 'n');
+for($loop=0;$loop<count($tmp_tab_setting1);$loop++) {
+	//$result.="Test ".$tmp_tab_setting1[$loop]."<br />";
+	$tmp_val=getSettingValue($tmp_tab_setting1[$loop]);
+	if($tmp_val=="") {
+		$result.="Initialisation de la valeur de ".$tmp_tab_setting1[$loop]." : ";
+		if(saveSetting($tmp_tab_setting1[$loop], $tmp_tab_setting2[$loop])) {
+			$result .= msj_ok("Ok !");
+		} else {
+			$result .= msj_erreur();
+		}
+		$result.="<br />";
+	}
+}
+
 ?>

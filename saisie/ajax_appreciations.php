@@ -54,6 +54,7 @@ if(isset($_SESSION['login'])) {
 // Le check_token doit être à false parce qu'il va se produire sans charger une nouvelle page, avec un header HTML déjà transmis
 check_token(false);
 
+$header_http_envoye=0;
 log_ajax_app("Test check_token() depasse.");
 
 //echo "C";
@@ -163,12 +164,22 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					log_ajax_app($sql);
 					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 					$insertion_ou_maj_tempo="n";
+
 					// Pour effacer le spinner
+					if($header_http_envoye==0) {
+						header("HTTP/1.0 200 OK");
+						$header_http_envoye++;
+					}
 					echo "";
 				}
 			}
 	
 			if($insertion_ou_maj_tempo=="y") {
+				if($header_http_envoye==0) {
+					header("HTTP/1.0 200 OK");
+					$header_http_envoye++;
+				}
+
 				// On vérifie si cette appréciation existe déjà ou non
 				$verif_appreciation = mysqli_query($GLOBALS["mysqli"], "SELECT appreciation FROM matieres_appreciations_tempo WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."'");
 				// Si elle existe, on la met à jour
@@ -211,12 +222,21 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 
 	if(getSettingValue('active_recherche_lapsus')=='n') {
 		// on renvoie une réponse valide
-		header("HTTP/1.0 200 OK");
+		if($header_http_envoye==0) {
+			header("HTTP/1.0 200 OK");
+			$header_http_envoye++;
+		}
 		echo ' ';
 	}
 	else {
 		// Vérification des fautes de frappe/lapsus que l'on saisisse une appréciation ou un avis du conseil de classe
 		//if($mode=='verif') {
+
+			if($header_http_envoye==0) {
+				header("HTTP/1.0 200 OK");
+				$header_http_envoye++;
+			}
+
 			$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 				terme VARCHAR(255) NOT NULL DEFAULT '',
 				terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
@@ -262,13 +282,13 @@ if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='secours') || ($
 					}
 					else {
 						// et on renvoie une réponse valide
-						header("HTTP/1.0 200 OK");
+						//header("HTTP/1.0 200 OK");
 						echo ' ';
 					}
 				}
 				else {
 					// et on renvoie une réponse valide
-					header("HTTP/1.0 200 OK");
+					//header("HTTP/1.0 200 OK");
 					echo ' ';
 				}
 			}

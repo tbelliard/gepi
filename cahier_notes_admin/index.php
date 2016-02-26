@@ -128,8 +128,10 @@ if(isset($_POST['is_posted'])) {
   	if (isset($_POST['sacoche_base'])) {
 		saveSetting("sacoche_base", $_POST['sacoche_base']);
 	}
-		
-	
+
+  	if (isset($_POST['cn_affiche_date_fin_periode'])) {
+		saveSetting("cn_affiche_date_fin_periode", $_POST['cn_affiche_date_fin_periode']);
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')){

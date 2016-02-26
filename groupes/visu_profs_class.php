@@ -1,7 +1,7 @@
 <?php
 /*
 *
-*  Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*  Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -267,35 +267,36 @@ if((isset($_GET['export_prof_suivi']))&&(isset($export))&&($export=='csv')) {
 	$msg="";
 
 	if($_SESSION['statut']=='scolarite'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	if($_SESSION['statut']=='professeur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	}
 	if($_SESSION['statut']=='cpe'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	if($_SESSION['statut']=='administrateur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_classes = mysqli_num_rows($result_classes);
 	$tab_classe=array();
+	$tab_suivi_par=array();
 	if(mysqli_num_rows($result_classes)==0){
 		$msg="<p>Il semble qu'aucune classe n'ait encore été créée...<br />... ou alors aucune classe ne vous a été attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
 	}
@@ -303,16 +304,17 @@ if((isset($_GET['export_prof_suivi']))&&(isset($export))&&($export=='csv')) {
 		$nb_classes=mysqli_num_rows($result_classes);
 		while($lig_class=mysqli_fetch_object($result_classes)){
 			$tab_classe[$lig_class->id]=$lig_class->classe;
+			$tab_suivi_par[$lig_class->id]=$lig_class->suivi_par;
 		}
 
 		$pp=ucfirst(getSettingValue('gepi_prof_suivi'));
-		$csv="Classe;".$pp.";Mails;\r\n";
+		$csv="Classe;".$pp.";Mails;Classe suivie par;\r\n";
 
 		$tab_pp=get_tab_prof_suivi();
 		foreach($tab_classe as $current_id_classe => $current_classe) {
 			if(isset($tab_pp[$current_id_classe])) {
 				for($loop=0;$loop<count($tab_pp[$current_id_classe]);$loop++) {
-					$csv.=$current_classe.";".civ_nom_prenom($tab_pp[$current_id_classe][$loop]).";".get_mail_user($tab_pp[$current_id_classe][$loop]).";\r\n";
+					$csv.=$current_classe.";".civ_nom_prenom($tab_pp[$current_id_classe][$loop]).";".get_mail_user($tab_pp[$current_id_classe][$loop]).";".$tab_suivi_par[$current_id_classe].";\r\n";
 				}
 			}
 		}
@@ -346,30 +348,30 @@ if(isset($id_classe)){
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
 		if($_SESSION['statut']=='scolarite'){
 			//$sql="SELECT id,classe FROM classes ORDER BY classe";
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
 		if($_SESSION['statut']=='professeur'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 		}
 		if($_SESSION['statut']=='cpe'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 		}
 		if($_SESSION['statut']=='administrateur'){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 		}
 
 		if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 		}
 		if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 		}
 		if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 		}
 
 		if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
-			$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+			$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 		}
 
 		$chaine_options_classes="";
@@ -447,6 +449,11 @@ if(isset($id_classe)){
 		echo "<h3>Equipe pédagogique de la classe de ".$classe["classe"]." <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;export=csv' class='noprint' title=\"Exporter l'équipe au format CSV (tableur)\" target='_blank'><img src='../images/icons/csv.png' class='icone16' alt='CSV' /></a>";
 		echo "<span id='span_mail'></span>";
 		echo "</h3>\n";
+
+		$suivi_par=get_valeur_champ("classes", "id='$id_classe'", "suivi_par");
+		if($suivi_par!="") {
+			echo "<p>Classe suivie par&nbsp: $suivi_par</p>";
+		}
 
 		echo "<script type='text/javascript' language='JavaScript'>
 	var fen;
@@ -680,30 +687,30 @@ else {
 	//$sql="SELECT id,classe FROM classes ORDER BY classe";
 	if($_SESSION['statut']=='scolarite'){
 		//$sql="SELECT id,classe FROM classes ORDER BY classe";
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c, j_scol_classes jsc WHERE jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
 	if($_SESSION['statut']=='professeur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_groupes_classes jgc,j_groupes_professeurs jgp WHERE jgp.login = '".$_SESSION['login']."' AND jgc.id_groupe=jgp.id_groupe AND jgc.id_classe=c.id ORDER BY c.classe";
 	}
 	if($_SESSION['statut']=='cpe'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.cpe_login = '".$_SESSION['login']."' AND jec.e_login=jecl.login AND jecl.id_classe=c.id ORDER BY c.classe";
 	}
 	if($_SESSION['statut']=='administrateur'){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	if(($_SESSION['statut']=='scolarite')&&(getSettingValue("GepiAccesVisuToutesEquipScol") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 	if(($_SESSION['statut']=='cpe')&&(getSettingValue("GepiAccesVisuToutesEquipCpe") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 	if(($_SESSION['statut']=='professeur')&&(getSettingValue("GepiAccesVisuToutesEquipProf") =="yes")){
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	if(($_SESSION['statut']=='autre')&&(acces('/groupes/visu_profs_class.php', 'autre'))) {
-		$sql="SELECT DISTINCT c.id,c.classe FROM classes c ORDER BY c.classe";
+		$sql="SELECT DISTINCT c.id,c.classe, c.suivi_par FROM classes c ORDER BY c.classe";
 	}
 
 	$result_classes=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -724,19 +731,20 @@ else {
 	else{
 		$nb_classes=mysqli_num_rows($result_classes);
 		$nb_class_par_colonne=round($nb_classes/3);
+		$percent_colonne=floor(100/3);
 		echo "<table width='100%' summary='Choix de la classe'>\n";
 		echo "<tr valign='top' align='center'>\n";
 		$cpt=0;
 		//echo "<td style='padding: 0 10px 0 10px'>\n";
-		echo "<td>\n";
+		echo "<td width='33%'>\n";
 		while($lig_class=mysqli_fetch_object($result_classes)){
 			if(($cpt>0)&&(round($cpt/$nb_class_par_colonne)==$cpt/$nb_class_par_colonne)){
 				echo "</td>\n";
 				//echo "<td style='padding: 0 10px 0 10px'>\n";
-				echo "<td>\n";
+				echo "<td width='$percent_colonne%'>\n";
 			}
 			//echo "<option value='$lig_class->id'>" . htmlspecialchars("$lig_class->classe") . "</option>\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id".$ajout_href_2."'>".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$lig_class->id".$ajout_href_2."' title=\"Classe suivie par ".$lig_class->suivi_par."\" onmouseover=\"this.style.fontWeight='bold';this.style.fontSize='x-large'\" onmouseout=\"this.style.fontWeight='normal';this.style.fontSize='medium'\">".htmlspecialchars("$lig_class->classe") . "</a><br />\n";
 			$tab_classe[$lig_class->id]=$lig_class->classe;
 			$cpt++;
 		}

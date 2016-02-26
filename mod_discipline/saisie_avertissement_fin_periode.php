@@ -263,7 +263,7 @@ if((isset($periode))&&(isset($login_ele))) {
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_saisie_avt'>
 	<fieldset class='fieldset_opacite50'>".$lien_suppl."
-		<p class='bold'>Saisie d'$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
+		<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
 		<input type='hidden' name='periode' value='$periode' />
@@ -333,7 +333,7 @@ else {
 		echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>";
 		echo "</p>
 
-		<p class='bold'>Saisie d'".$mod_disc_terme_avertissement_fin_periode." pour ".get_nom_prenom_eleve($login_ele)."</p>
+		<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode." pour ".get_nom_prenom_eleve($login_ele)."</p>
 
 		<p style='margin-left:4em; text-indent:-2em;'>Choix de la période&nbsp;:<br />";
 
@@ -382,7 +382,7 @@ else {
 		}
 		else {
 			echo "
-<p style='color:red'>Vous n'avez pas accès à la saisie d'".$mod_disc_terme_avertissement_fin_periode.".</p>";
+<p style='color:red'>Vous n'avez pas accès à la saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode.".</p>";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -452,7 +452,7 @@ else {
 
 			echo "</p>
 
-			<p class='bold'>Saisie d'".$mod_disc_terme_avertissement_fin_periode." pour la classe de ".$nom_classe;
+			<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode." pour la classe de ".$nom_classe;
 
 			echo "</p>
 			<p style='margin-left:4em; text-indent:-2em;'>Choix de la période&nbsp;:<br />";

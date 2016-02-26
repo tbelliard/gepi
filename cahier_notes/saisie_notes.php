@@ -1831,6 +1831,8 @@ $i = 0;
 $pointer = 0;
 $tot_data_pdf = 1;
 $tab_ele_notes=array();
+// 20160222
+$tab_note_sur=array();
 // 20151024
 //$nombre_lignes = count($current_group["eleves"][$periode_num]["list"]);
 $nombre_lignes = count($liste_eleves);
@@ -1886,6 +1888,10 @@ while($i < $nombre_lignes) {
 		if (($id_devoir==0) or ($id_dev[$k] == $id_devoir)) {
 			echo $mess_note[$i][$k];
 			$tab_ele_notes[$i][]=$mess_note_pdf[$i][$k];
+
+			// 20160221: Récupérer l'indice courant avec count($tab_ele_notes[$i]);
+			$tab_note_sur[count($tab_ele_notes[$i])-1]=$note_sur[$k];
+
 			$data_pdf[$pointer][] = $mess_note_pdf[$i][$k];
 			if ((($nocomment[$k]!='yes') and ($_SESSION['affiche_comment'] == 'yes')) or ($id_dev[$k] == $id_devoir)) {
 				echo $mess_comment[$i][$k];
@@ -2191,9 +2197,39 @@ for($i=0;$i<count($tab_ele_notes);$i++) {
 		$tab_col_note[$j][$i]=$tab_ele_notes[$i][$j];
 	}
 }
+/*
+echo "<div style='float:left;width:300px;'>";
+echo "\$note_sur<pre>";
+print_r($note_sur);
+echo "</pre>";
+echo "</div>";
 
+echo "<div style='float:left;width:300px;'>";
+echo "\$tab_col_note<pre>";
+print_r($tab_col_note);
+echo "</pre>";
+echo "</div>";
+
+echo "<div style='float:left;width:300px;'>";
+echo "\$tab_note_sur<pre>";
+print_r($tab_note_sur);
+echo "</pre>";
+echo "</div>";
+
+echo "<div style='clear:both;'></div>";
+*/
+$tmp_tab_note_sur=array();
 for($i=0;$i<count($tab_col_note);$i++) {
-	$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i]);
+	// 20160220
+	if(isset($tab_note_sur[$i])) {
+		$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i], $tab_note_sur[$i]);
+		if(!in_array($tab_note_sur[$i], $tmp_tab_note_sur)) {
+			$tmp_tab_note_sur[]=$tab_note_sur[$i];
+		}
+	}
+	else {
+		$tab_m[$i]=calcule_moy_mediane_quartiles($tab_col_note[$i]);
+	}
 }
 
 if(getPref($_SESSION['login'], 'cn_avec_min_max', 'y')=='y') {
@@ -2276,12 +2312,24 @@ if(getPref($_SESSION['login'], 'cn_avec_mediane_q1_q3', 'y')=='y') {
 	echo "</tr>\n";
 }
 
+$temoin_remarque_nb_notes_sup_10_autre_referentiel=0;
 if(getPref($_SESSION['login'], 'cn_avec_sup10', 'y')=='y') {
 	$tot_data_pdf++;
 	echo "<tr>\n";
 
-	$data_pdf[$tot_data_pdf][]='Nb.notes≥10 :';
-	echo "<td class='cn bold'><b>Nb.notes&ge;10&nbsp;:</b></td>\n";
+	if(count($tab_note_sur)==1) {
+		$data_pdf[$tot_data_pdf][]='Nb.notes≥'.($tmp_tab_note_sur[0]/2).' :';
+		echo "<td class='cn bold'><b>Nb.notes&ge;".($tmp_tab_note_sur[0]/2)."&nbsp;:</b></td>\n";
+	}
+	elseif(count($tmp_tab_note_sur)>1) {
+		$data_pdf[$tot_data_pdf][]='Nb.notes≥10 (*) :';
+		echo "<td class='cn bold' title=\"Nombre de notes supérieures ou égales à la note moitié du référentiel.\nCe sera le plus souvent 10, mais pour un référentiel sur 30, on comptera les notes supérieures ou égales à 15.\"><b>Nb.notes&ge;10 (**)&nbsp;:</b></td>\n";
+		$temoin_remarque_nb_notes_sup_10_autre_referentiel++;
+	}
+	else {
+		$data_pdf[$tot_data_pdf][]='Nb.notes≥10 :';
+		echo "<td class='cn bold'><b>Nb.notes&ge;10&nbsp;:</b></td>\n";
+	}
 	if ($multiclasses) {
 		echo "<td class='cn bold'>&nbsp;</td>\n";
 		$data_pdf[$tot_data_pdf][]='';
@@ -2294,9 +2342,20 @@ if(getPref($_SESSION['login'], 'cn_avec_sup10', 'y')=='y') {
 	echo "</tr>\n";
 	
 	$tot_data_pdf++;
-	$data_pdf[$tot_data_pdf][]='Nb.notes<10 :';
 	echo "<tr>\n";
-	echo "<td class='cn bold'><b>Nb.notes&lt;10&nbsp;:</b></td>\n";
+	if(count($tab_note_sur)==1) {
+		$data_pdf[$tot_data_pdf][]='Nb.notes<'.($tmp_tab_note_sur[0]/2).' :';
+		echo "<td class='cn bold'><b>Nb.notes&lt;".($tmp_tab_note_sur[0]/2)."&nbsp;:</b></td>\n";
+	}
+	elseif(count($tmp_tab_note_sur)>1) {
+		$data_pdf[$tot_data_pdf][]='Nb.notes<10 (*) :';
+		echo "<td class='cn bold' title=\"Nombre de notes inférieures à la note moitié du référentiel.\nCe sera le plus souvent 10, mais pour un référentiel sur 30, on comptera les notes inférieures à 15.\"><b>Nb.notes&lt;10 (**)&nbsp;:</b></td>\n";
+		$temoin_remarque_nb_notes_sup_10_autre_referentiel++;
+	}
+	else {
+		$data_pdf[$tot_data_pdf][]='Nb.notes<10 :';
+		echo "<td class='cn bold'><b>Nb.notes&lt;10&nbsp;:</b></td>\n";
+	}
 	if ($multiclasses) {
 		echo "<td class='cn bold'>&nbsp;</td>\n";
 		$data_pdf[$tot_data_pdf][]='';
@@ -2817,6 +2876,12 @@ $aff_photo_cn_par_defaut=getPref($_SESSION['login'],'aff_photo_cn',"n");
 echo "<br />";
 echo $message_cnil_commentaires."<br />";
 
+if((isset($temoin_remarque_nb_notes_sup_10_autre_referentiel))&&($temoin_remarque_nb_notes_sup_10_autre_referentiel>0)) {
+	echo "** Le nombre de notes supérieures ou égales à la note moitié du référentiel est affiché.<br />
+	Pour les notes sur 20, ce sera le nombre de notes supérieures ou égales (<em >respectivement inférieures</em>) à 10.<br />
+	Pour d'autres référentiels, par exemple sur 30, on comptera les notes supérieures ou égales à 15.<br />\n";
+}
+
 // 20141103
 foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
 	$titre_infobulle="Devoir n°".$current_id_dev." : ".$current_tab_notes['nom_dev'];
@@ -2835,6 +2900,9 @@ foreach($tab_ele_dev as $current_id_dev => $current_tab_notes) {
 		//number_format($tmp_tab['note'], 1, ".")
 		if(preg_match("/^[0-9]{1,}[,]{0,1}[0-9]{0,2}$/", $tmp_tab['note'])) {
 			$current_note=preg_replace("/,/", ".", $tmp_tab['note']);
+		}
+		elseif($tmp_tab['note']=="") {
+			$current_note="-";
 		}
 		else {
 			$current_note=$tmp_tab['note'];
