@@ -4776,7 +4776,7 @@ function affiche_tab_avis_conseil($login_ele, $avec_js="y", $avec_lien="y") {
 	return $retour;
 }
 
-function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group=NULL) {
+function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group=NULL, $align="center") {
 	if(!isset($current_group)) {
 		$current_group=get_group($id_groupe, array('classes'));
 	}
@@ -4788,7 +4788,7 @@ function affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_gro
 
 		if(isset($current_ev['id_ev'])) {
 			if($chaine_date_conseil_classe=="") {
-				$chaine_date_conseil_classe="<p align='center' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
+				$chaine_date_conseil_classe="<p align='$align' title=\"Date du prochain conseil de classe pour cette classe.\"><span style='color:red'>Conseil de classe&nbsp;:</span><br />";
 			}
 			$lieu_conseil_de_classe="";
 			if(isset($current_ev['lieu']['designation_complete'])) {

@@ -793,7 +793,12 @@ var tab_per_cn=new Array();\n";
 
 	//if(isset($current_group)) { echo "DEBUG 5 : ".$current_group['classlist_string']."<br />";}
 
-    echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " ($nom_periode[$periode_num])</h2>\n";
+    echo "<h2 class='gepi'>Carnet de notes : ". htmlspecialchars($current_group["description"]) . " (<em>".$nom_periode[$periode_num];
+    if(getSettingAOui('cn_affiche_date_fin_periode')) {
+        echo " <span title='Fin de période' style='font-size:xx-small'>-&gt; ".formate_date($date_fin_periode[$periode_num])."</span>";
+    }
+    echo "</em>)</h2>\n";
+// 20160225
     echo "<p class='bold'> Classe(s) : " . $current_group["classlist_string"] . " | Matière : " . htmlspecialchars($current_group["matiere"]["nom_complet"]) . "(" . htmlspecialchars($current_group["matiere"]["matiere"]) . ")";
     // On teste si le carnet de notes est partagé ou non avec d'autres utilisateurs
     $login_prof = $_SESSION['login'];
@@ -812,6 +817,11 @@ var tab_per_cn=new Array();\n";
         }
     }
     echo "</p>\n";
+
+//=========================
+$chaine_date_conseil_classe=affiche_date_prochain_conseil_de_classe_groupe($id_groupe, $current_group, "left");
+echo $chaine_date_conseil_classe;
+//=========================
 
 	if((isset($current_group["visibilite"]["cahier_notes"]))&&($current_group["visibilite"]["cahier_notes"]!='y')) {
 		echo "<p style='color:red; text-indent:-7em;margin-left:7em;'><strong>ANOMALIE&nbsp;:</strong> Vous ne devriez pas saisir de notes dans ce carnet de notes.<br />L'enseignement courant est marqué comme ne devant pas avoir de carnet de notes.<br />Si vous y saisissez des notes, elles seront inexploitables.</p>";
@@ -1036,6 +1046,21 @@ if (!(isset($_GET['id_groupe'])) and !(isset($_GET['periode_num'])) and !(isset(
 		}
     }
 }
+
+/*
+$periode_num=1;
+$login_ele=$current_group['eleves'][$periode_num]["list"][0];
+$tab=get_tab_notes_ele($login_ele, $id_groupe, $periode_num);
+echo "<pre>";
+print_r($tab);
+echo "</pre>";
+echo "<hr />";
+$tab=get_tab_notes($id_groupe, $periode_num);
+echo "<pre>";
+print_r($tab);
+echo "</pre>";
+*/
+
   /**
    * Pied de page
    */

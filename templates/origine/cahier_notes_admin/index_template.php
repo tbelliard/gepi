@@ -128,7 +128,35 @@
 		Désactiver les carnets de notes
 	  </label>
 	</fieldset>
-	
+
+	<p class="grandEspaceHaut italic">
+		Afficher la date de fin de période ou non&nbsp;:<br />
+		Si les dates de fin de période saisies pour les absences ne coïncident pas avec les dates de verrouillage de période, vous ne devriez pas afficher la date dans le carnet de notes.
+	</p>
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Afficher la date de fin de période ou non</legend>
+	  <input type="radio" 
+			 name="cn_affiche_date_fin_periode" 
+			 id='cn_affiche_date_fin_periode_y' 
+			 value="y" 
+			<?php if (getSettingValue("cn_affiche_date_fin_periode")=='y') echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='cn_affiche_date_fin_periode_y' style='cursor: pointer;'>
+		Afficher la date de fin de période dans le carnet de notes
+	  </label>
+	<br />
+	  <input type="radio" 
+			 name="cn_affiche_date_fin_periode" 
+			 id='cn_affiche_date_fin_periode_n' 
+			 value="n" 
+			<?php if (getSettingValue("cn_affiche_date_fin_periode")=='n') echo " checked='checked'"; ?>
+			 onchange='changement();' />
+	  <label for='cn_affiche_date_fin_periode_n' style='cursor: pointer;'>
+		Ne pas afficher la date de fin de période dans le carnet de notes
+	  </label>
+	</fieldset>
+
+
 	<p class="grandEspaceHaut">
 <?php
 	//if(file_exists("../lib/ss_zip.class.php")){ 
