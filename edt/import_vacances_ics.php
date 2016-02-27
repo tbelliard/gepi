@@ -163,9 +163,9 @@ if(!isset($zone)) {
 <h2>Choix de la zone</h2>
 <p>De quelle zone souhaitez-vous télécharger les dates de vacances&nbsp;?</p>
 <ul>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=A&amp;mode=telech'>Zone A</a>&nbsp;: Caen, Clermont-Ferrand, Grenoble, Lyon, Montpellier, Nancy-Metz, Nantes, Rennes, Toulouse</p></li>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=B&amp;mode=telech'>Zone B</a>&nbsp;: Aix-Marseille, Amiens, Besançon, Dijon, Lille, Limoges, Nice, Orléans-Tours, Poitiers, Reims, Rouen, Strasbourg </p></li>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=C&amp;mode=telech'>Zone C</a>&nbsp;: Bordeaux, Créteil, Paris, Versailles </p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=A&amp;mode=telech'>Zone A</a>&nbsp;: Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers</p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=B&amp;mode=telech'>Zone B</a>&nbsp;: Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg</p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=C&amp;mode=telech'>Zone C</a>&nbsp;: Créteil, Montpellier, Paris, Toulouse, Versailles</p></li>
 </ul>";
 
 }
