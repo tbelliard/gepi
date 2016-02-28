@@ -354,7 +354,7 @@ elseif($mode=="telech") {
 	<input type='checkbox' 
 		   name='date_vacances[]' 
 		   id='date_vacances_<?php echo $cpt; ?>' 
-		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',Pentecote($annee_1)); ?>" 
+		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(Pentecote($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
 		Lundi de Pentecôte : <?php echo strftime('%d %B %Y', Pentecote($annee_1)); ?>
