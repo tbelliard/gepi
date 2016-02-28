@@ -4851,4 +4851,57 @@ function affiche_date_dernier_conseil_de_classe_classe($id_classe) {
 
 	return $chaine_date_conseil_classe;
 }
+
+function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y") {
+	$retour="";
+
+	// A FAIRE : Si $id_classe est non vide, relever le contenu de edt_calendrier pour la classe indiquée avec etabferme_calendrier='2', etabvacances_calendrier='1'
+
+	if($id_classe=="") {
+		$sql="SELECT * FROM calendrier_vacances ORDER BY debut_calendrier_ts;";
+	}
+	else {
+		$sql="SELECT * FROM edt_calendrier WHERE (classe_concerne_calendrier LIKE '".$id_classe.";%' OR classe_concerne_calendrier LIKE '%;".$id_classe.";%') AND 
+									etabferme_calendrier='2' AND 
+									etabvacances_calendrier='1' ORDER BY debut_calendrier_ts;";
+	}
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="<table class='boireaus boireaus_alt' summary='Vacances scolaires'>
+	<tr>
+		<th>Titre</th>
+		<th>Du</th>
+		<th>Au</th>
+	</tr>";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($griser=="y")&&($lig->fin_calendrier_ts<time())) {
+				$passe=" style='background-color:grey'";
+			}
+			else {
+				$passe="";
+			}
+
+			if(($affiche_passe=="y")||($passe=="")) {
+				$retour.="
+	<tr".$passe.">
+		<th".$passe.">".$lig->nom_calendrier."</th>
+		<td>".strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
+		<td>".strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
+	</tr>";
+			}
+		}
+		$retour.="</table>";
+	}
+
+	return $retour;
+}
+
+function affiche_calendrier_vacances() {
+	$retour="";
+
+	// Boucler sur les mois de septembre à juillet et griser les jours non ouvrés et vacances
+	// Sur une option afficher l'indication de semaine A/B
+
+	return $retour;
+}
 ?>

@@ -6,7 +6,9 @@
 Gepi-master (Version de développement)
 ===========================
 Carnets de notes:
-- Possibilité d'afficher la date de fin de période dans la page index du Carnet de notes professeur.
+- Possibilité d'afficher la date de fin de période dans la page index du Carnet 
+  de notes professeur (pour visualiser lors de l'ajout d'évaluation, le temps 
+  avant la fin de période).
 
 Bulletins:
 - Validation de corrections en attente: Affichage de témoins dans la page de 

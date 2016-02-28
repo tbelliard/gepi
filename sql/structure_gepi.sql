@@ -1373,3 +1373,15 @@ id_type int(11) NOT NULL COMMENT 'identifiant du type d engagement',
 PRIMARY KEY (`id`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS calendrier_vacances;
+CREATE TABLE IF NOT EXISTS calendrier_vacances (
+id int(11) NOT NULL auto_increment,
+nom_calendrier varchar(100) NOT NULL default '',
+debut_calendrier_ts varchar(11) NOT NULL,
+fin_calendrier_ts varchar(11) NOT NULL,
+jourdebut_calendrier date NOT NULL default '0000-00-00',
+heuredebut_calendrier time NOT NULL default '00:00:00',
+jourfin_calendrier date NOT NULL default '0000-00-00',
+heurefin_calendrier time NOT NULL default '00:00:00',
+PRIMARY KEY (id)) 
+ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
