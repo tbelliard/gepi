@@ -13316,6 +13316,7 @@ function get_id_classe_ele_d_apres_date($login_eleve, $timestamp) {
 	$sql="SELECT p.id_classe FROM periodes p, 
 						j_eleves_classes jec 
 					WHERE p.id_classe=jec.id_classe AND 
+						p.num_periode=jec.periode AND 
 						jec.login='".$login_eleve."' AND 
 						p.date_fin>='".$date_mysql."'
 					ORDER BY date_fin ASC LIMIT 1;";
