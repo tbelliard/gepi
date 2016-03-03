@@ -179,11 +179,16 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
  *         (on ne récupère que les indices id, name, description du groupe et les classes associées,
  *          pas les indices profs, eleves, periodes, matieres)
  */
-function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_categories="n") {
+function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_categories="n", $periode="") {
 	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
 	// Avec le choix "n" sur les catégories, on reste sur un fonctionnement proche de celui d'origine (cf old_way)
 
 	if (!is_numeric($_id_classe)) {$_id_classe = "0";}
+
+	$chaine_periode="";
+	if ($periode!="") {
+		$chaine_periode=" AND jeg.periode='$periode' ";
+	}
 
 	if($d_apres_categories=="auto") {
 		$d_apres_categories="n";
@@ -212,7 +217,7 @@ function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_ca
 					m.matiere = jgm.id_matiere AND
 					g.id=jgc.id_groupe AND
 					jeg.id_groupe=jgc.id_groupe AND
-					jeg.login='$_login_eleve')
+					jeg.login='$_login_eleve'".$chaine_periode.")
 				ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet, g.name;";
 	}
 	else {
@@ -224,7 +229,7 @@ function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_ca
 								"g.id = jgc.id_groupe " .
 								" and jgc.id_classe = '" . $_id_classe . "'".
 								" AND jeg.id_groupe=jgc.id_groupe".
-								" AND jeg.login='$_login_eleve'".
+								" AND jeg.login='$_login_eleve'".$chaine_periode.
 								") ORDER BY jgc.priorite, g.name";
 		}
 		else {
@@ -237,7 +242,7 @@ function get_groups_for_eleve($_login_eleve, $_id_classe, $ordre="", $d_apres_ca
 					jgm.id_groupe=jgc.id_groupe
 					AND jgc.id_groupe=g.id AND
 					jeg.id_groupe=jgc.id_groupe AND
-					jeg.login='$_login_eleve'
+					jeg.login='$_login_eleve'".$chaine_periode."
 					)
 				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
 		}

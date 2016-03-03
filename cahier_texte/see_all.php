@@ -289,16 +289,32 @@ if ($infos_generales != '') {
 echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de séance</strong>\n</h2>\n";
 
 if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-	$req_notices =
-		"select 'c' type, contenu, date_ct, id_ct
-		from ct_entry
-		where (contenu != ''
-		and id_groupe='".$id_groupe."'
-		and date_ct != ''
-		and date_ct >= '".getSettingValue("begin_bookings")."'
-		and date_ct <= '".getSettingValue("end_bookings")."'
-		and date_ct <= '".time()."')
-		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+	if((isset($selected_eleve_login))&&($selected_eleve_login!="")) {
+		$req_notices =
+			"select 'c' type, contenu, date_ct, id_ct
+			from ct_entry ce, j_eleves_groupes jeg
+			where (contenu != ''
+			and ce.id_groupe='".$id_groupe."'
+			and ce.id_groupe=jeg.id_groupe
+			and jeg.login='".$selected_eleve_login."'
+			and date_ct != ''
+			and date_ct >= '".getSettingValue("begin_bookings")."'
+			and date_ct <= '".getSettingValue("end_bookings")."'
+			and date_ct <= '".time()."')
+			ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+	}
+	else {
+		$req_notices =
+			"select 'c' type, contenu, date_ct, id_ct
+			from ct_entry
+			where (contenu != ''
+			and id_groupe='".$id_groupe."'
+			and date_ct != ''
+			and date_ct >= '".getSettingValue("begin_bookings")."'
+			and date_ct <= '".getSettingValue("end_bookings")."'
+			and date_ct <= '".time()."')
+			ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+	}
 }
 else {
 	$req_notices =

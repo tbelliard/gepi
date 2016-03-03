@@ -956,11 +956,31 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
 		}
 
-		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
+		$id_classe=get_id_classe_ele_d_apres_date($id_ref, time());
+		//echo "id_classe=$id_classe<br />";
+		if($id_classe=="") {
+			$id_classe=get_id_classe_derniere_classe_ele($id_ref);
+		}
+
+		if($id_classe=="") {
+			$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 				"jec.login='".$id_ref."' and " .
 				"g.id = jec.id_groupe and " .
 				"jec.id_groupe = ct.id_groupe" .
 				") order by g.name";
+		}
+		else {
+			$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_classes jec, j_eleves_groupes jeg, groupes g, ct_entry ct where (" .
+				"jec.id_classe='$id_classe' and ".
+				"jec.login=jeg.login and ".
+				"jec.periode=jeg.periode and ".
+				"jeg.login='".$id_ref."' and " .
+				"g.id = jeg.id_groupe and " .
+				"jeg.id_groupe = ct.id_groupe" .
+				") order by g.name";
+		}
+		// DEBUG 20160303
+		//echo "$sql<br />";
 	}
 	$res = sql_query($sql);
 	if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)

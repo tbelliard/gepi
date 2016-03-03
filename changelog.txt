@@ -20,6 +20,7 @@ Absences2:
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
   et professeur principal à l'export ODS des incidents.
+- Sanctions du jour: Possibilité de tri sur le tableau des sanctions non effectuées.
 
 Engagements:
 - Possibilité d'afficher les engagements sur les pages Equipe pédago.
@@ -34,6 +35,7 @@ Statistiques:
 Général:
 - Affichage de l'identité de la personne qui suit la classe (chef, adjoint)
   et du professeur principal dans diverses pages de choix de classes.
+- Possibilité d'afficher le dates de vacances et jours fériés en page d'accueil simplifiée professeur.
 
 Gepi-1.6.8 (05/01/2016)
 ===========================
