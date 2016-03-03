@@ -130,7 +130,7 @@ if ($current_imprime == 'n') {
 }
 
 // On ajoute un retour vers la page de signature des cdt si c'est un administrateur
-$_retour = ($_SESSION["retour"] == 'admin_ct') ? $_SESSION["retour"] : 'visa_ct';
+$_retour = ((isset($_SESSION["retour"]))&&($_SESSION["retour"] == 'admin_ct')) ? $_SESSION["retour"] : 'visa_ct';
 $code_retour_admin = '<p><a href="../cahier_texte_admin/' . $_retour .'.php">RETOUR vers la signature des cahiers de textes</a></p>';
 $retour_admin = ($_SESSION["statut"] == 'administrateur') ? $code_retour_admin : '';
 
