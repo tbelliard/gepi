@@ -204,7 +204,11 @@ if(isset($_POST['enregistrer_sanction'])) {
 								}
 							}
 
-							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue $heure_debut_descr pour une durée de $duree_retenue\n";
+							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue $heure_debut_descr pour une durée de ".$duree_retenue;
+							if((preg_match("/^[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,},[0-9]{1,}$/", $duree_retenue))) {
+								$message_mail.="H";
+							}
+							$message_mail.=".\n";
 							if($lieu_retenue!="") {
 								$message_mail.="Lieu: $lieu_retenue\n";
 							}
@@ -290,7 +294,11 @@ if(isset($_POST['enregistrer_sanction'])) {
 								$heure_debut_descr.=" (".$tmp_h.")";
 							}
 						}
-						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." ".$heure_debut_descr." pour une durée de ".$duree_retenue."H.\n";
+						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." ".$heure_debut_descr." pour une durée de ".$duree_retenue;
+						if((preg_match("/^[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,},[0-9]{1,}$/", $duree_retenue))) {
+							$message_mail.="H";
+						}
+						$message_mail.=".\n";
 						if($travail!="") {
 							$message_mail.="Travail: $travail\n";
 						}
