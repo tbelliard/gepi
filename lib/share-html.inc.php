@@ -4924,4 +4924,152 @@ function affiche_calendrier_vacances() {
 
 	return $retour;
 }
+
+function affiche_tableau_periodes_ouvertes() {
+	global $couleur_verrouillage_periode, $traduction_verrouillage_periode;
+
+	$retour="";
+
+	//SELECT c.classe, p.* FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe,p.;
+
+	$sql="SELECT max(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+
+		$tab_clas=array();
+		$sql=retourne_sql_mes_classes();
+		$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_clas)>0) {
+			$retour="<table class='boireaus'>
+	<tr>
+		<th></th>";
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
+
+			$retour.="
+		<th>".$lig_clas->classe."</th>";
+			}
+			$retour.="
+	</tr>";
+		}
+
+		$tab_per_clas=array();
+		$sql="SELECT p.* FROM periodes p;";
+		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_per)>0) {
+			while($lig_per=mysqli_fetch_object($res_per)) {
+				$tab_per_clas[$lig_per->id_classe][$lig_per->num_periode]=$lig_per->verouiller;
+			}
+		}
+
+		for($i=1;$i<=$maxper;$i++) {
+			$retour.="
+	<tr>
+		<th title='Période $i'>P.".$i."</th>";
+
+			foreach($tab_clas as $id_classe => $classe) {
+				if(!isset($tab_per_clas[$id_classe][$i])) {
+					$retour.="
+		<td style='background-color:grey'></td>";
+				}
+				else {
+					$retour.="
+		<td style='background-color:".$couleur_verrouillage_periode[$tab_per_clas[$id_classe][$i]]."' title=\"Classe de ".$classe." : Période $i ".$traduction_verrouillage_periode[$tab_per_clas[$id_classe][$i]]."\"></td>";
+				}
+
+				$retour.="
+		</td>";
+
+			}
+
+			$retour.="
+	</tr>";
+		}
+			$retour.="
+</table>";
+
+	}
+
+	return $retour;
+}
+
+function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins() {
+	global $couleur_verrouillage_periode, $traduction_verrouillage_periode;
+
+	$retour="";
+
+	//SELECT c.classe, p.* FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe,p.;
+
+	$sql="SELECT max(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+
+		$tab_clas=array();
+		$sql=retourne_sql_mes_classes();
+		$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_clas)>0) {
+			$retour="<table class='boireaus'>
+	<tr>
+		<th></th>";
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
+
+			$retour.="
+		<th>".$lig_clas->classe."</th>";
+			}
+			$retour.="
+	</tr>";
+		}
+
+		$tab_per_clas=array();
+		$sql="SELECT * FROM matieres_appreciations_acces;";
+		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_per)>0) {
+			while($lig_per=mysqli_fetch_object($res_per)) {
+				$tab_per_clas[$lig_per->id_classe][$lig_per->periode]=$lig_per->acces;
+			}
+		}
+
+		for($i=1;$i<=$maxper;$i++) {
+			$retour.="
+	<tr>
+		<th title='Période $i'>P.".$i."</th>";
+
+			foreach($tab_clas as $id_classe => $classe) {
+				if(!isset($tab_per_clas[$id_classe][$i])) {
+					$retour.="
+		<td style='background-color:grey'></td>";
+				}
+				elseif($tab_per_clas[$id_classe][$i]=="y") {
+					$retour.="
+		<td style='background-color:green' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe sont visibles des parents et élèves.\"></td>";
+				}
+				elseif($tab_per_clas[$id_classe][$i]=="n") {
+					$retour.="
+		<td style='background-color:red' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe ne sont pas visibles des parents et élèves.\"></td>";
+				}
+				else {
+					$retour.="
+		<td title=\"Classe de ".$classe." en période $i : ???\">???</td>";
+				}
+
+				$retour.="
+		</td>";
+
+			}
+
+			$retour.="
+	</tr>";
+		}
+			$retour.="
+</table>";
+
+	}
+
+	return $retour;
+}
 ?>

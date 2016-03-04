@@ -13,6 +13,11 @@ Carnets de notes:
 Bulletins:
 - Validation de corrections en attente: Affichage de témoins dans la page de 
   sélection des bulletins à imprimer.
+- Affichage en page d'accueil administrateur et scolarité de tableaux:
+    . des périodes ouvertes/fermées
+    . de la visibilité des appréciations et avis du conseil de classe pour les 
+      parents et élèves.
+  L'affichage de ces tableaux peut être désactivé dans Gérer mon compte.
 
 Absences2:
 - Affichage des manquements du jour sur la page d'accueil simplifiée parent.

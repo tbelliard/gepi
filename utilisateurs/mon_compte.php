@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -614,6 +614,32 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 		if($msg!="") {$msg.="<br />";}
 		$msg.="Aucune modification n'a été apportée !";
 	}
+}
+
+// 20160304
+if ((in_array($_SESSION['statut'], array("scolarite", "administrateur")))&&(isset($_POST['valide_ouverture_periode_et_acces']))) {
+	check_token();
+
+	$message_ouverture_periode_et_acces="";
+
+	if(savePref($_SESSION['login'], "accueil_tableau_ouverture_periode", $_POST['accueil_tableau_ouverture_periode'])) {
+		$msg.="Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué.<br />";
+		$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+	else{
+		$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'.<br />";
+		$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+
+	if(savePref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", $_POST['accueil_tableau_acces_app_bull_ele_resp'])) {
+		$msg.="Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué.<br />";
+		$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+	else{
+		$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'.<br />";
+		$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	}
+
 }
 
 //debug_var();
@@ -2263,6 +2289,45 @@ document.getElementById('$chaine_td').style.backgroundColor='lightgray';
 
 //==============================================================================
 
+if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
+	// 20160304
+	$checked_accueil_tableau_ouverture_periode_y=(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")=="y") ? " checked" : "";
+	$checked_accueil_tableau_ouverture_periode_n=(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")=="n") ? " checked" : "";
+	$checked_accueil_tableau_acces_app_bull_ele_resp_y=(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")=="y") ? " checked" : "";
+	$checked_accueil_tableau_acces_app_bull_ele_resp_n=(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")=="n") ? " checked" : "";
+
+	echo "<a name='tableaux_ouverture_periode_et_acces'></a>
+<form name='form_ouverture_periode_et_acces' method='post' action='".$_SERVER['PHP_SELF']."#tableaux_ouverture_periode_et_acces'>
+	<fieldset class='fieldset_opacite50'>
+		<legend style='border: 1px solid grey; background-color: white; '>Tableau d'ouverture/accès en page d'accueil</legend>
+		".add_token_field()."
+		<input type='hidden' name='valide_ouverture_periode_et_acces' value='y' />
+
+		<p><input type='radio' name='accueil_tableau_ouverture_periode' id='accueil_tableau_ouverture_periode_y' value='y' tabindex='$tabindex'$checked_accueil_tableau_ouverture_periode_y onchange=\"checkbox_change('accueil_tableau_ouverture_periode_y');checkbox_change('accueil_tableau_ouverture_periode_n');changement()\" /><label for='accueil_tableau_ouverture_periode_y' id='texte_accueil_tableau_ouverture_periode_y'> Afficher en page d'accueil le tableau de l'état d'ouverture/verrouillage des périodes pour mes classes.</label><br />";
+	$tabindex++;
+	echo "
+		<input type='radio' name='accueil_tableau_ouverture_periode' id='accueil_tableau_ouverture_periode_n' value='n' tabindex='$tabindex'$checked_accueil_tableau_ouverture_periode_n onchange=\"checkbox_change('accueil_tableau_ouverture_periode_y');checkbox_change('accueil_tableau_ouverture_periode_n');changement()\"/><label for='accueil_tableau_ouverture_periode_n' id='texte_accueil_tableau_ouverture_periode_n'> Ne pas afficher en page d'accueil le tableau de l'état d'ouverture/verrouillage des périodes pour mes classes.</label></p>";
+	$tabindex++;
+
+	if((getSettingAOui('active_bulletins'))&&(getSettingValue("acces_app_ele_resp")=="manuel")) {
+		echo "
+		<p style='margin-top:1em;'><input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_y' value='y' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_y onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_y' id='texte_accueil_tableau_acces_app_bull_ele_resp_y'> Afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label><br />";
+		$tabindex++;
+		echo "
+		<input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_n' value='n' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_n onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_n' id='texte_accueil_tableau_acces_app_bull_ele_resp_n'> Ne pas afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label></p>";
+		$tabindex++;
+	}
+
+	echo "
+	<p><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center></p>".((isset($message_ouverture_periode_et_acces)) ? "<br />".$message_ouverture_periode_et_acces : "")."
+	</fieldset>
+</form>
+<br />\n";
+	$tabindex++;
+}
+
+//==============================================================================
+
 if(($_SESSION['statut']=='responsable')||($_SESSION['statut']=='eleve')) {
 	$pref_accueil_simpl=getPref($_SESSION['login'],'accueil_simpl', "y");
 	$checked_accueil_simpl_y=($pref_accueil_simpl=="y") ? " checked" : "";
@@ -3863,7 +3928,7 @@ if(getSettingAOui("active_bulletins")) {
 echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
 echo "<script type='text/javascript'>
-var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', $chaine_champs_checkbox_mod_discipline);
+var champs_checkbox=new Array('aff_quartiles_cn', 'aff_photo_cn', 'aff_photo_saisie_app', 'cn_avec_min_max', 'cn_avec_mediane_q1_q3', 'cn_avec_sup10', 'cn_order_by_classe', 'cn_order_by_nom', 'visibleMenu', 'visibleMenuLight', 'invisibleMenu', 'headerBas', 'headerNormal', 'footer_sound_pour_qui_perso', 'footer_sound_pour_qui_tous_profs', 'footer_sound_pour_qui_tous_personnels', 'footer_sound_pour_qui_tous', 'ouverture_auto_WinDevoirsDeLaClasse_y', 'ouverture_auto_WinDevoirsDeLaClasse_n', 'choix_encodage_csv_ascii', 'choix_encodage_csv_utf8', 'choix_encodage_csv_windows_1252', 'output_mode_pdf_D', 'output_mode_pdf_I','AlertesAvecSon_y','AlertesAvecSon_n', 'DiscTemoinIncidentAdmin', 'DiscTemoinIncidentPP', 'DiscTemoinIncidentProf', 'DiscTemoinIncidentCpe', 'DiscTemoinIncidentCpeTous', 'DiscTemoinIncidentScol', 'DiscTemoinIncidentScolTous', 'AbsProf_jamais_remplacer', 'accueil_tableau_ouverture_periode_y', 'accueil_tableau_ouverture_periode_n', 'accueil_tableau_acces_app_bull_ele_resp_y', 'accueil_tableau_acces_app_bull_ele_resp_n', $chaine_champs_checkbox_mod_discipline);
 function maj_style_label_checkbox() {
 	for(i=0;i<champs_checkbox.length;i++) {
 		checkbox_change(champs_checkbox[i]);
