@@ -23,6 +23,7 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/envoi_SMS.inc.php");
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -868,6 +869,45 @@ if (isset($_POST['phpmailer_debug'])) {
 		$msg .= "Erreur lors de l'enregistrement de phpmailer_debug !";
 	}
 }
+
+if (isset($_POST['autorise_envoi_sms'])) {
+	check_token();
+	if (!saveSetting("autorise_envoi_sms", $_POST['autorise_envoi_sms'])) {
+		$msg .= "Erreur lors de l'enregistrement de autorise_envoi_sms !";
+	}
+}
+if (isset($_POST['sms_prestataire'])) {
+	check_token();
+	if (!saveSetting("sms_prestataire", $_POST['sms_prestataire'])) {
+		$msg .= "Erreur lors de l'enregistrement de sms_prestataire !";
+	}
+}
+if (isset($_POST['sms_username'])) {
+	check_token();
+	if (!saveSetting("sms_username", $_POST['sms_username'])) {
+		$msg .= "Erreur lors de l'enregistrement de sms_username !";
+	}
+}
+if (isset($_POST['sms_password'])) {
+	check_token();
+	if (!saveSetting("sms_password", $_POST['sms_password'])) {
+		$msg .= "Erreur lors de l'enregistrement de sms_password !";
+	}
+}
+if (isset($_POST['sms_identite'])) {
+	check_token();
+	if (!saveSetting("sms_identite", $_POST['sms_identite'])) {
+		$msg .= "Erreur lors de l'enregistrement de sms_identite !";
+	}
+}
+/*
+if (isset($_POST['sms_max_envois'])) {
+	check_token();
+	if (!saveSetting("sms_max_envois", $_POST['sms_max_envois'])) {
+		$msg .= "Erreur lors de l'enregistrement de sms_max_envois !";
+	}
+}
+*/
 
 // Load settings
 if (!loadSettings()) {
@@ -2585,6 +2625,90 @@ echo add_token_field();
 	<p style='margin-top:1em; margin-left:3em; text-indent:-3em;'><span style='color:red'>(*)</span> Ces champs doivent impérativement être non vides si vous utilisez PHPMailer sous peine de voir échouer l'envoi de mails.</p>
 </fieldset>
 </form>
+
+<hr />
+
+<a name='config_envoi_sms'></a>
+<form enctype="multipart/form-data" action="param_gen.php" method="post" id="form6" style="width: 100%;">
+<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+	<p>
+<?php
+echo add_token_field();
+?>
+	</p>
+
+	<p  class="cellTab" style="font-variant: small-caps;">
+		Autoriser l'envoi de SMS&nbsp;:
+
+	<p class="cellTab">
+		<input type="radio" 
+			   name="autorise_envoi_sms" 
+			   id="autorise_envoi_sms_y" 
+			   value="y" 
+			   <?php
+				if(getSettingValue('autorise_envoi_sms')===null) {saveSetting('autorise_envoi_sms', 'n');}
+				if(getSettingAOui('autorise_envoi_sms')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='gepi_en_production_y' style='cursor: pointer;'>
+			Oui
+		</label>
+		<br />
+		<input type="radio" 
+			   name="autorise_envoi_sms" 
+			   id="autorise_envoi_sms_n" 
+			   value="n" 
+			   <?php
+				if(!getSettingAOui('autorise_envoi_sms')) {echo "checked='checked'";}
+			   ?>
+			   onchange='changement()' />
+		<label for='autorise_envoi_sms_n' style='cursor: pointer;'>
+			Non
+		</label>
+	</p>
+	</p>
+	<br />
+	<p class="ligneCaps" style="font-variant: small-caps;">Identié de l'émetteur SMS&nbsp;:&nbsp;
+	<input type="text" style="width: 300px" name="sms_identite" value="<?php echo (getSettingValue('sms_identite')===null)?getSettingValue('gepiSchoolName'):getSettingValue('sms_identite'); ?>">
+	<br /><span class='small'>Nom  de l'établissement, ou numéro de téléphone, ou autre (éviter les lettres accentuées et caractères spéciaux).</span></p>
+	<br />
+	<p  class="ligneCaps" style="font-variant: small-caps;">Prestataire SMS&nbsp;:&nbsp;<?php  getSettingValue('sms_prestataire'); ?>
+	<select style="width: 200px;" name="sms_prestataire">
+		<optgroup>
+		<option></option>
+	<?php
+	foreach($tab_prestataires_SMS as $prestataire)
+		{
+	?>
+		<option value="<?php echo $prestataire;?>" <?php if (getSettingValue('sms_prestataire')==$prestataire) echo " selected='selected'"?>><?php echo $prestataire; ?></option>
+		<?php
+		}
+	?>
+		</optgroup>
+	</select>
+	<br /><span  class='small'>Prestataire SMS.</span></p>
+	<br />
+	<p  class="ligneCaps" style="font-variant: small-caps;">Identifiant SMS&nbsp;:&nbsp;
+	<input type="text" style="width: 300px" name="sms_username" value="<?php echo getSettingValue('sms_username'); ?>">
+	<br /><span class='small'>Identifiant pour se connecter au prestataire SMS.</span></p>
+	<br />
+	<p  class="ligneCaps" style="font-variant: small-caps;">Mot de passe SMS&nbsp;:&nbsp;
+	<input type="text" style="width: 300px" name="sms_password" value="<?php echo getSettingValue('sms_password'); ?>">
+	<br /><span class='small'>Mot de passe pour se connecter au prestataire SMS.</span></p>
+	<br />
+	<br />
+	<p>
+	<input type="hidden" name="is_posted" value="1" />
+	</p>
+	<p class="center">
+		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
+	</p>
+
+
+</fieldset>
+</form>
+
+<hr />
 
 <?php
 require("../lib/footer.inc.php");

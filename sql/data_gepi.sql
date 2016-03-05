@@ -1756,3 +1756,10 @@ INSERT INTO setting VALUES ('sso_display_portail','no');
 INSERT INTO setting VALUES ('sso_url_portail', 'https://www.example.com');
 INSERT INTO setting VALUES ('sso_hide_logout', 'no');
 INSERT INTO droits SET id='/mod_discipline/ajout_travail_sanction.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Discipline: Ajout de travail pour une sanction', statut='';
+INSERT INTO setting VALUES ('autorise_envoi_sms', 'n');
+INSERT INTO setting VALUES ('sms_prestataire', '');
+INSERT INTO setting VALUES ('sms_username', '');
+INSERT INTO setting VALUES ('sms_password', '');
+INSERT INTO setting VALUES ('sms_identite', 'Nom de l''établissement');
+
+
