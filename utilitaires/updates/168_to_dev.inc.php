@@ -108,4 +108,46 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "<strong>Ajout d'entrées de configuration envoi SMS dans la table setting</strong><br />";
+
+// Il faut tenir compte de données déjà saisies dans le module absence 2
+$result .= "&nbsp;-> Ajout de l'entrée autorise_envoi_sms dans la table setting<br />";
+if (getSettingValue('autorise_envoi_sms')===null) {
+	if (getSettingValue('abs2_sms')!==null) $OK=saveSetting('autorise_envoi_sms',getSettingValue('abs2_sms')); else $OK=saveSetting('autorise_envoi_sms','n');
+	if ($OK) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée autorise_envoi_sms existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée sms_prestataire dans la table setting<br />";
+if (getSettingValue('sms_prestataire')===null) {
+	if (getSettingValue('abs2_sms_prestataire')!==null) $OK=saveSetting('sms_prestataire',getSettingValue('abs2_sms_prestataire'));
+	else $OK=saveSetting('sms_prestataire','');
+	if ($OK) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée sms_prestataire existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée sms_username dans la table setting<br />";
+if (getSettingValue('sms_username')===null) {
+	if (getSettingValue('abs2_sms_username')!==null) $OK=saveSetting('sms_username',getSettingValue('abs2_sms_username'));
+	else $OK=saveSetting('sms_username','');
+	if ($OK) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée sms_username existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée sms_password dans la table setting<br />";
+if (getSettingValue('sms_password')===null) {
+	if (getSettingValue('abs2_sms_password')!==null) $OK=saveSetting('sms_password',getSettingValue('abs2_sms_password'));
+	else $OK=saveSetting('sms_password','');
+	if ($OK) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée sms_password existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée sms_identite dans la table setting<br />";
+if (getSettingValue('sms_identite')===null) {
+	if (saveSetting('sms_identite',getSettingValue('gepiSchoolName'))) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée sms_identite existe déjà dans la table setting");
+
+/*
+$result .= "Ajout de l'entrée sms_max_envois dans la table setting<br />";
+if (getSettingValue('sms_max_envois')===null) {
+	if (saveSetting('sms_max_envois','10')) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée sms_max_envois existe déjà dans la table setting)";
+*/
+
 ?>

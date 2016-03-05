@@ -30,6 +30,7 @@ $accessibilite="y";
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+require_once("../lib/envoi_SMS.inc.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -306,7 +307,7 @@ if (!$notif_mail_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotificatio
     echo '<br/><br/>';
 }
 
-if(getSettingAOui("abs2_sms")) {
+if(getSettingAOui("autorise_envoi_sms") && getSettingAOui("abs2_sms")) {
 	//
 	//on envoie les SMS
 	//
