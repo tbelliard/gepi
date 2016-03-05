@@ -2696,12 +2696,6 @@ echo add_token_field();
 	<input type="text" style="width: 300px" name="sms_password" value="<?php echo getSettingValue('sms_password'); ?>">
 	<br /><span class='small'>Mot de passe pour se connecter au prestataire SMS.</span></p>
 	<br />
-	<!--
-	<p  class="ligneCaps" style="font-variant: small-caps;">Nombre maximun de SMS pouvant être envoyés &nbsp;:&nbsp;
-	<input name="sms_max_envois" value="<?php echo (getSettingValue('sms_max_envois')=="")?"100":getSettingValue('sms_max_envois'); ?>" type="text" size="4">
-	<br /><span class='small'>Si le nombre de SMS à envoyer est supérieur à ce nombre l'envoi est alors annulé.</span></p>
-	<br />
-	-->
 	<br />
 	<p>
 	<input type="hidden" name="is_posted" value="1" />

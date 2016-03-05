@@ -1761,5 +1761,5 @@ INSERT INTO setting VALUES ('sms_prestataire', '');
 INSERT INTO setting VALUES ('sms_username', '');
 INSERT INTO setting VALUES ('sms_password', '');
 INSERT INTO setting VALUES ('sms_identite', 'Nom de l''établissement');
-/*INSERT INTO setting VALUES ('sms_max_envois', '');*/
+
 

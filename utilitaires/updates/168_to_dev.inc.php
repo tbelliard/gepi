@@ -143,11 +143,4 @@ if (getSettingValue('sms_identite')===null) {
 	if (saveSetting('sms_identite',getSettingValue('gepiSchoolName'))) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée sms_identite existe déjà dans la table setting");
 
-/*
-$result .= "Ajout de l'entrée sms_max_envois dans la table setting<br />";
-if (getSettingValue('sms_max_envois')===null) {
-	if (saveSetting('sms_max_envois','10')) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
-} else $result .= msj_present("L'entrée sms_max_envois existe déjà dans la table setting)";
-*/
-
 ?>
