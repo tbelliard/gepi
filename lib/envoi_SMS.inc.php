@@ -121,7 +121,7 @@ function envoi_SMS($tab_to,$sms) {
 				Les  parametres suivants sont pour le moment facultatifs (janv/2011) 
 			mais peuvent êtres utiles pour une évolution future ou en cas de debug
 			*/
-			$parametres['gepi_school'] = getSettingValue("sms_identite")
+			$parametres['gepi_school'] = getSettingValue("sms_identite");
 			$parametres['gepi_version'] = getSettingValue("version"); // pour debug au cas ou
 			$parametres['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remontée éventuelle des réponses par mail
 			$parametres['gepi_rne'] = getSettingValue("gepiSchoolRne"); // identification supplémentaire
