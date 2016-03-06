@@ -129,7 +129,7 @@ function envoi_SMS($tab_to,$sms) {
 
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if (substr($reponse,0,3)=='ERR' || substr($reponse, 0, 6)=='Erreur') {
-				return 'SMS non enoyé(s) : '.$reponse;
+				return 'SMS non envoyé(s) : '.$reponse;
 				} 
 			else return "OK";
 
@@ -150,7 +150,7 @@ function envoi_SMS($tab_to,$sms) {
 			$t_erreurs=array(80 => "Le message a été envoyé", 81 => "Le message est enregistré pour un envoi en différé", 82 => "Le login et/ou mot de passe n’est pas valide",  83 => "vous devez créditer le compte", 84 => "le numéro de gsm n’est pas valide", 85 => "le format d’envoi en différé n’est pas valide", 86 => "le groupe de contacts est vide", 87 => "la valeur email est vide", 88 => "la valeur pass est vide",  89 => "la valeur numero est vide", 90 => "la valeur message est vide", 91 => "le message a déjà été envoyé à ce numéro dans les 24 dernières heures");
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse!='80') {
-				return 'SMS non enoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
+				return 'SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
 				} 
 			else return "OK";
 			
@@ -177,14 +177,14 @@ function envoi_SMS($tab_to,$sms) {
 			
 			$reponse=envoi_requete_http($url,$script,$parametres);
 			if (mb_substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
-				return 'SMS non enoyé(s) : '.$reponse;
+				return 'SMS non envoyé(s) : '.$reponse;
 				} 
 			else return "OK";
 
 			break;
 
 		default :
-			return "SMS non enoyé(s) : prestataire SMS non défini.";
+			return "SMS non envoyé(s) : prestataire SMS non défini.";
 		}
 	
 	return $reponse;

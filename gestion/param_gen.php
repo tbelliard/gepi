@@ -2626,10 +2626,10 @@ echo add_token_field();
 </fieldset>
 </form>
 
+<a name='config_envoi_sms'></a>
 <hr />
 
-<a name='config_envoi_sms'></a>
-<form enctype="multipart/form-data" action="param_gen.php" method="post" id="form6" style="width: 100%;">
+<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="form6" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p>
 <?php
@@ -2696,17 +2696,47 @@ echo add_token_field();
 	<input type="text" style="width: 300px" name="sms_password" value="<?php echo getSettingValue('sms_password'); ?>">
 	<br /><span class='small'>Mot de passe pour se connecter au prestataire SMS.</span></p>
 	<br />
-	<br />
-	<p>
 	<input type="hidden" name="is_posted" value="1" />
-	</p>
 	<p class="center">
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
 
 
-</fieldset>
 </form>
+<?php
+if (getSettingAOui('autorise_envoi_sms'))
+	{
+?>
+	<br />
+	<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="test_config_sms" style="width: 100%;">
+	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms à ce numéro :
+	<input type="text"  style="width: 300px" name="numero_test_sms" value="">
+	</p>
+	<br />
+	<p class="center">
+	<input type="submit" name="test_sms" value="Tester" style="font-variant: small-caps;" />
+	</p>
+	<form>
+	<?php
+	if (isset($_POST['test_sms']))
+		{
+		$tab_to[]=$_POST['numero_test_sms'];
+		$retour=envoi_SMS($tab_to,"Gepi : message de test émis par ".getSettingValue("sms_identite"));
+	?>
+	<br />
+	<p class="center" style="color:<?php if ($retour=="OK") echo 'blue'; else echo 'red'; ?>">
+	<?php
+		if ($retour=="OK") echo "Message bien envoyé."; else echo "Erreur : ".$retour;
+	?>
+	</p>
+	<?php
+		}
+	?>
+	<br />
+<?php
+	}
+?>
+</fieldset>
 
 <hr />
 
