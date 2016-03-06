@@ -282,10 +282,10 @@
 	if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
 		if(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")!="n") {
 			if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;'><a href='$gepiPath/bulletin/verrouillage.php' title=\"Modifier l'ouverture/verrouillage des périodes.\" style='color:black;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><a href='$gepiPath/bulletin/verrouillage.php' title=\"Modifier l'ouverture/verrouillage des périodes.\" style='color:black;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
 			}
 			else {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><strong>Tableau de l'ouverture/verrouillage des périodes</strong>";
 			}
 			$chaine_tableaux_page_accueil.=affiche_tableau_periodes_ouvertes();
 			$chaine_tableaux_page_accueil.="</div>";
@@ -293,10 +293,10 @@
 
 		if((getSettingAOui('active_bulletins'))&&(getSettingValue("acces_app_ele_resp")=="manuel")&&(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")!="n")) {
 			if(acces("/classes/acces_appreciations.php", $_SESSION['statut'])) {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;'><a href='$gepiPath/classes/acces_appreciations.php' title=\"Modifier l'accès aux appréciations et avis.\" style='color:black;'><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><a href='$gepiPath/classes/acces_appreciations.php' title=\"Modifier l'accès aux appréciations et avis.\" style='color:black;'><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
 			}
 			else {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;'><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>";
 			}
 			$chaine_tableaux_page_accueil.=affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins();
 			$chaine_tableaux_page_accueil.="</div>";
