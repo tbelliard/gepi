@@ -1364,3 +1364,7 @@ CREATE TABLE IF NOT EXISTS sso_table_correspondance ( `login_gepi` varchar(100) 
 `login_sso` varchar(100) NOT NULL default '', 
 PRIMARY KEY (`login_gepi`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS tempo4;
+CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
