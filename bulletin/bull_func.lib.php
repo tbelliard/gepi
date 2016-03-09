@@ -1719,8 +1719,10 @@ echo "</pre>";
 				$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['groupe'][$j]["matiere"]["categorie_id"];
 			}
 			*/
-			if(!in_array($tab_bull['cat_id'][$j], $tab_bull['eleve'][$i]['cat_id'])) {
-				$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['cat_id'][$j];
+			if(isset($tab_bull['cat_id'][$j])) {
+				if(!in_array($tab_bull['cat_id'][$j], $tab_bull['eleve'][$i]['cat_id'])) {
+					$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['cat_id'][$j];
+				}
 			}
 		}
 	}
