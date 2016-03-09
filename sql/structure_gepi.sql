@@ -1365,6 +1365,9 @@ CREATE TABLE IF NOT EXISTS sso_table_correspondance ( `login_gepi` varchar(100) 
 PRIMARY KEY (`login_gepi`)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS tempo4;
+CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 DROP TABLE IF EXISTS engagements_pages;
 CREATE TABLE IF NOT EXISTS engagements_pages (
 id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',
@@ -1385,3 +1388,4 @@ jourfin_calendrier date NOT NULL default '0000-00-00',
 heurefin_calendrier time NOT NULL default '00:00:00',
 PRIMARY KEY (id)) 
 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
