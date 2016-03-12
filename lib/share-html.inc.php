@@ -4706,6 +4706,9 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 								$retour.="<span style='font-size:x-small'>(*)</span>";
 							}
 						}
+						elseif($current_devoir['statut']=="v") {
+							$retour.="-";
+						}
 						else {
 							$retour.=$current_devoir['statut'];
 						}
