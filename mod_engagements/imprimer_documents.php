@@ -710,6 +710,7 @@ if((isset($id_classe[0]))&&(isset($_GET['imprimer_liste_eleve']))&&(isset($_GET[
 
 	// Load the template
 	$nom_fichier_modele_ooo ='liste_eleve_conseil_classe.odt';
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 	//Procédure du traitement à effectuer
 	//les chemins contenant les données
