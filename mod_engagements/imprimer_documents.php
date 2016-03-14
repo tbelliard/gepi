@@ -602,6 +602,7 @@ __ADR_ETAB__
 
 	// Load the template
 	$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 	//Procédure du traitement à effectuer
 	//les chemins contenant les données
