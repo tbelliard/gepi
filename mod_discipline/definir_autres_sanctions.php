@@ -335,7 +335,7 @@ else {
 			if($acces_upload_modele_ooo) {
 				if(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt")) {
 					echo "<a href='../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt' target='_blank'><img src='../images/icons/odt.png' class='icone16' alt='Éditer' /></a>";
-					echo " <a href='".$_SERVER['PHP_SELF']."?suppr_modele_odt=".$lig->id_nature.add_token_in_url()."' target='_blank'><img src='../images/icons/delete.png' class='icone16' alt='Supprimer le modèle' /></a>";
+					echo " <a href='".$_SERVER['PHP_SELF']."?suppr_modele_odt=".$lig->id_nature.add_token_in_url()."'><img src='../images/icons/delete.png' class='icone16' alt='Supprimer le modèle' /></a>";
 				}
 				else {
 					echo "<input type='file' name='modele_odt[".$lig->id_nature."]' />";
