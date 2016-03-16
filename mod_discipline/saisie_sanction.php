@@ -1155,6 +1155,7 @@ if(isset($odt)&&
 		if(mysqli_num_rows($res_sanction)>0) {
 			$lig_sanction=mysqli_fetch_object($res_sanction);
 			$id_nature_sanction=$lig_sanction->id_nature_sanction;
+			$nature_sanction=$lig_sanction->nature;
 		}
 
 		if($odt=='retenue') {
@@ -1173,12 +1174,22 @@ if(isset($odt)&&
 				$date=$lig_sanction->date;
 				$heure_debut=$lig_sanction->heure_debut;
 				$duree=$lig_sanction->duree;
-				$travail=$lig_sanction->travail;
-				$lieu=$lig_sanction->lieu;
+				$travail=preg_replace("/^Travail : /", "", $lig_sanction->travail);
+				$lieu=ucfirst($lig_sanction->lieu);
 				$materiel=$lig_sanction->materiel;
 			}
-			$date_retenue=$date;
-			$h_deb=$heure_debut;
+			$date_retenue=formate_date($date);
+			if(preg_match("/^[0-9]/", $heure_debut)) {
+				$h_deb=$heure_debut;
+			}
+			else {
+				$h_deb=get_mysql_heure($heure_debut);
+				if(preg_match("/^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/", $h_deb)) {
+					$tmp_h_deb=explode(":", $h_deb);
+					$h_deb=$tmp_h_deb[0]."H".$tmp_h_deb[1];
+				}
+			}
+
 			$num_incident=$id_incident;
 
 			$ets_nom=getSettingValue("gepiSchoolName");
@@ -1359,6 +1370,8 @@ die();
 					  'classe_ele' => $classe_ele,
 					  'classe' => $classe_ele,
 
+					  'travail' => $travail,
+
 					  'motif' => $motif,
 					  'texte_report' => $texte_report,
 					  'nom_resp' => $nom_resp,
@@ -1480,6 +1493,7 @@ die();
 			$extraction_bilans="../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt";
 		}
 
+		$prefixe_fichier_odt=ensure_ascii($nature_sanction);
 	}
 
 	//Coordonnées etab
