@@ -26,6 +26,7 @@ Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
   et professeur principal à l'export ODS des incidents.
 - Sanctions du jour: Possibilité de tri sur le tableau des sanctions non effectuées.
+- Possibilité de définir des modèles spécifiques pour des types de sanctions particuliers.
 
 Engagements:
 - Possibilité d'afficher les engagements sur les pages Equipe pédago.

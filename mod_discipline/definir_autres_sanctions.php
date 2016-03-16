@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -66,6 +66,8 @@ else {
 
 $msg="";
 
+//debug_var();
+
 $suppr_nature=isset($_POST['suppr_nature']) ? $_POST['suppr_nature'] : NULL;
 
 $nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;
@@ -94,6 +96,87 @@ if(isset($suppr_nature)) {
 					$msg.="Suppression de la nature n°".$suppr_nature[$i].".<br />\n";
 				}
 			}
+		}
+	}
+}
+
+if ($_SESSION['rne']!='') {
+	$rne=$_SESSION['rne']."/";
+} else {
+	$rne='';
+}
+
+$acces_upload_modele_ooo=false;
+if(getSettingAOui("active_mod_ooo")) {
+	if(($_SESSION['statut']=="administrateur")||
+	(($_SESSION['statut']=="cpe")&&(getSettingAOui("OOoUploadCpeDiscipline")))||
+	(($_SESSION['statut']=="scolarite")&&(getSettingAOui("OOoUploadScolDiscipline")))) {
+		$acces_upload_modele_ooo=true;
+	}
+}
+
+if($acces_upload_modele_ooo) {
+	if((isset($_GET['suppr_modele_odt']))&&(preg_match("/^[0-9]{1,}$/", $_GET['suppr_modele_odt']))) {
+		check_token();
+		if(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$_GET['suppr_modele_odt'].".odt")) {
+			if(unlink("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$_GET['suppr_modele_odt'].".odt")) {
+				$msg.="Modèle spécifique n°".$_GET['suppr_modele_odt']." supprimé.<br />";
+			}
+			else {
+				$msg.="Erreur lors de la suppression du modèle spécifique n°".$_GET['suppr_modele_odt'].".<br />";
+			}
+		}
+		else {
+			$msg.="Modèle spécifique n°".$_GET['suppr_modele_odt']." non trouvé.<br />";
+		}
+	}
+
+	if(isset($_FILES['modele_odt'])) {
+		check_token();
+
+		$modele_odt=$_FILES['modele_odt'];
+		/*
+		echo "<pre>";
+		print_r($modele_odt);
+		echo "</pre>";
+		*/
+		$nb_fichiers_mis_en_place=0;
+		if((isset($modele_odt['name']))&&(is_array($modele_odt['name']))) {
+			foreach($modele_odt['name'] as $id_nature_sanction => $nom_fichier) {
+
+				$monfichiername=$modele_odt['name'][$id_nature_sanction];
+				$monfichiertype=$modele_odt['type'][$id_nature_sanction];
+				$monfichiererror=$modele_odt['error'][$id_nature_sanction];
+				$monfichiersize=$modele_odt['size'][$id_nature_sanction];
+				$monfichiertmp_name=$modele_odt['tmp_name'][$id_nature_sanction];
+
+				if($monfichiererror==0) {
+					$poursuivre="y";
+					if(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt")) {
+						if(unlink("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt")) {
+							$msg.="Modèle spécifique précédent n°".$id_nature_sanction." supprimé.<br />";
+						}
+						else {
+							$msg.="Erreur lors de la suppression du modèle spécifique précédent n°".$id_nature_sanction.".<br />";
+							$poursuivre="n";
+						}
+					}
+
+					if($poursuivre=="y") {
+						$res_copy=copy($monfichiertmp_name , "../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt");
+						if(!$res_copy) {
+							$msg.="Erreur lors de la mise en place du fichier discipline_sanction_".$id_nature_sanction.".odt";
+						}
+						else {
+							$nb_fichiers_mis_en_place++;
+						}
+					}
+				}
+			}
+		}
+
+		if($nb_fichiers_mis_en_place>0) {
+			$msg.=$nb_fichiers_mis_en_place." fichier(s) mis en place.<br />";
 		}
 	}
 }
@@ -191,6 +274,8 @@ echo add_token_field();
 echo "<p class='bold'>Saisie de types de ".$mod_disc_terme_sanction."s&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
+$active_mod_ooo=getSettingAOui('active_mod_ooo');
+
 $cpt=0;
 $sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -204,6 +289,13 @@ else {
 	echo "<th>Nature</th>\n";
 	echo "<th>Type</th>\n";
 	echo "<th title=\"Précisez si un professeur peut ou non saisir lui-même ce type de ".$mod_disc_terme_sanction."\">Professeur</th>\n";
+
+	// 20160315
+	if($active_mod_ooo) {
+		echo "<th title=\"Le modèle par défaut est le modèle associé au 'Type' de sanction (retenue, exclusion, travail ou autre).\nVous pouvez toutefois pour un type de sanction particulier choisir un modèle spécifique.\">Modèle OOo par défaut</th>\n";
+		echo "<th title=\"Le modèle par défaut est le modèle associé au 'Type' de sanction (retenue, exclusion, travail ou autre).\nVous pouvez toutefois pour un type de sanction particulier choisir un modèle spécifique.\">Modèle OOo personnalisé</th>\n";
+	}
+
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
@@ -226,6 +318,34 @@ else {
 		if($lig->saisie_prof=="y") {echo "checked ";}
 		echo "onchange='changement();' />";
 		echo "</td>\n";
+
+		// 20160315
+		if($active_mod_ooo) {
+			echo "<td>\n";
+			if($lig->type=="retenue") {
+				echo "<a href='../mod_ooo/modeles_gepi/retenue.odt' target='_blank'><img src='../images/icons/odt.png' class='icone16' alt='Voir' /></a>";
+			}
+			elseif(file_exists("../mod_ooo/modeles_gepi/discipline_".$lig->type.".odt")) {
+				echo "<a href='../mod_ooo/modeles_gepi/discipline_".$lig->type.".odt' target='_blank'><img src='../images/icons/odt.png' class='icone16' alt='Voir' /></a>";
+			}
+			echo "</td>\n";
+
+			echo "<td>\n";
+
+			if($acces_upload_modele_ooo) {
+				if(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt")) {
+					echo "<a href='../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt' target='_blank'><img src='../images/icons/odt.png' class='icone16' alt='Éditer' /></a>";
+					echo " <a href='".$_SERVER['PHP_SELF']."?suppr_modele_odt=".$lig->id_nature.add_token_in_url()."' target='_blank'><img src='../images/icons/delete.png' class='icone16' alt='Supprimer le modèle' /></a>";
+				}
+				else {
+					echo "<input type='file' name='modele_odt[".$lig->id_nature."]' />";
+				}
+			}
+			elseif(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt")) {
+				echo "<a href='../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$lig->id_nature.".odt' target='_blank'><img src='../images/icons/odt.png' class='icone16' alt='Éditer' /></a>";
+			}
+			echo "</td>\n";
+		}
 
 		echo "<td>";
 		$sql="SELECT 1=1 FROM s_sanctions WHERE id_nature_sanction='$lig->id_nature';";
