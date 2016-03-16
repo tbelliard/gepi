@@ -126,6 +126,8 @@ if($_SESSION['statut']=="professeur") {
 	}
 }
 
+$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+
 include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
 $nom_fichier_modele_ooo =''; // variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
