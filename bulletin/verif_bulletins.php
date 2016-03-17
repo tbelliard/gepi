@@ -51,6 +51,7 @@ if(!getSettingAOui('active_bulletins')) {
 $editer_modele_mail=isset($_POST['editer_modele_mail']) ? $_POST['editer_modele_mail'] : (isset($_GET['editer_modele_mail']) ? $_GET['editer_modele_mail'] : NULL);
 $valider_modele_mail=isset($_POST['editer_modele_mail']) ? $_POST['editer_modele_mail'] : NULL;
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+if((isset($id_classe))&&(!preg_match("/^[0-9]{1,}$/", $id_classe))) {unset($id_classe);}
 $per=isset($_POST['per']) ? $_POST['per'] : (isset($_GET['per']) ? $_GET['per'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
