@@ -484,6 +484,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 
 		if(
 			(
+				($current_group["classe"]["ver_periode"]['all'][$correction_periode] == 1)&&
+
 				(
 					($app_grp[$correction_periode]!='')||
 					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
@@ -1059,6 +1061,8 @@ while ($k < $nb_periode) {
 
 		if(
 			(
+				($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
+
 				(
 					($app_grp[$k]!='')||
 					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
