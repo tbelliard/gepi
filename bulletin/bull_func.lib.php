@@ -4325,6 +4325,8 @@ fclose($f);
 								// Il faut récupérer l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
 								$pdf->SetFont('DejaVu','I',6);
 
+								$fleche_evolution="";
+
 								if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]=='y') {
 									if(isset($tab_bull['login_prec'])) {
 
@@ -4358,6 +4360,17 @@ fclose($f);
 														}
 														else {
 															$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+															//===============================
+															if($tab_bull['note'][$m][$i]>=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]+$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																$fleche_evolution="+";
+															}
+															elseif($tab_bull['note'][$m][$i]<=$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]-$tab_modele_pdf["evolution_moyenne_periode_precedente_seuil"][$classe_id]) {
+																$fleche_evolution="-";
+															}
+															else {
+																$fleche_evolution="";
+															}
+															//===============================
 														}
 														if($key==1) {$bordure_top='T';} else {$bordure_top='';}
 														$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, 'P'.$key.': '.$valeur,'LR'.$bordure_top,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
@@ -4368,8 +4381,14 @@ fclose($f);
 										}
 									}
 								}
+								if($fleche_evolution!="") {$fleche_evolution=" ".$fleche_evolution;}
 
-								$pdf->SetFont('DejaVu','B',10);
+								if($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y') {
+									$pdf->SetFont('DejaVu','B',8);
+								}
+								else {
+									$pdf->SetFont('DejaVu','B',10);
+								}
 
 								// On filtre si la moyenne est vide, on affiche seulement un tiret
 								if ($tab_bull['note'][$m][$i]=="-") {
@@ -4381,7 +4400,7 @@ fclose($f);
 								else {
 									$valeur = present_nombre($tab_bull['note'][$m][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 								}
-								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur.$fleche_evolution,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								// Réinitialisation
 								$valeur = "";
 
