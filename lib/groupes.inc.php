@@ -459,6 +459,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                     $i++;
                 }
                 $get_profs->close();
+                $temp["proflist_string"]=$temp["profs"]["proflist_string"];
             }
             if($get_periodes=='y') {
                 // Périodes
