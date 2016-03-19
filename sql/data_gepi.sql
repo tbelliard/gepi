@@ -1761,5 +1761,4 @@ INSERT INTO setting VALUES ('sms_prestataire', '');
 INSERT INTO setting VALUES ('sms_username', '');
 INSERT INTO setting VALUES ('sms_password', '');
 INSERT INTO setting VALUES ('sms_identite', 'Nom de l''établissement');
-
-
+INSERT INTO droits SET id='/bulletin/impression_avis_grp.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Impression des avis sur les groupes-classes',statut='';

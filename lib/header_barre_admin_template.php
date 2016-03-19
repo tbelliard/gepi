@@ -317,6 +317,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		}
 
 		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/bull_index.php" '.insert_confirm_abandon().'>Impression</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/bulletin/impression_avis_grp.php"'.insert_confirm_abandon().'>Avis groupes/classes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/statistiques/index.php" '.insert_confirm_abandon().'>Extractions stats</a></li>'."\n";
 		$gepi_denom_mention=getSettingValue('gepi_denom_mention');
 		if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
