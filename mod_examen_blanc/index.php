@@ -1115,7 +1115,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||
 			}
 			echo "</ul>\n";
 
-			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'examens blancs.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-être ajouter une conservation dans les tables archivages (années antérieures).</p>\n";
+			//echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'examens blancs.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-être ajouter une conservation dans les tables archivages (années antérieures).</p>\n";
+			echo "<p><em>NOTES&nbsp;:</em> Au changement d'année, les tables 'ex_classes', 'ex_groupes' et 'ex_notes' sont vidées.</p>\n";
 		}
 		//===========================================================================
 		// Création d'un examen
