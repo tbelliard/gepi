@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -864,7 +864,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			}
 			echo "</ul>\n";
 
-			echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'épreuves blanches.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-être ajouter une conservation dans les tables archivages (années antérieures).</p>\n";
+			//echo "<p style='color:red'>A FAIRE ENCORE&nbsp;: Un lien pour vider toutes les tables d'épreuves blanches.<br />Est-ce qu'il faut vider ces tables lors de l'initialisation?<br />Si oui, peut-être ajouter une conservation dans les tables archivages (années antérieures).</p>\n";
+			echo "<p><em>NOTES&nbsp;:</em> Au changement d'année, les tables 'eb_copies', 'eb_epreuves', 'eb_groupes' et 'eb_profs' sont vidées.</p>\n";
 		}
 		//===========================================================================
 		// Création d'une épreuve
