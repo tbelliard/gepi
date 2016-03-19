@@ -201,6 +201,7 @@ L'enseignement ".$current_group['name']." (".$current_group['description'].") en
 				$ajout_header="";
 				$email_declarant=retourne_email($_SESSION['login']);
 				if(($email_declarant!="")&&(check_mail($email_declarant))) {
+					$nom_declarant=casse_mot($_SESSION['prenom'], "majf2")." ".$_SESSION['nom'];
 					$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";
 					$tab_param_mail['cc'][]=$email_declarant;
 					$tab_param_mail['cc_name'][]=$nom_declarant;
