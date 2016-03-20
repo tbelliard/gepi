@@ -1341,18 +1341,6 @@ if(getSettingAOui('active_bulletins')) {
 		}
 	}
 
-	if ($this->statutUtilisateur=='scolarite'){
-	  $this->creeNouveauItem("/responsables/index.php",
-			  "Gestion des fiches ".$this->gepiSettings['denomination_responsables'],
-			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$this->gepiSettings['denomination_responsables']." des ".$this->gepiSettings['denomination_eleves'].".");
-	}
-
-	if ($this->statutUtilisateur=='scolarite') {
-		$this->creeNouveauItem("/eleves/index.php",
-			  "Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
-			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
-	}
-
 	if(getSettingAOui('active_bulletins')) {
 		if ((($this->test_prof_suivi != "0")
 					AND (getSettingValue("GepiProfImprBul")=='yes'))
@@ -1393,6 +1381,19 @@ if(getSettingAOui('active_bulletins')) {
 				  "Les engagements sont par exemple les rôles de Délégué de classe, membre du Conseil d'Administration,...<br />Cet outil permet d'imprimer les convocations aux conseils de classe,...");
 			}
 		}
+	}
+
+	if ($this->statutUtilisateur=='scolarite'){
+	  $this->creeNouveauItem("/responsables/index.php",
+			  "Gestion des fiches ".$this->gepiSettings['denomination_responsables'],
+			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$this->gepiSettings['denomination_responsables']." des ".$this->gepiSettings['denomination_eleves'].".");
+	}
+
+	// Ce n'est pas vraiment à sa place dans la rubrique Bulletins... mais il faudrait ajouter une rubrique Gestion juste pour ça
+	if ($this->statutUtilisateur=='scolarite') {
+		$this->creeNouveauItem("/eleves/index.php",
+			  "Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
+			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
 	}
 
 	if ($this->b>0){
@@ -1521,6 +1522,13 @@ if(getSettingAOui('active_bulletins')) {
 				  "Impression PDF des avis du conseil de classe",
 				  "Ceci vous permet d'imprimer en PDF la synthèse des avis du conseil de classe.");
 		}
+
+		if ($this->statutUtilisateur=='scolarite') {
+			$this->creeNouveauItem("/bulletin/impression_avis_grp.php",
+				  "Avis groupes-classes",
+				  "Cet outil vous permet d'imprimer les avis/appréciations des enseignants sur le groupe classe pour telle ou telle période.<br />Cela permet de disposer d'un récapitulatif des avis pour les différents enseignements de la classe.");
+		}
+
 	}
 
 	if(($this->statutUtilisateur=='scolarite')||
