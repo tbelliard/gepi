@@ -184,6 +184,7 @@ echo "<div class='centre_table'>\n";
 		if (($_SESSION['statut'] == 'responsable')&&(isset($selected_eleve_login))) {
 			// A VOIR: Cas des élèves qui changent de classe...
 
+			/*
 			//if((!isset($id_classe))||($id_classe<1)) {
 				$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
 				//echo "$sql<br />";
@@ -193,12 +194,29 @@ echo "<div class='centre_table'>\n";
 					$tmp_id_classe = old_mysql_result($res_classe, 0, 'id_classe');
 				}
 			//}
+			*/
+
+			$tmp_id_classe=get_id_classe_ele_d_apres_date($selected_eleve_login, time());
+			//echo "tmp_id_classe=$tmp_id_classe<br />";
+			if($tmp_id_classe=="") {
+				$tmp_id_classe=get_id_classe_derniere_classe_ele($selected_eleve_login);
+			}
+			$tmp_num_periode=get_num_periode_d_apres_date($tmp_id_classe, $selected_eleve_login);
 
 			//if(isset($id_classe)) {
 			if(isset($tmp_id_classe)) {
 				//$tab_grp=get_groups_for_eleve($selected_eleve_login, $id_classe);
-				$tab_grp=get_groups_for_eleve($selected_eleve_login, $tmp_id_classe);
-				//echo "get_groups_for_eleve($selected_eleve_login, $id_classe)<br />";
+				//$tab_grp=get_groups_for_eleve($selected_eleve_login, $tmp_id_classe);
+				if($tmp_num_periode=="") {
+					$tab_grp=get_groups_for_eleve($selected_eleve_login, $tmp_id_classe, "", "n");
+					// DEBUG 20160303
+					//echo "get_groups_for_eleve($selected_eleve_login, $tmp_id_classe, '', 'n')<br />";
+				}
+				else {
+					$tab_grp=get_groups_for_eleve($selected_eleve_login, $tmp_id_classe, "", "n", $tmp_num_periode);
+					// DEBUG 20160303
+					//echo "get_groups_for_eleve($selected_eleve_login, $tmp_id_classe, '', 'n', $tmp_num_periode)<br />";
+				}
 
 				foreach($tab_grp as $tmp_current_group) {
 					$tmp_id_groupe=$tmp_current_group['id'];
@@ -364,6 +382,7 @@ if(($id_groupe=='Toutes_matieres')&&
 (($selected_eleve_login!='')||($id_classe!=-1))) {
 	if($id_classe==-1) {
 		// Cas élève
+		/*
 		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -372,6 +391,18 @@ if(($id_groupe=='Toutes_matieres')&&
 		}
 		$lig=mysqli_fetch_object($res);
 		$id_classe=$lig->id_classe;
+		*/
+
+		$id_classe=get_id_classe_ele_d_apres_date($selected_eleve_login, time());
+		//echo "id_classe=$id_classe<br />";
+		if($id_classe=="") {
+			$id_classe=get_id_classe_derniere_classe_ele($selected_eleve_login);
+		}
+		if($id_classe=="") {
+			echo "<p style='color:red'>Aucune classe n'a été trouvée pour ".get_nom_prenom_eleve($selected_eleve_login)."</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
 	}
 
 	echo "<div class='no_print'>\n";
@@ -468,13 +499,28 @@ if(($id_groupe=='Toutes_matieres')&&
 	//$tab_notices_exclues_mail=array();
 
 	$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='$id_classe' ORDER BY priorite;";
+	// DEBUG 20160303
+	//echo "$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	while($lig=mysqli_fetch_object($res)) {
 		$tab_id_grp[]=$lig->id_groupe;
 	}
 
 	if($afficher_travail_a_faire_seulement=='n') {
-		$sql="SELECT cte.* FROM ct_entry cte, j_groupes_classes jgc WHERE (contenu != ''
+		if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+			$sql="SELECT cte.* FROM ct_entry cte, j_groupes_classes jgc, j_eleves_groupes jeg WHERE (contenu != ''
+			AND date_ct != ''
+			AND date_ct >= '".getSettingValue("begin_bookings")."'
+			AND date_ct <= '".getSettingValue("end_bookings")."'
+			AND jgc.id_groupe=cte.id_groupe
+			AND jgc.id_classe='$id_classe'
+			AND jeg.id_groupe=jgc.id_groupe 
+			AND jeg.login='".$selected_eleve_login."'
+			) ORDER BY date_ct DESC, heure_entry DESC, jgc.priorite DESC;";
+			//) ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre.", jgc.priorite;";
+		}
+		else {
+			$sql="SELECT cte.* FROM ct_entry cte, j_groupes_classes jgc WHERE (contenu != ''
 			AND date_ct != ''
 			AND date_ct >= '".getSettingValue("begin_bookings")."'
 			AND date_ct <= '".getSettingValue("end_bookings")."'
@@ -482,6 +528,8 @@ if(($id_groupe=='Toutes_matieres')&&
 			AND jgc.id_classe='$id_classe'
 			) ORDER BY date_ct DESC, heure_entry DESC, jgc.priorite DESC;";
 			//) ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre.", jgc.priorite;";
+		}
+		// DEBUG 20160303
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;
@@ -517,14 +565,29 @@ if(($id_groupe=='Toutes_matieres')&&
 	$ts_limite_visibilite_devoirs_pour_eleves=time()+getSettingValue('delai_devoirs')*24*3600;
 
 	if($afficher_compte_rendus_seulement=='n') {
-		$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc WHERE (contenu != ''
-			AND date_ct != ''
-			AND date_ct >= '".getSettingValue("begin_bookings")."'
-			AND date_ct <= '".getSettingValue("end_bookings")."'
-			AND jgc.id_groupe=ctd.id_groupe
-			AND jgc.id_classe='$id_classe'
-			) ORDER BY date_ct DESC, jgc.priorite DESC;";
-			//) ORDER BY date_ct ".$current_ordre.", jgc.priorite;";
+		if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+			$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc, j_eleves_groupes jeg  WHERE (contenu != ''
+				AND date_ct != ''
+				AND date_ct >= '".getSettingValue("begin_bookings")."'
+				AND date_ct <= '".getSettingValue("end_bookings")."'
+				AND jgc.id_groupe=ctd.id_groupe
+				AND jgc.id_classe='$id_classe'
+				AND jeg.id_groupe=jgc.id_groupe 
+				AND jeg.login='".$selected_eleve_login."'
+				) ORDER BY date_ct DESC, jgc.priorite DESC;";
+				//) ORDER BY date_ct ".$current_ordre.", jgc.priorite;";
+		}
+		else {
+			$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc WHERE (contenu != ''
+				AND date_ct != ''
+				AND date_ct >= '".getSettingValue("begin_bookings")."'
+				AND date_ct <= '".getSettingValue("end_bookings")."'
+				AND jgc.id_groupe=ctd.id_groupe
+				AND jgc.id_classe='$id_classe'
+				) ORDER BY date_ct DESC, jgc.priorite DESC;";
+				//) ORDER BY date_ct ".$current_ordre.", jgc.priorite;";
+		}
+		// DEBUG 20160303
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		$cpt=0;

@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -204,7 +204,11 @@ if(isset($_POST['enregistrer_sanction'])) {
 								}
 							}
 
-							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue $heure_debut_descr pour une durée de $duree_retenue\n";
+							$message_mail.="La $nature_sanction n°$id_sanction est définie pour le $date_retenue $heure_debut_descr pour une durée de ".$duree_retenue;
+							if((preg_match("/^[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,},[0-9]{1,}$/", $duree_retenue))) {
+								$message_mail.="H";
+							}
+							$message_mail.=".\n";
 							if($lieu_retenue!="") {
 								$message_mail.="Lieu: $lieu_retenue\n";
 							}
@@ -290,7 +294,11 @@ if(isset($_POST['enregistrer_sanction'])) {
 								$heure_debut_descr.=" (".$tmp_h.")";
 							}
 						}
-						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." ".$heure_debut_descr." pour une durée de ".$duree_retenue."H.\n";
+						$message_mail.="Une $nature_sanction (n°$id_sanction) concernant ".get_nom_prenom_eleve($ele_login, "avec_classe")." est définie pour le ".$date_retenue." ".$heure_debut_descr." pour une durée de ".$duree_retenue;
+						if((preg_match("/^[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,}.[0-9]{1,}$/", $duree_retenue))||(preg_match("/^[0-9]{1,},[0-9]{1,}$/", $duree_retenue))) {
+							$message_mail.="H";
+						}
+						$message_mail.=".\n";
 						if($travail!="") {
 							$message_mail.="Travail: $travail\n";
 						}
@@ -1099,6 +1107,7 @@ if(($mode=="suppr_report")&&(isset($id_report))) {
 
 if(isset($odt)&&
 	(($odt=="exclusion")||
+	($odt=="retenue")||
 	($odt=="travail")||
 	($odt=="autre"))) { //impression de l'exclusion en Ooo
 	//recup des informations à exporter dans l'ODT
@@ -1107,6 +1116,11 @@ if(isset($odt)&&
 		$eleve_current=  EleveQuery::create()->filterByLogin($ele_login)->findOne();
 		$nom_ele = $eleve_current->getNom();
 		$prenom_ele= $eleve_current->getPrenom();
+
+		// Pour la page mod_ooo/retenue.php
+		$nom_prenom_eleve=$nom_ele." ".$prenom_ele;
+		$classe_ele="";
+
 		$id_classe_ele= $eleve_current->getClasse()->getId();
 	}
 	//classe de l'élève
@@ -1129,9 +1143,104 @@ if(isset($odt)&&
 	$cp_ville_resp=$tab_adresse[0]['cp_ville'];
 	$civilite_courrier=$tab_adresse[0]['civilite_courrier'];
 
+	// Pour la page mod_ooo/retenue.php
+	$cp_resp=$tab_adresse[0]['cp'];
+	$commune_resp=$tab_adresse[0]['commune'];
+
 	//Contenu du courrier
 	if ($id_sanction != null && $id_sanction != '') {
-		if($odt=='exclusion') {
+
+		$sql="SELECT * FROM s_sanctions WHERE id_sanction='$id_sanction';";
+		$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_sanction)>0) {
+			$lig_sanction=mysqli_fetch_object($res_sanction);
+			$id_nature_sanction=$lig_sanction->id_nature_sanction;
+			$nature_sanction=$lig_sanction->nature;
+		}
+
+		if($odt=='retenue') {
+			$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
+			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_sanction)==0) {
+				$date="";
+				$heure_debut="";
+				$duree="";
+				$travail="";
+				$lieu="";
+				$materiel="";
+			}
+			else {
+				$lig_sanction=mysqli_fetch_object($res_sanction);
+				$date=$lig_sanction->date;
+				$heure_debut=$lig_sanction->heure_debut;
+				$duree=$lig_sanction->duree;
+				$travail=preg_replace("/^Travail : /", "", $lig_sanction->travail);
+				$lieu=ucfirst($lig_sanction->lieu);
+				$materiel=$lig_sanction->materiel;
+			}
+			$date_retenue=formate_date($date);
+			if(preg_match("/^[0-9]/", $heure_debut)) {
+				$h_deb=$heure_debut;
+			}
+			else {
+				$h_deb=get_mysql_heure($heure_debut);
+				if(preg_match("/^[0-9]{1,2}:[0-9]{2}:[0-9]{2}$/", $h_deb)) {
+					$tmp_h_deb=explode(":", $h_deb);
+					$h_deb=$tmp_h_deb[0]."H".$tmp_h_deb[1];
+				}
+			}
+
+			$num_incident=$id_incident;
+
+			$ets_nom=getSettingValue("gepiSchoolName");
+			$ets_adr1=getSettingValue("gepiSchoolAdress1");
+			$ets_adr2=getSettingValue("gepiSchoolAdress2");
+			$ets_cp=getSettingValue("gepiSchoolZipCode");
+			$ets_ville=getSettingValue("gepiSchoolCity");
+			$ets_tel=getSettingValue("gepiSchoolTel");
+			$ets_fax=getSettingValue("gepiSchoolFax");
+			$ets_email=getSettingValue("gepiSchoolEmail");
+
+			$motif="MOTIF A EXTRAIRE";
+			$texte_report="TEXTE REPORT";
+			$nom_resp="NOM DECLARANT";
+			$fct_resp="FONCTION DECLARANT";
+
+			$motif=get_valeur_champ("s_incidents", "id_incident='".$id_incident."'", "description");
+			$nature_incident=get_valeur_champ("s_incidents", "id_incident='".$id_incident."'", "nature");
+
+			$nb_report=nombre_reports($id_sanction,0);
+			if ($nb_report<>0) {
+				$texte_report="REPORT N° ".$nb_report;
+			} else {
+				$texte_report="";
+			}
+
+			$sql="SELECT login,nom,prenom,civilite,statut FROM utilisateurs u, s_incidents si WHERE id_incident='$id_incident' AND u.login=si.declarant;";
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				$lig=mysqli_fetch_object($res);
+				$nom_resp = $lig->civilite." ".strtoupper($lig->nom)." ".ucfirst(mb_substr($lig->prenom,0,1)).".";
+
+				if($lig->statut=='autre') {
+					$sql = "SELECT ds.id, ds.nom_statut FROM droits_statut ds, droits_utilisateurs du
+													WHERE du.login_user = '".$lig->login."'
+													AND du.id_statut = ds.id;";
+					$query = mysqli_query($GLOBALS["mysqli"], $sql);
+					$result = mysqli_fetch_array($query);
+
+					//var retenue
+					$fct_resp = $result['nom_statut'] ;
+				}
+				else {
+					$fct_resp = $lig->statut ;
+				}
+			}
+
+			$fct_resp = ucfirst($fct_resp);
+		}
+		elseif($odt=='exclusion') {
 			$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";
 			$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_sanction)==0) {
@@ -1220,9 +1329,57 @@ if(isset($odt)&&
 			}
 		}
 	}
-
+/*
+echo "<pre>";
+print_r($classe_ele);
+echo "</pre>";
+echo "classe=$classe_ele<br />";
+die();
+*/
 	$export = array();
-	if($odt=='exclusion') {
+	if($odt=='retenue') {
+		$export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
+					  'ad_nom_resp' => $ad_nom_resp, 
+					  'adr1_resp' => $adr1_resp, 'adr2_resp' => $adr2_resp, 'adr3_resp' => $adr3_resp,
+					  'cp_ville_resp' => $cp_ville_resp,
+					  'civilite_courrier' => $civilite_courrier,
+					  'date' => $date,
+					  'duree' => $duree,
+					  'travail' => $travail,
+					  'lieu' => $lieu,
+					  'materiel' => $materiel,
+
+					  'cp_resp' => $cp_resp,
+					  'commune_resp' => $commune_resp,
+
+					  'ets_nom' => $ets_nom,
+					  'ets_adr1' => $ets_adr1,
+					  'ets_adr2' => $ets_adr2,
+					  'ets_cp' => $ets_cp,
+					  'ets_ville' => $ets_ville,
+					  'ets_tel' => $ets_tel,
+					  'ets_fax' => $ets_fax,
+					  'ets_email' => $ets_email,
+
+					  'date_retenue' => $date_retenue,
+					  'h_deb' => $h_deb,
+					  'num_incident' => $id_incident,
+					  'nature_incident' => $nature_incident,
+
+					  'nom_prenom_eleve' => $nom_prenom_eleve,
+					  'classe_ele' => $classe_ele,
+					  'classe' => $classe_ele,
+
+					  'travail' => $travail,
+
+					  'motif' => $motif,
+					  'texte_report' => $texte_report,
+					  'nom_resp' => $nom_resp,
+					  'fct_resp' => $fct_resp
+
+					  );
+	}
+	elseif($odt=='exclusion') {
 		//conversion des dates
 		//Voici les deux tableaux des jours et des mois traduits en français
 		$nom_jour_fr = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
@@ -1301,10 +1458,15 @@ if(isset($odt)&&
 	echo print_r($mois);
 	echo "</pre>";
 	*/
+
 	// génération Ooo
 	include_once '../mod_abs2/lib/function.php'; //pour la fonction repertoire_modeles
 	include_once '../orm/helpers/AbsencesNotificationHelper.php'; // pour la fonction tbs_str et MergeInfosEtab
-	if($odt=='exclusion') {
+	if($odt=='retenue') {
+		$fichier_modele_discipline='retenue.odt';
+		$prefixe_fichier_odt="retenue";
+	}
+	elseif($odt=='exclusion') {
 		$fichier_modele_discipline='discipline_exclusion.odt';
 		$prefixe_fichier_odt="exclusion";
 	}
@@ -1316,11 +1478,33 @@ if(isset($odt)&&
 		$fichier_modele_discipline='discipline_autre.odt';
 		$prefixe_fichier_odt="autre_sanction";
 	}
+
 	$extraction_bilans = repertoire_modeles($fichier_modele_discipline);
+
+	if(isset($id_nature_sanction)) {
+		// Tester l'existence du modèle
+		if ($_SESSION['rne']!='') {
+			$rne=$_SESSION['rne']."/";
+		} else {
+			$rne='';
+		}
+
+		if(file_exists("../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt")) {
+			$extraction_bilans="../mod_ooo/mes_modeles/".$rne."discipline_sanction_".$id_nature_sanction.".odt";
+		}
+
+		$prefixe_fichier_odt=ensure_ascii($nature_sanction);
+	}
+
 	//Coordonnées etab
 	$TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 
-	$TBS->MergeBlock('export', $export);
+	if($odt=='retenue') {
+		$TBS->MergeBlock('var', $export);
+	}
+	else {
+		$TBS->MergeBlock('export', $export);
+	}
 
 	$nom_fichier = $prefixe_fichier_odt.'_'. $nom_ele.'_'.$prenom_ele.'_'.$id_sanction. '.odt';
 	$TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);

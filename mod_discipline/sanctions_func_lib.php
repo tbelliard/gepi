@@ -1825,6 +1825,11 @@ function liste_sanctions($id_incident, $ele_login) {
 			   $retour.="<th>Nbre report</th>\n";
 			}
 
+			// 20160315
+			if(getSettingAOui("active_mod_ooo")) {
+				$retour.="<th>Imprimer</th>\n";
+			}
+
 			// 20141106
 			//if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 				$retour.="<th>Effectuée</th>\n";
@@ -1904,6 +1909,10 @@ function liste_sanctions($id_incident, $ele_login) {
 					$retour.="</td>";
 				}
 
+				// 20160315
+				if(getSettingAOui("active_mod_ooo")) {
+					$retour.="<td><a href='$gepiPath/mod_discipline/saisie_sanction.php?odt=retenue&id_sanction=".$lig_sanction->id_sanction."&id_incident=$id_incident&ele_login=".$ele_login.add_token_in_url()."' target='_blank'><img src='$gepiPath/images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>\n";
+				}
 
 				// 20141106
 				// Sanction effectuée
@@ -1966,6 +1975,12 @@ function liste_sanctions($id_incident, $ele_login) {
 			$retour.="<th>Heure fin</th>\n";
 			$retour.="<th>Lieu</th>\n";
 			$retour.="<th>Travail</th>\n";
+
+			// 20160315
+			if(getSettingAOui("active_mod_ooo")) {
+				$retour.="<th>Imprimer</th>\n";
+			}
+
 			// 20141106
 			//if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 				$retour.="<th>Effectuée</th>\n";
@@ -2009,6 +2024,10 @@ function liste_sanctions($id_incident, $ele_login) {
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
+				// 20160315
+				if(getSettingAOui("active_mod_ooo")) {
+					$retour.="<td><a href='$gepiPath/mod_discipline/saisie_sanction.php?odt=exclusion&id_sanction=".$lig_sanction->id_sanction."&id_incident=$id_incident&ele_login=".$ele_login.add_token_in_url()."' target='_blank'><img src='$gepiPath/images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>\n";
+				}
 
 				// 20141106
 				// Sanction effectuée
@@ -2067,6 +2086,12 @@ function liste_sanctions($id_incident, $ele_login) {
 			$retour.="<th>Nature</th>\n";
 			$retour.="<th>Date retour</th>\n";
 			$retour.="<th>Travail</th>\n";
+
+			// 20160315
+			if(getSettingAOui("active_mod_ooo")) {
+				$retour.="<th>Imprimer</th>\n";
+			}
+
 			// 20141106
 			//if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 				$retour.="<th>Effectuée</th>\n";
@@ -2088,7 +2113,6 @@ function liste_sanctions($id_incident, $ele_login) {
 				$retour.="<td>".formate_date($lig_sanction->date_retour)."</td>\n";
 				$retour.="<td>";
 
-
 				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
 				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
@@ -2105,6 +2129,10 @@ function liste_sanctions($id_incident, $ele_login) {
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
+				// 20160315
+				if(getSettingAOui("active_mod_ooo")) {
+					$retour.="<td><a href='$gepiPath/mod_discipline/saisie_sanction.php?odt=travail&id_sanction=".$lig_sanction->id_sanction."&id_incident=$id_incident&ele_login=".$ele_login.add_token_in_url()."' target='_blank'><img src='$gepiPath/images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>\n";
+				}
 
 				// 20141106
 				// Sanction effectuée
@@ -2162,6 +2190,12 @@ function liste_sanctions($id_incident, $ele_login) {
 			$retour.="<tr>\n";
 			$retour.="<th>Nature</th>\n";
 			$retour.="<th>Description</th>\n";
+
+			// 20160315
+			if(getSettingAOui("active_mod_ooo")) {
+				$retour.="<th>Imprimer</th>\n";
+			}
+
 			// 20141106
 			//if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 				$retour.="<th>Effectuée</th>\n";
@@ -2186,6 +2220,10 @@ function liste_sanctions($id_incident, $ele_login) {
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_autre_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
+				// 20160315
+				if(getSettingAOui("active_mod_ooo")) {
+					$retour.="<td><a href='$gepiPath/mod_discipline/saisie_sanction.php?odt=autre&id_sanction=".$lig_sanction->id_sanction."&id_incident=$id_incident&ele_login=".$ele_login.add_token_in_url()."' target='_blank'><img src='$gepiPath/images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>\n";
+				}
 
 				// 20141106
 				// Sanction effectuée

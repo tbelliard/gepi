@@ -86,14 +86,26 @@ elseif(($_SESSION['statut']=='cpe')&&(!getSettingAOui('imprDiscCpeAvtOOo'))) {
 	die();
 }
 
+function debug_impr($chaine) {
+	$debug="n";
+	if($debug=="y") {
+		$f=fopen("/tmp/debug_imprimer_bilan_periode.txt", "a+");
+		fwrite($f, strftime("%d/%m/%Y %H:%M:%S")." : ".$chaine."\n");
+		fclose($f);
+	}
+}
 
 if (isset($eleve)) {
 	$tab_eleves_OOo=array();
 	$nb_eleve=0;
 
+	debug_impr("Avant get_tab_type_avertissement().");
 	$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
+	debug_impr("Apres get_tab_type_avertissement().");
 
 	for($loop=0;$loop<count($eleve);$loop++) {
+		debug_impr("==================================================");
+		debug_impr("Eleve n°$loop.");
 		$tab=explode("|", $eleve[$loop]);
 		if(isset($tab[2])) {
 			$current_id_classe=$tab[0];
@@ -103,7 +115,9 @@ if (isset($eleve)) {
 
 			$classe=get_nom_classe($current_id_classe);
 
+			debug_impr("Avant get_info_eleve($current_eleve_login, $current_periode)");
 			$tab_current_ele=get_info_eleve($current_eleve_login, $current_periode);
+			debug_impr("Apres get_info_eleve($current_eleve_login, $current_periode)");
 
 			// Espace par défaut pour placer si nécessaire la date à la main dans le document
 			$date_conseil_de_classe="                 ";
@@ -111,6 +125,7 @@ if (isset($eleve)) {
 			if(isset($tab_ev_conseil_classe['slashdate_ev'])) {
 				$date_conseil_de_classe=$tab_ev_conseil_classe['slashdate_ev'];
 			}
+			debug_impr("\$date_conseil_de_classe=$date_conseil_de_classe");
 
 			$tmp_tab_pers_id=array();
 			$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND e.login='".$current_eleve_login."' AND e.ele_id=r.ele_id AND (resp_legal='1' OR resp_legal='2') ORDER BY resp_legal;";
@@ -123,6 +138,7 @@ if (isset($eleve)) {
 					$cpt_resp++;
 				}
 			}
+			debug_impr("Apres extraction des responsables");
 
 /*
 			// Mettre à jour la liste des variables dans:
@@ -143,6 +159,7 @@ if (isset($eleve)) {
 */
 			$tmp_tab_info_parent=array();
 			if(getSettingAOui('mod_disc_avertissement_impression_parents_separes')) {
+				debug_impr("mod_disc_avertissement_impression_parents_separes=true");
 				// On fera peut-être deux tours pour l'élève courant
 				if(count($tmp_tab_pers_id)>1) {
 					if(responsables_adresses_separees($current_eleve_login)) {
@@ -173,6 +190,7 @@ if (isset($eleve)) {
 				}
 			}
 			else {
+				debug_impr("mod_disc_avertissement_impression_parents_separes=false");
 				// On ne fera qu'un tour pour l'élève courant même si les parents sont séparés
 				if(responsables_adresses_separees($current_eleve_login)) {
 					$tmp_tab_info_parent[0]['designation_resp']=$tmp_tab_pers_id[0]['civ_denomination'];
@@ -194,7 +212,9 @@ if (isset($eleve)) {
 				}
 			}
 
+			debug_impr("Avant la boucle sur les parents");
 			for($loop_resp=0;$loop_resp<count($tmp_tab_info_parent);$loop_resp++) {
+				debug_impr("Parent n°$loop_resp");
 				$tab_eleves_OOo[$nb_eleve]=array();
 
 				$tab_eleves_OOo[$nb_eleve]['nom']=$tab_current_ele['nom'];
@@ -235,11 +255,11 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['titre_pp']=casse_mot(retourne_denomination_pp($current_id_classe), "majf2");
 				$tmp_tab_pp=get_tab_prof_suivi($current_id_classe);
 				$liste_pp="";
-				for($loop=0;$loop<count($tmp_tab_pp);$loop++) {
-					if($loop>0) {
+				for($loop_pp=0;$loop_pp<count($tmp_tab_pp);$loop_pp++) {
+					if($loop_pp>0) {
 						$liste_pp.="";
 					}
-					$liste_pp.=affiche_utilisateur($tmp_tab_pp[$loop], $current_id_classe);
+					$liste_pp.=affiche_utilisateur($tmp_tab_pp[$loop_pp], $current_id_classe);
 				}
 				$tab_eleves_OOo[$nb_eleve]['pp']=$liste_pp;
 
@@ -289,6 +309,8 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['resp_cp']=$tmp_tab_info_parent[$loop_resp]['adresse']['cp'];
 				$tab_eleves_OOo[$nb_eleve]['resp_commune']=$tmp_tab_info_parent[$loop_resp]['adresse']['commune'];
 				$tab_eleves_OOo[$nb_eleve]['resp_pays']=$tmp_tab_info_parent[$loop_resp]['adresse']['pays'];
+
+				debug_impr("Fin du remplissage de \$tab_eleves_OOo[$nb_eleve]");
 
 				$nb_eleve++;
 			}

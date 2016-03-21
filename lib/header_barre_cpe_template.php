@@ -130,7 +130,12 @@ if ($barre_plugin!="") {
 			if (getSettingValue("active_bulletins") == "y") {
 				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/bulletin/bulletins_et_conseils_classes.php"'.insert_confirm_abandon().'>&nbsp;Bulletins</a>'."\n";
 				$menus .= '   <ul class="niveau2">'."\n";
-	
+
+				if(getSettingAOui('GepiCpeImprBul')) {
+					$menus .= '     <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression</a></li>'."\n";
+					//$menus .= '     <li><a href="'.$gepiPath.'/bulletin/impression_avis_grp.php"'.insert_confirm_abandon().'>Avis groupes/classes</a></li>'."\n";
+				}
+
 				$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Moyennes une classe</a></li>'."\n";
 				$menus .= '     <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
 				if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {

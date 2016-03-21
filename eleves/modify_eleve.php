@@ -2463,8 +2463,15 @@ if(isset($eleve_login)){
 		echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
 		$sql="SELECT jec.id_classe,c.classe, jec.periode FROM j_eleves_classes jec, classes c WHERE jec.login='$eleve_login' AND jec.id_classe=c.id GROUP BY jec.id_classe ORDER BY jec.periode";
 		$res_grp1=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_grp1)==0){
-			echo "L'élève n'est encore associé(e) à aucune classe <a href='#' onclick=\" afficher_div('div_ajout_a_une_classe', 'y',-20,20);return false;\" title=\"Ajouter à une classe.\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>.";
+		if(mysqli_num_rows($res_grp1)==0) {
+			$acces_classes_ajout=acces('/classes/classes_ajout.php', $_SESSION['statut']);
+
+			if($acces_classes_ajout) {
+				echo "L'élève n'est encore associé(e) à aucune classe <a href='#' onclick=\" afficher_div('div_ajout_a_une_classe', 'y',-20,20);return false;\" title=\"Ajouter à une classe.\"><img src='../images/icons/add.png' class='icone16' alt='Ajouter' /></a>";
+			}
+			else {
+				echo "<span title=\"Un compte administrateur est requis pour ajouter l'élève à une classe.\">L'élève n'est encore associé(e) à aucune classe.</span>";
+			}
 
 			$titre_infobulle="Ajouter à une classe";
 			$texte_infobulle="<form action='../classes/classes_ajout.php#ligne_$eleve_login' method='post' target='_blank'>

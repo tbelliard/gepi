@@ -51,6 +51,9 @@ function adresse_responsables($login_eleve) {
 		$tab_adresse[0]['adresse3']="";
 		$tab_adresse[0]['adresse4']="";
 		$tab_adresse[0]['cp_ville']="";
+		$tab_adresse[0]['cp']="";
+		$tab_adresse[0]['commune']="";
+		$tab_adresse[0]['ville']="";
 		$tab_adresse[0]['pays']="";
 
 		// Initialisation parce qu'on a des blagues s'il n'y a pas de resp:
@@ -65,6 +68,9 @@ function adresse_responsables($login_eleve) {
 		$tab_adresse[0]['adresse3']="";
 		$tab_adresse[0]['adresse4']="";
 		$tab_adresse[0]['cp_ville']="";
+		$tab_adresse[0]['cp']="";
+		$tab_adresse[0]['commune']="";
+		$tab_adresse[0]['ville']="";
 		$tab_adresse[0]['pays']="";
 
 		if (isset($tab_ele['resp'][1])) {
@@ -120,6 +126,10 @@ function adresse_responsables($login_eleve) {
 					//}
 					$tab_adresse[0]['cp_ville']=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
 
+					$tab_adresse[0]['cp']=$tab_ele['resp'][0]['cp'];
+					$tab_adresse[0]['commune']=$tab_ele['resp'][0]['commune'];
+					$tab_adresse[0]['ville']=$tab_ele['resp'][0]['commune'];
+
 					if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adresse[0]['pays']=$tab_ele['resp'][0]['pays'];
 					}
@@ -168,6 +178,10 @@ function adresse_responsables($login_eleve) {
 						
 						$tab_adresse[$cpt]['cp_ville']=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
+						$tab_adresse[$cpt]['cp']=$tab_ele['resp'][$cpt]['cp'];
+						$tab_adresse[$cpt]['commune']=$tab_ele['resp'][$cpt]['commune'];
+						$tab_adresse[$cpt]['ville']=$tab_ele['resp'][$cpt]['commune'];
+
 						if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 							$tab_adresse[$cpt]['pays']=$tab_ele['resp'][$cpt]['pays'];
 						}
@@ -209,6 +223,10 @@ function adresse_responsables($login_eleve) {
 					*/
 					$tab_adresse[$cpt]['cp_ville']=$tab_ele['resp'][$cpt]['cp']." ".$tab_ele['resp'][$cpt]['commune'];
 
+					$tab_adresse[$cpt]['cp']=$tab_ele['resp'][$cpt]['cp'];
+					$tab_adresse[$cpt]['commune']=$tab_ele['resp'][$cpt]['commune'];
+					$tab_adresse[$cpt]['ville']=$tab_ele['resp'][$cpt]['commune'];
+
 					if(($tab_ele['resp'][$cpt]['pays']!="")&&(mb_strtolower($tab_ele['resp'][$cpt]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 						$tab_adresse[$cpt]['pays']=$tab_ele['resp'][$cpt]['pays'];
 					}
@@ -238,6 +256,10 @@ function adresse_responsables($login_eleve) {
 				$tab_adresse[0]['adresse3']=$tab_ele['resp'][0]['adr3'];
 			}
 			$tab_adresse[0]['cp_ville']=$tab_ele['resp'][0]['cp']." ".$tab_ele['resp'][0]['commune'];
+
+			$tab_adresse[0]['cp']=$tab_ele['resp'][0]['cp'];
+			$tab_adresse[0]['commune']=$tab_ele['resp'][0]['commune'];
+			$tab_adresse[0]['ville']=$tab_ele['resp'][0]['commune'];
 
 			if(($tab_ele['resp'][0]['pays']!="")&&(mb_strtolower($tab_ele['resp'][0]['pays'])!=mb_strtolower($gepiSchoolPays))) {
 				$tab_adresse[0]['pays']=$tab_ele['resp'][0]['pays'];

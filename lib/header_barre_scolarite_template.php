@@ -140,6 +140,7 @@ if ($barre_plugin!="") {
 					$menus .= '                <li><a href="'.$gepiPath.'/saisie/commentaires_types.php"'.insert_confirm_abandon().'>Commentaires-types</a></li>'."\n";
 				}
 				$menus .= '                <li><a href="'.$gepiPath.'/saisie/impression_avis.php"'.insert_confirm_abandon().'>Impression avis PDF</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/impression_avis_grp.php"'.insert_confirm_abandon().'>Avis groupes/classes</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/classes/dates_classes.php"'.insert_confirm_abandon().' title="Faire apparaître des événements en page d\'accueil pour telle ou telle classe de telle à telle date,...
 Vous pouvez notamment faire apparaître un tableau des dates de conseils de classe.">Dates événements</a></li>'."\n";
 				if(getSettingAOui('active_mod_engagements')) {
@@ -176,6 +177,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 				}
 				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/bull_index.php"'.insert_confirm_abandon().'>Impression bulletins</a></li>'."\n";
 				$menus .= '                <li><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a></li>'."\n";
+				$menus .= '                <li><a href="'.$gepiPath.'/bulletin/impression_avis_grp.php"'.insert_confirm_abandon().'>Avis groupes/classes</a></li>'."\n";
 				$menus .= '            </ul>'."\n";
 				$menus .= '     </li>'."\n";
 	

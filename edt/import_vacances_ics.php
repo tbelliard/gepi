@@ -46,10 +46,27 @@ $zone=isset($_POST['zone']) ? $_POST['zone'] : (isset($_GET['zone']) ? $_GET['zo
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 
+$sql="CREATE TABLE IF NOT EXISTS calendrier_vacances (
+id int(11) NOT NULL auto_increment,
+nom_calendrier varchar(100) NOT NULL default '',
+debut_calendrier_ts varchar(11) NOT NULL,
+fin_calendrier_ts varchar(11) NOT NULL,
+jourdebut_calendrier date NOT NULL default '0000-00-00',
+heuredebut_calendrier time NOT NULL default '00:00:00',
+jourfin_calendrier date NOT NULL default '0000-00-00',
+heurefin_calendrier time NOT NULL default '00:00:00',
+PRIMARY KEY (id)) 
+ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+$create_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
 if(isset($_POST['enregistrer_vacances'])) {
 	check_token();
 
 	$msg="";
+
+	$sql="TRUNCATE calendrier_vacances;";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$edt_vacances=array();
 	$edt_vacances2=array();
@@ -102,7 +119,7 @@ if(isset($_POST['enregistrer_vacances'])) {
 			$debut_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2]);
 			$jourdebut_calendrier=strftime("%Y-%m-%d", $debut_calendrier_ts);
 			$heuredebut_calendrier=strftime("%H:%M:%S", $debut_calendrier_ts);
-			//echo "Du ".strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
+			//echo "<p style='margin-top:1em;'>Du ".strftime("%A %d/%m/%Y à %H:%M:%S", $debut_calendrier_ts)."";
 
 			$tab_date=explode("/", $tab[2]);
 			$fin_calendrier_ts=mktime(0,0,0,$tab_date[1], $tab_date[0], $tab_date[2])-60;
@@ -125,6 +142,16 @@ if(isset($_POST['enregistrer_vacances'])) {
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if($res) {
 				$nb_reg++;
+
+				$sql="INSERT INTO calendrier_vacances SET nom_calendrier='".$tab[0]."',
+									debut_calendrier_ts='".$debut_calendrier_ts."',
+									fin_calendrier_ts='".$fin_calendrier_ts."',
+									jourdebut_calendrier='".$jourdebut_calendrier."',
+									heuredebut_calendrier='".$heuredebut_calendrier."',
+									jourfin_calendrier='".$jourfin_calendrier."',
+									heurefin_calendrier='".$heurefin_calendrier."';";
+				//echo "$sql<br />";
+				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			}
 			else {
 				$msg.="Erreur lors de l'enregistrement pour ".$tab[0]."<br />";
@@ -163,9 +190,9 @@ if(!isset($zone)) {
 <h2>Choix de la zone</h2>
 <p>De quelle zone souhaitez-vous télécharger les dates de vacances&nbsp;?</p>
 <ul>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=A&amp;mode=telech'>Zone A</a>&nbsp;: Caen, Clermont-Ferrand, Grenoble, Lyon, Montpellier, Nancy-Metz, Nantes, Rennes, Toulouse</p></li>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=B&amp;mode=telech'>Zone B</a>&nbsp;: Aix-Marseille, Amiens, Besançon, Dijon, Lille, Limoges, Nice, Orléans-Tours, Poitiers, Reims, Rouen, Strasbourg </p></li>
-	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=C&amp;mode=telech'>Zone C</a>&nbsp;: Bordeaux, Créteil, Paris, Versailles </p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=A&amp;mode=telech'>Zone A</a>&nbsp;: Besançon, Bordeaux, Clermont-Ferrand, Dijon, Grenoble, Limoges, Lyon, Poitiers</p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=B&amp;mode=telech'>Zone B</a>&nbsp;: Aix-Marseille, Amiens, Caen, Lille, Nancy-Metz, Nantes, Nice, Orléans-Tours, Reims, Rennes, Rouen, Strasbourg</p></li>
+	<li><p><a href='".$_SERVER['PHP_SELF']."?zone=C&amp;mode=telech'>Zone C</a>&nbsp;: Créteil, Montpellier, Paris, Toulouse, Versailles</p></li>
 </ul>";
 
 }
@@ -354,7 +381,7 @@ elseif($mode=="telech") {
 	<input type='checkbox' 
 		   name='date_vacances[]' 
 		   id='date_vacances_<?php echo $cpt; ?>' 
-		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',Pentecote($annee_1)); ?>" 
+		   value="Lundi de Pentecôte|<?php echo strftime('%d/%m/%Y', Pentecote($annee_1)); ?>|<?php echo strftime('%d/%m/%Y',JourSuivant(Pentecote($annee_1))); ?>" 
 		   onchange="checkbox_change(this.id); changement();" />
 	<label for='date_vacances_<?php echo $cpt; ?>' id='texte_date_vacances_<?php echo $cpt; ?>'>
 		Lundi de Pentecôte : <?php echo strftime('%d %B %Y', Pentecote($annee_1)); ?>

@@ -13307,15 +13307,20 @@ function acces_moyenne_min_max_chaque_devoir_carnet_notes($statut_user) {
 	}
 }
 
-function get_id_classe_ele_d_apres_date($login_eleve, $timestamp) {
+function get_id_classe_ele_d_apres_date($login_eleve, $timestamp="") {
 	global $mysqli;
 	$id_classe="";
+
+	if($timestamp=="") {
+		$timestamp=time();
+	}
 
 	$date_mysql=strftime("%Y-%m-%d %H:%M:%S", $timestamp);
 
 	$sql="SELECT p.id_classe FROM periodes p, 
 						j_eleves_classes jec 
 					WHERE p.id_classe=jec.id_classe AND 
+						p.num_periode=jec.periode AND 
 						jec.login='".$login_eleve."' AND 
 						p.date_fin>='".$date_mysql."'
 					ORDER BY date_fin ASC LIMIT 1;";
@@ -13974,6 +13979,43 @@ function get_priorite($abs) {
 		}
 	}
 	return($priorite);
+}
+
+// Si $id_classe est vide, il faut que $login_eleve soit non vide
+function get_num_periode_d_apres_date($id_classe, $login_eleve="", $timestamp="") {
+	global $mysqli;
+
+	$num_periode="";
+
+	if($timestamp=="") {
+		$timestamp=time();
+	}
+
+	$date_mysql=strftime("%Y-%m-%d %H:%M:%S", $timestamp);
+
+	if($id_classe!="") {
+		$sql="SELECT p.num_periode FROM periodes p 
+					WHERE p.id_classe='$id_classe' AND 
+						p.date_fin>='".$date_mysql."'
+					ORDER BY date_fin ASC LIMIT 1;";
+	}
+	else {
+		$sql="SELECT p.num_periode FROM periodes p, 
+						j_eleves_classes jec 
+					WHERE p.id_classe=jec.id_classe AND 
+						p.num_periode=jec.periode AND 
+						jec.login='".$login_eleve."' AND 
+						p.date_fin>='".$date_mysql."'
+					ORDER BY date_fin ASC LIMIT 1;";
+	}
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$num_periode=$lig->num_periode;
+	}
+
+	return $num_periode;
 }
 
 ?>

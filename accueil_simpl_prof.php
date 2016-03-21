@@ -1796,6 +1796,14 @@ if(document.getElementById('h_liste_pdf_'+$i)){
 	echo "</script>\n";
 }
 
+$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+if($html_tab_vacances!="") {
+	echo "<div align='center' style='margin-top:1em;'>
+	<p class='bold'>Vacances et jours fériés à venir</p>
+	".$html_tab_vacances."
+</div>";
+}
+
 //require("../lib/footer.inc.php");
 echo "<p><br /></p>\n";
 require("lib/footer.inc.php");

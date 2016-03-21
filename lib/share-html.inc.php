@@ -956,11 +956,31 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
 		}
 
-		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
+		$id_classe=get_id_classe_ele_d_apres_date($id_ref, time());
+		//echo "id_classe=$id_classe<br />";
+		if($id_classe=="") {
+			$id_classe=get_id_classe_derniere_classe_ele($id_ref);
+		}
+
+		if($id_classe=="") {
+			$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 				"jec.login='".$id_ref."' and " .
 				"g.id = jec.id_groupe and " .
 				"jec.id_groupe = ct.id_groupe" .
 				") order by g.name";
+		}
+		else {
+			$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_classes jec, j_eleves_groupes jeg, groupes g, ct_entry ct where (" .
+				"jec.id_classe='$id_classe' and ".
+				"jec.login=jeg.login and ".
+				"jec.periode=jeg.periode and ".
+				"jeg.login='".$id_ref."' and " .
+				"g.id = jeg.id_groupe and " .
+				"jeg.id_groupe = ct.id_groupe" .
+				") order by g.name";
+		}
+		// DEBUG 20160303
+		//echo "$sql<br />";
 	}
 	$res = sql_query($sql);
 	if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
@@ -4686,6 +4706,9 @@ function affiche_tableau_notes_ele($login_ele, $id_groupe, $mode=1) {
 								$retour.="<span style='font-size:x-small'>(*)</span>";
 							}
 						}
+						elseif($current_devoir['statut']=="v") {
+							$retour.="-";
+						}
 						else {
 							$retour.=$current_devoir['statut'];
 						}
@@ -4850,5 +4873,206 @@ function affiche_date_dernier_conseil_de_classe_classe($id_classe) {
 	}
 
 	return $chaine_date_conseil_classe;
+}
+
+function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y") {
+	$retour="";
+
+	// A FAIRE : Si $id_classe est non vide, relever le contenu de edt_calendrier pour la classe indiquée avec etabferme_calendrier='2', etabvacances_calendrier='1'
+
+	if($id_classe=="") {
+		$sql="SELECT * FROM calendrier_vacances ORDER BY debut_calendrier_ts;";
+	}
+	else {
+		$sql="SELECT * FROM edt_calendrier WHERE (classe_concerne_calendrier LIKE '".$id_classe.";%' OR classe_concerne_calendrier LIKE '%;".$id_classe.";%') AND 
+									etabferme_calendrier='2' AND 
+									etabvacances_calendrier='1' ORDER BY debut_calendrier_ts;";
+	}
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$retour.="<table class='boireaus boireaus_alt' summary='Vacances scolaires'>
+	<tr>
+		<th>Titre</th>
+		<th>Du</th>
+		<th>Au</th>
+	</tr>";
+		while($lig=mysqli_fetch_object($res)) {
+			if(($griser=="y")&&($lig->fin_calendrier_ts<time())) {
+				$passe=" style='background-color:grey'";
+			}
+			else {
+				$passe="";
+			}
+
+			if(($affiche_passe=="y")||($passe=="")) {
+				$retour.="
+	<tr".$passe.">
+		<th".$passe.">".$lig->nom_calendrier."</th>
+		<td>".strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
+		<td>".strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
+	</tr>";
+			}
+		}
+		$retour.="</table>";
+	}
+
+	return $retour;
+}
+
+function affiche_calendrier_vacances() {
+	$retour="";
+
+	// Boucler sur les mois de septembre à juillet et griser les jours non ouvrés et vacances
+	// Sur une option afficher l'indication de semaine A/B
+
+	return $retour;
+}
+
+function affiche_tableau_periodes_ouvertes() {
+	global $couleur_verrouillage_periode, $traduction_verrouillage_periode;
+
+	$retour="";
+
+	//SELECT c.classe, p.* FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe,p.;
+
+	$sql="SELECT max(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+
+		$tab_clas=array();
+		$sql=retourne_sql_mes_classes();
+		$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_clas)>0) {
+			$retour="<table class='boireaus'>
+	<tr>
+		<th></th>";
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
+
+			$retour.="
+		<th>".$lig_clas->classe."</th>";
+			}
+			$retour.="
+	</tr>";
+		}
+
+		$tab_per_clas=array();
+		$sql="SELECT p.* FROM periodes p;";
+		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_per)>0) {
+			while($lig_per=mysqli_fetch_object($res_per)) {
+				$tab_per_clas[$lig_per->id_classe][$lig_per->num_periode]=$lig_per->verouiller;
+			}
+		}
+
+		for($i=1;$i<=$maxper;$i++) {
+			$retour.="
+	<tr>
+		<th title='Période $i'>P.".$i."</th>";
+
+			foreach($tab_clas as $id_classe => $classe) {
+				if(!isset($tab_per_clas[$id_classe][$i])) {
+					$retour.="
+		<td style='background-color:grey'></td>";
+				}
+				else {
+					$retour.="
+		<td style='background-color:".$couleur_verrouillage_periode[$tab_per_clas[$id_classe][$i]]."' title=\"Classe de ".$classe." : Période $i ".$traduction_verrouillage_periode[$tab_per_clas[$id_classe][$i]]."\"></td>";
+				}
+
+				$retour.="
+		</td>";
+
+			}
+
+			$retour.="
+	</tr>";
+		}
+			$retour.="
+</table>";
+
+	}
+
+	return $retour;
+}
+
+function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins() {
+	global $couleur_verrouillage_periode, $traduction_verrouillage_periode;
+
+	$retour="";
+
+	//SELECT c.classe, p.* FROM periodes p, classes c WHERE c.id=p.id_classe ORDER BY c.classe,p.;
+
+	$sql="SELECT max(num_periode) AS maxper FROM periodes;";
+	$res=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$lig=mysqli_fetch_object($res);
+		$maxper=$lig->maxper;
+
+		$tab_clas=array();
+		$sql=retourne_sql_mes_classes();
+		$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_clas)>0) {
+			$retour="<table class='boireaus'>
+	<tr>
+		<th></th>";
+			while($lig_clas=mysqli_fetch_object($res_clas)) {
+				$tab_clas[$lig_clas->id_classe]=$lig_clas->classe;
+
+			$retour.="
+		<th>".$lig_clas->classe."</th>";
+			}
+			$retour.="
+	</tr>";
+		}
+
+		$tab_per_clas=array();
+		$sql="SELECT * FROM matieres_appreciations_acces;";
+		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_per)>0) {
+			while($lig_per=mysqli_fetch_object($res_per)) {
+				$tab_per_clas[$lig_per->id_classe][$lig_per->periode]=$lig_per->acces;
+			}
+		}
+
+		for($i=1;$i<=$maxper;$i++) {
+			$retour.="
+	<tr>
+		<th title='Période $i'>P.".$i."</th>";
+
+			foreach($tab_clas as $id_classe => $classe) {
+				if(!isset($tab_per_clas[$id_classe][$i])) {
+					$retour.="
+		<td style='background-color:grey'></td>";
+				}
+				elseif($tab_per_clas[$id_classe][$i]=="y") {
+					$retour.="
+		<td style='background-color:green' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe sont visibles des parents et élèves.\"></td>";
+				}
+				elseif($tab_per_clas[$id_classe][$i]=="n") {
+					$retour.="
+		<td style='background-color:red' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe ne sont pas visibles des parents et élèves.\"></td>";
+				}
+				else {
+					$retour.="
+		<td title=\"Classe de ".$classe." en période $i : ???\">???</td>";
+				}
+
+				$retour.="
+		</td>";
+
+			}
+
+			$retour.="
+	</tr>";
+		}
+			$retour.="
+</table>";
+
+	}
+
+	return $retour;
 }
 ?>

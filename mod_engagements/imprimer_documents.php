@@ -121,6 +121,8 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 		// Load the template
 		$nom_fichier_modele_ooo ='liste_eleve_conseil_classe.odt';
 
+		$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+
 		//Procédure du traitement à effectuer
 		//les chemins contenant les données
 		include_once ("../mod_ooo/lib/chemin.inc.php");
@@ -263,6 +265,7 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 
 		// Load the template
 		$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
+		$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 		//Procédure du traitement à effectuer
 		//les chemins contenant les données
@@ -599,6 +602,7 @@ __ADR_ETAB__
 
 	// Load the template
 	$nom_fichier_modele_ooo ='convocation_conseil_classe.odt';
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 	//Procédure du traitement à effectuer
 	//les chemins contenant les données
@@ -706,6 +710,7 @@ if((isset($id_classe[0]))&&(isset($_GET['imprimer_liste_eleve']))&&(isset($_GET[
 
 	// Load the template
 	$nom_fichier_modele_ooo ='liste_eleve_conseil_classe.odt';
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 	//Procédure du traitement à effectuer
 	//les chemins contenant les données
@@ -990,6 +995,7 @@ print_r($dates_conseils);
 echo "</pre>";
 */
 
+$msg_scorie="";
 echo "<p class='bold'>Choisissez&nbsp;:</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>
@@ -1057,54 +1063,60 @@ for($i=0;$i<count($id_classe);$i++) {
 			<tbody>";
 				foreach($tab_engagements_classe['id_engagement_user'][$current_id_engagement] as $key => $value) {
 					$current_user=get_info_user($value);
-
-					echo "
+					/*
+					echo "\$value=$value<br />";
+					echo "<pre>";
+					print_r($current_user);
+					echo "</pre>";
+					*/
+					if(count($current_user)>0) {
+						echo "
 				<tr>
 					<td>".$current_user['civ_denomination']."</td>
 					<td>";
-					if(count($dates_conseils[$id_classe[$i]])>0) {
-						if($acces_imprimerConvocationConseilClasse) {
-							echo "<input type='checkbox' name='convocation_".$id_classe[$i]."[]' id='convocation_$cpt1' value=\"$value\" />";
-						}
-						else {
-							echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Les comptes '".$_SESSION['statut']."s' ne sont pas autorisés à imprimer les convocations.\" >";
-						}
-					}
-					else {
-						echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
-					}
-					echo "</td>
-					<td>";
-					if(count($dates_conseils[$id_classe[$i]])>0) {
-						$current_mail=get_mail_user($value);
-						if($acces_imprimerConvocationConseilClasse) {
-							if(check_mail($current_mail)) {
-								echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
+						if(count($dates_conseils[$id_classe[$i]])>0) {
+							if($acces_imprimerConvocationConseilClasse) {
+								echo "<input type='checkbox' name='convocation_".$id_classe[$i]."[]' id='convocation_$cpt1' value=\"$value\" />";
 							}
 							else {
-								echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
+								echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Les comptes '".$_SESSION['statut']."s' ne sont pas autorisés à imprimer les convocations.\" >";
 							}
 						}
 						else {
-							echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Le comptes '".$_SESSION['statut']."s' ne sont pas autorisés à envoyer les convocations par mail.\" >";
+							echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
 						}
-					}
-					else {
-						echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
-					}
+						echo "</td>
+					<td>";
+						if(count($dates_conseils[$id_classe[$i]])>0) {
+							$current_mail=get_mail_user($value);
+							if($acces_imprimerConvocationConseilClasse) {
+								if(check_mail($current_mail)) {
+									echo "<input type='checkbox' name='mail_".$id_classe[$i]."[]' id='mail_$cpt1' value=\"$value\" />";
+								}
+								else {
+									echo "<img src='../images/disabled.png' class='icone20' alt='Mail non valide' title=\"Mail non valide : '".$current_mail."'\" >";
+								}
+							}
+							else {
+								echo "<img src='../images/disabled.png' class='icone20' alt='Non autorisé' title=\"Le comptes '".$_SESSION['statut']."s' ne sont pas autorisés à envoyer les convocations par mail.\" >";
+							}
+						}
+						else {
+							echo "<img src='../images/disabled.png' class='icone20' alt='Pas de date' title=\"Aucune date de conseil de classe n'est saisie.\" >";
+						}
 
-					$infos_supplementaires="";
-					if($current_user['statut']=='responsable') {
-						$infos_supplementaires=affiche_infos_adresse_et_tel("", $current_user);
-					}
-					//get_info_responsable($login_resp)
-					//get_info_user($login_resp);
-					//GepiAccesGestElevesProfP
-					//GepiAccesGestElevesProf
-					//GepiAccesGestElevesProfesseur n'existe pas mais serait testé par AccesInfoResp()
-					// AccesInfoResp("GepiAccesGestEleves", $value)
+						$infos_supplementaires="";
+						if($current_user['statut']=='responsable') {
+							$infos_supplementaires=affiche_infos_adresse_et_tel("", $current_user);
+						}
+						//get_info_responsable($login_resp)
+						//get_info_user($login_resp);
+						//GepiAccesGestElevesProfP
+						//GepiAccesGestElevesProf
+						//GepiAccesGestElevesProfesseur n'existe pas mais serait testé par AccesInfoResp()
+						// AccesInfoResp("GepiAccesGestEleves", $value)
 
-					echo "</td>
+						echo "</td>
 					<td>
 						<!-- Je ne vois pas comment générer d'un coup un fichier ODT/ODS avec les listes d'élèves à distribuer aux différents délégués -->
 						<!--input type='checkbox' name='liste_eleve_".$id_classe[$i]."' id='liste_eleve_$cpt2' value=\"$value\" /-->
@@ -1114,11 +1126,15 @@ for($i=0;$i<count($id_classe);$i++) {
 						$infos_supplementaires
 					</td>
 				</tr>";
-					// Ajouter un lien vers une page avec les infos dans le cas resp pour les PP avec GepiAccesGestElevesProfP, pour les scol,...
-					if(count($dates_conseils[$id_classe[$i]])>0) {
-						$cpt1++;
+						// Ajouter un lien vers une page avec les infos dans le cas resp pour les PP avec GepiAccesGestElevesProfP, pour les scol,...
+						if(count($dates_conseils[$id_classe[$i]])>0) {
+							$cpt1++;
+						}
+						$cpt2++;
 					}
-					$cpt2++;
+					else {
+						$msg_scorie.="Il semble qu'il reste des scories concernant le login $value (<em>vous devriez effectuer un nettoyage des tables</em>).<br />";
+					}
 				}
 				echo "
 			</tbody>
@@ -1132,6 +1148,11 @@ for($i=0;$i<count($id_classe);$i++) {
 	}
 	echo "
 		</div>";
+}
+
+if($msg_scorie!="") {
+	echo "
+<p style='color:red'>$msg_scorie</p>";
 }
 
 if($acces_imprimerConvocationConseilClasse) {

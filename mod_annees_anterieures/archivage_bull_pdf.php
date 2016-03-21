@@ -419,6 +419,9 @@ else {
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);
 
+		$sql="CREATE TABLE IF NOT EXISTS tempo4 ( col1 varchar(100) NOT NULL default '', col2 varchar(100) NOT NULL default '', col3 varchar(100) NOT NULL default '', col4 varchar(100) NOT NULL default '') ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+		$creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
+
 		// On va stocker la liste des id_classe,login,fichiers
 		$sql="TRUNCATE tempo4;";
 		$menage=mysqli_query($GLOBALS["mysqli"], $sql);

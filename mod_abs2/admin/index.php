@@ -74,21 +74,6 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
 			}
 		}
-		if (isset($_POST['abs2_sms_prestataire'])) {
-			if (!saveSetting("abs2_sms_prestataire", $_POST['abs2_sms_prestataire'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre prestataire sms !";
-			}
-		}
-		if (isset($_POST['abs2_sms_username'])) {
-			if (!saveSetting("abs2_sms_username", $_POST['abs2_sms_username'])) {
-				$msg = "Erreur lors de l'enregistrement du nom d'utilisateur prestataire sms !";
-			}
-		}
-		if (isset($_POST['abs2_sms_password'])) {
-			if (!saveSetting("abs2_sms_password", $_POST['abs2_sms_password'])) {
-				$msg = "Erreur lors de l'enregistrement du mot de passe prestataire sms !";
-			}
-		}
 		if (isset($_POST['abs2_retard_critere_duree'])) {
 			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
 				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
@@ -164,7 +149,6 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
-
 		if (isset($_POST['abs2_sms'])) {
 			if (!saveSetting("abs2_sms", $_POST['abs2_sms'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
@@ -174,7 +158,6 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
-
 		if (isset($_POST['abs2_saisie_par_defaut_sans_manquement'])) {
 			if (!saveSetting("abs2_saisie_par_defaut_sans_manquement", $_POST['abs2_saisie_par_defaut_sans_manquement'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sans_manquement";
@@ -411,34 +394,24 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 </p>
 
 <h2>Envoi des SMS</h2>
-<p>
-	<input type="checkbox" id="abs2_sms" name="abs2_sms" value="y"
-	<?php if (getSettingValue("abs2_sms")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_sms">&nbsp;Activer l'envoi des sms</label>
-</p>
+	<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
+		<em>NOTE 1&nbsp;:</em> Le paramétrage de l'envoi de SMS est à définir dans le module de <a href="../../gestion/param_gen.php#config_envoi_sms">Configuration générale.</a>
+	</p>
 <?php
-  $extensions = get_loaded_extensions();
-  if(!in_array('curl',$extensions)) {
-      echo "<p style='font-style: italic; color:red'>ATTENTION : Il semble que votre serveur ne soit pas configuré pour l'envoi de SMS. Cette fonctionnalité nécéssite l'extension PHP CURL.";
-      echo "</p>";
-  };
- ?>
-<p>
-    <label for="abs2_sms_prestataire">Choisissez un prestataire</label>
-	<select id="abs2_sms_prestataire" name="abs2_sms_prestataire">
-	<option value=''></option>
-	<option value='tm4b' <?php if (getSettingValue("abs2_sms_prestataire")=='tm4b') echo " selected "; ?> >www.tm4b.com</option>
-    <option value='pluriware' <?php if (getSettingValue("abs2_sms_prestataire")=='pluriware') echo " selected "; ?> >Pluriware (agréée EN)</option>
-	<option value='123-sms' <?php if (getSettingValue("abs2_sms_prestataire")=='123-sms') echo " selected "; ?> >www.123-sms.net</option>
-	</select><br/>
-	Nom d'utilisateur du service <input type="text" name="abs2_sms_username" size="20" value="<?php echo(getSettingValue("abs2_sms_username")); ?>"/><br/>
-	Mot de passe <input type="text" name="abs2_sms_password" size="20" value="<?php echo(getSettingValue("abs2_sms_password")); ?>"/><br/>
-</p>
-
-<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
-	<em>NOTE&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
-</p>
-
+if (getSettingAOui("autorise_envoi_sms"))
+	{
+?>
+	<p>
+		<input type="checkbox" id="abs2_sms" name="abs2_sms" value="y"
+		<?php if (getSettingAOui("abs2_sms")) echo " checked='checked'"; ?> />
+		<label for="abs2_sms">&nbsp;Activer l'envoi des SMS</label>
+	</p>
+	<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
+		<em>NOTE 2&nbsp;:</em> Le fichier modèle de SMS, comme les fichiers modèles openDocument générés par ce module peuvent être modifiés/remplacés dans la rubrique <a href="../../mod_ooo/gerer_modeles_ooo.php#MODULE_ABSENCE">Gérer ses propres modèles de documents du module</a>.
+	</p>
+<?php
+	}
+?>
 <h2>Configuration des saisies</h2>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"

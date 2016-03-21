@@ -2,7 +2,7 @@
 
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -100,6 +100,9 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+
+$javascript_specifique[] = "lib/tablekit";
+$utilisation_tablekit="ok";
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -664,28 +667,30 @@ $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Liste des retenues (<em>et assimilées</em>) non effectuées pour une date antérieure au $jour_sanction</p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	//echo "<th>Date</th>\n";
 	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
-	echo "<th>Nature</th>\n";
-	echo "<th title=\"Trier par date\"><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
-	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
-	echo "#retenues_en_souffrance'>Date</a></th>\n";
-	echo "<th>Heure</th>\n";
-	echo "<th>Durée</th>\n";
-	echo "<th>Lieu</th>\n";
-	echo "<th>Elève</th>\n";
-	echo "<th>Travail</th>\n";
-	echo "<th>Donné par (Déclarant)</th>\n";
-	echo "<th>Nbre de report</th>\n";
+	echo "<th class='text'>Nature</th>\n";
+	//echo "<th title=\"Trier par date\"><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
+	//if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
+	echo "<th title=\"Trier par date\" class='text'>Date</th>\n";
+	echo "<th class='number'>Heure</th>\n";
+	echo "<th class='number'>Durée</th>\n";
+	echo "<th class='text'>Lieu</th>\n";
+	echo "<th class='text'>Elève</th>\n";
+	echo "<th class='text'>Classe</th>\n";
+	echo "<th class='text'>Travail</th>\n";
+	echo "<th class='text'>Donné par (Déclarant)</th>\n";
+	echo "<th class='number'>Nbre de report</th>\n";
 	echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
-			echo "<tr class='lig$alt_b'>\n";
+			//echo "<tr class='lig$alt_b'>\n";
+			echo "<tr>\n";
 
 			echo "<td>";
 
@@ -709,7 +714,9 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			echo "<td>".ucfirst($lig_sanction->nature)."</td>\n";
 			//echo "<td><a href='saisie_sanction.php?mode=modif&amp;valeur=retenue&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer'";
+
 			echo "<td>";
+			echo "<span style='display:none'>".$lig_sanction->date."</span>";
 			$tmp_date_sanction=formate_date($lig_sanction->date);
 			echo "<a href='saisie_sanction.php?mode=modif&amp;valeur=$lig_sanction->id_nature_sanction&amp;ele_login=$lig_sanction->login&amp;id_incident=$lig_sanction->id_incident&amp;id_sanction=$lig_sanction->id_sanction' title='Reprogrammer ou modifier la sanction.'";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -721,12 +728,16 @@ if(mysqli_num_rows($res_sanction)>0) {
 			echo "<td>$lig_sanction->lieu</td>\n";
 			echo "<td>";
 			echo p_nom($lig_sanction->login);
-			echo " (<i>";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			//echo " (<i>";
 			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
 			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
 			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-			echo "</i>)";
+			//echo "</i>)";
 			echo "</td>\n";
+
 			echo "<td style='text-align:left;'>";
 			$travail=$lig_sanction->travail;
 
@@ -803,24 +814,29 @@ $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sanction)>0) {
 	echo "<p class='bold'>Travaux à rendre pour une date antérieure au $jour_sanction</p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
-	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
-	echo "<th>Nature</th>\n";
-	echo "<th>Elève</th>\n";
+	echo "<th class='number' title=\"Numéro de l'incident\">N°i</th>\n";
+	echo "<th class='text'>Nature</th>\n";
+	echo "<th class='text'>Elève</th>\n";
 	//echo "<th>Date de retour</th>\n";
+	/*
 	echo "<th><a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=$details&amp;order_by_date=";
 	if($order_by_date=='asc') {echo "desc";} else {echo "asc";}
 	echo "#travaux_en_souffrance'>Date de retour</a></th>\n";
-	echo "<th>Travail</th>\n";
-	echo "<th>Donné par (Déclarant)</th>\n";
+	*/
+	echo "<th class='text'>Date de retour</th>\n";
+	echo "<th class='text'>Classe</th>\n";
+	echo "<th class='text'>Travail</th>\n";
+	echo "<th class='text'>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
 		if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
 			$alt_b=$alt_b*(-1);
-			echo "<tr class='lig$alt_b'>\n";
+			//echo "<tr class='lig$alt_b'>\n";
+			echo "<tr>\n";
 
 			echo "<td>";
 
@@ -846,14 +862,18 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			echo "<td>";
 			echo p_nom($lig_sanction->login);
-			echo " (<i>";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			//echo " (<i>";
 			$tmp_tab=get_class_from_ele_login($lig_sanction->login);
 			//if(isset($tmp_tab['liste'])) {echo $tmp_tab['liste'];}
 			if(isset($tmp_tab['liste_nbsp'])) {echo $tmp_tab['liste_nbsp'];}
-			echo "</i>)";
+			//echo "</i>)";
 			echo "</td>\n";
 
 			echo "<td>";
+			echo "<span style='display:none'>".$lig_sanction->date_retour."</span>";
 			echo formate_date($lig_sanction->date_retour);
 			echo "</td>\n";
 

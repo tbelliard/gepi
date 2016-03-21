@@ -160,6 +160,13 @@ if (isset($_POST['is_posted'])) {
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
+	$tab_app_tempo=array();
+	$sql="SELECT * FROM matieres_appreciations_tempo WHERE id_groupe = '".$id_groupe."';";
+	$res_app_temp=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_app_tempo=mysqli_fetch_object($res_app_temp)) {
+		$tab_app_tempo[$lig_app_tempo->periode][$lig_app_tempo->login]=$lig_app_tempo->appreciation;
+	}
+
 	$k=1;
 	while ($k < $nb_periode) {
 		//=========================
@@ -486,6 +493,8 @@ elseif((isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_corr
 
 		if(
 			(
+				($current_group["classe"]["ver_periode"]['all'][$correction_periode] == 1)&&
+
 				(
 					($app_grp[$correction_periode]!='')||
 					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
@@ -1074,6 +1083,8 @@ while ($k < $nb_periode) {
 
 		if(
 			(
+				($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
+
 				(
 					($app_grp[$k]!='')||
 					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
@@ -1232,6 +1243,7 @@ $i=0;
 //=========================
 // Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
 $chaine_champs_input_prenom="";
+$chaine_champs_input_nom="";
 $chaine_champs_input_login="";
 //=========================
 // 20150316: Désactivé parce que cela provoque une série de requêtes ajax au chargement de la page.
@@ -1507,7 +1519,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 					$titre="Notes de $eleve_nom $eleve_prenom sur la période $k";
 					$texte="<div style='float:right; width:16px' title=\"Visualiser les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' target='_blank'><img src='../images/icons/cn_16.png' class='icone16' alt='Visualiser CN' /></a></div>";
-					$texte.="<div style='float:right; width:16px' title=\"Visualiser en infobulle les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' onclick=\"affiche_div_notes_cn(".$current_group['id'].", '".$eleve_login."');return false;\" target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
+					$texte.="<div style='float:right; width:16px' title=\"Visualiser en infobulle les notes du carnet de notes.\"><a href='../cahier_notes/saisie_notes.php?id_groupe=".$id_groupe."&amp;periode_num=$k' onclick=\"affiche_div_notes_cn(".$current_group['id'].", '".$eleve_login."', $k, $num_id);return false;\" target='_blank'><img src='../images/icons/chercher.png' class='icone16' alt='Visualiser' /></a></div>";
 					$texte.=$liste_notes_detaillees;
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
@@ -1526,6 +1538,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].="<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$eleve_login_t[$k]."\" />\n";
 
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
+				$chaine_champs_input_nom.="<input type='hidden' name='nom_eleve_".$k."[$i]' id='nom_eleve_".$k.$num_id."' value=\"".$eleve_nom."\" />\n";
 
 				$chaine_champs_input_login.="<input type='hidden' name='login_eleve_".$k."[$i]' id='login_eleve_".$k.$num_id."' value=\"".$eleve_login_t[$k]."\" />\n";
 
@@ -1598,18 +1611,6 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		$k++;
 	}
-
-
-	$titre_infobulle="Notes";
-	$texte_infobulle="<div id='div_notes_cn'></div>";
-	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
-	echo "<script type='text/javascript'>
-	function affiche_div_notes_cn(id_groupe, login_ele) {
-		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login='+login_ele+'&id_groupe='+id_groupe,{method: 'get'});
-
-		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
-	}
-</script>";
 
 
 	//
@@ -1864,6 +1865,28 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 </form>
 
 <?php
+
+	$titre_infobulle="Notes <span id='span_titre_notes_ele'></span>";
+	$texte_infobulle="<div id='div_notes_cn'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	echo "<script type='text/javascript'>
+	function affiche_div_notes_cn(id_groupe, login_ele, num_per, num_id_ele) {
+		designation_ele='';
+		if(document.getElementById('nom_eleve_'+num_per+num_id_ele)) {
+			designation_ele=document.getElementById('nom_eleve_'+num_per+num_id_ele).value;
+		}
+		if(document.getElementById('prenom_eleve_'+num_per+num_id_ele)) {
+			designation_ele=designation_ele+' '+document.getElementById('prenom_eleve_'+num_per+num_id_ele).value;
+		}
+
+		document.getElementById('span_titre_notes_ele').innerHTML=designation_ele;
+
+		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login='+login_ele+'&id_groupe='+id_groupe,{method: 'get'});
+
+		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
+	}
+</script>";
+
 	for($loop=1;$loop<$nb_periode;$loop++) {
 		$histogramme="";
 
@@ -1914,6 +1937,13 @@ echo "<script type='text/javascript'>
 				fermer_div_notes();
 				afficher_div(id_div_notes,'y',20,20);
 				// A FAIRE: Ajouter un test: si le positionnement a échoué et qu'on est hors fenêtre repositionner.
+			}
+
+			// 20160312
+			if(document.getElementById('div_infobulle_notes_cn')) {
+				if(document.getElementById('div_infobulle_notes_cn').style.display!='none') {
+					document.getElementById('div_infobulle_notes_cn').style.display='none';
+				}
 			}
 		}
 	}
@@ -2178,6 +2208,7 @@ function addslashes (str) {
 // Les champs INPUT des prénoms sont insérés hors du formulaire principal pour éviter d'envoyer trop de champs lors du submit (problèmes avec suhosin qui limite le nombre de champs pouvant être POSTés)
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form2' method=\"post\">\n";
 echo $chaine_champs_input_prenom;
+echo $chaine_champs_input_nom;
 echo $chaine_champs_input_login;
 echo "</form>\n";
 // ==============================================================
