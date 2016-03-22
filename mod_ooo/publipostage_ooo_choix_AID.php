@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2015 Régis Bouguin
+ * Copyright 2015-2016 Régis Bouguin
  *
  * This file is part of GEPI.
  *
@@ -40,7 +40,7 @@ $cpt = 1;
 
 $nombreligne = $res->num_rows;
 $nbcol=3;
-$nb_par_colonne=round($nombreligne/$nbcol);
+$nb_par_colonne=ceil($nombreligne/$nbcol);
 
 while ($obj = $res->fetch_object()) {
 	/*
@@ -67,7 +67,7 @@ while ($obj = $res->fetch_object()) {
 					</label>
 				</p>
 <?php
-	if (!($cpt % $nbcol))  {
+	if (!($cpt % $nb_par_colonne))  {
 ?>
 		</div>
 		<div class="colonne03">
