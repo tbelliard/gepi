@@ -1993,11 +1993,12 @@ class Eleve extends BaseEleve {
         if ($date_debut_test == null) {
             $date_debut_test = new DateTime('now');
         }
-        $date_sortie_eleve = $this->getDateSortie();            
+        $date_sortie_eleve = $this->getDateSortie();
         if (is_null($date_sortie_eleve) || $date_sortie_eleve == 0) {
             return false;
         } else {
-            if ($date_debut_test > $date_sortie_eleve) {
+            //if ($date_debut_test > $date_sortie_eleve) {
+            if ($date_debut_test->format("Y-m-d H:i:s") > $date_sortie_eleve) {
                 return(true);
             } else {
                 return(false);
