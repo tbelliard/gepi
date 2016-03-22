@@ -99,6 +99,9 @@ if (isset($eleve)) {
 	$tab_eleves_OOo=array();
 	$nb_eleve=0;
 
+	$tab_liste_classes=array();
+	$tab_liste_periodes=array();
+
 	debug_impr("Avant get_tab_type_avertissement().");
 	$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
 	debug_impr("Apres get_tab_type_avertissement().");
@@ -114,6 +117,13 @@ if (isset($eleve)) {
 			$current_eleve_login=$tab[2];
 
 			$classe=get_nom_classe($current_id_classe);
+
+			if(!in_array($classe,$tab_liste_classes)) {
+				$tab_liste_classes[]=$classe;
+			}
+			if(!in_array($current_periode,$tab_liste_periodes)) {
+				$tab_liste_periodes[]=$current_periode;
+			}
 
 			debug_impr("Avant get_info_eleve($current_eleve_login, $current_periode)");
 			$tab_current_ele=get_info_eleve($current_eleve_login, $current_periode);
@@ -345,7 +355,18 @@ if (isset($eleve)) {
    $OOo->MergeBlock('eleves',$tab_eleves_OOo);
    
    $nom_fic = $nom_fichier_modele_ooo;
-   
+
+   if(count($tab_liste_classes)<5) {
+   	$nom_fic="avertissement_fin_periode";
+   	for($loop=0;$loop<count($tab_liste_classes);$loop++) {
+   		$nom_fic.="_".ensure_ascii(preg_replace("/^[A-Za-z0-9]$/","",$tab_liste_classes[$loop]));
+   	}
+   	for($loop=0;$loop<count($tab_liste_periodes);$loop++) {
+   		$nom_fic.="_P".$tab_liste_periodes[$loop];
+   	}
+   	$nom_fic.=".odt";
+   }
+
    $OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
    
    $OOo->remove(); //suppression des fichiers de travail
