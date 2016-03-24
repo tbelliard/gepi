@@ -100,6 +100,26 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['abs2_ne_pas_afficher_saisies_englobees'])) {
+			if (!saveSetting("abs2_ne_pas_afficher_saisies_englobees", $_POST['abs2_ne_pas_afficher_saisies_englobees'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_ne_pas_afficher_saisies_englobees";
+			}
+		} else {
+			if (!saveSetting("abs2_ne_pas_afficher_saisies_englobees", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_ne_pas_afficher_saisies_englobees";
+			}
+		}
+
+		if (isset($_POST['abs2_ne_pas_afficher_lignes_avec_traitement_englobant'])) {
+			if (!saveSetting("abs2_ne_pas_afficher_lignes_avec_traitement_englobant", $_POST['abs2_ne_pas_afficher_lignes_avec_traitement_englobant'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_ne_pas_afficher_lignes_avec_traitement_englobant";
+			}
+		} else {
+			if (!saveSetting("abs2_ne_pas_afficher_lignes_avec_traitement_englobant", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_ne_pas_afficher_lignes_avec_traitement_englobant";
+			}
+		}
+
 		if (isset($_POST['abs2_import_manuel_bulletin'])) {
 			if (!saveSetting("abs2_import_manuel_bulletin", $_POST['abs2_import_manuel_bulletin'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
@@ -327,6 +347,18 @@ echo add_token_field();
 	<input type="checkbox" name="abs2_alleger_abs_du_jour" id="abs2_alleger_abs_du_jour" value="y"
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_ne_pas_afficher_saisies_englobees" id="abs2_ne_pas_afficher_saisies_englobees" value="y"
+	<?php if (getSettingValue("abs2_ne_pas_afficher_saisies_englobees")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_ne_pas_afficher_saisies_englobees">&nbsp;Par défaut, ne pas afficher les saisies englobées dans la page 'Absences du jour'.<br />
+	<em>(les saisies englobées n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+</p>
+<p>
+	<input type="checkbox" name="abs2_ne_pas_afficher_lignes_avec_traitement_englobant" id="abs2_ne_pas_afficher_lignes_avec_traitement_englobant" value="y"
+	<?php if (getSettingValue("abs2_ne_pas_afficher_lignes_avec_traitement_englobant")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_ne_pas_afficher_lignes_avec_traitement_englobant">&nbsp;Par défaut, ne pas afficher les lignes concernant des saisies déjà traitées dans la page 'Absences du jour'.<br />
+	<em>(les saisies n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
 </p>
 <p>
 E-mail gestion absence établissement :

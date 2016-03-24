@@ -510,12 +510,18 @@ $eleve_col = $query
 
 				echo " - ";
 				$ne_pas_afficher_saisies_englobees=isset($_POST['ne_pas_afficher_saisies_englobees']) ? $_POST['ne_pas_afficher_saisies_englobees'] : NULL;
+				if((!isset($_POST['date_absence_eleve']))&&(getSettingAOui('abs2_ne_pas_afficher_saisies_englobees'))) {
+					$ne_pas_afficher_saisies_englobees="y";
+				}
 				$checked_ou_pas="";
 				if($ne_pas_afficher_saisies_englobees=="y") {$checked_ou_pas=" checked";}
 				echo "<input type='checkbox' id='ne_pas_afficher_saisies_englobees' name='ne_pas_afficher_saisies_englobees' value='y'$checked_ou_pas /><label for='ne_pas_afficher_saisies_englobees' title='Ne pas afficher les saisies englobées... sous réserve que les saisies ne soient pas conflictuelles.'>Ne pas afficher les saisies englobées</label>\n";
 
 				echo " - ";
 				$ne_pas_afficher_lignes_avec_traitement_englobant=isset($_POST['ne_pas_afficher_lignes_avec_traitement_englobant']) ? $_POST['ne_pas_afficher_lignes_avec_traitement_englobant'] : NULL;
+				if((!isset($_POST['date_absence_eleve']))&&(getSettingAOui('abs2_ne_pas_afficher_lignes_avec_traitement_englobant'))) {
+					$ne_pas_afficher_lignes_avec_traitement_englobant="y";
+				}
 				$checked_ou_pas="";
 				if($ne_pas_afficher_lignes_avec_traitement_englobant=="y") {$checked_ou_pas=" checked";}
 				echo "<input type='checkbox' id='ne_pas_afficher_lignes_avec_traitement_englobant' name='ne_pas_afficher_lignes_avec_traitement_englobant' value='y'$checked_ou_pas /><label for='ne_pas_afficher_lignes_avec_traitement_englobant' title='Ne pas afficher les lignes pour lesquelles les saisies sont traitées ou englobées...

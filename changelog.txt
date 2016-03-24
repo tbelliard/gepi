@@ -21,6 +21,7 @@ Bulletins:
 
 Absences2:
 - Affichage des manquements du jour sur la page d'accueil simplifiée parent.
+- Possibilité de ne pas afficher par défaut les saisies englobées ou traitées.
 
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
