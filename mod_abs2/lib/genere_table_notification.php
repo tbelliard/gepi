@@ -336,7 +336,7 @@ class AbsencesNotificationHelper {
 
 	// Envoi sms
 	$tab_to[]=$notification->getTelephone();
-	$reponse = envoi_SMS($tab_to,$message)
+	$reponse = envoi_SMS($tab_to,$message);
 
 	$notification->setDateEnvoi('now');
 
