@@ -2414,7 +2414,7 @@ if(isset($eleve_login)){
 		if(acces("/eleves/visu_eleve.php", $_SESSION['statut'])) {
 			echo "<br />\n";
 			echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
-			echo "<a href='visu_eleve.php?ele_login=".$eleve_login."'>Consultation élève</a>";
+			echo "<a href='visu_eleve.php?ele_login=".$eleve_login."' title=\"Voir les onglets élève.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Voir' /> Consultation élève</a>";
 			echo "</div>\n";
 			echo "<br />\n";
 		}
@@ -2455,7 +2455,7 @@ if(isset($eleve_login)){
 
 		echo "<br />\n";
 		echo "<div style='border: 1px solid black; text-align:center;' class='fieldset_opacite50'>\n";
-		echo "<a href='visu_eleve.php?ele_login=".$eleve_login."'>Consultation élève</a>";
+		echo "<a href='visu_eleve.php?ele_login=".$eleve_login."' title=\"Voir les onglets élève.\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Voir' /> Consultation élève</a>";
 		echo "</div>\n";
 		echo "<br />\n";
 		//=========================
