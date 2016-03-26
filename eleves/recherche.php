@@ -62,15 +62,17 @@ function extract_utilisateurs($tab_login) {
 			$tab_result_recherche['personnel'][$cpt_pers]['style_ligne']=$style_ligne;
 
 			// Login
+			$tab_result_recherche['personnel'][$cpt_pers]['login']=$lig->login;
 			if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-				$tab_result_recherche['personnel'][$cpt_pers]['login']=$lig->login;
-
 				if($acces_modify_user) {
 					$tab_result_recherche['personnel'][$cpt_pers]['td_login']="<a href='$gepiPath/utilisateurs/modify_user.php?user_login=$lig->login' title=\"Modifier les informations utilisateur\">$lig->login</a>";
 				}
 				else {
 					$tab_result_recherche['personnel'][$cpt_pers]['td_login']=$lig->login;
 				}
+			}
+			else {
+				$tab_result_recherche['personnel'][$cpt_pers]['td_login']=$lig->login;
 			}
 
 			$tab_result_recherche['personnel'][$cpt_pers]['nom_prenom']=casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2");
