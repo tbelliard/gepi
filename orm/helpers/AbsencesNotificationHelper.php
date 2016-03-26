@@ -244,136 +244,27 @@ class AbsencesNotificationHelper {
 	return $return_message;
 
     } else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
-	if (getSettingValue("abs2_sms")!='y') {
+	if (!getSettingAOui('autorise_envoi_sms') || !getSettingAOui('abs2_sms')) {
 	    return 'Erreur : envoi de sms désactivé.';
 	}
 
-	// Load the template
-	if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
-	    $url = "http://www.tm4b.com/client/api/http.php";
-	    $hote = "tm4b.com";
-	    $script = "/client/api/http.php";
-	    $param['username'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
-	    $param['password'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
-	    $param['type'] = 'broadcast'; // envoi de sms
-	    $param['msg'] = $message; // message que l'on désire envoyer
-
-	    $tel = $notification->getTelephone();
-	    if (mb_substr($tel, 0, 1) == '0') {
-		$tel = '33'.mb_substr($tel, 1, 9);
-	    }
-	    $param['to'] = $tel; // numéros de téléphones auxquels on envoie le message
-	    $param['from'] = getSettingValue("gepiSchoolName"); // expéditeur du message (first class uniquement)
-	    $param['route'] = 'business'; // type de route (pour la france, business class uniquement)
-	    $param['version'] = '2.1';
-	    $param['sim'] = 'yes'; // on active le mode simulation, pour tester notre script
-	} else if (getSettingValue("abs2_sms_prestataire")=='123-sms') {
-	    $url = "http://www.123-SMS.net/http.php";
-	    $hote = "123-SMS.net";
-	    $script = "/http.php";
-	    $param['email'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
-	    $param['pass'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
-	    $param['message'] = $message; // message que l'on désire envoyer
-	    $param['numero'] = $notification->getTelephone(); // numéros de téléphones auxquels on envoie le message
-	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
-            $url = "http://sms.pluriware.fr/httpapi.php";
-            $hote = "pluriware.fr";
-            $script = "/httpapi.php";
-            $param['user'] = getSettingValue("abs2_sms_username"); // identifiant du compte Pluriware
-            $param['pass'] = getSettingValue("abs2_sms_password"); // mot de passe du compte Pluriware
-	    $param['cmd'] = 'sendsms';            
-	    $param['txt'] = $message; // message a envoyer
-		$tel = $notification->getTelephone();
-		$tel = str_replace(" ","",$tel);
-		$tel = str_replace(".","",$tel);
-		$tel = str_replace("-","",$tel);
-		$tel = str_replace("/","",$tel);
-	    if (mb_substr($tel, 0, 1) == '0') { //Ajout indicatif 33
-		$tel = '33'.mb_substr($tel, 1, 9);
-	    }
-        $param['to'] = $tel; // numéro de téléphone auxquel on envoie le message
-	    $param['from'] = str_replace(" ","",getSettingValue("gepiSchoolTel")); // expéditeur du message (facultatif)
-	    /*
-    		Les  parametres suivants sont pour le moment facultatifs (janv/2011) 
-        mais peuvent êtres utiles pour une évolution future ou en cas de debug
-	    */
-	    $param['gepi_school'] = getSettingValue("gepiSchoolName");
-	    $param['gepi_version'] = getSettingValue("version"); // pour debug au cas ou
-	    $param['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remontée éventuelle des réponses par mail
-	    $param['gepi_rne'] = getSettingValue("gepiSchoolRne"); // identification supplémentaire
-	    $param['gepi_pays'] = getSettingValue("gepiSchoolPays"); // peux servir pour corriger ou insérer l'indicatif international du num tel
-		
-		//echo "<pre>";
-		//echo print_r($param);
-		//echo "</pre>";
-	}
-
-	$requete = '';
-	foreach($param as $clef => $valeur)  {
-	    $requete .= $clef . '=' . urlencode($valeur); // il faut bien formater les valeurs
-	    $requete .= '&';
-	}
-
-	if (in_array  ('curl', get_loaded_extensions())) {
-	    //on utilise curl pour la requete au service sms
-	    $ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $url);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	    curl_setopt($ch, CURLOPT_POST, 1);
-	    curl_setopt($ch, CURLOPT_POSTFIELDS, $requete);
-	    $reponse = curl_exec($ch);
-	    curl_close($ch);
-	} else {
-	    $longueur_requete = strlen($requete);
-	    $methode = "POST";
-	    $entete = $methode . " " . $script . " HTTP/1.1\r\n";
-	    $entete .= "Host: " . $hote . "\r\n";
-	    $entete .= "Content-Type: application/x-www-form-urlencoded\r\n";
-	    $entete .= "Content-Length: " . $longueur_requete . "\r\n";
-	    $entete .= "Connection: close\r\n\r\n";
-	    $entete .= $requete . "\r\n";
-	    $socket = fsockopen($hote, 80, $errno, $errstr);
-	    if($socket) {
-		fputs($socket, $entete); // envoi de l'entete
-		while(!feof($socket)) {
-		    $reponseArray[] = fgets($socket); // recupere les resultats
-		}
-		$reponse = $reponseArray[8];
-		fclose($socket);
-	    } else {
-		$reponse = 'error : no socket available.';
-	    }
-	}
+	// Envoi sms
+	$tab_to[]=$notification->getTelephone();
+	$reponse = envoi_SMS($tab_to,$message);
 
 	$notification->setDateEnvoi('now');
 
 	//traitement de la réponse
-	if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
-	    if (mb_substr($reponse, 0, 5) == 'error') {
-		$return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
-		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-		$notification->setErreurMessageEnvoi($reponse);
-	    } else {
-		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-	    }
-	} else if (getSettingValue("abs2_sms_prestataire")=='123-sms') {
-	    if ($reponse != '80') {
-		$return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
-		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-		$notification->setErreurMessageEnvoi($reponse);
-	    } else {
-		$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-	    }
-	} else if (getSettingValue("abs2_sms_prestataire")=='pluriware') {
-            if (mb_substr($reponse, 0, 3) == 'ERR') {
-                $return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
-                $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
-                $notification->setErreurMessageEnvoi($reponse);
-            } else {
-                $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES);
-            }
-        }
-		
+
+	if ($reponse != 'OK') {
+	$return_message = 'Erreur : message non envoyé. Code erreur : '.$reponse;
+	$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
+	$notification->setErreurMessageEnvoi($reponse);
+	} else {
+	$notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES);
+	}
+	// Fin envoi sms
+	
 	$notification->save();
 	return $return_message;
     }
