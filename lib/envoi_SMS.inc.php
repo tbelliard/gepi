@@ -5,7 +5,7 @@
 //************************
 
 // tableau des prestataires pris en compte
-$tab_prestataires_SMS=array("pluriware.fr","tm4b.com","123-SMS.net");
+$tab_prestataires_SMS=array("pluriware.fr","tm4b.com","123-SMS.net","allmysms.com");
 
 function filtrage_numero($numero,$international=false) {
 	// supprime les caractères indésirables et ajoute éventuellement l'indicatif 33
@@ -183,11 +183,53 @@ function envoi_SMS($tab_to,$sms) {
 
 			break;
 
+		 case "allmysms.com" :
+			//URL Simul : https://api.allmysms.com/http/9.0/simulateCampaign/
+			//URL envoi : https://api.allmysms.com/http/9.0/sendSms/
+
+			$url='https://api.allmysms.com/http/9.0/sendSms/';
+			$script="";
+			$parametres['login']=getSettingValue("sms_username");    //votre identifant allmysms
+			$parametres['apiKey']=getSettingValue("sms_password");    //votre mot de passe allmysms
+			
+			$sender=substr(getSettingValue("sms_identite"),0,11);  //l'expediteur, attention pas plus de 11 caractères alphanumériques
+																	//Doit commencer par une lettre
+																	//Ne peut contenir que des caractères alphanumériques (a-z0-9) et majuscules, ou un espace
+																	//Pas de caractères accentués ou de caractères spéciaux
+
+			$message=substr($sms,0,160);    //le message SMS, attention pas plus de 160 caractères
+			$msisdn=filtrage_numero($tab_to[0],true);    //numéro de téléphone du destinataire
+			/*
+			$parametres['smsData']= "
+			<DATA>
+			   <MESSAGE><![CDATA[".$message."]]></MESSAGE>
+			   <TPOA>$sender</TPOA>
+			   <SMS>
+				  <MOBILEPHONE>$msisdn</MOBILEPHONE>
+			   </SMS>
+			</DATA>";
+			*/
+			$parametres['smsData']= "
+			{
+			   \"DATA\": {
+				  \"MESSAGE\": \"".$message."\",
+				 \"TPOA\": \"".$sender."\",
+				  \"SMS\": 	[
+							 {
+							 \"MOBILEPHONE\": \"".$msisdn."\"
+							 }
+							]
+			   }
+			}";
+			$reponse=envoi_requete_http($url,$script,$parametres);
+			$t_reponse=json_decode($reponse,true);
+			if ($t_reponse['status']==100) return "OK";
+				else return 'SMS non envoyé(s) : '.$t_reponse['statusText'];
+			break;
+
 		default :
 			return "SMS non envoyé(s) : prestataire SMS non défini.";
 		}
-	
-	return $reponse;
 }
 
 /* Tests prestataires
@@ -204,21 +246,27 @@ $script="/httpapi.php";
 $parametres=array("cmd"=>"sendsms");
 echo envoi_requete_http($url,$script,$parametres);
 
-echo "<hr>123-SMS<br>";			
+echo "<hr>123-SMS<br>";
 $url="www.123-SMS.net";
 $script="/http.php";
-$parametres=array("email"=>"toto","message"=>"test");	
+$parametres=array("email"=>"toto","message"=>"test");
 $r=envoi_requete_http($url,$script,$parametres);
 $t_erreurs=array(80 => "Le message a été envoyé", 81 => "Le message est enregistré pour un envoi en différé", 82 => "Le login et/ou mot de passe n’est pas valide",  83 => "vous devez créditer le compte", 84 => "le numéro de gsm n’est pas valide", 85 => "le format d’envoi en différé n’est pas valide", 86 => "le groupe de contacts est vide", 87 => "la valeur email est vide", 88 => "la valeur pass est vide",  89 => "la valeur numero est vide", 90 => "la valeur message est vide", 91 => "le message a déjà été envoyé à ce numéro dans les 24 dernières heures");
 echo $r." : ".$t_erreurs[$r];
 
 
-echo "<hr>Pluriware-SMS XML<br>";			
+echo "<hr>Pluriware-SMS XML<br>";
 $url="sms.pluriware.fr";
 $script="/xmlapi.php";
 $parametres=array("data"=>'<pluriAPI><login></login><password></password><sendMsg><to>330628000000</to><txt>Test msg 1</txt><climsgid></climsgid><status></status></sendMsg></pluriAPI>');	
 echo envoi_requete_http($url,$script,$parametres,"GET");
-			
+
+echo "<hr>allmysms.com<br>";
+$url='https://api.allmysms.com/http/9.0/sendSms/';
+$script="";
+$parametres=array("login"=>"test","apiKey"=>"pass","smsData"=>"");	
+echo envoi_requete_http($url,$script,$parametres);
+
 $url="www.ac-poitiers.fr";
 $script="/";
 $parametres=array();
