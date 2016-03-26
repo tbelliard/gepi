@@ -282,10 +282,18 @@
 	if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
 		if(getPref($_SESSION['login'], "accueil_tableau_ouverture_periode", "y")!="n") {
 			if(acces("/bulletin/verrouillage.php", $_SESSION['statut'])) {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><a href='$gepiPath/bulletin/verrouillage.php' title=\"Modifier l'ouverture/verrouillage des périodes.\" style='color:black;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.";
+				$chaine_tableaux_page_accueil.="\n\n";
+				$chaine_tableaux_page_accueil.=chaine_title_explication_verrouillage_periodes();
+				$chaine_tableaux_page_accueil.="\n\n";
+				$chaine_tableaux_page_accueil.="Vous pouvez supprimer l'affichage de ce tableau dans 'Gérer mon compte'.\"><a href='$gepiPath/bulletin/verrouillage.php' title=\"Modifier l'ouverture/verrouillage des périodes.\" style='color:black;'><strong>Tableau de l'ouverture/verrouillage des périodes</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
 			}
 			else {
-				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><strong>Tableau de l'ouverture/verrouillage des périodes</strong>";
+				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'ouverture/verrouillage des périodes.";
+				$chaine_tableaux_page_accueil.="\n\n";
+				$chaine_tableaux_page_accueil.=chaine_title_explication_verrouillage_periodes();
+				$chaine_tableaux_page_accueil.="\n\n";
+				$chaine_tableaux_page_accueil.="Vous pouvez supprimer l'affichage de ce tableau dans 'Gérer mon compte'.\"><strong>Tableau de l'ouverture/verrouillage des périodes</strong>";
 			}
 			$chaine_tableaux_page_accueil.=affiche_tableau_periodes_ouvertes();
 			$chaine_tableaux_page_accueil.="</div>";

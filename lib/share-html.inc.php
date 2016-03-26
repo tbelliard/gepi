@@ -5075,4 +5075,19 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins() {
 
 	return $retour;
 }
+
+function chaine_title_explication_verrouillage_periodes() {
+	global $couleur_verrouillage_periode, $traduction_verrouillage_periode, $explication_verrouillage_periode;
+
+	$chaine="Le verrouillage/déverrouillage s'effectue en compte *scolarité*.";
+	$chaine.="\n\n";
+	$chaine.="Légende:\n";
+	$chaine.="*".$couleur_verrouillage_periode['N']."*: Période ".$traduction_verrouillage_periode['N']."\n".preg_replace('/"/',"''",$explication_verrouillage_periode['N']);
+	$chaine.="\n\n";
+	$chaine.="*".$couleur_verrouillage_periode['P']."*: Période ".$traduction_verrouillage_periode['P']."\n".preg_replace('/"/',"''",$explication_verrouillage_periode['P']);
+	$chaine.="\n\n";
+	$chaine.="*".$couleur_verrouillage_periode['O']."*: Période ".$traduction_verrouillage_periode['O']."\n".preg_replace('/"/',"''",$explication_verrouillage_periode['O']);
+
+	return $chaine;
+}
 ?>
