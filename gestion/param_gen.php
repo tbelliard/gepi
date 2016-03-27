@@ -913,7 +913,7 @@ if (isset($_POST['sms_max_envois'])) {
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées (".strftime("%d/%m/%Y à %H:%M:%S").") !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 
 if((getSettingAOui('utiliser_phpmailer'))&&
 ((getSettingValue("phpmailer_smtp_host")=="")||
@@ -1959,7 +1959,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			<label for='aff_temoin_check_serveur' style='cursor: pointer'>Effectuer des "contacts" réguliers du serveur et afficher un témoin pour s'assurer que le serveur est bien à l'écoute.</label>
 			<br />
 			<span class='small'>
-				(<em>cela peut être utile dans le cas où vous avez une qualité de connexion aléatoire</em>)&nbsp;:</label>
+				(<em>cela peut être utile dans le cas où vous avez une qualité de connexion aléatoire</em>)&nbsp;:
 			</span>
 		</span>
 		<span class="cellTab plusPetit">
@@ -1979,7 +1979,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			<br />
 			<span class='small'>
 				(<em>utilisé dans des envois de mails pour donner l'adresse d'une page en particulier<br />
-				Exemple&nbsp;: https://NOM_SERVEUR/DOSSIER_GEPI</em>)&nbsp;:</label>
+				Exemple&nbsp;: https://NOM_SERVEUR/DOSSIER_GEPI</em>)&nbsp;:
 			</span>
 		</span>
 		<span class="cellTab plusPetit">
@@ -1996,7 +1996,7 @@ if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 			<span class='small'>
 				(<em>utilisé dans des envois de mails pour donner l'adresse d'une page en particulier<br />
 				Exemple&nbsp;: https://IP_SERVEUR/DOSSIER_GEPI<br />
-				Laisser vide si l'adresse interne d'accès à Gepi est la même que l'adresse externe</em>)&nbsp;:</label>
+				Laisser vide si l'adresse interne d'accès à Gepi est la même que l'adresse externe</em>)&nbsp;:
 			</span>
 		</span>
 		<span class="cellTab plusPetit">
@@ -2631,12 +2631,11 @@ echo add_token_field();
 
 <form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="form6" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
+	<p>
 <?php
 echo add_token_field();
-if((isset($_POST['autorise_envoi_sms']))&&($msg!="")) {
-	echo "<p style='color:red; text-align:center; font-weight: bold;'>".$msg."</p>";
-}
 ?>
+	</p>
 
 	<p  class="cellTab" style="font-variant: small-caps;">
 		Autoriser l'envoi de SMS&nbsp;:
@@ -2651,7 +2650,7 @@ if((isset($_POST['autorise_envoi_sms']))&&($msg!="")) {
 				if(getSettingAOui('autorise_envoi_sms')) {echo "checked='checked'";}
 			   ?>
 			   onchange='changement()' />
-		<label for='autorise_envoi_sms_y' style='cursor: pointer;'>
+		<label for='gepi_en_production_y' style='cursor: pointer;'>
 			Oui
 		</label>
 		<br />
@@ -2666,7 +2665,6 @@ if((isset($_POST['autorise_envoi_sms']))&&($msg!="")) {
 		<label for='autorise_envoi_sms_n' style='cursor: pointer;'>
 			Non
 		</label>
-	</p>
 	</p>
 	<br />
 	<p class="ligneCaps" style="font-variant: small-caps;">Identié de l'émetteur SMS&nbsp;:&nbsp;
@@ -2701,15 +2699,16 @@ if((isset($_POST['autorise_envoi_sms']))&&($msg!="")) {
 	<p class="center">
 		<input type="submit" name = "OK" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
-
-
+</fieldset>
 </form>
+
 <?php
 if (getSettingAOui('autorise_envoi_sms'))
 	{
 ?>
 	<br />
 	<form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="test_config_sms" style="width: 100%;">
+	<fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
 	<p  class="ligneCaps" style="font-variant: small-caps;">Vous pouvez tester les paramètres ci-dessus en envoyant un sms à ce numéro :
 	<input type="text"  style="width: 300px" name="numero_test_sms" value="">
 	</p>
@@ -2717,7 +2716,6 @@ if (getSettingAOui('autorise_envoi_sms'))
 	<p class="center">
 	<input type="submit" name="test_sms" value="Tester" style="font-variant: small-caps;" />
 	</p>
-	<form>
 	<?php
 	if (isset($_POST['test_sms']))
 		{
@@ -2734,10 +2732,12 @@ if (getSettingAOui('autorise_envoi_sms'))
 		}
 	?>
 	<br />
+	</fieldset>
+	</form>
 <?php
 	}
 ?>
-</fieldset>
+
 
 <hr />
 
