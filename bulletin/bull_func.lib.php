@@ -9338,7 +9338,8 @@ fclose($f);
 				if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
 					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 					$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
-					$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $tab_bull['synthese_classe'],'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					//$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], $tab_bull['synthese_classe'],'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+					$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 					$largeur_utilise = $largeur_utilise + $largeur_appreciation;
 				}
 				$cpt_ordre = $cpt_ordre + 1;
@@ -9590,10 +9591,55 @@ fclose($f);
 		//================
 
 
+		//==================================================================
+		// Synthèse
+		$X_note_moy_app = $tab_modele_pdf["X_note_app"][$classe_id];
+		$hauteur_synthese=20;
+		$marge_avant_synthese=5;
+
+		$Y_note_moy_app = $tab_modele_pdf["Y_note_app"][$classe_id]+$tab_modele_pdf["hauteur_note_app"][$classe_id]-$tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id]+$marge_avant_synthese;
+
+		$pdf->SetXY($X_note_moy_app, $Y_note_moy_app);
+		$pdf->SetFont('DejaVu','',10);
+		$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+		//================
+		// Titre de la ligne:
+		$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $hauteur_synthese, ("Synthèse"),1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+		//================
+		$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
+
+		$largeur_synthese=$tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise;
+
+		$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
+		//$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
+		$pdf->SetFillColor(255, 255, 255);
+		//$pdf->Cell($largeur_synthese, $hauteur_synthese, $tab_bull['synthese_classe'],'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+
+		if($use_cell_ajustee=="n") {
+			$pdf->Cell($largeur_synthese, $hauteur_synthese, $tab_bull['synthese_classe'],'TLRB',0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
+		}
+		else {
+			$taille_texte_total = $pdf->GetStringWidth($tab_bull['synthese_classe']);
+
+			$texte=$tab_bull['synthese_classe'];
+			$taille_max_police=$hauteur_caractere_appreciation;
+			$taille_min_police=ceil($taille_max_police/3);
+
+			$largeur_dispo=$largeur_synthese;
+			$h_cell=$hauteur_synthese;
+
+			if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+			cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+		}
+		//==================================================================
+
+
+
+		$largeur_utilise = 0;
+		// fin de boucle d'ordre
+		$pdf->SetFillColor(0, 0, 0);
 
 	}
-
-
 
 }
 
