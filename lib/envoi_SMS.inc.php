@@ -9,8 +9,9 @@ $tab_prestataires_SMS=array("pluriware.fr","tm4b.com","123-SMS.net","allmysms.co
 
 function filtrage_numero($numero,$international=false) {
 	// supprime les caractères indésirables et ajoute éventuellement l'indicatif 33
-	$numero=ereg_replace("[^0-9]","",$numero);
+	$numero=preg_replace("#[^0-9]#","",$numero);
 	if ($international) $numero='33'.substr($numero, 1);
+	return $numero;
 }
 
 function envoi_requete_http($url,$script,$t_parametres,$methode="POST") {
