@@ -168,11 +168,9 @@ function envoi_SMS($tab_to,$sms) {
 		case "123-SMS.net" :
 			$url="www.123-SMS.net";
 			$script="/http.php";
-			$hote="123-SMS.net";
-			$script="/http.php";
 			$parametres['email']=getSettingValue("sms_username"); // identifiant 123-SMS.net
 			$parametres['pass']=getSettingValue("sms_password"); // mot de passe 123-SMS.net
-			$parametres['message']=$sms; // message que l'on désire envoyer
+			$parametres['message']=urlencode($sms); // message que l'on désire envoyer
 			
 			foreach($tab_to as $key => $to) $tab_to[$key]=filtrage_numero($to);
 			$to=implode("-",$tab_to);
@@ -183,7 +181,7 @@ function envoi_SMS($tab_to,$sms) {
 				return 'SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
 				} 
 			else return "OK";
-			
+
 			break;
 
 		case "tm4b.com" :
