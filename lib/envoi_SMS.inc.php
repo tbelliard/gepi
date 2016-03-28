@@ -187,12 +187,10 @@ function envoi_SMS($tab_to,$sms) {
 		case "tm4b.com" :
 			$url="www.tm4b.com";
 			$script="/client/api/http.php";
-			$hote="tm4b.com";
-			$script="/client/api/http.php";
 			$parametres['username']=getSettingValue("sms_username"); // identifiant  TM4B
 			$parametres['password']=getSettingValue("sms_password"); // mot de passe  TM4B
 			$parametres['type']='broadcast'; // envoi de sms
-			$parametres['msg']=$sms; // message a envoyer
+			$parametres['msg']=urlencode($sms); // message a envoyer
 			
 			foreach($tab_to as $key => $to) $tab_to[$key]=filtrage_numero($to,true);
 			$to=implode("%7C",$tab_to);
@@ -204,7 +202,7 @@ function envoi_SMS($tab_to,$sms) {
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
 			
 			$reponse=envoi_requete_http($url,$script,$parametres);
-			if (mb_substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
+			if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
 				return 'SMS non envoyé(s) : '.$reponse;
 				} 
 			else return "OK";
