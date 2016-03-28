@@ -106,6 +106,7 @@ function envoi_SMS($tab_to,$sms) {
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
 		case "pluriware.fr" :
+/*
 			$url="sms.pluriware.fr";
 			$script="/httpapi.php";
 			$parametres['cmd']='sendsms';            
@@ -121,7 +122,7 @@ function envoi_SMS($tab_to,$sms) {
 			/*
 				Les  parametres suivants sont pour le moment facultatifs (janv/2011) 
 			mais peuvent êtres utiles pour une évolution future ou en cas de debug
-			*/
+
 			$parametres['gepi_school'] = getSettingValue("sms_identite");
 			$parametres['gepi_version'] = getSettingValue("version"); // pour debug au cas ou
 			$parametres['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remontée éventuelle des réponses par mail
@@ -133,7 +134,35 @@ function envoi_SMS($tab_to,$sms) {
 				return 'SMS non envoyé(s) : '.$reponse;
 				} 
 			else return "OK";
+*/
+			$url="sms.pluriware.fr";
+			$script="/xmlapi.php";
 
+			$parametres['data']="<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
+			<pluriAPI>
+				<login>".getSettingValue("sms_username")."</login>
+				<password>".getSettingValue("sms_password")."</password>";
+			foreach($tab_to as $to) {
+					$parametres['data'].="
+					<sendMsg>
+						<to>".filtrage_numero($to,true)."</to>
+						<txt>".urlencode($sms)."</txt>
+						<from>".substr(getSettingValue("sms_identite"),0,11)."</from>
+					</sendMsg>";
+			}
+			$parametres['data'].="
+			</pluriAPI>\n";
+
+			$reponse=envoi_requete_http($url,$script,$parametres);
+			$xml = new DOMDocument();
+			$xml->loadXML($reponse);
+			$err=$xml->getElementsByTagName('err');
+			if ($err->length!=0) {
+				$erreur="";
+				$descs=$xml->getElementsByTagName('desc');
+				foreach($descs as $desc) $erreur.=$desc->nodeValue;
+				return 'SMS non envoyé(s) : '.$erreur;
+			} else return "OK";
 			break;
 
 		case "123-SMS.net" :
