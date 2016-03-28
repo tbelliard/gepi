@@ -213,8 +213,8 @@ function envoi_SMS($tab_to,$sms) {
 			//URL Simul : https://api.allmysms.com/http/9.0/simulateCampaign/
 			//URL envoi : https://api.allmysms.com/http/9.0/sendSms/
 
-			$url='https://api.allmysms.com/http/9.0/sendSms/';
-			$script="";
+			$url='api.allmysms.com';
+			$script="/http/9.0/sendSms/";
 			$parametres['login']=getSettingValue("sms_username");    //votre identifant allmysms
 			$parametres['apiKey']=getSettingValue("sms_password");    //votre mot de passe allmysms
 			
