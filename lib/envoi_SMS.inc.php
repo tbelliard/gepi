@@ -171,6 +171,7 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['email']=getSettingValue("sms_username"); // identifiant 123-SMS.net
 			$parametres['pass']=getSettingValue("sms_password"); // mot de passe 123-SMS.net
 			$parametres['message']=urlencode($sms); // message que l'on désire envoyer
+			$parametres['from']=urlencode(getSettingValue("sms_identite")); // expéditeur
 			
 			foreach($tab_to as $key => $to) $tab_to[$key]=filtrage_numero($to);
 			$to=implode("-",$tab_to);
