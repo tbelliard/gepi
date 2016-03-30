@@ -1634,6 +1634,18 @@ autre='F',
 description='Impression des avis sur les groupes-classes',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_abs2/alerte_nj.php',
+administrateur='V',
+professeur='F',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Absences non justifiées depuis un certain temps',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

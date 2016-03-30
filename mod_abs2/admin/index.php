@@ -71,9 +71,43 @@ if (isset($_POST['is_posted'])) {
 		}
 		if (isset($_POST['gepiAbsenceEmail'])) {
 			if (!saveSetting("gepiAbsenceEmail", $_POST['gepiAbsenceEmail'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
+				$msg = "Erreur lors de l'enregistrement du paramètre gestion 'absence email' !";
 			}
 		}
+
+		if (isset($_POST['abs2_afficher_alerte_nj'])) {
+			if (!saveSetting("abs2_afficher_alerte_nj", "y")) {
+				$msg = "Erreur lors de l'enregistrement à 'y' du paramètre 'abs2_afficher_alerte_nj' !";
+			}
+		}
+		else {
+			if (!saveSetting("abs2_afficher_alerte_nj", "n")) {
+				$msg = "Erreur lors de l'enregistrement à 'n' du paramètre 'abs2_afficher_alerte_nj' !";
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_alerte_nb_nj'])) {
+			if(!preg_match("/^[0-9]{1,}$/", $_POST['abs2_afficher_alerte_nb_nj'])) {
+				$msg = "Valeur invalide pour 'abs2_afficher_alerte_nb_nj' !";
+			}
+			else {
+				if (!saveSetting("abs2_afficher_alerte_nb_nj", $_POST['abs2_afficher_alerte_nb_nj'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_afficher_alerte_nb_nj' !";
+				}
+			}
+		}
+
+		if (isset($_POST['abs2_afficher_alerte_nj_delai'])) {
+			if((!preg_match("/^[0-9]{1,}$/", $_POST['abs2_afficher_alerte_nj_delai']))||($_POST['abs2_afficher_alerte_nj_delai']<1)) {
+				$msg = "Valeur invalide pour 'abs2_afficher_alerte_nj_delai' !";
+			}
+			else {
+				if (!saveSetting("abs2_afficher_alerte_nj_delai", $_POST['abs2_afficher_alerte_nj_delai'])) {
+					$msg = "Erreur lors de l'enregistrement du paramètre 'abs2_afficher_alerte_nj_delai' !";
+				}
+			}
+		}
+
 		if (isset($_POST['abs2_retard_critere_duree'])) {
 			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
 				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
@@ -316,6 +350,7 @@ echo "</p>";
 <p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 <h2>Gestion des absences par les CPE</h2>
+<div style='margin-left:3em;'>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
 
@@ -325,7 +360,7 @@ echo add_token_field();
 <p>
 	<input type="radio" id="activerY" name="activer" value="y"
 	<?php if (getSettingValue("active_module_absence")=='y') echo ' checked="checked"'; ?> />
-	<label for="activerY">&nbsp;Activer le module de la gestion des absences</label>
+	<label for="activerY">&nbsp;Activer le module de la gestion des absences <em style='color:red'>(obsolète&nbsp;: le module n'est plus maintenu)</em></label>
 </p>
 <p>
 	<input type="radio" id="activer2" name="activer" value="2"
@@ -338,6 +373,7 @@ echo add_token_field();
 	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
+<br />
 <p>
 	<input type="checkbox" name="abs2_import_manuel_bulletin" id="abs2_import_manuel_bulletin" value="y"
 	<?php if (getSettingValue("abs2_import_manuel_bulletin")=='y') echo " checked='checked'"; ?> />
@@ -348,24 +384,52 @@ echo add_token_field();
 	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
 </p>
+<br />
 <p>
 	<input type="checkbox" name="abs2_ne_pas_afficher_saisies_englobees" id="abs2_ne_pas_afficher_saisies_englobees" value="y"
 	<?php if (getSettingValue("abs2_ne_pas_afficher_saisies_englobees")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_ne_pas_afficher_saisies_englobees">&nbsp;Par défaut, ne pas afficher les saisies englobées dans la page 'Absences du jour'.<br />
-	<em>(les saisies englobées n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(les saisies englobées n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_ne_pas_afficher_lignes_avec_traitement_englobant" id="abs2_ne_pas_afficher_lignes_avec_traitement_englobant" value="y"
 	<?php if (getSettingValue("abs2_ne_pas_afficher_lignes_avec_traitement_englobant")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_ne_pas_afficher_lignes_avec_traitement_englobant">&nbsp;Par défaut, ne pas afficher les lignes concernant des saisies déjà traitées dans la page 'Absences du jour'.<br />
-	<em>(les saisies n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>(les saisies n'apparaitront qu'en le choisissant explicitement dans la page)</em></label>
 </p>
+<br />
 <p>
 E-mail gestion absence établissement :
 <input type="text" name="gepiAbsenceEmail" size="20" value="<?php echo(getSettingValue("gepiAbsenceEmail")); ?>"/>
 </p>
 
+<br />
+
+<?php
+$abs2_afficher_alerte_nb_nj=getSettingValue("abs2_afficher_alerte_nb_nj");
+if($abs2_afficher_alerte_nb_nj=="") {
+	$abs2_afficher_alerte_nb_nj=4;
+}
+
+$abs2_afficher_alerte_nj_delai=getSettingValue("abs2_afficher_alerte_nj_delai");
+if($abs2_afficher_alerte_nj_delai=="") {
+	$abs2_afficher_alerte_nj_delai=30;
+}
+?>
+<p>
+	<input type="checkbox" name="abs2_afficher_alerte_nj" id="abs2_afficher_alerte_nj" value="y"
+	<?php if (getSettingValue("abs2_afficher_alerte_nj")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_afficher_alerte_nj">&nbsp;Alerter en page d'accueil les comptes CPE lorsque plus de </label>
+	<input type="text" name="abs2_afficher_alerte_nb_nj" id="abs2_afficher_alerte_nb_nj" onkeydown="clavier_2(this.id,event,1,50);" value="<?php echo $abs2_afficher_alerte_nb_nj;?>" size="2" />
+	<label for="abs2_afficher_alerte_nj"> manquements (<em>dans la période courante</em>) ne sont pas justifiés depuis plus de </label>
+	<input type="text" name="abs2_afficher_alerte_nj_delai" id="abs2_afficher_alerte_nj_delai" onkeydown="clavier_2(this.id,event,1,300);" value="<?php echo $abs2_afficher_alerte_nj_delai;?>" size="2" />
+	<label for="abs2_afficher_alerte_nj"> jours.</label>
+</p>
+
+</div>
+
 <h2>Saisie des absences par les professeurs</h2>
+<div style='margin-left:3em;'>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
 Normalement, ce module ne devrait être activé que si le module ci-dessus est lui-même activé.</p>
 <p>
@@ -424,8 +488,10 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est l
 	<?php if (getSettingAOui("abs2_jouer_sound_erreur")) echo " checked='checked'"; ?> />
 	<label for="abs2_jouer_sound_erreur">&nbsp;Jouer un son en cas d'erreur d'enregistrement de la saisie sur le groupe</label>
 </p>
+</div>
 
 <h2>Envoi des SMS</h2>
+<div style='margin-left:3em;'>
 	<p style='text-indent:-4em;margin-left:4em;margin-top:1em;'>
 		<em>NOTE 1&nbsp;:</em> Le paramétrage de l'envoi de SMS est à définir dans le module de <a href="../../gestion/param_gen.php#config_envoi_sms">Configuration générale.</a>
 	</p>
@@ -444,7 +510,10 @@ if (getSettingAOui("autorise_envoi_sms"))
 <?php
 	}
 ?>
+</div>
+
 <h2>Configuration des saisies</h2>
+<div style='margin-left:3em;'>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') echo " checked='checked'"; ?> />
@@ -509,7 +578,9 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
 	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
 </p-->
-	
+
+</div>
+
 <br/>
 <p class="center"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></p>
 

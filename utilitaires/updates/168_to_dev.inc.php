@@ -143,4 +143,19 @@ if (getSettingValue('sms_identite')===null) {
 	if (saveSetting('sms_identite',getSettingValue('gepiSchoolName'))) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée sms_identite existe déjà dans la table setting");
 
+$result .= "&nbsp;-> Ajout de l'entrée abs2_afficher_alerte_nj dans la table setting<br />";
+if (getSettingValue('abs2_afficher_alerte_nj')===null) {
+if (saveSetting('abs2_afficher_alerte_nj',"y")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée abs2_afficher_alerte_nj existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée abs2_afficher_alerte_nb_nj dans la table setting<br />";
+if (getSettingValue('abs2_afficher_alerte_nb_nj')===null) {
+	if (saveSetting('abs2_afficher_alerte_nb_nj',"4")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée abs2_afficher_alerte_nb_nj existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée abs2_afficher_alerte_nj_delai dans la table setting<br />";
+if (getSettingValue('abs2_afficher_alerte_nj_delai')===null) {
+	if (saveSetting('abs2_afficher_alerte_nj_delai',"30")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée abs2_afficher_alerte_nj_delai existe déjà dans la table setting");
+
 ?>
