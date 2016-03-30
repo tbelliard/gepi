@@ -61,6 +61,8 @@ if($utilisateur->getStatut() == "professeur" && $utilisateur->getClasses()->isEm
 
 include_once 'lib/function.php';
 
+//debug_var();
+
 // Initialisation des variables
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] : (isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : (isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
@@ -164,11 +166,13 @@ if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='ht
     unset($_SESSION['donnees_bilan']);
 }
 
+//echo "\$utilisateur->getLogin()=".$utilisateur->getLogin()."<br />";
 $limite_temps=true;
 if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
     $logins_authorises=explode(',',getSettingValue('Abs2DebrideBilanIndividuelLogins'));
     foreach($logins_authorises as $login){
-        if ($utilisateur->getLogin()==$login){
+        //echo "\$login=".$login."<br />";
+        if (mb_strtolower($utilisateur->getLogin())==mb_strtolower($login)){
             $limite_temps=false;
             break;
         }
@@ -200,7 +204,12 @@ if ($affichage != 'ods' && $affichage != 'odt' ) {
     flush();
 ?>
     <div id="contain_div" class="css-panes">
-        <?php if (isset($message)){
+        <?php
+        if(acces("/mod_abs2/alerte_nj.php", $_SESSION['statut'])) {
+             echo "<div style='float:right; width:20px; margin:3px;' title=\"Afficher les absences non justifiées depuis un certain temps.\"><a href='alerte_nj.php'><img src='../images/icons/absences_flag.png' class='icone20' alt='Alerte' /></a></div>";
+        }
+
+        if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
         <?php if($limite_temps && $utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ) :?>
