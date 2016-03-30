@@ -5,7 +5,7 @@
 //************************
 
 // tableau des prestataires pris en compte
-$tab_prestataires_SMS=array("pluriware.fr","tm4b.com","123-SMS.net","allmysms.com");
+$tab_prestataires_SMS=array("PLURIWARE","TM4B","123-SMS","AllMySMS");
 
 function filtrage_numero($numero,$international=false) {
 	// supprime les caractères indésirables et ajoute éventuellement l'indicatif 33
@@ -105,7 +105,7 @@ function envoi_SMS($tab_to,$sms) {
 	
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
-		case "pluriware.fr" :
+		case "PLURIWARE" :
 /*
 			$url="sms.pluriware.fr";
 			$script="/httpapi.php";
@@ -165,7 +165,7 @@ function envoi_SMS($tab_to,$sms) {
 			} else return "OK";
 			break;
 
-		case "123-SMS.net" :
+		case "123-SMS" :
 			$url="www.123-SMS.net";
 			$script="/http.php";
 			$parametres['email']=getSettingValue("sms_username"); // identifiant 123-SMS.net
@@ -185,7 +185,7 @@ function envoi_SMS($tab_to,$sms) {
 
 			break;
 
-		case "tm4b.com" :
+		case "TM4B" :
 			$url="www.tm4b.com";
 			$script="/client/api/http.php";
 			$parametres['username']=getSettingValue("sms_username"); // identifiant  TM4B
@@ -210,7 +210,7 @@ function envoi_SMS($tab_to,$sms) {
 
 			break;
 
-		 case "allmysms.com" :
+		 case "AllMySMS" :
 			//URL Simul : https://api.allmysms.com/http/9.0/simulateCampaign/
 			//URL envoi : https://api.allmysms.com/http/9.0/sendSms/
 

@@ -119,7 +119,7 @@ if (getSettingValue('autorise_envoi_sms')===null) {
 
 $result .= "&nbsp;-> Ajout de l'entrée sms_prestataire dans la table setting<br />";
 if (getSettingValue('sms_prestataire')===null) {
-	if (getSettingValue('abs2_sms_prestataire')!==null) $OK=saveSetting('sms_prestataire',getSettingValue('abs2_sms_prestataire'));
+	if (getSettingValue('abs2_sms_prestataire')!==null) $OK=saveSetting('sms_prestataire',strtoupper(getSettingValue('abs2_sms_prestataire')));
 	else $OK=saveSetting('sms_prestataire','');
 	if ($OK) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée sms_prestataire existe déjà dans la table setting");
