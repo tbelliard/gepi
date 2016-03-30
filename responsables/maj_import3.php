@@ -866,6 +866,16 @@ else{
 					info_debug($sql);
 					$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
 
+					$sql="CREATE TABLE IF NOT EXISTS temp_grp (
+					id smallint(6) unsigned NOT NULL auto_increment, 
+					ELE_ID varchar(40) NOT NULL default '',
+					NOM_GRP varchar(255) NOT NULL default '',
+					PRIMARY KEY id (id));";
+					$create_table = mysqli_query($GLOBALS["mysqli"], $sql);
+
+					$sql="TRUNCATE TABLE temp_grp;";
+					$vide_table = mysqli_query($GLOBALS["mysqli"], $sql);
+
 					//echo "<p style='color:red;'>DEBUG \$tempdir=$tempdir</p>";
 
 					echo "<script type='text/javascript'>
@@ -1000,16 +1010,26 @@ else{
 				$temoin_div_trouvee="";
 				if(isset($eleves[$i]["structures"])){
 					if(count($eleves[$i]["structures"])>0){
+						$indice_structure="";
 						for($j=0;$j<count($eleves[$i]["structures"]);$j++){
 							//if($eleves[$i]['eleve_id']=='596023') {affiche_debug($eleves[$i]["structures"][$j]['code_structure']."<br />");}
 
 							if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
 								$temoin_div_trouvee="oui";
-								break;
+								// 20160330
+								//break;
+								$indice_structure=$j;
+							}
+							// 20160330
+							elseif($eleves[$i]["structures"][$j]["type_structure"]=="G") {
+								$sql="INSERT INTO temp_grp SET ele_id='".$eleves[$i]['eleve_id']."', nom_grp='".mysqli_real_escape_string($GLOBALS["mysqli"], $eleves[$i]["structures"][$j]["code_structure"])."';";
+								$insert_assoc_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 							}
 						}
-						if($temoin_div_trouvee!=""){
-							$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+
+						if($temoin_div_trouvee!="") {
+							//$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+							$eleves[$i]["classe"]=$eleves[$i]["structures"][$indice_structure]["code_structure"];
 						}
 					}
 				}
@@ -5149,6 +5169,24 @@ else{
 			echo "</pre>";
 			*/
 
+			// 20160330
+			// Recherche des groupes renseignés dans Sconet
+			$tab_grp_ele=array();
+			$sql="SELECT t.* FROM temp_grp t, eleves e WHERE t.ele_id=e.ele_id AND e.login='$login_eleve';";
+			//echo "$sql<br />";
+			$res_grp_sconet_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_grp_sconet_ele)>0){
+				while($lig_grp_sconet_ele=mysqli_fetch_object($res_grp_sconet_ele)) {
+					$tab_grp_ele[]=$lig_grp_sconet_ele->NOM_GRP;
+				}
+			}
+			/*
+			echo "<pre>";
+			print_r($tab_grp_ele);
+			echo "</pre>";
+			*/
+
+
 			echo "<input type='hidden' name='opt_eleve' value='y' />\n";
 
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c,j_eleves_classes jec
@@ -5263,6 +5301,32 @@ else{
 						echo "</p>";
 					}
 
+					// 20160330
+					if(count($tab_grp_ele)>0) {
+						echo "<p>Groupe(s) saisi(s) dans Sconet&nbsp;: ";
+						$cpt_grp=0;
+						foreach($tab_grp_ele as $current_grp) {
+							if($cpt_grp>0) {echo ", ";}
+							echo $current_grp;
+							/*
+							if(isset($tab_options_sconet['code'][$current_opt]['matieres'])) {
+								echo " (<em>";
+								
+								$cpt_mat=0;
+								foreach($tab_options_sconet['code'][$current_opt]['matieres'] as $current_matiere) {
+									if($cpt_mat>0) {echo ", ";}
+									echo $current_matiere;
+									$cpt_mat++;
+								}
+								
+								echo "</em>)";
+							}
+							*/
+							$cpt_grp++;
+						}
+						echo "</p>";
+					}
+
 					echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
 					echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -5342,6 +5406,12 @@ else{
 						*/
 						echo "<tr class='lig$alt white_hover'>\n";
 						echo "<td>";
+
+						//20160330
+						if(in_array_i(mb_strtolower($nom_groupe), $tab_grp_ele)) {
+							echo "<div style='float:right;width:16px;' title=\"L'élève est inscrit dans un groupe à ce nom dans Sconet.\"><img src='../images/icons/flag_green.png' class='icone16' alt='Groupe sconet' /></div>";
+						}
+
 						echo "<span title=\"".$tmp_group['description']."\" alt=\"".$tmp_group['description']."\">";
 						echo $nom_groupe;
 						echo " <span style='font-size: x-small'>(".$tmp_group['classlist_string'].")</span>";
@@ -5394,7 +5464,7 @@ else{
 									}
 
 									if($temoin!=""){
-										echo "<td><center>".$temoin."<input type=hidden name=".$id_groupe."_".$j." value='checked' /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
+										echo "<td><center>".$temoin."<input type='hidden' name=".$id_groupe."_".$j." value='checked' /> (<em title=\"Effectif actuel en période $j : $eff_grp_periode_courante\">".$eff_grp_periode_courante."</em>)</center></td>\n";
 									}
 									else{
 										$msg_erreur="Cette case est validée et ne devrait pas l être. Validez le formulaire pour corriger.";
@@ -5430,6 +5500,10 @@ else{
 									//echo "a<br />";
 									//if(in_array($tab_options_sconet['matiere'][$current_code_matiere]['code'], $tab_opt_ele)) {
 									if(in_array($current_code_matiere, $tab_opt_ele)) {
+										$checked=" checked";
+									}
+									//20160330
+									elseif(in_array_i(mb_strtolower($nom_groupe), $tab_grp_ele)) {
 										$checked=" checked";
 									}
 									else {
