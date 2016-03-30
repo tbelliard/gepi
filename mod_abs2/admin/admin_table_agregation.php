@@ -101,6 +101,12 @@ echo "</p>";
                     $del = AbsenceAgregationDecompteQuery::create()->deleteAll();
                     $nb = AbsenceAgregationDecompteQuery::create()->count();
                     if ($nb === 0) {
+
+				// INSERT INTO setting SET name='abs2_journaliser_admin_table_agregation', value='y';
+				if(getSettingAOui('abs2_journaliser_admin_table_agregation')) {
+					saveSetting('abs2_table_agregation_'.strftime("%Y%m%d_%H%M%S"), "Vidage par ".$_SESSION['login']." (".$_SERVER['REMOTE_ADDR'].")");
+				}
+
                         echo"<p>La Table est maintenant vide.</p>";
                         echo "<p>Revenir à l'<a href='".$_SERVER['PHP_SELF']."'>Agrégation des absences</a></p>";
                         die();
@@ -119,6 +125,11 @@ echo "</p>";
 							echo"<p>Un problème est survenu.</p>";
 							die();
 						}
+
+						if(getSettingAOui('abs2_journaliser_admin_table_agregation')) {
+							saveSetting('abs2_table_agregation_'.strftime("%Y%m%d_%H%M%S"), "Remplissage par ".$_SESSION['login']." (".$_SERVER['REMOTE_ADDR'].")");
+						}
+
 					}
                     echo'<div id="contain_div" class="css-panes">
                         <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
@@ -136,6 +147,9 @@ echo "</p>";
                         $page++;
                     } else {
                         echo"<p>Traitement terminé</p>";
+				if(getSettingAOui('abs2_journaliser_admin_table_agregation')) {
+					saveSetting('abs2_table_agregation_'.strftime("%Y%m%d_%H%M%S"), "Remplissage par ".$_SESSION['login']." (".$_SERVER['REMOTE_ADDR'].") : Terminé.");
+				}
                         die();
                     }
                 }
