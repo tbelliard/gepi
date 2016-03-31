@@ -913,7 +913,7 @@ if (isset($_POST['sms_max_envois'])) {
 if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées (".strftime("%d/%m/%Y à %H:%M:%S").") !";
 
 if((getSettingAOui('utiliser_phpmailer'))&&
 ((getSettingValue("phpmailer_smtp_host")=="")||
@@ -2631,11 +2631,12 @@ echo add_token_field();
 
 <form enctype="multipart/form-data" action="param_gen.php#config_envoi_sms" method="post" id="form6" style="width: 100%;">
 <fieldset style='border: 1px solid grey; background-image: url("../images/background/opacite50.png");'>
-	<p>
 <?php
-echo add_token_field();
+	if((isset($_POST['autorise_envoi_sms']))&&($msg!="")) {
+		echo "<p style='color:red; text-align:center; font-weight: bold;'>".$msg."</p>";
+	}
+	echo add_token_field();
 ?>
-	</p>
 
 	<p  class="cellTab" style="font-variant: small-caps;">
 		Autoriser l'envoi de SMS&nbsp;:
@@ -2650,7 +2651,7 @@ echo add_token_field();
 				if(getSettingAOui('autorise_envoi_sms')) {echo "checked='checked'";}
 			   ?>
 			   onchange='changement()' />
-		<label for='gepi_en_production_y' style='cursor: pointer;'>
+		<label for='autorise_envoi_sms_y' style='cursor: pointer;'>
 			Oui
 		</label>
 		<br />
