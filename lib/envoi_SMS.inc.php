@@ -265,10 +265,6 @@ function envoi_SMS($tab_to,$sms) {
 		}
 }
 
-include("initialisations.inc.php");
-$tab_to	= array("0644444444","0655555555"); $sms="Test de envoi_SMS.inc.php";
-echo envoi_SMS($tab_to,$sms);
-
 /* Tests prestataires
 
 echo "tm4b<br>";
