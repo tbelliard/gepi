@@ -338,7 +338,7 @@ if (getSettingValue("absence_classement_top") == '10'){
 // header
 $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc.php");
-echo "<p class='bold'><a href='../../accueil_modules.php' title='Retour'><img src='../../images/icons/back.png' class='back_link' /> Retour </a> | <a href='http://www.sylogix.org/projects/gepi/wiki/Abs_2' title='Aide'>Aide à la configuration</a>";
+echo "<p class='bold'><a href='../../accueil_modules.php' title='Retour'><img src='../../images/icons/back.png' alt='Retour' class='back_link' /> Retour </a> | <a href=\"http://www.sylogix.org/projects/gepi/wiki/Abs_2\" alt='Aide' />Aide à la configuration</a>";
 echo "</p>";
     if (isset ($result)) {
 	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
@@ -603,6 +603,23 @@ echo "<p style='color:red'>* Le responsable de l'absence, c'est l'élève (et se
 	?>
 </blockquote>
 
-<?PHP
+<h2>Partie Emplois du temps</h2>
+<blockquote>
+	<a href="../../edt_organisation/admin_horaire_ouverture.php?action=visualiser">Définir les horaires d'ouverture de l'établissement</a><br />
+	<a href="../../edt_organisation/admin_periodes_absences.php?action=visualiser">Définir les créneaux horaires</a><br />
+	<?php // On vérifie si le module calendrier / edt est ouvert ou non pour savoir quel lien on lance
+
+	if ((getSettingAOui('autorise_edt_admin'))||getSettingAOui('autorise_edt_tous')) {
+		// On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
+		$_SESSION["retour"] = "../mod_abs2/admin/index";
+		echo '<a href="../../edt_organisation/edt_calendrier.php">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';
+	} else {
+		echo '<a href="../../mod_absences/admin/admin_config_calendrier.php?action=visualiser">D&eacute;finir p&eacute;riodes de vacances et jours f&eacute;ri&eacute;s</a><br />';
+	}
+	?>
+	<a href="../../edt_organisation/admin_config_semaines.php?action=visualiser">Définir les types de semaine</a><br />
+</blockquote>
+
+<?php
 require("../../lib/footer.inc.php");
 ?>
