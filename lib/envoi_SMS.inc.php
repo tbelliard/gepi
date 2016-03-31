@@ -225,7 +225,6 @@ function envoi_SMS($tab_to,$sms) {
 																	//Pas de caractères accentués ou de caractères spéciaux
 
 			$message=substr($sms,0,160);    //le message SMS, attention pas plus de 160 caractères
-			$msisdn=filtrage_numero($tab_to[0],true);    //numéro de téléphone du destinataire
 			/*
 			$parametres['smsData']= "
 			<DATA>
@@ -241,10 +240,17 @@ function envoi_SMS($tab_to,$sms) {
 			   \"DATA\": {
 				  \"MESSAGE\": \"".$message."\",
 				 \"TPOA\": \"".$sender."\",
-				  \"SMS\": 	[
+				  \"SMS\": 	[";
+			$mobiles="";
+			foreach($tab_to as $to) {
+				$mobiles.="
 							 {
-							 \"MOBILEPHONE\": \"".$msisdn."\"
-							 }
+							 \"MOBILEPHONE\": \"".filtrage_numero($to,true)."\"
+							 },";
+				};
+			$mobiles=rtrim($mobiles,',');
+			$parametres['smsData'].=$mobiles;
+			$parametres['smsData'].="
 							]
 			   }
 			}";
@@ -258,6 +264,10 @@ function envoi_SMS($tab_to,$sms) {
 			return "SMS non envoyé(s) : prestataire SMS non défini.";
 		}
 }
+
+include("initialisations.inc.php");
+$tab_to	= array("0644444444","0655555555"); $sms="Test de envoi_SMS.inc.php";
+echo envoi_SMS($tab_to,$sms);
 
 /* Tests prestataires
 
