@@ -44,6 +44,7 @@ Général:
 - Affichage de l'identité de la personne qui suit la classe (chef, adjoint)
   et du professeur principal dans diverses pages de choix de classes.
 - Possibilité d'afficher le dates de vacances et jours fériés en page d'accueil simplifiée professeur.
+- Affichage d'un témoin pour l'appartenance à tel ou tel groupe renseigné dans Sconet lors de la Mise à jour d'après Sconet.
 
 Gepi-1.6.8 (05/01/2016)
 ===========================
