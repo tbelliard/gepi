@@ -2248,7 +2248,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
-										e.date_sortie!='' OR
+										(e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
@@ -2283,7 +2283,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
-										e.date_sortie!='' OR
+										(e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
