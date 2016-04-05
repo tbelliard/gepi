@@ -47,69 +47,71 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     $texte_messages_simpl_prof = ''; // variable uniquement utilisée dans accueil_simpl_prof.php
     $texte_messages_resume_ele = ''; // variable uniquement utilisée dans eleves/resume_ele.php
     $affiche_messages = 'no';    
-    while ($obj = $appel_messages->fetch_object()) {
-        $statuts_destinataires1 = $obj->statuts_destinataires;
-        $login_destinataire1 = $obj->login_destinataire;
-        $id_message1 = $obj->id;
-        $autre_message = "";
-        if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
-            if ($affiche_messages == 'yes') {
-                $autre_message = "hr";
-                //$texte_messages_simpl_prof .= "<hr />";
-            }
-            $affiche_messages = 'yes';
-            $content = $obj->texte;
-            // _DECOMPTE_
-            if(strstr($content, '_DECOMPTE_')) {
-                //$nb_sec=old_mysql_result($appel_messages, $ind, 'date_decompte')-time();
-                $nb_sec=$obj->date_decompte-time();
-                if($nb_sec>0) {
-                    $decompte_remplace="";
-                } elseif($nb_sec==0) {
-                    $decompte_remplace=" <span style='color:red'>Vous êtes à l'instant T</span> ";
-                } else {
-                    $nb_sec=$nb_sec*(-1);
-                    $decompte_remplace=" <span style='color:red'>date dépassée de</span> ";
+    if($nb_messages>0) {
+        while ($obj = $appel_messages->fetch_object()) {
+            $statuts_destinataires1 = $obj->statuts_destinataires;
+            $login_destinataire1 = $obj->login_destinataire;
+            $id_message1 = $obj->id;
+            $autre_message = "";
+            if ((strpos($statuts_destinataires1, mb_substr($_SESSION['statut'], 0, 1))) || ($_SESSION['login']==$login_destinataire1)) {
+                if ($affiche_messages == 'yes') {
+                    $autre_message = "hr";
+                    //$texte_messages_simpl_prof .= "<hr />";
                 }
+                $affiche_messages = 'yes';
+                $content = $obj->texte;
+                // _DECOMPTE_
+                if(strstr($content, '_DECOMPTE_')) {
+                    //$nb_sec=old_mysql_result($appel_messages, $ind, 'date_decompte')-time();
+                    $nb_sec=$obj->date_decompte-time();
+                    if($nb_sec>0) {
+                        $decompte_remplace="";
+                    } elseif($nb_sec==0) {
+                        $decompte_remplace=" <span style='color:red'>Vous êtes à l'instant T</span> ";
+                    } else {
+                        $nb_sec=$nb_sec*(-1);
+                        $decompte_remplace=" <span style='color:red'>date dépassée de</span> ";
+                    }
 
-                $decompte_j=floor($nb_sec/(24*3600));
-                $decompte_h=floor(($nb_sec-$decompte_j*24*3600)/3600);
-                $decompte_m=floor(($nb_sec-$decompte_j*24*3600-$decompte_h*3600)/60);
+                    $decompte_j=floor($nb_sec/(24*3600));
+                    $decompte_h=floor(($nb_sec-$decompte_j*24*3600)/3600);
+                    $decompte_m=floor(($nb_sec-$decompte_j*24*3600-$decompte_h*3600)/60);
 
-                if($decompte_j==1) {$decompte_remplace.=$decompte_j." jour ";}
-                elseif($decompte_j>1) {$decompte_remplace.=$decompte_j." jours ";}
+                    if($decompte_j==1) {$decompte_remplace.=$decompte_j." jour ";}
+                    elseif($decompte_j>1) {$decompte_remplace.=$decompte_j." jours ";}
 
-                if($decompte_h==1) {$decompte_remplace.=$decompte_h." heure ";}
-                elseif($decompte_h>1) {$decompte_remplace.=$decompte_h." heures ";}
+                    if($decompte_h==1) {$decompte_remplace.=$decompte_h." heure ";}
+                    elseif($decompte_h>1) {$decompte_remplace.=$decompte_h." heures ";}
 
-                if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
-                elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
+                    if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
+                    elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
 
-                $content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
+                    $content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
+                }
+                // fin _DECOMPTE_
+                // fin _DECOMPTE_
+
+                // gestion du token (csrf_alea)
+                // si elle est présente la variable _CSRF_ALEA_ est remplacée lors de l'affichage du message
+                // par la valeur du token de l'utilisateur, par exemple on peut ainsi inclure dans un message
+                // un lien appelant un script : <a href="module/script.php?id=33&csrf_alea=_CSRF_ALEA_">Vers le script</a>
+                $pos_crsf_alea=strpos($content,"_CSRF_ALEA_");
+                if($pos_crsf_alea!==false)
+                    $content=preg_replace("/_CSRF_ALEA_/",$_SESSION['gepi_alea'],$content);
+
+                //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
+
+                // Pour forcer le target='_blank' sur ces messages en page d'accueil
+                $content=preg_replace("/<a href/i","<a target='_blank' href",$content);
+
+                // dans accueil.php
+                if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content, "statuts_destinataires"=>$statuts_destinataires1);
+                // dans accueil_simpl_prof.php
+                $texte_messages_simpl_prof .= "<div class='postit'>".$content."</div>";
+                $texte_messages_resume_ele .= "<div class='postit'>".$content."</div>";
             }
-            // fin _DECOMPTE_
-            // fin _DECOMPTE_
-
-            // gestion du token (csrf_alea)
-            // si elle est présente la variable _CSRF_ALEA_ est remplacée lors de l'affichage du message
-            // par la valeur du token de l'utilisateur, par exemple on peut ainsi inclure dans un message
-            // un lien appelant un script : <a href="module/script.php?id=33&csrf_alea=_CSRF_ALEA_">Vers le script</a>
-            $pos_crsf_alea=strpos($content,"_CSRF_ALEA_");
-            if($pos_crsf_alea!==false)
-                $content=preg_replace("/_CSRF_ALEA_/",$_SESSION['gepi_alea'],$content);
-
-            //$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
-
-            // Pour forcer le target='_blank' sur ces messages en page d'accueil
-            $content=preg_replace("/<a href/i","<a target='_blank' href",$content);
-
-            // dans accueil.php
-            if (isset($afficheAccueil) && is_object($afficheAccueil)) $afficheAccueil->message[]=array("id"=>$id_message1, "suite"=>$autre_message,"message"=>$content, "statuts_destinataires"=>$statuts_destinataires1);
-            // dans accueil_simpl_prof.php
-            $texte_messages_simpl_prof .= "<div class='postit'>".$content."</div>";
-            $texte_messages_resume_ele .= "<div class='postit'>".$content."</div>";
+            $ind++;
         }
-        $ind++;
     }
     $appel_messages->close();
 
