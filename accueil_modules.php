@@ -412,8 +412,20 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	}
 	unset($nouveauItem);
 
+// Orientation
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_orientation/admin.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->choix_icone('active_mod_orientation') ;
+		$nouveauItem->titre="Orientation" ;
+		$nouveauItem->expli="Donner l'accès à la saisie des voeux et orientations proposées." ;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
 
-$tbs_microtime	="";
+
+$tbs_microtime="";
 $tbs_pmv="";
 require_once ("./lib/footer_template.inc.php");
 

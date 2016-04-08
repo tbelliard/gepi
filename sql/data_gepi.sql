@@ -1766,3 +1766,11 @@ INSERT INTO droits SET id='/mod_abs2/alerte_nj.php', administrateur='V', profess
 INSERT INTO setting SET name='abs2_afficher_alerte_nj', value='y';
 INSERT INTO setting SET name='abs2_afficher_alerte_nb_nj', value='4';
 INSERT INTO setting SET name='abs2_afficher_alerte_nj_delai', value='30';
+INSERT INTO droits SET id='/mod_orientation/index.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Accueil orientation', statut='';
+INSERT INTO droits SET id='/mod_orientation/saisie_types_orientation.php', administrateur='V', professeur='V', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des types d orientation', statut='';
+INSERT INTO droits SET id='/mod_orientation/admin.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Module Orientation : Administration du module', statut='';
+INSERT INTO droits SET id='/mod_orientation/saisie_orientation.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie orientation élève', statut='';
+INSERT INTO droits SET id='/mod_orientation/saisie_voeux.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Saisie des voeux', statut='';
+INSERT INTO setting SET name='active_mod_orientation', value='n';
+INSERT INTO setting SET name='OrientationNbMaxOrientation', value='3';
+INSERT INTO setting SET name='OrientationNbMaxVoeux', value='3';

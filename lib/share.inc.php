@@ -4128,7 +4128,7 @@ function my_echo_debug($texte) {
 			$dossier=$points."/temp/".$tempdir;
 
 			// Pour simplifier en debug sur une machine perso sous *nix:
-			$dossier="/tmp";
+			//$dossier="/tmp";
 
 			$fichier=$dossier."/my_echo_debug_".date("Ymd_Hi").".txt";
 

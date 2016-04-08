@@ -1389,3 +1389,43 @@ heurefin_calendrier time NOT NULL default '00:00:00',
 PRIMARY KEY (id)) 
 ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS o_orientations;
+CREATE TABLE IF NOT EXISTS o_orientations (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+id_orientation int(11) NOT NULL,
+rang int(3) NOT NULL,
+commentaire text NOT NULL,
+date_orientation datetime NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login_rang (login,rang)) 
+ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS o_orientations_base;
+CREATE TABLE IF NOT EXISTS o_orientations_base (
+id int(11) NOT NULL AUTO_INCREMENT,
+titre varchar(255) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS o_orientations_mefs;
+CREATE TABLE IF NOT EXISTS o_orientations_mefs (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_orientation int(11) NOT NULL,
+mef_code varchar(50) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS o_voeux;
+CREATE TABLE IF NOT EXISTS o_voeux (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+id_orientation int(11) NOT NULL,
+rang int(3) NOT NULL,
+date_voeu datetime NOT NULL,
+commentaire varchar(255) NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login_rang (login,rang)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

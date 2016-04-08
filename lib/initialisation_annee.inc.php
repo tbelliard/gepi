@@ -77,6 +77,9 @@ $liste_tables_del_etape_eleves = array(
 "observatoire_comment",
 "observatoire_suivi",
 
+"o_orientations",
+"o_voeux",
+
 "tempo2",
 "tempo",
 // Découpe de trombinoscopes

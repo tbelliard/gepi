@@ -158,7 +158,11 @@ if ($barre_plugin!="") {
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/extraction_engagements.php" '.insert_confirm_abandon().'>Extraction engagements</a></li>'."\n";
 					$menus .= '     <li><a href="'.$gepiPath.'/mod_engagements/imprimer_documents.php" '.insert_confirm_abandon().'>Convocation conseil de classe,...</a></li>'."\n";
 				}
-	
+
+				if((getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypeCpe'))||(getSettingAOui('OrientationSaisieOrientationCpe'))||(getSettingAOui('OrientationSaisieVoeuxCpe')))) {
+					$menus .= '     <li><a href="'.$gepiPath.'/mod_orientation/index.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
+				}
+
 				$menus .= '   </ul>'."\n";
 				$menus .= '</li>'."\n";
 			}

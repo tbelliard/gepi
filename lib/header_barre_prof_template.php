@@ -529,6 +529,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 					$cpt_sous_menu++;
 				}
 
+				if(($is_pp_header_barre_prof_template)&&(getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypePP'))||(getSettingAOui('OrientationSaisieOrientationPP'))||(getSettingAOui('OrientationSaisieVoeuxPP')))) {
+					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_orientation/index.php' , "texte"=>"Orientation", "title"=>"Orientation des élèves");
+					$cpt_sous_menu++;
+				}
+
 				if((getSettingAOui('AAProfTout'))||(getSettingAOui('AAProfClasses'))||(getSettingAOui('AAProfGroupes'))||
 				((getSettingAOui('AAProfPrinc'))&&($is_pp_header_barre_prof_template))) {
 					$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_annees_anterieures/consultation_annee_anterieure.php' , "texte"=>"Années antérieures");
@@ -536,13 +541,12 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 				}
 
 
-
 			$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 			$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 			$compteur_menu++;
 		}
 	}else{$barre_note = '';}
-    
+
 	//=======================================================
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
@@ -724,6 +728,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 
 	if((getSettingAOui('active_mod_engagements'))&&($is_pp_header_barre_prof_template)) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_engagements/imprimer_documents.php' , "texte"=>"Engagements", "title"=>"Imprimer les engagements élèves/responsables.\nAccès aux informations responsables, délégués,...");
+		$cpt_sous_menu++;
+	}
+
+	if(($is_pp_header_barre_prof_template)&&(getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypePP'))||(getSettingAOui('OrientationSaisieOrientationPP'))||(getSettingAOui('OrientationSaisieVoeuxPP')))) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_orientation/index.php' , "texte"=>"Orientation", "title"=>"Orientation des élèves");
 		$cpt_sous_menu++;
 	}
 

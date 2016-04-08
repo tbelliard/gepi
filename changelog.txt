@@ -40,6 +40,9 @@ Statistiques:
 - Ajout de l'extraction des sous-groupes ne concernant qu'une classe.
 - Possibilité d'exporter l'établissement d'origine dans l'export de Bulletins.
 
+Orientation:
+- Ajout d'un module orientation pour saisir les voeux d'orientation et l'orientation conseillée.
+
 Général:
 - Affichage de l'identité de la personne qui suit la classe (chef, adjoint)
   et du professeur principal dans diverses pages de choix de classes.

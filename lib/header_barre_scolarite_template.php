@@ -353,6 +353,10 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 			$menus .= '       </li>'."\n";
 		}
 
+		if((getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypeScolarite'))||(getSettingAOui('OrientationSaisieOrientationScolarite'))||(getSettingAOui('OrientationSaisieVoeuxScolarite')))) {
+			$menus .= '  <li><a href="'.$gepiPath.'/mod_orientation/index.php" '.insert_confirm_abandon().'>Orientation</a></li>'."\n";
+		}
+
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================

@@ -1646,6 +1646,66 @@ autre='F',
 description='Absences non justifiées depuis un certain temps',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/index.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Accueil orientation',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/saisie_types_orientation.php',
+administrateur='V',
+professeur='V',
+cpe='F',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie des types d orientation',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/admin.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Module Orientation : Administration du module',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/saisie_orientation.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie orientation élève',
+statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/saisie_voeux.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Saisie des voeux',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

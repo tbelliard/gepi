@@ -158,4 +158,102 @@ if (getSettingValue('abs2_afficher_alerte_nj_delai')===null) {
 	if (saveSetting('abs2_afficher_alerte_nj_delai',"30")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée abs2_afficher_alerte_nj_delai existe déjà dans la table setting");
 
+$result .= "<strong>Ajout d'une table 'o_orientations' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_orientations'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_orientations (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+id_orientation int(11) NOT NULL,
+rang int(3) NOT NULL,
+commentaire text NOT NULL,
+date_orientation datetime NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login_rang (login,rang)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'o_orientations_base' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_orientations_base'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_orientations_base (
+id int(11) NOT NULL AUTO_INCREMENT,
+titre varchar(255) NOT NULL,
+description text NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'o_orientations_mefs' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_orientations_mefs'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_orientations_mefs (
+id int(11) NOT NULL AUTO_INCREMENT,
+id_orientation int(11) NOT NULL,
+mef_code varchar(50) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'o_voeux' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_voeux'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_voeux (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+id_orientation int(11) NOT NULL,
+rang int(3) NOT NULL,
+date_voeu datetime NOT NULL,
+commentaire varchar(255) NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login_rang (login,rang)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout de l'entrée active_mod_orientation dans la table setting<br />";
+if (getSettingValue('active_mod_orientation')===null) {
+	if (saveSetting('active_mod_orientation',"n")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée active_mod_orientation existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée OrientationNbMaxOrientation dans la table setting<br />";
+if (getSettingValue('OrientationNbMaxOrientation')===null) {
+	if (saveSetting('OrientationNbMaxOrientation',"3")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée OrientationNbMaxOrientation existe déjà dans la table setting");
+
+$result .= "&nbsp;-> Ajout de l'entrée OrientationNbMaxVoeux dans la table setting<br />";
+if (getSettingValue('OrientationNbMaxVoeux')===null) {
+	if (saveSetting('OrientationNbMaxVoeux',"3")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
+} else $result .= msj_present("L'entrée OrientationNbMaxVoeux existe déjà dans la table setting");
+
 ?>
