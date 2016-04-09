@@ -200,6 +200,25 @@
 	$champ_bull_pdf[]="cell_ajustee_texte_matiere";
 	$champ_bull_pdf[]="cell_ajustee_texte_matiere_ratio_min_max";
 
+	//=========================
+	// AJOUT: 20160409
+	//$champ_bull_pdf[]="active_bloc_orientation";
+	$champ_bull_pdf[]="orientation_periodes";
+
+	$champ_bull_pdf[]="largeur_cadre_orientation";
+	$champ_bull_pdf[]="hauteur_cadre_orientation";
+	$champ_bull_pdf[]="X_cadre_orientation";
+	$champ_bull_pdf[]="Y_cadre_orientation";
+
+	$champ_bull_pdf[]="cadre_voeux_orientation";
+	$champ_bull_pdf[]="X_voeux_orientation";
+	
+	$champ_bull_pdf[]="cadre_orientation_proposee";
+	$champ_bull_pdf[]="X_cadre_orientation_proposee";
+
+	//$champ_bull_pdf[]="ligne_commentaire_orientation";
+	//=========================
+
 	/*
 		mysql> show fields from modele_bulletin;
 		+--------------------+--------------+------+-----+---------+-------+
@@ -415,6 +434,28 @@
 	$val_defaut_champ_bull_pdf["cell_ajustee_texte_matiere"]=0;
 	$val_defaut_champ_bull_pdf["cell_ajustee_texte_matiere_ratio_min_max"]=3;
 
+	//=========================
+	// AJOUT: 20160409
+	//$val_defaut_champ_bull_pdf["active_bloc_orientation"]=0;
+	$val_defaut_champ_bull_pdf["orientation_periodes"]="";
+
+	$val_defaut_champ_bull_pdf["largeur_cadre_orientation"]=200;
+	$val_defaut_champ_bull_pdf["hauteur_cadre_orientation"]=15;
+	$val_defaut_champ_bull_pdf["X_cadre_orientation"]=5;
+	$val_defaut_champ_bull_pdf["Y_cadre_orientation"]=250;
+
+	$val_defaut_champ_bull_pdf["cadre_voeux_orientation"]=1;
+	$val_defaut_champ_bull_pdf["X_cadre_voeux_orientation"]=5;
+	$val_defaut_champ_bull_pdf["titre_voeux_orientation"]="Voeux";
+
+	$val_defaut_champ_bull_pdf["cadre_orientation_proposee"]=1;
+	$val_defaut_champ_bull_pdf["X_cadre_orientation_proposee"]=70;
+	$val_defaut_champ_bull_pdf["titre_orientation_proposee"]="Orientation proposée";
+
+	//$val_defaut_champ_bull_pdf["ligne_commentaire_orientation"]=1;
+	//$val_defaut_champ_bull_pdf["X_ligne_commentaire_orientation"]=60;
+	//=========================
+
 	for($loop_champs=0;$loop_champs<count($champ_bull_pdf);$loop_champs++) {
 		$type_champ_pdf["$champ_bull_pdf[$loop_champs]"]="numerique";
 	}
@@ -439,6 +480,10 @@
 	$type_champ_pdf["type_texte_periode"]="texte";
 	$type_champ_pdf["type_texte_date_datation"]="texte";
 
+	// 20160409
+	$type_champ_pdf["orientation_periodes"]="texte";
+	$type_champ_pdf["titre_voeux_orientation"]="texte";
+	$type_champ_pdf["titre_orientation_proposee"]="texte";
 
 
 	function get_max_id_model_bulletin() {

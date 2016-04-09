@@ -1565,6 +1565,32 @@ else {
 	}
 
 
+	// 20160408
+	if(getSettingAOui('active_mod_orientation')) {
+		// Extraire les voeux et orientations pour la classe courante
+		$tab_orientation_classe_courante=array();
+
+		$tab_orientation=array();
+		$tab_orientation2=array();
+		$sql="SELECT oob.*, oom.mef_code FROM o_orientations_base oob, o_orientations_mefs oom WHERE oob.id=oom.id_orientation ORDER BY titre;";
+		//echo "$sql<br />";
+		$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_o)>0) {
+			$cpt=0;
+			while($lig_o=mysqli_fetch_object($res_o)) {
+				$tab_orientation[$lig_o->mef_code]['id_orientation'][]=$lig_o->id;
+				$tab_orientation[$lig_o->mef_code]['titre'][]=$lig_o->titre;
+				$tab_orientation[$lig_o->mef_code]['description'][]=$lig_o->description;
+
+				$tab_orientation2[$lig_o->id]['id_orientation']=$lig_o->id;
+				$tab_orientation2[$lig_o->id]['titre']=$lig_o->titre;
+				$tab_orientation2[$lig_o->id]['description']=$lig_o->description;
+
+				$cpt++;
+			}
+		}
+	}
+
 	$nb_bulletins_edites=0;
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
@@ -1805,6 +1831,87 @@ else {
 		}
 		//=========================================================================
 
+		// 20160408
+		if(getSettingAOui('active_mod_orientation')) {
+			// Extraire les voeux et orientations pour la classe courante
+			$tab_orientation_classe_courante=array();
+
+			$tab_voeux_ele=array();
+			$sql="SELECT DISTINCT ov.* FROM o_voeux ov, j_eleves_classes jec WHERE ov.login=jec.login AND jec.id_classe='".$id_classe."' ORDER BY ov.login, ov.rang;";
+			//echo "$sql<br />";
+			$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_o)>0) {
+				$login_prec="";
+				$cpt=1;
+				while($lig_o=mysqli_fetch_object($res_o)) {
+					if($lig_o->login!=$login_prec) {
+						$cpt=1;
+						$login_prec=$lig_o->login;
+					}
+					$tab_voeux_ele[$lig_o->login][$cpt]['id_orientation']=$lig_o->id_orientation;
+
+					// Si le titre existe, le récupérer de $tab_orientation ou $tab_orientation2
+					// Sinon, juste mettre le commentaire?
+					if(isset($tab_orientation2[$lig_o->id_orientation])) {
+						$tab_voeux_ele[$lig_o->login][$cpt]['designation']=$tab_orientation2[$lig_o->id_orientation]['titre'];
+						$tab_voeux_ele[$lig_o->login][$cpt]['description']=$tab_orientation2[$lig_o->id_orientation]['description'];
+					}
+					else {
+						// Proposer de ne pas faire apparaitre les voeux non listés dans la base si jamais on ouvre la saisie aux parents/élèves ou si on conserve des trucs à titre informatif, mais ne devant pas figurer sur le bulletin.
+						$tab_voeux_ele[$lig_o->login][$cpt]['designation']=$lig_o->commentaire;
+						// Ou mettre "Autre orientation"
+						$tab_voeux_ele[$lig_o->login][$cpt]['description']="";
+					}
+
+					$tab_voeux_ele[$lig_o->login][$cpt]['commentaire']=$lig_o->commentaire;
+					$tab_voeux_ele[$lig_o->login][$cpt]['rang']=$lig_o->rang;
+					$tab_voeux_ele[$lig_o->login][$cpt]['saisi_par']=$lig_o->saisi_par;
+					$tab_voeux_ele[$lig_o->login][$cpt]['saisi_par_cnp']=civ_nom_prenom($lig_o->saisi_par);
+					$tab_voeux_ele[$lig_o->login][$cpt]['date_voeu']=formate_date($lig_o->date_voeu, "y");
+					$cpt++;
+				}
+			}
+
+			$tab_o_ele=array();
+			$sql="SELECT DISTINCT oo.* FROM o_orientations oo, j_eleves_classes jec WHERE oo.login=jec.login AND jec.id_classe='".$id_classe."' ORDER BY oo.login, oo.rang;";
+			//echo "$sql<br />";
+			$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_o)>0) {
+				$login_prec="";
+				$cpt=1;
+				while($lig_o=mysqli_fetch_object($res_o)) {
+					if($lig_o->login!=$login_prec) {
+						$cpt=1;
+						$login_prec=$lig_o->login;
+					}
+					$tab_o_ele[$lig_o->login][$cpt]['id_orientation']=$lig_o->id_orientation;
+
+					// Si le titre existe, le récupérer de $tab_orientation ou $tab_orientation2
+					// Sinon, juste mettre le commentaire?
+					if(isset($tab_orientation2[$lig_o->id_orientation])) {
+						$tab_o_ele[$lig_o->login][$cpt]['designation']=$tab_orientation2[$lig_o->id_orientation]['titre'];
+						$tab_o_ele[$lig_o->login][$cpt]['description']=$tab_orientation2[$lig_o->id_orientation]['description'];
+					}
+					else {
+						// Proposer de ne pas faire apparaitre les voeux non listés dans la base si jamais on ouvre la saisie aux parents/élèves ou si on conserve des trucs à titre informatif, mais ne devant pas figurer sur le bulletin.
+						$tab_o_ele[$lig_o->login][$cpt]['designation']=$lig_o->commentaire;
+						// Ou mettre "Autre orientation"
+						$tab_o_ele[$lig_o->login][$cpt]['description']="";
+					}
+
+					$tab_o_ele[$lig_o->login][$cpt]['commentaire']=$lig_o->commentaire;
+					$tab_o_ele[$lig_o->login][$cpt]['rang']=$lig_o->rang;
+					$tab_o_ele[$lig_o->login][$cpt]['saisi_par']=$lig_o->saisi_par;
+					$tab_o_ele[$lig_o->login][$cpt]['saisi_par_cnp']=civ_nom_prenom($lig_o->saisi_par);
+					$tab_o_ele[$lig_o->login][$cpt]['date_orientation']=formate_date($lig_o->date_orientation, "y");
+					$cpt++;
+				}
+			}
+
+			$tab_orientation_classe_courante['voeux']=$tab_voeux_ele;
+			$tab_orientation_classe_courante['orientation_proposee']=$tab_o_ele;
+		}
+
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
@@ -1899,6 +2006,10 @@ else {
 			}
 
 
+			// 20160408
+			if(getSettingAOui('active_mod_orientation')) {
+				$tab_bulletin[$id_classe][$periode_num]['orientation']=$tab_orientation_classe_courante;
+			}
 
 			// 20150203
 			$tab_bulletin[$id_classe][$tab_periode_num[$loop_periode_num]]['bull_prefixe_periode']=getParamClasse($id_classe, 'bull_prefixe_periode', "Bulletin du ");

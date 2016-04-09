@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -347,6 +347,38 @@ if(isset($_POST['param_communs_pdf_html'])) {
 	else { if (isset($_GET['X_absence'])) { $X_absence = $_GET['X_absence']; } if (isset($_POST['X_absence'])) { $X_absence = $_POST['X_absence']; } }
 
 	$largeur_cadre_absences=isset($_GET['largeur_cadre_absences']) ? $_GET['largeur_cadre_absences'] : (isset($_POST['largeur_cadre_absences']) ? $_POST['largeur_cadre_absences'] : 200);
+
+
+	// 20160409
+	//$active_bloc_orientation=isset($_GET['active_bloc_orientation']) ? $_GET['active_bloc_orientation'] : (isset($_POST['active_bloc_orientation']) ? $_POST['active_bloc_orientation'] : 0);
+	$orientation_periodes=isset($_GET['orientation_periodes']) ? $_GET['orientation_periodes'] : (isset($_POST['orientation_periodes']) ? $_POST['orientation_periodes'] : "");
+
+	if($orientation_periodes!="") {
+		$tmp_tab_periode_orientation=explode(";", preg_replace("/[^0-9]/",";",$orientation_periodes));
+		$orientation_periodes="";
+		for($loop=0;$loop<count($tmp_tab_periode_orientation);$loop++) {
+			if($tmp_tab_periode_orientation[$loop]!="") {
+				if($orientation_periodes!="") {
+					$orientation_periodes.=";";
+				}
+				$orientation_periodes.=$tmp_tab_periode_orientation[$loop];
+			}
+		}
+	}
+
+	$largeur_cadre_orientation=isset($_GET['largeur_cadre_orientation']) ? $_GET['largeur_cadre_orientation'] : (isset($_POST['largeur_cadre_orientation']) ? $_POST['largeur_cadre_orientation'] : 200);
+	$hauteur_cadre_orientation=isset($_GET['hauteur_cadre_orientation']) ? $_GET['hauteur_cadre_orientation'] : (isset($_POST['hauteur_cadre_orientation']) ? $_POST['hauteur_cadre_orientation'] : 15);
+	$X_cadre_orientation=isset($_GET['X_cadre_orientation']) ? $_GET['X_cadre_orientation'] : (isset($_POST['X_cadre_orientation']) ? $_POST['X_cadre_orientation'] : 5);
+	$Y_cadre_orientation=isset($_GET['Y_cadre_orientation']) ? $_GET['Y_cadre_orientation'] : (isset($_POST['Y_cadre_orientation']) ? $_POST['Y_cadre_orientation'] : 250);
+	$cadre_voeux_orientation=isset($_GET['cadre_voeux_orientation']) ? $_GET['cadre_voeux_orientation'] : (isset($_POST['cadre_voeux_orientation']) ? $_POST['cadre_voeux_orientation'] : 1);
+	$X_cadre_voeux_orientation=isset($_GET['X_cadre_voeux_orientation']) ? $_GET['X_cadre_voeux_orientation'] : (isset($_POST['X_cadre_voeux_orientation']) ? $_POST['X_cadre_voeux_orientation'] : 5);
+	$titre_voeux_orientation=isset($_GET['titre_voeux_orientation']) ? $_GET['titre_voeux_orientation'] : (isset($_POST['titre_voeux_orientation']) ? $_POST['titre_voeux_orientation'] : "Voeux");
+	$cadre_orientation_proposee=isset($_GET['cadre_orientation_proposee']) ? $_GET['cadre_orientation_proposee'] : (isset($_POST['cadre_orientation_proposee']) ? $_POST['cadre_orientation_proposee'] : 1);
+	$X_cadre_orientation_proposee=isset($_GET['X_cadre_orientation_proposee']) ? $_GET['X_cadre_orientation_proposee'] : (isset($_POST['X_cadre_orientation_proposee']) ? $_POST['X_cadre_orientation_proposee'] : 70);
+	$titre_orientation_proposee=isset($_GET['titre_orientation_proposee']) ? $_GET['titre_orientation_proposee'] : (isset($_POST['titre_orientation_proposee']) ? $_POST['titre_orientation_proposee'] : "Orientation proposée");
+
+	//$XXX=isset($_GET['XXX']) ? $_GET['XXX'] : (isset($_POST['XXX']) ? $_POST['XXX'] : 200);
+
 
 	if (empty($_GET['hauteur_entete_moyenne_general']) and empty($_POST['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = ''; }
 	else { if (isset($_GET['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_GET['hauteur_entete_moyenne_general']; } if (isset($_POST['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_POST['hauteur_entete_moyenne_general']; } }
@@ -1732,6 +1764,74 @@ function DecocheCheckbox() {
 			<br /><br />
 			</td>
 		</tr>
+
+		<!-- 20160409 -->
+		<tr>
+			<td style="vertical-align: top; white-space: nowrap; text-align: left;" colspan="2">
+
+				<div style="font-weight: bold; background: #CFCFCF;">Cadre Orientation de l'élève</div>
+				<!--
+				<input name="active_bloc_orientation" id="active_bloc_orientation_1" value="1" type="radio" <?php if(!empty($active_bloc_orientation) and $active_bloc_orientation==='1') { ?>checked="checked"<?php } ?> /><label for='active_bloc_orientation_1'>&nbsp;Activer</label> &nbsp;<input name="active_bloc_orientation" id="active_bloc_orientation_0" value="0" type="radio" <?php if(empty($active_bloc_orientation) or (!empty($active_bloc_orientation) and $active_bloc_orientation!='1')) { ?>checked="checked"<?php } ?> /><label for='active_bloc_orientation_0'>&nbsp;Désactiver</label><br />
+				-->
+				<!-- Limitation par période -->
+				Liste des périodes avec affichage du cadre orientation&nbsp;: <input name="orientation_periodes" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($orientation_periodes)) { ?>value="<?php echo $orientation_periodes; ?>" <?php } ?> /><br />
+				<em>(laissez vide pour désactiver l'affichage du cadre Orientation;<br />
+				sinon donnez les numéros de périodes, séparés par des point-virgules)</em><br />
+
+
+				Positionnement X&nbsp;<input name="X_cadre_orientation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_cadre_orientation)) { ?>value="<?php echo $X_cadre_orientation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_cadre_orientation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_cadre_orientation)) { ?>value="<?php echo $Y_cadre_orientation; ?>" <?php } ?> />mm&nbsp;<br />
+
+				Largeur du bloc&nbsp;<input name="largeur_cadre_orientation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_cadre_orientation)) { ?>value="<?php echo $largeur_cadre_orientation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_cadre_orientation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_cadre_orientation)) { ?>value="<?php echo $hauteur_cadre_orientation; ?>" <?php } ?> />mm&nbsp;<br />
+
+				<br />
+
+				Dans ce cadre, vous pouvez activer l'affichage de deux blocs&nbsp;:<br >
+				L'un pour afficher la <b>Liste des voeux de l'élève</b> et l'autre pour afficher la <b>Liste des orientations proposées/conseillées par le conseil de classe</b>.<br />
+
+
+				<!-- Voeux -->
+				<br />
+				<b>Cadre Voeux</b><br />
+				<input name="cadre_voeux_orientation" id="cadre_voeux_orientation_1" value="1" type="radio" <?php if(!empty($cadre_voeux_orientation) and $cadre_voeux_orientation==1) { ?>checked="checked"<?php } ?> /><label for='cadre_voeux_orientation_1'>&nbsp;Activer</label> &nbsp;<input name="cadre_voeux_orientation" id="cadre_voeux_orientation_0" value="0" type="radio" <?php if(empty($cadre_voeux_orientation) or (!empty($cadre_voeux_orientation) and $cadre_voeux_orientation!=1)) { ?>checked="checked"<?php } ?> /><label for='cadre_voeux_orientation_0'>&nbsp;Désactiver</label>
+				<br />
+				<em style='font-size:x-small;'>(l'affichage n'aura lieu que si des numéros de périodes sont définis plus haut pour l'affichage du Cadre Orientation)</em>
+				<br />
+
+				Positionnement X&nbsp;<input name="X_cadre_voeux_orientation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_cadre_voeux_orientation)) { ?>value="<?php echo $X_cadre_voeux_orientation; ?>" <?php } ?> />mm<br />
+
+				Titre du bloc Voeux de l'élève&nbsp;: <input name="titre_voeux_orientation" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_voeux_orientation)) { ?>value="<?php echo $titre_voeux_orientation; ?>" <?php } ?> /><br />
+				<!--
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_voeux_orientation" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_voeux_orientation)) { ?>value="<?php echo $taille_titre_voeux_orientation; ?>" <?php } ?> />pixel<br />
+				-->
+
+
+				<!-- Orientation proposée/conseillée -->
+				<br />
+				<b>Cadre Orientation proposée/conseillée</b><br />
+				<input name="cadre_orientation_proposee" id="cadre_orientation_proposee_1" value="1" type="radio" <?php if(!empty($cadre_orientation_proposee) and $cadre_orientation_proposee==1) { ?>checked="checked"<?php } ?> /><label for='cadre_orientation_proposee_1'>&nbsp;Activer</label> &nbsp;<input name="cadre_orientation_proposee" id="cadre_orientation_proposee_0" value="0" type="radio" <?php if(empty($cadre_orientation_proposee) or (!empty($cadre_orientation_proposee) and $cadre_orientation_proposee!=1)) { ?>checked="checked"<?php } ?> /><label for='cadre_orientation_proposee_0'>&nbsp;Désactiver</label>
+				<br />
+				<em style='font-size:x-small;'>(l'affichage n'aura lieu que si des numéros de périodes sont définis plus haut pour l'affichage du Cadre Orientation)</em>
+				<br />
+
+				Positionnement X&nbsp;<input name="X_cadre_orientation_proposee" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_cadre_orientation_proposee)) { ?>value="<?php echo $X_cadre_orientation_proposee; ?>" <?php } ?> />mm<br />
+
+				Titre du bloc Orientation proposée/conseillée&nbsp;: <input name="titre_orientation_proposee" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_orientation_proposee)) { ?>value="<?php echo $titre_orientation_proposee; ?>" <?php } ?> /><br />
+				<!--
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_orientation_proposee" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_orientation_proposee)) { ?>value="<?php echo $taille_titre_orientation_proposee; ?>" <?php } ?> />pixel<br />
+				-->
+
+
+			<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+			<ul>
+				<li>L'affichage de ce cadre est conditionné par le paramètre d'activation ci-dessus, mais aussi par l'activation du module Orientation.</li>
+				<li>Pour permettre un affichage conditionné par la période d'affichage, la hauteur de ce cadre est prise sur la hauteur du cadre Avis du conseil de classe.<br />
+				Il n'est en effet pas judicieux d'afficher les voeux d'orientation et orientation proposée au premier trimestre.<br />
+				Et l'archivage des bulletins PDF en fin d'année ne permet pas de choisir des modèles PDF différents selon les périodes.<br />
+				L'ordonnée Y du cadre <b>Avis du conseil de classe</b> sera donc décalée et la hauteur du cadre <b>Avis du conseil de classe</b> réduite de la hauteur du cadre <b>Orientation</b> si l'affichage de ce dernier cadre est activé.<br />
+				Veillez à ce que la hauteur du cadre Avis soit suffisamment importante pour inclure la hauteur du cadre Orientation.</li>
+			</ul>
+		</tr>
+
 		<tr>
 			<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 
