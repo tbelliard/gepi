@@ -1096,6 +1096,13 @@ Ce lien est là pour ça.\" target='_blank'><img src='../images/icons/mail.png' 
 		echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
 		$nb=$periode1;
 		while ($nb < $periode2+1) {
+			// Initialisation:
+			$eleve_abs[$nb]='';
+			$eleve_abs_nj[$nb]='';
+			$eleve_abs_j[$nb]="";
+			$eleve_retards[$nb]="";
+			$current_eleve_appreciation_absences="";
+
 			//On vérifie si le module est activé
 			if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 			    $current_eleve_absences_query = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
