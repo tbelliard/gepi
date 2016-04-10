@@ -14018,4 +14018,96 @@ function get_num_periode_d_apres_date($id_classe, $login_eleve="", $timestamp=""
 	return $num_periode;
 }
 
+function acces_saisie_voeux_orientation($id_classe="") {
+	$acces="n";
+
+	if(getSettingAOui("active_mod_orientation")) {
+		if($id_classe=="") {
+			if(($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieVoeuxScolarite')))||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieVoeuxCpe')))||
+			(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieVoeuxPP'))&&(is_pp($_SESSION['login'])))) {
+				$acces="y";
+			}
+		}
+		else {
+			if($_SESSION['statut']=="administrateur") {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="scolarite")&&(getSettingAOui('OrientationSaisieVoeuxScolarite'))&&(is_scol_classe($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="cpe")&&(getSettingAOui('OrientationSaisieVoeuxCpe'))&&(is_cpe($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="professeur")&&(getSettingAOui('OrientationSaisieVoeuxPP'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+		}
+	}
+	if($acces=="n") {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function acces_saisie_orientation($id_classe="") {
+	$acces="n";
+
+	if(getSettingAOui("active_mod_orientation")) {
+		if($id_classe=="") {
+			if(($_SESSION['statut']=='administrateur')||
+			(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieOrientationScolarite')))||
+			(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieOrientationCpe')))||
+			(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieOrientationPP'))&&(is_pp($_SESSION['login'])))) {
+				$acces="y";
+			}
+		}
+		else {
+			if($_SESSION['statut']=="administrateur") {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="scolarite")&&(getSettingAOui('OrientationSaisieOrientationScolarite'))&&(is_scol_classe($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="cpe")&&(getSettingAOui('OrientationSaisieOrientationCpe'))&&(is_cpe($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+			elseif(($_SESSION['statut']=="professeur")&&(getSettingAOui('OrientationSaisieOrientationPP'))&&(is_pp($_SESSION['login'], $id_classe))) {
+				$acces="y";
+			}
+		}
+	}
+
+	if($acces=="n") {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+function acces_saisie_type_orientation() {
+	$acces="n";
+
+	if(getSettingAOui("active_mod_orientation")) {
+		if(($_SESSION['statut']=='administrateur')||
+		(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieTypeScolarite')))||
+		(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieTypeCpe')))||
+		(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieTypePP'))&&(is_pp($_SESSION['login'])))) {
+			$acces="y";
+		}
+	}
+
+	if($acces=="n") {
+		return false;
+	}
+	else {
+		return true;
+	}
+
+}
+
 ?>

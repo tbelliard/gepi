@@ -57,8 +57,13 @@ $insert=mysqli_query($GLOBALS["mysqli"], $sql);
 
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if(!acces_saisie_type_orientation()) {
+	header("Location: index.php?msg=Accès non autorisé");
+	die();
 }
 
 $msg="";
