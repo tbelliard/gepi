@@ -13731,7 +13731,7 @@ function is_scol_classe($login_scol, $id_classe) {
 	$is_scol_classe=false;
 
 	$sql="SELECT 1=1 FROM j_scol_classes jsc
-					WHERE jsc.login='".$login_prof."' AND 
+					WHERE jsc.login='".$login_scol."' AND 
 						jsc.id_classe='$id_classe' LIMIT 1;";
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
