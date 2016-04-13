@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -31,6 +31,23 @@ Header('Pragma: public');
 require_once("../lib/initialisations.inc.php");
 //=============================
 
+// Resume session
+$resultat_session = $session_gepi->security_check();
+
+if ($resultat_session == 'c') {
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
+} else if ($resultat_session == '0') {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; réglage des paramètres', '');
+if (!checkAccess()) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
 if (!defined('FPDF_VERSION')) {
 	require_once('../fpdf/fpdf.php');
 }
@@ -52,25 +69,9 @@ require_once ("./liste.inc.php");
 // Pour le contourner, on ajoutez la ligne suivante avant session_start() :
 session_cache_limiter('private');
 
-// Resume session
-$resultat_session = $session_gepi->security_check();
-
 $ok=isset($_POST['ok']) ? $_POST["ok"] : 0;
 
 if ($ok==0) {
-	if ($resultat_session == 'c') {
-		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-		die();
-	} else if ($resultat_session == '0') {
-		header("Location: ../logout.php?auto=1");
-		die();
-	}
-
-	//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf_avis.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'Impression des avis conseil classe PDF; réglage des paramètres', '');
-	if (!checkAccess()) {
-		header("Location: ../logout.php?auto=1");
-		die();
-	}
 
 	//**************** EN-TETE **************************************
 	//$titre_page = "Impression de listes au format PDF <br />Choix des paramètres".$periode;
@@ -91,6 +92,7 @@ if ($ok==0) {
 	echo "<fieldset style='background-image: url(\"../images/background/opacite50.png\");'>\n";
 	echo "<legend style='border: 1px solid grey; background-color: white;'>Modifiez l'apparence du document PDF&nbsp;:</legend>\n";
 	echo "<form method=\"post\" action=\"../impression/parametres_impression_pdf_avis.php\" name=\"choix_parametres\">\n";
+	echo add_token_field();
 	echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
 	echo "<br />\n";
 
@@ -195,6 +197,8 @@ if ($ok==0) {
 	require("../lib/footer.inc.php");
 
 } else { // if OK
+	check_token();
+
 	// On enregistre dans la session et on redirige vers impression_serie.php
 	$_SESSION['avis_pdf_marge_gauche']=isset($_POST['marge_gauche']) ? $_POST["marge_gauche"] : 10;
 	savePref($_SESSION['login'],'avis_pdf_marge_gauche',$_SESSION['avis_pdf_marge_gauche']);
