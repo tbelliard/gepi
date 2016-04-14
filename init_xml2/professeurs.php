@@ -480,15 +480,22 @@ else {
 				$lcs_prof_en_erreur="n";
 				if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 					$lcs_prof_en_erreur="y";
+					$lcs_prof_details_erreur="";
 					$exist = 'no';
 					if($prof[$k]["id"]!='') {
 						$login_prof_gepi=get_lcs_login($prof[$k]["id"], 'professeur');
 						//echo "get_lcs_login(".$prof[$k]["id"].", 'professeur')=".$login_prof_gepi."<br />";
 						if($login_prof_gepi!='') {
 							$lcs_prof_en_erreur="n";
-							$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_prof_gepi';";
+							//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_prof_gepi';";
+							$sql="SELECT statut FROM utilisateurs WHERE login='$login_prof_gepi';";
 							$test_exist_prof=mysqli_query($GLOBALS["mysqli"], $sql);
 							if(mysqli_num_rows($test_exist_prof)>0) {
+								$lig_test_prof=mysqli_fetch_object($test_exist_prof);
+								if($lig_test_prof->statut!='professeur') {
+									$lcs_prof_en_erreur="yy";
+									$lcs_prof_details_erreur="Le compte $login_prof_gepi du LDAP correspond dans Gepi à un compte de statut ".$lig_test_prof->statut;
+								}
 								$exist = 'yes';
 							}
 							else {
@@ -552,6 +559,11 @@ else {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					echo "<td><p><font color='red'>Non trouvé dans l'annuaire LDAP</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>&nbsp;</td></tr>\n";
+				}
+				elseif($lcs_prof_en_erreur=="yy") {
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
+					echo "<td><p><font color='red'>$lcs_prof_details_erreur</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>&nbsp;</td></tr>\n";
 				}
 				/*
 				elseif(getSettingValue('auth_sso')=='lcs') {
@@ -662,7 +674,7 @@ else {
 	
 						// utilise le prénom composé s'il existe, plutôt que le premier prénom
 	
-						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."'";
+						$sql="INSERT INTO utilisateurs SET login='$login_prof', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', password='$pwd', statut='professeur', etat='actif', change_mdp='".$changemdp."', numind='P".$prof[$k]["id"]."', type='".$prof[$k]["type"]."'";
 						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}
@@ -680,7 +692,7 @@ else {
 						echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 					} else {
 						// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
-						$sql="UPDATE utilisateurs set etat='actif', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', numind='P".$prof[$k]["id"]."'";
+						$sql="UPDATE utilisateurs set etat='actif', nom='".mysqli_real_escape_string($GLOBALS["mysqli"], $prof[$k]["nom_usage"])."', prenom='".mysqli_real_escape_string($GLOBALS["mysqli"], $premier_prenom)."', civilite='$civilite', numind='P".$prof[$k]["id"]."', type='".$prof[$k]["type"]."'";
 						if(($auth_sso=='lcs')||($gepi_non_plugin_lcs_mais_recherche_ldap)) {
 							$sql.=", auth_mode='sso'";
 						}

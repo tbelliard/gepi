@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -130,7 +130,7 @@ check_token();
 
 
 	if ($_POST['reg_nom'] == '')  {
-		$msg = "Veuillez entrer un nom pour l'utilisateur !";
+		$msg.="Veuillez entrer un nom pour l'utilisateur !";
 	}
 	else {
 		$k = 0;
@@ -152,9 +152,9 @@ check_token();
 			$reg_password_c = md5($NON_PROTECT['password1']);
 			$resultat = "";
 			if (($_POST['no_anti_inject_password1'] != $_POST['reg_password2']) and ($is_pwd == "y")) {
-				$msg = "Erreur lors de la saisie : les deux mots de passe ne sont pas identiques, veuillez recommencer !";
+				$msg.="Erreur lors de la saisie : les deux mots de passe ne sont pas identiques, veuillez recommencer !";
 			} else if ((!(verif_mot_de_passe($_POST['no_anti_inject_password1'],0)))  and ($is_pwd == "y")) {
-				$msg = "Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
+				$msg.="Erreur lors de la saisie du mot de passe (<em>voir les recommandations</em>), veuillez recommencer !";
 				if((isset($info_verif_mot_de_passe))&&($info_verif_mot_de_passe!="")) {$msg.="<br />".$info_verif_mot_de_passe;}
 			} else {
 				// Le teste suivant détecte si un utilisateur existe avec le même login (insensible à la casse)
@@ -162,7 +162,7 @@ check_token();
 				$nombreligne = mysqli_num_rows($test);
 				if ($nombreligne != 0) {
 					$resultat = "NON";
-					$msg = "*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
+					$msg.="*** Attention ! Un utilisateur ayant le même identifiant existe déjà. Enregistrement impossible ! ***";
 				}
 				if ($resultat != "NON") {
 					// On enregistre l'utilisateur
@@ -188,16 +188,38 @@ check_token();
 						$write_ldap = false;
 					}
 
+					$sql_ajout_chaine_numind_et_type="";
+					if(isset($_POST['reg_numind'])) {
+						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
+						if($_POST['reg_statut']=="professeur") {
+							$reg_numind="P".$reg_numind;
+						}
+
+						$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."';";
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
+							$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+						}
+						else {
+							$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+						}
+					}
+					if((isset($_POST['reg_type']))&&(in_array($_POST['reg_type'], array('epp', 'local')))) {
+						$sql_ajout_chaine_numind_et_type.=", type='".$_POST['reg_type']."'";
+					}
+
 					# On poursuit si le LDAP s'est bien passé (ou bien si on n'avait rien à faire avec...)
 					if (!$write_ldap or ($write_ldap && $write_ldap_success)) {
 						// Ensuite, on enregistre dans la base, en distinguant selon le type d'authentification.
 						if ($_POST['reg_auth_mode'] == "gepi") {
 							// On enregistre le mot de passe
-							$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='y'");
+							$sql="INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='$reg_password_c',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='y'";
 						} else {
 							// Auth LDAP ou SSO, pas de mot de passe.
-							$reg_data = mysqli_query($GLOBALS["mysqli"], "INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'");
+							$sql="INSERT INTO utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."',login='".$_POST['new_login']."',password='',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."', auth_mode = '".$_POST['reg_auth_mode']."',etat='actif', change_mdp='n'";
 						}
+						$sql.=$sql_ajout_chaine_numind_et_type;
+						$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 
 						if ($_POST['reg_statut'] == "professeur") {
 							$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$_POST['new_login']."'");
@@ -215,10 +237,10 @@ check_token();
 							}
 						}
 
-						$msg="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
+						$msg.="Vous venez de créer un nouvel utilisateur !<br />Par défaut, cet utilisateur est considéré comme actif.";
 						//$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
-						$msg = $msg."<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
+						$msg.="<br />Pour imprimer les paramètres de l'utilisateur (identifiant, mot de passe, ...), cliquez <a href='impression_bienvenue.php?user_login=".$_POST['new_login']."&amp;mot_de_passe=".urlencode($NON_PROTECT['password1'])."' target='_blank'>ici</a> !";
+						$msg.="<br />Attention : ultérieurement, il vous sera impossible d'imprimer à nouveau le mot de passe d'un utilisateur ! ";
 						$user_login = $_POST['new_login'];
 
 						$temoin_ajout_ou_modif_ok="y";
@@ -322,7 +344,7 @@ check_token();
 				if(!getSettingAOui('auth_sso_ne_pas_vider_MDP_gepi')) {
 					mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
 				}
-				$msg = "Passage à un mode d'authentification externe : ";
+				$msg.="Passage à un mode d'authentification externe : ";
 				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 				if ($gepiSettings['ldap_write_access'] == "yes") {
 					$create_ldap_user = true;
@@ -343,13 +365,14 @@ check_token();
 					$delete_ldap_user = true;
 				}
 			}
+
 			$change = "yes";
 			$flag = '';
 			if ($_POST['reg_statut'] != "professeur") {
 				$test = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_groupes_professeurs WHERE (login='".$user_login."')");
 				$nb = mysqli_num_rows($test);
 				if ($nb != 0) {
-					$msg = "Impossible de changer le statut. Cet utilisateur est actuellement professeur dans certaines classes !";
+					$msg.="Impossible de changer le statut. Cet utilisateur est actuellement professeur dans certaines classes !";
 					$change = "no";
 				} else {
 					$k = 0;
@@ -393,7 +416,7 @@ check_token();
 						$k++;
 					}
 					if ($change == "no") {
-						$msg = "Impossible de changer les matières. Cet utilisateur est actuellement professeur dans certaines classes des matières que vous voulez supprimer !";
+						$msg.="Impossible de changer les matières. Cet utilisateur est actuellement professeur dans certaines classes des matières que vous voulez supprimer !";
 					}
 				}
 			}
@@ -446,8 +469,27 @@ check_token();
 					}
 				}
 
+				$sql_ajout_chaine_numind_et_type="";
+				if(isset($_POST['reg_numind'])) {
+					$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
+					if($_POST['reg_statut']=="professeur") {
+						$reg_numind="P".$reg_numind;
+					}
 
-				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."' WHERE login='".$user_login."'");
+					$sql="SELECT 1=1 FROM utilisateurs WHERE numind='".$reg_numind."';";
+					$test=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test)==0) {
+						$sql_ajout_chaine_numind_et_type.=", numind='".$reg_numind."'";
+					}
+					else {
+						$msg.="Identifiant STS déjà attribué à un autre utilisateur.<br />";
+					}
+				}
+				if((isset($_POST['reg_type']))&&(in_array($_POST['reg_type'], array('epp', 'local')))) {
+					$sql_ajout_chaine_numind_et_type.=", type='".$_POST['reg_type']."'";
+				}
+
+				$reg_data = mysqli_query($GLOBALS["mysqli"], "UPDATE utilisateurs SET nom='".$_POST['reg_nom']."',prenom='".$_POST['reg_prenom']."',civilite='".$_POST['reg_civilite']."', login='".$_POST['reg_login']."',statut='".$_POST['reg_statut']."',email='".$_POST['reg_email']."',etat='".$_POST['reg_etat']."',auth_mode='".$_POST['reg_auth_mode']."'".$sql_ajout_chaine_numind_et_type." WHERE login='".$user_login."'");
 				$del = mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres WHERE id_professeur = '".$user_login."'");
 				$m = 0;
 				while ($m < $_POST['max_mat']) {
@@ -463,7 +505,7 @@ check_token();
 					$m++;
 				}
 				if (!$reg_data) {
-					$msg = "Erreur lors de l'enregistrement des données.<br />";
+					$msg.="Erreur lors de l'enregistrement des données.<br />";
 				} else {
 					$msg.="Les modifications ont bien été enregistrées !<br />";
 				}
@@ -528,10 +570,10 @@ check_token();
 		} // elseif...
 		else {
 			if (mb_strlen($_POST['new_login']) > $longmax_login) {
-				$msg = "L'identifiant est trop long, il ne doit pas dépasser ".$longmax_login." caractères.";
+				$msg.="L'identifiant est trop long, il ne doit pas dépasser ".$longmax_login." caractères.";
 			}
 			else {
-				$msg = "L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
+				$msg.="L'identifiant de l'utilisateur doit être constitué uniquement de lettres et de chiffres !";
 			}
 		}
 
@@ -557,10 +599,10 @@ check_token();
 					if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
 						if($_POST['suppr_filephoto']=='y'){
 							if(unlink($repertoire.$code_photo.".jpg")){
-								$msg = "La photo ".$repertoire.$code_photo.".jpg a été supprimée. ";
+								$msg.="La photo ".$repertoire.$code_photo.".jpg a été supprimée. ";
 							}
 							else{
-								$msg = "Echec de la suppression de la photo ".$repertoire.$code_photo.".jpg ";
+								$msg.="Echec de la suppression de la photo ".$repertoire.$code_photo.".jpg ";
 							}
 						}
 					}
@@ -579,26 +621,26 @@ check_token();
 									$source_file = $filephoto_tmp;
 									$res_copy=copy("$source_file" , "$dest_file");
 									if($res_copy){
-										$msg = "Mise en place de la photo effectuée.";
+										$msg.="Mise en place de la photo effectuée.";
 										if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 											// si le redimensionnement des photos est activé on redimensionne
 											if (getSettingValue("active_module_trombinoscopes_rt")!='')
 												$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"),getSettingValue("active_module_trombinoscopes_rt"));
 											else
 												$redim_OK=redim_photo($dest_file,getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
-											if (!$redim_OK) $msg .= " Echec du redimensionnement de la photo.";
+											if (!$redim_OK) $msg.=" Echec du redimensionnement de la photo.";
 										}
 									}
 									else{
-										$msg = "Erreur lors de la mise en place de la photo.";
+										$msg.="Erreur lors de la mise en place de la photo.";
 									}
 								}
 								else{
-									$msg = "Erreur lors de l'upload de la photo.";
+									$msg.="Erreur lors de l'upload de la photo.";
 								}
 							}
 							else {
-								$msg = "Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.";
+								$msg.="Erreur : seuls les fichiers ayant l'extension .jpg ou .jpeg sont autorisés.";
 							}
 						}
 					}
@@ -661,6 +703,9 @@ if (isset($user_login) and ($user_login!='')) {
 	$user_etat = old_mysql_result($call_user_info, "0", "etat");
 	$date_verrouillage = old_mysql_result($call_user_info, "0", "date_verrouillage");
 
+	$user_numind = old_mysql_result($call_user_info, "0", "numind");
+	$user_type = old_mysql_result($call_user_info, "0", "type");
+
 	$call_matieres = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur = '".$user_login."' ORDER BY ordre_matieres");
 	$nb_mat = mysqli_num_rows($call_matieres);
 	$k = 0;
@@ -722,12 +767,16 @@ if (isset($user_login) and ($user_login!='')) {
 		$user_civilite = $_POST['reg_civilite'];
 	else
 		$user_civilite = 'M.';
+
 	$user_auth_mode = isset($_POST['reg_auth_mode']) ? $_POST['reg_auth_mode'] : "gepi";
 	if (isset($_POST['reg_nom'])) $user_nom = $_POST['reg_nom'];
 	if (isset($_POST['reg_prenom'])) $user_prenom = $_POST['reg_prenom'];
 	if (isset($_POST['reg_statut'])) $user_statut = $_POST['reg_statut'];
 	if (isset($_POST['reg_email'])) $user_email = $_POST['reg_email'];
 	if (isset($_POST['reg_etat'])) $user_etat = $_POST['reg_etat'];
+
+	if (isset($_POST['reg_numind'])) $user_numind = $_POST['reg_numind'];
+	if (isset($_POST['reg_type'])) $user_type = $_POST['reg_type'];
 
 	if ((isset($_POST['matiere_0']))&&($_POST['matiere_0']!='')) {
 		$user_matiere[0]=$_POST['matiere_0'];
@@ -1138,6 +1187,33 @@ if (getSettingValue("statuts_prives") == "y") {
 }
 ?>
 <br />
+
+<br />
+<?php
+	if (!isset($user_numind)) {$user_numind="";}
+	if (!isset($user_type)) {$user_type="";}
+?>
+<table border='0' summary="Informations STS">
+	<tr style='vertical-align:top;'>
+		<td>Identifiant STS&nbsp;: </td>
+		<td>
+			<input type='text' name='reg_numind' id='reg_numind' size='6' onchange="changement()" value="<?php echo $user_numind;?>" /><br />
+			<span style='font-size:x-small'>Cet identifiant est utilisé pour la liaison LSUN et pour la liaison éventuelle avec un serveur LCS.<br />
+			Il est préfixé d'un P pour les professeurs lors de l'import.<br />
+			Vous ne devriez pas modifier cet identifiant s'il a été correctement importé lors de l'initialisation.</span>
+		</td>
+	</tr>
+	<tr style='vertical-align:top;'>
+		<td>Type STS&nbsp;: </td>
+		<td>
+			<select name='reg_type' id='reg_type' onchange="changement()">
+				<option value=''>---</option>
+				<option value='epp' title="Personnel recruté par une académie"<?php if($user_type=='epp') {echo " selected";}?>>Emploi Poste Personnel</option>
+				<option value='local' title="Enseignant (vacataire ?) recruté par un établissement et payé avec des crédits du département ou de la région."<?php if($user_type=='local') {echo " selected";}?>>Local</option>
+			</select>
+		</td>
+	</tr>
+</table>
 
 <br />Etat :<select name="reg_etat" size="1" onchange="changement()">
 <?php if (!isset($user_etat)) $user_etat = "actif"; ?>

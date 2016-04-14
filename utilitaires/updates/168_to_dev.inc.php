@@ -296,4 +296,17 @@ PRIMARY KEY (id), UNIQUE KEY login (login)
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'type' à la table 'utilisateurs'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM utilisateurs LIKE 'type';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE utilisateurs ADD type varchar(10) NOT NULL default '';");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>
