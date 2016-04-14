@@ -40,6 +40,8 @@
 
 	$taille_max_police=10;
 
+	//DEBUG 20160413
+	//debug_var(); // Pour débugger, décommenter la ligne debug_var() et commenter la ligne ci-dessous
 	header("Content-type:image/png");
 
 	$avec_moy_classe="y";
@@ -698,6 +700,8 @@
 
 				if($afficher_la_serie_courante=="y") {
 					$ytmp=$ytmp+15;
+					//DEBUG 20160413
+					//echo "\$moyenne[$k][$i]=".$moyenne[$k][$i]."<br />";
 					if((($moyenne[$k][$i]!="")&&($moyenne[$k][$i]!="-")&&(preg_match("/^[0-9]{1,}/", $moyenne[$k][$i])))&&
 					(($k!=2)||((isset($nom_eleve[2]))&&($nom_eleve[2]!="Rang eleve")&&($nom_eleve[2]!="Rang élève")))) {
 						$texte_courant=nf($moyenne[$k][$i]);
