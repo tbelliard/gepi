@@ -1567,29 +1567,11 @@ else {
 
 	// 20160408
 	if(getSettingAOui('active_mod_orientation')) {
-		// Extraire les voeux et orientations pour la classe courante
-		$tab_orientation_classe_courante=array();
-
-		$tab_orientation=array();
-		$tab_orientation2=array();
-		$sql="SELECT oob.*, oom.mef_code FROM o_orientations_base oob, o_orientations_mefs oom WHERE oob.id=oom.id_orientation ORDER BY titre;";
-		//echo "$sql<br />";
-		$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($res_o)>0) {
-			$cpt=0;
-			while($lig_o=mysqli_fetch_object($res_o)) {
-				$tab_orientation[$lig_o->mef_code]['id_orientation'][]=$lig_o->id;
-				$tab_orientation[$lig_o->mef_code]['titre'][]=$lig_o->titre;
-				$tab_orientation[$lig_o->mef_code]['description'][]=$lig_o->description;
-
-				$tab_orientation2[$lig_o->id]['id_orientation']=$lig_o->id;
-				$tab_orientation2[$lig_o->id]['titre']=$lig_o->titre;
-				$tab_orientation2[$lig_o->id]['description']=$lig_o->description;
-
-				$cpt++;
-			}
-		}
+		// Orientations type saisies dans la bases
+		$tab_orientation=get_tab_orientations_types_par_mef();
+		$tab_orientation2=get_tab_orientations_types();
 	}
+
 
 	$nb_bulletins_edites=0;
 	// Boucle sur les classes
@@ -1832,7 +1814,7 @@ else {
 		//=========================================================================
 
 		// 20160408
-		if(getSettingAOui('active_mod_orientation')) {
+		if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
 			// Extraire les voeux et orientations pour la classe courante
 			$tab_orientation_classe_courante=array();
 
@@ -1908,8 +1890,20 @@ else {
 				}
 			}
 
+			$tab_avis_o_ele=array();
+			$sql="SELECT DISTINCT oa.* FROM o_avis oa, j_eleves_classes jec WHERE oa.login=jec.login AND jec.id_classe='".$id_classe."' ORDER BY oa.login;";
+			//echo "$sql<br />";
+			$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res_o)>0) {
+				$cpt=1;
+				while($lig_o=mysqli_fetch_object($res_o)) {
+					$tab_avis_o_ele[$lig_o->login]=$lig_o->avis;
+				}
+			}
+
 			$tab_orientation_classe_courante['voeux']=$tab_voeux_ele;
 			$tab_orientation_classe_courante['orientation_proposee']=$tab_o_ele;
+			$tab_orientation_classe_courante['avis']=$tab_avis_o_ele;
 		}
 
 		// Boucle sur les périodes
@@ -2007,8 +2001,9 @@ else {
 
 
 			// 20160408
-			if(getSettingAOui('active_mod_orientation')) {
+			if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
 				$tab_bulletin[$id_classe][$periode_num]['orientation']=$tab_orientation_classe_courante;
+				$tab_bulletin[$id_classe][$periode_num]['orientation']['mef_avec_orientation']=get_tab_mef_avec_proposition_orientation();
 			}
 
 			// 20150203
@@ -2801,6 +2796,7 @@ else {
 						$tab_ele['elenoet']=$lig_ele->elenoet;
 						$tab_ele['ele_id']=$lig_ele->ele_id;
 						$tab_ele['no_gep']=$lig_ele->no_gep;
+						$tab_ele['mef_code']=$lig_ele->mef_code;
 
 						$tab_ele['classe']=$classe;
 						$tab_ele['id_classe']=$id_classe;

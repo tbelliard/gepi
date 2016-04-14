@@ -71,6 +71,7 @@ $msg="";
 $tab_mef=get_tab_mef();
 
 if(isset($_POST['nouvelle_orientation'])) {
+	check_token();
 
 	// Nouvelle orientation
 	$nouvelle_orientation=$_POST['nouvelle_orientation'];

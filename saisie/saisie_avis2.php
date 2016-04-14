@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -87,6 +87,15 @@ if((!isset($id_classe))||(!preg_match("/^[0-9]{1,}$/", $id_classe))) {
 if(($_SESSION['statut']=='professeur')&&(!is_pp($_SESSION['login'], $id_classe))) {
 	header("Location: ../accueil.php?msg=Accès non autorisé.");
 	die();
+}
+
+if(isset($current_eleve_login)) {
+	$sql="SELECT 1=1 FROM eleves WHERE login='$current_eleve_login';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+		header("Location: saisie_avis.php?msg=Elève inconnu.");
+		die();
+	}
 }
 
 include "../lib/periodes.inc.php";
@@ -721,6 +730,7 @@ echo "</form>\n";
 	$tab_totaux_avertissement_fin_periode=array();
 	while($i < $nombre_lignes) {
 		$current_eleve_login = old_mysql_result($appel_donnees_eleves, $i, "login");
+		$current_eleve_id_eleve = old_mysql_result($appel_donnees_eleves, $i, "id_eleve");
 		$ind_eleve_login_suiv = 0;
 		if ($i < $nombre_lignes-1) $ind_eleve_login_suiv = $i+1;
 		$current_eleve_nom = old_mysql_result($appel_donnees_eleves, $i, "nom");
@@ -1003,13 +1013,15 @@ if (isset($fiche)) {
 		unset($graphe_chaine_temp);
 		unset($graphe_chaine_mgen);
 
+		$graphe_chaine_etiquette="";
 		for($j=0;$j<count($tab_moy['current_group']);$j++) {
 			$current_group=$tab_moy['current_group'][$j];
 
 			if(in_array($current_eleve_login, $current_group["eleves"]["all"]["list"])) {
 
 				if(!isset($graphe_chaine_etiquette)) {$graphe_chaine_etiquette="";}
-				else {$graphe_chaine_etiquette.="|";}
+				//else {$graphe_chaine_etiquette.="|";}
+				elseif($graphe_chaine_etiquette!="") {$graphe_chaine_etiquette.="|";}
 
 				$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
 
@@ -1198,8 +1210,21 @@ if (isset($fiche)) {
 	}
 	//=========================
 
+	//=========================
+	// Pour la photo, le nom, le prénom et l'id_eleve
+	$sql="SELECT elenoet, nom, prenom, sexe, id_eleve FROM eleves WHERE login='$current_eleve_login';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	$lig_ele=mysqli_fetch_object($res_ele);
+	$current_eleve_elenoet=$lig_ele->elenoet;
+	$current_eleve_nom=$lig_ele->nom;
+	$current_eleve_prenom=$lig_ele->prenom;
+	$current_eleve_sexe=$lig_ele->sexe;
+	$current_eleve_id_eleve=$lig_ele->id_eleve;
+	//=========================
+
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
-	echo add_token_field();
+	echo add_token_field(true);
 	echo "<table border='0' summary=\"Elève $current_eleve_login\">\n";
 	echo "<tr>\n";
 	echo "<td>\n";
@@ -1214,19 +1239,176 @@ if (isset($fiche)) {
 		echo champ_select_mention('current_eleve_mention',$id_classe,$current_eleve_mention);
 	}
 	// **** FIN DE L'AJOUT POUR LES MENTIONS ****
+
+	//=========================
+	// 20160412: Orientation
+	if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
+		// Orientations type saisies dans la bases
+		//$tab_orientation=get_tab_orientations_types_par_mef();
+		//$tab_orientation2=get_tab_orientations_types();
+
+		//$tab_orientation_classe_courante=get_tab_voeux_orientations_classe($id_classe);
+
+		$OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
+		$OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
+
+		$acces_saisie_voeux_orientation=acces_saisie_voeux_orientation($id_classe);
+		$acces_saisie_orientation=acces_saisie_orientation($id_classe);
+
+		$chaine_voeux_orientation="";
+		$chaine_orientation_proposee="";
+
+		//=========================
+		// Voeux
+		$edit_voeu_orientation="";
+		$chaine_voeux_orientation=get_liste_voeux_orientation($current_eleve_login);
+		if($acces_saisie_voeux_orientation) {
+			$edit_voeu_orientation="<div style='float:right; width:16px;'><a href='../mod_orientation/saisie_voeux.php?id_classe=$id_classe' onclick=\"afficher_saisie_voeux_orientation('$current_eleve_login', $current_eleve_id_eleve);return false;\" target='_blank'><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a></div>";
+
+			$titre_infobulle="Saisie des voeux (".$current_eleve_nom." ".$current_eleve_prenom.")";
+			$texte_infobulle="<form action='../mod_orientation/saisie_voeux.php' id='form_saisie_voeux_orientation_".$current_eleve_id_eleve."' method='post' target='_blank'>
+".add_token_field()."
+<input type='hidden' name='login_eleve' id='saisie_voeux_login_eleve_".$current_eleve_id_eleve."' value='$current_eleve_login' />
+<input type='hidden' name='id_eleve' id='saisie_voeux_id_eleve_".$current_eleve_id_eleve."' value='$current_eleve_id_eleve' />
+".get_select_voeux_orientation($current_eleve_login)."
+<!--p><input type='submit' value='Valider' /></p-->
+<p><input type='button' value='Valider' onclick=\"valider_saisie_voeux($current_eleve_id_eleve)\" /></p>
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_voeux_'.$current_eleve_id_eleve, $titre_infobulle, "",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		}
+
+		//=========================
+		// Orientation
+		$edit_orientation_proposee="";
+		$chaine_orientation_proposee=get_liste_orientations_proposees($current_eleve_login);
+
+		if($chaine_orientation_proposee!="") {
+			$chaine_orientation_proposee.="<br />";
+		}
+		$chaine_orientation_proposee.=get_avis_orientations_proposees($current_eleve_login);
+
+		if($acces_saisie_orientation) {
+			// Ouvrir vers ../mod_orientation/saisie_orientation.php si l'ouverture en JS/Ajax n'est pas possible... et afficher les orientations déjà saisies.
+			$edit_orientation_proposee="<div style='float:right; width:16px;'><a href='../mod_orientation/saisie_orientation.php?id_classe=$id_classe' onclick=\"afficher_saisie_orientation_proposee('$current_eleve_login', $current_eleve_id_eleve);return false;\" target='_blank'><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a></div>";
+
+			$titre_infobulle="Saisie des orientations (".$current_eleve_nom." ".$current_eleve_prenom.")";
+			$texte_infobulle="<form action='../mod_orientation/saisie_orientation.php' id='form_saisie_orientation_".$current_eleve_id_eleve."' method='post' target='_blank'>
+".add_token_field()."
+<input type='hidden' name='login_eleve' id='saisie_orientation_login_eleve_".$current_eleve_id_eleve."' value='$current_eleve_login' />
+<input type='hidden' name='id_eleve' id='saisie_orientation_id_eleve_".$current_eleve_id_eleve."' value='$current_eleve_id_eleve' />
+".get_select_orientations_proposees($current_eleve_login)."
+".get_champ_avis_orientations_proposees($current_eleve_login)."
+<!--p><input type='submit' value='Valider' /></p-->
+<p><input type='button' value='Valider' onclick=\"valider_saisie_orientation($current_eleve_id_eleve)\" /></p>
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_orientation_'.$current_eleve_id_eleve, $titre_infobulle, "",$texte_infobulle,"",40,0,'y','y','n','n');
+		}
+		//=========================
+
+		echo "
+		<table class='boireaus boireaus_alt' width='100%'>
+			<tr>
+				<th>Voeux</th>
+				<th>Orientation proposée/conseillée</th>
+			</tr>
+			<tr>
+				<td style='text-align:left;vertical-align:top;'>".$edit_voeu_orientation."<div id='div_voeu_".$current_eleve_id_eleve."'>$chaine_voeux_orientation</div></td>
+				<td style='text-align:left;vertical-align:top;'>".$edit_orientation_proposee."<div id='div_orientation_proposee_".$current_eleve_id_eleve."'>$chaine_orientation_proposee</div></td>
+			</tr>
+		</table>";
+
+		echo "<script type='text/javascript'>
+	function afficher_saisie_voeux_orientation(login_ele, id_eleve) {
+		afficher_div('div_infobulle_voeux_'+id_eleve, 'y', 10, 10);
+	}
+
+	function valider_saisie_voeux(id_eleve) {
+		//id_eleve=document.getElementById('saisie_voeux_id_eleve').value;
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		var tab_voeux=new Array();
+		var tab_commentaires_voeux=new Array();
+		for(i=1;i<=$OrientationNbMaxVoeux;i++) {
+			if(document.getElementById('voeu_'+id_eleve+'_'+i)) {
+				//alert(document.getElementById('voeu_'+id_eleve+'_'+i).selectedIndex);
+				tab_voeux[i]=document.getElementById('voeu_'+id_eleve+'_'+i).options[document.getElementById('voeu_'+id_eleve+'_'+i).selectedIndex].value;
+				//alert('tab_voeux['+i+']='+tab_voeux[i]);
+				//tab_commentaires_voeux[i]=document.getElementById('commentaire_voeu_'+id_eleve+'_'+i).value;
+				tab_commentaires_voeux[i]=encodeURIComponent(document.getElementById('commentaire_voeu_'+id_eleve+'_'+i).value);
+			}
+		}
+
+		new Ajax.Updater($('div_voeu_'+id_eleve),'../mod_orientation/saisie_voeux.php',{method: 'post',
+		parameters: {
+			id_eleve: id_eleve,
+			mode: 'saisie_voeux_eleve',";
+		for($loop=1;$loop<=$OrientationNbMaxVoeux;$loop++) {
+			echo "
+			tab_voeux_$loop: tab_voeux[$loop],
+			tab_commentaires_voeux_$loop: tab_commentaires_voeux[$loop],";
+		}
+		echo "
+			tab_commentaires_voeux: tab_commentaires_voeux,
+			csrf_alea: csrf_alea
+		}});
+
+		cacher_div('div_infobulle_voeux_'+id_eleve);
+
+	}
+
+	function afficher_saisie_orientation_proposee(login_ele, id_eleve) {
+		afficher_div('div_infobulle_orientation_'+id_eleve, 'y', 10, 10);
+	}
+
+	function valider_saisie_orientation(id_eleve) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		var tab_orientation=new Array();
+		var tab_commentaires_orientation=new Array();
+		for(i=1;i<=$OrientationNbMaxOrientation;i++) {
+			if(document.getElementById('orientation_'+id_eleve+'_'+i)) {
+				//alert(document.getElementById('orientation_'+id_eleve+'_'+i).selectedIndex);
+				tab_orientation[i]=document.getElementById('orientation_'+id_eleve+'_'+i).options[document.getElementById('orientation_'+id_eleve+'_'+i).selectedIndex].value;
+				//alert('tab_orientation['+i+']='+tab_orientation[i]);
+				//tab_commentaires_orientation[i]=document.getElementById('commentaire_orientation_'+id_eleve+'_'+i).value;
+				tab_commentaires_orientation[i]=encodeURIComponent(document.getElementById('commentaire_orientation_'+id_eleve+'_'+i).value);
+			}
+		}
+
+		avis_orientation='';
+		if(document.getElementById('avis_orientation_'+id_eleve)) {
+			avis_orientation=document.getElementById('avis_orientation_'+id_eleve).value;
+			avis_orientation=encodeURIComponent(avis_orientation);
+		}
+
+		new Ajax.Updater($('div_orientation_proposee_'+id_eleve),'../mod_orientation/saisie_orientation.php',{method: 'post',
+		parameters: {
+			id_eleve: id_eleve,
+			mode: 'saisie_orientation_eleve',";
+		for($loop=1;$loop<=$OrientationNbMaxOrientation;$loop++) {
+			echo "
+			tab_orientation_$loop: tab_orientation[$loop],
+			tab_commentaires_orientation_$loop: tab_commentaires_orientation[$loop],";
+		}
+		echo "
+			tab_commentaires_orientation: tab_commentaires_orientation,
+			avis_orientation: avis_orientation,
+			csrf_alea: csrf_alea
+		}});
+
+		cacher_div('div_infobulle_orientation_'+id_eleve);
+
+	}
+</script>";
+	}
+
+	//=========================
+
 	echo "</td>\n";
 
 
 	//==========================
-	// Photo
-	$sql="SELECT elenoet, nom, prenom, sexe FROM eleves WHERE login='$current_eleve_login';";
-	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-	$lig_ele=mysqli_fetch_object($res_ele);
-	$current_eleve_elenoet=$lig_ele->elenoet;
-	$current_eleve_nom=$lig_ele->nom;
-	$current_eleve_prenom=$lig_ele->prenom;
-	$current_eleve_sexe=$lig_ele->sexe;
-
 	// Photo...
 	$photo=nom_photo($current_eleve_elenoet);
 	$temoin_photo="";
@@ -1286,6 +1468,8 @@ if (isset($fiche)) {
 		$titre_infobulle="$current_eleve_nom $current_eleve_prenom (Toutes périodes)";
 
 		$texte_infobulle="<div align='center'>\n";
+		// Debug 20160413
+		//$texte_infobulle.="Debug <a href='../visualisation/draw_graphe.php?".$graphe_chaine_toutes_periodes."' target='_blank'>../visualisation/draw_graphe.php?".$graphe_chaine_toutes_periodes."</a><br />";
 		$texte_infobulle.="<img src='../visualisation/draw_graphe.php?".$graphe_chaine_toutes_periodes."' width='600' height='400' alt=\"$current_eleve_nom $current_eleve_prenom (Toutes périodes)\" title=\"$current_eleve_nom $current_eleve_prenom (Toutes périodes)\" />";
 		$texte_infobulle.="<br />\n";
 		$texte_infobulle.="</div>\n";
@@ -1303,6 +1487,8 @@ if (isset($fiche)) {
 				$titre_infobulle="$current_eleve_nom $current_eleve_prenom (Période $loop)";
 
 				$texte_infobulle="<div align='center'>\n";
+				// Debug 20160413
+				//$texte_infobulle.="Debug <a href='../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."' target='_blank'>../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."</a><br />";
 				$texte_infobulle.="<img src='../visualisation/draw_graphe.php?".$graphe_chaine_periode[$loop]."' width='600' height='400' alt=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" title=\"$current_eleve_nom $current_eleve_prenom (Période $loop)\" />";
 				$texte_infobulle.="<br />\n";
 				$texte_infobulle.="</div>\n";

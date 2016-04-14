@@ -1429,3 +1429,20 @@ saisi_par varchar(50) NOT NULL,
 PRIMARY KEY (id), UNIQUE KEY login_rang (login,rang)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS o_mef;
+CREATE TABLE IF NOT EXISTS o_mef (
+id int(11) NOT NULL AUTO_INCREMENT,
+mef_code varchar(50) NOT NULL,
+affichage char(1) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY mef_code_affichage (mef_code,affichage)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS o_avis;
+CREATE TABLE IF NOT EXISTS o_avis (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+avis varchar(255) NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login (login)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

@@ -82,6 +82,7 @@ function info_eleve($ele_login) {
 	$tab_ele['no_gep']=$lig_ele->no_gep;
 	$tab_ele['email']=$lig_ele->email;
 	$tab_ele['date_sortie']=$lig_ele->date_sortie;
+	$tab_ele['id_eleve']=$lig_ele->id_eleve;
 
 	$tab_ele['code_lieu_naissance']=$lig_ele->lieu_naissance;
 	if($ele_lieu_naissance=="y") {

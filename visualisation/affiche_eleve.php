@@ -3237,7 +3237,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 
 	$acces_visu_eleve=check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut']);
 
-	if((isset($eleve1))&&(($acces_bull_simp=="y")||($acces_visu_eleve))) {
+	if((isset($eleve1))&&(($acces_bull_simp=="y")||($acces_visu_eleve))||(getSettingAOui('active_mod_orientation'))) {
 		echo "<div class='fieldset_opacite50' style='margin-bottom:0.5em;'>";
 		if($acces_bull_simp=="y") {
 
@@ -3268,7 +3268,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 				echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletin simpl.' />Voir le bulletin simpl.";
 				echo "</a>";
 			}
-			if($acces_visu_eleve) {
+			if(($acces_visu_eleve)||(getSettingAOui('active_mod_orientation'))) {
 			echo "<br />";
 			}
 		}
@@ -3281,8 +3281,18 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 			echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\" title=\"Voir la fiche élève avec ses différents onglets dans une autre page.\">";
 			echo "<img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' />Consultation";
 			echo "</a>";
+
+			if(getSettingAOui('active_mod_orientation')) {
+			echo "<br />";
+			}
 		}
 
+		if(getSettingAOui('active_mod_orientation')) {
+			//&id_classe=".$id_classe."
+			echo "<a href=\"../mod_orientation/index.php\" target=\"_blank\" title=\"Voir/saisie les voeux d'orientation et l'orientation proposée/conseillée par le conseil de classe.\" onclick=\"afficher_infobulle_orientation();return false;\">";
+			echo "Orientation";
+			echo "</a>";
+		}
 		echo "</div>";
 	}
 	//========================================================
@@ -3328,7 +3338,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 
 	$titre_infobulle="Notes";
 	$texte_infobulle="<div id='div_notes_cn'></div>";
-	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+	$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_notes_cn',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n',2);
 	echo "<script type='text/javascript'>
 	//function affiche_div_notes_cn(id_groupe, periode) {
 		//new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login=$eleve1&id_groupe='+id_groupe+'&periode='+periode,{method: 'get'});
@@ -5990,6 +6000,180 @@ echo "<script type='text/javascript'>
 	}
 	//]]>
 </script>\n";
+
+	//=========================
+	// 20160412: Orientation
+	if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
+		// Orientations type saisies dans la bases
+		//$tab_orientation=get_tab_orientations_types_par_mef();
+		//$tab_orientation2=get_tab_orientations_types();
+
+		//$tab_orientation_classe_courante=get_tab_voeux_orientations_classe($id_classe);
+
+		$OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
+		$OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
+
+		$acces_saisie_voeux_orientation=acces_saisie_voeux_orientation($id_classe);
+		$acces_saisie_orientation=acces_saisie_orientation($id_classe);
+
+		$chaine_voeux_orientation="";
+		$chaine_orientation_proposee="";
+
+		$current_eleve_login=$eleve1;
+		$current_eleve_nom=$tab_ele['nom'];
+		$current_eleve_prenom=$tab_ele['prenom'];
+		$current_eleve_id_eleve=$tab_ele['id_eleve'];
+
+		//=========================
+		// Voeux
+		$edit_voeu_orientation="";
+		$chaine_voeux_orientation=get_liste_voeux_orientation($current_eleve_login);
+		if($acces_saisie_voeux_orientation) {
+			$edit_voeu_orientation="<div style='float:right; width:16px;'><a href='../mod_orientation/saisie_voeux.php?id_classe=$id_classe' onclick=\"afficher_saisie_voeux_orientation('$current_eleve_login', $current_eleve_id_eleve);return false;\" target='_blank'><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a></div>";
+
+			$titre_infobulle="Saisie des voeux (".$current_eleve_nom." ".$current_eleve_prenom.")";
+			$texte_infobulle="<form action='../mod_orientation/saisie_voeux.php' id='form_saisie_voeux_orientation_".$current_eleve_id_eleve."' method='post' target='_blank'>
+".add_token_field()."
+<input type='hidden' name='login_eleve' id='saisie_voeux_login_eleve_".$current_eleve_id_eleve."' value='$current_eleve_login' />
+<input type='hidden' name='id_eleve' id='saisie_voeux_id_eleve_".$current_eleve_id_eleve."' value='$current_eleve_id_eleve' />
+".get_select_voeux_orientation($current_eleve_login)."
+<!--p><input type='submit' value='Valider' /></p-->
+<p><input type='button' value='Valider' onclick=\"valider_saisie_voeux($current_eleve_id_eleve)\" /></p>
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_voeux_'.$current_eleve_id_eleve, $titre_infobulle, "",$texte_infobulle,"",35,0,'y','y','n','n',2);
+
+		}
+
+		//=========================
+		// Orientation
+		$edit_orientation_proposee="";
+		$chaine_orientation_proposee=get_liste_orientations_proposees($current_eleve_login);
+		if($chaine_orientation_proposee!="") {
+			$chaine_orientation_proposee.="<br />";
+		}
+		$chaine_orientation_proposee.=get_avis_orientations_proposees($current_eleve_login);
+		if($acces_saisie_orientation) {
+			// Ouvrir vers ../mod_orientation/saisie_orientation.php si l'ouverture en JS/Ajax n'est pas possible... et afficher les orientations déjà saisies.
+			$edit_orientation_proposee="<div style='float:right; width:16px;'><a href='../mod_orientation/saisie_orientation.php?id_classe=$id_classe' onclick=\"afficher_saisie_orientation_proposee('$current_eleve_login', $current_eleve_id_eleve);return false;\" target='_blank'><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a></div>";
+
+			$titre_infobulle="Saisie des orientations (".$current_eleve_nom." ".$current_eleve_prenom.")";
+			$texte_infobulle="<form action='../mod_orientation/saisie_orientation.php' id='form_saisie_orientation_".$current_eleve_id_eleve."' method='post' target='_blank'>
+".add_token_field()."
+<input type='hidden' name='login_eleve' id='saisie_orientation_login_eleve_".$current_eleve_id_eleve."' value='$current_eleve_login' />
+<input type='hidden' name='id_eleve' id='saisie_orientation_id_eleve_".$current_eleve_id_eleve."' value='$current_eleve_id_eleve' />
+".get_select_orientations_proposees($current_eleve_login)."
+".get_champ_avis_orientations_proposees($current_eleve_login)."
+<!--p><input type='submit' value='Valider' /></p-->
+<p><input type='button' value='Valider' onclick=\"valider_saisie_orientation($current_eleve_id_eleve)\" /></p>
+</form>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_orientation_'.$current_eleve_id_eleve, $titre_infobulle, "",$texte_infobulle,"",40,0,'y','y','n','n',2);
+		}
+		//=========================
+
+		$titre_infobulle="Voeux et orientation";
+		$texte_infobulle="<form action='../mod_orientation/saisie_orientation.php' id='form_saisie_orientation_".$current_eleve_id_eleve."' method='post'>
+		<table class='boireaus boireaus_alt' width='100%'>
+			<tr>
+				<th>Voeux</th>
+				<th>Orientation proposée/conseillée</th>
+			</tr>
+			<tr>
+				<td style='text-align:left;'>".$edit_voeu_orientation."<div id='div_voeu_".$current_eleve_id_eleve."'>$chaine_voeux_orientation</div></td>
+				<td style='text-align:left;'>".$edit_orientation_proposee."<div id='div_orientation_proposee_".$current_eleve_id_eleve."'>$chaine_orientation_proposee</div></td>
+			</tr>
+		</table>";
+			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_voeux_et_orientation_'.$current_eleve_id_eleve, $titre_infobulle, "",$texte_infobulle,"",60,0,'y','y','n','n',1);
+
+		echo "<script type='text/javascript'>
+	function afficher_infobulle_orientation() {
+		afficher_div('div_infobulle_voeux_et_orientation_".$current_eleve_id_eleve."', 'y', 10, 10);
+	}
+
+	function afficher_saisie_voeux_orientation(login_ele, id_eleve) {
+		afficher_div('div_infobulle_voeux_'+id_eleve, 'y', 10, 10);
+	}
+
+	function valider_saisie_voeux(id_eleve) {
+		//id_eleve=document.getElementById('saisie_voeux_id_eleve').value;
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		var tab_voeux=new Array();
+		var tab_commentaires_voeux=new Array();
+		for(i=1;i<=$OrientationNbMaxVoeux;i++) {
+			if(document.getElementById('voeu_'+id_eleve+'_'+i)) {
+				//alert(document.getElementById('voeu_'+id_eleve+'_'+i).selectedIndex);
+				tab_voeux[i]=document.getElementById('voeu_'+id_eleve+'_'+i).options[document.getElementById('voeu_'+id_eleve+'_'+i).selectedIndex].value;
+				//alert('tab_voeux['+i+']='+tab_voeux[i]);
+				//tab_commentaires_voeux[i]=document.getElementById('commentaire_voeu_'+id_eleve+'_'+i).value;
+				tab_commentaires_voeux[i]=encodeURIComponent(document.getElementById('commentaire_voeu_'+id_eleve+'_'+i).value);
+			}
+		}
+
+		new Ajax.Updater($('div_voeu_'+id_eleve),'../mod_orientation/saisie_voeux.php',{method: 'post',
+		parameters: {
+			id_eleve: id_eleve,
+			mode: 'saisie_voeux_eleve',";
+		for($loop=1;$loop<=$OrientationNbMaxVoeux;$loop++) {
+			echo "
+			tab_voeux_$loop: tab_voeux[$loop],
+			tab_commentaires_voeux_$loop: tab_commentaires_voeux[$loop],";
+		}
+		echo "
+			tab_commentaires_voeux: tab_commentaires_voeux,
+			csrf_alea: csrf_alea
+		}});
+
+		cacher_div('div_infobulle_voeux_'+id_eleve);
+
+	}
+
+	function afficher_saisie_orientation_proposee(login_ele, id_eleve) {
+		afficher_div('div_infobulle_orientation_'+id_eleve, 'y', 10, 10);
+	}
+
+	function valider_saisie_orientation(id_eleve) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
+		var tab_orientation=new Array();
+		var tab_commentaires_orientation=new Array();
+		for(i=1;i<=$OrientationNbMaxOrientation;i++) {
+			if(document.getElementById('orientation_'+id_eleve+'_'+i)) {
+				//alert(document.getElementById('orientation_'+id_eleve+'_'+i).selectedIndex);
+				tab_orientation[i]=document.getElementById('orientation_'+id_eleve+'_'+i).options[document.getElementById('orientation_'+id_eleve+'_'+i).selectedIndex].value;
+				//alert('tab_orientation['+i+']='+tab_orientation[i]);
+				tab_commentaires_orientation[i]=encodeURIComponent(document.getElementById('commentaire_orientation_'+id_eleve+'_'+i).value);
+			}
+		}
+
+		avis_orientation='';
+		if(document.getElementById('avis_orientation_'+id_eleve)) {
+			avis_orientation=document.getElementById('avis_orientation_'+id_eleve).value;
+			avis_orientation=encodeURIComponent(avis_orientation);
+		}
+
+		new Ajax.Updater($('div_orientation_proposee_'+id_eleve),'../mod_orientation/saisie_orientation.php',{method: 'post',
+		parameters: {
+			id_eleve: id_eleve,
+			mode: 'saisie_orientation_eleve',";
+		for($loop=1;$loop<=$OrientationNbMaxOrientation;$loop++) {
+			echo "
+			tab_orientation_$loop: tab_orientation[$loop],
+			tab_commentaires_orientation_$loop: tab_commentaires_orientation[$loop],";
+		}
+		echo "
+			tab_commentaires_orientation: tab_commentaires_orientation,
+			avis_orientation: avis_orientation,
+			csrf_alea: csrf_alea
+		}});
+
+		cacher_div('div_infobulle_orientation_'+id_eleve);
+
+	}
+</script>";
+	}
+
+	//=========================
+
 
 
 if(getSettingValue('active_annees_anterieures')=='y') {

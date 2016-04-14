@@ -256,4 +256,44 @@ if (getSettingValue('OrientationNbMaxVoeux')===null) {
 	if (saveSetting('OrientationNbMaxVoeux',"3")) $result .= msj_ok("SUCCES !"); else $result .= msj_erreur("ECHEC !");
 } else $result .= msj_present("L'entrée OrientationNbMaxVoeux existe déjà dans la table setting");
 
+$result .= "<strong>Ajout d'une table 'o_mef' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_mef'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_mef (
+id int(11) NOT NULL AUTO_INCREMENT,
+mef_code varchar(50) NOT NULL,
+affichage char(1) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY mef_code_affichage (mef_code,affichage)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+
+$result .= "<strong>Ajout d'une table 'o_avis' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'o_avis'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS o_avis (
+id int(11) NOT NULL AUTO_INCREMENT,
+login varchar(50) NOT NULL,
+avis varchar(255) NOT NULL,
+saisi_par varchar(50) NOT NULL,
+PRIMARY KEY (id), UNIQUE KEY login (login)
+) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

@@ -144,10 +144,21 @@ if(($_SESSION['statut']=='administrateur')||
 }
 
 echo "
+	<li><a href='consulter_orientation.php'>Consulter les voeux et orientations proposées par le conseil de classe</a></li>";
+
+echo "
 	<!--
 	<li></li>
 	-->
 </ul>
+
+<p style='color:red;margin-top:1em;'><em>A FAIRE&nbsp;:</em></p>
+<ul>
+	<li>Pouvoir ne faire apparaitre que le 1er voeu/orientation sur le bulletin.</li>
+	<li>Permettre la saisie des voeux en parent/élève.</li>
+	<li>Permettre de produire un PDF des voeux formulés, des orientations proposées.</li>
+</ul>
+
 <p><br /></p>\n";
 
 // Pouvoir demander l'ajout de tel type orientation?

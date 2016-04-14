@@ -98,13 +98,14 @@
 echo add_token_field();
 ?>
 		<legend class="invisible">Activation</legend>
-		<p>
+		<p style='text-indent:-3em; margin-left:3em;'><strong>Activation</strong><br />
 		<input type='radio'
 			   name='activer'
 			   id='activer_y'
 			   value='y'
+			   onchange="change_style_radio();changement();"
 			   <?php if (getSettingValue('active_mod_orientation')=='y') echo ' checked="checked"'; ?>/>
-		<label for='activer_y'>
+		<label for='activer_y' id='label_activer_y'>
 		  Activer le module Orientation
 		</label>
 		<br />
@@ -112,15 +113,16 @@ echo add_token_field();
 			   name='activer'
 			   id='activer_n'
 			   value='n'
+			   onchange="change_style_radio();changement();"
 			   <?php if (getSettingValue('active_mod_orientation')=='n') echo ' checked="checked"'; ?>/>
-		<label for='activer_n'>
+		<label for='activer_n' id='label_activer_n'>
 		  Désactiver le module orientation
 		</label>
 		</p>
 
 		<br />
 
-		<p><strong>Voeux</strong>
+		<p style='text-indent:-3em; margin-left:3em;'><strong>Voeux</strong>
 		<br />
 		<input type='hidden'
 			   name='OrientationSaisieVoeuxAdministrateur'
@@ -131,8 +133,9 @@ echo add_token_field();
 			   name='OrientationSaisieVoeuxPP'
 			   id='OrientationSaisieVoeuxPP'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieVoeuxPP')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieVoeuxPP'>
+		<label for='OrientationSaisieVoeuxPP' id='label_OrientationSaisieVoeuxPP'>
 		  Les comptes professeurs principal peuvent saisir les voeux formulés par les élèves dont ils sont professeur principal.
 		</label>
 		<br />
@@ -141,8 +144,9 @@ echo add_token_field();
 			   name='OrientationSaisieVoeuxScolarite'
 			   id='OrientationSaisieVoeuxScolarite'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieVoeuxScolarite')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieVoeuxScolarite'>
+		<label for='OrientationSaisieVoeuxScolarite' id='label_OrientationSaisieVoeuxScolarite'>
 		  Les comptes scolarité peuvent saisir les voeux d'orientation des élèves des classes qu'ils suivent.
 		</label>
 		<br />
@@ -151,8 +155,9 @@ echo add_token_field();
 			   name='OrientationSaisieVoeuxCpe'
 			   id='OrientationSaisieVoeuxCpe'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieVoeuxCpe')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieVoeuxCpe'>
+		<label for='OrientationSaisieVoeuxCpe' id='label_OrientationSaisieVoeuxCpe'>
 		  Les comptes cpe peuvent saisir les voeux d'orientation des élèves qu'ils suivent.
 		</label>
 		<br />
@@ -163,6 +168,7 @@ echo add_token_field();
 		<input type='text'
 			   name='OrientationNbMaxVoeux'
 			   id='OrientationNbMaxVoeux'
+			   onchange="changement();"
 			   value='<?php 
 			   $OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
 			   if((!preg_match("/^[0-9]{1,}$/", $OrientationNbMaxVoeux))||($OrientationNbMaxVoeux==0)) {
@@ -175,7 +181,7 @@ echo add_token_field();
 			    />
 		</p>
 
-		<p><strong>Orientation</strong>
+		<p style='text-indent:-3em; margin-left:3em;'><strong>Orientation</strong>
 		<br />
 		<input type='hidden'
 			   name='OrientationSaisieOrientationAdministrateur'
@@ -186,8 +192,9 @@ echo add_token_field();
 			   name='OrientationSaisieOrientationPP'
 			   id='OrientationSaisieOrientationPP'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieOrientationPP')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieOrientationPP'>
+		<label for='OrientationSaisieOrientationPP' id='label_OrientationSaisieOrientationPP'>
 		  Les comptes professeurs principal peuvent saisir l'orientation proposée par le conseil de classe pour les élèves dont ils sont professeur principal.
 		</label>
 		<br />
@@ -196,8 +203,9 @@ echo add_token_field();
 			   name='OrientationSaisieOrientationScolarite'
 			   id='OrientationSaisieOrientationScolarite'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieOrientationScolarite')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieOrientationScolarite'>
+		<label for='OrientationSaisieOrientationScolarite' id='label_OrientationSaisieOrientationScolarite'>
 		  Les comptes scolarité peuvent saisir l'orientation proposée par le conseil de classe pour les élèves des classes qu'ils suivent.
 		</label>
 		<br />
@@ -206,8 +214,9 @@ echo add_token_field();
 			   name='OrientationSaisieOrientationCpe'
 			   id='OrientationSaisieOrientationCpe'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieOrientationCpe')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieOrientationCpe'>
+		<label for='OrientationSaisieOrientationCpe' id='label_OrientationSaisieOrientationCpe'>
 		  Les comptes cpe peuvent saisir l'orientation proposée par le conseil de classe pour les élèves qu'ils suivent.
 		</label>
 		<br />
@@ -218,6 +227,7 @@ echo add_token_field();
 		<input type='text'
 			   name='OrientationNbMaxOrientation'
 			   id='OrientationNbMaxOrientation'
+			   onchange="changement();"
 			   value='<?php 
 			   $OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
 			   if((!preg_match("/^[0-9]{1,}$/", $OrientationNbMaxOrientation))||($OrientationNbMaxOrientation==0)) {
@@ -230,7 +240,7 @@ echo add_token_field();
 			    />
 		</p>
 
-		<p><strong>Types d'orientation</strong>
+		<p style='text-indent:-3em; margin-left:3em;'><strong>Types d'orientation</strong>
 		<br />
 		<input type='hidden'
 			   name='OrientationSaisieTypeAdministrateur'
@@ -241,8 +251,9 @@ echo add_token_field();
 			   name='OrientationSaisieTypePP'
 			   id='OrientationSaisieTypePP'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieTypePP')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieTypePP'>
+		<label for='OrientationSaisieTypePP' id='label_OrientationSaisieTypePP'>
 		  Les comptes professeurs principal peuvent saisir de nouveaux types d'orientation et modifier les types existants.
 		</label>
 		<br />
@@ -251,8 +262,9 @@ echo add_token_field();
 			   name='OrientationSaisieTypeScolarite'
 			   id='OrientationSaisieTypeScolarite'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieTypeScolarite')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieTypeScolarite'>
+		<label for='OrientationSaisieTypeScolarite' id='label_OrientationSaisieTypeScolarite'>
 		  Les comptes scolarité peuvent saisir de nouveaux types d'orientation et modifier les types existants.
 		</label>
 		<br />
@@ -261,11 +273,65 @@ echo add_token_field();
 			   name='OrientationSaisieTypeCpe'
 			   id='OrientationSaisieTypeCpe'
 			   value='y'
+			   onchange="checkbox_change(this.id);changement();"
 			   <?php if (getSettingAOui('OrientationSaisieTypeCpe')) echo ' checked="checked"'; ?>/>
-		<label for='OrientationSaisieTypeCpe'>
+		<label for='OrientationSaisieTypeCpe' id='label_OrientationSaisieTypeCpe'>
 		  Les comptes cpe peuvent saisir de nouveaux types d'orientation et modifier les types existants.
 		</label>
 		</p>
+
+		<p><strong>MEFs concernés</strong></p>
+		<p style='text-indent:-3em; margin-left:3em;'>
+		Vous pouvez restreindre l'affichage des consultation et saisie et des voeux et orientations proposées à certains MEFs.<br />
+		<?php
+			$tab_mef_af=array();
+			$sql="SELECT m.* FROM o_mef om, mef m WHERE om.mef_code=m.mef_code AND om.affichage='y' ORDER BY libelle_edition, libelle_long, libelle_court;";
+			$res_mef=mysqli_query($mysqli, $sql);
+			while($lig_mef=mysqli_fetch_object($res_mef)) {
+				$tab_mef_af[]=$lig_mef->mef_code;
+			}
+
+			$cpt=0;
+			$tab_mef=get_tab_mef();
+			foreach($tab_mef as $mef_code => $current_mef) {
+				$checked="";
+				if(in_array($mef_code, $tab_mef_af)) {
+					$checked=" checked";
+				}
+				echo "<input type='checkbox' name='mef_code_af[]' id='mef_code_af_".$cpt."' value='$mef_code'".$checked." onchange=\"checkbox_change(this.id);changement();\" /><label for='mef_code_af_".$cpt."' id='label_mef_code_af_".$cpt."'>".$current_mef['designation_courte']."</label><br />";
+				$cpt++;
+			}
+		?>
+		</p>
+		<p><a href='#' onclick="cocher_toutes_mefs();return false;">Tout cocher</a> / <a href='#' onclick="decocher_toutes_mefs();return false;">tout décocher</a></p>
+
+		<script type='text/javascript'>
+			function cocher_toutes_mefs() {
+				for(i=0;i<<?php echo $cpt;?>;i++) {
+					if(document.getElementById('mef_code_af_'+i)) {
+						document.getElementById('mef_code_af_'+i).checked=true;
+						checkbox_change('mef_code_af_'+i);
+					}
+				}
+				changement();
+			}
+
+			function decocher_toutes_mefs() {
+				for(i=0;i<<?php echo $cpt;?>;i++) {
+					if(document.getElementById('mef_code_af_'+i)) {
+						document.getElementById('mef_code_af_'+i).checked=false;
+						checkbox_change('mef_code_af_'+i);
+					}
+				}
+				changement();
+			}
+			<?php
+				echo js_checkbox_change_style("checkbox_change", 'label_', "n");
+				echo js_change_style_radio();
+				echo js_change_style_all_checkbox();
+			?>
+			change_style_radio();
+		</script>
 
 		<input type='hidden' name='is_posted' value='y' />
 
@@ -301,7 +367,7 @@ echo add_token_field();
 			<input type='submit' name='valider' value='Valider' />
 		</p>
 
-		<p style='margin-top:1em;'><em>NOTES&nbsp;:</em> Les voeux et orientations saisies sont aussi supprimées lors de l'initialisation.</p>
+		<p style='margin-top:1em;'><em>NOTES&nbsp;:</em> Les voeux et orientations saisies sont aussi supprimés lors de l'initialisation.</p>
 	  </fieldset>
 	</form>
 

@@ -1706,6 +1706,18 @@ autre='F',
 description='Saisie des voeux',
 statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_orientation/consulter_orientation.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Consultation des voeux et orientation proposée',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

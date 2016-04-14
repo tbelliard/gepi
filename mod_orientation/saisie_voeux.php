@@ -93,8 +93,85 @@ $OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
 
 $msg="";
 
-if((isset($id_classe))&&(isset($_POST['enregistrer_voeux']))) {
+if((isset($_POST['id_eleve']))&&(isset($_POST['mode']))&&($_POST['mode']=="saisie_voeux_eleve")) {
+	check_token();
 
+	$id_eleve=$_POST['id_eleve'];
+	$sql="SELECT * FROM eleves WHERE id_eleve='$id_eleve';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		echo "Élève non trouvé.<br />";
+		die();
+	}
+
+	$lig_ele=mysqli_fetch_object($res_ele);
+
+	$tab_orientation_eleve=get_tab_voeux_orientations_ele($lig_ele->login);
+	$tab_voeux_ele=$tab_orientation_eleve['voeux'];
+	$tab_o_ele=$tab_orientation_eleve['orientation_proposee'];
+
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+
+	$rang=1;
+	for($loop=1;$loop<=$OrientationNbMaxVoeux;$loop++) {
+		if(isset($_POST['tab_voeux_'.$loop])) {
+
+			$voeu[$loop]=$_POST['tab_voeux_'.$loop];
+
+			$commentaire[$loop]=$_POST['tab_commentaires_voeux_'.$loop];
+			$commentaire[$loop]=urldecode($commentaire[$loop]);
+			// Le $purifier est initialisé dans lib/traitement_data.inc.php
+			$commentaire[$loop]=$purifier->purify($commentaire[$loop]);
+			$commentaire[$loop]=stripslashes($commentaire[$loop]);
+
+			if((trim($voeu[$loop])=="")&&(trim($commentaire[$loop])=="")) {
+				if(isset($tab_voeux_ele[$loop])) {
+					$sql="DELETE FROM o_voeux WHERE login='".$lig_ele->login."' AND rang='".$loop."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					//$nb_reg++;
+				}
+			}
+			else {
+				if(isset($tab_voeux_ele[$loop])) {
+					if($voeu[$loop]!=$tab_voeux_ele[$loop]['id_orientation']) {
+						$sql="UPDATE o_voeux SET id_orientation='".$voeu[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire[$loop])."', date_voeu='".$date_courante."', saisi_par='".$_SESSION['login']."' WHERE login='".$lig_ele->login."' AND rang='".$rang."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						//$nb_reg++;
+					}
+					elseif(trim($commentaire[$loop])!=$tab_voeux_ele[$loop]['commentaire']) {
+						$sql="UPDATE o_voeux SET id_orientation='".$voeu[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, trim($commentaire[$loop]))."', date_voeu='".$date_courante."', saisi_par='".$_SESSION['login']."' WHERE login='".$lig_ele->login."' AND rang='".$rang."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						//$nb_reg++;
+					}
+				}
+				else {
+					$sql="INSERT INTO o_voeux SET id_orientation='".$voeu[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire[$loop])."', date_voeu='".$date_courante."', login='".$lig_ele->login."', rang='".$rang."', saisi_par='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					//$nb_reg++;
+				}
+				$rang++;
+			}
+
+		}
+	}
+
+	// Afficher les voeux:
+	echo get_liste_voeux_orientation($lig_ele->login);
+	
+	//debug_var();
+
+	die();
+}
+
+
+
+if((isset($id_classe))&&(isset($_POST['enregistrer_voeux']))) {
+	check_token();
 /*
 $_POST['id_classe']=	33
 $_POST['voeu_4921']=	Array (*)
@@ -254,7 +331,7 @@ require_once("../lib/header.inc.php");
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<h2>Saisie des voeux d'orientation</h2>
+<h2>Saisie des voeux d'orientation".(isset($id_classe) ? " (".get_nom_classe($id_classe).")" : "")."</h2>
 
 <p>Ce module est destiné à saisir les voeux d'orientation des élèves et les orientations proposées par le conseil de classe.</p>";
 
@@ -272,16 +349,37 @@ if(!isset($id_classe)) {
 		die();
 	}
 
+	$tab_classe_o=array();
+	$sql="SELECT DISTINCT id_classe FROM o_mef om, j_eleves_classes jec, eleves e WHERE om.affichage='y' AND e.mef_code=om.mef_code AND e.login=jec.login;";
+	//echo "$sql<br />";
+	$res_clas_o=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_clas_o=mysqli_fetch_object($res_clas_o)) {
+		$tab_classe_o[]=$lig_clas_o->id_classe;
+	}
+
 	if(mysqli_num_rows($res_clas)==1) {
 		$lig_clas=mysqli_fetch_object($res_clas);
 		$id_classe=$lig_clas->id;
+		if(!in_array($id_classe, $tab_classe_o)) {
+			echo "<p style=color:red'>Aucune classe avec MEF associé à un niveau d'orientation ne vous est associée.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
 	}
 	else {
 		$tab_txt=array();
 		$tab_lien=array();
 		while($lig_clas=mysqli_fetch_object($res_clas)) {
-			$tab_lien[] = $_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
-			$tab_txt[] = $lig_clas->classe;
+			if(in_array($lig_clas->id, $tab_classe_o)) {
+				$tab_lien[] = $_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+				$tab_txt[] = $lig_clas->classe;
+			}
+		}
+
+		if(count($tab_lien)==0) {
+			echo "<p style=color:red'>Aucune classe avec MEF associé à un niveau d'orientation ne vous est associée.</p>";
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$nbcol=3;
@@ -307,6 +405,12 @@ echo "<pre>";
 print_r($tab_orientation);
 echo "</pre>";
 */
+
+if(!mef_avec_proposition_orientation($id_classe)) {
+	echo "<p style=color:red'>La classe de '<strong>".get_nom_classe($id_classe)."</strong>' n'est pas associée à des MEFs d'un niveau d'orientation.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
 
 echo "
 <form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
@@ -390,15 +494,6 @@ echo "
 		<p style='text-align:center;'><input type='submit' value='Valider' /></p>
 	</fieldset>
 </form>
-<p style='color:red;margin-top:1em;'><em>A FAIRE&nbsp;:</em></p>
-<ul>
-	<li>Permettre de faire apparaitre les voeux dans les bulletins (<em>sous la ligne absences/retards</em>).<br />
-	Pouvoir ne faire apparaitre que le 1er voeu sur le bulletin.<br />
-	Et pouvoir faire apparaitre l'orientation proposée/conseillée par le conseil de classe.</li>
-	<li>Permettre la saisie de l'orientation conseillée depuis les graphes, depuis les pages de saisie de l'avis du conseil de classe.</li>
-	<li>Permettre la saisie des voeux en parent/élève.</li>
-	<li>Permettre de produire un PDF des voeux formulés, des orientations proposées.</li>
-</ul>
 <p><br /></p>\n";
 
 require("../lib/footer.inc.php");

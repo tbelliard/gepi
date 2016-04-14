@@ -19,7 +19,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 $accessibilite="y";
-$titre_page = "Alertes : Activation/désactivation";
+$titre_page = "Orientation : Activation/désactivation";
 $niveau_arbo = 1;
 $gepiPathJava="./..";
 $post_reussi=FALSE;
@@ -185,6 +185,39 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	$tab_mef_deja_af=array();
+	$mef_code_af=isset($_POST['mef_code_af']) ? $_POST['mef_code_af'] : array();
+	$sql="SELECT * FROM o_mef om WHERE affichage='y';";
+	$res_o_mef=mysqli_query($mysqli, $sql);
+	while($lig_o_mef=mysqli_fetch_object($res_o_mef)) {
+		if(!in_array($lig_o_mef->mef_code, $mef_code_af)) {
+			$sql="DELETE FROM o_mef WHERE mef_code='".$lig_o_mef->mef_code."';";
+			$del=mysqli_query($mysqli, $sql);
+			if(!$del) {
+				$msg.="Erreur lors de la suppression de l'affichage pour le MEF '".$lig_o_mef->mef_code."'.<br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+		else {
+			$tab_mef_deja_af[]=$lig_o_mef->mef_code;
+		}
+	}
+
+	for($loop=0;$loop<count($mef_code_af);$loop++) {
+		if(!in_array($mef_code_af[$loop], $tab_mef_deja_af)) {
+			$sql="INSERT INTO o_mef SET mef_code='".$mef_code_af[$loop]."', affichage='y';";
+			$insert=mysqli_query($mysqli, $sql);
+			if(!$insert) {
+				$msg.="Erreur lors de l'enregistrement de l'affichage pour le MEF '".$mef_code_af[$loop]."'.<br />";
+			}
+			else {
+				$nb_reg++;
+			}
+		}
+	}
+
 	if($nb_reg>0) {
 		$msg .= "Enregistrement effectué ($nb_reg valeurs).<br />";
 		$post_reussi=TRUE;
@@ -220,6 +253,8 @@ if (isset($_POST['is_posted2'])) {
 		}
 	}
 }
+
+$themessage = 'Des modifications n ont pas été validées. Voulez-vous vraiment quitter sans enregistrer ?';
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc.php");

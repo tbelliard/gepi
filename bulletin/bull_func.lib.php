@@ -5817,7 +5817,9 @@ $hauteur_pris_app_abs=0;
 			//if($tab_modele_pdf["active_bloc_orientation"][$classe_id]==='1') {
 			//if($tab_modele_pdf["active_bloc_orientation"][$classe_id]==1) {
 			$tmp_tab_periode_orientation=explode(";", $tab_modele_pdf["orientation_periodes"][$classe_id]);
-			if(in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation)) {
+			//if(in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation)) {
+			if((in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation))&&(isset($tab_bull['orientation']['mef_avec_orientation']))&&(in_array($tab_bull['eleve'][$i]['mef_code'], $tab_bull['orientation']['mef_avec_orientation']))) {
+				//$tab_bulletin[$id_classe][$periode_num]['orientation']['mef_avec_orientation']=get_tab_mef_avec_proposition_orientation();
 
 				// LE TEMPS DU DEVELOPPEMENT, pour ne pas devoir adapter un modèle PDF, on prend la hauteur orientation sur la hauteur avis en mettant
 				// INSERT INTO setting SET name='bull_pdf_orientation_pris_sur_avis', value='y';
@@ -5871,7 +5873,7 @@ $hauteur_pris_app_abs=0;
 								for($loop_voeu=1;$loop_voeu<=count($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']]);$loop_voeu++) {
 									$texte_voeux.=$loop_voeu.". ".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'];
 									if(($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!="")&&($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!=$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'])) {
-										$texte_voeux.=" (".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
+										$texte_voeux.=" (".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
 									}
 									$texte_voeux.="\n";
 								}
@@ -5886,7 +5888,7 @@ $hauteur_pris_app_abs=0;
 								for($loop_voeu=1;$loop_voeu<=count($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']]);$loop_voeu++) {
 									$texte_voeux.="<b>".$loop_voeu.".</b> ".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'];
 									if(($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!="")&&($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!=$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'])) {
-										$texte_voeux.=" (".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
+										$texte_voeux.=" (".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
 									}
 									$texte_voeux.="\n";
 								}
@@ -5941,6 +5943,10 @@ $hauteur_pris_app_abs=0;
 								}
 							}
 
+							if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
+								$texte_orientations_proposees.="Avis: ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
+							}
+
 							$pdf->drawTextBox(($texte_orientations_proposees), $largeur_cadre_orientation_proposee-$largeur_chaine_titre_orientations_proposees, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'J', 'M', 0);
 						}
 						else {
@@ -5953,6 +5959,10 @@ $hauteur_pris_app_abs=0;
 									}
 									$texte_orientations_proposees.="\n";
 								}
+							}
+
+							if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
+								$texte_orientations_proposees.="<b>Avis:</b> ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
 							}
 
 							$texte=$texte_orientations_proposees;

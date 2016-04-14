@@ -100,7 +100,124 @@ $OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
 
 $msg="";
 
+
+if((isset($_POST['id_eleve']))&&(isset($_POST['mode']))&&($_POST['mode']=="saisie_orientation_eleve")) {
+	check_token();
+
+	$id_eleve=$_POST['id_eleve'];
+	$sql="SELECT * FROM eleves WHERE id_eleve='$id_eleve';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		echo "Élève non trouvé.<br />";
+		die();
+	}
+
+	$lig_ele=mysqli_fetch_object($res_ele);
+
+	$tab_orientation_eleve=get_tab_voeux_orientations_ele($lig_ele->login);
+	$tab_voeux_ele=$tab_orientation_eleve['voeux'];
+	$tab_o_ele=$tab_orientation_eleve['orientation_proposee'];
+
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+
+	$rang=1;
+	for($loop=1;$loop<=$OrientationNbMaxOrientation;$loop++) {
+		if(isset($_POST['tab_orientation_'.$loop])) {
+
+			$orientation[$loop]=$_POST['tab_orientation_'.$loop];
+
+			$commentaire[$loop]=$_POST['tab_commentaires_orientation_'.$loop];
+			$commentaire[$loop]=urldecode($commentaire[$loop]);
+			// Le $purifier est initialisé dans lib/traitement_data.inc.php
+			$commentaire[$loop]=$purifier->purify($commentaire[$loop]);
+			$commentaire[$loop]=stripslashes($commentaire[$loop]);
+
+			if((trim($orientation[$loop])=="")&&(trim($commentaire[$loop])=="")) {
+				if(isset($tab_o_ele[$loop])) {
+					$sql="DELETE FROM o_orientations WHERE login='".$lig_ele->login."' AND rang='".$loop."';";
+					//echo "$sql<br />";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+					//$nb_reg++;
+				}
+			}
+			else {
+				if(isset($tab_o_ele[$loop])) {
+					if($orientation[$loop]!=$tab_o_ele[$loop]['id_orientation']) {
+						$sql="UPDATE o_orientations SET id_orientation='".$orientation[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire[$loop])."', date_orientation='".$date_courante."', saisi_par='".$_SESSION['login']."' WHERE login='".$lig_ele->login."' AND rang='".$rang."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						//$nb_reg++;
+					}
+					elseif(trim($commentaire[$loop])!=$tab_o_ele[$loop]['commentaire']) {
+						$sql="UPDATE o_orientations SET id_orientation='".$orientation[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, trim($commentaire[$loop]))."', date_orientation='".$date_courante."', saisi_par='".$_SESSION['login']."' WHERE login='".$lig_ele->login."' AND rang='".$rang."';";
+						//echo "$sql<br />";
+						$update=mysqli_query($GLOBALS["mysqli"], $sql);
+						//$nb_reg++;
+					}
+				}
+				else {
+					$sql="INSERT INTO o_orientations SET id_orientation='".$orientation[$loop]."', commentaire='".mysqli_real_escape_string($mysqli, $commentaire[$loop])."', date_orientation='".$date_courante."', login='".$lig_ele->login."', rang='".$rang."', saisi_par='".$_SESSION['login']."';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					//$nb_reg++;
+				}
+				$rang++;
+			}
+
+		}
+	}
+
+	$avis_orientation=isset($_POST['avis_orientation']) ? $_POST['avis_orientation'] : "";
+	$avis_orientation=urldecode($avis_orientation);
+	// Le $purifier est initialisé dans lib/traitement_data.inc.php
+	$avis_orientation=$purifier->purify($avis_orientation);
+	$avis_orientation=nl2br($avis_orientation);
+	$avis_orientation=stripslashes($avis_orientation);
+
+	$avis_o_ele="";
+	$sql="SELECT DISTINCT * FROM o_avis oa WHERE oa.login='".$lig_ele->login."';";
+	//echo "$sql<br />";
+	$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_o)>0) {
+		$cpt=1;
+		$lig_o=mysqli_fetch_object($res_o);
+		$avis_o_ele=$lig_o->avis;
+
+		//if(stripslashes($avis_orientation)!=$avis_o_ele) {
+		if($avis_orientation!=$avis_o_ele) {
+			$sql="UPDATE o_avis SET avis='".mysqli_real_escape_string($mysqli, $avis_orientation)."' WHERE login='".$lig_ele->login."';";
+			//echo strftime("%Y%m%d %H%M%S")."<br />";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(!$update) {
+				echo "<span style='color:red'>Erreur lors de la mise à jour de l'avis</span>.<br />";
+			}
+		}
+	}
+	else {
+		$sql="INSERT INTO o_avis SET avis='".mysqli_real_escape_string($mysqli, $avis_orientation)."', login='".$lig_ele->login."';";
+		//echo strftime("%Y%m%d %H%M%S")."<br />";
+		//echo "$sql<br />";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$insert) {
+			echo "<span style='color:red'>Erreur lors de l'enregistrement de l'avis</span>.<br />";
+		}
+	}
+
+
+	// Afficher les orientations:
+	echo get_liste_orientations_proposees($lig_ele->login);
+	//echo nl2br(get_avis_orientations_proposees($lig_ele->login));
+	echo get_avis_orientations_proposees($lig_ele->login);
+	
+	//debug_var();
+
+	die();
+}
+
 if((isset($id_classe))&&(isset($_POST['enregistrer_orientation']))) {
+	check_token();
 
 	$acces="n";
 	if($_SESSION['statut']=="administrateur") {
@@ -218,6 +335,45 @@ if((isset($id_classe))&&(isset($_POST['enregistrer_orientation']))) {
 					}
 					$cpt++;
 				}
+
+
+				if (isset($NON_PROTECT["avis_orientation_".$lig_ele->id_eleve])){
+					$avis_orientation=suppression_sauts_de_lignes_surnumeraires($NON_PROTECT["avis_orientation_".$lig_ele->id_eleve]);
+					$avis_orientation=nl2br($avis_orientation);
+
+					$sql="SELECT * FROM o_avis WHERE login='".$lig_ele->login."';";
+					//echo "$sql<br />";
+					$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_o)>0) {
+						$lig_o=mysqli_fetch_object($res_o);
+						$avis_o_ele=$lig_o->avis;
+
+						if($avis_orientation!=$avis_o_ele) {
+							$sql="UPDATE o_avis SET avis='".mysqli_real_escape_string($mysqli, $avis_orientation)."' WHERE login='".$lig_ele->login."';";
+							//echo strftime("%Y%m%d %H%M%S")."<br />";
+							//echo "$sql<br />";
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(!$update) {
+								$msg.="Erreur lors de la mise à jour de l'avis pour ".$lig_ele->login.".<br />";
+							}
+							else {
+								$nb_reg++;
+							}
+						}
+					}
+					else {
+						$sql="INSERT INTO o_avis SET avis='".mysqli_real_escape_string($mysqli, $avis_orientation)."', login='".$lig_ele->login."';";
+						//echo strftime("%Y%m%d %H%M%S")."<br />";
+						//echo "$sql<br />";
+						$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$insert) {
+							$msg.="Erreur lors de l'enregistrement de l'avis pour ".$lig_ele->login.".<br />";
+						}
+						else {
+							$nb_reg++;
+						}
+					}
+				}
 			}
 		}
 
@@ -240,7 +396,7 @@ require_once("../lib/header.inc.php");
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
-<h2>Saisie de l'orientation proposée par le conseil de classe</h2>
+<h2>Saisie de l'orientation proposée par le conseil de classe".(isset($id_classe) ? " (".get_nom_classe($id_classe).")" : "")."</h2>
 
 <p>Ce module est destiné à saisir les voeux et orientations proposées par le conseil de classe.</p>";
 
@@ -258,16 +414,37 @@ if(!isset($id_classe)) {
 		die();
 	}
 
+	$tab_classe_o=array();
+	$sql="SELECT DISTINCT id_classe FROM o_mef om, j_eleves_classes jec, eleves e WHERE om.affichage='y' AND e.mef_code=om.mef_code AND e.login=jec.login;";
+	//echo "$sql<br />";
+	$res_clas_o=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_clas_o=mysqli_fetch_object($res_clas_o)) {
+		$tab_classe_o[]=$lig_clas_o->id_classe;
+	}
+
 	if(mysqli_num_rows($res_clas)==1) {
 		$lig_clas=mysqli_fetch_object($res_clas);
 		$id_classe=$lig_clas->id;
+		if(!in_array($id_classe, $tab_classe_o)) {
+			echo "<p style=color:red'>Aucune classe avec MEF associé à un niveau d'orientation ne vous est associée.</p>";
+			require("../lib/footer.inc.php");
+			die();
+		}
 	}
 	else {
 		$tab_txt=array();
 		$tab_lien=array();
 		while($lig_clas=mysqli_fetch_object($res_clas)) {
-			$tab_lien[] = $_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
-			$tab_txt[] = $lig_clas->classe;
+			if(in_array($lig_clas->id, $tab_classe_o)) {
+				$tab_lien[] = $_SERVER['PHP_SELF']."?id_classe=".$lig_clas->id;
+				$tab_txt[] = $lig_clas->classe;
+			}
+		}
+
+		if(count($tab_lien)==0) {
+			echo "<p style=color:red'>Aucune classe avec MEF associé à un niveau d'orientation ne vous est associée.</p>";
+			require("../lib/footer.inc.php");
+			die();
 		}
 
 		$nbcol=3;
@@ -294,6 +471,19 @@ print_r($tab_orientation);
 echo "</pre>";
 */
 
+if(!mef_avec_proposition_orientation($id_classe)) {
+	echo "<p style=color:red'>La classe de '<strong>".get_nom_classe($id_classe)."</strong>' n'est pas associée à des MEFs d'un niveau d'orientation.</p>";
+	require("../lib/footer.inc.php");
+	die();
+}
+
+$tab_orientation_classe_courante=get_tab_voeux_orientations_classe($id_classe);
+/*
+echo "<pre>";
+print_r($tab_orientation_classe_courante);
+echo "</pre>";
+*/
+
 echo "
 <form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>
 	<fieldset class='fieldset_opacite50'>
@@ -316,37 +506,19 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 	$chaine_copie_voeu="";
 
 	$tab_voeux_ele=array();
-	$sql="SELECT * FROM o_voeux WHERE login='".$lig_ele->login."' ORDER BY rang;";
-	//echo "$sql<br />";
-	$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_o)>0) {
-		$cpt=1;
-		while($lig_o=mysqli_fetch_object($res_o)) {
-			$tab_voeux_ele[$cpt]['id_orientation']=$lig_o->id_orientation;
-			$tab_voeux_ele[$cpt]['commentaire']=$lig_o->commentaire;
-			$tab_voeux_ele[$cpt]['rang']=$lig_o->rang;
-			$tab_voeux_ele[$cpt]['saisi_par']=$lig_o->saisi_par;
-			$tab_voeux_ele[$cpt]['saisi_par_cnp']=civ_nom_prenom($lig_o->saisi_par);
-			$tab_voeux_ele[$cpt]['date_voeu']=formate_date($lig_o->date_voeu, "y");
-			$cpt++;
-		}
+	$tab_o_ele=array();
+	$avis_o_ele="";
+
+	if(isset($tab_orientation_classe_courante['voeux'][$lig_ele->login])) {
+		$tab_voeux_ele=$tab_orientation_classe_courante['voeux'][$lig_ele->login];
 	}
 
-	$tab_o_ele=array();
-	$sql="SELECT * FROM o_orientations WHERE login='".$lig_ele->login."' ORDER BY rang;";
-	//echo "$sql<br />";
-	$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res_o)>0) {
-		$cpt=1;
-		while($lig_o=mysqli_fetch_object($res_o)) {
-			$tab_o_ele[$cpt]['id_orientation']=$lig_o->id_orientation;
-			$tab_o_ele[$cpt]['commentaire']=$lig_o->commentaire;
-			$tab_o_ele[$cpt]['rang']=$lig_o->rang;
-			$tab_o_ele[$cpt]['saisi_par']=$lig_o->saisi_par;
-			$tab_o_ele[$cpt]['saisi_par_cnp']=civ_nom_prenom($lig_o->saisi_par);
-			$tab_o_ele[$cpt]['date_orientation']=formate_date($lig_o->date_orientation, "y");
-			$cpt++;
-		}
+	if(isset($tab_orientation_classe_courante['orientation_proposee'][$lig_ele->login])) {
+		$tab_o_ele=$tab_orientation_classe_courante['orientation_proposee'][$lig_ele->login];
+	}
+
+	if(isset($tab_orientation_classe_courante['avis'][$lig_ele->login])) {
+		$avis_o_ele=$tab_orientation_classe_courante['avis'][$lig_ele->login];
 	}
 
 	echo "
@@ -474,6 +646,13 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 						<input type='text' name='commentaire_".$lig_ele->id_eleve."[]'  id='commentaire_".$lig_ele->id_eleve."_".$loop."'value=\"".$commentaire."\" size='30' onchange=\"changement();\" /><br />";
 
 	}
+
+	echo "<label for='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> </label><textarea name='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' id='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' rows='5' cols='60' class='wrap' onchange=\"changement()\">";
+	if(isset($tab_orientation_classe_courante['avis'][$lig_ele->login])) {
+		echo preg_replace("#<br />#i", "", $tab_orientation_classe_courante['avis'][$lig_ele->login]);
+	}
+	echo "</textarea>\n";
+
 	echo "
 					</td>
 				</tr>";
@@ -516,16 +695,6 @@ echo "
 		}
 	}
 </script>
-
-<p style='color:red;margin-top:1em;'><em>A FAIRE&nbsp;:</em></p>
-<ul>
-	<li>Permettre de faire apparaitre les voeux dans les bulletins (<em>sous la ligne absences/retards</em>).<br />
-	Pouvoir ne faire apparaitre que le 1er voeu sur le bulletin.<br />
-	Et pouvoir faire apparaitre l'orientation proposée/conseillée par le conseil de classe.</li>
-	<li>Permettre la saisie de l'orientation conseillée depuis les graphes, depuis les pages de saisie de l'avis du conseil de classe.</li>
-	<li>Permettre la saisie des voeux en parent/élève.</li>
-	<li>Permettre de produire un PDF des voeux formulés, des orientations proposées.</li>
-</ul>
 <p><br /></p>\n";
 
 require("../lib/footer.inc.php");

@@ -5094,6 +5094,11 @@ function chaine_title_explication_verrouillage_periodes() {
 function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_seulement="y") {
 	global $mysqli, $gepiPath;
 
+	$chaine_lien_alerte_nj="";
+	if(acces("/mod_abs2/alerte_nj.php", $_SESSION['statut'])) {
+		$chaine_lien_alerte_nj="<div style='float:right; width:20px; margin:3px;' title=\"Afficher les absences non justifiées depuis un certain temps.\"><a href='$gepiPath/mod_abs2/alerte_nj.php'><img src='$gepiPath/images/icons/absences_flag.png' class='icone20' alt='Alerte' /></a></div>";
+	}
+
 	$lignes_alerte="";
 	// Pour le debug
 	$temoin_au_moins_une_alerte=0;
@@ -5162,6 +5167,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 			$date_absence_eleve_debut=strftime("%Y-%m-%d", getSettingValue('begin_bookings'));
 			$date_absence_eleve_fin=$date_test;
 
+			$lignes_alerte.=$chaine_lien_alerte_nj;
 			$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s).</p>".$msg_switch_mode_periode."
 			<table class='boireaus boireaus_alt resizable sortable' border='1'>
 				<thead>
@@ -5195,7 +5201,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 					<tr>";
 				if($acces_visu_eleve) {
 					$lignes_alerte.="
-						<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences'><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
+						<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
 				}
 				$lignes_alerte.="
 						<td>".$nom_prenom_ele."</td>
@@ -5283,6 +5289,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 
 					//if($lignes_alerte=="") {
 					if($temoin_au_moins_une_alerte==0) {
+						$lignes_alerte.=$chaine_lien_alerte_nj;
 						$lignes_alerte.="<p class='bold'>Liste des élèves dépassant le seuil des ".$abs2_afficher_alerte_nb_nj." demi-journées d'absence non justifiées depuis plus de ".$abs2_afficher_alerte_nj_delai." jour(s) (<em>dans la période courante</em>).</p>
 				<table class='boireaus boireaus_alt resizable sortable' border='1'>
 					<thead>
@@ -5303,7 +5310,7 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 						<tr>";
 					if($acces_visu_eleve) {
 						$lignes_alerte.="
-							<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences'><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
+							<td><a href='$gepiPath/eleves/visu_eleve.php?ele_login=".$lig->login."&onglet=absences' title=\"Voir les absences de l'élève dans le classeur élève.\"><img src='$gepiPath/images/icons/ele_onglets.png' class='icone16' alt='Visu' /></a></td>";
 					}
 					$lignes_alerte.="
 							<td>".$nom_prenom_ele."</td>
@@ -5334,5 +5341,308 @@ function abs2_afficher_tab_alerte_nj($nb_nj="", $nj_delai="", $periode_courante_
 		}
 	}
 	return $lignes_alerte;
+}
+
+function get_liste_voeux_orientation($login_eleve, $mode="") {
+	global $tab_orientation, $tab_orientation_classe_courante;
+
+	$retour="";
+
+	if((!isset($tab_orientation_classe_courante))||(!is_array($tab_orientation_classe_courante))||(!isset($tab_orientation_classe_courante['voeux'][$login_eleve]))) {
+		if((!isset($tab_orientation))||(!is_array($tab_orientation))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+		elseif((!isset($tab_orientation2))||(!is_array($tab_orientation2))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+
+		$OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
+
+		$tab=get_tab_voeux_orientations_ele($login_eleve);
+		$tab_voeux_ele=$tab['voeux'];
+
+		/*
+		echo "<pre>";
+		print_r($tab_voeux_ele);
+		echo "</pre>";
+		*/
+	}
+	else {
+		$tab_voeux_ele=$tab_orientation_classe_courante['voeux'][$login_eleve];
+	}
+
+	for($loop_voeu=1;$loop_voeu<=count($tab_voeux_ele);$loop_voeu++) {
+		$retour.="<b>".$loop_voeu.".</b> ".$tab_voeux_ele[$loop_voeu]['designation'];
+		if(($tab_voeux_ele[$loop_voeu]['commentaire']!="")&&($tab_voeux_ele[$loop_voeu]['commentaire']!=$tab_voeux_ele[$loop_voeu]['designation'])) {
+			if($mode=="pdf_cell_ajustee") {
+				$retour.="<i> (".$tab_voeux_ele[$loop_voeu]['commentaire'].")</i>";
+			}
+			else {
+				$retour.="<em style='font-size:x-small'> (".$tab_voeux_ele[$loop_voeu]['commentaire'].")</em>";
+			}
+		}
+		$retour.="<br />\n";
+	}
+
+	return $retour;
+}
+
+
+function get_select_voeux_orientation($login_eleve) {
+	global $tab_orientation;
+
+	$retour="";
+
+	$sql="SELECT * FROM eleves WHERE login='$login_eleve';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		$retour="Élève non trouvé.<br />";
+	}
+	else {
+		if((!isset($tab_orientation))||(!is_array($tab_orientation))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			//$tab_orientation2=get_tab_orientations_types();
+		}
+		/*
+		elseif((!isset($tab_orientation2))||(!is_array($tab_orientation2))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+		*/
+
+		$OrientationNbMaxVoeux=getSettingValue('OrientationNbMaxVoeux');
+
+		$lig_ele=mysqli_fetch_object($res_ele);
+
+		$tab=get_tab_voeux_orientations_ele($login_eleve);
+		$tab_voeux_ele=$tab['voeux'];
+
+		for($loop=1;$loop<=$OrientationNbMaxVoeux;$loop++) {
+			$commentaire="";
+			$selected_aucun="";
+			if(!isset($tab_voeux_ele[$loop])) {
+				$selected_aucun=" selected";
+			}
+			else {
+				$commentaire=preg_replace('/"/', " ", $tab_voeux_ele[$loop]['commentaire']);
+			}
+			$retour.="
+							Voeu ".($loop)."
+							<select name='voeu_".$lig_ele->id_eleve."[]' id='voeu_".$lig_ele->id_eleve."_".$loop."' onchange=\"changement();\">
+								<option value='' title=\"Choisissez un voeu.\nSi l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected_aucun.">---</option>";
+			if(isset($tab_orientation[$lig_ele->mef_code])) {
+				for($loop2=0;$loop2<count($tab_orientation[$lig_ele->mef_code]['id_orientation']);$loop2++) {
+					$selected="";
+					if((isset($tab_voeux_ele[$loop]))&&($tab_voeux_ele[$loop]['id_orientation']==$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2])) {
+						$selected=" selected";
+					}
+					$retour.="
+								<option value='".$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2]."' title=\"".preg_replace('/"/', " ", $tab_orientation[$lig_ele->mef_code]['description'][$loop2])."\"".$selected.">".$tab_orientation[$lig_ele->mef_code]['titre'][$loop2]."</option>";
+				}
+			}
+			$selected="";
+			if((isset($tab_voeux_ele[$loop]))&&($tab_voeux_ele[$loop]['id_orientation']=="0")) {
+				$selected=" selected";
+			}
+			$retour.="
+								<option value='0' title=\"Si l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected.">Autre orientation</option>
+							</select>
+							<input type='text' name='commentaire_".$lig_ele->id_eleve."[]' id='commentaire_voeu_".$lig_ele->id_eleve."_".$loop."' value=\"".$commentaire."\" size='30' onchange=\"changement();\" /><br />";
+		}
+	}
+
+	return $retour;
+}
+
+
+function get_liste_orientations_proposees($login_eleve, $mode="") {
+	global $tab_orientation, $tab_orientation_classe_courante;
+
+	$retour="";
+
+	if((!isset($tab_orientation_classe_courante))||(!is_array($tab_orientation_classe_courante))||(!isset($tab_orientation_classe_courante['orientation_proposee'][$login_eleve]))) {
+		if((!isset($tab_orientation))||(!is_array($tab_orientation))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+		elseif((!isset($tab_orientation2))||(!is_array($tab_orientation2))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+
+		$OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
+
+		$tab=get_tab_voeux_orientations_ele($login_eleve);
+		$tab_o_ele=$tab['orientation_proposee'];
+
+		/*
+		echo "<pre>";
+		print_r($tab_voeux_ele);
+		echo "</pre>";
+		*/
+	}
+	else {
+		$tab_o_ele=$tab_orientation_classe_courante['orientation_proposee'][$login_eleve];
+	}
+
+	for($loop_op=1;$loop_op<=count($tab_o_ele);$loop_op++) {
+		$retour.="<b>".$loop_op.".</b> ".$tab_o_ele[$loop_op]['designation'];
+		if(($tab_o_ele[$loop_op]['commentaire']!="")&&($tab_o_ele[$loop_op]['commentaire']!=$tab_o_ele[$loop_op]['designation'])) {
+			if($mode=="pdf_cell_ajustee") {
+				$retour.="<i> (".$tab_o_ele[$loop_op]['commentaire'].")</i>";
+			}
+			else {
+				$retour.="<em style='font-size:x-small'> (".$tab_o_ele[$loop_op]['commentaire'].")</em>";
+			}
+		}
+		$retour.="<br />\n";
+	}
+
+	return $retour;
+}
+
+
+function get_select_orientations_proposees($login_eleve) {
+	global $tab_orientation;
+
+	$retour="";
+
+	$sql="SELECT * FROM eleves WHERE login='$login_eleve';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		$retour="Élève non trouvé.<br />";
+	}
+	else {
+
+		if((!isset($tab_orientation))||(!is_array($tab_orientation))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			//$tab_orientation2=get_tab_orientations_types();
+		}
+		/*
+		elseif((!isset($tab_orientation2))||(!is_array($tab_orientation2))) {
+			$tab_orientation=get_tab_orientations_types_par_mef();
+			$tab_orientation2=get_tab_orientations_types();
+		}
+		*/
+
+		$OrientationNbMaxOrientation=getSettingValue('OrientationNbMaxOrientation');
+
+		$lig_ele=mysqli_fetch_object($res_ele);
+
+		$tab=get_tab_voeux_orientations_ele($login_eleve);
+		$tab_o_ele=$tab['orientation_proposee'];
+
+		for($loop=1;$loop<=$OrientationNbMaxOrientation;$loop++) {
+			$commentaire="";
+			$selected_aucun="";
+			if(!isset($tab_o_ele[$loop])) {
+				$selected_aucun=" selected";
+			}
+			else {
+				$commentaire=preg_replace('/"/', " ", $tab_o_ele[$loop]['commentaire']);
+			}
+			$retour.="
+							Orientation ".($loop)."
+							<select name='orientation_".$lig_ele->id_eleve."[]' id='orientation_".$lig_ele->id_eleve."_".$loop."' onchange=\"changement();\">
+								<option value='' title=\"Si l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected_aucun.">---</option>";
+			if(isset($tab_orientation[$lig_ele->mef_code])) {
+				for($loop2=0;$loop2<count($tab_orientation[$lig_ele->mef_code]['id_orientation']);$loop2++) {
+					$selected="";
+					if((isset($tab_o_ele[$loop]))&&($tab_o_ele[$loop]['id_orientation']==$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2])) {
+						$selected=" selected";
+					}
+					$retour.="
+								<option value='".$tab_orientation[$lig_ele->mef_code]['id_orientation'][$loop2]."' title=\"".preg_replace('/"/', " ", $tab_orientation[$lig_ele->mef_code]['description'][$loop2])."\"".$selected.">".$tab_orientation[$lig_ele->mef_code]['titre'][$loop2]."</option>";
+				}
+			}
+			$selected="";
+			if((isset($tab_o_ele[$loop]))&&($tab_o_ele[$loop]['id_orientation']=="0")) {
+				$selected=" selected";
+			}
+			$retour.="
+								<option value='0' title=\"Si l'orientation souhaitée n'est pas dans la liste proposée, choisissez 'Autre orientation' et précisez en commentaire l'orientation.\"".$selected.">Autre orientation</option>
+							</select>
+							<input type='text' name='commentaire_".$lig_ele->id_eleve."[]' id='commentaire_orientation_".$lig_ele->id_eleve."_".$loop."' value=\"".$commentaire."\" size='30' onchange=\"changement();\" /><br />";
+		}
+	}
+
+	return $retour;
+}
+
+
+
+function get_avis_orientations_proposees($login_eleve, $mode="") {
+	$retour="";
+
+	$avis_o_ele="";
+	$sql="SELECT DISTINCT * FROM o_avis oa WHERE oa.login='".$login_eleve."';";
+	//echo "$sql<br />";
+	$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_o)>0) {
+		$cpt=1;
+		$lig_o=mysqli_fetch_object($res_o);
+		$avis_o_ele=$lig_o->avis;
+
+		$retour="<b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> ".$avis_o_ele;
+	}
+
+	//$retour="<b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> ".$avis_o_ele;
+
+	return $retour;
+}
+
+function get_champ_avis_orientations_proposees($login_eleve) {
+	global $tab_orientation;
+
+	$retour="";
+
+	$sql="SELECT * FROM eleves WHERE login='$login_eleve';";
+	//echo "$sql<br />";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		$retour="Élève non trouvé.<br />";
+	}
+	else {
+		$lig_ele=mysqli_fetch_object($res_ele);
+
+		$avis_o_ele="";
+		$sql="SELECT DISTINCT * FROM o_avis oa WHERE oa.login='".$login_eleve."';";
+		//echo "$sql<br />";
+		$res_o=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_o)>0) {
+			$cpt=1;
+			$lig_o=mysqli_fetch_object($res_o);
+			$avis_o_ele=$lig_o->avis;
+
+			$avis_o_ele=preg_replace("#<br />#i", "", $lig_o->avis);
+		}
+
+		$retour.="<label for='avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> </label><textarea name='avis_orientation_".$lig_ele->id_eleve."[]' id='avis_orientation_".$lig_ele->id_eleve."' cols='60' onchange=\"changement();\">".$avis_o_ele."</textarea></p>";
+	}
+
+	return $retour;
+}
+
+function js_change_style_all_checkbox($avec_balise_script="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	item=document.getElementsByTagName('input');
+	for(i=0;i<item.length;i++) {
+		if(item[i].getAttribute('type')=='checkbox') {
+			checkbox_change(item[i].getAttribute('id'));
+		}
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
 }
 ?>
