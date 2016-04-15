@@ -1305,7 +1305,7 @@
 						// Faut-il supprimer les associations qui ne sont plus dans le XML?
 						$tab_mef_mat=array();
 						$sql="SELECT * FROM mef_matieres;";
-						$res_mm=mysqli_query($sql);
+						$res_mm=mysqli_query($GLOBALS["mysqli"], $sql);
 						while($lig_mm=mysqli_fetch_object($res_mm)) {
 							$tab_mef_mat[$lig_mm->mef_code][$lig_mm->matiere][]=$lig_mm->code_modalite_elect;
 						}
@@ -1319,7 +1319,7 @@
 									$sql="INSERT INTO mef_matieres SET mef_code='".$programmes[$loop]['code_mef']."',
 									code_matiere='".$programmes[$loop]['code_matiere']."',
 									code_modalite_elect='".$programmes[$loop]['code_modalite_elect']."';";
-									$insert=mysqli_query($sql);
+									$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 									if($insert) {
 										$nb_insert_prog++;
 									}
