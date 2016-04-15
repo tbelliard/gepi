@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -710,6 +710,85 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 					if($nb_mef_reg>0) {
 						echo "<p>$nb_mef_reg MEF a(ont) été importée(s) depuis le XML.</p>";
 					}
+
+					//=======================================================
+					// 20160415
+
+					echo "<p>";
+					echo "Analyse du fichier pour extraire les associations MEF/MATIERE/MODALITE_ELECTION...<br />\n";
+
+					$tab_champs_programme=array("CODE_MEF",
+					"CODE_MATIERE", 
+					"CODE_MODALITE_ELECT");
+
+					$programmes=array();
+					$i=-1;
+
+					$objet_programmes=($nomenclature_xml->DONNEES->PROGRAMMES);
+					foreach ($objet_programmes->children() as $programme) {
+						$i++;
+						//echo "<p><b>Matière $i</b><br />";
+
+						$programmes[$i]=array();
+
+						/*
+						<PROGRAMME>
+							<CODE_MEF>1001000B11A</CODE_MEF>
+							<CODE_MATIERE>005400</CODE_MATIERE>
+							<CODE_MODALITE_ELECT>S</CODE_MODALITE_ELECT>
+							<HORAIRE>0.00</HORAIRE>
+						</PROGRAMME>
+
+						foreach($programme->attributes() as $key => $value) {
+							// <PROGRAMME>
+							//echo "$key=".$value."<br />";
+				
+							$programmes[$i][my_strtolower($key)]=trim($value);
+						}
+						*/
+
+						foreach($programme->children() as $key => $value) {
+							if(in_array(my_strtoupper($key),$tab_champs_programme)) {
+								$programmes[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
+								//echo "\$programme->$key=".$value."<br />";
+							}
+						}
+					}
+
+					$nb_insert_prog=0;
+
+					// Faut-il supprimer les associations qui ne sont plus dans le XML?
+					$tab_mef_mat=array();
+					$sql="SELECT * FROM mef_matieres;";
+					$res_mm=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($lig_mm=mysqli_fetch_object($res_mm)) {
+						$tab_mef_mat[$lig_mm->mef_code][$lig_mm->matiere][]=$lig_mm->code_modalite_elect;
+					}
+
+					for($loop=0;$loop<count($programmes);$loop++) {
+						if((isset($programmes[$loop]['code_mef']))&&
+						(isset($programmes[$loop]['code_matiere']))&&
+						(isset($programmes[$loop]['code_modalite_elect']))) {
+							if((!isset($tab_mef_mat[$programmes[$loop]['code_mef']][$programmes[$loop]['code_matiere']]))||
+							(!in_array($programmes[$loop]['code_modalite_elect'], $tab_mef_mat[$programmes[$loop]['code_mef']][$programmes[$loop]['code_matiere']]))) {
+								$sql="INSERT INTO mef_matieres SET mef_code='".$programmes[$loop]['code_mef']."',
+								code_matiere='".$programmes[$loop]['code_matiere']."',
+								code_modalite_elect='".$programmes[$loop]['code_modalite_elect']."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
+									$nb_insert_prog++;
+								}
+							}
+						}
+					}
+
+					if($nb_insert_prog>0) {
+						echo "<p>$nb_insert_prog association(s) MEF/Matière/Modalité élection ont été importées.</p>";
+					}
+					else {
+						echo "<p>Aucune association MEF/Matière/Modalité élection n'a été ajoutée.</p>";
+					}
+					//=======================================================
 
 				}
 			}
