@@ -762,7 +762,7 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 					$sql="SELECT * FROM mef_matieres;";
 					$res_mm=mysqli_query($GLOBALS["mysqli"], $sql);
 					while($lig_mm=mysqli_fetch_object($res_mm)) {
-						$tab_mef_mat[$lig_mm->mef_code][$lig_mm->matiere][]=$lig_mm->code_modalite_elect;
+						$tab_mef_mat[$lig_mm->mef_code][$lig_mm->code_matiere][]=$lig_mm->code_modalite_elect;
 					}
 
 					for($loop=0;$loop<count($programmes);$loop++) {
