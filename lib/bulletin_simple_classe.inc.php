@@ -56,7 +56,8 @@ if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
 	}
 }
 
-if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+//if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+if($afficher_signalement_faute=='y') {
 	// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 
 	if((!isset($necessaire_signalement_fautes_insere))||($necessaire_signalement_fautes_insere=="n")) {
