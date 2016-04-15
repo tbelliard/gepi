@@ -1449,3 +1449,6 @@ PRIMARY KEY (id), UNIQUE KEY login (login)
 DROP TABLE IF EXISTS matieres_appreciations_acces_eleve;
 CREATE TABLE IF NOT EXISTS matieres_appreciations_acces_eleve (login VARCHAR( 50 ) NOT NULL , periode INT( 11 ) NOT NULL, acces ENUM( 'y', 'n') NOT NULL ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS mef_matieres;
+CREATE TABLE IF NOT EXISTS mef_matieres (mef_code varchar(50) NOT NULL, code_matiere VARCHAR( 250 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
