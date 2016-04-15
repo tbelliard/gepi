@@ -202,7 +202,8 @@ elseif($_SESSION['statut']=='scolarite') {
 
 unset($tab_acces_app);
 $tab_acces_app=array();
-$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+//$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, '', $current_eleve_login);
 //==========================================================
 
 $nb_periodes = $periode2 - $periode1 + 1;
@@ -1473,7 +1474,8 @@ global $affiche_colonne_moy_classe;
 
 unset($tab_acces_app);
 $tab_acces_app=array();
-$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+//$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, "", $current_eleve_login);
 
 	$nb_periodes = $periode2 - $periode1 + 1;
 	$call_data = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");

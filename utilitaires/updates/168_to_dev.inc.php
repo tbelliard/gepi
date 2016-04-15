@@ -309,4 +309,18 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<strong>Ajout d'une table 'matieres_appreciations_acces_eleve' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'matieres_appreciations_acces_eleve';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS matieres_appreciations_acces_eleve (login VARCHAR( 50 ) NOT NULL, periode INT( 11 ) NOT NULL, acces ENUM( 'y', 'n') NOT NULL, UNIQUE KEY login_periode (login,periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

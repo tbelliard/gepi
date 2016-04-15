@@ -29,6 +29,11 @@ function g_manuel(id_div,id_classe,periode,accessible,statut) {
 	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=manuel&accessible='+accessible+'&statut='+statut+'&csrf_alea='+csrf_alea,{method: 'get'});
 }
 
+function g_manuel_individuel(id_div,id_classe,periode) {
+	csrf_alea=document.getElementById('csrf_alea').value;
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=manuel_individuel&csrf_alea='+csrf_alea,{method: 'get'});
+}
+
 function g_date() {
 	csrf_alea=document.getElementById('csrf_alea').value;
 	id_div=$('choix_date_id_div').value;

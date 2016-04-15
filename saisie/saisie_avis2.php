@@ -141,6 +141,30 @@ if((isset($id_classe))&&(isset($periode_num))&&(isset($_GET['mode']))&&($_GET['m
 			$msg="Erreur lors de la modification de la visibilité parent/élève.<br />";
 		}
 	}
+	elseif(($acces_app_ele_resp=='manuel_individuel')&&(isset($current_eleve_login))) {
+		$sql="SELECT * FROM matieres_appreciations_acces_eleve WHERE login='".$current_eleve_login."' AND periode='".$periode_num."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			$sql="INSERT INTO matieres_appreciations_acces_eleve SET acces='y', login='".$current_eleve_login."', periode='$periode_num';";
+			$msg="L'accès parent/élève est ouvert pour la période n°$periode_num pour cet élève.<br />";
+		}
+		else {
+			$lig_acces_ele=mysqli_fetch_object($test);
+			if($lig_acces_ele->acces=="y") {
+				$sql="UPDATE matieres_appreciations_acces_eleve SET acces='n' WHERE login='".$current_eleve_login."' AND periode='$periode_num';";
+				$msg="L'accès parent/élève n'est pas/plus ouvert pour la période n°$periode_num pour cet élève.<br />";
+			}
+			else {
+				$sql="UPDATE matieres_appreciations_acces_eleve SET acces='y' WHERE login='".$current_eleve_login."' AND periode='$periode_num';";
+				$msg="L'accès parent/élève est maintenant ouvert pour la période n°$periode_num pour cet élève.<br />";
+			}
+		}
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(!$res) {
+			$msg="Erreur lors de la modification de la visibilité parent/élève.<br />";
+		}
+	}
 	else {
 		$msg="L'accès ou non n'est pas modifié manuellement.<br />";
 	}
@@ -358,8 +382,18 @@ if (isset($id_classe)) {
 		$date_ouverture_acces_app_classe=array();
 		$tab_acces_app_classe[$id_classe]=acces_appreciations(1, $nb_periode, $id_classe, 'responsable');
 
+		$tab_acces_app_classe2=array();
+		$tab_acces_app_classe2[$id_classe]=get_tab_acces_appreciations_ele(1, $nb_periode-1, $id_classe, 'responsable');
+		/*
+		echo "<pre>";
+		print_r($tab_acces_app_classe2);
+		echo "</pre>";
+		*/
 		$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 		if($acces_app_ele_resp=='manuel') {
+			$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+		}
+		elseif($acces_app_ele_resp=='manuel_individuel') {
 			$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
 		}
 		elseif($acces_app_ele_resp=='date') {
@@ -424,9 +458,13 @@ if (isset($id_classe) and (!isset($periode_num))) {
 			if($tab_acces_app_classe[$id_classe][$i]=="y") {
 				echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$i." sont visibles des parents/élèves.' />";
 			}
-			else {
+			elseif($tab_acces_app_classe[$id_classe][$i]=="n") {
 				echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$i." ne sont pas encore visibles des parents/élèves.
 $msg_acces_app_ele_resp\" />";
+			}
+			else {
+				echo " <span title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$i." ne sont visibles que pour ".$tab_acces_app_classe[$id_classe][$i]." élève(s).
+$msg_acces_app_ele_resp\"><img src='../images/icons/visible.png' width='19' height='16' alt='Visible' /><img src='../images/icons/invisible.png' width='19' height='16' alt='Invisible' /></span>";
 			}
 		}
 
@@ -658,9 +696,13 @@ echo "</form>\n";
 					if($tab_acces_app_classe[$id_classe][$periode_num]=="y") {
 						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves.' />";
 					}
-					else {
+					elseif($tab_acces_app_classe[$id_classe][$periode_num]=="n") {
 						echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont pas encore visibles des parents/élèves.
 				$msg_acces_app_ele_resp\" />";
+					}
+					else {
+						echo " <span title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont visibles que pour ".$tab_acces_app_classe[$id_classe][$periode_num]." élève(s).
+$msg_acces_app_ele_resp\"><img src='../images/icons/visible.png' width='19' height='16' alt='Visible' /><img src='../images/icons/invisible.png' width='19' height='16' alt='Invisible' /></span>";
 					}
 				}
 
@@ -741,16 +783,31 @@ echo "</form>\n";
 		$current_eleve_mention = @old_mysql_result($current_eleve_avis_query, 0, "id_mention");
 		// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
+		$temoin_visibilite="";
+		if((getSettingAOui('GepiAccesBulletinSimpleParent'))||
+		(getSettingAOui('GepiAccesGraphParent'))||
+		(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
+		(getSettingAOui('GepiAccesGraphEleve'))) {
+			if((!isset($tab_acces_app_classe2[$id_classe][$periode_num][$current_eleve_login]))||($tab_acces_app_classe2[$id_classe][$periode_num][$current_eleve_login]=="n")) {
+				$temoin_visibilite=" <img src='../images/icons/invisible.png' width='19' height='16' alt='Invisible' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." ne sont pas encore visibles des parents/élèves pour cet élève.
+		$msg_acces_app_ele_resp\" />";
+			}
+			else {
+				$temoin_visibilite=" <img src='../images/icons/visible.png' width='19' height='16' alt='Visible' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$periode_num." sont visibles des parents/élèves pour cet élève.' />";
+			}
+		}
+
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "
 	<td>
-		<div style='float:left; width:16px;' class='noprint'>
+		<div style='float:left; width:40px;' class='noprint'>
 			<a href='../eleves/visu_eleve.php?ele_login=$current_eleve_login&onglet=bulletins&onglet2=bulletin_$periode_num' title=\"Voir dans un nouvel onglet le bulletin simplifié de l'élève dans les onglets élève.\" target='_blank'><img src='../images/icons/ele_onglets.png' class='icone16' alt='Voir bulletin' /></a>";
 		if($acces_impression_bulletin) {
 			echo "<br />
 			<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$current_eleve_login."&tab_id_classe[0]=".$id_classe."&tab_periode_num[0]=".$periode_num."' target='_blank' title=\"Voir/imprimer le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$periode_num.".\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
 		}
+		echo $temoin_visibilite;
 		echo "
 		</div>
 
@@ -1578,10 +1635,13 @@ Si vous avez modifié l'avis du conseil de classe, il faut enregistrer avant de 
 			// L'accès est donné à la même date pour parents et responsables.
 			// On teste seulement pour les parents
 			$date_ouverture_acces_app_classe=array();
-			$tab_acces_app_classe[$id_classe]=acces_appreciations($periode_num, $periode_num, $id_classe, 'responsable');
+			$tab_acces_app_classe[$id_classe]=acces_appreciations($periode_num, $periode_num, $id_classe, 'responsable', $current_eleve_login);
 
 			$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 			if($acces_app_ele_resp=='manuel') {
+				$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+			}
+			elseif($acces_app_ele_resp=='manuel_individuel') {
 				$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
 			}
 			elseif($acces_app_ele_resp=='date') {
@@ -1621,6 +1681,16 @@ Si vous avez modifié l'avis du conseil de classe, il faut enregistrer avant de 
 
 		new Ajax.Updater($('div_etat_actuel_visibilite_parent'),'./saisie_avis2.php?id_classe=$id_classe&periode_num=$periode_num&mode=modifier_visibilite_parents&mode_js=y".add_token_in_url(false)."',{method: 'get'});
 	}
+</script>\n";
+			}
+			elseif(($acces_app_ele_resp=='manuel_individuel')&&($acces_classes_acces_appreciations)) {
+				echo "<p>Alterner&nbsp;: <a href='./saisie_avis2.php?current_eleve_login=$current_eleve_login&id_classe=$id_classe&periode_num=$periode_num&mode=modifier_visibilite_parents".add_token_in_url()."' onclick=\"alterner_visibilite_parent();return false;\" target='_blank'>Donner/enlever l'accès pour cet élève</a></p>
+
+<script type='text/javascript'>
+	function alterner_visibilite_parent() {
+		new Ajax.Updater($('div_etat_actuel_visibilite_parent'),'./saisie_avis2.php?current_eleve_login=$current_eleve_login&id_classe=$id_classe&periode_num=$periode_num&mode=modifier_visibilite_parents&mode_js=y".add_token_in_url(false)."',{method: 'get'});
+	}
+
 </script>\n";
 			}
 

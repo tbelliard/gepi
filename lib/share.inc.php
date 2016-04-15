@@ -7285,11 +7285,12 @@ function captcha()
  * @param string $statut     Le statut 'responsable' ou 'eleve'
  *                           Si le statut est vide, on prend le statut de 
  *                           l'utilisateur connecté.
+ * @param string $login_ele  Le login de l'élève, utilisé dans le cas d'une ouverture manuelle par élève
  *
  * @return array Tableau avec les numéros de période en indice et 'y' ou 'n' 
  *               selon que les appréciations sont ou non accessibles
  */
-function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
+function acces_appreciations($periode1, $periode2, $id_classe, $statut='', $login_ele="") {
 	global $mysqli;
 	global $delais_apres_cloture;
 	global $date_ouverture_acces_app_classe;
@@ -7359,6 +7360,69 @@ function acces_appreciations($periode1, $periode2, $id_classe, $statut='') {
 				}
 				else {
 					$tab_acces_app[$i]="n";
+				}
+			}
+		}
+		elseif(getSettingValue('acces_app_ele_resp')=='manuel_individuel') {
+			// Ouverture manuelle élève par élève
+			for($i=$periode1;$i<=$periode2;$i++) {
+				if($login_ele!="") {
+					$sql="SELECT * FROM matieres_appreciations_acces_eleve WHERE login='".$login_ele."' AND
+													periode='$i';";
+					//echo "$sql<br />";
+					$res = mysqli_query($mysqli, $sql);
+					if($res) {
+						if($res->num_rows > 0) {
+							$lig = $res->fetch_object();
+							//echo "\$lig->acces=$lig->acces<br />";
+							if($lig->acces=="y") {
+								$tab_acces_app[$i]="y";
+							}
+							else {
+								$tab_acces_app[$i]="n";
+							}
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+						$res->close();
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
+				}
+				else {
+					$sql="SELECT maae.* FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+													jec.id_classe='".$id_classe."' AND 
+													jec.periode=maae.periode AND 
+													maae.periode='$i';";
+					//echo "$sql<br />";
+					$res = mysqli_query($mysqli, $sql);
+					if($res) {
+						if($res->num_rows > 0) {
+							$tmp_tab_acces=array();
+							while($lig = $res->fetch_object()) {
+								$tmp_tab_acces[$lig->acces][]=$lig->login;
+							}
+
+							if((isset($tmp_tab_acces['y']))&&(isset($tmp_tab_acces['n']))) {
+								$tab_acces_app[$i]=count($tmp_tab_acces['y']);
+							}
+							elseif(isset($tmp_tab_acces['y'])) {
+								$tab_acces_app[$i]="y";
+							}
+							else {
+								$tab_acces_app[$i]="n";
+							}
+						}
+						else {
+							$tab_acces_app[$i]="n";
+						}
+						$res->close();
+					}
+					else {
+						$tab_acces_app[$i]="n";
+					}
 				}
 			}
 		}
@@ -14431,4 +14495,88 @@ function mef_avec_proposition_orientation($id_classe="",$mef_code="",$login_elev
 	return $retour;
 }
 
+function get_tab_acces_appreciations_ele($periode1, $periode2, $id_classe, $statut='') {
+	global $mysqli;
+	global $delais_apres_cloture;
+	global $date_ouverture_acces_app_classe;
+
+	$tab_acces_app=array();
+
+	$tab_ele=array();
+	$sql="SELECT * FROM j_eleves_classes WHERE id_classe='$id_classe';";
+	$res_ele=mysqli_query($mysqli, $sql);
+	while($lig_ele=mysqli_fetch_object($res_ele)) {
+		$tab_ele[$lig_ele->periode][]=$lig_ele->login;
+	}
+
+	if($statut=="") {
+		$statut=$_SESSION['statut'];
+	}
+
+	if(($statut=='eleve')||($statut=='responsable')) {
+		if(getSettingValue('acces_app_ele_resp')=='periode_close') {
+			$tmp_tab_acces_app=acces_appreciations($periode1, $periode2, $id_classe, $statut);
+			for($i=$periode1;$i<=$periode2;$i++) {
+				for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+					$tab_acces_app[$i][$tab_ele[$i][$loop]]=$tmp_tab_acces_app[$i];
+				}
+			}
+		}
+		elseif(getSettingValue('acces_app_ele_resp')=='date') {
+			$tmp_tab_acces_app=acces_appreciations($periode1, $periode2, $id_classe, $statut);
+			for($i=$periode1;$i<=$periode2;$i++) {
+				for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+					$tab_acces_app[$i][$tab_ele[$i][$loop]]=$tmp_tab_acces_app[$i];
+				}
+			}
+		}
+		elseif(getSettingValue('acces_app_ele_resp')=='manuel_individuel') {
+			// Ouverture manuelle élève par élève
+			for($i=$periode1;$i<=$periode2;$i++) {
+				for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+					$sql="SELECT * FROM matieres_appreciations_acces_eleve WHERE login='".$tab_ele[$i][$loop]."' AND periode='".$i."';";
+					//echo "$sql<br />";
+					$res = mysqli_query($mysqli, $sql);
+					if($res) {
+						if($res->num_rows > 0) {
+							$lig = $res->fetch_object();
+							//echo "\$lig->acces=$lig->acces<br />";
+							if($lig->acces=="y") {
+								$tab_acces_app[$i][$tab_ele[$i][$loop]]="y";
+							}
+							else {
+								$tab_acces_app[$i][$tab_ele[$i][$loop]]="n";
+							}
+						}
+						else {
+							$tab_acces_app[$i][$tab_ele[$i][$loop]]="n";
+						}
+						$res->close();
+					}
+					else {
+						$tab_acces_app[$i][$tab_ele[$i][$loop]]="n";
+					}
+				}
+			}
+		}
+		else {
+			// Ouverture manuelle
+			$tmp_tab_acces_app=acces_appreciations($periode1, $periode2, $id_classe, $statut);
+			for($i=$periode1;$i<=$periode2;$i++) {
+				for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+					$tab_acces_app[$i][$tab_ele[$i][$loop]]=$tmp_tab_acces_app[$i];
+				}
+			}
+		}
+	}
+	else {
+		// Pas de limitations d'accès pour les autres statuts.
+		for($i=$periode1;$i<=$periode2;$i++) {
+			for($loop=0;$loop<count($tab_ele[$i]);$loop++) {
+				$tab_acces_app[$i][$tab_ele[$i][$loop]]="y";
+			}
+		}
+	}
+	return $tab_acces_app;
+}
 ?>

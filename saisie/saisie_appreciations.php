@@ -1199,12 +1199,14 @@ if($_SESSION['statut']=="secours") {
 // 20121118
 $date_du_jour=strftime("%d/%m/%Y");
 // Si les parents ont accès aux bulletins ou graphes,... on va afficher un témoin
-$tab_acces_app_classe=array();
+//$tab_acces_app_classe=array();
+$tab_acces_app_classe2=array();
 foreach($current_group["classes"]["list"] as $key => $value) {
 	// L'accès est donné à la même date pour parents et responsables.
 	// On teste seulement pour les parents
 	$date_ouverture_acces_app_classe=array();
-	$tab_acces_app_classe[$value]=acces_appreciations(1, count($current_group["periodes"]), $value, 'responsable');
+	//$tab_acces_app_classe[$value]=acces_appreciations(1, count($current_group["periodes"]), $value, 'responsable');
+	$tab_acces_app_classe2[$value]=get_tab_acces_appreciations_ele(1, count($current_group["periodes"]), $value, 'responsable');
 }
 
 
@@ -1752,7 +1754,8 @@ foreach ($liste_eleves as $eleve_login) {
 				(getSettingAOui('GepiAccesGraphParent'))||
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
-					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+					//if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+					if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
 						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
@@ -1791,7 +1794,8 @@ $msg_acces_app_ele_resp\" />";
 				(getSettingAOui('GepiAccesGraphParent'))||
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
-					if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+					//if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+					if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
 						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {

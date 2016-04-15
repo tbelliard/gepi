@@ -714,7 +714,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$tab_acces_app=array();
 
 	if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-		$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut']);
+		//$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut']);
+		$tab_acces_app=acces_appreciations(1, $nb_periode, $id_classe, $_SESSION['statut'], $login_eleve);
 	}
 	else {
 		// Pas de limitations d'accès pour les autres statuts.

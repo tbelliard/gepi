@@ -5028,47 +5028,114 @@ function affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins() {
 	</tr>";
 		}
 
-		$tab_per_clas=array();
-		$sql="SELECT * FROM matieres_appreciations_acces;";
-		$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
-		if(mysqli_num_rows($res_per)>0) {
-			while($lig_per=mysqli_fetch_object($res_per)) {
-				$tab_per_clas[$lig_per->id_classe][$lig_per->periode]=$lig_per->acces;
+		if(getSettingValue("acces_app_ele_resp")=="manuel") {
+			$tab_per_clas=array();
+			$sql="SELECT * FROM matieres_appreciations_acces;";
+			$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_per)>0) {
+				while($lig_per=mysqli_fetch_object($res_per)) {
+					$tab_per_clas[$lig_per->id_classe][$lig_per->periode]=$lig_per->acces;
+				}
 			}
-		}
 
-		for($i=1;$i<=$maxper;$i++) {
-			$retour.="
+			for($i=1;$i<=$maxper;$i++) {
+				$retour.="
 	<tr>
 		<th title='Période $i'>P.".$i."</th>";
 
-			foreach($tab_clas as $id_classe => $classe) {
-				if(!isset($tab_per_clas[$id_classe][$i])) {
-					$retour.="
+				foreach($tab_clas as $id_classe => $classe) {
+					if(!isset($tab_per_clas[$id_classe][$i])) {
+						$retour.="
 		<td style='background-color:grey'></td>";
-				}
-				elseif($tab_per_clas[$id_classe][$i]=="y") {
-					$retour.="
+					}
+					elseif($tab_per_clas[$id_classe][$i]=="y") {
+						$retour.="
 		<td style='background-color:green' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe sont visibles des parents et élèves.\"></td>";
-				}
-				elseif($tab_per_clas[$id_classe][$i]=="n") {
-					$retour.="
+					}
+					elseif($tab_per_clas[$id_classe][$i]=="n") {
+						$retour.="
 		<td style='background-color:red' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe ne sont pas visibles des parents et élèves.\"></td>";
-				}
-				else {
-					$retour.="
+					}
+					else {
+						$retour.="
 		<td title=\"Classe de ".$classe." en période $i : ???\">???</td>";
+					}
+
+					$retour.="
+		</td>";
+
 				}
 
 				$retour.="
-		</td>";
+	</tr>";
+			}
+		}
+		else {
+			// getSettingValue("acces_app_ele_resp")=="manuel_individuel"
+			$tab_eff_ele=array();
 
+			$sql="SELECT * FROM j_eleves_classes;";
+			//echo "$sql<br />\n";
+			$res_jec=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_jec=mysqli_fetch_object($res_jec)) {
+				$tab_eff_ele[$lig_jec->periode][$lig_jec->id_classe][]=$lig_jec->login;
 			}
 
-			$retour.="
+			$tab_acces=array();
+			$sql="SELECT * FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+											jec.periode=maae.periode AND 
+											maae.acces='y';";
+			//echo "$sql<br />\n";
+			$res_maae=mysqli_query($GLOBALS["mysqli"], $sql);
+			while($lig_maae=mysqli_fetch_object($res_maae)) {
+				$tab_acces[$lig_maae->periode][$lig_maae->id_classe][]=$lig_maae->login;
+			}
+
+			/*
+			$tab_per_clas=array();
+			$sql="SELECT * FROM matieres_appreciations_acces;";
+			$res_per=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_per)>0) {
+				while($lig_per=mysqli_fetch_object($res_per)) {
+					$tab_per_clas[$lig_per->id_classe][$lig_per->periode]=$lig_per->acces;
+				}
+			}
+			*/
+
+			for($i=1;$i<=$maxper;$i++) {
+				$retour.="
+	<tr>
+		<th title='Période $i'>P.".$i."</th>";
+
+				foreach($tab_clas as $id_classe => $classe) {
+					//if(!isset($tab_per_clas[$id_classe][$i])) {
+					if(!isset($tab_eff_ele[$i][$id_classe])) {
+						$retour.="
+		<td style='background-color:grey'></td>";
+					}
+					elseif(!isset($tab_acces[$i][$id_classe])) {
+						$retour.="
+		<td style='background-color:red' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe ne sont pas visibles des parents et élèves.\"></td>";
+					}
+					elseif(count($tab_acces[$i][$id_classe])!=count($tab_eff_ele[$i][$id_classe])) {
+						$retour.="
+		<td style='background-color:orange' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe ne sont visibles que pour ".count($tab_acces[$i][$id_classe])." élèves sur ".count($tab_eff_ele[$i][$id_classe]).".\">".count($tab_acces[$i][$id_classe])."</td>";
+					}
+					else {
+						$retour.="
+		<td style='background-color:green' title=\"Classe de ".$classe." en période $i : Les appréciations et avis du conseil de classe sont visibles des parents et élèves.\"></td>";
+					}
+
+					$retour.="
+		</td>";
+
+				}
+
+				$retour.="
 	</tr>";
+			}
 		}
-			$retour.="
+		$retour.="
 </table>";
 
 	}
