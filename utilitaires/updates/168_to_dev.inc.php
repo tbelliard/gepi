@@ -337,4 +337,30 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 'type_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'type_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD type_prof varchar(10) NOT NULL default '' AFTER prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'id_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'id_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD id_prof varchar(255) NOT NULL default '' AFTER prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

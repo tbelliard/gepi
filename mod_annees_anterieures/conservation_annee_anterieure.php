@@ -491,25 +491,31 @@ else {
 
 
 					// CPE associé(s) à l'élève
-					$sql="SELECT jec.cpe_login, u.nom, u.prenom FROM j_eleves_cpe jec, utilisateurs u WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."' AND jec.cpe_login=u.login;";
+					$sql="SELECT jec.cpe_login, u.nom, u.prenom, u.numind, u.type FROM j_eleves_cpe jec, utilisateurs u WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."' AND jec.cpe_login=u.login;";
 					$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_cpe)==0){
 						$tab_eleve[$cpt]['cpe']="";
 						$tab_eleve[$cpt]['nom_cpe']="";
 						$tab_eleve[$cpt]['prenom_cpe']="";
+						$tab_eleve[$cpt]['numind_cpe']="";
+						$tab_eleve[$cpt]['type_cpe']="";
 					}
 					else{
 						$lig_cpe=mysqli_fetch_object($res_cpe);
 						$tab_eleve[$cpt]['cpe']=affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 						$tab_eleve[$cpt]['nom_cpe']=$lig_cpe->nom;
 						$tab_eleve[$cpt]['prenom_cpe']=$lig_cpe->prenom;
+						$tab_eleve[$cpt]['numind_cpe']=$lig_cpe->numind;
+						$tab_eleve[$cpt]['type_cpe']=$lig_cpe->type;
 
 						// Normalement, il n'y a qu'un CPE associé
 						while($lig_cpe=mysqli_fetch_object($res_cpe)){
 							$tab_eleve[$cpt]['cpe'].=", ".affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 							$tab_eleve[$cpt]['nom_cpe'].="|".$lig_cpe->nom;
 							$tab_eleve[$cpt]['prenom_cpe'].="|".$lig_cpe->prenom;
+							$tab_eleve[$cpt]['numind_cpe'].="|".$lig_cpe->numind;
+							$tab_eleve[$cpt]['type_cpe'].="|".$lig_cpe->type;
 						}
 					}
 
@@ -786,6 +792,8 @@ else {
 											special='ABSENCES',
 											matiere='',
 											code_matiere='',
+											id_prof='".$tab_eleve[$j]['numind_cpe']."',
+											type_prof='".$tab_eleve[$j]['type_cpe']."',
 											prof='".addslashes($cpe)."',
 											nom_prof='".addslashes($tab_eleve[$j]['nom_cpe'])."',
 											prenom_prof='".addslashes($tab_eleve[$j]['prenom_cpe'])."',
@@ -960,9 +968,11 @@ else {
 										$prof=$tab_prof_grp[$id_groupe]['prof'];
 										$nom_prof=$tab_prof_grp[$id_groupe]['nom_prof'];
 										$prenom_prof=$tab_prof_grp[$id_groupe]['prenom_prof'];
+										$numind_prof=$tab_prof_grp[$id_groupe]['numind_prof'];
+										$type_prof=$tab_prof_grp[$id_groupe]['type_prof'];
 									}
 									else {
-										$sql="SELECT u.login, u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login ORDER BY login";
+										$sql="SELECT u.login, u.nom,u.prenom, u.numind, u.type FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login ORDER BY login";
 										echo "<!-- $sql -->\n";
 										//echo "$sql<br />";
 										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -977,15 +987,21 @@ else {
 											$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
 											$nom_prof=$lig_prof->nom;
 											$prenom_prof=$lig_prof->prenom;
+											$numind_prof=$lig_prof->numind;
+											$type_prof=$lig_prof->type;
 											while($lig_prof=mysqli_fetch_object($res_prof)){
 												$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
 												$nom_prof.="|".$lig_prof->nom;
 												$prenom_prof.="|".$lig_prof->prenom;
+												$numind_prof.="|".$lig_prof->numind;
+												$type_prof.="|".$lig_prof->type;
 											}
 										}
 										$tab_prof_grp[$id_groupe]['prof']=$prof;
 										$tab_prof_grp[$id_groupe]['nom_prof']=$nom_prof;
 										$tab_prof_grp[$id_groupe]['prenom_prof']=$prenom_prof;
+										$tab_prof_grp[$id_groupe]['numind_prof']=$numind_prof;
+										$tab_prof_grp[$id_groupe]['type_prof']=$type_prof;
 									}
 	
 									// Insertion de la note, l'appréciation,... dans la matière,...
@@ -1005,6 +1021,8 @@ else {
 														code_matiere='".addslashes($code_matiere)."',
 														id_groupe='$id_groupe',
 														special='',
+														id_prof='".$numind_prof."',
+														type_prof='".$type_prof."',
 														prof='".addslashes($prof)."',
 														nom_prof='".addslashes($nom_prof)."',
 														prenom_prof='".addslashes($prenom_prof)."',
@@ -1157,6 +1175,8 @@ else {
 												code_matiere='".addslashes($code_mat_grp[$id_groupe])."',
 												id_groupe='$id_groupe',
 												special='GRP_ANNEE',
+												id_prof='".$tab_prof_grp[$id_groupe]['numind_prof']."',
+												type_prof='".$tab_prof_grp[$id_groupe]['type_prof']."',
 												prof='".addslashes($tab_prof_grp[$id_groupe]['prof'])."',
 												nom_prof='".addslashes($tab_prof_grp[$id_groupe]['nom_prof'])."',
 												prenom_prof='".addslashes($tab_prof_grp[$id_groupe]['prenom_prof'])."',
