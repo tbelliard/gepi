@@ -5712,4 +5712,18 @@ function js_change_style_all_checkbox($avec_balise_script="n", $avec_js_checkbox
 	if($avec_balise_script!="n") {$retour.="</script>\n";}
 	return $retour;
 }
+
+function get_chaine_matieres_prof($login, $champ="matiere", $separateur=", ") {
+	$retour="";
+
+	$tab=get_tab_matieres_prof($login);
+	for($loop=0;$loop<count($tab);$loop++) {
+		if($loop>0) {
+			$retour.=$separateur;
+		}
+		$retour.=$tab[$loop][$champ];
+	}
+
+	return $retour;
+}
 ?>

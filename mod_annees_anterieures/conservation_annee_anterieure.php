@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -198,13 +198,25 @@ if(!isset($annee_scolaire)){
 	$sql="SELECT DISTINCT e.* FROM eleves e,j_eleves_classes jec WHERE jec.login=e.login AND e.mef_code='';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
-		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." élève(s) ont leur CODE_MEF non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association élève/MEF avant d'archiver l'année.<br /><a href='../mef/associer_eleve_mef.php'>Associer élèves et MEF</a></p>";
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." élève(s) ont leur CODE_MEF non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association élève/MEF avant d'archiver l'année.<br /><a href='../mef/associer_eleve_mef.php'>Associer élèves et MEF</a></p>";
 	}
 
 	$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere AND m.code_matiere='';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
-		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
+	}
+
+	$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND u.statut='professeur' AND numind='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." professeur(s) ont leur NUMIND <em>(identifiant STS)</em> non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association professeur/NUMIND avant d'archiver l'année.<br /><a href='recuperation_donnees_manquantes.php'>Associer professeurs et NUMIND</a>.</p>";
+	}
+
+	$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND u.statut='professeur' AND type='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." professeur(s) ont leur TYPE <em>(\"Emploi Poste Personnel\" ou \"Local\")</em> non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association professeur/TYPE avant d'archiver l'année.<br /><a href='recuperation_donnees_manquantes.php'>Associer professeurs et TYPE</a>.</p>";
 	}
 }
 else {

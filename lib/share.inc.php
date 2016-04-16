@@ -14579,4 +14579,28 @@ function get_tab_acces_appreciations_ele($periode1, $periode2, $id_classe, $stat
 	}
 	return $tab_acces_app;
 }
+
+function get_tab_matieres_prof($login, $mode="associees_a_un_groupe") {
+	global $mysqli;
+	$tab=array();
+
+	if($mode!="associees_a_un_groupe") {
+		$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m, j_professeurs_matieres jpm WHERE id_professeur='".$login."' AND jpm.id_matiere=m.matiere ORDER BY jpm.ordre_matieres, m.matiere;";
+	}
+	else {
+		$sql="SELECT DISTINCT m.matiere, m.nom_complet FROM matieres m, j_professeurs_matieres jpm, j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE id_professeur='".$login."' AND jpm.id_professeur=jgp.login AND jpm.id_matiere=m.matiere AND jgm.id_matiere=jpm.id_matiere AND jgm.id_groupe=jgp.id_groupe ORDER BY jpm.ordre_matieres, m.matiere;";
+	}
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[$cpt]=$lig;
+			$cpt++;
+		}
+	}
+
+	return $tab;
+}
+
 ?>
