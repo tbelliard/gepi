@@ -324,7 +324,6 @@ elseif(isset($_POST['modif_manuelle_periode'])) {
 	// On refait la requête de liste des classes
 	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 }
-/*
 elseif(isset($_POST['modif_manuelle_individuelle_periode'])) {
 	check_token(false);
 
@@ -337,16 +336,41 @@ elseif(isset($_POST['modif_manuelle_individuelle_periode'])) {
 
 	if(($periode!=NULL)&&($acces!=NULL)) {
 		while ($lig=mysqli_fetch_object($res_classe)) {
-			$sql2="UPDATE matieres_appreciations_acces SET acces='$acces' WHERE id_classe='$lig->id' AND periode='$periode';";
-			//echo "$sql2<br />";
-			$update=mysqli_query($GLOBALS["mysqli"], $sql2);
+			$id_classe=$lig->id;
+
+			$tab_ele=array();
+			$sql2="SELECT DISTINCT login FROM j_eleves_classes jec WHERE jec.id_classe='".$id_classe."' AND
+											jec.periode='$periode';";
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql2);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab_ele[]=$lig->login;
+				}
+			}
+
+			$sql2="DELETE FROM matieres_appreciations_acces_eleve WHERE login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='$periode') AND periode='$periode';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql2);
+
+			$nb_err=0;
+			for($loop=0;$loop<count($tab_ele);$loop++) {
+				$sql2="INSERT INTO matieres_appreciations_acces_eleve SET login='".$tab_ele[$loop]."', periode='".$periode."', acces='".$acces."';";
+				//echo "$sql<br />\n";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql2);
+				if(!$insert) {
+					$nb_err++;
+				}
+			}
+			if($nb_err>0) {
+				$msg.="Il s'est produit $nb_err erreur(s)<br />";
+			}
 		}
 	}
 
 	// On refait la requête de liste des classes
 	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 }
-*/
 $tab_classe=array();
 $cpt=0;
 $max_per=0;
@@ -804,8 +828,8 @@ elseif($acces_app_ele_resp=='manuel_individuel') {
 	for($i=1;$i<=$max_per;$i++) {
 		echo "<th>\n";
 
-		echo "<a href='#' onclick='modif_periode($i,\"y\");return false;'><img src='../images/enabled.png' width='15' height='15' alt='Rendre accessible' /></a>/\n";
-		echo "<a href='#' onclick='modif_periode($i,\"n\");return false;'><img src='../images/disabled.png' width='15' height='15' alt='Rendre inaccessible' /></a>\n";
+		echo "<a href='#' onclick='modif_periode($i,\"y\");return false;' title='Rendre accessible'><img src='../images/enabled.png' width='15' height='15' alt='Rendre accessible' /></a>/\n";
+		echo "<a href='#' onclick='modif_periode($i,\"n\");return false;' title='Rendre accessible'><img src='../images/disabled.png' width='15' height='15' alt='Rendre inaccessible' /></a>\n";
 
 		echo "</th>\n";
 	}
