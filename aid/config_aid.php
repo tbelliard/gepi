@@ -140,7 +140,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 
     if (isset($_POST["reg_gestionnaire_login"]) and ($_POST["reg_gestionnaire_login"] !="")) {
         // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$reg_gestionnaire_login' and indice_aid='$indice_aid')");
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '".$_POST["reg_gestionnaire_login"]."' and indice_aid='$indice_aid')");
         if ($test != "0") {
             $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
         } else {
