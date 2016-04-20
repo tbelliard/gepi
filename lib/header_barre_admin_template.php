@@ -269,7 +269,7 @@ Vous pouvez notamment faire apparaître un tableau des dates de conseils de clas
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_annees_anterieures/admin.php" '.insert_confirm_abandon().'>Années antérieures</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_discipline/discipline_admin.php" '.insert_confirm_abandon().'>Discipline</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_ooo/ooo_admin.php" '.insert_confirm_abandon().'>Modèles openDocument</a></li>'."\n";
-		$menus .= '      <li><a href="'.$gepiPath.'/mod_ects/ects_admin.php" '.insert_confirm_abandon().'>Saisie ECTS</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_ects/ects_admin.php" '.insert_confirm_abandon().'>Crédits ECTS</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_genese_classes/admin.php" '.insert_confirm_abandon().'>Genèse des classes</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_epreuve_blanche/admin.php" '.insert_confirm_abandon().'>Epreuves blanches</a></li>'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/admin.php" '.insert_confirm_abandon().'>Examens blancs</a></li>'."\n";
