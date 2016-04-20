@@ -183,6 +183,36 @@ if (isset($_POST['is_posted'])) {
 	}
 	$flag = null;
 
+	// 20160420
+	$reg_code_modalite_elect_eleves=array();
+	$sql="SELECT 1=1 FROM mef_matieres LIMIT 1;";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		for($i=0;$i<count($login_eleve);$i++) {
+			if(isset($_POST['code_modalite_elect_'.$i])) {
+				$id=$login_eleve[$i];
+				$code_modalite_elect=$_POST['code_modalite_elect_'.$i];
+				if($code_modalite_elect!="") {
+					$reg_code_modalite_elect_eleves[$code_modalite_elect]["eleves"][]=$id;
+				}
+				else {
+					$sql="DELETE FROM j_groupes_eleves_modalites WHERE id_groupe='".$id_groupe."' AND login='".$id."';";
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+			}
+		}
+	}
+	else {
+		// On ne modifie pas les modalités si la table mef_matieres est vide parce qu'alors les champ SELECT_modalite de la page étaient aussi vides
+		$reg_code_modalite_elect_eleves=$current_group["modalite"];
+	}
+
+	/*
+	echo "\$reg_code_modalite_elect_eleves<pre>";
+	print_r($reg_code_modalite_elect_eleves);
+	echo "</pre>";
+	*/
+
 	if (!$error) {
 		// pas d'erreur : on continue avec la mise à jour du groupe
 		/*
@@ -194,8 +224,9 @@ if (isset($_POST['is_posted'])) {
 		//==========================================
 		// MODIF: boireaus
 		if(count($reg_eleves)!=0){
-			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
-			debug_edit_eleves("update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, \$reg_clazz, \$reg_professeurs, \$reg_eleves);");
+			// 20160420
+			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $reg_code_modalite_elect_eleves);
+			debug_edit_eleves("update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, \$reg_clazz, \$reg_professeurs, \$reg_eleves, \$reg_code_modalite_elect_eleves);");
 			if (!$create) {
 				$msg .= "Erreur lors de la mise à jour du groupe.";
 			} else {
@@ -334,7 +365,10 @@ if(isset($_POST['upload_et_import_csv'])) {
 		}
 
 		if($nb_inscriptions_eleve>0) {
-			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+			// 20160420: On ne change pas les modalités pour le moment: Problème: on peut garder des modalités pour des élèves qui ne sont plus dans le groupe
+			$reg_code_modalite_elect_eleves=$current_group["modalites"];
+
+			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $reg_code_modalite_elect_eleves);
 			debug_edit_eleves("update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, \$reg_clazz, \$reg_professeurs, \$reg_eleves);");
 			if (!$create) {
 				$msg .= "Erreur lors de la mise à jour du groupe.";
@@ -1012,6 +1046,7 @@ foreach ($current_group["periodes"] as $period) {
 }
 echo "<th>&nbsp;</th>";
 echo "<th>Coef</th>";
+echo "<th>Modalités</th>";
 echo "</tr>\n";
 
 $conditions = "e.login = j.login and (";
@@ -1120,7 +1155,19 @@ else {
 	echo "&nbsp;";
 }
 echo "</th>
-<th>&nbsp;</th>\n";
+<th>&nbsp;</th>
+<th>";
+// 20160420 : Proposer de passer tous les élèves à telle modalité.
+echo "
+<select name='code_modalite_elect_modele' id='code_modalite_elect_modele' onchange='changement()'>
+	<option value=''>---</option>";
+foreach($current_group["modalites"] as $code_modalite_elect => $current_modalite) {
+	echo "
+	<option value='".$code_modalite_elect."' title=\"".$current_modalite["libelle_long"]."\">".$current_modalite["libelle_court"]."</option>";
+}
+echo "</select>
+<a href='#' onclick=\"imposer_modalite();changement();return false\" title=\"Imposer cette modalité pour tous les élèves.\"><img src='../images/icons/wizard.png' class='icone16' alt='Forcer' /></a>\n";
+echo "</th>\n";
 echo "</tr>\n";
 
 // Marqueurs pour identifier quand on change de classe dans la liste
@@ -1193,6 +1240,7 @@ if(count($total_eleves)>0) {
 				foreach ($current_group["periodes"] as $period) {
 					echo "<td>&nbsp;</td>\n";
 				}
+				echo "<td>&nbsp;</td>\n";
 				echo "<td>&nbsp;</td>\n";
 				echo "</tr>\n";
 				$prev_classe = $new_classe;
@@ -1338,7 +1386,21 @@ if(count($total_eleves)>0) {
 			//echo "<td><input type='text' size='3' name='setting_coef[".$num_eleve."]' value='".$setting[0]."' /></td>\n";
 			echo "<td><input type='text' size='3' name='setting_coef_".$num_eleve."' value='".$setting[0]."' onchange='changement();' /></td>\n";
 			//=========================
-	
+
+			//20160420
+			echo "<td>
+			<select name='code_modalite_elect_".$num_eleve."' id='code_modalite_elect_".$num_eleve."' onchange='changement()'>
+				<option value=''>---</option>";
+			foreach($current_group["modalites"] as $code_modalite_elect => $current_modalite) {
+				$selected="";
+				if(in_array($e_login, $current_modalite["eleves"])) {
+					$selected=" selected";
+				}
+				echo "
+				<option value='".$code_modalite_elect."' title=\"".$current_modalite["libelle_long"]."\"$selected>".$current_modalite["libelle_court"]."</option>";
+			}
+			echo "</select></td>\n";
+
 			echo "</tr>\n";
 		}
 	}
@@ -1372,6 +1434,7 @@ if(count($total_eleves)>0) {
 		echo "&nbsp;";
 	}
 	echo "</th>\n";
+	echo "<th>&nbsp;</th>\n";
 	echo "<th>&nbsp;</th>\n";
 	echo "</tr>\n";
 
@@ -1565,6 +1628,15 @@ if(count($total_eleves)>0) {
 				if(document.getElementById('login_eleve_'+j).value==tab[i]) {
 					DecocheLigne(j);
 				}
+			}
+		}
+	}
+
+	// 20160420
+	function imposer_modalite() {
+		for(i=0;i<$nb_eleves;i++) {
+			if(document.getElementById('code_modalite_elect_'+i)) {
+				document.getElementById('code_modalite_elect_'+i).selectedIndex=document.getElementById('code_modalite_elect_modele').selectedIndex;
 			}
 		}
 	}

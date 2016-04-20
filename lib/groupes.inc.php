@@ -347,6 +347,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 	$get_periodes='n';
 	$get_profs='n';
 	$get_visibilite='n';
+	$get_modalite_elect='n';
 	if(in_array('all',$tab_champs)) {
 		$get_matieres='y';
 		$get_classes='y';
@@ -354,6 +355,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		$get_profs='y';
 		$get_periodes='y';
 		$get_visibilite='y';
+		$get_modalite_elect='y';
 	}
 	else {
 		if(in_array('matieres',$tab_champs)) {$get_matieres='y';}
@@ -362,6 +364,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		if(in_array('periodes',$tab_champs)) {$get_periodes='y';$get_classes='y';}
 		if(in_array('profs',$tab_champs)) {$get_profs='y';}
 		if(in_array('visibilite',$tab_champs)) {$get_visibilite='y';}
+		if(in_array('modalites_elect',$tab_champs)) {$get_modalite_elect='y';$get_matieres='y';$get_eleves='y';$get_classes='y';$get_periodes='y';}
 	}
 
     if (!is_numeric($_id_groupe)) {$_id_groupe = "0";}
@@ -587,6 +590,55 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                 }
                 $get_all_eleves->close();
             }
+
+		//20160419
+		if($get_modalite_elect=='y') {
+			$temp["modalites"]=array();
+			$sql="SELECT DISTINCT mm.*, nme.libelle_court, nme.libelle_long FROM mef_matieres mm, 
+								nomenclature_modalites_election nme
+							WHERE nme.code_modalite_elect=mm.code_modalite_elect AND 
+								mm.code_matiere='".$temp["matiere"]["code_matiere"]."' AND 
+								mm.mef_code IN (SELECT e.mef_code FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$_id_groupe."');";
+			//echo "$sql<br />";
+			$res_mm=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_mm)>0) {
+				while($lig_mm=mysqli_fetch_object($res_mm)) {
+					$temp["modalites"][$lig_mm->code_modalite_elect]["libelle_court"]=$lig_mm->libelle_court;
+					$temp["modalites"][$lig_mm->code_modalite_elect]["libelle_long"]=$lig_mm->libelle_long;
+					$temp["modalites"][$lig_mm->code_modalite_elect]["eleves"]=array();
+
+					$sql="SELECT DISTINCT jgem.login FROM j_groupes_eleves_modalites jgem
+								WHERE jgem.code_modalite_elect='".$lig_mm->code_modalite_elect."' AND 
+									jgem.id_groupe='".$_id_groupe."';";
+					//echo "$sql<br />";
+					$res_ele_mod=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_ele_mod)>0) {
+						while($lig_ele_mod=mysqli_fetch_object($res_ele_mod)) {
+							$temp["modalites"][$lig_mm->code_modalite_elect]["eleves"][]=$lig_ele_mod->login;
+						}
+					}
+
+					$sql="SELECT DISTINCT jeg.login FROM matieres m, 
+									mef_matieres mm, 
+									j_eleves_groupes jeg, 
+									eleves e 
+								WHERE mm.code_modalite_elect='".$lig_mm->code_modalite_elect."' AND 
+									mm.code_matiere=m.code_matiere AND 
+									mm.mef_code=e.mef_code AND 
+									e.login=jeg.login AND 
+									jeg.id_groupe='".$_id_groupe."';";
+					//echo "$sql<br />";
+					$res_ele_mod=mysqli_query($mysqli, $sql);
+					if(mysqli_num_rows($res_ele_mod)>0) {
+						while($lig_ele_mod=mysqli_fetch_object($res_ele_mod)) {
+							$temp["modalites"][$lig_mm->code_modalite_elect]["eleves_possibles"][]=$lig_ele_mod->login;
+						}
+					}
+
+				}
+			}
+		}
+
         }
         $resultat->close();
     return $temp;
@@ -738,7 +790,7 @@ function update_group_class_options($_id_groupe, $_id_classe, $_options) {
  * @see get_period_number()
  * @see test_before_eleve_removal()
  */
-function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, $_professeurs, $_eleves) {
+function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, $_professeurs, $_eleves, $code_modalite_elect_eleves=array()) {
     global $msg;
     $former_groupe = get_group($_id_groupe);
     $errors = false;
@@ -853,6 +905,53 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
             }
         }
     }
+
+	//=====================================================
+	// 20160419
+	// Mise à jour des modalités associées aux élèves
+
+	foreach($former_groupe["modalites"] as $code_modalite_elect => $tab_modalite) {
+		for($loop=0;$loop<count($tab_modalite["eleves"]);$loop++) {
+			if(!in_array($tab_modalite["eleves"][$loop], $code_modalite_elect_eleves[$code_modalite_elect]["eleves"])) {
+				// Enlever l'élève:
+				$sql="DELETE FROM j_groupes_eleves_modalites WHERE code_modalite_elect='".$code_modalite_elect."' AND id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+				$res = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (!$res) {
+					$errors = true;
+					$msg.="ERREUR sur $sql<br />";
+				}
+			}
+		}
+	}
+
+	foreach($code_modalite_elect_eleves as $code_modalite_elect => $tab_modalite) {
+		for($loop=0;$loop<count($tab_modalite["eleves"]);$loop++) {
+			if((!isset($former_groupe["modalites"][$code_modalite_elect]["eleves"]))||(!in_array($tab_modalite["eleves"][$loop], $former_groupe["modalites"][$code_modalite_elect]["eleves"]))) {
+				// Ajouter l'élève:
+				//$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE code_modalite_elect='".$code_modalite_elect."' AND id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+				$sql="SELECT 1=1 FROM j_groupes_eleves_modalites WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+				$test = mysqli_query($GLOBALS["mysqli"], $sql);
+				if (mysqli_num_rows($test)==0) {
+					$sql="INSERT INTO j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."', id_groupe='".$_id_groupe."', login='".$tab_modalite["eleves"][$loop]."';";
+					$res = mysqli_query($GLOBALS["mysqli"], $sql);
+					if (!$res) {
+						$errors = true;
+						$msg.="ERREUR sur $sql<br />";
+					}
+				}
+				else {
+					// Ca ne devrait pas arriver avec la boucle foreach de nettoyage précédente.
+					$sql="UPDATE j_groupes_eleves_modalites SET code_modalite_elect='".$code_modalite_elect."' WHERE id_groupe='".$_id_groupe."' AND login='".$tab_modalite["eleves"][$loop]."';";
+					$res = mysqli_query($GLOBALS["mysqli"], $sql);
+					if (!$res) {
+						$errors = true;
+						$msg.="ERREUR sur $sql<br />";
+					}
+				}
+			}
+		}
+	}
+	//=====================================================
 
     if ($errors) {
         return FALSE;

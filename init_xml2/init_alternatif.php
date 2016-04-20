@@ -242,12 +242,17 @@ if(isset($_POST['add_groupes_classes'])) {
 		if(mysqli_num_rows($res_per)>0) {
 			$nb_per=old_mysql_result($res_per, 0);
 
+			$tab_eleves_groupe_toutes_periodes=array();
 			$sql="SELECT DISTINCT login FROM j_eleves_classes WHERE id_classe='$id_classe[$i]';";
 			$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_ele)>0) {
 				while($lig_ele=mysqli_fetch_object($res_ele)) {
 					for($j=1;$j<=$nb_per;$j++) {
 						$tab_eleves[$j][]=$lig_ele->login;
+
+						if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+							$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+						}
 					}
 				}
 			}
@@ -291,9 +296,21 @@ if(isset($_POST['add_groupes_classes'])) {
 					print_r($tab_eleves);
 					echo "</pre><br />";
 					*/
+
 					//$id_groupe=mysql_insert_id();
 					$id_groupe=$creation;
-					$update=update_group($id_groupe, $matiere[$j], $description, $matiere[$j], array($id_classe[$i]), $tab_profs[$j], $tab_eleves);
+
+					$code_modalite_elect_eleves=array();
+					for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+						$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$matiere[$j]."';";
+						$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_cme)>0) {
+							$lig_cme=mysqli_fetch_object($res_cme);
+							$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+						}
+					}
+
+					$update=update_group($id_groupe, $matiere[$j], $description, $matiere[$j], array($id_classe[$i]), $tab_profs[$j], $tab_eleves, $code_modalite_elect_eleves);
 					//echo "update_group($id_groupe, $matiere[$j], $description, $matiere[$j], array($id_classe[$i]), $tab_profs[$j], $tab_eleves)<br />";
 					if(!$update) {
 						$msg.="Erreur lors du remplissage de l'enseignement de $matiere[$j] en ".get_nom_classe($id_classe[$i]).".<br />\n";

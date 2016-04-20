@@ -117,7 +117,7 @@ if(!acces('/prepa_conseil/edit_limite.php', $_SESSION['statut'])) {
 				"OPTION_11",
 				"OPTION_12"*/
 
-$debug_import_edt="n";
+$debug_import_edt="y";
 
 $msg="";
 $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : "");
@@ -640,8 +640,11 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 				$ts=time();
 				//echo "<br />Temps écoulé ".($ts-$ts0)."<br />";
 
+				// 20160420: On ne modifie pas les modalités:
+				$code_modalite_elect_eleves=$current_group["modalites"];
+
 				echo "<p class='bold' style='margin-top:1em;'>Mise à jour du groupe en période $num_periode&nbsp;: ";
-				$update = update_group($_GET['id_groupe'], $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+				$update = update_group($_GET['id_groupe'], $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 				if($update) {
 					echo "<span style='color:green'>SUCCES</span>";
 					if($reserves_sur_maj>0) {echo "<span style='color:red'> avec les réserves mentionnées plus haut</span>.";}

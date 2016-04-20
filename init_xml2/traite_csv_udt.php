@@ -1006,7 +1006,8 @@ $
 										}
 	
 	
-	
+
+										$tab_eleves_groupe_toutes_periodes=array();
 										$reg_eleves=array();
 										for($loop=0;$loop<count($tab_clas);$loop++) {
 											//for($loopp=0;$loopp<count($tab_ele[$tab_clas[$loop]]);$loopp++) {
@@ -1032,15 +1033,34 @@ $
 												}
 	
 												if($temoin_enseignement_suivi=="y") {
-													for($n_per=1;$n_per<=$tab_per[$tab_clas[$loop]];$n_per++) {$reg_eleves[$n_per][]=$value;}
+													for($n_per=1;$n_per<=$tab_per[$tab_clas[$loop]];$n_per++) {
+														$reg_eleves[$n_per][]=$value;
+
+														if(!in_array($value, $tab_eleves_groupe_toutes_periodes)) {
+															$tab_eleves_groupe_toutes_periodes[]=$value;
+														}
+													}
 													if($debug_import=="y") {echo "<span style='color:green'>$value suit l'enseignement n°$id_groupe de $mat</span><br />";}
 												}
 												elseif($debug_import=="y") {echo "<span style='color:red'>$value ne suit pas l'enseignement n°$id_groupe de $mat</span><br />";}
 											}
 										}
-	
+
+
+										$code_modalite_elect_eleves=array();
+										for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+											//$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+											$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$mat."';";
+											$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_cme)>0) {
+												$lig_cme=mysqli_fetch_object($res_cme);
+												$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+											}
+										}
+
+
 										//$create = update_group($id_groupe, $id_matiere[$i], $mat_nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves);
-										$update_group=update_group($id_groupe, $nom_grp, $descr_grp, $mat, $tab_clas, $tab_prof, $reg_eleves);
+										$update_group=update_group($id_groupe, $nom_grp, $descr_grp, $mat, $tab_clas, $tab_prof, $reg_eleves, $code_modalite_elect_eleves);
 										if(!$update_group) {
 											echo "<span style='color:red;'>ERREUR lors de l'association des professeur(s) et élève(s) avec le groupe.</span><br />\n";
 										}

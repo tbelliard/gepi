@@ -433,6 +433,7 @@ if(!in_array($critere_etat, array('actif', 'inactif'))) {
 }
 
 $critere_auth_mode=isset($_POST['critere_auth_mode']) ? $_POST['critere_auth_mode'] : (isset($_GET['critere_auth_mode']) ? $_GET['critere_auth_mode'] : array());
+$critere_sso_corresp=isset($_POST['critere_sso_corresp']) ? $_POST['critere_sso_corresp'] : (isset($_GET['critere_sso_corresp']) ? $_GET['critere_sso_corresp'] : array());
 
 $critere_limit=isset($_POST['critere_limit']) ? $_POST['critere_limit'] : (isset($_GET['critere_limit']) ? $_GET['critere_limit'] : 20);
 if(($critere_limit=="")||(!preg_match("/^[0-9]*$/", $critere_limit))||($critere_limit<1)) {
@@ -493,6 +494,19 @@ if(count($critere_auth_mode)==0) {
 }
 if((isset($critere_etat))&&($critere_etat!="")) {
 	$_SESSION['edit_ele_critere_etat']=$critere_etat;
+}
+//++++++++++++++++++++++++
+if((isset($critere_sso_corresp))&&(is_array($critere_sso_corresp))&&(count($critere_sso_corresp)>0)) {
+	$_SESSION['edit_ele_critere_sso_corresp']=$critere_sso_corresp;
+}
+
+if(count($critere_sso_corresp)==0) {
+	if(isset($_SESSION['edit_ele_critere_sso_corresp'])) {
+		if(isset($_GET['test_recup_critere'])) {
+			$critere_sso_corresp=$_SESSION['edit_ele_critere_sso_corresp'];
+		}
+		unset($_SESSION['edit_ele_critere_sso_corresp']);
+	}
 }
 //++++++++++++++++++++++++
 if((isset($critere_limit))&&($critere_limit!="")&&($critere_limit>19)) {
@@ -590,6 +604,27 @@ $res_auth_mode_ldap=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_auth_mode_ldap=mysqli_num_rows($res_auth_mode_ldap);
 if($nb_auth_mode_ldap==0) {$style_auth_mode_ldap=" style='color:red'";}
 
+
+if(getSettingAOui('sso_cas_table')) {
+	$style_sso_corresp_manquante="";
+	$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	$res_sso_corresp_manquante=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_sso_corresp_manquante=mysqli_num_rows($res_sso_corresp_manquante);
+	if($nb_sso_corresp_manquante==0) {$style_sso_corresp_manquante=" style='color:red'";}
+
+	$style_sso_corresp_manquante_auth_sso="";
+	$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	$res_sso_corresp_manquante_auth_sso=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_sso_corresp_manquante_auth_sso=mysqli_num_rows($res_sso_corresp_manquante_auth_sso);
+	if($nb_sso_corresp_manquante_auth_sso==0) {$style_sso_corresp_manquante_auth_sso=" style='color:red'";}
+
+	$style_sso_corresp_presente="";
+	$sql="SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso!='';";
+	$res_sso_corresp_presente=mysqli_query($GLOBALS["mysqli"], $sql);
+	$nb_sso_corresp_presente=mysqli_num_rows($res_sso_corresp_presente);
+	if($nb_sso_corresp_presente==0) {$style_sso_corresp_presente=" style='color:red'";}
+}
+
 echo "<tr>\n";
 echo "<td style='vertical-align:top'>\n";
 echo "<input type='submit' name='filtrage' value='Afficher' /> les élèves dont mode d'authentification est&nbsp;: ";
@@ -606,6 +641,19 @@ if(in_array("ldap", $critere_auth_mode)) {echo "checked ";}
 echo "/><label for='auth_mode_ldap'$style_auth_mode_ldap>ldap (<em title='$nb_auth_mode_ldap compte(s) élèves toutes classes confondues.'>$nb_auth_mode_ldap</em>)</label>\n";
 echo "</td>\n";
 echo "</tr>\n";
+
+if(getSettingAOui('sso_cas_table')) {
+	echo "<tr>
+	<td style='vertical-align:top'>
+		<input type='submit' name='filtrage' value='Afficher' /> les élèves dont la correspondance SSO est&nbsp;: 
+	</td>
+	<td>
+		<input type='checkbox' name='critere_sso_corresp[]' id='sso_corresp_manquante' value='manquante' ".((in_array("manquante", $critere_sso_corresp)) ? "checked " : "")."/><label for='sso_corresp_manquante'$style_sso_corresp_manquante>manquante (<em title='$nb_sso_corresp_manquante compte(s) élèves toutes classes confondues.'>$nb_sso_corresp_manquante</em>)</label><br />
+		<input type='checkbox' name='critere_sso_corresp[]' id='sso_corresp_manquante_auth_sso' value='manquante_auth_sso' ".((in_array("manquante_auth_sso", $critere_sso_corresp)) ? "checked " : "")."/><label for='sso_corresp_manquante_auth_sso'$style_sso_corresp_manquante_auth_sso>manquante bien que l'auth_mode soit 'sso' (<em title='$nb_sso_corresp_manquante_auth_sso compte(s) élèves toutes classes confondues.'>$nb_sso_corresp_manquante_auth_sso</em>)</label><br />
+		<input type='checkbox' name='critere_sso_corresp[]' id='sso_corresp_presente' value='presente' ".((in_array("presente", $critere_sso_corresp)) ? "checked " : "")."/><label for='sso_corresp_presente'$style_sso_corresp_presente>présente (<em title='$nb_sso_corresp_presente compte(s) élèves toutes classes confondues.'>$nb_sso_corresp_presente</em>)</label>
+	</td>
+</tr>\n";
+}
 
 $sql="SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login;";
 $res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -705,6 +753,33 @@ if(count($critere_auth_mode)>0) {
 		$sql.=" AND ($chaine_auth_mode)";
 	}
 }
+
+// 20150902
+if(count($critere_sso_corresp)>0) {
+	$chaine_sso_corresp="";
+
+	if(in_array("manquante", $critere_sso_corresp)) {
+		if($chaine_sso_corresp!="") {
+			$chaine_sso_corresp.=" OR ";
+		}
+		$chaine_sso_corresp.="u.login NOT IN ((SELECT login_gepi FROM sso_table_correspondance WHERE login_sso='') UNION ())";
+	}
+	/*
+	for($loop=0;$loop<count($critere_sso_corresp);$loop++) {
+		if(in_array($critere_auth_mode[$loop], array('sso', 'gepi', 'ldap'))) {
+			if($chaine_auth_mode!="") {
+				$chaine_auth_mode.=" OR ";
+			}
+			$chaine_auth_mode.=" u.auth_mode='".$critere_auth_mode[$loop]."'";
+		}
+	}
+
+	if($chaine_auth_mode!="") {
+		$sql.=" AND ($chaine_auth_mode)";
+	}
+	*/
+}
+
 
 $sql.=") ORDER BY u.nom,u.prenom";
 

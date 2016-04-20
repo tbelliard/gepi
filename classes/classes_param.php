@@ -493,12 +493,32 @@ if (isset($_POST['is_posted'])) {
 									}
 
 									$nouvel_enseignement_eleves=isset($_POST['nouvel_enseignement_eleves']) ? $_POST['nouvel_enseignement_eleves'] : "tous";
-									$tab_choix_nouvel_enseignement_eleves=array("tous", "aucun", "1", "2");
+									$tab_choix_nouvel_enseignement_eleves=array("tous", "aucun", "1", "2", "sconet");
 									if(!in_array($nouvel_enseignement_eleves, $tab_choix_nouvel_enseignement_eleves)) {$nouvel_enseignement_eleves="tous";}
 									$reg_eleves=array();
+									$tab_eleves_groupe_toutes_periodes=array();
 									foreach ($current_group["periodes"] as $period) {
 										$reg_eleves[$period['num_periode']]=array();
-										if($nouvel_enseignement_eleves!="aucun") {
+										if($nouvel_enseignement_eleves=="sconet") {
+											$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, sconet_ele_options seo WHERE id_classe='$id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND e.ele_id=seo.ele_id AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+											//echo "$sql<br />";
+											$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+											$eff_ele_ens=mysqli_num_rows($res_ele);
+											if($eff_ele_ens>0){
+												$cpt_ele_ens=0;
+												while($lig_ele=mysqli_fetch_object($res_ele)){
+													if($cpt_ele_ens<$eff_ele_ens/2) {
+														$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+														if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+															$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+														}
+													}
+													$cpt_ele_ens++;
+												}
+											}
+										}
+										elseif($nouvel_enseignement_eleves!="aucun") {
 											$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e WHERE jec.id_classe='$id_classe' AND jec.periode='".$period['num_periode']."' AND jec.login=e.login ORDER BY e.nom, e.prenom;";
 											$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 											$eff_ele_ens=mysqli_num_rows($res_ele);
@@ -508,6 +528,10 @@ if (isset($_POST['is_posted'])) {
 													while($lig_ele=mysqli_fetch_object($res_ele)){
 														if($cpt_ele_ens<$eff_ele_ens/2) {
 															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+															if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+																$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+															}
 														}
 														$cpt_ele_ens++;
 													}
@@ -516,6 +540,10 @@ if (isset($_POST['is_posted'])) {
 													while($lig_ele=mysqli_fetch_object($res_ele)){
 														if($cpt_ele_ens>=$eff_ele_ens/2) {
 															$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+															if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+																$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+															}
 														}
 														$cpt_ele_ens++;
 													}
@@ -523,13 +551,27 @@ if (isset($_POST['is_posted'])) {
 												else {
 													while($lig_ele=mysqli_fetch_object($res_ele)){
 														$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+														if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+															$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+														}
 													}
 												}
 											}
 										}
 									}
 
-									$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+									$code_modalite_elect_eleves=array();
+									for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+										$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+										$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_cme)>0) {
+											$lig_cme=mysqli_fetch_object($res_cme);
+											$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+										}
+									}
+
+									$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 
 									if($coef_nouvel_enseignement!="") {
 										$sql="UPDATE j_groupes_classes SET coef='$coef_nouvel_enseignement' WHERE id_groupe='$create' AND id_classe='$id_classe';";
@@ -1390,6 +1432,12 @@ Il n'est pas question ici de verrouiller automatiquement une période de note à
 			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_aucun' value='aucun' /><label for='nouvel_enseignement_eleves_aucun'>aucun élève</label><br />\n";
 			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_1' value='1' /><label for='nouvel_enseignement_eleves_1'>la première moitié de la classe</label><br />\n";
 			echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_2' value='2' /><label for='nouvel_enseignement_eleves_2'>la deuxième moitié de la classe</label><br />\n";
+
+			$sql="SELECT 1=1 FROM sconet_ele_options LIMIT 1;";
+			$test=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test)>0) {
+				echo "<input type='radio' name='nouvel_enseignement_eleves' id='nouvel_enseignement_eleves_sconet' value='sconet' /><label for='nouvel_enseignement_eleves_sconet' id='texte_eleves_frac_classe_sconet' title=\"Ne faites ce choix que pour les options effectivement saisies dans Sconet.\nPas pour les enseignements en tronc commun,...\"> d'après les options saisies dans Sconet</label><br />";
+			}
 
 			echo "</td>\n";
 			echo "</tr>\n";

@@ -790,6 +790,92 @@ Il faut pour le moment faire les imports dans les pages d'import des nomenclatur
 					}
 					//=======================================================
 
+					//=======================================================
+					// 20160417
+
+					echo "<p>";
+					echo "Analyse du fichier pour extraire les MODALITE_ELECTION...<br />\n";
+
+					$tab_champs_modalites=array("LIBELLE_COURT",
+					"LIBELLE_LONG");
+
+					$modalites=array();
+					$i=-1;
+
+					$objet_modalites=($nomenclature_xml->DONNEES->MODALITES_ELECTION);
+					foreach ($objet_modalites->children() as $modalite) {
+						$i++;
+						//echo "<p><b>Matière $i</b><br />";
+
+						$modalites[$i]=array();
+
+						/*
+						<MODALITE_ELECTION CODE_MODALITE_ELECT="S">
+							<LIBELLE_COURT>TRONC COMM</LIBELLE_COURT>
+							<LIBELLE_LONG>MATIERE ENSEIGNEE EN TRONC COMMUN</LIBELLE_LONG>
+						</MODALITE_ELECTION>
+						*/
+
+						foreach($modalite->attributes() as $key => $value) {
+							$modalites[$i][my_strtolower($key)]=trim($value);
+						}
+
+						foreach($modalite->children() as $key => $value) {
+							if(in_array(my_strtoupper($key),$tab_champs_modalites)) {
+								$modalites[$i][my_strtolower($key)]=preg_replace('/"/','',trim($value));
+								//echo "\$modalite->$key=".$value."<br />";
+							}
+						}
+					}
+
+					/*
+					echo "<pre>";
+					print_r($modalites);
+					echo "</pre>";
+					*/
+
+					$nb_insert_mod=0;
+
+					// Faut-il supprimer les associations qui ne sont plus dans le XML?
+					$tab_modalites=array();
+					$sql="SELECT * FROM nomenclature_modalites_election;";
+					$res_mm=mysqli_query($GLOBALS["mysqli"], $sql);
+					while($lig_mm=mysqli_fetch_object($res_mm)) {
+						$tab_modalites[$lig_mm->code_modalite_elect]=$lig_mm->libelle_court;
+					}
+
+					$sql="TRUNCATE nomenclature_modalites_election;";
+					$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+					for($loop=0;$loop<count($modalites);$loop++) {
+						if((isset($modalites[$loop]['code_modalite_elect']))&&
+						(isset($modalites[$loop]['libelle_court']))&&
+						(isset($modalites[$loop]['libelle_long']))) {
+							if(!array_key_exists($modalites[$loop]['code_modalite_elect'], $tab_modalites)) {
+								$sql="INSERT INTO nomenclature_modalites_election SET code_modalite_elect='".$modalites[$loop]['code_modalite_elect']."',
+								libelle_court='".mysqli_real_escape_string($mysqli, $modalites[$loop]['libelle_court'])."',
+								libelle_long='".mysqli_real_escape_string($mysqli, $modalites[$loop]['libelle_long'])."';";
+								$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+								if($insert) {
+									$nb_insert_mod++;
+								}
+							}
+							else {
+								$sql="UPDATE nomenclature_modalites_election SET libelle_court='".mysqli_real_escape_string($mysqli, $modalites[$loop]['libelle_court'])."',
+								libelle_long='".mysqli_real_escape_string($mysqli, $modalites[$loop]['libelle_long'])."' WHERE  code_modalite_elect='".$modalites[$loop]['code_modalite_elect']."';";
+								$update=mysqli_query($GLOBALS["mysqli"], $sql);
+							}
+						}
+					}
+
+					if($nb_insert_mod>0) {
+						echo "<p>$nb_insert_mod modalités élection ont été importées.</p>";
+					}
+					else {
+						echo "<p>Aucune modalité élection n'a été enregistrée.</p>";
+					}
+					//=======================================================
+
 				}
 			}
 		}

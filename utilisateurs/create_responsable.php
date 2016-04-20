@@ -86,7 +86,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"e.login = jec.login AND " .
 					"jec.id_classe = c.id)");
 			*/
-			$sql = "SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
+			$sql = "SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel, r.login " .
 					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"r.login = '' AND " .
 					"r.pers_id = re.pers_id AND " .
@@ -107,7 +107,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					"e.login = jec.login AND " .
 					"jec.id_classe = '" . $_POST['classe']."')");
 			*/
-			$sql="SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel " .
+			$sql="SELECT distinct(r.pers_id), r.nom, r.prenom, r.civilite, r.mel, r.login " .
 					"FROM resp_pers r, responsables2 re, classes c, j_eleves_classes jec, eleves e WHERE (" .
 					"r.login = '' AND " .
 					"r.pers_id = re.pers_id AND " .
@@ -126,7 +126,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 	if (!$error) {
 		$nb_comptes = 0;
+		$liste_comptes_recuperes_avec_mdp="";
+		$nb_comptes_recuperes_avec_mdp=0;
 		while ($current_parent = mysqli_fetch_object($quels_parents)) {
+			unset($reg_login);
+			$reg_password="";
+			$reg_salt="";
 
 			// Dans le cas où Gepi est intégré dans un ENT, on va chercher les logins
 			if (getSettingValue("use_ent") == "y") {
@@ -149,16 +154,197 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 						$reg_login = old_mysql_result($query_p, 0,"login_u");
 					}
 					else {
-						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
-						//$reg_login = "erreur_".$k; // en attendant une solution viable, on génère le login du responsable
-						$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
+						//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						// 20150915
+						$test_login=$current_parent->login;
+						if($test_login!="") {
+							// Il y a déjà un login non vide dans resp_pers
+							// On vérifie que le login n'est pas déjà attribué à un autre
+							$sql="SELECT login FROM utilisateurs WHERE login='".$test_login."';";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_login)==0) {
+								$sql="SELECT login FROM resp_pers WHERE login='".$test_login."' AND pers_id!='".$current_parent->pers_id."';";
+								if($debug_create_resp=="y") {echo "$sql<br />\n";}
+								$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_login)==0) {
+									$sql="SELECT login FROM eleves WHERE login='".$test_login."';";
+									if($debug_create_resp=="y") {echo "$sql<br />\n";}
+									$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+									if(mysqli_num_rows($res_login)==0) {
+
+										$sql="SELECT * FROM tempo_utilisateurs WHERE login='".$test_login."';";
+										if($debug_create_resp=="y") {echo "$sql<br />\n";}
+										$res_tempo_u=mysqli_query($GLOBALS["mysqli"], $sql);
+										if(mysqli_num_rows($res_tempo_u)>0) {
+											$lig_tempo_u=mysqli_fetch_object($res_tempo_u);
+
+											if($lig_tempo_u->statut!='responsable') {
+												$msg.="Le login ($test_login) pré-existant du responsable ".$current_parent->nom." ".$current_parent->prenom." (".$current_parent->pers_id.") était attribué préalablement à un utilisateur de statut ".$lig_tempo_u->statut." (<em>compte mis en réserve dans 'tempo_utilisateurs'</em>).<br />Un nouveau login va être généré pour le responsable.<br />";
+											}
+											elseif($lig_tempo_u->identifiant1!=$current_parent->pers_id) {
+												$msg.="Le login ($test_login) pré-existant du responsable ".$current_parent->nom." ".$current_parent->prenom." (".$current_parent->pers_id.") était attribué à un autre responsable&nbsp;: ".$lig_tempo_u->nom." ".$lig_tempo_u->prenom." (".$lig_tempo_u->identifiant1.") (<em>compte mis en réserve dans 'tempo_utilisateurs'</em>).<br />Un nouveau login va être généré pour le responsable.<br />";
+											}
+											else {
+												if(test_unique_login($lig_tempo_u->login, "y")) {
+													// On écrase le login présent pour restaurer celui mis en réserve?
+													$reg_login=$lig_tempo_u->login;
+													$reg_password=$lig_tempo_u->password;
+													$reg_salt=$lig_tempo_u->salt;
+
+													$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable'";
+													if($debug_create_resp=="y") {echo "$sql<br />\n";}
+													$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+													if($liste_comptes_recuperes_avec_mdp!="") {
+														$liste_comptes_recuperes_avec_mdp.=", ";
+													}
+													$liste_comptes_recuperes_avec_mdp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir la fiche du responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,"maj")." ".casse_mot($current_parent->prenom,"majf2")."</a>";
+													$nb_comptes_recuperes_avec_mdp++;
+												}
+												elseif($test_login!=$lig_tempo_u->login) {
+													// Login tempo_utilisateurs déjà attribué
+													// On conserve le login présent dans resp_pers et testé plus haut comme unique
+													$reg_login=$test_login;
+												}
+											}
+										}
+										else {
+											$reg_login=$test_login;
+										}
+									}
+								}
+							}
+						}
+
+						if(($test_login=="")||(!isset($reg_login))) {
+							// On tente de récupérer un login mis en réserve
+							$sql="SELECT login, password, salt FROM tempo_utilisateurs WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable';";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_login)>0) {
+								$lig_login=mysqli_fetch_object($res_login);
+								if(test_unique_login($lig_login->login, "y")) {
+									$reg_login=$lig_login->login;
+									$reg_password=$lig_login->password;
+									$reg_salt=$lig_login->salt;
+
+									$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable'";
+									if($debug_create_resp=="y") {echo "$sql<br />\n";}
+									$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+									if($liste_comptes_recuperes_avec_mdp!="") {
+										$liste_comptes_recuperes_avec_mdp.=", ";
+									}
+									$liste_comptes_recuperes_avec_mdp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir la fiche du responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,"maj")." ".casse_mot($current_parent->prenom,"majf2")."</a>";
+									$nb_comptes_recuperes_avec_mdp++;
+								}
+							}
+						}
+						//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+						if(!isset($reg_login)) {
+							// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
+							//$reg_login = "erreur_".$k; // en attendant une solution viable, on génère le login du responsable
+							$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
+						}
 					}
 				}
 			} else {
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				// 20150915
+				$test_login=$current_parent->login;
+				if($test_login!="") {
+					// Il y a déjà un login non vide dans resp_pers
+					// On vérifie que le login n'est pas déjà attribué à un autre
+					$sql="SELECT login FROM utilisateurs WHERE login='".$test_login."';";
+					if($debug_create_resp=="y") {echo "$sql<br />\n";}
+					$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_login)==0) {
+						$sql="SELECT login FROM resp_pers WHERE login='".$test_login."' AND pers_id!='".$current_parent->pers_id."';";
+						if($debug_create_resp=="y") {echo "$sql<br />\n";}
+						$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_login)==0) {
+							$sql="SELECT login FROM eleves WHERE login='".$test_login."';";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_login)==0) {
+
+								$sql="SELECT * FROM tempo_utilisateurs WHERE login='".$test_login."';";
+								if($debug_create_resp=="y") {echo "$sql<br />\n";}
+								$res_tempo_u=mysqli_query($GLOBALS["mysqli"], $sql);
+								if(mysqli_num_rows($res_tempo_u)>0) {
+									$lig_tempo_u=mysqli_fetch_object($res_tempo_u);
+
+									if($lig_tempo_u->statut!='responsable') {
+										$msg.="Le login ($test_login) pré-existant du responsable ".$current_parent->nom." ".$current_parent->prenom." (".$current_parent->pers_id.") était attribué préalablement à un utilisateur de statut ".$lig_tempo_u->statut." (<em>compte mis en réserve dans 'tempo_utilisateurs'</em>).<br />Un nouveau login va être généré pour le responsable.<br />";
+									}
+									elseif($lig_tempo_u->identifiant1!=$current_parent->pers_id) {
+										$msg.="Le login ($test_login) pré-existant du responsable ".$current_parent->nom." ".$current_parent->prenom." (".$current_parent->pers_id.") était attribué à un autre responsable&nbsp;: ".$lig_tempo_u->nom." ".$lig_tempo_u->prenom." (".$lig_tempo_u->identifiant1.") (<em>compte mis en réserve dans 'tempo_utilisateurs'</em>).<br />Un nouveau login va être généré pour le responsable.<br />";
+									}
+									else {
+										if(test_unique_login($lig_tempo_u->login, "y")) {
+											// On écrase le login présent pour restaurer celui mis en réserve?
+											$reg_login=$lig_tempo_u->login;
+											$reg_password=$lig_tempo_u->password;
+											$reg_salt=$lig_tempo_u->salt;
+
+											$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable'";
+											if($debug_create_resp=="y") {echo "$sql<br />\n";}
+											$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+											if($liste_comptes_recuperes_avec_mdp!="") {
+												$liste_comptes_recuperes_avec_mdp.=", ";
+											}
+											$liste_comptes_recuperes_avec_mdp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir la fiche du responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,"maj")." ".casse_mot($current_parent->prenom,"majf2")."</a>";
+											$nb_comptes_recuperes_avec_mdp++;
+										}
+										elseif($test_login!=$lig_tempo_u->login) {
+											// Login tempo_utilisateurs déjà attribué
+											// On conserve le login présent dans resp_pers et testé plus haut comme unique
+											$reg_login=$test_login;
+										}
+									}
+								}
+								else {
+									$reg_login=$test_login;
+								}
+							}
+						}
+					}
+				}
+
+				if(($test_login=="")||(!isset($reg_login))) {
+					// On tente de récupérer un login mis en réserve
+					$sql="SELECT login, password, salt FROM tempo_utilisateurs WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable';";
+					if($debug_create_resp=="y") {echo "$sql<br />\n";}
+					$res_login=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_login)>0) {
+						$lig_login=mysqli_fetch_object($res_login);
+						if(test_unique_login($lig_login->login, "y")) {
+							$reg_login=$lig_login->login;
+							$reg_password=$lig_login->password;
+							$reg_salt=$lig_login->salt;
+
+							$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$current_parent->pers_id."' AND statut='responsable'";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							if($liste_comptes_recuperes_avec_mdp!="") {
+								$liste_comptes_recuperes_avec_mdp.=", ";
+							}
+							$liste_comptes_recuperes_avec_mdp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' title=\"Voir la fiche du responsable dans un nouvel onglet.\" target='_blank'>".casse_mot($current_parent->nom,"maj")." ".casse_mot($current_parent->prenom,"majf2")."</a>";
+							$nb_comptes_recuperes_avec_mdp++;
+						}
+					}
+				}
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 				// Création du compte utilisateur pour le responsable considéré
-				//echo "\$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, ".getSettingValue("mode_generation_login").");<br />\n";
-				$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
+				if(!isset($reg_login)) {
+					$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login_responsable"), getSettingValue("mode_generation_login_responsable_casse"));
 				// generate_unique_login() peut retourner 'false' en cas de pb
+				}
 			}
 
 			if(($reg_login)&&($reg_login!='')) {
@@ -192,37 +378,60 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 					} elseif ($_POST['reg_auth_mode'] == "auth_sso") {
 						$reg_auth = "sso";
 					}
-					$sql="INSERT INTO utilisateurs SET " .
-							"login = '" . $reg_login . "', " .
-							"nom = '" . addslashes($current_parent->nom) . "', " .
-							"prenom = '". addslashes($current_parent->prenom) ."', " .
-							"password = '', " .
-							"civilite = '" . $current_parent->civilite."', " .
-							"email = '" . $current_parent->mel . "', " .
-							"statut = 'responsable', " .
-							"etat = 'actif', " .
-							"auth_mode = '".$reg_auth."', " .
-							"change_mdp = 'n'";
-					if($debug_create_resp=="y") {echo "$sql<br />\n";}
-					$reg = mysqli_query($GLOBALS["mysqli"], $sql);
-	
-					if (!$reg) {
-						$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
-					} else {
-						$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
-						$reg2 = mysqli_query($GLOBALS["mysqli"], $sql);
-						if($debug_create_resp=="y") {echo "$sql<br />\n";}
-						//$msg.="$sql<br />";
-						$nb_comptes++;
 
-						// Ménage:
-						$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
+					// Dans le cas d'un compte récupéré, au cas où le compte aurait préalablement été recréé...
+					$sql="SELECT * FROM utilisateurs WHERE login = '" . $reg_login . "';";
+					if($debug_create_resp=="y") {echo "$sql<br />\n";}
+					$test_user_exist = mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($test_user_exist)>0) {
+						$lig_user_exist=mysqli_fetch_object($test_user_exist);
+
+						// Vérifier si c'est un compre resp... on ne devrait pas tomber sur ce cas
+						if($lig_user_exist->statut!='responsable') {
+							$msg .= "Anomalie : le login $reg_login qui devait être attribué au responsable ".$current_parent->nom." ".$current_parent->prenom." (<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' target='_blank'></a>) est attribué à un autre utilisateur ".$lig_user_exist->nom." ".$lig_user_exist->prenom." de statut ".$lig_user_exist->statut."<br/>";
+						}
+						else {
+							$msg .= $current_parent->nom." ".$current_parent->prenom." (<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' target='_blank'>".$current_parent->pers_id."</a>)&nbsp;: Un compte existe déjà dans la table 'utilisateurs' pour le login $reg_login attribué au responsable ".$lig_user_exist->nom." ".$lig_user_exist->prenom.".<br/>";
+							// Faut il restaurer le MDP?
+						}
+
+					}
+					else {
+						$sql="INSERT INTO utilisateurs SET " .
+								"login = '" . $reg_login . "', " .
+								"nom = '" . addslashes($current_parent->nom) . "', " .
+								"prenom = '". addslashes($current_parent->prenom) ."', " .
+								"password = '".$reg_password."', " .
+								"salt = '".$reg_salt."', " .
+								"civilite = '" . $current_parent->civilite."', " .
+								"email = '" . $current_parent->mel . "', " .
+								"statut = 'responsable', " .
+								"etat = 'actif', " .
+								"auth_mode = '".$reg_auth."', " .
+								"change_mdp = 'n'";
 						if($debug_create_resp=="y") {echo "$sql<br />\n";}
-						$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
-						if(mysqli_num_rows($res_actions)>0) {
-							while($lig_action=mysqli_fetch_object($res_actions)) {
-								$menage=del_info_action($lig_action->id);
-								if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
+						$reg = mysqli_query($GLOBALS["mysqli"], $sql);
+	
+						if (!$reg) {
+							$msg .= "Erreur lors de la création du compte ".$reg_login."<br/>";
+							if($debug_create_resp=="y") {echo "<span style='color:red'>Erreur lors de la création du compte ".$reg_login."</span><br/>\n";}
+						} else {
+							$sql="UPDATE resp_pers SET login = '" . $reg_login . "' WHERE (pers_id = '" . $current_parent->pers_id . "')";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$reg2 = mysqli_query($GLOBALS["mysqli"], $sql);
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							//$msg.="$sql<br />";
+							$nb_comptes++;
+
+							// Ménage:
+							$sql="SELECT id FROM infos_actions WHERE titre LIKE 'Nouveau responsable%($current_parent->pers_id)';";
+							if($debug_create_resp=="y") {echo "$sql<br />\n";}
+							$res_actions=mysqli_query($GLOBALS["mysqli"], $sql);
+							if(mysqli_num_rows($res_actions)>0) {
+								while($lig_action=mysqli_fetch_object($res_actions)) {
+									$menage=del_info_action($lig_action->id);
+									if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
+								}
 							}
 						}
 					}
@@ -238,6 +447,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			$msg .= "Un compte a été créé avec succès.<br/>";
 		} elseif ($nb_comptes > 1) {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br/>";
+		}
+		if($nb_comptes_recuperes_avec_mdp>0) {
+			if($nb_comptes>0) {
+				$msg.="Parmi ces comptes, $nb_comptes_recuperes_avec_mdp sont des comptes récupérés.<br />";
+			}
+			else {
+				$msg.="$nb_comptes_recuperes_avec_mdp comptes récupérés.<br />";
+			}
 		}
 
 		// On propose de mettre à zéro les mots de passe et d'imprimer les fiches bienvenue seulement
@@ -258,6 +475,11 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		}
 		else {
 			saveSetting('fiches_bienvenue_un_jeu_par_parent', 'n');
+		}
+
+		if($liste_comptes_recuperes_avec_mdp!="") {
+			$msg.="<span title=\"Les comptes et mots de passe ont été mis en réserve lors du changement d'année.\nSi vous voulez faire table rase des logins et mot des passe de l'année passée, vous pouvez supprimer la mise en réserve en consultant la page de Changement d'année.\">Un ou des comptes ont été récupérés d'une mise en réserve des comptes/mots de passe de l'année passée</span>.<br />Leurs comptes et mots de passe ne vont pas être modifiés et les fiches ne seront pas ré-éditées pour ces utilisateurs.<br />En voici la liste&nbsp;: ".$liste_comptes_recuperes_avec_mdp."<br />";
+			$chaine_nouveaux_seulement="&amp;nouveaux_seulement=y";
 		}
 
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
@@ -394,6 +616,8 @@ $sql="SELECT DISTINCT rp.pers_id FROM resp_pers rp, responsables2 r WHERE rp.log
 $res_resp_legal_1_ou_2=mysqli_query($GLOBALS["mysqli"], $sql);
 $nb_resp_legal_1_ou_2_sans_compte=mysqli_num_rows($res_resp_legal_1_ou_2);
 
+//SELECT count(distinct rp.pers_id) FROM resp_pers rp, responsables2 r WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2');
+//SELECT count(distinct rp.pers_id) FROM resp_pers rp, responsables2 r, eleves e WHERE rp.login='' AND rp.pers_id=r.pers_id AND (r.resp_legal='1' OR r.resp_legal='2') and e.ele_id=r.ele_id;
 
 if(($nb_resp_legal_1_ou_2_sans_compte==0)&&($nb_resp_legal_0_sans_compte==0)) {
 	echo "<p class='bold'>Informations&nbsp;:</p>
