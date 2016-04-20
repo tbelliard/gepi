@@ -14603,4 +14603,27 @@ function get_tab_matieres_prof($login, $mode="associees_a_un_groupe") {
 	return $tab;
 }
 
+function get_tab_modalites_election($mode="indice") {
+	$tab=array();
+
+	$sql="SELECT * FROM nomenclature_modalites_election;";
+	$res_nme=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_nme)>0) {
+		if($mode=="indice") {
+			$cpt=0;
+			while($lig_nme=mysqli_fetch_assoc($res_nme)) {
+				$tab[$cpt]=$lig_nme;
+				$cpt++;
+			}
+		}
+		else {
+			while($lig_nme=mysqli_fetch_assoc($res_nme)) {
+				$tab[$lig_nme->code_modalite_elect]=$lig_nme;
+			}
+		}
+	}
+
+	return $tab;
+}
+
 ?>

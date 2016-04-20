@@ -1452,3 +1452,12 @@ CREATE TABLE IF NOT EXISTS matieres_appreciations_acces_eleve (login VARCHAR( 50
 DROP TABLE IF EXISTS mef_matieres;
 CREATE TABLE IF NOT EXISTS mef_matieres (mef_code varchar(50) NOT NULL, code_matiere VARCHAR( 250 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+DROP TABLE IF EXISTS nomenclature_modalites_election;
+CREATE TABLE IF NOT EXISTS nomenclature_modalites_election (code_modalite_elect VARCHAR( 6 ) NOT NULL, libelle_court VARCHAR(50) NOT NULL, libelle_long VARCHAR(250) NOT NULL, PRIMARY KEY ( code_modalite_elect )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS j_groupes_eleves_modalites;
+CREATE TABLE IF NOT EXISTS j_groupes_eleves_modalites (id_groupe int(11) NOT NULL, login VARCHAR( 50 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL, UNIQUE KEY id_groupe_login_modalite (id_groupe,login,code_modalite_elect)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS sconet_ele_options;
+CREATE TABLE IF NOT EXISTS sconet_ele_options (id int(11) unsigned NOT NULL auto_increment, ele_id varchar(10) NOT NULL default '', code_matiere varchar(255) NOT NULL default '', code_modalite_elect char(1) NOT NULL default '', num_option int(2) NOT NULL default '0', PRIMARY KEY id (id));
+

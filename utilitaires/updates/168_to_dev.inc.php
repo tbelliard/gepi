@@ -363,4 +363,54 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<strong>Ajout d'une table 'nomenclature_modalites_election' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'nomenclature_modalites_election';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS nomenclature_modalites_election (code_modalite_elect VARCHAR( 6 ) NOT NULL, 
+	libelle_court VARCHAR(50) NOT NULL, 
+	libelle_long VARCHAR(250) NOT NULL,
+	PRIMARY KEY ( code_modalite_elect )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'j_groupes_eleves_modalites' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_eleves_modalites';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_eleves_modalites (id_groupe int(11) NOT NULL, login VARCHAR( 50 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL, UNIQUE KEY id_groupe_login_modalite (id_groupe,login,code_modalite_elect)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'sconet_ele_options' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'sconet_ele_options';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sconet_ele_options (
+						id int(11) unsigned NOT NULL auto_increment, 
+						ele_id varchar(10) NOT NULL default '',
+						code_matiere varchar(255) NOT NULL default '',
+						code_modalite_elect char(1) NOT NULL default '',
+						num_option int(2) NOT NULL default '0',
+						PRIMARY KEY id (id));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 ?>

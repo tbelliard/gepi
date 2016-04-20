@@ -1578,6 +1578,15 @@ else{
 			for($i=0;$i<count($eleves);$i++){
 				// On ne retient les options que des élèves qui sont dans des classes (ceux dans des classes ont été listés dans $tab_ele_id)
 				if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
+					$sql="DELETE FROM sconet_ele_options WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+					affiche_debug("$sql<br />\n");
+					$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$menage) {
+						echo "Erreur lors de la requête $sql<br />\n";
+						flush();
+						$nb_err++;
+					}
+
 					for($j=0;$j<count($eleves[$i]["options"]);$j++){
 						$k=$j+1;
 						$sql="UPDATE temp_gep_import2 SET ";
@@ -1593,6 +1602,18 @@ else{
 						}
 						else{
 							$stat++;
+						}
+
+						$sql="INSERT INTO sconet_ele_options SET ele_id='".$eleves[$i]['eleve_id']."', 
+													code_matiere='".$eleves[$i]["options"][$j]['code_matiere']."', 
+													code_modalite_elect='".$eleves[$i]["options"][$j]['code_modalite_elect']."',
+													num_option='".$eleves[$i]["options"][$j]['num_option']."';";
+						affiche_debug("$sql<br />\n");
+						$res_update=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(!$res_update){
+							echo "<span style='color:red'><strong>Erreur lors de la requête</strong> $sql</span><br />\n";
+							flush();
+							$nb_err++;
 						}
 					}
 				}
