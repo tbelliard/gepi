@@ -550,7 +550,7 @@ class Session {
 		// Si on est là, ce que l'utilisateur a le droit de rester.
 
 		if ($change_password &&
-				($this->current_auth_mode == "gepi" || getSettingValue("ldap_write_access") == "yes"))
+				($this->current_auth_mode == "gepi" || $this->current_auth_mode == "simpleSAML" || getSettingValue("ldap_write_access") == "yes"))
 			{
 				return "c";
 			}

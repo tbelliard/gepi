@@ -1707,7 +1707,7 @@ require_once("../lib/header.inc.php");
 // On initialise un flag pour savoir si l'utilisateur est 'éditable' ou non.
 // Cela consiste à déterminer s'il s'agit d'un utilisateur local ou LDAP, et dans
 // ce dernier cas à savoir s'il s'agit d'un accès en écriture ou non.
-if ($session_gepi->current_auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes") {
+if ($session_gepi->current_auth_mode == "gepi" || $session_gepi->current_auth_mode == "simpleSAML" || $gepiSettings['ldap_write_access'] == "yes") {
 	$editable_user = true;
 	$affiche_bouton_submit = 'yes';
 } else {
