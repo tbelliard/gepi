@@ -224,9 +224,8 @@ L'enseignement ".$current_group['name']." (".$current_group['description'].") en
 		}
 		// ==================================================
 
-
-
-
+		// 20160420: On ne modifie pas les modalités:
+		$code_modalite_elect_eleves=$current_group["modalites"];
 
 		$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
 		if (!$create) {

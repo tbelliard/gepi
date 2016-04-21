@@ -252,6 +252,8 @@ if(isset($step)){
 		}
 		*/
 
+		$code_modalite_elect_eleves=array();
+
 		$test=0;
 		$test2=0;
 		$test3=0;
@@ -341,6 +343,16 @@ if(isset($step)){
 
 			$tab_classe=array_merge($tab_classe,$tmp_grp["classes"]["list"]);
 
+			foreach($tmp_grp["modalites"] as $code_modalite_elect => $tmp_tab) {
+				if(!array_key_exists($code_modalite_elect, $code_modalite_elect_eleves)) {
+					$code_modalite_elect_eleves[$code_modalite_elect]=$tmp_tab;
+				}
+				else {
+					for($loop=0;$loop<count($tmp_tab["eleves"]);$loop++) {
+						$code_modalite_elect_eleves[$code_modalite_elect]["eleves"][]=$tmp_tab["eleves"][$loop];
+					}
+				}
+			}
 		}
 
 		array_unique($tab_professeurs);
@@ -365,7 +377,7 @@ if(isset($step)){
 
 		if (!$error) {
 			// pas d'erreur : on continue avec la mise à jour du groupe
-			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $tab_classe, $tab_professeurs, $tab_eleves);
+			$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $tab_classe, $tab_professeurs, $tab_eleves, $code_modalite_elect_eleves);
 			if (!$create) {
 				$msg .= "Erreur lors de la mise à jour du groupe.";
 			} else {

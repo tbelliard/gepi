@@ -2,6 +2,39 @@
 	// Initialisations files
 	require_once("../lib/initialisations.inc.php");
 
+	// Resume session
+	$resultat_session = $session_gepi->security_check();
+	if ($resultat_session == 'c') {
+		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+		die();
+	} else if ($resultat_session == '0') {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	$sql="SELECT 1=1 FROM droits WHERE id='/classes/acces_appreciations_ajax.php';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)==0) {
+	$sql="INSERT INTO droits SET id='/classes/acces_appreciations_ajax.php',
+	administrateur='V',
+	professeur='V',
+	cpe='V',
+	scolarite='V',
+	eleve='F',
+	responsable='F',
+	secours='F',
+	autre='F',
+	description='Ajax: Acces aux appreciations et avis des bulletins',
+	statut='';";
+	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+
+	if (!checkAccess()) {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+
 	// Ajouter des tests sur le statut du visiteur
 	if(($_SESSION['statut']!='administrateur')&&($_SESSION['statut']!='scolarite')&&($_SESSION['statut']!="professeur")) {
 		echo "<p style='color:red;'>Accès non autorisé.</p>";
@@ -121,6 +154,60 @@
 						}
 					}
 				}
+			}
+		}
+	}
+	elseif($_GET['mode']=='manuel_individuel') {
+		//Changer pour toute la classe ou pour une sélection d'élèves
+		if(($id_classe!=NULL)&&($periode!=NULL)) {
+			$tab_ele=array();
+			$sql="SELECT DISTINCT login FROM j_eleves_classes jec WHERE jec.id_classe='".$id_classe."' AND
+											jec.periode='$periode';";
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab_ele[]=$lig->login;
+				}
+			}
+
+			$sql="SELECT * FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+											jec.id_classe='".$id_classe."' AND 
+											jec.periode=maae.periode AND 
+											maae.periode='$periode' AND 
+											acces='y';";
+			//echo "$sql<br />\n";
+			$test_acces=mysqli_query($GLOBALS["mysqli"], $sql);
+			if (mysqli_num_rows($test_acces)==0) {
+				// On passe toute la classe en acces='y'
+				$acces="y";
+			}
+			else {
+				// On passe toute la classe en acces='n'
+				$acces="n";
+			}
+
+			$sql="DELETE FROM matieres_appreciations_acces_eleve WHERE login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='$periode') AND periode='$periode';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			$nb_err=0;
+			for($loop=0;$loop<count($tab_ele);$loop++) {
+				$sql="INSERT INTO matieres_appreciations_acces_eleve SET login='".$tab_ele[$loop]."', periode='".$periode."', acces='".$acces."';";
+				//echo "$sql<br />\n";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$nb_err++;
+				}
+			}
+			if($nb_err>0) {
+				echo "<div style='background-color:red;'>Il s'est produit $nb_err erreur(s)</div>\n";
+			}
+			elseif($acces=="y") {
+				echo "<div style='background-color:lightgreen;'>Accessible</div>\n";
+			}
+			else {
+				echo "<div style='background-color:orangered;'>Inaccessible</div>\n";
 			}
 		}
 	}

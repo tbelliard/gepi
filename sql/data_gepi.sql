@@ -92,7 +92,7 @@ INSERT INTO droits VALUES ('/aid/help.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', '
 INSERT INTO droits VALUES ('/aid/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/index2.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/aid/modify_aid.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
-INSERT INTO droits VALUES ('/aid/modify_aid_new.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
+INSERT INTO droits VALUES ('/aid/modify_aid_new.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Configuration des AID', '');
 INSERT INTO droits VALUES ('/bulletin/edit.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
 INSERT INTO droits VALUES ('/bulletin/param_bull.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');
 INSERT INTO droits VALUES ('/bulletin/verif_bulletins.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Vérification du remplissage des bulletins', '');
@@ -1775,3 +1775,4 @@ INSERT INTO setting SET name='active_mod_orientation', value='n';
 INSERT INTO setting SET name='OrientationNbMaxOrientation', value='3';
 INSERT INTO setting SET name='OrientationNbMaxVoeux', value='3';
 INSERT INTO droits SET id='/mod_orientation/consulter_orientation.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Consultation des voeux et orientation proposée', statut='';
+INSERT INTO droits SET id='/mod_annees_anterieures/recuperation_donnees_manquantes.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Ajax: Acces aux appreciations et avis des bulletins', statut='';

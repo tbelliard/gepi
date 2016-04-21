@@ -152,6 +152,7 @@ if (isset($_POST['is_posted'])) {
                                 $reg_eleves[$ligne_eleve->periode][]=$ligne_eleve->login;
                             }
                             */
+					$tab_eleves_groupe_toutes_periodes=array();
                             $sql="SELECT * FROM periodes WHERE id_classe='$id_classe'";
                             $result_list_periodes=mysqli_query($GLOBALS["mysqli"], $sql);
                             while($ligne_periode=mysqli_fetch_object($result_list_periodes)){
@@ -164,10 +165,24 @@ if (isset($_POST['is_posted'])) {
                                 while($ligne_eleve=mysqli_fetch_object($result_list_eleves)){
                                     $reg_eleves[$ligne_periode->num_periode][]=$ligne_eleve->login;
                                     //echo "<!-- \$ligne_eleve->login=$ligne_eleve->login -->\n";
+
+						if(!in_array($ligne_eleve->login, $tab_eleves_groupe_toutes_periodes)) {
+							$tab_eleves_groupe_toutes_periodes[]=$ligne_eleve->login;
+						}
                                 }
                             }
 
-                            $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves);
+					$code_modalite_elect_eleves=array();
+					for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+						$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+						$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res_cme)>0) {
+							$lig_cme=mysqli_fetch_object($res_cme);
+							$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+						}
+					}
+
+                            $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
                             if (!$create) {
                                 $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
                             }
@@ -213,7 +228,9 @@ if (isset($_POST['is_posted'])) {
                         else{
                             $tabele=array();
                         }
-                        $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $tabprof, $tabele);
+                        $tab_modalites=$group["modalites"];
+
+                        $create = update_group($id_groupe, $id_matiere[$i], $ligne_matiere->nom_complet, $id_matiere[$i], $reg_clazz, $tabprof, $tabele,$tab_modalites);
 
                         if (!$create) {
                             $msg .= "Erreur lors de la mise à jour du groupe $id_matiere[$i]";
@@ -459,7 +476,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 			echo "<td>&nbsp;</td>\n";
 
 			//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs professeurs</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-			echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>)</td>\n";
+			echo "<td colspan='3' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres professeurs impliqués</i>)</td>\n";
 			$groupe_existant="trop";
 		}
 		else {
@@ -480,7 +497,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 				echo "<td>&nbsp;</td>\n";
 
 				//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-				echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>)</td>\n";
+				echo "<td colspan='3' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes impliquées</i>)</td>\n";
 
 				$groupe_existant="trop";
 			}
@@ -495,7 +512,7 @@ while($ligne_matiere=mysqli_fetch_object($result_matiere)){
 		echo "<td>&nbsp;</td>\n";
 
 		//echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->matiere: groupe complexe (<i>plusieurs classes</i>), accessible par <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">Gérer les enseignements</a>.</td>\n";
-		echo "<td colspan='2' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes et plusieurs professeurs impliqués</i>)</td>\n";
+		echo "<td colspan='3' style='text-align:left;'>$ligne_matiere->nom_complet: <a href='edit_class.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\">géré ici</a> (<i>autres classes et plusieurs professeurs impliqués</i>)</td>\n";
 
 		$groupe_existant="trop";
 	}

@@ -1627,7 +1627,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 
 
 
-
+										$tab_eleves_groupe_toutes_periodes=array();
 										$reg_eleves=array();
 										$current_group=get_group($create);
 										foreach ($current_group["periodes"] as $period) {
@@ -1649,15 +1649,33 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 												while($lig_ele=mysqli_fetch_object($res_ele)) {
 													$reg_eleves[$period['num_periode']][]=$lig_ele->login;
 													//echo $lig_ele->login."<br />";
+
+													if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+														$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+													}
+
 													$cpt_ele++;
 												}
 											}
 										}
 
+
+										$code_modalite_elect_eleves=array();
+										for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+											//$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+											$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$mat."';";
+											$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+											if(mysqli_num_rows($res_cme)>0) {
+												$lig_cme=mysqli_fetch_object($res_cme);
+												$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+											}
+										}
+
+
 										if ((count($reg_professeurs) == 0)&&(count($reg_eleves) == 0)) {
 											echo "<span style='color:red'>Groupe sans élève ni professeur.</span><br />";
 										} else {
-											$update_grp=update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+											$update_grp=update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 											if(!$update_grp) {
 												echo "<span style='color:red'>Erreur lors de l'inscription des professeurs et élèves dans le groupe.</span><br />";
 											}

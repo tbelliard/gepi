@@ -675,8 +675,10 @@ if(!$tempdir) {
 														*/
 													}
 
+													$code_modalite_elect_eleves=array();
+
 													if ((count($tab_profs) > 0)||(count($reg_eleves) > 0)) {
-														$res = update_group($create, $nom_groupe, $description_groupe, $matiere, $reg_clazz, $tab_profs, $reg_eleves);
+														$res = update_group($create, $nom_groupe, $description_groupe, $matiere, $reg_clazz, $tab_profs, $reg_eleves, $code_modalite_elect_eleves);
 													}
 												}
 											}

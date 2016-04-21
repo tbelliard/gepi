@@ -249,42 +249,47 @@ echo "</pre>";
 					}
 				}
 
+
 				//debug_var();
 				// METTRE TOUS LES ELEVES DES CLASSES CONCERNEES DANS LE GROUPE
 				$reg_eleves=array();
+				$tab_eleves_groupe_toutes_periodes=array();
 				$current_group=get_group($create);
 				foreach ($current_group["periodes"] as $period) {
 					$reg_eleves[$period['num_periode']]=array();
 
-					if((isset($_POST['eleves_order_by']))&&($_POST['eleves_order_by']=='classe')) {
+					// 20160420
+					if((isset($_POST['eleves_frac_classe']))&&($_POST['eleves_frac_classe']=='sconet')) {
 						$cpt_clas=0;
 						$sql="";
-						foreach($reg_clazz as $tmp_id_classe){
-							if($cpt_clas>0) {$sql.=" UNION ";}
-							$sql.="(SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom)";
-							$cpt_clas++;
-						}
-						//$sql.=" ORDER BY c.classe, e.nom, e.prenom;";
-						//echo "$sql<br />";
-						$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
-						$nb_ele=mysqli_num_rows($res_ele);
-						if($nb_ele>0){
-							$cpt_ele=1;
-							while($lig_ele=mysqli_fetch_object($res_ele)) {
-								if((!isset($_POST['eleves_frac_classe']))||
-									(($_POST['eleves_frac_classe']=='tous'))||
-									(($_POST['eleves_frac_classe']==1)&&($cpt_ele<=ceil($nb_ele/2)))||
-									(($_POST['eleves_frac_classe']==2)&&($cpt_ele>ceil($nb_ele/2)))) {
+						$cpt_ele=1;
+						foreach($reg_clazz as $tmp_id_classe) {
+							$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, sconet_ele_options seo WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND e.ele_id=seo.ele_id AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+							//echo "$sql<br />";
+							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+							$nb_ele=mysqli_num_rows($res_ele);
+							if($nb_ele>0){
+								while($lig_ele=mysqli_fetch_object($res_ele)) {
 									$reg_eleves[$period['num_periode']][]=$lig_ele->login;
-									//echo $lig_ele->login."<br />";
+
+									if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+										$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+									}
+									$cpt_ele++;
 								}
-								$cpt_ele++;
 							}
 						}
 					}
 					else {
-						foreach($reg_clazz as $tmp_id_classe){
-							$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom;";
+						if((isset($_POST['eleves_order_by']))&&($_POST['eleves_order_by']=='classe')) {
+							$cpt_clas=0;
+							$sql="";
+							foreach($reg_clazz as $tmp_id_classe){
+								if($cpt_clas>0) {$sql.=" UNION ";}
+								$sql.="(SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom)";
+								$cpt_clas++;
+							}
+							//$sql.=" ORDER BY c.classe, e.nom, e.prenom;";
 							//echo "$sql<br />";
 							$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
 							$nb_ele=mysqli_num_rows($res_ele);
@@ -296,9 +301,38 @@ echo "</pre>";
 										(($_POST['eleves_frac_classe']==1)&&($cpt_ele<=ceil($nb_ele/2)))||
 										(($_POST['eleves_frac_classe']==2)&&($cpt_ele>ceil($nb_ele/2)))) {
 										$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+										if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+											$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+										}
 										//echo $lig_ele->login."<br />";
 									}
 									$cpt_ele++;
+								}
+							}
+						}
+						else {
+							foreach($reg_clazz as $tmp_id_classe){
+								$sql="SELECT jec.login FROM j_eleves_classes jec, eleves e, classes c WHERE id_classe='$tmp_id_classe' AND periode='".$period['num_periode']."' AND jec.login=e.login AND jec.id_classe=c.id ORDER BY e.nom, e.prenom;";
+								//echo "$sql<br />";
+								$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+								$nb_ele=mysqli_num_rows($res_ele);
+								if($nb_ele>0){
+									$cpt_ele=1;
+									while($lig_ele=mysqli_fetch_object($res_ele)) {
+										if((!isset($_POST['eleves_frac_classe']))||
+											(($_POST['eleves_frac_classe']=='tous'))||
+											(($_POST['eleves_frac_classe']==1)&&($cpt_ele<=ceil($nb_ele/2)))||
+											(($_POST['eleves_frac_classe']==2)&&($cpt_ele>ceil($nb_ele/2)))) {
+											$reg_eleves[$period['num_periode']][]=$lig_ele->login;
+
+											if(!in_array($lig_ele->login, $tab_eleves_groupe_toutes_periodes)) {
+												$tab_eleves_groupe_toutes_periodes[]=$lig_ele->login;
+											}
+											//echo $lig_ele->login."<br />";
+										}
+										$cpt_ele++;
+									}
 								}
 							}
 						}
@@ -309,8 +343,19 @@ echo "</pre>";
                 if ((count($reg_professeurs) == 0)&&(count($reg_eleves) == 0)) {
                     header("Location: ./edit_group.php?id_groupe=$create&msg=$msg&id_classe=$id_classe&mode=$mode");
                 } else {
+
+				$code_modalite_elect_eleves=array();
+				for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
+					$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
+					$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_cme)>0) {
+						$lig_cme=mysqli_fetch_object($res_cme);
+						$code_modalite_elect_eleves[$lig_cme->code_modalite_elect]["eleves"][]=$tab_eleves_groupe_toutes_periodes[$loop];
+					}
+				}
+
                     //$res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, array());
-                    $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+                    $res = update_group($create, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 
 					//if($res){$msg.="Mise à jour des professeurs du groupe effectuée. ";}else{$msg.="Echec de la mise à jour des professeurs du groupe. ";}
 					if (count($reg_professeurs) == 1) {
@@ -493,11 +538,18 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 	echo ">".$tab_domaines_texte[$loop]."</label><br />\n";
 }
 
+$chaine_d_apres_options_sconet="";
+$sql="SELECT 1=1 FROM sconet_ele_options LIMIT 1;";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)>0) {
+	$chaine_d_apres_options_sconet="<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_sconet' value='sconet' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');checkbox_change_frac_classe('eleves_frac_classe_sconet');changement();\" /><label for='eleves_frac_classe_sconet' id='texte_eleves_frac_classe_sconet' title=\"Ne faites ce choix que pour les options effectivement saisies dans Sconet.\nPas pour les enseignements en tronc commun,...\"> d'après les options saisies dans Sconet</label><br />";
+}
+
 echo "<br />
-<p>Affecter dans l'enseignement&nbsp;:<br />
-<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_tous' value='tous' checked onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_tous' id='texte_eleves_frac_classe_tous' style='font-weight:bold'> tous les élèves</label><br />
-<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_1' value='1' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_1' id='texte_eleves_frac_classe_1'> la première moitié</label><br />
-<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_2' value='2' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');changement();\" /><label for='eleves_frac_classe_2' id='texte_eleves_frac_classe_2'> la deuxième moitié</label></p>";
+<p>Affecter dans l'enseignement&nbsp;:<br />".$chaine_d_apres_options_sconet."
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_tous' value='tous' checked onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');checkbox_change_frac_classe('eleves_frac_classe_sconet');changement();\" /><label for='eleves_frac_classe_tous' id='texte_eleves_frac_classe_tous' style='font-weight:bold'> tous les élèves</label><br />
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_1' value='1' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');checkbox_change_frac_classe('eleves_frac_classe_sconet');changement();\" /><label for='eleves_frac_classe_1' id='texte_eleves_frac_classe_1'> la première moitié</label><br />
+<input type='radio' name='eleves_frac_classe' id='eleves_frac_classe_2' value='2' onchange=\"checkbox_change_frac_classe('eleves_frac_classe_tous');checkbox_change_frac_classe('eleves_frac_classe_1');checkbox_change_frac_classe('eleves_frac_classe_2');checkbox_change_frac_classe('eleves_frac_classe_sconet');changement();\" /><label for='eleves_frac_classe_2' id='texte_eleves_frac_classe_2'> la deuxième moitié</label></p>";
 
 if($mode == "regroupement") {
 	echo "<p>Dans le cas où vous ne mettez qu'une moitié des élèves dans le groupe, veuillez choisir le tri&nbsp;<br />

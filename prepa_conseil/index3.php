@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -827,6 +827,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		if($acces_app_ele_resp=='manuel') {
 			$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
 		}
+		elseif($acces_app_ele_resp=='manuel_individuel') {
+			$msg_acces_app_ele_resp="Les appréciations seront visibles après une intervention manuelle d'un compte de statut 'scolarité'.";
+		}
 		elseif($acces_app_ele_resp=='date') {
 			$chaine_date_ouverture_acces_app_classe="";
 			for($loop=0;$loop<count($date_ouverture_acces_app_classe);$loop++) {
@@ -860,8 +863,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($value=="y") {
 				echo "sont visibles des parents/élèves.";
 			}
-			else {
+			elseif($value=="n") {
 				echo "ne sont pas encore visibles des parents/élèves.<br />";
+				echo $msg_acces_app_ele_resp;
+			}
+			else {
+				echo "ne sont visibles que pour ".$value." élèves.<br />";
 				echo $msg_acces_app_ele_resp;
 			}
 			echo "</li>\n";

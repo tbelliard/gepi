@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -198,13 +198,25 @@ if(!isset($annee_scolaire)){
 	$sql="SELECT DISTINCT e.* FROM eleves e,j_eleves_classes jec WHERE jec.login=e.login AND e.mef_code='';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
-		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." élève(s) ont leur CODE_MEF non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association élève/MEF avant d'archiver l'année.<br /><a href='../mef/associer_eleve_mef.php'>Associer élèves et MEF</a></p>";
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." élève(s) ont leur CODE_MEF non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association élève/MEF avant d'archiver l'année.<br /><a href='../mef/associer_eleve_mef.php'>Associer élèves et MEF</a></p>";
 	}
 
 	$sql="SELECT DISTINCT m.matiere FROM matieres m, j_groupes_matieres jgm WHERE jgm.id_matiere=m.matiere AND m.code_matiere='';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0){
-		echo "<p style='color:red'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le Livret Scolaire Lycée.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." matière(s) ont leur CODE_MATIERE non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association matière/CODE_MATIERE avant d'archiver l'année.<br /><a href='../matieres/index.php'>Associer matières et CODE_MATIERE</a><br />Si nécessaire, vous pouvez procéder à un <a href='../gestion/admin_nomenclatures.php'>import des nomenclatures</a> pour disposer des codes matières officiels.</p>";
+	}
+
+	$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND u.statut='professeur' AND numind='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." professeur(s) ont leur NUMIND <em>(identifiant STS)</em> non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association professeur/NUMIND avant d'archiver l'année.<br /><a href='recuperation_donnees_manquantes.php'>Associer professeurs et NUMIND</a>.</p>";
+	}
+
+	$sql="SELECT DISTINCT u.login FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND u.statut='professeur' AND type='';";
+	$test=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0){
+		echo "<p style='color:red; margin-top:1em; margin-left:7.5em; text-indent:-7.5em;'><strong>ATTENTION&nbsp;:</strong> ".mysqli_num_rows($test)." professeur(s) ont leur TYPE <em>(\"Emploi Poste Personnel\" ou \"Local\")</em> non renseigné.<br />Cela posera problème dans le cas où vous souhaiteriez faire remonter les données dans le <strong>Livret Scolaire Lycée</strong> ou dans le <strong>Livret Scolaire Collège</strong> <em>(LSUN)</em>.<br />Il est recommandé de procéder à l'association professeur/TYPE avant d'archiver l'année.<br /><a href='recuperation_donnees_manquantes.php'>Associer professeurs et TYPE</a>.</p>";
 	}
 }
 else {
@@ -479,25 +491,31 @@ else {
 
 
 					// CPE associé(s) à l'élève
-					$sql="SELECT jec.cpe_login, u.nom, u.prenom FROM j_eleves_cpe jec, utilisateurs u WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."' AND jec.cpe_login=u.login;";
+					$sql="SELECT jec.cpe_login, u.nom, u.prenom, u.numind, u.type FROM j_eleves_cpe jec, utilisateurs u WHERE jec.e_login='".$tab_eleve[$cpt]['login_eleve']."' AND jec.cpe_login=u.login;";
 					$res_cpe=mysqli_query($GLOBALS["mysqli"], $sql);
 
 					if(mysqli_num_rows($res_cpe)==0){
 						$tab_eleve[$cpt]['cpe']="";
 						$tab_eleve[$cpt]['nom_cpe']="";
 						$tab_eleve[$cpt]['prenom_cpe']="";
+						$tab_eleve[$cpt]['numind_cpe']="";
+						$tab_eleve[$cpt]['type_cpe']="";
 					}
 					else{
 						$lig_cpe=mysqli_fetch_object($res_cpe);
 						$tab_eleve[$cpt]['cpe']=affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 						$tab_eleve[$cpt]['nom_cpe']=$lig_cpe->nom;
 						$tab_eleve[$cpt]['prenom_cpe']=$lig_cpe->prenom;
+						$tab_eleve[$cpt]['numind_cpe']=$lig_cpe->numind;
+						$tab_eleve[$cpt]['type_cpe']=$lig_cpe->type;
 
 						// Normalement, il n'y a qu'un CPE associé
 						while($lig_cpe=mysqli_fetch_object($res_cpe)){
 							$tab_eleve[$cpt]['cpe'].=", ".affiche_utilisateur($lig_cpe->cpe_login,$id_classe[0]);
 							$tab_eleve[$cpt]['nom_cpe'].="|".$lig_cpe->nom;
 							$tab_eleve[$cpt]['prenom_cpe'].="|".$lig_cpe->prenom;
+							$tab_eleve[$cpt]['numind_cpe'].="|".$lig_cpe->numind;
+							$tab_eleve[$cpt]['type_cpe'].="|".$lig_cpe->type;
 						}
 					}
 
@@ -774,6 +792,8 @@ else {
 											special='ABSENCES',
 											matiere='',
 											code_matiere='',
+											id_prof='".$tab_eleve[$j]['numind_cpe']."',
+											type_prof='".$tab_eleve[$j]['type_cpe']."',
 											prof='".addslashes($cpe)."',
 											nom_prof='".addslashes($tab_eleve[$j]['nom_cpe'])."',
 											prenom_prof='".addslashes($tab_eleve[$j]['prenom_cpe'])."',
@@ -948,9 +968,11 @@ else {
 										$prof=$tab_prof_grp[$id_groupe]['prof'];
 										$nom_prof=$tab_prof_grp[$id_groupe]['nom_prof'];
 										$prenom_prof=$tab_prof_grp[$id_groupe]['prenom_prof'];
+										$numind_prof=$tab_prof_grp[$id_groupe]['numind_prof'];
+										$type_prof=$tab_prof_grp[$id_groupe]['type_prof'];
 									}
 									else {
-										$sql="SELECT u.login, u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login ORDER BY login";
+										$sql="SELECT u.login, u.nom,u.prenom, u.numind, u.type FROM j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login ORDER BY login";
 										echo "<!-- $sql -->\n";
 										//echo "$sql<br />";
 										$res_prof=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -965,15 +987,21 @@ else {
 											$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
 											$nom_prof=$lig_prof->nom;
 											$prenom_prof=$lig_prof->prenom;
+											$numind_prof=$lig_prof->numind;
+											$type_prof=$lig_prof->type;
 											while($lig_prof=mysqli_fetch_object($res_prof)){
 												$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
 												$nom_prof.="|".$lig_prof->nom;
 												$prenom_prof.="|".$lig_prof->prenom;
+												$numind_prof.="|".$lig_prof->numind;
+												$type_prof.="|".$lig_prof->type;
 											}
 										}
 										$tab_prof_grp[$id_groupe]['prof']=$prof;
 										$tab_prof_grp[$id_groupe]['nom_prof']=$nom_prof;
 										$tab_prof_grp[$id_groupe]['prenom_prof']=$prenom_prof;
+										$tab_prof_grp[$id_groupe]['numind_prof']=$numind_prof;
+										$tab_prof_grp[$id_groupe]['type_prof']=$type_prof;
 									}
 	
 									// Insertion de la note, l'appréciation,... dans la matière,...
@@ -993,6 +1021,8 @@ else {
 														code_matiere='".addslashes($code_matiere)."',
 														id_groupe='$id_groupe',
 														special='',
+														id_prof='".$numind_prof."',
+														type_prof='".$type_prof."',
 														prof='".addslashes($prof)."',
 														nom_prof='".addslashes($nom_prof)."',
 														prenom_prof='".addslashes($prenom_prof)."',
@@ -1145,6 +1175,8 @@ else {
 												code_matiere='".addslashes($code_mat_grp[$id_groupe])."',
 												id_groupe='$id_groupe',
 												special='GRP_ANNEE',
+												id_prof='".$tab_prof_grp[$id_groupe]['numind_prof']."',
+												type_prof='".$tab_prof_grp[$id_groupe]['type_prof']."',
 												prof='".addslashes($tab_prof_grp[$id_groupe]['prof'])."',
 												nom_prof='".addslashes($tab_prof_grp[$id_groupe]['nom_prof'])."',
 												prenom_prof='".addslashes($tab_prof_grp[$id_groupe]['prenom_prof'])."',

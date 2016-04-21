@@ -517,7 +517,9 @@ else {
 					$reg_professeurs=array($tmp_tab_prof[0]['login']);
 				}
 
-				$create = update_group($id_groupe_dest[$i], $current_group_src['matiere']['matiere'], $current_group_src['matiere']['nom_complet'], $current_group_src['matiere']['matiere'], array($id_classe_dest), $reg_professeurs, $reg_eleves);
+				$code_modalite_elect_eleves=$current_group_src["modalites"];
+
+				$create = update_group($id_groupe_dest[$i], $current_group_src['matiere']['matiere'], $current_group_src['matiere']['nom_complet'], $current_group_src['matiere']['matiere'], array($id_classe_dest), $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 				if (!$create) {
 					echo "<span style='color:red'>Erreur lors de la mise à jour du groupe ".$current_group_src['matiere']['matiere']."</span><br />";
 				}

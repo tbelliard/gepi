@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -40,6 +40,8 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+//debug_var();
 
 // Initialisation des variables utilisées dans le formulaire
 
@@ -538,7 +540,9 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-
+	// 20160419
+	//$code_modalite_elect=isset($_POST['code_modalite_elect']) ? $_POST['code_modalite_elect'] : array();
+	$code_modalite_elect_eleves=$current_group["modalites"];
 
 	/*
 	echo "Apres modif:<br />";
@@ -554,7 +558,8 @@ if (isset($_POST['is_posted'])) {
 
 	if (!$error) {
 		// pas d'erreur : on continue avec la mise à jour du groupe
-		$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+		//$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);
+		$create = update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves, $code_modalite_elect_eleves);
 		if (!$create) {
 			$msg .= "Erreur lors de la mise à jour du groupe.";
 		} else {
@@ -1047,6 +1052,93 @@ for($loop=0;$loop<count($tab_domaines);$loop++) {
 		</script>
 
 	</div>";
+
+// +++++++++++++++++++++++++++++++++
+// 20160417
+$sql="SELECT * FROM nomenclature_modalites_election;";
+$res_nme=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_nme)>0) {
+	$cpt_mod=0;
+	$tab_non_assoc=array();
+	echo "<div style='margin-top:1em; border:1px solid white;' class='fieldset_opacite50'>
+	<p title=\"Les modalités possibles pour les couples MEF/matière sont normalement importés avec les nomenclatures lors de l'initialisation de l'année.\nSi ce n'est pas le cas, commencez par refaire, dans Gestion des bases/Gestion des MEFs, une importation des MEFs d'après un fichier Nomenclature.xml\">Modalités associées à cet enseignement&nbsp;: </p>";
+	$cpt_code_modalite_elect=0;
+	while($lig_nme=mysqli_fetch_object($res_nme)) {
+		$tab_autres_nomenclatures=array();
+
+		$sql="SELECT DISTINCT mm.* FROM matieres m, 
+						mef_matieres mm
+					WHERE mm.code_modalite_elect='".$lig_nme->code_modalite_elect."' AND 
+					mm.code_matiere=m.code_matiere AND 
+					m.matiere='".$current_group["matiere"]["matiere"]."' AND 
+					mm.mef_code IN (SELECT e.mef_code FROM eleves e, j_eleves_groupes jeg WHERE e.login=jeg.login AND jeg.id_groupe='".$id_groupe."');";
+		//echo "$sql<br />";
+		$res_mm=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_mm)>0) {
+
+			/*
+			echo "
+	<input type='checkbox' name='code_modalite_elect[]' id='code_modalite_elect_".$lig_nme->code_modalite_elect."' value='".$lig_nme->code_modalite_elect."' checked /><label for='".$lig_nme->code_modalite_elect."'>".$lig_nme->libelle_court." <em>(".$lig_nme->libelle_long.")</em></label>";
+			*/
+
+			echo $lig_nme->libelle_court." <em>(".$lig_nme->libelle_long.")</em>";
+
+			$sql="SELECT DISTINCT jgem.login FROM j_groupes_eleves_modalites jgem
+						WHERE jgem.code_modalite_elect='".$lig_nme->code_modalite_elect."' AND 
+							jgem.id_groupe='".$id_groupe."';";
+			//echo "$sql<br />";
+			$res_ele_mod=mysqli_query($mysqli, $sql);
+			$eff_ele_mod=mysqli_num_rows($res_ele_mod);
+
+			$sql="SELECT DISTINCT jeg.login FROM matieres m, 
+							mef_matieres mm, 
+							j_eleves_groupes jeg, 
+							eleves e 
+						WHERE mm.code_modalite_elect='".$lig_nme->code_modalite_elect."' AND 
+							mm.code_matiere=m.code_matiere AND 
+							mm.mef_code=e.mef_code AND 
+							e.login=jeg.login AND 
+							jeg.id_groupe='".$id_groupe."';";
+			//echo "$sql<br />";
+			$res_ele_mod2=mysqli_query($mysqli, $sql);
+			$eff_ele_mod2=mysqli_num_rows($res_ele_mod2);
+
+			echo " <span title=\"$eff_ele_mod élève(s) associés à cette modalité dans cet enseignement sur $eff_ele_mod2 .\">($eff_ele_mod/$eff_ele_mod2)</span>";
+
+			echo " <br />";
+			$cpt_code_modalite_elect++;
+		}
+		/*
+		else {
+			// Remplir un tableau des modalités non associées
+			$tab_non_assoc[$lig_nme->code_modalite_elect]['libelle_court']=$lig_nme->libelle_court;
+			$tab_non_assoc[$lig_nme->code_modalite_elect]['libelle_long']=$lig_nme->libelle_long;
+		}
+		*/
+	}
+
+	if($cpt_code_modalite_elect==0) {
+		echo "<span style='color:red;'>Aucune modalité élection de la matière ".$current_group["matiere"]["matiere"]." n'est associée aux MEFs des élèves de cet enseignement.</span><br />";
+	}
+
+	/*
+	// Parcourir le tableau des modalités non associées pour proposer l'ajout via un SELECT.
+	if(count($tab_non_assoc)>0) {
+		echo "
+	<select name='code_modalite_elect[]' id='code_modalite_elect_supplementaire' onchange='changement()'>
+		<option value=''>--- Ajouter ---</option>";
+		foreach($tab_non_assoc as $current_code_modalite_elect => $tmp_tab) {
+			echo "
+		<option value='$current_code_modalite_elect' title=\"".$tmp_tab['libelle_long']."\">".$tmp_tab['libelle_long']."</option>";
+		}
+		echo "
+	</select><img src='../images/icons/ico_attention.png' class='icone16' title=\"Vous ne devriez normalement pas ajouter de modalité.\nLes modalités possibles pour les couples MEF/matière sont normalement importés avec les nomenclatures lors de l'initialisation de l'année.\nSi ce n'est pas le cas, commencez par refaire, dans Gestion des bases/Gestion des MEFs, une importation des MEFs d'après un fichier Nomenclature.xml\" />";
+	}
+	*/
+	echo "
+</div>";
+}
+// +++++++++++++++++++++++++++++++++
 
 // +++++++++++++++++++++++++++++++++
 $sql="SELECT 1=1 FROM edt_corresp2;";

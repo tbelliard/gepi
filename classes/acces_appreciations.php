@@ -69,91 +69,137 @@ $sql="CREATE TABLE IF NOT EXISTS `matieres_appreciations_acces` (
 `acces` ENUM( 'y', 'n', 'date', 'd' ) NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 $creation_table=mysqli_query($GLOBALS["mysqli"], $sql);
-/*
-if(isset($_POST['submit'])) {
-	$max_per=isset($_POST['max_per']) ? $_POST['max_per'] : 0;
-	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
-	$nb_classe=isset($_POST['nb_classe']) ? $_POST['nb_classe'] : 0;
 
-	unset($tab);
-	$tab=array();
-	$tab['ele']='eleve';
-	$tab['resp']='responsable';
 
-	$cpt=0;
 
-	foreach($tab as $pref => $statut) {
-		for($j=0;$j<$nb_classe;$j++){
-			if(isset($id_classe[$j])) {
-				for($i=1;$i<=$max_per;$i++){
-					if(isset($_POST[$pref.'_mode_'.$j.'_'.$i])) {
-						$mode=$_POST[$pref.'_mode_'.$j.'_'.$i];
-						if($mode=="manuel") {
-							if(isset($_POST[$pref.'_acces_'.$j.'_'.$i])) {
-								$accessible="y";
-							}
-							else {
-								$accessible="n";
-							}
-							$sql="DELETE FROM matieres_appreciations_acces
-									WHERE id_classe='$id_classe[$j]' AND
-											statut='$statut' AND
-											periode='$i';";
-							$suppr=mysql_query($sql);
+if((isset($_POST['mode']))&&($_POST['mode']=='liste_eleves')&&(isset($_POST['id_classe']))&&(isset($_POST['periode']))) {
+	check_token();
 
-							$sql="INSERT INTO matieres_appreciations_acces
-									SET id_classe='$id_classe[$j]',
-											statut='$statut',
-											periode='$i',
-											acces='$accessible';";
-							$insert=mysql_query($sql);
-							if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
-						}
-						else {
-							if(isset($_POST[$pref.'_display_date_'.$j.'_'.$i])) {
-								$tmp_date=$_POST[$pref.'_display_date_'.$j.'_'.$i];
-								// Contrôler le format de la date et sa validité.
+	$sql="SELECT * FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$_POST['id_classe']."' AND jec.periode='".$_POST['periode']."' ORDER BY e.nom,e.prenom;";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		echo "<span style='color:red'>Aucun élève dans la classe n°".$_POST['id_classe']."' en période ".$_POST['periode']."???</span>";
+	}
+	else {
+		$tab_acces=array();
+		$sql="SELECT * FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+										jec.id_classe='".$_POST['id_classe']."' AND 
+										jec.periode=maae.periode AND 
+										maae.periode='".$_POST['periode']."' AND 
+										maae.acces='y';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab_acces[]=$lig->login;
+			}
+		}
 
-								$tabdate=explode("/",$tmp_date);
+		echo "<table class='boireaus boireaus_alt'>
+	<tr>
+		<th>Élève</th>
+		<th>Accès</th>
+	</tr>";
+		$cpt=0;
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
+			$checked="";
+			$style="";
+			if(in_array($lig_ele->login, $tab_acces)) {
+				$checked=" checked";
+				$style=" style='font-weight:bold;'";
+			}
+			echo "
+	<tr id='tr_$cpt'>
+		<td><label for='acces_".$lig_ele->id_eleve."' id='texte_acces_".$lig_ele->id_eleve."'$style>$lig_ele->nom $lig_ele->prenom</label></td>
+		<td><input type='checkbox' name='acces_".$lig_ele->id_eleve."' id='acces_".$lig_ele->id_eleve."' value='y'$checked onchange=\"checkbox_change(this.id);changement();\"/></td>
+	</tr>";
+			$cpt++;
+		}
+		echo "
+</table>";
+	}
 
-								if(checkdate($tabdate[1],$tabdate[0],$tabdate[2])) {
-									$date=sprintf("%04d",$tabdate[2])."-".$tabdate[1]."-".$tabdate[0];
+	die();
+}
 
-									$sql="DELETE FROM matieres_appreciations_acces
-											WHERE id_classe='$id_classe[$j]' AND
-													statut='$statut' AND
-													periode='$i';";
-									$suppr=mysql_query($sql);
+//debug_var();
 
-									$sql="INSERT INTO matieres_appreciations_acces
-											SET id_classe='$id_classe[$j]',
-													statut='$statut',
-													periode='$i',
-													date='$date',
-													acces='date';";
-									$insert=mysql_query($sql);
-									if(!$insert) {$msg.="Erreur sur l'accès aux appréciations de la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";}else{$cpt++;}
-								}
-								else {
-									$msg.="La date $tmp_date n'est pas valide pour la classe ".get_class_from_id($id_classe[$j])." en $statut pour la période $i.<br />\n";
-								}
-							}
-						}
+if((isset($_POST['mode']))&&($_POST['mode']=='valider_choix_ele')&&(isset($_POST['id_classe']))&&(isset($_POST['periode']))) {
+	check_token();
+
+	$sql="SELECT * FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='".$_POST['id_classe']."' AND jec.periode='".$_POST['periode']."' ORDER BY e.nom,e.prenom;";
+	$res_ele=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele)==0) {
+		$msg.="Aucun élève dans la classe n°".$_POST['id_classe']."' en période ".$_POST['periode']."???<br />";
+	}
+	else {
+		$tab_acces=array();
+		$sql="SELECT * FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+										jec.id_classe='".$_POST['id_classe']."' AND 
+										jec.periode=maae.periode AND 
+										maae.periode='".$_POST['periode']."';";
+		//echo "$sql<br />\n";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$tab_acces[$lig->login]=$lig->acces;
+			}
+		}
+
+		/*
+		echo "<pre>";
+		print_r($tab_acces);
+		echo "</pre>";
+		*/
+
+		$nb_reg=0;
+		while($lig_ele=mysqli_fetch_object($res_ele)) {
+			if(isset($tab_acces[$lig_ele->login])) {
+				unset($acces);
+				if((isset($_POST['acces_'.$lig_ele->id_eleve]))&&($tab_acces[$lig_ele->login]!='y')) {
+					$acces="y";
+				}
+				elseif((!isset($_POST['acces_'.$lig_ele->id_eleve]))&&($tab_acces[$lig_ele->login]=='y')) {
+					$acces="n";
+				}
+				if(isset($acces)) {
+					$sql="UPDATE matieres_appreciations_acces_eleve SET acces='".$acces."' WHERE login='".$lig_ele->login."' AND 
+										periode='".$_POST['periode']."';";
+					//echo "$sql<br />\n";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(!$update) {
+						$msg.="Erreur lors du passage à $acces de l'accès pour ".$lig_ele->prenom." ".$lig_ele->nom." en période ".$_POST['periode']."<br />";
+					}
+					else {
+						$nb_reg++;
 					}
 				}
 			}
+			else {
+				if(isset($_POST['acces_'.$lig_ele->id_eleve])) {
+					$acces="y";
+				}
+				elseif(!isset($_POST['acces_'.$lig_ele->id_eleve])) {
+					$acces="n";
+				}
+				$sql="INSERT INTO matieres_appreciations_acces_eleve SET acces='".$acces."', 
+									login='".$lig_ele->login."', 
+									periode='".$_POST['periode']."';";
+				//echo "$sql<br />\n";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'enregistrement à $acces de l'accès pour ".$lig_ele->prenom." ".$lig_ele->nom." en période ".$_POST['periode']."<br />";
+				}
+				else {
+					$nb_reg++;
+				}
+			}
 		}
-	}
-	if(($msg=="")&&($cpt>0)) {
-		if($cpt==1) {
-			$msg="Enregistrement effectué.<br />\n";
-		}
-		else{
-			$msg="Enregistrements effectués ($cpt).<br />\n";
+		if($nb_reg>0) {
+			$msg.=$nb_reg." enregistrement(s) effectué(s)<br />";
 		}
 	}
 }
-*/
 
 $javascript_specifique[]="classes/acces_appreciations";
 
@@ -278,7 +324,53 @@ elseif(isset($_POST['modif_manuelle_periode'])) {
 	// On refait la requête de liste des classes
 	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 }
+elseif(isset($_POST['modif_manuelle_individuelle_periode'])) {
+	check_token(false);
 
+	$periode=isset($_POST['periode']) ? $_POST['periode'] : NULL;
+	if(mb_strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
+	if($periode=='') {$periode=NULL;}
+
+	$acces=isset($_POST['acces']) ? $_POST['acces'] : NULL;
+	if(($acces!='y')&&($acces!='n')) {$acces=NULL;}
+
+	if(($periode!=NULL)&&($acces!=NULL)) {
+		while ($lig=mysqli_fetch_object($res_classe)) {
+			$id_classe=$lig->id;
+
+			$tab_ele=array();
+			$sql2="SELECT DISTINCT login FROM j_eleves_classes jec WHERE jec.id_classe='".$id_classe."' AND
+											jec.periode='$periode';";
+			//echo "$sql<br />\n";
+			$res=mysqli_query($GLOBALS["mysqli"], $sql2);
+			if(mysqli_num_rows($res)>0) {
+				while($lig=mysqli_fetch_object($res)) {
+					$tab_ele[]=$lig->login;
+				}
+			}
+
+			$sql2="DELETE FROM matieres_appreciations_acces_eleve WHERE login IN (SELECT login FROM j_eleves_classes WHERE id_classe='".$id_classe."' AND periode='$periode') AND periode='$periode';";
+			//echo "$sql<br />\n";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql2);
+
+			$nb_err=0;
+			for($loop=0;$loop<count($tab_ele);$loop++) {
+				$sql2="INSERT INTO matieres_appreciations_acces_eleve SET login='".$tab_ele[$loop]."', periode='".$periode."', acces='".$acces."';";
+				//echo "$sql<br />\n";
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql2);
+				if(!$insert) {
+					$nb_err++;
+				}
+			}
+			if($nb_err>0) {
+				$msg.="Il s'est produit $nb_err erreur(s)<br />";
+			}
+		}
+	}
+
+	// On refait la requête de liste des classes
+	$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+}
 $tab_classe=array();
 $cpt=0;
 $max_per=0;
@@ -304,13 +396,17 @@ $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';saveSetting('acces_app_ele_resp','manuel');}
 $delais_apres_cloture=getSettingValue('delais_apres_cloture');
 
-echo "<p>Vous pouvez définir ici quand les comptes utilisateurs pour des responsables et des élèves peuvent accéder aux appréciations des professeurs et avis du conseil de classe.<br />
+echo "<p>Vous pouvez définir ici quand les responsables et les élèves peuvent accéder dans Gepi aux appréciations des professeurs et avis du conseil de classe.<br />
 Il est souvent apprécié de pouvoir interdire l'accès aux élèves et responsables avant que le conseil de classe se soit déroulé.<br />
 Cet accès est conditionné par l'existence des comptes responsables et élèves.</p>\n";
 echo "<br />\n";
 
 if($acces_app_ele_resp=='manuel') {
 	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+}
+elseif($acces_app_ele_resp=='manuel_individuel') {
+	echo "<p>Cliquez sur la clef <img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel individuel\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
+	echo "<p>Cliquez sur l'icone <img src='../images/edit16.png' width='16' height='16' alt=\"Manuel individuel\" /> pour choisir pour quels élèves l'accès aux appréciations est ouvert.</p>\n";
 }
 elseif($acces_app_ele_resp=='date') {
 	echo "<p>Cliquez sur le calendrier <img src='../images/icons/date.png' width='16' height='16' alt=\"Choix d'une date de déverrouillage\" /> pour donner ou supprimer l'accès aux appréciations.</p>\n";
@@ -683,7 +779,219 @@ if($acces_app_ele_resp=='manuel') {
 </script>\n";
 
 }
-elseif($acces_app_ele_resp=='date') {
+// 20160415
+elseif($acces_app_ele_resp=='manuel_individuel') {
+	// Le mode global paramétré est 'manuel_individuel'
+	// Si des paramétrages particuliers sont à autre chose que 'manuel', on bascule/modifie vers 'manuel'.
+
+	$tab_dates_prochains_conseils=array();
+	$date_courante=strftime("%Y-%m-%d %H:%M:%S");
+	$sql="SELECT DISTINCT ddec.id_ev, ddec.id_classe, ddec.date_evenement FROM d_dates_evenements dde, d_dates_evenements_classes ddec WHERE dde.type='conseil_de_classe' AND dde.id_ev=ddec.id_ev AND dde.date_debut<='$date_courante' AND ddec.date_evenement>='$date_courante' ORDER BY date_evenement DESC;";
+	$res_cc=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_cc)>0) {
+		while($lig_cc=mysqli_fetch_object($res_cc)) {
+			$tab_dates_prochains_conseils[$lig_cc->id_classe]=formate_date($lig_cc->date_evenement,"y2","court");
+		}
+	}
+
+	echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form_manuel'>\n";
+	//echo "<p align='center'><input type='submit' name='submit' value='Valider' /></p>\n";
+	//echo add_token_field();
+	//echo "<input type='hidden' id='csrf_alea' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+	echo add_token_field(true);
+
+	echo "<table class='boireaus' width='100%'>\n";
+	echo "<tr>\n";
+	echo "<th rowspan='3'>Classe</th>\n";
+	//echo "<th rowspan='2'>Statut</th>\n";
+	echo "<th colspan='$max_per'>Périodes</th>\n";
+	if(count($tab_dates_prochains_conseils)>0) {
+		echo "<th rowspan='3' title=\"Si des dates de conseil de classe ont été saisies, elles apparaîtront dans cette colonne.\">Date du prochain<br />conseil de classe</th>\n";
+	}
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	for($i=1;$i<=$max_per;$i++) {
+		$sql="SELECT DISTINCT nom_periode FROM periodes WHERE num_periode='$i';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==1) {
+			$lig_per=mysqli_fetch_object($test);
+			echo "<th>$lig_per->nom_periode</th>\n";
+		}
+		else{
+			echo "<th>Période $i</th>\n";
+		}
+	}
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	for($i=1;$i<=$max_per;$i++) {
+		echo "<th>\n";
+
+		echo "<a href='#' onclick='modif_periode($i,\"y\");return false;' title='Rendre accessible'><img src='../images/enabled.png' width='15' height='15' alt='Rendre accessible' /></a>/\n";
+		echo "<a href='#' onclick='modif_periode($i,\"n\");return false;' title='Rendre accessible'><img src='../images/disabled.png' width='15' height='15' alt='Rendre inaccessible' /></a>\n";
+
+		echo "</th>\n";
+	}
+	echo "</tr>\n";
+
+	/*	
+	$annee = strftime("%Y");
+	$mois = strftime("%m");
+	$jour = strftime("%d");
+
+	$display_date=$jour."/".$mois."/".$annee;
+	*/
+
+	//include("../lib/calendrier/calendrier.class.php");
+	
+	$tab_statut=array('eleve', 'responsable');
+	$tab_statut2=array('Elève', 'Responsable');
+
+	$alt=1;
+	for($j=0;$j<count($tab_classe);$j++) {
+		$alt=$alt*(-1);
+		$id_classe=$tab_classe[$j]['id'];
+		unset($nom_periode);
+		unset($ver_periode);
+		include "../lib/periodes.inc.php";
+		if(isset($nom_periode)) {
+			if(count($nom_periode)>0){
+				echo "<tr class='lig$alt white_hover' title=\"Classe suivie par ".$tab_classe[$j]['suivi_par'];
+				if((isset($tab_liste_pp[$id_classe]))&&($tab_liste_pp[$id_classe]!="")) {
+					echo "\n$gepi_prof_suivi : ".$tab_liste_pp[$id_classe];
+				}
+				echo "\">\n";
+				echo "<td>".$tab_classe[$j]['classe'];
+				echo "<input type='hidden' name='id_classe[$j]' value='$id_classe' />\n";
+				echo "</td>\n";
+
+				for($i=1;$i<=count($nom_periode);$i++) {
+
+					echo "<td>\n";
+						$sql="SELECT 1=1 FROM j_eleves_classes jec WHERE jec.id_classe='".$id_classe."' AND
+														jec.periode='$i';";
+						//echo "$sql<br />\n";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						$eff_classe=mysqli_num_rows($res);
+
+						$acces_ouvert=0;
+						$acces_ferme=0;
+						$tab_ele=array();
+						$sql="SELECT * FROM matieres_appreciations_acces_eleve maae, j_eleves_classes jec WHERE maae.login=jec.login AND 
+														jec.id_classe='".$id_classe."' AND 
+														jec.periode=maae.periode AND 
+														maae.periode='$i';";
+						//echo "$sql<br />\n";
+						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($res)>0) {
+							while($lig=mysqli_fetch_object($res)) {
+								$tab_ele[$lig->login]=$lig->acces;
+								if($lig->acces=="y") {
+									$acces_ouvert++;
+								}
+								else {
+									$acces_ferme++;
+								}
+							}
+						}
+
+						$current_statut='ele_resp';
+						$id_div=$current_statut."_".$j."_".$i;
+
+						echo "<div style='float:left; width:20px; padding-left: 10px;'>\n";
+						//echo "<a href='#' onclick=\"g_manuel('$id_div', $id_classe, $i,'$accessible','$tab_statut[$k]');return false;\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel\" /></a>\n";
+						echo "<a href='#' onclick=\"g_manuel_individuel('$id_div', $id_classe, $i);return false;\" title=\"Changer pour tous les élèves de la classe\"><img src='../images/icons/configure.png' width='16' height='16' alt=\"Manuel individuel\" /></a>\n";
+						echo "</div>\n";
+
+						echo "<div style='float:left; width:20px; padding-left: 10px;'>\n";
+						echo "<a href='#' onclick=\"aff_div_choix_individuel('$id_div', $id_classe, $i);return false;\" title=\"Choisir les élèves pour lesquels l'accès est possible.\"><img src='../images/edit16.png' width='16' height='16' alt=\"Manuel individuel\" /></a>\n";
+						echo "</div>\n";
+
+						echo "<div id='$id_div' style='width:100%; height:100%;";
+						if($acces_ouvert==0) {
+							echo " background-color:orangered;\n";
+							echo "'>\n";
+							echo "Inaccessible";
+						}
+						elseif($acces_ouvert!=$eff_classe) {
+							echo " background-color:orange;\n";
+							echo "'>\n";
+							echo "Acces pour $acces_ouvert/$eff_classe";
+						}
+						else {
+							echo " background-color:lightgreen;\n";
+							echo "'>\n";
+							echo "Accessible";
+						}
+						echo "</div>\n";
+
+					echo "</td>\n";
+				}
+				if(count($tab_dates_prochains_conseils)>0) {
+					echo "<td>";
+					if(isset($tab_dates_prochains_conseils[$id_classe])) {
+						echo $tab_dates_prochains_conseils[$id_classe];
+					}
+					else {
+						echo "-";
+					}
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			}
+		}
+	}
+	
+	echo "</table>\n";
+
+	echo "<input type='hidden' name='periode' id='periode' value='' />\n";
+	echo "<input type='hidden' name='acces' id='acces' value='' />\n";
+	echo "<input type='hidden' name='modif_manuelle_individuelle_periode' value='y' />\n";
+	echo "</form>\n";
+
+
+	$titre_infobulle="Choix des élèves";
+	$texte_infobulle="<form action='".$_SERVER['PHP_SELF']."' method='post'>
+	<div align='center'>
+	".add_token_field()."
+	<input type='hidden' name='mode' id='mode' value='valider_choix_ele' />
+	<input type='hidden' name='id_classe' id='choix_ele_id_classe' value='' />
+	<input type='hidden' name='periode' id='choix_ele_periode' value='' />
+	<div id='div_choix_eleves_liste_eleves'></div>
+	<a href='javascript:cocher_decocher_tous_checkbox(true)'>Tout cocher</a> / <a href='javascript:cocher_decocher_tous_checkbox(false)'>Tout décocher</a><br />
+	<input type='submit' value='Valider' />
+	".js_cocher_decocher_tous_checkbox("cocher_decocher_tous_checkbox", "y", "y", "y")."
+	</div>
+</form>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_choix_eleves',$titre_infobulle,"",$texte_infobulle,"",20,0,'y','y','n','n');
+
+	echo "<script type='text/javascript'>
+
+	function modif_periode(periode,acces) {
+		document.getElementById('periode').value=periode;
+		document.getElementById('acces').value=acces;
+		document.forms['form_manuel'].submit();
+	}
+
+	function aff_div_choix_individuel(id_div, id_classe, periode) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		document.getElementById('choix_ele_id_classe').value=id_classe;
+		document.getElementById('choix_ele_periode').value=periode;
+
+		new Ajax.Updater($('div_choix_eleves_liste_eleves'),'".$_SERVER['PHP_SELF']."',{method: 'post',
+		parameters: {
+			id_classe: id_classe,
+			periode: periode,
+			mode: 'liste_eleves',
+			csrf_alea: csrf_alea
+		}});
+
+		afficher_div('div_choix_eleves', 'y', 10, 10);
+	}
+</script>\n";
+
+}elseif($acces_app_ele_resp=='date') {
 	// Le mode global paramétré est 'date'
 	// Si des paramétrages particuliers sont à autre chose que 'date', on bascule/modifie vers 'date'.
 

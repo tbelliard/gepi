@@ -56,7 +56,8 @@ if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
 	}
 }
 
-if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+//if(($afficher_signalement_faute=='y')||($afficher_proposition_correction=="y")) {
+if($afficher_signalement_faute=='y') {
 	// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 
 	if((!isset($necessaire_signalement_fautes_insere))||($necessaire_signalement_fautes_insere=="n")) {
@@ -123,7 +124,28 @@ if(mysqli_num_rows($data_profsuivi)>0){
 
 unset($tab_acces_app);
 $tab_acces_app=array();
-$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+if($_SESSION['statut']=='eleve') {
+	$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, $_SESSION['statut'], $_SESSION['login']);
+}
+elseif($_SESSION['statut']=='responsable') {
+	$tmp_ele_login="";
+	$sql="SELECT DISTINCT e.login FROM eleves e, responsables2 r, resp_pers rp, j_eleves_classes jec 
+				WHERE jec.login=e.login AND 
+				jec.id_classe='".$id_classe."' AND 
+				e.ele_id=r.ele_id AND
+				rp.pers_id=r.pers_id AND
+				rp.login='".$_SESSION['login']."' ORDER BY e.nom,e.prenom;";
+	$res_ele_resp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_ele_resp)>0) {
+		$lig_ele_resp=mysqli_fetch_object($res_ele_resp);
+		$tmp_ele_login=$lig_ele_resp->login;
+	}
+
+	$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe, $_SESSION['statut'], $tmp_ele_login);
+}
+else {
+	$tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
+}
 
 $call_classe = mysqli_query($GLOBALS["mysqli"], "SELECT * FROM classes WHERE id='$id_classe'");
 $classe = old_mysql_result($call_classe, 0, "classe");

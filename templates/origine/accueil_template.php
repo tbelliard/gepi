@@ -299,7 +299,10 @@
 			$chaine_tableaux_page_accueil.="</div>";
 		}
 
-		if((getSettingAOui('active_bulletins'))&&(getSettingValue("acces_app_ele_resp")=="manuel")&&(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")!="n")) {
+		if((getSettingAOui('active_bulletins'))&&
+		((getSettingValue("acces_app_ele_resp")=="manuel")||
+		(getSettingValue("acces_app_ele_resp")=="manuel_individuel"))&&
+		(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")!="n")) {
 			if(acces("/classes/acces_appreciations.php", $_SESSION['statut'])) {
 				$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><a href='$gepiPath/classes/acces_appreciations.php' title=\"Modifier l'accès aux appréciations et avis.\" style='color:black;'><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
 			}

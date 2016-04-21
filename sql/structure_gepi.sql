@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `archivage_aid_eleve` (`id_aid` int(11) NOT NULL defa
 DROP TABLE IF EXISTS archivage_appreciations_aid;
 CREATE TABLE IF NOT EXISTS `archivage_appreciations_aid` (`id_eleve` varchar(255) NOT NULL,`annee` varchar(200) NOT NULL,`classe` varchar(255) NOT NULL,`id_aid` int(11) NOT NULL,`periode` int(11) NOT NULL default '0',`appreciation` text NOT NULL,`note_eleve` varchar(50) NOT NULL,`note_moyenne_classe` varchar(255) NOT NULL,`note_min_classe` varchar(255) NOT NULL,`note_max_classe` varchar(255) NOT NULL,PRIMARY KEY  (`id_eleve`,`id_aid`,`periode`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_disciplines;
-CREATE TABLE IF NOT EXISTS `archivage_disciplines` ( `id` int(11) NOT NULL AUTO_INCREMENT, `annee` varchar(200) NOT NULL, `INE` varchar(255) NOT NULL, `classe` varchar(255) NOT NULL, `mef_code` varchar(50) NOT NULL, `num_periode` tinyint(4) NOT NULL, `nom_periode` varchar(255) NOT NULL, `special` varchar(255) NOT NULL, `matiere` varchar(255) NOT NULL, `code_matiere` varchar(255) NOT NULL, `id_groupe` INT(11) NOT NULL DEFAULT '0', `effectif` smallint(6) NOT NULL, `prof` varchar(255) NOT NULL, `nom_prof` varchar(50) NOT NULL, `prenom_prof` varchar(50) NOT NULL, `note` varchar(255) NOT NULL, `moymin` varchar(255) NOT NULL, `moymax` varchar(255) NOT NULL, `moyclasse` varchar(255) NOT NULL, `repar_moins_8` float(4,2) NOT NULL, `repar_8_12` float(4,2) NOT NULL, `repar_plus_12` float(4,2) NOT NULL, `rang` tinyint(4) NOT NULL, `appreciation` mediumtext NOT NULL, `nb_absences` int(11) NOT NULL, `non_justifie` int(11) NOT NULL, `nb_retards` int(11) NOT NULL, `ordre_matiere` smallint(6) NOT NULL, PRIMARY KEY (`id`), KEY `annee` (`annee`), KEY `INE` (`INE`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS `archivage_disciplines` ( `id` int(11) NOT NULL AUTO_INCREMENT, `annee` varchar(200) NOT NULL, `INE` varchar(255) NOT NULL, `classe` varchar(255) NOT NULL, `mef_code` varchar(50) NOT NULL, `num_periode` tinyint(4) NOT NULL, `nom_periode` varchar(255) NOT NULL, `special` varchar(255) NOT NULL, `matiere` varchar(255) NOT NULL, `code_matiere` varchar(255) NOT NULL, `id_groupe` INT(11) NOT NULL DEFAULT '0', `effectif` smallint(6) NOT NULL, `prof` varchar(255) NOT NULL, id_prof varchar(255) NOT NULL default '', type_prof varchar(10) NOT NULL default '', `nom_prof` varchar(50) NOT NULL, `prenom_prof` varchar(50) NOT NULL, `note` varchar(255) NOT NULL, `moymin` varchar(255) NOT NULL, `moymax` varchar(255) NOT NULL, `moyclasse` varchar(255) NOT NULL, `repar_moins_8` float(4,2) NOT NULL, `repar_8_12` float(4,2) NOT NULL, `repar_plus_12` float(4,2) NOT NULL, `rang` tinyint(4) NOT NULL, `appreciation` mediumtext NOT NULL, `nb_absences` int(11) NOT NULL, `non_justifie` int(11) NOT NULL, `nb_retards` int(11) NOT NULL, `ordre_matiere` smallint(6) NOT NULL, PRIMARY KEY (`id`), KEY `annee` (`annee`), KEY `INE` (`INE`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_eleves;
 CREATE TABLE IF NOT EXISTS `archivage_eleves` (`ine` varchar(255) NOT NULL,`nom` varchar(255) NOT NULL default '',`prenom` varchar(255) NOT NULL default '',`sexe` char(1) NOT NULL,`naissance` date NOT NULL default '0000-00-00', PRIMARY KEY  (`ine`),  KEY `nom` (`nom`)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 DROP TABLE IF EXISTS archivage_eleves2;
@@ -1445,4 +1445,19 @@ avis varchar(255) NOT NULL,
 saisi_par varchar(50) NOT NULL,
 PRIMARY KEY (id), UNIQUE KEY login (login)
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS matieres_appreciations_acces_eleve;
+CREATE TABLE IF NOT EXISTS matieres_appreciations_acces_eleve (login VARCHAR( 50 ) NOT NULL , periode INT( 11 ) NOT NULL, acces ENUM( 'y', 'n') NOT NULL ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS mef_matieres;
+CREATE TABLE IF NOT EXISTS mef_matieres (mef_code varchar(50) NOT NULL, code_matiere VARCHAR( 250 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS nomenclature_modalites_election;
+CREATE TABLE IF NOT EXISTS nomenclature_modalites_election (code_modalite_elect VARCHAR( 6 ) NOT NULL, libelle_court VARCHAR(50) NOT NULL, libelle_long VARCHAR(250) NOT NULL, PRIMARY KEY ( code_modalite_elect )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS j_groupes_eleves_modalites;
+CREATE TABLE IF NOT EXISTS j_groupes_eleves_modalites (id_groupe int(11) NOT NULL, login VARCHAR( 50 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL, UNIQUE KEY id_groupe_login_modalite (id_groupe,login,code_modalite_elect)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+DROP TABLE IF EXISTS sconet_ele_options;
+CREATE TABLE IF NOT EXISTS sconet_ele_options (id int(11) unsigned NOT NULL auto_increment, ele_id varchar(10) NOT NULL default '', code_matiere varchar(255) NOT NULL default '', code_modalite_elect char(1) NOT NULL default '', num_option int(2) NOT NULL default '0', PRIMARY KEY id (id));
 

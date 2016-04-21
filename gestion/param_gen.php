@@ -1739,6 +1739,19 @@ if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
 			<br />
 			<input type='radio' 
 				   name='acces_app_ele_resp' 
+				   id='acces_app_ele_resp_manuel_individuel' 
+				   value='manuel_individuel' 
+				   onchange='changement()'
+				   <?php if($acces_app_ele_resp=='manuel_individuel') {echo "checked='checked'";} ?>
+				   />
+			<label for='acces_app_ele_resp_manuel_individuel' title="Ce choix, s'il est fastidieux permet de traiter la situation suivante:
+Si les bulletins sont remis en mains propres aux familles par le professeur principal, on peut souhaiter ne pas donner acccès aux appréciations et avis tant que la famille ne s'est pas déplacée.
+Il peut en effet être intéressant de voir les familles des élèves pour lesquels une réaction est attendue.">
+				manuel élève par élève (<em>ouvert par la scolarité</em>) <img src='../images/icons/ico_question_petit.png' class='icone16' alt='Info' />
+			</label>
+			<br />
+			<input type='radio' 
+				   name='acces_app_ele_resp' 
 				   id='acces_app_ele_resp_date' 
 				   value='date' 
 				   <?php if($acces_app_ele_resp=='date') {echo "checked='checked'";} ?>

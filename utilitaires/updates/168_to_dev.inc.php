@@ -309,4 +309,108 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<strong>Ajout d'une table 'matieres_appreciations_acces_eleve' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'matieres_appreciations_acces_eleve';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS matieres_appreciations_acces_eleve (login VARCHAR( 50 ) NOT NULL, periode INT( 11 ) NOT NULL, acces ENUM( 'y', 'n') NOT NULL, UNIQUE KEY login_periode (login,periode)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'mef_matieres' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mef_matieres';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS mef_matieres (mef_code varchar(50) NOT NULL, code_matiere VARCHAR( 250 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'type_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'type_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD type_prof varchar(10) NOT NULL default '' AFTER prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'id_prof' à la table 'archivage_disciplines'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM archivage_disciplines LIKE 'id_prof';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE archivage_disciplines ADD id_prof varchar(255) NOT NULL default '' AFTER prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'nomenclature_modalites_election' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'nomenclature_modalites_election';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS nomenclature_modalites_election (code_modalite_elect VARCHAR( 6 ) NOT NULL, 
+	libelle_court VARCHAR(50) NOT NULL, 
+	libelle_long VARCHAR(250) NOT NULL,
+	PRIMARY KEY ( code_modalite_elect )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'j_groupes_eleves_modalites' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_eleves_modalites';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_eleves_modalites (id_groupe int(11) NOT NULL, login VARCHAR( 50 ) NOT NULL, code_modalite_elect VARCHAR(6) NOT NULL, UNIQUE KEY id_groupe_login_modalite (id_groupe,login,code_modalite_elect)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'sconet_ele_options' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'sconet_ele_options';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sconet_ele_options (
+						id int(11) unsigned NOT NULL auto_increment, 
+						ele_id varchar(10) NOT NULL default '',
+						code_matiere varchar(255) NOT NULL default '',
+						code_modalite_elect char(1) NOT NULL default '',
+						num_option int(2) NOT NULL default '0',
+						PRIMARY KEY id (id));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
 ?>
