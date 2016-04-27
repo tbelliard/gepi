@@ -286,7 +286,7 @@ if($accueil_afficher_tous_les_groupes=="n") {
 
 	// On passe en revue les groupes qui ont été triés dans Mon compte
 	$groups=array();
-	$tmp_groups=get_groups_for_prof($_SESSION["login"]);
+	$tmp_groups=get_groups_for_prof($_SESSION["login"],NULL,array('classes', 'periodes', 'eleves', 'profs', 'visibilite')); // 'matieres', 'modalites_elect'
 	for($loop=0;$loop<count($tab_grp_order);$loop++) {
 		for($i=0;$i<count($tmp_groups);$i++) {
 			if($tmp_groups[$i]['id']==$tab_grp_order[$loop]) {
@@ -305,7 +305,8 @@ if($accueil_afficher_tous_les_groupes=="n") {
 
 }
 else {
-	$groups=get_groups_for_prof($_SESSION["login"]);
+	//$groups=get_groups_for_prof($_SESSION["login"]);
+	$groups=get_groups_for_prof($_SESSION["login"],NULL,array('classes', 'periodes', 'eleves', 'profs', 'visibilite')); //  'matieres', 'modalites_elect'
 }
 //================================
 

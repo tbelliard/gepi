@@ -441,7 +441,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 	check_token(false);
 
 	// On va détailler ce qui serait supprimé en cas de confirmation
-	$tmp_group=get_group($_GET['id_groupe']);
+	$tmp_group=get_group($_GET['id_groupe'], array("classes"));
 	echo "<div class='fieldset_opacite50' style='border: 2px solid red; margin:0.5em; padding:0.5em;'>\n";
 	echo "<p><strong>ATTENTION&nbsp;:</strong> Vous souhaitez supprimer l'enseignement suivant&nbsp;: ".$tmp_group['name']." (<i>".$tmp_group['description']."</i>) en ".$tmp_group['classlist_string']."<br />\n";
 	echo "Voici quelques éléments sur l'enseignement&nbsp;:</p>\n";
@@ -868,7 +868,7 @@ for($i=0;$i<10;$i++){
 <?php
 	$temoin_tous_coef_nuls="y";
 	foreach ($groups as $group) {
-		$current_group = get_group($group["id"]);
+		$current_group = get_group($group["id"], array("classes"));
 		if($current_group["classes"]["classes"][$id_classe]['coef']>0) {
 			$temoin_tous_coef_nuls="n";
 			break;
@@ -1025,7 +1025,8 @@ for($i=0;$i<10;$i++){
 	$alt=1;
 	foreach ($groups as $group) {
 
-		$current_group = get_group($group["id"]);
+		// On récupère le groupe avec toutes les infos sauf les modalités
+		$current_group = get_group($group["id"], array('matieres', 'classes', 'eleves', 'periodes', 'profs', 'visibilite'));
 		$total = count($group["classes"]);
 
 		if(in_array($current_group['description'], $tab_description_groupe_homonyme)) {
