@@ -3101,8 +3101,16 @@ Pour envoyer plus d'une semaine par mail, vous pouvez utiliser la page de consul
 				}
 			}
 
+			// 20160503
+			if(acces('/mod_abs2/bilan_individuel.php', $_SESSION['statut'])) {
+				$date_absence_eleve_debut=isset($_POST['date_absence_eleve_debut']) ? $_POST['date_absence_eleve_debut'] : (isset($_GET['date_absence_eleve_debut']) ? $_GET['date_absence_eleve_debut'] : (isset($_SESSION['date_absence_eleve_debut']) ? $_SESSION['date_absence_eleve_debut'] : strftime("%Y-%m-%d")));
+				$date_absence_eleve_fin=isset($_POST['date_absence_eleve_fin']) ? $_POST['date_absence_eleve_fin'] : (isset($_GET['date_absence_eleve_fin']) ? $_GET['date_absence_eleve_fin'] : (isset($_SESSION['date_absence_eleve_fin']) ? $_SESSION['date_absence_eleve_fin'] : strftime("%Y-%m-%d")));
+
+				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/bilan_individuel.php?id_eleve=".$tab_ele['id_eleve']."&date_absence_eleve_debut=".$date_absence_eleve_debut."&date_absence_eleve_fin=".$date_absence_eleve_fin."&affichage=html' title=\"Voir le bilan individuel de l'élève\" target='_blank'><img src='../images/icons/absences.png' class='icone16' alt='Bilan individuel' /></a></div>";
+			}
+
 			if(acces('/mod_abs2/visu_eleve_calendrier.php', $_SESSION['statut'])) {
-				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/visu_eleve_calendrier.php?login_ele=$ele_login' title=\"Voir les absences de l'élève par mois sur un calendrier\" target='_blank'><img src='../images/icons/absences.png' class='icone16' alt='Absences sur calendrier' /></a></div>";
+				echo "<div style='float:right; width:16px; margin:0.2em;'><a href='../mod_abs2/visu_eleve_calendrier.php?login_ele=$ele_login' title=\"Voir les absences de l'élève par mois sur un calendrier\" target='_blank'><img src='../images/icons/absences_calendrier.png' class='icone16' alt='Absences sur calendrier' /></a></div>";
 			}
 
 			if((acces('/edt/index2.php', $_SESSION['statut']))&&(getSettingValue('active_module_absence')=='2')) {
