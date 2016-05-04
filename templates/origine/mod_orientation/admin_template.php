@@ -89,6 +89,10 @@
 
   <div id='container'>
 <!-- Fin haut de page -->
+	<p class='bold'>
+		<a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour Gestion des modules</a>
+		 | <a href="index.php">Page d'accueil du module Orientation</a>
+	</p>
 
 	<h2>Activation et paramétrage du module</h2>
 
