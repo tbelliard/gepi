@@ -305,7 +305,35 @@ if($_SESSION['statut']=='administrateur') {
 	echo "
  | <a href='".$_SERVER['PHP_SELF']."?import_orientation=y' onclick=\"return confirm_abandon (this, change, '$themessage')\">Importer un CSV</a>";
 }
-echo "</p>\n";
+
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieVoeuxScolarite')))||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieVoeuxCpe')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieVoeuxPP'))&&(is_pp($_SESSION['login'])))) {
+	echo "
+ | <a href='saisie_voeux.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les voeux</a>";
+}
+
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieOrientationScolarite')))||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieOrientationCpe')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieOrientationPP'))&&(is_pp($_SESSION['login'])))) {
+	echo "
+ | <a href='saisie_orientation.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les orientations proposées</a>";
+}
+/*
+if(acces_saisie_type_orientation()) {
+	echo "
+ | <a href='saisie_types_orientation.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les types d'orientations</a>";
+}
+*/
+if(acces("/mod_orientation/consulter_orientation.php", $_SESSION['statut'])) {
+	echo "
+ | <a href='consulter_orientation.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Consulter les voeux et orientations proposées</a>";
+}
+
+echo "
+</p>\n";
 
 //==========================================================
 

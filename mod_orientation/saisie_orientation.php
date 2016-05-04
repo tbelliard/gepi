@@ -394,7 +394,45 @@ require_once("../lib/header.inc.php");
 
 //debug_var();
 
-echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+
+$parametres_liens="";
+if(isset($id_classe)) {
+	$parametres_liens="?id_classe=".$id_classe;
+	echo "
+ | <a href='".$_SERVER['PHP_SELF']."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir une autre classe</a>";
+}
+
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieVoeuxScolarite')))||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieVoeuxCpe')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieVoeuxPP'))&&(is_pp($_SESSION['login'])))) {
+	echo "
+ | <a href='saisie_voeux.php".$parametres_liens."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les voeux</a>";
+}
+
+/*
+if(($_SESSION['statut']=='administrateur')||
+(($_SESSION['statut']=='scolarite')&&(getSettingAOui('OrientationSaisieOrientationScolarite')))||
+(($_SESSION['statut']=='cpe')&&(getSettingAOui('OrientationSaisieOrientationCpe')))||
+(($_SESSION['statut']=='professeur')&&(getSettingAOui('OrientationSaisieOrientationPP'))&&(is_pp($_SESSION['login'])))) {
+	echo "
+ | <a href='saisie_orientation.php".$parametres_liens."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les orientations proposées</a>";
+}
+*/
+
+if(acces_saisie_type_orientation()) {
+	echo "
+ | <a href='saisie_types_orientation.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Saisir les types d'orientations</a>";
+}
+
+if(acces("/mod_orientation/consulter_orientation.php", $_SESSION['statut'])) {
+	echo "
+ | <a href='consulter_orientation.php".$parametres_liens."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Consulter les voeux et orientations proposées</a>";
+}
+
+echo "
+</p>
 
 <h2>Saisie de l'orientation proposée par le conseil de classe".(isset($id_classe) ? " (".get_nom_classe($id_classe).")" : "")."</h2>
 
