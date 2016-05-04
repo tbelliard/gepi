@@ -1322,6 +1322,20 @@ elseif($action=="comparer") {
 		}
 	}
 
+	// 20160504
+	$tab_eleves_sortis=array();
+	$sql="SELECT DISTINCT login FROM eleves WHERE date_sortie IS NOT NULL AND date_sortie NOT LIKE '0000-00-00%' AND date_sortie<='".strftime("%Y-%m-%d %H:%M:%S")."';";
+	//echo "$sql<br />";
+	$res_sortis=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig_sorti=mysqli_fetch_object($res_sortis)) {
+		$tab_eleves_sortis[]=$lig_sorti->login;
+	}
+	/*
+	echo "\$tab_eleves_sortis<pre>";
+	print_r($tab_eleves_sortis);
+	echo "</pre>";
+	*/
+
 	$sql="TRUNCATE edt_tempo;";
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -1489,10 +1503,39 @@ elseif($action=="comparer") {
 
 						$diff=array_diff($current_tab_ele['list'], $tab_ele_regroupement_edt['login']);
 						$diff2=array_diff($tab_ele_regroupement_edt['login'], $current_tab_ele['list']);
-						if((count($diff)==0)&&(count($diff2)==0)) {
+
+						$au_moins_une_vraie_diff=0;
+						foreach($diff as $current_diff) {
+							if(!in_array($current_diff, $tab_eleves_sortis)) {
+								//echo "$current_diff<br />";
+								$au_moins_une_vraie_diff++;
+								break;
+							}
+						}
+						foreach($diff2 as $current_diff) {
+							if(!in_array($current_diff, $tab_eleves_sortis)) {
+								//echo "$current_diff<br />";
+								$au_moins_une_vraie_diff++;
+								break;
+							}
+						}
+
+						//echo "\$au_moins_une_vraie_diff=$au_moins_une_vraie_diff<br />";
+
+						if(((count($diff)==0)&&(count($diff2)==0))||($au_moins_une_vraie_diff==0)) {
 							echo "<p style='color:blue; margin-top:1em;'>Le groupe ".$tab_info_grp[$current_id_groupe]." est à jour.</p>";
 						}
 						else {
+
+							/*
+							echo "diff<pre>";
+							print_r($diff);
+							echo "</pre>";
+
+							echo "diff2<pre>";
+							print_r($diff2);
+							echo "</pre>";
+							*/
 							$temoin_bull_ou_cn_non_vide=0;
 
 							$temoin_differences++;
