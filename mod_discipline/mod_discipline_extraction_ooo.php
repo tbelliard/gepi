@@ -126,11 +126,13 @@ if($_SESSION['statut']=="professeur") {
 	}
 }
 
+/*
 $prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 
 include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
 $nom_fichier_modele_ooo =''; // variable a initialiser a blanc pour inclure le fichier suivant et eviter une notice. Pour les autres inclusions, cela est inutile.
 include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+*/
 
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
@@ -244,7 +246,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	$cacher_autres_protagonistes_eleves=isset($_POST['cacher_autres_protagonistes_eleves']) ? $_POST['cacher_autres_protagonistes_eleves'] : (isset($_GET['cacher_autres_protagonistes_eleves']) ? $_GET['cacher_autres_protagonistes_eleves'] : "n");
 
 
-	$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
+	//$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
 
 	require_once("../mod_discipline/sanctions_func_lib.php");
 
@@ -678,13 +680,14 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 		$tableau_a_utiliser=$tab_lignes_OOo;
 		$nom_a_utiliser="incident";
 	}
-	
-	// le chemin du fichier est indique a partir de l'emplacement de ce fichier
-	$nom_dossier_modele_a_utiliser = $path."/";
+
+	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+	include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
 	$nom_fichier_modele_ooo = $fichier_a_utiliser;
-	$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
-	
-	
+	include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+
+	$OOo->LoadTemplate($nom_dossier_modele_a_utiliser."/".$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+
 	// $OOo->MergeBlock('eleves',$tab_eleves_OOo);
 	$OOo->MergeBlock($nom_a_utiliser,$tableau_a_utiliser);
 	
@@ -692,15 +695,11 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	
 	$OOo->Show(OPENTBS_DOWNLOAD, $nom_fic);
 	
-	
-	
 	$OOo->remove(); //suppression des fichiers de travail
 	
 	$OOo->close();
 
 	die();
-
-
 
 }
 
@@ -708,7 +707,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 
 // Mode historique:
 
-$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
+//$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
 
 require_once("../mod_discipline/sanctions_func_lib.php");
 
@@ -1023,9 +1022,17 @@ else {
 
 // le chemin du fichier est indique a partir de l'emplacement de ce fichier
 //   $path."/".$tab_file[$num_fich]
-$nom_dossier_modele_a_utiliser = $path."/";
-$nom_fichier_modele_ooo = "mod_discipline_liste_incidents.odt";
-$OOo->LoadTemplate($nom_dossier_modele_a_utiliser.$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
+
+$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
+include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
+$nom_fichier_modele_ooo = $fichier_a_utiliser;
+include_once('../mod_ooo/lib/chemin.inc.php'); // le chemin des dossiers contenant les  modèles
+
+//$path='../mod_ooo/'.$nom_dossier_modele_a_utiliser;
+
+//$nom_dossier_modele_a_utiliser = $path."/";
+
+$OOo->LoadTemplate($nom_dossier_modele_a_utiliser."/".$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
 
 $OOo->MergeBlock($nom_a_utiliser,$tableau_a_utiliser);
 
