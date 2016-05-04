@@ -61,7 +61,9 @@ function get_days_from_week_number($num_semaine ,$annee) {
 	$tab=array();
 
 	for($num_jour=1; $num_jour<=7; $num_jour++) {
-		$ts=strtotime($annee."W".$num_semaine.$num_jour);
+		//$ts=strtotime($annee."W".$num_semaine.$num_jour);
+		//$ts=strtotime($annee."W".$num_semaine."-".$num_jour);
+		$ts=strtotime($annee."-W".sprintf("%02d",$num_semaine)."-".$num_jour);
 		$tab['num_jour'][$num_jour]['nom_jour']=strftime("%A", $ts);
 		$tab['num_jour'][$num_jour]['timestamp']=$ts;
 		$tab['num_jour'][$num_jour]['jj']=date('d', $ts);
