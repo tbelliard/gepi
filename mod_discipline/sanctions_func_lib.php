@@ -1520,7 +1520,7 @@ function sanction_documents_joints($id_incident, $ele_login) {
 	return $retour;
 }
 
-function liste_doc_joints_sanction($id_sanction) {
+function liste_doc_joints_sanction($id_sanction, $mode="html") {
 	global $dossier_documents_discipline;
 	$retour="";
 
@@ -1535,7 +1535,18 @@ function liste_doc_joints_sanction($id_sanction) {
 			$chemin="../$dossier_documents_discipline/incident_".$id_incident."/sanction_".$id_sanction;
 	
 			for($loop=0;$loop<count($tab_doc_joints);$loop++) {
-				$retour.="<a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a><br />\n";
+				if($mode=="html") {
+					$retour.="<a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a><br />\n";
+				}
+				elseif($mode="liste_en_ligne") {
+					$retour.="$tab_doc_joints[$loop], ";
+				}
+				else {
+					if($loop>0) {
+						$retour.=",\n";
+					}
+					$retour.="$tab_doc_joints[$loop]";
+				}
 			}
 		}
 	}

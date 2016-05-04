@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -47,9 +47,255 @@ if(mb_strtolower(mb_substr(getSettingValue('active_mod_discipline'),0,1))!='y') 
 
 require('sanctions_func_lib.php');
 
+//debug_var();
+
 $msg="";
 
 $jour_sanction=isset($_POST['jour_sanction']) ? $_POST['jour_sanction'] : (isset($_GET['jour_sanction']) ? $_GET['jour_sanction'] : NULL);
+$mode_jour_semaine=isset($_POST['mode_jour_semaine']) ? $_POST['mode_jour_semaine'] : (isset($_GET['mode_jour_semaine']) ? $_GET['mode_jour_semaine'] : "jour");
+if(!in_array($mode_jour_semaine, array("jour","semaine"))) {
+	$mode_jour_semaine="jour";
+}
+
+if(isset($jour_sanction)) {
+	if(preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $jour_sanction)) {
+		$tmp_date=explode("/", $jour_sanction);
+		$ts_jour_sanction=mktime(12, 0, 0, $tmp_date[1], $tmp_date[0], $tmp_date[2]);
+		$num_semaine=strftime("%V", $ts_jour_sanction);
+	}
+	else {
+		$msg.="Date $jour_sanction invalide.<br />";
+		unset($jour_sanction);
+	}
+}
+
+if($mode_jour_semaine=="semaine") {
+	if(!isset($ts_jour_sanction)) {
+		$mode_jour_semaine="jour";
+	}
+	else {
+		// Récupération du premier et du dernier jour de la semaine
+		$num_semaine=strftime("%V", $ts_jour_sanction);
+		$annee=strftime("%Y", $ts_jour_sanction);
+
+		// Avec strtotime(), on récupère un timestamp du début du jour à 0h00min00s
+		$num_jour=1;
+		$ts_1er_jour_semaine=strtotime($annee."-W".$num_semaine."-".$num_jour);
+		$num_jour=7;
+		$ts_dernier_jour_semaine=strtotime($annee."-W".$num_semaine."-".$num_jour)+24*3600;
+	}
+}
+
+if((isset($_GET['export_csv']))&&($_GET['export_csv']=="retenue")&&(isset($ts_jour_sanction))) {
+	check_token();
+
+	if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND sr.date<'".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+
+		$nom_fic="retenues_semaine_du_".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."_au_".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	else {
+		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".strftime("%Y-%m-%d", $ts_jour_sanction)."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+		$nom_fic="retenues_jour_".strftime("%Y-%m-%d", $ts_jour_sanction)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	//echo "$sql<br />\n";
+	$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_sanction)>0) {
+		$cpt=1;
+		$csv="Compteur;Num.incident;Nature;Date;Heure;Durée;Lieu;Élève;Classe;Travail;Donné par (déclarant);Nombre de reports;Effectuée;\n";
+		//$csv="Compteur;Num.incident;Nature;Date;Heure;Durée;Lieu;Élève;Classe;Travail;Nombre de reports;Effectuée;\n";
+		while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+
+				$csv.=$cpt.";";
+				$csv.=$lig_sanction->id_incident.";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->nature).";";
+				$csv.=formate_date($lig_sanction->date).";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->heure_debut).";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->duree).";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->lieu).";";
+				$csv.=preg_replace("/;/", " ", p_nom($lig_sanction->login)).";";
+
+				$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+				if(isset($tmp_tab['liste'])) {
+					$csv.=preg_replace("/;/", " ", $tmp_tab['liste']);
+				}
+				$csv.=";";
+
+				$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+				if($login_declarant!="") {
+					$csv.=preg_replace("/;/", " ", civ_nom_prenom($login_declarant)).";";
+				}
+				else {
+					$csv.=";";
+				}
+
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, "liste_en_ligne");
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+					$csv.="Aucun travail;";
+				}
+				elseif($tmp_doc_joints=="") {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail))).";";
+				}
+				else {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail." (".$tmp_doc_joints.")"))).";";
+				}
+
+				$csv.=nombre_reports($lig_sanction->id_sanction,"Néant").";";
+				$csv.=$lig_sanction->effectuee.";\n";
+				$cpt++;
+			}
+		}
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+
+	}
+	else {
+		echo "<p>Aucune retenue trouvée.</p>";
+	}
+
+	die();
+}
+elseif((isset($_GET['export_csv']))&&($_GET['export_csv']=="exclusion")&&(isset($ts_jour_sanction))) {
+	check_token();
+
+	if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+		$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND 
+							(
+								(se.date_debut<='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_fin>='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."') OR 
+								(se.date_fin>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_fin<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."') OR 
+								(se.date_debut>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_debut<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."')
+							) ORDER BY se.date_debut, se.heure_debut, se.lieu;";
+
+		$nom_fic="exclusions_semaine_du_".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."_au_".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	else {
+		$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND se.date_debut<='".strftime("%Y-%m-%d", $ts_jour_sanction)."' AND se.date_fin>='".strftime("%Y-%m-%d", $ts_jour_sanction)."' ORDER BY se.date_debut, se.heure_debut, se.lieu;";
+		$nom_fic="exclusions_jour_".strftime("%Y-%m-%d", $ts_jour_sanction)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	//echo "$sql<br />\n";
+	$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_sanction)>0) {
+		$cpt=1;
+		$csv="Compteur;Num.incident;Nature;Élève;Classe;Date début;Heure début;Date fin;Heure fin;Lieu;Travail;Effectuée;\n";
+		while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+
+				$csv.=$cpt.";";
+				$csv.=$lig_sanction->id_incident.";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->nature).";";
+
+				$csv.=preg_replace("/;/", " ", p_nom($lig_sanction->login)).";";
+
+				$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+				if(isset($tmp_tab['liste'])) {
+					$csv.=preg_replace("/;/", " ", $tmp_tab['liste']);
+				}
+				$csv.=";";
+
+				$csv.=formate_date($lig_sanction->date_debut).";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->heure_debut).";";
+				$csv.=formate_date($lig_sanction->date_fin).";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->heure_fin).";";
+
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->lieu).";";
+
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, "liste_en_ligne");
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+					$csv.="Aucun travail;";
+				}
+				elseif($tmp_doc_joints=="") {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail))).";";
+				}
+				else {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail." (".$tmp_doc_joints.")"))).";";
+				}
+
+				$csv.=$lig_sanction->effectuee.";\n";
+				$cpt++;
+			}
+		}
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+
+	}
+	else {
+		echo "<p>Aucune exclusion trouvée.</p>";
+	}
+
+	die();
+}
+if((isset($_GET['export_csv']))&&($_GET['export_csv']=="travail")&&(isset($ts_jour_sanction))) {
+	check_token();
+
+	if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+		$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND st.date_retour<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."' ORDER BY st.date_retour;";
+
+		$nom_fic="travaux_semaine_du_".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."_au_".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	else {
+		$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour='".strftime("%Y-%m-%d", $ts_jour_sanction)."' ORDER BY st.date_retour;";
+		$nom_fic="travaux_jour_".strftime("%Y-%m-%d", $ts_jour_sanction)."_genere_le_".strftime("%Y%m%d_%H%M%S").".csv";
+	}
+	//echo "$sql<br />\n";
+	$res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_sanction)>0) {
+		$cpt=1;
+		$csv="Compteur;Num.incident;Nature;Date retour;Élève;Classe;Travail;Donné par (déclarant);Effectuée;\n";
+		//$csv="Compteur;Num.incident;Nature;Date;Heure;Durée;Lieu;Élève;Classe;Travail;Nombre de reports;Effectuée;\n";
+		while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+			if(($_SESSION['statut']!='professeur')||(in_array($lig_sanction->id_incident, $tab_incidents_prof))) {
+
+				$csv.=$cpt.";";
+				$csv.=$lig_sanction->id_incident.";";
+				$csv.=preg_replace("/;/", ".,", $lig_sanction->nature).";";
+				$csv.=formate_date($lig_sanction->date_retour).";";
+
+				$csv.=preg_replace("/;/", " ", p_nom($lig_sanction->login)).";";
+
+				$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+				if(isset($tmp_tab['liste'])) {
+					$csv.=preg_replace("/;/", " ", $tmp_tab['liste']);
+				}
+				$csv.=";";
+
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction, "liste_en_ligne");
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+					$csv.="Aucun travail;";
+				}
+				elseif($tmp_doc_joints=="") {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail))).";";
+				}
+				else {
+					$csv.=preg_replace('/\n/', " ", preg_replace('/\r/', " ", preg_replace("/;/", " ", $lig_sanction->travail." (".$tmp_doc_joints.")"))).";";
+				}
+
+				$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+				if($login_declarant!="") {
+					$csv.=preg_replace("/;/", " ", civ_nom_prenom($login_declarant)).";";
+				}
+				else {
+					$csv.=";";
+				}
+
+				$csv.=$lig_sanction->effectuee.";\n";
+				$cpt++;
+			}
+		}
+
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+
+	}
+	else {
+		echo "<p>Aucun travail à rendre trouvé.</p>";
+	}
+
+	die();
+}
+
 $details=isset($_POST['details']) ? $_POST['details'] : (isset($_GET['details']) ? $_GET['details'] : "n");
 
 $order_by_date=isset($_POST['order_by_date']) ? $_POST['order_by_date'] : (isset($_GET['order_by_date']) ? $_GET['order_by_date'] : "asc");
@@ -167,6 +413,17 @@ echo " | <a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction_suivant'
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Jour suivant</a>";
 
+if($mode_jour_semaine=="jour") {
+	echo " | <a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction_suivant&mode_jour_semaine=semaine'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Voir toute la semaine</a>";
+}
+else {
+	echo " | <a href='".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction_suivant'";
+	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+	echo ">Voir juste le jour (".$jour_sanction_suivant.")</a>";
+}
+
 echo "</p>\n";
 
 echo "</form>\n";
@@ -258,25 +515,35 @@ if($_SESSION['statut']=='professeur') {
 //===============================================
 
 // Retenues
-$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".$mysql_jour_sanction."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+	$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND sr.date<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+	$param_csv="export_csv=retenue&mode_jour_semaine=semaine&jour_sanction=$jour_sanction";
+}
+else {
+	$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE sr.date='".$mysql_jour_sanction."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut, sr.lieu, s.login;";
+	$param_csv="export_csv=retenue&mode_jour_semaine=jour&jour_sanction=$jour_sanction";
+}
 //$retour.="$sql<br />\n";
 //echo "$sql<br />\n";
 $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Retenues (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
+	echo "<p class='bold'>Retenues (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction <a href='".$_SERVER['PHP_SELF']."?".$param_csv.add_token_in_url()."' target='_blank' title=\"Générer un export tableur CSV\"><img src='../images/icons/csv.png' alt='CSV' class='icone16' /></a></p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable' border='1' summary='Retenues' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
+	if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+		echo "<th>Date</th>\n";
+	}
 	echo "<th>Heure</th>\n";
-	echo "<th>Durée</th>\n";
+	echo "<th class='number'>Durée</th>\n";
 	echo "<th>Lieu</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
 	echo "<th>Donné par (Déclarant)</th>\n";
-	echo "<th>Nbre de report</th>\n";
-	echo "<th>Effectuée</th>\n";
+	echo "<th class='number'>Nbre de report</th>\n";
+	echo "<th class='nosort'>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	$num=0;
@@ -313,6 +580,9 @@ if(mysqli_num_rows($res_sanction)>0) {
 			echo "</td>\n";
 
 			echo "<td>$lig_sanction->nature</td>\n";
+			if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+				echo "<td>".formate_date($lig_sanction->date)."</td>\n";
+			}
 			echo "<td>$lig_sanction->heure_debut</td>\n";
 			echo "<td>$lig_sanction->duree</td>\n";
 			echo "<td>$lig_sanction->lieu</td>\n";
@@ -357,7 +627,6 @@ if(mysqli_num_rows($res_sanction)>0) {
 
 			echo "<td>\n";
 			echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
-
 			echo "</td>\n";
 
 			echo "<td>\n";
@@ -396,13 +665,27 @@ if(mysqli_num_rows($res_sanction)>0) {
 }
 
 // Exclusions
-$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND se.date_debut<='".$mysql_jour_sanction."' AND se.date_fin>='".$mysql_jour_sanction."' ORDER BY se.date_debut, se.heure_debut, se.lieu;";
+if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+	$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND 
+							(
+								(se.date_debut<='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_fin>='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."') OR 
+								(se.date_fin>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_fin<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."') OR 
+								(se.date_debut>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND se.date_debut<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."')
+							) ORDER BY se.date_debut, se.heure_debut, se.lieu;";
+
+	$param_csv="export_csv=exclusion&mode_jour_semaine=semaine&jour_sanction=$jour_sanction";
+}
+else {
+	$sql="SELECT * FROM s_sanctions s, s_exclusions se WHERE se.id_sanction=s.id_sanction AND se.date_debut<='".$mysql_jour_sanction."' AND se.date_fin>='".$mysql_jour_sanction."' ORDER BY se.date_debut, se.heure_debut, se.lieu;";
+
+	$param_csv="export_csv=exclusion&mode_jour_semaine=jour&jour_sanction=$jour_sanction";
+}
 //echo "$sql<br />\n";
 $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Exclusions (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction</p>\n";
+	echo "<p class='bold'>Exclusions (<em>et assimilées</em>) du jour&nbsp;: $jour_sanction <a href='".$_SERVER['PHP_SELF']."?".$param_csv.add_token_in_url()."' target='_blank' title=\"Générer un export tableur CSV\"><img src='../images/icons/csv.png' alt='CSV' class='icone16' /></a></p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Exclusions' style='margin:2px;'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable' border='1' summary='Exclusions' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
@@ -413,7 +696,7 @@ if(mysqli_num_rows($res_sanction)>0) {
 	echo "<th>Heure fin</th>\n";
 	echo "<th>Lieu</th>\n";
 	echo "<th>Travail</th>\n";
-    echo "<th>Effectuée</th>\n";
+	echo "<th class='nosort'>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysqli_fetch_object($res_sanction)) {
@@ -511,25 +794,32 @@ if(mysqli_num_rows($res_sanction)>0) {
 		}
 	}
 	echo "</table>\n";
-    echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
+	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
 	echo "</blockquote>\n";
 }
 
 // Simple travail
-$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour='".$mysql_jour_sanction."' ORDER BY st.date_retour;";
+if((isset($mode_jour_semaine))&&($mode_jour_semaine=="semaine")&&(isset($ts_1er_jour_semaine))&&(isset($ts_dernier_jour_semaine))) {
+	$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour>='".strftime("%Y-%m-%d", $ts_1er_jour_semaine)."' AND st.date_retour<='".strftime("%Y-%m-%d", $ts_dernier_jour_semaine)."' ORDER BY st.date_retour;";
+	$param_csv="export_csv=travail&mode_jour_semaine=semaine&jour_sanction=$jour_sanction";
+}
+else {
+	$sql="SELECT * FROM s_sanctions s, s_travail st WHERE st.id_sanction=s.id_sanction AND st.date_retour='".$mysql_jour_sanction."' ORDER BY st.date_retour;";
+	$param_csv="export_csv=travail&mode_jour_semaine=jour&jour_sanction=$jour_sanction";
+}
 //echo "$sql<br />\n";
 $res_sanction=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res_sanction)>0) {
-	echo "<p class='bold'>Travaux à rendre pour le jour&nbsp;: $jour_sanction</p>\n";
+	echo "<p class='bold'>Travaux à rendre pour le jour&nbsp;: $jour_sanction <a href='".$_SERVER['PHP_SELF']."?".$param_csv.add_token_in_url()."' target='_blank' title=\"Générer un export tableur CSV\"><img src='../images/icons/csv.png' alt='CSV' class='icone16' /></a></p>\n";
 	echo "<blockquote>\n";
-	echo "<table class='boireaus' border='1' summary='Travail' style='margin:2px;'>\n";
+	echo "<table class='boireaus boireaus_alt resizable sortable' border='1' summary='Travail' style='margin:2px;'>\n";
 	echo "<tr>\n";
 	echo "<th title=\"Numéro de l'incident\">N°i</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
 	echo "<th>Donné par (Déclarant)</th>\n";
-	echo "<th>Effectué</th>\n";
+	echo "<th class='nosort'>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysqli_fetch_object($res_sanction)) {

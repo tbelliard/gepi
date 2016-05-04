@@ -32,6 +32,7 @@ Discipline:
   et professeur principal à l'export ODS des incidents.
 - Sanctions du jour: Possibilité de tri sur le tableau des sanctions non effectuées.
 - Possibilité de définir des modèles spécifiques pour des types de sanctions particuliers.
+- Possibilité d'afficher (et extraire en CSV) les sanctions de la semaine et non plus seulement du jour.
 
 Engagements:
 - Possibilité d'afficher les engagements sur les pages Equipe pédago.
