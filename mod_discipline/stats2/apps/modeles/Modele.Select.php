@@ -38,7 +38,7 @@ Class modele_select extends Modele {
     $this->res=mysqli_query($GLOBALS["mysqli"], $this->sql);
     if (isset($this->liste)) unset ($this->liste);
     while($this->row=mysqli_fetch_array($this->res)) {
-      $this->liste[].=$this->row[0];
+      $this->liste[]=$this->row[0];
     }
     return($this->liste);
   }
