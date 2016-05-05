@@ -18,6 +18,8 @@ Bulletins:
     . de la visibilité des appréciations et avis du conseil de classe pour les 
       parents et élèves.
   L'affichage de ces tableaux peut être désactivé dans Gérer mon compte.
+  Affichage pour le professeur principal du tableau de l'ouverture d'accès parents/élèves 
+  aux avis et appréciations pour ses classes.
 - Possibilité d'ouvrir l'accès parent/élève aux appréciations et avis élève par
   élève (pour les établissements dans lesquels les bulletins sont remis en mains 
   propres aux familles).
@@ -46,6 +48,7 @@ Statistiques:
 
 Orientation:
 - Ajout d'un module orientation pour saisir les voeux d'orientation et l'orientation conseillée.
+  Les voeux et orientations proposées peuvent être affichées sur les bulletins PDF.
 
 Général:
 - Affichage de l'identité de la personne qui suit la classe (chef, adjoint)

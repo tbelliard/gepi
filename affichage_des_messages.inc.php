@@ -46,7 +46,7 @@ $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_des
     $texte_messages = '';
     $texte_messages_simpl_prof = ''; // variable uniquement utilisée dans accueil_simpl_prof.php
     $texte_messages_resume_ele = ''; // variable uniquement utilisée dans eleves/resume_ele.php
-    $affiche_messages = 'no';    
+    $affiche_messages = 'no';
     if($nb_messages>0) {
         while ($obj = $appel_messages->fetch_object()) {
             $statuts_destinataires1 = $obj->statuts_destinataires;
@@ -142,6 +142,27 @@ if (basename($_SERVER['SCRIPT_NAME'])=="accueil_simpl_prof.php") {
 	if(($_SESSION['statut']=='professeur')&&(getSettingAOui('active_mod_abs_prof'))) {
 		echo affiche_remplacements_confirmes($_SESSION['login']);
 		echo affiche_remplacements_en_attente_de_reponse($_SESSION['login']);
+	}
+
+	$chaine_tableaux_page_accueil="";
+	if(($_SESSION['statut']=='professeur')&&
+		(getSettingAOui('active_bulletins'))&&
+		((getSettingValue("acces_app_ele_resp")=="manuel")||
+		(getSettingValue("acces_app_ele_resp")=="manuel_individuel"))&&
+		(is_pp($_SESSION['login']))&&
+		(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")!="n")) {
+
+		// Chemin d'ouverture à revoir...
+		if(getSettingAOui('GepiAccesRestrAccesAppProfP')) {
+			$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><a href='$gepiPath/classes/acces_appreciations.php' title=\"Modifier l'accès aux appréciations et avis.\" style='color:black;'><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>&nbsp;<img src='$gepiPath/images/edit16.png' class='icone16' alt='Modifier' /></a>";
+		}
+		else {
+			$chaine_tableaux_page_accueil.="<div align='center' style='font-size:xx-small; margin:0.5em;' title=\"Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe.\n\nVous pouvez supprimer cet affichage dans 'Gérer mon compte'.\"><strong>Tableau de l'accès parents/élève aux appréciations et avis du conseil de classe</strong>";
+		}
+		$chaine_tableaux_page_accueil.=affiche_tableau_acces_ele_parents_appreciations_et_avis_bulletins("pp");
+		$chaine_tableaux_page_accueil.="</div>";
+
+		echo $chaine_tableaux_page_accueil;
 	}
 
 
