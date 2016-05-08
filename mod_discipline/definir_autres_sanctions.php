@@ -286,6 +286,7 @@ else {
 	echo "<p>".$mod_disc_terme_sanction."s existantes&nbsp;:</p>\n";
 	echo "<table class='boireaus' border='1' summary='Tableau des ".$mod_disc_terme_sanction."s existantes'>\n";
 	echo "<tr>\n";
+	echo "<th title='Identifiant'>Id</th>\n";
 	echo "<th>Nature</th>\n";
 	echo "<th>Type</th>\n";
 	echo "<th title=\"Précisez si un professeur peut ou non saisir lui-même ce type de ".$mod_disc_terme_sanction."\">Professeur</th>\n";
@@ -302,6 +303,12 @@ else {
 	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
+
+		echo "<td>\n";
+		echo "<label for='suppr_nature_$cpt' style='cursor:pointer;'>";
+		echo $lig->id_nature;
+		echo "</label>";
+		echo "</td>\n";
 
 		echo "<td>\n";
 		echo "<label for='suppr_nature_$cpt' style='cursor:pointer;'>";
