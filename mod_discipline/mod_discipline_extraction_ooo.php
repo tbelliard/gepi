@@ -612,9 +612,9 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						// 20160505
 						if(!isset($tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction])) {
 							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 						}
-						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 						$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
 						if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
@@ -656,9 +656,9 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						// 20160505
 						if(!isset($tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction])) {
 							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 						}
-						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 						$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
 						$texte_sanctions.=" ".$lig_sanction->heure_debut;
@@ -696,9 +696,9 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						// 20160505
 						if(!isset($tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction])) {
 							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 						}
-						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 						$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
@@ -731,9 +731,9 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 						$nature_sanction_courante=ucfirst($lig_sanction->nature);
 						if(!isset($tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction])) {
 							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+							$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 						}
-						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+						$tab_lignes_OOo_eleve['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
 						if($tmp_doc_joints!="") {
@@ -841,6 +841,14 @@ elseif((isset($mode))&&($mode=="classe2")) {
 	require_once("../mod_discipline/sanctions_func_lib.php");
 
 
+	$tab_id_nature_sanction=array();
+	$sql="SELECT DISTINCT id_nature FROM s_types_sanctions2;";
+	$res_sts=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res_sts)>0) {
+		while($lig_sts=mysqli_fetch_object($res_sts)) {
+			$tab_id_nature_sanction[]=$lig_sts->id_nature;
+		}
+	}
 
 	$id_classe_incident=isset($_POST['id_classe_incident']) ? $_POST['id_classe_incident'] : (isset($_GET['id_classe_incident']) ? $_GET['id_classe_incident'] : "");
 if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
@@ -919,6 +927,10 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 				$tab_lignes_OOo_eleve[$cpt_ele]['nom']=$lig_ele->nom;
 				$tab_lignes_OOo_eleve[$cpt_ele]['prenom']=$lig_ele->prenom;
 				$tab_lignes_OOo_eleve[$cpt_ele]['classe']=$lig_ele->classe;
+
+				for($loop_sts=0;$loop_sts<count($tab_id_nature_sanction);$loop_sts++) {
+					$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$tab_id_nature_sanction[$loop_sts]]['total']=0;
+				}
 
 				// Test
 				//$tab_lignes_OOo_eleve[$cpt_ele]['eleve']['etab']=getSettingValue("gepiSchoolName");
@@ -1140,9 +1152,9 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									// 20160505
 									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
 										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 									$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
 									if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
@@ -1184,9 +1196,9 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									// 20160505
 									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
 										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 									$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
 									$texte_sanctions.=" ".$lig_sanction->heure_debut;
@@ -1224,9 +1236,9 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									// 20160505
 									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
 										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 									$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
@@ -1259,9 +1271,9 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 									$nature_sanction_courante=ucfirst($lig_sanction->nature);
 									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
 										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']=0;
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['effectif']++;
+									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
 
 									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
 									if($tmp_doc_joints!="") {
