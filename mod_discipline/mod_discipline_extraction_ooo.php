@@ -406,7 +406,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 	// Extraire l'adresse des responsables/parents...
 	// get_adresse_responsable($pers_id) retourne $tab_adresse
 	// Voir bull_func.lib.php
-	$sql_resp="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.resp_legal='1' AND r.pers_id=rp.pers_id;";
+	$sql_resp="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.resp_legal='1' AND r.pers_id=rp.pers_id AND e.login='".$protagoniste_incident."';";
 	$res_resp=mysqli_query($GLOBALS["mysqli"], $sql_resp);
 	if(mysqli_num_rows($res_resp)==0) {
 		$tab_lignes_OOo_eleve['responsable']["civilite"]="";
