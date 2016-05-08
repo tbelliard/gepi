@@ -70,7 +70,14 @@ if (isset($_POST['is_posted'])) {
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
-	
+
+	if (isset($_POST['acces_archives_cdt'])) {
+		if (!saveSetting("acces_archives_cdt", "y")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !";
+	}
+	else {
+		if (!saveSetting("acces_archives_cdt", "n")) $msg = "Erreur lors de l'enregistrement du paramètre d'accès aux Archives CDT !";
+	}
+
 	if (isset($_POST['version'])) {
 		if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !";
 	}

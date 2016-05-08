@@ -30,6 +30,17 @@ if(!in_array($_SESSION["statut"],$tab_statuts)) {
 	die();
 }
 
+if(getSettingValue('acces_archives_cdt')=="") {
+	$acces="y";
+}
+elseif(getSettingAOui('acces_archives_cdt')) {
+	$acces="y";
+}
+else {
+	header("Location: $pref_arbo_include/accueil.php?msg=Accès aux archives CDT non autorisé.");
+	die();
+}
+
 if((isset($chaine_login_prof))&&($chaine_login_prof!='')) {
 	//$tab_login=array(my_strtolower($chaine_login_prof));
 

@@ -84,7 +84,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 	if (getSettingValue("autorise_edt_tous") == "y") {
 		// Actuellement, ce professeur à ce cours (id_cours):
 		$cours_actu = retourneCours($_SESSION["login"]);
-            
+
 		// Qui correspond à cet id_groupe :
 		if ($cours_actu != "non") {	
                 $sqlG = "SELECT id_groupe, id_aid FROM edt_cours WHERE id_cours = '".$cours_actu."'";
@@ -131,6 +131,7 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		$tmp_sous_menu=array();
 		$cpt_sous_menu=0;
 		foreach($mes_groupes as $tmp_group) {
+
 			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$tmp_group['id']."' AND domaine='cahier_texte' AND visible='n';";
 			//echo "$sql<br />\n";
                    
@@ -169,7 +170,13 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 		$tbs_menu_prof[$compteur_menu]["niveau_sous_menu"]=2;
 
 		$compteur_menu++;
-	}else{$barre_textes = '';}
+	}
+	elseif ((getSettingValue("acces_archives_cdt")=='')||(getSettingValue("acces_archives_cdt")=='y')) {
+		$tbs_menu_prof[$compteur_menu]["lien"]='/documents/archives/index.php';
+		$tbs_menu_prof[$compteur_menu]["texte"]="Arch.CDT";
+		$compteur_menu++;
+	}
+	else{$barre_textes = '';}
 
 	//=======================================================
 	// Module carnet de notes

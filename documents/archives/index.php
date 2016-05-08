@@ -60,6 +60,17 @@ if (!checkAccess()) {
 	die();
 }
 
+if(getSettingValue('acces_archives_cdt')=="") {
+	$acces="y";
+}
+elseif(getSettingAOui('acces_archives_cdt')) {
+	$acces="y";
+}
+else {
+	header("Location: ../../accueil.php?msg=Accès aux archives CDT non autorisé.");
+	die();
+}
+
 $step=isset($_POST['step']) ? $_POST['step'] : (isset($_GET['step']) ? $_GET['step'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : NULL;
 
@@ -76,11 +87,15 @@ require_once("../../lib/header.inc.php");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
-	if (getSettingValue("GepiCahierTexteVersion")=='2') {
+	if((getSettingAOui("active_cahiers_texte"))&&(getSettingValue("GepiCahierTexteVersion")=='2')) {
 		echo "<a href='../../cahier_texte_2/index.php'>";
 	}
-	else {
+	elseif(getSettingAOui("active_cahiers_texte")) {
 		echo "<a href='../../cahier_texte/index.php'>";
+	}
+	else {
+		// Si le CDT Gepi n'est plus actif, mais que l'on a maintenu l'accès aux archives:
+		echo "<a href='../../accueil.php'>";
 	}
 }
 else {echo "<a href='../../accueil.php'>";}

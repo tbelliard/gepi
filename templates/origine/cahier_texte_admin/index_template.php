@@ -219,6 +219,20 @@ echo add_token_field();
 		<label for='activer_n' style='cursor: pointer;'>
 		  Désactiver les cahiers de textes (<em>consultation et édition</em>)
 		</label>
+
+	  <br />
+	  <br />
+		<input type="checkbox" 
+				 name="acces_archives_cdt" 
+				 id="acces_archives_cdt" 
+				 value="y"
+			 onchange='changement();'
+				<?php if (getSettingAOui("acces_archives_cdt")) echo " checked='checked'"; ?> />
+		<label for='acces_archives_cdt' style='cursor: pointer;'>
+		  Permettre l'accès aux archives de Cahiers de textes<br />
+		  (<em>dans le cas d'un abandon du CDT Gepi pour passer à un autre CDT, il peut néanmoins être intéressant de permettre aux professeurs de consulter leurs CDT d'années passées</em>)
+		</label>
+
 	  </fieldset>
 	  
 	  

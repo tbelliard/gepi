@@ -1626,6 +1626,22 @@ if(getSettingAOui('active_bulletins')) {
 		}
 	}
 
+	/*if((!getSettingAOui('active_cahiers_texte'))&&
+		(
+			(getSettingValue("acces_archives_cdt")=='')||(getSettingValue("acces_archives_cdt")=='y')
+		)) {
+	*/
+	if((getSettingValue("acces_archives_cdt")=='')||(getSettingValue("acces_archives_cdt")=='y')) {
+		if(($this->statutUtilisateur=='scolarite')||
+				($this->statutUtilisateur=='administrateur')||
+				($this->statutUtilisateur=='professeur')||
+				($this->statutUtilisateur=='cpe')){
+		$this->creeNouveauItem("/documents/archives/index.php",
+				"Archives CDT",
+				"Ce menu vous permet d'accéder aux archives du cahier de textes.");
+		}
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Visualisation - Impression",'images/icons/print.png');
 	  return true;
