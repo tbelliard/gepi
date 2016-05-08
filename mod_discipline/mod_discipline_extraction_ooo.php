@@ -815,6 +815,7 @@ elseif((isset($mode))&&($mode=="extract_responsable")) {
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 elseif((isset($mode))&&($mode=="classe2")) {
 
+	// 20160508
 
 	// A FAIRE : Ajouter un test sur l'accès aux infos parents pour la personne connectée.
 	$avec_bloc_adresse_resp=isset($_POST['avec_bloc_adresse_resp']) ? $_POST['avec_bloc_adresse_resp'] : (isset($_GET['avec_bloc_adresse_resp']) ? $_GET['avec_bloc_adresse_resp'] : "n");
@@ -931,7 +932,7 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 				// Extraire l'adresse des responsables/parents...
 				// get_adresse_responsable($pers_id) retourne $tab_adresse
 				// Voir bull_func.lib.php
-				$sql_resp="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.resp_legal='1' AND r.pers_id=rp.pers_id;";
+				$sql_resp="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.ele_id=r.ele_id AND r.resp_legal='1' AND r.pers_id=rp.pers_id AND e.login='".$lig_ele->login."';";
 				$res_resp=mysqli_query($GLOBALS["mysqli"], $sql_resp);
 				if(mysqli_num_rows($res_resp)==0) {
 					$tab_lignes_OOo_eleve[$cpt_ele]['responsable']["civilite"]="";
