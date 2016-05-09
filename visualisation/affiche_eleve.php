@@ -3288,7 +3288,7 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 			}
 		}
 
-		if(getSettingAOui('active_mod_orientation')) {
+		if((getSettingAOui('active_mod_orientation'))&&(acces("/mod_orientation/index.php", $_SESSION['statut']))) {
 			//&id_classe=".$id_classe."
 			echo "<a href=\"../mod_orientation/index.php\" target=\"_blank\" title=\"Voir/saisie les voeux d'orientation et l'orientation proposée/conseillée par le conseil de classe.\" onclick=\"afficher_infobulle_orientation();return false;\">";
 			echo "Orientation";
