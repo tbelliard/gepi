@@ -240,7 +240,7 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post' target=
 	<fieldset class='fieldset_opacite50' style='margin-top:1em; '>
 		<legend style='border: 1px solid grey; background-color: white; '>Bilan classe</legend>
 
-		<p style='color:red'>EXPERIMENTAL... et de fait pas encore fonctionnel.</p>
+		<!--p style='color:red'>EXPERIMENTAL... et de fait pas encore fonctionnel.</p-->
 
 		<p>Extraire les ".$mod_disc_terme_incident."s&nbsp;:<br />
 		<select name='id_classe_incident'>
@@ -1317,15 +1317,13 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 	
 	
-	//$mode_test=isset($_POST['mode_test']) ? $_POST['mode_test'] : (isset($_GET['mode_test']) ? $_GET['mode_test'] : NULL);
-	//if(isset($mode_test)) {
 //	if($avec_bloc_adresse_resp=="y") {
 		//$fichier_a_utiliser="mod_discipline_liste_incidents_bloc_adresse.odt";
 		$fichier_a_utiliser="mod_discipline_liste_incidents_bilan_classe.odt";
 
 		$tableau_a_utiliser=$tab_lignes_OOo_eleve;
-		$tab_tmp_test['eleve']=$tab_lignes_OOo_eleve;
-		$tableau_a_utiliser=$tab_tmp_test;
+		//$tab_tmp_test['eleve']=$tab_lignes_OOo_eleve;
+		//$tableau_a_utiliser=$tab_tmp_test;
 
 		$nom_a_utiliser="eleve";
 
@@ -1345,7 +1343,6 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 
 	$OOo->LoadTemplate($nom_dossier_modele_a_utiliser."/".$nom_fichier_modele_ooo, OPENTBS_ALREADY_UTF8);
 
-	// $OOo->MergeBlock('eleves',$tab_eleves_OOo);
 	$OOo->MergeBlock($nom_a_utiliser,$tableau_a_utiliser);
 	
 	$nom_fic = $fichier_a_utiliser;
