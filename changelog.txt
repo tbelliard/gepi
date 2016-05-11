@@ -32,6 +32,7 @@ Absences2:
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
   et professeur principal à l'export ODS des incidents.
+- Possibilité d'extraire un bilan ODS par période avec chiffrage, avec choix des types de sanction,...
 - Sanctions du jour: Possibilité de tri sur le tableau des sanctions non effectuées.
 - Possibilité de définir des modèles spécifiques pour des types de sanctions particuliers.
 - Possibilité d'afficher (et extraire en CSV) les sanctions de la semaine et non plus seulement du jour.

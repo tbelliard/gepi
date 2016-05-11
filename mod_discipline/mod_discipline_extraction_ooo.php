@@ -63,6 +63,9 @@ if (!checkAccess()) {
 $mod_disc_terme_incident=getSettingValue('mod_disc_terme_incident');
 if($mod_disc_terme_incident=="") {$mod_disc_terme_incident="incident";}
 
+$mod_disc_terme_sanction=getSettingValue('mod_disc_terme_sanction');
+if($mod_disc_terme_sanction=="") {$mod_disc_terme_sanction="sanction";}
+
 $sql_classes="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
 $option_toutes_classes="Toutes classes confondues";
 $sql_ele="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
@@ -182,29 +185,11 @@ echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post' target=
 	<fieldset class='fieldset_opacite50' style='margin-top:1em; '>
 		<legend style='border: 1px solid grey; background-color: white; '>Autre mode d'extraction</legend>
 
-		<p>Extraire les ".$mod_disc_terme_incident."s";
-/*
-echo "&nbsp;:<br />
-		<select name='id_classe_incident'>
-			<option value='' selected='true'>Toutes classes confondues</option>";
-$sql="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
-$res=mysqli_query($GLOBALS["mysqli"], $sql);
-while($lig=mysqli_fetch_object($res)) {
-	echo "
-			<option value='$lig->id'>$lig->classe ($lig->nom_complet)</option>";
-}
-echo "
-		</select><br />
-		Uniquement les incidents";
-*/
-echo " concernant l'élève suivant (<em>en tant que responsable</em>)&nbsp;:<br />
+		<p>Extraire les ".$mod_disc_terme_incident."s concernant l'élève suivant (<em>en tant que responsable</em>)&nbsp;:<br />
 		<select name='protagoniste_incident'>
 			<!--option value='' selected='true'>Tous élèves confondus</option-->
 			<option value='' selected='true'>---</option>";
 
-//$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login ORDER BY e.nom, e.prenom;";
-// A FAIRE: Permettre de choisir les 'qualite'
-//$sql_ele_responsable="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, s_protagonistes sp WHERE e.login=sp.login AND sp.qualite='Responsable' ORDER BY e.nom, e.prenom;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql_ele_responsable);
 while($lig=mysqli_fetch_object($res)) {
 	echo "
@@ -230,23 +215,15 @@ echo "
 	</fieldset>
 </form>\n";
 
-	// A FAIRE: Permettre de choisir les 'qualite', des dates,...
-
-	echo "<p style='margin-top:1em; margin-left:5em; text-indent:-5em;'><em>NOTES&nbsp;:</em> Seuls les élèves avec $mod_disc_terme_incident déclaré sont proposés ici.<br />Les élèves ne sont pas nécessairement responsables de l'".$mod_disc_terme_incident.".<br />Ils peuvent être témoin, victime,...</p>";
-
-
 // 20160508
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form2' method='post' target='_blank'>
 	<fieldset class='fieldset_opacite50' style='margin-top:1em; '>
 		<legend style='border: 1px solid grey; background-color: white; '>Bilan classe</legend>
 
-		<!--p style='color:red'>EXPERIMENTAL... et de fait pas encore fonctionnel.</p-->
-
 		<p>Extraire les ".$mod_disc_terme_incident."s&nbsp;:<br />
 		<select name='id_classe_incident'>
 			<option value='' selected='true'>$option_toutes_classes</option>";
 
-//$sql_classes="SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe, nom_complet;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql_classes);
 while($lig=mysqli_fetch_object($res)) {
 	echo "
@@ -271,12 +248,55 @@ while($lig=mysqli_fetch_object($res)) {
 echo "
 		</select><br />";
 */
+
+$sql="SELECT MAX(num_periode) AS maxper FROM periodes;";
+$res=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res)>0) {
+	$lig=mysqli_fetch_object($res);
+
+	echo "
+		pour <input type='radio' name='num_periode' id='num_periode_vide' value='' checked /><label for='num_periode_vide' id='texte_num_periode_vide'> toute l'année</label><br />";
+	$maxper=$lig->maxper;
+	for($i=1;$i<=$maxper;$i++) {
+		if($i==1) {
+			echo "
+		ou seulement une période&nbsp;:<br />";
+		}
+		echo "
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' name='num_periode' id='num_periode_".$i."' value='".$i."' /><label for='num_periode_".$i."' id='texte_num_periode_".$i."'> Période ".$i."</label><br />";
+	}
+}
+
+$sql="SELECT DISTINCT id_nature, nature FROM s_types_sanctions2 ORDER BY rang, type, nature;";
+$res_sts=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($res_sts)>0) {
+	echo "
+		<p style='margin-left:3em;text-indent:-3em;'>Afficher pour chaque élève un tableau des totaux de sanctions de <span title='si le nombre de sanctions est non nul.'>chaque type(*)</span> pour&nbsp;:<br />";
+	while($lig_sts=mysqli_fetch_object($res_sts)) {
+		$checked="";
+		if(getPref($_SESSION['login'], 'mod_disc_extract_bilan_id_nature_sanction_'.$lig_sts->id_nature, "n")=='y') {
+			$checked=" checked";
+		}
+		echo "
+		<input type='checkbox' name='id_nature[]' id='id_nature_".$lig_sts->id_nature."' value='".$lig_sts->id_nature."'$checked /><label for='id_nature_".$lig_sts->id_nature."' id='texte_id_nature_".$lig_sts->nature."'>".$lig_sts->nature."</label><br />";
+	}
+	echo "</p>";
+}
+
+$checked_anonymer=(getPref($_SESSION['login'], 'mod_disc_extract_bilan_anonymer', "n")=="y" ? " checked" : "");
+$checked_cacher=(getPref($_SESSION['login'], 'mod_disc_extract_bilan_cacher_autres_protagonistes', "n")=="y" ? " checked" : "");
+$checked_extraire_incidents_avec_sanction=(getPref($_SESSION['login'], 'mod_disc_extract_bilan_extraire_incidents_avec_sanction', "n")=="y" ? " checked" : "");
+
 echo "
 		<!--
 		<input type='checkbox' name='avec_bloc_adresse_resp' id='avec_bloc_adresse_resp' value='y' /><label for='avec_bloc_adresse_resp' id='texte_avec_bloc_adresse_resp'> Avec le bloc adresse responsable/parent.</label><br />
 		-->
-		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves' value='y' /><label for='anonymer_autres_protagonistes_eleves' id='texte_anonymer_autres_protagonistes_eleves'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
-		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves' value='y' /><label for='cacher_autres_protagonistes_eleves' id='texte_cacher_autres_protagonistes_eleves'> Cacher ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
+		<input type='checkbox' name='anonymer_autres_protagonistes_eleves' id='anonymer_autres_protagonistes_eleves_bilan' value='y'".$checked_anonymer." /><label for='anonymer_autres_protagonistes_eleves_bilan' id='texte_anonymer_autres_protagonistes_eleves_bilan'> Anonymer (<em>remplacer par des XXXXXXXXX</em>) ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
+		<input type='checkbox' name='cacher_autres_protagonistes_eleves' id='cacher_autres_protagonistes_eleves_bilan' value='y'".$checked_cacher." /><label for='cacher_autres_protagonistes_eleves_bilan' id='texte_cacher_autres_protagonistes_eleves_bilan'> Cacher ce qui concerne les autres protagonistes élèves des ".$mod_disc_terme_incident."s extraits.</label><br />
+
+		<input type='checkbox' name='extraire_incidents_avec_sanction' id='extraire_incidents_avec_sanction' value='y'".$checked_extraire_incidents_avec_sanction." /><label for='extraire_incidents_avec_sanction' id='texte_extraire_incidents_avec_sanction'> N'extraire que les ".$mod_disc_terme_incident."s avec ".$mod_disc_terme_sanction.".</label><br />
+
+		<input type='checkbox' name='extraire_incidents_avec_sanction_choix' id='extraire_incidents_avec_sanction_choix' value='y' /><label for='extraire_incidents_avec_sanction_choix' id='texte_extraire_incidents_avec_sanction_choix'> N'extraire que les ".$mod_disc_terme_incident."s avec ".$mod_disc_terme_sanction." parmi celles cochées ci-dessus pour les totaux affichés.</label><br />
 
 		<input type='checkbox' name='debug' id='debug' value='y' /><label for='debug' id='texte_mode_test' style='color:red'> Debug pour contrôler les indices du tableau produit</label><br />
 
@@ -291,11 +311,11 @@ echo "
 
 		<input type='submit' value='Extraire' />
 
-
-		<p style='color:red'>A FAIRE : Pouvoir sélectionner la période pour un bilan chiffré à joindre aux bulletins.</p>
 	</fieldset>
 </form>\n";
 
+	// A FAIRE: Permettre de choisir les 'qualite',...
+	echo "<p style='margin-top:1em; margin-left:5em; text-indent:-5em;'><em>NOTES&nbsp;:</em> Seuls les élèves avec $mod_disc_terme_incident déclaré sont proposés ici.<br />Les élèves ne sont pas nécessairement responsables de l'".$mod_disc_terme_incident.".<br />Ils peuvent être témoin, victime,...</p>";
 
 	require("../lib/footer.inc.php");
 	die();
@@ -819,20 +839,28 @@ elseif((isset($mode))&&($mode=="classe2")) {
 
 	// A FAIRE : Ajouter un test sur l'accès aux infos parents pour la personne connectée.
 	$avec_bloc_adresse_resp=isset($_POST['avec_bloc_adresse_resp']) ? $_POST['avec_bloc_adresse_resp'] : (isset($_GET['avec_bloc_adresse_resp']) ? $_GET['avec_bloc_adresse_resp'] : "n");
-	$anonymer_autres_protagonistes_eleves=isset($_POST['anonymer_autres_protagonistes_eleves']) ? $_POST['anonymer_autres_protagonistes_eleves'] : (isset($_GET['anonymer_autres_protagonistes_eleves']) ? $_GET['anonymer_autres_protagonistes_eleves'] : "n");
-	$cacher_autres_protagonistes_eleves=isset($_POST['cacher_autres_protagonistes_eleves']) ? $_POST['cacher_autres_protagonistes_eleves'] : (isset($_GET['cacher_autres_protagonistes_eleves']) ? $_GET['cacher_autres_protagonistes_eleves'] : "n");
 
-	$sql_restriction_dates="";
+	$anonymer_autres_protagonistes_eleves=isset($_POST['anonymer_autres_protagonistes_eleves']) ? $_POST['anonymer_autres_protagonistes_eleves'] : (isset($_GET['anonymer_autres_protagonistes_eleves']) ? $_GET['anonymer_autres_protagonistes_eleves'] : "n");
+	savePref($_SESSION['login'], 'mod_disc_extract_bilan_anonymer', $anonymer_autres_protagonistes_eleves);
+
+	$cacher_autres_protagonistes_eleves=isset($_POST['cacher_autres_protagonistes_eleves']) ? $_POST['cacher_autres_protagonistes_eleves'] : (isset($_GET['cacher_autres_protagonistes_eleves']) ? $_GET['cacher_autres_protagonistes_eleves'] : "n");
+	savePref($_SESSION['login'], 'mod_disc_extract_bilan_cacher_autres_protagonistes', $cacher_autres_protagonistes_eleves);
+
+	$extraire_incidents_avec_sanction=isset($_POST['extraire_incidents_avec_sanction']) ? $_POST['extraire_incidents_avec_sanction'] : (isset($_GET['extraire_incidents_avec_sanction']) ? $_GET['extraire_incidents_avec_sanction'] : "n");
+	savePref($_SESSION['login'], 'mod_disc_extract_bilan_extraire_incidents_avec_sanction', $extraire_incidents_avec_sanction);
+
+	$extraire_incidents_avec_sanction_choix=isset($_POST['extraire_incidents_avec_sanction_choix']) ? $_POST['extraire_incidents_avec_sanction_choix'] : (isset($_GET['extraire_incidents_avec_sanction_choix']) ? $_GET['extraire_incidents_avec_sanction_choix'] : "n");
+
 	$date_debut=isset($_POST['date_debut']) ? $_POST['date_debut'] : (isset($_GET['date_debut']) ? $_GET['date_debut'] : NULL);
 	$date_fin=isset($_POST['date_fin']) ? $_POST['date_fin'] : (isset($_GET['date_fin']) ? $_GET['date_fin'] : NULL);
-	if(isset($date_debut)) {
-		$sql_restriction_dates.=" AND date>='".$date_debut."'";
-	}
-	if(isset($date_fin)) {
-		$sql_restriction_dates.=" AND date<='".$date_fin."'";
-	}
 
+	$num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+
+	$sql_ajout_protagoniste="";
 	$protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagoniste_incident'] : (isset($_GET['protagoniste_incident']) ? $_GET['protagoniste_incident'] : "");
+	if($protagoniste_incident!="") {
+		$sql_ajout_protagoniste=" AND e.login='".$protagoniste_incident."'";
+	}
 
 	// A FAIRE : Pouvoir restreindre l'extraction à telles ou telles sanctions (s_types_sanctions2)
 
@@ -841,21 +869,30 @@ elseif((isset($mode))&&($mode=="classe2")) {
 	require_once("../mod_discipline/sanctions_func_lib.php");
 
 
+	$id_nature=isset($_POST['id_nature']) ? $_POST['id_nature'] : (isset($_GET['id_nature']) ? $_GET['id_nature'] : array());
+	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'mod_disc_extract_bilan_id_nature_sanction_%';";
+	$menage=mysqli_query($mysqli, $sql);
+	for($loop=0;$loop<count($id_nature);$loop++) {
+		savePref($_SESSION['login'], 'mod_disc_extract_bilan_id_nature_sanction_'.$id_nature[$loop], 'y');
+	}
+
 	$tab_id_nature_sanction=array();
-	$sql="SELECT DISTINCT id_nature FROM s_types_sanctions2;";
+	$tab_nature_sanction=array();
+	$sql="SELECT DISTINCT id_nature, nature FROM s_types_sanctions2 ORDER BY rang, type, nature;";
 	$res_sts=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_sts)>0) {
 		while($lig_sts=mysqli_fetch_object($res_sts)) {
 			$tab_id_nature_sanction[]=$lig_sts->id_nature;
+			$tab_nature_sanction[]=$lig_sts->nature;
 		}
 	}
 
 	$id_classe_incident=isset($_POST['id_classe_incident']) ? $_POST['id_classe_incident'] : (isset($_GET['id_classe_incident']) ? $_GET['id_classe_incident'] : "");
 if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
-		$sql="SELECT DISTINCT e.*, c.classe FROM j_eleves_classes jec, eleves e, classes c WHERE jec.id_classe='".$id_classe_incident."' AND jec.login=e.login AND c.id=jec.id_classe ORDER BY e.nom, e.prenom;";
+		$sql="SELECT DISTINCT e.*, c.id AS id_classe, c.classe FROM j_eleves_classes jec, eleves e, classes c WHERE jec.id_classe='".$id_classe_incident."' AND jec.login=e.login AND c.id=jec.id_classe".$sql_ajout_protagoniste." ORDER BY e.nom, e.prenom;";
 	}
 	else {
-		$sql="SELECT DISTINCT e.*, c.classe FROM j_eleves_classes jec, classes c, eleves e WHERE jec.id_classe=c.id AND jec.login=e.login ORDER BY c.classe, e.nom, e.prenom;";
+		$sql="SELECT DISTINCT e.*, c.id AS id_classe, c.classe FROM j_eleves_classes jec, classes c, eleves e WHERE jec.id_classe=c.id AND jec.login=e.login".$sql_ajout_protagoniste." ORDER BY c.classe, e.nom, e.prenom;";
 	}
 	$res_ele=mysqli_query($mysqli, $sql);
 	if(mysqli_num_rows($res_ele)==0) {
@@ -868,17 +905,27 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 
 	$cpt_ele=0;
 	while($lig_ele=mysqli_fetch_object($res_ele)) {
-		$chaine_criteres="";
+		//$chaine_criteres="";
 		$date_incident="";
 		$heure_incident="";
 		$nature_incident="---";
 		$declarant_incident="---";
 		$incidents_clos="y";
 
+		// On force le protagoniste:
+		$protagoniste_incident=$lig_ele->login;
+
 		$extraire="y";
 		if($_SESSION['statut']=="professeur") {
-			if(!acces_extract_disc("", $protagoniste_incident)) {
-				$extraire="n";
+			if($protagoniste_incident!="") {
+				if(!acces_extract_disc("", $protagoniste_incident)) {
+					$extraire="n";
+				}
+			}
+			else {
+				if(!acces_extract_disc($lig_ele->id_classe, "")) {
+					$extraire="n";
+				}
 			}
 		}
 
@@ -886,10 +933,22 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 			$sql="(SELECT DISTINCT si.* FROM s_incidents si, s_protagonistes sp WHERE sp.id_incident=si.id_incident AND sp.login='".$lig_ele->login."'";
 
 			$ajout_sql="";
-			if($date_incident!="") {$ajout_sql.=" AND si.date='$date_incident'";$chaine_criteres.="&amp;date_incident=$date_incident";}
-			if($heure_incident!="") {$ajout_sql.=" AND si.heure='$heure_incident'";$chaine_criteres.="&amp;heure_incident=$heure_incident";}
-			if($nature_incident!="---") {$ajout_sql.=" AND si.nature='$nature_incident'";$chaine_criteres.="&amp;nature_incident=$nature_incident";}
-			if($protagoniste_incident!="") {$ajout_sql.=" AND sp.login='$protagoniste_incident'";$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";}
+			if($date_incident!="") {
+				$ajout_sql.=" AND si.date='$date_incident'";
+				//$chaine_criteres.="&amp;date_incident=$date_incident";
+			}
+			if($heure_incident!="") {
+				$ajout_sql.=" AND si.heure='$heure_incident'";
+				//$chaine_criteres.="&amp;heure_incident=$heure_incident";
+			}
+			if($nature_incident!="---") {
+				$ajout_sql.=" AND si.nature='$nature_incident'";
+				//$chaine_criteres.="&amp;nature_incident=$nature_incident";
+			}
+			if($protagoniste_incident!="") {
+				$ajout_sql.=" AND sp.login='$protagoniste_incident'";
+				//$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";
+			}
 
 
 			// A FAIRE : Permettre de choisir les 'qualite', des dates,...
@@ -897,15 +956,53 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 			$qualite="Responsable";
 
 			$ajout_sql.=" AND sp.qualite='$qualite'";
-			$chaine_criteres.="&amp;qualite=$qualite";
+			//$chaine_criteres.="&amp;qualite=$qualite";
 
 			//echo "\$declarant_incident=$declarant_incident<br />";
 
-			if($declarant_incident!="---") {$ajout_sql.=" AND si.declarant='$declarant_incident'";$chaine_criteres.="&amp;declarant_incident=$declarant_incident";}
+			if($declarant_incident!="---") {
+				$ajout_sql.=" AND si.declarant='$declarant_incident'";
+				//$chaine_criteres.="&amp;declarant_incident=$declarant_incident";
+			}
 
+			/*
 			if($id_classe_incident!="") {
 				$chaine_criteres.="&amp;id_classe_incident=$id_classe_incident";
 			}
+			*/
+
+
+			$id_classe_courante=$lig_ele->id_classe;
+
+			$nom_periode="";
+			$sql_restriction_dates="";
+			if((isset($num_periode))&&(preg_match("/^[0-9]{1,}$/", $num_periode))&&($num_periode>0)) {
+				// Récupérer les dates de la période pour cette classe
+				$dates_periode=get_dates_debut_fin_classe_periode($id_classe_courante, $num_periode, 2);
+				if(isset($dates_periode['debut']['mysql_date'])) {
+					$date_debut=$dates_periode['debut']['mysql_date'];
+				}
+				if(isset($dates_periode['fin']['mysql_date'])) {
+					$date_fin=$dates_periode['fin']['mysql_date'];
+				}
+
+				$sql_per="SELECT nom_periode FROM periodes WHERE id_classe='".$id_classe_courante."' AND num_periode='".$num_periode."';";
+				$res_per=mysqli_query($GLOBALS["mysqli"], $sql_per);
+				if(mysqli_num_rows($res_per)>0) {
+					$lig_per=mysqli_fetch_object($res_per);
+					$nom_periode=$lig_per->nom_periode;
+				}
+			}
+
+			if(isset($date_debut)) {
+				$sql_restriction_dates.=" AND date>='".$date_debut."'";
+			}
+			if(isset($date_fin)) {
+				$sql_restriction_dates.=" AND date<='".$date_fin."'";
+			}
+
+
+
 
 			$sql.=$ajout_sql;
 			$sql.=$sql_restriction_dates;
@@ -928,9 +1025,38 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 				$tab_lignes_OOo_eleve[$cpt_ele]['prenom']=$lig_ele->prenom;
 				$tab_lignes_OOo_eleve[$cpt_ele]['classe']=$lig_ele->classe;
 
+				$tab_lignes_OOo_eleve[$cpt_ele]['date_edition']=strftime("%d/%m/%Y à %Hh%M");
+
+				$tab_lignes_OOo_eleve[$cpt_ele]['periode']="";
+				$tab_lignes_OOo_eleve[$cpt_ele]['num_periode']=$nom_periode;
+				if((isset($num_periode))&&(preg_match("/^[0-9]{1,}$/", $num_periode))&&($num_periode>0)) {
+					$tab_lignes_OOo_eleve[$cpt_ele]['num_periode']=$num_periode;
+					$tab_lignes_OOo_eleve[$cpt_ele]['periode']=$nom_periode;
+				}
+
+				$tab_lignes_OOo_eleve[$cpt_ele]['date_debut']="";
+				$tab_lignes_OOo_eleve[$cpt_ele]['dates']="";
+				if(isset($date_debut)) {
+					$tab_lignes_OOo_eleve[$cpt_ele]['date_debut']=get_date_slash_from_mysql_date($date_debut);
+					$tab_lignes_OOo_eleve[$cpt_ele]['dates']="(depuis le ".$tab_lignes_OOo_eleve[$cpt_ele]['date_debut'].")";
+				}
+				$tab_lignes_OOo_eleve[$cpt_ele]['date_fin']="";
+				if(isset($date_fin)) {
+					$tab_lignes_OOo_eleve[$cpt_ele]['date_fin']=get_date_slash_from_mysql_date($date_fin);
+					if($tab_lignes_OOo_eleve[$cpt_ele]['dates']=="") {
+						$tab_lignes_OOo_eleve[$cpt_ele]['dates']="(jusqu'au ".$tab_lignes_OOo_eleve[$cpt_ele]['date_fin'].")";
+					}
+					else {
+						$tab_lignes_OOo_eleve[$cpt_ele]['dates']="(du ".$tab_lignes_OOo_eleve[$cpt_ele]['date_debut']." au ".$tab_lignes_OOo_eleve[$cpt_ele]['date_fin'].")";
+					}
+				}
+
+				/*
 				for($loop_sts=0;$loop_sts<count($tab_id_nature_sanction);$loop_sts++) {
 					$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$tab_id_nature_sanction[$loop_sts]]['total']=0;
+					$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$tab_id_nature_sanction[$loop_sts]]['nature']=$tab_nature_sanction[$loop_sts];
 				}
+				*/
 
 				// Test
 				//$tab_lignes_OOo_eleve[$cpt_ele]['eleve']['etab']=getSettingValue("gepiSchoolName");
@@ -992,11 +1118,14 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 					$tab_lignes_OOo_eleve[$cpt_ele]['resp_adr_en_ligne']=$tab_adr_courante['en_ligne'];
 				}
 
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				// Tableau des incidents de l'élève courant
 				$tab_lignes_OOo=array();
 				$nb_ligne=0;
 				//$res_incident=mysqli_query($GLOBALS["mysqli"], $sql);
 				while($lig_incident=mysqli_fetch_object($res_incident)) {
+					$nb_sanctions_incident_courant=0;
+					$nb_sanctions_incident_courant_types_choisis=0;
 					$tab_lignes_OOo[$nb_ligne]=array();
 
 					$tab_lignes_OOo[$nb_ligne]['etab']=getSettingValue("gepiSchoolName");
@@ -1145,16 +1274,22 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 								$texte_sanctions.=$designation_eleve;
 
 								while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+									$nb_sanctions_incident_courant++;
 									//$texte_sanctions.=" : Retenue ";
 									$nature_sanction_courante=ucfirst($lig_sanction->nature);
 									$texte_sanctions.=" : ".$nature_sanction_courante." ";
 
 									// 20160505
-									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
+									if(in_array($lig_sanction->id_nature_sanction, $id_nature)) {
+										if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+										}
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+										$nb_sanctions_incident_courant_types_choisis++;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
 
 									$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
 									if($nombre_de_report!=0) {$texte_sanctions.=" ($nombre_de_report reports)";}
@@ -1189,16 +1324,22 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 								$texte_sanctions.=$designation_eleve;
 
 								while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+									$nb_sanctions_incident_courant++;
 									//$texte_sanctions.=" : Exclusion ";
 									$nature_sanction_courante=ucfirst($lig_sanction->nature);
 									$texte_sanctions.=" : ".$nature_sanction_courante." ";
 
 									// 20160505
-									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
+									if(in_array($lig_sanction->id_nature_sanction, $id_nature)) {
+										if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+										}
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+										$nb_sanctions_incident_courant_types_choisis++;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
 
 									$texte_sanctions.=" ".formate_date($lig_sanction->date_debut);
 									$texte_sanctions.=" ".$lig_sanction->heure_debut;
@@ -1229,16 +1370,22 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 								$texte_sanctions.=$designation_eleve;
 
 								while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+									$nb_sanctions_incident_courant++;
 									//$texte_sanctions.=" : Travail pour le ";
 									$nature_sanction_courante=ucfirst($lig_sanction->nature);
 									$texte_sanctions.=" : ".$nature_sanction_courante." pour le ";
 
 									// 20160505
-									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
+									if(in_array($lig_sanction->id_nature_sanction, $id_nature)) {
+										if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+										}
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+										$nb_sanctions_incident_courant_types_choisis++;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
 
 									$texte_sanctions.=formate_date($lig_sanction->date_retour);
 	
@@ -1265,15 +1412,21 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 								$texte_sanctions.=$designation_eleve;
 
 								while($lig_sanction=mysqli_fetch_object($res_sanction)) {
+									$nb_sanctions_incident_courant++;
 									$texte_sanctions.=" : $lig_sanction->description ";
 
 									// 20160505
 									$nature_sanction_courante=ucfirst($lig_sanction->nature);
-									if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
-										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
+									if(in_array($lig_sanction->id_nature_sanction, $id_nature)) {
+										if(!isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction])) {
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['nature']=$nature_sanction_courante;
+											$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']=0;
+										}
+										$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+										$nb_sanctions_incident_courant_types_choisis++;
 									}
-									$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$lig_sanction->id_nature_sanction]['total']++;
+									//+++++++++++++++++++++++++++++++++++++++++++++++
 
 									$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
 									if($tmp_doc_joints!="") {
@@ -1287,19 +1440,38 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 
 					$tab_lignes_OOo[$nb_ligne]['sanctions']=$texte_sanctions;
 
-
-					$nb_ligne++;
+					if(($nb_sanctions_incident_courant==0)&&($extraire_incidents_avec_sanction=="y")) {
+						unset($tab_lignes_OOo[$nb_ligne]);
+					}
+					elseif(($nb_sanctions_incident_courant_types_choisis==0)&&($extraire_incidents_avec_sanction_choix=="y")) {
+						unset($tab_lignes_OOo[$nb_ligne]);
+					}
+					else {
+						$nb_ligne++;
+					}
 				}
 
-				$tab_lignes_OOo_eleve[$cpt_ele]['incident']=$tab_lignes_OOo;
+				if(count($tab_lignes_OOo)>0) {
+					$tab_lignes_OOo_eleve[$cpt_ele]['incident']=$tab_lignes_OOo;
 
-				if(isset($_POST['debug'])) {
-					echo "<hr />tab_lignes_OOo_eleve[$cpt_ele]<pre>";
-					print_r($tab_lignes_OOo_eleve[$cpt_ele]);
-					echo "</pre>";
+					// Pour réordonner les types sanctions:
+					for($loop_s=0;$loop_s<count($id_nature);$loop_s++) {
+						if(isset($tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$id_nature[$loop_s]])) {
+							$tab_lignes_OOo_eleve[$cpt_ele]['sanctions2'][]=$tab_lignes_OOo_eleve[$cpt_ele]['sanctions'][$id_nature[$loop_s]];
+						}
+					}
+
+					if(isset($_POST['debug'])) {
+						echo "<hr />tab_lignes_OOo_eleve[$cpt_ele]<pre>";
+						print_r($tab_lignes_OOo_eleve[$cpt_ele]);
+						echo "</pre>";
+					}
+
+					$cpt_ele++;
 				}
-
-				$cpt_ele++;
+				else {
+					unset($tab_lignes_OOo_eleve[$cpt_ele]);
+				}
 			}
 		}
 	}
@@ -1315,26 +1487,10 @@ if(preg_match("/^[0-9]{1,}$/", $id_classe_incident)) {
 
 	$OOo = new clsTinyButStrong;
 	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
-	
-	
-//	if($avec_bloc_adresse_resp=="y") {
-		//$fichier_a_utiliser="mod_discipline_liste_incidents_bloc_adresse.odt";
-		$fichier_a_utiliser="mod_discipline_liste_incidents_bilan_classe.odt";
 
-		$tableau_a_utiliser=$tab_lignes_OOo_eleve;
-		//$tab_tmp_test['eleve']=$tab_lignes_OOo_eleve;
-		//$tableau_a_utiliser=$tab_tmp_test;
-
-		$nom_a_utiliser="eleve";
-
-/*
-	}
-	else {
-		$fichier_a_utiliser="mod_discipline_liste_incidents.odt";
-		$tableau_a_utiliser=$tab_lignes_OOo;
-		$nom_a_utiliser="incident";
-	}
-*/
+	$fichier_a_utiliser="mod_discipline_liste_incidents_bilan_classe.odt";
+	$tableau_a_utiliser=$tab_lignes_OOo_eleve;
+	$nom_a_utiliser="eleve";
 
 	$prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
 	include_once('../mod_ooo/lib/lib_mod_ooo.php'); // les fonctions
