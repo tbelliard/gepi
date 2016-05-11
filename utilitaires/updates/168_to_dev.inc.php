@@ -413,4 +413,27 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sconet_ele_options (
 } else {
 	$result .= msj_present("La table existe déjà");
 }
+
+$result .= "&nbsp;-> Ajout d'un champ 'rang' à la table 's_types_sanctions2'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_types_sanctions2 LIKE 'rang';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE s_types_sanctions2 ADD rang INT(11) NOT NULL default 0 AFTER saisie_prof;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+
+	$cpt_sts=1;
+	$sql="SELECT * FROM s_types_sanctions2 ORDER BY rang, nature, type;";
+	$res_sts=mysqli_query($mysqli, $sql);
+	while($lig_sts=mysqli_fetch_object($res_sts)) {
+		$sql="UPDATE s_types_sanctions2 SET rang='".$cpt_sts."' WHERE id_nature='".$lig_sts->id_nature."';";
+		$update=mysqli_query($mysqli, $sql);
+		$cpt_sts++;
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

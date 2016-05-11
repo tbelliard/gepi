@@ -64,6 +64,53 @@ else {
 	die();
 }
 
+$reordonner="n";
+$sql="SELECT * FROM s_types_sanctions2 WHERE rang='0';";
+//echo "$sql<br />";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)>0) {
+	$reordonner="y";
+}
+//echo "reordonner=$reordonner<br />";
+
+$sql="SELECT COUNT(rang) AS nbr_doublon, id_nature FROM s_types_sanctions2 GROUP BY rang HAVING COUNT(*)>1;";
+//echo "$sql<br />";
+$test=mysqli_query($mysqli, $sql);
+if(mysqli_num_rows($test)>0) {
+	$reordonner="y";
+}
+//echo "reordonner=$reordonner<br />";
+
+$sql="SELECT MAX(rang) AS max_rang FROM s_types_sanctions2;";
+//echo "$sql<br />";
+$test1=mysqli_query($mysqli, $sql);
+$max_rang="";
+if(mysqli_num_rows($test1)>0) {
+	$lig_maxrang=mysqli_fetch_object($test1);
+	$max_rang=$lig_maxrang->max_rang;
+}
+$sql="SELECT 1=1 FROM s_types_sanctions2;";
+//echo "$sql<br />";
+$test2=mysqli_query($mysqli, $sql);
+//echo mysqli_num_rows($test2)."<br />";
+if($max_rang!=mysqli_num_rows($test2)) {
+	$reordonner="y";
+}
+//echo "reordonner=$reordonner<br />";
+
+if($reordonner=="y") {
+	$cpt_sts=1;
+	$sql="SELECT * FROM s_types_sanctions2 ORDER BY rang, type, nature;";
+	//echo "$sql<br />";
+	$res_sts=mysqli_query($mysqli, $sql);
+	while($lig_sts=mysqli_fetch_object($res_sts)) {
+		$sql="UPDATE s_types_sanctions2 SET rang='".$cpt_sts."' WHERE id_nature='".$lig_sts->id_nature."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+		$cpt_sts++;
+	}
+}
+
 $msg="";
 
 //debug_var();
@@ -73,6 +120,51 @@ $suppr_nature=isset($_POST['suppr_nature']) ? $_POST['suppr_nature'] : NULL;
 $nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;
 $type=isset($_POST['type']) ? $_POST['type'] : NULL;
 $cpt=isset($_POST['cpt']) ? $_POST['cpt'] : 0;
+
+if((isset($_GET['move']))&&(isset($_GET['id_nature']))) {
+	check_token();
+
+	$tab_sts=array();
+	$sql="SELECT * FROM s_types_sanctions2 ORDER BY rang, type, nature;";
+	$res_sts=mysqli_query($mysqli, $sql);
+	$loop=0;
+	$loop_modif="";
+	while($lig_sts=mysqli_fetch_object($res_sts)) {
+		$tab_sts[$loop]['id_nature']=$lig_sts->id_nature;
+		$tab_sts[$loop]['rang']=$lig_sts->rang;
+		$tab_sts[$loop]['nature']=$lig_sts->nature;
+		if($lig_sts->id_nature==$_GET['id_nature']) {
+			$loop_modif=$loop;
+		}
+		$loop++;
+	}
+
+	/*
+	echo "<pre>";
+	print_r($tab_sts);
+	echo "</pre>";
+	echo "\$loop_modif=$loop_modif<br />";
+	*/
+
+	if(($_GET['move']=="up")&&($loop_modif>0)&&($tab_sts[$loop_modif]['rang']>1)) {
+		$sql="UPDATE s_types_sanctions2 SET rang='".($tab_sts[$loop_modif]['rang']-1)."' WHERE id_nature='".$tab_sts[$loop_modif]['id_nature']."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+
+		$sql="UPDATE s_types_sanctions2 SET rang='".($tab_sts[$loop_modif]['rang'])."' WHERE id_nature='".$tab_sts[$loop_modif-1]['id_nature']."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+	}
+	elseif(($_GET['move']=="down")&&($loop_modif<count($tab_sts)-1)) {
+		$sql="UPDATE s_types_sanctions2 SET rang='".($tab_sts[$loop_modif]['rang']+1)."' WHERE id_nature='".$tab_sts[$loop_modif]['id_nature']."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+
+		$sql="UPDATE s_types_sanctions2 SET rang='".($tab_sts[$loop_modif]['rang'])."' WHERE id_nature='".$tab_sts[$loop_modif+1]['id_nature']."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+	}
+}
 
 if(isset($suppr_nature)) {
 	check_token();
@@ -191,7 +283,8 @@ if(isset($nature)) {
 
 	$sql="SELECT * FROM s_types_sanctions2 ORDER BY nature;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	if(mysqli_num_rows($res)>0) {
+	$nb_types_sanctions=mysqli_num_rows($res);
+	if($nb_types_sanctions>0) {
 		$tab_nature=array();
 		$tab_saisie_prof_avant=array();
 		while($lig=mysqli_fetch_object($res)) {
@@ -239,7 +332,8 @@ if(isset($nature)) {
 			else {
 				$nature=suppression_sauts_de_lignes_surnumeraires($nature);
 
-				$sql="INSERT INTO s_types_sanctions2 SET nature='".$nature."', type='".$type."';";
+				$nb_types_sanctions++;
+				$sql="INSERT INTO s_types_sanctions2 SET nature='".$nature."', type='".$type."', rang='".$nb_types_sanctions."';";
 				//echo "$sql<br />\n";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
@@ -277,14 +371,14 @@ echo "<blockquote>\n";
 $active_mod_ooo=getSettingAOui('active_mod_ooo');
 
 $cpt=0;
-$sql="SELECT * FROM s_types_sanctions2 ORDER BY type, nature;";
+$sql="SELECT * FROM s_types_sanctions2 ORDER BY rang, type, nature;";
 $res=mysqli_query($GLOBALS["mysqli"], $sql);
 if(mysqli_num_rows($res)==0) {
 	echo "<p>Aucune ".$mod_disc_terme_sanction." supplémentaire n'est encore définie.</p>\n";
 }
 else {
 	echo "<p>".$mod_disc_terme_sanction."s existantes&nbsp;:</p>\n";
-	echo "<table class='boireaus' border='1' summary='Tableau des ".$mod_disc_terme_sanction."s existantes'>\n";
+	echo "<a name='tab'></a><table class='boireaus' border='1' summary='Tableau des ".$mod_disc_terme_sanction."s existantes'>\n";
 	echo "<tr>\n";
 	echo "<th title='Identifiant'>Id</th>\n";
 	echo "<th>Nature</th>\n";
@@ -297,12 +391,14 @@ else {
 		echo "<th title=\"Le modèle par défaut est le modèle associé au 'Type' de sanction (retenue, exclusion, travail ou autre).\nVous pouvez toutefois pour un type de sanction particulier choisir un modèle spécifique.\">Modèle OOo personnalisé</th>\n";
 	}
 
+	echo "<th colspan='3'>Rang</th>\n";
 	echo "<th>Supprimer</th>\n";
 	echo "</tr>\n";
 	$alt=1;
+	$nb_sts=mysqli_num_rows($res);
 	while($lig=mysqli_fetch_object($res)) {
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
+		echo "<tr class='lig$alt' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
 
 		echo "<td>\n";
 		echo "<label for='suppr_nature_$cpt' style='cursor:pointer;'>";
@@ -353,6 +449,20 @@ else {
 			}
 			echo "</td>\n";
 		}
+
+		echo "<td>\n";
+		if($cpt>0) {
+			echo "<a href='".$_SERVER['PHP_SELF']."?move=up&rang=$cpt&id_nature=".$lig->id_nature.add_token_in_url()."#tab' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/up.png' class='icone16' alt='Up' /></a>";
+		}
+		echo "</td>\n";
+		echo "<td>\n";
+		echo $lig->rang;
+		echo "</td>\n";
+		echo "<td>\n";
+		if($cpt<$nb_sts-1) {
+			echo "<a href='".$_SERVER['PHP_SELF']."?move=down&rang=".($cpt+2)."&id_nature=".$lig->id_nature.add_token_in_url()."#tab' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/down.png' class='icone16' alt='Down' /></a>";
+		}
+		echo "</td>\n";
 
 		echo "<td>";
 		$sql="SELECT 1=1 FROM s_sanctions WHERE id_nature_sanction='$lig->id_nature';";

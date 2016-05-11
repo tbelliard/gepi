@@ -14626,4 +14626,112 @@ function get_tab_modalites_election($mode="indice") {
 	return $tab;
 }
 
+function get_dates_debut_fin_classe_periode($id_classe, $num_periode, $mode=1) {
+	$tab=array();
+
+	if($id_classe=="") {
+		$sql="SELECT e.* FROM edt_calendrier e WHERE etabferme_calendrier='1' AND numero_periode='".$num_periode."';";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res)>0) {
+			// On s'aligne sur le premier enregistrement
+			$lig=mysqli_fetch_object($res);
+			$tab['debut']['ts']=$lig->debut_calendrier_ts;
+			$tab['debut']['mysql_date']=$lig->jourdebut_calendrier;
+			$tab['fin']['ts']=$lig->fin_calendrier_ts;
+			$tab['fin']['mysql_date']=$lig->jourfin_calendrier;
+		}
+		else {
+			// A améliorer parce que là, on évite juste le plantage
+			$ts_debut=getSettingValue('begin_bookings');
+			$tab['debut']['ts']=$ts_debut;
+			$tab['debut']['mysql_date']=strftime("%Y-%m-%d", $ts_debut);
+
+			$ts_fin=getSettingValue('end_bookings');
+			$tab['fin']['ts']=$ts_fin;
+			$tab['fin']['mysql_date']=strftime("%Y-%m-%d", $ts_fin);
+		}
+	}
+	else {
+		$sql="SELECT e.* FROM periodes p, edt_calendrier e WHERE (classe_concerne_calendrier LIKE '%;$id_classe;%' OR classe_concerne_calendrier LIKE '$id_classe;%') AND etabferme_calendrier='1' AND numero_periode='".$num_periode."' AND p.nom_periode=e.nom_calendrier AND p.id_classe='$id_classe';";
+		//echo "$sql<br />";
+		$res=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res)>0) {
+			$lig=mysqli_fetch_object($res);
+			$tab['debut']['ts']=$lig->debut_calendrier_ts;
+			$tab['debut']['mysql_date']=$lig->jourdebut_calendrier;
+			$tab['fin']['ts']=$lig->fin_calendrier_ts;
+			$tab['fin']['mysql_date']=$lig->jourfin_calendrier;
+		}
+		else {
+			if($num_periode==1) {
+				$ts_debut=getSettingValue('begin_bookings');
+			}
+			else {
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='".($num_periode-1)."';";
+				$res=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$lig=mysqli_fetch_object($res);
+					$ts_debut=mysql_date_to_unix_timestamp($lig->date_fin);
+				}
+				else {
+					// On ne devrait pas passer là
+					$ts_debut=getSettingValue('begin_bookings');
+				}
+			}
+
+			$tab['debut']['ts']=$ts_debut;
+			$tab['debut']['mysql_date']=strftime("%Y-%m-%d", $ts_debut);
+
+			if($mode==2) {
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='".($num_periode+1)."';";
+				$res=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res)==0) {
+					$ts_fin=getSettingValue('end_bookings');
+				}
+				else {
+					$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$num_periode."';";
+					$res=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(mysqli_num_rows($res)>0) {
+						$lig=mysqli_fetch_object($res);
+						$ts_fin=mysql_date_to_unix_timestamp($lig->date_fin);
+					}
+					else {
+						// Ca ne devrait pas arriver
+						$ts_fin=getSettingValue('end_bookings');
+					}
+				}
+			}
+			else {
+				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$num_periode."';";
+				$res=mysqli_query($GLOBALS['mysqli'], $sql);
+				if(mysqli_num_rows($res)>0) {
+					$lig=mysqli_fetch_object($res);
+					$ts_fin=mysql_date_to_unix_timestamp($lig->date_fin);
+				}
+				else {
+					// Ca ne devrait pas arriver
+					$ts_fin=getSettingValue('end_bookings');
+				}
+			}
+
+			$tab['fin']['ts']=$ts_fin;
+			$tab['fin']['mysql_date']=strftime("%Y-%m-%d", $ts_fin);
+		}
+	}
+
+	return $tab;
+}
+
+function get_date_debut_classe_periode($id_classe, $num_periode, $mode=1) {
+	$tab=get_dates_debut_fin_classe_periode($id_classe, $num_periode, $mode);
+	$tab2=$tab["debut"];
+	return $tab2;
+}
+
+function get_date_fin_classe_periode($id_classe, $num_periode, $mode=1) {
+	$tab=get_dates_debut_fin_classe_periode($id_classe, $num_periode, $mode);
+	$tab2=$tab["fin"];
+	return $tab2;
+}
 ?>
