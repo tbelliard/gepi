@@ -103,6 +103,12 @@ if(($_SESSION['statut']=='administrateur')||
 	$utilisation[]="Extraction des incidents et sanctions<br />(<em>avec bloc adresse responsable</em>)";
 	$special[]="";
 
+	$lien_wiki[]='';
+	$entete_section[]="";
+	$fich[]="mod_discipline_liste_incidents_bilan_classe.odt";
+	$utilisation[]="Extraction des incidents et sanctions<br />(<em>avec bilan chiffré</em>)";
+	$special[]="";
+
 }
 
 if(($_SESSION['statut']=='administrateur')||
