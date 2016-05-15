@@ -850,20 +850,35 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 		$style=" style='background-color:grey;'";
 		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
 	}
-	elseif(in_array(strftime("%d/%m/%Y", $ts_courant), $tab_jour_vacance)) {
-		$style=" style='background-color:grey;'";
-		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
-	}
-	elseif(strftime("%m", $ts_courant)!=$mois) {
-		$style=" style='background-color:grey;'";
+	//elseif(in_array(strftime("%d/%m/%Y", $ts_courant), $tab_jour_vacance)) {
+	elseif(in_array(strftime("%Y%m%d", $ts_courant), $tab_jour_vacance)) {
+		$style=" style='background-color:grey;' title=\"Vacances ou jour férié.\"";
 		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
 	}
 	elseif(!in_array($tab_jfr[$num_jsem_courant], $tab_jour_ouverture)) {
 		$style=" style='background-color:grey;'";
 		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
 	}
+	/*
+	elseif(strftime("%m", $ts_courant)>$mois) {
+		$style=" style='background-color:silver;' title=\"Mois suivant\"";
+		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+	}
+	elseif(strftime("%m", $ts_courant)<$mois) {
+		$style=" style='background-color:silver;' title=\"Mois précédent\"";
+		$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+	}
+	*/
 	else {
 		$style="";
+		if(strftime("%m", $ts_courant)>$mois) {
+			$style=" style='background-color:silver;' title=\"Mois suivant\"";
+			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+		}
+		elseif(strftime("%m", $ts_courant)<$mois) {
+			$style=" style='background-color:silver;' title=\"Mois précédent\"";
+			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+		}
 
 		// A VERIFIER : Est-ce que le 12 est standard ou fonction d'un paramètre de mod_abs2?
 		if((isset($tab_abs[$annee_courant."-".$mois_courant."-".$jour_courant." 00:00:00"]))||
@@ -910,7 +925,7 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 				$ajout.="<div style='width:2em; float:left;'>&nbsp;</div>";
 			}
 		}
-		else {
+		elseif($style=="") {
 			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
 		}
 	}
