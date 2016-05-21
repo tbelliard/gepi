@@ -508,7 +508,8 @@ if(($id_groupe=='Toutes_matieres')&&
 
 	if($afficher_travail_a_faire_seulement=='n') {
 		if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-			$sql="SELECT cte.* FROM ct_entry cte, j_groupes_classes jgc, j_eleves_groupes jeg WHERE (contenu != ''
+			// DISTINCT à cause du j_eleves_groupes
+			$sql="SELECT DISTINCT cte.* FROM ct_entry cte, j_groupes_classes jgc, j_eleves_groupes jeg WHERE (contenu != ''
 			AND date_ct != ''
 			AND date_ct >= '".getSettingValue("begin_bookings")."'
 			AND date_ct <= '".getSettingValue("end_bookings")."'
@@ -566,7 +567,8 @@ if(($id_groupe=='Toutes_matieres')&&
 
 	if($afficher_compte_rendus_seulement=='n') {
 		if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
-			$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc, j_eleves_groupes jeg  WHERE (contenu != ''
+			// DISTINCT à cause du j_eleves_groupes
+			$sql="SELECT DISTINCT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc, j_eleves_groupes jeg  WHERE (contenu != ''
 				AND date_ct != ''
 				AND date_ct >= '".getSettingValue("begin_bookings")."'
 				AND date_ct <= '".getSettingValue("end_bookings")."'
