@@ -4878,6 +4878,8 @@ function affiche_date_dernier_conseil_de_classe_classe($id_classe) {
 function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y") {
 	$retour="";
 
+	$nb_lignes=0;
+
 	// A FAIRE : Si $id_classe est non vide, relever le contenu de edt_calendrier pour la classe indiquée avec etabferme_calendrier='2', etabvacances_calendrier='1'
 
 	if($id_classe=="") {
@@ -4911,9 +4913,14 @@ function affiche_tableau_vacances($id_classe="", $griser="n", $affiche_passe="y"
 		<td>".strftime("%a %d/%m/%Y", $lig->debut_calendrier_ts)."</td>
 		<td>".strftime("%a %d/%m/%Y", $lig->fin_calendrier_ts)."</td>
 	</tr>";
+				$nb_lignes++;
 			}
 		}
 		$retour.="</table>";
+	}
+
+	if($nb_lignes==0) {
+		$retour="";
 	}
 
 	return $retour;
