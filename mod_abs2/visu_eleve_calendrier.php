@@ -830,6 +830,7 @@ echo "<!--div id='div_details_date' style='float:right; width:30em;'></div-->
 		</tr>
 	</thead>
 	<tbody>";
+$temoin_abs=0;
 $chaine_debug="";
 $ts_courant=$ts;
 $temoin_mois_suiv=0;
@@ -899,6 +900,7 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 				//$ajout.="<br /><div style='width:2em; margin-right:1px; background-color:$couleur; float:left;' onclick=\"cherche_absences('".$annee_courant."-".$mois_courant."-".$jour_courant." 00:00:00"."')\"$title>&nbsp;</div>";
 				//$ajout.="<br /><div style='width:2em; margin-right:1px; background-color:$couleur; float:left;' onclick=\"cherche_absences('".$annee_courant."-".$mois_courant."-".$jour_courant." 10:00:00"."', 'matin')\"$title>&nbsp;</div>";
 				$ajout.="<br /><div style='width:2em; margin-right:1px; background-color:$couleur; float:left;' onclick=\"cherche_absences('".$annee_courant."-".$mois_courant."-".$jour_courant."', 'matin')\"$title>&nbsp;</div>";
+				$temoin_abs++;
 			}
 			else {
 				//$ajout.="&nbsp;";
@@ -919,6 +921,7 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 				}
 				//$ajout.="<div style='width:2em; background-color:$couleur; float:left;' onclick=\"cherche_absences('".$annee_courant."-".$mois_courant."-".$jour_courant." 12:00:00"."', 'apres-midi')\"$title>&nbsp;</div>";
 				$ajout.="<div style='width:2em; background-color:$couleur; float:left;' onclick=\"cherche_absences('".$annee_courant."-".$mois_courant."-".$jour_courant."', 'apres-midi')\"$title>&nbsp;</div>";
+				$temoin_abs++;
 			}
 			else {
 				$ajout.="&nbsp;";
@@ -966,7 +969,14 @@ while($ts_courant-2*3600<$ts_dim_suiv) {
 }
 echo "
 	</tbody>
-</table>
+</table>";
+
+if($temoin_abs>0) {
+	echo "
+<p style='font-size:x-small;'>Cliquez ci-dessus sur l'absence souhaitée pour obtenir ci-dessous des détails sur les saisies correspondantes.</p>";
+}
+
+echo "
 
 <div id='div_details_date'></div>
 </div>
