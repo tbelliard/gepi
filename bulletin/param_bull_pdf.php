@@ -376,6 +376,7 @@ if(isset($_POST['param_communs_pdf_html'])) {
 	$cadre_orientation_proposee=isset($_GET['cadre_orientation_proposee']) ? $_GET['cadre_orientation_proposee'] : (isset($_POST['cadre_orientation_proposee']) ? $_POST['cadre_orientation_proposee'] : 1);
 	$X_cadre_orientation_proposee=isset($_GET['X_cadre_orientation_proposee']) ? $_GET['X_cadre_orientation_proposee'] : (isset($_POST['X_cadre_orientation_proposee']) ? $_POST['X_cadre_orientation_proposee'] : 70);
 	$titre_orientation_proposee=isset($_GET['titre_orientation_proposee']) ? $_GET['titre_orientation_proposee'] : (isset($_POST['titre_orientation_proposee']) ? $_POST['titre_orientation_proposee'] : "Orientation proposée");
+	$titre_avis_orientation_proposee=isset($_GET['titre_avis_orientation_proposee']) ? $_GET['titre_avis_orientation_proposee'] : (isset($_POST['titre_avis_orientation_proposee']) ? $_POST['titre_avis_orientation_proposee'] : "Commentaire");
 
 	//$XXX=isset($_GET['XXX']) ? $_GET['XXX'] : (isset($_POST['XXX']) ? $_POST['XXX'] : 200);
 
@@ -1816,6 +1817,7 @@ function DecocheCheckbox() {
 				Positionnement X&nbsp;<input name="X_cadre_orientation_proposee" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_cadre_orientation_proposee)) { ?>value="<?php echo $X_cadre_orientation_proposee; ?>" <?php } ?> />mm<br />
 
 				Titre du bloc Orientation proposée/conseillée&nbsp;: <input name="titre_orientation_proposee" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_orientation_proposee)) { ?>value="<?php echo $titre_orientation_proposee; ?>" <?php } ?> /><br />
+				Titre du commentaire/avis sur l'orientation proposée/conseillée&nbsp;: <input name="titre_avis_orientation_proposee" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_avis_orientation_proposee)) { ?>value="<?php echo $titre_avis_orientation_proposee; ?>" <?php } ?> /><br />
 				<!--
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_orientation_proposee" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_orientation_proposee)) { ?>value="<?php echo $taille_titre_orientation_proposee; ?>" <?php } ?> />pixel<br />
 				-->

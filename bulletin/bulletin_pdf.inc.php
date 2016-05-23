@@ -216,6 +216,12 @@
 	$champ_bull_pdf[]="cadre_orientation_proposee";
 	$champ_bull_pdf[]="X_cadre_orientation_proposee";
 
+	$champ_bull_pdf[]="titre_voeux_orientation";
+
+	$champ_bull_pdf[]="titre_orientation_proposee";
+	$champ_bull_pdf[]="titre_avis_orientation_proposee";
+	//=========================
+
 	//$champ_bull_pdf[]="ligne_commentaire_orientation";
 	//=========================
 
@@ -449,8 +455,9 @@
 	$val_defaut_champ_bull_pdf["titre_voeux_orientation"]="Voeux";
 
 	$val_defaut_champ_bull_pdf["cadre_orientation_proposee"]=1;
-	$val_defaut_champ_bull_pdf["X_cadre_orientation_proposee"]=70;
+	$val_defaut_champ_bull_pdf["X_cadre_orientation_proposee"]=90;
 	$val_defaut_champ_bull_pdf["titre_orientation_proposee"]="Orientation proposée";
+	$val_defaut_champ_bull_pdf["titre_avis_orientation_proposee"]="Commentaire";
 
 	//$val_defaut_champ_bull_pdf["ligne_commentaire_orientation"]=1;
 	//$val_defaut_champ_bull_pdf["X_ligne_commentaire_orientation"]=60;
@@ -484,6 +491,7 @@
 	$type_champ_pdf["orientation_periodes"]="texte";
 	$type_champ_pdf["titre_voeux_orientation"]="texte";
 	$type_champ_pdf["titre_orientation_proposee"]="texte";
+	$type_champ_pdf["titre_avis_orientation_proposee"]="texte";
 
 
 	function get_max_id_model_bulletin() {

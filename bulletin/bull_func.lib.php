@@ -5928,6 +5928,8 @@ $hauteur_pris_app_abs=0;
 						$largeur_chaine_titre_orientations_proposees=$pdf->GetStringWidth($chaine_titre_orientations_proposees);
 						$pdf->Cell($chaine_titre_orientations_proposees,5, $chaine_titre_orientations_proposees,0,2,'');
 
+						$chaine_titre_avis_orientations_proposees=$tab_modele_pdf["titre_avis_orientation_proposee"][$classe_id];
+
 						// Liste des orientations proposées (pouvoir limiter aux N premières)
 						$pdf->SetXY($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id]+$largeur_chaine_titre_orientations_proposees, $tab_modele_pdf["Y_cadre_orientation"][$classe_id]+$padding_haut_orientation);
 
@@ -5944,7 +5946,7 @@ $hauteur_pris_app_abs=0;
 							}
 
 							if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
-								$texte_orientations_proposees.="Avis: ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
+								$texte_orientations_proposees.=$chaine_titre_avis_orientations_proposees." : ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
 							}
 
 							$pdf->drawTextBox(($texte_orientations_proposees), $largeur_cadre_orientation_proposee-$largeur_chaine_titre_orientations_proposees, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'J', 'M', 0);
@@ -5962,7 +5964,7 @@ $hauteur_pris_app_abs=0;
 							}
 
 							if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
-								$texte_orientations_proposees.="<b>Avis:</b> ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
+								$texte_orientations_proposees.="<b>".$chaine_titre_avis_orientations_proposees." :</b> ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
 							}
 
 							$texte=$texte_orientations_proposees;
