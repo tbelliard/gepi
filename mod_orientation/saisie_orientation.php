@@ -685,7 +685,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 
 	}
 
-	echo "<label for='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> </label><textarea name='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' id='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' rows='5' cols='60' class='wrap' onchange=\"changement()\">";
+	echo "<label for='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Commentaire sur l'orientation proposée\">Commentaire&nbsp;</b> </label><textarea name='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' id='no_anti_inject_avis_orientation_".$lig_ele->id_eleve."' rows='5' cols='60' class='wrap' onchange=\"changement()\">";
 	if(isset($tab_orientation_classe_courante['avis'][$lig_ele->login])) {
 		echo preg_replace("#<br />#i", "", $tab_orientation_classe_courante['avis'][$lig_ele->login]);
 	}

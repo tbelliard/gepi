@@ -247,7 +247,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 	}
 
 	if(isset($tab_orientation_classe_courante['avis'][$lig_ele->login])) {
-		$chaine_orientation_proposee.="<label for='avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> </label>".$tab_orientation_classe_courante['avis'][$lig_ele->login];
+		$chaine_orientation_proposee.="<label for='avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Commentaire sur l'orientation proposée\">Commentaire&nbsp;</b> </label>".$tab_orientation_classe_courante['avis'][$lig_ele->login];
 	}
 
 	echo "
