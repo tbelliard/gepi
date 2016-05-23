@@ -473,7 +473,13 @@ if (isset($titre_page)) {
 				$tbs_statut[]=array("classe"=>"" , "texte"=>"CPE");
 		}elseif ($_SESSION['statut'] == "eleve") {
 			$tab_tmp_info_classes=get_noms_classes_from_ele_login($_SESSION['login']);
-			$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
+			if(count($tab_tmp_info_classes)>0) {
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève de ".$tab_tmp_info_classes[count($tab_tmp_info_classes)-1]);
+			}
+			else {
+				// In ne devrait pas y avoir d'accès en connexion
+				$tbs_statut[]=array("classe"=>"" , "texte"=>"Élève sans classe ?");
+			}
 		}elseif ($_SESSION['statut'] == "responsable") {
 			if(getSettingAOui('GepiMemesDroitsRespNonLegaux')) {
 				$tab_tmp_ele=get_enfants_from_resp_login($_SESSION['login'], "simple", "yy");
