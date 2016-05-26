@@ -254,6 +254,8 @@ if(isset($_POST['param_communs_pdf_html'])) {
 	else { if (isset($_GET['affiche_doublement'])) { $affiche_doublement = $_GET['affiche_doublement']; } if (isset($_POST['affiche_doublement'])) { $affiche_doublement = $_POST['affiche_doublement']; } }
 	if (empty($_GET['affiche_date_naissance']) and empty($_POST['affiche_date_naissance'])) { $affiche_date_naissance = ''; }
 	else { if (isset($_GET['affiche_date_naissance'])) { $affiche_date_naissance = $_GET['affiche_date_naissance']; } if (isset($_POST['affiche_date_naissance'])) { $affiche_date_naissance = $_POST['affiche_date_naissance']; } }
+	if (empty($_GET['affiche_lieu_naissance']) and empty($_POST['affiche_lieu_naissance'])) { $affiche_lieu_naissance = ''; }
+	else { if (isset($_GET['affiche_lieu_naissance'])) { $affiche_lieu_naissance = $_GET['affiche_lieu_naissance']; } if (isset($_POST['affiche_lieu_naissance'])) { $affiche_lieu_naissance = $_POST['affiche_lieu_naissance']; } }
 	if (empty($_GET['affiche_dp']) and empty($_POST['affiche_dp'])) { $affiche_dp = ''; }
 	else { if (isset($_GET['affiche_dp'])) { $affiche_dp = $_GET['affiche_dp']; } if (isset($_POST['affiche_dp'])) { $affiche_dp = $_POST['affiche_dp']; } }
 	if (empty($_GET['affiche_nom_court']) and empty($_POST['affiche_nom_court'])) { $affiche_nom_court = ''; }
@@ -1350,7 +1352,17 @@ function DecocheCheckbox() {
 			<input name="affiche_doublement" id="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_doublement'>&nbsp;si doublement</label><br />
 			
 			<input name="affiche_date_naissance" id="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_date_naissance'>&nbsp;la date de naissance</label><br />
-			
+
+			<?php
+				if(getSettingAOui('ele_lieu_naissance')) {
+					$checked_lieu_naissance="";
+					if(!empty($affiche_lieu_naissance) and $affiche_lieu_naissance==='1') {
+						$checked_lieu_naissance=" checked";
+					}
+					echo "<input name=\"affiche_lieu_naissance\" id=\"affiche_lieu_naissance\" style=\"border: 1px solid #74748F;\" type=\"checkbox\" value=\"1\"$checked_lieu_naissance /><label for='affiche_lieu_naissance'>&nbsp;le lieu de naissance</label><br />";
+				}
+			?>
+
 			<input name="affiche_dp" id="affiche_dp" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_dp) and $affiche_dp==='1') { ?>checked="checked"<?php } ?> /><label for='affiche_dp'>&nbsp;le régime</label><br />
 
 			<?php
