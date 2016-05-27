@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -745,6 +745,28 @@ $chaine_js_designation_u="var designation_u=new Array(";
 $chaine_prof_classe="";
 $chaine_prof_classe2="";
 $chaine_prof_matiere="";
+
+$chaine_prof_principal="";
+$tab_pp=get_tab_prof_suivi();
+$tmp_tab_deja_pp=array();
+foreach($tab_pp as $tmp_id_classe => $tmp_tab) {
+	for($loop_pp=0;$loop_pp<count($tmp_tab);$loop_pp++) {
+		if(!in_array($tmp_tab[$loop_pp], $tmp_tab_deja_pp)) {
+			if($chaine_prof_principal=="") {
+				$chaine_prof_principal.="var prof_principal=new Array(";
+			}
+			if(count($tmp_tab_deja_pp)>0) {
+				$chaine_prof_principal.=",";
+			}
+			$chaine_prof_principal.="'".$tmp_tab[$loop_pp]."'";
+			$tmp_tab_deja_pp[]=$tmp_tab[$loop_pp];
+		}
+	}
+}
+if($chaine_prof_principal!="") {
+	$chaine_prof_principal.=");";
+}
+
 for($loop=0;$loop<count($tab_statut);$loop++) {
 	$sql="SELECT * FROM utilisateurs WHERE etat='actif' AND statut='".$tab_statut[$loop]."' ORDER BY nom, prenom";
 	$res_u=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -838,6 +860,28 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 				}
 				$texte_infobulle.="</select>";
 			}
+			$chaine_pp_classe="";
+			if($chaine_prof_principal!="") {
+				$texte_infobulle.="<br />Tous les <a href='#' onclick=\"cocher_pp()\">".getSettingValue('gepi_prof_suivi')."</a> ou seulement de ";
+				$texte_infobulle.=" <select name='id_classe' id='id_classe3' onchange='cocher_pp_classe()' title=\"Cocher les ".getSettingValue('gepi_prof_suivi')." la classe.\"><option value=''>---</option>";
+				$sql="SELECT DISTINCT c.id, c.classe FROM classes c, j_eleves_classes jec, j_eleves_professeurs jep WHERE c.id=jec.id_classe AND jec.login=jep.login ORDER BY classe;";
+				$res_classe=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_classe=mysqli_fetch_object($res_classe)) {
+					$texte_infobulle.="<option value='$lig_classe->id'>$lig_classe->classe</option>";
+
+					$chaine_pp_classe.="var pp_classe_".$lig_classe->id."=new Array(";
+					if(isset($tab_pp[$lig_classe->id])) {
+						for($loop_pp=0;$loop_pp<count($tab_pp[$lig_classe->id]);$loop_pp++) {
+							if($loop_pp>0) {
+								$chaine_pp_classe.=", ";
+							}
+							$chaine_pp_classe.="'".$tab_pp[$lig_classe->id][$loop_pp]."'";
+						}
+					}
+					$chaine_pp_classe.=");";
+				}
+				$texte_infobulle.="</select>";
+			}
 		}
 
 		$texte_infobulle.=" <input type='button' value='Ajouter' onclick=\"ajouter_dest_choisis(); cacher_div('div_choix_dest')\"></p>";
@@ -847,7 +891,8 @@ for($loop=0;$loop<count($tab_statut);$loop++) {
 		while($lig_u=mysqli_fetch_object($res_u)) {
 			if(!in_array($lig_u->login, $tab_user_mae)) {
 				$designation_u="$lig_u->civilite ".casse_mot($lig_u->nom, 'maj')." ".casse_mot($lig_u->prenom, 'majf2');
-				$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
+				$texte_infobulle.="<tr class='white_hover'><td style='text-align:left'><input type='checkbox' name='login_dest[]' id='login_dest_$cpt_u' value='$lig_u->login' onchange=\"checkbox_change('login_dest_$cpt_u')\" attribut_statut=\"".$tab_statut[$loop]."\"";
+				$texte_infobulle.="><label for='login_dest_$cpt_u' id='texte_login_dest_$cpt_u'>$designation_u</label></td></tr>";
 				$chaine_js_login_u.="'$lig_u->login',";
 				$chaine_js_designation_u.="'".preg_replace("/'/", " ", $designation_u)."',";
 				$cpt_u++;
@@ -870,11 +915,13 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 	<?php
 		echo js_checkbox_change_style('checkbox_change', 'texte_', 'n');
 
-		echo $chaine_js_login_u;
-		echo $chaine_js_designation_u;
-		echo $chaine_prof_classe;
-		echo $chaine_prof_classe2;
-		echo $chaine_prof_matiere;
+		echo $chaine_js_login_u."\n";
+		echo $chaine_js_designation_u."\n";
+		echo $chaine_prof_classe."\n";
+		echo $chaine_prof_classe2."\n";
+		echo $chaine_prof_matiere."\n";
+		echo $chaine_prof_principal."\n";
+		echo $chaine_pp_classe."\n";
 
 		$chaine_edt_ajouter_mon_compte="";
 		$chaine_edt_ajouter_lien_prof="";
@@ -1003,6 +1050,46 @@ $tabdiv_infobulle[]=creer_div_infobulle("div_choix_dest",$titre_infobulle,"",$te
 		if(matiere!='') {
 			//alert(matiere);
 			tab=eval('prof_matiere_'+matiere);
+			//alert(tab.length);
+			for(i=0;i<<?php echo $cpt_u;?>;i++) {
+				if(document.getElementById('login_dest_'+i)) {
+					for(j=0;j<tab.length;j++) {
+						if(tab[j]==document.getElementById('login_dest_'+i).value) {
+							document.getElementById('login_dest_'+i).checked=true;
+							checkbox_change('login_dest_'+i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	function cocher_pp() {
+		<?php
+			echo $chaine_prof_principal."\n";
+		?>
+		tab=prof_principal;
+		//alert(tab.length);
+		for(i=0;i<<?php echo $cpt_u;?>;i++) {
+			if(document.getElementById('login_dest_'+i)) {
+				for(j=0;j<tab.length;j++) {
+					if(tab[j]==document.getElementById('login_dest_'+i).value) {
+						document.getElementById('login_dest_'+i).checked=true;
+						checkbox_change('login_dest_'+i);
+					}
+				}
+			}
+		}
+	}
+
+	function cocher_pp_classe() {
+		<?php
+			echo $chaine_pp_classe."\n";
+		?>
+
+		id_classe=document.getElementById('id_classe3').options[document.getElementById('id_classe3').selectedIndex].value;
+		if(id_classe!='') {
+			tab=eval('pp_classe_'+id_classe);
 			//alert(tab.length);
 			for(i=0;i<<?php echo $cpt_u;?>;i++) {
 				if(document.getElementById('login_dest_'+i)) {
