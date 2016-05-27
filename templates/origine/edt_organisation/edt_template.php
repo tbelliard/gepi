@@ -3,7 +3,7 @@
 /*
  * $Id$
  * *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -101,7 +101,7 @@
 	<hr />
 	
 	<form action="edt.php" method="post" id="autorise_edt">
-		<fieldset class="no_bordure">
+		<fieldset class="no_bordure fieldset_opacite50">
 <?php
 echo add_token_field();
 ?>
@@ -147,7 +147,7 @@ echo add_token_field();
 	</script>
 
 	<form action="edt.php" method="post" id="autorise_prof">
-		<fieldset class="no_bordure grandEspaceHaut">
+		<fieldset class="no_bordure grandEspaceHaut fieldset_opacite50">
 <?php
 echo add_token_field();
 ?>
@@ -186,7 +186,7 @@ echo add_token_field();
 	</script>
 	
 	<form action="edt.php" method="post" id="autorise_admin">
-		<fieldset class="no_bordure grandEspaceHaut">
+		<fieldset class="no_bordure grandEspaceHaut fieldset_opacite50">
 <?php
 echo add_token_field();
 ?>
@@ -244,7 +244,7 @@ echo add_token_field();
 			</em>
 	  </p>
 
-		<fieldset class="no_bordure grandEspaceHaut">
+		<fieldset class="no_bordure grandEspaceHaut fieldset_opacite50">
 		  <legend class="invisible">Activation pour les élèves et leurs responsables</legend>
 		  <input name="activ_ele"
 				 id="activEleY"
@@ -273,9 +273,80 @@ echo add_token_field();
 		</fieldset>
 	</form>
 
+	<hr />
+
+	<h2>Autres paramètres</h2>
+
+	<form action="edt.php" method="post" id="edt_autres_parametres">
+<?php
+echo add_token_field();
+?>
+	  <!--p>
+			<em>
+				.
+			</em>
+	  </p-->
+
+		<fieldset class="no_bordure grandEspaceHaut fieldset_opacite50">
+		  <legend class="invisible">Affichage des jours fériés et vacances</legend>
+
+		  <p>Professeurs&nbsp;:<br />
+		  <input name="affiche_vacances_prof"
+				 id="affiche_vacances_profY"
+				 value="yes"
+				 type="radio"<?php echo eval_checked("affiche_vacances_prof", "yes"); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="affiche_vacances_profY">
+			Afficher dans l'interface professeur les jours fériés et vacances à venir <em>(sous réserve que ces informations soient saisies dans le Calendrier EDT)</em>
+		  </label>
+
+		  <br />
+		  <input name="affiche_vacances_prof"
+				 id="affiche_vacances_profN"
+				 value="no"
+				 type="radio"<?php echo eval_checked("affiche_vacances_prof", "no"); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="affiche_vacances_profN">
+			Ne pas afficher dans l'interface professeur les jours fériés et vacances à venir <em>(qu'ils soient saisis ou non)</em>
+		  </label>
+		  <br />
+		  </p>
+
+		  <p>Élèves, responsables&nbsp;:<br />
+		  <input name="affiche_vacances_eleresp"
+				 id="affiche_vacances_elerespY"
+				 value="yes"
+				 type="radio"<?php echo eval_checked("affiche_vacances_eleresp", "yes"); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="affiche_vacances_elerespY">
+			Afficher dans l'interface simplifiée/résumé élève/responsable les jours fériés et vacances à venir <em>(sous réserve que ces informations soient saisies dans le Calendrier EDT)</em>
+		  </label>
+
+		  <br />
+		  <input name="affiche_vacances_eleresp"
+				 id="affiche_vacances_elerespN"
+				 value="no"
+				 type="radio"<?php echo eval_checked("affiche_vacances_eleresp", "no"); ?>
+				 onclick="document.getElementById('edt_autres_parametres').submit();"
+				 />
+		  <label for="affiche_vacances_elerespN">
+			Ne pas afficher dans l'interface simplifiée/résumé élève/responsable les jours fériés et vacances à venir <em>(qu'ils soient saisis ou non)</em>
+		  </label>
+		  </p>
+		  <br />
+		  <span class="block center">
+			<input type="submit" value="Enregistrer" id="btn_autres_param" />
+		  </span>
+		</fieldset>
+	</form>
+
 	<script type="text/javascript">
 		//<![CDATA[
 	  document.getElementById('btn_eleve').className = 'invisible';
+	  document.getElementById('btn_autres_param').className = 'invisible';
 		//]]>
 	</script>
 	

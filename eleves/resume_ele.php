@@ -294,9 +294,11 @@ else {
 
 $info_eleve=get_nom_prenom_eleve($login_eleve, "avec_classe");
 $id_classe=get_id_classe_ele_d_apres_date($login_eleve, $ts_display_date);
+//echo "id_classe=$id_classe<br />";
 if($id_classe=="") {
 	$id_classe=get_id_classe_derniere_classe_ele($login_eleve);
 }
+//echo "id_classe=$id_classe<br />";
 //===================================================
 
 //===================================================
@@ -671,6 +673,8 @@ if((getSettingAOui('active_cahiers_texte'))&&(acces_cdt_eleve($_SESSION['login']
 
 	$html="";
 
+	//echo "id_classe=$id_classe<br />".get_nom_classe($id_classe)."<br />";
+
 	$html.="
 <style type='text/css'>
 	.color_fond_notices_t_fait {
@@ -952,6 +956,16 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 	}
 	else {
 		$html.="Aucun message actuellement.";
+	}
+
+	if(getSettingValue('affiche_vacances_eleresp')!="no") {
+		$html_tab_vacances=affiche_tableau_vacances("", "y", "n");
+		if($html_tab_vacances!="") {
+			$html.="<div align='center' style='margin-top:1em; font-size:x-small;'>
+			<p class='bold'>Vacances et jours fériés à venir</p>
+			".$html_tab_vacances."
+		</div>";
+		}
 	}
 
 	echo "
