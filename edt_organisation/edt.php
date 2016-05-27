@@ -2,7 +2,7 @@
 
 /**
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -72,6 +72,8 @@ $autorise_acces_admin = isset($_POST["activ_ad"]) ? $_POST["activ_ad"] : NULL;
 $autorise_acces_eleve = isset($_POST["activ_ele"]) ? $_POST["activ_ele"] : NULL;
 $autorise_acces_tous  = isset($_POST["activ_tous"]) ? $_POST["activ_tous"] : NULL;
 $autorise_saisir_prof = isset($_POST["autorise_saisir_prof"]) ? $_POST["autorise_saisir_prof"] : NULL;
+$affiche_vacances_eleresp = isset($_POST["affiche_vacances_eleresp"]) ? $_POST["affiche_vacances_eleresp"] : NULL;
+$affiche_vacances_prof = isset($_POST["affiche_vacances_prof"]) ? $_POST["affiche_vacances_prof"] : NULL;
 $modif_setting = "";
 $message = "";
 
@@ -96,7 +98,7 @@ $message = "";
 		$modif_setting = "ok";
 	}
 
-	// On effectue la requête
+	// On effectue la requête (un seul des trois formulaires précédents a pu être posté à la fois)
 	if ($modif_setting == "ok") {
 		check_token();
 		$modif = mysqli_query($GLOBALS["mysqli"], $requete) OR DIE('La modification n\'a pas été enregistrée : '.mysqli_error($GLOBALS["mysqli"]));
@@ -105,22 +107,44 @@ $message = "";
 		$post_reussi=TRUE;
 	}
 
-  // L'autorisation pour les professeurs de saisir leur edt
-  if (isset ($autorise_saisir_prof)){
-	check_token();
-    if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
-      $message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
-	  $msg .= " La modification a bien été enregistrée !";
-    }
-  }
+	// L'autorisation pour les professeurs de saisir leur edt
+	if (isset ($autorise_saisir_prof)){
+		check_token();
+		if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
+			$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
+			$msg .= " La modification a bien été enregistrée !";
+		}
+	}
+
+
+	// Modification du setting affiche_vacances_eleresp
+	if (isset($affiche_vacances_eleresp)) {
+		check_token();
+		if (saveSetting("affiche_vacances_eleresp", $affiche_vacances_eleresp)){
+			$message .= "<p class=\"red\">La modification de 'affiche_vacances_eleresp' a bien été enregistrée !</p>";;
+			$msg .= " La modification de 'affiche_vacances_eleresp' a bien été enregistrée !";
+		}
+	}
+
+	// Modification du setting affiche_vacances_prof
+	if (isset($affiche_vacances_prof)) {
+		check_token();
+		if (saveSetting("affiche_vacances_prof", $affiche_vacances_prof)){
+			$message .= "<p class=\"red\">La modification de 'affiche_vacances_prof' a bien été enregistrée !</p>";;
+			$msg .= " La modification de 'affiche_vacances_prof' a bien été enregistrée !";
+		}
+	}
 
 	// Petite fonction pour déterminer le checked="checked"
 	function eval_checked($Settings, $yn){
-	$req_setting = mysqli_fetch_array(mysqli_query($GLOBALS["mysqli"], "SELECT value FROM setting WHERE name = '".$Settings."'")) OR DIE ('Erreur requête eval_setting () : '.mysqli_error($GLOBALS["mysqli"]));
-		if ($req_setting["value"] == $yn) {
-			$aff_check = ' checked="checked"';
-		}else {
-			$aff_check = '';
+		$aff_check = '';
+		$sql="SELECT value FROM setting WHERE name = '".$Settings."';";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql) OR DIE ('Erreur requête eval_setting () : '.mysqli_error($GLOBALS["mysqli"]));
+		if(mysqli_num_rows($res)>0) {
+			$req_setting=mysqli_fetch_array($res);
+			if ($req_setting["value"] == $yn) {
+				$aff_check = ' checked="checked"';
+			}
 		}
 		return $aff_check;
 	}
