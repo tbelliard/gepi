@@ -2289,7 +2289,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
-										(e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
+										(e.date_sortie IS NOT NULL AND e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
@@ -2324,7 +2324,7 @@ else{
 							WHERE e.ele_id=t.ELE_ID AND
 									e.ele_id=t2.col1 AND
 									(
-										(e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
+										(e.date_sortie IS NOT NULL AND e.date_sortie!='' AND e.date_sortie!='0000-00-00 00:00:00') OR
 										e.nom $chaine_collate!= t.ELENOM OR
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
@@ -2552,8 +2552,9 @@ else{
 					if((!isset($tab_ele_id_diff))||(!in_array($tab_ele_id[$i], $tab_ele_id_diff))) {
 						// Contrôler si une date de sortie est enregistrée dans Gepi et pas dans Sconet:
 						$sql="SELECT 1=1 FROM eleves
-								WHERE ele_id='$tab_ele_id[$i]' AND
-										date_sortie!='NULL' AND
+								WHERE ele_id='$tab_ele_id[$i]' AND 
+										date_sortie IS NOT NULL AND 
+										date_sortie!='NULL' AND 
 										date_sortie!='0000-00-00 00:00:00';";
 						info_debug($sql);
 						//echo "$sql<br />";
@@ -3179,8 +3180,9 @@ else{
 
 								// 20120919
 								$sql="SELECT 1=1 FROM eleves
-										WHERE ele_id='$tab_ele_id_diff[$w]' AND
-												date_sortie!='NULL' AND
+										WHERE ele_id='$tab_ele_id_diff[$w]' AND 
+												date_sortie IS NOT NULL AND 
+												date_sortie!='NULL' AND 
 												date_sortie!='0000-00-00 00:00:00';";
 								//echo "<tr><td colspan='13'>$sql</td></tr>\n";
 								$test_sortie=mysqli_query($GLOBALS["mysqli"], $sql);
