@@ -1003,13 +1003,15 @@ if (isset($fiche)) {
 		unset($graphe_chaine_temp);
 		unset($graphe_chaine_mgen);
 
+		$graphe_chaine_etiquette="";
 		for($j=0;$j<count($tab_moy['current_group']);$j++) {
 			$current_group=$tab_moy['current_group'][$j];
 
 			if(in_array($current_eleve_login, $current_group["eleves"]["all"]["list"])) {
 
 				if(!isset($graphe_chaine_etiquette)) {$graphe_chaine_etiquette="";}
-				else {$graphe_chaine_etiquette.="|";}
+				//else {$graphe_chaine_etiquette.="|";}
+				elseif($graphe_chaine_etiquette!="") {$graphe_chaine_etiquette.="|";}
 
 				$graphe_chaine_etiquette.=$current_group["matiere"]["matiere"];
 
