@@ -216,6 +216,8 @@ foreach($tmp_mes_classes as $current_id_classe => $current_classe) {
 
 //echo "\$colspan=$colspan<br />";
 
+insere_lien_calendrier_crob("right");
+
 echo "<div class='norme'><p class='bold'>\n";
 //echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
 //echo "<a href=\"./accueil.php?accueil_simpl=n\"> Accès à l'interface complète </a>";

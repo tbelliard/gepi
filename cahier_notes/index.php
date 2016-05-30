@@ -537,11 +537,13 @@ if  (isset($id_racine) and ($id_racine!='')) {
 		}
     }
 
-    echo "<div class='norme'>\n";
+	insere_lien_calendrier_crob("right");
+
+	echo "<div class='norme'>\n";
 	echo "<form enctype=\"multipart/form-data\" id= \"form1\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
-    echo "<p class='bold'>\n";
-    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
-    echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
+	echo "<p class='bold'>\n";
+	echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a> | \n";
+	echo "<a href='index.php?id_groupe=no_group'> Mes enseignements </a> | \n";
 
 
 //if(isset($current_group)) { echo "DEBUG 1 : ".$current_group['classlist_string']."<br />";}

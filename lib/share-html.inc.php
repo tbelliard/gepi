@@ -5846,4 +5846,49 @@ function get_chaine_matieres_prof($login, $champ="matiere", $separateur=", ") {
 
 	return $retour;
 }
+
+function insere_lien_calendrier_crob($float="") {
+	global $gepiPath, $niveau_arbo, $tabdiv_infobulle, $tabid_infobulle;
+
+	//include("$gepiPath/lib/calendrier_crob.inc.php");
+	if(isset($niveau_arbo)) {
+		if($niveau_arbo==0) {
+			include("./lib/calendrier_crob.inc.php");
+		}
+		elseif($niveau_arbo==1) {
+			include("../lib/calendrier_crob.inc.php");
+		}
+		elseif($niveau_arbo==2) {
+			include("../../lib/calendrier_crob.inc.php");
+		}
+		else {
+			$abandon="y";
+		}
+	}
+	else {
+		include("../lib/calendrier_crob.inc.php");
+	}
+
+	if(!isset($abandon)) {
+		$titre_infobulle="Calendrier";
+		$texte_infobulle="<div id='div_calendrier_popup_contenu_infobulle_crob'>".affiche_calendrier_crob(strftime("%m"), strftime("%Y"), "", "popup")."</div>";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_calendrier_crob_popup',$titre_infobulle,"",$texte_infobulle,"",40,0,'y','y','n','n');
+
+		if($float!="") {
+			echo "<div style='float:$float;width:16px;margin:3px;'>";
+		}
+		echo "<a href='$gepiPath/lib/calendrier.php' onclick=\"afficher_div('div_calendrier_crob_popup', 'y', 10, 10); return false;\" target='_blank' title=\"Afficher le calendrier.\"><img src='$gepiPath/images/icons/date.png' class='icone16' alt='Calendrier' /></a>
+<script type='text/javascript'>
+	function affiche_calendrier_crob(mois, annee, id_classe) {
+		//alert('plop');
+
+		new Ajax.Updater($('div_calendrier_popup_contenu_infobulle_crob'),'$gepiPath/lib/calendrier_crob.php?mois='+mois+'&annee='+annee+'&mode=popup&id_classe='+id_classe+'".add_token_in_url(false)."',{method: 'get'});
+	}
+</script>";
+		if($float!="") {
+			echo "</div>";
+		}
+
+	}
+}
 ?>

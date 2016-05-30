@@ -12548,6 +12548,40 @@ function get_tab_jours_vacances($id_classe='') {
 	return $tab;
 }
 
+function get_tab_jours_vacances2($id_classe='') {
+	$tab=array();
+	$tab['jour']=array();
+	$tab['nom_ferie']=array();
+
+	$sql_ajout="";
+	if($id_classe!="") {
+		$sql_ajout=" AND (classe_concerne_calendrier LIKE '$id_classe;%' OR classe_concerne_calendrier LIKE '%;$id_classe;%')";
+	}
+
+	$sql="SELECT * FROM edt_calendrier WHERE etabvacances_calendrier='1'".$sql_ajout.";";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_object($res)) {
+			$ts1=$lig->debut_calendrier_ts;
+			$ts2=$lig->fin_calendrier_ts;
+
+			if($ts2>$ts1) {
+				$current_ts=$ts1;
+				while($current_ts<$ts2) {
+
+					$tab['jour'][]=strftime("%Y%m%d", $current_ts);
+					$tab['nom_ferie'][]=$lig->nom_calendrier;
+
+					$current_ts+=3600*24;
+				}
+			}
+
+		}
+	}
+
+	return $tab;
+}
+
 function get_tab_remplacements_eleve($login_eleve, $mode="") {
 	global $gepiPath;
 
