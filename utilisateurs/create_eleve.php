@@ -93,6 +93,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 		$nb_comptes_preexistants=0;
 
+		$liste_compte_crees_liens_vers_modify_ele="";
 		$nb_comptes = 0;
 		while ($current_eleve = mysqli_fetch_object($quels_eleves)) {
 			// Création du compte utilisateur pour l'élève considéré
@@ -176,6 +177,11 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 							}
 						}
 
+						if($liste_compte_crees_liens_vers_modify_ele!="") {
+							$liste_compte_crees_liens_vers_modify_ele.=", ";
+						}
+						$liste_compte_crees_liens_vers_modify_ele.="<a href='../eleves/modify_eleve.php?eleve_login=".$current_eleve->login."' target='_'blank' title='Voir la fiche élève dans un nouvel onglet.'>".casse_mot($current_eleve->nom, "maj")." ".casse_mot($current_eleve->prenom, "majf2")."</a>";
+
 						$nb_comptes++;
 					}
 				}
@@ -190,8 +196,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		}
 		if ($nb_comptes == 1) {
 			$msg .= "Un compte a été créé avec succès.<br />";
+			if($liste_compte_crees_liens_vers_modify_ele!="") {
+				$msg.="Le voici ".$liste_compte_crees_liens_vers_modify_ele."<br />";
+			}
 		} elseif ($nb_comptes > 1) {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br />";
+			if($liste_compte_crees_liens_vers_modify_ele!="") {
+				$msg.="Les voici ".$liste_compte_crees_liens_vers_modify_ele."<br />";
+			}
 		}
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 

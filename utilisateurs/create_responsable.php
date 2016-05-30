@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -128,6 +128,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		$nb_comptes = 0;
 		$liste_comptes_recuperes_avec_mdp="";
 		$nb_comptes_recuperes_avec_mdp=0;
+		$liste_compte_crees_liens_vers_modify_resp="";
 		while ($current_parent = mysqli_fetch_object($quels_parents)) {
 			unset($reg_login);
 			$reg_password="";
@@ -433,6 +434,12 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 									if(!$menage) {$msg.="Erreur lors de la suppression de l'action en attente en page d'accueil à propos de $reg_login<br />";}
 								}
 							}
+
+							if($liste_compte_crees_liens_vers_modify_resp!="") {
+								$liste_compte_crees_liens_vers_modify_resp.=", ";
+							}
+							$liste_compte_crees_liens_vers_modify_resp.="<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."' target='_'blank' title='Voir la fiche responsable dans un nouvel onglet.'>".$current_parent->civilite." ".casse_mot($current_parent->nom, "maj")." ".mb_substr($current_parent->prenom, 0, 1)."</a>";
+
 						}
 					}
 				} else {
@@ -445,15 +452,19 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		}
 		if ($nb_comptes == 1) {
 			$msg .= "Un compte a été créé avec succès.<br/>";
+			if($liste_compte_crees_liens_vers_modify_resp!="") {
+				$msg.="Le voici ".$liste_compte_crees_liens_vers_modify_resp."<br />";
+			}
 		} elseif ($nb_comptes > 1) {
 			$msg .= $nb_comptes." comptes ont été créés avec succès.<br/>";
+			$msg.="Les voici ".$liste_compte_crees_liens_vers_modify_resp."<br />";
 		}
 		if($nb_comptes_recuperes_avec_mdp>0) {
 			if($nb_comptes>0) {
 				$msg.="Parmi ces comptes, $nb_comptes_recuperes_avec_mdp sont des comptes récupérés.<br />";
 			}
 			else {
-				$msg.="$nb_comptes_recuperes_avec_mdp comptes récupérés.<br />";
+				$msg.="$nb_comptes_recuperes_avec_mdp compte(s) récupéré(s).<br />";
 			}
 		}
 
