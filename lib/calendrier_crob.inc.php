@@ -3,6 +3,8 @@
 function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 	global $mysqli, $gepiPath;
 
+	$YYYYmmjj_aujourdhui=strftime("%Y%m%d");
+
 	$tab_creneaux=get_heures_debut_fin_creneaux();
 
 	$ts_debut_annee_scolaire=getSettingValue('begin_bookings');
@@ -77,7 +79,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		$afficher_lien_mois_suivant="n";
 	}
 	else {
-		$lien_mois_suivant="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_suivante&amp;mois=$mois_suivant'".$complement_lien_mois_suivant.">Suivant</a>";
+		$lien_mois_suivant="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_suivante&amp;mois=$mois_suivant'".$complement_lien_mois_suivant."><img src='$gepiPath/images/icons/forward.png' class='icone16' alt='Mois suivant' /></a>";
 	}
 
 	$lien_mois_precedent="";
@@ -86,7 +88,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		$afficher_lien_mois_precedent="n";
 	}
 	else {
-		$lien_mois_precedent="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_prec&amp;mois=$mois_prec'".$complement_lien_mois_precedent.">Préc.</a>";
+		$lien_mois_precedent="<a href='$gepiPath/lib/calendrier.php?id_classe=$id_classe&amp;annee=$annee_prec&amp;mois=$mois_prec'".$complement_lien_mois_precedent."><img src='$gepiPath/images/icons/back.png' class='icone16' alt='Mois précédent' /></a>";
 	}
 
 	$ts_dim_suiv=$ts_j1_mois_suiv;
@@ -195,7 +197,7 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 				$details_vacances=$tab_jour_vacance['nom_ferie'][$cpt_tab];
 			}
 			$style=" style='background-color:grey;' title=\"".$details_vacances.".\"";
-			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+			//$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
 			/*
 			echo "<hr />".strftime("%Y%m%d", $ts_courant)."<br /><pre>";
 			print_r($tmp_tab);
@@ -204,29 +206,34 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 		}
 		elseif(!in_array($tab_jfr[$num_jsem_courant], $tab_jour_ouverture)) {
 			$style=" style='background-color:grey;'";
-			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
+			//$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
 		}
 		else {
 			$style="";
 			if(strftime("%m", $ts_courant)>$mois) {
-				$style=" style='background-color:silver;' title=\"Mois suivant\"";
-				$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+				$style=" style='background-color:lavender;' title=\"Mois suivant\"";
+				//$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
 			}
 			elseif(strftime("%m", $ts_courant)<$mois) {
-				$style=" style='background-color:silver;' title=\"Mois précédent\"";
-				$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
+				$style=" style='background-color:lavender;' title=\"Mois précédent\"";
+				//$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em;float:left; '>&nbsp;</div>";
 			}
 
-			$ajout.="<br /><div style='width:2em; margin-right:1px; float:left;'>&nbsp;</div>";
-			$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
+			//$ajout.="<br /><div style='width:2em; margin-right:1px; float:left;'>&nbsp;</div>";
+			//$ajout="<br /><div style='width:2em; margin-right:1px; float:left;'></div><div style='width:2em; float:left;'>&nbsp;</div>";
 		}
 
 		if($temoin_debug==1) {
 			$chaine_debug="<br />$ts_courant<br />".(($ts_dim_suiv-$ts_courant)/3600)."h<br />$temoin_mois_suiv<br />".strftime("%m", $ts_courant);
 		}
 
+		//$texte_jour=strftime("%d", $ts_courant);
+			$texte_jour="<span title=\"".strftime("%A %d/%m/%Y", $ts_courant)."\">".strftime("%d", $ts_courant)."</span>";
+		if($YYYYmmjj_aujourdhui==$annee_courant.$mois_courant.$jour_courant) {
+			$texte_jour="<span style='color:red; font-weight:bold;' title=\"Aujourd'hui ".strftime("%A", $ts_courant)." $jour_courant/$mois_courant/$annee_courant\">".strftime("%d", $ts_courant)."</span>";
+		}
 		$retour.="
-				<td$style>".strftime("%d", $ts_courant).$ajout.$chaine_debug."</td>";
+				<td$style>".$texte_jour.$ajout.$chaine_debug."</td>";
 
 		$ts_courant+=3600*24;
 
