@@ -2,7 +2,7 @@
 /*
  *
  *
- * Copyright 2010-2011 Josselin Jacquard
+ * Copyright 2010-2016 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -53,6 +53,8 @@ if (empty($_GET['nom_motif']) and empty($_POST['nom_motif'])) { $nom_motif=""; }
     else { if (isset($_GET['nom_motif'])) {$nom_motif=$_GET['nom_motif'];} if (isset($_POST['nom_motif'])) {$nom_motif=$_POST['nom_motif'];} }
 if (empty($_GET['com_motif']) and empty($_POST['com_motif'])) { $com_motif="";}
     else { if (isset($_GET['com_motif'])) {$com_motif=$_GET['com_motif'];} if (isset($_POST['com_motif'])) {$com_motif=$_POST['com_motif'];} }
+if (empty($_GET['valable_motif']) and empty($_POST['valable_motif'])) { $valable_motif="y";}
+    else { if (isset($_GET['valable_motif'])) {$valable_motif=$_GET['valable_motif'];} if (isset($_POST['valable_motif'])) {$valable_motif=$_POST['valable_motif'];} }
 
 include("function.php");
 
@@ -86,6 +88,10 @@ if ($action == 'supprimer') {
 		$motif->setNom(stripslashes($nom_motif));
 		$motif->setCommentaire(stripslashes($com_motif));
 		$motif->save();
+
+		// Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
+		$sql="UPDATE a_motifs SET valable='".$valable_motif."' WHERE id='".$id_motif."'";
+		$res=mysqli_query($GLOBALS['mysqli'], $sql);
     }
 }
 
@@ -143,6 +149,7 @@ echo add_token_field();
         <tr>
           <td>Nom (obligatoire)</td>
           <td colspan="2">Commentaire (facultatif)</td>
+          <td>Motif valable ou non (obligatoire)</td>
         </tr>
         <tr>
           <td>
@@ -155,6 +162,32 @@ echo add_token_field();
            </td>
            <td colspan="2">
 	       <input name="com_motif" type="text" id="com_motif" size="40" value="<?php  if ($motif != null) {echo $motif->getCommentaire();} ?>"/>
+           </td>
+           <td colspan="2">
+             <?php
+                 if ($motif != null) {
+                     // Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
+                     $sql="SELECT * FROM a_motifs WHERE id='".$id_motif."'";
+                     $res=mysqli_query($GLOBALS['mysqli'], $sql);
+                     if(mysqli_num_rows($res)==0) {
+                         $checked_valable=" checked";
+                         $checked_non_valable="";
+                     }
+                     else {
+                         $lig=mysqli_fetch_object($res);
+                         if($lig->valable=="y") {
+                             $checked_valable=" checked";
+                             $checked_non_valable="";
+                         }
+                         else {
+                             $checked_valable="";
+                             $checked_non_valable=" checked";
+                         }
+                     }
+                 }
+             ?>
+	       <input name="valable_motif" type="radio" id="valable_motif_y" size="40" value="y"<?php echo $checked_valable;?> /><label for='valable_motif_y'>Valable</label><br />
+	       <input name="valable_motif" type="radio" id="valable_motif_n" size="40" value="n"<?php echo $checked_non_valable;?> /><label for='valable_motif_n'>Non valable</label><br />
            </td>
         </tr>
       </table>
@@ -174,10 +207,23 @@ echo add_token_field();
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
+        <td style="width: 25px;">Valable</td>
+        <td style="width: 25px;"></td>
+        <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
       </tr>
     <?php
+	// A FAIRE AVEC PROPEL ORM dans l'objet AbsenceEleveMotif, mais je ne sais pas faire
+	$tab_a_motifs=array();
+	$sql="SELECT * FROM a_motifs;";
+	$res_a_motifs=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res_a_motifs)>0) {
+		while($lig_a_motif=mysqli_fetch_assoc($res_a_motifs)) {
+			$tab_a_motifs[$lig_a_motif["id"]]=$lig_a_motif;
+		}
+	}
+
     $motif_collection = new PropelCollection();
     $motif_collection = AbsenceEleveMotifQuery::create()->findList();
     $motif = new AbsenceEleveMotif();
@@ -186,6 +232,19 @@ echo add_token_field();
         <tr>
 	  <td><?php echo $motif->getNom(); ?></td>
 	  <td><?php echo $motif->getCommentaire(); ?></td>
+	  <td><?php 
+		if(isset($tab_a_motifs[$motif->getId()])) {
+			if($tab_a_motifs[$motif->getId()]["valable"]=="y") {
+				echo "<img src='$gepiPath/images/enabled.png' class='icone16' alt='Y' title=\"Motif valable\" />";
+			}
+			else {
+				echo "<img src='$gepiPath/images/disabled.png' class='icone16' alt='N' title=\"Motif non valable\" />";
+			}
+		}
+		else {
+			echo "<img src='$gepiPath/images/icons/ico_question.png' class='icone16' alt='?' title=\"???\" />";
+		}
+		?></td>
           <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
           <td><a href="admin_motifs_absences.php?action=supprimer&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce motif ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
           <td><a href="admin_motifs_absences.php?action=monter&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
