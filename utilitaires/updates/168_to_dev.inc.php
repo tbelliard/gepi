@@ -436,4 +436,30 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME = 'affiche_vacances_eleresp'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';");
+	$result .= "Initialisation du paramètre affiche_vacances_eleresp à 'yes': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'valable' à la table 'a_motifs'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM a_motifs LIKE 'valable';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE a_motifs ADD valable VARCHAR(3) NOT NULL default 'y' AFTER sortable_rank;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

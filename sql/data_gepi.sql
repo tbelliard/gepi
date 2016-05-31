@@ -1776,3 +1776,4 @@ INSERT INTO setting SET name='OrientationNbMaxOrientation', value='3';
 INSERT INTO setting SET name='OrientationNbMaxVoeux', value='3';
 INSERT INTO droits SET id='/mod_orientation/consulter_orientation.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Consultation des voeux et orientation proposée', statut='';
 INSERT INTO droits SET id='/mod_annees_anterieures/recuperation_donnees_manquantes.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Ajax: Acces aux appreciations et avis des bulletins', statut='';
+INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';
