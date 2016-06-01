@@ -10249,10 +10249,12 @@ function affiche_evenement($id_ev, $afficher_obsolete="n") {
 
 			$texte_infobulle="<div id='div_action_conseil_de_classe_$id_ev'></div>";
 			$tabdiv_infobulle[]=creer_div_infobulle('div_infobulle_action_conseil_de_classe_'.$id_ev, "Bulletins et conseils de classe","",$texte_infobulle,"",40,0,'y','y','n','n');
-			$retour.="<script type='text/javascript'>
+			$retour.="
+<script type='text/javascript'>
 	function afficher_action_classe_$id_ev(id_classe) {
 		new Ajax.Updater($('div_action_conseil_de_classe_$id_ev'), '$gepiPath/lib/ajax_action.php?mode=actions_conseil_classe&id_classe='+id_classe,{method: 'get'});
 		afficher_div('div_infobulle_action_conseil_de_classe_$id_ev', 'y', 10, 10);
+		//alert('id_classe='+id_classe);
 	}
 </script>";
 

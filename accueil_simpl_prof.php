@@ -1727,7 +1727,7 @@ echo "<script type='text/javascript'>
 
 if($pref_accueil_infobulles=="y"){
 	for($i=0;$i<count($tab_liste_infobulles);$i++){
-		echo "cacher_div('$tab_liste_infobulles[$i]');\n";
+		echo "cacher_div('".$tab_liste_infobulles[$i]."');\n";
 	}
 }
 echo "</script>\n";

@@ -5848,7 +5848,7 @@ function get_chaine_matieres_prof($login, $champ="matiere", $separateur=", ") {
 }
 
 function insere_lien_calendrier_crob($float="") {
-	global $gepiPath, $niveau_arbo, $tabdiv_infobulle, $tabid_infobulle;
+	global $gepiPath, $niveau_arbo, $tabdiv_infobulle;//, $tabid_infobulle;
 
 	//include("$gepiPath/lib/calendrier_crob.inc.php");
 	if(isset($niveau_arbo)) {
