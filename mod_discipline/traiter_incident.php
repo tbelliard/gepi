@@ -490,7 +490,7 @@ if(!isset($id_incident)) {
 	echo add_token_field();
 	echo "<p align='left'><input type='checkbox' name='incidents_clos' id='incidents_clos' value='y'";
 	if($incidents_clos=="y") {echo " checked='checked'";}
-	echo " /><label for='incidents_clos' style='cursor:pointer;' onclick='formulaire.submit()'> Afficher les ".$mod_disc_terme_incident."s clos</label>";
+	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les ".$mod_disc_terme_incident."s clos</label>";
 
 	// 20130716
 	$sql_test_mes_incidents="SELECT 1=1 FROM s_incidents si, s_protagonistes sp WHERE si.declarant='".$_SESSION['login']."' AND si.id_incident=sp.id_incident LIMIT 1;";
@@ -501,7 +501,7 @@ if(!isset($id_incident)) {
 		echo "<br />\n";
 		echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
 		if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
-		echo " /><label for='declarant_incident2' style='cursor:pointer;' onclick='formulaire.submit()'> Ne voir que mes déclarations d'".$mod_disc_terme_incident."s</label>\n";
+		echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'".$mod_disc_terme_incident."s</label>\n";
 	}
 	echo "</p>\n";
 
