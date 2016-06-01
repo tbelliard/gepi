@@ -1362,7 +1362,7 @@ function tabmatieres($type_brevet){
 	for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 		$tabmatieres[$j]['extraction_moyenne']='y';
 	}
-	$sql="SELECT id_mat FROM notanet_corresp WHERE mode='saisie';";
+	$sql="SELECT id_mat FROM notanet_corresp WHERE mode='saisie' AND type_brevet = '".$type_brevet."' ;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res)>0) {
 		while($lig=mysqli_fetch_object($res)) {
