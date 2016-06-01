@@ -241,6 +241,7 @@ if($extraire=="y") {
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
 		// Motif on valable: C'est une partie des non justifié?
+		/*
 		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e 
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
@@ -250,6 +251,16 @@ if($extraire=="y") {
 		a.eleve_id=e.id_eleve AND 
 		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4;";
+		*/
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e 
+		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+		a.manquement_obligation_presence='1' AND 
+		(a.retards='0' OR a.motifs_absences!='') AND 
+		a.eleve_id=e.id_eleve AND 
+		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
+		GROUP BY a.eleve_id HAVING COUNT(a.manquement_obligation_presence)>=4;";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		//$tab_stat['mef'][$cpt_mef]['non_valable_sup_egal_4']=mysqli_num_rows($res);
 		$tab_stat['mef'][$cpt_mef]['non_valable_sup_egal_4']=0;
@@ -267,11 +278,18 @@ if($extraire=="y") {
 			while($lig_ele=mysqli_fetch_object($res)) {
 				$cpt_non_valable=0;
 
+				/*
 				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
 				a.manquement_obligation_presence='1' AND 
 				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.non_justifiee!='0' AND 
+				a.eleve_id='".$lig_ele->eleve_id."';";
+				*/
+				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+				a.manquement_obligation_presence='1' AND 
+				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.eleve_id='".$lig_ele->eleve_id."';";
 				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
@@ -399,6 +417,7 @@ if($extraire=="y") {
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
 		// Motif on valable: C'est une partie des non justifié?
+		/*
 		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e 
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
@@ -408,6 +427,15 @@ if($extraire=="y") {
 		a.eleve_id=e.id_eleve AND 
 		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=4 AND COUNT(a.non_justifiee)<=10;";
+		*/
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e 
+		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+		a.manquement_obligation_presence='1' AND 
+		(a.retards='0' OR a.motifs_absences!='') AND 
+		a.eleve_id=e.id_eleve AND 
+		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
+		GROUP BY a.eleve_id HAVING COUNT(a.manquement_obligation_presence)>=4;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		//$tab_stat['mef'][$cpt_mef]['non_valable_4_a_10']=mysqli_num_rows($res);
 		$tab_stat['mef'][$cpt_mef]['non_valable_4_a_10']=0;
@@ -425,11 +453,18 @@ if($extraire=="y") {
 			while($lig_ele=mysqli_fetch_object($res)) {
 				$cpt_non_valable=0;
 
+				/*
 				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
 				a.manquement_obligation_presence='1' AND 
 				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.non_justifiee!='0' AND 
+				a.eleve_id='".$lig_ele->eleve_id."';";
+				*/
+				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+				a.manquement_obligation_presence='1' AND 
+				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.eleve_id='".$lig_ele->eleve_id."';";
 				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
@@ -556,7 +591,8 @@ if($extraire=="y") {
 
 		// Aucun motif (i.e. non valable)
 		// Comment récupérer ça?
-		// Motif on valable: C'est une partie des non justifié?
+		// Motif on valable: C'est une partie des non justifié? Pas forcément: Cas du parent qui met comme justification "Enlevé par les ovnis"
+		/*
 		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id,count(a.non_justifiee) FROM a_agregation_decompte a, eleves e 
 		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
@@ -566,6 +602,15 @@ if($extraire=="y") {
 		a.eleve_id=e.id_eleve AND 
 		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
 		GROUP BY a.eleve_id HAVING COUNT(a.non_justifiee)>=11;";
+		*/
+		$sql="SELECT e.login,e.nom,e.prenom,a.eleve_id FROM a_agregation_decompte a, eleves e 
+		WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+		a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+		a.manquement_obligation_presence='1' AND 
+		(a.retards='0' OR a.motifs_absences!='') AND 
+		a.eleve_id=e.id_eleve AND 
+		e.mef_code IN (SELECT DISTINCT mef_code FROM mef WHERE mef_rattachement='".$lig_mef->mef_code."') 
+		GROUP BY a.eleve_id HAVING COUNT(a.manquement_obligation_presence)>=11;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		//$tab_stat['mef'][$cpt_mef]['non_valable_sup_egal_11']=mysqli_num_rows($res);
 		$tab_stat['mef'][$cpt_mef]['non_valable_sup_egal_11']=0;
@@ -583,11 +628,18 @@ if($extraire=="y") {
 			while($lig_ele=mysqli_fetch_object($res)) {
 				$cpt_non_valable=0;
 
+				/*
 				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
 				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
 				a.manquement_obligation_presence='1' AND 
 				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.non_justifiee!='0' AND 
+				a.eleve_id='".$lig_ele->eleve_id."';";
+				*/
+				$sql="SELECT * FROM a_agregation_decompte a WHERE a.date_demi_jounee>='".$annee_extract."-".$mois."-01 00:00:00' AND 
+				a.date_demi_jounee<'".$annee_mois_suiv."-".$mois_suiv."-01 00:00:00' AND 
+				a.manquement_obligation_presence='1' AND 
+				(a.retards='0' OR a.motifs_absences!='') AND 
 				a.eleve_id='".$lig_ele->eleve_id."';";
 				$res2=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res2)>0) {
@@ -629,31 +681,33 @@ if($extraire=="y") {
 
 		}
 		//======================================
+		// Correctif pour les arrondis
+		$tab_stat['mef'][$cpt_mef]['pourcentage_nj_sup_egal_4']=$tab_stat['mef'][$cpt_mef]['pourcentage_nj_4_a_10']+$tab_stat['mef'][$cpt_mef]['pourcentage_nj_sup_egal_11'];
+		$tab_stat['mef'][$cpt_mef]['pourcentage_non_valable_sup_egal_4']=$tab_stat['mef'][$cpt_mef]['pourcentage_non_valable_4_a_10']+$tab_stat['mef'][$cpt_mef]['pourcentage_non_valable_sup_egal_11'];
+		//======================================
 
 		$cpt_mef++;
 	}
 
-}
+	/*
+	$tab_prefixe_mois=array();
+	$tab_prefixe_mois["01"]="janv";
+	$tab_prefixe_mois["02"]="fevr";
+	$tab_prefixe_mois["03"]="mars";
+	$tab_prefixe_mois["04"]="avr";
+	$tab_prefixe_mois["05"]="mai";
+	$tab_prefixe_mois["06"]="juin";
+	$tab_prefixe_mois["07"]="juil";
+	$tab_prefixe_mois["08"]="aout";
+	$tab_prefixe_mois["09"]="sept";
+	$tab_prefixe_mois["10"]="oct";
+	$tab_prefixe_mois["11"]="nov";
+	$tab_prefixe_mois["12"]="dec";
+	*/
 
-/*
-$tab_prefixe_mois=array();
-$tab_prefixe_mois["01"]="janv";
-$tab_prefixe_mois["02"]="fevr";
-$tab_prefixe_mois["03"]="mars";
-$tab_prefixe_mois["04"]="avr";
-$tab_prefixe_mois["05"]="mai";
-$tab_prefixe_mois["06"]="juin";
-$tab_prefixe_mois["07"]="juil";
-$tab_prefixe_mois["08"]="aout";
-$tab_prefixe_mois["09"]="sept";
-$tab_prefixe_mois["10"]="oct";
-$tab_prefixe_mois["11"]="nov";
-$tab_prefixe_mois["12"]="dec";
-*/
-
-$non_calcule="";
-//$csv="Mois ;".$tab_prefixe_mois[$mois]."-".mb_substr($annee_extract,2).";;;;;;;;;;;;
-$csv="Mois ;".$tab_stat["mois"].";;;;;;;;;;;;
+	$non_calcule="";
+	//$csv="Mois ;".$tab_prefixe_mois[$mois]."-".mb_substr($annee_extract,2).";;;;;;;;;;;;
+	$csv="Mois ;".$tab_stat["mois"].";;;;;;;;;;;;
 Nom établissement;".getSettingValue("gepiSchoolName").";;;;;;;;;;;;
 Ville;".getSettingValue("gepiSchoolCity").";;;;;;;;;;;;
 Logiciel;Gepi;;;;;;;;;;;;
@@ -669,14 +723,16 @@ Nombre d'élève par niveau scolaire dont les absences ont pour attribut 'AUCUN 
 NIVEAU - MEF;MEF_2;A partir de 4 demi-journées;;;;De 4 à 10 demi-journées;;;;A partir de 11 demi-journées;;;
 ;;% d'éléves absents;;nombre d'élèves;;% d'éléves absents;;nombre d'élèves;;% d'éléves absents;;nombre d'élèves;
 ;;Aucun motif;Non justifié;Aucun motif;Non justifié;Aucun motif;Non justifié;Aucun motif;Non justifié;Aucun motif;Non justifié;Aucun motif;Non justifié\n";
-for($loop=0;$loop<count($tab_stat["mef"]);$loop++) {
-	$csv.=$tab_stat["mef"][$loop]["libelle_long"].";".$tab_stat["mef"][$loop]["mef_2"].";".
-	$tab_stat["mef"][$loop]["pourcentage_non_valable_sup_egal_4"].";".$tab_stat["mef"][$loop]["pourcentage_nj_sup_egal_4"].";".
-	$tab_stat["mef"][$loop]["non_valable_sup_egal_4"].";".$tab_stat['mef'][$loop]['nj_sup_egal_4'].";".
-	$tab_stat["mef"][$loop]["pourcentage_non_valable_4_a_10"].";".$tab_stat["mef"][$loop]["pourcentage_nj_4_a_10"].";".
-	$tab_stat["mef"][$loop]["non_valable_4_a_10"].";".$tab_stat['mef'][$loop]['nj_4_a_10'].";".
-	$tab_stat["mef"][$loop]["pourcentage_non_valable_sup_egal_11"].";".$tab_stat["mef"][$loop]["pourcentage_nj_sup_egal_11"].";".
-	$tab_stat["mef"][$loop]["non_valable_sup_egal_11"].";".$tab_stat['mef'][$loop]['nj_sup_egal_11']."\n";
+	for($loop=0;$loop<count($tab_stat["mef"]);$loop++) {
+		$csv.=$tab_stat["mef"][$loop]["libelle_long"].";".$tab_stat["mef"][$loop]["mef_2"].";".
+		$tab_stat["mef"][$loop]["pourcentage_non_valable_sup_egal_4"].";".$tab_stat["mef"][$loop]["pourcentage_nj_sup_egal_4"].";".
+		$tab_stat["mef"][$loop]["non_valable_sup_egal_4"].";".$tab_stat['mef'][$loop]['nj_sup_egal_4'].";".
+		$tab_stat["mef"][$loop]["pourcentage_non_valable_4_a_10"].";".$tab_stat["mef"][$loop]["pourcentage_nj_4_a_10"].";".
+		$tab_stat["mef"][$loop]["non_valable_4_a_10"].";".$tab_stat['mef'][$loop]['nj_4_a_10'].";".
+		$tab_stat["mef"][$loop]["pourcentage_non_valable_sup_egal_11"].";".$tab_stat["mef"][$loop]["pourcentage_nj_sup_egal_11"].";".
+		$tab_stat["mef"][$loop]["non_valable_sup_egal_11"].";".$tab_stat['mef'][$loop]['nj_sup_egal_11']."\n";
+	}
+
 }
 
 if($mode=="export_csv") {
@@ -762,6 +818,25 @@ $tabid_infobulle=$tabid_infobulle_0;
 //echo "<p style='color:red; font-weight:bold'>Cette page, réclamée peu de temps avant la sortie de la 1.6.3, est inachevée.</p>\n";
 
 //debug_var();
+
+$sql="SELECT 1=1 FROM a_agregation_decompte;";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==0) {
+	$chaine_agregation="remplissage de cette table";
+	if(acces("/mod_abs2/admin/admin_table_agregation.php", $_SESSION['statut'])) {
+		if(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
+			$chaine_agregation="<a href='$gepiPath/mod_abs2/admin/admin_table_agregation.php'>remplissage de cette table</a>";
+		}
+		elseif(($_SESSION['statut']=="administrateur")) {
+			$chaine_agregation="<a href='$gepiPath/mod_abs2/admin/admin_table_agregation.php'>remplissage de cette table</a>";
+		}
+	}
+	echo "
+	<p style='color:red'>La table 'a_agregation_decompte' est vide.<br />
+	Commencez par provoquer le $chaine_agregation.<br />
+	<strong>Attention&nbsp;:</strong> L'opération est longue et gourmande en ressources.<br />
+	Il est préférable de lancer l'opération en dehors des heures de cours.</p>";
+}
 
 // Choix du mois
 if(!isset($mois)) {
