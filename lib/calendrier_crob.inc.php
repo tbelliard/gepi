@@ -264,7 +264,8 @@ function affiche_calendrier_crob($mois="", $annee="", $id_classe="", $mode="") {
 	}
 	$retour.="
 		</tbody>
-	</table>";
+	</table>
+</div>";
 
 	return $retour;
 }
