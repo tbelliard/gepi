@@ -1560,7 +1560,7 @@ foreach ($liste_eleves as $eleve_login) {
 				// MODIF: boireaus 20080520
 				//$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");\"";
 				$mess[$k].=" onfocus=\"focus_suivant(".$k.$num_id.");document.getElementById('focus_courant').value='".$k.$num_id."';";
-				$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."');";
+				$mess[$k].="repositionner_commtype(); afficher_positionner_div_notes('notes_".$eleve_login."_".$k."', '".$eleve_login."');";
 				//================================================
 				if(getSettingValue("gepi_pmv")!="n"){
 					$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login."';";
@@ -1888,6 +1888,8 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 		new Ajax.Updater($('div_notes_cn'),'../lib/ajax_action.php?mode=notes_ele_grp_per&ele_login='+login_ele+'&id_groupe='+id_groupe,{method: 'get'});
 
 		afficher_div('div_infobulle_notes_cn', 'y', 10, 10);
+
+		document.getElementById('login_ele_courant').value=login_ele;
 	}
 </script>";
 
@@ -1906,7 +1908,10 @@ ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n
 		}
 	}
 
-echo "<script type='text/javascript'>
+echo "
+<input type='hidden' name='login_ele_courant' id='login_ele_courant' value='' />
+
+<script type='text/javascript'>
 
 	function repositionner_commtype() {
 		if(document.getElementById('div_commtype')) {
@@ -1918,7 +1923,7 @@ echo "<script type='text/javascript'>
 		}
 	}
 
-	function afficher_positionner_div_notes(id_div_notes) {
+	function afficher_positionner_div_notes(id_div_notes, login_ele) {
 		if(document.getElementById(id_div_notes)) {
 			div_note_aff='n';
 
@@ -1943,9 +1948,8 @@ echo "<script type='text/javascript'>
 				// A FAIRE: Ajouter un test: si le positionnement a échoué et qu'on est hors fenêtre repositionner.
 			}
 
-			// 20160312
 			if(document.getElementById('div_infobulle_notes_cn')) {
-				if(document.getElementById('div_infobulle_notes_cn').style.display!='none') {
+				if((document.getElementById('div_infobulle_notes_cn').style.display!='none')&&(document.getElementById('login_ele_courant').value!=login_ele)) {
 					document.getElementById('div_infobulle_notes_cn').style.display='none';
 				}
 			}
