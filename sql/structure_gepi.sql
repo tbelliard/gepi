@@ -416,7 +416,7 @@ CREATE TABLE a_motifs
 	nom VARCHAR(250) NOT NULL COMMENT 'Nom du motif',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
-	valable VARCHAR(3) NOT NULL default 'y', COMMENT 'caractere valable ou non du motif',
+	valable VARCHAR(3) NOT NULL default 'y' COMMENT 'caractere valable ou non du motif',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id)
