@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
 *
 * This file is part of GEPI.
 *
@@ -533,8 +533,23 @@ if((!isset($id_classe))||(!isset($id_groupe))) {
 					nc.type_brevet='$type_brevet';";
 				//echo "$sql<br />";
 				$res_eff=mysqli_query($GLOBALS["mysqli"], $sql);
+
+				$tmp_grp=get_group($lig_grp->id_groupe, array("visibilite"));
+
+				/*
+				echo "<pre>";
+				print_r($tmp_grp);
+				echo "</pre>";
+				*/
+
 				echo "<span class='bold' title=\"Nombre de notes saisies\">".mysqli_num_rows($res_eff)."&nbsp;:</span> ";
-				echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet&amp;id_classe=$lig->id_classe&amp;id_groupe=$lig_grp->id_groupe&amp;matiere=$lig_mn->matiere'>".get_info_grp($lig_grp->id_groupe)."</a><br />";
+				echo "<a href='".$_SERVER['PHP_SELF']."?type_brevet=$type_brevet&amp;id_classe=$lig->id_classe&amp;id_groupe=$lig_grp->id_groupe&amp;matiere=$lig_mn->matiere'>".get_info_grp($lig_grp->id_groupe)."</a>";
+
+				if((!isset($tmp_grp["visibilite"]["bulletins"]))||($tmp_grp["visibilite"]["bulletins"]!="n")) {
+					echo "<img src='../images/icons/bulletin_16.png' class='icone16' alt='Bulletins' />";
+				}
+
+				echo "<br />";
 			}
 
 		}
@@ -618,6 +633,8 @@ if(!getSettingAOui("notanet_saisie_note_ouverte")) {
 	echo "<p style='color:red'>La saisie de notes est actuellement fermée.<br />Seule la consultation est possible.</p>";
 }
 
+$sql="SELECT * FROM ";
+
 $notanet_saisie_note_ouverte=getSettingAOui("notanet_saisie_note_ouverte");
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>
@@ -653,6 +670,7 @@ $sql="SELECT DISTINCT jeg.login FROM j_eleves_classes jec,
 	j_eleves_groupes jeg,
 	j_groupes_matieres jgm,
 	notanet_corresp nc, 
+	notanet_ele_type net, 
 	eleves e
 WHERE jec.login=jeg.login AND
 	jec.id_classe='$id_classe' AND
@@ -661,6 +679,8 @@ WHERE jec.login=jeg.login AND
 	jgm.id_matiere='$matiere' AND
 	jgm.id_matiere=nc.matiere AND
 	jeg.login=e.login AND 
+	net.type_brevet=nc.type_brevet AND 
+	net.login=jec.login AND 
 	nc.type_brevet='$type_brevet'
 ORDER BY e.nom, e.prenom, e.naissance;";
 //echo "$sql<br />";
