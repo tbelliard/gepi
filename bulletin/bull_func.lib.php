@@ -6211,7 +6211,6 @@ $hauteur_pris_app_abs=0;
 					if(mysql_num_rows($test)>0) {
 				*/
 
-				// 20130719
 				if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
 						$fich_sign=$signature_bull[$tab_bull['id_classe']];
 
@@ -6219,7 +6218,9 @@ $hauteur_pris_app_abs=0;
 						$Y_sign = $Y_sign_chef_init;
 
 						$largeur_dispo=$tab_modele_pdf["longeur_sign_chef"][$classe_id]-10;
-						$hauteur_dispo=$hauteur_sign_chef_init-10;
+						//$hauteur_dispo=$hauteur_sign_chef_init-10;
+						// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
+						$hauteur_dispo=$hauteur_sign_chef_init-2;
 						/*
 						echo "\$tab_modele_pdf[\"longeur_sign_chef\"][$classe_id]=".$tab_modele_pdf["longeur_sign_chef"][$classe_id]."<br />\n";
 						echo "\$hauteur_sign_chef_init=".$hauteur_sign_chef_init."<br />\n";
