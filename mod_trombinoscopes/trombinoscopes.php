@@ -174,20 +174,34 @@ if(isset($_POST['upload_photo'])) {
 			$dest = $rep_photos;
 
 			$sql="SELECT elenoet FROM eleves WHERE login='".mysqli_real_escape_string($GLOBALS["mysqli"], $_POST['login_photo'])."';";
+			//echo "$sql<br />";
 			$res_elenoet=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(mysqli_num_rows($res_elenoet)==0) {
 				$msg.="Aucun elenoet n'a été trouvé pour renommer la photo de cet élève.<br />\n";
 			}
 			else {
-				$quiestce=encode_nom_photo(old_mysql_result($res_elenoet,0,'elenoet'));
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					$elenoet_ou_login=$_POST['login_photo'];
+				}
+				else {
+					$lig_elenoet=mysqli_fetch_object($res_elenoet);
+					$elenoet_ou_login=$lig_elenoet->elenoet;
+				}
+
+				$quiestce=encode_nom_photo($elenoet_ou_login);
+				//echo "\$quiestce=$quiestce<br />";
+				$dest_file=$rep_photos.encode_nom_photo($quiestce).".jpg";
+				//echo "\$dest_file=$dest_file<br />";
+				//if (!deplacer_fichier_upload($sav_photo['tmp_name'], $rep_photos.$quiestce.".jpg")) {
+				if (!deplacer_fichier_upload($sav_photo['tmp_name'], $dest_file)) {
 					$msg.="Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
 					//$msg = "Téléchargement réussi.";
 					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 						// si le redimensionnement des photos est activé on redimenssionne
 
-						$source = imagecreatefromjpeg($rep_photos.$quiestce.".jpg"); // La photo est la source
+						//$source = imagecreatefromjpeg($rep_photos.$quiestce.".jpg"); // La photo est la source
+						$source = imagecreatefromjpeg($dest_file); // La photo est la source
 
 						if (getSettingValue("active_module_trombinoscopes_rt")=='') {
 							$destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes"));
@@ -206,7 +220,8 @@ if(isset($_POST['upload_photo'])) {
 							$destination = ImageRotateRightAngle($destination,$degrees);
 						}
 						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-						imagejpeg($destination, $rep_photos.$quiestce.".jpg",100);
+						//imagejpeg($destination, $rep_photos.$quiestce.".jpg",100);
+						imagejpeg($destination, $dest_file,100);
 					}
 				}
 			}

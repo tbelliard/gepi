@@ -4496,7 +4496,7 @@ function encode_nom_photo($nom_photo) {
  * @see getSettingValue()
  */
 function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
-    global $mysqli;
+	global $mysqli;
 	
 	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
@@ -4511,10 +4511,10 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 
 	// En multisite, on ajoute le répertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		  // On récupère le RNE de l'établissement
-      $repertoire2=$_COOKIE['RNE']."/";
+		// On récupère le RNE de l'établissement
+		$repertoire2=$_COOKIE['RNE']."/";
 	}else{
-	  $repertoire2="";
+		$repertoire2="";
 	}
 
 
@@ -4522,19 +4522,18 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	if ($repertoire == "eleves") {
 
 		if($_elenoet_ou_login!='') {
-
+			//echo "\$_elenoet_ou_login=$_elenoet_ou_login<br />";
 			// on vérifie si la photo existe
 
+			// En multisite, on recherche aussi avec les logins
 			if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-				// En multisite, on recherche aussi avec les logins
-				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-					// On récupère le login de l'élève
-					$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
-					$query = mysqli_query($mysqli, $sql);
-					$obj = $query->fetch_object();
-					$_elenoet_ou_login = $obj->login;
-				}
+				// On récupère le login de l'élève
+				$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+				$query = mysqli_query($mysqli, $sql);
+				$obj = $query->fetch_object();
+				$_elenoet_ou_login = $obj->login;
 			}
+			//echo "\$_elenoet_ou_login=$_elenoet_ou_login<br />";
 
 			if(file_exists($chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg")) {
 				$photo=$chemin."../photos/".$repertoire2."eleves/".encode_nom_photo($_elenoet_ou_login).".jpg";
@@ -4556,6 +4555,12 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 			}
 
 		}
+		// DEBUG
+		/*
+		if(isset($photo)) {
+			echo "\$photo=$photo<br />";
+		}
+		*/
 	}
 	// Cas des non-élèves
 	else {
