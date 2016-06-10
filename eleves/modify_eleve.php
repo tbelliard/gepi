@@ -635,8 +635,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			*/
 				$sql.=",email='$reg_email'";
 			//}
-			$sql.=" WHERE login='".$eleve_login."'";
-
+			$sql.=" WHERE login='".$eleve_login."';";
+			//echo "$sql<br />";
 			$reg_data = mysqli_query($GLOBALS["mysqli"], $sql);
 			if (!$reg_data) {
 				$msg = "Erreur lors de l'enregistrement des données";
@@ -806,13 +806,22 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 			// Envoi de la photo
 			if(isset($reg_no_gep)){
 				//echo "\$reg_no_gep=$reg_no_gep<br />";
-				if($reg_no_gep!=""){
-					if(mb_strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0) {
+
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					$elenoet_ou_login=$eleve_login;
+				}
+				else {
+					$elenoet_ou_login=$reg_no_gep;
+				}
+
+				if($elenoet_ou_login!=""){
+					if((isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')||
+					(mb_strlen(preg_replace("/[0-9]/","",$elenoet_ou_login))==0)) {
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
 								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
-								$photo=nom_photo($reg_no_gep);
+								$photo=nom_photo($elenoet_ou_login);
 /*
 								if("$photo"!=""){
 									if(unlink("../photos/eleves/$photo")){
@@ -826,16 +835,20 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 									}
 								}
 								else{
-									$msg.="Echec de la suppression de la photo correspondant à $reg_no_gep (<i>non trouvée</i>) ";
+									$msg.="Echec de la suppression de la photo correspondant à $elenoet_ou_login (<i>non trouvée</i>) ";
 								}
 							}
 						}
 
 						// Contrôler qu'un seul élève a bien cet elenoet???
-						$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
-						$test=mysqli_query($GLOBALS["mysqli"], $sql);
-						$nb_elenoet=mysqli_num_rows($test);
-						if($nb_elenoet==1){
+						$nb_occurrence_identifiant=1;
+						if (!isset($GLOBALS['multisite']) OR $GLOBALS['multisite'] != 'y') {
+							$sql="SELECT 1=1 FROM eleves WHERE elenoet='$reg_no_gep'";
+							$test=mysqli_query($GLOBALS["mysqli"], $sql);
+							$nb_occurrence_identifiant=mysqli_num_rows($test);
+						}
+
+						if($nb_occurrence_identifiant==1){
 							// filephoto
 							if(isset($_FILES['filephoto'])){
 								$filephoto_tmp=$_FILES['filephoto']['tmp_name'];
@@ -845,7 +858,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 									// Tester la taille max de la photo?
 
 									if(is_uploaded_file($filephoto_tmp)){
-										$dest_file=$rep_photos.encode_nom_photo($reg_no_gep).".jpg";
+										$dest_file=$rep_photos.encode_nom_photo($elenoet_ou_login).".jpg";
 										//echo "\$dest_file=$dest_file<br />";
 										$source_file=$filephoto_tmp;
 										$res_copy=copy("$source_file" , "$dest_file");
@@ -870,7 +883,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 								}
 							}
 						}
-						elseif($nb_elenoet==0){
+						elseif($nb_occurrence_identifiant==0){
 								//$msg.="Le numéro GEP de l'élève n'est pas enregistré dans la table 'eleves'.";
 								$msg.="Le numéro interne Sconet (elenoet) de l'élève n'est pas enregistré dans la table 'eleves'.";
 						}
