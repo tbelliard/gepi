@@ -108,6 +108,11 @@ while($lig_class=mysqli_fetch_object($result_classes)){
 
 			echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id&amp;tab_periode_num[0]=".$lig_per->num_periode."&amp;valide_select_eleves=y' target='_blank'>".$lig_per->nom_periode."</a></td>\n";
 		}
+		echo "<td> - <a href='bull_index.php?mode_bulletin=pdf&amp;type_bulletin=-1&amp;choix_periode_num=fait&amp;b_adr_pg=xx&amp;intercaler_app_classe=y&amp;bouton_valide_select_eleves1=Valider&amp;tab_id_classe[0]=$lig_class->id";
+		for($loop=0;$loop<mysqli_num_rows($res_per);$loop++) {
+			echo "&amp;tab_periode_num[$loop]=".($loop+1);
+		}
+		echo "&amp;valide_select_eleves=y' target='_blank'>Toutes</a></td>\n";
 		echo "</tr>\n";
 	}
 	$cpt++;
