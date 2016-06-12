@@ -1022,15 +1022,15 @@ function focus_suivant(num){
 	if ($test !== 0 AND $restauration == NULL) {
 		// On envoie un message à l'utilisateur
 		echo "
-		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées lors de votre dernière saisie.<br />
+		<p class=\"red\">Certaines appréciations n'ont pas été enregistrées dans une table temporaire lors de votre dernière saisie.<br />
 			Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
 		</p>
 		<p class=\"red\">
 		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui".add_token_in_url()."\">OUI</a>
-		(elles remplaceront alors la saisie précédente)
+		<em>(elles remplaceront le contenu actuel des champs de saisie)</em>
 			-
 		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non".add_token_in_url()."\">NON</a>
-		(elles seront alors définitivement perdues)
+		<em>(elles seront alors définitivement perdues)</em>
 		</p>
 		";
 	}
