@@ -127,10 +127,10 @@ if(isset($_POST['ajout_travail'])) {
 			}
 			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$update) {
-				$msg.="Erreur lors de la mise à jour du texte saisi.<br />";
+				$msg.="Erreur lors de la mise à jour du texte saisi (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 			}
 			else {
-				$msg.="Mise à jour du texte saisi effectuée.<br />";
+				$msg.="<span style='color:green'>Mise à jour du texte saisi effectuée (".strftime("%d/%m/%Y à %H:%M:%S").").</span><br />";
 				$travail=$travail_reg;
 			}
 		}
@@ -242,14 +242,14 @@ if(isset($_POST['ajout_travail'])) {
 				}
 
 				$res_copy=copy("$source_file" , "$dest_file");
-				if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
+				if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";}
 			}
 		}
 		$temoin_modif_fichier++;
 	}
 
 	if($temoin_modif_fichier>0) {
-		$msg.="Enregistrement des modifications pour ".$temoin_modif_fichier." fichier(s).<br />";
+		$msg.="<span style='color:green'>Enregistrement des modifications pour ".$temoin_modif_fichier." fichier(s) (".strftime("%d/%m/%Y à %H:%M:%S").").</span><br />";
 	}
 
 }
