@@ -8075,6 +8075,7 @@ Concrètement, le témoin est juste remis à non lu.\" target='_blank'>
 function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date") {
 	global $mysqli;
 	global $gepiPath;
+	global $themessage;
 
 	$retour="";
 	if($mode=='tous') {
@@ -8115,7 +8116,7 @@ function affiche_historique_messages_recus($login_dest, $mode="tous", $tri="date
 			$retour.="<th>Message</th>";
 		}
 		$retour.="
-		<th><a href=\"javascript:trie_affiche_historique_messages_recus('vu')\" title='Trier selon que le message est lu ou non'>Lu/vu</a></th>
+		<th><a href=\"javascript:trie_affiche_historique_messages_recus('vu')\" title='Trier selon que le message est lu ou non'>Lu/vu</a><br /><a href='$gepiPath/mod_alerte/form_message.php?mode=marquer_tous_lus&amp;mode_no_js=y".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\"/><img src='$gepiPath/images/enabled_wizard.png' class='icone20' alt='Magic' title=\"Marquer tous les messages comme lus (pour éviter de devoir les cocher un par un).\"/></a></th>
 		<!-- A FAIRE : Ajouter une colonne pour Répondre si on en a le droit -->";
 
 		if($peut_poster_message) {

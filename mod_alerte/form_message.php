@@ -195,6 +195,20 @@ if((isset($mode))&&($mode=='marquer_lu')) {
 	die();
 }
 
+if((isset($mode))&&($mode=='marquer_tous_lus')) {
+	check_token();
+
+	$sql="UPDATE messagerie SET vu='1', date_vu='".strftime("%Y-%m-%d %H:%M:%S")."' WHERE login_dest='".$_SESSION['login']."' AND date_visibilite<='".strftime("%Y-%m-%d %H:%M:%S", time()-10)."' AND vu='0'";
+	$update=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(!$update) {
+		$msg="Erreur lors du marquage de tous les messages comme lus (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+	else {
+		$msg="<span style='color:green'>Marquage de tous les messages comme lus effectué (".strftime("%d/%m/%Y à %H:%M:%S").").</span><br />";
+	}
+}
+
+
 $envoi_mail_actif=getSettingValue('envoi_mail_actif');
 if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 	$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
