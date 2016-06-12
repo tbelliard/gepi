@@ -516,7 +516,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 			}
 		}
 
-          } else {$msg .= "Problème lors de l'enregistrement !";}
+          } else {$msg .= "Problème lors de l'enregistrement (".strftime("%d/%m/%Y à %H:%M:%S").") !";}
 
         } else {
           $msg = $msg_error_date;
@@ -608,7 +608,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 		}
         }
         else {
-        	$msg = "Problème lors de l'enregistrement !";
+        	$msg = "Problème lors de l'enregistrement (".strftime("%d/%m/%Y à %H:%M:%S").") !";
         }
 
     }
