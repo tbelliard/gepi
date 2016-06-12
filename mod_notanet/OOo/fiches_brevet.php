@@ -303,6 +303,9 @@ $fb_dezip_ooo=getSettingValue("fb_dezip_ooo");
 	<li><p>Si, lors de la génération des fiches brevet, vous obtenez une erreur mentionnant <strong>TinyButStrong</strong>, il est probable que vous utilisez un modèle OOo défecteux ou obsolète.</p></li>
 	<li><p>Le choix <strong>Gabarit personnel</strong> nécessite que vous ayez envoyé un modèle personnel dans <a href='../../mod_ooo/gerer_modeles_ooo.php#MODULE_NOTANET'>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</a></p>
 	<p style='text-indent:-4em;margin-left:4em;'><em>Remarque&nbsp;:</em> Si vous obtenez une erreur, avec un <strong>Gabarit personnel</strong>, commencez par tester si le modèle officiel Gepi permet de régler le problème.</p></li>
+	<li><p>Si aucune fiche brevet n'est éditée pour un élève, c'est que l'extraction CSV à destination Notanet n'a pas eu lieu pour cet élève.<br />
+	Il manquait peut-être des notes.<br />
+	Veuillez contrôler si l'extraction a échoué pour certains élèves <em>(via l'étape <strong>Corriger l'extraction des moyennes</strong>)</em>.</p></li>
 </ul>";
 
 
@@ -418,7 +421,13 @@ if(!isset($type_brevet)) {
 	echo "</ul>\n";
 
 
-	echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em> Si vous avez mis en place des modèles personnels dans la rubrique <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong> accessible depuis la page d'accueil, vous devez encore préciser ci-dessus dans <strong>Paramétrer</strong> si vous souhaitez utiliser des <strong>Gabarits personnels</strong> ou si vous préférez utiliser les <strong>Gabarits Gepi</strong>.</p>";
+	echo "<p style='text-indent:-4em;margin-left:4em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li><p>Si vous avez mis en place des modèles personnels dans la rubrique <strong>Modèle Open Office/Gérer les modèles de document OOo de l'établissement</strong> accessible depuis la page d'accueil, vous devez encore préciser ci-dessus dans <strong>Paramétrer</strong> si vous souhaitez utiliser des <strong>Gabarits personnels</strong> ou si vous préférez utiliser les <strong>Gabarits Gepi</strong>.</p></li>
+	<li><p>Si aucune fiche brevet n'est éditée pour un élève, c'est que l'extraction CSV à destination Notanet n'a pas eu lieu pour cet élève.<br />
+	Il manquait peut-être des notes.<br />
+	Veuillez contrôler si l'extraction a échoué pour certains élèves <em>(via l'étape <strong>Corriger l'extraction des moyennes</strong>)</em>.</p></li>
+</ul>";
 
 
 	require("../../lib/footer.inc.php");
@@ -517,6 +526,9 @@ if (!isset($id_classe)) {
 <ul>
 	<li><p>Si une ou des classes n'apparaissent pas dans le champ de sélection ci-dessus, c'est très probablement que l'extraction n'a pas été faite pour ces classes.<br />
 	Cela peut arriver par exemple quand les notes d'EPS n'ont pas été saisies.</p></li>
+	<li><p>Si aucune fiche brevet n'est éditée pour un élève, c'est que l'extraction CSV à destination Notanet n'a pas eu lieu pour cet élève.<br />
+	Il manquait peut-être des notes.<br />
+	Veuillez contrôler si l'extraction a échoué pour certains élèves <em>(via l'étape <strong>Corriger l'extraction des moyennes</strong>)</em>.</p></li>
 	<li><p>Si vous obtenez une erreur mentionnant <strong>TinyButStrong</strong>, il est probable que vous utilisez un modèle OOo défecteux ou obsolète.</p></li>
 	<li><p>Si vous obtenez une page blanche, peut-être avez-vous sélectionné trop de classes d'un coup.<br />
 	Essayez de ne sélectionner dans un premier temps qu'une classe ci-dessus pour éliminer un éventuel problème avec le nombre de variables envoyées.</p></li>
