@@ -543,7 +543,37 @@ Vous pouvez choisir dans 'Gérer mon compte' quel(s) bouton(s) vous souhaitez fa
 		<input type="hidden" name="date_ct" value="<?php echo $ctCompteRendu->getDateCt(); ?>" /> 
 		<input type="hidden" name="date_ct_cours_suivant" id="date_ct_cours_suivant" value="<?php echo $ts_date_ct_cours_suivant; ?>" /> 
 		<input type="hidden" id="id_ct" name="id_ct" value="<?php echo $ctCompteRendu->getIdCt(); ?>" /> 
-		<input type="hidden" name="id_groupe" value="<?php echo $groupe->getId(); ?>" /></td>
+		<input type="hidden" name="id_groupe" value="<?php echo $groupe->getId(); ?>" />
+
+		<?php
+			$tab_tag_type=get_tab_tag_cdt();
+
+			if(preg_match("/^[0-9]{1,}$/", $ctCompteRendu->getIdCt())) {
+				$tab_tag_notice=get_tab_tag_notice($ctCompteRendu->getIdCt(), 'c');
+
+				/*
+				echo "\$id_ct=".$ctCompteRendu->getIdCt();
+				echo "<pre>";
+				print_r($tab_tag_notice);
+				echo "</pre>";
+				*/
+			}
+
+			if(isset($tab_tag_type["tag_compte_rendu"])) {
+				echo "<br />";
+				foreach($tab_tag_type["tag_compte_rendu"] as $id_tag => $tag_courant) {
+					echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
+					$style_label="";
+					if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
+						echo " checked";
+						$style_label=" style='font-weight:bold'";
+					}
+					echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+				}
+			}
+		?>
+
+		</td>
 		<td><?php
 		if (!isset($info)) {
 			$hier = $today - 3600*24;

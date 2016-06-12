@@ -557,6 +557,7 @@ if(($id_groupe=='Toutes_matieres')&&
 				$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
 				$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
 				$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
+				$tab_notices[$date_notice][$lig->id_groupe][$cpt]['chaine_tag']=get_liste_tag_notice_cdt($lig->id_ct, 'c', "right");
 				//echo " <span style='color:red'>\$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
 				$cpt++;
 			}
@@ -623,7 +624,8 @@ if(($id_groupe=='Toutes_matieres')&&
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_visibilite_eleve']=$lig->date_visibilite_eleve;
-					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['special']=$lig->special;
+					//$tab_dev[$date_dev][$lig->id_groupe][$cpt]['special']=$lig->special;
+					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['chaine_tag']=get_liste_tag_notice_cdt($lig->id_ct, 't', "right");
 					$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_ct']=$lig->date_ct;
 					//echo " <span style='color:green'>\$tab_dev[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
 					$cpt++;
@@ -745,9 +747,16 @@ if(($id_groupe=='Toutes_matieres')&&
 								$lignes_date_courante.="<div id='div_etat_travail_".$value['id_ct']."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$value['id_ct']."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 							}
 
+							/*
 							if($value['special']=="controle") {
 								$lignes_date_courante.="<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $value['date_ct'])."\" /></div>";
 							}
+							*/
+							if($value['chaine_tag']!="") {
+								//$lignes_date_courante.="<div style='float:right; width:16px;'>".$value['chaine_tag']."</div>";
+								$lignes_date_courante.=$value['chaine_tag'];
+							}
+
 
 							$lignes_date_courante.=$value['contenu'];
 							//$chaine_travail_a_faire_futur.=$value['contenu'];
@@ -769,7 +778,12 @@ if(($id_groupe=='Toutes_matieres')&&
 					if(isset($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]])) {
 						//for($k=0;$k<count($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]]);$k++) {
 						foreach($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]] as $key => $value) {
-							$lignes_date_courante.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+							$lignes_date_courante.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+							if($value['chaine_tag']!="") {
+								//$lignes_date_courante.="<div style='float:right; width:16px;'>".$value['chaine_tag']."</div>";
+								$lignes_date_courante.=$value['chaine_tag'];
+							}
+							$lignes_date_courante.=$value['contenu'];
 							$adj=affiche_docs_joints($value['id_ct'],"c");
 							if($adj!='') {
 								$lignes_date_courante.="<div style='border: 1px dashed black'>\n";
@@ -945,8 +959,10 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 else {
 	$ts_limite_dev=getSettingValue("end_bookings");
 }
+
+//"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve, special
 $req_devoirs =
-	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve, special
+	"select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
 	from ct_devoirs_entry
 	where (contenu != ''
 	and id_groupe = '".$id_groupe."'
@@ -1104,12 +1120,20 @@ while (true) {
 			echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 		}
 
+		/*
 		if($type_notice=='devoir') {
 			if($not_dev->special=="controle") {
 				echo "<div style='float:right; width:16px;'><img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $not_dev->date_ct)."\" /></div>";
 			}
 		}
-
+		*/
+		$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type,"right");
+		//echo "<span style='color:red'>\$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type);</span>";
+		if($chaine_tag!="") {
+			//$content.="<div style='float:right; width:16px;'>".$chaine_tag."</div>";
+			//echo "<div style='float:right; width:16px;'>".$chaine_tag."</div>";
+			echo $chaine_tag;
+		}
 		echo "$content\n</div>\n";
 		if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 	}

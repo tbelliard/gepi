@@ -5808,7 +5808,7 @@ function get_champ_avis_orientations_proposees($login_eleve) {
 			$avis_o_ele=preg_replace("#<br />#i", "", $lig_o->avis);
 		}
 
-		$retour.="<label for='avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis sur l'orientation proposée\">Avis&nbsp;</b> </label><textarea name='avis_orientation_".$lig_ele->id_eleve."[]' id='avis_orientation_".$lig_ele->id_eleve."' cols='60' onchange=\"changement();\">".$avis_o_ele."</textarea></p>";
+		$retour.="<label for='avis_orientation_".$lig_ele->id_eleve."' style='vertical-align:top'><b title=\"Avis/commentaire sur l'orientation proposée\">Commentaire&nbsp;</b> </label><textarea name='avis_orientation_".$lig_ele->id_eleve."[]' id='avis_orientation_".$lig_ele->id_eleve."' cols='60' onchange=\"changement();\">".$avis_o_ele."</textarea></p>";
 	}
 
 	return $retour;
@@ -5890,5 +5890,55 @@ function insere_lien_calendrier_crob($float="") {
 		}
 
 	}
+}
+
+
+function get_liste_tag_notice_cdt($id_ct, $type_ct, $float="") {
+	global $mysqli, $tab_drapeaux_tag_cdt, $tab_tag_type, $gepiPath;
+
+	$retour="";
+
+	if((!isset($tab_tag_type))||(!is_array($tab_tag_type))||(count($tab_tag_type)==0)) {
+		$tab_tag_type=get_tab_tag_cdt();
+		// Pour contrôler que l'opération n'est bien effectuée qu'une fois par page (cf global)
+		//$retour.="<span style='color:plum'>get_tab_tag_cdt</span>";
+	}
+
+	if(count($tab_tag_type)>0) {
+		//echo "get_tab_tag_notice($id_ct, $type_ct)<br />";
+		$tab_tag_notice=get_tab_tag_notice($id_ct, $type_ct);
+		if(isset($tab_tag_notice["indice"])) {
+			if($type_ct=="t") {
+				$sql="SELECT date_ct FROM ct_devoirs_entry WHERE id_ct='".$id_ct."';";
+			}
+			elseif($type_ct=="c") {
+				$sql="SELECT date_ct FROM ct_entry WHERE id_ct='".$id_ct."';";
+			}
+			elseif($type_ct=="p") {
+				$sql="SELECT date_ct FROM ct_private_entry WHERE id_ct='".$id_ct."';";
+			}
+			$res_ct=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_ct)==0) {
+				$chaine_complement_title="cette notice";
+			}
+			else {
+				$lig_ct=mysqli_fetch_object($res_ct);
+				$chaine_complement_title="le ".strftime("%A %d/%m/%Y", $lig_ct->date_ct);
+			}
+			for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
+				if($float=="") {
+					$retour.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est signalé pour ".$chaine_complement_title.".\" />";
+				}
+				elseif($float=="right") {
+					$retour.="<div style='float:right; width:16px; margin-right:3px;'><img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est signalé pour ".$chaine_complement_title.".\" /></div>";
+				}
+				else {
+					$retour.="<div style='float:left; width:16px; margin-left:3px;'><img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est signalé pour ".$chaine_complement_title.".\" /></div>";
+				}
+			}
+		}
+	}
+
+	return $retour;
 }
 ?>

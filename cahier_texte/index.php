@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,8 @@ if (!checkAccess()) {
 if (getSettingValue("active_cahiers_texte")!='y') {
     die("Le module n'est pas activé.");
 }
+
+//debug_var();
 
 $message_avertissement_navigateur = "";
 ////on regarde si les preferences pour le cdt ont change
@@ -359,6 +361,8 @@ if ((isset($_GET['action'])) and ($_GET['action'] == 'sup_devoirs') and $valide_
 if (isset($_POST['notes']) and $valide_form=='yes') {
    check_token();
 
+	//debug_var();
+
     // Cas des devoirs
 	if (isset($edit_devoir)) {
 		$msg="";
@@ -469,7 +473,51 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
             $req = mysqli_query($GLOBALS["mysqli"], $sql);
             $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
           }
-          if ($req) {$msg.= "Enregistrement réussi.";} else {$msg .= "Problème lors de l'enregistrement !";}
+          if ($req) {
+		$msg.= "Enregistrement réussi (".strftime("%d/%m/%Y à %H:%M:%S").").";
+
+		$tag=isset($_POST['tag']) ? $_POST['tag'] : array();
+		$tag_deja=array();
+		$sql="SELECT * FROM ct_tag WHERE id_ct='".$id_ct."' AND type_ct='t';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$res_tag_existants=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_tag_existants)>0) {
+			while($lig_tag=mysqli_fetch_object($res_tag_existants)) {
+				if(!in_array($lig_tag->id_tag, $tag)) {
+					$sql="DELETE FROM ct_tag WHERE id='".$lig_tag->id."';";
+					//echo "$sql<br />";
+					/*
+					$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+					fwrite($f, $sql."\n");
+					fclose($f);
+					*/
+					$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				else {
+					$tag_deja[]=$lig_tag->id;
+				}
+			}
+		}
+		for($loop=0;$loop<count($tag);$loop++) {
+			if(!in_array($tag[$loop], $tag_deja)) {
+				$sql="INSERT INTO ct_tag SET id_ct='".$id_ct."', type_ct='t', id_tag='".$tag[$loop]."';";
+				//echo "$sql<br />";
+				/*
+				$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+				fwrite($f, $sql."\n");
+				fclose($f);
+				*/
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+		}
+
+          } else {$msg .= "Problème lors de l'enregistrement !";}
+
         } else {
           $msg = $msg_error_date;
 		}
@@ -516,7 +564,52 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
             $id_ct = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["mysqli"]))) ? false : $___mysqli_res);
 //            $today = $temp;
         }
-        if ($req) $msg = "Enregistrement réussi."; else $msg = "Problème lors de l'enregistrement !";
+        if ($req) {
+        	$msg = "Enregistrement réussi (".strftime("%d/%m/%Y à %H:%M:%S").")."; 
+
+		$tag=isset($_POST['tag']) ? $_POST['tag'] : array();
+		$tag_deja=array();
+		$sql="SELECT * FROM ct_tag WHERE id_ct='".$id_ct."' AND type_ct='c';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$res_tag_existants=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_tag_existants)>0) {
+			while($lig_tag=mysqli_fetch_object($res_tag_existants)) {
+				if(!in_array($lig_tag->id_tag, $tag)) {
+					$sql="DELETE FROM ct_tag WHERE id='".$lig_tag->id."';";
+					//echo "$sql<br />";
+					/*
+					$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+					fwrite($f, $sql."\n");
+					fclose($f);
+					*/
+					$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+				}
+				else {
+					$tag_deja[]=$lig_tag->id;
+				}
+			}
+		}
+		for($loop=0;$loop<count($tag);$loop++) {
+			if(!in_array($tag[$loop], $tag_deja)) {
+				$sql="INSERT INTO ct_tag SET id_ct='".$id_ct."', type_ct='c', id_tag='".$tag[$loop]."';";
+				//echo "$sql<br />";
+				/*
+				$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+				fwrite($f, $sql."\n");
+				fclose($f);
+				*/
+				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+		}
+        }
+        else {
+        	$msg = "Problème lors de l'enregistrement !";
+        }
 
     }
 }
@@ -1109,6 +1202,12 @@ while (true) {
 			$content_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 		}
 	}
+
+	$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type,"");
+	if($chaine_tag!="") {
+		$content_balise.=$chaine_tag." ";
+	}
+
 	$content_balise .= "</div>\n";
 
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n$content_balise$content</td>\n</tr>\n</table>\n<br/>\n");
@@ -1375,6 +1474,53 @@ if (isset($edit_devoir)) {
 echo "</td>\n";
 echo "</tr>\n";
 echo "\n";
+
+//==============================================
+echo "<tr><td colspan=\"4\">";
+
+$type_ct="c";
+if (isset($edit_devoir)) {
+	$type_ct="t";
+}
+$tab_tag_type=get_tab_tag_cdt();
+
+if(preg_match("/^[0-9]{1,}$/", $id_ct)) {
+	$tab_tag_notice=get_tab_tag_notice($id_ct, $type_ct);
+
+	/*
+	echo "\$id_ct=$id_ct<br />";
+	echo "\$tab_tag_notice<pre>";
+	print_r($tab_tag_notice);
+	echo "</pre>";
+	*/
+
+}
+
+if(($type_ct=="t")&&(isset($tab_tag_type["tag_devoir"]))) {
+	foreach($tab_tag_type["tag_devoir"] as $id_tag => $tag_courant) {
+		echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
+		$style_label="";
+		if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
+			echo " checked";
+			$style_label=" style='font-weight:bold'";
+		}
+		echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\"$style_label>".$tag_courant['nom_tag']."</label>";
+	}
+}
+elseif(($type_ct=="c")&&(isset($tab_tag_type["tag_compte_rendu"]))) {
+	foreach($tab_tag_type["tag_compte_rendu"] as $id_tag => $tag_courant) {
+		echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
+		$style_label="";
+		if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
+			echo " checked";
+			$style_label=" style='font-weight:bold'";
+		}
+		echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\"$style_label>".$tag_courant['nom_tag']."</label>";
+	}
+}
+
+echo "</td></tr>";
+//==============================================
 ?>
 <tr><td colspan="4">
 <?php
@@ -1498,8 +1644,8 @@ if ($last_date != "-1") {
 
 	echo "<br />\n";
     echo "<div style=\"width:100%;\">\n";
-    echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
-    echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Suppression de notices</legend>\n";
+    echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\" class='fieldset_opacite50'>\n";
+    echo "<legend style=\"border: 1px solid grey; font-variant: small-caps; background-color:white;\">Suppression de notices</legend>\n";
     echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
     echo "<tr>\n<td>\n";
     echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\">\n";

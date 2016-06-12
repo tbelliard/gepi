@@ -4496,7 +4496,7 @@ function encode_nom_photo($nom_photo) {
  * @see getSettingValue()
  */
 function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
-	global $mysqli;
+    global $mysqli;
 	
 	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
@@ -4511,10 +4511,10 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 
 	// En multisite, on ajoute le répertoire RNE
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		// On récupère le RNE de l'établissement
-		$repertoire2=$_COOKIE['RNE']."/";
+		  // On récupère le RNE de l'établissement
+      $repertoire2=$_COOKIE['RNE']."/";
 	}else{
-		$repertoire2="";
+	  $repertoire2="";
 	}
 
 
@@ -14774,5 +14774,82 @@ function get_date_fin_classe_periode($id_classe, $num_periode, $mode=1) {
 	$tab=get_dates_debut_fin_classe_periode($id_classe, $num_periode, $mode);
 	$tab2=$tab["fin"];
 	return $tab2;
+}
+
+function get_tab_tag_cdt() {
+	global $mysqli, $tab_drapeaux_tag_cdt;
+
+	$tab_tag=array();
+	$sql="SELECT * FROM ct_tag_type ORDER BY nom_tag;";
+	$res_tag=mysqli_query($mysqli, $sql);
+	$loop=0;
+	//$loop_modif="";
+	while($lig_tag=mysqli_fetch_object($res_tag)) {
+		$tab_tag["indice"][$loop]['id']=$lig_tag->id;
+		$tab_tag["indice"][$loop]['nom_tag']=$lig_tag->nom_tag;
+		$tab_tag["indice"][$loop]['drapeau']=$lig_tag->drapeau;
+		$tab_tag["indice"][$loop]['tag_compte_rendu']=$lig_tag->tag_compte_rendu;
+		$tab_tag["indice"][$loop]['tag_devoir']=$lig_tag->tag_devoir;
+		$tab_tag["indice"][$loop]['tag_notice_privee']=$lig_tag->tag_notice_privee;
+
+		$tab_tag["id"][$lig_tag->id]['id']=$lig_tag->id;
+		$tab_tag["id"][$lig_tag->id]['nom_tag']=$lig_tag->nom_tag;
+		$tab_tag["id"][$lig_tag->id]['drapeau']=$lig_tag->drapeau;
+		$tab_tag["id"][$lig_tag->id]['tag_compte_rendu']=$lig_tag->tag_compte_rendu;
+		$tab_tag["id"][$lig_tag->id]['tag_devoir']=$lig_tag->tag_devoir;
+		$tab_tag["id"][$lig_tag->id]['tag_notice_privee']=$lig_tag->tag_notice_privee;
+
+		$tab_tag["nom_tag"][$lig_tag->nom_tag]["id"]=$lig_tag->id;
+		$tab_tag["nom_tag"][$lig_tag->nom_tag]["iindice"]=$loop;
+
+		if($lig_tag->tag_compte_rendu=="y") {
+			$tab_tag["tag_compte_rendu"][$lig_tag->id]['id']=$lig_tag->id;
+			$tab_tag["tag_compte_rendu"][$lig_tag->id]['nom_tag']=$lig_tag->nom_tag;
+			$tab_tag["tag_compte_rendu"][$lig_tag->id]['drapeau']=$lig_tag->drapeau;
+		}
+
+		if($lig_tag->tag_devoir=="y") {
+			$tab_tag["tag_devoir"][$lig_tag->id]['id']=$lig_tag->id;
+			$tab_tag["tag_devoir"][$lig_tag->id]['nom_tag']=$lig_tag->nom_tag;
+			$tab_tag["tag_devoir"][$lig_tag->id]['drapeau']=$lig_tag->drapeau;
+		}
+
+		if($lig_tag->tag_notice_privee=="y") {
+			$tab_tag["tag_notice_privee"][$lig_tag->id]['id']=$lig_tag->id;
+			$tab_tag["tag_notice_privee"][$lig_tag->id]['nom_tag']=$lig_tag->nom_tag;
+			$tab_tag["tag_notice_privee"][$lig_tag->id]['drapeau']=$lig_tag->drapeau;
+		}
+
+		$loop++;
+	}
+
+	return $tab_tag;
+}
+
+function get_tab_tag_notice($id_ct, $type_ct) {
+	global $mysqli, $tab_drapeaux_tag_cdt, $tab_tag_type;
+
+	if((!isset($tab_tag_type))||(!is_array($tab_tag_type))||(count($tab_tag_type)==0)) {
+		$tab_tag_type=get_tab_tag_cdt();
+	}
+
+	$tab_tag_notice=array();
+	$sql="SELECT * FROM ct_tag WHERE id_ct='$id_ct' AND type_ct='$type_ct';";
+	//echo "$sql<br />";
+	$res_tag=mysqli_query($mysqli, $sql);
+	$loop=0;
+	//$loop_modif="";
+	while($lig_tag=mysqli_fetch_object($res_tag)) {
+		if(isset($tab_tag_type["id"][$lig_tag->id_tag])) {
+			$tab_tag_notice['indice'][]=$tab_tag_type["id"][$lig_tag->id_tag];
+			$tab_tag_notice['id'][]=$lig_tag->id_tag;
+		}
+		else {
+			// Anomalie
+			//echo "\$tab_tag_type[\"id\"][$lig_tag->id_tag] non défini.<br />";
+		}
+	}
+
+	return $tab_tag_notice;
 }
 ?>

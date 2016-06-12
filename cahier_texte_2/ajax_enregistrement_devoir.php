@@ -247,16 +247,58 @@ $ctTravailAFaire->setDateVisibiliteEleve($date_visibilite_eleve);
 //enregistrement de l'objet
 $ctTravailAFaire->save();
 
+//==================================================
 // Lors de l'enregistrement d'une nouvelle notice, on n'a pas encore de $id_devoir
 $id_devoir=$ctTravailAFaire->getIdCt();
-$sql="UPDATE ct_devoirs_entry SET special='$controle' WHERE id_ct='$id_devoir';";
+//$sql="UPDATE ct_devoirs_entry SET special='$controle' WHERE id_ct='$id_devoir';";
 //echo "$sql<br />";
 /*
 $f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
 fwrite($f, $sql."\n");
 fclose($f);
 */
-$update=mysqli_query($GLOBALS["mysqli"], $sql);
+//$update=mysqli_query($GLOBALS["mysqli"], $sql);
+
+$tag=isset($_POST['tag']) ? $_POST['tag'] : array();
+$tag_deja=array();
+$sql="SELECT * FROM ct_tag WHERE id_ct='".$id_devoir."' AND type_ct='t';";
+//echo "$sql<br />";
+/*
+$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+fwrite($f, $sql."\n");
+fclose($f);
+*/
+$res_tag_existants=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_tag_existants)>0) {
+	while($lig_tag=mysqli_fetch_object($res_tag_existants)) {
+		if(!in_array($lig_tag->id_tag, $tag)) {
+			$sql="DELETE FROM ct_tag WHERE id='".$lig_tag->id."';";
+			//echo "$sql<br />";
+			/*
+			$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+			fwrite($f, $sql."\n");
+			fclose($f);
+			*/
+			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+		else {
+			$tag_deja[]=$lig_tag->id;
+		}
+	}
+}
+for($loop=0;$loop<count($tag);$loop++) {
+	if(!in_array($tag[$loop], $tag_deja)) {
+		$sql="INSERT INTO ct_tag SET id_ct='".$id_devoir."', type_ct='t', id_tag='".$tag[$loop]."';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+//==================================================
 
 //traitement de telechargement de documents joints
 if (!empty($doc_file['name'][0])) {

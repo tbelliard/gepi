@@ -24,6 +24,9 @@ Bulletins:
   élève (pour les établissements dans lesquels les bulletins sont remis en mains 
   propres aux familles).
 
+Cahiers de textes:
+- Possibilité de définir des Tag (Contrôle, EPI, AP) pour les notices de CDT.
+
 Absences2:
 - Affichage des manquements du jour sur la page d'accueil simplifiée parent.
 - Possibilité de ne pas afficher par défaut les saisies englobées ou traitées.

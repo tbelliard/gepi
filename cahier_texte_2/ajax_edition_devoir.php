@@ -489,6 +489,7 @@ echo "<script type='text/javascript'>
 				echo " <img src='../images/icons/ico_attention.png' width='22' height='19' alt=\"$message_visibilite\" title=\"$message_visibilite\" />\n";
 			}
 
+			/*
 			if(isset($id_devoir)) {
 				$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE id_ct='$id_devoir' AND special='controle';";
 				$res_special=mysqli_query($GLOBALS['mysqli'], $sql);
@@ -505,8 +506,32 @@ echo "<script type='text/javascript'>
 				$checked_controle="";
 				$style_controle="";
 			}
+			*/
 
-			echo " <input type='checkbox' name='controle' id='controle' value='controle'$checked_controle onchange=\"checkbox_change(this.id);\" /><label for='controle' id='texte_controle' title=\"Cocher la case si la séance comportera un contrôle/évaluation.\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_controle>Contrôle</label>";
+			$tab_tag_type=get_tab_tag_cdt();
+
+			if(isset($id_devoir)) {
+				$tab_tag_notice=get_tab_tag_notice($id_devoir, 't');
+
+				/*
+				echo "\$id_devoir=$id_devoir";
+				echo "<pre>";
+				print_r($tab_tag_notice);
+				echo "</pre>";
+				*/
+			}
+
+			if(isset($tab_tag_type["tag_devoir"])) {
+				foreach($tab_tag_type["tag_devoir"] as $id_tag => $tag_courant) {
+					echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
+					$style_label="";
+					if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
+						echo " checked";
+						$style_label=" style='font-weight:bold'";
+					}
+					echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comportera un ".$tag_courant['nom_tag'].".\nUn témoin apparaîtra dans l'interface élève pour attirer l'attention.\"$style_label>".$tag_courant['nom_tag']."</label>";
+				}
+			}
 
 		?>
 		<input type='hidden' id='passer_a' name='passer_a'

@@ -321,6 +321,34 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		<input type='hidden' name='id_ct_a_importer' id='id_ct_a_importer' value='' />
 		<button type='submit' id='affichage_import_notice' style='font-variant: small-caps; display:none; background-color:red;' onClick="javascript:$('importer_notice').value='y';">Importer la notice</button>
 
+		<?php
+			$tab_tag_type=get_tab_tag_cdt();
+
+			if(preg_match("/^[0-9]{1,}$/", $cahierTexteNoticePrivee->getIdCt())) {
+				$tab_tag_notice=get_tab_tag_notice($cahierTexteNoticePrivee->getIdCt(), 'p');
+
+				/*
+				echo "\$id_ct=".$cahierTexteNoticePrivee->getIdCt();
+				echo "<pre>";
+				print_r($tab_tag_notice);
+				echo "</pre>";
+				*/
+			}
+
+			if(isset($tab_tag_type["tag_notice_privee"])) {
+				echo "<br />";
+				foreach($tab_tag_type["tag_notice_privee"] as $id_tag => $tag_courant) {
+					echo " <input type='checkbox' name='tag[]' id='tag_".$id_tag."' value='".$id_tag."'";
+					$style_label="";
+					if((isset($tab_tag_notice["id"]))&&(in_array($id_tag, $tab_tag_notice["id"]))) {
+						echo " checked";
+						$style_label=" style='font-weight:bold'";
+					}
+					echo " onchange=\"checkbox_change(this.id);\" /><label for='tag_".$id_tag."' id='texte_tag_".$id_tag."' title=\"Cocher la case si la séance comporte un ".$tag_courant['nom_tag'].".\"$style_label>".$tag_courant['nom_tag']."</label>";
+				}
+			}
+		?>
+
 		</td>
 	<td><?php
 	if (!isset($info)) {

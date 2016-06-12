@@ -1462,3 +1462,20 @@ CREATE TABLE IF NOT EXISTS j_groupes_eleves_modalites (id_groupe int(11) NOT NUL
 DROP TABLE IF EXISTS sconet_ele_options;
 CREATE TABLE IF NOT EXISTS sconet_ele_options (id int(11) unsigned NOT NULL auto_increment, ele_id varchar(10) NOT NULL default '', code_matiere varchar(255) NOT NULL default '', code_modalite_elect char(1) NOT NULL default '', num_option int(2) NOT NULL default '0', PRIMARY KEY id (id));
 
+DROP TABLE IF EXISTS ct_tag_type;
+CREATE TABLE IF NOT EXISTS ct_tag_type (
+id int(11) unsigned NOT NULL auto_increment, 
+nom_tag varchar(255) NOT NULL default '',
+tag_compte_rendu char(1) NOT NULL default 'y',
+tag_devoir char(1) NOT NULL default 'y',
+tag_notice_privee char(1) NOT NULL default 'y',
+drapeau varchar(255) NOT NULL default '',
+PRIMARY KEY id (id));
+
+DROP TABLE IF EXISTS ct_tag;
+CREATE TABLE IF NOT EXISTS ct_tag (
+id int(11) unsigned NOT NULL auto_increment, 
+id_ct int(11) unsigned NOT NULL, 
+id_tag int(11) unsigned NOT NULL, 
+PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));
+

@@ -462,4 +462,65 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$result .= "<strong>Ajout d'une table 'ct_tag_type' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'ct_tag_type';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag_type (
+						id int(11) unsigned NOT NULL auto_increment, 
+						nom_tag varchar(255) NOT NULL default '',
+						tag_compte_rendu char(1) NOT NULL default 'y',
+						tag_devoir char(1) NOT NULL default 'y',
+						tag_notice_privee char(1) NOT NULL default 'y',
+						drapeau varchar(255) NOT NULL default '',
+						PRIMARY KEY id (id));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'ct_tag' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'ct_tag';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag (
+						id int(11) unsigned NOT NULL auto_increment, 
+						id_ct int(11) unsigned NOT NULL, 
+						type_ct char(1) NOT NULL DEFAULT '', 
+						id_tag int(11) unsigned NOT NULL, 
+						PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+		$sql="SELECT * FROM ct_devoirs_entry WHERE special='controle';";
+		$res_controle=mysqli_query($GLOBALS['mysqli'], $sql);
+		if(mysqli_num_rows($res_controle)>0) {
+			$sql="SELECT * FROM ct_tag_type WHERE nom_tag='controle';";
+			$test=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$sql="INSERT INTO ct_tag_type SET nom_tag='controle', tag_compte_rendu='y', tag_devoir='y', drapeau='images/icons/flag2.gif';";
+				$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+				$id_tag_controle=mysqli_insert_id($GLOBALS['mysqli']);
+			}
+			else {
+				// Normalement, on ne devrait pas passer là
+				$lig_controle=mysqli_fetch_object($test);
+				$id_tag_controle=$lig_controle->id;
+			}
+
+			while($lig_controle=mysqli_fetch_object($res_controle)) {
+				$sql="INSERT INTO ct_tag SET id_ct='".$lig_controle->id_ct."', type_ct='t', id_tag='".$id_tag_controle."';";
+				$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+			}
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

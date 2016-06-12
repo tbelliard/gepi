@@ -83,6 +83,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 	}
 
+	/*
 	$sql="SELECT DISTINCT cde.* FROM ct_devoirs_entry cde WHERE cde.id_ct='".$devoir->getIdCt()."';";
 	//$html_balise.="$sql<br />";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -90,6 +91,15 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		$lig=mysqli_fetch_object($res);
 		if($lig->special=="controle") {
 			$html_balise .= " <img src='$gepiPath/images/icons/flag2.gif' class='icone16' alt='Contrôle' title=\"Un contrôle/évaluation est programmé pour le ".strftime("%A %d/%m/%Y", $lig->date_ct)."\" />";
+		}
+	}
+	*/
+
+	$tab_tag_type=get_tab_tag_cdt();
+	$tab_tag_notice=get_tab_tag_notice($devoir->getIdCt(), 't');
+	if(isset($tab_tag_notice["indice"])) {
+		for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
+			$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est programmé pour le ".strftime("%A %d/%m/%Y", $devoir->getDateCt())."\" />";
 		}
 	}
 
@@ -107,6 +117,8 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 }
 
 function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_notice, $color_fond_notices) {
+	global $gepiPath;
+
 	echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["p"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 
 	echo("<strong>&nbsp;Notice priv&eacute;e</strong>\n");
@@ -149,9 +161,28 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 										new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 										return false;
 									\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
+
+
+			$tab_tag_type=get_tab_tag_cdt();
+			$tab_tag_notice=get_tab_tag_notice($notice_privee->getIdCt(), 'p');
+			/*
+			echo "\$notice_privee->getIdCt()=".$notice_privee->getIdCt();
+			echo "<pre>";
+			print_r($tab_tag_notice);
+			echo "</pre>";
+			*/
+			if(isset($tab_tag_notice["indice"])) {
+				//echo "<span style='color:green'>".count($tab_tag_notice["indice"])."</span>";
+				for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
+					$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est marqué pour le ".strftime("%A %d/%m/%Y", $notice_privee->getDateCt())."\" />";
+				}
+			}
+
 			$html_balise .= '</div>';
-			echo($html_balise);
+			//echo($html_balise);
 		}
+
+	echo($html_balise);
 
 	echo "<br/>";
 	//affichage contenu
@@ -161,6 +192,8 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 }
 
 function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_notice, $color_fond_notices) {
+	global $gepiPath;
+
 		echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices["c"]."\" summary=\"Tableau de...\">\n<tr>\n<td>\n");
 		echo("<b>&nbsp;" . strftime("%a %d %b %y", $compte_rendu->getDateCt()) . "</b>\n");
 
@@ -216,6 +249,17 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 				$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 			}
 		}
+
+
+		$tab_tag_type=get_tab_tag_cdt();
+		$tab_tag_notice=get_tab_tag_notice($compte_rendu->getIdCt(), 'c');
+		if(isset($tab_tag_notice["indice"])) {
+			for($loop_tag=0;$loop_tag<count($tab_tag_notice["indice"]);$loop_tag++) {
+				$html_balise.=" <img src='$gepiPath/".$tab_tag_notice["indice"][$loop_tag]['drapeau']."' class='icone16' alt=\"".$tab_tag_notice["indice"][$loop_tag]['nom_tag']."\" title=\"Un ".$tab_tag_notice["indice"][$loop_tag]['nom_tag']." est indiqué pour le ".strftime("%A %d/%m/%Y", $compte_rendu->getDateCt())."\" />";
+			}
+		}
+
+
 		$html_balise .= '</div>';
 		echo($html_balise);
 

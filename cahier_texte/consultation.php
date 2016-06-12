@@ -466,6 +466,12 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                      $content.="<div id='div_etat_travail_".$id_devoirs."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('".$selected_eleve->login."', '".$id_devoirs."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 				}
 
+			$chaine_tag=get_liste_tag_notice_cdt($id_devoirs, 't', "right");
+			if($chaine_tag!="") {
+				//$content.="<div style='float:right; width:16px;'>".$chaine_tag."</div>";
+				$content.=$chaine_tag;
+			}
+
                 $content .= $content_ini;
                 // fichier joint
                 $content .= affiche_docs_joints($id_devoirs,"t");
@@ -610,8 +616,11 @@ echo "<div class=\"centre_cont_texte\">\n";
               $chaine.=affiche_utilisateur($prof[2],$selected_eleve_classe);
               }
 //$content = "<div style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["f"]."; padding: 2px; margin: 2px;\"><font color='".$color_police_matieres."' style='font-variant: small-caps;'><small><strong><u>".$matiere_devoirs." (".$chaine.") :</u></strong></small></font>\n".$content;
+
+		$chaine_tag=get_liste_tag_notice_cdt($id_devoirs, 't', "");
+
 // Correction Régis : ajout de class pour gérer la mise en page
-              $content = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$content;
+              $content = "<div class='matiere_a_faire couleur_bord_tableau_notice couleur_cellule_f color_police_matieres'>\n<h4 class='a_faire_titre color_police_matieres'>".$matiere_devoirs." (".$chaine.") :</h4>\n<div class='txt_gauche'>\n".$chaine_tag.$content;
               // fichier joint
               $content .= affiche_docs_joints($id_devoirs,"t");
               $content .="</div>\n</div>\n";
@@ -813,6 +822,12 @@ $td = date("d",$i);
 
              if ($not_dev->type == "c") {
                 echo "<div class='cdt_titre_not_dev couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
+
+			$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type,"right");
+			if($chaine_tag!="") {
+				//echo "<div style='float:right; width:16px;'>".$chaine_tag."</div>";
+				echo $chaine_tag;
+			}
              }
              else {
 				// 20130727
@@ -850,6 +865,12 @@ $td = date("d",$i);
 
 				if($CDTPeutPointerTravailFait) {
 					echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
+				}
+
+				$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type, "right");
+				if($chaine_tag!="") {
+					//echo "<div style='float:right; width:16px;'>".$chaine_tag."</div>";
+					echo $chaine_tag;
 				}
 
              }

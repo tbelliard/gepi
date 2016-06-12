@@ -958,6 +958,11 @@ for($i=0;$i<14;$i++) {
 						$texte_dev_courant.="<div id='div_etat_travail_".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$login_eleve', '".$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct']."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 					}
 
+					$chaine_tag=get_liste_tag_notice_cdt($tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['id_ct'], 't', "right");
+					if($chaine_tag!="") {
+						$texte_dev_courant.=$chaine_tag;
+					}
+
 					$texte_dev_courant.=$tab_notice[$i][$id_groupe]['ct_devoirs_entry'][$j]['contenu'];
 					$texte_dev_courant.="</div>\n";
 					$temoin_dev_non_vides++;
@@ -982,6 +987,12 @@ for($i=0;$i<14;$i++) {
 				// Liste des compte-renddus pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_entry']);$j++) {
 					$texte_cr_courant.="<div style='background-color:palegreen; border: 1px solid black; margin: 1px;'>\n";
+
+					$chaine_tag=get_liste_tag_notice_cdt($tab_notice[$i][$id_groupe]['ct_entry'][$j]['id_ct'], 'c', "right");
+					if($chaine_tag!="") {
+						$texte_cr_courant.=$chaine_tag;
+					}
+
 					$texte_cr_courant.=$tab_notice[$i][$id_groupe]['ct_entry'][$j]['contenu'];
 					$texte_cr_courant.="</div>\n";
 					$temoin_cr_non_vides++;
@@ -1006,6 +1017,10 @@ for($i=0;$i<14;$i++) {
 				// Liste des notices privées pour ce jour dans ce groupe:
 				for($j=0;$j<count($tab_notice[$i][$id_groupe]['ct_private_entry']);$j++) {
 					$texte_np_courant.="<div style='background-color:".$color_fond_notices['p']."; border: 1px solid black; margin: 1px;'>\n";
+					$chaine_tag=get_liste_tag_notice_cdt($tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['id_ct'], 'p', "right");
+					if($chaine_tag!="") {
+						$texte_np_courant.=$chaine_tag;
+					}
 					$texte_np_courant.=$tab_notice[$i][$id_groupe]['ct_private_entry'][$j]['contenu'];
 					$texte_np_courant.="</div>\n";
 					$temoin_np_non_vides++;

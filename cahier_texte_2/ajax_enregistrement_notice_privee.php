@@ -123,6 +123,50 @@ $ctNoticePrivee->setHeureEntry($heure_entry);
 //enregistrement de l'objet
 $ctNoticePrivee->save();
 
+//==================================================
+// Lors de l'enregistrement d'une nouvelle notice, on n'a pas encore de $id_ct
+$id_ct=$ctNoticePrivee->getIdCt();
+
+$tag=isset($_POST['tag']) ? $_POST['tag'] : array();
+$tag_deja=array();
+$sql="SELECT * FROM ct_tag WHERE id_ct='".$id_ct."' AND type_ct='p';";
+//echo "$sql<br />";
+/*
+$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+fwrite($f, $sql."\n");
+fclose($f);
+*/
+$res_tag_existants=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($res_tag_existants)>0) {
+	while($lig_tag=mysqli_fetch_object($res_tag_existants)) {
+		if(!in_array($lig_tag->id_tag, $tag)) {
+			$sql="DELETE FROM ct_tag WHERE id='".$lig_tag->id."';";
+			//echo "$sql<br />";
+			/*
+			$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+			fwrite($f, $sql."\n");
+			fclose($f);
+			*/
+			$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+		else {
+			$tag_deja[]=$lig_tag->id;
+		}
+	}
+}
+for($loop=0;$loop<count($tag);$loop++) {
+	if(!in_array($tag[$loop], $tag_deja)) {
+		$sql="INSERT INTO ct_tag SET id_ct='".$id_ct."', type_ct='p', id_tag='".$tag[$loop]."';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+//==================================================
 echo ($ctNoticePrivee->getIdCt());
 $utilisateur->clearAllReferences();
 ?>

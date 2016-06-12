@@ -482,6 +482,7 @@ echo add_token_field();
 	  <li><a href='../cahier_texte_2/export_cdt.php'>Export de cahiers de textes et accès inspecteur (<em>sans authentification</em>)</a></li>
 	  <li><a href='../cahier_texte_2/correction_notices_cdt_formules_maths.php'>Téléchargement des images de formules mathématiques et correction des notices en conséquence</a></li>
 	  <li><a href='../cahier_texte_2/correction_notices_url_absolues_docs_joints.php'>URL absolues à corriger en URL relatives pour les documents joints aux cahiers de textes.</a></li>
+	  <li><a href='../cahier_texte_admin/admin_tag.php'>Définir des tag <em>(Contrôle, AP, EPI,...)</em> pour les notices de cahiers de textes.</a></li>
 	</ul>
 	
 	<hr />

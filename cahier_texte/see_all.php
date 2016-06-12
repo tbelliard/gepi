@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -487,6 +487,12 @@ while (true) {
 		if(($type_notice=='devoir')&&($CDTPeutPointerTravailFait)) {
 			echo "<div id='div_etat_travail_".$not_dev->id_ct."' style='float:right; width: 16px; margin: 2px; text-align: center;'><a href=\"javascript:cdt_modif_etat_travail('$selected_eleve_login', '".$not_dev->id_ct."')\" title=\"$texte_etat_travail\"><img src='$image_etat' class='icone16' /></a></div>\n";
 		}
+
+		$chaine_tag=get_liste_tag_notice_cdt($not_dev->id_ct, $not_dev->type, "right");
+		if($chaine_tag!="") {
+			echo $chaine_tag;
+		}
+
 
 		echo "$content\n</div>\n";
 		if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
