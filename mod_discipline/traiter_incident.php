@@ -58,8 +58,31 @@ $protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagon
 //$declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "");
 $declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "---");
 //echo "\$declarant_incident=$declarant_incident<br />";
+
 $declarant_incident2=isset($_POST['declarant_incident2']) ? $_POST['declarant_incident2'] : (isset($_GET['declarant_incident2']) ? $_GET['declarant_incident2'] : NULL);
-if(isset($declarant_incident2)) {$declarant_incident=$declarant_incident2;}
+
+if((isset($_POST['valider']))&&(isset($_SESSION['mod_discipline_traiter_incident_declarant_incident']))) {
+	unset($_SESSION['mod_discipline_traiter_incident_declarant_incident']);
+}
+
+if(isset($declarant_incident2)) {
+	$declarant_incident=$declarant_incident2;
+	$_SESSION['mod_discipline_traiter_incident_declarant_incident']=$declarant_incident;
+}
+
+
+if((!isset($_POST['valider']))&&(isset($_SESSION['mod_discipline_traiter_incident_declarant_incident']))) {
+	$declarant_incident=$_SESSION['mod_discipline_traiter_incident_declarant_incident'];
+}
+
+//$_SESSION['mod_discipline_traiter_incident_declarant_incident']=$declarant_incident;
+
+/*
+if(isset($_SESSION['mod_discipline_traiter_incident_declarant_incident'])) {
+	$declarant_incident=$_SESSION['mod_discipline_traiter_incident_declarant_incident'];
+}
+*/
+
 //echo "\$declarant_incident2=$declarant_incident2<br />";
 //echo "\$declarant_incident=$declarant_incident<br />";
 
@@ -98,7 +121,7 @@ $msg="";
 				//echo "$sql<br />";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la mise à jour de l'état de l'incident n°".$form_id_incident[$i].".<br />\n";
+					$msg.="ERREUR lors de la mise à jour de l'état de l'incident n°".$form_id_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 				}
 			}
 		}
@@ -125,7 +148,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 			//echo "$sql<br />\n";
 			$res=mysqli_query($GLOBALS["mysqli"], $sql);
 			if(!$res) {
-				$msg.="ERREUR lors de la suppression des protagonistes de l'incident ".$suppr_incident[$i].".<br />\n";
+				$msg.="ERREUR lors de la suppression des protagonistes de l'incident ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 				$temoin_erreur="y";
 			}
 		}
@@ -140,7 +163,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de retenues attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de retenues attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -148,7 +171,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression d'excluions attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression d'excluions attachées à l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -156,7 +179,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de travaux attachés à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de travaux attachés à l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 						$temoin_erreur="y";
 					}
 
@@ -175,7 +198,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de la ".$mod_disc_terme_sanction." associée à l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de la ".$mod_disc_terme_sanction." associée à l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -186,7 +209,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 				//echo "$sql<br />\n";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la suppression des traitements d'".$mod_disc_terme_incident." (mesures) de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression des traitements d'".$mod_disc_terme_incident." (mesures) de l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 					$temoin_erreur="y";
 				}
 
@@ -195,7 +218,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression des travaux proposés pour une mesure demandée de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression des travaux proposés pour une mesure demandée de l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 						$temoin_erreur="y";
 					}
 				}
@@ -205,7 +228,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					//echo "$sql<br />\n";
 					$res=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(!$res) {
-						$msg.="ERREUR lors de la suppression de l'".$mod_disc_terme_incident." ".$suppr_incident[$i].".<br />\n";
+						$msg.="ERREUR lors de la suppression de l'".$mod_disc_terme_incident." ".$suppr_incident[$i]." (".strftime("%d/%m/%Y à %H:%M:%S").").<br />\n";
 					}
 				}
 			}
@@ -221,19 +244,16 @@ if(isset($_POST['valider_saisie_travail'])) {
 	$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : NULL;
 
 	if((!isset($id_incident))) {
-		$msg.="ERREUR : Numéro d'incident non défini.<br />";
+		$msg.="ERREUR : Numéro d'incident non défini (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 	elseif((!isset($id_sanction))) {
-		$msg.="ERREUR : Numéro de sanction non défini.<br />";
+		$msg.="ERREUR : Numéro de sanction non défini (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 	elseif((!isset($ele_login))) {
-		$msg.="ERREUR : Élève non choisi.<br />";
+		$msg.="ERREUR : Élève non choisi (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
 	}
 	else {
 		// Vérifier si l'incident est ouvert
-
-
-
 
 		unset($id_incident);
 		unset($id_sanction);
