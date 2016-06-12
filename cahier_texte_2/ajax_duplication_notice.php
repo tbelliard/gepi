@@ -75,13 +75,38 @@ $nouveauCompteRendu->save();
 $f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
 fwrite($f, "Copie de la notice $id_ct de type $type : Id de la nouvelle notice : ".$nouveauCompteRendu->getIdCt()."\n");
 fclose($f);
-*/
 if ($type == 'CahierTexteTravailAFaire') {
 	$sql="SELECT 1=1 FROM ct_devoirs_entry WHERE special='controle' AND id_ct='$id_ct';";
 	$test=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test)>0) {
 		$sql="UPDATE ct_devoirs_entry SET special='controle' WHERE id_ct='".$nouveauCompteRendu->getIdCt()."';";
 		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+*/
+
+if ($type=='CahierTexteTravailAFaire') {
+	$type_ct="t";
+}
+elseif($type=='CahierTexteCompteRendu') {
+	$type_ct="c";
+}
+else {
+	$type_ct="p";
+}
+$tab_tag_notice_source=get_tab_tag_notice($id_ct, $type_ct);
+if(isset($tab_tag_notice_source["id"])) {
+	$id_ct_nouvelle_notice=$nouveauCompteRendu->getIdCt();
+
+	for($loop=0;$loop<count($tab_tag_notice_source["id"]);$loop++) {
+		$sql="INSERT INTO ct_tag SET id_ct='".$id_ct_nouvelle_notice."', type_ct='".$type_ct."', id_tag='".$tab_tag_notice_source["id"][$loop]."';";
+		//echo "$sql<br />";
+		/*
+		$f=fopen("/tmp/gepi_debug_ct_dev.txt", "a+");
+		fwrite($f, $sql."\n");
+		fclose($f);
+		*/
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
 	}
 }
 
