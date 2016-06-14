@@ -4,7 +4,7 @@
  *
  * $Id$
  *
- * @copyright Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+ * @copyright Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
  * @todo Les bulletins HTML utilisent les infos display_rang, display_coef,... de la table 'classes'.
  *Les bulletins PDF utilisent plutôt les infos de la table 'modele_bulletin' il me semble.
  *Il faudrait peut-être revoir le dispositif pour adopter la même stratégie.
@@ -70,6 +70,8 @@ if($gepi_denom_mention=="") {
 }
 //================================
 
+//debug_var();
+
 $generer_fichiers_pdf_archivage=isset($_POST['generer_fichiers_pdf_archivage']) ? $_POST['generer_fichiers_pdf_archivage'] : (isset($_GET['generer_fichiers_pdf_archivage']) ? $_GET['generer_fichiers_pdf_archivage'] : "n");
 
 $intercaler_releve_notes=isset($_POST['intercaler_releve_notes']) ? $_POST['intercaler_releve_notes'] : (isset($_GET['intercaler_releve_notes']) ? $_GET['intercaler_releve_notes'] : NULL);
@@ -84,6 +86,9 @@ $contexte_document_produit="bulletin";
 $nb_releve_par_page=1;
 
 $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n";
+
+// 20160614
+$dest_mail=isset($_POST['dest_mail']) ? $_POST['dest_mail'] : (isset($_GET['dest_mail']) ? $_GET['dest_mail'] : NULL);
 
 // HTML ou PDF par défaut:
 $type_bulletin_par_defaut=getSettingValue('type_bulletin_par_defaut');
@@ -3790,6 +3795,7 @@ else {
 		$arch_bull_annee_scolaire=getPref($_SESSION['login'], 'arch_bull_annee_scolaire', 'yes');
 		$arch_bull_date_edition=getPref($_SESSION['login'], 'arch_bull_date_edition', 'yes');
 		$arch_bull_classe=getPref($_SESSION['login'], 'arch_bull_classe', 'yes');
+		$arch_bull_envoi_mail=getPref($_SESSION['login'], 'arch_bull_envoi_mail', 'no');
 
 		for($j=0;$j<count($tableau_eleve['login']);$j++) {
 			//send_file_download_headers('application/pdf','bulletin.pdf');
@@ -3856,7 +3862,54 @@ else {
 			}
 
 			echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
-			echo "<p><a href='$dirname/$nom_fichier_bulletin'>$nom_fichier_bulletin</a></p>\n";
+			echo "<p><a href='$dirname/$nom_fichier_bulletin'>$nom_fichier_bulletin</a>";
+			if($arch_bull_envoi_mail=="yes") {
+				//$tmp_tab_resp=get_resp_from_ele_login($tableau_eleve['login'][$j], "n", "y");
+				$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')) UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
+				$res_mail_resp=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_mail_resp)>0) {
+					while($lig_mail_resp=mysqli_fetch_object($res_mail_resp)) {
+						$destinataire_mail="";
+						if(check_mail($lig_mail_resp->mel)) {
+							$destinataire_mail.=$lig_mail_resp->mel;
+							$tab_param_mail['destinataire'][]=$lig_mail_resp->mel;
+						}
+						$sql="SELECT email FROM utilisateurs WHERE login='".$lig_mail_resp->login."' AND statut='responsable';";
+						$res_mail_resp_user=mysqli_query($mysqli, $sql);
+						if(mysqli_num_rows($res_mail_resp_user)>0) {
+							$lig_mail_resp_user=mysqli_fetch_object($res_mail_resp_user);
+							if(($lig_mail_resp_user->email!=$lig_mail_resp->mel)&&(check_mail($lig_mail_resp_user->email))) {
+								if($destinataire_mail!="") {
+									$destinataire_mail.=",";
+								}
+								$destinataire_mail.=$lig_mail_resp_user->email;
+								$tab_param_mail['destinataire'][]=$lig_mail_resp_user->email;
+							}
+						}
+
+						if($destinataire_mail!="") {
+							$sujet_mail="Envoi du bulletin ".$nom_fichier_bulletin;
+							$message_mail="Bonjour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom.",
+
+Veuillez trouver en pièce jointe le bulletin ".$nom_fichier_bulletin."
+
+
+Bien cordialement.
+-- 
+".getSettingValue('gepiSchoolName');
+
+							// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
+							if(envoi_mail($sujet_mail, $message_mail, $destinataire_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_fichier_bulletin))) {
+								echo " <em style='color:green' title=\"Mail envoyé avec succès pour ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+							}
+							else {
+								echo " <em style='color:red' title=\"Échec de l'envoi du mail ".$lig_mail_resp->civilite." ".$lig_mail_resp->nom." ".$lig_mail_resp->prenom."\">(".$destinataire_mail.")</em>";
+							}
+						}
+					}
+				}
+			}
+			echo "</p>\n";
 
 			flush();
 		}
@@ -4353,8 +4406,43 @@ elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
 		die();
 	}
 	else {
-		$pref_output_mode_pdf=get_output_mode_pdf();
-		$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
+		//$envoi_mail="y";
+		//if($envoi_mail=="n") {
+		if((!isset($dest_mail))||(!check_mail($dest_mail))) {
+			$pref_output_mode_pdf=get_output_mode_pdf();
+			$pdf->Output($nom_bulletin,$pref_output_mode_pdf);
+		}
+		else {
+			//$dest_mail=getSettingValue('gepiAdminAdress');
+			//echo "\$dest_mail=$dest_mail<br />";
+			$sujet_mail="Envoi du bulletin ".$nom_bulletin;
+			$message_mail="Bonjour Monsieur, madame,
+
+Veuillez trouver en pièce jointe le bulletin ".$nom_bulletin."
+
+
+Bien cordialement.
+-- 
+".civ_nom_prenom($_SESSION['login'], "initiale_prenom")."
+".getSettingValue('gepiSchoolName');
+
+			$tab_param_mail['destinataire']=array($dest_mail);
+
+			$tempdir=get_user_temp_directory();
+			$dirname="../temp/".$tempdir;
+
+			echo $pdf->Output($dirname."/".$nom_bulletin,'F');
+
+			// On enlève le préfixe ../ parce que le chemin absolu est reconstruit via SERVER_ROOT dans envoi_mail()
+			envoi_mail($sujet_mail, $message_mail, $dest_mail, '', "plain", $tab_param_mail, preg_replace("#^\.\./#", "", $dirname."/".$nom_bulletin));
+
+			$data=file_get_contents($dirname."/".$nom_bulletin);
+			send_file_download_headers('application/pdf',$nom_bulletin);
+			echo $data;
+			// Ménage:
+			unlink($dirname."/".$nom_bulletin);
+			die();
+		}
 	}
 }
 

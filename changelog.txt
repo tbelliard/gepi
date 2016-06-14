@@ -23,6 +23,7 @@ Bulletins:
 - Possibilité d'ouvrir l'accès parent/élève aux appréciations et avis élève par
   élève (pour les établissements dans lesquels les bulletins sont remis en mains 
   propres aux familles).
+- Possibilité d'envoyer les bulletins aux familles par mail lors de l'archivage de fin d'année.
 
 Cahiers de textes:
 - Possibilité de définir des Tag (Contrôle, EPI, AP) pour les notices de CDT.

@@ -56,7 +56,7 @@ include_once dirname(__FILE__).'/share-pdf.inc.php';
  * @param string $plain_ou_html format du mail (plain pour texte brut, html sinon)
  * @param array $tab_param_mail tableau des paramètres mail pour phpMailer
  */
-function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain", $tab_param_mail=array()) {
+function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_ou_html="plain", $tab_param_mail=array(), $piece_jointe="") {
 	global $gepiPath, $niveau_arbo;
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
@@ -126,6 +126,10 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 		$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
 		$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 		*/
+
+		if($piece_jointe!="") {
+			$mail->addAttachment($piece_jointe);
+		}
 
 		// From
 		if((isset($tab_param_mail['from']))&&(check_mail($tab_param_mail['from']))) {
@@ -269,11 +273,62 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 
 	}
 	else {
-		$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
-		$headers .= "MIME-Version: 1.0\r\n";
-		$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
-		$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
-		$headers .= $ajout_headers;
+			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			$headers .= $ajout_headers;
+
+		if($piece_jointe=="") {
+			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			$headers .= $ajout_headers;
+		}
+		else {
+			$path=$_SERVER['DOCUMENT_ROOT'].$gepiPath."/";
+
+			/*
+			$f=fopen("/tmp/debug_PJ_".strftime("%Y%m%d").".txt", "a+");
+			fwrite($f, "===============================\n");
+			fwrite($f, "Date: ".strftime("%Y-%m-%d %H:%M:%S")."\n");
+			fwrite($f, "\$path=".$path."\n");
+			fwrite($f, "\$path.\$piece_jointe=".$path.$piece_jointe."\n");
+			fclose($f);
+			*/
+			$type_piece_jointe=filetype($path.$piece_jointe);
+			$data=chunk_split( base64_encode(file_get_contents($path.$piece_jointe)) );
+
+			$boundary=md5(uniqid(time()));
+
+			$headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+			$headers .= "X-Priority: 1 \r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\" \r\n";
+			//$headers .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+			$headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+			$headers .= $ajout_headers;
+
+			$tmp_message  = "--$boundary \r\n";
+			//$tmp_message .= "Content-Type: text/html; charset=UTF-8\r\n";
+			$tmp_message .= "Content-type: text/$plain_ou_html; charset=UTF-8\r\n";
+			$tmp_message .= "Content-Transfer-Encoding:8bit\r\n";
+			$tmp_message .= "\r\n";
+			$tmp_message .= $message;
+			$tmp_message .= "\r\n";
+			$tmp_message .= "--$boundary \r\n";
+			$tmp_message .= "Content-Type: $type_piece_jointe; name=\"".basename($piece_jointe)."\" \r\n";
+			$tmp_message .= "Content-Transfer-Encoding: base64 \r\n";
+			$tmp_message .= "Content-Disposition: attachment; filename=\"".basename($piece_jointe)."\" \r\n";
+			$tmp_message .= "\r\n";
+			$tmp_message .= $data."\r\n";
+			$tmp_message .= "\r\n";
+			$tmp_message .= "--".$boundary."--";
+
+			$message=$tmp_message;
+
+		}
 
 		// On envoie le mail
 		$envoi = mail($destinataire,
@@ -6291,7 +6346,7 @@ function acces_ele_disc($login_ele) {
  *
  * @return array Le tableau
  */
-function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
+function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n", $envoi_bulletin="") {
 	global $mysqli;
 	$tab="";
 
@@ -6302,27 +6357,35 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n") {
 	elseif($meme_en_resp_legal_0=="yy") {
 		$sql.=" UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='0' AND r.acces_sp='y')";
 	}
+
+	if($envoi_bulletin=="y") {
+		$sql.=" UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
+	}
 	$sql.=";";
 	//echo "$sql<br />";
 	$res = mysqli_query($mysqli, $sql);
 	if($res->num_rows > 0) {
 		$cpt=0;
+		$tab_deja=array();
 		while($lig = $res->fetch_object()) {
-			$tab[$cpt]=array();
+			if(!in_array($lig->login, $tab_deja)) {
+				$tab[$cpt]=array();
 
-			$tab[$cpt]['login']=$lig->login;
-			$tab[$cpt]['nom']=$lig->nom;
-			$tab[$cpt]['prenom']=$lig->prenom;
-			$tab[$cpt]['civilite']=$lig->civilite;
-			$tab[$cpt]['mel']=$lig->mel;
+				$tab[$cpt]['login']=$lig->login;
+				$tab[$cpt]['nom']=$lig->nom;
+				$tab[$cpt]['prenom']=$lig->prenom;
+				$tab[$cpt]['civilite']=$lig->civilite;
+				$tab[$cpt]['mel']=$lig->mel;
 
-			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+				$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
 
-			$tab[$cpt]['pers_id']=$lig->pers_id;
+				$tab[$cpt]['pers_id']=$lig->pers_id;
 
-			$tab[$cpt]['resp_legal']=$lig->resp_legal;
+				$tab[$cpt]['resp_legal']=$lig->resp_legal;
 
-			$cpt++;
+				$tab_deja[]=$lig->login;
+				$cpt++;
+			}
 		}
 		$res->close();
 	}
@@ -8602,6 +8665,12 @@ function get_next_tel_jour($jour, $decalage_aujourdhui=0) {
 }
 
 function get_output_mode_pdf() {
+	/*
+		I : envoyer en inline au navigateur. Le visualiseur PDF est utilisé.
+		D : envoyer au navigateur en forçant le téléchargement, avec le nom indiqué dans name.
+		F : sauver dans un fichier local, avec le nom indiqué dans name (peut inclure un répertoire).
+		S : renvoyer le document sous forme de chaîne.
+	*/
 	$output_mode_pdf=getSettingValue("output_mode_pdf");
 	if(!in_array($output_mode_pdf, array("D", "I"))) {$output_mode_pdf='D';}
 	return getPref($_SESSION['login'], "output_mode_pdf", $output_mode_pdf);

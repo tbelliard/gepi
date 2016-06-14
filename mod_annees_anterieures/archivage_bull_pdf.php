@@ -113,7 +113,7 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 
-	echo "<p>Nommage des fichiers&nbsp;:<br />Inclure dans le nom de fichier pour chaque élève&nbsp;:</p>\n";
+	echo "<p><strong>Nommage des fichiers&nbsp;:</strong><br />Inclure dans le nom de fichier pour chaque élève&nbsp;:</p>\n";
 	echo "<input type='checkbox' id='arch_bull_nom_prenom' name='arch_bull_nom_prenom' value='yes'";
 	$arch_bull_nom_prenom=getPref($_SESSION['login'],'arch_bull_nom_prenom', 'yes');
 	if($arch_bull_nom_prenom=='yes') {echo " checked";}
@@ -138,6 +138,14 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	$arch_bull_classe=getPref($_SESSION['login'],'arch_bull_classe', 'yes');
 	if($arch_bull_classe=='yes') {echo " checked";}
 	echo " /><label for='arch_bull_classe'> Classe de l'élève</label><br />\n";
+
+	echo "<p><strong>Autres paramètres&nbsp;:</strong><br />";
+	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes'";
+	$arch_bull_envoi_mail=getPref($_SESSION['login'],'arch_bull_envoi_mail', 'no');
+	if($arch_bull_envoi_mail=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_envoi_mail'> Envoyer par mail aux responsables pour lesquels une adresse mail est renseignée, les bulletins générés</label><br /><em>(notez que l'envoi de mail peut ralentir l'opération d'archivage; il se peut aussi que votre fournisseur d'accès fasse des histoires avec l'envoi de nombreux mails (cela risque d'être injustement pris pour du spam))</em>";
+	//echo "<br />\n";
+	echo "</p>\n";
 
 	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
 	echo "<input type='hidden' name='generer_fichiers_pdf_archivage' value='y' />\n";
@@ -415,6 +423,9 @@ else {
 
 		$arch_bull_classe=isset($_POST['arch_bull_classe']) ? $_POST['arch_bull_classe'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_classe',$arch_bull_classe);
+
+		$arch_bull_envoi_mail=isset($_POST['arch_bull_envoi_mail']) ? $_POST['arch_bull_envoi_mail'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_envoi_mail',$arch_bull_envoi_mail);
 
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);

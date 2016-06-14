@@ -1651,7 +1651,24 @@ Patientez pendant l'extraction des données... merci.
 									echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."&pers_id=".$tab_ele['resp'][$i]['pers_id']."' target='_blank' title=\"Voir dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode.".
 
 Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['resp'][$i]['civilite']." ".$tab_ele['resp'][$i]['nom']." ".$tab_ele['resp'][$i]['prenom']."\">P".$current_num_periode."</a>";
+								}
 
+								$possibilite_envoi_bulletin_par_mail="n";
+								if((isset($tab_ele['resp'][$i]['mel']))&&(check_mail($tab_ele['resp'][$i]['mel']))) {
+									$possibilite_envoi_bulletin_par_mail="y";
+								}
+								if($possibilite_envoi_bulletin_par_mail=="y") {
+									echo "<br />";
+									for($loop_per=0;$loop_per<count($tab_ele['periodes']);$loop_per++) {
+										$current_id_classe=$tab_ele['periodes'][$loop_per]['id_classe'];
+										$current_num_periode=$tab_ele['periodes'][$loop_per]['num_periode'];
+										if($loop_per>0) {
+											echo " - ";
+										}
+										echo "<a href='../bulletin/bull_index.php?mode_bulletin=".$type_bulletin_par_defaut.$chaine_intercaler_releve_notes."&type_bulletin=-1&choix_periode_num=fait&valide_select_eleves=y&tab_selection_ele_0_0[0]=".$ele_login."&tab_id_classe[0]=".$current_id_classe."&tab_periode_num[0]=".$current_num_periode."&pers_id=".$tab_ele['resp'][$i]['pers_id']."&dest_mail=".$tab_ele['resp'][$i]['mel']."' target='_blank' title=\"Envoyer le bulletin par mail à l'adresse ".$tab_ele['resp'][$i]['mel'].", et ouvrir ensuite dans un nouvel onglet le bulletin ".casse_mot($type_bulletin_par_defaut, "maj")." de la période ".$current_num_periode.".
+
+Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['resp'][$i]['civilite']." ".$tab_ele['resp'][$i]['nom']." ".$tab_ele['resp'][$i]['prenom']."\"><img src='../images/icons/mail.png' class='icone16' alt='Mail' />P".$current_num_periode."</a>";
+									}
 								}
 							}
 
