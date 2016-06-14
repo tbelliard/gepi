@@ -1127,6 +1127,7 @@ function make_eleve_select_html($link, $login_resp, $current, $year, $month, $da
  */
 function affiche_docs_joints($id_ct,$type_notice) {
   global $contexte_affichage_docs_joints;
+  global $envoi_mail;
 
   // documents joints
   $html = '';
@@ -1151,6 +1152,11 @@ function affiche_docs_joints($id_ct,$type_notice) {
           ) {
                 $titre = $row[0];
                 $emplacement = $row[1];
+
+                if((isset($envoi_mail))&&($envoi_mail=="y")&&(getSettingValue("url_racine_gepi")!="")) {
+                    $emplacement=preg_replace("#^\.\./#", getSettingValue("url_racine_gepi")."/", $emplacement);
+                }
+
               // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
               // alternative, utiliser un javascript
                 //$html .= "<li style=\"padding: 0px; margin: 0px;font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
