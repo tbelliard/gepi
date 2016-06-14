@@ -690,7 +690,7 @@ $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
 ?>
-<script type="text/javascript" language="javascript">
+<script type="text/javascript" >
 change = 'no';
 
 </script>
@@ -764,7 +764,7 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 				if($tmp_groups[$loop]['id']==$id_groupe){
 					$num_groupe=$loop;
 
-					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='true'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_classes.="<option value='".$tmp_groups[$loop]['id']."' selected='selected'>".$tmp_groups[$loop]['description']." (".$tmp_groups[$loop]['classlist_string'].")</option>\n";
 	
 					$temoin_tmp=1;
 					if(isset($tmp_groups[$loop+1])){
@@ -890,7 +890,7 @@ echo $chaine_date_conseil_classe;
 //=========================
 
 if($proposer_liens_enregistrement=="y") {
-	echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+	echo "<p class='center'><input type='submit' value='Enregistrer' /></p>\n";
 }
 
 //===========================================================
@@ -904,7 +904,7 @@ echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px
 	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
 		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
 		echo "<a href='#' onClick=\"cacher_div('div_bull_simp');return false;\">\n";
-		echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+		echo "<img src='../images/icons/close16.png' style=\"width:16px; height:16px\" alt='Fermer' />\n";
 		echo "</a>\n";
 		echo "</div>\n";
 
@@ -1066,12 +1066,9 @@ while ($k < $nb_periode) {
 	$mess[$k]="";
 	$mess[$k].="<td>".$moyenne_t[$k]."</td>\n";
 	$mess[$k].="<td>\n";
-	//$mess[$k].="\$current_group['classe']['ver_periode']['all'][$k]=".$current_group["classe"]["ver_periode"]['all'][$k]."<br />";
-	//if(((($current_group["classe"]["ver_periode"]['all'][$k] == 0)||($current_group["classe"]["ver_periode"]['all'][$k] == 1))&&($_SESSION['statut']!='secours'))||
 	if((($current_group["classe"]["ver_periode"]['all'][$k] != 3)&&($_SESSION['statut']!='secours'))||
 	(($current_group["classe"]["ver_periode"]['all'][$k]==0)&&($_SESSION['statut']=='secours'))) {
 
-		//$mess[$k].=htmlspecialchars(nl2br($app_grp[$k]));
 		$mess[$k].=nl2br($app_grp[$k]);
 
 		$sql="SELECT * FROM matieres_app_corrections WHERE (login='' AND id_groupe='".$current_group["id"]."' AND periode='$k');";
@@ -1082,20 +1079,17 @@ while ($k < $nb_periode) {
 		}
 
 		if(
-			(
-				($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
-
-				(
-					($app_grp[$k]!='')||
-					(mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
-				)
-				&&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
-			)||
-			($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
+                    (
+                        ($current_group["classe"]["ver_periode"]['all'][$k] == 1)&&
+                        (
+                            ($app_grp[$k]!='')||
+                            (mb_substr(getSettingValue('autoriser_correction_bulletin_hors_delais'),0,1)=='y')
+                        )
+                        &&(mb_substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')
+                    )||
+                    ($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
 		) {
-			//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
-			//$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>".$app_grp[$k]."</textarea>\n";
-			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
+			$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction_groupe('$k');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px\" alt='Proposer une correction' title='Proposer une correction' /></a>";
 			$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_grp_$k' id='reserve_correction_app_grp_$k'>".$app_grp[$k]."</textarea>\n";
 			$mess[$k].="</div>\n";
 
@@ -1116,28 +1110,38 @@ while ($k < $nb_periode) {
 
 	// on affiche si besoin l'appréciation temporaire (en sauvegarde)
 	//$mess[$k].=$eleve_app_t;
-	$mess[$k].= "</td>\n";
+	//$mess[$k].= "</td>\n";
 	$k++;
 }
 
 
-echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Appréciation sur le groupe/classe\">\n";
-echo "<tr>\n";
-echo "<th width=\"200\"><div align=\"center\">&nbsp;</div></th>\n";
-echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
-echo "<th>\n";
+?>
+<table style ="width: 750px; border-collapse: separate; border-spacing: 1px; " class='boireaus'>
+    <tr>
+        <th  style="width:200px" ><div class="center">&nbsp;</div></th>
+        <th style="width:30px" ><div class="center"><strong>Moy.</strong></div></th>
+        <th>
+            <div style='float:right; width:16px;'>
+                <a href='javascript:affichage_div_photo();'>
+                    <img src='../images/icons/wizard.png' 
+                         style ="width:16px; height:16px "
+                         alt='Afficher les quartiles et éventuellement la photo élève' 
+                         title='Afficher la photo élève pendant la saisie' />
+                </a>
+            </div>
 
-echo "<div style='float:right; width:16px;'><a href='javascript:affichage_div_photo();'><img src='../images/icons/wizard.png' width='16' height='16' alt='Afficher les quartiles et éventuellement la photo élève' title='Afficher la photo élève pendant la saisie' /></a></div>\n";
-
+<?php
 
 if(getSettingAOui('GepiAccesBulletinSimpleClasseEleve')) {
-	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/icons/trombinoscope.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des élèves\" alt=\"Appréciation sur le groupe-classe visible des élèves\" /></div>\n";
+	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/icons/trombinoscope.png' style=\"width:16px; height:16px\" title=\"L'appréciation sur le groupe-classe est visible des élèves\" alt=\"Appréciation sur le groupe-classe visible des élèves\" /></div>\n";
 }
 if(getSettingAOui('GepiAccesBulletinSimpleClasseResp')) {
-	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/group16.png' width='16' height='16' title=\"L'appréciation sur le groupe-classe est visible des parents\" /></div>\n";
+	echo "<div style='float:right; width:16px;margin-right:5px;'><img src='../images/group16.png' style=\"width:16px; height:16px\" alt=\"Visibilité par les parents\" title=\"L'appréciation sur le groupe-classe est visible des parents\" /></div>\n";
 }
-
-echo "<div align=\"center\"><b>Appréciation sur le groupe/classe</b>\n";
+?>
+            <div class="center">
+                <strong>Appréciation sur le groupe/classe</strong>
+<?php
 
 //===============================================
 $tabdiv_infobulle[]=creer_div_infobulle('div_explication_cnil',"Saisies et CNIL","",$message_cnil_bons_usages,"",30,0,'y','y','n','n');
@@ -1151,10 +1155,19 @@ $delais_affichage_infobulle=500;
 //===============================================
 
 // 20121101: Mettre une infobulle CNIL
-echo " <a href='#' onclick=\"afficher_div('div_explication_cnil','y',10,-40);return false;\" onmouseover=\"delais_afficher_div('div_explication_cnil','y',10,-40, $delais_affichage_infobulle, $largeur_survol_infobulle, $hauteur_survol_infobulle);\"><img src='../images/info.png' width='20' height='20' title='CNIL : Règles de bon usage' /></a>";
 
-echo "</div></th>\n";
-echo "</tr>\n";
+?>
+                <a href='#' 
+                   onclick="afficher_div('div_explication_cnil','y',10,-40);return false;" 
+                   onmouseover="delais_afficher_div('div_explication_cnil','y',10,-40, <?php echo $delais_affichage_infobulle ?>, <?php echo $largeur_survol_infobulle ?>, <?php echo $hauteur_survol_infobulle ?>);">
+                    <img src='../images/info.png' style="width: 20px; height: 20px" title='CNIL : Règles de bon usage' alt="Information" />
+                </a>
+            </div>
+        </th>
+    </tr>
+<?php
+//echo "</div></th>\n";
+//echo "</tr>\n";
 //=================================================
 
 
@@ -1163,17 +1176,35 @@ $k=1;
 $alt=1;
 while ($k < $nb_periode) {
 	$alt=$alt*(-1);
+?>
+    <tr class='lig<?php echo $alt; ?>'>
+        <td>
+<?php
 	if ($current_group["classe"]["ver_periode"]["all"][$k] == 0) {
-		echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span><span id='span_repartition_notes_$k'></span></td>\n";
+		//echo "<tr class='lig$alt'><td><span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span><span id='span_repartition_notes_$k'></span>1</td>\n";
+            echo "<span title=\"$gepiClosedPeriodLabel\">$nom_periode[$k]</span><span id='span_repartition_notes_$k'></span>\n";
 	} else {
-		echo "<tr class='lig$alt'><td>$nom_periode[$k]<span id='span_repartition_notes_$k'></span></td>\n";
+		//echo "<tr class='lig$alt'><td>$nom_periode[$k]<span id='span_repartition_notes_$k'></span>2</td>\n";
+            echo "$nom_periode[$k]<span id='span_repartition_notes_$k'></span>\n";
 	}
 	echo $mess[$k];
+?>
+        </td>
+    </tr>
+<?php
 	$k++;
 }
+?>
+</table>
+    
+    <br />
+<?php
+/*
 echo "</tr>\n";
 echo "</table>\n";
-echo "<br />\n";
+ * 
+ */
+//echo "\n";
 
 
 //=================================
@@ -1283,9 +1314,8 @@ foreach ($liste_eleves as $eleve_login) {
 				if("$photo"!=""){
 					$titre="$eleve_nom $eleve_prenom";
 
-					$texte="<div align='center'>\n";
-					$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
-					$texte.="<br />\n";
+					$texte="<div class='center'>\n";
+					$texte.="<img src='".$photo."' style=\"width:150\" alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="</div>\n";
 
 					$temoin_photo="y";
@@ -1376,7 +1406,8 @@ foreach ($liste_eleves as $eleve_login) {
 			$eleve_statut = @old_mysql_result($note_query, 0, "statut");
 			$eleve_note = @old_mysql_result($note_query, 0, "note");
 			// Formatage de la note
-			$note ="<center>";
+			$note ="";
+			//$note .="<center>";
 			$note.="<a href='saisie_notes.php?id_groupe=".$current_group["id"]."&amp;periode_cn=$k' onclick=\"return confirm_abandon (this, change, '$themessage')\" title=\"Accéder aux notes du bulletin en période $k\">";
 			if ($eleve_statut != '') {
 				$note .= $eleve_statut;
@@ -1389,7 +1420,7 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 			}
 			$note.="</a>";
-			$note .= "</center>";
+			//$note .= "</center>";
 
 			// 20131204
 			$acces_exceptionnel_complet="n";
@@ -1426,7 +1457,7 @@ foreach ($liste_eleves as $eleve_login) {
 						($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')
 					) {
 
-						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
+						$mess[$k].="<div style='float:right; widthheight:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' style=\"width:16px; height:16px;\" alt='Proposer une correction' title='Proposer une correction' /></a>";
 	
 						$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
 						$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
@@ -1525,7 +1556,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$texte.=$liste_notes_detaillees;
 					$tabdiv_infobulle[]=creer_div_infobulle('notes_'.$eleve_login.'_'.$k,$titre,"",$texte,"",30,0,'y','y','n','n');
 
-					$mess[$k].="<a name='".$eleve_login."_".$k."'></a>";
+					//$mess[$k].="<a name='".$eleve_login."_".$k."'></a>";
 					$mess[$k].="<a href='#".$eleve_login."_".$k."' onclick=\"fermer_div_notes();afficher_div('notes_".$eleve_login."_".$k."','y',-100,-10);return false;\" title=\"Afficher le détail des notes\">";
 					$mess[$k].=$liste_notes;
 					$mess[$k].="</a>";
@@ -1597,7 +1628,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].="</div>\n";
 
 
-				$mess[$k].= "</td>\n";
+				//$mess[$k].= "</td>\n";
 
 				//=========================
 
@@ -1633,22 +1664,12 @@ foreach ($liste_eleves as $eleve_login) {
 			echo "<h3>Classe de " . $eleve_classe . "</h3>\n";
 		}
 		$prev_classe = $eleve_classe;
-		//echo "<table width=\"750px\" border=\"1\" cellspacing=\"2\" cellpadding=\"5\">\n";
-		/*
-		echo "<table width=\"750\" border=\"1\" cellspacing=\"2\" cellpadding=\"5\">\n";
-		echo "<tr>\n";
-		echo "<td width=\"200\"><div align=\"center\">&nbsp;</div></td>\n";
-		echo "<td width=\"30\"><div align=\"center\"><b>Moy.</b></div></td>\n";
-		echo "<td><div align=\"center\"><b>$eleve_nom $eleve_prenom</b></div></td>\n";
-		echo "</tr>\n";
-		*/
-
-		echo "<a name='saisie_app_$eleve_login'></a>";
-		echo "<table width=\"750\" class='boireaus' cellspacing=\"2\" cellpadding=\"5\" summary=\"Tableau de $eleve_nom $eleve_prenom\">\n";
-		echo "<tr>\n";
-		//echo "<th width=\"200\">\n";
-		echo "<th align='center' width=\"200\">\n";
-		//echo "<div align=\"center\">&nbsp;</div>\n";
+                //echo "<a name='saisie_app_$eleve_login'></a>";
+?>
+    <table style ="width: 750px; border-collapse: separate; border-spacing: 1px; " class='boireaus'>
+        <tr>
+            <th class="center" style="width: 200px;">
+<?php 
 
 		$num_per1=0;
 		$id_premiere_classe="";
@@ -1674,16 +1695,24 @@ foreach ($liste_eleves as $eleve_login) {
 		if(($id_premiere_classe!='')&&($acces_bull_simp=='y')) {
 			//echo "<div style='float:right; width: 17px; margin-right: 1px;'>\n";
 			echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$designation_eleve','$id_premiere_classe','$num_per1','$num_per2');return false;\">";
-			echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
+			echo "<img src='../images/icons/bulletin_simp.png' style=\"width:17px; height:17px\" alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 			echo "</a>";
 			//echo "</div>\n";
 		}
+?>
+            </th>
+            <th style="width:30px">
+                <div class="center"><strong>Moy.</strong></div>
+            </th>
+            <th>
+                <div class="center">
+                    <strong>
+<?php
+		//echo "</th>\n";
+		//echo "<th style=\"width:30px\"><div class=\"center\"><strong>Moy.</strong></div></th>\n";
+		//echo "<th>\n";
 
-		echo "</th>\n";
-		echo "<th width=\"30\"><div align=\"center\"><b>Moy.</b></div></th>\n";
-		echo "<th>\n";
-
-		echo "<div align=\"center\"><b>";
+		//echo "<div class=\"center\"><b>";
 		if($acces_visu_eleve) {
 			echo "<a href='../eleves/visu_eleve.php?ele_login=$eleve_login' target='_blank' title=\"Voir (dans un nouvel onglet) la fiche élève avec les onglets Élève, Enseignements, Bulletins, CDT, Absences,...\">";
 			echo "$eleve_nom $eleve_prenom";
@@ -1692,17 +1721,17 @@ foreach ($liste_eleves as $eleve_login) {
 		else {
 			echo "$eleve_nom $eleve_prenom";
 		}
-		echo "</b>\n";
-
+		//echo "</b>\n";
+?>
+                    </strong>
+<?php
 		//==========================
 		// AJOUT: boireaus 20071115
 		// Lien photo...
 		if($temoin_photo=="y"){
-			//echo " <a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
 			echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-100,20,1000,10,10);\"";
 			echo " onclick=\"afficher_div('photo_$eleve_login','y',-100,20); return false;\" title=\"Afficher la photo de l'élève.\"";
 			echo ">";
-			//echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
 			echo "<img src='../mod_trombinoscopes/images/";
 			if($eleve_sexe=="F") {
 				echo "photo_f.png";
@@ -1715,8 +1744,16 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		//==========================
 
-		echo "</div></th>\n";
-		echo "</tr>\n";
+		//echo "</div>\n";
+		echo "\n";
+                
+?>
+                       
+                </div> 
+            </th>
+        </tr>
+    
+<?php
 
 		// Pour permettre de sauter dans la liste un élève qui est parti en cours d'année
 		// Si plusieurs périodes sont ouvertes en saisie, cela peut ne pas fonctionner
@@ -1738,14 +1775,11 @@ foreach ($liste_eleves as $eleve_login) {
 				//if($current_id_classe!='') {
 				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
-					echo " <a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$designation_eleve','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
+					echo " <a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,20); affiche_bull_simp('$eleve_login','$designation_eleve','$current_id_classe[$k]','$k','$k');return false;\" title='Bulletin simple en infobulle'>";
 					//echo $nom_periode[$k];
-					echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
+					echo "<img src='../images/icons/bulletin_simp.png' style=\"width:17px; height:17px;\" alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
 					echo "</a>";
 				}
-				//else {
-				//	echo $nom_periode[$k];
-				//}
 				echo "</span>\n";
 
 				// 20121118
@@ -1755,17 +1789,18 @@ foreach ($liste_eleves as $eleve_login) {
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
 					//if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
+                                    if(isset($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login])) {
+                                    
 					if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
-						echo " <img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+						echo " <img src='../images/icons/visible.png' style=\"width:19px; height:16px;\" alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
-						/*
-						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
-						*/
-						echo " <img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+						echo " <img src='../images/icons/invisible.png' style=\"width:19px; height:16px;\" alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
 $msg_acces_app_ele_resp\" />";
 					}
+                                        
+                                    }  
+                                        
 				}
 
 				echo "</td>\n";
@@ -1778,15 +1813,10 @@ $msg_acces_app_ele_resp\" />";
 				//if($current_id_classe!='') {
 				if((isset($current_id_classe[$k]))&&($acces_bull_simp=='y')) {
 					//echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\">";
-					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$designation_eleve','$current_id_classe[$k]','$k','$k');return false;\" alt='Bulletin simple en infobulle' title='Bulletin simple en infobulle'>";
-					//echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve_login."&id_classe=$current_id_classe&periode1=$k&periode2=$k\" onclick=\"affiche_bull_simp('$eleve_login','$current_id_classe','$k','$k');return false;\" target=\"_blank\">";
-					//echo $nom_periode[$k];
-					echo " <img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
+					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$eleve_login','$designation_eleve','$current_id_classe[$k]','$k','$k');return false;\" title='Bulletin simple en infobulle'>";
+					echo " <img src='../images/icons/bulletin_simp.png' style=\"width:17px; height:17px;\" alt='Bulletin simple de la période en infobulle' title='Bulletin simple de la période en infobulle' />";
 					echo "</a>";
 				}
-				//else {
-				//	echo $nom_periode[$k];
-				//}
 
 				// 20121118
 				// Si les parents ont l'accès aux bulletins, graphes,... on affiche s'ils ont l'accès aux appréciations à ce jour
@@ -1794,22 +1824,17 @@ $msg_acces_app_ele_resp\" />";
 				(getSettingAOui('GepiAccesGraphParent'))||
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
-					//if($tab_acces_app_classe[$eleve_id_classe][$k]=="y") {
 					if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
-						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+						echo "<img src='../images/icons/visible.png' style=\"width:19px; height:16px;\" alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
 					}
 					else {
-						/*
-						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour.") les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-Les appréciations seront visibles soit à une date donnée, soit N jours après la clôture de la période $k, soit après une intervention manuelle d'un compte de statut 'scolarité' selon le paramétrage choisi.\" />";
-						*/
-						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+						echo "<img src='../images/icons/invisible.png' style=\"width:19px; height:16px;\" alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
 $msg_acces_app_ele_resp\" />";
 					}
 				}
 
 				if(($_SESSION['statut']=='secours')&&($id_premiere_classe!='')) {
-					echo " <a href='../saisie/saisie_secours_eleve.php?id_classe=$id_premiere_classe&periode_num=$k&ele_login=$eleve_login' title=\"Corriger les appréciations et notes de cet élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='' /></a>";
+					echo " <a href='../saisie/saisie_secours_eleve.php?id_classe=$id_premiere_classe&periode_num=$k&ele_login=$eleve_login' title=\"Corriger les appréciations et notes de cet élève.\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Éditer' /></a>";
 				}
 
 				echo "</td>\n";
@@ -1819,8 +1844,10 @@ $msg_acces_app_ele_resp\" />";
 			$k++;
 		}
 		echo "</tr>\n";
-		//echo"</table>\n<p></p>";
-		echo "</table>\n";
+		//echo"</table>\n<p></p>";";
+?>
+    </table>
+<?php
 		//echo"<p>&nbsp;</p>\n";
 		//echo"<p></p>\n";
 		echo "<br />\n";
@@ -1834,38 +1861,37 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 <input type="hidden" name="is_posted" value="yes" />
 <input type="hidden" name="id_groupe" value="<?php echo "$id_groupe";?>" />
 <input type="hidden" name="periode_cn" value="<?php echo "$periode_cn";?>" />
-<center>
-	<div id="fixe">
+
+    <div class="center" id="fixe">
 	<?php
-		echo $chaine_date_conseil_classe."<br />";
-		if($proposer_liens_enregistrement=='y') {
-			if(getSettingAOui('aff_temoin_check_serveur')) {
-				temoin_check_srv();
-			}
-			echo "
-		<input type='submit' value='Enregistrer' /><br />
+            echo $chaine_date_conseil_classe."<br />";
+            if($proposer_liens_enregistrement=='y') {
+                if(getSettingAOui('aff_temoin_check_serveur')) {
+                        temoin_check_srv();
+                }
+                echo "
+            <input type='submit' value='Enregistrer' /><br />
 
-		<!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
-		<div id='decompte' title=\"La session ne sera plus valide, si vous ne consultez pas une page
+            <!-- DIV destiné à afficher un décompte du temps restant pour ne pas se faire piéger par la fin de session -->
+            <div id='decompte' title=\"La session ne sera plus valide, si vous ne consultez pas une page
 ou ne validez pas ce formulaire avant le nombre de secondes indiqué.\"></div>\n";
-		}
+            }
 
-		//============================================
-		if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
-		//============================================
+            //============================================
+            if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
+            //============================================
 
-		if($proposer_liens_enregistrement=="y") {
-			echo "<a href='#' onClick=\"insere_notes();return false;\">";
-			echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
-			echo "</a>\n";
-			}
+            if($proposer_liens_enregistrement=="y") {
+                echo "<a href='#' onclick=\"insere_notes();return false;\">";
+                echo "<img src='../images/icons/wizard.png' style=\"width:16px; height:16px\" alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
+                echo "</a>\n";
+            }
 	?>
 
 		<!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
 		<input type='hidden' id='info_focus' name='champ_info_focus' value='' />
 		<input type='hidden' id='focus_courant' name='focus_courant' value='' />
-	</div>
-</center>
+    </div>
 </form>
 
 <?php
@@ -2115,7 +2141,7 @@ function affichage_div_photo() {
 }
 
 function affiche_photo(photo,nom_prenom) {
-	document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+	document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\"  style=\"width:150px\" alt=\"Photo\" /><br />'+nom_prenom;
 }
 ";
 if($aff_photo_par_defaut=='y') {

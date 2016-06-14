@@ -20,7 +20,9 @@
 	$epaisseur_traits=$_GET['epaisseur_traits'];
 	$v_legend1=$_GET['v_legend1'];
 	$v_legend2=$_GET['v_legend2'];
-
+        
+        // il ne faudrait pas utiliser | pour séparer les données → erreur html
+        $serie = str_replace(";", "|", $serie);
 	$notes=explode("|",$serie);
 
 	$fond="white";
@@ -144,4 +146,3 @@
 	echo "</svg>\n";
 	die();
 
-?>

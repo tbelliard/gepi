@@ -2501,12 +2501,13 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	$graphe_serie="";
 	if(isset($tab_graph_note)) {
 		for($l=0;$l<count($tab_graph_note);$l++) {
-			if($l>0) {$graphe_serie.="|";}
+			//if($l>0) {$graphe_serie.="|";}
+			if($l>0) {$graphe_serie.=";";}
 			$graphe_serie.=$tab_graph_note[$l];
 		}
 	}
 
-	$texte="<div align='center'><object data='../lib/graphe_svg.php?";
+	$texte="<div class='center'><object data=\"../lib/graphe_svg.php?";
 	$texte.="serie=$graphe_serie";
 	$texte.="&amp;note_sur_serie=$note_sur";
 	$texte.="&amp;nb_tranches=$nb_tranches";
@@ -2517,7 +2518,7 @@ function retourne_html_histogramme_svg($tab_graph_note, $titre, $id, $nb_tranche
 	$texte.="&amp;hauteurTotale=$graphe_hauteurTotale";
 	$texte.="&amp;taille_police=$graphe_taille_police";
 	$texte.="&amp;epaisseur_traits=$graphe_epaisseur_traits";
-	$texte.="'";
+	$texte.="\"";
 	$texte.=" width='$graphe_largeurTotale' height='$graphe_hauteurTotale'";
 	$texte.=" type=\"image/svg+xml\"></object></div>\n";
 
