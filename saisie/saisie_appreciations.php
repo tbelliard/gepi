@@ -1824,12 +1824,14 @@ $msg_acces_app_ele_resp\" />";
 				(getSettingAOui('GepiAccesGraphParent'))||
 				(getSettingAOui('GepiAccesBulletinSimpleEleve'))||
 				(getSettingAOui('GepiAccesGraphEleve'))) {
-					if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
-						echo "<img src='../images/icons/visible.png' style=\"width:19px; height:16px;\" alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
-					}
-					else {
-						echo "<img src='../images/icons/invisible.png' style=\"width:19px; height:16px;\" alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-$msg_acces_app_ele_resp\" />";
+					if(isset($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login])) {
+						if($tab_acces_app_classe2[$eleve_id_classe][$k][$eleve_login]=="y") {
+							echo "<img src='../images/icons/visible.png' style=\"width:19px; height:16px;\" alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+						}
+						else {
+							echo "<img src='../images/icons/invisible.png' style=\"width:19px; height:16px;\" alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+	$msg_acces_app_ele_resp\" />";
+						}
 					}
 				}
 
