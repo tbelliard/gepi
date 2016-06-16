@@ -4479,7 +4479,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Saisie de l'avis du conseil
 			$retour.="
 		<tr>
-			<td>Saisir l'avis du conseil de classe&nbsp:</td>";
+			<td>Saisir l'avis du conseil de classe&nbsp;:</td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				if($periode['verouiller']!='O') {
 					$retour.="
@@ -4496,7 +4496,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Impression avis du conseil
 			$retour.="
 		<tr>
-			<td>Imprimer les avis du conseil de classe&nbsp:</td>";
+			<td><a href='$gepiPath/saisie/impression_avis.php'$target>Imprimer les avis du conseil de classe&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				$sql="SELECT DISTINCT a.login FROM avis_conseil_classe a, j_eleves_classes jec WHERE jec.login=a.login AND jec.periode=a.periode AND jec.id_classe='$id_classe' AND a.periode='$current_num_periode' AND avis!='';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4515,7 +4515,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Affichage Appréciations sur le groupe classe
 			$retour.="
 		<tr>
-			<td>Imprimer les appréciations des professeurs sur le groupe classe&nbsp:</td>";
+			<td><a href='$gepiPath/prepa_conseil/index3.php?id_classe=$id_classe'$target>Imprimer les appréciations des professeurs sur le groupe classe&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				$sql="SELECT DISTINCT mag.id_groupe FROM matieres_appreciations_grp mag, j_groupes_classes jgc WHERE jgc.id_groupe=mag.id_groupe AND jgc.id_classe='$id_classe' AND mag.periode='$current_num_periode' AND appreciation!='' AND appreciation!='-';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -4543,7 +4543,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			if(getSettingAOui('active_mod_engagements')) {
 				$retour.="
 		<tr>
-			<td>Imprimer les grilles/listes destinées à la prise de notes pendant le conseil de classe&nbsp:</td>";
+			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe' title=\"Imprimer les documents pour le conseil de classe : Convocations, grilles,...\"$target>Imprimer les grilles/listes destinées à la prise de notes pendant le conseil de classe&nbsp;:</a></td>";
 				foreach($tab_per as $current_num_periode => $periode) {
 					$retour.="
 			<td><a href='$gepiPath/mod_engagements/imprimer_documents.php?id_classe[0]=$id_classe&amp;periode=$current_num_periode&amp;imprimer_liste_eleve=y&destinataire=".add_token_in_url()."'$target><img src='$gepiPath/images/icons/ods.png' class='icone32' alt='ODS' /></a></td>";
@@ -4560,7 +4560,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			// Graphes
 			$retour.="
 		<tr>
-			<td>Toutes les moyennes de la classe&nbsp:</td>";
+			<td><a href='$gepiPath/prepa_conseil/index2.php?id_classe=$id_classe'$target>Toutes les moyennes de la classe&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				/*
 				$retour.="
@@ -4572,7 +4572,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$retour.="
 		</tr>
 		<tr>
-			<td>Bulletins simplifiés&nbsp:</td>";
+			<td><a href='$gepiPath/prepa_conseil/edit_limite.php?choix_edit=1&id_classe=$id_classe&periode1=1&periode2=".count($tab_per)."&couleur_alterne=y' target='_blank' title=\"Afficher les bulletins simplifiés de toutes les périodes.\">Bulletins simplifiés&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				//https://127.0.0.1/steph/gepi_git_trunk/prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=boivinj&id_classe=42&periode1=3&periode2=3
 				/*
@@ -4585,7 +4585,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			$retour.="
 		</tr>
 		<tr>
-			<td>Graphes&nbsp:</td>";
+			<td><a href='$gepiPath/visualisation/affiche_eleve.php?id_classe=$id_classe&amp;choix_periode=toutes_periodes' title=\"Afficher les graphes en mode Évolution sur l'année\"$target>Graphes&nbsp;:</a></td>";
 			foreach($tab_per as $current_num_periode => $periode) {
 				$retour.="
 			<td><a href='$gepiPath/visualisation/affiche_eleve.php?id_classe=$id_classe&amp;num_periode_choisie=$current_num_periode'$target title=\"Voir les graphes de la classe en période $current_num_periode\"><img src='$gepiPath/images/icons/graphes.png' class='icone32' alt='Graphes' /></a></td>";
@@ -4617,7 +4617,7 @@ function affiche_choix_action_conseil_de_classe($id_classe, $target="") {
 			for($loop=0;$loop<count($tab_mes_groupes_avec_bulletin_dans_cette_classe);$loop++) {
 				$retour.="
 		<tr>
-			<td>".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['name']."&nbsp:</td>";
+			<td>".$tab_mes_groupes_avec_bulletin_dans_cette_classe[$loop]['name']."&nbsp;:</td>";
 				foreach($tab_per as $current_num_periode => $periode) {
 					if($periode['verouiller']=='N') {
 						$retour.="
