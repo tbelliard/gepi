@@ -63,6 +63,32 @@ if (isset($_POST['force_error_reporting'])) {
 	$msg_force_error_reporting=$msg;
 }
 
+
+// Traitement des paramètres proxy
+if ((isset($_POST['is_posted_proxy']))&&(isset($_POST['ip_proxy']))&&(isset($_POST['port_proxy']))) {
+	check_token();
+
+	if(($_POST['port_proxy']!="")&&(!preg_match("/^[0-9]{1,}$/", $_POST['port_proxy']))) {
+		$msg="Paramètre 'port_proxy' invalide (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+	else {
+		$msg="";
+		if(saveSetting('ip_proxy',$_POST['ip_proxy'])) {
+			$msg="Paramètre 'ip_proxy' enregistré (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+		}
+		else {
+			$msg="Erreur lors de l'enregistrement du paramètre 'ip_proxy' (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+		}
+
+		if(saveSetting('port_proxy',$_POST['port_proxy'])) {
+			$msg.="Paramètre 'port_proxy' enregistré (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+		}
+		else {
+			$msg.="Erreur lors de l'enregistrement du paramètre 'port_proxy' (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+		}
+		$msg_proxy=$msg;
+	}
+}
 // Instance de la classe infos (voir serveur_infos.class.php)
 $test_infos_serveur = new infos;
 
@@ -165,6 +191,31 @@ if ($test_infos_serveur->versionGd()) {
 
 		echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
 		echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+	}
+
+	echo "<br />\n";
+	echo "<hr />\n";
+	echo "<a name='proxy'></a><h4>Serveur Proxy</h4>\n";
+	echo "<p>Si le serveur Gepi hébergeant Gepi est derrière un serveur proxy, il peut être nécessaire de préciser le couple ADRESSE_PROXY:PORT_PROXY pour que certains téléchargements fonctionnent.<br />
+Par exemple, dans les Cahiers de textes, la génération de formules mathématiques est effectuée par un serveur externe.<br />
+Le téléchargement des images produites peut échouer si un serveur proxy bloque les requêtes.<br />
+Renseigner ici le couple IP_PROXY:PORT_PROXY peut régler le problème.</p>
+
+<form action='".$_SERVER['PHP_SELF']."#proxy' id='form_proxy' method='post'>
+<table>
+	<tr>
+		<td>Adresse IP proxy&nbsp;: </td><td><input type='text' name='ip_proxy' value='".getSettingValue('ip_proxy')."' /></td>
+	</tr>
+	<tr>
+		<td>Port proxy&nbsp;: </td><td><input type='text' name='port_proxy' value='".getSettingValue('port_proxy')."' /></td>
+	</tr>
+</table>
+<input type='hidden' name='is_posted_proxy' value='y' />
+<input type='submit' value='Enregistrer' />
+".add_token_field()."
+</form>\n";
+	if(isset($msg_proxy)) {
+		echo "<p style='color:red'>".$msg_proxy."</p>";
 	}
 
 	echo "<br />\n";

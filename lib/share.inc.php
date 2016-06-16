@@ -6801,6 +6801,8 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 			creation_index_redir_login($dest_documents,$niv_arbo_tmp);
 		}
 
+		$stream_context=get_stream_context();
+
 		$chaine="";
 		$tab_tmp=preg_split('/"/',$contenu_cor);
 		for($loop=0;$loop<count($tab_tmp);$loop++) {
@@ -6854,7 +6856,12 @@ function get_img_formules_math($texte, $id_groupe, $type_notice="c") {
 					fwrite($f, strftime('%Y%m%d %H%M%S')." : ".$morceau_courant."\n");
 					fclose($f);
 					*/
-					if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
+					if($stream_context=="") {
+						if(!copy($tab_tmp[$loop],$morceau_courant)) {$morceau_courant=$tab_tmp[$loop];}
+					}
+					else {
+						if(!copy($tab_tmp[$loop],$morceau_courant,$stream_context)) {$morceau_courant=$tab_tmp[$loop];}
+					}
 				}
 				else {
 					$morceau_courant=$tab_tmp[$loop];
@@ -14921,5 +14928,21 @@ function get_tab_tag_notice($id_ct, $type_ct) {
 	}
 
 	return $tab_tag_notice;
+}
+
+function get_stream_context() {
+	$retour="";
+
+	$ip_proxy=getSettingValue('ip_proxy');
+	$port_proxy=getSettingValue('port_proxy');
+	if(($ip_proxy!="")&&($port_proxy!="")) {
+		$opts = array(
+			'http' => array('proxy' => $ip_proxy.':'.$port_proxy, 'request_fulluri' => true),
+			'ssl' => array('SNI_enabled' => false)
+		);
+		$retour = stream_context_create($opts);
+	}
+
+	return $retour;
 }
 ?>

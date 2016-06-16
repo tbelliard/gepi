@@ -27,6 +27,8 @@ Bulletins:
 
 Cahiers de textes:
 - Possibilité de définir des Tag (Contrôle, EPI, AP) pour les notices de CDT.
+- Possibilité de définir un proxy pour le téléchargement des images
+  de formules mathématiques générées sur https://latex.codecogs.com
 
 Absences2:
 - Affichage des manquements du jour sur la page d'accueil simplifiée parent.
