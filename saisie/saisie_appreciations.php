@@ -1664,7 +1664,7 @@ foreach ($liste_eleves as $eleve_login) {
 			echo "<h3>Classe de " . $eleve_classe . "</h3>\n";
 		}
 		$prev_classe = $eleve_classe;
-                //echo "<a name='saisie_app_$eleve_login'></a>";
+		echo "<a name='saisie_app_$eleve_login'></a>";
 ?>
     <table style ="width: 750px; border-collapse: separate; border-spacing: 1px; " class='boireaus'>
         <tr>
