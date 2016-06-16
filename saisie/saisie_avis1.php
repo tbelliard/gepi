@@ -1052,12 +1052,14 @@ if ($insert_mass_appreciation_type=="y") {
 					}
 					echo " <span id='span_acces_resp_".$i."_".$k."'>";
 					//if($tab_acces_app_classe[$id_classe][$k]=="y") {
-					if($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y") {
-						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
-					}
-					else {
-						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
-$msg_acces_app_ele_resp\" />";
+					if(isset($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login])) {
+						if($tab_acces_app_classe2[$id_classe][$k][$current_eleve_login]=="y") {
+							echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Appréciations visibles des parents/élèves.' title='A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." sont visibles des parents/élèves.' />";
+						}
+						else {
+							echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Appréciations non encore visibles des parents/élèves.' title=\"A la date du jour (".$date_du_jour."), les appréciations de la période ".$k." ne sont pas encore visibles des parents/élèves.
+	$msg_acces_app_ele_resp\" />";
+						}
 					}
 					echo " </span>";
 					if($affiche_slash_a=="y") {
