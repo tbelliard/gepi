@@ -2912,6 +2912,9 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 								$texte.=div_cmnt_type();
 							}
 
+							// 20160616
+							$texte.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
+
 							$texte.="</div>\n";
 							$texte.="</form>\n";
 	
@@ -2961,6 +2964,8 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
 
+							// 20160616
+							$texte.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
 
 							$texte_saisie_avis_fixe.="</div>\n";
 							$texte_saisie_avis_fixe.="</fieldset>\n";
@@ -3127,6 +3132,9 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 								$texte.=div_cmnt_type();
 							}
 
+							// 20160616
+							$texte.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
+
 							$texte.="</div>\n";
 							$texte.="</form>\n";
 	
@@ -3175,6 +3183,9 @@ ou bien optez pour l'affichage d'une seule période dans la présente page.\"><i
 							||(($_SESSION['statut'] == 'cpe')&&((getSettingValue("GepiRubConseilCpe")=='yes')||(getSettingValue("GepiRubConseilCpeTous")=='yes'))&&(getSettingValue('CommentairesTypesCpe')=='yes'))) {
 								$texte_saisie_avis_fixe.=div_cmnt_type();
 							}
+
+							// 20160616
+							$texte_saisie_avis_fixe.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
 
 							$texte_saisie_avis_fixe.="</div>\n";
 							$texte_saisie_avis_fixe.="</fieldset>\n";
@@ -5816,6 +5827,7 @@ function div_cmnt_type() {
 	global $id_classe;
 	global $num_periode_choisie;
 	global $graphe_champ_saisie_avis_fixe;
+	global $gepiPath;
 
 	// Récupération du numéro de la période de saisie de l'avis du conseil:
 	$periode_num=$num_periode_choisie;
@@ -5849,7 +5861,7 @@ function div_cmnt_type() {
 
 			$retour_lignes_cmnt_type.="<div id='commentaire_type' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; height: 10em 5px; width: 400px;'>\n";
 			$retour_lignes_cmnt_type.="<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px;'  onmousedown=\"dragStart(event, 'commentaire_type')\">\n";
-			$retour_lignes_cmnt_type.="<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;'><a href='#' onClick=\"document.getElementById('commentaire_type').style.display='none';return false;\">X</a></div>\n";
+			$retour_lignes_cmnt_type.="<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;'><a href='#' onClick=\"document.getElementById('commentaire_type').style.display='none';return false;\"><img src='$gepiPath/images/icons/close16.png' class='icone16' alt='Fermer' /></a></div>\n";
 			$retour_lignes_cmnt_type.="Commentaires-types";
 			$retour_lignes_cmnt_type.="</div>\n";
 
@@ -5860,12 +5872,13 @@ function div_cmnt_type() {
 				$alt=$alt*(-1);
 				$retour_lignes_cmnt_type.="<div class='lig$alt' style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
+				// 20160616: A FAIRE: Pouvoir tenir compte du caractère qui précède: chaine vide, nouvelle ligne ou point pour intercaler un point ou non avant le commentaire type.corriger_espaces_et_casse_ponctuation(chaine)
 				if(preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
 				}
 				$retour_lignes_cmnt_type.=">\n";
 
-				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
+				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\"".htmlspecialchars(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
 				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]

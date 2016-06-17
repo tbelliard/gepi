@@ -878,6 +878,9 @@ if ($insert_mass_appreciation_type=="y") {
 
 			echo "$current_synthese[$k]";
 			echo "</textarea>\n";
+
+			// 20160617
+			echo "<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
 			echo "</td>\n";
 		}
 		else {
@@ -1140,6 +1143,9 @@ $msg_acces_app_ele_resp\" />";
 					echo "</textarea>\n";
 
 					echo "<div style='float:right; width:16px' title=\"Éditer l'avis du conseil de classe pour $current_eleve_nom $current_eleve_prenom sur la période $k avec rappel du bulletin.\"><a href='saisie_avis2.php?periode_num=".$k."&id_classe=".$id_classe."&fiche=y&current_eleve_login=".$current_eleve_login."#app' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit16_ele.png' class='icone16' alt='Éditer' /></a></div>";
+
+					// 20160617
+					echo "<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
 
 					// ***** AJOUT POUR LES MENTIONS *****
 					if(test_existence_mentions_classe($id_classe)) {

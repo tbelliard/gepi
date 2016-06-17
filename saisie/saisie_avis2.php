@@ -1466,6 +1466,9 @@ if (isset($fiche)) {
 
 
 	//==========================
+	// Photo et correction ponctuation
+	echo "<td valign='top'>\n";
+
 	// Photo...
 	$photo=nom_photo($current_eleve_elenoet);
 	$temoin_photo="";
@@ -1482,7 +1485,7 @@ if (isset($fiche)) {
 
 		$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$current_eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
 
-		echo "<td valign='top'>\n";
+		//echo "<td valign='top'>\n";
 		//echo " <a href='#' onmouseover=\"afficher_div('photo_$current_eleve_login','y',-100,20);\"";
 		//echo " <a href='#' onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\"";
 		echo " <a href=\"$photo\" onmouseover=\"delais_afficher_div('photo_$current_eleve_login','y',-100,20,1000,10,10);\" onclick=\"afficher_div('photo_$current_eleve_login','y',-100,20); return false;\" target='_blank'";
@@ -1496,8 +1499,13 @@ if (isset($fiche)) {
 			}
 			echo "' class='icone20' alt='$current_eleve_nom $current_eleve_prenom' />";
 		echo "</a>";
-		echo "</td>\n";
+		//echo "</td>\n";
+		echo "<br />\n";
 	}
+
+	// 20160617
+	echo "<a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap').value);changement();return false;\" title=\"Corriger la ponctuation.\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
+	echo "</td>\n";
 	//==========================
 
 

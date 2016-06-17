@@ -1106,6 +1106,8 @@ while ($k < $nb_periode) {
 		$mess[$k].="\"";
 		$mess[$k].=">".$app_grp[$k]."</textarea>\n";
 
+		// 20160617
+		$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
 	}
 
 	// on affiche si besoin l'appréciation temporaire (en sauvegarde)
@@ -1616,6 +1618,10 @@ foreach ($liste_eleves as $eleve_login) {
 				//==================================
 
 				$mess[$k].=">".$eleve_app."</textarea>\n";
+
+				// 20160617
+				$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
+
 				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
 				$mess[$k].=$eleve_app_t;
 
