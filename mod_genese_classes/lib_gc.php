@@ -27,19 +27,21 @@ $liste=array('palegoldenrod',
 'lightgray',
 'gray');
 
-$chaine_couleur_classe_fut="'$liste[0]'";
-for($i=1;$i<count($classe_fut)-3;$i++) {
-	if(isset($liste[$i])) {
-		$chaine_couleur_classe_fut.=",'$liste[$i]'";
+if(isset($classe_fut)) {
+	$chaine_couleur_classe_fut="'$liste[0]'";
+	for($i=1;$i<count($classe_fut)-3;$i++) {
+		if(isset($liste[$i])) {
+			$chaine_couleur_classe_fut.=",'$liste[$i]'";
+		}
+		else {
+			$chaine_couleur_classe_fut.=",'$tabcouleur[$i]'";
+		}
 	}
-	else {
-		$chaine_couleur_classe_fut.=",'$tabcouleur[$i]'";
-	}
-}
-$chaine_couleur_classe_fut.=",'lightgray','gray','white'";
+	$chaine_couleur_classe_fut.=",'lightgray','gray','white'";
 
-//echo "\$chaine_couleur_classe_fut=$chaine_couleur_classe_fut<br />";
-$tab_couleur_classe_fut=explode(",", preg_replace("/[^A-Za-z0-9,]/", "", $chaine_couleur_classe_fut));
+	//echo "\$chaine_couleur_classe_fut=$chaine_couleur_classe_fut<br />";
+	$tab_couleur_classe_fut=explode(",", preg_replace("/[^A-Za-z0-9,]/", "", $chaine_couleur_classe_fut));
+}
 //=====================================
 
 //=====================================
@@ -63,14 +65,31 @@ $chaine_couleur_lv3="'purple','greenyellow','violet','chartreuse','lightgray','g
 $tab_sexe=array('M','F');
 
 $tab_profil=array('GC','C','RAS','B','TB');
+$tab_profil_traduction=array('Gros Cas','Cas','Rien à signaler','Bien','Très Bien');
 // Pour le moment les valeurs testées dans les scripts javascript et les couleurs associées sont en dur dans les pages.
 // A modifier...
-$chaine_couleur_profil="'red','orangered','gray','green','blue'";
-$chaine_profil="'GC','C','RAS','B','TB'";
+//$chaine_couleur_profil="'red','orangered','gray','green','blue'";
+//$chaine_profil="'GC','C','RAS','B','TB'";
+$chaine_couleur_profil="";
+$chaine_profil="";
 
 //$tab_profil=array($chaine_profil);
 //$tab_couleur_profil=array($chaine_couleur_profil);
 $tab_couleur_profil=array('red','orangered','gray','green','blue');
+$tab_couleur_profil_assoc=array();
+for($loop=0;$loop<count($tab_profil);$loop++) {
+	$tab_couleur_profil_assoc[$tab_profil[$loop]]=$tab_couleur_profil[$loop];
+
+	if($chaine_couleur_profil!="") {
+		$chaine_couleur_profil.=",";
+	}
+	$chaine_couleur_profil.="'".$tab_couleur_profil[$loop]."'";
+
+	if($chaine_profil!="") {
+		$chaine_profil.=",";
+	}
+	$chaine_profil.="'".$tab_profil[$loop]."'";
+}
 
 
 function colorise_abs($abs,$nj,$ret,$mode="echo") {
@@ -484,5 +503,4 @@ function ligne_choix_classe_future($ele_login) {
 
 	return $retour;
 }
-
 ?>

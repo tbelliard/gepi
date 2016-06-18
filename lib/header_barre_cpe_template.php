@@ -262,6 +262,10 @@ if ($barre_plugin!="") {
 			$menus .= '       </li>'."\n";
 		}
 
+		if ((getSettingAOui('active_mod_genese_classes'))&&(getSettingAOui('geneseClassesSaisieProfilsCpe'))) {
+			$menus .= '       <li><a href="'.$gepiPath.'/mod_genese_classes/saisie_profils_eleves.php"'.insert_confirm_abandon().'>Saisie profils élèves pour classes futures</a></li>'."\n";
+		}
+
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
 		//=======================================================

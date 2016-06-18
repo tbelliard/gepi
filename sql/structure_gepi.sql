@@ -1479,3 +1479,6 @@ id_ct int(11) unsigned NOT NULL,
 id_tag int(11) unsigned NOT NULL, 
 PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));
 
+DROP TABLE IF EXISTS gc_eleves_profils;
+CREATE TABLE IF NOT EXISTS gc_eleves_profils (id int(11) unsigned NOT NULL auto_increment, login VARCHAR( 50 ) NOT NULL , profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS', PRIMARY KEY ( id )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+

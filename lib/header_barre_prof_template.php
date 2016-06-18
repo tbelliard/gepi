@@ -547,7 +547,6 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 					$cpt_sous_menu++;
 				}
 
-
 			$tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
 			$tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
 			$compteur_menu++;
@@ -740,6 +739,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 
 	if(($is_pp_header_barre_prof_template)&&(getSettingAOui('active_mod_orientation'))&&((getSettingAOui('OrientationSaisieTypePP'))||(getSettingAOui('OrientationSaisieOrientationPP'))||(getSettingAOui('OrientationSaisieVoeuxPP')))) {
 		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_orientation/index.php' , "texte"=>"Orientation", "title"=>"Orientation des élèves");
+		$cpt_sous_menu++;
+	}
+
+	if ((getSettingAOui('active_mod_genese_classes'))&&(getSettingAOui('geneseClassesSaisieProfilsPP'))) {
+		$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> '/mod_genese_classes/saisie_profils_eleves.php' , "texte"=>"Saisie profils élèves pour classes futures");
 		$cpt_sous_menu++;
 	}
 

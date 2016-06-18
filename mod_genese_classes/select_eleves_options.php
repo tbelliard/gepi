@@ -141,10 +141,10 @@ if(isset($_POST['is_posted'])) {
 	}
 
 	if($nb_reg>0) {
-		$msg.="<span style='color:green'>".$nb_reg." enregistrement(s) effectué(s).</span><br />";
+		$msg.="<span style='color:green'>".$nb_reg." enregistrement(s) effectué(s) (".strftime("%d/%m/%Y %H:%M:%S").").</span><br />";
 	}
 	if($nb_err>0) {
-		$msg.=$nb_err." erreur(s) lors des enregistrements.<br />";
+		$msg.=$nb_err." erreur(s) lors des enregistrements (".strftime("%d/%m/%Y %H:%M:%S").").<br />";
 	}
 	$msg.=verif_proportion_garcons_filles();
 
@@ -1000,7 +1000,24 @@ echo "<p><br /></p>
 		<p>Les boutons Valider dans cette page valident l'ensemble du formulaire (<em>toutes les classes d'un coup</em>).<br />
 		Si vous travaillez avec plusieurs fenêtre ouvertes, une validation dans cette page risque d'écraser des modifications faites dans d'autres pages (<em>d'affectation dans des classes par exemple</em>) depuis le chargement de la présente page.<br />
 		Dans le doute, avant toute saisie dans la présente page, commencez par rafraichir l'affichage à l'aide du lien idoine en haut de la page.</p>
-	</li>
+	</li>";
+if(getSettingValue('active_module_absence')=="2") {
+	if($_SESSION['statut']=='administrateur') {
+		echo "
+	<li>
+		<p>Si les totaux d'absences/non_justifiées/retards sont à 0/0/0, il se peut que la table des totaux d'absences ne soit pas remplie.<br />
+		Vous pouvez effectuer ce remplissage en administrateur via <strong>Gestion des modules/Absences 2/Configuration avancée/<a href='../mod_abs2/admin/admin_table_totaux_absences.php' target='_blank'>Gérér la table des totaux d'absences</a></strong>.</p>
+	</li>";
+	}
+	else {
+		echo "
+	<li>
+		<p>Si les totaux d'absences/non_justifiées/retards sont à 0/0/0, il se peut que la table des totaux d'absences ne soit pas remplie.<br />
+		Vous pouvez effectuer ce remplissage en administrateur via <strong>Gestion des modules/Absences 2/Configuration avancée/Gérér la table des totaux d'absences</strong>.</p>
+	</li>";
+	}
+}
+echo "
 </ul>\n";
 
 if((isset($temoin_erreur_eleves_en_doublon))&&($temoin_erreur_eleves_en_doublon!="")) {

@@ -566,6 +566,11 @@ $texteItem="peut créer des examens blancs pour les classes dont il est ".getSet
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='geneseClassesSaisieProfilsPP';
+$texteItem="peut saisir les profils d'élèves en vue de la Genèse des futures classes pour les classes dont il est ".getSettingValue('gepi_prof_suivi');
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 //=======================================================================================
 
 // DROITS SCOLARITE
@@ -906,6 +911,11 @@ if(getSettingValue('active_mod_alerte')=='y') {
   $texteItem="peut informer par mail (sous réserve que le mail du destinataire soit renseigné) les personnes concernées par un événement.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='geneseClassesSaisieProfilsScol';
+$texteItem="peut saisir les profils d'élèves en vue de la Genèse des futures classes.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //=======================================================================================
 
@@ -1284,6 +1294,11 @@ if(getSettingValue('active_mod_alerte')=='y') {
   $texteItem="peut informer par mail (sous réserve que le mail du destinataire soit renseigné) les personnes concernées par un événement.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='geneseClassesSaisieProfilsCpe';
+$texteItem="peut saisir les profils d'élèves en vue de la Genèse des futures classes.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 //=======================================================================================
 

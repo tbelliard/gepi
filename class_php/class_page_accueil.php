@@ -1975,9 +1975,27 @@ if(getSettingAOui('active_bulletins')) {
   protected function geneseClasses(){
 	$this->b=0;
 
-	$this->creeNouveauItem("/mod_genese_classes/index.php",
+	if($_SESSION['statut']=='administrateur') {
+		$this->creeNouveauItem("/mod_genese_classes/index.php",
 			"Genèse des classes",
 			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
+	}
+	elseif(($_SESSION['statut']=='scolarite')&&(getSettingAOui('geneseClassesSaisieProfilsScol'))) {
+		$this->creeNouveauItem("/mod_genese_classes/saisie_profils_eleves.php",
+			"Genèse des classes",
+			"Pointer les profils élèves en vue de la Genèse des classes futures.");
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(getSettingAOui('geneseClassesSaisieProfilsCpe'))) {
+		$this->creeNouveauItem("/mod_genese_classes/saisie_profils_eleves.php",
+			"Genèse des classes",
+			"Pointer les profils élèves en vue de la Genèse des classes futures.");
+	}
+	elseif(($_SESSION['statut']=='professeur')&&(getSettingAOui('geneseClassesSaisieProfilsPP'))&&(is_pp($_SESSION['login']))) {
+		$this->creeNouveauItem("/mod_genese_classes/saisie_profils_eleves.php",
+			"Genèse des classes",
+			"Pointer les profils élèves en vue de la Genèse des classes futures.");
+	}
+
 
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Genèse des classes",'images/icons/document.png');

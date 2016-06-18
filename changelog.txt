@@ -57,6 +57,11 @@ Orientation:
 - Ajout d'un module orientation pour saisir les voeux d'orientation et l'orientation conseillée.
   Les voeux et orientations proposées peuvent être affichées sur les bulletins PDF.
 
+Genèse des classes:
+- Possibilité pour les comptes scolarité, cpe, professeur principal, d'effectuer 
+  la saisie des profils élèves en vue de la Genèse des classes futures
+  (accès activable par statut via Gestion générale/Droits d'accès).
+
 Général:
 - Affichage de l'identité de la personne qui suit la classe (chef, adjoint)
   et du professeur principal dans diverses pages de choix de classes.
