@@ -115,7 +115,7 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
 	
 	// enregistre la jointure de chaque élève du groupe
 	$groupe = get_group($id_groupe);
-	foreach ($groupe['eleves'][1]['list'] as $login) {
+	foreach ($groupe['eleves'][$periode]['list'] as $login) {
 		saveJointureEleveEP($login, $idNewLibelle, $annee, $periode );
 	}
 	
@@ -227,7 +227,7 @@ function dissocieElemGroupe($id_groupe, $idElem, $annee, $periode) {
 	
 	// On supprime pour tous les élèves
 	$groupe = get_group($id_groupe);
-	foreach ($groupe['eleves'][1]['list'] as $login) {
+	foreach ($groupe['eleves'][$periode]['list'] as $login) {
 		delJointureEleveEP($login, $idElem, $annee, $periode);
 	}
 	
@@ -277,7 +277,7 @@ function associeElemGroupe($id_groupe, $idElem, $annee, $periode) {
 	
 	// enregistre la jointure de chaque élève du groupe
 	$groupe = get_group($id_groupe);
-	foreach ($groupe['eleves'][1]['list'] as $login) {
+	foreach ($groupe['eleves'][$periode]['list'] as $login) {
 		saveJointureEleveEP($login, $idElem, $annee, $periode );
 	}
 	
@@ -290,15 +290,78 @@ function associeElemGroupe($id_groupe, $idElem, $annee, $periode) {
 	
 }
 
-
+/**
+ * Renvoie la matière enseignée pour un groupe
+ * 
+ * @param type $id_groupe
+ * @return type
+ */
 function getMatiere($id_groupe) {
 	$groupe = get_group($id_groupe);
 	$matiere = $groupe["matiere"]["matiere"];
 	return $matiere;
 }
 
+/**
+ * Renvoie les éléments de programme d'une période pour un élève
+ * 
+ * @global DB_connect $mysqli
+ * @param type $login_eleve
+ * @param type $annee
+ * @param type $periode
+ * @return type
+ */
+function getElementEleve($login_eleve, $annee, $periode) {
+	//echo $id_eleve.'<br';
+	global $mysqli;
+	$sql = "SELECT * FROM matiere_element_programme AS mep "
+		. "INNER JOIN j_mep_eleve AS jme "
+		. "ON mep.id = jme.idEP "
+		. "WHERE jme.periode = '".$periode."' "
+		. "AND jme.annee = '".$annee."' "
+		. "AND jme.idEleve = '".$login_eleve."' "
+		. "ORDER BY mep.libelle";
+	//echo $sql."<br />";
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB;
+}
+	
+/**
+ * Supprime une association élève/élément
+ * 
+ * @param type $login
+ * @param type $idElem
+ * @param type $annee
+ * @param type $periode
+ * @param type $groupe
+ */
+function supprimeElemProgElv($login, $idElem, $annee, $periode, $groupe) {		
+	// on commence par traiter le groupe ".$groupe;
+	delJointureGroupeEP($groupe, $idElem, $annee, $periode);
+	// puis on traite l'élève ".$login;
+	delJointureEleveEP($login, $idElem, $annee, $periode);
+}
+	
+function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $periode) {
+	
+	// on commence par créér l'élément de programme → ".$texteElem;
+	saveNewElement($texteElem);
+	
+	// puis on récupère l'index ";
+	$idNewLibelle = getElemProgByLibelle($texteElem)->fetch_object()->id;
+	
+	// puis on traite le prof ".$_SESSION['login'];
+	saveJointureProfEP($_SESSION['login'], $idNewLibelle);
+	
+	// puis pour la matière
+	$matiere = getMatiere($id_groupe);
+	saveJointureMatiereEP($matiere, $idNewLibelle);
+	
+	// puis pour l'éleve ".$loginEleve; pour l'année ".$annee; et la période ".$periode;
+	saveJointureEleveEP($loginEleve, $idNewLibelle, $annee, $periode);
+	
+}
 
-	
-	
-	
+
+
 	

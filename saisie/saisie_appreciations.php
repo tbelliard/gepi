@@ -58,7 +58,8 @@ $quePerso = filter_input(INPUT_POST, 'quePerso');
 $queMat = filter_input(INPUT_POST, 'queMat');
 
 
-/* ===== Nouvel élément de programme pour le groupe =====*/
+
+/* ===== Élément de programme pour le groupe =====*/
 if ($id_groupe) {
 	
 	// on crée un nouvel élément programme pour le groupe
@@ -82,9 +83,39 @@ if ($id_groupe) {
 	
 }
 
-//var_dump();
+/* ===== Fin élément de programme pour le groupe =====*/
 
-/* ===== Fin nouvel élément de programme pour le groupe =====*/
+/* ===== Élément de programme pour un élève =====*/
+$delElemProgElv = filter_input(INPUT_POST, 'delElemProgElv', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+if ($delElemProgElv) {
+	foreach ($delElemProgElv as $idElem=>$loginEleve) {
+		supprimeElemProgElv($loginEleve, $idElem,$anneeScolaire, $periode, $id_groupe);
+	}
+}
+
+$associeElem_Eleve = filter_input(INPUT_POST, 'Elem_Eleve', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+if ($associeElem_Eleve) {
+	foreach ($associeElem_Eleve as $loginEleve=>$idElem) {
+		if ($idElem) {
+			saveJointureEleveEP($loginEleve, $idElem, $anneeScolaire, $periode);
+		}
+	}
+}
+
+$newElem_Eleve = filter_input(INPUT_POST, 'newElemEleve', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+if ($newElem_Eleve) {
+	foreach ($newElem_Eleve as $loginEleve=>$texteElem) {
+		if ($texteElem) {
+			//echo "On crée l'élément ".$texteElem." pour ".$loginEleve." dans le groupe ".$id_groupe ;
+			creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $anneeScolaire, $periode);
+
+		}
+	}
+}
+
+
+
+/* ===== Fin élément de programme pour un élève =====*/
 
 // Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
 $aff_temoin_serveur_hors_entete="y";
@@ -734,7 +765,7 @@ $titre_page = "Saisie des appréciations";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-// debug_var();
+//debug_var();
 
 $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
@@ -752,6 +783,8 @@ $matiere_nom = $current_group["matiere"]["nom_complet"];
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form1' method=\"post\">\n";
 
 echo "<p class='bold'>\n";
+echo "<input type='hidden' name='id_groupe' value='".$id_groupe."' />";
+
 if (($periode_cn != 0)&&($_SESSION['statut']!='secours')) {
 	echo "<a href=\"../cahier_notes/index.php?id_groupe=$id_groupe&amp;periode_num=$periode_cn\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 } else {
@@ -1590,8 +1623,21 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k] =$mess[$k]."</td>\n";
 				
 				
-                $mess[$k].="<td style='text-align:left;'>Lire les éléments de programme<br>";
-						
+                $mess[$k].="<td style='text-align:left;'>-<br>";
+				$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k);
+				//$mess[$k].= var_dump($elementEleve);
+				
+		$cpt=FALSE;
+		while($element = $elementEleve->fetch_object()){
+			if($cpt) {
+				$mess[$k].="\n<br />\n";
+			}
+			$mess[$k].="<input type='image' name='delElemProgElv['$element->idEP']['$eleve_login']' src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+			$mess[$k].="- ".$element->libelle;
+			$cpt = TRUE;
+		}
+				
+				
 
 			} else {
 
@@ -1734,13 +1780,44 @@ foreach ($liste_eleves as $eleve_login) {
 					$mess[$k].=teste_lapsus($eleve_app);
 				}
 				$mess[$k].="</div>\n";
+				
+                $mess[$k].="</td>\n<td style='text-align:left;'>";
+				
+				$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k);	
+				$cpt=FALSE;
+				while($element = $elementEleve->fetch_object()){
+					if($cpt) {
+						$mess[$k].="\n<br />\n";
+					}
+					//$mess[$k].="<input type='image' name=\"delElemProgElv_".$element->idEP."['$eleve_login']\"  src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> ";
+					$mess[$k].="<button name=\"delElemProgElv[".$element->idEP."]\" value='$eleve_login' "
+						. "title=\"Supprimer cette liaison\" style='margin=0; padding = 0;' >\n";
+					$mess[$k].="<img src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour $eleve_login' /> \n";
+					$mess[$k].="</button>\n";
+					$mess[$k].="- ".$element->libelle;
+					$cpt = TRUE;
+				}
+		
+				$toutElemProgramme->data_seek(0);
 
-                        $mess[$k].="</td>\n<td style='text-align:left;'>"
-							. "Lire les  éléments de programme<br />"
-							. "Proposer les éléments de programme connus<br />"
+				$mess[$k].="<br />\n";
+				$mess[$k].="<select name=\"Elem_Eleve[$eleve_login]\" id='Elem_Eleve$eleve_login' style='margin-top:.5em'> \n";
+				$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
+				while($element = $toutElemProgramme->fetch_object()){
+					$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+				}
+				$mess[$k].="</select> \n";
+
+				$mess[$k].="<br />\n";
+					
+						$mess[$k].= "<br />"
 							. "Pouvoir créer un nouvel éléments de programme<br />\n";
+				$mess[$k].="<input type='text' name='newElemEleve[$eleve_login]' placeholder='Nouvel élément de programme' style='width:35em; margin-top:.3em' /> \n";
 
-
+				//$mess[$k].= var_dump($elementEleve);
+				
+			
+				
 				//$mess[$k].= "</td>\n";
 
 				//=========================
