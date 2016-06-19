@@ -549,7 +549,7 @@ if ($test == -1) {
     $sql = "CREATE TABLE IF NOT EXISTS matiere_element_programme ( "
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "libelle varchar(255) NOT NULL default '' COMMENT \"Libellé de l'élément de programme\", "
-            . "PRIMARY KEY id (id)) "
+            . "PRIMARY KEY id (id) , UNIQUE KEY libelle (libelle)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Éléments de programme travaillé' ;";
     $result_inter = traite_requete($sql);
@@ -570,7 +570,7 @@ if ($test == -1) {
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "idMat varchar(50) COMMENT 'identifiant unique de la matière', "
             . "idEP int(11)  COMMENT \"identifiant unique de l'élément de programme\", "
-            . "PRIMARY KEY id (id)) "
+            . "PRIMARY KEY id (id) , UNIQUE KEY jointMapMat (idMat, idEP)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ matière' ;";
     $result_inter = traite_requete($sql);
@@ -591,7 +591,7 @@ if ($test == -1) {
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "idEP int(11)  COMMENT \"identifiant unique de l'élément de programme\", "
             . "	id_prof varchar(50) COMMENT 'identifiant unique du professeur', "
-            . "PRIMARY KEY id (id)) "
+            . "PRIMARY KEY id (id) , UNIQUE KEY jointMapProf (id_prof, idEP)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ enseignant' ;";
     $result_inter = traite_requete($sql);
@@ -614,7 +614,7 @@ if ($test == -1) {
             . "idGroupe int(11)  COMMENT 'identifiant du groupe', "
             . "annee varchar(4) COMMENT 'année sur 4 caractères', "
             . "periode int(11) COMMENT 'période sur 4 caractères', "
-            . "PRIMARY KEY id (id)) "
+            . "PRIMARY KEY id (id) , UNIQUE KEY jointGroupe (idEP,idGroupe,annee, periode) ) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ groupe enseignement' ;";
     $result_inter = traite_requete($sql);
@@ -637,7 +637,7 @@ if ($test == -1) {
             . "idEleve varchar(50) COMMENT 'login élève', "
             . "annee varchar(4) COMMENT 'année sur 4 caractères', "
             . "periode int(11) COMMENT 'période sur 4 caractères', "
-            . "PRIMARY KEY id (id)) "
+            . "PRIMARY KEY id (id) , UNIQUE KEY jointMapProf (idEP , idEleve , annee , periode)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ groupe enseignement' ;";
     $result_inter = traite_requete($sql);

@@ -45,11 +45,52 @@ if (!checkAccess()) {
 
 include_once 'scripts/fonctions.php';
 
+$anneeScolaire = EdtHelper::getPremierJourAnneeScolaire()->format("Y");
+
+
+$id_groupe = filter_input(INPUT_POST, 'id_groupe') ? filter_input(INPUT_POST, 'id_groupe') : filter_input(INPUT_GET, 'id_groupe');
+
+
+$periode_cn = filter_input(INPUT_POST, 'periode_cn') ? filter_input(INPUT_POST, 'periode_cn') : filter_input(INPUT_GET, 'periode_cn');
+$periode = filter_input(INPUT_POST, 'periode');
+
+$quePerso = filter_input(INPUT_POST, 'quePerso');
+$queMat = filter_input(INPUT_POST, 'queMat');
+
+
+/* ===== Nouvel élément de programme pour le groupe =====*/
+if ($id_groupe) {
+	
+	// on crée un nouvel élément programme pour le groupe
+	$newElemGroupe = filter_input(INPUT_POST, 'newElemGroupe');
+	if ($newElemGroupe != NULL) {
+		saveNewElemGroupe($id_groupe, $newElemGroupe, $anneeScolaire, $periode);
+	}
+	
+	// on associe un élément programme au groupe
+	$elemGroupe = filter_input(INPUT_POST, 'Elem_groupe');
+	if ($elemGroupe != NULL) {
+		associeElemGroupe($id_groupe, $elemGroupe, $anneeScolaire, $periode);
+	}
+	
+	// on récupère l'Id de l'élément à supprimer puis on le supprime
+	$delElemGroupe =filter_input(INPUT_POST, 'delElemProgGroup', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	if ($delElemGroupe != NULL) {
+		$delElemGroupe = key($delElemGroupe);
+		dissocieElemGroupe($id_groupe, $delElemGroupe, $anneeScolaire, $periode);
+	}
+	
+}
+
+//var_dump();
+
+/* ===== Fin nouvel élément de programme pour le groupe =====*/
+
 // Si le témoin temoin_check_srv() doit être affiché, on l'affichera dans la page à côté de Enregistrer.
 $aff_temoin_serveur_hors_entete="y";
 
 // Initialisation
-$id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
+//$id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
 } else {
@@ -67,7 +108,6 @@ if (count($current_group["classes"]["list"]) > 1) {
     $multiclasses = false;
 }
 
-$periode_cn = isset($_POST["periode_cn"]) ? $_POST["periode_cn"] :(isset($_GET["periode_cn"]) ? $_GET["periode_cn"] :NULL);
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
 
 if ($_SESSION['statut'] != "secours") {
@@ -694,7 +734,7 @@ $titre_page = "Saisie des appréciations";
 require_once("../lib/header.inc.php");
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+// debug_var();
 
 $acces_visu_eleve=acces('/eleves/visu_eleve.php', $_SESSION['statut']);
 
@@ -1108,7 +1148,6 @@ while ($k < $nb_periode) {
         }
         $mess[$k].="</td>\n<td style='text-align:left;'>\n";
 		
-		$anneeScolaire = EdtHelper::getPremierJourAnneeScolaire()->format("Y");
 		$elemProgramme = getGroupElemProg($current_group["id"], $anneeScolaire, $k);
 		$cpt=FALSE;
 		while($element = $elemProgramme->fetch_object()){
@@ -1134,7 +1173,32 @@ while ($k < $nb_periode) {
 		// 20160617
 		$mess[$k].="<div style='float:right; width:16px; margin-right:3px;' title=\"Corriger la ponctuation.\"><a href=\"#\" onclick=\"document.getElementById('n".$k.$num_id."').value=corriger_espaces_et_casse_ponctuation(document.getElementById('n".$k.$num_id."').value);changement();return false;\"><img src='../images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a></div>";
 	
-        $mess[$k].="</td>\n<td style='text-align:left;'>Proposer les éléments de programme connus<br />Pouvoir créer un nouvel éléments de programme<br />Lire les  éléments de programme\n";
+        $mess[$k].="</td>\n";
+        $mess[$k].="<td style='text-align:left;'>\n";
+		
+		$elemProgramme = getGroupElemProg($current_group["id"], $anneeScolaire, $k);
+		$cpt=FALSE;
+		while($element = $elemProgramme->fetch_object()){
+			if($cpt) {
+				$mess[$k].="\n<br />\n";
+			}
+			$mess[$k].="<input type='image' name='delElemProgGroup[$element->idEP]' src='../images/disabled.png' style =\"width:16px; height:16px \" alt=\"Supprimer l'élément\" title='Supprimer cet élément de programme pour tous les élèves' /> ";
+			$mess[$k].="- ".$element->libelle;
+			$cpt = TRUE;
+		}
+		
+        $mess[$k].="<br />\n";
+		$toutElemProgramme = getToutElemProg($quePerso, $queMat , getMatiere($id_groupe));
+		
+		$mess[$k].="<select name='Elem_groupe' id='Elem_groupe' style='margin-top:.5em'> \n";
+		$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
+		while($element = $toutElemProgramme->fetch_object()){
+			$mess[$k].="<option value=\"".$element->id."\" >".$element->libelle."</option> \n";
+		}
+		$mess[$k].="</select> \n";
+		
+        $mess[$k].="<br />\n";
+        $mess[$k].="<input type='text' name='newElemGroupe' placeholder='Nouvel élément de programme' style='width:35em; margin-top:.3em' /> \n";
 
     }
     
@@ -1193,7 +1257,12 @@ $delais_affichage_infobulle=500;
         </th>
         <th>
             Éléments du programme
-        </th>
+			<br />
+			<input type="checkbox" name="quePerso" id="quePerso" <?php if ($quePerso) {echo "checked = 'checked'";} ?> />
+			<label for="quePerso" title="Ne montrer que mes éléments de programme">Que mes éléments</label>
+			<input type="checkbox" name="queMat" id="queMat" <?php if ($queMat) {echo "checked = 'checked'";} ?> />
+			<label for="queMat" title="Ne montrer que les éléments de programme de la matière">Que cette matière</label>
+        </th> 
     </tr>
 <?php
 //echo "</div></th>\n";
@@ -1219,6 +1288,7 @@ while ($k < $nb_periode) {
 	}
 	echo $mess[$k];
 ?>
+			<input type="hidden" name="periode" value="<?php echo $k; ?>" />
         </td>
     </tr>
 <?php
@@ -1520,7 +1590,7 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k] =$mess[$k]."</td>\n";
 				
 				
-                $mess[$k].="<td style='text-align:left;'>Lire les éléments de programme";
+                $mess[$k].="<td style='text-align:left;'>Lire les éléments de programme<br>";
 						
 
 			} else {
@@ -1665,7 +1735,10 @@ foreach ($liste_eleves as $eleve_login) {
 				}
 				$mess[$k].="</div>\n";
 
-                        $mess[$k].="</td>\n<td style='text-align:left;'>Proposer les éléments de programme connus<br />Pouvoir créer un nouvel éléments de programme<br />Lire les  éléments de programme\n";
+                        $mess[$k].="</td>\n<td style='text-align:left;'>"
+							. "Lire les  éléments de programme<br />"
+							. "Proposer les éléments de programme connus<br />"
+							. "Pouvoir créer un nouvel éléments de programme<br />\n";
 
 
 				//$mess[$k].= "</td>\n";
@@ -1681,7 +1754,7 @@ foreach ($liste_eleves as $eleve_login) {
                     //
                     $suit_option[$k] = 'no';
                     $mess[$k] = "<td>&nbsp;</td><td><p class='small' title=\"Enseignement non suivi sur cette période.\">non suivi</p></td>\n";
-                    $mess[$k].="</td>\n<td style='text-align:left;'>";
+                    $mess[$k].="<td style='text-align:left;'>";
 
 		}
 		$k++;
@@ -1708,7 +1781,7 @@ foreach ($liste_eleves as $eleve_login) {
 		$prev_classe = $eleve_classe;
 		//echo "<a name='saisie_app_$eleve_login'></a>";
 ?>
-    <table id='saisie_app_<?php echo $eleve_login;?>' border-collapse: separate; border-spacing: 1px; " class='boireaus'>
+    <table id='saisie_app_<?php echo $eleve_login;?>' style ="border-collapse: separate; border-spacing: 1px; " class='boireaus'>
         <tr>
             <th class="center" style="width: 70px;">
 <?php 
@@ -2355,7 +2428,5 @@ if ((isset($insert_mass_appreciation_type))&&($insert_mass_appreciation_type=="y
 </script>\n";
 }
 //=========================
-
-?>
-<p><br /></p>
-<?php require("../lib/footer.inc.php");?>
+require("../lib/footer.inc.php");
+ 
