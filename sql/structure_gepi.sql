@@ -1532,4 +1532,10 @@ CREATE TABLE IF NOT EXISTS j_mep_eleve(
     UNIQUE KEY jointMapProf (idEP , idEleve , annee , periode)) 
     ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT 'Jointure éléments de programme travaillé ↔ groupe enseignement' ;
 
-
+CREATE TABLE IF NOT EXISTS j_mep_niveau(
+    id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', 
+    idEP int(11) COMMENT "identifiant unique de l'élément de programme", 
+    idNiveau varchar(50) COMMENT "niveau auquel se réfère l'élément" , 
+    PRIMARY KEY id (id) , 
+    UNIQUE KEY niveau (idEP , idNiveau)) 
+    ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT 'Jointure éléments de programme travaillé ↔ Niveau' ;

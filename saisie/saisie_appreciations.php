@@ -56,11 +56,14 @@ $periode = filter_input(INPUT_POST, 'periode');
 
 $quePerso = filter_input(INPUT_POST, 'quePerso');
 $queMat = filter_input(INPUT_POST, 'queMat');
+$queNiveau = filter_input(INPUT_POST, 'queNiveau');
 
-
+$mefDuGroupe = NULL;
 
 /* ===== Élément de programme pour le groupe =====*/
 if ($id_groupe) {
+	
+	$mefDuGroupe = getMef($id_groupe);
 	
 	// on crée un nouvel élément programme pour le groupe
 	$newElemGroupe = filter_input(INPUT_POST, 'newElemGroupe');
@@ -80,7 +83,6 @@ if ($id_groupe) {
 		$delElemGroupe = key($delElemGroupe);
 		dissocieElemGroupe($id_groupe, $delElemGroupe, $anneeScolaire, $periode);
 	}
-	
 }
 
 /* ===== Fin élément de programme pour le groupe =====*/
@@ -124,6 +126,7 @@ $aff_temoin_serveur_hors_entete="y";
 //$id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
+	//var_dump($current_group);
 } else {
     $current_group = false;
 
@@ -1221,7 +1224,7 @@ while ($k < $nb_periode) {
 		}
 		
         $mess[$k].="<br />\n";
-		$toutElemProgramme = getToutElemProg($quePerso, $queMat , getMatiere($id_groupe));
+		$toutElemProgramme = getToutElemProg($quePerso, $queMat , $queNiveau, getMatiere($id_groupe));
 		
 		$mess[$k].="<select name='Elem_groupe' id='Elem_groupe' style='margin-top:.5em'> \n";
 		$mess[$k].="<option value=\"\">Ajouter un élément de programme</option> \n";
@@ -1291,10 +1294,16 @@ $delais_affichage_infobulle=500;
         <th>
             Éléments du programme
 			<br />
-			<input type="checkbox" name="quePerso" id="quePerso" <?php if ($quePerso) {echo "checked = 'checked'";} ?> />
-			<label for="quePerso" title="Ne montrer que mes éléments de programme">Que mes éléments</label>
-			<input type="checkbox" name="queMat" id="queMat" <?php if ($queMat) {echo "checked = 'checked'";} ?> />
-			<label for="queMat" title="Ne montrer que les éléments de programme de la matière">Que cette matière</label>
+			<span style="display: inline-block; text-align:left;">
+				<input type="checkbox" name="quePerso" id="quePerso" <?php if ($quePerso) {echo "checked = 'checked'";} ?> />
+				<label for="quePerso" title="Ne montrer que mes éléments de programme">Que mes éléments</label>
+				<br>
+				<input type="checkbox" name="queMat" id="queMat" <?php if ($queMat) {echo "checked = 'checked'";} ?> />
+				<label for="queMat" title="Ne montrer que les éléments de programme de la matière">Que cette matière</label>
+				<br>
+				<input type="checkbox" name="queNiveau" id="queNiveau" <?php if ($queNiveau) {echo "checked = 'checked'";} ?> />
+				<label for="queMat" title="Ne montrer que les éléments de programme du niveau">Que ce niveau</label>
+			</span>
         </th> 
     </tr>
 <?php

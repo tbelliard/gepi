@@ -649,5 +649,27 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}    
+}     
+ 
+$result .= "→ Ajout d'une table 'j_mep_niveau' :<br />";   
+$test = sql_query1("SHOW TABLES LIKE 'j_mep_niveau';");  
+if ($test == -1) {   
+    $sql = "CREATE TABLE IF NOT EXISTS  j_mep_niveau( "
+            . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
+            . "idEP int(11)  COMMENT \"identifiant unique de l'élément de programme\", "
+            . "idNiveau varchar(50) COMMENT \"niveau auquel se réfère l'élément\" , "
+            . "PRIMARY KEY id (id) , UNIQUE KEY niveau (idEP , idNiveau)) "
+            . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
+            . "COMMENT 'Jointure éléments de programme travaillé ↔ Niveau' ;";
+	echo $sql;
+    $result_inter = traite_requete($sql);
+    if ($result_inter == '') {
+        $result .= msj_ok("SUCCES !");
+    }
+    else {
+        $result .= msj_erreur("ECHEC !");
+    }
+} else {
+    $result .= msj_present("La table existe déjà");
+}     
 

@@ -27,7 +27,7 @@
  * @global DB_connect $mysqli
  * @return mysqli_query
  */
-function getToutElemProg($quePerso = false, $queMat = false, $matiere = NULL) {
+function getToutElemProg($quePerso = false, $queMat = false, $queNiveau = false, $matiere = NULL) {
 	global $mysqli;
 	
 	if (!$quePerso && !$queMat) {
@@ -36,12 +36,19 @@ function getToutElemProg($quePerso = false, $queMat = false, $matiere = NULL) {
 			$sql = "SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_prof AS jmp ON jmp.idEP = mep.id WHERE jmp.id_prof = '".$_SESSION['login']."' ORDER BY mep.libelle ";
 		if ($queMat) {
 			
-			$sql = "SELECT t0.* FROM "
-				. "(SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_prof AS jmp ON jmp.idEP = mep.id WHERE jmp.id_prof = '".$_SESSION['login']."' ) AS t0 "
+			$sql = "SELECT t0.* FROM (SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_prof AS jmp ON jmp.idEP = mep.id WHERE jmp.id_prof = '".$_SESSION['login']."' ) AS t0 "
 				. "INNER JOIN j_mep_mat AS jmm ON jmm.idEP = t0.id WHERE jmm.idMat = '".$matiere."' ORDER BY t0.libelle ";
 		}
 	} else {
 		$sql = "SELECT mep.* FROM matiere_element_programme AS mep INNER JOIN j_mep_mat AS jmm ON jmm.idEP = mep.id WHERE jmm.idMat = '".$matiere."'";
+	}
+	
+	if ($queNiveau) {
+		global $id_groupe;
+		$sql1 = "SELECT jmn.* FROM (SELECT DISTINCT e.mef_code FROM eleves AS e INNER JOIN j_eleves_groupes AS jeg ON e.login = jeg.login WHERE jeg.id_groupe = '".$id_groupe."' ) AS tm "
+			. "INNER JOIN j_mep_niveau AS jmn ON jmn.idNiveau = tm.mef_code ";
+		
+		$sql = "SELECT DISTINCT ts.*  FROM (".$sql1.") AS tn INNER JOIN (".$sql.") AS ts ON ts.id = tn.idEP ";
 	}
 	
 	$resultchargeDB = $mysqli->query($sql);
@@ -102,6 +109,7 @@ function getElemProgByLibelle($libelle) {
  * @param string $periode
  */
 function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
+	global $mefDuGroupe;
 	
 	//enregistre le nouvel élément
 	saveNewElement($newElemGroupe);
@@ -125,6 +133,11 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
 	// enregistre la jointure avec la matière';
 	$matiere = $groupe["matiere"]["matiere"];
 	saveJointureMatiereEP($matiere, $idNewLibelle);
+
+	// enregistre la jointure avec le niveau
+	if ($mefDuGroupe) {
+		saveJointureEPMef($mefDuGroupe,$idNewLibelle);
+	}
 	
 }
 
@@ -212,6 +225,25 @@ function saveJointureMatiereEP($matiere, $idEP) {
 		. "ON DUPLICATE KEY UPDATE `idMat` = '".$matiere."' ; ";
 	//echo $sql.'<br />';
 	$mysqli->query($sql);
+}
+
+/**
+ * Enregistre la jointure MEF/élément de programme
+ * 
+ * @global DB_connect $mysqli
+ * @param type $mefDuGroupe
+ * @param type $idEP
+ */
+function saveJointureEPMef($mefDuGroupe , $idEP) {	
+	global $mysqli;
+	
+	while($mef = $mefDuGroupe->fetch_object()){
+		$sql = "INSERT INTO j_mep_niveau (id , idEP , idNiveau) "
+			. "VALUES (NULL, '".$idEP."' , '".$mef->mef_code."') "
+			. "ON DUPLICATE KEY UPDATE `idNiveau` = '".$mef->mef_code."' ; ";
+		//echo $sql.'<br />';
+		$mysqli->query($sql);
+	}
 	
 }
 
@@ -341,7 +373,16 @@ function supprimeElemProgElv($login, $idElem, $annee, $periode, $groupe) {
 	// puis on traite l'élève ".$login;
 	delJointureEleveEP($login, $idElem, $annee, $periode);
 }
-	
+
+/**
+ * Appelle les fonctions lors de la création d'un élément de programme pour un élève
+ * 
+ * @param type $loginEleve
+ * @param type $id_groupe
+ * @param type $texteElem
+ * @param type $annee
+ * @param type $periode
+ */
 function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $periode) {
 	
 	// on commence par créér l'élément de programme → ".$texteElem;
@@ -362,6 +403,24 @@ function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $peri
 	
 }
 
+/**
+ * Renvoir les différents MEFS du groupe
+ * 
+ * @global DB_connect $mysqli
+ * @param type $id_groupe
+ * @return type
+ */
+function getMef($id_groupe) {	
+	global $mysqli;
+	$sql = "SELECT DISTINCT mef_code FROM eleves AS e "
+		. "INNER JOIN j_eleves_groupes AS jeg "
+		. "ON e.login = jeg.login "
+		. "WHERE jeg.id_groupe = '".$id_groupe."' ";
+	
+	//echo $sql."<br />";
+	$resultchargeDB = $mysqli->query($sql);
+	return $resultchargeDB;
+}
 
 
 	
