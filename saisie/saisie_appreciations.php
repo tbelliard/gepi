@@ -1448,7 +1448,7 @@ foreach ($liste_eleves as $eleve_login) {
 					$titre="$eleve_nom $eleve_prenom";
 
 					$texte="<div class='center'>\n";
-					$texte.="<img src='".$photo."' style=\"width:150\" alt=\"$eleve_nom $eleve_prenom\" />";
+					$texte.="<img src='".$photo."' style=\"width:150px;\" alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="</div>\n";
 
 					$temoin_photo="y";
