@@ -1231,7 +1231,7 @@ while ($k < $nb_periode) {
 		$mess[$k].="</select> \n";
 		
         $mess[$k].="<br />\n";
-        $mess[$k].="<input type='text' name='newElemGroupe' placeholder='Nouvel élément de programme' style='width:35em; margin-top:.3em' /> \n";
+        $mess[$k].="<input type='text' name='newElemGroupe' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 
     }
     
@@ -1240,11 +1240,11 @@ while ($k < $nb_periode) {
 
 
 ?>
-<table style ="border-collapse: separate; border-spacing: 1px; " class='boireaus'>
+<table style ="width:100%; border-collapse: separate; border-spacing: 1px; " class='boireaus'>
     <tr>
-       <th  style="width:70px" ><div class="center">&nbsp;</div></th>
-        <th style="width:30px" ><div class="center"><strong>Moy.</strong></div></th>
-        <th style="width:320px" >
+       <th  style="width:70px;" ><div class="center">&nbsp;</div></th>
+        <th style="width:30px;" ><div class="center"><strong>Moy.</strong></div></th>
+        <th style="width:60%;" >
             <div style='float:right; width:16px;'>
                 <a href='javascript:affichage_div_photo();'>
                     <img src='../images/icons/wizard.png' 
@@ -1810,9 +1810,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 				$mess[$k].="<br />\n";
 					
-						$mess[$k].= "<br />"
-							. "Pouvoir créer un nouvel éléments de programme<br />\n";
-				$mess[$k].="<input type='text' name='newElemEleve[$eleve_login]' placeholder='Nouvel élément de programme' style='width:35em; margin-top:.3em' /> \n";
+				$mess[$k].="<input type='text' name='newElemEleve[$eleve_login]' placeholder='Nouvel élément de programme' style='width:95%; margin-top:.3em' /> \n";
 
 				//$mess[$k].= var_dump($elementEleve);
 				
@@ -1858,7 +1856,7 @@ foreach ($liste_eleves as $eleve_login) {
 		$prev_classe = $eleve_classe;
 		//echo "<a name='saisie_app_$eleve_login'></a>";
 ?>
-    <table id='saisie_app_<?php echo $eleve_login;?>' style ="border-collapse: separate; border-spacing: 1px; " class='boireaus'>
+    <table id='saisie_app_<?php echo $eleve_login;?>' style ="width:100%; border-collapse: separate; border-spacing: 1px; " class='boireaus'>
         <tr>
             <th class="center" style="width: 70px;">
 <?php 
@@ -1896,7 +1894,7 @@ foreach ($liste_eleves as $eleve_login) {
             <th class="center" style="width:30px">
                 <strong>Moy.</strong>
             </th>
-            <th class="center" style="width:320px">
+            <th class="center" style="width:60%">
                     <strong>
 <?php
 		//echo "</th>\n";
