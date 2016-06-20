@@ -192,6 +192,11 @@ else {
 
 if($_SESSION['statut']=='professeur') {
 	$tab_pp=get_tab_ele_clas_pp($_SESSION['login']);
+	/*
+	echo "<pre>";
+	print_r($tab_pp);
+	echo "</pre>";
+	*/
 	if(count($tab_pp['id_classe'])==1) {
 		$id_classe=$tab_pp['id_classe'][0];
 	}
@@ -232,7 +237,7 @@ if(!isset($id_classe)) {
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p WHERE c.id=p.id_classe ORDER BY c.classe;";
 	}
 	elseif($_SESSION['statut']=='professeur') {
-		$sql="SELECT DISTINCT jec.id_classe, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
+		$sql="SELECT DISTINCT jec.id_classe AS id, c.classe FROM j_eleves_professeurs jep, j_eleves_classes jec, classes c WHERE jep.professeur='".$_SESSION['login']."' AND jep.login=jec.login AND jec.id_classe=c.id ORDER BY c.classe;";
 	}
 	$res_clas=mysqli_query($GLOBALS['mysqli'], $sql);
 	$liste_sql="";
