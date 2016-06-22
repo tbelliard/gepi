@@ -562,7 +562,7 @@ if ($test == -1) {
 } else {
     $result .= msj_present("La table existe déjà");
 }
-      
+
 $result .= "→ Ajout d'une table 'j_mep_mat' :<br />";  
 $test = sql_query1("SHOW TABLES LIKE 'j_mep_mat';");   
 if ($test == -1) {   
@@ -582,8 +582,8 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}                         
-      
+}
+
 $result .= "→ Ajout d'une table 'j_mep_prof' :<br />";  
 $test = sql_query1("SHOW TABLES LIKE 'j_mep_prof';");   
 if ($test == -1) {   
@@ -603,8 +603,8 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}    
- 
+}
+
 $result .= "→ Ajout d'une table 'j_mep_groupe' :<br />"; 
 $test = sql_query1("SHOW TABLES LIKE 'j_mep_groupe';");  
 if ($test == -1) {   
@@ -626,8 +626,8 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}      
- 
+}
+
 $result .= "→ Ajout d'une table 'j_mep_eleve' :<br />"; 
 $test = sql_query1("SHOW TABLES LIKE 'j_mep_eleve';");  
 if ($test == -1) {   
@@ -649,8 +649,8 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}     
- 
+}
+
 $result .= "→ Ajout d'une table 'j_mep_niveau' :<br />";   
 $test = sql_query1("SHOW TABLES LIKE 'j_mep_niveau';");  
 if ($test == -1) {   
@@ -661,7 +661,7 @@ if ($test == -1) {
             . "PRIMARY KEY id (id) , UNIQUE KEY niveau (idEP , idNiveau)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ Niveau' ;";
-	echo $sql;
+    //echo $sql;
     $result_inter = traite_requete($sql);
     if ($result_inter == '') {
         $result .= msj_ok("SUCCES !");
@@ -671,5 +671,5 @@ if ($test == -1) {
     }
 } else {
     $result .= msj_present("La table existe déjà");
-}     
-
+}
+?>
