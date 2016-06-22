@@ -188,7 +188,8 @@ if(isset($_POST['upload_photo'])) {
 					$elenoet_ou_login=$lig_elenoet->elenoet;
 				}
 
-				$quiestce=encode_nom_photo($elenoet_ou_login);
+				//$quiestce=encode_nom_photo($elenoet_ou_login);
+				$quiestce=$elenoet_ou_login;
 				//echo "\$quiestce=$quiestce<br />";
 				$dest_file=$rep_photos.encode_nom_photo($quiestce).".jpg";
 				//echo "\$dest_file=$dest_file<br />";
