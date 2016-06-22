@@ -93,7 +93,7 @@ function getElemProgByLibelle($libelle) {
 	global $mysqli;
 	
 	$sql = "SELECT * FROM matiere_element_programme "
-		. "WHERE libelle = '".$libelle."' ";
+		. "WHERE libelle = \"".$libelle."\" ";
 	
 	$resultchargeDB = $mysqli->query($sql);
 	return $resultchargeDB;
@@ -150,8 +150,8 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
 function saveNewElement($newElemGroupe) {
 	global $mysqli;
 	$sql1 = "INSERT INTO matiere_element_programme (`id`, `libelle`) "
-		. "VALUES (NULL, '".$newElemGroupe."') "
-		. "ON DUPLICATE KEY UPDATE `libelle` = '".$newElemGroupe."' ; ";
+		. "VALUES (NULL, \"".$newElemGroupe."\") "
+		. "ON DUPLICATE KEY UPDATE `libelle` = \"".$newElemGroupe."\" ; ";
 	// echo '<br />'.$sql1.'<br />';
 	$mysqli->query($sql1);
 	
