@@ -34,6 +34,9 @@ Absences2:
 - Affichage des manquements du jour sur la page d'accueil simplifiée parent.
 - Possibilité de ne pas afficher par défaut les saisies englobées ou traitées.
 - Possibilité d'afficher un rappel des absences non justifiées depuis un certain temps.
+- Ajout d'un caractère Valable ou non pour les motifs (utile pour les statistiques nationales).
+  Pensez à effectuer le paramétrage de ce caractère dans
+     Gestion des modules/Absences 2/Définir les motifs des absences
 
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 
