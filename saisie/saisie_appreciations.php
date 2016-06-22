@@ -1302,7 +1302,7 @@ $delais_affichage_infobulle=500;
 				<label for="queMat" title="Ne montrer que les éléments de programme de la matière">Que cette matière</label>
 				<br>
 				<input type="checkbox" name="queNiveau" id="queNiveau" <?php if ($queNiveau) {echo "checked = 'checked'";} ?> />
-				<label for="queMat" title="Ne montrer que les éléments de programme du niveau">Que ce niveau</label>
+				<label for="queNiveau" title="Ne montrer que les éléments de programme du niveau">Que ce niveau</label>
 			</span>
         </th> 
     </tr>
