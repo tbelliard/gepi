@@ -98,11 +98,22 @@ if(isset($_POST['is_posted'])) {
 				$msg.="Erreur lors de l'enregistrement de 'bullNoMoyCatParDefaut'.<br />";
 			}
 		}
+
+		if (isset($_POST['bullNoSaisieElementsProgrammes'])) {
+			if(!saveSetting('bullNoSaisieElementsProgrammes', "yes")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoSaisieElementsProgrammes'.<br />";
+			}
+		}
+		else {
+			if(!saveSetting('bullNoSaisieElementsProgrammes', "no")) {
+				$msg.="Erreur lors de l'enregistrement de 'bullNoSaisieElementsProgrammes'.<br />";
+			}
+		}
 	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')){
-  $msg = "Les modifications ont été enregistrées !";
+  $msg = "Les modifications ont été enregistrées (".strftime("le %d/%m/%Y à %H:%M:%S").") !";
   $post_reussi=TRUE;
 }
 

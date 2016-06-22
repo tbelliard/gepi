@@ -672,4 +672,17 @@ if ($test == -1) {
 } else {
     $result .= msj_present("La table existe déjà");
 }
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bullNoSaisieElementsProgrammes'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='yes';");
+	$result .= "Initialisation du paramètre 'bullNoSaisieElementsProgrammes' à 'yes': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
 ?>

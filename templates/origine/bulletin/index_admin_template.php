@@ -150,6 +150,10 @@
 	if(getSettingAOui("bullNoMoyCatParDefaut")) {echo "checked ";}
 	?>/><label for='bullNoMoyCatParDefaut'> Ne pas afficher la ligne des moyennes de catégories par défaut</label></p>
 
+	<p><input type='checkbox' name='bullNoSaisieElementsProgrammes' id='bullNoSaisieElementsProgrammes' value='yes' <?php
+	if(getSettingAOui("bullNoSaisieElementsProgrammes")) {echo "checked ";}
+	?>/><label for='bullNoSaisieElementsProgrammes'> Ne pas afficher la colonne de saisie des éléments de programmes dans la saisie d'appréciations, et donc dans les bulletins</label></p>
+
 	<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
 	<ul>
 		<li><p>N'oubliez pas de paramétrer l'autorisation/interdiction d'accès pour les élèves/responsables dans Gestion générale/Droits d'accès.</p></li>

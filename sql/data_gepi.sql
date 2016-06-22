@@ -1778,3 +1778,4 @@ INSERT INTO droits SET id='/mod_orientation/consulter_orientation.php', administ
 INSERT INTO droits SET id='/mod_annees_anterieures/recuperation_donnees_manquantes.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Ajax: Acces aux appreciations et avis des bulletins', statut='';
 INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';
 INSERT INTO droits SET id='/mod_genese_classes/saisie_profils_eleves.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Genèse des classes: Saisie des profils des élèves', statut='';
+INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='yes';
