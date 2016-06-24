@@ -54,6 +54,29 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 
 $msg="";
 
+$sql="show index from notanet_saisie";
+//echo "$sql<br />";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==1) {
+	/*
+	echo "Index invalide<br />";
+	while($lig=mysqli_fetch_object($test)) {
+		echo "<pre>";
+		print_r($lig);
+		echo "</pre>";
+	}
+	*/
+
+	$sql="ALTER TABLE notanet_saisie DROP PRIMARY KEY;";
+	//echo "$sql<br />";
+	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($menage) {
+		$sql="ALTER TABLE notanet_saisie ADD UNIQUE login_id_mat (login, id_mat);";
+		//echo "$sql<br />";
+		$creation_index=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+}
+
 include("./lib_brevets.php");
 
 if((getSettingAOui("notanet_saisie_note_ouverte"))&&(isset($_POST['is_posted']))&&(isset($id_groupe))&&(isset($matiere))) {
