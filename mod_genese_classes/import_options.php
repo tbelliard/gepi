@@ -109,8 +109,9 @@ if($action=="upload_file") {
 	}
 	else {
 
-		$sql="DELETE FROM gc_eleves_options WHERE projet='$projet';";
-		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		// 20160624: Commenté pour ne pas perdre la prise en compte de date sortie
+		//$sql="DELETE FROM gc_eleves_options WHERE projet='$projet';";
+		//$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 		$tab_non_option=array('NOM','PRENOM','SEXE','NAISSANCE','LOGIN','ELENOET','ELE_ID','INE','EMAIL','CLASSE');
 
@@ -237,9 +238,21 @@ if($action=="upload_file") {
 					}
 					if($chaine_opt_eleve!="") {
 						$chaine_opt_eleve.="|";
-						$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
+
+						// 20160624: Test
+						$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND login='$val_login';";
 						//echo "$sql<br />\n";
-						$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						$test=mysqli_query($GLOBALS["mysqli"], $sql);
+						if(mysqli_num_rows($test)==0) {
+							$sql="INSERT INTO gc_eleves_options SET projet='$projet', login='$val_login', liste_opt='".$chaine_opt_eleve."';";
+							//echo "$sql<br />\n";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						}
+						else {
+							$sql="UPDATE gc_eleves_options SET liste_opt='".$chaine_opt_eleve."' WHERE projet='$projet' AND login='$val_login';";
+							//echo "$sql<br />\n";
+							$res=mysqli_query($GLOBALS["mysqli"], $sql);
+						}
 					}
 				}
 

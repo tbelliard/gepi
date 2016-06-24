@@ -389,8 +389,11 @@ $eff_tot_F=0;
 // Nombre max de périodes pour faire les requêtes pour les redoublants dont la classe n'est pas "connue"
 $max_nb_per=0;
 
+// 20160624
 // Pour repérer des élèves affichés deux fois (par exemple dans une classe et en redoublant (cas d'une erreur de choix des redoublants du niveau courant au lieu du niveau futur))
 $tab_eleves_affiches=array();
+$tab_eleves_affiches2=array();
+// Il y a aussi les élèves qui ont changé de classe.
 
 $chaine_id_classe="";
 $cpt=0;
@@ -459,13 +462,16 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 	$num_per2=-1;
 	if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
-		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe_actuelle[$j]."' ORDER BY e.nom,e.prenom;";
 		//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' AND (e.date_sortie IS NULL OR e.date_sortie NOT LIKE '20%') ORDER BY e.nom,e.prenom;";
 		$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
 		$res_per=mysqli_query($GLOBALS["mysqli"], $sql_per);
 		if(mysqli_num_rows($res_per)>0) {
 			$lig_per=mysqli_fetch_object($res_per);
 			$num_per2=$lig_per->num_periode;
+
+			// 20160624
+			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='".$id_classe_actuelle[$j]."' AND periode='".$num_per2."' ORDER BY e.nom,e.prenom;";
 		}
 	}
 	else {
@@ -624,355 +630,529 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover' onmouseover=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='red';\" onmouseout=\"document.getElementById('nom_prenom_eleve_numero_$cpt').style.color='';\">\n";
 			// 20130621
 			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
-			echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"colorise_ligne2($cpt);\">\n";
 
-			//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol'\">\n";
-			echo "<td>\n";
-			$designation_eleve=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
 			if(in_array($lig->login, $tab_eleves_affiches)) {
-				echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Cet élève est déjà présent ailleurs dans une autre classe de la présente page.\" alt='Erreur' />";
+				echo "<tr class='white_hover white_survol'>\n";
+				echo "<td>\n";
+				$designation_eleve=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Cet élève est déjà présent ailleurs dans une autre classe (".$tab_eleves_affiches2[$lig->login].") de la présente page.\" alt='Erreur' />";
 				$temoin_erreur_eleves_en_doublon.=$designation_eleve." apparaît plusieurs fois.<br />";
-			}
-			else {
-				$tab_eleves_affiches[]=$lig->login;
-			}
-			echo "<a name='eleve$cpt'></a>\n";
-			if(nom_photo($lig->elenoet)) {
-				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
-				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
-				echo $designation_eleve;
-				echo "</span>";
-				echo "</a>\n";
-			}
-			else {
-				echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
-				echo $designation_eleve;
-				echo "</span>";
-			}
-			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
-			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
-			echo "<input type='hidden' name='id_classe_actuelle_eleve[$cpt]' value='$id_classe_actuelle[$j]' />\n";
-			//echo " $cpt";
-			echo "</td>\n";
-			//echo "<td id='eleve_sexe_$cpt'>";
-			echo "<td>";
-			//echo $lig->sexe;
-			//echo "<span style='display:none'>".$lig->sexe."</span>";
-			echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
-			//echo image_sexe($lig->sexe);
-			echo "<div id='div_sexe_$cpt' onclick=\"affiche_set_sexe($cpt, '$lig->login');changement();return false;\">".image_sexe($lig->sexe)."</div>\n";
-			echo "</td>\n";
-			echo "<td>$classe_actuelle[$j]</td>\n";
-			//echo "<td>Profil</td>\n";
-			echo "<td>\n";
-			$sql="SELECT profil FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
-			$res_profil=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_profil)==0) {
-				$profil='RAS';
-				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="y";
-			}
-			else {
-				$lig_profil=mysqli_fetch_object($res_profil);
-				$profil=$lig_profil->profil;
-				$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
-			}
 
-			$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="n";
-			if($eleve_courant_non_encore_enregistre_dans_gc_eleves_options=="y") {
-				if(($lig->date_sortie!='NULL')&&(preg_match("/^20/",$lig->date_sortie))) {
-					$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="y";
-				}
-			}
-
-			echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
-
-			echo "<div id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</div>\n";
-
-			/*
-			echo "<select name='profil[$cpt]'>\n";
-			for($loop=0;$loop<count($tab_profil);$loop++) {
-				echo "<option value='$tab_profil[$loop]'";
-				if($tab_profil[$loop]==$profil) {echo " selected='true'";}
-				echo ">$tab_profil[$loop]</option>\n";
-			}
-			echo "</select>\n";
-			*/
-			echo "</td>\n";
-
-			//===================================
-			echo "<td>\n";
-			$sql="SELECT ROUND(AVG(note),1) AS moy FROM matieres_notes WHERE login='$lig->login' AND statut='';";
-			$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_note)>0) {
-				$lig_note=mysqli_fetch_object($res_note);
-
-				if($num_per2>0) {
-					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
-				}
-
-				if($lig_note->moy<7) {
-					echo "<span style='color:red;'>";
-				}
-				elseif($lig_note->moy<9) {
-					echo "<span style='color:orange;'>";
-				}
-				elseif($lig_note->moy<12) {
-					echo "<span style='color:gray;'>";
-				}
-				elseif($lig_note->moy<15) {
-					echo "<span style='color:green;'>";
-				}
-				else {
-					echo "<span style='color:blue;'>";
-				}
-				if($lig_note->moy!="") {echo "$lig_note->moy\n";} else {echo "&nbsp;\n";}
-
-				if($num_per2>0) {
+				if(nom_photo($lig->elenoet)) {
+					echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+					echo $designation_eleve;
 					echo "</a>\n";
 				}
-
-				echo "</span>";
-				echo "<input type='hidden' name='moy[$cpt]' value='$lig_note->moy' />\n";
-			}
-			else {
-				echo "-\n";
-				echo "<input type='hidden' name='moy[$cpt]' value='-' />\n";
-			}
-			echo "</td>\n";
-			//===================================
-
-
-			//===================================
-			$current_eleve_absences=0;
-			$current_eleve_nj=0;
-			$current_eleve_retards=0;
-			if($nb_per_classe==0) {$nb_per_classe_abs=$max_nb_per;}
-			else {$nb_per_classe_abs=$nb_per_classe;}
-			for($loop=1;$loop<=$nb_per_classe_abs;$loop++) {
-				$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
-				$current_eleve_absences_query=mysqli_query($GLOBALS["mysqli"], $sql);
-				if(mysqli_num_rows($current_eleve_absences_query)>0) {
-					$current_eleve_absences+=@old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
-					$current_eleve_nj+=@old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
-					$current_eleve_retards+=@old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
-				}
-				/*
 				else {
-					$current_eleve_absences="-";
-					$current_eleve_nj="-";
-					$current_eleve_retards="-";
+					echo $designation_eleve;
 				}
-				*/
-			}
-			echo "<td title=\"Absences/Non justifiées/Retards\">\n";
-			//echo "<span style='font-size:small;'>".colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards)."</span>";
-			echo colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards);
-			echo "<input type='hidden' name='nb_absences[$cpt]' value='$current_eleve_absences' />\n";
-			echo "<input type='hidden' name='non_justifie[$cpt]' value='$current_eleve_nj' />\n";
-			echo "<input type='hidden' name='nb_retards[$cpt]' value='$current_eleve_retards' />\n";
-			echo "</td>\n";
-			//===================================
+				echo "</td>\n";
 
+				echo "<td>";
+				echo image_sexe($lig->sexe);
+				echo "</td>\n";
 
-			$fut_classe="";
-			$tab_ele_opt=array();
-			$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
-			$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
-			if(mysqli_num_rows($res_opt)>0) {
-				$lig_opt=mysqli_fetch_object($res_opt);
+				echo "<td>$classe_actuelle[$j]</td>\n";
 
-				$fut_classe=$lig_opt->classe_future;
+				echo "<td>\n";
+				$sql="SELECT profil FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
+				$res_profil=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_profil)==0) {
+					$profil='RAS';
+				}
+				else {
+					$lig_profil=mysqli_fetch_object($res_profil);
+					$profil=$lig_profil->profil;
+				}
+				echo $profil;
+				echo "</td>\n";
 
-				$tmp_tab=explode("|",$lig_opt->liste_opt);
-				for($loop=0;$loop<count($tmp_tab);$loop++) {
-					if($tmp_tab[$loop]!="") {
-						$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
+				//===================================
+				echo "<td>\n";
+				$sql="SELECT ROUND(AVG(note),1) AS moy FROM matieres_notes WHERE login='$lig->login' AND statut='';";
+				$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_note)>0) {
+					$lig_note=mysqli_fetch_object($res_note);
+
+					if($num_per2>0) {
+						echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
 					}
+
+					if($lig_note->moy<7) {
+						echo "<span style='color:red;'>";
+					}
+					elseif($lig_note->moy<9) {
+						echo "<span style='color:orange;'>";
+					}
+					elseif($lig_note->moy<12) {
+						echo "<span style='color:gray;'>";
+					}
+					elseif($lig_note->moy<15) {
+						echo "<span style='color:green;'>";
+					}
+					else {
+						echo "<span style='color:blue;'>";
+					}
+					if($lig_note->moy!="") {echo "$lig_note->moy\n";} else {echo "&nbsp;\n";}
+
+					if($num_per2>0) {
+						echo "</a>\n";
+					}
+
+					echo "</span>";
 				}
-			}
-			else {
-				// On récupère les options de l'année écoulée
-				$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
+				else {
+					echo "-\n";
+				}
+				echo "</td>\n";
+				//===================================
+
+
+				//===================================
+				$current_eleve_absences=0;
+				$current_eleve_nj=0;
+				$current_eleve_retards=0;
+				if($nb_per_classe==0) {$nb_per_classe_abs=$max_nb_per;}
+				else {$nb_per_classe_abs=$nb_per_classe;}
+				for($loop=1;$loop<=$nb_per_classe_abs;$loop++) {
+					$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
+					$current_eleve_absences_query=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($current_eleve_absences_query)>0) {
+						$current_eleve_absences+=@old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+						$current_eleve_nj+=@old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+						$current_eleve_retards+=@old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+					}
+					/*
+					else {
+						$current_eleve_absences="-";
+						$current_eleve_nj="-";
+						$current_eleve_retards="-";
+					}
+					*/
+				}
+				echo "<td title=\"Absences/Non justifiées/Retards\">\n";
+				//echo "<span style='font-size:small;'>".colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards)."</span>";
+				echo colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards);
+				echo "</td>\n";
+				//===================================
+
+
+				$fut_classe="";
+				$tab_ele_opt=array();
+				$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
 				$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_opt)>0) {
-					while($lig_opt=mysqli_fetch_object($res_opt)) {
-						$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
-					}
-				}
-			}
+					$lig_opt=mysqli_fetch_object($res_opt);
 
-			$temoin_une_classe_cochee_pour_cet_eleve="n";
-			for($i=0;$i<count($classe_fut);$i++) {
-				echo "<td";
+					$fut_classe=$lig_opt->classe_future;
 
-				$coche_possible='y';
-				if(($classe_fut[$i]!='Red')&&($classe_fut[$i]!='Dep')&&($classe_fut[$i]!='')) {
-					for($loop=0;$loop<count($tab_ele_opt);$loop++) {
-						if(in_array(mb_strtoupper($tab_ele_opt[$loop]),$tab_opt_exclue["$classe_fut[$i]"])) {
-							$coche_possible='n';
-							break;
+					$tmp_tab=explode("|",$lig_opt->liste_opt);
+					for($loop=0;$loop<count($tmp_tab);$loop++) {
+						if($tmp_tab[$loop]!="") {
+							$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
 						}
 					}
+				}
+				else {
+					// On récupère les options de l'année écoulée
+					$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
+					$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_opt)>0) {
+						while($lig_opt=mysqli_fetch_object($res_opt)) {
+							$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
+						}
+					}
+				}
+
+				$temoin_une_classe_cochee_pour_cet_eleve="n";
+				for($i=0;$i<count($classe_fut);$i++) {
+					echo "<td></td>\n";
+				}
+
+				for($i=0;$i<count($lv1);$i++) {
+					echo "<td>\n";
+					if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo $lv1[$i];}
+					echo "</td>\n";
+				}
+
+
+				for($i=0;$i<count($lv2);$i++) {
+					echo "<td>\n";
+					if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo $lv2[$i];}
+					echo "</td>\n";
+				}
+
+
+				for($i=0;$i<count($lv3);$i++) {
+					echo "<td>\n";
+					if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo $lv3[$i];}
+					echo "</td>\n";
+				}
+
+				for($i=0;$i<count($autre_opt);$i++) {
+					echo "<td>\n";
+					if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo $autre_opt[$i];}
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			}
+			else {
+				echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"colorise_ligne2($cpt);\">\n";
+
+				//echo "<tr id='tr_eleve_$cpt' class='white_hover white_survol'\">\n";
+				echo "<td>\n";
+				$designation_eleve=mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom));
+				if(in_array($lig->login, $tab_eleves_affiches)) {
+					// 20160624
+					echo "<img src='../images/icons/ico_attention.png' class='icone16' title=\"Cet élève est déjà présent ailleurs dans une autre classe (".$tab_eleves_affiches2[$lig->login].") de la présente page.\" alt='Erreur' />";
+					$temoin_erreur_eleves_en_doublon.=$designation_eleve." apparaît plusieurs fois.<br />";
+				}
+				else {
+					$tab_eleves_affiches[]=$lig->login;
+					$tab_eleves_affiches2[$lig->login]=$classe_actuelle[$j];
+				}
+				echo "<a name='eleve$cpt'></a>\n";
+				if(nom_photo($lig->elenoet)) {
+					echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(mb_strtoupper($lig->nom)." ".ucfirst(mb_strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+					echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
+					echo $designation_eleve;
+					echo "</span>";
+					echo "</a>\n";
+				}
+				else {
+					echo "<span id='nom_prenom_eleve_numero_$cpt' class='col_nom_eleve'>";
+					echo $designation_eleve;
+					echo "</span>";
+				}
+				//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
+				echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
+				echo "<input type='hidden' name='id_classe_actuelle_eleve[$cpt]' value='$id_classe_actuelle[$j]' />\n";
+				//echo " $cpt";
+				echo "</td>\n";
+				//echo "<td id='eleve_sexe_$cpt'>";
+				echo "<td>";
+				//echo $lig->sexe;
+				//echo "<span style='display:none'>".$lig->sexe."</span>";
+				echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
+				//echo image_sexe($lig->sexe);
+				echo "<div id='div_sexe_$cpt' onclick=\"affiche_set_sexe($cpt, '$lig->login');changement();return false;\">".image_sexe($lig->sexe)."</div>\n";
+				echo "</td>\n";
+				echo "<td>$classe_actuelle[$j]</td>\n";
+				//echo "<td>Profil</td>\n";
+				echo "<td>\n";
+				$sql="SELECT profil FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
+				$res_profil=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_profil)==0) {
+					$profil='RAS';
+					$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="y";
+				}
+				else {
+					$lig_profil=mysqli_fetch_object($res_profil);
+					$profil=$lig_profil->profil;
+					$eleve_courant_non_encore_enregistre_dans_gc_eleves_options="n";
+				}
+
+				$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="n";
+				if($eleve_courant_non_encore_enregistre_dans_gc_eleves_options=="y") {
+					if(($lig->date_sortie!='NULL')&&(preg_match("/^20/",$lig->date_sortie))) {
+						$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre="y";
+					}
+				}
+
+				echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
+
+				echo "<div id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</div>\n";
+
+				//20160624
+				//echo "date_sortie=$lig->date_sortie<br />";
+				//echo "\$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre=$temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre";
+
+				/*
+				echo "<select name='profil[$cpt]'>\n";
+				for($loop=0;$loop<count($tab_profil);$loop++) {
+					echo "<option value='$tab_profil[$loop]'";
+					if($tab_profil[$loop]==$profil) {echo " selected='true'";}
+					echo ">$tab_profil[$loop]</option>\n";
+				}
+				echo "</select>\n";
+				*/
+				echo "</td>\n";
+
+				//===================================
+				echo "<td>\n";
+				$sql="SELECT ROUND(AVG(note),1) AS moy FROM matieres_notes WHERE login='$lig->login' AND statut='';";
+				$res_note=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_note)>0) {
+					$lig_note=mysqli_fetch_object($res_note);
+
+					if($num_per2>0) {
+						echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+					}
+
+					if($lig_note->moy<7) {
+						echo "<span style='color:red;'>";
+					}
+					elseif($lig_note->moy<9) {
+						echo "<span style='color:orange;'>";
+					}
+					elseif($lig_note->moy<12) {
+						echo "<span style='color:gray;'>";
+					}
+					elseif($lig_note->moy<15) {
+						echo "<span style='color:green;'>";
+					}
+					else {
+						echo "<span style='color:blue;'>";
+					}
+					if($lig_note->moy!="") {echo "$lig_note->moy\n";} else {echo "&nbsp;\n";}
+
+					if($num_per2>0) {
+						echo "</a>\n";
+					}
+
+					echo "</span>";
+					echo "<input type='hidden' name='moy[$cpt]' value='$lig_note->moy' />\n";
+				}
+				else {
+					echo "-\n";
+					echo "<input type='hidden' name='moy[$cpt]' value='-' />\n";
+				}
+				echo "</td>\n";
+				//===================================
+
+
+				//===================================
+				$current_eleve_absences=0;
+				$current_eleve_nj=0;
+				$current_eleve_retards=0;
+				if($nb_per_classe==0) {$nb_per_classe_abs=$max_nb_per;}
+				else {$nb_per_classe_abs=$nb_per_classe;}
+				for($loop=1;$loop<=$nb_per_classe_abs;$loop++) {
+					$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
+					$current_eleve_absences_query=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($current_eleve_absences_query)>0) {
+						$current_eleve_absences+=@old_mysql_result($current_eleve_absences_query, 0, "nb_absences");
+						$current_eleve_nj+=@old_mysql_result($current_eleve_absences_query, 0, "non_justifie");
+						$current_eleve_retards+=@old_mysql_result($current_eleve_absences_query, 0, "nb_retards");
+					}
+					/*
+					else {
+						$current_eleve_absences="-";
+						$current_eleve_nj="-";
+						$current_eleve_retards="-";
+					}
+					*/
+				}
+				echo "<td title=\"Absences/Non justifiées/Retards\">\n";
+				//echo "<span style='font-size:small;'>".colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards)."</span>";
+				echo colorise_abs($current_eleve_absences,$current_eleve_nj,$current_eleve_retards);
+				echo "<input type='hidden' name='nb_absences[$cpt]' value='$current_eleve_absences' />\n";
+				echo "<input type='hidden' name='non_justifie[$cpt]' value='$current_eleve_nj' />\n";
+				echo "<input type='hidden' name='nb_retards[$cpt]' value='$current_eleve_retards' />\n";
+				echo "</td>\n";
+				//===================================
+
+
+				$fut_classe="";
+				$tab_ele_opt=array();
+				$sql="SELECT * FROM gc_eleves_options WHERE projet='$projet' AND login='$lig->login';";
+				$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+				if(mysqli_num_rows($res_opt)>0) {
+					$lig_opt=mysqli_fetch_object($res_opt);
+
+					$fut_classe=$lig_opt->classe_future;
+
+					$tmp_tab=explode("|",$lig_opt->liste_opt);
+					for($loop=0;$loop<count($tmp_tab);$loop++) {
+						if($tmp_tab[$loop]!="") {
+							$tab_ele_opt[]=mb_strtoupper($tmp_tab[$loop]);
+						}
+					}
+				}
+				else {
+					// On récupère les options de l'année écoulée
+					$sql="SELECT * FROM j_eleves_groupes jeg, j_groupes_matieres jgm WHERE jeg.id_groupe=jgm.id_groupe AND jeg.login='$lig->login';";
+					$res_opt=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res_opt)>0) {
+						while($lig_opt=mysqli_fetch_object($res_opt)) {
+							$tab_ele_opt[]=mb_strtoupper($lig_opt->id_matiere);
+						}
+					}
+				}
+
+				$temoin_une_classe_cochee_pour_cet_eleve="n";
+				for($i=0;$i<count($classe_fut);$i++) {
+					echo "<td";
+
+					$coche_possible='y';
+					if(($classe_fut[$i]!='Red')&&($classe_fut[$i]!='Dep')&&($classe_fut[$i]!='')) {
+						for($loop=0;$loop<count($tab_ele_opt);$loop++) {
+							if(in_array(mb_strtoupper($tab_ele_opt[$loop]),$tab_opt_exclue["$classe_fut[$i]"])) {
+								$coche_possible='n';
+								break;
+							}
+						}
+					}
+
+					// 20130621
+					if($coche_possible=='y') {
+						echo " onclick=\"document.getElementById('classe_fut_".$i."_".$cpt."').checked=true;calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\"";
+					}
+					echo ">\n";
+
+					if($coche_possible=='y') {
+						echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
+
+						if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre=="y") {
+							if($classe_fut[$i]=='Dep') {
+								echo "checked ";
+								echo "title=\"Cet élève a quitté l'établissement le ".formate_date($lig->date_sortie)."\" ";
+								$temoin_une_classe_cochee_pour_cet_eleve="y";
+							}
+						}
+						else {
+							if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {
+								echo "checked ";
+								$temoin_une_classe_cochee_pour_cet_eleve="y";
+							}
+						}
+
+						// Si aucune classe n'est cochée et qu'on en est à classe future non définie ''
+						// Quand on copie un projet par exemple futures_3emes pour faire futures_3emes_grp_langue
+						// on définie de nouvelles "classes" futures pour les groupes,
+						// et un élève qui a déjà une classe future dans le projet d'origine se retrouve sans aucune case cochée.
+						// Avec les test ci-dessous, on évitera ce pb.
+						if(($classe_fut[$i]=='')&&($temoin_une_classe_cochee_pour_cet_eleve=="n")) {
+							echo "checked ";
+						}
+
+						echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
+						//echo "title=\"$lig->login/$classe_fut[$i]\" ";
+						if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre!="y") {
+							echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
+						}
+						echo "/>\n";
+						/*
+						echo $lig->date_sortie;
+						echo $temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre;
+						echo $classe_fut[$i];
+						echo $eleve_courant_non_encore_enregistre_dans_gc_eleves_options;
+						*/
+						//echo "'classe_fut_".$i."_".$cpt."'";
+					}
+					else {
+						echo "_";
+					}
+
+					echo "</td>\n";
+				}
+
+				/*
+				echo "<td>...</td>\n";
+				echo "<td>...</td>\n";
+				echo "<td>...</td>\n";
+				*/
+
+				for($i=0;$i<count($lv1);$i++) {
+					echo "<td";
+					//echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
+					echo " onclick=\"coche_lv('lv1', $i, $cpt);calcule_effectif('lv1',".count($lv1).");changement();\"";
+					echo " title=\"$lig->login/$lv1[$i]\"";
+					echo ">\n";
+
+					// Conteneur du bouton radio
+					echo "<span id='span_input_lv1_".$i."_".$cpt."'>\n";
+					echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
+					if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
+					echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
+					echo "title=\"$lig->login/$lv1[$i]\" ";
+					echo "/>\n";
+					echo "</span>\n";
+
+					// Conteneur de l'affichage (non affiché si JS inactif)
+					echo "<span id='span_affichage_coche_lv1_".$i."_".$cpt."' style='display:none'>\n";
+					if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo $lv1[$i];}
+					echo "</span>\n";
+
+					echo "</td>\n";
+				}
+
+
+				for($i=0;$i<count($lv2);$i++) {
+					echo "<td";
+					//echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
+					echo " onclick=\"coche_lv('lv2', $i, $cpt);calcule_effectif('lv2',".count($lv2).");changement();\"";
+					echo " title=\"$lig->login/$lv2[$i]\"";
+					echo ">\n";
+
+					// Conteneur du bouton radio
+					echo "<span id='span_input_lv2_".$i."_".$cpt."'>\n";
+					echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
+					if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
+					echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
+					echo "title=\"$lig->login/$lv2[$i]\" ";
+					echo "/>\n";
+					echo "</span>\n";
+
+					// Conteneur de l'affichage (non affiché si JS inactif)
+					echo "<span id='span_affichage_coche_lv2_".$i."_".$cpt."' style='display:none'>\n";
+					if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo $lv2[$i];}
+					echo "</span>\n";
+
+					echo "</td>\n";
+				}
+
+
+				for($i=0;$i<count($lv3);$i++) {
+					echo "<td";
+					//echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
+					echo " onclick=\"coche_lv('lv3', $i, $cpt);calcule_effectif('lv3',".count($lv3).");changement();\"";
+					echo " title=\"$lig->login/$lv3[$i]\"";
+					echo ">\n";
+
+					// Conteneur du bouton radio
+					echo "<span id='span_input_lv3_".$i."_".$cpt."'>\n";
+					echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
+					if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
+					echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
+					echo "title=\"$lig->login/$lv3[$i]\" ";
+					echo "/>\n";
+					echo "</span>\n";
+
+					// Conteneur de l'affichage (non affiché si JS inactif)
+					echo "<span id='span_affichage_coche_lv3_".$i."_".$cpt."' style='display:none'>\n";
+					if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo $lv3[$i];}
+					echo "</span>\n";
+					echo "</td>\n";
 				}
 
 				// 20130621
-				if($coche_possible=='y') {
-					echo " onclick=\"document.getElementById('classe_fut_".$i."_".$cpt."').checked=true;calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\"";
-				}
-				echo ">\n";
+				for($i=0;$i<count($autre_opt);$i++) {
+					echo "<td";
+					//echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+					echo " onclick=\"coche_autre_opt($i, $cpt);calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
+					echo " title=\"$lig->login/$autre_opt[$i]\"";
+					echo ">\n";
 
-				if($coche_possible=='y') {
-					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-
-					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre=="y") {
-						if($classe_fut[$i]=='Dep') {
-							echo "checked ";
-							echo "title=\"Cet élève a quitté l'établissement le ".formate_date($lig->date_sortie)."\" ";
-							$temoin_une_classe_cochee_pour_cet_eleve="y";
-						}
-					}
-					else {
-						if(mb_strtoupper($fut_classe)==mb_strtoupper($classe_fut[$i])) {
-							echo "checked ";
-							$temoin_une_classe_cochee_pour_cet_eleve="y";
-						}
-					}
-
-					// Si aucune classe n'est cochée et qu'on en est à classe future non définie ''
-					// Quand on copie un projet par exemple futures_3emes pour faire futures_3emes_grp_langue
-					// on définie de nouvelles "classes" futures pour les groupes,
-					// et un élève qui a déjà une classe future dans le projet d'origine se retrouve sans aucune case cochée.
-					// Avec les test ci-dessous, on évitera ce pb.
-					if(($classe_fut[$i]=='')&&($temoin_une_classe_cochee_pour_cet_eleve=="n")) {
-						echo "checked ";
-					}
-
-					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
-					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
-					if($temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre!="y") {
-						echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
-					}
+					// Conteneur du checkbox
+					echo "<span id='span_input_autre_opt_".$i."_".$cpt."'>\n";
+					echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
+					if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
+					echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
+					echo "title=\"$lig->login/$autre_opt[$i]\" ";
 					echo "/>\n";
-					/*
-					echo $lig->date_sortie;
-					echo $temoin_eleve_ayant_quitte_etab_et_encore_non_enregistre;
-					echo $classe_fut[$i];
-					echo $eleve_courant_non_encore_enregistre_dans_gc_eleves_options;
-					*/
-					//echo "'classe_fut_".$i."_".$cpt."'";
+					echo "</span>\n";
+
+					// Conteneur de l'affichage (non affiché si JS inactif)
+					echo "<span id='span_affichage_coche_autre_opt_".$i."_".$cpt."' style='display:none'>\n";
+					if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo $autre_opt[$i];}
+					echo "</span>\n";
+
+					echo "</td>\n";
 				}
-				else {
-					echo "_";
-				}
-
-				echo "</td>\n";
+				echo "</tr>\n";
+				$cpt++;
 			}
-
-			/*
-			echo "<td>...</td>\n";
-			echo "<td>...</td>\n";
-			echo "<td>...</td>\n";
-			*/
-
-			for($i=0;$i<count($lv1);$i++) {
-				echo "<td";
-				//echo " onclick=\"document.getElementById('lv1_".$i."_".$cpt."').checked=true;calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\"";
-				echo " onclick=\"coche_lv('lv1', $i, $cpt);calcule_effectif('lv1',".count($lv1).");changement();\"";
-				echo " title=\"$lig->login/$lv1[$i]\"";
-				echo ">\n";
-
-				// Conteneur du bouton radio
-				echo "<span id='span_input_lv1_".$i."_".$cpt."'>\n";
-				echo "<input type='radio' name='lv1[$cpt]' id='lv1_".$i."_".$cpt."' value='$lv1[$i]' ";
-				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo "checked ";}
-				echo "onchange=\"calcule_effectif('lv1',".count($lv1).");colorise_ligne('lv1',$cpt,$i);changement();\" ";
-				echo "title=\"$lig->login/$lv1[$i]\" ";
-				echo "/>\n";
-				echo "</span>\n";
-
-				// Conteneur de l'affichage (non affiché si JS inactif)
-				echo "<span id='span_affichage_coche_lv1_".$i."_".$cpt."' style='display:none'>\n";
-				if(in_array(mb_strtoupper($lv1[$i]),$tab_ele_opt)) {echo $lv1[$i];}
-				echo "</span>\n";
-
-				echo "</td>\n";
-			}
-
-
-			for($i=0;$i<count($lv2);$i++) {
-				echo "<td";
-				//echo " onclick=\"document.getElementById('lv2_".$i."_".$cpt."').checked=true;calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\"";
-				echo " onclick=\"coche_lv('lv2', $i, $cpt);calcule_effectif('lv2',".count($lv2).");changement();\"";
-				echo " title=\"$lig->login/$lv2[$i]\"";
-				echo ">\n";
-
-				// Conteneur du bouton radio
-				echo "<span id='span_input_lv2_".$i."_".$cpt."'>\n";
-				echo "<input type='radio' name='lv2[$cpt]' id='lv2_".$i."_".$cpt."' value='$lv2[$i]' ";
-				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo "checked ";}
-				echo "onchange=\"calcule_effectif('lv2',".count($lv2).");colorise_ligne('lv2',$cpt,$i);changement();\" ";
-				echo "title=\"$lig->login/$lv2[$i]\" ";
-				echo "/>\n";
-				echo "</span>\n";
-
-				// Conteneur de l'affichage (non affiché si JS inactif)
-				echo "<span id='span_affichage_coche_lv2_".$i."_".$cpt."' style='display:none'>\n";
-				if(in_array(mb_strtoupper($lv2[$i]),$tab_ele_opt)) {echo $lv2[$i];}
-				echo "</span>\n";
-
-				echo "</td>\n";
-			}
-
-
-			for($i=0;$i<count($lv3);$i++) {
-				echo "<td";
-				//echo " onclick=\"document.getElementById('lv3_".$i."_".$cpt."').checked=true;calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\"";
-				echo " onclick=\"coche_lv('lv3', $i, $cpt);calcule_effectif('lv3',".count($lv3).");changement();\"";
-				echo " title=\"$lig->login/$lv3[$i]\"";
-				echo ">\n";
-
-				// Conteneur du bouton radio
-				echo "<span id='span_input_lv3_".$i."_".$cpt."'>\n";
-				echo "<input type='radio' name='lv3[$cpt]' id='lv3_".$i."_".$cpt."' value='$lv3[$i]' ";
-				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo "checked ";}
-				echo "onchange=\"calcule_effectif('lv3',".count($lv3).");colorise_ligne('lv3',$cpt,$i);changement();\" ";
-				echo "title=\"$lig->login/$lv3[$i]\" ";
-				echo "/>\n";
-				echo "</span>\n";
-
-				// Conteneur de l'affichage (non affiché si JS inactif)
-				echo "<span id='span_affichage_coche_lv3_".$i."_".$cpt."' style='display:none'>\n";
-				if(in_array(mb_strtoupper($lv3[$i]),$tab_ele_opt)) {echo $lv3[$i];}
-				echo "</span>\n";
-				echo "</td>\n";
-			}
-
-			// 20130621
-			for($i=0;$i<count($autre_opt);$i++) {
-				echo "<td";
-				//echo " onclick=\"if(document.getElementById('autre_opt_".$i."_".$cpt."').checked==true) {document.getElementById('autre_opt_".$i."_".$cpt."').checked=false} else {document.getElementById('autre_opt_".$i."_".$cpt."').checked=true};calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
-				echo " onclick=\"coche_autre_opt($i, $cpt);calcule_effectif('autre_opt',".count($autre_opt).");changement();\"";
-				echo " title=\"$lig->login/$autre_opt[$i]\"";
-				echo ">\n";
-
-				// Conteneur du checkbox
-				echo "<span id='span_input_autre_opt_".$i."_".$cpt."'>\n";
-				echo "<input type='checkbox' name='autre_opt_".$i."[$cpt]' id='autre_opt_".$i."_".$cpt."' value='$autre_opt[$i]' ";
-				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo "checked ";}
-				echo "onchange=\"calcule_effectif('autre_opt',".count($autre_opt).");changement();\" ";
-				echo "title=\"$lig->login/$autre_opt[$i]\" ";
-				echo "/>\n";
-				echo "</span>\n";
-
-				// Conteneur de l'affichage (non affiché si JS inactif)
-				echo "<span id='span_affichage_coche_autre_opt_".$i."_".$cpt."' style='display:none'>\n";
-				if(in_array(mb_strtoupper($autre_opt[$i]),$tab_ele_opt)) {echo $autre_opt[$i];}
-				echo "</span>\n";
-
-				echo "</td>\n";
-			}
-			echo "</tr>\n";
-			$cpt++;
 		}
 	}
 	echo "</table>\n";
