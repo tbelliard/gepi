@@ -686,14 +686,14 @@ if ($res_test == 0){
 	}
 
 	// Dans ce cas, on force l'affichage par défaut de la colonne Elements de Programmes sur les bulletins PDF.
-	$sql="SELECT DISTINCT id_model_bulletin, value FROM modele_bulletin WHERE nom='nom_model_bulletin';";
+	$sql="SELECT DISTINCT id_model_bulletin, valeur FROM modele_bulletin WHERE nom='nom_model_bulletin';";
 	$res_model_bull=mysqli_query($GLOBALS['mysqli'], $sql);
-	if(mysqli_num_rows($res_model_bull>0) {
+	if(mysqli_num_rows($res_model_bull)>0) {
 		while($lig_model_bull=mysqli_fetch_object($res_model_bull)) {
 			$sql="SELECT 1=1 FROM modele_bulletin WHERE id_model_bulletin='".$lig_model_bull->id_model_bulletin."' AND nom='active_colonne_Elements_Programmes';";
 			$test=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($test)==0) {
-				$result .= "Affichage par défaut de la colonne Éléments de Programmes dans le modèle de bulletins PDF '".$lig_model_bull->valeur."'&nbsp;:<br />";
+				$result .= "Affichage par défaut de la colonne Éléments de Programmes dans le modèle de bulletins PDF '<strong>".$lig_model_bull->valeur."</strong>'&nbsp;:<br />";
 				$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$lig_model_bull->id_model_bulletin."', nom='active_colonne_Elements_Programmes', valeur='1';";
 				$result_inter = traite_requete($sql);
 				if ($result_inter == '') {
@@ -707,7 +707,7 @@ if ($res_test == 0){
 			$sql="SELECT 1=1 FROM modele_bulletin WHERE id_model_bulletin='".$lig_model_bull->id_model_bulletin."' AND nom='largeur_Elements_Programmes';";
 			$test=mysqli_query($GLOBALS['mysqli'], $sql);
 			if(mysqli_num_rows($test)==0) {
-				$result .= "Initialisation de la largeur de la colonne Éléments de Programmes dans le modèle de bulletins PDF '".$lig_model_bull->valeur."' à 50mm&nbsp;:<br />";
+				$result .= "Initialisation de la largeur de la colonne Éléments de Programmes dans le modèle de bulletins PDF '<strong>".$lig_model_bull->valeur."</strong>' à 50mm&nbsp;:<br />";
 				$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$lig_model_bull->id_model_bulletin."', nom='largeur_Elements_Programmes', valeur='50';";
 				$result_inter = traite_requete($sql);
 				if ($result_inter == '') {
