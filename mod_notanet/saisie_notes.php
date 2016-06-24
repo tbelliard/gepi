@@ -123,7 +123,7 @@ if((getSettingAOui("notanet_saisie_note_ouverte"))&&(isset($_POST['is_posted']))
 					//echo "$sql<br />";
 					$register=mysqli_query($GLOBALS["mysqli"], $sql);
 					if (!$register) {
-						$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$i]<br />";
+						$msg .= "Erreur lors de l'enregistrement des données pour $ele_login[$key]<br />";
 						//echo "ERREUR<br />";
 						$pb_record = 'yes';
 					}
