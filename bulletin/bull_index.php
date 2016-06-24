@@ -2004,6 +2004,15 @@ else {
 				$tab_releve[$id_classe][$periode_num]=array();
 			}
 
+			// 20160622
+			if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
+				$tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']=get_elements_programmes_classe($id_classe, $periode_num);
+				/*
+				echo "\$tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']<pre>";
+				print_r($tab_bulletin[$id_classe][$periode_num]['ElementsProgrammes']);
+				echo "</pre>";
+				*/
+			}
 
 			// 20160408
 			if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($id_classe))) {
@@ -3747,6 +3756,13 @@ else {
 		}
 	}
 
+	// 20160624
+	/*
+	echo "\$tab_bulletin<pre>";
+	print_r($tab_bulletin);
+	echo "</pre>";
+	die();
+	*/
 	//echo "\$nb_bulletins_edites=$nb_bulletins_edites<br />";
 
 	//========================================================================

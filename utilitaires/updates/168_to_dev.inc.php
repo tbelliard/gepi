@@ -590,7 +590,7 @@ if ($test == -1) {
     $sql = "CREATE TABLE IF NOT EXISTS  j_mep_prof( "
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "idEP int(11)  COMMENT \"identifiant unique de l'élément de programme\", "
-            . "	id_prof varchar(50) COMMENT 'identifiant unique du professeur', "
+            . "id_prof varchar(50) COMMENT 'identifiant unique du professeur', "
             . "PRIMARY KEY id (id) , UNIQUE KEY jointMapProf (id_prof, idEP)) "
             . "ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci "
             . "COMMENT 'Jointure éléments de programme travaillé ↔ enseignant' ;";
@@ -676,13 +676,49 @@ if ($test == -1) {
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bullNoSaisieElementsProgrammes'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='yes';");
-	$result .= "Initialisation du paramètre 'bullNoSaisieElementsProgrammes' à 'yes': ";
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='no';");
+	$result .= "Initialisation du paramètre 'bullNoSaisieElementsProgrammes' à 'no': ";
 	if($query){
 		$result .= msj_ok();
 	}
 	else{
 		$result .= msj_erreur('!');
 	}
+
+	// Dans ce cas, on force l'affichage par défaut de la colonne Elements de Programmes sur les bulletins PDF.
+	$sql="SELECT DISTINCT id_model_bulletin, value FROM modele_bulletin WHERE nom='nom_model_bulletin';";
+	$res_model_bull=mysqli_query($GLOBALS['mysqli'], $sql);
+	if(mysqli_num_rows($res_model_bull>0) {
+		while($lig_model_bull=mysqli_fetch_object($res_model_bull)) {
+			$sql="SELECT 1=1 FROM modele_bulletin WHERE id_model_bulletin='".$lig_model_bull->id_model_bulletin."' AND nom='active_colonne_Elements_Programmes';";
+			$test=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$result .= "Affichage par défaut de la colonne Éléments de Programmes dans le modèle de bulletins PDF '".$lig_model_bull->valeur."'&nbsp;:<br />";
+				$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$lig_model_bull->id_model_bulletin."', nom='active_colonne_Elements_Programmes', valeur='1';";
+				$result_inter = traite_requete($sql);
+				if ($result_inter == '') {
+					$result .= msj_ok("SUCCES !");
+				}
+				else {
+					$result .= msj_erreur("ECHEC !");
+				}
+			}
+
+			$sql="SELECT 1=1 FROM modele_bulletin WHERE id_model_bulletin='".$lig_model_bull->id_model_bulletin."' AND nom='largeur_Elements_Programmes';";
+			$test=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($test)==0) {
+				$result .= "Initialisation de la largeur de la colonne Éléments de Programmes dans le modèle de bulletins PDF '".$lig_model_bull->valeur."' à 50mm&nbsp;:<br />";
+				$sql="INSERT INTO modele_bulletin SET id_model_bulletin='".$lig_model_bull->id_model_bulletin."', nom='largeur_Elements_Programmes', valeur='50';";
+				$result_inter = traite_requete($sql);
+				if ($result_inter == '') {
+					$result .= msj_ok("SUCCES !");
+				}
+				else {
+					$result .= msj_erreur("ECHEC !");
+				}
+			}
+		}
+	}
+
 }
 ?>

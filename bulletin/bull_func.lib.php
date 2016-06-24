@@ -2909,6 +2909,12 @@ fclose($f);
 				$hauteur_caractere = '10';
 				$pdf->SetFont('DejaVu','',$hauteur_caractere);
 				if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+					// 20160623
+					$largeur_Elements_Programmes_si_affiche=0;
+					if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+						$largeur_Elements_Programmes_si_affiche=$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+					}
+
 					$X_col_app=$tab_modele_pdf["X_note_app"][$classe_id]+$largeur_utilise;
 					$pdf->SetXY($X_col_app, $tab_modele_pdf["Y_note_app"][$classe_id]);
 					if ( !empty($ordre_moyenne[$cpt_ordre+1]) ) {
@@ -2934,10 +2940,23 @@ fclose($f);
 							     $ordre_moyenne[$cpt_ordre_sous] === 'max' ) { $largeur_appret = $largeur_appret + $tab_modele_pdf["largeur_d_une_moyenne"][$classe_id]; }
 							$cpt_ordre_sous = $cpt_ordre_sous + 1;
 						}
-						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id] - $largeur_utilise - $largeur_appret;
+						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise-$largeur_appret-$largeur_Elements_Programmes_si_affiche;
 					} else {
-						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise;
+						$largeur_appreciation = $tab_modele_pdf["longeur_note_app"][$classe_id]-$largeur_utilise-$largeur_Elements_Programmes_si_affiche;
 					}
+
+					// 20160623
+					if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+						$pdf->SetFont('DejaVu','',10);
+
+						//$titre_entete_Elements_Programmes=$tab_modele_pdf['titre_entete_Elements_Programmes'][$classe_id];
+						$titre_entete_Elements_Programmes="Éléments de programmes";
+
+						//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LRB',0,'C');
+						$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $hauteur_entete, ($titre_entete_Elements_Programmes),'LR',0,'C');
+						$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+					}
+
 					$pdf->SetFont('DejaVu','',10);
 
 					//$titre_entete_appreciation=$bull_intitule_app;
@@ -3386,10 +3405,23 @@ fclose($f);
 								$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 							}
 
-							//appréciation
+							// appréciation AID B
 							if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
 								// si on autorise l'affichage des sous matière et s'il y en a alors on les affiche
 								//$id_groupe_select = $tab_bull['eleve'][$i]['groupe'][$m]['id'];
+
+								// 20160623
+								if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+									$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+									$pdf->SetFont('DejaVu','',10);
+
+									$texte_Elements_Programmes="";
+
+									//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+									$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LR',0,'C');
+									$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+								}
+
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
 								$X_sous_matiere = 0;
 								$largeur_sous_matiere=0;
@@ -3762,14 +3794,35 @@ fclose($f);
 							$pdf->Cell($tab_modele_pdf["largeur_niveau"][$classe_id], $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TB',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_niveau"][$classe_id];
 						}
-						// Appreciation
+						// Appreciation Ligne Catégorie de matière (vide)
 						if($tab_modele_pdf["active_appreciation"][$classe_id]==='1') {
+
+							// On enlève 0.1 pour éviter que le gris ne couvre en partie/éclaircisse la bordure verticale de droite.
+							$largeur_app_et_elements_prog=$largeur_appreciation-0.1;
+							// 20160623
+							if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+								// On n'affiche rien... c'est la ligne catégorie de matières; il faut juste tenir compte de la largeur de colonne
+								/*
+								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+								$pdf->SetFont('DejaVu','',10);
+
+								$texte_Elements_Programmes="";
+
+								//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+								$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LR',0,'C');
+								$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+								*/
+								$largeur_app_et_elements_prog=$largeur_appreciation+$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id]-0.1;
+							}
+
+
 							// Problème de coordonnées si on met l'appréciation en première position...
 							//$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal);
 							$pdf->SetXY($X_col_app, $Y_decal);
 
 							$pdf->SetFillColor($tab_modele_pdf["couleur_categorie_entete1"][$classe_id], $tab_modele_pdf["couleur_categorie_entete2"][$classe_id], $tab_modele_pdf["couleur_categorie_entete3"][$classe_id]);
-							$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TB',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+							//$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TB',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
+							$pdf->Cell($largeur_app_et_elements_prog, $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TBL',0,'C',$tab_modele_pdf["couleur_categorie_entete"][$classe_id]);
 							//$pdf->Cell($largeur_appreciation, $tab_modele_pdf["hauteur_info_categorie"][$classe_id], '','TB',0,'C');
 							$largeur_utilise=0;
 						}
@@ -4537,6 +4590,69 @@ fclose($f);
 
 						//appréciation
 						if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+
+							// 20160623
+							if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+
+								$hauteur_caractere_appreciation = 9;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+								$texte_Elements_Programmes="";
+
+								if((isset($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))&&(is_array($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))) {
+									for($loop_mep=0;$loop_mep<count($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]);$loop_mep++) {
+										if($texte_Elements_Programmes!="") {
+											$texte_Elements_Programmes.="\n";
+										}
+										$texte_Elements_Programmes.=$tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']][$loop_mep];
+									}
+								}
+
+								if($texte_Elements_Programmes=="") {
+									$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+								}
+								else {
+									// DEBUT AJUSTEMENT TAILLE ELEMENTS PROGRAMME
+									$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+									$largeur_dispo=$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+
+									if($use_cell_ajustee=="n") {
+										$nb_ligne_app = '2.8';
+										$taille_texte_max = $nb_ligne_app * ($largeur_dispo-4);
+										$grandeur_texte='test';	
+
+										while($grandeur_texte!='ok') {
+											if($taille_texte_max < $taille_texte_total)
+											{
+												$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+												$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+												$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+											}
+											else {
+												$grandeur_texte='ok';
+											}
+										}
+										$grandeur_texte='test';
+										$pdf->drawTextBox(($texte_Elements_Programmes), $largeur_dispo, $espace_entre_matier, 'J', 'M', 1);
+									}
+									else {
+										$texte=$texte_Elements_Programmes;
+										$taille_max_police=$hauteur_caractere_appreciation;
+										$taille_min_police=ceil($taille_max_police/3);
+
+										$h_cell=$espace_entre_matier;
+
+										if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+										cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'LRBT');
+									}
+
+								}
+
+								$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+							}
+
+
 							// si on autorise l'affichage des sous matière et s'il y en a alors on les affiche
 							$id_groupe_select = $tab_bull['groupe'][$m]['id'];
 							$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
@@ -4988,6 +5104,17 @@ fclose($f);
 
 							//appréciation
 							if($tab_modele_pdf["active_appreciation"][$classe_id]==='1' and $ordre_moyenne[$cpt_ordre] === 'appreciation' ) {
+								// 20160623
+								if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&($tab_modele_pdf["active_colonne_Elements_Programmes"][$classe_id]==='1')) {
+									$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));
+									$pdf->SetFont('DejaVu','',10);
+
+									$texte_Elements_Programmes="";
+
+									$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+									$largeur_utilise = $largeur_utilise + $tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+								}
+
 								// si on autorise l'affichage des sous matière et s'il y en a alors on les affiche
 								//$id_groupe_select = $tab_bull['eleve'][$i]['groupe'][$m]['id'];
 								$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_decal-($espace_entre_matier/2));

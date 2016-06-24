@@ -25,6 +25,11 @@
 	$champ_bull_pdf[]="active_coef_moyenne";
 	$champ_bull_pdf[]="active_nombre_note";
 	$champ_bull_pdf[]="active_nombre_note_case";
+
+	// 20160623
+	$champ_bull_pdf[]="active_colonne_Elements_Programmes";
+	$champ_bull_pdf[]="largeur_Elements_Programmes";
+
 	$champ_bull_pdf[]="active_moyenne";
 	$champ_bull_pdf[]="active_moyenne_eleve";
 	$champ_bull_pdf[]="active_moyenne_classe";
@@ -265,6 +270,11 @@
 	$val_defaut_champ_bull_pdf["active_coef_moyenne"]=0;
 	$val_defaut_champ_bull_pdf["active_nombre_note"]=0;
 	$val_defaut_champ_bull_pdf["active_nombre_note_case"]=0;
+
+	// 20160623
+	$val_defaut_champ_bull_pdf["active_colonne_Elements_Programmes"]=1;
+	$val_defaut_champ_bull_pdf["largeur_Elements_Programmes"]=50;
+
 	$val_defaut_champ_bull_pdf["active_moyenne"]=1;
 	$val_defaut_champ_bull_pdf["active_moyenne_eleve"]=1;
 	$val_defaut_champ_bull_pdf["active_moyenne_classe"]=1;

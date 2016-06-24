@@ -200,6 +200,22 @@ if(isset($_POST['param_communs_pdf_html'])) {
 	else { if (isset($_GET['active_nombre_note'])) { $active_nombre_note = $_GET['active_nombre_note']; } if (isset($_POST['active_nombre_note'])) { $active_nombre_note = $_POST['active_nombre_note']; } }
 	if (empty($_GET['active_nombre_note_case']) and empty($_POST['active_nombre_note_case'])) { $active_nombre_note_case = ''; }
 	else { if (isset($_GET['active_nombre_note_case'])) { $active_nombre_note_case = $_GET['active_nombre_note_case']; } if (isset($_POST['active_nombre_note_case'])) { $active_nombre_note_case = $_POST['active_nombre_note_case']; } }
+
+	//20160623
+	if (empty($_GET['active_colonne_Elements_Programmes']) and empty($_POST['active_colonne_Elements_Programmes'])) { $active_colonne_Elements_Programmes=''; }
+	else { if (isset($_GET['active_colonne_Elements_Programmes'])) { $active_colonne_Elements_Programmes = $_GET['active_colonne_Elements_Programmes']; } if (isset($_POST['active_colonne_Elements_Programmes'])) { $active_colonne_Elements_Programmes = $_POST['active_colonne_Elements_Programmes']; } }
+	if (empty($_GET['largeur_Elements_Programmes']) and empty($_POST['largeur_Elements_Programmes'])) {
+		$largeur_Elements_Programmes=50; 
+	}
+	else {
+		if (isset($_GET['largeur_Elements_Programmes'])) { 
+			$largeur_Elements_Programmes = $_GET['largeur_Elements_Programmes']; 
+		}
+		if (isset($_POST['largeur_Elements_Programmes'])) {
+			$largeur_Elements_Programmes = $_POST['largeur_Elements_Programmes']; 
+		}
+	}
+
 	if (empty($_GET['active_moyenne']) and empty($_POST['active_moyenne'])) { $active_moyenne = ''; }
 	else { if (isset($_GET['active_moyenne'])) { $active_moyenne = $_GET['active_moyenne']; } if (isset($_POST['active_moyenne'])) { $active_moyenne = $_POST['active_moyenne']; } }
 	if (empty($_GET['active_moyenne_eleve']) and empty($_POST['active_moyenne_eleve'])) { $active_moyenne_eleve = ''; }
@@ -1554,16 +1570,21 @@ function DecocheCheckbox() {
 			<div style="background: #EFEFEF; font-style:italic;">Autres</div>
 			<input name="active_coef_moyenne" id="active_coef_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_moyenne) and $active_coef_moyenne==='1') { ?>checked="checked"<?php } ?> /><label for='active_coef_moyenne'>&nbsp;Coefficient de chaque matière</label><br />
 			
-			&nbsp;&nbsp;&nbsp;- Largeur de la colonne des coefficients&nbsp;<input name="largeur_coef_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_coef_moyenne)) { ?>value="<?php echo $largeur_coef_moyenne; ?>" <?php } ?> />mm<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur de la colonne des coefficients&nbsp;<input name="largeur_coef_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_coef_moyenne)) { ?>value="<?php echo $largeur_coef_moyenne; ?>" <?php } ?> />mm<br />
 			
-			&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" id="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> /><label for='active_coef_sousmoyene'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="active_coef_sousmoyene" id="active_coef_sousmoyene" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_coef_sousmoyene) and $active_coef_sousmoyene==='1') { ?>checked="checked"<?php } ?> /><label for='active_coef_sousmoyene'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
 			
 			<input name="active_nombre_note_case" id="active_nombre_note_case" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note_case) and $active_nombre_note_case==='1') { ?>checked="checked"<?php } ?> /><label for='active_nombre_note_case'>&nbsp;Nombre de notes par matière dans une case</label><br />
 			
-			&nbsp;&nbsp;&nbsp;- Largeur de la colonne du nombre de notes&nbsp;<input name="largeur_nombre_note" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_nombre_note)) { ?>value="<?php echo $largeur_nombre_note; ?>" <?php } ?> />mm<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur de la colonne du nombre de notes&nbsp;<input name="largeur_nombre_note" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_nombre_note)) { ?>value="<?php echo $largeur_nombre_note; ?>" <?php } ?> />mm<br />
 			
-			&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" id="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> /><label for='active_nombre_note'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="active_nombre_note" id="active_nombre_note" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_nombre_note) and $active_nombre_note==='1') { ?>checked="checked"<?php } ?> /><label for='active_nombre_note'>&nbsp;l'afficher sous la moyenne de l'élève</label><br />
 
+			<!-- 20160623 -->
+			<input name="active_colonne_Elements_Programmes" id="active_colonne_Elements_Programmes" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_colonne_Elements_Programmes) and $active_colonne_Elements_Programmes==='1') { ?>checked="checked"<?php } ?> /><label for='active_colonne_Elements_Programmes'>&nbsp;Afficher la colonne Éléments de programmes<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style='font-size:x-small'>(sous réserve que la saisie de ces éléments soit activée pour les professeurs&nbsp;<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;la colonne sera intercalée devant la colonne Appréciations)</em></label><br />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur de la colonne Éléments de programmes <em>(si elle est affichée)</em>&nbsp;:<input name="largeur_Elements_Programmes" id="largeur_Elements_Programmes" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_Elements_Programmes)) { ?>value="<?php echo $largeur_Elements_Programmes; ?>" <?php } ?> onkeydown='clavier_2(this.id,event,1,210);' autocomplete='off' />mm<br />
 
 
 

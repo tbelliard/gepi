@@ -14945,4 +14945,94 @@ function get_stream_context() {
 
 	return $retour;
 }
+
+function get_elements_programmes_ele($login_ele, $id_groupe, $periode) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_groupe jmg, 
+				j_mep_eleve jme, 
+				j_eleves_groupes jeg 
+			WHERE mep.id=jmg.idEP AND 
+				mep.id=jmp.idEP AND 
+				mep.id=jme.idEP AND 
+				jmg.idGroupe='".$id_groupe."' AND 
+				jme.periode='".$periode."' AND 
+				jmg.idGroupe=jeg.id_groupe AND 
+				jme.periode=jeg.periode AND 
+				jme.idEleve=jeg.login AND 
+				jme.idEleve='".$login_ele."' 
+			ORDER BY mep.libelle;";
+	//echo "$sql<br />";
+	// Faut-il trier par libelle ou par ordre de saisie? ajouter un paramètre à la fonction?
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab[]=$lig->libelle;
+	}
+
+	return $tab;
+}
+
+function get_elements_programmes_grp($id_groupe, $periode) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_groupe jmg, 
+				j_mep_eleve jme, 
+				j_eleves_groupes jeg 
+			WHERE mep.id=jmg.idEP AND 
+				mep.id=jmp.idEP AND 
+				mep.id=jme.idEP AND 
+				jeg.login=jme.idEleve AND 
+				jeg.id_groupe=jmg.idGroupe AND 
+				jeg.periode=jme.periode AND 
+				jmg.idGroupe='".$id_groupe."' AND 
+				jme.periode='".$periode."' AND 
+			ORDER BY mep.libelle;";
+	//echo "$sql<br />";
+	// Faut-il trier par libelle ou par ordre de saisie? ajouter un paramètre à la fonction?
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab['ele'][$lig->login][]=$lig->libelle;
+		$tab['mep'][$lig->idEP][]=$lig->login;
+	}
+
+	return $tab;
+}
+
+function get_elements_programmes_classe($id_classe, $periode) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_groupe jmg, 
+				j_mep_eleve jme, 
+				j_eleves_groupes jeg, 
+				j_groupes_classes jgc 
+			WHERE mep.id=jmg.idEP AND 
+				mep.id=jmg.idEP AND 
+				mep.id=jme.idEP AND 
+				jeg.id_groupe=jmg.idGroupe AND 
+				jeg.periode=jme.periode AND 
+				jgc.id_groupe=jmg.idGroupe AND 
+				jeg.login=jme.idEleve AND 
+				jgc.id_classe='".$id_classe."' AND 
+				jme.periode='".$periode."' 
+			ORDER BY mep.libelle;";
+	//echo "$sql<br />";
+	// Faut-il trier par libelle ou par ordre de saisie? ajouter un paramètre à la fonction?
+	$res=mysqli_query($mysqli, $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab['ele'][$lig->login][$lig->id_groupe][]=$lig->libelle;
+		$tab['mep'][$lig->idEP][]=$lig->login;
+	}
+
+	return $tab;
+}
+
 ?>
