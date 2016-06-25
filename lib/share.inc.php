@@ -12382,10 +12382,24 @@ function get_tab_jour_ouverture_etab() {
 	$tab_jour=array();
 	$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
 	for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
-		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."';";
+		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
 		$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_jour)>0) {
 			$tab_jour[]=$tmp_tab_jour[$loop];
+		}
+	}
+	return $tab_jour;
+}
+
+function get_tab_jour_ouverture_etab_US() {
+	$tab_jour=array();
+	$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+	$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "sturday", "sunday");
+	for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
+		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
+		$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test_jour)>0) {
+			$tab_jour[]=$tmp_tab_jour_US[$loop];
 		}
 	}
 	return $tab_jour;
@@ -15035,4 +15049,67 @@ function get_elements_programmes_classe($id_classe, $periode) {
 	return $tab;
 }
 
+function get_tab_saisie_abs2($id_saisie) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM a_saisies WHERE id='".$id_saisie."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab=mysqli_fetch_assoc($res);
+	}
+
+	return $tab;
+}
+
+function get_tab_traitement_abs2($id_traitement) {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM a_traitements WHERE id='".$id_traitement."';";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$tab['traitement']=mysqli_fetch_assoc($res);
+		if(!is_null($tab['traitement']['a_type_id'])) {
+			$sql="SELECT * FROM a_types WHERE id='".$tab['traitement']['a_type_id']."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$tab['traitement']['a_type_id']=mysqli_fetch_assoc($res2);
+			}
+		}
+
+		if(!is_null($tab['traitement']['a_motif_id'])) {
+			$sql="SELECT * FROM a_types WHERE id='".$tab['traitement']['a_motif_id']."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$tab['traitement']['a_motif_id']=mysqli_fetch_assoc($res2);
+			}
+		}
+
+		if(!is_null($tab['traitement']['a_justification_id'])) {
+			$sql="SELECT * FROM a_justifications WHERE id='".$tab['traitement']['a_justification_id']."';";
+			//echo "$sql<br />";
+			$res2=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$tab['traitement']['a_justification_id']=mysqli_fetch_assoc($res2);
+			}
+		}
+
+		$sql="SELECT a.* FROM j_traitements_saisies jts, a_saisies a WHERE jts.a_traitement_id='".$id_traitement."' AND a.id=jts.a_saisie_id ORDER BY a.debut_abs;";
+		$res2=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res2)>0) {
+			while($lig=mysqli_fetch_assoc($res2)) {
+				$tab['traitement']['saisies'][]=$lig;
+			}
+		}
+	}
+
+	return $tab;
+}
 ?>

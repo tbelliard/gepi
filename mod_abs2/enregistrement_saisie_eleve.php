@@ -185,27 +185,53 @@ if ($current_cours != null) {
     if ($message_enregistrement == "") {
 	if ($multisaisie == 'y') {
 	//on va creer une saisie par jour
-	    $date_compteur = $date_debut;
-	    $compteur = 0;
-	    while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanées
-		$compteur = $compteur + 1;
-		$date_debut_saisie = clone $date_compteur;
-		$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
-		$date_fin_saisie = clone $date_compteur;
-		$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 
-		$saisie = new AbsenceEleveSaisie();
-		$saisie->setUtilisateurProfessionnel($utilisateur);
-		$saisie->setCommentaire($commentaire);
+		$tab_jour_ouvres=get_tab_jour_ouverture_etab();
+		$tab_jour_ouvres_US=get_tab_jour_ouverture_etab_US();
+		/*
+		echo "tab_jour_ouvres<pre>";
+		print_r($tab_jour_ouvres);
+		echo "</pre>";
 
-		$saisie->setDebutAbs($date_debut_saisie);
-		$saisie->setFinAbs($date_fin_saisie);
-		if ($creneau != null) {
-		     $saisie->setEdtCreneau($creneau);
+		echo "tab_jour_ouvres_US<pre>";
+		print_r($tab_jour_ouvres_US);
+		echo "</pre>";
+		*/
+		$tab_jours_vacances=get_tab_jours_vacances();
+
+		$date_compteur = $date_debut;
+		$compteur = 0;
+		while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanées
+
+			// 20160624: Ajouter un test sur le fait que le jour est ouvré ou non... dans des vacances ou non... pb si vacances pour certaines classes seulement.
+			//echo "\$date_compteur->format('Ymd')=".$date_compteur->format('Ymd')." ";
+			//echo "\$date_compteur->format('U')=".$date_compteur->format('U')." ";
+			//echo "\$date_compteur->format('j')=".$date_compteur->format('j')." ".$date_compteur->format('l');
+
+			$compteur = $compteur + 1;
+			if(((in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres))||
+			(in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres_US)))&&
+			(!in_array($date_compteur->format('Ymd'), $tab_jours_vacances))) {
+				//echo " jour ouvré";
+				$date_debut_saisie = clone $date_compteur;
+				$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+				$date_fin_saisie = clone $date_compteur;
+				$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
+
+				$saisie = new AbsenceEleveSaisie();
+				$saisie->setUtilisateurProfessionnel($utilisateur);
+				$saisie->setCommentaire($commentaire);
+
+				$saisie->setDebutAbs($date_debut_saisie);
+				$saisie->setFinAbs($date_fin_saisie);
+				if ($creneau != null) {
+					$saisie->setEdtCreneau($creneau);
+				}
+				$saisie_col_modele->append($saisie);
+			}
+			//echo "<br />";
+			$date_compteur->modify("+1 day");
 		}
-		$saisie_col_modele->append($saisie);
-		$date_compteur->modify("+1 day");
-	    }
 	} else {
 	    $date_debut_saisie = clone $date_debut;
 	    $date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
@@ -293,6 +319,21 @@ for($i=0; $i<$total_eleves; $i++) {
 			if($modif_lien_message_enregistrement=="y") {
 			    $lien_message_enregistrement="<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$saisie->getPrimaryKey()."'>Saisie et traitement enregistrés pour l'eleve : ".$eleve->getNom()."</a>";
 			}
+
+			// Apporter des précisions sur le traitement:
+			$info_traitement=get_infos_traitement_abs2($traitement->getId());
+			if($info_traitement!="") {
+				$lien_message_enregistrement.=" <span style='font-size:x-small'>(".$info_traitement.")</span>";
+			}
+			// 20160624: Chercher les saisies pouvant être rattachées
+	    }
+	    else {
+			// Apporter des précisions sur la saisie:
+			$info_saisie=get_infos_saisie_abs2($saisie->getId());
+			if($info_saisie!="") {
+				$lien_message_enregistrement.=" <span style='font-size:x-small'>(".$info_saisie.")</span>";
+			}
+			// 20160624: Chercher les saisies pouvant être rattachées?
 	    }
 
 	    $message_enregistrement .= $lien_message_enregistrement;

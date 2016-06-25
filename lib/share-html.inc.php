@@ -5948,4 +5948,77 @@ function get_liste_tag_notice_cdt($id_ct, $type_ct, $float="") {
 
 	return $retour;
 }
+
+function get_infos_saisie_abs2($id_saisie, $tab=array()) {
+	$retour="";
+
+	if($id_saisie!="") {
+		$tab=get_tab_saisie_abs2($id_saisie);
+	}
+
+	if((isset($tab['debut_abs']))&&(isset($tab['fin_abs']))) {
+		if(mb_substr($tab['debut_abs'],0,10)==mb_substr($tab['fin_abs'],0,10)) {
+			$retour.="le ".formate_date($tab['debut_abs'], "", "court")." de ".mb_substr($tab['debut_abs'], 11, 5)." à ".mb_substr($tab['fin_abs'], 11, 5);
+		}
+		else {
+			$retour.="du ".formate_date($tab['debut_abs'], "y2", "court")." au ".formate_date($tab['fin_abs'], "y2", "court");
+		}
+	}
+
+	if((isset($tab['commentaire']))&&($tab['commentaire']!="")) {
+		if($retour!="") {
+			$retour.=" ";
+		}
+		$retour.="(".$tab['commentaire'].")";
+	}
+
+	return $retour;
+}
+
+function get_infos_traitement_abs2($id_traitement) {
+	$retour="";
+
+	$tab=get_tab_traitement_abs2($id_traitement);
+
+	if(isset($tab['traitement']['a_type_id'])) {
+		$style="";
+		if($tab['traitement']['a_type_id']['manquement_obligation_presence']=="1") {
+			$style=" style='color:red'";
+		}
+		$retour.=" <span title=\"".$tab['traitement']['a_type_id']['nom']." : ".$tab['traitement']['a_type_id']['commentaire']."\"".$style.">".$tab['traitement']['a_type_id']['nom']."</span>";
+	}
+
+	if(isset($tab['traitement']['a_motif_id'])) {
+		if($retour!="") {
+			$retour.=" -";
+		}
+		$retour.=" <span title=\"".$tab['traitement']['a_motif_id']['nom']." : ".$tab['traitement']['a_motif_id']['commentaire'];
+		if($tab['traitement']['a_motif_id']['valable']=="y") {
+			$retour.="\n(motif valable)";
+		}
+		else {
+			$retour.="\n(motif non valable)";
+		}
+		$retour.="\">".$tab['traitement']['a_motif_id']['nom']."</span>";
+	}
+
+	if(isset($tab['traitement']['a_justification_id'])) {
+		if($retour!="") {
+			$retour.=" -";
+		}
+		$retour.=" <span title=\"".$tab['traitement']['a_justification_id']['nom']." : ".$tab['traitement']['a_justification_id']['commentaire']."\">".$tab['traitement']['a_justification_id']['nom']."</span>";
+	}
+
+	if(isset($tab['traitement']['saisies'])) {
+		$retour.=" (";
+		for($loop=0;$loop<count($tab['traitement']['saisies']);$loop++) {
+			if($loop>0) {$retour.=", ";}
+			
+			$retour.=get_infos_saisie_abs2("", $tab['traitement']['saisies'][$loop]);
+		}
+		$retour.=")";
+	}
+
+	return $retour;
+}
 ?>
