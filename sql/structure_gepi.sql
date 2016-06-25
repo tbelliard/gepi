@@ -975,7 +975,7 @@ description TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS notanet_saisie;
-CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY ( login )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE TABLE IF NOT EXISTS notanet_saisie (login VARCHAR( 50 ) NOT NULL, id_mat INT(4), matiere VARCHAR(50), note VARCHAR(4), PRIMARY KEY login_id_mat ( login , id_mat )) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS grp_groupes;
 CREATE TABLE IF NOT EXISTS grp_groupes (

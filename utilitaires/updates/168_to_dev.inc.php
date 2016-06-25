@@ -719,6 +719,33 @@ if ($res_test == 0){
 			}
 		}
 	}
-
 }
+
+$sql="show index from notanet_saisie";
+//echo "$sql<br />";
+$test=mysqli_query($GLOBALS["mysqli"], $sql);
+if(mysqli_num_rows($test)==1) {
+	$result .= "Suppression d'un index invalide sur la table'notanet_saisie'&nbsp;: ";
+	$sql="ALTER TABLE notanet_saisie DROP PRIMARY KEY;";
+	//echo "$sql<br />";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "Création d'un nouvel index sur la table'notanet_saisie'&nbsp;: ";
+		$sql="ALTER TABLE notanet_saisie ADD UNIQUE login_id_mat (login, id_mat);";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>
