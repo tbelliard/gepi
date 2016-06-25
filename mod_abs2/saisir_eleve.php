@@ -142,7 +142,7 @@ echo "<div class='css-panes' id='containDiv'>\n";
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection pour l'eleve
-echo "<td style='border : 1px solid; padding : 10px;'>";
+echo "<td style='border : 1px solid; padding : 10px;' class='fieldset_opacite50'>";
 echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<p>';
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
@@ -164,7 +164,7 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
     $groupe_col = $utilisateur->getGroupes();
 }
 if (!$groupe_col->isEmpty()) {
-	echo "<td style='border : 1px solid; padding : 10px;'>";
+	echo "<td style='border : 1px solid; padding : 10px;' class='fieldset_opacite50'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
@@ -192,7 +192,7 @@ if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSt
     $classe_col = $utilisateur->getClasses();
 }
 if (!$classe_col->isEmpty()) {
-	echo "<td style='border : 1px solid; padding : 10px;'>";
+	echo "<td style='border : 1px solid; padding : 10px;' class='fieldset_opacite50'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
@@ -222,7 +222,7 @@ if ((getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSt
     $aid_col = $utilisateur->getAidDetailss();
 }
 if (!$aid_col->isEmpty()) {
-	echo "<td style='border : 1px solid;'>";
+	echo "<td style='border : 1px solid;' class='fieldset_opacite50'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
@@ -518,7 +518,7 @@ echo "</td>";
 echo "<td style='width:10px;'>&nbsp;";
 echo "</td>";
 echo "<td style='width:270px; vertical-align: top;'>";
-    echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
+    echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;" class="fieldset_opacite50">';
 	echo '<p>';
     echo 'Début : <input size="9" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
    echo '</p>';
@@ -548,7 +548,7 @@ echo 'Fin : <input size="9" id="date_absence_eleve_fin_saisir_eleve" name="date_
 	singleClick    :    true
     });
 </script><br/>';
-echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
+echo '<div id="div_heures_debut_fin" style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
 echo '<p>';
 echo 'De <input name="heure_debut_absence_eleve" value="';
 echo $edt_creneau_col->getFirst()->getHeuredebutDefiniePeriode("H:i");
@@ -562,15 +562,19 @@ echo '" type="text" maxlength="5" size="4"';
 echo ' id="heure_fin_absence_eleve" onKeyDown="clavier_heure2(this.id,event,30,300);" AutoComplete="off" ';
 echo '/><br/>';
 
-echo '<input type="radio" name="multisaisie" value="n" checked="checked" />';
-echo '	Créer une seule saisie <br/>';
-echo '	<input type="radio" name="multisaisie" value="y"/>';
-echo '	Créer une saisie par jour';
+echo "<span title=\"Pour plusieurs élèves, les saisies sont toujours créées séparées.
+En revanche, si pour un élève donné, vous saisissez une absence récurrente, par exemple pour des rendez-vous tous les lundis de 10h à 11h entre telle date et telle date, il peut être utile de créer des saisies séparées, au cas où l'un des rendez-vous serait annulé par la suite.\">";
+echo '<input type="radio" name="multisaisie" id="multisaisie_n" value="n" checked="checked" />';
+echo '	<label for="multisaisie_n">Créer une seule saisie</label> <br/>';
+echo '	<input type="radio" name="multisaisie" id="multisaisie_y" value="y"/>';
+echo '	<label for="multisaisie_y">Créer une saisie par jour</label>';
+echo "</span>";
+
 echo '</p></div>';
 echo 'ou ';
-echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
+echo '<div id="div_choix_creneau" style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
     echo '<p>';
-    echo ("<select name=\"id_creneau\" class=\"small\">");
+    echo ("<select name=\"id_creneau\" id=\"id_creneau\" class=\"small\" onchange=\"check_changement_creneau()\" title=\"Choisissez un créneau.\nCe choix aura la priorité sur des heures saisies de début et fin saisies dans les champs ci-dessus.\">");
 
 
     echo "<option value='-1'>choisissez un créneau</option>\n";
@@ -587,9 +591,9 @@ echo '</div>';
 //on affiche une boite de selection avec les cours
 if (!$cours_col->isEmpty()) {
 	//echo '<br/>ou<br/><br/>';
-    echo '<p>ou</p>';
-	echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
-    echo '<p>';
+	echo '<p>ou</p>';
+	echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;" class="fieldset_opacite50">';
+	echo '<p>';
 	echo ("<select name=\"id_cours\" class=\"small\">");
 	echo "<option value='-1'>choisissez un cours</option>\n";
 	foreach ($cours_col as $edt_cours) {
@@ -655,6 +659,22 @@ echo "</td></tr>";
 </table>
 </form>
 </div>
+
+<script type='text/javascript'>
+	function check_changement_creneau() {
+		if(document.getElementById('id_creneau')) {
+			if(document.getElementById('id_creneau').selectedIndex==0) {
+				document.getElementById('div_heures_debut_fin').style.opacity=1;
+				document.getElementById('div_choix_creneau').style.opacity=0.3;
+			}
+			else {
+				document.getElementById('div_heures_debut_fin').style.opacity=0.3;
+				document.getElementById('div_choix_creneau').style.opacity=1;
+			}
+		}
+	}
+	//check_changement_creneau();
+</script>
 <?php
 }
 echo "</div>\n";
