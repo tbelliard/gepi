@@ -118,6 +118,7 @@ if ($affichage != 'ods') {
     }
 //recupération des élèves   
     require_once("../orm/helpers/EdtHelper.php");
+
     $nbre_demi_journees = EdtHelper::getNbreDemiJourneesEtabOuvert($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
 
     $eleve_query = EleveQuery::create();
@@ -163,7 +164,12 @@ if ($affichage != 'ods') {
 	    if (!$table_synchro_ok) {//la table n'est pas synchronisée. On va vérifier individuellement les élèves qui se sont pas synchronisés
 			$eleve_col = $eleve_query->find();
 			if ($eleve_col->count()>150) {
-				echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée. Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
+				echo 'Il semble que vous demandez des statistiques sur trop d\'élèves et votre table de statistiques n\'est pas synchronisée.<br />Veuillez faire une demande pour moins d\'élèves ou demander à votre administrateur de remplir la table d\'agrégation.';
+
+				if(($_SESSION['statut']=="cpe")&&(getSettingAOui('AccesCpeAgregationAbs2'))) {
+					echo "<br />Le droit de <a href='$gepiPath/mod_abs2/admin/admin_table_agregation.php'>vider/remplir la table d'Agrégation des Absences</a> vous a été donné.<br />Notez que l'opération est lourde en ressources.<br />Il vaut mieux lancer cela le soir ou sur le temps du midi pour ne pas ralentir les connexions/usages.";
+				}
+
 				if (ob_get_contents()) {
 					ob_flush();
 				}
