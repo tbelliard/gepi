@@ -264,7 +264,7 @@ if (isset($_POST['suppr_fichier'])) {
 					}
 				}
 
-				$sql="SELECT * FROM signature_classes WHERE id_fichier='".$suppr_fichier[$loop]."';";
+				$sql="SELECT * FROM signature_classes WHERE id_fichier='".$suppr[$loop]."';";
 				$res_sc=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res_sc)>0) {
 					while($lig_sc=mysqli_fetch_object($res_sc)) {
