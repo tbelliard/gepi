@@ -8879,6 +8879,75 @@ function get_tab_signature_bull($login_user="") {
 	return $tab;
 }
 
+function get_tab_signature_bull_archivage($id_classe) {
+	global $mysqli;
+	global $niveau_arbo;
+	$tab=array();
+
+	if($niveau_arbo=="") {
+		$niveau_arbo=1;
+	}
+
+	$pref_arbo="..";
+	if($niveau_arbo==0) {
+		$pref_arbo=".";
+	}
+	if($niveau_arbo==1) {
+		$pref_arbo="..";
+	}
+	if($niveau_arbo==2) {
+		$pref_arbo="../..";
+	}
+
+/*
+mysql> SELECT * FROM signature_droits;
++----+----------+
+| id | login    |
++----+----------+
+
+mysql> SELECT * FROM signature_fichiers;
++------------+-------------------------+----------+------+
+| id_fichier | fichier                 | login    | type |
++------------+-------------------------+----------+------+
+
+mysql> SELECT * FROM signature_classes;
++----+----------+-----------+------------+
+| id | login    | id_classe | id_fichier |
++----+----------+-----------+------------+
+
+*/
+
+	$sql="SELECT sf.fichier, sc.* FROM signature_droits sd, 
+			signature_fichiers sf, 
+			signature_classes sc 
+		WHERE sd.login=sf.login AND 
+			sf.id_fichier=sc.id_fichier AND 
+			sd.login=sc.login AND 
+			sc.id_classe='".$id_classe."';";
+	//echo "$sql<br />";
+	$res = mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(!isset($user_temp_directory[$lig->login])) {
+				$user_temp_directory[$lig->login]=get_user_temp_directory($lig->login);
+			}
+
+			$tab['fichier'][$cpt]['fichier']=$lig->fichier;
+			$tab['fichier'][$cpt]['chemin']=$pref_arbo."/temp/".$user_temp_directory[$lig->login]."/signature/".$lig->fichier;
+
+			$cpt++;
+		}
+	}
+	/*
+	echo "<pre>";
+	print_r($tab);
+	echo "</pre>";
+	*/
+
+	return $tab;
+}
+
 /*
 # 1 : session ouverte, mais pas refermée (encore ouverte, ou fermée en fermant le navigateur)
 # 0 : logout normal

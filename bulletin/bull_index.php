@@ -3812,6 +3812,35 @@ else {
 		$arch_bull_date_edition=getPref($_SESSION['login'], 'arch_bull_date_edition', 'yes');
 		$arch_bull_classe=getPref($_SESSION['login'], 'arch_bull_classe', 'yes');
 		$arch_bull_envoi_mail=getPref($_SESSION['login'], 'arch_bull_envoi_mail', 'no');
+		$arch_bull_envoi_mail_tous_resp=getPref($_SESSION['login'], 'arch_bull_envoi_mail_tous_resp', 'no');
+		$arch_bull_signature=getPref($_SESSION['login'], 'arch_bull_signature', 'no');
+
+		$tab_signature_classe=array();
+/*
+//get_tab_signature_bull_archivage($id_classe)
+
+
+
+
+	$signature_bull=array();
+	if(count($signer)>0) {
+		$tab_signature=get_tab_signature_bull();
+		//echo "<pre>";
+		//print_r($tab_signature);
+		//echo "</pre>";
+		if((count($tab_signature)>0)&&(isset($tab_signature['classe']))) {
+			for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+
+				if(array_key_exists($tab_id_classe[$loop_classe], $tab_signature['classe'])) {
+					if(array_key_exists($tab_signature['classe'][$tab_id_classe[$loop_classe]]['id_fichier'], $tab_signature['fichier'])) {
+						$signature_bull[$tab_id_classe[$loop_classe]]=$tab_signature['fichier'][$tab_signature['classe'][$tab_id_classe[$loop_classe]]['id_fichier']]['chemin'];
+					}
+				}
+
+			}
+		}
+	}
+*/
 
 		for($j=0;$j<count($tableau_eleve['login']);$j++) {
 			//send_file_download_headers('application/pdf','bulletin.pdf');
@@ -3860,6 +3889,21 @@ else {
 				$id_classe=$tab_id_classe[$loop_classe];
 				$classe=get_class_from_id($id_classe);
 
+				if($arch_bull_signature=="yes") {
+					if(!isset($tab_signature_classe[$id_classe])) {
+						$tab_signature_classe[$id_classe]=get_tab_signature_bull_archivage($id_classe);
+					}
+
+					if(isset($tab_signature_classe[$id_classe]['fichier'][0]['chemin'])) {
+						$signature_bull[$id_classe]=$tab_signature_classe[$id_classe]['fichier'][0]['chemin'];
+						/*
+						echo "\$signature_bull[$id_classe]<pre>";
+						print_r($signature_bull[$id_classe]);
+						echo "</pre>";
+						*/
+					}
+				}
+
 				$sql="INSERT INTO tempo4 SET col1='$id_classe', col2='".$tableau_eleve['login'][$j]."', col3='$nom_fichier_bulletin', col4='".mysqli_real_escape_string($GLOBALS["mysqli"], $tableau_eleve['nom_prenom'][$j])."';";
 				$res_t4=mysqli_query($GLOBALS["mysqli"], $sql);
 
@@ -3878,10 +3922,15 @@ else {
 			}
 
 			echo $pdf->Output($dirname."/".$nom_fichier_bulletin,'F');
-			echo "<p><a href='$dirname/$nom_fichier_bulletin'>$nom_fichier_bulletin</a>";
-			if($arch_bull_envoi_mail=="yes") {
+			echo "<p><a href='$dirname/$nom_fichier_bulletin' target='_blank'>$nom_fichier_bulletin</a>";
+			if(($arch_bull_envoi_mail=="yes")||($arch_bull_envoi_mail_tous_resp=="yes")) {
 				//$tmp_tab_resp=get_resp_from_ele_login($tableau_eleve['login'][$j], "n", "y");
-				$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')) UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
+				if($arch_bull_envoi_mail_tous_resp=="yes") {
+					$sql="(SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2')) UNION (SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.envoi_bulletin='y')";
+				}
+				else {
+					$sql="SELECT rp.*, r.resp_legal FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='".$tableau_eleve['login'][$j]."' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND r.resp_legal='1';";
+				}
 				$res_mail_resp=mysqli_query($mysqli, $sql);
 				if(mysqli_num_rows($res_mail_resp)>0) {
 					while($lig_mail_resp=mysqli_fetch_object($res_mail_resp)) {

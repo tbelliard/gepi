@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -139,14 +139,34 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	if($arch_bull_classe=='yes') {echo " checked";}
 	echo " /><label for='arch_bull_classe'> Classe de l'élève</label><br />\n";
 
-	echo "<p><strong>Autres paramètres&nbsp;:</strong><br />";
+	//======================================
+	echo "<p><strong>Autres paramètres&nbsp;:</strong></p>";
+
+	echo "<p style='text-indent:-2em; margin-left:2em;'>";
 	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes'";
 	$arch_bull_envoi_mail=getPref($_SESSION['login'],'arch_bull_envoi_mail', 'no');
 	if($arch_bull_envoi_mail=='yes') {echo " checked";}
-	echo " /><label for='arch_bull_envoi_mail'> Envoyer par mail aux responsables pour lesquels une adresse mail est renseignée, les bulletins générés</label><br /><em>(notez que l'envoi de mail peut ralentir l'opération d'archivage; il se peut aussi que votre fournisseur d'accès fasse des histoires avec l'envoi de nombreux mails (cela risque d'être injustement pris pour du spam))</em>";
+	echo " /><label for='arch_bull_envoi_mail'> Envoyer par mail aux responsables légaux 1 pour lesquels une adresse mail est renseignée, les bulletins générés</label><br />
+	<em>(on limite l'envoi au responsable légal 1, parce que l'adresse apparaissant sur le bulletin PDF généré est celle du responsable légal 1)</em><br />
+	<em>(notez également que l'envoi de mail peut ralentir l'opération d'archivage; il se peut aussi que votre fournisseur d'accès fasse des histoires avec l'envoi de nombreux mails (cela risque d'être injustement pris pour du spam))</em>";
 	//echo "<br />\n";
 	echo "</p>\n";
 
+	echo "<p style='text-indent:-2em; margin-left:2em;'>";
+	echo "<input type='checkbox' id='arch_bull_envoi_mail_tous_resp' name='arch_bull_envoi_mail_tous_resp' value='yes'";
+	$arch_bull_envoi_mail_tous_resp=getPref($_SESSION['login'],'arch_bull_envoi_mail_tous_resp', 'no');
+	if($arch_bull_envoi_mail_tous_resp=='yes') {echo " checked";}
+	echo " /><label for='arch_bull_envoi_mail_tous_resp'> Envoyer par mail à tous les responsables légaux pour lesquels une adresse mail est renseignée, les bulletins générés</label><br /><em>(et ceci, bien que l'adresse responsable appraissant sur les bulletins sera celle du responsable légal 1)</em></p>";
+
+	if(getSettingAOui('active_fichiers_signature')) {
+		echo "<p style='text-indent:-2em; margin-left:2em;'>";
+		echo "<input type='checkbox' id='arch_bull_signature' name='arch_bull_signature' value='yes'";
+		$arch_bull_signature=getPref($_SESSION['login'],'arch_bull_signature', 'no');
+		if($arch_bull_signature=='yes') {echo " checked";}
+		echo " /><label for='arch_bull_signature'> Inclure le fichier signature si un tel fichier est défini pour la classe de l'élève</label></p>";
+	}
+
+	//======================================
 	echo "<p>Parcourir les élèves par tranches de&nbsp;: <input type='text' name='arch_bull_eff_tranche' size='2' value='".getPref($_SESSION['login'],'arch_bull_eff_tranche',10)."' /><br />\n";
 	echo "<input type='hidden' name='generer_fichiers_pdf_archivage' value='y' />\n";
 	echo "<input type=\"submit\" name='ok' value=\"Générer les PDF par élève\" style=\"font-variant: small-caps;\" /></p>\n";
@@ -157,6 +177,7 @@ if(!isset($generer_fichiers_pdf_archivage)){
 	<ul>
 		<li>L'opération d'archivage est assez lourde.<br />Si vous parcourez les élèves par trop grosses tranches, vous risquez de dépasser le 'max_execution_time' de votre serveur.</li>
 		<li>L'un au moins des champs permettant d'identifier l'élève doit être sélectionné.<br />Si, ni le Nom_prénom, ni l'INE ne sont sélectionnés, les deux champs seront automatiquement sélectionnés.</li>
+		<li>Si des fichiers de signature ont été définis pour les classes <em style='font-size:small'>(voir Gestion des modules/Bulletins/Définir, modifier ou supprimer un ou des fichiers de signature pour les bulletins)</em>, ils peuvent être inclus dans les PDF générés.</li>
 	</ul>\n";
 }
 else {
@@ -426,6 +447,12 @@ else {
 
 		$arch_bull_envoi_mail=isset($_POST['arch_bull_envoi_mail']) ? $_POST['arch_bull_envoi_mail'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_envoi_mail',$arch_bull_envoi_mail);
+
+		$arch_bull_envoi_mail_tous_resp=isset($_POST['arch_bull_envoi_mail_tous_resp']) ? $_POST['arch_bull_envoi_mail_tous_resp'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_envoi_mail_tous_resp',$arch_bull_envoi_mail_tous_resp);
+
+		$arch_bull_signature=isset($_POST['arch_bull_signature']) ? $_POST['arch_bull_signature'] : 'no';
+		savePref($_SESSION['login'],'arch_bull_signature',$arch_bull_signature);
 
 		$dossier_archivage_pdf=savePref($_SESSION['login'], 'dossier_archivage_pdf', 'bulletins_pdf_individuels_eleves_'.strftime('%Y%m%d'));
 		@mkdir("../temp/".get_user_temp_directory()."/".$dossier_archivage_pdf);

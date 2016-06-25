@@ -24,6 +24,7 @@ Bulletins:
   élève (pour les établissements dans lesquels les bulletins sont remis en mains 
   propres aux familles).
 - Possibilité d'envoyer les bulletins aux familles par mail lors de l'archivage de fin d'année.
+- Possibilité d'inclure la signature lors de l'archivage de fin d'année.
 - Possibilité de saisir les Éléments de Programmes abordés, pour les faire apparaitre dans une colonne du bulletin.
 
 Cahiers de textes:
