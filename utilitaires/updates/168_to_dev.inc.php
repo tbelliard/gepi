@@ -812,4 +812,30 @@ if ($res_test == 0){
 		$result .= msj_erreur('!');
 	}
 }
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_aff_Elements_Programmes'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_aff_Elements_Programmes', value='y';");
+	$result .= "Initialisation du paramètre 'bull_aff_Elements_Programmes' à 'y': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_largeur_col_Elements_Programmes'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150';");
+	$result .= "Initialisation du paramètre 'bull_largeur_col_Elements_Programmes' à '150': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
 ?>

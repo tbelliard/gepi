@@ -50,7 +50,12 @@ if ($tab_bull['affiche_rang'] == 'y'){
 }
 
 // Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
-if ($bull_affiche_appreciations == 'y'){
+if ($bull_affiche_appreciations == 'y') {
+	// 20160626
+	if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+		$bull_largeur_col_Elements_Programmes=getSettingValue('bull_largeur_col_Elements_Programmes');
+		echo "<td style=\"width: ".$bull_largeur_col_Elements_Programmes."px; text-align: center;\"$chaine_rowspan><span class='bulletin'>Éléments de programmes</span></td>\n";
+	}
 	echo "<td colspan=\"2\"$chaine_rowspan><span class='bulletin'>".$bull_intitule_app."</span></td>\n";
 }
 
@@ -149,6 +154,12 @@ if ($bull_affiche_aid == 'y') {
 
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
+				// 20160626
+				if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+					// Pas d'éléments de programmes dans les AID pour le moment
+					echo "<td style=\"width: ".$bull_largeur_col_Elements_Programmes."px; text-align: center;\"><span class='bulletin'>-</span></td>\n";
+				}
+
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
 				//echo "<b>".$tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']."</b><br />";
 				if(($tab_bull['eleve'][$i]['aid_b'][$z]['message']!='')||(($tab_bull['eleve'][$i]['aid_b'][$z]['aid_nom']!='')&&($tab_bull['eleve'][$i]['aid_b'][$z]['display_nom']=='y'))) {
@@ -214,8 +225,17 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					$colspan=2;
 					if($tab_bull['affiche_graph']=='y') {$colspan++;}
 					if($tab_bull['affiche_rang']=='y') {$colspan++;}
-					if ($bull_affiche_appreciations != 'y') {$colspan-=2;}
+					if ($bull_affiche_appreciations != 'y') {
+						if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+							$colspan--;
+						}
+						$colspan-=2;
+					}
 					if($colspan>0) {
+						if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+							echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: left;'>&nbsp;</td>\n";
+						}
+
 						// Appréciation
 						echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: left;' colspan='$colspan'>&nbsp;</td>\n";
 					}
@@ -243,7 +263,12 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 					if($min_max_moyclas==1){$colspan-=2;}
 					if($tab_bull['affiche_graph']=='y') {$colspan++;}
 					if($tab_bull['affiche_rang']=='y') {$colspan++;}
-					if ($bull_affiche_appreciations != 'y') {$colspan-=2;}
+					if ($bull_affiche_appreciations != 'y') {
+						if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+							$colspan--;
+						}
+						$colspan-=2;
+					}
 
 					echo "<td style='padding: 0; margin: 0; font-size: ".$bull_categ_font_size."px; text-align: center;' colspan='$colspan'>".$tab_bull['nom_cat_complet'][$j]."</td>\n";
 				}
@@ -432,6 +457,23 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		if ($bull_affiche_appreciations == 'y') {
+			// 20160626
+			if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+				$bull_largeur_col_Elements_Programmes=getSettingValue('bull_largeur_col_Elements_Programmes');
+				echo "<td style=\"width: ".$bull_largeur_col_Elements_Programmes."px; text-align: left;\"><span class='bulletin'>";
+
+				$texte_Elements_Programmes="";
+				if((isset($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$j]['id']]))&&(is_array($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$j]['id']]))) {
+					for($loop_mep=0;$loop_mep<count($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$j]['id']]);$loop_mep++) {
+						if($texte_Elements_Programmes!="") {
+							$texte_Elements_Programmes.="<br />\n";
+						}
+						$texte_Elements_Programmes.="- ".$tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$j]['id']][$loop_mep];
+					}
+				}
+				echo $texte_Elements_Programmes;
+				echo "</span></td>\n";
+			}
 
 			if(!isset($tab_bull['groupe'][$j][$i]['cn_note'])) {
 				// Appréciation
@@ -569,6 +611,12 @@ if ($bull_affiche_aid == 'y') {
 
 			// Pas d'affichage dans le cas d'un bulletin d'une période "examen blanc"
 			if ($bull_affiche_appreciations == 'y'){
+				// 20160626
+				if((!getSettingAOui('bullNoSaisieElementsProgrammes'))&&(getSettingAOui('bull_aff_Elements_Programmes'))){
+					// Pas d'éléments de programmes dans les AID pour le moment
+					echo "<td style=\"width: ".$bull_largeur_col_Elements_Programmes."px; text-align: center;\"><span class='bulletin'>-</span></td>\n";
+				}
+
 				echo "<td style='text-align: left;' colspan='2'><span class='bulletin'>";
 				//echo "<b>".$tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']."</b><br />";
 				if(($tab_bull['eleve'][$i]['aid_e'][$z]['message']!='')||(($tab_bull['eleve'][$i]['aid_e'][$z]['aid_nom']!='')&&($tab_bull['eleve'][$i]['aid_e'][$z]['display_nom']=='y'))) {

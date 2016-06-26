@@ -1790,3 +1790,5 @@ INSERT INTO setting SET name='bull_voeux_orientation', value='y';
 INSERT INTO setting SET name='bull_titre_voeux_orientation', value='Voeux';
 INSERT INTO setting SET name='bull_orientation', value='y';
 INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';
+INSERT INTO setting SET name='bull_aff_Elements_Programmes', value='y';
+INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150';

@@ -836,6 +836,25 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if (isset($_POST['bull_aff_Elements_Programmes'])) {
+		if (!saveSetting("bull_aff_Elements_Programmes", $_POST['bull_aff_Elements_Programmes'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_aff_Elements_Programmes !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_largeur_col_Elements_Programmes'])) {
+		$bull_largeur_col_Elements_Programmes=preg_replace("/[^0-9;]/","",$_POST['bull_largeur_col_Elements_Programmes']);
+		if(($bull_largeur_col_Elements_Programmes=="")||($bull_largeur_col_Elements_Programmes==0)) {
+			$bull_largeur_col_Elements_Programmes=150;
+			$msg .= "La valeur proposée pour 'bull_largeur_col_Elements_Programmes' est invalide (retour à la valeur par défaut, à savoir 150).<br />";
+			$reg_ok = 'no';
+		}
+		if (!saveSetting("bull_largeur_col_Elements_Programmes", $_POST['bull_largeur_col_Elements_Programmes'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_largeur_col_Elements_Programmes !";
+			$reg_ok = 'no';
+		}
+	}
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
@@ -1912,6 +1931,7 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
     </tr>
 
 	<?php
+		// Affichage du cadre Orientation
 		if(getSettingAOui("active_mod_orientation")) {
 			$style_bgcolor="";
 			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
@@ -2010,6 +2030,51 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
 			<input type='text' name='bull_titre_orientation' value='$bull_titre_orientation' />
 		</td>
 	</tr>";
+		}
+
+		// Affichage des Éléments de Programmes
+		if(!getSettingAOui("bullNoSaisieElementsProgrammes")) {
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_aff_Elements_Programmes=getSettingValue('bull_aff_Elements_Programmes');
+			if($bull_aff_Elements_Programmes=="y") {
+				$checked_bull_aff_Elements_Programmes_y=" checked";
+				$checked_bull_aff_Elements_Programmes_n="";
+			}
+			else {
+				$checked_bull_aff_Elements_Programmes_y="";
+				$checked_bull_aff_Elements_Programmes_n=" checked";
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Faire apparaître la colonne Éléments de programmes avant la colonne Appréciations&nbsp;:
+		</td>
+		<td>
+			<input type='radio' name='bull_aff_Elements_Programmes' id='bull_aff_Elements_Programmes_y' value='y'$checked_bull_aff_Elements_Programmes_y /><label for='bull_aff_Elements_Programmes_y'>Oui</label><br />
+			<input type='radio' name='bull_aff_Elements_Programmes' id='bull_aff_Elements_Programmes_n' value='n'$checked_bull_aff_Elements_Programmes_n /><label for='bull_aff_Elements_Programmes_n'>Non</label>
+		</td>
+	</tr>";
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_largeur_col_Elements_Programmes=getSettingValue('bull_largeur_col_Elements_Programmes');
+			if(!preg_match("/^[0-9]{1,}$/", $bull_largeur_col_Elements_Programmes)) {
+				$bull_largeur_col_Elements_Programmes=150;
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Largeur (en pixels) de la colonne Éléments de programmes&nbsp;:
+		</td>
+		<td>
+			<input name='bull_largeur_col_Elements_Programmes' size='3' style='border: 1px solid #74748F;' type='text' value='".$bull_largeur_col_Elements_Programmes."' />
+		</td>
+	</tr>";
+
 		}
 	?>
 </table>
