@@ -1785,3 +1785,8 @@ INSERT INTO droits SET id='/mod_annees_anterieures/recuperation_donnees_manquant
 INSERT INTO setting SET name='affiche_vacances_eleresp', value='yes';
 INSERT INTO droits SET id='/mod_genese_classes/saisie_profils_eleves.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Genèse des classes: Saisie des profils des élèves', statut='';
 INSERT INTO setting SET name='bullNoSaisieElementsProgrammes', value='no';
+INSERT INTO setting SET name='bull_orientation_periodes', value='';
+INSERT INTO setting SET name='bull_voeux_orientation', value='y';
+INSERT INTO setting SET name='bull_titre_voeux_orientation', value='Voeux';
+INSERT INTO setting SET name='bull_orientation', value='y';
+INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';

@@ -889,7 +889,7 @@ width:".$largeur1."%;\n";
 		//if(($bull_affiche_abs_tot=='y')||($bull_affiche_abs_nj=='y')||($bull_affiche_abs_ret=='y')) {
 			echo "\n<!-- Début de l'affichage du tableau des absences du bulletin n°$bulletin pour ".$tab_bull['eleve'][$i]['nom']." ".$tab_bull['eleve'][$i]['prenom'].", ".$tab_bull['eleve'][$i]['classe']." -->\n\n";
 
-            echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences'>\n";
+			echo "<table width='$largeurtableau' border='0' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary='Tableau des absences'>\n";
 			echo "<tr>\n";
 			echo "<td style='vertical-align: top;'>\n";
 			echo "<p class='bulletin'>";
@@ -948,7 +948,54 @@ width:".$largeur1."%;\n";
 
 
 		//=============================================
+		// 20160625
+		// Voeux et orientation
+		if((getSettingAOui('active_mod_orientation'))&&
+		((getSettingAOui('bull_voeux_orientation'))||(getSettingAOui('bull_orientation')))) {
+			$tab_periodes_avec_cadre_orientation=explode(";", getSettingValue("bull_orientation_periodes"));
+			if(in_array($tab_bull["num_periode"], $tab_periodes_avec_cadre_orientation)) {
+				echo "<table $class_bordure width='$largeurtableau' border='1' cellspacing='".$cellspacing."' cellpadding='".$cellpadding."' summary=\"Tableau de l'orientation\">
+	<tr>";
 
+				if(getSettingAOui('bull_voeux_orientation')) {
+					echo "
+		<td><p class='bulletin'><strong>".getSettingValue("bull_titre_voeux_orientation")."&nbsp;:</strong><br />";
+					if(isset($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']])) {
+						$texte_voeux="";
+						for($loop_voeu=1;$loop_voeu<=count($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']]);$loop_voeu++) {
+							$texte_voeux.="<strong>".$loop_voeu.".</strong> ".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'];
+							if(($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!="")&&($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!=$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'])) {
+								$texte_voeux.=" (".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
+							}
+							$texte_voeux.="\n";
+						}
+						echo $texte_voeux;
+					}
+					echo "</p></td>";
+				}
+
+				if(getSettingAOui('bull_orientation')) {
+					echo "
+		<td><p class='bulletin'><strong>".getSettingValue("bull_titre_orientation")."&nbsp;:</strong><br />";
+					if(isset($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']])) {
+						$texte_orientations_proposees="";
+						for($loop_op=1;$loop_op<=count($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']]);$loop_op++) {
+							$texte_orientations_proposees.="<strong>".$loop_op.".</strong> ".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'];
+							if(($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!="")&&($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!=$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'])) {
+								$texte_orientations_proposees.=" (".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire'].")";
+							}
+							$texte_orientations_proposees.="\n";
+						}
+						echo $texte_orientations_proposees;
+					}
+					echo "</p></td>";
+				}
+				echo "
+	</tr>";
+			}
+		}
+
+		//=============================================
 
 		// Avis du conseil de classe à ramener par là
 

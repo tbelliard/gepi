@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2012 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -795,6 +795,43 @@ if (isset($_POST['is_posted'])) {
 		}
 		if (!saveSetting("bull_affich_intitule_mentions", $bull_affich_intitule_mentions)) {
 			$msg .= "Erreur lors de l'enregistrement de bull_affich_intitule_mentions !";
+			$reg_ok = 'no';
+		}
+	}
+
+	// 20160624
+	if (isset($_POST['bull_orientation_periodes'])) {
+		$bull_orientation_periodes=preg_replace("/[^0-9;]/","",$_POST['bull_orientation_periodes']);
+		if (!saveSetting("bull_orientation_periodes", $bull_orientation_periodes)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_orientation_periodes !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_voeux_orientation'])) {
+		if (!saveSetting("bull_voeux_orientation", $_POST['bull_voeux_orientation'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_voeux_orientation !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_titre_voeux_orientation'])) {
+		if (!saveSetting("bull_titre_voeux_orientation", $_POST['bull_titre_voeux_orientation'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_titre_voeux_orientation !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_orientation'])) {
+		if (!saveSetting("bull_orientation", $_POST['bull_orientation'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_orientation !";
+			$reg_ok = 'no';
+		}
+	}
+
+	if (isset($_POST['bull_titre_orientation'])) {
+		if (!saveSetting("bull_titre_orientation", $_POST['bull_titre_orientation'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_titre_orientation !";
 			$reg_ok = 'no';
 		}
 	}
@@ -1874,6 +1911,107 @@ if (getSettingValue("active_module_trombinoscopes")=='y') {
         </td>
     </tr>
 
+	<?php
+		if(getSettingAOui("active_mod_orientation")) {
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_orientation_periodes=getSettingValue('bull_orientation_periodes');
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Faire apparaître le cadre Orientation au-dessus de l'avis du conseil de classe pour les périodes suivantes&nbsp;:<br />
+			<em>(laissez vide pour désactiver l'affichage du cadre Orientation;<br />
+			sinon donnez les numéros de périodes, séparés par des point-virgules)</em><br />
+			Dans ce cadre, vous pouvez activer l'affichage de deux blocs :<br />
+			L'un pour afficher la <strong>Liste des voeux</strong> de l'élève et l'autre pour afficher la <strong>Liste des orientations proposées/conseillées par le conseil de classe</strong>.
+		</td>
+		<td>
+			<input name='bull_orientation_periodes' size='19' style='border: 1px solid #74748F;' type='text' value='".$bull_orientation_periodes."' />
+		</td>
+	</tr>";
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_voeux_orientation=getSettingValue('bull_voeux_orientation');
+			if($bull_voeux_orientation=="y") {
+				$checked_voeux_orientation_y=" checked";
+				$checked_voeux_orientation_n="";
+			}
+			else {
+				$checked_voeux_orientation_y="";
+				$checked_voeux_orientation_n=" checked";
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Faire apparaître dans le cadre Orientation, une colonne Voeux de l'élève&nbsp;:
+		</td>
+		<td>
+			<input type='radio' name='bull_voeux_orientation' id='bull_voeux_orientation_y' value='y'$checked_voeux_orientation_y /><label for='bull_voeux_orientation_y'>Oui</label><br />
+			<input type='radio' name='bull_voeux_orientation' id='bull_voeux_orientation_n' value='n'$checked_voeux_orientation_n /><label for='bull_voeux_orientation_n'>Non</label>
+		</td>
+	</tr>";
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_titre_voeux_orientation=getSettingValue('bull_titre_voeux_orientation');
+			if($bull_titre_voeux_orientation=="") {
+				$bull_titre_voeux_orientation="Voeux";
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Titre de la colonne Voeux de l'élève&nbsp;:
+		</td>
+		<td>
+			<input type='text' name='bull_titre_voeux_orientation' value='$bull_titre_voeux_orientation' />
+		</td>
+	</tr>";
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_orientation=getSettingValue('bull_orientation');
+			if($bull_orientation=="y") {
+				$checked_orientation_y=" checked";
+				$checked_orientation_n="";
+			}
+			else {
+				$checked_orientation_y="";
+				$checked_orientation_n=" checked";
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Faire apparaître dans le cadre Orientation, une colonne Orientation proposée&nbsp;:
+		</td>
+		<td>
+			<input type='radio' name='bull_orientation' id='bull_orientation_y' value='y'$checked_orientation_y /><label for='bull_orientation_y'>Oui</label><br />
+			<input type='radio' name='bull_orientation' id='bull_orientation_n' value='n'$checked_orientation_n /><label for='bull_orientation_n'>Non</label>
+		</td>
+	</tr>";
+
+			$style_bgcolor="";
+			if ($nb_ligne % 2) {$style_bgcolor=" bgcolor=".$bgcolor;}
+			$nb_ligne++;
+			$bull_titre_orientation=getSettingValue('bull_titre_orientation');
+			if($bull_titre_orientation=="") {
+				$bull_titre_orientation="Orientation proposée";
+			}
+			echo "
+	<tr$style_bgcolor>
+		<td style='font-variant: small-caps;'>
+			Titre de la colonne Orientation proposée&nbsp;:
+		</td>
+		<td>
+			<input type='text' name='bull_titre_orientation' value='$bull_titre_orientation' />
+		</td>
+	</tr>";
+		}
+	?>
 </table>
 
 <script type='text/javascript'>

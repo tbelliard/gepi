@@ -748,4 +748,68 @@ if(mysqli_num_rows($test)==1) {
 	}
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_orientation_periodes'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_orientation_periodes', value='';");
+	$result .= "Initialisation du paramètre 'bull_orientation_periodes' à '': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_voeux_orientation'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_voeux_orientation', value='y';");
+	$result .= "Initialisation du paramètre 'bull_voeux_orientation' à 'y': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_titre_voeux_orientation'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_titre_voeux_orientation', value='Voeux';");
+	$result .= "Initialisation du paramètre 'bull_titre_voeux_orientation' à 'Voeux': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_orientation'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_orientation', value='y';");
+	$result .= "Initialisation du paramètre 'bull_orientation' à 'y': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
+
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_titre_orientation'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';");
+	$result .= "Initialisation du paramètre 'bull_titre_orientation' à 'Orientation proposée': ";
+	if($query){
+		$result .= msj_ok();
+	}
+	else{
+		$result .= msj_erreur('!');
+	}
+}
 ?>
