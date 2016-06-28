@@ -189,7 +189,7 @@ check_token();
 					}
 
 					$sql_ajout_chaine_numind_et_type="";
-					if(isset($_POST['reg_numind'])) {
+					if((isset($_POST['reg_numind']))&&($_POST['reg_numind']!="")) {
 						$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
 						if($_POST['reg_statut']=="professeur") {
 							$reg_numind="P".$reg_numind;
@@ -470,7 +470,7 @@ check_token();
 				}
 
 				$sql_ajout_chaine_numind_et_type="";
-				if(isset($_POST['reg_numind'])) {
+				if((isset($_POST['reg_numind']))&&($_POST['reg_numind']!="")) {
 					$reg_numind=preg_replace("/[^0-9]/","",trim($_POST['reg_numind']));
 					if($_POST['reg_statut']=="professeur") {
 						$reg_numind="P".$reg_numind;
