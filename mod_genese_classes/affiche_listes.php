@@ -375,79 +375,127 @@ if(!isset($afficher_listes)) {
 		}
 		//echo "id_req=$id_req<br />";
 
+		$nb_conditions_req=0;
+		$tmp_nom_req="";
 		if(count($id_clas_act)>0) {
 			for($i=0;$i<count($id_clas_act);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='id_clas_act', valeur='$id_clas_act[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$id_clas_act[$i];
 			}
 		}
 		if(count($clas_fut)>0) {
 			for($i=0;$i<count($clas_fut);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='clas_fut', valeur='$clas_fut[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$clas_fut[$i];
 			}
 		}
 
 		if(count($avec_lv1)>0) {
 			for($i=0;$i<count($avec_lv1);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv1', valeur='$avec_lv1[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$avec_lv1[$i];
+				//echo "\$nb_conditions_req=$nb_conditions_req<br />";
 			}
 		}
 		if(count($avec_lv2)>0) {
 			for($i=0;$i<count($avec_lv2);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv2', valeur='$avec_lv2[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$avec_lv2[$i];
 			}
 		}
 		if(count($avec_lv3)>0) {
 			for($i=0;$i<count($avec_lv3);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_lv3', valeur='$avec_lv3[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$avec_lv3[$i];
 			}
 		}
 		if(count($avec_autre)>0) {
 			for($i=0;$i<count($avec_autre);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_autre', valeur='$avec_autre[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$avec_autre[$i];
 			}
 		}
 		if(count($avec_profil)>0) {
 			for($i=0;$i<count($avec_profil);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_profil', valeur='$avec_profil[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req=$avec_profil[$i];
 			}
 		}
 
 		if(count($sans_lv1)>0) {
 			for($i=0;$i<count($sans_lv1);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv1', valeur='$sans_lv1[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req="Non_".$sans_lv1[$i];
 			}
 		}
 		if(count($sans_lv2)>0) {
 			for($i=0;$i<count($sans_lv2);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv2', valeur='$sans_lv2[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req="Non_".$sans_lv2[$i];
 			}
 		}
 		if(count($sans_lv3)>0) {
 			for($i=0;$i<count($sans_lv3);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv3', valeur='$sans_lv3[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req="Non_".$sans_lv3[$i];
 			}
 		}
 		if(count($sans_autre)>0) {
 			for($i=0;$i<count($sans_autre);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_autre', valeur='$sans_autre[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req="Non_".$sans_autre[$i];
 			}
 		}
 		if(count($sans_profil)>0) {
 			for($i=0;$i<count($sans_profil);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]', nom_requete='$nom_requete';";
+				//echo "$sql<br />";
 				$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+				$nb_conditions_req++;
+				$tmp_nom_req="Non_".$sans_profil[$i];
 			}
+		}
+
+		//echo "\$nb_conditions_req=$nb_conditions_req<br />";
+		if(($nom_requete=="")&&($nb_conditions_req==1)&&($tmp_nom_req!="")) {
+			// On nomme automatiquement la requête d'après l'unique condition:
+			$nom_requete=$tmp_nom_req;
+			$sql="UPDATE gc_affichages SET nom_requete='$nom_requete' WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
+			//echo "$sql<br />";
+			$update=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 
 		// Si aucune requête n'existe pour $id_aff, on supprime le nom aussi:
@@ -857,6 +905,13 @@ if(!isset($afficher_listes)) {
 		$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$id_aff' ORDER BY id_req;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
+
+			//20160629
+			$tab_req_eff_tot_fut=array();
+			for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+				$tab_req_eff_tot_fut[$loop_fut]=0;
+			}
+
 			echo "<p>Cochez les requêtes à supprimer, ou cliquez sur les images <img src='../images/edit16.png' class='icone16' alt='Modifier' /> pour modifier/corriger des requêtes.</p>";
 			//echo "<table>\n";
 			while($lig=mysqli_fetch_object($res)) {
@@ -954,6 +1009,7 @@ width='16' height='16' alt='Affecter' /></a></b>";
 				if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
 				if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
 
+				// 20160629
 				$tab_req_eff_fut=array();
 				for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
 					if(($classe_fut[$loop_fut]!="Dep")&&($classe_fut[$loop_fut]!="Red")) {
@@ -961,6 +1017,7 @@ width='16' height='16' alt='Affecter' /></a></b>";
 						//echo $sql_tmp_eff."<br />";
 						$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
 						$tab_req_eff_fut[$loop_fut]=mysqli_num_rows($res_tmp_eff);
+						$tab_req_eff_tot_fut[$loop_fut]+=$tab_req_eff_fut[$loop_fut];
 					}
 				}
 				/*
@@ -1088,6 +1145,19 @@ echo "</pre>";
 				//$txt_requete.="</div>\n";
 
 				echo $txt_requete;
+/*
+echo "<pre>";
+print_r($classe_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_req_eff_fut);
+echo "</pre>";
+
+echo "<pre>";
+print_r($tab_couleur_classe_fut);
+echo "</pre>";
+*/
 			}
 			//echo "</table>\n";
 
@@ -1103,6 +1173,21 @@ echo "</pre>";
 		}
 	}
 </script>\n";
+
+
+/*
+			// Attention : totaux pertinents que si les requetes sont disjointes.
+			for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+				if(($classe_fut[$loop_fut]!="Dep")&&($classe_fut[$loop_fut]!="Red")) {
+					$sql_tmp_eff=$sql_ele." AND classe_future='".$classe_fut[$loop_fut]."';";
+					//echo $sql_tmp_eff."<br />";
+					$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+					$tab_req_eff_fut[$loop_fut]=mysqli_num_rows($res_tmp_eff);
+					$tab_req_eff_fut[$loop_fut]+=$tab_req_eff_fut[$loop_fut];
+				}
+			}
+*/
+
 
 		}
 	}
@@ -1872,9 +1957,15 @@ else {
 						$contenu_affichage_requete_courante.="<td>\n";
 						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
 						if(nom_photo($lig->elenoet)) {
+							/*
 							$contenu_affichage_requete_courante.="<div style='float:right;width:16px;'><a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\"><img src='$icone_photo' class='icone16' alt='Photo' /></a></div>";
 
 							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\">";
+							*/
+
+							$contenu_affichage_requete_courante.="<div style='float:right;width:16px;'><a href='#eleve$cpt' onmouseover=\"affiche_photo2('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\"><img src='$icone_photo' class='icone16' alt='Photo' /></a></div>";
+
+							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo2('".nom_photo($lig->elenoet)."','".addslashes($designation_eleve)."');\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\" style='color:black;' title=\"Afficher la photo de $designation_eleve\">";
 
 							$contenu_affichage_requete_courante.=$designation_eleve;
 							$contenu_affichage_requete_courante.="</a>\n";
@@ -2454,6 +2545,58 @@ else {
 		document.getElementById('entete_div_photo_eleve').innerHTML=nom_prenom;
 		document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
 	}
+
+	function affiche_photo2(photo,nom_prenom) {
+		document.getElementById('entete_div_photo_eleve').innerHTML=nom_prenom;
+		document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
+
+		afficher_div('div_photo','y',100,10);
+		/*
+		alertSize();
+		tab=getScrollXY();
+		alert('scrOfX='+tab[0]+' et scrOfY='+tab[1]);
+
+		alert(document.getElementById('div_photo').style.top+' '+document.getElementById('div_photo').style.left+' '+document.getElementById('div_photo').style.width+' '+document.getElementById('div_photo').style.height);
+		*/
+	}
+
+
+function alertSize() {
+  var myWidth = 0, myHeight = 0;
+  if( typeof( window.innerWidth ) == 'number' ) {
+    //Non-IE
+    myWidth = window.innerWidth;
+    myHeight = window.innerHeight;
+  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+    //IE 6+ in 'standards compliant mode'
+    myWidth = document.documentElement.clientWidth;
+    myHeight = document.documentElement.clientHeight;
+  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+    //IE 4 compatible
+    myWidth = document.body.clientWidth;
+    myHeight = document.body.clientHeight;
+  }
+  window.alert( 'Width = ' + myWidth );
+  window.alert( 'Height = ' + myHeight );
+}
+
+function getScrollXY() {
+  var scrOfX = 0, scrOfY = 0;
+  if( typeof( window.pageYOffset ) == 'number' ) {
+    //Netscape compliant
+    scrOfY = window.pageYOffset;
+    scrOfX = window.pageXOffset;
+  } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+    //DOM compliant
+    scrOfY = document.body.scrollTop;
+    scrOfX = document.body.scrollLeft;
+  } else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+    //IE6 standards compliant mode
+    scrOfY = document.documentElement.scrollTop;
+    scrOfX = document.documentElement.scrollLeft;
+  }
+  return [ scrOfX, scrOfY ];
+}
 ";
 	//=================================
 
