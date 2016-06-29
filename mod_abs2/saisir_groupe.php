@@ -1873,9 +1873,11 @@ echo '
 		setTimeout('rafraichit_totaux_regimes()', 1000);
 	}
 
-	setTimeout('rafraichit_totaux_regimes()', 1000);
-</script>\n";
+	setTimeout('rafraichit_totaux_regimes()', 1000);";
 	}
+
+	echo 
+"</script>\n";
 }
 
 if (isset($radioButtonType)) {
@@ -1913,4 +1915,4 @@ if (isset($radioButtonType)) {
 require_once("../lib/footer.inc.php");
 
 // $affiche_debug=debug_var();
- 
+?>
