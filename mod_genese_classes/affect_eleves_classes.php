@@ -1019,12 +1019,106 @@ else {
 			echo " onchange=\"confirm_changement_requete(change, '$themessage');\"";
 			echo ">\n";
 			while($lig_req_nommee=mysqli_fetch_object($res_req_nommees)) {
+
+				//=============================================
+				//20160629
+				// Calcul effectif de la requete... A MODIFIER POUR EN FAIRE UNE FONCTION
+				// A FAIRE : Pouvoir retourner les élèves et l'effectif
+				$tab_req_eff_tot_fut=array();
+				for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+					$tab_req_eff_tot_fut[$loop_fut]=0;
+				}
+
+				$id_req_nommee=$lig_req_nommee->id_req;
+
+				$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
+				$sql_ele_id_classe_act="";
+				$sql_ele_classe_fut="";
+				$sql_avec_profil="";
+				$sql_sans_profil="";
+
+				$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req_nommee' ORDER BY type;";
+				$res_tmp=mysqli_query($GLOBALS["mysqli"], $sql);
+				while($lig_tmp=mysqli_fetch_object($res_tmp)) {
+					switch($lig_tmp->type) {
+						case 'id_clas_act':
+							if($sql_ele_id_classe_act!='') {$sql_ele_id_classe_act.=" OR ";}
+							$sql_ele_id_classe_act.="id_classe_actuelle='$lig_tmp->valeur'";
+							break;
+		
+						case 'clas_fut':
+							if($sql_ele_classe_fut!='') {$sql_ele_classe_fut.=" OR ";}
+							$sql_ele_classe_fut.="classe_future='$lig_tmp->valeur'";
+							break;
+		
+						case 'avec_lv1':
+							$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+							break;
+						case 'avec_lv2':
+							$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+							break;
+						case 'avec_lv3':
+							$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+							break;
+		
+						case 'avec_autre':
+							$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+							break;
+		
+						case 'avec_profil':
+							if($sql_avec_profil!='') {$sql_avec_profil.=" OR ";}
+							$sql_avec_profil.="profil='$lig_tmp->valeur'";
+							break;
+		
+						case 'sans_lv1':
+							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+							break;
+						case 'sans_lv2':
+							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+							break;
+						case 'sans_lv3':
+							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+							break;
+						case 'sans_autre':
+							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+							break;
+
+						case 'sans_profil':
+							if($sql_sans_profil!='') {$sql_sans_profil.=" AND ";}
+							$sql_sans_profil.="profil!='$lig_tmp->valeur'";
+							break;
+					}
+				}
+
+				if($sql_ele_id_classe_act!='') {$sql_ele.=" AND ($sql_ele_id_classe_act)";}
+				if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
+				if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
+				if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
+
+				for($loop_fut=0;$loop_fut<count($classe_fut);$loop_fut++) {
+					if(($classe_fut[$loop_fut]!="Dep")&&($classe_fut[$loop_fut]!="Red")) {
+						$sql_tmp_eff=$sql_ele." AND classe_future='".$classe_fut[$loop_fut]."';";
+						//echo $sql_tmp_eff."<br />";
+						$res_tmp_eff=mysqli_query($GLOBALS["mysqli"], $sql_tmp_eff);
+						$tab_req_eff_tot_fut[$loop_fut]+=mysqli_num_rows($res_tmp_eff);
+					}
+				}
+
+				$sql_ele.=";";
+				//echo "$sql_ele<br />\n";
+				$res_ele=mysqli_query($GLOBALS["mysqli"], $sql_ele);
+				$eff_ele_req_courante=mysqli_num_rows($res_ele);
+				//=============================================
+
 				echo "<option value='".$lig_req_nommee->id_req."'";
 				if((isset($id_req))&&($lig_req_nommee->id_req==$id_req)) {
 					echo " selected='selected'";
 					$indice_requete=$num_requete;
 				}
-				echo ">".$lig_req_nommee->nom_requete." (req.n°".$lig_req_nommee->id_req.")</option>\n";
+				if($eff_ele_req_courante==0) {
+					echo " style='color:grey'";
+				}
+				echo ">".$lig_req_nommee->nom_requete." (req.n°".$lig_req_nommee->id_req.") (".$eff_ele_req_courante.")</option>\n";
 				$num_requete++;
 			}
 			// Il arrive que l'on perde le nom de la requête courante... je n'ai pas trouvé pourquoi...
