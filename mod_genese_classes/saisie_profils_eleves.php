@@ -220,10 +220,10 @@ if(!isset($id_classe)) {
 	if($_SESSION['statut']=='administrateur') {
 		echo "
 		<li>
-			<p><a href='".$_SERVER['PHP_SELF']."?mode=vider".add_token_in_url()."' onclick=\"return confirm('Attention : L\opération est irréversible. Êtes-vous sûr de vouloir vider la table des profils élèves ?')\">Vider la table des profils élèves</a></p>
+			<p><a href='".$_SERVER['PHP_SELF']."?mode=vider".add_token_in_url()."' onclick=\"return confirm('Attention : L\'opération est irréversible. Êtes-vous sûr de vouloir vider la table des profils élèves ?')\">Vider la table des profils élèves</a></p>
 		</li>
 		<li>
-			<p><a href='".$_SERVER['PHP_SELF']."?mode=transferer".add_token_in_url()."' onclick=\"return confirm('Attention : L\opération est irréversible. Êtes-vous sûr de vouloir vider la table des profils élèves ?')\">Remplir les profils élèves dans les projets de Genèse des classes d'après le contenu de la table des profils élèves.</a><br />
+			<p><a href='".$_SERVER['PHP_SELF']."?mode=transferer".add_token_in_url()."' onclick=\"return confirm('Attention : L\'opération est irréversible. Êtes-vous sûr de vouloir mettre à jour les projets d\'après le contenu de la table des profils élèves ?')\">Remplir les profils élèves dans les projets de Genèse des classes d'après le contenu de la table des profils élèves.</a><br />
 			Les saisies de profils préalablement effectués dans les projets de classes futures seront écrasées.<br />
 			Les affectactions des élèves dans telle ou telle classe et les options saisies ne seront en revanche pas impactées.</p>
 		</li>";
