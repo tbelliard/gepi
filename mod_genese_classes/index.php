@@ -480,6 +480,7 @@ else {
 		echo ">$lig_proj->projet</option>\n";
 	}
 	echo "</select>\n";
+	echo " | <a href='saisie_profils_eleves.php'>Saisir les profils des élèves</a>";
 	echo "</p>\n";
 	echo "</form>\n";
 
