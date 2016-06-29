@@ -1648,7 +1648,24 @@ for(k=0;k<".count($lv3).";k++) {
 }
 
 function affichage_temoin_modif() {
-	document.getElementById('p_temoin_modif_non_enregistrees').innerHTML='Des modifications n&apos;ont pas été enregistrées.';
+	var ladate=new Date();
+
+	var j=ladate.getDate();
+	if(j<10){j='0'+j}
+	var m=eval(ladate.getMonth()+1);
+	if(m<10){m='0'+m}
+	var Y=ladate.getFullYear();
+
+	var h=ladate.getHours();
+	if(h<10){h='0'+h}
+	var minute=ladate.getMinutes();
+	if(minute<10){minute='0'+minute}
+	var s=ladate.getSeconds();
+	if(s<10){s='0'+s}
+
+	var ladate_formatee=j+'/'+m+'/'+Y+'/'+' '+h+':'+minute+':'+s;
+
+	document.getElementById('p_temoin_modif_non_enregistrees').innerHTML='Des modifications n&apos;ont pas été enregistrées ('+ladate_formatee+').';
 }
 
 function colorise_ligne2(cpt) {
