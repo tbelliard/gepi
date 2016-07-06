@@ -79,6 +79,7 @@ if (!defined('FPDF_VERSION')) {
 */
 
 	$RneEtablissement=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne") : "";
+	$gepiSchoolAcademie=getSettingValue("gepiSchoolAcademie") ? getSettingValue("gepiSchoolAcademie") : "gepiSchoolAcademie";
 	$gepiSchoolName=getSettingValue("gepiSchoolName") ? getSettingValue("gepiSchoolName") : "gepiSchoolName";
 	$gepiSchoolAdress1=getSettingValue("gepiSchoolAdress1") ? getSettingValue("gepiSchoolAdress1") : "";
 	$gepiSchoolAdress2=getSettingValue("gepiSchoolAdress2") ? getSettingValue("gepiSchoolAdress2") : "";
@@ -245,7 +246,7 @@ if (!defined('FPDF_VERSION')) {
 	$bull_ecart_entete=getSettingValue("bull_ecart_entete") ? getSettingValue("bull_ecart_entete") : 0;
 
 	$page_garde_imprime=getSettingValue("page_garde_imprime") ? getSettingValue("page_garde_imprime") : "n";
-    $affiche_page_garde = $page_garde_imprime;
+	$affiche_page_garde = $page_garde_imprime;
 
 
 	$bull_mention_doublant=getSettingValue("bull_mention_doublant") ? getSettingValue("bull_mention_doublant") : "n";

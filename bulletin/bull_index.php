@@ -122,7 +122,7 @@ elseif ((isset($mode_bulletin))&&($mode_bulletin=='html')) {
 }
 //============ FIN ENTETE BULLETIN HTML ==============
 //====================================================
-//============== ENTETE BULLETIN HTML ================
+//============== ENTETE BULLETIN PDF ================
 elseif ((isset($mode_bulletin))&&($mode_bulletin=='pdf')) {
 
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
@@ -150,16 +150,51 @@ mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<b
 	//=============================================
 
 }
-//============ FIN ENTETE BULLETIN HTML ==============
+//============ FIN ENTETE BULLETIN PDF ==============
+//====================================================
+//============== ENTETE BULLETIN PDF 2016 ============
+elseif ((isset($mode_bulletin))&&($mode_bulletin=='pdf_2016')) {
+
+	// DEBUG Décommenter la ligne ci-dessous pour débugger
+	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
+	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />";
+	if($bull_pdf_debug=='y') {
+		echo "<p style='color:red'>DEBUG:<br />
+La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
+mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<br />
+</p>\n";
+	}
+
+	include("header_bulletin_pdf.php");
+
+	//=============================================
+	/*
+	// Faire les extractions pour le relevé de notes si jamais cela a été demandé.
+	//$intercaler_releve_notes="y";
+	if(isset($intercaler_releve_notes)) {
+		// On n'extrait les relevés de notes que pour la/les périodes choisies pour les bulletins
+		$choix_periode='periode';
+		// REVOIR LE HEADER POUR PDF: QUE FAUT-IL EXTRAIRE COMME PARAMETRES SPECIFIQUES AU PDF
+		//include("../cahier_notes/initialisations_header_releves_html.php");
+		include("header_releve_pdf.php");
+	}
+	*/
+	//=============================================
+
+}
+//============ FIN ENTETE BULLETIN PDF 2016 =========
 
 //echo "microtime()=".microtime()."<br />";
 //echo "time()=".time()."<br />";
 
 $debug="n";
 $tab_instant=array();
-include("bull_func.lib.php");
+//include("bull_func.lib.php");
 
-if((!isset($mode_bulletin))||($mode_bulletin!='pdf')) {
+if((!isset($mode_bulletin))||(
+	(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')))) {
+
+	include("bull_func.lib.php");
 	//==============================
 	$motif="Duree_totale";
 	//decompte_debug($motif,"Témoin de $motif initialisation");
@@ -551,7 +586,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "<table border='0' summary='Choix du type de bulletin'>\n";
 	echo "<tr>\n";
 	echo "<td valign='top'>\n";
-	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");change_lien_param_bull(\"html\");griser_lignes_specifiques_pdf();' ";
+	echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_html' value='html' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");checkbox_change(\"mode_bulletin_pdf_2016\");change_lien_param_bull(\"html\");griser_lignes_specifiques_pdf();' ";
 	if($type_bulletin_par_defaut=='html') {echo "checked ";}
 	echo "/> ";
 	echo "</td>\n";
@@ -590,7 +625,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 			}
 		}
 		else {
-			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' ";
+			echo "<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf' value='pdf' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_html\");checkbox_change(\"mode_bulletin_pdf_2016\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' ";
 			if($type_bulletin_par_defaut=='pdf') {echo "checked ";}
 			echo "/> ";
 			echo "</td>\n";
@@ -657,7 +692,23 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	// 20160701:
+	// Tester si le MEF est défini pour tous les élèves?
+	//$sql="SELECT ";
+	echo "
+	<tr>
+		<td>
+			<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf_2016' value='pdf_2016' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' />
+		</td>
+		<td>
+			<label for='mode_bulletin_pdf_2016' id='texte_mode_bulletin_pdf_2016'> Bulletin PDF au format Collège Réforme 2016</label>
+		</td>
+	</tr>";
+
 	echo "</table>\n";
+
+	echo "<br />";
 
 	echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
 
@@ -1284,6 +1335,9 @@ display_param_b_adr_pg();
 	echo "<p><input type='submit' name='bouton_valide_select_eleves2' value='Valider' /></p>\n";
 	echo "</form>\n";
 
+	// 20160702
+	//echo "<div style='float:left; width:30px; height:30px; background-color:rgb(9,87,221)'></div>";
+
 	require("../lib/footer.inc.php");
 	die();
 }
@@ -1337,6 +1391,10 @@ else {
 </style>\n";
 	*/
 
+	// 20160702
+	if($mode_bulletin=="pdf_2016") {
+		include("bull_func_2016.lib.php");
+	}
 
 	if($mode_bulletin=="html") {
 		echo "<div id='infodiv'>
@@ -1388,8 +1446,10 @@ else {
 	// RECUPERER LES INFOS ETABLISSEMENT
 
 	//==============================
-	$motif="Temoin_1";
-	decompte_debug($motif,"Initialisation $motif");
+	if($mode_bulletin=="html") {
+		$motif="Temoin_1";
+		decompte_debug($motif,"Initialisation $motif");
+	}
 	//==============================
 
 	// Peut-être déplacer ça vers un fichier externe d'initialisation de variables
@@ -1501,8 +1561,10 @@ else {
 	$tab_bulletin=array();
 
 	//==============================
-	$motif="Temoin_1";
-	decompte_debug($motif,"$motif avant la boucle classes");
+	if($mode_bulletin=="html") {
+		$motif="Temoin_1";
+		decompte_debug($motif,"$motif avant la boucle classes");
+	}
 	//==============================
 
 	// 20120419
@@ -1577,6 +1639,7 @@ else {
 		$tab_orientation2=get_tab_orientations_types();
 	}
 
+	$tab_mef=get_tab_mef();
 
 	$nb_bulletins_edites=0;
 	// Boucle sur les classes
@@ -1702,6 +1765,20 @@ else {
 			//================================
 			//================================
 		}
+		elseif($mode_bulletin=="pdf_2016") {
+			$moyennes_annee="n";
+			$moyennes_periodes_precedentes="n";
+
+			require_once("bulletin_pdf_2016.inc.php");
+
+			foreach($val_defaut_champ_bull_pdf as $key => $value) {
+				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
+			}
+
+			//================================
+			//================================
+			//================================
+		}
 
 		//echo "\$moyennes_annee=$moyennes_annee<br />";
 
@@ -1742,8 +1819,8 @@ else {
 
 		$test_acces_classe=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($test_acces_classe)==0) {
-            tentative_intrusion(2, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") à une classe (".get_class_from_id($id_classe).") sans y être autorisé.");
-            echo "<p>Vous n'êtes pas autorisés à être ici.</p>\n";
+			tentative_intrusion(2, "Tentative d'un ".$_SESSION["statut"]." (".$_SESSION["login"].") à une classe (".get_class_from_id($id_classe).") sans y être autorisé.");
+			echo "<p>Vous n'êtes pas autorisé à être ici.</p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
@@ -2037,6 +2114,11 @@ else {
 
 			$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=$affiche_adresse;
 			//echo "\$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']=".$tab_bulletin[$id_classe][$periode_num]['affiche_adresse']."<br />";
+
+			// Informations sur les périodes
+			$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe';";
+			$res_per=mysqli_query($GLOBALS["mysqli"], $sql);
+			$tab_bulletin[$id_classe][$periode_num]['nb_periodes']=mysqli_num_rows($res_per);
 
 			// Informations sur la période
 			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode_num';";
@@ -4045,7 +4127,7 @@ Bien cordialement.
 	}
 	*/
 
-	if($mode_bulletin=="pdf") {
+	if(($mode_bulletin=="pdf")||($mode_bulletin=="pdf_2016")) {
 		// définition d'une variable
 		$hauteur_pris = 0;
 
@@ -4403,7 +4485,7 @@ document.getElementById('td_periode').innerHTML='".$periode_num."';
 	}
 }
 
-if((!isset($mode_bulletin))||($mode_bulletin!="pdf")) {
+if((!isset($mode_bulletin))||(($mode_bulletin!="pdf")&&($mode_bulletin!="pdf_2016"))) {
 	echo "<div id='remarques_bas_de_page' style='display:none;'>
 <p><br /></p>
 <p>A REVOIR:</p>
@@ -4417,7 +4499,7 @@ On a aussi ajouté des champs dans la table 'classes' pour les relevés de notes
 
 	require("../lib/footer.inc.php");
 }
-elseif((isset($mode_bulletin))&&($mode_bulletin=="pdf")) {
+elseif((isset($mode_bulletin))&&(($mode_bulletin=="pdf")||($mode_bulletin=="pdf_2016"))) {
 
 	if($compteur_bulletins==0) {
 		$pdf->AddPage(); //ajout d'une page au document
