@@ -2227,6 +2227,7 @@ if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 		<br />- les transparences sur les images PNG, GIF ne permettent pas une impression PDF 
 		(<em>canal alpha non supporté par fpdf</em>)
 		<br />- il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la génération de PDF
+		<br />- dans le doute sur l'apparition ou non du logo dans les PDF, le format JPEG reste néanmoins plus sûr.
 	</p>
 </fieldset>
 </form>
