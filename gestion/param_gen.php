@@ -89,7 +89,8 @@ if (isset($_POST['valid_logo'])) {
 			} else {
 				$old = getSettingValue("logo_etab");
 				if (file_exists($dest.$old)) @unlink($dest.$old);
-				if (file_exists($dest.$doc_file)) @unlink($dest.$doc_file);
+				//if (file_exists($dest.$doc_file)) @unlink($dest.$doc_file);
+				if (file_exists($dest.$doc_file['name'])) @unlink($dest.$doc_file['name']);
 				// le fichier téléchargé est renommé log_etab.xxx
 				$ok = @copy($doc_file['tmp_name'], $dest."logo_etab.".$ext);
 				if (!$ok) $ok = @move_uploaded_file($doc_file['tmp_name'], $dest."logo_etab.".$ext);
