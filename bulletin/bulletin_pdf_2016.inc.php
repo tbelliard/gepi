@@ -246,6 +246,12 @@
 	//Cycle 4
 	$param_bull2016["hauteur_bilan_acquisitions_cycle_4"]=44;
 
+
+	$param_bull2016["affich_mentions"]="y";
+	$param_bull2016["affich_intitule_mentions"]="y";
+	// Si les coches sont choisies, les deux choix précédents ne sont pas pris en compte
+	$param_bull2016["avec_coches_mentions"]="y";
+
 	//========================================
 
 	$param_bull2016["couleur_bandeau_communication_famille"]["R"]=15*16+6;
@@ -271,6 +277,11 @@
 	$param_bull2016["largeur_signature_chef"]=47.5;
 	$param_bull2016["hauteur_signature_chef"]=49.5;
 
+	$param_bull2016["affichage_haut_responsable"]="y";
+	//$param_bull2016["affiche_fonction_chef"]="y";
+	//$param_bull2016["taille_texte_fonction_chef"]=9;
+	$param_bull2016["taille_texte_identite_chef"]=8;
+
 	//$param_bull2016["couleur_visa_famille"]["R"]=15*16+12;
 	//$param_bull2016["couleur_visa_famille"]["V"]=12*16+10;
 	//$param_bull2016["couleur_visa_famille"]["B"]=8*16+14;
@@ -279,6 +290,7 @@
 	$param_bull2016["y_visa_famille"]=264.5;
 	$param_bull2016["largeur_visa_famille"]=189;
 	$param_bull2016["hauteur_visa_famille"]=18;
+
 	//========================================
 
 	$champ_bull_pdf[]="nom_model_bulletin";

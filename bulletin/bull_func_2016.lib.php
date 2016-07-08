@@ -254,7 +254,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		//=========================================
 
-		// 20120713
+		/*
+		// FILIGRANE PERIODE NON CLOSE
 		if($tab_bull['verouiller']=="N") {
 			$pdf->SetFont('DejaVu','B',40);
 			$pdf->SetTextColor(255,192,203);
@@ -269,6 +270,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->TextWithRotation(40,190,$tab_modele_pdf["texte_filigrame"][$classe_id],45);
 			$pdf->SetTextColor(0,0,0);
 		}
+		*/
 
 		//=========================================
 
@@ -1130,6 +1132,22 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 		}
 
+		// FILIGRANE PERIODE NON CLOSE
+		if($tab_bull['verouiller']=="N") {
+			$pdf->SetFont('DejaVu','B',40);
+			$pdf->SetTextColor(255,192,203);
+			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			$pdf->TextWithRotation(40,210,"ATTENTION : Période non close",45);
+			$pdf->SetTextColor(0,0,0);
+		}
+		elseif($tab_modele_pdf["affiche_filigrame"][$classe_id]==='1'){
+			$pdf->SetFont('DejaVu','B',50);
+			$pdf->SetTextColor(255,192,203);
+			//$pdf->TextWithRotation(40,190,$texte_filigrame[$classe_id],45);
+			$pdf->TextWithRotation(40,190,$tab_modele_pdf["texte_filigrame"][$classe_id],45);
+			$pdf->SetTextColor(0,0,0);
+		}
+
 		//=========================================
 		//=========================================
 		//=========================================
@@ -1142,6 +1160,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		// Que fait-on des AID dans le nouveau bulletin s'il ne s'agit ni d'AP, ni d'EPI, ni d'un Parcours...
 
 		if($cycle==4) {
+			$y_bandeau_bilan_acquisitions=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"];
+			$y_bilan_acquisitions=$param_bull2016["y_bilan_acquisitions_cycle_4"];
+			$hauteur_bilan_acquisitions=$param_bull2016["hauteur_bilan_acquisitions_cycle_4"];
+
 			//=========================================
 
 			// EPI en cycle 4
@@ -1156,6 +1178,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			//=========================================
 
+			/*
 			// Bandeau Bilan de l'acquisition des connaissances et compétences
 
 			$pdf->SetFillColor($param_bull2016["couleur_bandeau_bilan_acquisitions"]["R"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["V"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["B"]);
@@ -1182,15 +1205,16 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],7, "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
 
 			// A FAIRE : Insérer l'avis du conseil de classe
-
-
-
-
+			*/
 
 			//=========================================
 
 		}
 		else {
+			$y_bandeau_bilan_acquisitions=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"];
+			$y_bilan_acquisitions=$param_bull2016["y_bilan_acquisitions_cycle_3"];
+			$hauteur_bilan_acquisitions=$param_bull2016["hauteur_bilan_acquisitions_cycle_3"];
+
 			//=========================================
 
 			// AP
@@ -1199,41 +1223,171 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			// Parcours éducatifs
 
-			//=========================================
-
-			// Bandeau Bilan de l'acquisition des connaissances et compétences
-
-			$pdf->SetFillColor($param_bull2016["couleur_bandeau_bilan_acquisitions"]["R"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["V"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["B"]);
-
-			$pdf->Rect($param_bull2016["x_bandeau_bilan_acquisitions"], $param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"], $param_bull2016["largeur_bandeau_bilan_acquisitions"], $param_bull2016["hauteur_bandeau_bilan_acquisitions"], 'F');
-
-			$pdf->SetFillColor(0, 0, 0);
-			$pdf->SetTextColor(255, 255, 255);
-			$pdf->SetXY($param_bull2016["x_bandeau_bilan_acquisitions"], $param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]+1);
-			$pdf->SetFont('DejaVu','B',12);
-			$pdf->Cell($param_bull2016["largeur_bandeau_bilan_acquisitions"],7, "Bilan de l'acquisition des connaissances et compétences",0,2,'C');
-
-			// Cadre synthèse de l'évolution des acquis...
-
-			$pdf->SetFillColor($param_bull2016["couleur_bilan_acquisitions"]["R"], $param_bull2016["couleur_bilan_acquisitions"]["V"], $param_bull2016["couleur_bilan_acquisitions"]["B"]);
-
-			$pdf->Rect($param_bull2016["x_bilan_acquisitions"], $param_bull2016["y_bilan_acquisitions_cycle_3"], $param_bull2016["largeur_bilan_acquisitions"], $param_bull2016["hauteur_bilan_acquisitions_cycle_3"], 'F');
-
-			$pdf->SetFillColor(0, 0, 0);
-			$pdf->SetTextColor(0, 0, 0);
-			$pdf->SetXY($param_bull2016["x_bilan_acquisitions"], $param_bull2016["y_bilan_acquisitions_cycle_3"]+1);
-			$pdf->SetFont('DejaVu','',9);
-			//$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],$param_bull2016["y_bilan_acquisitions_cycle_3"], "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
-			$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],7, "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
-
-			// A FAIRE : Insérer l'avis du conseil de classe
-
-
-
-
-			//=========================================
-
 		}
+
+		//=========================================
+
+		// Bandeau Bilan de l'acquisition des connaissances et compétences
+
+		$pdf->SetFillColor($param_bull2016["couleur_bandeau_bilan_acquisitions"]["R"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["V"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["B"]);
+
+		$pdf->Rect($param_bull2016["x_bandeau_bilan_acquisitions"], $y_bandeau_bilan_acquisitions, $param_bull2016["largeur_bandeau_bilan_acquisitions"], $param_bull2016["hauteur_bandeau_bilan_acquisitions"], 'F');
+
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(255, 255, 255);
+		$pdf->SetXY($param_bull2016["x_bandeau_bilan_acquisitions"], $y_bandeau_bilan_acquisitions+1);
+		$pdf->SetFont('DejaVu','B',12);
+		$pdf->Cell($param_bull2016["largeur_bandeau_bilan_acquisitions"],7, "Bilan de l'acquisition des connaissances et compétences",0,2,'C');
+
+
+
+		// Cadre synthèse de l'évolution des acquis...
+
+		$pdf->SetFillColor($param_bull2016["couleur_bilan_acquisitions"]["R"], $param_bull2016["couleur_bilan_acquisitions"]["V"], $param_bull2016["couleur_bilan_acquisitions"]["B"]);
+		$pdf->Rect($param_bull2016["x_bilan_acquisitions"], $y_bilan_acquisitions, $param_bull2016["largeur_bilan_acquisitions"], $hauteur_bilan_acquisitions, 'F');
+
+		$pdf->SetFillColor(0, 0, 0);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->SetXY($param_bull2016["x_bilan_acquisitions"], $y_bilan_acquisitions+1);
+		$pdf->SetFont('DejaVu','',9);
+		$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],7, "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
+
+
+		// Avis du conseil de classe
+
+		$pdf->SetXY($param_bull2016["x_bilan_acquisitions"]+2.5, $y_bilan_acquisitions+5);
+
+		$marge_droite_avis_cons=5;
+		$pdf->SetFont('DejaVu','',10);
+		$texteavis = $tab_bull['avis'][$i];
+
+		if(($param_bull2016["affich_mentions"]=="y")||($param_bull2016["avec_coches_mentions"]=="y")) {
+			if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+				$tableau_des_mentions_sur_le_bulletin=get_mentions($classe_id);
+			}
+			if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
+				$textmention=$tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]];
+			}
+			else {$textmention="-";}
+
+			if($param_bull2016["avec_coches_mentions"]=="y") {
+				if(count($tableau_des_mentions_sur_le_bulletin)>0) {
+					$marge_droite_avis_cons=40;
+				}
+				else {
+					$marge_droite_avis_cons=5;
+				}
+			}
+			else {
+				$marge_droite_avis_cons=5;
+				if(($param_bull2016["affich_mentions"]!="n")&&($textmention!="")&&($textmention!="-")) {
+					if($use_cell_ajustee=="n") {
+						if($param_bull2016["affich_intitule_mentions"]!="n") {
+							$texteavis.="\n".ucfirst($gepi_denom_mention)." : ";
+						}
+						$texteavis.=$textmention;
+					}
+					else {
+						if($param_bull2016["affich_intitule_mentions"]!="n") {
+							$texteavis.="\n"."<b>".ucfirst($gepi_denom_mention)." :</b> ";
+						}
+						$texteavis.=$textmention;
+					}
+				}
+			}
+		}
+
+		if($use_cell_ajustee=="n") {
+			$pdf->drawTextBox(($texteavis), $param_bull2016["largeur_bilan_acquisitions"]-$marge_droite_avis_cons, $hauteur_bilan_acquisitions-10, 'J', 'M', 0);
+		}
+		else {
+			$texte=$texteavis;
+			$taille_max_police=10;
+			$taille_min_police=ceil($taille_max_police/3);
+
+			$largeur_dispo=$param_bull2016["largeur_bilan_acquisitions"]-$marge_droite_avis_cons;
+			$h_cell=$hauteur_bilan_acquisitions-10;
+
+			cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+		}
+
+
+		/*
+		$X_pp_aff=$param_bull2016["x_bilan_acquisitions"];
+
+		//$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+$tab_modele_pdf["hauteur_avis_cons"][$classe_id]-5;
+		$Y_pp_aff=$y_bilan_acquisitions+$hauteur_avis_cons_init-5;
+
+		$pdf->SetXY($X_pp_aff,$Y_pp_aff);
+		if ( $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] != '' and is_numeric($tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]) and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id]>0 and $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id] < '15' ) {
+			$taille = $tab_modele_pdf["taille_profprincipal_bloc_avis_conseil"][$classe_id];
+		} else {
+			$taille = '10';
+		}
+		$pdf->SetFont('DejaVu','I',$taille);
+		// Le nom du professeur principal
+		$pp_classe[$i]="";
+		//if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
+		if($tab_modele_pdf["afficher_tous_profprincipaux"][$classe_id]==1) {
+			$index_pp='pp_classe';
+		}
+		else {
+			$index_pp='pp';
+		}
+		if(isset($tab_bull['eleve'][$i][$index_pp][0]['login'])) {
+			$pp_classe[$i]="<b>".ucfirst($tab_bull['gepi_prof_suivi'])."</b> : ";
+			$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+			for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i][$index_pp]);$i_pp++) {
+				$pp_classe[$i].=", ";
+				$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i][$index_pp][$i_pp]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
+			}
+		}
+		else {
+			$pp_classe[$i]="";
+		}
+		//$pdf->MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+		//$pdf->ext_MultiCellTag(200, 5, ($pp_classe[$i]), '', 'J', '');
+
+		$taille_max_police=$taille;
+		$taille_min_police=ceil($taille_max_police/3);
+		//$largeur_dispo=200;
+		$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id];
+		$h_cell=5;
+		cell_ajustee($pp_classe[$i],$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+		*/
+
+
+		if($param_bull2016["avec_coches_mentions"]=="y") {
+			$pdf->SetFont('DejaVu','',9);
+			$X_pp_aff=$param_bull2016["x_bilan_acquisitions"]+$param_bull2016["largeur_bilan_acquisitions"]-35;
+			$Y_pp_aff=$y_bilan_acquisitions+5;
+			$pdf->SetXY($X_pp_aff,$Y_pp_aff);
+
+			if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+				$tableau_des_mentions_sur_le_bulletin=get_mentions($classe_id);
+			}
+
+			$loop_mention=0;
+			foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
+				$pdf->Cell(35,4, $value_mention,0,2,'L');
+				$loop_mention++;
+			}
+
+			$loop_mention=0;
+			foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
+				$pdf->Rect($X_pp_aff+30, $Y_pp_aff+4*$loop_mention+0.3, 2.4, 3);
+
+				if($key_mention==$tab_bull['id_mention'][$i]) {
+					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+$loop_mention*4);
+					$pdf->Cell(35,4, 'X',0,2,'R');
+				}
+				$loop_mention++;
+			}
+			$pdf->Rect($X_pp_aff, $Y_pp_aff+0.1, 0.01, $loop_mention*4);
+		}
+
+
+		//=========================================
 
 		// Bandeau Communication avec la famille
 
@@ -1268,18 +1422,125 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
 		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 
-		$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34);
-		$pdf->SetFont('DejaVu','',8);
-		$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Retards :",0,2,'L');
+		if($tab_bull['eleve'][$i]['appreciation_absences'] != "")
+		{
+			// supprimer les espaces
+			//$text_absences_appreciation = trim(str_replace(array("\r\n","\r","\n"), ' ', unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences'])));
+			$text_absences_appreciation = trim(unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences']));
+			$info_absence_appreciation=$text_absences_appreciation;
 
-		$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+3.5);
-		$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences justifiées par les responsables légaux : "." demi-journées",0,2,'L');
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+10);
+			$pdf->SetFont('DejaVu','',8);
+			$val = $pdf->GetStringWidth($info_absence_appreciation);
+			// nombre de lignes que prend la remarque cpe
+			//Arrondi à l'entier supérieur : ceil()
+			$nb_ligne = 1;
+			$nb_ligne = ceil($val / 200);
+			$hauteur_pris = $nb_ligne * 3;
 
-		$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+3.5+3.5);
-		$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences non justifiées par les responsables légaux : "." demi-journées",0,2,'L');
+			$taille_max_police=8;
+			$taille_min_police=ceil($taille_max_police/3);
+			$largeur_dispo=$param_bull2016["largeur_communication_famille"];
+			$h_cell=22; // A ajuster selon ce qu'on affiche des retards, nj, j,...
+			cell_ajustee($info_absence_appreciation,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+		}
 
-		$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+3.5+3.5+3.5);
-		$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Nombre d'heures de cours manquées du fait de ses absences, justifiées ou non justifiées : "." heure(s)",0,2,'L');
+		/*
+		// Identité CPE
+			if(($tab_modele_pdf["afficher_abs_cpe"][$classe_id]=='1')&&(isset($tab_bull['eleve'][$i]['cperesp_civilite']))&&(isset($tab_bull['eleve'][$i]['cperesp_login']))) {
+				$pdf->SetFont('DejaVu','',8);
+				// C.P.E.
+				$info_absence = $info_absence." (".ucfirst($gepi_cpe_suivi)." chargé";
+				if($tab_bull['eleve'][$i]['cperesp_civilite']!="M.") {
+					$info_absence = $info_absence."e";
+				}
+				$info_absence = $info_absence." du suivi : <i>".affiche_utilisateur($tab_bull['eleve'][$i]['cperesp_login'],$tab_bull['id_classe'])."</i>)";
+			}
+			//$pdf->MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, ($info_absence), '', 'J', '');
+			//$pdf->ext_MultiCellTag($tab_modele_pdf["largeur_cadre_absences"][$classe_id], 5, $info_absence, '', 'J', '');
+
+			$taille_max_police=8;
+			$taille_min_police=ceil($taille_max_police/3);
+			$largeur_dispo=$tab_modele_pdf["largeur_cadre_absences"][$classe_id];
+			$h_cell=5;
+			cell_ajustee($info_absence,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+		*/
+
+		// A FAIRE : Pouvoir ne pas faire apparaitre certaines lignes
+
+		$h_ligne_retard_abs=3.5;
+		$decal=3.5*3;
+		// Heures perdues
+		$afficher_nb_heures_perdues="n";
+		if($afficher_nb_heures_perdues=="y") {
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Nombre d'heures de cours manquées du fait de ses absences, justifiées ou non justifiées : "."       heure(s)",0,2,'L');
+			$decal-=3.5;
+		}
+
+		// Non justifiées
+		$afficher_non_justifiees="y";
+		if($afficher_non_justifiees=="y") {
+			$nb_nj=$tab_bull['eleve'][$i]['eleve_nj'];
+			$s="";
+			if("$nb_nj"=="?") {
+				$s="s";
+			}
+			elseif($nb_nj<=1) {
+				$s="";
+			}
+			elseif($nb_nj>=1) {
+				$s="s";
+			}
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences non justifiées par les responsables légaux : ".$nb_nj." demi-journée".$s,0,2,'L');
+			$decal-=3.5;
+		}
+
+		// Justifiées
+		$afficher_justifiees="y";
+		$afficher_total_abs="n";
+		if($afficher_justifiees=="y") {
+			$nb_j=$tab_bull['eleve'][$i]['eleve_absences']-$tab_bull['eleve'][$i]['eleve_nj'];
+			$s="";
+			if("$nb_j"=="?") {
+				$s="s";
+			}
+			elseif($nb_j<=1) {
+				$s="";
+			}
+			elseif($nb_j>=1) {
+				$s="s";
+			}
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences justifiées par les responsables légaux : ".$nb_j." demi-journée".$s,0,2,'L');
+			$decal-=3.5;
+		}
+		elseif($afficher_total_abs=="y") {
+			$nb_j=$tab_bull['eleve'][$i]['eleve_absences'];
+			$s="";
+			if("$nb_j"=="?") {
+				$s="s";
+			}
+			elseif($nb_j<=1) {
+				$s="";
+			}
+			elseif($nb_j>=1) {
+				$s="s";
+			}
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Total des absences : ".$nb_j." demi-journée".$s,0,2,'L');
+			$decal-=3.5;
+		}
+
+		$afficher_retards="y";
+		if($afficher_retards=="y") {
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetFont('DejaVu','',8);
+			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Retards : ".$tab_bull['eleve'][$i]['eleve_retards'],0,2,'L');
+		}
+
+
 
 		// Cadre chef étab
 
@@ -1291,6 +1552,81 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$pdf->SetTextColor(0, 0, 0);
 		//$pdf->Cell($param_bull2016["largeur_signature_chef"],7, "Date, nom et signature du chef d'établissement",0,2,'L');
 		$pdf->drawTextBox("Date, nom et signature\ndu chef de l'établissement", $param_bull2016["largeur_signature_chef"], $param_bull2016["hauteur_signature_chef"], 'R', 'T', 0);
+
+
+		$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]);
+
+		if((isset($signature_bull[$tab_bull['id_classe']]))&&($signature_bull[$tab_bull['id_classe']]!="")&&(file_exists($signature_bull[$tab_bull['id_classe']]))) {
+			$fich_sign=$signature_bull[$tab_bull['id_classe']];
+
+			$X_sign = $param_bull2016["x_signature_chef"];
+			$Y_sign = $param_bull2016["y_signature_chef"];
+
+			$largeur_dispo=$param_bull2016["largeur_signature_chef"]-10;
+			// On ajuste mieux la hauteur de l'image, quitte à ce que le tampon/signature soit en surimpression (ou plutôt sous-impression) avec le Nom du chef en première ligne du cadre.
+			$hauteur_dispo=$param_bull2016["hauteur_signature_chef"]-2;
+
+			$tmp_dim_photo=getimagesize($fich_sign);
+			$ratio_l=$tmp_dim_photo[0]/$largeur_dispo;
+			$ratio_h=$tmp_dim_photo[1]/$hauteur_dispo;
+			if($ratio_l>$ratio_h) {
+				$L_sign = $largeur_dispo;
+				$H_sign = $largeur_dispo*$tmp_dim_photo[1]/$tmp_dim_photo[0];
+			}
+			else {
+				$H_sign = $hauteur_dispo;
+				$L_sign = $hauteur_dispo*$tmp_dim_photo[0]/$tmp_dim_photo[1];
+			}
+
+			/*
+			echo "\$X_sign=$X_sign<br />\n";
+			echo "\$Y_sign=$Y_sign<br />\n";
+			echo "\$L_sign=$L_sign<br />\n";
+			echo "\$H_sign=$H_sign<br />\n";
+			*/
+
+			$X_sign += ($param_bull2016["largeur_signature_chef"]-$L_sign) / 2;
+			$Y_sign += ($param_bull2016["hauteur_signature_chef"]-$H_sign) / 2;
+
+			$tmp_dim_photo=getimagesize($fich_sign);
+
+			if((isset($tmp_dim_photo[2]))&&($tmp_dim_photo[2]==2)) {
+				//$pdf->Image($fich_sign, $X_sign, $Y_sign, $L_sign, $H_sign);
+				$pdf->Image($fich_sign, round($X_sign), round($Y_sign), round($L_sign), round($H_sign));
+			}
+		}
+
+		$pdf->SetFont('DejaVu','',10);
+		if($param_bull2016["affichage_haut_responsable"]=='y') {
+			/*
+			$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]+7);
+			if($param_bull2016["affiche_fonction_chef"]=='y') {
+				if($param_bull2016["taille_texte_fonction_chef"]!= '' and $param_bull2016["taille_texte_fonction_chef"]!='0' and $param_bull2016["taille_texte_fonction_chef"]<'15') {
+					$taille=$param_bull2016["taille_texte_fonction_chef"];
+				} else {
+					$taille='9';
+				}
+				$pdf->SetFont('DejaVu','B',$taille);
+				$pdf->MultiCell($param_bull2016["largeur_signature_chef"], 5, ($tab_bull['formule']),0,2,'');
+				$pdf->SetX($param_bull2016["x_signature_chef"]);
+			}
+			else {
+				// Date seule
+			}
+			*/
+
+			if($param_bull2016["taille_texte_identite_chef"]!='' and $param_bull2016["taille_texte_identite_chef"]!='0' and $param_bull2016["taille_texte_identite_chef"]<'15') {
+				$taille = $param_bull2016["taille_texte_identite_chef"];
+			} else {
+				$taille='8';
+			}
+			$pdf->SetXY($param_bull2016["x_signature_chef"], $param_bull2016["y_signature_chef"]+7);
+			$pdf->SetFont('DejaVu','I',$taille);
+			$pdf->MultiCell($param_bull2016["largeur_signature_chef"], 5, "Le ".strftime("%d/%m/%Y").", ".$tab_bull['suivi_par'], 0, 2, '');
+		} else {
+			$pdf->MultiCell($param_bull2016["largeur_signature_chef"], 5, ("Visa du Chef d'établissement\nou de son délégué"),0,2,'');
+		}
+
 
 		// Cadre Visa famille
 
@@ -5252,11 +5588,6 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					$pdf->SetFont('DejaVu','I',8);
 					$info_absence='';
 
-					// 20130215
-					/*
-					if(($tab_modele_pdf["afficher_abs_tot"][$classe_id]==='1')||
-					($tab_modele_pdf["afficher_abs_nj"][$classe_id]==='1')) {
-					*/
 					if($tab_modele_pdf["afficher_abs_tot"][$classe_id]=='1') {
 						if($tab_bull['eleve'][$i]['eleve_absences'] != '?') {
 							if($tab_bull['eleve'][$i]['eleve_absences'] == '0')
@@ -5907,7 +6238,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 						if ( $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] < '15' ) {
 							$taille = $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id];
 						} else {
-							$taille_avis = '8';
+							$taille='8';
 						}
 						$pdf->SetFont('DejaVu','I',$taille);
 						$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_bull['suivi_par']),0,2,'');

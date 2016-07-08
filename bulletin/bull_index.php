@@ -194,6 +194,7 @@ $tab_instant=array();
 if((!isset($mode_bulletin))||(
 	(($mode_bulletin!='pdf')&&($mode_bulletin!='pdf_2016')))) {
 
+	// Pour le bulletin HTML ou en mode_bulletin non encore défini
 	include("bull_func.lib.php");
 	//==============================
 	$motif="Duree_totale";
@@ -1394,6 +1395,9 @@ else {
 	// 20160702
 	if($mode_bulletin=="pdf_2016") {
 		include("bull_func_2016.lib.php");
+	}
+	elseif($mode_bulletin=="pdf") {
+		include("bull_func.lib.php");
 	}
 
 	if($mode_bulletin=="html") {
