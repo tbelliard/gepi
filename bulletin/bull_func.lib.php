@@ -5787,6 +5787,7 @@ fclose($f);
 
 
 			// =============== bloc absence ==================
+			$hauteur_pris_app_abs=0;
 			if($tab_modele_pdf["active_bloc_absence"][$classe_id]==='1') {
 				$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]);
 				$origine_Y_absence = $tab_modele_pdf["Y_absence"][$classe_id];
@@ -5892,8 +5893,6 @@ fclose($f);
 				//if ( !isset($hauteur_sign_chef_init) ) { $hauteur_sign_chef_init = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - 0.5; }
 				$hauteur_avis_cons_init = $tab_modele_pdf["hauteur_avis_cons"][$classe_id] - 0.5;
 				$hauteur_sign_chef_init = $tab_modele_pdf["hauteur_sign_chef"][$classe_id] - 0.5;
-
-$hauteur_pris_app_abs=0;
 
 				if($tab_bull['eleve'][$i]['appreciation_absences'] != "")
 				{
@@ -6001,6 +6000,8 @@ $hauteur_pris_app_abs=0;
 //				($hauteur_avis_cons_init-$tab_modele_pdf["hauteur_cadre_orientation"][$classe_id]>10)) {
 					//$tab_modele_pdf["active_bloc_avis_conseil"][$classe_id]
 
+					$y_corrigee_cadre_orientation=$tab_modele_pdf["Y_cadre_orientation"][$classe_id]+$hauteur_pris_app_abs;
+
 					//===========================
 					// Pour prendre la hauteur du cadre orientation sur la hauteur du cadre avis
 //					if(getSettingAOui('bull_pdf_orientation_pris_sur_avis')) {
@@ -6015,7 +6016,7 @@ $hauteur_pris_app_abs=0;
 					// Pour avoir une petite marge haute sur les listes de voeux/orientations dans le cadre orientation
 					$padding_haut_orientation=1;
 
-					$pdf->Rect($tab_modele_pdf["X_cadre_orientation"][$classe_id], $tab_modele_pdf["Y_cadre_orientation"][$classe_id], $tab_modele_pdf["largeur_cadre_orientation"][$classe_id], $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
+					$pdf->Rect($tab_modele_pdf["X_cadre_orientation"][$classe_id], $y_corrigee_cadre_orientation, $tab_modele_pdf["largeur_cadre_orientation"][$classe_id], $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
 
 					if($tab_modele_pdf["cadre_voeux_orientation"][$classe_id]!=0) {
 
@@ -6030,16 +6031,16 @@ $hauteur_pris_app_abs=0;
 							}
 						}
 
-						$pdf->Rect($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id], $tab_modele_pdf["Y_cadre_orientation"][$classe_id], $largeur_cadre_voeux, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
+						$pdf->Rect($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id], $y_corrigee_cadre_orientation, $largeur_cadre_voeux, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
 
-						$pdf->SetXY($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id],$tab_modele_pdf["Y_cadre_orientation"][$classe_id]);
+						$pdf->SetXY($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id],$y_corrigee_cadre_orientation);
 						$pdf->SetFont('DejaVu','B',10);
 						$chaine_titre_voeux=$tab_modele_pdf["titre_voeux_orientation"][$classe_id]." : ";
 						$largeur_chaine_titre_voeux=$pdf->GetStringWidth($chaine_titre_voeux);
 						$pdf->Cell($largeur_chaine_titre_voeux,5, $chaine_titre_voeux,0,2,'');
 
 						// Liste des voeux (pouvoir limiter aux N premiers voeux)
-						$pdf->SetXY($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id]+$largeur_chaine_titre_voeux, $tab_modele_pdf["Y_cadre_orientation"][$classe_id]+$padding_haut_orientation);
+						$pdf->SetXY($tab_modele_pdf["X_cadre_voeux_orientation"][$classe_id]+$largeur_chaine_titre_voeux, $y_corrigee_cadre_orientation+$padding_haut_orientation);
 
 						if($use_cell_ajustee=="n") {
 							$texte_voeux="";
@@ -6093,9 +6094,9 @@ $hauteur_pris_app_abs=0;
 							}
 						}
 
-						$pdf->Rect($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id], $tab_modele_pdf["Y_cadre_orientation"][$classe_id], $largeur_cadre_orientation_proposee, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
+						$pdf->Rect($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id], $y_corrigee_cadre_orientation, $largeur_cadre_orientation_proposee, $tab_modele_pdf["hauteur_cadre_orientation"][$classe_id], 'D');
 
-						$pdf->SetXY($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id],$tab_modele_pdf["Y_cadre_orientation"][$classe_id]);
+						$pdf->SetXY($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id],$y_corrigee_cadre_orientation);
 						$pdf->SetFont('DejaVu','B',10);
 						//$pdf->Cell(50,5, $tab_modele_pdf["titre_orientation_proposee"][$classe_id]." : ",0,2,'');
 						$chaine_titre_orientations_proposees=$tab_modele_pdf["titre_orientation_proposee"][$classe_id]." : ";
@@ -6105,7 +6106,7 @@ $hauteur_pris_app_abs=0;
 						$chaine_titre_avis_orientations_proposees=$tab_modele_pdf["titre_avis_orientation_proposee"][$classe_id];
 
 						// Liste des orientations proposées (pouvoir limiter aux N premières)
-						$pdf->SetXY($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id]+$largeur_chaine_titre_orientations_proposees, $tab_modele_pdf["Y_cadre_orientation"][$classe_id]+$padding_haut_orientation);
+						$pdf->SetXY($tab_modele_pdf["X_cadre_orientation_proposee"][$classe_id]+$largeur_chaine_titre_orientations_proposees, $y_corrigee_cadre_orientation+$padding_haut_orientation);
 
 						if($use_cell_ajustee=="n") {
 							$texte_orientations_proposees="";
@@ -6443,7 +6444,7 @@ $hauteur_pris_app_abs=0;
 						}
 						$pdf->SetFont('DejaVu','B',$taille);
 						$pdf->MultiCell($tab_modele_pdf["longeur_sign_chef"][$classe_id],5, ($tab_bull['formule']),0,2,'');
-                        $pdf->SetX($tab_modele_pdf["X_sign_chef"][$classe_id]);
+						$pdf->SetX($tab_modele_pdf["X_sign_chef"][$classe_id]);
 					}
 					if ( $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] != '0' and $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id] < '15' ) {
 						$taille = $tab_modele_pdf["taille_texte_identitee_chef"][$classe_id];
