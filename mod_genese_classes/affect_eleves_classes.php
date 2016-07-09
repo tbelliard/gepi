@@ -196,6 +196,41 @@ $javascript_specifique[] = "lib/tablekit";
 $utilisation_tablekit="ok";
 */
 
+
+$choix_affich=isset($_POST['choix_affich']) ? $_POST['choix_affich'] : (isset($_GET['choix_affich']) ? $_GET['choix_affich'] : NULL);
+
+$id_clas_act=isset($_POST['id_clas_act']) ? $_POST['id_clas_act'] : (isset($_GET['id_clas_act']) ? $_GET['id_clas_act'] : array());
+$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : (isset($_GET['clas_fut']) ? $_GET['clas_fut'] : array());
+$avec_lv1=isset($_POST['avec_lv1']) ? $_POST['avec_lv1'] : (isset($_GET['avec_lv1']) ? $_GET['avec_lv1'] : array());
+$sans_lv1=isset($_POST['sans_lv1']) ? $_POST['sans_lv1'] : (isset($_GET['sans_lv1']) ? $_GET['sans_lv1'] : array());
+$avec_lv2=isset($_POST['avec_lv2']) ? $_POST['avec_lv2'] : (isset($_GET['avec_lv2']) ? $_GET['avec_lv2'] : array());
+$sans_lv2=isset($_POST['sans_lv2']) ? $_POST['sans_lv2'] : (isset($_GET['sans_lv2']) ? $_GET['sans_lv2'] : array());
+$avec_lv3=isset($_POST['avec_lv3']) ? $_POST['avec_lv3'] : (isset($_GET['avec_lv3']) ? $_GET['avec_lv3'] : array());
+$sans_lv3=isset($_POST['sans_lv3']) ? $_POST['sans_lv3'] : (isset($_GET['sans_lv3']) ? $_GET['sans_lv3'] : array());
+$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : (isset($_GET['avec_autre']) ? $_GET['avec_autre'] : array());
+$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : (isset($_GET['sans_autre']) ? $_GET['sans_autre'] : array());
+
+$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : (isset($_GET['avec_profil']) ? $_GET['avec_profil'] : array());
+$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
+
+if((isset($projet))&&($projet!="")&&(isset($choix_affich))) {
+	$requete_definie=isset($_POST['requete_definie']) ? $_POST['requete_definie'] : (isset($_GET['requete_definie']) ? $_GET['requete_definie'] : 'n');
+	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
+	$id_req=isset($_POST['id_req']) ? $_POST['id_req'] : (isset($_GET['id_req']) ? $_GET['id_req'] : NULL);
+
+	if((isset($id_aff))&&(isset($id_req))) {
+		$sql="SELECT nom_requete FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
+		$res_nom_req=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_nom_req)>0) {
+			$lig_nom_req=mysqli_fetch_object($res_nom_req);
+			$titre_page_title2=$id_req.".".remplace_accents($lig_nom_req->nom_requete,"all")." (affectation)";
+		}
+		else {
+			$titre_page_title2=$id_req.".(affectation)";
+		}
+	}
+}
+
 $style_specifique[]="mod_genese_classes/mod_genese_classes";
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
@@ -216,22 +251,6 @@ if((!isset($projet))||($projet=="")) {
 //echo "<div class='noprint'>\n";
 //echo "<p class='bold'><a href='index.php?projet=$projet'>Retour</a>";
 //echo "</div>\n";
-
-$choix_affich=isset($_POST['choix_affich']) ? $_POST['choix_affich'] : (isset($_GET['choix_affich']) ? $_GET['choix_affich'] : NULL);
-
-$id_clas_act=isset($_POST['id_clas_act']) ? $_POST['id_clas_act'] : (isset($_GET['id_clas_act']) ? $_GET['id_clas_act'] : array());
-$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : (isset($_GET['clas_fut']) ? $_GET['clas_fut'] : array());
-$avec_lv1=isset($_POST['avec_lv1']) ? $_POST['avec_lv1'] : (isset($_GET['avec_lv1']) ? $_GET['avec_lv1'] : array());
-$sans_lv1=isset($_POST['sans_lv1']) ? $_POST['sans_lv1'] : (isset($_GET['sans_lv1']) ? $_GET['sans_lv1'] : array());
-$avec_lv2=isset($_POST['avec_lv2']) ? $_POST['avec_lv2'] : (isset($_GET['avec_lv2']) ? $_GET['avec_lv2'] : array());
-$sans_lv2=isset($_POST['sans_lv2']) ? $_POST['sans_lv2'] : (isset($_GET['sans_lv2']) ? $_GET['sans_lv2'] : array());
-$avec_lv3=isset($_POST['avec_lv3']) ? $_POST['avec_lv3'] : (isset($_GET['avec_lv3']) ? $_GET['avec_lv3'] : array());
-$sans_lv3=isset($_POST['sans_lv3']) ? $_POST['sans_lv3'] : (isset($_GET['sans_lv3']) ? $_GET['sans_lv3'] : array());
-$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : (isset($_GET['avec_autre']) ? $_GET['avec_autre'] : array());
-$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : (isset($_GET['sans_autre']) ? $_GET['sans_autre'] : array());
-
-$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : (isset($_GET['avec_profil']) ? $_GET['avec_profil'] : array());
-$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
 
 // Choix des élèves à afficher:
 //if(!isset($_POST['choix_affich'])) {

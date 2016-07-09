@@ -9,7 +9,10 @@
 
 
 	<title><?php
-		if((isset($titre_page))&&($titre_page!="")) {
+		if((isset($titre_page_title2))&&($titre_page_title2!="")) {
+			echo "$titre_page_title2 : $tbs_gepiSchoolName";
+		}
+		elseif((isset($titre_page))&&($titre_page!="")) {
 			echo "$titre_page : $tbs_gepiSchoolName";
 		}
 		elseif((isset($titre_page_title))&&($titre_page_title!="")) {
