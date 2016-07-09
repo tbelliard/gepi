@@ -1318,72 +1318,6 @@ echo "</pre>";
 
 	$affiche_numero_responsable=$tab_bull['affiche_numero_responsable'];
 
-	//=====================================
-	/*
-	// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
-
-	// Règles en rouge:
-	// Selon ce que l'on souhaite débugger, décommenter une des deux règles
-	$pdf->SetDrawColor(255,0,0);
-	//=====================================
-	// Règle 1: horizontale
-	$tmp_marge_gauche=5;
-	$tmp_marge_haut=5;
-	$x=$tmp_marge_gauche;
-	$y=$tmp_marge_haut;
-
-	$pdf->SetXY($x,$y);
-	$pdf->Cell(200,1,'','T',0,'C',0);
-
-	for($loop=0;$loop<19;$loop++) {
-		$x=$tmp_marge_gauche+$loop*10;
-		$pdf->SetXY($x,$y);
-		$pdf->Cell(5,20,''.$loop,'',0,'L',0);
-		$pdf->SetXY($x,$y);
-		$pdf->Cell(10,270,'','L',0,'C',0);
-
-		for($loop2=0;$loop2<10;$loop2++) {
-			$pdf->SetXY($x+$loop2,$y);
-			$pdf->Cell(10,5,'','L',0,'C',0);
-		}
-	}
-	//=====================================
-	// Règle 2: verticale
-	$tmp_marge_gauche=1;
-	$tmp_marge_haut=0;
-	$x=$tmp_marge_gauche;
-	$y=$tmp_marge_haut;
-
-	$pdf->SetFont('DejaVu','',5);
-
-	// Ligne verticale
-	$pdf->SetXY($x,$y);
-	$pdf->Cell(1,280,'','L',0,'C',0);
-
-	for($loop=1;$loop<29;$loop++) {
-		// Repère numérique en cm
-		$y=$tmp_marge_haut+$loop*10-3;
-		$pdf->SetXY($x,$y);
-		$pdf->Cell(10,5,''.$loop,'',0,'L',0);
-
-		// Ligne tous les centimètres
-		$y=$tmp_marge_haut+$loop*10;
-		$pdf->SetXY($x,$y);
-		$pdf->Cell(200,10,'','T',0,'C',0);
-
-		// Les millimètres
-		for($loop2=0;$loop2<10;$loop2++) {
-			$pdf->SetXY($x,$y-10+$loop2);
-			$pdf->Cell(2,10,'','T',0,'C',0);
-		}
-	}
-	//=====================================
-	// Retour au noir pour les tracés qui suivent:
-	$pdf->SetDrawColor(0,0,0);
-	*/
-	//=====================================
-
-
 	if(($nb_releve_par_page!=1)||($nb_releve_par_page!=2)) {
 		// Actuellement, on n'a qu'un bulletin par page/recto donc qu'un relevé de notes par verso, mais sait-on jamais un jour...
 		$nb_releve_par_page=1;
@@ -1809,6 +1743,72 @@ echo "</pre>";
 	for($num_resp_bull=0;$num_resp_bull<$nb_bulletins;$num_resp_bull++) {
 		$pdf->AddPage(); //ajout d'une page au document
 		$pdf->SetFont('DejaVu');
+
+		//=====================================
+		/*
+		// NE PAS SUPPRIMER CETTE SECTION... c'est pour le debug
+		// 20160709
+		// Règles en rouge:
+		// Selon ce que l'on souhaite débugger, décommenter une des deux règles
+		$pdf->SetDrawColor(255,0,0);
+		//=====================================
+		// Règle 1: horizontale
+		$tmp_marge_gauche=5;
+		$tmp_marge_haut=5;
+		$x=$tmp_marge_gauche;
+		$y=$tmp_marge_haut;
+
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(200,1,'','T',0,'C',0);
+
+		for($loop=0;$loop<19;$loop++) {
+			$x=$tmp_marge_gauche+$loop*10;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(5,20,''.$loop,'',0,'L',0);
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(10,270,'','L',0,'C',0);
+
+			for($loop2=0;$loop2<10;$loop2++) {
+				$pdf->SetXY($x+$loop2,$y);
+				$pdf->Cell(10,5,'','L',0,'C',0);
+			}
+		}
+		//=====================================
+		// Règle 2: verticale
+		$tmp_marge_gauche=1;
+		$tmp_marge_haut=0;
+		$x=$tmp_marge_gauche;
+		$y=$tmp_marge_haut;
+
+		$pdf->SetFont('DejaVu','',5);
+
+		// Ligne verticale
+		$pdf->SetXY($x,$y);
+		$pdf->Cell(1,280,'','L',0,'C',0);
+
+		for($loop=1;$loop<29;$loop++) {
+			// Repère numérique en cm
+			$y=$tmp_marge_haut+$loop*10-3;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(10,5,''.$loop,'',0,'L',0);
+
+			// Ligne tous les centimètres
+			$y=$tmp_marge_haut+$loop*10;
+			$pdf->SetXY($x,$y);
+			$pdf->Cell(200,10,'','T',0,'C',0);
+
+			// Les millimètres
+			for($loop2=0;$loop2<10;$loop2++) {
+				$pdf->SetXY($x,$y-10+$loop2);
+				$pdf->Cell(2,10,'','T',0,'C',0);
+			}
+		}
+		//=====================================
+		// Retour au noir pour les tracés qui suivent:
+		$pdf->SetDrawColor(0,0,0);
+		*/
+		//=====================================
+
 
 		//================================
 		// On insère le footer dès que la page est créée:
@@ -5910,6 +5910,10 @@ fclose($f);
 					//Arrondi à l'entier supérieur : ceil()
 					$nb_ligne = 1;
 					$nb_ligne = ceil($val / 200);
+					// Pour éviter l'écrasement du cadre Avis du conseil de classe:
+					if($nb_ligne>2) {
+						$nb_ligne=2;
+					}
 					$hauteur_pris = $nb_ligne * 3;
 
 					$taille_max_police=8;
@@ -6296,31 +6300,49 @@ fclose($f);
 
 			}
 
-			//if($avec_coches_mentions=="y") {
 			if($tab_modele_pdf["affich_coches_mentions"][$classe_id]!="n") {
-				// ***** AJOUT POUR LES MENTIONS *****
-				// Essai pour ajouter un bloc renseignant les mentions du CC
-				// A COMPLETER...
-				$pdf->SetFont('DejaVu','',9);
+				// 20160709
+				$Y_pp_aff=$Y_avis_cons_init+5;
+				$h_coche=4;
+				$taille_police_coche=9;
+				while(($h_coche>1)&&($Y_pp_aff+$h_coche*count($tableau_des_mentions_sur_le_bulletin)>$Y_avis_cons_init+$hauteur_avis_cons_init)) {
+					/*
+					fich_debug_bull("======================\n");
+					fich_debug_bull("\$h_coche=$h_coche\n");
+					fich_debug_bull("\$taille_police_coche=$taille_police_coche\n");
+					fich_debug_bull("\$Y_pp_aff+\$h_coche*count(\$tableau_des_mentions_sur_le_bulletin)=".$Y_pp_aff."+".$h_coche."*".count($tableau_des_mentions_sur_le_bulletin)."=$Y_pp_aff+".($h_coche*count($tableau_des_mentions_sur_le_bulletin))."=".($Y_pp_aff+$h_coche*count($tableau_des_mentions_sur_le_bulletin))."\n");
+					fich_debug_bull("\$Y_avis_cons_init+\$hauteur_avis_cons_init=$Y_avis_cons_init+$hauteur_avis_cons_init=".($Y_avis_cons_init+$hauteur_avis_cons_init)."\n");
+					fich_debug_bull("On réduit \$h_coche et \$taille_police_coche\n");
+					*/
+
+					$h_coche-=0.1;
+					$taille_police_coche-=0.2;
+					//fich_debug_bull("\$h_coche=$h_coche et \$taille_police_coche=$taille_police_coche\n");
+				}
+				if($taille_police_coche<3) {
+					$taille_police_coche=3;
+				}
+
+				$pdf->SetFont('DejaVu','',$taille_police_coche);
 				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id]+$tab_modele_pdf["longeur_avis_cons"][$classe_id]-35;
 				//$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+5;
 				$Y_pp_aff=$Y_avis_cons_init+5;
 				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
 
-				/*
-				$pdf->Cell(35,4, 'Félicitations      ',0,2,'R');
-				$pdf->Cell(35,4, 'Mention honorable      ',0,2,'R');
-				$pdf->Cell(35,4, 'Encouragements      ',0,2,'R');
-				*/
 				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
 					$tableau_des_mentions_sur_le_bulletin=get_mentions($classe_id);
 				}
 
 				//for($loop_mention=0;$loop_mention<count($tableau_des_mentions_sur_le_bulletin);$loop_mention++) {
 				$loop_mention=0;
+				$largeur_max_mention=0;
 				foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
 					//$pdf->Cell(35,4, $value_mention,0,2,'R');
-					$pdf->Cell(35,4, $value_mention,0,2,'L');
+					$largeur_courante_mention=$pdf->GetStringWidth($value_mention);
+					if($largeur_courante_mention>$largeur_max_mention) {
+						$largeur_max_mention=$largeur_courante_mention;
+					}
+					$pdf->Cell(35, $h_coche, $value_mention,0,2,'L');
 					$loop_mention++;
 				}
 
@@ -6333,35 +6355,22 @@ fclose($f);
 				//for($loop_mention=0;$loop_mention<count($tableau_des_mentions_sur_le_bulletin);$loop_mention++) {
 				$loop_mention=0;
 				foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
-					$pdf->Rect($X_pp_aff+30, $Y_pp_aff+4*$loop_mention+0.3, 2.4, 3);
+					//$pdf->Rect($X_pp_aff+($largeur_max_mention+5), $Y_pp_aff+$h_coche*$loop_mention+0.3, 2.4, 3);
+					// Le +$loop_mention est ajouté pour le debug
+					//$pdf->Rect($X_pp_aff+($largeur_max_mention+5)+$loop_mention, $Y_pp_aff+$h_coche*$loop_mention+0.3, $h_coche*3/4, $h_coche*3/4);
+					$pdf->Rect($X_pp_aff+($largeur_max_mention+5), $Y_pp_aff+$h_coche*$loop_mention+0.3, $h_coche*3/4, $h_coche*3/4);
 
 					if($key_mention==$tab_bull['id_mention'][$i]) {
-						$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+$loop_mention*4);
-						$pdf->Cell(35,4, 'X',0,2,'R');
+						//$pdf->SetXY($X_pp_aff-($largeur_max_mention)-1.73,$Y_pp_aff+$loop_mention*$h_coche);
+						//$pdf->Cell(35,$h_coche, 'X',0,2,'R');
+						$pdf->Line($X_pp_aff+($largeur_max_mention+5), $Y_pp_aff+$h_coche*$loop_mention+0.3, $X_pp_aff+($largeur_max_mention+5)+$h_coche*3/4, $Y_pp_aff+$h_coche*$loop_mention+0.3+$h_coche*3/4);
+
+						$pdf->Line($X_pp_aff+($largeur_max_mention+5), $Y_pp_aff+$h_coche*$loop_mention+0.3+$h_coche*3/4, $X_pp_aff+($largeur_max_mention+5)+$h_coche*3/4, $Y_pp_aff+$h_coche*$loop_mention+0.3);
 					}
 					$loop_mention++;
 				}
-				$pdf->Rect($X_pp_aff, $Y_pp_aff+0.1, 0.01, $loop_mention*4);
-	
-				/*
-				// Si félicitations (à modifier...)
-				if($textmention=="F") {
-					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff);
-					$pdf->Cell(35,4, 'X',0,2,'R');
-				}
-				// Si mention honorable (à modifier...)
-				if($textmention=="M") {
-					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+4);
-					$pdf->Cell(35,4, 'X',0,2,'R');
-				}
-				// Si encouragements (à modifier...)
-				if($textmention=="E") {
-					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+8);
-					$pdf->Cell(35,4, 'X',0,2,'R');
-				}
-				*/
-				// Fin de l'essai
-				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+				$pdf->Rect($X_pp_aff, $Y_pp_aff+0.1, 0.01, $loop_mention*$h_coche);
+
 			}
 
 			// ======================= bloc du président du conseil de classe ================
