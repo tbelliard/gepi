@@ -75,7 +75,7 @@ function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80)
 				$envoi.="\n";
 				$envoi.=$data;
 			}
-			if (!$socket=@fsockopen($url,$port,$errno,$errstr,30)) return 'Erreur : '.$errstr;
+			if (!$socket=@fsockopen($url,$port,$errno,$errstr,120)) return 'Erreur fsckopen : '.$errstr;
 			fputs($socket,$envoi);
 
 			// En-tête
@@ -136,6 +136,7 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['data'].='</pluriAPI>'."\n";
 
 			$reponse=envoi_requete_http($url,$script,$parametres);
+			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			$xml = new DOMDocument();
 			$xml->loadXML($reponse);
 			$err=$xml->getElementsByTagName('err');
@@ -160,6 +161,7 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['numero']=$to; // numéros de téléphones auxquels on envoie le message séparés par des tirets
 			$t_erreurs=array(80 => 'Le message a été envoyé', 81 => 'Le message est enregistré pour un envoi en différé', 82 => 'Le login et/ou mot de passe n’est pas valide',  83 => 'Vous devez créditer le compte', 84 => 'Le numéro de gsm n’est pas valide', 85 => 'Le format d’envoi en différé n’est pas valide', 86 => 'Le groupe de contacts est vide', 87 => 'La valeur email est vide', 88 => 'La valeur pass est vide',  89 => 'La valeur numero est vide', 90 => 'La valeur message est vide', 91 => 'Le message a déjà été envoyé à ce numéro dans les 24 dernières heures');
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
+			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			if ($reponse!='80') {
 				return 'SMS non envoyé(s) : '.$reponse.' '.$t_erreurs[$reponse];
 				} 
@@ -185,6 +187,7 @@ function envoi_SMS($tab_to,$sms) {
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
 			
 			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
+			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			if (substr($reponse, 0, 5)=='error' || substr($reponse, 0, 6)=='Erreur') {
 				return 'SMS non envoyé(s) : '.$reponse;
 				} 
@@ -237,7 +240,8 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['smsData'].='	}'."\n";
 			$parametres['smsData'].='}'."\n";
 			
-			$reponse=envoi_requete_http($url,$script,$parametres);
+			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
+			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			$t_reponse=json_decode($reponse,true);
 			if ($t_reponse['status']==100) return 'OK';
 				else return 'SMS non envoyé(s) : '.$t_reponse['statusText'];
