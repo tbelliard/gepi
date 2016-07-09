@@ -196,17 +196,54 @@ if(!isset($id_groupe)) {
 	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($res_grp)==0) {
 		//echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore défini les classes/élèves concernés par le brevet.</p>\n";
-		echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
+		//echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
+
+		$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE nv.id_classe=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."';";
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp)>0) {
+			echo "<p>L'administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.<br />
+Vous pouvez néanmoins saisir les appréciations pour le ou les classes/groupes suivants&nbsp;:</p>
+<ul>";
+	while($lig_grp=mysqli_fetch_object($res_grp)) {
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id_groupe'>".get_info_grp($lig_grp->id_groupe)."</a></li>\n";
+	}
+	echo "
+</ul>\n";
+		}
+		else {
+			echo "<p>Aucune de vos classes n'est concernée par le Brevet des collèges.<br />Ou alors votre administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet.</p>\n";
+		}
+
 		require("../lib/footer.inc.php");
 		die();
 	}
 
+	$tab_grp_deja=array();
 	echo "<p>Choisissez le groupe pour lequel vous souhaitez saisir les appréciations pour les fiches brevet: </p>\n";
 	echo "<ul>\n";
 	while($lig_grp=mysqli_fetch_object($res_grp)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id'>$lig_grp->description (<i>$lig_grp->classe</i>)</a></li>\n";
+		$tab_grp_deja[]=$lig_grp->id;
 	}
 	echo "</ul>\n";
+
+	$sql="SELECT nv.*, jgc.id_groupe FROM notanet_verrou nv, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE nv.id_classe=jgc.id_classe AND jgc.id_groupe=jgp.id_groupe AND jgp.login='".$_SESSION['login']."';";
+	$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res_grp)>0) {
+		$chaine_autres_groupes="";
+		while($lig_grp=mysqli_fetch_object($res_grp)) {
+			if(!in_array($lig_grp->id_groupe, $tab_grp_deja)) {
+				$chaine_autres_groupes.="<li><a href='".$_SERVER['PHP_SELF']."?id_groupe=$lig_grp->id_groupe'>".get_info_grp($lig_grp->id_groupe)."</a></li>\n";
+			}
+		}
+		if($chaine_autres_groupes!="") {
+			echo "<p>L'administrateur n'a pas encore effectué l'extraction des moyennes pour le brevet pour le ou les enseignements suivants.<br />
+Vous pouvez néanmoins en saisir les appréciations&nbsp;:</p>
+<ul>
+	$chaine_autres_groupes
+</ul>\n";
+		}
+	}
 
 	/*
 	$affichage="<p>Choisissez le groupe pour lequel vous souhaitez saisir les appréciations pour les fiches brevet: </p>\n";
@@ -328,18 +365,35 @@ else {
 
 			if($mode_moy=="extract_moy") {
 				$sql="SELECT n.note FROM notanet n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
+				//echo "<tr><td colspan='4'>$sql</td></tr>";
+				$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
+
+				if(mysqli_num_rows($note_query)>0) {
+					$eleve_note = @old_mysql_result($note_query, 0, "note");
+					$eleve_note_html=$eleve_note;
+					$title_eleve_note=" title=\"Moyenne extraite\"";
+				}
+				else {
+					$eleve_note="";
+					$eleve_note_html="<span style='color:red'>X</span>";
+					$title_eleve_note=" title=\"Moyenne non encore extraite par l'administrateur.\"";
+				}
 			}
 			else {
 				$sql="SELECT n.note FROM notanet_saisie n WHERE (n.login='$eleve_login' AND n.matiere='$matiere');";
-			}
-			//echo "<tr><td colspan='4'>$sql</td></tr>";
-			$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
+				//echo "<tr><td colspan='4'>$sql</td></tr>";
+				$note_query = mysqli_query($GLOBALS["mysqli"], $sql);
 
-			if(mysqli_num_rows($note_query)>0) {
-				$eleve_note = @old_mysql_result($note_query, 0, "note");
-			}
-			else {
-				$eleve_note="";
+				if(mysqli_num_rows($note_query)>0) {
+					$eleve_note = @old_mysql_result($note_query, 0, "note");
+					$eleve_note_html=$eleve_note;
+					$title_eleve_note=" title=\"Moyenne saisie\"";
+				}
+				else {
+					$eleve_note="";
+					$eleve_note_html="<span style='color:red'>X</span>";
+					$title_eleve_note=" title=\"Vous devez saisir une moyenne\"";
+				}
 			}
 
 			// Notes des périodes
@@ -385,7 +439,7 @@ else {
 			echo $eleve_notes_trim;
 			echo "</td>\n";
 
-			echo "<td>".$eleve_note."</td>\n";
+			echo "<td".$title_eleve_note.">".$eleve_note_html."</td>\n";
 
 			echo "<td>\n";
 
