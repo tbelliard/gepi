@@ -168,17 +168,20 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	//$fich=fopen("/tmp/infos_matieres_eleve.txt","a+");
 	//fwrite($fich,"\$tab_bull['eleve'][$i]['nom']=".$tab_bull['eleve'][$i]['nom']."\n");
 	//$tab_bull['eleve'][$i]['cat_id']=array();
-	for($j=0;$j<count($tab_bull['groupe']);$j++) {
-		if(isset($tab_bull['note'][$j][$i])) {
+	for($m=0;$m<count($tab_bull['groupe']);$m++) {
+		//if(isset($tab_bull['note'][$m][$i])) {
+		// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+		if((isset($tab_bull['note'][$m][$i]))&&
+		(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
 			// Si l'élève suit l'option, sa note est affectée (éventuellement vide)
-			//fwrite($fich,"\$tab_bull['groupe'][$j]['matiere']['matiere']=".$tab_bull['groupe'][$j]['matiere']['matiere']." ");
-			//fwrite($fich,"\$tab_bull['note'][$j][$i]=".$tab_bull['note'][$j][$i]."\n");
+			//fwrite($fich,"\$tab_bull['groupe'][$m]['matiere']['matiere']=".$tab_bull['groupe'][$m]['matiere']['matiere']." ");
+			//fwrite($fich,"\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."\n");
 			$nb_matiere++;
 
 			/*
-			if(isset($tab_bull['cat_id'][$j])) {
-				if(!in_array($tab_bull['cat_id'][$j], $tab_bull['eleve'][$i]['cat_id'])) {
-					$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['cat_id'][$j];
+			if(isset($tab_bull['cat_id'][$m])) {
+				if(!in_array($tab_bull['cat_id'][$m], $tab_bull['eleve'][$i]['cat_id'])) {
+					$tab_bull['eleve'][$i]['cat_id'][]=$tab_bull['cat_id'][$m];
 				}
 			}
 			*/
@@ -655,7 +658,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$cpt_matiere=0;
 		$y_courant=$y0+0.5;
 		for($m=0;$m<count($tab_bull['groupe']);$m++) {
-			if(isset($tab_bull['note'][$m][$i])) {
+			//if(isset($tab_bull['note'][$m][$i])) {
+			// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+			if((isset($tab_bull['note'][$m][$i]))&&
+			(!isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
 				// Colonne 1 : Matière, prof
 
 				$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
@@ -1166,46 +1172,32 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			//=========================================
 
-			// EPI en cycle 4
+			$total_hauteur_EPI_AP_Parcours=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]-$param_bull2016["y_EPI_AP_Parcours"]-$param_bull2016["espace_vertical_avant_bandeau_Bilan"]-3*$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]-2*$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
+			// $total_hauteur_EPI_AP_Parcours à diviser par le nombre d'EPI/AP/Parcours suivis par l'élève
 
-			//=========================================
+			$nb_EPI_AP_Parcours=0;
+			$nb_EPI=0;
+			$nb_AP=0;
+			$nb_Parcours=0;
+			for($m=0;$m<count($tab_bull['groupe']);$m++) {
+				//if(isset($tab_bull['note'][$m][$i])) {
+				// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+				if((isset($tab_bull['note'][$m][$i]))&&
+				(isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+					if($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="EPI") {
+						$nb_EPI++;
+					}
+					elseif($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="AP") {
+						$nb_AP++;
+					}
+					elseif($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="Parcours") {
+						$nb_Parcours++;
+					}
+				}
+			}
+			$nb_EPI_AP_Parcours=$nb_EPI+$nb_AP+$nb_Parcours;
 
-			// AP
-
-			//=========================================
-
-			// Parcours éducatifs
-
-			//=========================================
-
-			/*
-			// Bandeau Bilan de l'acquisition des connaissances et compétences
-
-			$pdf->SetFillColor($param_bull2016["couleur_bandeau_bilan_acquisitions"]["R"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["V"], $param_bull2016["couleur_bandeau_bilan_acquisitions"]["B"]);
-
-			$pdf->Rect($param_bull2016["x_bandeau_bilan_acquisitions"], $param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"], $param_bull2016["largeur_bandeau_bilan_acquisitions"], $param_bull2016["hauteur_bandeau_bilan_acquisitions"], 'F');
-
-			$pdf->SetFillColor(0, 0, 0);
-			$pdf->SetTextColor(255, 255, 255);
-			$pdf->SetXY($param_bull2016["x_bandeau_bilan_acquisitions"], $param_bull2016["y_bandeau_bilan_acquisitions_cycle_4"]+1);
-			$pdf->SetFont('DejaVu','B',12);
-			$pdf->Cell($param_bull2016["largeur_bandeau_bilan_acquisitions"],7, "Bilan de l'acquisition des connaissances et compétences",0,2,'C');
-
-			// Cadre synthèse de l'évolution des acquis...
-
-			$pdf->SetFillColor($param_bull2016["couleur_bilan_acquisitions"]["R"], $param_bull2016["couleur_bilan_acquisitions"]["V"], $param_bull2016["couleur_bilan_acquisitions"]["B"]);
-
-			$pdf->Rect($param_bull2016["x_bilan_acquisitions"], $param_bull2016["y_bilan_acquisitions_cycle_4"], $param_bull2016["largeur_bilan_acquisitions"], $param_bull2016["hauteur_bilan_acquisitions_cycle_4"], 'F');
-
-			$pdf->SetFillColor(0, 0, 0);
-			$pdf->SetTextColor(0, 0, 0);
-			$pdf->SetXY($param_bull2016["x_bilan_acquisitions"], $param_bull2016["y_bilan_acquisitions_cycle_4"]+1);
-			$pdf->SetFont('DejaVu','',9);
-			//$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],$param_bull2016["y_bilan_acquisitions_cycle_4"], "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
-			$pdf->Cell($param_bull2016["largeur_bilan_acquisitions"],7, "Synthèse de l'évolution des acquis scolaires et conseils pour progresser :",0,2,'L');
-
-			// A FAIRE : Insérer l'avis du conseil de classe
-			*/
+			// Il faudrait encore ajouter les AID tagués EPI/AP/Parcours
 
 			//=========================================
 
@@ -1217,13 +1209,781 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			//=========================================
 
+			$total_hauteur_EPI_AP_Parcours=$param_bull2016["y_bandeau_bilan_acquisitions_cycle_3"]-$param_bull2016["y_EPI_AP_Parcours"]-$param_bull2016["espace_vertical_avant_bandeau_Bilan"]-3*$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]-2*$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
+			// $total_hauteur_EPI_AP_Parcours à diviser par le nombre d'EPI/AP/Parcours suivis par l'élève
+
+			$nb_EPI_AP_Parcours=0;
+			$nb_EPI=0; // Ce nombre va rester à 0 pour le cycle 3
+			$nb_AP=0;
+			$nb_Parcours=0;
+			for($m=0;$m<count($tab_bull['groupe']);$m++) {
+				//if(isset($tab_bull['note'][$m][$i])) {
+				// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+				if((isset($tab_bull['note'][$m][$i]))&&
+				(isset($tab_bull['groupe'][$m]['type_grp'][0]))) {
+					if($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="AP") {
+						$nb_AP++;
+					}
+					elseif($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="Parcours") {
+						$nb_Parcours++;
+					}
+				}
+			}
+			$nb_EPI_AP_Parcours=$nb_EPI+$nb_AP+$nb_Parcours;
+
+			// Il faudrait encore ajouter les AID tagués EPI/AP/Parcours
+
+			//=========================================
+
+		}
+
+
+		if($nb_EPI_AP_Parcours>0) {
+			$hauteur_EPI_AP_Parcours=$total_hauteur_EPI_AP_Parcours/$nb_EPI_AP_Parcours;
+			// On limite la hauteur
+			if($hauteur_EPI_AP_Parcours>30) {
+				$hauteur_EPI_AP_Parcours=30;
+			}
+
+			$y_courant=$param_bull2016["y_EPI_AP_Parcours"];
+
+			// EPI en cycle 4 seulement
+
+			if($nb_EPI>0) {
+
+				$pdf->SetFillColor($param_bull2016["couleur_bandeau_EPI"]["R"], $param_bull2016["couleur_bandeau_EPI"]["V"], $param_bull2016["couleur_bandeau_EPI"]["B"]);
+				$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours"], $param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"], 'F');
+
+				$pdf->SetFillColor(0, 0, 0);
+				//$pdf->SetTextColor(255, 255, 255);
+				$pdf->SetTextColor(0, 0, 0);
+				$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+				$pdf->SetFont('DejaVu','',8);
+				$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours"],7, "Enseignements pratiques interdisciplinaires : projets réalisés et implication de l'élève",0,2,'L');
+				//." nb_EPI=".$nb_EPI." nb_AP=".$nb_AP." nb_Parcours=".$nb_Parcours
+
+				$cpt_matiere=0;
+				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+				for($m=0;$m<count($tab_bull['groupe']);$m++) {
+					//if(isset($tab_bull['note'][$m][$i])) {
+					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+					if((isset($tab_bull['note'][$m][$i]))&&
+					(isset($tab_bull['groupe'][$m]['type_grp'][0]))&&
+					($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="EPI")) {
+
+						// Colonne 1 : Matière, prof
+
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+						$pdf->SetFont('DejaVu','',8);
+
+						if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['name'];
+						}
+						elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['description'];
+						}
+						else {
+							// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+							if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+							}
+						}
+
+						$hauteur_caractere_matiere=8;
+						$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						$cell_ajustee_texte_matiere=1;
+						if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+							// Encadrement
+							//$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+
+							// cell_ajustee() ne centre pas verticalement le texte.
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=2;
+							// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+							//$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
+							//$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant);
+
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							//$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+							$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							//$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+							$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+							//cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+						}
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$Y_decal=$y_courant;
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+							$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+						}
+			
+
+						// On note l'ordonnée pour le nom des professeurs
+						$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->SetFont('DejaVu','',8);
+
+						//fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
+						//fich_debug_bull("Le nom de matière est écrit; on est à mi-hauteur de la cellule pour écrire le nom du prof:\n");
+						//fich_debug_bull("\$Y_decal=$Y_decal\n");
+
+						// nom des professeurs
+
+						if ( isset($tab_bull['groupe'][$m]["profs"]["list"]) )
+						{
+
+							// Présentation en ligne des profs
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['groupe'][$m]["profs"]["list"]);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
+							if($text_prof!="") {
+								//$espace_matiere_prof = $espace_entre_matier/2;
+								$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+								$hauteur_caractere_prof = 7;
+
+								/*
+								if($use_cell_ajustee=="n") {
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+									$val = $pdf->GetStringWidth($text_prof);
+									$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
+									$grandeur_texte='test';
+									while($grandeur_texte!='ok') {
+										if($taille_texte<$val)
+										{
+											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+											$val = $pdf->GetStringWidth($text_prof);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
+									}
+									$grandeur_texte='test';
+									$pdf->SetX($X_bloc_matiere);
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
+								}
+								else {
+								*/
+									$texte=$text_prof;
+									$taille_max_police=$hauteur_caractere_prof;
+									$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+									$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+									$h_cell=$espace_matiere_prof;
+
+									$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+								//}
+							}
+						}
+
+
+						// Colonne 2 : Appréciation
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+						$pdf->SetFillColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+						// calcul de la taille du texte des appréciations
+						$hauteur_caractere_appreciation = 8;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						//suppression des espaces en début et en fin
+						$app_aff = trim($tab_bull['app'][$m][$i]);
+
+						fich_debug_bull("__________________________________________\n");
+						fich_debug_bull("$app_aff\n");
+						fich_debug_bull("__________________________________________\n");
+
+						// DEBUT AJUSTEMENT TAILLE APPRECIATION
+						$taille_texte_total = $pdf->GetStringWidth($app_aff);
+						//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+						$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+						if($use_cell_ajustee=="n") {
+							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+							$nb_ligne_app = '2.8';
+							//$nb_ligne_app = '3.8';
+							//$nb_ligne_app = '4.8';
+							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+							$grandeur_texte='test';
+
+							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+							while($grandeur_texte!='ok') {
+								if($taille_texte_max < $taille_texte_total)
+								{
+									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+						}
+						else {
+							$texte=$app_aff;
+							//$texte="Bla bla\nbli ".$app_aff;
+							$taille_max_police=$hauteur_caractere_appreciation;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$largeur_appreciation2;
+							$h_cell=$hauteur_EPI_AP_Parcours;
+
+							if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+
+						$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+						$cpt_matiere++;
+
+					}
+				}
+				$y_courant+=$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
+			}
+
+			//=========================================
+
 			// AP
+
+			if($nb_AP>0) {
+
+				$pdf->SetFillColor($param_bull2016["couleur_bandeau_EPI"]["R"], $param_bull2016["couleur_bandeau_EPI"]["V"], $param_bull2016["couleur_bandeau_EPI"]["B"]);
+				$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours"], $param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"], 'F');
+
+				$pdf->SetFillColor(0, 0, 0);
+				//$pdf->SetTextColor(255, 255, 255);
+				$pdf->SetTextColor(0, 0, 0);
+				$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+				$pdf->SetFont('DejaVu','',8);
+				$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours"],7, "Accompagnement personnalisé : actions réalisées et implication de l'élève",0,2,'L');
+
+				$cpt_matiere=0;
+				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+				for($m=0;$m<count($tab_bull['groupe']);$m++) {
+					//if(isset($tab_bull['note'][$m][$i])) {
+					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+					if((isset($tab_bull['note'][$m][$i]))&&
+					(isset($tab_bull['groupe'][$m]['type_grp'][0]))&&
+					($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="AP")) {
+
+						// Colonne 1 : Matière, prof
+
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+						$pdf->SetFont('DejaVu','',8);
+
+						if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['name'];
+						}
+						elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['description'];
+						}
+						else {
+							// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+							if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+							}
+						}
+
+						$hauteur_caractere_matiere=8;
+						$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						$cell_ajustee_texte_matiere=1;
+						if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+							// Encadrement
+							//$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+
+							// cell_ajustee() ne centre pas verticalement le texte.
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=2;
+							// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+							//$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
+							//$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant);
+
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							//$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+							$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							//$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+							$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+							//cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+						}
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$Y_decal=$y_courant;
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+							$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+						}
+			
+
+						// On note l'ordonnée pour le nom des professeurs
+						$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->SetFont('DejaVu','',8);
+
+						//fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
+						//fich_debug_bull("Le nom de matière est écrit; on est à mi-hauteur de la cellule pour écrire le nom du prof:\n");
+						//fich_debug_bull("\$Y_decal=$Y_decal\n");
+
+						// nom des professeurs
+
+						if ( isset($tab_bull['groupe'][$m]["profs"]["list"]) )
+						{
+
+							// Présentation en ligne des profs
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['groupe'][$m]["profs"]["list"]);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
+							if($text_prof!="") {
+								//$espace_matiere_prof = $espace_entre_matier/2;
+								$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+								$hauteur_caractere_prof = 7;
+
+								/*
+								if($use_cell_ajustee=="n") {
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+									$val = $pdf->GetStringWidth($text_prof);
+									$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
+									$grandeur_texte='test';
+									while($grandeur_texte!='ok') {
+										if($taille_texte<$val)
+										{
+											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+											$val = $pdf->GetStringWidth($text_prof);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
+									}
+									$grandeur_texte='test';
+									$pdf->SetX($X_bloc_matiere);
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
+								}
+								else {
+								*/
+									$texte=$text_prof;
+									$taille_max_police=$hauteur_caractere_prof;
+									$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+									$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+									$h_cell=$espace_matiere_prof;
+
+									$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+								//}
+							}
+						}
+
+
+						// Colonne 2 : Appréciation
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+						$pdf->SetFillColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+						// calcul de la taille du texte des appréciations
+						$hauteur_caractere_appreciation = 8;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						//suppression des espaces en début et en fin
+						$app_aff = trim($tab_bull['app'][$m][$i]);
+
+						fich_debug_bull("__________________________________________\n");
+						fich_debug_bull("$app_aff\n");
+						fich_debug_bull("__________________________________________\n");
+
+						// DEBUT AJUSTEMENT TAILLE APPRECIATION
+						$taille_texte_total = $pdf->GetStringWidth($app_aff);
+						//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+						$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+						if($use_cell_ajustee=="n") {
+							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+							$nb_ligne_app = '2.8';
+							//$nb_ligne_app = '3.8';
+							//$nb_ligne_app = '4.8';
+							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+							$grandeur_texte='test';
+
+							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+							while($grandeur_texte!='ok') {
+								if($taille_texte_max < $taille_texte_total)
+								{
+									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+						}
+						else {
+							$texte=$app_aff;
+							//$texte="Bla bla\nbli ".$app_aff;
+							$taille_max_police=$hauteur_caractere_appreciation;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$largeur_appreciation2;
+							$h_cell=$hauteur_EPI_AP_Parcours;
+
+							if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+
+						$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+						$cpt_matiere++;
+
+					}
+				}
+				$y_courant+=$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
+			}
 
 			//=========================================
 
 			// Parcours éducatifs
 
+			if($nb_Parcours>0) {
+
+				$pdf->SetFillColor($param_bull2016["couleur_bandeau_EPI"]["R"], $param_bull2016["couleur_bandeau_EPI"]["V"], $param_bull2016["couleur_bandeau_EPI"]["B"]);
+				$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours"], $param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"], 'F');
+
+				$pdf->SetFillColor(0, 0, 0);
+				//$pdf->SetTextColor(255, 255, 255);
+				$pdf->SetTextColor(0, 0, 0);
+				$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+				$pdf->SetFont('DejaVu','',8);
+				$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours"],7, "Parcours éducatifs : projet(s) mis en oeuvre et implication de l'élève",0,2,'L');
+
+				$cpt_matiere=0;
+				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+				for($m=0;$m<count($tab_bull['groupe']);$m++) {
+					//if(isset($tab_bull['note'][$m][$i])) {
+					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
+					if((isset($tab_bull['note'][$m][$i]))&&
+					(isset($tab_bull['groupe'][$m]['type_grp'][0]))&&
+					($tab_bull['groupe'][$m]['type_grp'][0]['nom_court']=="Parcours")) {
+
+						// Colonne 1 : Matière, prof
+
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+						$pdf->SetFont('DejaVu','',8);
+
+						if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['name'];
+						}
+						elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['description'];
+						}
+						else {
+							// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+							if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+							}
+							else {
+								$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+							}
+						}
+
+						$hauteur_caractere_matiere=8;
+						$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						$cell_ajustee_texte_matiere=1;
+						if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+							// Encadrement
+							//$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_entre_matier, "",'LRBT',1,'L');
+
+							// cell_ajustee() ne centre pas verticalement le texte.
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=2;
+							// On repositionne et on inscrit le nom de matière sur la moitié de la hauteur de la cellule
+							//$pdf->SetXY($X_bloc_matiere, $Y_decal+$Y_decal_cell_ajustee);
+							//$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant);
+
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							//$taille_min_police=ceil($taille_max_police/$tab_modele_pdf["cell_ajustee_texte_matiere_ratio_min_max"][$classe_id]);
+							$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							//$h_cell=$espace_entre_matier/2-$Y_decal_cell_ajustee;
+							$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+							//cell_ajustee("<b>".$texte."</b>",$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+						}
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$Y_decal=$y_courant;
+							$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+							$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+						}
+			
+
+						// On note l'ordonnée pour le nom des professeurs
+						$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->SetFont('DejaVu','',8);
+
+						//fich_debug_bull("\$info_nom_matiere=$info_nom_matiere\n");
+						//fich_debug_bull("Le nom de matière est écrit; on est à mi-hauteur de la cellule pour écrire le nom du prof:\n");
+						//fich_debug_bull("\$Y_decal=$Y_decal\n");
+
+						// nom des professeurs
+
+						if ( isset($tab_bull['groupe'][$m]["profs"]["list"]) )
+						{
+
+							// Présentation en ligne des profs
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['groupe'][$m]["profs"]["list"]);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
+							if($text_prof!="") {
+								//$espace_matiere_prof = $espace_entre_matier/2;
+								$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+								$hauteur_caractere_prof = 7;
+
+								/*
+								if($use_cell_ajustee=="n") {
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+									$val = $pdf->GetStringWidth($text_prof);
+									$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
+									$grandeur_texte='test';
+									while($grandeur_texte!='ok') {
+										if($taille_texte<$val)
+										{
+											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+											$pdf->SetFont('DejaVu','',$hauteur_caractere_prof);
+											$val = $pdf->GetStringWidth($text_prof);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
+									}
+									$grandeur_texte='test';
+									$pdf->SetX($X_bloc_matiere);
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, ($text_prof),'LR',1,'L');
+								}
+								else {
+								*/
+									$texte=$text_prof;
+									$taille_max_police=$hauteur_caractere_prof;
+									$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+									$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+									$h_cell=$espace_matiere_prof;
+
+									$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+									cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+								//}
+							}
+						}
+
+
+						// Colonne 2 : Appréciation
+						$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+						$pdf->SetFillColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+						// calcul de la taille du texte des appréciations
+						$hauteur_caractere_appreciation = 8;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						//suppression des espaces en début et en fin
+						$app_aff = trim($tab_bull['app'][$m][$i]);
+
+						fich_debug_bull("__________________________________________\n");
+						fich_debug_bull("$app_aff\n");
+						fich_debug_bull("__________________________________________\n");
+
+						// DEBUT AJUSTEMENT TAILLE APPRECIATION
+						$taille_texte_total = $pdf->GetStringWidth($app_aff);
+						//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+						$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+						if($use_cell_ajustee=="n") {
+							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+							$nb_ligne_app = '2.8';
+							//$nb_ligne_app = '3.8';
+							//$nb_ligne_app = '4.8';
+							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+							$grandeur_texte='test';
+
+							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+							while($grandeur_texte!='ok') {
+								if($taille_texte_max < $taille_texte_total)
+								{
+									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+						}
+						else {
+							$texte=$app_aff;
+							//$texte="Bla bla\nbli ".$app_aff;
+							$taille_max_police=$hauteur_caractere_appreciation;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$largeur_appreciation2;
+							$h_cell=$hauteur_EPI_AP_Parcours;
+
+							if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+
+						$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+						$cpt_matiere++;
+
+					}
+				}
+			}
+
+			//=========================================
 		}
+
+
 
 		//=========================================
 

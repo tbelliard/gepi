@@ -751,91 +751,169 @@ if(mysqli_num_rows($test)==1) {
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_orientation_periodes'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_orientation_periodes', value='';");
 	$result .= "Initialisation du paramètre 'bull_orientation_periodes' à '': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_orientation_periodes', value='';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_voeux_orientation'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_voeux_orientation', value='y';");
 	$result .= "Initialisation du paramètre 'bull_voeux_orientation' à 'y': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_voeux_orientation', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_titre_voeux_orientation'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_titre_voeux_orientation', value='Voeux';");
 	$result .= "Initialisation du paramètre 'bull_titre_voeux_orientation' à 'Voeux': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_titre_voeux_orientation', value='Voeux';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_orientation'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_orientation', value='y';");
 	$result .= "Initialisation du paramètre 'bull_orientation' à 'y': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_orientation', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_titre_orientation'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';");
 	$result .= "Initialisation du paramètre 'bull_titre_orientation' à 'Orientation proposée': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_aff_Elements_Programmes'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_aff_Elements_Programmes', value='y';");
 	$result .= "Initialisation du paramètre 'bull_aff_Elements_Programmes' à 'y': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_aff_Elements_Programmes', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
 
 $req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='bull_largeur_col_Elements_Programmes'");
 $res_test = mysqli_num_rows($req_test);
 if ($res_test == 0){
-	$query = mysqli_query($GLOBALS["mysqli"], "INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150';");
 	$result .= "Initialisation du paramètre 'bull_largeur_col_Elements_Programmes' à '150': ";
-	if($query){
-		$result .= msj_ok();
+	$sql="INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
 	}
-	else{
-		$result .= msj_erreur('!');
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 }
+
+$result .= "<strong>Ajout d'une table 'groupes_types' :</strong> ";
+$test = sql_query1("SHOW TABLES LIKE 'groupes_types';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS groupes_types (
+						id int(11) unsigned NOT NULL auto_increment, 
+						nom_court varchar(255) NOT NULL default '',
+						nom_complet varchar(255) NOT NULL default '',
+						nom_complet_pluriel varchar(255) NOT NULL default '',
+						PRIMARY KEY id (id));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+
+		$result .= "Ajout du type AP : ";
+		$sql="INSERT INTO groupes_types SET nom_court='AP', nom_complet='Accompagnement personnalisé', nom_complet_pluriel='Accompagnements personnalisés';";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+
+		$result .= "Ajout du type EPI : ";
+		$sql="INSERT INTO groupes_types SET nom_court='EPI', nom_complet='Enseignement pratique interdisciplinaire', nom_complet_pluriel='Enseignements pratiques interdisciplinaires';";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+
+		$result .= "Ajout du type AP : ";
+		$sql="INSERT INTO groupes_types SET nom_court='Parcours', nom_complet='Parcours éducatif', nom_complet_pluriel='Parcours éducatifs';";
+		//echo "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter == '') {
+			$result .= msj_ok("SUCCES !");
+		}
+		else {
+			$result .= msj_erreur("ECHEC !");
+		}
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= "<br />".msj_present("La table existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'j_groupes_types' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_types';");
+if ($test == -1) {
+$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_types (
+						id int(11) unsigned NOT NULL auto_increment, 
+						id_groupe int(11) NOT NULL,
+						id_type int(11) NOT NULL,
+						PRIMARY KEY id (id));");
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
+}
+
 ?>

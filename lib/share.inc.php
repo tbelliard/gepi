@@ -15181,4 +15181,20 @@ function get_tab_traitement_abs2($id_traitement) {
 
 	return $tab;
 }
+
+function get_tab_types_groupe() {
+	global $mysqli;
+
+	$tab=array();
+
+	$sql="SELECT * FROM groupes_types;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)>0) {
+		while($lig=mysqli_fetch_assoc($res)) {
+			$tab[]=$lig;
+		}
+	}
+	return $tab;
+}
 ?>

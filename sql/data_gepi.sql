@@ -1792,3 +1792,6 @@ INSERT INTO setting SET name='bull_orientation', value='y';
 INSERT INTO setting SET name='bull_titre_orientation', value='Orientation proposée';
 INSERT INTO setting SET name='bull_aff_Elements_Programmes', value='y';
 INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150';
+INSERT INTO groupes_types SET nom_court='AP', nom_complet='Accompagnement personnalisé', nom_complet_pluriel='Accompagnements personnalisés';";
+INSERT INTO groupes_types SET nom_court='EPI', nom_complet='Enseignement pratique interdisciplinaire', nom_complet_pluriel='Enseignements pratiques interdisciplinaires';
+INSERT INTO groupes_types SET nom_court='Parcours', nom_complet='Parcours éducatif', nom_complet_pluriel='Parcours éducatifs';

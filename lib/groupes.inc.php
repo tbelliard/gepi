@@ -338,7 +338,7 @@ function get_visibilite_for_group($_id_groupe) {
  * @return array Tableaux imbriques des informations du groupe
  */
 function get_group($_id_groupe,$tab_champs=array('all')) {
-    global $mysqli;
+	global $mysqli;
 	$temp=array();
 
 	$get_matieres='n';
@@ -636,6 +636,24 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 					}
 
 				}
+			}
+		}
+
+		// 20160709
+		$temp["type_grp"]=array();
+		$sql="SELECT * FROM j_groupes_types jgt, groupes_types gt
+						WHERE jgt.id_type=gt.id AND 
+							jgt.id_groupe='".$_id_groupe."';";
+		//echo "$sql<br />";
+		$res_gt=mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_gt)>0) {
+			$cpt_gt=0;
+			while($lig_gt=mysqli_fetch_object($res_gt)) {
+				// Normalement on fait au plus un tour dans la boucle
+				$temp["type_grp"][$cpt_gt]["id_type"]=$lig_gt->id_type;
+				$temp["type_grp"][$cpt_gt]["nom_court"]=$lig_gt->nom_court;
+				$temp["type_grp"][$cpt_gt]["nom_complet"]=$lig_gt->nom_complet;
+				$cpt_gt++;
 			}
 		}
 

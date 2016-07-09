@@ -1775,9 +1775,11 @@ else {
 
 			require_once("bulletin_pdf_2016.inc.php");
 
+			/*
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
 				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
 			}
+			*/
 
 			//================================
 			//================================

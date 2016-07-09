@@ -71,6 +71,9 @@ if(isset($_GET['forcer_recalcul_rang'])) {
 	}
 }
 
+// 20160709
+$tab_type_grp=get_tab_types_groupe();
+
 // =================================
 // AJOUT: boireaus
 $chaine_options_classes="";
@@ -312,6 +315,44 @@ if (isset($_POST['is_posted'])) {
         // Toutes les vérifications de sécurité sont faites dans la fonction
         $update = update_group_class_options($key, $id_classe, $value);
     }
+
+	$type_grp=array();
+	foreach ($_POST as $key => $value) {
+		$pattern = "/^type\_/";
+		if (preg_match($pattern, $key)) {
+			$group_id = preg_replace($pattern, "", $key);
+			$type_grp[$group_id] = $value;
+
+			$sql="SELECT * FROM j_groupes_types WHERE id_groupe='".$group_id."';";
+			$res_type_grp=mysqli_query($GLOBALS['mysqli'], $sql);
+			if(mysqli_num_rows($res_type_grp)==0) {
+				if($type_grp[$group_id]!="") {
+					$sql="INSERT INTO j_groupes_types SET id_groupe='".$group_id."', id_type='".$value."';";
+					$insert=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(!$insert) {
+						$msg.="Erreur lors de l'enregistrement du type du groupe n°".$tab_id_groupe[$loop].".<br />";
+					}
+				}
+			}
+			else {
+				$lig_type=mysqli_fetch_object($res_type_grp);
+				if($type_grp[$group_id]=="") {
+					$sql="DELETE FROM j_groupes_types WHERE id_groupe='".$group_id."';";
+					$suppr=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(!$suppr) {
+						$msg.="Erreur lors de la remise à vide du type du groupe n°".$tab_id_groupe[$loop].".<br />";
+					}
+				}
+				elseif($type_grp[$group_id]!=$lig_type->id_type) {
+					$sql="UPDATE j_groupes_types SET id_type='".$value."' WHERE id_groupe='".$group_id."';";
+					$update=mysqli_query($GLOBALS['mysqli'], $sql);
+					if(!$update) {
+						$msg.="Erreur lors de la mise à jour du type du groupe n°".$tab_id_groupe[$loop].".<br />";
+					}
+				}
+			}
+		}
+	}
 
 	for($loo=0;$loo<count($tab_domaines);$loo++) {
 		/*
@@ -987,10 +1028,11 @@ for($i=0;$i<10;$i++){
 	echo "<th colspan='".($nb_periode-1)."'><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits</th>\n";
 	echo "<th rowspan='2'>Priorité<br />d'affichage</th>\n";
 	echo "<th rowspan='2'>Catégorie</th>\n";
+	echo "<th rowspan='2'>Type</th>\n";
 	echo "<th colspan='".count($tab_domaines)."'>Visibilité</th>\n";
 	echo "<th rowspan='2'>Coefficient</th>\n";
 	echo "<th colspan='3'>Mode moy</th>\n";
-	$nb_total_col=8+$nb_periode-1+count($tab_domaines);
+	$nb_total_col=9+$nb_periode-1+count($tab_domaines);
 
 	if ($gepiSettings['active_mod_ects'] == "y") {
 		echo "<th rowspan='2'>Activer la saisie ECTS</th>\n";
@@ -1201,6 +1243,40 @@ for($i=0;$i<10;$i++){
 			}
 			//echo ">".html_entity_decode_all_version($cat->nom_court)."</option>\n";
 			echo ">".htmlspecialchars($cat->nom_court)."</option>\n";
+		}
+		echo "</select>\n";
+
+		if(($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=0)&&(!in_array($current_group["classes"]["classes"][$id_classe]["categorie_id"],$tab_categorie_id))) {
+			$temoin_anomalie_categorie="y";
+			echo "<a href='#' onclick=\"afficher_div('association_anormale_enseignement_categorie','y',-100,20);return false;\"'><img src='../images/icons/flag2.gif' width='17' height='18' /></a>";
+		}
+
+		if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
+			//echo "<br />\n";
+			$message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/projects/gepi/wiki/Enseignement_invisible";
+			//echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+
+			echo "<a href='#' onclick=\"afficher_div('enseignement_invisible','y',-100,20);return false;\"";
+			echo ">";
+			echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
+			echo "</a>";
+		}
+		echo "</td>\n";
+
+
+		// 20160709
+		// Type (AP, EPI, Parcours)
+		echo "<td>";
+		echo "<select onchange=\"changement()\" size=1 id='type_".$cpt_grp."' name='type_" .$current_group["id"]. "'>\n";
+		echo "<option value='' title=\"Groupe standard\"";
+		if ((!isset($current_group["type_grp"]))||(count($current_group["type_grp"])=="0")) {echo " SELECTED";}
+		echo ">---</option>\n";
+		for($loop_grp_type=0;$loop_grp_type<count($tab_type_grp);$loop_grp_type++) {
+			echo "<option value='".$tab_type_grp[$loop_grp_type]["id"] . "' title=\"".$tab_type_grp[$loop_grp_type]["nom_complet"] . "\"";
+			if((isset($current_group["type_grp"][0]))&&($current_group["type_grp"][0]["id_type"]==$tab_type_grp[$loop_grp_type]["id"])) {
+				echo " selected";
+			}
+			echo ">".$tab_type_grp[$loop_grp_type]["nom_court"]."</option>\n";
 		}
 		echo "</select>\n";
 

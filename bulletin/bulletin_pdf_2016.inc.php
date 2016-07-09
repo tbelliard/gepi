@@ -293,6 +293,69 @@
 
 	//========================================
 
+	$param_bull2016["x_EPI_AP_Parcours"]=10;
+	$param_bull2016["y_EPI_AP_Parcours"]=11;
+	$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]=7;
+	$param_bull2016["largeur_EPI_AP_Parcours"]=189;
+	$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"]=5;
+	$param_bull2016["espace_vertical_avant_bandeau_Bilan"]=10;
+
+	$param_bull2016["largeur_EPI_AP_Parcours_col_1"]=44;
+
+	$param_bull2016["x_EPI_AP_Parcours_col_2"]=$param_bull2016["x_EPI_AP_Parcours"]+$param_bull2016["largeur_EPI_AP_Parcours_col_1"]+0.5;
+	$param_bull2016["largeur_EPI_AP_Parcours_col_2"]=$param_bull2016["largeur_EPI_AP_Parcours"]-$param_bull2016["largeur_EPI_AP_Parcours_col_1"]-0.5;
+
+	// Bandeau EPI
+	$param_bull2016["couleur_bandeau_EPI"]["R"]=243;
+	$param_bull2016["couleur_bandeau_EPI"]["V"]=249;
+	$param_bull2016["couleur_bandeau_EPI"]["B"]=254;
+	//f3f9fe
+
+	$param_bull2016["couleur_EPI_alt1"]["R"]=230;
+	$param_bull2016["couleur_EPI_alt1"]["V"]=242;
+	$param_bull2016["couleur_EPI_alt1"]["B"]=252;
+	//e6f2fc
+
+	$param_bull2016["couleur_EPI_alt2"]["R"]=243;
+	$param_bull2016["couleur_EPI_alt2"]["V"]=249;
+	$param_bull2016["couleur_EPI_alt2"]["B"]=254;
+	//f3f9fe
+
+	// Bandeau AP
+	$param_bull2016["couleur_bandeau_AP"]["R"]=243;
+	$param_bull2016["couleur_bandeau_AP"]["V"]=249;
+	$param_bull2016["couleur_bandeau_AP"]["B"]=254;
+	//f3f9fe
+
+	$param_bull2016["couleur_AP_alt1"]["R"]=230;
+	$param_bull2016["couleur_AP_alt1"]["V"]=242;
+	$param_bull2016["couleur_AP_alt1"]["B"]=252;
+	//e6f2fc
+
+	$param_bull2016["couleur_AP_alt2"]["R"]=243;
+	$param_bull2016["couleur_AP_alt2"]["V"]=249;
+	$param_bull2016["couleur_AP_alt2"]["B"]=254;
+	//f3f9fe
+
+	// Bandeau Parcours
+	$param_bull2016["couleur_bandeau_Parcours"]["R"]=243;
+	$param_bull2016["couleur_bandeau_Parcours"]["V"]=249;
+	$param_bull2016["couleur_bandeau_Parcours"]["B"]=254;
+	//f3f9fe
+
+	$param_bull2016["couleur_Parcours_alt1"]["R"]=230;
+	$param_bull2016["couleur_Parcours_alt1"]["V"]=242;
+	$param_bull2016["couleur_Parcours_alt1"]["B"]=252;
+	//e6f2fc
+
+	$param_bull2016["couleur_Parcours_alt2"]["R"]=243;
+	$param_bull2016["couleur_Parcours_alt2"]["V"]=249;
+	$param_bull2016["couleur_Parcours_alt2"]["B"]=254;
+	//f3f9fe
+
+	//========================================
+
+	/*
 	$champ_bull_pdf[]="nom_model_bulletin";
 	$champ_bull_pdf[]="active_bloc_datation";
 	$champ_bull_pdf[]="active_bloc_eleve";
@@ -515,6 +578,7 @@
 
 	//$champ_bull_pdf[]="ligne_commentaire_orientation";
 	//=========================
+	*/
 
 	/*
 		mysql> show fields from modele_bulletin;
@@ -538,6 +602,7 @@
 		mysql>
 	*/
 
+	/*
 	$val_defaut_champ_bull_pdf["nom_model_bulletin"]="Nom du modèle";
 	$val_defaut_champ_bull_pdf["active_bloc_datation"]=1;
 	$val_defaut_champ_bull_pdf["active_bloc_eleve"]=1;
@@ -802,4 +867,5 @@
 			return $lig->max_id_model_bulletin;
 		}
 	}
+	*/
 ?>
