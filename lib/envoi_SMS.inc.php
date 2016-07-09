@@ -30,7 +30,7 @@ function envoi_requete_http($url,$script,$t_parametres,$methode='POST',$port=80)
 		} */
 	$url_encode_parametres=http_build_query($t_parametres);
 
-	if (!in_array('curl',get_loaded_extensions())) {
+	if (in_array('curl',get_loaded_extensions())) {
 	    // avec cURL
 		$ch=curl_init();
 		if ($methode=='GET') {
