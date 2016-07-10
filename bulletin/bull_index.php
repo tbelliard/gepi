@@ -1533,6 +1533,8 @@ else {
 	$gepi_cpe_suivi=getSettingValue("gepi_cpe_suivi");
 	//=========================================
 	// AID
+	// Paramètre HTML qui est aussi pris en compte par les bulletins PDF... pas génial.
+	// Il faudrait un paramètre dans les bulletins PDF aussi pour varier les comportements selon les modèles
 	$bull_affiche_aid=getSettingValue("bull_affiche_aid");
 
 	if ($bull_affiche_aid == 'y') {
@@ -3192,6 +3194,7 @@ else {
 							   $display_begin = $finfo->display_begin;
 							   $display_end = $finfo->display_end;
 							   $type_note = $finfo->type_note;
+							   $type_aid = $finfo->type_aid;
 							   $note_max = $finfo->note_max;
 							   
 								if (($periode_num >= $display_begin) and ($periode_num <= $display_end)) {
@@ -3204,6 +3207,7 @@ else {
 										$aid_id = $obj_aid->id_aid;
 										if ($aid_id != '') {
 
+											$tab_ele['aid_b'][$zz]['type_aid']=$type_aid;
 											$tab_ele['aid_b'][$zz]['display_begin']=$display_begin;
 											$tab_ele['aid_b'][$zz]['display_end']=$display_end;
 
@@ -3373,12 +3377,14 @@ else {
 							   $call_data_aid_e->data_seek($z);
 							   $finfo_aid_e = $call_data_aid_e->fetch_object();
 							   if ($finfo_aid_e) {
+								 $type_aid = $finfo_aid_e->type_aid;
 								 $display_begin = $finfo_aid_e->display_begin;
 								 $display_end = $finfo_aid_e->display_end;
 								 $type_note = $finfo_aid_e->type_note;
 								 $note_max = $finfo_aid_e->note_max;
 							   } else {
 								 $display_begin = $display_end = $type_note = $note_max = '';
+								 $type_aid=0;
 							   }
 							   
 							   
@@ -3394,6 +3400,7 @@ else {
 										$aid_id = $obj_aid->id_aid;
 
 										if ($aid_id != '') {
+											$tab_ele['aid_e'][$zz]['type_aid']=$type_aid;
 											$tab_ele['aid_e'][$zz]['display_begin']=$display_begin;
 											$tab_ele['aid_e'][$zz]['display_end']=$display_end;
 

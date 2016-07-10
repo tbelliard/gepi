@@ -33,7 +33,7 @@ INSERT INTO aid  values ('0', 'Premiere activite ludique', '1', '1', '', '', '',
 #
 # table aid_config
 #
-INSERT INTO aid_config  values ('A.A.L', 'Aid d\'activite ludique', '20', 'b', '0', 'every', '1', '3', '', 'y', '1', 'y', 'y', 'n', 'n', 'n');
+INSERT INTO aid_config  values ('A.A.L', 'Aid d\'activite ludique', '20', 'b', '0', 'every', '0', '1', '3', '', 'y', '1', 'y', 'y', 'n', 'n', 'n');
 
 
 #

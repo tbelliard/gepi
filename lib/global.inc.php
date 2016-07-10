@@ -268,4 +268,22 @@ $icone_deposer_alerte="module_alerte32.png";
 
 // Liste des drapeaux/icones autorisés pour les tag CDT
 $tab_drapeaux_tag_cdt=array("images/bulle_bleue.png", "images/bulle_verte.png", "images/bulle_rouge.png", "images/icons/flag.png", "images/icons/flag_green.png", "images/icons/flag_yellow.png", "images/icons/flag2.gif", "images/icons/ap.png", "images/icons/epi.png");
+
+// Types d'AID:
+$tab_type_aid=array();
+$tab_type_aid[0]["nom_court"]="";
+$tab_type_aid[0]["nom_complet"]="";
+$tab_type_aid[0]["nom_complet_pluriel"]="";
+
+$tab_type_aid[1]["nom_court"]="AP";
+$tab_type_aid[1]["nom_complet"]="Accompagnement personnalisé";
+$tab_type_aid[1]["nom_complet_pluriel"]="Accompagnements personnalisés";
+
+$tab_type_aid[2]["nom_court"]="EPI";
+$tab_type_aid[2]["nom_complet"]="Enseignement pratique interdisciplinaire";
+$tab_type_aid[2]["nom_complet_pluriel"]="Enseignements pratiques interdisciplinaires";
+
+$tab_type_aid[3]["nom_court"]="Parcours";
+$tab_type_aid[3]["nom_complet"]="Parcours éducatif";
+$tab_type_aid[3]["nom_complet_pluriel"]="Parcours éducatifs";
 ?>

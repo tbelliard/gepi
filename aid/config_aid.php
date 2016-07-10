@@ -46,6 +46,7 @@ $note_max = isset($_POST["note_max"]) ? $_POST["note_max"] : NULL;
 $display_begin = isset($_POST["display_begin"]) ? $_POST["display_begin"] : NULL;
 $display_end = isset($_POST["display_end"]) ? $_POST["display_end"] : NULL;
 $type_note = isset($_POST["type_note"]) ? $_POST["type_note"] : NULL;
+$type_aid = isset($_POST["type_aid"]) ? $_POST["type_aid"] : NULL;
 $order_display1 = isset($_POST["order_display1"]) ? $_POST["order_display1"] : NULL;
 $order_display2 = isset($_POST["order_display2"]) ? $_POST["order_display2"] : NULL;
 $message = isset($_POST["message"]) ? $_POST["message"] : NULL;
@@ -85,6 +86,7 @@ if (isset($is_posted) and ($is_posted == "1")) {
 			display_begin='".$display_begin."',
 			display_end='".$display_end."',
 			type_note='".$type_note."',
+			type_aid='".$type_aid."',
 			order_display1 = '".$order_display1."',
 			order_display2 = '".$order_display2."',
 			message ='".$message."',
@@ -218,6 +220,7 @@ if (isset($indice_aid)) {
     $order_display1 = $obj_data->order_display1;
     $order_display2 = $obj_data->order_display2;
     $type_note = $obj_data->type_note;
+    $type_aid = $obj_data->type_aid;
     $display_begin = $obj_data->display_begin;
     $display_end = $obj_data->display_end;
     $message = $obj_data->message;
@@ -245,6 +248,7 @@ if (isset($indice_aid)) {
     $order_display1 = '';
     $order_display2 = '';
     $type_note = "every";
+    $type_aid = 0;
     $display_bulletin = "y";
     $autoriser_inscript_multiples = "n";
     $bull_simplifie = "y";
@@ -300,6 +304,24 @@ echo add_token_field();
 		<hr />
 
 <?php
+
+	echo "Type particulier pour l'AID&nbsp;: 
+		<select name='type_aid' id='type_aid'>";
+	for($loop=0;$loop<count($tab_type_aid);$loop++) {
+		if($type_aid==$loop) {
+			$selected=" selected";
+		}
+		else {
+			$selected="";
+		}
+		echo "
+			<option value='".$loop."' title=\"".$tab_type_aid[$loop]["nom_complet"]."\"".$selected.">".$tab_type_aid[$loop]["nom_court"]."</option>";
+	}
+	echo "
+		</select>
+		<hr />";
+
+	//=====================================================================================
 
 $query_max_periode = mysqli_query($GLOBALS["mysqli"], "SELECT max(num_periode) max FROM periodes");
 

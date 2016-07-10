@@ -30,11 +30,13 @@ $result .= "<h3 class='titreMaJ'>Mise à jour vers la version 1.6.9 :</h3>";
 $result .= "&nbsp;-> Ajout d'un champ 'tel_pers' à la table 'eleves'<br />";
 $test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM eleves LIKE 'tel_pers';"));
 if ($test_champ==0) {
-	$query = mysqli_query($mysqli, "ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';");
-	if ($query) {
-			$result .= msj_ok("Ok !");
-	} else {
-			$result .= msj_erreur();
+	$sql="ALTER TABLE eleves ADD tel_pers varchar(255) NOT NULL default '';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
 	}
 } else {
 	$result .= msj_present("Le champ existe déjà");
@@ -914,6 +916,19 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_types (
 	}
 } else {
 	$result .= msj_present("La table existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'type_aid' à la table 'aid_config'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM aid_config LIKE 'type_aid';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE aid_config ADD type_aid int(11) NOT NULL DEFAULT '0' AFTER type_note;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
 }
 
 ?>

@@ -197,15 +197,67 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	*/
 
 
+	$nb_AID_b_non_AP_EPI_Parcours=0;
+	$nb_AID_AP_EPI_Parcours=0;
+	$indice_AID_b_AP=array();
+	$indice_AID_b_EPI=array();
+	$indice_AID_b_Parcours=array();
+	$indice_AID_e_AP=array();
+	$indice_AID_e_EPI=array();
+	$indice_AID_e_Parcours=array();
 	// A REVOIR : Certains AID devraient pouvoir être tagués pour apparaitre en page 2 dans les AP, EPI, Parcours personnalisés
 	if(isset($tab_bull['eleve'][$i]['aid_b'])) {
-		$nb_matiere+=count($tab_bull['eleve'][$i]['aid_b']);
+		//$nb_matiere+=count($tab_bull['eleve'][$i]['aid_b']);
+		for($loop=0;$loop<count($tab_bull['eleve'][$i]['aid_b']);$loop++) {
+			// Repérer les AP, EPI,...
+			if($tab_bull['eleve'][$i]['aid_b'][$loop]['type_aid']==0) {
+				$nb_matiere++;
+				$nb_AID_b_non_AP_EPI_Parcours++;
+			}
+			else {
+				$nb_AID_AP_EPI_Parcours++;
+				if($tab_bull['eleve'][$i]['aid_b'][$loop]['type_aid']==1) {
+					$indice_AID_b_AP[]=$loop;
+				}
+				elseif($tab_bull['eleve'][$i]['aid_b'][$loop]['type_aid']==2) {
+					$indice_AID_b_EPI[]=$loop;
+				}
+				elseif($tab_bull['eleve'][$i]['aid_b'][$loop]['type_aid']==3) {
+					$indice_AID_b_Parcours[]=$loop;
+				}
+			}
+		}
 	}
 
+	$nb_AID_e_non_AP_EPI_Parcours=0;
 	if(isset($tab_bull['eleve'][$i]['aid_e'])) {
-		$nb_matiere+=count($tab_bull['eleve'][$i]['aid_e']);
+		//$nb_matiere+=count($tab_bull['eleve'][$i]['aid_e']);
+		for($loop=0;$loop<count($tab_bull['eleve'][$i]['aid_e']);$loop++) {
+			// Repérer les AP, EPI,...
+			if($tab_bull['eleve'][$i]['aid_e'][$loop]['type_aid']==0) {
+				$nb_matiere++;
+				$nb_AID_e_non_AP_EPI_Parcours++;
+			}
+			else {
+				$nb_AID_AP_EPI_Parcours++;
+				if($tab_bull['eleve'][$i]['aid_e'][$loop]['type_aid']==1) {
+					$indice_AID_e_AP[]=$loop;
+				}
+				elseif($tab_bull['eleve'][$i]['aid_e'][$loop]['type_aid']==2) {
+					$indice_AID_e_EPI[]=$loop;
+				}
+				elseif($tab_bull['eleve'][$i]['aid_e'][$loop]['type_aid']==3) {
+					$indice_AID_e_Parcours[]=$loop;
+				}
+			}
+		}
 	}
-
+/*
+echo "<pre>";
+print_r($tab_bull['eleve'][$i]['aid_b']);
+echo "</pre>";
+die();
+*/
 	/*
 	$nb_categories_select=0;
 	//$categorie_passe_for='';
@@ -657,6 +709,320 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		$cpt_matiere=0;
 		$y_courant=$y0+0.5;
+
+		// Début des AID_b
+		if($nb_AID_b_non_AP_EPI_Parcours>0) {
+			if(isset($tab_bull['eleve'][$i]['aid_b'])) {
+				for($m=0;$m<count($tab_bull['eleve'][$i]['aid_b']);$m++) {
+					if($tab_bull['eleve'][$i]['aid_b'][$m]["type_aid"]==0) {
+						// Colonne 1 : Matière, prof
+
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_1"], $y_courant, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant);
+						$pdf->SetFont('DejaVu','',8);
+						/*
+						//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
+						$texte="Matiere $m ".$hauteur_matiere;
+						$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'L', 'M', 0);
+						*/
+
+						if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+						}
+
+						$hauteur_caractere_matiere=8;
+						$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						$cell_ajustee_texte_matiere=1;
+						if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=2;
+							$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_1"];
+							$h_cell=$hauteur_matiere/2-$Y_decal_cell_ajustee;
+
+							cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+				
+						}
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $param_bull2016["largeur_acquis_col_1"]-2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$Y_decal=$y_courant;
+							$pdf->SetXY($param_bull2016["x_acquis_col_1"], $Y_decal);
+							$pdf->Cell($param_bull2016["largeur_acquis_col_1"], $hauteur_matiere/2, ($info_nom_matiere),'',1,'L');
+						}
+				
+
+						// On note l'ordonnée pour le nom des professeurs
+						$Y_decal = $y_courant+($hauteur_matiere/2);
+						$pdf->SetXY($param_bull2016["x_acquis_col_1"], $Y_decal);
+						$pdf->SetFont('DejaVu','',8);
+
+						// nom des professeurs
+						if ( isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][0]) )
+						{
+
+							// Présentation en ligne des profs
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
+							if($text_prof!="") {
+								//$espace_matiere_prof = $espace_entre_matier/2;
+								$espace_matiere_prof = $hauteur_matiere/2;
+								$hauteur_caractere_prof = 7;
+
+								$texte=$text_prof;
+								$taille_max_police=$hauteur_caractere_prof;
+								$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+								$largeur_dispo=$param_bull2016["largeur_acquis_col_1"];
+								$h_cell=$espace_matiere_prof;
+
+								$pdf->SetX($param_bull2016["x_acquis_col_1"]);
+
+								cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							}
+						}
+
+						// Colonne 2 : Éléments de programmes
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_2"], $y_courant, $param_bull2016["largeur_acquis_col_2"], $hauteur_matiere, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_2"], $y_courant);
+						$pdf->SetFont('DejaVu','',7);
+
+						// Pas d'éléments de programmes dans les AID pour le moment
+
+						/*
+						$hauteur_caractere_appreciation = 9;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						$texte_Elements_Programmes="";
+
+						if((isset($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))&&(is_array($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))) {
+							for($loop_mep=0;$loop_mep<count($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]);$loop_mep++) {
+								if($texte_Elements_Programmes!="") {
+									$texte_Elements_Programmes.="\n";
+								}
+								$texte_Elements_Programmes.=$tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']][$loop_mep];
+							}
+						}
+
+						if($texte_Elements_Programmes=="") {
+							//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+						}
+						else {
+							// DEBUT AJUSTEMENT TAILLE ELEMENTS PROGRAMME
+							$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+							//$largeur_dispo=$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_2"];
+
+							if($use_cell_ajustee=="n") {
+								$nb_ligne_app = '2.8';
+								$taille_texte_max = $nb_ligne_app * ($largeur_dispo-4);
+								$grandeur_texte='test';	
+
+								while($grandeur_texte!='ok') {
+									if($taille_texte_max < $taille_texte_total)
+									{
+										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+										$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+									}
+									else {
+										$grandeur_texte='ok';
+									}
+								}
+								$grandeur_texte='test';
+								$pdf->drawTextBox(($texte_Elements_Programmes), $largeur_dispo, $hauteur_matiere, 'J', 'M', 1);
+							}
+							else {
+								$texte=$texte_Elements_Programmes;
+								$taille_max_police=$hauteur_caractere_appreciation;
+								$taille_min_police=ceil($taille_max_police/3);
+
+								$h_cell=$hauteur_matiere;
+
+								if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+								cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							}
+
+						}
+						*/
+
+
+						// Colonne 3 : Appréciation
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_3"], $y_courant, $param_bull2016["largeur_acquis_col_3"], $hauteur_matiere, 'F');
+
+						$pdf->SetFillColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_3"], $y_courant);
+
+						// calcul de la taille du texte des appréciations
+						$hauteur_caractere_appreciation = 8;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						//suppression des espaces en début et en fin
+						//$app_aff = trim($tab_bull['app'][$m][$i]);
+						$app_aff="";
+						if($tab_bull['eleve'][$i]['aid_b'][$m]['message']!='') {
+							$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['message'];
+						}
+						//if($app_aff!='') {$app_aff.=" ";}
+						if(($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='')) {
+							if($app_aff!='') {$app_aff.=" ";}
+							$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+						}
+						if($app_aff!='') {$app_aff.="\n";}
+						$app_aff.=trim($tab_bull['eleve'][$i]['aid_b'][$m]['aid_appreciation']);
+
+						fich_debug_bull("__________________________________________\n");
+						fich_debug_bull("$app_aff\n");
+						fich_debug_bull("__________________________________________\n");
+
+						// DEBUT AJUSTEMENT TAILLE APPRECIATION
+						$taille_texte_total = $pdf->GetStringWidth($app_aff);
+						//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+						$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"];
+
+						if($use_cell_ajustee=="n") {
+							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+							$nb_ligne_app = '2.8';
+							//$nb_ligne_app = '3.8';
+							//$nb_ligne_app = '4.8';
+							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+							$grandeur_texte='test';
+
+							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+							while($grandeur_texte!='ok') {
+								if($taille_texte_max < $taille_texte_total)
+								{
+									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_matiere, 'J', 'M', 1);
+						}
+						else {
+							$texte=$app_aff;
+							//$texte="Bla bla\nbli ".$app_aff;
+							$taille_max_police=$hauteur_caractere_appreciation;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$largeur_appreciation2;
+							$h_cell=$hauteur_matiere;
+
+							if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+
+
+						// Colonne 4 : Moyenne élève
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_moy"], $y_courant, $param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, 'F');
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_moy"], $y_courant);
+						$pdf->SetFont('DejaVu', 'B', 8);
+						//$pdf->Cell($param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, $texte,0,2,'C');
+						//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moy"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+
+						$fleche_evolution="";
+
+						// On filtre si la moyenne est vide, on affiche seulement un tiret
+						if ($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note']=="-") {
+							$valeur = "-";
+						}
+						elseif ($tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut']!="") {
+							if($tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut']=="other") {
+								$valeur = "-";
+							}
+							else {
+								$valeur=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_statut'];
+							}
+						}
+						else {
+							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+						}
+
+						$pdf->Cell($param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, $valeur.$fleche_evolution, 0, 2, 'C', 1);
+						$valeur = "";
+
+
+						// Colonne 5 : Moyenne classe
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_moyclasse"], $y_courant, $param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, 'F');
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+						$pdf->SetFont('DejaVu','',7);
+
+						if (($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne']=="")) {
+							$valeur = "-";
+						}
+						else {
+							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_b'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+						}
+
+						$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
+
+
+						$y_courant+=$hauteur_matiere+0.5;
+
+						$cpt_matiere++;
+					}
+				}
+			}
+		}
+		// Fin des AID_b
+
+		// Début des enseignements de la table 'groupes'
 		for($m=0;$m<count($tab_bull['groupe']);$m++) {
 			//if(isset($tab_bull['note'][$m][$i])) {
 			// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
@@ -1137,6 +1503,320 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$cpt_matiere++;
 			}
 		}
+		// Fin des enseignements de la table 'groupes'
+
+		// Début des AID_e
+		if($nb_AID_e_non_AP_EPI_Parcours>0) {
+			if(isset($tab_bull['eleve'][$i]['aid_e'])) {
+				for($m=0;$m<count($tab_bull['eleve'][$i]['aid_e']);$m++) {
+					if($tab_bull['eleve'][$i]['aid_e'][$m]["type_aid"]==0) {
+						// Colonne 1 : Matière, prof
+
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_1"], $y_courant, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant);
+						$pdf->SetFont('DejaVu','',8);
+						/*
+						//$pdf->Cell($param_bull2016["largeur_bandeau_suivi_acquis"],7, "Suivi des acquis scolaires de l'élève",0,2,'C');
+						$texte="Matiere $m ".$hauteur_matiere;
+						$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_1"], $hauteur_matiere, 'L', 'M', 0);
+						*/
+
+						if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+						}
+
+						$hauteur_caractere_matiere=8;
+						$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+						// 20130927 : cell_ajustee() ou pas sur le nom de matière/enseignement
+						$cell_ajustee_texte_matiere=1;
+						if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+							// On met un décalage pour ne pas coller le texte à la bordure
+							$Y_decal_cell_ajustee=2;
+							$pdf->SetXY($param_bull2016["x_acquis_col_1"], $y_courant+$Y_decal_cell_ajustee);
+
+							$texte=$info_nom_matiere;
+							$taille_max_police=$hauteur_caractere_matiere;
+							$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_1"];
+							$h_cell=$hauteur_matiere/2-$Y_decal_cell_ajustee;
+
+							cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+				
+						}
+						else {
+							$val = $pdf->GetStringWidth($info_nom_matiere);
+							$taille_texte = $param_bull2016["largeur_acquis_col_1"]-2;
+							$grandeur_texte='test';
+							while($grandeur_texte!='ok') {
+								if($taille_texte<$val)
+								{
+									$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+									$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+									$val = $pdf->GetStringWidth($info_nom_matiere);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$Y_decal=$y_courant;
+							$pdf->SetXY($param_bull2016["x_acquis_col_1"], $Y_decal);
+							$pdf->Cell($param_bull2016["largeur_acquis_col_1"], $hauteur_matiere/2, ($info_nom_matiere),'',1,'L');
+						}
+				
+
+						// On note l'ordonnée pour le nom des professeurs
+						$Y_decal = $y_courant+($hauteur_matiere/2);
+						$pdf->SetXY($param_bull2016["x_acquis_col_1"], $Y_decal);
+						$pdf->SetFont('DejaVu','',8);
+
+						// nom des professeurs
+						if ( isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][0]) )
+						{
+
+							// Présentation en ligne des profs
+							// On n'a pas forcément le formatage choisi pour la classe...
+							//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							$text_prof="";
+							for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+								$tmp_login_prof=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+								if($loop_prof_grp>0) {$text_prof.=", ";}
+								$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+							}
+
+							if($text_prof!="") {
+								//$espace_matiere_prof = $espace_entre_matier/2;
+								$espace_matiere_prof = $hauteur_matiere/2;
+								$hauteur_caractere_prof = 7;
+
+								$texte=$text_prof;
+								$taille_max_police=$hauteur_caractere_prof;
+								$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+								$largeur_dispo=$param_bull2016["largeur_acquis_col_1"];
+								$h_cell=$espace_matiere_prof;
+
+								$pdf->SetX($param_bull2016["x_acquis_col_1"]);
+
+								cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							}
+						}
+
+						// Colonne 2 : Éléments de programmes
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_2"], $y_courant, $param_bull2016["largeur_acquis_col_2"], $hauteur_matiere, 'F');
+						$pdf->SetFillColor(0, 0, 0);
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_2"], $y_courant);
+						$pdf->SetFont('DejaVu','',7);
+
+						// Pas d'éléments de programmes dans les AID pour le moment
+
+						/*
+						$hauteur_caractere_appreciation = 9;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						$texte_Elements_Programmes="";
+
+						if((isset($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))&&(is_array($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]))) {
+							for($loop_mep=0;$loop_mep<count($tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']]);$loop_mep++) {
+								if($texte_Elements_Programmes!="") {
+									$texte_Elements_Programmes.="\n";
+								}
+								$texte_Elements_Programmes.=$tab_bull['ElementsProgrammes']['ele'][$tab_bull['eleve'][$i]['login']][$tab_bull['groupe'][$m]['id']][$loop_mep];
+							}
+						}
+
+						if($texte_Elements_Programmes=="") {
+							//$pdf->Cell($tab_modele_pdf["largeur_Elements_Programmes"][$classe_id], $espace_entre_matier, ($texte_Elements_Programmes),'LRB',0,'C');
+						}
+						else {
+							// DEBUT AJUSTEMENT TAILLE ELEMENTS PROGRAMME
+							$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+							//$largeur_dispo=$tab_modele_pdf["largeur_Elements_Programmes"][$classe_id];
+							$largeur_dispo=$param_bull2016["largeur_acquis_col_2"];
+
+							if($use_cell_ajustee=="n") {
+								$nb_ligne_app = '2.8';
+								$taille_texte_max = $nb_ligne_app * ($largeur_dispo-4);
+								$grandeur_texte='test';	
+
+								while($grandeur_texte!='ok') {
+									if($taille_texte_max < $taille_texte_total)
+									{
+										$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+										$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+										$taille_texte_total = $pdf->GetStringWidth($texte_Elements_Programmes);
+									}
+									else {
+										$grandeur_texte='ok';
+									}
+								}
+								$grandeur_texte='test';
+								$pdf->drawTextBox(($texte_Elements_Programmes), $largeur_dispo, $hauteur_matiere, 'J', 'M', 1);
+							}
+							else {
+								$texte=$texte_Elements_Programmes;
+								$taille_max_police=$hauteur_caractere_appreciation;
+								$taille_min_police=ceil($taille_max_police/3);
+
+								$h_cell=$hauteur_matiere;
+
+								if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+								cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+							}
+
+						}
+						*/
+
+
+						// Colonne 3 : Appréciation
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_3"], $y_courant, $param_bull2016["largeur_acquis_col_3"], $hauteur_matiere, 'F');
+
+						$pdf->SetFillColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_3"], $y_courant);
+
+						// calcul de la taille du texte des appréciations
+						$hauteur_caractere_appreciation = 8;
+						$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+						//suppression des espaces en début et en fin
+						//$app_aff = trim($tab_bull['app'][$m][$i]);
+						$app_aff="";
+						if($tab_bull['eleve'][$i]['aid_e'][$m]['message']!='') {
+							$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['message'];
+						}
+						//if($app_aff!='') {$app_aff.=" ";}
+						if(($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='')) {
+							if($app_aff!='') {$app_aff.=" ";}
+							$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+						}
+						if($app_aff!='') {$app_aff.="\n";}
+						$app_aff.=trim($tab_bull['eleve'][$i]['aid_e'][$m]['aid_appreciation']);
+
+						fich_debug_bull("__________________________________________\n");
+						fich_debug_bull("$app_aff\n");
+						fich_debug_bull("__________________________________________\n");
+
+						// DEBUT AJUSTEMENT TAILLE APPRECIATION
+						$taille_texte_total = $pdf->GetStringWidth($app_aff);
+						//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+						$largeur_appreciation2=$param_bull2016["largeur_acquis_col_3"];
+
+						if($use_cell_ajustee=="n") {
+							//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+							$nb_ligne_app = '2.8';
+							//$nb_ligne_app = '3.8';
+							//$nb_ligne_app = '4.8';
+							$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+							//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+							$grandeur_texte='test';
+
+							fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+							fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+							fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+							//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+							fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+							while($grandeur_texte!='ok') {
+								if($taille_texte_max < $taille_texte_total)
+								{
+									$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+									//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+									$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+									$taille_texte_total = $pdf->GetStringWidth($app_aff);
+								}
+								else {
+									$grandeur_texte='ok';
+								}
+							}
+							$grandeur_texte='test';
+							$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_matiere, 'J', 'M', 1);
+						}
+						else {
+							$texte=$app_aff;
+							//$texte="Bla bla\nbli ".$app_aff;
+							$taille_max_police=$hauteur_caractere_appreciation;
+							$taille_min_police=ceil($taille_max_police/3);
+
+							$largeur_dispo=$largeur_appreciation2;
+							$h_cell=$hauteur_matiere;
+
+							if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+
+
+						// Colonne 4 : Moyenne élève
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_colonne_moyenne_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_moy"], $y_courant, $param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, 'F');
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_moy"], $y_courant);
+						$pdf->SetFont('DejaVu', 'B', 8);
+						//$pdf->Cell($param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, $texte,0,2,'C');
+						//$pdf->drawTextBox($texte, $param_bull2016["largeur_acquis_col_moy"], $param_bull2016["hauteur_acquis_ligne_entete"], 'C', 'M', 0);
+
+						$fleche_evolution="";
+
+						// On filtre si la moyenne est vide, on affiche seulement un tiret
+						if ($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note']=="-") {
+							$valeur = "-";
+						}
+						elseif ($tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut']!="") {
+							if($tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut']=="other") {
+								$valeur = "-";
+							}
+							else {
+								$valeur=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_statut'];
+							}
+						}
+						else {
+							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+						}
+
+						$pdf->Cell($param_bull2016["largeur_acquis_col_moy"], $hauteur_matiere, $valeur.$fleche_evolution, 0, 2, 'C', 1);
+						$valeur = "";
+
+
+						// Colonne 5 : Moyenne classe
+						$pdf->SetFillColor($param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_acquis_ligne_alt".($cpt_matiere%2+1)]["B"]);
+						$pdf->Rect($param_bull2016["x_acquis_col_moyclasse"], $y_courant, $param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, 'F');
+
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->SetXY($param_bull2016["x_acquis_col_moyclasse"], $y_courant);
+						$pdf->SetFont('DejaVu','',7);
+
+						if (($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="-")||($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne']=="")) {
+							$valeur = "-";
+						}
+						else {
+							$valeur = present_nombre($tab_bull['eleve'][$i]['aid_e'][$m]['aid_note_moyenne'], $arrondi, $nb_chiffre_virgule, $chiffre_avec_zero);
+						}
+
+						$pdf->Cell($param_bull2016["largeur_acquis_col_moyclasse"], $hauteur_matiere, $valeur,'',0,'C');
+
+
+						$y_courant+=$hauteur_matiere+0.5;
+
+						$cpt_matiere++;
+					}
+				}
+			}
+		}
+		// Fin des AID_e
+
 
 		// FILIGRANE PERIODE NON CLOSE
 		if($tab_bull['verouiller']=="N") {
@@ -1237,6 +1917,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		}
 
+		$nb_EPI_AP_Parcours+=$nb_AID_AP_EPI_Parcours;
+		$nb_AP=$nb_AP+count($indice_AID_b_AP)+count($indice_AID_e_AP);
+		$nb_EPI=$nb_EPI+count($indice_AID_b_EPI)+count($indice_AID_e_EPI);
+		$nb_Parcours=$nb_Parcours+count($indice_AID_b_Parcours)+count($indice_AID_e_Parcours);
 
 		if($nb_EPI_AP_Parcours>0) {
 			$hauteur_EPI_AP_Parcours=$total_hauteur_EPI_AP_Parcours/$nb_EPI_AP_Parcours;
@@ -1264,6 +1948,197 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				$cpt_matiere=0;
 				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+
+				// AID_b de type EPI
+				for($loop=0;$loop<count($indice_AID_b_EPI);$loop++) {
+					$m=$indice_AID_b_EPI[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_b'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_b tagués EPI
+
+				// Enseignements de la table 'groupes' tagués EPI
 				for($m=0;$m<count($tab_bull['groupe']);$m++) {
 					//if(isset($tab_bull['note'][$m][$i])) {
 					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
@@ -1488,6 +2363,198 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					}
 				}
+				// Fin des enseignements de la table 'groupes' tagués EPI
+
+
+				// AID_e de type EPI
+				for($loop=0;$loop<count($indice_AID_e_EPI);$loop++) {
+					$m=$indice_AID_e_EPI[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_e'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_e tagués EPI
+
 				$y_courant+=$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
 			}
 
@@ -1509,6 +2576,199 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				$cpt_matiere=0;
 				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+
+
+				// AID_b de type AP
+				for($loop=0;$loop<count($indice_AID_b_AP);$loop++) {
+					$m=$indice_AID_b_AP[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_b'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_b tagués AP
+
+
+				// Enseignements de la table 'groupes' tagués AP
 				for($m=0;$m<count($tab_bull['groupe']);$m++) {
 					//if(isset($tab_bull['note'][$m][$i])) {
 					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
@@ -1733,6 +2993,198 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					}
 				}
+				// Fin des enseignements de la table 'groupes' tagués AP
+
+
+				// AID_e de type AP
+				for($loop=0;$loop<count($indice_AID_e_AP);$loop++) {
+					$m=$indice_AID_e_AP[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_e'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_e tagués AP
+
 				$y_courant+=$param_bull2016["espace_vertical_entre_sections_EPI_AP_Parcours"];
 			}
 
@@ -1754,6 +3206,199 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				$cpt_matiere=0;
 				$y_courant+=$param_bull2016["hauteur_ligne_titre_EPI_AP_Parcours"]+0.5;
+
+
+				// AID_b de type Parcours
+				for($loop=0;$loop<count($indice_AID_b_Parcours);$loop++) {
+					$m=$indice_AID_b_Parcours[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_b'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_b'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_b'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_b'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_b'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_b tagués Parcours
+
+
+				// Enseignements de la table 'groupes' tagués Parcours
 				for($m=0;$m<count($tab_bull['groupe']);$m++) {
 					//if(isset($tab_bull['note'][$m][$i])) {
 					// On n'affiche pas ici les groupes correspondant à AP, EPI ou Parcours
@@ -1978,6 +3623,199 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					}
 				}
+
+				// Fin des enseignements de la table 'groupes' tagués AP
+
+
+				// AID_e de type Parcours
+				for($loop=0;$loop<count($indice_AID_e_Parcours);$loop++) {
+					$m=$indice_AID_e_Parcours[$loop];
+
+					// Colonne 1 : Matière, prof
+
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours, 'F');
+					$pdf->SetFillColor(0, 0, 0);
+
+					$pdf->SetTextColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant);
+					$pdf->SetFont('DejaVu','',8);
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'])) {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom_complet'];
+					}
+					else {
+						$info_nom_matiere=$tab_bull['eleve'][$i]['aid_e'][$m]['nom'];
+					}
+
+					if(isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'])) {
+						$info_nom_matiere.="\n(".$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'].")";
+					}
+
+					$hauteur_caractere_matiere=8;
+					$cell_ajustee_texte_matiere_ratio_min_max=3;
+
+					// Forcé pour le moment
+					$cell_ajustee_texte_matiere=1;
+					if((isset($cell_ajustee_texte_matiere))&&($cell_ajustee_texte_matiere==1)) {
+						// On met un décalage pour ne pas coller le texte à la bordure
+						$Y_decal_cell_ajustee=2;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $y_courant+$Y_decal_cell_ajustee);
+
+						$texte=$info_nom_matiere;
+						$taille_max_police=$hauteur_caractere_matiere;
+						$taille_min_police=ceil($taille_max_police/$cell_ajustee_texte_matiere_ratio_min_max);
+
+						$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+						$h_cell=$hauteur_EPI_AP_Parcours/2-$Y_decal_cell_ajustee;
+
+						cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+			
+					}
+					else {
+						$val = $pdf->GetStringWidth($info_nom_matiere);
+						$taille_texte = $param_bull2016["largeur_EPI_AP_Parcours_col_1"]-2;
+						$grandeur_texte='test';
+						while($grandeur_texte!='ok') {
+							if($taille_texte<$val)
+							{
+								$hauteur_caractere_matiere = $hauteur_caractere_matiere-0.3;
+								$pdf->SetFont('DejaVu','B',$hauteur_caractere_matiere);
+								$val = $pdf->GetStringWidth($info_nom_matiere);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$Y_decal=$y_courant;
+						$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+						$pdf->Cell($param_bull2016["largeur_EPI_AP_Parcours_col_1"], $hauteur_EPI_AP_Parcours/2, ($info_nom_matiere),'',1,'L');
+					}
+
+
+					// On note l'ordonnée pour le nom des professeurs
+					$Y_decal = $y_courant+($hauteur_EPI_AP_Parcours/2);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours"], $Y_decal);
+					$pdf->SetFont('DejaVu','',8);
+
+					// nom des professeurs
+					if ( isset($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][0]) )
+					{
+
+						// Présentation en ligne des profs
+						// On n'a pas forcément le formatage choisi pour la classe...
+						//$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+						$text_prof="";
+						for($loop_prof_grp=0;$loop_prof_grp<count($tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login']);$loop_prof_grp++) {
+							$tmp_login_prof=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_prof_resp_login'][$loop_prof_grp];
+							if($loop_prof_grp>0) {$text_prof.=", ";}
+							$text_prof.=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+						}
+
+						if($text_prof!="") {
+							//$espace_matiere_prof = $espace_entre_matier/2;
+							$espace_matiere_prof = $hauteur_EPI_AP_Parcours/2;
+							$hauteur_caractere_prof = 7;
+
+							$texte=$text_prof;
+							$taille_max_police=$hauteur_caractere_prof;
+							$taille_min_police=ceil($hauteur_caractere_prof/3);
+
+							$largeur_dispo=$param_bull2016["largeur_EPI_AP_Parcours_col_1"];
+							$h_cell=$espace_matiere_prof;
+
+							$pdf->SetX($param_bull2016["x_EPI_AP_Parcours"]);
+
+							cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+						}
+					}
+
+
+					// Colonne 2 : Appréciation
+					$pdf->SetFillColor($param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["R"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["V"], $param_bull2016["couleur_EPI_alt".($cpt_matiere%2+1)]["B"]);
+					$pdf->Rect($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant, $param_bull2016["largeur_EPI_AP_Parcours_col_2"], $hauteur_EPI_AP_Parcours, 'F');
+
+					$pdf->SetFillColor(0, 0, 0);
+					$pdf->SetXY($param_bull2016["x_EPI_AP_Parcours_col_2"], $y_courant);
+
+					// calcul de la taille du texte des appréciations
+					$hauteur_caractere_appreciation = 8;
+					$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+
+					//suppression des espaces en début et en fin
+					//$app_aff = trim($tab_bull['app'][$m][$i]);
+					$app_aff="";
+					if($tab_bull['eleve'][$i]['aid_e'][$m]['message']!='') {
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['message'];
+					}
+					//if($app_aff!='') {$app_aff.=" ";}
+					if(($tab_bull['eleve'][$i]['aid_e'][$m]['display_nom']=='y')&&($tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom']!='')) {
+						if($app_aff!='') {$app_aff.=" ";}
+						$app_aff.=$tab_bull['eleve'][$i]['aid_e'][$m]['aid_nom'];
+					}
+					if($app_aff!='') {$app_aff.="\n";}
+					$app_aff.=trim($tab_bull['eleve'][$i]['aid_e'][$m]['aid_appreciation']);
+
+					fich_debug_bull("__________________________________________\n");
+					fich_debug_bull("$app_aff\n");
+					fich_debug_bull("__________________________________________\n");
+
+					// DEBUT AJUSTEMENT TAILLE APPRECIATION
+					$taille_texte_total = $pdf->GetStringWidth($app_aff);
+					//$largeur_appreciation2 = $largeur_appreciation - $largeur_sous_matiere;
+					$largeur_appreciation2=$param_bull2016["largeur_EPI_AP_Parcours_col_2"];
+
+					if($use_cell_ajustee=="n") {
+						//$taille_texte = (($espace_entre_matier/3)*$largeur_appreciation2);
+						$nb_ligne_app = '2.8';
+						//$nb_ligne_app = '3.8';
+						//$nb_ligne_app = '4.8';
+						$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2-4);
+						//$taille_texte_max = $nb_ligne_app * ($largeur_appreciation2);
+						$grandeur_texte='test';
+
+						fich_debug_bull("\$taille_texte_total=$taille_texte_total\n");
+						fich_debug_bull("\$largeur_appreciation2=$largeur_appreciation2\n");
+						fich_debug_bull("\$nb_ligne_app=$nb_ligne_app\n");
+						//fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2-4)=$nb_ligne_app * ($largeur_appreciation2-4)=$taille_texte_max\n");
+						fich_debug_bull("\$taille_texte_max = \$nb_ligne_app * (\$largeur_appreciation2)=$nb_ligne_app * ($largeur_appreciation2)=$taille_texte_max\n");
+
+						while($grandeur_texte!='ok') {
+							if($taille_texte_max < $taille_texte_total)
+							{
+								$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.3;
+								//$hauteur_caractere_appreciation = $hauteur_caractere_appreciation-0.1;
+								$pdf->SetFont('DejaVu','',$hauteur_caractere_appreciation);
+								$taille_texte_total = $pdf->GetStringWidth($app_aff);
+							}
+							else {
+								$grandeur_texte='ok';
+							}
+						}
+						$grandeur_texte='test';
+						$pdf->drawTextBox(($app_aff), $largeur_appreciation2, $hauteur_EPI_AP_Parcours, 'J', 'M', 1);
+					}
+					else {
+						$texte=$app_aff;
+						//$texte="Bla bla\nbli ".$app_aff;
+						$taille_max_police=$hauteur_caractere_appreciation;
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_appreciation2;
+						$h_cell=$hauteur_EPI_AP_Parcours;
+
+						if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
+					}
+
+					$y_courant+=$hauteur_EPI_AP_Parcours+0.5;
+					$cpt_matiere++;
+
+
+				}
+				// Fin des AID_e tagués Parcours
+
 			}
 
 			//=========================================
@@ -2406,6 +4244,30 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//=========================================
 		//=========================================
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2414,6 +4276,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		// Pour ne pas afficher la suite:
 		$bidon_reserve=0;
+		// C'est une réserve pour piocher/copier/coller
 		if($bidon_reserve==1) {
 			// ============= DEBUT BLOC ETABLISSEMENT ==========================
 
