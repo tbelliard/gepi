@@ -116,4 +116,14 @@ function sqli_count ($r)
     return ($r->num_rows);
 }
 
+// Le mode strict de mysql 5.7 pose des problèmes avec certaine valeurs par défaut de certains champs (date à 0000-00-00 00:00:00 par exemple)
+// Le mode forcé par défaut dans Gepi permet de revenir au comportement mysql 5.6
+// Voir http://dev.mysql.com/doc/refman/5.6/en/sql-mode.html et http://dev.mysql.com/doc/refman/5.7/en/sql-mode.html
+// Il est possible de définir un autre mode via une variable $set_mode_mysql à déclarer dans le secure/connect.inc.php
+if(!isset($set_mode_mysql)) {
+	sqli_query("SET MODE='NO_ENGINE_SUBSTITUTION'");
+}
+else {
+	sqli_query("SET MODE='$set_mode_mysql'");
+}
 ?>
