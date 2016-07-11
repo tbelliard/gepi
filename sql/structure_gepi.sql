@@ -1476,6 +1476,7 @@ DROP TABLE IF EXISTS ct_tag;
 CREATE TABLE IF NOT EXISTS ct_tag (
 id int(11) unsigned NOT NULL auto_increment, 
 id_ct int(11) unsigned NOT NULL, 
+type_ct char(1) NOT NULL DEFAULT '', 
 id_tag int(11) unsigned NOT NULL, 
 PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));
 
