@@ -663,6 +663,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 				}
 			//echo "</span>\n";
 
+			/*
 			echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 			$titre_infobulle="Fonction cell_ajustee()\n";
@@ -685,8 +686,8 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 			echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 
 			echo "<br />\n";
-
-			echo "<br />\n";
+			*/
+			//echo "<br />\n";
 
 			echo "</div>\n";
 		}
@@ -709,6 +710,32 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 
 	echo "</table>\n";
 
+	echo "<div id='div_param_bull_pdf'>\n";
+
+	echo "<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' onchange=\"checkbox_change(this.id)\" /><label for='use_cell_ajustee' id='texte_use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+
+	$titre_infobulle="Fonction cell_ajustee()\n";
+	$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espérons;o).<br />\n";
+	//$texte_infobulle.="\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('a_propos_cell_ajustee',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+
+	echo "<br />\n";
+
+	// Debug
+	echo "<input type='checkbox' name='bull_pdf_debug' id='bull_pdf_debug' value='y' onchange=\"checkbox_change(this.id)\" />&nbsp;<label for='bull_pdf_debug' id='texte_bull_pdf_debug' style='cursor: pointer;'>Activer le debug pour afficher les erreurs perturbant la génération de PDF.</label>\n";
+
+	$titre_infobulle="Debug\n";
+	$texte_infobulle="Il arrive que la génération de PDF échoue.<br />Les raisons peuvent être variables (<em>manque de ressources serveur, bug,...</em>).<br />Dans ce cas, la présence d'un plugin lecteur PDF peut empêcher de voir quelles erreurs provoquent l'échec.<br />En cochant la case DEBUG, vous obtiendrez l'affichage des erreurs et ainsi vous pourrez obtenir de l'aide plus facilement sur la liste 'gepi-users'<br />\n";
+	//$texte_infobulle.="\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_bull_debug_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+	echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+
+	echo "</div>\n";
+
+	echo "<br />";
 	echo "<br />";
 
 	echo js_checkbox_change_style('checkbox_change', 'texte_', 'y');
@@ -721,9 +748,25 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 		if(document.getElementById('div_modele_bulletin_pdf')) {
 			if(document.getElementById('mode_bulletin_pdf').checked==true) {
 				document.getElementById('div_modele_bulletin_pdf').style.display='';
+
+				if(document.getElementById('div_param_bull_pdf')) {
+					document.getElementById('div_param_bull_pdf').style.display='';
+				}
+
 			}
 			else {
 				document.getElementById('div_modele_bulletin_pdf').style.display='none';
+
+				if(document.getElementById('mode_bulletin_pdf_2016').checked==true) {
+					if(document.getElementById('div_param_bull_pdf')) {
+						document.getElementById('div_param_bull_pdf').style.display='';
+					}
+				}
+				else {
+					if(document.getElementById('div_param_bull_pdf')) {
+						document.getElementById('div_param_bull_pdf').style.display='none';
+					}
+				}
 			}
 		}
 
@@ -927,6 +970,12 @@ function ToutDeCocher() {
 	}
 	else {
 		echo "<p><img src='../images/icons/ico_ampoule.png' width='15' height='20' alt='Indication' /> Avec un compte de statut <strong>scolarité</strong> <span style='color:red'>vous pourriez</span> <strong>intercaler les relevés de notes</strong> pour une impression recto-verso.</p>";
+		echo "<script type='text/javascript'>
+	function griser_lignes_specifiques_html() {
+	}
+	function griser_lignes_specifiques_pdf() {
+	}
+</script>";
 	}
 
 	$tab_signature=get_tab_signature_bull();
