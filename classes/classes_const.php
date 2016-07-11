@@ -603,6 +603,9 @@ function imposer_cpe() {
 </script>
 ";
 
+	$tab_profsuivi=array();
+	$tab_profnom=array();
+	$tab_profprenom=array();
 	// Liste des profs pour prof_principal
 	$call_prof = mysqli_query($GLOBALS["mysqli"], "SELECT DISTINCT u.login, u.nom, u.prenom " .
 			"FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
@@ -631,6 +634,9 @@ function imposer_cpe() {
 		$login_pp_unique_actuel="";
 	}
 
+	$tab_cperesp=array();
+	$tab_cpenom=array();
+	$tab_cpeprenom=array();
 	// Liste des CPE
 	$call_cpe = mysqli_query($GLOBALS["mysqli"], "SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
 	$nb = mysqli_num_rows($call_cpe);
