@@ -6021,4 +6021,13 @@ function get_infos_traitement_abs2($id_traitement) {
 
 	return $retour;
 }
+
+function get_liste_classes_eleve($login_ele) {
+	$retour="";
+	$tmp_tab_clas=get_class_from_ele_login($login_ele);
+	if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
+		$retour=$tmp_tab_clas['liste'];
+	}
+	return $retour;
+}
 ?>
