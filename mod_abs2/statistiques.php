@@ -192,7 +192,7 @@ if ($affichage_final=='n') {
 		login_ele VARCHAR(50) NOT NULL DEFAULT '', 
 		item VARCHAR(100) NOT NULL DEFAULT '', 
 		valeur VARCHAR(255) NULL DEFAULT '', 
-		PRIMARY KEY id (id));";
+		PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
 		$create_table=mysqli_query($GLOBALS['mysqli'], $sql);
 
 		// Menage

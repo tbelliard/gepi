@@ -405,7 +405,7 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS sconet_ele_options (
 						code_matiere varchar(255) NOT NULL default '',
 						code_modalite_elect char(1) NOT NULL default '',
 						num_option int(2) NOT NULL default '0',
-						PRIMARY KEY id (id));");
+						PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -474,7 +474,7 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag_type (
 						tag_devoir char(1) NOT NULL default 'y',
 						tag_notice_privee char(1) NOT NULL default 'y',
 						drapeau varchar(255) NOT NULL default '',
-						PRIMARY KEY id (id));");
+						PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -493,7 +493,7 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS ct_tag (
 						id_ct int(11) unsigned NOT NULL, 
 						type_ct char(1) NOT NULL DEFAULT '', 
 						id_tag int(11) unsigned NOT NULL, 
-						PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag));");
+						PRIMARY KEY id (id), UNIQUE KEY idct_idtag (id_ct, type_ct, id_tag)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 		$sql="SELECT * FROM ct_devoirs_entry WHERE special='controle';";
@@ -856,7 +856,7 @@ if ($test == -1) {
 						nom_court varchar(255) NOT NULL default '',
 						nom_complet varchar(255) NOT NULL default '',
 						nom_complet_pluriel varchar(255) NOT NULL default '',
-						PRIMARY KEY id (id));");
+						PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 
@@ -907,7 +907,7 @@ $result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_types (
 						id int(11) unsigned NOT NULL auto_increment, 
 						id_groupe int(11) NOT NULL,
 						id_type int(11) NOT NULL,
-						PRIMARY KEY id (id));");
+						PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;");
 	if ($result_inter == '') {
 		$result .= msj_ok("SUCCES !");
 	}
@@ -929,6 +929,28 @@ if ($test_champ==0) {
 	}
 } else {
 	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "<strong>Ajout d'une table 'temp_abs_extract' :</strong><br />";
+$test = sql_query1("SHOW TABLES LIKE 'temp_abs_extract';");
+if ($test == -1) {
+	$sql="CREATE TABLE IF NOT EXISTS temp_abs_extract (
+	id int(11) unsigned NOT NULL auto_increment, 
+	login VARCHAR(50) NOT NULL DEFAULT '', 
+	date_extract DATETIME NOT NULL default '0000-00-00 00:00:00', 
+	login_ele VARCHAR(50) NOT NULL DEFAULT '', 
+	item VARCHAR(100) NOT NULL DEFAULT '', 
+	valeur VARCHAR(255) NULL DEFAULT '', 
+	PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("La table existe déjà");
 }
 
 ?>

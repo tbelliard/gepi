@@ -39,6 +39,7 @@ Absences2:
 - Ajout d'un caractère Valable ou non pour les motifs (utile pour les statistiques nationales).
   Pensez à effectuer le paramétrage de ce caractère dans
      Gestion des modules/Absences 2/Définir les motifs des absences
+- Statistiques: Modification pour ne pas bloquer sur les grosses extractions.
 
 Discipline:
 - Ajout de droits extractDiscProf et extractDiscProfP pour les accès professeur 

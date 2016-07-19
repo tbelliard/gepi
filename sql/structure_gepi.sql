@@ -1559,3 +1559,12 @@ id_groupe int(11) NOT NULL,
 id_type int(11) NOT NULL,
 PRIMARY KEY id (id));
 
+DROP TABLE IF EXISTS temp_abs_extract;
+CREATE TABLE IF NOT EXISTS temp_abs_extract (
+id int(11) unsigned NOT NULL auto_increment, 
+login VARCHAR(50) NOT NULL DEFAULT '', 
+date_extract DATETIME NOT NULL default '0000-00-00 00:00:00', 
+login_ele VARCHAR(50) NOT NULL DEFAULT '', 
+item VARCHAR(100) NOT NULL DEFAULT '', 
+valeur VARCHAR(255) NULL DEFAULT '', 
+PRIMARY KEY id (id)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
