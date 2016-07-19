@@ -397,7 +397,7 @@ else {
 		$display_date_debut=strftime("%d/%m/%Y", getSettingValue("begin_bookings"));
 		$display_date_fin=strftime("%d/%m/%Y", getSettingValue("end_bookings"));
 
-		echo "<p>Les notices vont être extraites pour des dates entre le $display_date_debut et le $display_date_fin</p>";
+		//echo "<p>Les notices vont être extraites pour des dates entre le $display_date_debut et le $display_date_fin</p>";
 
 		$largeur_tranche=10;
 
@@ -651,7 +651,7 @@ echo "</pre>";
 		else {
 			// Les pages des enseignements n°$id_groupe de l'archive CDT ont été générés à l'étape précedente
 
-			echo "<p>L'archivage des enseignements est réalisé.<br />Les pages d'index vont maintenant être créées.</p>\n";
+			echo "<p>L'archivage des enseignements est réalisé ($display_date_debut - $display_date_fin).<br />Les pages d'index vont maintenant être créées.</p>\n";
 
 			// ============================
 			// Page racine de l'archive CDT
