@@ -93,6 +93,12 @@ if(($_SESSION['statut']=='administrateur')||
 
 	$lien_wiki[]='';
 	$entete_section[]="";
+	$fich[]="avertissement_mi_periode.odt";
+	$utilisation[]="Avertissement de mi-période";
+	$special[]="";
+
+	$lien_wiki[]='';
+	$entete_section[]="";
 	$fich[]="mod_discipline_liste_incidents.odt";
 	$utilisation[]="Extraction des incidents et sanctions";
 	$special[]="";

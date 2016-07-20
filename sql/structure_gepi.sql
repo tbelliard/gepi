@@ -958,11 +958,12 @@ KEY id_ev_u (id_ev,statut)) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_genera
 DROP TABLE IF EXISTS s_avertissements;
 CREATE TABLE IF NOT EXISTS s_avertissements (
 id_avertissement INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-login_ele VARCHAR( 50 ) NOT NULL ,
-id_type_avertissement INT(11),
-periode INT(11),
+login_ele VARCHAR( 50 ) NOT NULL DEFAULT '',
+id_type_avertissement INT(11) NOT NULL DEFAULT '0',
+periode INT(11) NOT NULL DEFAULT '0',
+s_periode CHAR(1) NOT NULL DEFAULT 'n',
 date_avertissement DATETIME NOT NULL ,
-declarant VARCHAR( 50 ) NOT NULL ,
+declarant VARCHAR( 50 ) NOT NULL DEFAULT '',
 commentaire TEXT NOT NULL
 ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
 

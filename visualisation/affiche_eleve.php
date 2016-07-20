@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -5745,7 +5745,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 					if((acces_saisie_avertissement_fin_periode($eleve1, $i))&&($ver_periode[$i]!='O')) {
 
 						echo "
-			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $i\">
+			<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$i&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $i, 'n', 'liste_avertissements_fin_periode_$i');return false;\" style='color:black;' target='_blank' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $i\">
 				<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 				<span class='bold' id='liste_avertissements_fin_periode_$i'>".liste_avertissements_fin_periode($eleve1, $i)."</span>
 			</a>";
@@ -5765,7 +5765,7 @@ le bulletin simplifié de la période $num_periode_choisie.\">";
 				if((acces_saisie_avertissement_fin_periode($eleve1, $num_periode_choisie))&&($ver_periode[$num_periode_choisie]!='O')) {
 
 					echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)." en période $num_periode_choisie\">
-	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'liste_avertissements_fin_periode');return false;\" style='color:black;' target='_blank'>
+	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$eleve1&amp;periode=$num_periode_choisie&amp;lien_refermer=y' onclick=\"afficher_saisie_avertissement_fin_periode('$eleve1', $num_periode_choisie, 'n', 'liste_avertissements_fin_periode');return false;\" style='color:black;' target='_blank'>
 		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 		<span class='bold' id='liste_avertissements_fin_periode'>".liste_avertissements_fin_periode($eleve1, $num_periode_choisie)."</span>
 	</a>

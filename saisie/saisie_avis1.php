@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001, 2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger
+* Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1175,7 +1175,7 @@ $msg_acces_app_ele_resp\" />";
 						if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
 							echo "<div title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\">
 	<a href='../mod_discipline/saisie_avertissement_fin_periode.php?login_ele=$current_eleve_login&amp;periode=$k&amp;lien_refermer=y'";
-						echo " onclick=\"afficher_saisie_avertissement_fin_periode('$current_eleve_login', $k, 'liste_avertissements_fin_periode_".$i."_$k');return false;\"";
+						echo " onclick=\"afficher_saisie_avertissement_fin_periode('$current_eleve_login', $k, 'n', 'liste_avertissements_fin_periode_".$i."_$k');return false;\"";
 						echo " style='color:black;' target='_blank'>
 		<img src='../images/icons/balance_justice.png' class='icone20' alt=\"Avertissements de fin de période\" />
 		<span class='bold' id='liste_avertissements_fin_periode_".$i."_$k'>".liste_avertissements_fin_periode($current_eleve_login, $k)."</span>

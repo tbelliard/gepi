@@ -47,6 +47,10 @@ $msg="";
 
 // recupération des parametres
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+
+// Pour pouvoir utiliser des modèles différents pour les fin et mi période, on n'imprime qu'un seul type à la fois
+$s_periode=isset($_POST['s_periode']) ? $_POST['s_periode'] : (isset($_GET['s_periode']) ? $_GET['s_periode'] : "n");
+
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
 $eleve=isset($_POST['eleve']) ? $_POST['eleve'] : (isset($_GET['eleve']) ? $_GET['eleve'] : NULL);
@@ -101,6 +105,7 @@ if (isset($eleve)) {
 
 	$tab_liste_classes=array();
 	$tab_liste_periodes=array();
+	$tab_liste_s_periodes=array();
 
 	debug_impr("Avant get_tab_type_avertissement().");
 	$tab_type_avertissement_fin_periode=get_tab_type_avertissement();
@@ -113,6 +118,7 @@ if (isset($eleve)) {
 		if(isset($tab[2])) {
 			$current_id_classe=$tab[0];
 			$current_periode=$tab[1];
+			//$current_s_periode=$tab[2];
 
 			$current_eleve_login=$tab[2];
 
@@ -124,6 +130,11 @@ if (isset($eleve)) {
 			if(!in_array($current_periode,$tab_liste_periodes)) {
 				$tab_liste_periodes[]=$current_periode;
 			}
+			/*
+			if(!in_array($current_s_periode,$tab_liste_s_periodes)) {
+				$tab_liste_s_periodes[]=$current_s_periode;
+			}
+			*/
 
 			debug_impr("Avant get_info_eleve($current_eleve_login, $current_periode)");
 			$tab_current_ele=get_info_eleve($current_eleve_login, $current_periode);
@@ -242,6 +253,15 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['date_conseil_de_classe']=$date_conseil_de_classe;
 
 				$tab_eleves_OOo[$nb_eleve]['periode']=$current_periode;
+				//$tab_eleves_OOo[$nb_eleve]['s_periode']=$current_s_periode;
+				$tab_eleves_OOo[$nb_eleve]['s_periode']=$s_periode;
+				//if($current_s_periode=="y") {
+				if($s_periode=="y") {
+					$tab_eleves_OOo[$nb_eleve]['texte_s_periode']="mi-période";
+				}
+				else {
+					$tab_eleves_OOo[$nb_eleve]['texte_s_periode']="fin de période";
+				}
 				$tab_eleves_OOo[$nb_eleve]['per']=array();
 				$sql="SELECT * FROM periodes WHERE id_classe='$current_id_classe' ORDER BY num_periode;";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -293,7 +313,8 @@ if (isset($eleve)) {
 				$tab_eleves_OOo[$nb_eleve]['ita']=array();
 
 				$tmp_tab=array();
-				$sql="SELECT * FROM s_avertissements WHERE login_ele='".$current_eleve_login."' AND periode='".$current_periode."';";
+				//$sql="SELECT * FROM s_avertissements WHERE login_ele='".$current_eleve_login."' AND periode='".$current_periode."' AND s_periode='".$current_s_periode."';";
+				$sql="SELECT * FROM s_avertissements WHERE login_ele='".$current_eleve_login."' AND periode='".$current_periode."' AND s_periode='".$s_periode."';";
 				$res=mysqli_query($GLOBALS["mysqli"], $sql);
 				if(mysqli_num_rows($res)>0) {
 					while($lig=mysqli_fetch_object($res)) {
@@ -346,7 +367,12 @@ if (isset($eleve)) {
 	$OOo->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
 	
    $prefixe_generation_hors_dossier_mod_ooo="../mod_ooo/";
-   $nom_fichier_modele_ooo="avertissement_fin_periode.odt";
+   if($s_periode=="y") {
+	$nom_fichier_modele_ooo="avertissement_mi_periode.odt";
+   }
+   else {
+	$nom_fichier_modele_ooo="avertissement_fin_periode.odt";
+   }
    //les chemins contenant les données
    include_once("../mod_ooo/lib/chemin.inc.php");
    
@@ -357,7 +383,13 @@ if (isset($eleve)) {
    $nom_fic = $nom_fichier_modele_ooo;
 
    if(count($tab_liste_classes)<5) {
-   	$nom_fic="avertissement_fin_periode";
+	if($s_periode=="y") {
+		$nom_fic="avertissement_mi_periode";
+	}
+	else {
+		$nom_fic="avertissement_fin_periode";
+	}
+   	//$nom_fic="avertissement_fin_periode";
    	for($loop=0;$loop<count($tab_liste_classes);$loop++) {
    		$nom_fic.="_".ensure_ascii(preg_replace("/^[A-Za-z0-9]$/","",$tab_liste_classes[$loop]));
    	}
@@ -419,6 +451,10 @@ if(!isset($periode)) {
 			<input type='checkbox' name='periode[]' id='periode_".$lig->periode."' value='$lig->periode' /><label for='periode_".$lig->periode."'>Période ".$lig->periode."</label><br />\n";
 		}
 		echo "
+		</p>
+		<p>Imprimer les $mod_disc_terme_avertissement_fin_periode de <br />
+			<input type='radio' name='s_periode' id='s_periode_y' value='y' /><label for='s_periode_y'>mi-période</label><br />
+			<input type='radio' name='s_periode' id='s_periode_n' value='n' checked /><label for='s_periode_n'>fin de période</label><br />
 		</p>";
 	}
 
@@ -473,20 +509,27 @@ if(!isset($id_classe)) {
 		$input_periode.="<input type='hidden' name='periode[]' value='".$periode[$loop]."' />\n";
 	}
 
+	$chaine_s_periode="";
+	if($s_periode=="y") {
+		$chaine_s_periode=" <em>(mi-période)</em>";
+	}
+
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a></p>
 
-<h2>Impression des $mod_disc_terme_avertissement_fin_periode en période(s) $liste_periodes</h2>\n
+<h2>Impression des $mod_disc_terme_avertissement_fin_periode en période(s) $liste_periodes".$chaine_s_periode."</h2>\n
 
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>
 	<fieldset class='fieldset_opacite50'>
 		<p class='bold'>Choix de la (ou des) classe(s)&nbsp;:</p>
+		<input type='hidden' name='s_periode' value='".$s_periode."' />
 		$input_periode";
 
 	$sql="SELECT DISTINCT c.classe, jec.id_classe FROM s_avertissements sa, 
 									j_eleves_classes jec, 
 									classes c 
-								WHERE sa.login_ele=jec.login AND
-									($chaine_periode) AND
+								WHERE sa.login_ele=jec.login AND 
+									($chaine_periode) AND 
+									s_periode='$s_periode' AND 
 									c.id=jec.id_classe
 								ORDER BY c.classe;";
 	//echo "$sql<br />";
@@ -557,12 +600,18 @@ for($loop=0;$loop<count($periode);$loop++) {
 	$chaine_retour_periode.="periode[]=".$periode[$loop];
 }
 
+$chaine_s_periode="";
+if($s_periode=="y") {
+	$chaine_s_periode=" <em>(mi-période)</em>";
+}
+
 echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a> | <a href='".$_SERVER['PHP_SELF']."?$chaine_retour_periode'>Choisir d'autres classes</a></p>
 
-<h2>Impression des $mod_disc_terme_avertissement_fin_periode</h2>
+<h2>Impression des ".$mod_disc_terme_avertissement_fin_periode.$chaine_s_periode."</h2>
 
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' target='_blank'>
 	<fieldset class='fieldset_opacite50'>
+		<input type='hidden' name='s_periode' value='".$s_periode."' />
 		<p class='bold'>Choix des élèves&nbsp;:</p>";
 for($loop=0;$loop<count($id_classe);$loop++) {
 	echo "
@@ -581,11 +630,12 @@ for($loop=0;$loop<count($id_classe);$loop++) {
 
 		$sql="SELECT DISTINCT e.nom, e.prenom, e.login FROM eleves e, 
 								j_eleves_classes jec, 
-								s_avertissements sa
+								s_avertissements sa 
 							WHERE e.login=jec.login AND 
 								jec.id_classe='".$id_classe[$loop]."' AND 
-								e.login=sa.login_ele AND
-								sa.periode='".$periode[$loop2]."'
+								e.login=sa.login_ele AND 
+								sa.periode='".$periode[$loop2]."' AND 
+								sa.s_periode='".$s_periode."' 
 							ORDER BY e.nom, e.prenom;";
 		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);

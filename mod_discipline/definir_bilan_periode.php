@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001-2014 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -67,6 +67,17 @@ $avertissement_nom_court = isset($_POST['avertissement_nom_court']) ? $_POST['av
 $avertissement_nom_complet = isset($_POST['avertissement_nom_complet']) ? $_POST['avertissement_nom_complet'] : NULL;
 $avertissement_description = isset($_POST['avertissement_description']) ? $_POST['avertissement_description'] : NULL;
 $cpt = isset($_POST['cpt']) ? $_POST['cpt'] : 0;
+
+/*
+if(in_array_i(remplace_accents(mb_substr($mod_disc_terme_avertissement_fin_periode,0,1)), array("a", "e", "i", "o", "u"))) {
+	$pref_du_mod_disc_terme_avertissement_fin_periode="de l'";
+}
+else {
+	$pref_du_mod_disc_terme_avertissement_fin_periode="du";
+	$pref_du_mod_disc_terme_avertissement_fin_periode="de la";
+	// Il faudrait aussi le genre du mot.
+}
+*/
 
 if (isset($suppr_type_avertissement)) {
 	check_token();

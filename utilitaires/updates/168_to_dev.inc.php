@@ -953,4 +953,17 @@ if ($test == -1) {
 	$result .= msj_present("La table existe déjà");
 }
 
+$result .= "&nbsp;-> Ajout d'un champ 's_periode' à la table 's_avertissements'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM s_avertissements LIKE 's_periode';"));
+if ($test_champ==0) {
+	$query = mysqli_query($mysqli, "ALTER TABLE s_avertissements ADD s_periode CHAR(1) NOT NULL DEFAULT 'n' AFTER periode;");
+	if ($query) {
+			$result .= msj_ok("Ok !");
+	} else {
+			$result .= msj_erreur();
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
 ?>

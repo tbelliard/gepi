@@ -248,11 +248,11 @@ if (isset($_POST['is_posted'])) {
 			*/
 			if(acces_saisie_avertissement_fin_periode($current_eleve_login)) {
 
-				$tab_av_ele=get_tab_avertissement($current_eleve_login, $periode_num);
-				if(isset($tab_av_ele['id_type_avertissement'][$periode_num])) {
-					for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode_num]);$loop++) {
-						if(!in_array($tab_av_ele['id_type_avertissement'][$periode_num][$loop], $id_type_avertissement)) {
-							$sql="DELETE FROM s_avertissements WHERE login_ele='$current_eleve_login' AND periode='$periode_num' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode_num][$loop]."';";
+				$tab_av_ele=get_tab_avertissement($current_eleve_login, $periode_num, "n");
+				if(isset($tab_av_ele['id_type_avertissement'][$periode_num]["n"])) {
+					for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode_num]["n"]);$loop++) {
+						if(!in_array($tab_av_ele['id_type_avertissement'][$periode_num]["n"][$loop], $id_type_avertissement)) {
+							$sql="DELETE FROM s_avertissements WHERE login_ele='$current_eleve_login' AND periode='$periode_num' AND s_periode='n' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode_num]['n'][$loop]."';";
 							//$msg.="$sql<br />";
 							$del=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$del) {
@@ -263,9 +263,10 @@ if (isset($_POST['is_posted'])) {
 				}
 
 				for($loop=0;$loop<count($id_type_avertissement);$loop++) {
-					if((!isset($tab_av_ele['id_type_avertissement'][$periode_num]))||(!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode_num]))) {
+					if((!isset($tab_av_ele['id_type_avertissement'][$periode_num]["n"]))||(!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode_num]["n"]))) {
 						$sql="INSERT INTO s_avertissements SET login_ele='$current_eleve_login', 
 												periode='$periode_num', 
+												s_periode='n', 
 												id_type_avertissement='".$id_type_avertissement[$loop]."',
 												declarant='".$_SESSION['login']."',
 												date_avertissement='".strftime("%Y-%m-%d %H:%M:%S")."';";
@@ -876,7 +877,7 @@ $msg_acces_app_ele_resp\"><img src='../images/icons/visible.png' width='19' heig
 			echo "<br />
 <p class='bold'>Récapitulatif des ".$mod_disc_terme_avertissement_fin_periode." distribué(e)s&nbsp;:";
 			if(acces_impression_avertissement_fin_periode("", $id_classe)) {
-				echo " <a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$id_classe&amp;periode[0]=$periode_num' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
+				echo " <a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$id_classe&amp;periode[0]=$periode_num&amp;s_periode=n' title=\"Imprimer les '".$mod_disc_terme_avertissement_fin_periode."'.\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a>";
 			}
 			echo "</p>
 <table class='boireaus boireaus_alt'>
@@ -1607,7 +1608,7 @@ if (isset($fiche)) {
 		<img src='../images/icons/balance_justice.png' class='icone20' title=\"Saisir un ou des ".ucfirst($mod_disc_terme_avertissement_fin_periode)."\" style='float:left;' />
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
 		<div>
-			".champs_checkbox_avertissements_fin_periode($current_eleve_login, $periode_num)."
+			".champs_checkbox_avertissements_fin_periode($current_eleve_login, $periode_num, 'n')."
 		</div>
 </div>";
 

@@ -68,6 +68,7 @@ else {
 
 $login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : NULL);
 $periode=isset($_POST['periode']) ? $_POST['periode'] : (isset($_GET['periode']) ? $_GET['periode'] : NULL);
+$s_periode=isset($_POST['s_periode']) ? $_POST['s_periode'] : (isset($_GET['s_periode']) ? $_GET['s_periode'] : "n");
 $mode_js=isset($_POST['mode_js']) ? $_POST['mode_js'] : (isset($_GET['mode_js']) ? $_GET['mode_js'] : "n");
 $lien_refermer=isset($_POST['lien_refermer']) ? $_POST['lien_refermer'] : (isset($_GET['lien_refermer']) ? $_GET['lien_refermer'] : "n");
 
@@ -126,7 +127,7 @@ if((isset($periode))&&(isset($login_ele))) {
 
 		//$tab_av_ele=get_tab_avertissement($login_ele, $periode);
 
-		echo champs_checkbox_avertissements_fin_periode($login_ele, $periode);
+		echo champs_checkbox_avertissements_fin_periode($login_ele, $periode, $s_periode);
 
 		die();
 	}
@@ -151,11 +152,11 @@ if((isset($periode))&&(isset($login_ele))) {
 			*/
 
 			$nb_err=0;
-			$tab_av_ele=get_tab_avertissement($login_ele, $periode);
-			if(isset($tab_av_ele['id_type_avertissement'][$periode])) {
-				for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode]);$loop++) {
-					if(!in_array($tab_av_ele['id_type_avertissement'][$periode][$loop], $id_type_avertissement)) {
-						$sql="DELETE FROM s_avertissements WHERE login_ele='$login_ele' AND periode='$periode' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode][$loop]."';";
+			$tab_av_ele=get_tab_avertissement($login_ele, $periode, $s_periode);
+			if(isset($tab_av_ele['id_type_avertissement'][$periode][$s_periode])) {
+				for($loop=0;$loop<count($tab_av_ele['id_type_avertissement'][$periode][$s_periode]);$loop++) {
+					if(!in_array($tab_av_ele['id_type_avertissement'][$periode][$s_periode][$loop], $id_type_avertissement)) {
+						$sql="DELETE FROM s_avertissements WHERE login_ele='$login_ele' AND periode='$periode' AND s_periode='$s_periode' AND id_type_avertissement='".$tab_av_ele['id_type_avertissement'][$periode][$s_periode][$loop]."';";
 						//$msg.="$sql<br />";
 						//echo "$sql<br />";
 						$del=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -172,10 +173,11 @@ if((isset($periode))&&(isset($login_ele))) {
 			for($loop=0;$loop<count($id_type_avertissement);$loop++) {
 				if((preg_match("/^[0-9]{1,}$/", $id_type_avertissement[$loop]))&&
 					(array_key_exists($id_type_avertissement[$loop] ,$tab_type_avertissement_fin_periode['id_type_avertissement']))) {
-					if((!isset($tab_av_ele['id_type_avertissement'][$periode]))||
-					((!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode])))) {
+					if((!isset($tab_av_ele['id_type_avertissement'][$periode][$s_periode]))||
+					((!in_array($id_type_avertissement[$loop], $tab_av_ele['id_type_avertissement'][$periode][$s_periode])))) {
 						$sql="INSERT INTO s_avertissements SET login_ele='$login_ele', 
 												periode='$periode', 
+												s_periode='$s_periode', 
 												id_type_avertissement='".$id_type_avertissement[$loop]."',
 												declarant='".$_SESSION['login']."',
 												date_avertissement='".strftime("%Y-%m-%d %H:%M:%S")."';";
@@ -194,11 +196,11 @@ if((isset($periode))&&(isset($login_ele))) {
 				$msg.="Enregistrement effectué.<br />";
 				if(acces("/mod_discipline/imprimer_bilan_periode.php", $_SESSION['statut'])) {
 					$tmp_tab_clas=get_class_periode_from_ele_login($login_ele);
-					if(isset($tmp_tab_clas['periode'][$periode]['id_classe'])) {
-						$tab_av_ele=get_tab_avertissement($login_ele, $periode);
-						if((isset($tab_av_ele['periode'][$periode]))&&(count($tab_av_ele['periode'][$periode])>0)) {
+					if(isset($tmp_tab_clas['periode'][$periode][$s_periode]['id_classe'])) {
+						$tab_av_ele=get_tab_avertissement($login_ele, $periode, $s_periode);
+						if((isset($tab_av_ele['periode'][$periode][$s_periode]))&&(count($tab_av_ele['periode'][$periode][$s_periode])>0)) {
 							$current_id_classe=$tmp_tab_clas['periode'][$periode]['id_classe'];
-							$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&eleve[0]=$current_id_classe|$periode|$login_ele' target='_blank'>Imprimer ".$prefixe_mod_disc_terme_avertissement_fin_periode_le.$mod_disc_terme_avertissement_fin_periode."</a><br />";
+							$msg.="<a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&periode[0]=$periode&s_periode[0]=$s_periode&eleve[0]=$current_id_classe|$periode|$login_ele' target='_blank'>Imprimer ".$prefixe_mod_disc_terme_avertissement_fin_periode_le.$mod_disc_terme_avertissement_fin_periode."</a><br />";
 						}
 					}
 				}
@@ -207,7 +209,7 @@ if((isset($periode))&&(isset($login_ele))) {
 			if($mode_js=="y") {
 				if($nb_err==0) {
 					//echo "liste_avertissements_fin_periode($login_ele, $periode)<br />";
-					echo liste_avertissements_fin_periode($login_ele, $periode);
+					echo liste_avertissements_fin_periode($login_ele, $periode, $s_periode);
 				}
 				else {
 					echo "<span style='color:red'>Erreur</span>";
@@ -261,16 +263,22 @@ if((isset($periode))&&(isset($login_ele))) {
 			$lien_suppl="\n"."<div style='float:right; width:16px; margin:3px;'><a href='../eleves/visu_eleve.php?ele_login=".$login_ele."' onclick=\"return confirm_abandon(this, change, '$themessage');\" title=\"Accès aux onglets élève\"><img src='../images/icons/ele_onglets.png' class='icone16' alt='Onglets élève' /></a></div>";
 		}
 
+		$chaine_s_periode="";
+		if($s_periode=="y") {
+			$chaine_s_periode=" <em>(saisie de mi-période)</em>";
+		}
+
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_saisie_avt'>
 	<fieldset class='fieldset_opacite50'>".$lien_suppl."
-		<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période $periode&nbsp;:</p>
+		<p class='bold'>Saisie ".$prefixe_mod_disc_terme_avertissement_fin_periode_de."$mod_disc_terme_avertissement_fin_periode pour ".get_nom_prenom_eleve($login_ele)." en période ".$periode.$chaine_s_periode."&nbsp;:</p>
 		".add_token_field()."
 		<input type='hidden' name='saisie_avertissement_fin_periode' value='y' />
 		<input type='hidden' name='periode' value='$periode' />
+		<input type='hidden' name='s_periode' value='$s_periode' />
 		".(isset($id_classe) ? "		<input type='hidden' name='id_classe' value='$id_classe' />" : "")."
 		<input type='hidden' name='login_ele' value=\"$login_ele\" />
 		<input type='hidden' name='lien_refermer' value=\"$lien_refermer\" />
-		".champs_checkbox_avertissements_fin_periode($login_ele, $periode)."
+		".champs_checkbox_avertissements_fin_periode($login_ele, $periode, $s_periode)."
 		<input type='submit' value='Enregistrer' />
 	</fieldset>
 </form>";
@@ -342,7 +350,11 @@ else {
 			include("../lib/periodes.inc.php");
 
 			if($ver_periode[$current_num_per]!="O") {
-				echo "<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per'>".$current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]."</a><br />";
+				echo "<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de fin de période\">".$current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]."</a>";
+
+				echo " - <a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+
+				echo "<br />";
 			}
 			else {
 				echo $current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]." (<em style='color:".$couleur_verrouillage_periode['O']."'>période close</em>)<br />";
@@ -462,7 +474,12 @@ else {
 			$i = "1";
 			while ($i < $nb_periode) {
 				if($ver_periode[$i]!="O") {
-					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i'>".$nom_periode[$i]."</a><br />";
+					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de fin de période\">".$nom_periode[$i]."</a>";
+
+					echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+
+					echo "<br />";
+
 				}
 				else {
 					echo $nom_periode[$i]." (<em style='color:".$couleur_verrouillage_periode['O']."'>période close</em>)<br />";
@@ -478,9 +495,16 @@ else {
 	//===============================
 	// Choix de l'élève
 
+	$chaine_s_periode="";
+	$param_lien_s_periode="";
+	if($s_periode=="y") {
+		$chaine_s_periode=" <em>(saisie de mi-période)</em>";
+		$param_lien_s_periode="&amp;s_periode=y";
+	}
+
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a> | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période</a></p>
 	
-	<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période $periode</p>
+	<p class='bold'>Classe de ".get_nom_classe($id_classe)." en période ".$periode.$chaine_s_periode."</p>
 	<p>Choix de l'élève&nbsp;:<br />";
 
 	$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe='$id_classe' AND jec.periode='$periode' ORDER BY e.nom, e.prenom;";
@@ -490,7 +514,7 @@ else {
 	}
 	else {
 		while($lig=mysqli_fetch_object($res)) {
-			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$periode&amp;login_ele=".$lig->login."' title=\"Saisir un ".$mod_disc_terme_avertissement_fin_periode." pour cet élève en période $periode\">".$lig->nom." ".$lig->prenom."</a><br />\n";
+			echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$periode&amp;login_ele=".$lig->login.$param_lien_s_periode."' title=\"Saisir un ".$mod_disc_terme_avertissement_fin_periode." pour cet élève en période $periode\">".$lig->nom." ".$lig->prenom."</a><br />\n";
 		}
 	}
 
