@@ -483,7 +483,7 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 
 			unset($tab_avt_ele);
 			for($loop=0;$loop<count($_SESSION['id_liste_periodes']);$loop++) {
-				$tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]]=liste_avertissements_fin_periode_classe($id_classe, $_SESSION['id_liste_periodes'][$loop], "nom_court", "n");
+				$tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]]=liste_avertissements_fin_periode_classe($id_classe, $_SESSION['id_liste_periodes'][$loop], "nom_court", "n", "n");
 
 				if(count($tab_avt_ele[$_SESSION['id_liste_periodes'][$loop]])>0) {
 					$avec_col_avertissements="y";
@@ -509,6 +509,9 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 	if($avec_col_mention=="y") {
 		$X_avertissement+=$l_cell_mentions;
 	}
+
+	$totaux_avertissements=array();
+	$totaux_mentions=array();
 
 	// Boucle sur les eleves de la classe courante:
 	$compteur_eleves_page=0;
@@ -615,6 +618,15 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 					}
 				}
 
+				if ($current_eleve_mention != '') {
+					if(!isset($totaux_mentions[$donnees_eleves[$nb_eleves_i]['id_periode']][$current_eleve_mention])) {
+						$totaux_mentions[$donnees_eleves[$nb_eleves_i]['id_periode']][$current_eleve_mention]=1;
+					}
+					else {
+						$totaux_mentions[$donnees_eleves[$nb_eleves_i]['id_periode']][$current_eleve_mention]++;
+					}
+				}
+
 				$pdf->Setxy($X_mention,$y_tmp);
 
 				$pdf->SetFont('DejaVu','',7.5);
@@ -635,6 +647,24 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 				$current_avertissement="";
 				if(isset($tab_avt_ele[$donnees_eleves[$nb_eleves_i]['id_periode']][$login_elv])) {
 					$current_avertissement=$tab_avt_ele[$donnees_eleves[$nb_eleves_i]['id_periode']][$login_elv];
+					// $current_avertissement contient la liste des avertissements de l'élève, soit quelque chose comme "Avt_T, Avt_C"
+
+					$tmp_tab_avt=explode(",", $current_avertissement);
+					for($loop_avt=0;$loop_avt<count($tmp_tab_avt);$loop_avt++) {
+						$tmp_avt_courant=trim($tmp_tab_avt[$loop_avt]);
+						if(!isset($totaux_avertissements[$donnees_eleves[$nb_eleves_i]['id_periode']][$tmp_avt_courant])) {
+							$totaux_avertissements[$donnees_eleves[$nb_eleves_i]['id_periode']][$tmp_avt_courant]=1;
+						}
+						else {
+							$totaux_avertissements[$donnees_eleves[$nb_eleves_i]['id_periode']][$tmp_avt_courant]++;
+						}
+
+						/*
+						$f=fopen("/tmp/gepi_totaux_avertissements.txt", "a+");
+						fwrite($f, "$login_elv : on arrive à \$totaux_avertissements[".$donnees_eleves[$nb_eleves_i]['id_periode']."][$tmp_avt_courant]=".$totaux_avertissements[$donnees_eleves[$nb_eleves_i]['id_periode']][$tmp_avt_courant]."\n");
+						fclose($f);
+						*/
+					}
 				}
 
 				if ($nb_periodes>1) {
@@ -729,8 +759,16 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		//================================
 		// Colonne mention
 		if($avec_col_mention=="y") {
-			// A FAIRE : Nombre de mentions...
 			$synthese_mentions="";
+
+			if(isset($totaux_mentions[$current_num_periode])) {
+				foreach($totaux_mentions[$current_num_periode] as $current_mention => $effectif_mention) {
+					if($synthese_mentions!="") {
+						$synthese_mentions.=", ";
+					}
+					$synthese_mentions.=$current_mention.":".$effectif_mention;
+				}
+			}
 
 			$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 			$pdf->Setxy($X_mention,$y_tmp);
@@ -746,8 +784,16 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		//================================
 		// Colonne avertissements
 		if($avec_col_avertissements=="y") {
-			// A FAIRE : Nombre d'avertissements...
 			$synthese_avertissements="";
+
+			if(isset($totaux_avertissements[$current_num_periode])) {
+				foreach($totaux_avertissements[$current_num_periode] as $current_avertissement => $effectif_avt) {
+					if($synthese_avertissements!="") {
+						$synthese_avertissements.=", ";
+					}
+					$synthese_avertissements.=$current_avertissement.":".$effectif_avt;
+				}
+			}
 
 			$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 			$pdf->Setxy($X_avertissement,$y_tmp);
@@ -825,8 +871,16 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			//================================
 			// Colonne mention
 			if($avec_col_mention=="y") {
-				// A FAIRE : Nombre de mentions...
 				$synthese_mentions="";
+
+				if(isset($totaux_mentions[$current_num_periode])) {
+					foreach($totaux_mentions[$current_num_periode] as $current_mention => $effectif_mention) {
+						if($synthese_mentions!="") {
+							$synthese_mentions.=", ";
+						}
+						$synthese_mentions.=$current_mention.":".$effectif_mention;
+					}
+				}
 
 				$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 				$pdf->Setxy($X_mention,$y_tmp);
@@ -842,8 +896,16 @@ for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 			//================================
 			// Colonne avertissements
 			if($avec_col_avertissements=="y") {
-				// A FAIRE : Nombre d'avertissements...
 				$synthese_avertissements="";
+
+				if(isset($totaux_avertissements[$current_num_periode])) {
+					foreach($totaux_avertissements[$current_num_periode] as $current_avertissement => $effectif_avt) {
+						if($synthese_avertissements!="") {
+							$synthese_avertissements.=", ";
+						}
+						$synthese_avertissements.=$current_avertissement.":".$effectif_avt;
+					}
+				}
 
 				$y_tmp = $y_top_tableau+$compteur_eleves_page*$h_cell;
 				$pdf->Setxy($X_avertissement,$y_tmp);
