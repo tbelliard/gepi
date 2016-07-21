@@ -108,6 +108,11 @@ if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
 		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_acces_avertissements\" !<br />";
 	}
 
+	$mod_disc_avertissements_mi_periode=isset($_POST['mod_disc_avertissements_mi_periode']) ? $_POST['mod_disc_avertissements_mi_periode'] : "y";
+	if (!saveSetting("mod_disc_avertissements_mi_periode", $mod_disc_avertissements_mi_periode)) {
+		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_avertissements_mi_periode\" !<br />";
+	}
+
 	$mod_disc_avertissement_impression_parents_separes=isset($_POST['mod_disc_avertissement_impression_parents_separes']) ? $_POST['mod_disc_avertissement_impression_parents_separes'] : "n";
 	if (!saveSetting("mod_disc_avertissement_impression_parents_separes", $mod_disc_avertissement_impression_parents_separes)) {
 		$msg.= "Erreur lors de l'enregistrement du paramètre \"mod_disc_avertissement_impression_parents_separes\" !<br />";

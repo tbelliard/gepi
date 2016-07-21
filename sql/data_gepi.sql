@@ -1795,3 +1795,4 @@ INSERT INTO setting SET name='bull_largeur_col_Elements_Programmes', value='150'
 INSERT INTO groupes_types SET nom_court='AP', nom_complet='Accompagnement personnalisé', nom_complet_pluriel='Accompagnements personnalisés';
 INSERT INTO groupes_types SET nom_court='EPI', nom_complet='Enseignement pratique interdisciplinaire', nom_complet_pluriel='Enseignements pratiques interdisciplinaires';
 INSERT INTO groupes_types SET nom_court='Parcours', nom_complet='Parcours éducatif', nom_complet_pluriel='Parcours éducatifs';
+INSERT INTO setting SET name='mod_disc_avertissements_mi_periode', value='y';

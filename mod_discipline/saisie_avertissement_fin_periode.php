@@ -74,6 +74,10 @@ $lien_refermer=isset($_POST['lien_refermer']) ? $_POST['lien_refermer'] : (isset
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+if(getSettingANon("mod_disc_avertissements_mi_periode")) {
+	$s_periode="n";
+}
+
 /*
 if((!isset($periode))||(!isset($login_ele))) {
 	$mess=rawurlencode("L'élève ou la période n'a pas été choisie !");
@@ -280,6 +284,8 @@ if((isset($periode))&&(isset($login_ele))) {
 		<input type='hidden' name='lien_refermer' value=\"$lien_refermer\" />
 		".champs_checkbox_avertissements_fin_periode($login_ele, $periode, $s_periode)."
 		<input type='submit' value='Enregistrer' />
+
+		<hr width='200px'/>".tableau_des_avertissements_de_fin_de_periode_eleve($login_ele)."
 	</fieldset>
 </form>";
 	}
@@ -352,7 +358,9 @@ else {
 			if($ver_periode[$current_num_per]!="O") {
 				echo "<a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de fin de période\">".$current_tab_classe['classe']."&nbsp;: ".$nom_periode[$current_num_per]."</a>";
 
-				echo " - <a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+				if(!getSettingANon('mod_disc_avertissements_mi_periode')) {
+					echo " - <a href='".$_SERVER['PHP_SELF']."?login_ele=$login_ele&amp;id_classe=".$current_tab_classe['id_classe']."&amp;periode=$current_num_per&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+				}
 
 				echo "<br />";
 			}
@@ -476,7 +484,9 @@ else {
 				if($ver_periode[$i]!="O") {
 					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de fin de période\">".$nom_periode[$i]."</a>";
 
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+					if(!getSettingANon('mod_disc_avertissements_mi_periode')) {
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;periode=$i&amp;s_periode=y' title=\"Saisir un(e) ".$mod_disc_terme_avertissement_fin_periode." de mi-période\">mi-période</a>";
+					}
 
 					echo "<br />";
 

@@ -215,6 +215,29 @@ else {
 	  </label>
 
 	  <br />&nbsp;<br />
+
+	  <input type="radio"
+			 name="mod_disc_avertissements_mi_periode"
+			 id='mod_disc_avertissements_mi_periode_y'
+			 value="y"
+			 onchange='changement()'
+			<?php if (getSettingValue("mod_disc_avertissements_mi_periode")!='n') echo " checked='checked'"; ?> />
+	  <label for='mod_disc_avertissements_mi_periode_y' style='cursor: pointer;'>
+		Permettre la saisie et l'affichage <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?> pour les mi-périodes,
+	  </label>
+	  <br />
+	  <input type="radio"
+			 name="mod_disc_avertissements_mi_periode"
+			 id='mod_disc_avertissements_mi_periode_n'
+			 value="n"
+			 onchange='changement()'
+			<?php if (getSettingValue("mod_disc_avertissements_mi_periode")=='n') echo " checked='checked'"; ?> />
+	  <label for='mod_disc_avertissements_mi_periode_n' style='cursor: pointer;'>
+		Ne pas permettre la saisie, ni afficher <?php echo $prefixe_mod_disc_terme_avertissement_fin_periode_de.$mod_disc_terme_avertissement_fin_periode;?> pour les mi-périodes.
+	  </label>
+
+	  <br />&nbsp;<br />
+
 	  <input type='checkbox'
 			 name='mod_disc_avertissement_impression_parents_separes'
 			 id='mod_disc_avertissement_impression_parents_separes'

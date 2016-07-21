@@ -55,6 +55,10 @@ $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_c
 
 $eleve=isset($_POST['eleve']) ? $_POST['eleve'] : (isset($_GET['eleve']) ? $_GET['eleve'] : NULL);
 
+if(getSettingANon("mod_disc_avertissements_mi_periode")) {
+	$s_periode="n";
+}
+
 //debug_var();
 
 if($_SESSION['statut']=='professeur') {
@@ -451,11 +455,18 @@ if(!isset($periode)) {
 			<input type='checkbox' name='periode[]' id='periode_".$lig->periode."' value='$lig->periode' /><label for='periode_".$lig->periode."'>Période ".$lig->periode."</label><br />\n";
 		}
 		echo "
-		</p>
+		</p>";
+		if(!getSettingANon('mod_disc_avertissements_mi_periode')) {
+			echo "
 		<p>Imprimer les $mod_disc_terme_avertissement_fin_periode de <br />
 			<input type='radio' name='s_periode' id='s_periode_y' value='y' /><label for='s_periode_y'>mi-période</label><br />
 			<input type='radio' name='s_periode' id='s_periode_n' value='n' checked /><label for='s_periode_n'>fin de période</label><br />
 		</p>";
+		}
+		else {
+			echo "
+			<input type='hidden' name='s_periode' id='s_periode_n' value='n' />";
+		}
 	}
 
 	echo "

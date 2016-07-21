@@ -136,6 +136,22 @@ function getSettingAOui($_name)
 	}
 }
 
+/**
+ * Renvoie TRUE si le réglage est 'no' ou 'n'
+ *
+ *
+ * @param text $_name Le nom du réglage que vous cherchez
+ * @return bool TRUE si le réglage que vous cherchez est 'no' or 'n', FALSE sinon
+ */
+function getSettingANon($_name)
+{
+	if (getSettingValue($_name)=="no" || getSettingValue($_name)=="n"){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
 
 /**
  * Supprime une entrée dans la table setting

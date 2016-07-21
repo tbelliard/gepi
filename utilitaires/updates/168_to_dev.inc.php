@@ -966,4 +966,18 @@ if ($test_champ==0) {
 	$result .= msj_present("Le champ existe déjà");
 }
 
+$req_test= mysqli_query($GLOBALS["mysqli"], "SELECT VALUE FROM setting WHERE NAME='mod_disc_avertissements_mi_periode'");
+$res_test = mysqli_num_rows($req_test);
+if ($res_test == 0){
+	$result .= "Initialisation du paramètre 'mod_disc_avertissements_mi_periode' à 'y': ";
+	$sql="INSERT INTO setting SET name='mod_disc_avertissements_mi_periode', value='y';";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+}
+
 ?>

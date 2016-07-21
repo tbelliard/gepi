@@ -11676,81 +11676,133 @@ function tableau_des_avertissements_de_fin_de_periode_eleve($login_ele) {
 
 	$tab_avt_ele=get_tab_avertissement($login_ele);
 	if(count($tab_avt_ele)>0) {
-		$retour="<table class='boireaus boireaus_alt boireaus_white_hover'>
+		if(getSettingANon("mod_disc_avertissements_mi_periode")) {
+
+			$retour="<table class='boireaus boireaus_alt boireaus_white_hover'>
+	<tr>
+		<th title='Période'>Période</th>
+		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>";
+
+			$acces_imprimer_bilan_periode="n";
+			//if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+			if(acces_impression_avertissement_fin_periode($login_ele)) {
+				$acces_imprimer_bilan_periode="y";
+				$retour.="
+		<th title=\"Imprimer.\">Impr.</th>";
+			}
+
+			$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
+
+			$retour.="
+	</tr>";
+			foreach($tab_avt_ele['id_type_avertissement'] as $current_num_periode => $current_tab_avt) {
+				$retour.="
+	<tr>
+		<td>".$current_num_periode."</td>
+		<td>";
+				if(isset($current_tab_avt["n"])) {
+					for($loop=0;$loop<count($current_tab_avt["n"]);$loop++) {
+						if($loop>0) {$retour.="<br />";}
+						//$retour.=$current_tab_avt[$loop];
+						$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt["n"][$loop]]['nom_complet'];
+					}
+					$retour.="</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
+						$retour.="
+		<td><a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&s_periode=n&periode[0]=$current_num_periode&eleve[0]=$current_id_classe|$current_num_periode|$login_ele' title=\"Imprimer l'".$mod_disc_terme_avertissement_fin_periode."\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>";
+					}
+				}
+				else {
+					$retour.="
+		</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$retour.="
+		<td></td>";
+					}
+				}
+			}
+			$retour.="
+	</tr>
+</table>";
+		}
+		else {
+			$retour="<table class='boireaus boireaus_alt boireaus_white_hover'>
 	<tr>
 		<th title='Période'>Période</th>
 		<th title='Moitié ou Fin de période'>&frac12; ou fin</th>
 		<th>".ucfirst($mod_disc_terme_avertissement_fin_periode)."</th>";
 
-		$acces_imprimer_bilan_periode="n";
-		//if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
-		if(acces_impression_avertissement_fin_periode($login_ele)) {
-			$acces_imprimer_bilan_periode="y";
-			$retour.="
+			$acces_imprimer_bilan_periode="n";
+			//if(acces('/mod_discipline/imprimer_bilan_periode.php', $_SESSION['statut'])) {
+			if(acces_impression_avertissement_fin_periode($login_ele)) {
+				$acces_imprimer_bilan_periode="y";
+				$retour.="
 		<th title=\"Imprimer.\">Impr.</th>";
-		}
+			}
 
-		$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
+			$tab_classes_ele=get_class_periode_from_ele_login($login_ele);
 
-		$retour.="
-	</tr>";
-		foreach($tab_avt_ele['id_type_avertissement'] as $current_num_periode => $current_tab_avt) {
 			$retour.="
+	</tr>";
+			foreach($tab_avt_ele['id_type_avertissement'] as $current_num_periode => $current_tab_avt) {
+				$retour.="
 	<tr>
 		<td rowspan='2'>".$current_num_periode."</td>
 		<td title=\"Mi-période\">&frac12;</td>
 		<td>";
-			if(isset($current_tab_avt["y"])) {
-				for($loop=0;$loop<count($current_tab_avt["y"]);$loop++) {
-					if($loop>0) {$retour.="<br />";}
-					//$retour.=$current_tab_avt[$loop];
-					$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt["y"][$loop]]['nom_complet'];
-				}
-				$retour.="</td>";
-				if($acces_imprimer_bilan_periode=="y") {
-					$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
-					$retour.="
+				if(isset($current_tab_avt["y"])) {
+					for($loop=0;$loop<count($current_tab_avt["y"]);$loop++) {
+						if($loop>0) {$retour.="<br />";}
+						//$retour.=$current_tab_avt[$loop];
+						$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt["y"][$loop]]['nom_complet'];
+					}
+					$retour.="</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
+						$retour.="
 		<td><a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&s_periode=y&periode[0]=$current_num_periode&eleve[0]=$current_id_classe|$current_num_periode|$login_ele' title=\"Imprimer l'".$mod_disc_terme_avertissement_fin_periode." (mi-période)\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>";
+					}
 				}
-			}
-			else {
-				$retour.="
-		</td>";
-				if($acces_imprimer_bilan_periode=="y") {
+				else {
 					$retour.="
+		</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$retour.="
 		<td></td>";
+					}
 				}
-			}
-			$retour.="
+				$retour.="
 	</tr>
 	<tr>
 		<td title=\"Fin de période\">Fin</td>
 		<td>";
-			if(isset($current_tab_avt["n"])) {
-				for($loop=0;$loop<count($current_tab_avt["n"]);$loop++) {
-					if($loop>0) {$retour.="<br />";}
-					//$retour.=$current_tab_avt[$loop];
-					$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt["n"][$loop]]['nom_complet'];
-				}
-				$retour.="</td>";
-				if($acces_imprimer_bilan_periode=="y") {
-					$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
-					$retour.="
+				if(isset($current_tab_avt["n"])) {
+					for($loop=0;$loop<count($current_tab_avt["n"]);$loop++) {
+						if($loop>0) {$retour.="<br />";}
+						//$retour.=$current_tab_avt[$loop];
+						$retour.=$tab_type_avertissement_fin_periode['id_type_avertissement'][$current_tab_avt["n"][$loop]]['nom_complet'];
+					}
+					$retour.="</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$current_id_classe=$tab_classes_ele['periode'][$current_num_periode]['id_classe'];
+						$retour.="
 		<td><a href='../mod_discipline/imprimer_bilan_periode.php?id_classe[0]=$current_id_classe&s_periode=n&periode[0]=$current_num_periode&eleve[0]=$current_id_classe|$current_num_periode|$login_ele' title=\"Imprimer l'".$mod_disc_terme_avertissement_fin_periode."\"><img src='../images/icons/print.png' class='icone16' alt='Imprimer' /></a></td>";
+					}
 				}
-			}
-			else {
-				$retour.="
-		</td>";
-				if($acces_imprimer_bilan_periode=="y") {
+				else {
 					$retour.="
+		</td>";
+					if($acces_imprimer_bilan_periode=="y") {
+						$retour.="
 		<td></td>";
+					}
 				}
 			}
-		}
-		$retour.="
+			$retour.="
 	</tr>
 </table>";
+		}
 	}
 
 /*
