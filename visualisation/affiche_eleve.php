@@ -2964,7 +2964,7 @@ et le suivant est $eleve_suivant\">&nbsp;<img src='../images/icons/forward.png' 
 							}
 
 							// 20160616
-							$texte.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
+							$texte_saisie_avis_fixe.=" <a href=\"#\" onclick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=corriger_espaces_et_casse_ponctuation(document.getElementById('no_anti_inject_current_eleve_login_ap2').value);return false;\" title=\"Corriger la ponctuation\"><img src='$gepiPath/images/icons/wizard_ponctuation.png' class='icone16' alt='Ponctuation' /></a>";
 
 							$texte_saisie_avis_fixe.="</div>\n";
 							$texte_saisie_avis_fixe.="</fieldset>\n";
