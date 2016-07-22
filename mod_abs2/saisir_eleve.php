@@ -350,6 +350,10 @@ if (!$eleve_col->isEmpty()) {
 	    echo ("<td align='left'>\n");
 	    //echo '&nbsp;&nbsp;&nbsp;';
 	    echo 'Commentaire : <input name="commentaire" type="text" maxlength="150" size="20"/>';
+		echo "</td>";
+
+		// 20160722: Ajouter un checkbox pour rattacher les saisies qui peuvent l'être
+		echo "<td rowspan='2' style='vertical-align:top' title=\"Rattacher au nouveau traitement créé, les saisies qui peuvent l'être.\nSeules les saisies avec création de traitement permettent un rattachement\n(il faut donc choisir un 'type' dans le champ SELECT à gauche).\"><input type='checkbox' name='rattacher_saisies_si_possible' id='rattacher_saisies_si_possible' value='y' /><label for='rattacher_saisies_si_possible'>Rattacher saisies</label></td>";
 
 	    echo ("</tr>\n");
 		//=============================================================

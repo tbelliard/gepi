@@ -325,7 +325,66 @@ for($i=0; $i<$total_eleves; $i++) {
 			if($info_traitement!="") {
 				$lien_message_enregistrement.=" <span style='font-size:x-small'>(".$info_traitement.")</span>";
 			}
-			// 20160624: Chercher les saisies pouvant être rattachées
+
+			// 20160722: Chercher les saisies pouvant être rattachées
+			if((isset($_POST['rattacher_saisies_si_possible']))&&($_POST['rattacher_saisies_si_possible']=="y")) {
+
+				$query = AbsenceEleveSaisieQuery::create();
+
+				$tmp_date_debut = null;
+				$tmp_date_fin = null;
+				$tmp_id_eleve_array = null;
+				//$tmp_id_eleve_array[] = $eleve->getId();
+				$tmp_id_saisie_array = null;
+				foreach ($traitement->getAbsenceEleveSaisies() as $tmp_saisie) {
+					if ($tmp_date_debut == null || $tmp_saisie->getDebutAbs('U') < $tmp_date_debut->format('U')) {
+						$tmp_date_debut = clone $tmp_saisie->getDebutAbs(null);
+					}
+					if ($tmp_date_fin == null || $tmp_saisie->getFinAbs('U') > $tmp_date_fin->format('U')) {
+						$tmp_date_fin = clone $tmp_saisie->getFinAbs(null);
+					}
+					$tmp_id_eleve_array[] = $tmp_saisie->getEleveId();
+					$tmp_id_saisie_array[] = $tmp_saisie->getId();
+				}
+				if ($tmp_date_debut != null) date_date_set($tmp_date_debut, $tmp_date_debut->format('Y'), $tmp_date_debut->format('m'), $tmp_date_debut->format('d') - 1);
+				if ($tmp_date_fin != null) date_date_set($tmp_date_fin, $tmp_date_fin->format('Y'), $tmp_date_fin->format('m'), $tmp_date_fin->format('d') + 1);
+				$query->filterByPlageTemps($tmp_date_debut, $tmp_date_fin)->filterByEleveId($tmp_id_eleve_array)->filterById($tmp_id_saisie_array, Criteria::NOT_IN);
+
+				$query->distinct();
+
+				$tmp_page_number=1;
+				$tmp_item_per_page=1000;
+				$tmp_saisies_col = $query->paginate($tmp_page_number, $tmp_item_per_page);
+				$nb_saisies_rattachees=0;
+				$nb_saisies_conflit=0;
+
+				$results = $tmp_saisies_col->getResults();
+				if($results->count()!=0) {
+					foreach ($results as $tmp_saisie) {
+
+						$saisies_conflit = $tmp_saisie->getSaisiesContradictoiresManquementObligation();
+						if($saisies_conflit->isEmpty()) {
+							if (!$traitement->getAbsenceEleveSaisies()->contains($tmp_saisie)) {
+								$traitement->addAbsenceEleveSaisie($tmp_saisie);
+								$nb_saisies_rattachees++;
+							}
+						}
+						else {
+							$nb_saisies_conflit++;
+						}
+					}
+
+					if (($nb_saisies_rattachees>0)&&(!$traitement->getAbsenceEleveSaisies()->isEmpty())) {
+						$traitement->save();
+
+						$lien_message_enregistrement.=" <em style='font-size:x-small; color:darkviolet' title=\"$nb_saisies_rattachees saisie(s) a(ont) été rattachée(s).\">(".$nb_saisies_rattachees.")</em>";
+						if($nb_saisies_conflit>0) {
+							$lien_message_enregistrement.=" <em style='font-size:x-small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\">(".$nb_saisies_conflit.")</em>";
+						}
+					}
+				}
+
+			}
 	    }
 	    else {
 			// Apporter des précisions sur la saisie:
