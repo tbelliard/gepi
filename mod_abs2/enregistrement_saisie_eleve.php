@@ -357,6 +357,7 @@ for($i=0; $i<$total_eleves; $i++) {
 				$tmp_saisies_col = $query->paginate($tmp_page_number, $tmp_item_per_page);
 				$nb_saisies_rattachees=0;
 				$nb_saisies_conflit=0;
+				$liste_saisies_conflit="";
 
 				$results = $tmp_saisies_col->getResults();
 				if($results->count()!=0) {
@@ -370,6 +371,18 @@ for($i=0; $i<$total_eleves; $i++) {
 							}
 						}
 						else {
+							/*
+							foreach ($saisies_conflit as $current_saisie_conflit) {
+								$liste_saisies_conflit.="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_saisie_conflit->getPrimaryKey()."' style='' title=\"Voir la saisie n°".$current_saisie_conflit->getId()."\">";
+								// target='_blank'
+								$liste_saisies_conflit.=$current_saisie_conflit->getId();
+								$liste_saisies_conflit.="</a>";
+								if (!$saisies_conflit->isLast()) {
+									echo ' - ';
+								}
+							}
+							*/
+
 							$nb_saisies_conflit++;
 						}
 					}
@@ -379,8 +392,13 @@ for($i=0; $i<$total_eleves; $i++) {
 
 						$lien_message_enregistrement.=" <em style='font-size:x-small; color:darkviolet' title=\"$nb_saisies_rattachees saisie(s) a(ont) été rattachée(s).\">(".$nb_saisies_rattachees.")</em>";
 						if($nb_saisies_conflit>0) {
-							$lien_message_enregistrement.=" <em style='font-size:x-small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\">(".$nb_saisies_conflit.")</em>";
+							$lien_message_enregistrement.=" <em style='font-size:x-small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\nLa ou les saisies correspondantes n'ont pas été rattachées.\">(".$nb_saisies_conflit.")</em>";
 						}
+					}
+					elseif($nb_saisies_conflit>0) {
+						$lien_message_enregistrement.=" <em style='font-size:x-small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\nLa ou les saisies correspondantes n'ont pas été rattachées.\">(".$nb_saisies_conflit;
+						//$lien_message_enregistrement.=" <span style='font-size:xx-small;'>(".$liste_saisies_conflit.")</span>";
+						$lien_message_enregistrement.=")</em>";
 					}
 				}
 

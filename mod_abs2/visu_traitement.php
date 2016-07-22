@@ -282,12 +282,12 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 		echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
 		if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
 			echo '<form method="post" action="liste_saisies_selection_traitement.php">';
-		    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
-		echo '<p>';
-			echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-			echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
-			echo '<button type="submit">Ajouter</button>';
-		echo '</p>';
+			echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+			echo '<p>';
+				echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+				echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
+				echo '<button type="submit">Ajouter</button>';
+			echo '</p>';
 			echo '</form>';
 		}
 		echo '</div>';
@@ -328,6 +328,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
         $timestamp_max_fin=$timestamp_courant;
     }
 
+	echo "<div style='clear:both;'></div>";
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
     if($menu){
         echo"&menu=false";
@@ -373,6 +374,7 @@ if($cpt_tour_dans_boucle_saisies==0) {
 if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
     echo '<br/>';
 
+	echo "<div style='clear:both;'></div>";
 	// S'il y a plusieurs élèves à afficher dabs saisir_eleve.php, on ne parvient pas à ne récupérer qu'eux.
 	// Du coup, on n'affiche le lien que s'il n'y a qu'un élève pour le traitement.
 	if(count($tab_id_eleves_traitement)==1) {
@@ -389,14 +391,28 @@ if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 		echo '</div>';
 	}
 
+	echo "<table><tr><td>";
     echo '<form method="post" action="liste_saisies_selection_traitement.php">';
     echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     echo '<p>';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="filter_recherche_saisie_a_rattacher" value="oui"/>';
-    echo '<button type="submit">Chercher des saisies à rattacher</button>';
+    echo '<button type="submit" title="Le tableau des saisies pouvant être rattachées va être affiché pour contrôle.'."\n".'Vous pourrez choisir les saisies à rattacher avant de valider.">Chercher des saisies à rattacher</button>';
     echo '</p>';
     echo '</form>';
+	echo "</td><td>";
+
+	// 20160722: Rattacher les saisies qui peuvent l'être
+	echo '<form method="post" action="enregistrement_modif_traitement.php">';
+	echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+	echo '<p>';
+	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="rattacher_saisies_si_possible" />';
+	echo "<input type='hidden' name='rattacher_saisies_si_possible' value='y' />";
+	echo '<button type="submit" title="Rattacher au traitement, les saisies qui peuvent l\'être.'."\n".'Prenez soin de contrôler ensuite que la ou les saisies rattachées sont bien directement liées au traitement courant.'."\n".'Vous pourriez accidentellement rattacher un retard de la veille à l\'absence du jour.">Rattacher automatiquement les saisies</button>';
+	echo '</p>';
+	echo '</form>';
+	echo "</td></tr></table>";
 
     if ($traitement->getModifiable()) {
 		if(count($tab_saisie)>0) {

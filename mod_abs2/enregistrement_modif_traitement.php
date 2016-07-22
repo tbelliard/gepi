@@ -76,7 +76,7 @@ if ($traitement == null) {
 
 //debug_var();
 
-if ($modif == 'type') {    
+if ($modif == 'type') {
 	$traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->findPk($_POST["id_type"]));   
 } elseif ($modif == 'commentaire') {
     $traitement->setCommentaire($_POST["commentaire"]);
@@ -152,11 +152,97 @@ if ($modif == 'type') {
 
 	include("visu_traitement.php");
 	die();
+
+} elseif ($modif == 'rattacher_saisies_si_possible') {
+
+	$message_enregistrement="";
+
+	if((isset($id_traitement))&&(isset($_POST['rattacher_saisies_si_possible']))&&($_POST['rattacher_saisies_si_possible']=="y")) {
+		$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+		if ($traitement != null) {
+			$query = AbsenceEleveSaisieQuery::create();
+
+			$tmp_date_debut = null;
+			$tmp_date_fin = null;
+			$tmp_id_eleve_array = null;
+			//$tmp_id_eleve_array[] = $eleve->getId();
+			$tmp_id_saisie_array = null;
+			foreach ($traitement->getAbsenceEleveSaisies() as $tmp_saisie) {
+				if ($tmp_date_debut == null || $tmp_saisie->getDebutAbs('U') < $tmp_date_debut->format('U')) {
+					$tmp_date_debut = clone $tmp_saisie->getDebutAbs(null);
+				}
+				if ($tmp_date_fin == null || $tmp_saisie->getFinAbs('U') > $tmp_date_fin->format('U')) {
+					$tmp_date_fin = clone $tmp_saisie->getFinAbs(null);
+				}
+				$tmp_id_eleve_array[] = $tmp_saisie->getEleveId();
+				$tmp_id_saisie_array[] = $tmp_saisie->getId();
+			}
+			if ($tmp_date_debut != null) date_date_set($tmp_date_debut, $tmp_date_debut->format('Y'), $tmp_date_debut->format('m'), $tmp_date_debut->format('d') - 1);
+			if ($tmp_date_fin != null) date_date_set($tmp_date_fin, $tmp_date_fin->format('Y'), $tmp_date_fin->format('m'), $tmp_date_fin->format('d') + 1);
+			$query->filterByPlageTemps($tmp_date_debut, $tmp_date_fin)->filterByEleveId($tmp_id_eleve_array)->filterById($tmp_id_saisie_array, Criteria::NOT_IN);
+
+			$query->distinct();
+
+			$tmp_page_number=1;
+			$tmp_item_per_page=1000;
+			$tmp_saisies_col = $query->paginate($tmp_page_number, $tmp_item_per_page);
+			$nb_saisies_rattachees=0;
+			$nb_saisies_conflit=0;
+			$liste_saisies_conflit="";
+
+			$results = $tmp_saisies_col->getResults();
+			if($results->count()!=0) {
+				foreach ($results as $tmp_saisie) {
+
+					$saisies_conflit = $tmp_saisie->getSaisiesContradictoiresManquementObligation();
+					if($saisies_conflit->isEmpty()) {
+						if (!$traitement->getAbsenceEleveSaisies()->contains($tmp_saisie)) {
+							$traitement->addAbsenceEleveSaisie($tmp_saisie);
+							$nb_saisies_rattachees++;
+						}
+					}
+					else {
+						foreach ($saisies_conflit as $current_saisie_conflit) {
+							$liste_saisies_conflit.="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_saisie_conflit->getPrimaryKey()."' style='' title=\"Voir la saisie n°".$current_saisie_conflit->getId()."\">";
+							// target='_blank'
+							$liste_saisies_conflit.=$current_saisie_conflit->getId();
+							$liste_saisies_conflit.="</a>";
+							if (!$saisies_conflit->isLast()) {
+								echo ' - ';
+							}
+						}
+
+						$nb_saisies_conflit++;
+					}
+				}
+
+				if (($nb_saisies_rattachees>0)&&(!$traitement->getAbsenceEleveSaisies()->isEmpty())) {
+					$traitement->save();
+
+					$message_enregistrement=" <em style='font-size:small; color:darkviolet' title=\"$nb_saisies_rattachees saisie(s) a(ont) été rattachée(s).\">".$nb_saisies_rattachees." saisie(s) a(ont) été rattachée(s).</em>";
+					if($nb_saisies_conflit>0) {
+						$message_enregistrement.="<br /><em style='font-size:small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\">Conflit détecté sur $nb_saisies_conflit saisie(s) <span style='font-size:x-small;'>(".$liste_saisies_conflit.")</span>.</em>";
+					}
+				}
+				elseif($nb_saisies_conflit>0) {
+					$message_enregistrement.="<br /><em style='font-size:small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\nLa ou les saisies correspondantes n'ont pas été rattachées.\">Conflit détecté sur $nb_saisies_conflit saisie(s) <span style='font-size:x-small;'>(".$liste_saisies_conflit.")</span>.</em>";
+				}
+			}
+		}
+	}
+
+	include("visu_traitement.php");
+	die();
 }
 
 if (!$traitement->isModified()) {
     if (isset($count_delete) && $count_delete > 0) {
-	$message_enregistrement .= '<span style="color:red">Saisie supprimée</span>';
+	//$message_enregistrement .= '<span style="color:red">Saisie supprimée</span>';
+	$message_enregistrement.='<span style="color:red" title="La saisie n\'est plus rattachée au traitement courant.">Saisie ';
+	if(isset($_POST["id_saisie"])) {
+		$message_enregistrement.='<a href="visu_saisie.php?id_saisie='.$_POST["id_saisie"].'" style="" title="Voir la saisie n°'.$_POST["id_saisie"].' qui a été détachée du traitement courant">'.$_POST["id_saisie"].'</a> ';
+	}
+	$message_enregistrement.='enlevée</span>';
     } else {
 	$message_enregistrement .= '<span style="color:red">Pas de modifications</span>';
     }
