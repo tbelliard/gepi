@@ -2183,18 +2183,20 @@ function check_param_bloc_adresse_html($a4_ou_a3="a4") {
 function insere_lien_insertion_image_dans_ckeditor($url_img) {
 	$tmp_largeur='';
 	$tmp_hauteur='';
-	$tmp_size = getimagesize($url_img);
-	if($tmp_size) {
-		// Pour que l'image puisse être redimensionnée facilement dans la page, on fixe la largeur max à 400px
-		$tmp_largeur_max=400;
+	if(file_exists($url_img)) {
+		$tmp_size = getimagesize($url_img);
+		if($tmp_size) {
+			// Pour que l'image puisse être redimensionnée facilement dans la page, on fixe la largeur max à 400px
+			$tmp_largeur_max=400;
 
-		if(($tmp_size[0]>$tmp_largeur_max)&&($tmp_size[1]>20)) {
-			$tmp_largeur=$tmp_largeur_max;
-			$tmp_hauteur=round($tmp_size[1]*$tmp_largeur_max/$tmp_size[0]);
-		}
-		else {
-			$tmp_largeur=$tmp_size[0];
-			$tmp_hauteur=$tmp_size[1];
+			if(($tmp_size[0]>$tmp_largeur_max)&&($tmp_size[1]>20)) {
+				$tmp_largeur=$tmp_largeur_max;
+				$tmp_hauteur=round($tmp_size[1]*$tmp_largeur_max/$tmp_size[0]);
+			}
+			else {
+				$tmp_largeur=$tmp_size[0];
+				$tmp_hauteur=$tmp_size[1];
+			}
 		}
 	}
 	return "<div style='float:right; width:18px;'><a href=\"javascript:insere_image_dans_ckeditor('".$url_img."','$tmp_largeur','$tmp_hauteur')\" title='Insérer cette image dans le texte'><img src='../images/up.png' width='18' height='18' alt='Insérer cette image dans le texte' /></a></div>";
@@ -6030,4 +6032,62 @@ function get_liste_classes_eleve($login_ele) {
 	}
 	return $retour;
 }
+
+
+function liste_checkbox_classes($tab_classes_preselectionnees=array(), $nom_champ='id_classe', $nom_func_js_tout_cocher_decocher='cocher_decocher', $sql="") {
+	$retour="";
+
+	if($sql=="") {
+		$sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
+	}
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)>0) {
+		$nombreligne=mysqli_num_rows($res);
+		$nbcol=3;
+		$nb_par_colonne=round($nombreligne/$nbcol);
+
+		$retour.="<table style ='width:100%;'>\n";
+		$retour.="<caption class='invisible'>Tableau de choix des classes</caption>\n";
+		$retour.="<tr style='text-align:center; vertical-align: top;'>\n";
+		$retour.="<td style='text-align:left' >\n";
+
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			if(($cpt>0)&&(round($cpt/$nb_par_colonne)==$cpt/$nb_par_colonne)){
+				$retour.="</td>\n";
+				$retour.="<td style='text-align:left' >\n";
+			}
+
+			$retour.="<input type='checkbox' name='".$nom_champ."[]' id='".$nom_champ."_$cpt' value='$lig->id' ";
+			$retour.="onchange=\"checkbox_change('".$nom_champ."_$cpt')\" ";
+			if(in_array($lig->id, $tab_classes_preselectionnees)) {
+				$retour.="checked ";
+				$temp_style=" style='font-weight: bold;'";
+			}
+			else {
+				$temp_style="";
+			}
+			$retour.="/><label for='".$nom_champ."_$cpt' title=\"$lig->id\"><span id='texte_".$nom_champ."_$cpt'$temp_style>$lig->classe</span></label><br />\n";
+
+			$cpt++;
+		}
+		$retour.="</td>\n";
+		$retour.="</tr>\n";
+		$retour.="</table>\n";
+
+		$retour.="<script type='text/javascript'>
+function $nom_func_js_tout_cocher_decocher(mode) {
+	for (var k=0;k<$cpt;k++) {
+		if(document.getElementById('".$nom_champ."_'+k)){
+			document.getElementById('".$nom_champ."_'+k).checked=mode;
+			checkbox_change('".$nom_champ."_'+k);
+		}
+	}
+}
+</script>\n";
+	}
+
+	return $retour;
+}
+
 ?>

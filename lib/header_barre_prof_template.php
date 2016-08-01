@@ -162,6 +162,11 @@ $is_pp_header_barre_prof_template=is_pp($_SESSION['login']);
 			$cpt_sous_menu++;
 		}
 
+		$tmp_sous_menu[$cpt_sous_menu]['lien']='/cahier_texte_2/extract_tag.php';
+		$tmp_sous_menu[$cpt_sous_menu]['texte']="Extraction tag";
+		$tmp_sous_menu[$cpt_sous_menu]['title']="Extraire les notices portant tel ou tel tag (contrôle, EPI, AP,...)";
+		$cpt_sous_menu++;
+
 		$tmp_sous_menu[$cpt_sous_menu]['lien']='/documents/archives/index.php';
 		$tmp_sous_menu[$cpt_sous_menu]['texte']="Mes archives CDT";
 		$cpt_sous_menu++;

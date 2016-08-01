@@ -293,6 +293,7 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo " | <a href='../cahier_texte_2/extract_tag.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Extraction tag</a>";
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";

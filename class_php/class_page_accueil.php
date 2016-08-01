@@ -1495,6 +1495,9 @@ if(getSettingAOui('active_bulletins')) {
 				$this->creeNouveauItem("/cahier_texte_2/see_all.php",
 					"Consultation des cahiers de textes",
 					"Ce menu vous permet de consulter les cahiers de textes.");
+				$this->creeNouveauItem("/cahier_texte_2/extract_tag.php",
+					"Extraction des tags de CDT",
+					"Ce menu vous permet d'extraire les notices de CDT portant tel ou tel tag (contrôle, AP, EPI,...).");
 		}
 
 		if($this->statutUtilisateur=="professeur") {

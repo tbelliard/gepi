@@ -107,6 +107,8 @@ if ($barre_plugin!="") {
 					$menus .= '   <ul class="niveau2">'."\n";
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>Consultation CDT</a></li>'."\n";
 				}
+				$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_2/extract_tag.php"'.insert_confirm_abandon().' title="Extraire les notices portant tel ou tel tag (contrôle, EPI, AP,...)">Extraction tag</a></li>'."\n";
+
 				if(getSettingValue('GepiAccesCdtVisa')=='yes') {
 					$menus .= '     <li><a href="'.$gepiPath.'/cahier_texte_admin/visa_ct.php"'.insert_confirm_abandon().'>Visa c. de textes</a></li>'."\n";
 				}

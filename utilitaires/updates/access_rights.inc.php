@@ -1720,6 +1720,18 @@ statut='';";
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_annees_anterieures/recuperation_donnees_manquantes.php', administrateur='V', professeur='F', cpe='F', scolarite='F', eleve='F', responsable='F', secours='F', autre='F', description='Ajax: Acces aux appreciations et avis des bulletins', statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/extract_tag.php',
+administrateur='V',
+professeur='V',
+cpe='V',
+scolarite='V',
+eleve='F',
+responsable='F',
+secours='F',
+autre='V',
+description='Cahiers de textes: Extraction tags',
+statut='';";
+
 //$tab_req[] = "";
 
 $test1 = mysqli_num_rows(mysqli_query($GLOBALS["mysqli"], "SHOW COLUMNS FROM droits LIKE 'responsable'"));

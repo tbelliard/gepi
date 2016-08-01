@@ -1796,3 +1796,4 @@ INSERT INTO groupes_types SET nom_court='AP', nom_complet='Accompagnement person
 INSERT INTO groupes_types SET nom_court='EPI', nom_complet='Enseignement pratique interdisciplinaire', nom_complet_pluriel='Enseignements pratiques interdisciplinaires';
 INSERT INTO groupes_types SET nom_court='Parcours', nom_complet='Parcours éducatif', nom_complet_pluriel='Parcours éducatifs';
 INSERT INTO setting SET name='mod_disc_avertissements_mi_periode', value='y';
+INSERT INTO droits SET id='/cahier_texte_2/extract_tag.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='V', description='Cahiers de textes: Extraction tags', statut='';
