@@ -101,7 +101,12 @@ if (isFiltreRechercheParam('filter_eleve')) {
 //$id_classe = 14;
 //$classe = ClasseQuery::create()->findPk($id_classe);
 if (isFiltreRechercheParam('filter_classe')) {
-    if (in_array('SANS',getFiltreRechercheParam('filter_classe'))) {
+/*
+echo "<pre>";
+print_r(getFiltreRechercheParam('filter_classe'));
+echo "</pre>";
+*/
+    if((is_array(getFiltreRechercheParam('filter_classe')))&&(in_array('SANS',getFiltreRechercheParam('filter_classe')))) {
 	   $_SESSION['filtre_recherche']['filter_classe']=array('SANS');
     } else {
 	  $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
@@ -436,8 +441,15 @@ echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRecherchePa
 		foreach ($classe_col as $classe) {
 			echo "<option value='".$classe->getId()."'";
 			if (isFiltreRechercheParam('filter_classe') && (getFiltreRechercheParam('filter_classe') != "SANS")) {
-			   if (in_array($classe->getId(), getFiltreRechercheParam('filter_classe'))) {
-				  echo " selected='selected' ";
+			   if(is_array(getFiltreRechercheParam('filter_classe'))) {
+			      if ((in_array($classe->getId(), getFiltreRechercheParam('filter_classe')))) {
+				     echo " selected='selected' ";
+			      }
+			   }
+			   else {
+			      if ($classe->getId()==getFiltreRechercheParam('filter_classe')) {
+				     echo " selected='selected' ";
+			      }
 			   }
 			}
 			
