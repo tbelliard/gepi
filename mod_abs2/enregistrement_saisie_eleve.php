@@ -378,7 +378,7 @@ for($i=0; $i<$total_eleves; $i++) {
 								$liste_saisies_conflit.=$current_saisie_conflit->getId();
 								$liste_saisies_conflit.="</a>";
 								if (!$saisies_conflit->isLast()) {
-									echo ' - ';
+									$liste_saisies_conflit.=' - ';
 								}
 							}
 							*/
