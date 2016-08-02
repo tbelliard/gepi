@@ -200,10 +200,12 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 		$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($select_saisie[$loop]);
 		if ($saisie != null) {
 			$tab_ele[$saisie->getEleve()->getPrimaryKey()][]=$select_saisie[$loop];
+			$tab_nom_prenom_ele[$saisie->getEleve()->getPrimaryKey()]=$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
 		}
 	}
 
 	$message_erreur_traitement="";
+	$message_liens_traitements_crees="";
 	$message_enregistrement="";
 	$nb_reg=0;
 	$nb_notifications=0;
@@ -236,6 +238,82 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 			}
 
 			$traitement->save();
+
+			if($message_liens_traitements_crees!="") {
+				$message_liens_traitements_crees.=", ";
+			}
+			$message_liens_traitements_crees.="<a href='../mod_abs2/visu_traitement.php?id_saisie=".$traitement->getId()."' style='' title=\"Voir le traitement n°".$traitement->getId()." concernant ".$tab_nom_prenom_ele[$key_ele]."\" target='_blank'>".$traitement->getId()."</a>";
+
+			if((isset($_POST["rattacher_saisies_si_possible"]))&&($_POST["rattacher_saisies_si_possible"]=="y")&&($traitement != null)) {
+				$query = AbsenceEleveSaisieQuery::create();
+
+				$tmp_date_debut = null;
+				$tmp_date_fin = null;
+				$tmp_id_eleve_array = null;
+				//$tmp_id_eleve_array[] = $eleve->getId();
+				$tmp_id_saisie_array = null;
+				foreach ($traitement->getAbsenceEleveSaisies() as $tmp_saisie) {
+					if ($tmp_date_debut == null || $tmp_saisie->getDebutAbs('U') < $tmp_date_debut->format('U')) {
+						$tmp_date_debut = clone $tmp_saisie->getDebutAbs(null);
+					}
+					if ($tmp_date_fin == null || $tmp_saisie->getFinAbs('U') > $tmp_date_fin->format('U')) {
+						$tmp_date_fin = clone $tmp_saisie->getFinAbs(null);
+					}
+					$tmp_id_eleve_array[] = $tmp_saisie->getEleveId();
+					$tmp_id_saisie_array[] = $tmp_saisie->getId();
+				}
+				if ($tmp_date_debut != null) date_date_set($tmp_date_debut, $tmp_date_debut->format('Y'), $tmp_date_debut->format('m'), $tmp_date_debut->format('d') - 1);
+				if ($tmp_date_fin != null) date_date_set($tmp_date_fin, $tmp_date_fin->format('Y'), $tmp_date_fin->format('m'), $tmp_date_fin->format('d') + 1);
+				$query->filterByPlageTemps($tmp_date_debut, $tmp_date_fin)->filterByEleveId($tmp_id_eleve_array)->filterById($tmp_id_saisie_array, Criteria::NOT_IN);
+
+				$query->distinct();
+
+				$tmp_page_number=1;
+				$tmp_item_per_page=1000;
+				$tmp_saisies_col = $query->paginate($tmp_page_number, $tmp_item_per_page);
+				$nb_saisies_rattachees=0;
+				$nb_saisies_conflit=0;
+				$liste_saisies_conflit="";
+
+				$results = $tmp_saisies_col->getResults();
+				if($results->count()!=0) {
+					foreach ($results as $tmp_saisie) {
+
+						$saisies_conflit = $tmp_saisie->getSaisiesContradictoiresManquementObligation();
+						if($saisies_conflit->isEmpty()) {
+							if (!$traitement->getAbsenceEleveSaisies()->contains($tmp_saisie)) {
+								$traitement->addAbsenceEleveSaisie($tmp_saisie);
+								$nb_saisies_rattachees++;
+							}
+						}
+						else {
+							foreach ($saisies_conflit as $current_saisie_conflit) {
+								$liste_saisies_conflit.="<a href='../mod_abs2/visu_saisie.php?id_saisie=".$current_saisie_conflit->getPrimaryKey()."' style='' title=\"Voir la saisie n°".$current_saisie_conflit->getId()." concernant ".$tab_nom_prenom_ele[$key_ele]."\" target='_blank'>";
+								$liste_saisies_conflit.=$current_saisie_conflit->getId();
+								$liste_saisies_conflit.="</a>";
+								if (!$saisies_conflit->isLast()) {
+									$liste_saisies_conflit.=' - ';
+								}
+							}
+
+							$nb_saisies_conflit++;
+						}
+					}
+
+					if (($nb_saisies_rattachees>0)&&(!$traitement->getAbsenceEleveSaisies()->isEmpty())) {
+						$traitement->save();
+
+						$message_enregistrement.=" <em style='font-size:small; color:darkviolet' title=\"$nb_saisies_rattachees saisie(s) a(ont) été rattachée(s).\">".$nb_saisies_rattachees." saisie(s) a(ont) été rattachée(s) (".$tab_nom_prenom_ele[$key_ele].").</em>";
+						if($nb_saisies_conflit>0) {
+							$message_enregistrement.="<br /><em style='font-size:small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\">Conflit détecté sur $nb_saisies_conflit saisie(s) <span style='font-size:x-small;'>(".$liste_saisies_conflit.")</span>.</em>";
+						}
+					}
+					elseif($nb_saisies_conflit>0) {
+						$message_enregistrement.="<br /><em style='font-size:small; color:red' title=\"Conflit détecté sur $nb_saisies_conflit saisie(s).\nLa ou les saisies correspondantes n'ont pas été rattachées.\">Conflit détecté sur $nb_saisies_conflit saisie(s) <span style='font-size:x-small;'>(".$liste_saisies_conflit." concernant ".$tab_nom_prenom_ele[$key_ele].")</span>.</em>";
+					}
+					$message_enregistrement.="<br />";
+				}
+			}
 
 			$tab_traitement_cree[$key_ele]=$traitement->getId();
 
@@ -374,7 +452,11 @@ if(isset($_POST['validation_creation_lot_traitements'])) {
 		}
 	}
 	if($nb_reg>0) {
-		$message_enregistrement.=$nb_reg." traitement(s) créé(s).<br />";
+		$message_enregistrement.=$nb_reg." traitement(s) créé(s)";
+		if($message_liens_traitements_crees!="") {
+			$message_enregistrement.="<em style='font-size:small'> ($message_liens_traitements_crees)</em>";
+		}
+		$message_enregistrement.=".<br />";
 	}
 	if($nb_notifications>0) {
 		$message_enregistrement.=$nb_notifications." notification(s) créée(s).<br />";
@@ -697,7 +779,23 @@ echo "
 				<input type='text' name='commentaire' size='30' value='' onchange='changement()' />
 			</p>
 		</td>
-	</tr>
+	</tr>";
+
+// 20160802: Rattacher les saisies qui peuvent l'être
+
+echo "
+	<tr>
+		<td>
+			&nbsp;
+		</td>
+		<td>
+			<p>
+				<input type='checkbox' name='rattacher_saisies_si_possible' id='rattacher_saisies_si_possible' value='y' onchange='changement()' /><label for='rattacher_saisies_si_possible' title=\"Rattacher aux traitements créés, les saisies qui peuvent l'être.\n\nPrenez soin de contrôler ensuite que la ou les saisies rattachées sont bien directement liées au traitement courant.\nVous pourriez accidentellement rattacher un retard de la veille aux absences du jour.\"> Rattacher les saisies qui peuvent l'être.</label>
+			</p>
+		</td>
+	</tr>";
+
+echo "
 	<tr>
 		<td>
 			Notification : 
