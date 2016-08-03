@@ -47,6 +47,11 @@ $generer_fichiers_pdf_archivage=isset($_POST['generer_fichiers_pdf_archivage']) 
 
 $archivage_fichiers_bull_pdf_auto=isset($_POST['archivage_fichiers_bull_pdf_auto']) ? $_POST['archivage_fichiers_bull_pdf_auto'] : (isset($_GET['archivage_fichiers_bull_pdf_auto']) ? $_GET['archivage_fichiers_bull_pdf_auto'] : "n");
 
+$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : (isset($_GET['mode_bulletin']) ? $_GET['mode_bulletin'] : "pdf");
+if(($mode_bulletin!="pdf")&&($mode_bulletin!="pdf_2016")) {
+	$mode_bulletin="pdf";
+}
+
 // Si le module n'est pas activé...
 if($gepiSettings['active_annees_anterieures'] !="y"){
 	header("Location: ../logout.php?auto=1");
@@ -141,6 +146,17 @@ if(!isset($generer_fichiers_pdf_archivage)){
 
 	//======================================
 	echo "<p><strong>Autres paramètres&nbsp;:</strong></p>";
+
+	echo "<p style='text-indent:-2em; margin-left:2em;'>Modèle de bulletins&nbsp;:<br />";
+	echo "<input type='radio' id='mode_bulletin_pdf' name='mode_bulletin' value='pdf'";
+	$mode_bulletin=getPref($_SESSION['login'],'arch_bull_mode_bulletin', 'pdf');
+	if($mode_bulletin=='pdf') {echo " checked";}
+	echo " /><label for='mode_bulletin_pdf'> PDF</label><br />";
+	echo "<input type='radio' id='mode_bulletin_pdf_2016' name='mode_bulletin' value='pdf_2016'";
+	if($mode_bulletin=='pdf_2016') {echo " checked";}
+	echo " /><label for='mode_bulletin_pdf_2016'> PDF Réforme CLG 2016</label>";
+	//echo "<br />\n";
+	echo "</p>\n";
 
 	echo "<p style='text-indent:-2em; margin-left:2em;'>";
 	echo "<input type='checkbox' id='arch_bull_envoi_mail' name='arch_bull_envoi_mail' value='yes'";
@@ -445,6 +461,9 @@ else {
 		$arch_bull_classe=isset($_POST['arch_bull_classe']) ? $_POST['arch_bull_classe'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_classe',$arch_bull_classe);
 
+		$mode_bulletin=isset($_POST['mode_bulletin']) ? $_POST['mode_bulletin'] : 'pdf';
+		savePref($_SESSION['login'],'arch_bull_mode_bulletin',$mode_bulletin);
+
 		$arch_bull_envoi_mail=isset($_POST['arch_bull_envoi_mail']) ? $_POST['arch_bull_envoi_mail'] : 'no';
 		savePref($_SESSION['login'],'arch_bull_envoi_mail',$arch_bull_envoi_mail);
 
@@ -488,7 +507,7 @@ else {
 	else {
 		echo "<p>Archiver la classe de $classe&nbsp;: ";
 	}
-	echo "<input type='hidden' name='mode_bulletin' value='pdf' />\n";
+	echo "<input type='hidden' name='mode_bulletin' value='$mode_bulletin' />\n";
 	echo "<input type='hidden' name='type_bulletin' value='-1' />\n";
 
 	echo "<input type='hidden' name='bull_pdf_debug' value='n' />\n";
