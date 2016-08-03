@@ -247,10 +247,99 @@
 	$param_bull2016["hauteur_bilan_acquisitions_cycle_4"]=44;
 
 
-	$param_bull2016["affich_mentions"]="y";
-	$param_bull2016["affich_intitule_mentions"]="y";
+
+
+	$bull2016_affich_mentions=getSettingValue("bull2016_affich_mentions");
+	if($bull2016_affich_mentions=="") {
+		$bull2016_affich_mentions="y";
+	}
+
+	$bull2016_avec_coches_mentions=getSettingValue("bull2016_avec_coches_mentions");
+	if($bull2016_avec_coches_mentions=="") {
+		$bull2016_avec_coches_mentions="y";
+	}
+
+	$bull2016_intitule_mentions=getSettingValue("bull2016_intitule_mentions");
+	if($bull2016_intitule_mentions=="") {
+		$bull2016_intitule_mentions="y";
+	}
+
+	$param_bull2016["affich_mentions"]=$bull2016_affich_mentions;
+	$param_bull2016["affich_intitule_mentions"]=$bull2016_intitule_mentions;
 	// Si les coches sont choisies, les deux choix précédents ne sont pas pris en compte
-	$param_bull2016["avec_coches_mentions"]="y";
+	$param_bull2016["avec_coches_mentions"]=$bull2016_avec_coches_mentions;
+
+
+
+
+
+	$bull2016_arrondi=getSettingValue("bull2016_arrondi");
+	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
+	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
+	($bull2016_arrondi==0)||
+	($bull2016_arrondi=="")) {
+		$bull2016_arrondi=0.01;
+		//echo "Correction de bull2016_arrondi à $bull2016_arrondi";
+	}
+	$param_bull2016["bull2016_arrondi"]=$bull2016_arrondi;
+
+	$bull2016_nb_chiffre_virgule=getSettingValue("bull2016_nb_chiffre_virgule");
+	if((!preg_match("/^[0-9]{1,}$/", $bull2016_nb_chiffre_virgule))||
+	($bull2016_nb_chiffre_virgule=="")) {
+		$bull2016_nb_chiffre_virgule=1;
+	}
+	$param_bull2016["bull2016_nb_chiffre_virgule"]=$bull2016_nb_chiffre_virgule;
+
+	$bull2016_chiffre_avec_zero=getSettingValue("bull2016_chiffre_avec_zero");
+	if(($bull2016_chiffre_avec_zero!="0")&&($bull2016_chiffre_avec_zero!="1")) {
+		$bull2016_chiffre_avec_zero=0;
+	}
+	$param_bull2016["bull2016_chiffre_avec_zero"]=$bull2016_chiffre_avec_zero;
+
+	$bull2016_evolution_moyenne_periode_precedente=getSettingValue("bull2016_evolution_moyenne_periode_precedente");
+	if($bull2016_evolution_moyenne_periode_precedente=="") {
+		$bull2016_evolution_moyenne_periode_precedente="y";
+	}
+	$param_bull2016["bull2016_evolution_moyenne_periode_precedente"]=$bull2016_evolution_moyenne_periode_precedente;
+
+	$bull2016_evolution_moyenne_periode_precedente_seuil=getSettingValue("bull2016_evolution_moyenne_periode_precedente_seuil");
+	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_evolution_moyenne_periode_precedente_seuil))&&
+	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_evolution_moyenne_periode_precedente_seuil)))||
+	($bull2016_evolution_moyenne_periode_precedente_seuil=="")) {
+		$bull2016_evolution_moyenne_periode_precedente_seuil=0;
+	}
+	$param_bull2016["bull2016_evolution_moyenne_periode_precedente_seuil"]=$bull2016_evolution_moyenne_periode_precedente_seuil;
+
+
+
+
+	//$afficher_nb_heures_perdues="n";
+	$param_bull2016["bull2016_afficher_nb_heures_perdues"]="n";
+
+	$bull2016_aff_abs_nj=getSettingValue("bull2016_aff_abs_nj");
+	if($bull2016_aff_abs_nj=="") {
+		$bull2016_aff_abs_nj="y";
+	}
+	$param_bull2016["bull2016_aff_abs_nj"]=$bull2016_aff_abs_nj;
+
+	$bull2016_aff_abs_justifiees=getSettingValue("bull2016_aff_abs_justifiees");
+	if($bull2016_aff_abs_justifiees=="") {
+		$bull2016_aff_abs_justifiees="y";
+	}
+	$param_bull2016["bull2016_aff_abs_justifiees"]=$bull2016_aff_abs_justifiees;
+
+	$bull2016_aff_total_abs=getSettingValue("bull2016_aff_total_abs");
+	if($bull2016_aff_total_abs=="") {
+		$bull2016_aff_total_abs="y";
+	}
+	$param_bull2016["bull2016_aff_total_abs"]=$bull2016_aff_total_abs;
+
+	$bull2016_aff_retards=getSettingValue("bull2016_aff_retards");
+	if($bull2016_aff_retards=="") {
+		$bull2016_aff_retards="y";
+	}
+	$param_bull2016["bull2016_aff_retards"]=$bull2016_aff_retards;
+
 
 	//========================================
 

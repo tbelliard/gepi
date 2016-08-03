@@ -223,12 +223,13 @@ if(!isset($tab_id_classe)) {
 		else {
 			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 		}
+		echo " | <a href='param_bull_pdf_2016.php' title=\"Paramètres d'impression des bulletins Réforme Collège 2016\">Param.CLG.2016</a>";
 	}
-	
+
 	if((getSettingValue('ancien_dispositif_bulletins')=='y')&&($_SESSION['statut']!='autre')) {
 	  echo " | <a href='index.php'>Ancien dispositif</a>";
 	}
-	
+
 	echo "</p>\n";
 
 	echo "<p class='bold'>Choix des classes:</p>\n";
@@ -366,6 +367,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 		else {
 			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 		}
+		echo " | <a href='param_bull_pdf_2016.php' title=\"Paramètres d'impression des bulletins Réforme Collège 2016\">Param.CLG.2016</a>";
 	}
 	echo "</p>\n";
 
@@ -508,6 +510,7 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 		else {
 			echo " | <a id='lien_param_bull' href='param_bull.php' target='_blank'>Paramètres d'impression des bulletins</a>";
 		}
+		echo " | <a href='param_bull_pdf_2016.php' title=\"Paramètres d'impression des bulletins Réforme Collège 2016\">Param.CLG.2016</a>";
 	}
 	echo "</p>\n";
 
@@ -701,7 +704,9 @@ elseif((!isset($valide_select_eleves))&&(!isset($intercaler_app_classe))) {
 	echo "
 	<tr>
 		<td>
-			<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf_2016' value='pdf_2016' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' />
+			<input type='radio' name='mode_bulletin' id='mode_bulletin_pdf_2016' value='pdf_2016' onchange='display_div_modele_bulletin_pdf();display_param_b_adr_pg();checkbox_change(this.id);checkbox_change(\"mode_bulletin_pdf\");checkbox_change(\"mode_bulletin_html\");change_lien_param_bull(\"pdf\");griser_lignes_specifiques_html();' ";
+	if($type_bulletin_par_defaut=='pdf_2016') {echo "checked ";}
+	echo "/>
 		</td>
 		<td>
 			<label for='mode_bulletin_pdf_2016' id='texte_mode_bulletin_pdf_2016'> Bulletin PDF au format Collège Réforme 2016</label>
@@ -1826,6 +1831,8 @@ else {
 
 			require_once("bulletin_pdf_2016.inc.php");
 
+			$moyennes_periodes_precedentes=$param_bull2016["bull2016_evolution_moyenne_periode_precedente"];
+
 			/*
 			foreach($val_defaut_champ_bull_pdf as $key => $value) {
 				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
@@ -2485,7 +2492,7 @@ else {
 
 			//if($eff_classe==0) {
 			if(($eff_classe==0)&&($generer_fichiers_pdf_archivage!='y')) {
-				if($mode_bulletin!="pdf") {
+				if(($mode_bulletin!="pdf")&&($mode_bulletin!="pdf_2016")) {
 					echo "<p>La classe '$classe' est vide sur la période '$periode_num'.<br />Il n'est pas possible de poursuivre.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
@@ -4128,12 +4135,12 @@ Bien cordialement.
 		if(isset($_POST['ele_chgt_classe'])) {
 			//get_nom_prenom_eleve($tab_restriction_ele[0])
 			echo "<p>Bulletins de ".$tableau_eleve['nom_prenom'][0]." générés.<br />";
-			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;ele_chgt_classe=y&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;ele_chgt_classe=y&amp;generer_fichiers_pdf_archivage=y&amp;mode_bulletin=$mode_bulletin&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
 
 			if($archivage_fichiers_bull_pdf_auto=='y') {
 				echo "<script type='text/javascript'>
 	function archivage_suite() {
-		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&ele_chgt_classe=y&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
+		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&ele_chgt_classe=y&generer_fichiers_pdf_archivage=y&mode_bulletin=$mode_bulletin&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
 	}
 	setTimeout('archivage_suite()',2000);
 </script>\n";
@@ -4148,12 +4155,12 @@ Bien cordialement.
 			else {
 				echo "Classe de $classe traitée.<br />";
 			}
-			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;generer_fichiers_pdf_archivage=y&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
+			echo "<a href='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&amp;generer_fichiers_pdf_archivage=y&amp;mode_bulletin=$mode_bulletin&amp;archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url()."'>Suite</a>";
 
 			if($archivage_fichiers_bull_pdf_auto=='y') {
 				echo "<script type='text/javascript'>
 	function archivage_suite() {
-		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&generer_fichiers_pdf_archivage=y&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
+		document.location='../mod_annees_anterieures/archivage_bull_pdf.php?id_classe=$id_classe&generer_fichiers_pdf_archivage=y&mode_bulletin=$mode_bulletin&archivage_fichiers_bull_pdf_auto=$archivage_fichiers_bull_pdf_auto".add_token_in_url(false)."';
 	}
 	setTimeout('archivage_suite()',2000);
 </script>\n";
