@@ -456,7 +456,7 @@ if (isset($_POST['is_posted'])) {
 		}
 
 		if (isset($_POST['type_bulletin_par_defaut'])) {
-			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
+			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')||($_POST['type_bulletin_par_defaut']=='pdf_2016')) {
 				if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
 					$msg .= "Erreur lors de l'enregistrement du paramètre type_bulletin_par_defaut !";
 				}
@@ -1584,6 +1584,7 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		<span class="cellTab70">
 			Type de bulletins par défaut&nbsp;:
 		</span>
+
 		<span class="cellTab plusPetit">
 			<input type="radio" id='type_bulletin_par_defaut_pdf' name="type_bulletin_par_defaut" value="pdf"
 		<?php
@@ -1592,9 +1593,19 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		onchange='changement()' />
 			<label for='type_bulletin_par_defaut_pdf'>&nbsp;PDF</label>
 			<br />
+
+		<span class="cellTab plusPetit">
+			<input type="radio" id='type_bulletin_par_defaut_pdf_2016' name="type_bulletin_par_defaut" value="pdf_2016"
+		<?php
+			if(getSettingValue("type_bulletin_par_defaut")=='pdf_2016') {echo " checked='checked'";}
+		?>
+		onchange='changement()' />
+			<label for='type_bulletin_par_defaut_pdf_2016'>&nbsp;PDF Réforme CLG 2016</label>
+			<br />
+
 			<input type="radio" id='type_bulletin_par_defaut_html' name="type_bulletin_par_defaut" value="html"
 		<?php
-			if(getSettingValue("type_bulletin_par_defaut")!='pdf') {echo " checked='checked'";}
+			if((getSettingValue("type_bulletin_par_defaut")!='pdf')&&(getSettingValue("type_bulletin_par_defaut")!='pdf_2016')) {echo " checked='checked'";}
 		?>
 		onchange='changement()' />
 			<label for='type_bulletin_par_defaut_html'>&nbsp;HTML</label>
