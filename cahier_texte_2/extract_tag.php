@@ -265,6 +265,76 @@ if((isset($mode))&&($mode=="extraire")) {
 	}
 }
 
+if((isset($_GET['export']))&&($_GET['export']=="csv")) {
+
+	if(count($tab_notices)==0) {
+		$msg="Aucune notice n'a été trouvée avec les critères choisis.<br />";
+	}
+	else {
+
+		$csv="Dates_Ymd;Dates;Enseignements;Classes;Enseignants;Type de notice;Tags;\n";
+
+		$cpt=0;
+		$tab_grp=array();
+		$tab_prof=array();
+		$tab_classe=array();
+		foreach($tab_notices as $type_notice => $tab) {
+			// Style selon type_notice
+			for($loop=0;$loop<count($tab);$loop++) {
+				if(!isset($tab_grp[$tab[$loop]["id_groupe"]])) {
+					$tab_grp[$tab[$loop]["id_groupe"]]["designation"]=remplace_accents(html_entity_decode(get_info_grp($tab[$loop]["id_groupe"], array('description', 'matieres'),"")));
+				}
+				if(!isset($tab_prof[$tab[$loop]["id_login"]])) {
+					$tab_prof[$tab[$loop]["id_login"]]=remplace_accents(html_entity_decode(civ_nom_prenom($tab[$loop]["id_login"])));
+				}
+				if(!isset($tab_classe[$tab[$loop]["id_groupe"]])) {
+					$tab_classe[$tab[$loop]["id_groupe"]]="";
+					$sql="SELECT DISTINCT classe FROM classes c, j_groupes_classes jgc WHERE jgc.id_classe=c.id AND jgc.id_groupe='".$tab[$loop]["id_groupe"]."' ORDER BY classe;";
+					//echo "$sql<br />";
+					$res=mysqli_query($GLOBALS["mysqli"], $sql);
+					if(mysqli_num_rows($res)>0) {
+						while($lig=mysqli_fetch_object($res)) {
+							if($tab_classe[$tab[$loop]["id_groupe"]]!="") {
+								$tab_classe[$tab[$loop]["id_groupe"]].=", ";
+							}
+							$tab_classe[$tab[$loop]["id_groupe"]].=remplace_accents(html_entity_decode($lig->classe));
+						}
+					}
+				}
+				$chaine_tags="";
+				for($loop2=0;$loop2<count($tab[$loop]["id_tag"]);$loop2++) {
+					if($loop2>0) {
+						$chaine_tags.=", ";
+					}
+					$chaine_tags.=remplace_accents(html_entity_decode($tab_tag_type["id"][$tab[$loop]["id_tag"][$loop2]]["nom_tag"]));
+				}
+				$csv.=strftime("%Y%m%d", $tab[$loop]["date_ct"]).";";
+				$csv.=strftime("%a %d/%m/%Y", $tab[$loop]["date_ct"]).";";
+				$csv.=$tab_grp[$tab[$loop]["id_groupe"]]["designation"].";";
+				$csv.=$tab_classe[$tab[$loop]["id_groupe"]].";";
+				$csv.=$tab_prof[$tab[$loop]["id_login"]].";";
+				if($type_notice=="t") {
+					$csv.="travail/devoir à la maison;";
+				}
+				elseif($type_notice=="c") {
+					$csv.="compte-rendu de séance;";
+				}
+				else {
+					$csv.="notice privée;";
+				}
+				$csv.=$chaine_tags.";\n";
+				$cpt++;
+			}
+		}
+
+		$nom_fic="extract_tags_CDT_".strftime("%Y%m%d_%H%M%S").".csv";
+		send_file_download_headers('text/x-csv',$nom_fic);
+		echo echo_csv_encoded($csv);
+
+		die();
+	}
+}
+
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
@@ -380,7 +450,8 @@ else {
 	}
 	else {
 
-		echo "<table class='boireaus boireaus_alt sortable resizable'>
+		echo "<div style='float:right; width:16px;'><a href='".$_SERVER['PHP_SELF']."?export=csv&mode=extraire' target='_blank' title=\"Exporter en CSV les dates, enseignements, tags...\"><img src='../images/icons/csv.png' class='icone16' alt='CSV'/></a></div>
+<table class='boireaus boireaus_alt sortable resizable'>
 	<thead>
 		<tr>
 			<th>Date</th>
