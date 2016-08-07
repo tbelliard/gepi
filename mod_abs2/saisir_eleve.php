@@ -591,7 +591,30 @@ echo '<div id="div_choix_creneau" style="border-width: 1px; border-style: solid;
 	    echo "</option>\n";
     }
     echo "</select></p></div>";
+
+// Répétition: 20160809
+if(($_SESSION['statut']=="cpe")||($_SESSION['statut']=="scolarite")) {
+	$tab_jour_ouvres=get_tab_jour_ouverture_etab("indice");
+	if(count($tab_jour_ouvres)==0) {
+		echo "<p style='color:red'>Les jours d'ouverture de l'établissement ne sont pas définis. Contactez l'administrateur.</p>";
+	}
+	else {
+		echo "<br />
+<div style='border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;'>
+	<p title=\"Répéter la saisie entre les dates mentionnées ci-dessus...\nSi vous choisissez des jours de répétition de la saisie, une saisie sera créée par jour\n(même si vous cochez 'Créer une seule saisie' ci-dessus).\"><strong>Répétition&nbsp;:</strong><br />
+		Uniquement les <br />";
+		foreach($tab_jour_ouvres as $indice => $tab_jour_courant) {
+			echo "<input type='checkbox' name='restrict_jour[]' id='restrict_jour_".$indice."' value='$indice' /><label for='restrict_jour_".$indice."'>".$tab_jour_courant["fr"]."</label><br />";
+		}
+	}
+	echo "</p>
+</div>";
+}
+
 echo '</div>';
+
+//=================================
+// Si l'emploi du temps est rempli:
 //on affiche une boite de selection avec les cours
 if (!$cours_col->isEmpty()) {
 	//echo '<br/>ou<br/><br/>';

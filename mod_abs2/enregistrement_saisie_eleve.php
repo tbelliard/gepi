@@ -183,6 +183,11 @@ if ($current_cours != null) {
     }
 
     if ($message_enregistrement == "") {
+	$restrict_jour=isset($_POST['restrict_jour']) ? $_POST['restrict_jour'] : array();
+	if(count($restrict_jour)) {
+		$multisaisie="y";
+	}
+
 	if ($multisaisie == 'y') {
 	//on va creer une saisie par jour
 
@@ -204,6 +209,7 @@ if ($current_cours != null) {
 		while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanées
 
 			// 20160624: Ajouter un test sur le fait que le jour est ouvré ou non... dans des vacances ou non... pb si vacances pour certaines classes seulement.
+			// Voir http://php.net/manual/fr/function.date.php pour $date_compteur->format(???)
 			//echo "\$date_compteur->format('Ymd')=".$date_compteur->format('Ymd')." ";
 			//echo "\$date_compteur->format('U')=".$date_compteur->format('U')." ";
 			//echo "\$date_compteur->format('j')=".$date_compteur->format('j')." ".$date_compteur->format('l');
@@ -212,22 +218,25 @@ if ($current_cours != null) {
 			if(((in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres))||
 			(in_array(mb_strtolower($date_compteur->format('l')), $tab_jour_ouvres_US)))&&
 			(!in_array($date_compteur->format('Ymd'), $tab_jours_vacances))) {
-				//echo " jour ouvré";
-				$date_debut_saisie = clone $date_compteur;
-				$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
-				$date_fin_saisie = clone $date_compteur;
-				$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 
-				$saisie = new AbsenceEleveSaisie();
-				$saisie->setUtilisateurProfessionnel($utilisateur);
-				$saisie->setCommentaire($commentaire);
+				if((count($restrict_jour)==0)||(in_array($date_compteur->format('N'), $restrict_jour))) {
+					//echo " jour ouvré";
+					$date_debut_saisie = clone $date_compteur;
+					$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));
+					$date_fin_saisie = clone $date_compteur;
+					$date_fin_saisie->setTime($heure_fin->format('H'), $heure_fin->format('i'));
 
-				$saisie->setDebutAbs($date_debut_saisie);
-				$saisie->setFinAbs($date_fin_saisie);
-				if ($creneau != null) {
-					$saisie->setEdtCreneau($creneau);
+					$saisie = new AbsenceEleveSaisie();
+					$saisie->setUtilisateurProfessionnel($utilisateur);
+					$saisie->setCommentaire($commentaire);
+
+					$saisie->setDebutAbs($date_debut_saisie);
+					$saisie->setFinAbs($date_fin_saisie);
+					if ($creneau != null) {
+						$saisie->setEdtCreneau($creneau);
+					}
+					$saisie_col_modele->append($saisie);
 				}
-				$saisie_col_modele->append($saisie);
 			}
 			//echo "<br />";
 			$date_compteur->modify("+1 day");
@@ -346,6 +355,9 @@ for($i=0; $i<$total_eleves; $i++) {
 					$tmp_id_eleve_array[] = $tmp_saisie->getEleveId();
 					$tmp_id_saisie_array[] = $tmp_saisie->getId();
 				}
+
+// RECUPERER DES timestamp de début du jour début et fin du jour de fin
+
 				if ($tmp_date_debut != null) date_date_set($tmp_date_debut, $tmp_date_debut->format('Y'), $tmp_date_debut->format('m'), $tmp_date_debut->format('d') - 1);
 				if ($tmp_date_fin != null) date_date_set($tmp_date_fin, $tmp_date_fin->format('Y'), $tmp_date_fin->format('m'), $tmp_date_fin->format('d') + 1);
 				$query->filterByPlageTemps($tmp_date_debut, $tmp_date_fin)->filterByEleveId($tmp_id_eleve_array)->filterById($tmp_id_saisie_array, Criteria::NOT_IN);
@@ -362,6 +374,8 @@ for($i=0; $i<$total_eleves; $i++) {
 				$results = $tmp_saisies_col->getResults();
 				if($results->count()!=0) {
 					foreach ($results as $tmp_saisie) {
+						// A FAIRE : Il faudrait peut-être ajouter ici un test sur le fait que la saisie n'est pas antérieure ou postérieure aux dates limites (début/fin journée) des saisies sélectionnées.
+						// Nécessaire parce que l'extraction récupère les saisies de la veille et du lendemain
 
 						$saisies_conflit = $tmp_saisie->getSaisiesContradictoiresManquementObligation();
 						if($saisies_conflit->isEmpty()) {

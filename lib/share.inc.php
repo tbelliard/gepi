@@ -12624,14 +12624,29 @@ function get_tab_fichiers_du_dossier_de_sauvegarde($path="", $sous_dossier="n") 
 	return $tab_file;
 }
 
-function get_tab_jour_ouverture_etab() {
+function get_tab_jour_ouverture_etab($mode="") {
 	$tab_jour=array();
-	$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
-	for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
-		$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
-		$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
-		if(mysqli_num_rows($test_jour)>0) {
-			$tab_jour[]=$tmp_tab_jour[$loop];
+	if($mode=="indice") {
+		// strftime("%u") : 	ISO-8601 numeric representation of the day of the week 	1 (for Monday) through 7 (for Sunday)
+		$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+		$tmp_tab_jour_US=array("monday", "tuesday", "wednesday", "thursday", "friday", "sturday", "sunday");
+		for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
+			$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
+			$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_jour)>0) {
+				$tab_jour[$loop+1]["fr"]=$tmp_tab_jour[$loop];
+				$tab_jour[$loop+1]["us"]=$tmp_tab_jour_US[$loop];
+			}
+		}
+	}
+	else {
+		$tmp_tab_jour=array("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche");
+		for($loop=0;$loop<count($tmp_tab_jour);$loop++) {
+			$sql="SELECT DISTINCT jour_horaire_etablissement FROM horaires_etablissement WHERE jour_horaire_etablissement='".$tmp_tab_jour[$loop]."' AND ouvert_horaire_etablissement='1';";
+			$test_jour=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($test_jour)>0) {
+				$tab_jour[]=$tmp_tab_jour[$loop];
+			}
 		}
 	}
 	return $tab_jour;
@@ -15330,7 +15345,7 @@ function get_tab_traitement_abs2($id_traitement) {
 		}
 
 		if(!is_null($tab['traitement']['a_motif_id'])) {
-			$sql="SELECT * FROM a_types WHERE id='".$tab['traitement']['a_motif_id']."';";
+			$sql="SELECT * FROM a_motifs WHERE id='".$tab['traitement']['a_motif_id']."';";
 			//echo "$sql<br />";
 			$res2=mysqli_query($mysqli, $sql);
 			if(mysqli_num_rows($res2)>0) {
