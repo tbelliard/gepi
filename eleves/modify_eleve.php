@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * Copyright 2001, 2013 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -203,6 +203,100 @@ if(($_SESSION['statut']=="professeur")&&(isset($eleve_login))&&(is_pp($_SESSION[
 	$is_pp=true;
 	// Est-ce que dans le cas false, un prof peut accéder à cette page?
 }
+
+// 20160810
+$saisir_lieu_naissance=isset($_POST['saisir_lieu_naissance']) ? $_POST['saisir_lieu_naissance'] : (isset($_GET['saisir_lieu_naissance']) ? $_GET['saisir_lieu_naissance'] : NULL);
+$initiale_commune_naissance=isset($_POST['initiale_commune_naissance']) ? $_POST['initiale_commune_naissance'] : (isset($_GET['initiale_commune_naissance']) ? $_GET['initiale_commune_naissance'] : NULL);
+
+if((isset($eleve_login))&&(isset($_POST['valider_saisie_lieu_naissance']))&&(isset($_POST['code_commune_insee']))&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	check_token();
+
+	if((isset($_POST['code_pays']))&&($_POST['code_pays']!="")&&($_POST['code_pays']!="100")) {
+		// On enregistre le lieu de naissance au format code_pays@nom_commune
+		$nom_commune=get_valeur_champ("communes", "code_commune_insee='".$_POST['code_commune_insee']."'", "commune");
+		if($nom_commune=="") {
+			$msg="Erreur&nbsp;: Le nom de commune n'a pas été retrouvé pour l'élève ".$eleve_login."<br />";
+		}
+		else {
+			$sql="UPDATE eleves SET lieu_naissance='".mysqli_real_escape_string($GLOBALS['mysqli'], $_POST['code_pays']."@".$nom_commune)."' WHERE login='".$eleve_login."';";
+			//echo "$sql<br />";
+			$update=mysqli_query($mysqli, $sql);
+			if(!$update) {
+				$msg="Erreur lors de l'enregistrement du lieu de naissance de l'élève ".$eleve_login."<br />";
+			}
+			else {
+				$msg="Lieu de naissance de l'élève ".$eleve_login." enregistré.<br />";
+			}
+		}
+	}
+	else {
+		$sql="UPDATE eleves SET lieu_naissance='".$_POST['code_commune_insee']."' WHERE login='".$eleve_login."';";
+		//echo "$sql<br />";
+		$update=mysqli_query($mysqli, $sql);
+		if(!$update) {
+			$msg="Erreur lors de l'enregistrement du lieu de naissance de l'élève ".$eleve_login."<br />";
+		}
+		else {
+			$msg="Lieu de naissance de l'élève ".$eleve_login." enregistré.<br />";
+		}
+	}
+
+}
+
+if((isset($eleve_login))&&(isset($_POST['valider_saisie_lieu_naissance']))&&(isset($_POST['nouvelle_commune']))&&($_POST['nouvelle_commune']!="")&&(isset($_POST['departement']))&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	check_token();
+
+	// Génération d'un pseudo-code_commune_insee
+	$sql="SELECT * FROM communes WHERE code_commune_insee LIKE 'c%' ORDER BY code_commune_insee DESC LIMIT 1;";
+	//echo "$sql<br />";
+	$res=mysqli_query($mysqli, $sql);
+	if(mysqli_num_rows($res)==0) {
+		$code_commune_insee="c00000001";
+		//$code_commune_insee="c1";
+	}
+	else {
+		$lig=mysqli_fetch_object($res);
+		$code_commune_insee="c".sprintf("%08d",(substr($lig->code_commune_insee,1)+1));
+		//$code_commune_insee="c".(substr($lig->code_commune_insee,1)+1);
+	}
+
+
+	$sql="INSERT INTO communes SET code_commune_insee='$code_commune_insee', departement='".$_POST['departement']."', commune='".mysqli_real_escape_string($GLOBALS['mysqli'], $_POST['nouvelle_commune'])."';";
+	//echo "$sql<br />";
+	$insert=mysqli_query($mysqli, $sql);
+	if(!$insert) {
+		$msg="Erreur lors de l'enregistrement de la nouvelle commune<br />";
+	}
+	else {
+
+		if((isset($_POST['code_pays']))&&($_POST['code_pays']!="")&&($_POST['code_pays']!="100")) {
+			// On enregistre le lieu de naissance au format code_pays@nom_commune
+
+			$sql="UPDATE eleves SET lieu_naissance='".mysqli_real_escape_string($GLOBALS['mysqli'], $_POST['code_pays']."@".$_POST['nouvelle_commune'])."' WHERE login='".$eleve_login."';";
+			//echo "$sql<br />";
+			$update=mysqli_query($mysqli, $sql);
+			if(!$update) {
+				$msg="Erreur lors de l'enregistrement du lieu de naissance de l'élève ".$eleve_login."<br />";
+			}
+			else {
+				$msg="Lieu de naissance de l'élève ".$eleve_login." enregistré.<br />";
+			}
+		}
+		else {
+			$sql="UPDATE eleves SET lieu_naissance='".$code_commune_insee."' WHERE login='".$eleve_login."';";
+			//echo "$sql<br />";
+			$update=mysqli_query($mysqli, $sql);
+			if(!$update) {
+				$msg="Erreur lors de l'enregistrement du lieu de naissance de l'élève ".$eleve_login."<br />";
+			}
+			else {
+				$msg="Lieu de naissance de l'élève ".$eleve_login." enregistré.<br />";
+			}
+		}
+	}
+
+}
+
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	// Le deuxième responsable prend l'adresse du premier
@@ -1319,12 +1413,216 @@ if(!getSettingValue('conv_new_resp_table')){
 <!--form enctype="multipart/form-data" action="modify_eleve.php" method=post-->
 <?php
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
+
+	// 20160809
+	if((isset($eleve_login))&&(isset($saisir_lieu_naissance))) {
+		echo "<p class='bold'><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"modify_eleve.php?eleve_login=$eleve_login&amp;saisir_lieu_naissance=y\" onclick=\"return confirm_abandon (this, change, '$themessage')\">Choisir un autre lieu</a></p>\n";
+
+		echo "<h2>Définir le lieu de naissance de <b>".casse_mot($eleve_prenom,'majf2')." ".my_strtoupper($eleve_nom)."</b></h2>\n";
+
+		// Par défaut: France
+		$code_pays=100;
+		$code_commune_insee="";
+
+		// Enregistrement actuel:
+		if($eleve_lieu_naissance!="") {
+			$info_lieu_naissance=get_commune($eleve_lieu_naissance, 1);
+			if($info_lieu_naissance!="") {
+				echo "<p>Le lieu de naissance actuellement enregistré est&nbsp;: ".$info_lieu_naissance."</p>";
+			}
+			$code_commune_insee=$eleve_lieu_naissance;
+		}
+
+		if(strstr($eleve_lieu_naissance, '@')) {
+			$tmp_tab=explode('@',$code_commune_insee);
+			$commune=$tmp_tab[1];
+
+			$sql="SELECT * FROM pays WHERE code_pays='".$tmp_tab[0]."';";
+			//echo "$sql<br />";
+			$res_pays = mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_pays)==0) {
+				$code_pays="";
+			}
+			else {
+				$lig_pays=mysqli_fetch_object($res_pays);
+				$code_pays=$lig_pays->code_pays;
+			}
+		}
+
+		echo "<p class='bold' style='margin-top:1em'>Définir un nouveau lieu de naissance&nbsp;:</p>";
+
+		//if(!isset($initiale_commune_naissance)) {
+			echo "<p>Choisir une commune parmi celles enregistrées.<br />";
+			echo "Afficher les communes dont le nom commence par";
+			$alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			$cpt=0;
+			for($i=0;$i<strlen($alphabet);$i++) {
+				$sql="SELECT 1=1 FROM communes WHERE commune LIKE '".substr($alphabet,$i,1)."%';";
+				//echo "$sql<br />";
+				$res_ini=mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_ini)>0) {
+					if($cpt>0) {
+						echo "-";
+					}
+					echo "<a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&saisir_lieu_naissance=y&initiale_commune_naissance=".substr($alphabet,$i,1)."' title=\"".mysqli_num_rows($res_ini)." commune(s) enregistrée(s)\"> ".substr($alphabet,$i,1)." </a>";
+					$cpt++;
+				}
+			}
+			if($cpt==0) {
+				echo " <span style='color:red'>aucune commune n'est enregistrée actuellement</span>";
+			}
+			echo ".</p>";
+		//}
+		//else {
+
+		if(isset($initiale_commune_naissance)) {
+			echo "<form enctype='multipart/form-data' name='form_choix_commune_naissance' action='modify_eleve.php' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='eleve_login' value='$eleve_login' />
+		<input type='hidden' name='valider_saisie_lieu_naissance' value='y' />
+		<input type='hidden' name='initiale_commune_naissance' value='$initiale_commune_naissance' />
+		<p>Choisir une commune de naissance&nbsp;: <select name='code_commune_insee'>";
+			$sql="SELECT * FROM communes WHERE commune LIKE '$initiale_commune_naissance%' ORDER BY commune, departement;";
+			//echo "$sql<br />";
+			$res_commune=mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_commune)>0) {
+				while($lig_commune=mysqli_fetch_object($res_commune)) {
+					$selected="";
+					if($lig_commune->code_commune_insee==$code_commune_insee) {
+						$selected=" selected='true'";
+					}
+					echo "
+				<option value='".$lig_commune->code_commune_insee."'".$selected.">".$lig_commune->commune." (".$lig_commune->departement.")</option>";
+				}
+			}
+			echo "</select></p>
+
+		<p>Pays&nbsp;: <select name='code_pays'>";
+			$sql="SELECT * FROM pays ORDER BY nom_pays;";
+			//echo "$sql<br />";
+			$res_pays = mysqli_query($mysqli, $sql);
+			if(mysqli_num_rows($res_pays)>0) {
+				echo "
+			<option value=''>---</option>";
+				while($lig_pays=mysqli_fetch_object($res_pays)) {
+					$selected="";
+					if($lig_pays->code_pays==$code_pays) {
+						$selected=" selected='true'";
+					}
+					echo "
+			<option value='".$lig_pays->code_pays."'".$selected.">".$lig_pays->nom_pays."</option>";
+				}
+			}
+			echo "</select></p>
+		<p align='center'><input type='submit' value='Enregistrer' /></p>
+	</fieldset>
+</form>";
+		}
+
+		echo "ou<br />
+<form enctype='multipart/form-data' name='form_saisie_lieu_naissance' action='modify_eleve.php' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='eleve_login' value='$eleve_login' />
+		<input type='hidden' name='valider_saisie_lieu_naissance' value='y' />
+		<p>Définir une nouvelle commune&nbsp;: <input type='text' name='nouvelle_commune' value=\"\" /></p>
+
+		<p>Département&nbsp;: <select name='departement'>
+			<option value=''>---</option>";
+		$sql="SELECT DISTINCT departement FROM communes ORDER BY departement;";
+		//echo "$sql<br />";
+		$res_dpt= mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_dpt)>0) {
+			while($lig_dpt=mysqli_fetch_object($res_dpt)) {
+				$selected="";
+				echo "
+			<option value='".$lig_dpt->departement."'".$selected.">".$lig_dpt->departement."</option>";
+				}
+		}
+		echo "</select></p>
+
+		<p>Pays&nbsp;: <select name='code_pays'>";
+		$sql="SELECT * FROM pays ORDER BY nom_pays;";
+		//echo "$sql<br />";
+		$res_pays = mysqli_query($mysqli, $sql);
+		if(mysqli_num_rows($res_pays)>0) {
+			echo "
+			<option value=''>---</option>";
+			while($lig_pays=mysqli_fetch_object($res_pays)) {
+				$selected="";
+				if($lig_pays->code_pays==$code_pays) {
+					$selected=" selected='true'";
+				}
+				echo "
+			<option value='".$lig_pays->code_pays."'".$selected.">".$lig_pays->nom_pays."</option>";
+				}
+		}
+		echo "</select></p>
+		<p align='center'><input type='submit' value='Enregistrer' /></p>
+	</fieldset>
+</form>
+<p style='margin-top:1em;'><em>NOTES&nbsp;:</em></p>
+<ul>
+	<li>Si vous utilisez Siècle/Sconet, la méthode recommandée pour définir le lieu de naissance consiste à effectuer une ";
+		if(($_SESSION['statut']=='administrateur')||(($_SESSION['statut']=='scolarite')&&(getSettingAOui('GepiAccesMajSconetScol')))) {
+			echo "<a href='../responsables/maj_import3.php'>Mise à jour d'après Sconet</a>";
+		}
+		else {
+			echo "Mise à jour d'après Sconet <em>(en administrateur, ou en compte scolarité si le droit est donné)</em>";
+		}
+		echo ".</li>
+</ul>";
+/*
+function get_commune($code_commune_insee,$mode){
+    global $mysqli;
+	$retour="";
+
+	if(strstr($code_commune_insee,'@')) {
+		// On a affaire à une commune étrangère
+		$tmp_tab=explode('@',$code_commune_insee);
+		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
+		//echo "$sql<br />";
+		
+		$res_pays = mysqli_query($mysqli, $sql);
+		if($res_pays->num_rows == 0) {
+			$retour = stripslashes($tmp_tab[1])." ($tmp_tab[0])";
+		}else {
+			$lig_pays = $res_pays->fetch_object();
+			$res_pays->close();
+			$retour=stripslashes($tmp_tab[1])." (".$lig_pays->nom_pays.")";
+		}
+	}
+	else {
+		$sql="SELECT * FROM communes WHERE code_commune_insee='$code_commune_insee';";
+		$res = mysqli_query($mysqli, $sql);
+		if($res->num_rows > 0) {
+			$lig=$res->fetch_object();
+			if($mode==0) {
+				$retour=$lig->commune;
+			}
+			elseif($mode==1) {
+				$retour=$lig->commune." (<em>".$lig->departement."</em>)";
+			}
+			elseif($mode==2) {
+				$retour=$lig->commune." (".$lig->departement.")";
+			}
+			$res->close();
+		}
+	}
+	return $retour;
+}
+*/
+		require("../lib/footer.inc.php");
+		die();
+	}
+
 	//eleve_login=$eleve_login&amp;definir_resp=1
 	if(isset($definir_resp)){
 		if(!isset($valider_choix_resp)){
 
-			echo "<p class=bold><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
+			echo "<p class='bold'><a href=\"modify_eleve.php?eleve_login=$eleve_login\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 			echo "<p>Choix du responsable légal <b>$definir_resp</b> pour <b>".casse_mot($eleve_prenom,'majf2')." ".my_strtoupper($eleve_nom)."</b></p>\n";
 
@@ -2665,6 +2963,10 @@ if(getSettingValue('ele_lieu_naissance')=='y') {
 	echo "<b>Lieu de naissance&nbsp;:</b> ";
 	if(isset($eleve_lieu_naissance)) {echo get_commune($eleve_lieu_naissance,1);}
 	else {echo "<span style='color:red'>Non défini</span>";}
+	// 20160809
+	if((isset($eleve_login))&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+		echo "&nbsp;<a href='".$_SERVER['PHP_SELF']."?eleve_login=".$eleve_login."&amp;saisir_lieu_naissance=y' title=\"Saisir/modifier le lieu de naissance\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/edit16.png' class='icone16' alt='Modifier' /></a>";
+	}
 	echo "\n";
 }
 ?>

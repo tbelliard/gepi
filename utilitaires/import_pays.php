@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -60,7 +60,10 @@ require_once("../lib/header.inc.php");
 //debug_var();
 
 echo "<p class='bold'>";
-echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
+if(acces("/eleves/import_communes.php", $_SESSION['statut'])) {
+	echo " | <a href=\"../eleves/import_communes.php\">Import des communes</a>";
+}
 
 if(!isset($is_posted)) {
 	echo "</p>\n";
