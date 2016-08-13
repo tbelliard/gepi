@@ -1446,16 +1446,51 @@ else{
 	echo "<p>Saisir une adresse:</p>\n";
 }
 
+// 20160813 : Vérification du format de l'adresse
+$alerte_adr1="";
+$alerte_adr2="";
+$alerte_adr3="";
+$alerte_adr4="";
+$alerte_cp="";
+$alerte_commune="";
+$alerte_pays="";
+if(getSettingAOui("FormatAdressePostaleCheck")) {
+	if(mb_strlen($adr1)>38) {
+		$alerte_adr1.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que chaque ligne ne dépasse pas 38 caractères (espcaces inclus).\nIl y a ici ".mb_strlen($adr1)." caractères.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+	if(mb_strlen($adr2)>38) {
+		$alerte_adr2.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que chaque ligne ne dépasse pas 38 caractères (espcaces inclus).\nIl y a ici ".mb_strlen($adr2)." caractères.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+	if(mb_strlen($adr3)>38) {
+		$alerte_adr3.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que chaque ligne ne dépasse pas 38 caractères (espcaces inclus).\nIl y a ici ".mb_strlen($adr3)." caractères.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+	if(mb_strlen($adr4)>38) {
+		$alerte_adr4.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que chaque ligne ne dépasse pas 38 caractères (espcaces inclus).\nIl y a ici ".mb_strlen($adr4)." caractères.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+
+	if(mb_strlen($cp)+mb_strlen($commune)+1>38) {
+		$alerte_commune.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que chaque ligne ne dépasse pas 38 caractères (espcaces inclus).\nIl y a ici pour la chaine CODE_POSTAL+ESPCACE+COMMUNE ".(mb_strlen($cp)+mb_strlen($commune)+1)." caractères.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+
+	if(casse_mot($commune, "maj")!=$commune) {
+		$alerte_commune.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que le nom de la commune soit en majuscules.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+
+	if(casse_mot($pays, "maj")!=$pays) {
+		$alerte_pays.="<span title=\"La norme 38 (NF Z10-011) de La Poste impose que le nom du pays soit en majuscules.\nPour bien faire, vous devriez corriger l'adresse en conséquence.\n\n(Attention: dans le cas d'une importation depuis Sconet/Siècle, il est recommandé de faire la correction dans Sconet/Siècle et de faire une 'Mise à jour d'après sconet' dans Gepi pour prendre en compte les modifications).\"><img src='../images/icons/ico_attention.png' width='22' height='19' alt='Attention' /></span>";
+	}
+}
+
 echo "<table>\n";
 //echo "<tr><td colspan='2'>Saisir une adresse</td></tr>\n";
-echo "<tr><td>Adresse * : </td><td><input type=text size=50 name=adr1 value = \"".$adr1."\" onchange='changement();' /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr2 value = \"".$adr2."\" onchange='changement();' /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr3 value = \"".$adr3."\" onchange='changement();' /></td></tr>\n";
-echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr4 value = \"".$adr4."\" onchange='changement();' /></td></tr>\n";
-echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = \"".$cp."\" onchange='changement();' />";
-echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" onchange='changement();' />\n";
+echo "<tr><td>Adresse * : </td><td><input type=text size=50 name=adr1 value = \"".$adr1."\" onchange='changement();' />".$alerte_adr1."</td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr2 value = \"".$adr2."\" onchange='changement();' />".$alerte_adr2."</td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr3 value = \"".$adr3."\" onchange='changement();' />".$alerte_adr3."</td></tr>\n";
+echo "<tr><td>Adresse (<i>suite</i>): </td><td><input type=text size=50 name=adr4 value = \"".$adr4."\" onchange='changement();' />".$alerte_adr4."</td></tr>\n";
+echo "<tr><td>Code postal ** : </td><td><input type=text size=6 name=cp value = \"".$cp."\" onchange='changement();' />".$alerte_cp."";
+echo " ou Pays ** : <input type=text size=20 name=pays value = \"".$pays."\" onchange='changement();' />".$alerte_pays."\n";
 echo "</td></tr>\n";
-echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Commune * : </td><td><input type=text size=50 name=commune value = \"".$commune."\" onchange='changement();' />".$alerte_commune."</td></tr>\n";
 
 echo "</table>\n";
 

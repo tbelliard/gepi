@@ -455,6 +455,17 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['FormatAdressePostaleCheck'])) {
+			if(($_POST['FormatAdressePostaleCheck']!='y')&&($_POST['FormatAdressePostaleCheck']!='n')) {
+				$msg .= "Choix invalide pour FormatAdressePostaleCheck !";
+			}
+			else {
+				if (!saveSetting("FormatAdressePostaleCheck", $_POST['FormatAdressePostaleCheck'])) {
+					$msg .= "Erreur lors de l'enregistrement de FormatAdressePostaleCheck !";
+				}
+			}
+		}
+
 		if (isset($_POST['type_bulletin_par_defaut'])) {
 			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')||($_POST['type_bulletin_par_defaut']=='pdf_2016')) {
 				if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
@@ -1577,6 +1588,21 @@ pour limiter les saisies à des dates situées dans l'année scolaire
 		</span>
 		<span class="cellTab plusPetit">
 		<input type="text" name="denom_groupes_de_groupes" value="<?php if(getSettingValue("denom_groupes_de_groupes")!="") {echo getSettingValue("denom_groupes_de_groupes");} else {echo "ensembles de groupes";} ?>" onchange='changement()' /><br />
+		</span>
+	</p>
+
+	<p class="ligneCaps">
+		<a name='FormatAdressePostaleCheck'></a>
+		Afficher des alertes sur les saisies d'adresses responsables contrevenant aux recommandations de La Poste&nbsp;:<br />
+		<em>(La norme 38 (NF Z10-011) de La Poste impose certaines limitations et recommandations pour le format des adresses postales)</em>.
+		<span class="cellTab plusPetit">
+			<span class="cellTab">
+				<input type="radio" name="FormatAdressePostaleCheck" id="FormatAdressePostaleCheck_y" value="y" <?php if(getSettingAOui("FormatAdressePostaleCheck")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FormatAdressePostaleCheck_y' style='cursor: pointer;'>Oui</label>
+				<br />
+				<input type="radio" name="FormatAdressePostaleCheck" id="FormatAdressePostaleCheck_n" value="n" <?php if(!getSettingAOui("FormatAdressePostaleCheck")){echo "checked='checked'";} ?> onchange='changement()' />
+				<label for='FormatAdressePostaleCheck_n' style='cursor: pointer;'>Non</label>
+			</span>
 		</span>
 	</p>
 
