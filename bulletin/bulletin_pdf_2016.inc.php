@@ -444,6 +444,46 @@
 
 	//========================================
 
+	//$param_bull2016["bull2016_orientation_periodes"]="2;3";
+	$param_bull2016["bull2016_orientation_periodes"]=getSettingValue("bull2016_orientation_periodes");
+
+	$param_bull2016["largeur_cadre_orientation"]=140;
+	$param_bull2016["hauteur_cadre_orientation"]=15;
+
+	$param_bull2016["X_cadre_orientation"]=11;
+	$param_bull2016["Y_cadre_orientation"]=230;
+
+	$param_bull2016["cadre_voeux_orientation"]=1;
+	if(getSettingANon("bull2016_voeux_orientation")) {
+		$param_bull2016["cadre_voeux_orientation"]=0;
+	}
+	//$param_bull2016["X_voeux_orientation"]=5;
+	$param_bull2016["X_cadre_voeux_orientation"]=11;
+
+	$param_bull2016["cadre_orientation_proposee"]=1;
+	if(getSettingANon("bull2016_orientation_proposee")) {
+		$param_bull2016["cadre_orientation_proposee"]=0;
+	}
+	$param_bull2016["X_cadre_orientation_proposee"]=60;
+
+	$param_bull2016["titre_voeux_orientation"]=getSettingValue("bull2016_titre_voeux_orientation");
+	if($param_bull2016["titre_voeux_orientation"]=="") {
+		$param_bull2016["titre_voeux_orientation"]="Voeux";
+	}
+
+	$param_bull2016["titre_orientation_proposee"]=getSettingValue("bull2016_titre_orientation_proposee");
+	if($param_bull2016["titre_orientation_proposee"]=="") {
+		$param_bull2016["titre_orientation_proposee"]="Orientation proposée";
+	}
+	$param_bull2016["titre_avis_orientation_proposee"]=getSettingValue("bull2016_titre_avis_orientation_proposee");
+	if($param_bull2016["titre_avis_orientation_proposee"]=="") {
+		$param_bull2016["titre_avis_orientation_proposee"]="Commentaire";
+	}
+
+	$param_bull2016["bull2016_orientation_taille_police"]="9";
+
+	//========================================
+
 	/*
 	$champ_bull_pdf[]="nom_model_bulletin";
 	$champ_bull_pdf[]="active_bloc_datation";

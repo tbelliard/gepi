@@ -202,6 +202,77 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+
+
+
+	$bull2016_voeux_orientation=isset($_POST["bull2016_voeux_orientation"]) ? $_POST["bull2016_voeux_orientation"] : "n";
+	if(($bull2016_voeux_orientation!="y")&&($bull2016_voeux_orientation!="n")) {
+		$bull2016_voeux_orientation="y";
+	}
+	if (!saveSetting("bull2016_voeux_orientation", $bull2016_voeux_orientation)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_voeux_orientation !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_orientation_proposee=isset($_POST["bull2016_orientation_proposee"]) ? $_POST["bull2016_orientation_proposee"] : "n";
+	if(($bull2016_orientation_proposee!="y")&&($bull2016_orientation_proposee!="n")) {
+		$bull2016_orientation_proposee="y";
+	}
+	if (!saveSetting("bull2016_orientation_proposee", $bull2016_orientation_proposee)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_orientation_proposee !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_titre_voeux_orientation=isset($_POST["bull2016_titre_voeux_orientation"]) ? $_POST["bull2016_titre_voeux_orientation"] : "";
+	if($bull2016_titre_voeux_orientation=="") {
+		$bull2016_titre_voeux_orientation="Voeux";
+	}
+	if (!saveSetting("bull2016_titre_voeux_orientation", $bull2016_titre_voeux_orientation)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_titre_voeux_orientation !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_titre_orientation_proposee=isset($_POST["bull2016_titre_orientation_proposee"]) ? $_POST["bull2016_titre_orientation_proposee"] : "";
+	if($bull2016_titre_orientation_proposee=="") {
+		$bull2016_titre_orientation_proposee="Orientation proposée";
+	}
+	if (!saveSetting("bull2016_titre_orientation_proposee", $bull2016_titre_orientation_proposee)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_titre_orientation_proposee !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_titre_avis_orientation_proposee=isset($_POST["bull2016_titre_avis_orientation_proposee"]) ? $_POST["bull2016_titre_avis_orientation_proposee"] : "";
+	if($bull2016_titre_avis_orientation_proposee=="") {
+		$bull2016_titre_avis_orientation_proposee="Commentaire";
+	}
+	if (!saveSetting("bull2016_titre_avis_orientation_proposee", $bull2016_titre_avis_orientation_proposee)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_titre_avis_orientation_proposee !";
+		$reg_ok = 'no';
+	}
+
+	$bull2016_orientation_periodes=isset($_POST["bull2016_orientation_periodes"]) ? $_POST["bull2016_orientation_periodes"] : "";
+	if($bull2016_orientation_periodes!="") {
+		if(!preg_match("/^[0-9;]{1,}$/", $bull2016_orientation_periodes)) {
+			$bull2016_orientation_periodes="";
+		}
+		else {
+			$tmp_tab_periode_orientation=explode(";", preg_replace("/[^0-9]/",";",$bull2016_orientation_periodes));
+			$bull2016_orientation_periodes="";
+			for($loop=0;$loop<count($tmp_tab_periode_orientation);$loop++) {
+				if($tmp_tab_periode_orientation[$loop]!="") {
+					if($bull2016_orientation_periodes!="") {
+						$bull2016_orientation_periodes.=";";
+					}
+					$bull2016_orientation_periodes.=$tmp_tab_periode_orientation[$loop];
+				}
+			}
+		}
+	}
+	if (!saveSetting("bull2016_orientation_periodes", $bull2016_orientation_periodes)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_orientation_periodes !";
+		$reg_ok = 'no';
+	}
+
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
@@ -306,6 +377,20 @@ if($bull2016_aff_retards=="") {
 	$bull2016_aff_retards="y";
 }
 
+$bull2016_titre_voeux_orientation=getSettingValue("bull2016_titre_voeux_orientation");
+if($bull2016_titre_voeux_orientation=="") {
+	$bull2016_titre_voeux_orientation="Voeux";
+}
+$bull2016_titre_orientation_proposee=getSettingValue("bull2016_titre_orientation_proposee");
+if($bull2016_titre_orientation_proposee=="") {
+	$bull2016_titre_orientation_proposee="Orientation proposée";
+}
+$bull2016_titre_avis_orientation_proposee=getSettingValue("bull2016_titre_avis_orientation_proposee");
+if($bull2016_titre_avis_orientation_proposee=="") {
+	$bull2016_titre_avis_orientation_proposee="Commentaire";
+}
+
+$bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
 ?>
 
 
@@ -447,6 +532,65 @@ echo add_token_field();
 				echo "checked ";
 			}
 			?>/>
+		</td>
+	</tr>
+</table>
+
+<h3>Paramètres Orientation</h3>
+<p>Sous réserve que le module Orientation soit activé et que l'orientation soit activée pour les MEFS associés à la classe demandée à l'impression.</p>
+<table class='boireaus boireaus_alt' summary='Paramètres Orientation'>
+	<tr>
+		<td>Liste des périodes avec affichage du cadre orientation&nbsp;:<br />
+		<em>(laissez vide pour désactiver l'affichage de l'ensemble du cadre Orientation;<br />
+		sinon donnez les numéros de périodes, séparés par des point-virgules)</em></td>
+		<td>
+			<input type="text" name="bull2016_orientation_periodes" id="bull2016_orientation_periodes" size="20" onchange="changement()" value="<?php
+				echo $bull2016_orientation_periodes;
+			?>" />
+		</td>
+	</tr>
+	<tr>
+		<td>Afficher le cadre des Voeux d'orientation&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_voeux_orientation" id="bull2016_voeux_orientation" onchange="changement()" value="y" <?php
+			if(getSettingValue('bull2016_voeux_orientation')!="n") {
+				echo "checked ";
+			}
+			?>/>
+		</td>
+	</tr>
+	<tr>
+		<td>Titre du bloc Voeux&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_titre_voeux_orientation" id="bull2016_titre_voeux_orientation" size="20" onchange="changement()" value="<?php
+				echo $bull2016_titre_voeux_orientation;
+			?>" />
+		</td>
+	</tr>
+	<tr>
+		<td>Afficher le cadre des Orientations proposées&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_orientation_proposee" id="bull2016_orientation_proposee" onchange="changement()" value="y" <?php
+			if(getSettingValue('bull2016_orientation_proposee')!="n") {
+				echo "checked ";
+			}
+			?>/>
+		</td>
+	</tr>
+	<tr>
+		<td>Titre du bloc Orientation proposée&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_titre_orientation_proposee" id="bull2016_titre_orientation_proposee" size="20" onchange="changement()" value="<?php
+				echo $bull2016_titre_orientation_proposee;
+			?>" />
+		</td>
+	</tr>
+	<tr>
+		<td>Titre de l'avis/commentaire sur l'orientation proposée&nbsp;:</td>
+		<td>
+			<input type="text" name="bull2016_titre_avis_orientation_proposee" id="bull2016_titre_avis_orientation_proposee" size="20" onchange="changement()" value="<?php
+				echo $bull2016_titre_avis_orientation_proposee;
+			?>" />
 		</td>
 	</tr>
 </table>

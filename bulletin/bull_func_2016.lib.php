@@ -4033,6 +4033,61 @@ die();
 		//if(getSettingValue('suppr_balises_app_prof')=='y') {$texte=preg_replace('/<(.*)>/U','',$texte);}
 		cell_ajustee($texte,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 
+
+		//++++++++++++++++++++++++++++++++++++++++++++
+		// Vérifications/ajustements de hauteur
+
+		$h_ligne_retard_abs=3.5;
+		$hauteur_lignes_absences_retards=3.5;
+		// Heures perdues
+		if($param_bull2016["bull2016_afficher_nb_heures_perdues"]=="y") {
+			$hauteur_lignes_absences_retards+=$h_ligne_retard_abs;
+		}
+
+		// Non justifiées
+		if($param_bull2016["bull2016_aff_abs_nj"]=="y") {
+			$hauteur_lignes_absences_retards+=$h_ligne_retard_abs;
+		}
+
+		// Justifiées
+		if($param_bull2016["bull2016_aff_abs_justifiees"]=="y") {
+			$hauteur_lignes_absences_retards+=$h_ligne_retard_abs;
+		}
+		//elseif($param_bull2016["bull2016_aff_total_abs"]=="y") {
+		if($param_bull2016["bull2016_aff_total_abs"]=="y") {
+			$hauteur_lignes_absences_retards+=$h_ligne_retard_abs;
+		}
+
+		if($param_bull2016["bull2016_aff_retards"]=="y") {
+			$hauteur_lignes_absences_retards+=$h_ligne_retard_abs;
+		}
+
+
+		$hauteur_orientation=0;
+		if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($classe_id))) {
+
+			$tmp_tab_periode_orientation=explode(";", $param_bull2016["bull2016_orientation_periodes"]);
+			if((in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation))&&(isset($tab_bull['orientation']['mef_avec_orientation']))&&(in_array($tab_bull['eleve'][$i]['mef_code'], $tab_bull['orientation']['mef_avec_orientation']))) {
+				$hauteur_orientation=$param_bull2016["hauteur_cadre_orientation"];
+			}
+		}
+
+		if($tab_bull['eleve'][$i]['appreciation_absences'] != "") {
+			$hauteur_restant_pour_appreciation_absences=$param_bull2016["hauteur_communication_famille"]-10-$hauteur_lignes_absences_retards-$hauteur_orientation;
+			if($hauteur_restant_pour_appreciation_absences<10) {
+				$hauteur_restant_pour_appreciation_absences=10;
+				if($param_bull2016["hauteur_communication_famille"]-10-$hauteur_lignes_absences_retards-10>=10) {
+					$hauteur_orientation=$param_bull2016["hauteur_communication_famille"]-10-$hauteur_lignes_absences_retards-10;
+				}
+				// Sinon, on va avoir un souci
+			}
+		}
+
+		$y_lignes_absences_et_retards=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-$hauteur_lignes_absences_retards;
+		$y_cadre_orientation=$param_bull2016["y_communication_famille"]+$param_bull2016["hauteur_communication_famille"]-$hauteur_orientation-1;
+		//++++++++++++++++++++++++++++++++++++++++++++
+
+
 		if($tab_bull['eleve'][$i]['appreciation_absences'] != "")
 		{
 			// supprimer les espaces
@@ -4052,7 +4107,8 @@ die();
 			$taille_max_police=8;
 			$taille_min_police=ceil($taille_max_police/3);
 			$largeur_dispo=$param_bull2016["largeur_communication_famille"];
-			$h_cell=22; // A ajuster selon ce qu'on affiche des retards, nj, j,...
+			//$h_cell=22; // A ajuster selon ce qu'on affiche des retards, nj, j,...
+			$h_cell=$hauteur_restant_pour_appreciation_absences;
 			cell_ajustee($info_absence_appreciation,$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 		}
 
@@ -4078,11 +4134,176 @@ die();
 		*/
 
 
+
+		if((getSettingAOui('active_mod_orientation'))&&(mef_avec_proposition_orientation($classe_id))) {
+
+			$tmp_tab_periode_orientation=explode(";", $param_bull2016["bull2016_orientation_periodes"]);
+			if((in_array($tab_bull['num_periode'], $tmp_tab_periode_orientation))&&(isset($tab_bull['orientation']['mef_avec_orientation']))&&(in_array($tab_bull['eleve'][$i]['mef_code'], $tab_bull['orientation']['mef_avec_orientation']))) {
+
+
+				//$y_corrigee_cadre_orientation=$tab_modele_pdf["Y_cadre_orientation"][$classe_id]+$hauteur_pris_app_abs;
+				//$y_corrigee_cadre_orientation=$param_bull2016["Y_cadre_orientation"];
+				$y_corrigee_cadre_orientation=$y_cadre_orientation;
+
+				// Pour avoir une petite marge haute sur les listes de voeux/orientations dans le cadre orientation
+				$padding_haut_orientation=1;
+
+				//$pdf->Rect($param_bull2016["X_cadre_orientation"], $y_corrigee_cadre_orientation, $param_bull2016["largeur_cadre_orientation"], $param_bull2016["hauteur_cadre_orientation"], 'D');
+				$pdf->Rect($param_bull2016["X_cadre_orientation"], $y_corrigee_cadre_orientation, $param_bull2016["largeur_cadre_orientation"], $hauteur_orientation, 'D');
+
+				if($param_bull2016["cadre_voeux_orientation"]!=0) {
+
+					$largeur_cadre_voeux=$param_bull2016["largeur_cadre_orientation"];
+					if($param_bull2016["cadre_orientation_proposee"]!=0) {
+
+						if($param_bull2016["X_cadre_orientation_proposee"]>$param_bull2016["X_cadre_voeux_orientation"]) {
+							$largeur_cadre_voeux=$param_bull2016["X_cadre_orientation_proposee"]-$param_bull2016["X_cadre_voeux_orientation"];
+						}
+						else {
+							$largeur_cadre_voeux=$param_bull2016["largeur_cadre_orientation"]-($param_bull2016["X_cadre_voeux_orientation"]-$param_bull2016["X_cadre_orientation_proposee"]);
+						}
+					}
+
+					//$pdf->Rect($param_bull2016["X_cadre_voeux_orientation"], $y_corrigee_cadre_orientation, $largeur_cadre_voeux, $param_bull2016["hauteur_cadre_orientation"], 'D');
+					$pdf->Rect($param_bull2016["X_cadre_voeux_orientation"], $y_corrigee_cadre_orientation, $largeur_cadre_voeux, $hauteur_orientation, 'D');
+
+					$pdf->SetXY($param_bull2016["X_cadre_voeux_orientation"],$y_corrigee_cadre_orientation);
+					$pdf->SetFont('DejaVu','B', $param_bull2016["bull2016_orientation_taille_police"]);
+					$chaine_titre_voeux=$param_bull2016["titre_voeux_orientation"]." : ";
+					$largeur_chaine_titre_voeux=$pdf->GetStringWidth($chaine_titre_voeux);
+					$pdf->Cell($largeur_chaine_titre_voeux,5, $chaine_titre_voeux,0,2,'');
+
+					// Liste des voeux (pouvoir limiter aux N premiers voeux)
+					$pdf->SetXY($param_bull2016["X_cadre_voeux_orientation"]+$largeur_chaine_titre_voeux, $y_corrigee_cadre_orientation+$padding_haut_orientation);
+
+					if($use_cell_ajustee=="n") {
+						$texte_voeux="";
+						if(isset($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']])) {
+							for($loop_voeu=1;$loop_voeu<=count($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']]);$loop_voeu++) {
+								$texte_voeux.=$loop_voeu.". ".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'];
+								if(($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!="")&&($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!=$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'])) {
+									$texte_voeux.=" (".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
+								}
+								$texte_voeux.="\n";
+							}
+						}
+
+						//$pdf->drawTextBox(($texte_voeux), $largeur_cadre_voeux-$largeur_chaine_titre_voeux, $param_bull2016["hauteur_cadre_orientation"], 'J', 'M', 0);
+						$pdf->drawTextBox(($texte_voeux), $largeur_cadre_voeux-$largeur_chaine_titre_voeux, $hauteur_orientation, 'J', 'M', 0);
+					}
+					else {
+						$texte_voeux="";
+						if(isset($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']])) {
+							for($loop_voeu=1;$loop_voeu<=count($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']]);$loop_voeu++) {
+								$texte_voeux.="<b>".$loop_voeu.".</b> ".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'];
+								if(($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!="")&&($tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire']!=$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['designation'])) {
+									$texte_voeux.=" (".$tab_bull['orientation']['voeux'][$tab_bull['eleve'][$i]['login']][$loop_voeu]['commentaire'].")";
+								}
+								$texte_voeux.="\n";
+							}
+						}
+
+						$texte=$texte_voeux;
+						$taille_max_police=$param_bull2016["bull2016_orientation_taille_police"];
+						$taille_min_police=ceil($taille_max_police/3);
+
+						$largeur_dispo=$largeur_cadre_voeux-$largeur_chaine_titre_voeux;
+						//$h_cell=$param_bull2016["hauteur_cadre_orientation"]-$padding_haut_orientation;
+						$h_cell=$hauteur_orientation-$padding_haut_orientation;
+
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','T');
+					}
+				}
+
+				// Orientations proposées
+				if($param_bull2016["cadre_orientation_proposee"]!=0) {
+					$largeur_cadre_orientation_proposee=$param_bull2016["largeur_cadre_orientation"];
+					if($param_bull2016["cadre_voeux_orientation"]!=0) {
+
+						if($param_bull2016["X_cadre_orientation_proposee"]>$param_bull2016["X_cadre_voeux_orientation"]) {
+							$largeur_cadre_orientation_proposee=$param_bull2016["largeur_cadre_orientation"]-($param_bull2016["X_cadre_orientation_proposee"]-$param_bull2016["X_cadre_voeux_orientation"]);
+						}
+						else {
+							$largeur_cadre_orientation_proposee=$param_bull2016["X_cadre_voeux_orientation"]-$param_bull2016["X_cadre_orientation_proposee"];
+						}
+					}
+
+					//$pdf->Rect($param_bull2016["X_cadre_orientation_proposee"], $y_corrigee_cadre_orientation, $largeur_cadre_orientation_proposee, $param_bull2016["hauteur_cadre_orientation"], 'D');
+					$pdf->Rect($param_bull2016["X_cadre_orientation_proposee"], $y_corrigee_cadre_orientation, $largeur_cadre_orientation_proposee, $hauteur_orientation, 'D');
+
+					$pdf->SetXY($param_bull2016["X_cadre_orientation_proposee"],$y_corrigee_cadre_orientation);
+					$pdf->SetFont('DejaVu','B',$param_bull2016["bull2016_orientation_taille_police"]);
+					//$pdf->Cell(50,5, $param_bull2016["titre_orientation_proposee"]." : ",0,2,'');
+					$chaine_titre_orientations_proposees=$param_bull2016["titre_orientation_proposee"]." : ";
+					$largeur_chaine_titre_orientations_proposees=$pdf->GetStringWidth($chaine_titre_orientations_proposees);
+					$pdf->Cell($chaine_titre_orientations_proposees,5, $chaine_titre_orientations_proposees,0,2,'');
+
+					$chaine_titre_avis_orientations_proposees=$param_bull2016["titre_avis_orientation_proposee"];
+
+					// Liste des orientations proposées (pouvoir limiter aux N premières)
+					$pdf->SetXY($param_bull2016["X_cadre_orientation_proposee"]+$largeur_chaine_titre_orientations_proposees, $y_corrigee_cadre_orientation+$padding_haut_orientation);
+
+					if($use_cell_ajustee=="n") {
+						$texte_orientations_proposees="";
+						if(isset($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']])) {
+							for($loop_op=1;$loop_op<=count($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']]);$loop_op++) {
+								$texte_orientations_proposees.=$loop_op.". ".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'];
+								if(($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!="")&&($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!=$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'])) {
+									$texte_orientations_proposees.=" (".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire'].")";
+								}
+								$texte_orientations_proposees.="\n";
+							}
+						}
+
+						if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
+							$texte_orientations_proposees.=$chaine_titre_avis_orientations_proposees." : ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
+						}
+
+						//$pdf->drawTextBox(($texte_orientations_proposees), $largeur_cadre_orientation_proposee-$largeur_chaine_titre_orientations_proposees, $param_bull2016["hauteur_cadre_orientation"], 'J', 'M', 0);
+						$pdf->drawTextBox(($texte_orientations_proposees), $largeur_cadre_orientation_proposee-$largeur_chaine_titre_orientations_proposees, $hauteur_orientation, 'J', 'M', 0);
+					}
+					else {
+						$texte_orientations_proposees="";
+						if(isset($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']])) {
+							for($loop_op=1;$loop_op<=count($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']]);$loop_op++) {
+								$texte_orientations_proposees.="<b>".$loop_op.".</b> ".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'];
+								if(($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!="")&&($tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire']!=$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['designation'])) {
+									$texte_orientations_proposees.=" (".$tab_bull['orientation']['orientation_proposee'][$tab_bull['eleve'][$i]['login']][$loop_op]['commentaire'].")";
+								}
+								$texte_orientations_proposees.="\n";
+							}
+						}
+
+						if((isset($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]))&&($tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]!="")) {
+							$texte_orientations_proposees.="<b>".$chaine_titre_avis_orientations_proposees." :</b> ".preg_replace("#<br />#i", "", $tab_bull['orientation']['avis'][$tab_bull['eleve'][$i]['login']]);
+						}
+
+						$texte=$texte_orientations_proposees;
+						$taille_max_police=$param_bull2016["bull2016_orientation_taille_police"];
+						$taille_min_police=ceil($taille_max_police/3);
+
+						//$largeur_dispo=$largeur_cadre_orientation_proposee-($pdf->GetX()-$param_bull2016["X_cadre_orientation_proposee"]);
+						$largeur_dispo=$largeur_cadre_orientation_proposee-$largeur_chaine_titre_orientations_proposees;
+						//$h_cell=$param_bull2016["hauteur_cadre_orientation"]-$padding_haut_orientation;
+						$h_cell=$hauteur_orientation-$padding_haut_orientation;
+
+						cell_ajustee(($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'','T');
+					}
+
+				}
+
+			}
+
+		}
+
+
+		// On commence par la ligne le plus en bas parmi les lignes absences et on inscrit ensuite, si elles sont demandées à l'affichage, les lignes au-dessus une à une
 		$h_ligne_retard_abs=3.5;
 		$decal=3.5*3;
 		// Heures perdues
 		if($param_bull2016["bull2016_afficher_nb_heures_perdues"]=="y") {
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Nombre d'heures de cours manquées du fait de ses absences, justifiées ou non justifiées : "."       heure(s)",0,2,'L');
 			$decal-=3.5;
 		}
@@ -4100,7 +4321,8 @@ die();
 			elseif($nb_nj>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences non justifiées par les responsables légaux : ".$nb_nj." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
@@ -4118,7 +4340,8 @@ die();
 			elseif($nb_j>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Absences justifiées par les responsables légaux : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
@@ -4135,13 +4358,14 @@ die();
 			elseif($nb_j>=1) {
 				$s="s";
 			}
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
+			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Total des absences : ".$nb_j." demi-journée".$s,0,2,'L');
 			$decal-=3.5;
 		}
 
 		if($param_bull2016["bull2016_aff_retards"]=="y") {
-			$pdf->SetXY($param_bull2016["x_communication_famille"], $param_bull2016["y_communication_famille"]+34+$decal);
+			$pdf->SetXY($param_bull2016["x_communication_famille"], $y_lignes_absences_et_retards+$decal);
 			$pdf->SetFont('DejaVu','',8);
 			$pdf->Cell($param_bull2016["largeur_communication_famille"],7, "Retards : ".$tab_bull['eleve'][$i]['eleve_retards'],0,2,'L');
 		}
