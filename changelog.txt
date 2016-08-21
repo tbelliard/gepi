@@ -3,7 +3,7 @@
 |= CHANGELOG GEPI =|
 |==================|
 
-Gepi-master (Version de développement)
+Gepi-1.6.9 (21/08/2016)
 ===========================
 Carnets de notes:
 - Possibilité d'afficher la date de fin de période dans la page index du Carnet 

@@ -1,8 +1,7 @@
-GEPI-master (version de développement)-- Procédure d'installation
+GEPI-1.6.9 (version stable)-- Procédure d'installation
 ==========================================
 
-Version de développement: NE PAS INSTALLER EN PRODUCTION !
-La branche stable actuelle est la 1.6.8
+La branche stable actuelle est la 1.6.9
 
 ****************************************************
 Installation - Etape 0 : téléchargement de l'archive
