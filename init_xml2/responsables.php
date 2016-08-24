@@ -417,6 +417,8 @@
 						$personnes=array();
 
 						$tab_champs_personne=array("NOM",
+						"NOM_USAGE",
+						"NOM_DE_FAMILLE",
 						"PRENOM",
 						"LC_CIVILITE",
 						"TEL_PERSONNEL",
@@ -464,6 +466,15 @@
 						$i=0;
 						$nb_utilisateurs_responsables_restaures=0;
 						while($i<count($personnes)){
+
+							// Pour tenir compte de la modif Sconet de l'été 2016
+							if(isset($personnes[$i]["nom_usage"])) {
+								$personnes[$i]["nom"]=$personnes[$i]["nom_usage"];
+							}
+							elseif(isset($personnes[$i]["nom_de_famille"])) {
+								$personnes[$i]["nom"]=$personnes[$i]["nom_de_famille"];
+							}
+
 							//$sql="INSERT INTO temp_resp_pers_import SET ";
 							$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";

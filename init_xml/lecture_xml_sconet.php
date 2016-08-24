@@ -381,6 +381,8 @@ function extr_valeur($lig){
 							$tab_champs_eleve=array("ID_NATIONAL",
 							"ELENOET",
 							"NOM",
+							"NOM_DE_FAMILLE",
+							"NOM_USAGE",
 							"PRENOM",
 							"DATE_NAISS",
 							"DOUBLEMENT",
@@ -870,6 +872,14 @@ function extr_valeur($lig){
 							echo "</tr>\n";
 							$i=0;
 							while($i<count($eleves)){
+								// Pour tenir compte de la modif Sconet de l'été 2016
+								if(isset($eleves[$i]['nom_usage'])) {
+									$eleves[$i]['nom']=$eleves[$i]['nom_usage'];
+								}
+								elseif(isset($eleves[$i]['nom_de_famille'])) {
+									$eleves[$i]['nom']=$eleves[$i]['nom_de_famille'];
+								}
+
 								echo "<tr>\n";
 								//echo "<td style='color: blue;'>$cpt</td>\n";
 								//echo "<td style='color: blue;'>&nbsp;</td>\n";
@@ -1456,6 +1466,8 @@ function extr_valeur($lig){
 							$personnes=array();
 	
 							$tab_champs_personne=array("NOM",
+							"NOM_DE_FAMILLE",
+							"NOM_USAGE",
 							"PRENOM",
 							"LC_CIVILITE",
 							"TEL_PERSONNEL",
@@ -1593,6 +1605,14 @@ function extr_valeur($lig){
 							echo "</tr>\n";
 							$i=0;
 							while($i<count($personnes)){
+								// Pour tenir compte de la modif Sconet de l'été 2016
+								if(isset($personnes[$i]["nom_usage"])) {
+									$personnes[$i]["nom"]=$personnes[$i]["nom_usage"];
+								}
+								elseif(isset($personnes[$i]["nom_de_famille"])) {
+									$personnes[$i]["nom"]=$personnes[$i]["nom_de_famille"];
+								}
+
 								echo "<tr>\n";
 								for($j=0;$j<count($tab_champs_personne);$j++){
 									$tmpmin=mb_strtolower($tab_champs_personne[$j]);
