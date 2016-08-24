@@ -34,6 +34,9 @@ Cahiers de textes:
   de formules mathématiques générées sur https://latex.codecogs.com
 
 Absences2:
+- Envoi de SMS : désormais la saisie des identifiants de connexion se fait dans 
+  Paramètres/Config. générale mais l'activation de l'envoi de SMS pour ce module 
+  se fait toujours dans Modules/Paramétrages/Absences2
 - Facilités de rattachement de saisies.
 - Possibilité de restreindre aux seuls lundis, mardis,... la saisie d'absences pour des élèves
   (cas de répétition d'absences toutes les semaines sur tels créneaux).
