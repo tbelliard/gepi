@@ -1119,6 +1119,8 @@ else{
 
 			$tab_champs_eleve=array("ID_NATIONAL",
 			"ELENOET",
+			"NOM_DE_FAMILLE",
+			"NOM_USAGE",
 			"NOM",
 			"PRENOM",
 			"DATE_NAISS",
@@ -1259,6 +1261,11 @@ else{
 			$stat=0;
 			$nb_err=0;
 			for($i=0;$i<count($eleves);$i++){
+				// Pour tenir compte de la modif Sconet de l'été 2016
+				if(isset($eleves[$i]['nom_de_famille'])) {
+					$eleves[$i]['nom']=$eleves[$i]['nom_de_famille'];
+				}
+
 				// On parcourt le tableau des élèves trouvés dans la section ELEVES du XML pour ne retenir que ceux qui ont été retenus dans la partie STRUCTURES, c'est-à-dire ceux qui sont dans des classes
 				if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)) {
 					/*
@@ -5865,6 +5872,8 @@ else{
 					$personnes=array();
 
 					$tab_champs_personne=array("NOM",
+					"NOM_USAGE",
+					"NOM_DE_FAMILLE",
 					"PRENOM",
 					"LC_CIVILITE",
 					"TEL_PERSONNEL",
@@ -5911,7 +5920,15 @@ else{
 						//$nb_err=0;
 						$stat=0;
 						$i=0;
-						while($i<count($personnes)){
+						while($i<count($personnes)) {
+							// Pour tenir compte de la modif Sconet de l'été 2016
+							if(isset($personnes[$i]["nom_usage"])) {
+								$personnes[$i]["nom"]=$personnes[$i]["nom_usage"];
+							}
+							elseif(isset($personnes[$i]["nom_de_famille"])) {
+								$personnes[$i]["nom"]=$personnes[$i]["nom_de_famille"];
+							}
+
 							$sql="INSERT INTO temp_resp_pers_import SET ";
 							//$sql="INSERT INTO resp_pers SET ";
 							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";

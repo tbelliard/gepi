@@ -569,6 +569,8 @@
 				$tab_champs_eleve=array("ID_NATIONAL",
 				"ELENOET",
 				"NOM",
+				"NOM_USAGE",
+				"NOM_DE_FAMILLE",
 				"PRENOM",
 				"DATE_NAISS",
 				"DOUBLEMENT",
@@ -700,6 +702,14 @@
 							$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
 						}
 						*/
+
+						// Pour tenir compte de la modif Sconet de l'été 2016
+						if(isset($eleves[$i]['nom_usage'])) {
+							$eleves[$i]['nom']=$eleves[$i]['nom_usage'];
+						}
+						elseif(isset($eleves[$i]['nom_de_famille'])) {
+							$eleves[$i]['nom']=$eleves[$i]['nom_de_famille'];
+						}
 
 						$temoin_date_sortie="n";
 						if(isset($eleves[$i]['date_sortie'])) {
