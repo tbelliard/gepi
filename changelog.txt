@@ -14,6 +14,8 @@ Carnets de notes:
   avant la fin de période).
 
 Bulletins:
+- Possibilité de générer des bulletins au format Collège 2016.
+- Possibilité de saisir les Éléments de Programmes abordés, pour les faire apparaitre dans une colonne du bulletin.
 - Validation de corrections en attente: Affichage de témoins dans la page de 
   sélection des bulletins à imprimer.
 - Affichage en page d'accueil administrateur et scolarité de tableaux:
@@ -28,7 +30,6 @@ Bulletins:
   propres aux familles).
 - Possibilité d'envoyer les bulletins aux familles par mail lors de l'archivage de fin d'année.
 - Possibilité d'inclure la signature lors de l'archivage de fin d'année.
-- Possibilité de saisir les Éléments de Programmes abordés, pour les faire apparaitre dans une colonne du bulletin.
 
 Cahiers de textes:
 - Possibilité de définir des Tag (Contrôle, EPI, AP) pour les notices de CDT.
@@ -36,6 +37,9 @@ Cahiers de textes:
   de formules mathématiques générées sur https://latex.codecogs.com
 
 Absences2:
+- Envoi de SMS : désormais la saisie des identifiants de connexion se fait dans 
+  Paramètres/Config. générale mais l'activation de l'envoi de SMS pour ce module 
+  se fait toujours dans Modules/Paramétrages/Absences2
 - Facilités de rattachement de saisies.
 - Possibilité de restreindre aux seuls lundis, mardis,... la saisie d'absences pour des élèves
   (cas de répétition d'absences toutes les semaines sur tels créneaux).

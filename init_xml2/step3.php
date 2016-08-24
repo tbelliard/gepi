@@ -205,7 +205,13 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 							}
 						}
 						else {
-							$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
+							// Problème: Je me suis retrouvé avec plusieurs enregistrements pour un elenoet.
+							//$sql="UPDATE j_eleves_etablissements SET id_etablissement='$reg_etab' WHERE id_eleve='$reg_elenoet';";
+							$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
+							//echo "$sql<br />";
+							$delete=mysqli_query($GLOBALS["mysqli"], $sql);
+
+							$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
 							//echo "$sql<br />";
 							$update_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 							if (!$update_etab) {
@@ -220,9 +226,11 @@ if (isset($is_posted) and ($is_posted == "yes")) {
 					//       DELETE FROM j_eleves_etablissements WHERE id_etablissement='$gepiSchoolRne';
 					// une fois le RNE renseigné.
 					$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$reg_elenoet';";
+					//echo "$sql<br />";
 					$test_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 					if(mysqli_num_rows($test_etab)==0){
 						$sql="INSERT INTO j_eleves_etablissements SET id_eleve='$reg_elenoet', id_etablissement='$reg_etab';";
+						//echo "$sql<br />";
 						$insert_etab=mysqli_query($GLOBALS["mysqli"], $sql);
 						if (!$insert_etab) {
 							echo "<p style='color:red'>Erreur lors de l'enregistrement de l'appartenance de l'élève $reg_nom $reg_prenom à l'établissement $reg_etab.</p>\n";
