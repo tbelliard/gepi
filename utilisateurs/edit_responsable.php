@@ -548,7 +548,7 @@ Export CSV avec entête au format NOM;PRENOM;LOGIN;EMAIL;ENFANTS;SEXE;IDENTIFIAN
 	//++++++++++++++++++++++++
 
 	$rowspan=6;
-	$sql="SELECT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
+	$sql="SELECT DISTINCT u.*,rp.pers_id FROM utilisateurs u, resp_pers rp, responsables2 r, eleves e  WHERE u.statut='responsable' AND rp.login=u.login AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND e.login NOT IN (SELECT login FROM j_eleves_classes) ORDER BY u.nom,u.prenom;";
 	//echo "$sql<br />";
 	$test_parents = mysqli_query($GLOBALS["mysqli"], $sql);
 	if(mysqli_num_rows($test_parents)>0) {
@@ -984,7 +984,7 @@ Cliquer pour donner l'accès.\" /></a>";
 			echo "</td>\n";
 		}
 		else {
-			echo "<td colspan='3'>\n";
+			echo "<td colspan='4'>\n";
 			echo "&nbsp;";
 			echo "</td>\n";
 		}
