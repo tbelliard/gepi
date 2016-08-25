@@ -984,7 +984,7 @@ Cliquer pour donner l'accès.\" /></a>";
 			echo "</td>\n";
 		}
 		else {
-			echo "<td colspan='3'>\n";
+			echo "<td colspan='4'>\n";
 			echo "&nbsp;";
 			echo "</td>\n";
 		}
