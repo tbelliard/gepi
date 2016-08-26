@@ -336,8 +336,8 @@ die();
 
 		//=========================================
 
-		// Définition du $num_cycle par défaut, mais il est modifié/adapté/identifié plus bas d'après le MEF de l'élève
-		$num_cycle=3;
+		// Définition du $cycle par défaut, mais il est modifié/adapté/identifié plus bas d'après le MEF de l'élève
+		$cycle=3;
 
 		//=========================================
 
@@ -579,7 +579,7 @@ die();
 		else {
 			$trimestriel_ou_semestriel="trimestriel";
 		}
-		$pdf->Cell($param_bull2016["largeur_cadre_eleve"],7, "Bilan ".$trimestriel_ou_semestriel." du cycle ".$num_cycle." - ".$tab_bull['nom_periode'],0,2,'C');
+		$pdf->Cell($param_bull2016["largeur_cadre_eleve"],7, "Bilan ".$trimestriel_ou_semestriel." du cycle ".$cycle." - ".$tab_bull['nom_periode'],0,2,'C');
 
 		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_nom_prenom_eleve"]);
 		$pdf->SetFont('DejaVu','B',12);
