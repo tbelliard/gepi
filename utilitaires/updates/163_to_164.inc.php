@@ -417,7 +417,12 @@ if ($test == -1) {
 /*
  * mysql_query est obsolète depuis PHP 5.5.0, on utilise mysqli à la place
  */
-$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+if(isset($dbPort)) {
+	$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+}
+else {
+	$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+}
 /* Modification du jeu de résultats en utf8 */
 if (!$mysqli->set_charset("utf8")) {
     printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);

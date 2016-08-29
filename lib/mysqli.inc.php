@@ -16,17 +16,34 @@
 
 // Etablir la connexion à la base
 
-if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
-  // On utilise le module pdo de php pour entrer en contact avec la base
-  $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
+//echo 'mysql:host='.$dbHost.';port=".$dbPort.";dbname='.$dbDb.'<br />';
 
+if (isset($utiliser_pdo) AND $utiliser_pdo == 'on') {
+	// On utilise le module pdo de php pour entrer en contact avec la base
+	//  $cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
+	if(isset($dbPort)) {
+		$cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb.';port='.$dbPort, $dbUser, $dbPass);
+	}
+	else {
+		$cnx = new PDO('mysql:host='.$dbHost.';dbname='.$dbDb, $dbUser, $dbPass);
+	}
 }
 
 if (!isset($db_nopersist) || $db_nopersist) {
-    $mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+	if(isset($dbPort)) {
+		$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+	}
+	else {
+		$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+	}
 }
 else {
-    $mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb);
+	if(isset($dbPort)) {
+		$mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+	}
+	else {
+		$mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb);
+	}
 }
 
 if ($mysqli->connect_errno) {
