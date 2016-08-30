@@ -1,7 +1,7 @@
 <?php
 /*
 *
-* Copyright 2001-2015 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -388,10 +388,6 @@ if(my_strtolower(mb_substr(getSettingValue('active_cahiers_texte'),0,1))=='y') {
 	echo "<li><p><a href='../cahier_texte_2/archivage_cdt.php?chgt_annee=y'>Archiver les cahiers de textes</a> pour permettre aux professeurs une consultation de leurs CDT passés.</p></li>\n";
 	echo "<li><p>Si l'archivage des CDT est fait, vous pouvez aussi <a href='../cahier_texte_admin/suppr_docs_joints_cdt.php?chgt_annee=y'>supprimer les documents joints aux cahiers de textes</a> de l'année qui se termine.</p></li>\n";
 }
-if(getSettingValue('active_module_absence')=='2') {
-	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
-	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
-}
 echo "<li><p>Sauvegarder l'arborescence Gepi (<em>par ftp, sftp,...</em>) $lien_svg</p></li>\n";
 if(my_strtolower(mb_substr(getSettingValue('active_annees_anterieures'),0,1))=='y') {
 	echo "<li><p>Conserver les données de l'année passée via le <a href='../mod_annees_anterieures/conservation_annee_anterieure.php?chgt_annee=y'>module Années antérieures</a>.</p></li>\n";
@@ -403,6 +399,10 @@ else {
 }
 if(file_exists("../mod_plugins/archivageAPB/index.php")) {
 	echo "<li><a href='../mod_plugins/archivageAPB/index.php'>Archiver les données de l'année qui se termine pour le plugin APB</a>.</li>\n";
+}
+if(getSettingValue('active_module_absence')=='2') {
+	echo "<li><p><a href='../mod_abs2/extraction_saisies.php?date_absence_eleve_debut=".(date('Y')-1)."-08-01&date_absence_eleve_fin=".date('Y')."-08-01&type_extrait=1&retour=../gestion/changement_d_annee.php'>Effectuer une extraction CSV des absences</a>,\n";
+	echo " puis <a onclick=\"return(confirm('Voulez vous vider les tables d\'absences ?'));\" href='../utilitaires/clean_tables.php?action=clean_absences&amp;date_limite=31/07/".date('Y')."&amp;chgt_annee=y".add_token_in_url()."'/>purger les tables absences pour les absences antérieures au 31/07/".date('Y')."</a></p></li>";
 }
 if((getSettingAOui('active_mod_discipline'))&&(nombre_de_dossiers_docs_joints_a_des_sanctions()>0)) {
 	echo "<li><a href='../mod_discipline/discipline_admin.php?chgt_annee=y#suppr_docs_joints'>Supprimer les dossier(s) de documents joints à des ".getSettingValue('mod_disc_terme_sanction')."s</a>.</li>\n";
