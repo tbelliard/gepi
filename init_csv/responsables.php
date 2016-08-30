@@ -146,6 +146,17 @@ if (!isset($_POST["action"])) {
 			$j++;
 		}
 
+		// Ménage infos_actions:
+		$sql="SELECT * FROM infos_actions WHERE titre LIKE 'Nouveau responsable%';";
+		//echo "$sql<br />";
+		$test = mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<br />";
+			echo "Suppression d'anciens messages en page d'accueil invitant à créer de nouveaux comptes responsables.";
+			$sql="DELETE FROM infos_actions WHERE titre LIKE 'Nouveau responsable%';";
+			$del = mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+
 		// Suppression des comptes de responsables:
 		echo "<br />\n";
 		echo "<p><em>On supprime les anciens comptes responsables...</em> ";
