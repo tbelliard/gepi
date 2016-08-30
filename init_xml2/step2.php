@@ -168,6 +168,17 @@ if (isset($is_posted)) {
 		$j++;
 	}
 
+	// Ménage infos_actions:
+	$sql="SELECT * FROM infos_actions WHERE titre LIKE 'Nouvel élève%';";
+	//echo "$sql<br />";
+	$test = mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($test)>0) {
+		echo "<br />";
+		echo "Suppression d'anciens messages en page d'accueil invitant à créer de nouveaux comptes élèves.";
+		$sql="DELETE FROM infos_actions WHERE titre LIKE 'Nouvel élève%';";
+		$del = mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+
 	$sql="SHOW TABLES LIKE 'edt_corresp';";
 	//echo "$sql<br />";
 	$test = sql_query1($sql);
