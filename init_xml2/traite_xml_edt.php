@@ -892,7 +892,7 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 					die();
 				}
 
-				debug_var();
+				//debug_var();
 
 				// matiere
 				$corresp_matiere_a_enregistrer=isset($_POST['corresp_matiere_a_enregistrer']) ? $_POST['corresp_matiere_a_enregistrer'] : NULL;
@@ -1663,7 +1663,8 @@ Heure début : ".$ligne[$loop]['h_debut']."\">
 										$code_modalite_elect_eleves=array();
 										for($loop=0;$loop<count($tab_eleves_groupe_toutes_periodes);$loop++) {
 											//$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere='".$current_group["matiere"]["code_matiere"]."';";
-											$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$mat."';";
+											//$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$mat."';";
+											$sql="SELECT code_modalite_elect FROM sconet_ele_options seo, eleves e, matieres m WHERE seo.ele_id=e.ele_id AND e.login='".$tab_eleves_groupe_toutes_periodes[$loop]."' AND seo.code_matiere=m.code_matiere AND m.matiere='".$matiere."';";
 											$res_cme=mysqli_query($GLOBALS["mysqli"], $sql);
 											if(mysqli_num_rows($res_cme)>0) {
 												$lig_cme=mysqli_fetch_object($res_cme);
