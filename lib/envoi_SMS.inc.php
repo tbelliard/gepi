@@ -116,6 +116,9 @@ function envoi_SMS($tab_to,$sms) {
 	return "OK"; // ou return "Erreur d'envoi SMS";
 	*/
 	
+	// on ajoute l'identité de l'émetteur
+	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' ';$sms;
+	
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
 		case 'PLURIWARE' :
@@ -130,7 +133,7 @@ function envoi_SMS($tab_to,$sms) {
 				$parametres['data'].='		<sendMsg>'."\n";;
 				$parametres['data'].='			<to>'.filtrage_numero($to,true).'</to>'."\n";
 				$parametres['data'].='			<txt><![CDATA['.$sms.']]></txt>'."\n";
-				$parametres['data'].='			<from>".substr(getSettingValue("sms_identite"),0,11)."</from>'."\n";
+				//$parametres['data'].='			<from>".substr(getSettingValue("sms_identite"),0,11)."</from>'."\n";
 				$parametres['data'].='		</sendMsg>'."\n";
 			}
 			$parametres['data'].='</pluriAPI>'."\n";
@@ -154,7 +157,7 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['email']=getSettingValue('sms_username'); // identifiant 123-SMS.net
 			$parametres['pass']=getSettingValue('sms_password'); // mot de passe 123-SMS.net
 			$parametres['message']=urlencode($sms); // message que l'on désire envoyer
-			$parametres['from']=urlencode(getSettingValue('sms_identite')); // expéditeur
+			//$parametres['from']=urlencode(getSettingValue('sms_identite')); // expéditeur
 			
 			foreach($tab_to as $key => $to) $tab_to[$key]=filtrage_numero($to);
 			$to=implode('-',$tab_to);
@@ -181,7 +184,7 @@ function envoi_SMS($tab_to,$sms) {
 			$to=implode('%7C',$tab_to);
 			$parametres['to']=$to; // numéros de téléphones auxquels on envoie le message séparés par des 'pipe' %7C
 
-			$parametres['from']=getSettingValue('sms_identite'); // expéditeur du message (first class uniquement)
+			//$parametres['from']=getSettingValue('sms_identite'); // expéditeur du message (first class uniquement)
 			$parametres['route']='business'; // type de route (pour la france, business class uniquement)
 			$parametres['version']='2.1';
 			// $parametres['sim']='yes'; // on active le mode simulation, pour tester notre script
@@ -202,29 +205,20 @@ function envoi_SMS($tab_to,$sms) {
 			$url='api.allmysms.com';
 			$script='/http/9.0/sendSms/';
 			$parametres['login']=getSettingValue('sms_username');    //votre identifant allmysms
-			$parametres['apiKey']=getSettingValue('sms_password');    //votre mot de passe allmysms
+			$parametres['apiKey']=getSettingValue('sms_password');    //votre clé d'API allmysms
 			
-			$sender=substr(getSettingValue('sms_identite'),0,11);  //l'expediteur, attention pas plus de 11 caractères alphanumériques
+			//$sender=substr(getSettingValue('sms_identite'),0,11);  //l'expediteur, attention pas plus de 11 caractères alphanumériques
 																	//Doit commencer par une lettre
 																	//Ne peut contenir que des caractères alphanumériques (a-z0-9) et majuscules, ou un espace
 																	//Pas de caractères accentués ou de caractères spéciaux
 
 			$message=substr($sms,0,160);    //le message SMS, attention pas plus de 160 caractères
-			/*
-			$parametres['smsData']= "
-			<DATA>
-			   <MESSAGE><![CDATA[".$message."]]></MESSAGE>
-			   <TPOA>$sender</TPOA>
-			   <SMS>
-				  <MOBILEPHONE>$msisdn</MOBILEPHONE>
-			   </SMS>
-			</DATA>";
-			*/
 
 			$parametres['smsData']='{'."\n";
 			$parametres['smsData'].='"DATA": {'."\n";
-			$parametres['smsData'].='	"MESSAGE": { "#cdata-section" : "'.$message.'"},'."\n";
-			$parametres['smsData'].='	"TPOA": "'.$sender.'",'."\n";
+			$parametres['smsData'].='	"MESSAGE": "'.$message.'",'."\n";
+			//$parametres['smsData'].='	"TPOA": "'.$sender.'",'."\n";
+			$parametres['smsData'].='	"DYNAMIC": "0",'."\n";
 			$parametres['smsData'].='	"SMS": 	['."\n";
 			$mobiles="";
 			foreach($tab_to as $to) {
@@ -240,7 +234,7 @@ function envoi_SMS($tab_to,$sms) {
 			$parametres['smsData'].='	}'."\n";
 			$parametres['smsData'].='}'."\n";
 			
-			$reponse=envoi_requete_http($url,$script,$parametres,'GET');
+			$reponse=envoi_requete_http($url,$script,$parametres);
 			if ($reponse=='Erreur fsckopen') return 'SMS non envoyé(s) : '.$reponse;
 			$t_reponse=json_decode($reponse,true);
 			if ($t_reponse['status']==100) return 'OK';
@@ -276,7 +270,7 @@ echo envoi_requete_http($url,$script,$parametres);
 
 echo "<hr>allmysms.com<br>";
 $url='api.allmysms.com';
-$script="/http/9.0/sendSms/";
+$script="/http/9.0/simulateCampaign/";
 $parametres=array("login"=>"test","apiKey"=>"pass","smsData"=>"");	
 echo envoi_requete_http($url,$script,$parametres);
 
