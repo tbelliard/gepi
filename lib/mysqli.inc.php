@@ -76,12 +76,12 @@ function sqli_query1 ($sql)
     global $mysqli;
     
     $resultat = mysqli_query($mysqli, $sql);
-    if (!$resultat) return (-1);
-    if ($resultat->num_rows != 1) return (-1);
-    if ($resultat->field_count != 1) return (-1);
+	if (!$resultat) {return (-1);}
+    if ($resultat->num_rows != 1)  {return (-1);}
+    if ($resultat->field_count != 1)  {return (-1);}
     $ligne1 = $resultat->fetch_row();
     $result = $ligne1[0];
-    if ($result == "") return (-1);
+    if ($result == "") {return (-1);}
     
     $resultat->close();
     return $result;
@@ -96,7 +96,6 @@ function sqli_query1 ($sql)
  */
 function sqli_row ($r, $i)
 {
-    global $mysqli;
 
     if ($i >= $r->num_rows) {
         $r->free();
@@ -119,11 +118,12 @@ function sqli_count ($r)
 // Le mode strict de mysql 5.7 pose des problèmes avec certaine valeurs par défaut de certains champs (date à 0000-00-00 00:00:00 par exemple)
 // Le mode forcé par défaut dans Gepi permet de revenir au comportement mysql 5.6
 // Voir http://dev.mysql.com/doc/refman/5.6/en/sql-mode.html et http://dev.mysql.com/doc/refman/5.7/en/sql-mode.html
+// https://dev.mysql.com/doc/refman/5.7/en/group-by-handling.html , https://dev.mysql.com/doc/refman/5.7/en/sql-mode.html#sqlmode_only_full_group_by
 // Il est possible de définir un autre mode via une variable $set_mode_mysql à déclarer dans le secure/connect.inc.php
 if(!isset($set_mode_mysql)) {
-	sqli_query("SET MODE='NO_ENGINE_SUBSTITUTION'");
+	sqli_query("SET sql_mode ='NO_ENGINE_SUBSTITUTION'");
 }
 else {
-	sqli_query("SET MODE='$set_mode_mysql'");
+	sqli_query("SET sql_mode ='$set_mode_mysql'");
 }
-?>
+

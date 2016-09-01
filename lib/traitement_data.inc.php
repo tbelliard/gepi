@@ -148,9 +148,11 @@ function no_php_in_img($chaine) {
 
 
 
-// on force la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
-// puissent être affichées directement, sans caractère "\"
-@set_magic_quotes_runtime(0);
+// on force, si besoin, la valeur de magic_quotes_runtime à off de façon à ce que les valeurs récupérées dans la base
+// puissent être affichées directement, sans caractère "\" 
+if (get_magic_quotes_runtime()) {
+    set_magic_quotes_runtime(FALSE);
+} 
 
 
 $config = HTMLPurifier_Config::createDefault();
