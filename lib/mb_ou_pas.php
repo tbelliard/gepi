@@ -11,7 +11,8 @@ $sql="SELECT value FROM setting WHERE name='utiliser_mb';";
 //echo "$sql<br />";
    
 $res = mysqli_query($mysqli, $sql);
-if($res->num_rows == 0) {
+if($res->num_rows == 0 || version_compare(phpversion(), '5.6', '>')) {
+	// si la version de php est supérieure à 5.7, on impose les fonctions mb_
 	$initialiser_mb = "y";
 }
 else {
