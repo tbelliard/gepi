@@ -1025,6 +1025,7 @@ while ($per < $max_periode) {
 			";
 		}
 		echo "
+	}
 	function cocher_classes_post_precedent_inverse() {
 		tout_cocher($per, true);";
 		for($loop=0;$loop<count($tab_id_cases_classes_postees_precedemment);+$loop++) {
