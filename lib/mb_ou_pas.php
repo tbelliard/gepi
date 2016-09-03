@@ -11,7 +11,8 @@ $sql="SELECT value FROM setting WHERE name='utiliser_mb';";
 //echo "$sql<br />";
    
 $res = mysqli_query($mysqli, $sql);
-if($res->num_rows == 0) {
+if($res->num_rows == 0 || version_compare(phpversion(), '5.6', '>')) {
+	// si la version de php est supérieure à 5.7, on impose les fonctions mb_
 	$initialiser_mb = "y";
 }
 else {
@@ -77,11 +78,24 @@ function my_ereg($motif,$chaine,$tableau=NULL) {
 	}
 }
 
-//mb_ereg_replace ( string $pattern , string $replacement , string $string [, string $option= "msr" ] )
-//(PHP 4 >= 4.2.0, PHP 5)
+/**
+ * Remplace motif par remplacement
+ * 
+ * 
+ * mb_ereg_replace ( string $pattern , string $replacement , string $string [, string $option= "msr" ] )
+ * (PHP 4 >= 4.2.0, PHP 5)
+ * 
+ * À partir de PHP 5.7, on n'utilise plus ereg_replace qui produit une erreur
+ * 
+ * @global string $utiliser_mb y ou autre chose
+ * @param string $motif
+ * @param string $remplacement
+ * @param string $chaine
+ * @return string
+ */
 function my_ereg_replace($motif,$remplacement,$chaine) {
 	global $utiliser_mb;
-	if($utiliser_mb=='y') {
+	if($utiliser_mb=='y' || version_compare(phpversion(), '5.6', '>')) {
 		return mb_ereg_replace($motif,$remplacement,$chaine);
 	}
 	else {

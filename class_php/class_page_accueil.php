@@ -1201,7 +1201,7 @@ if(getSettingAOui('active_bulletins')) {
       global $mysqli;
       $this->b=0;
     
-        $sql = "SELECT distinct ac.indice_aid, ac.nom
+        $sql = "SELECT distinct ac.indice_aid, ac.nom, ac.nom_complet
               FROM aid_config ac, aid a
               WHERE ac.outils_complementaires = 'y'
               AND a.indice_aid=ac.indice_aid
