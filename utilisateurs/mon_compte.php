@@ -617,29 +617,34 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 }
 
 // 20160304
-if ((in_array($_SESSION['statut'], array("scolarite", "administrateur")))&&(isset($_POST['valide_ouverture_periode_et_acces']))) {
+if (((in_array($_SESSION['statut'], array("scolarite", "administrateur")))||
+	(($_SESSION['statut']=="professeur")&&(is_pp($_SESSION['login']))))&&
+	(isset($_POST['valide_ouverture_periode_et_acces']))) {
 	check_token();
 
 	$message_ouverture_periode_et_acces="";
 
-	if(savePref($_SESSION['login'], "accueil_tableau_ouverture_periode", $_POST['accueil_tableau_ouverture_periode'])) {
-		$msg.="Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué.<br />";
-		$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
-	}
-	else{
-		$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'.<br />";
-		$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
-	}
-
-	if(savePref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", $_POST['accueil_tableau_acces_app_bull_ele_resp'])) {
-		$msg.="Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué.<br />";
-		$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
-	}
-	else{
-		$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'.<br />";
-		$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+	if(isset($_POST['accueil_tableau_ouverture_periode'])) {
+		if(savePref($_SESSION['login'], "accueil_tableau_ouverture_periode", $_POST['accueil_tableau_ouverture_periode'])) {
+			$msg.="Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué.<br />";
+			$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_ouverture_periode' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+		}
+		else{
+			$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'.<br />";
+			$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_ouverture_periode'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+		}
 	}
 
+	if(isset($_POST['accueil_tableau_acces_app_bull_ele_resp'])) {
+		if(savePref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", $_POST['accueil_tableau_acces_app_bull_ele_resp'])) {
+			$msg.="Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué.<br />";
+			$message_ouverture_periode_et_acces.="<p style='color:green'>Enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp' effectué&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+		}
+		else{
+			$msg.="Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'.<br />";
+			$message_ouverture_periode_et_acces.="<p style='color:red'>Erreur lors de l'enregistrement de la préférence 'accueil_tableau_acces_app_bull_ele_resp'&nbsp;: ".strftime("%d/%m/%Y à %H:%M:%S")."</p>";
+		}
+	}
 }
 
 //debug_var();
@@ -2309,7 +2314,8 @@ if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
 		<input type='radio' name='accueil_tableau_ouverture_periode' id='accueil_tableau_ouverture_periode_n' value='n' tabindex='$tabindex'$checked_accueil_tableau_ouverture_periode_n onchange=\"checkbox_change('accueil_tableau_ouverture_periode_y');checkbox_change('accueil_tableau_ouverture_periode_n');changement()\"/><label for='accueil_tableau_ouverture_periode_n' id='texte_accueil_tableau_ouverture_periode_n'> Ne pas afficher en page d'accueil le tableau de l'état d'ouverture/verrouillage des périodes pour mes classes.</label></p>";
 	$tabindex++;
 
-	if((getSettingAOui('active_bulletins'))&&(getSettingValue("acces_app_ele_resp")=="manuel")) {
+	if((getSettingAOui('active_bulletins'))&&
+		((getSettingValue("acces_app_ele_resp")=="manuel")||(getSettingValue("acces_app_ele_resp")=="manuel_individuel"))) {
 		echo "
 		<p style='margin-top:1em;'><input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_y' value='y' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_y onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_y' id='texte_accueil_tableau_acces_app_bull_ele_resp_y'> Afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label><br />";
 		$tabindex++;
@@ -2317,6 +2323,34 @@ if (in_array($_SESSION['statut'], array("scolarite", "administrateur"))) {
 		<input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_n' value='n' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_n onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_n' id='texte_accueil_tableau_acces_app_bull_ele_resp_n'> Ne pas afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label></p>";
 		$tabindex++;
 	}
+
+	echo "
+	<p><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center></p>".((isset($message_ouverture_periode_et_acces)) ? "<br />".$message_ouverture_periode_et_acces : "")."
+	</fieldset>
+</form>
+<br />\n";
+	$tabindex++;
+}
+elseif(($_SESSION['statut']=='professeur')&&
+	(getSettingAOui('active_bulletins'))&&
+	((getSettingValue("acces_app_ele_resp")=="manuel")||
+	(getSettingValue("acces_app_ele_resp")=="manuel_individuel"))&&
+	(is_pp($_SESSION['login']))) {
+	$checked_accueil_tableau_acces_app_bull_ele_resp_y=(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")=="y") ? " checked" : "";
+	$checked_accueil_tableau_acces_app_bull_ele_resp_n=(getPref($_SESSION['login'], "accueil_tableau_acces_app_bull_ele_resp", "y")=="n") ? " checked" : "";
+
+	echo "<a name='tableaux_ouverture_periode_et_acces'></a>
+<form name='form_ouverture_periode_et_acces' method='post' action='".$_SERVER['PHP_SELF']."#tableaux_ouverture_periode_et_acces'>
+	<fieldset class='fieldset_opacite50'>
+		<legend style='border: 1px solid grey; background-color: white; '>Tableau d'ouverture/accès en page d'accueil</legend>
+		".add_token_field()."
+		<input type='hidden' name='valide_ouverture_periode_et_acces' value='y' />
+
+		<p style='margin-top:1em;'><input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_y' value='y' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_y onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_y' id='texte_accueil_tableau_acces_app_bull_ele_resp_y'> Afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label><br />";
+		$tabindex++;
+		echo "
+		<input type='radio' name='accueil_tableau_acces_app_bull_ele_resp' id='accueil_tableau_acces_app_bull_ele_resp_n' value='n' tabindex='$tabindex'$checked_accueil_tableau_acces_app_bull_ele_resp_n onchange=\"checkbox_change('accueil_tableau_acces_app_bull_ele_resp_y');checkbox_change('accueil_tableau_acces_app_bull_ele_resp_n');changement()\" /><label for='accueil_tableau_acces_app_bull_ele_resp_n' id='texte_accueil_tableau_acces_app_bull_ele_resp_n'> Ne pas afficher en page d'accueil le tableau de l'état de visibilité des appréciations et avis du conseil de classe sur les bulletins.</label></p>";
+		$tabindex++;
 
 	echo "
 	<p><center><input type=\"submit\" value=\"Enregistrer\" tabindex='$tabindex' /></center></p>".((isset($message_ouverture_periode_et_acces)) ? "<br />".$message_ouverture_periode_et_acces : "")."
