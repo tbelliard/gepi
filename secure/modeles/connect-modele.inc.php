@@ -16,6 +16,8 @@ $multisite = "n";
 # Le nom du serveur qui héberge votre base mysql.
 # (si c'est le même que celui qui héberge les scripts php, mettre "localhost")
 $dbHost="localhost";
+# Port mySQL sur le serveur; c'est généralement le 3306
+//$dbPort=ini_get("mysqli.default_port");
 # Le nom de votre base mysql
 $dbDb="gepi";
 # Le nom de l'utilisateur mysql qui a les droits sur la base

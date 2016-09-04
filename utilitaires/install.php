@@ -2,7 +2,7 @@
 /**
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2016 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  * 
  * @package General
  * @subpackage Installation
@@ -82,7 +82,10 @@ $etape = isset($_POST["etape"]) ? $_POST["etape"] : (isset($_GET["etape"]) ? $_G
 
 if (file_exists($nom_fic)) {
 	require_once("../secure/connect.inc.php");
-	if (@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
+	//echo "\$dbPort=".$dbPort."<br />";
+	//if (@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))) {
+	if (((isset($dbPort))&&(@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass","",$dbPort))))||
+	((!isset($dbPort))&&(@($GLOBALS["mysqli"] = mysqli_connect("$dbHost",  "$dbUser",  "$dbPass"))))) {
 		if (@((bool)mysqli_query($GLOBALS["mysqli"], "USE `$dbDb`"))) {
 			$call_test = @mysqli_query($GLOBALS["mysqli"], "SELECT * FROM setting WHERE name='sessionMaxLength'");
 			$test2 = @mysqli_num_rows($call_test);
@@ -102,7 +105,16 @@ if (file_exists($nom_fic)) {
 				end_html();
 				die();
 			}
+			else {
+				echo "<p style='color:red'>La base de données n'est pas remplie/initialisée.</p>";
+			}
 		}
+		else {
+			echo "<p style='color:red'>Echec de la connexion à la base de données.</p>";
+		}
+	}
+	else {
+		echo "<p style='color:red'>Echec de la connexion mySQL.</p>";
 	}
 }
 
@@ -113,7 +125,13 @@ if ($etape == 4) {
 	echo "<br /><h2 class='gepi'>Quatrième étape : Création des tables de la base</h2>\n";
 	echo "<p>";
 
-	$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
+	//$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
+	if((isset($_POST['port_db']))&&($_POST['port_db']!="")) {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db'], "", $_POST['port_db']));
+	}
+	else {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
+	}
 
 	if ($_POST['choix_db'] == "new_gepi") {
 		$sel_db = $_POST['table_new'];
@@ -193,7 +211,7 @@ if ($etape == 4) {
 			$gepipath = mb_substr($url['path'], 0, -24);
 			$conn = "<"."?php\n";
 			$conn .= "# La ligne suivante est à modifier si vous voulez utiliser le multisite\n";
-                        $conn .= "# Regardez le fichier modeles/connect-modele.inc.php pour information\n";
+			$conn .= "# Regardez le fichier modeles/connect-modele.inc.php pour information\n";
 			$conn .= "\$multisite = 'n';\n";
 			$conn .= "# Les cinq lignes suivantes sont à modifier selon votre configuration\n";
 			$conn .= "# Pensez à renommer ce fichier connect.cfg.php en connect.inc.php\n";
@@ -201,6 +219,13 @@ if ($etape == 4) {
 			$conn .= "# ligne suivante : le nom du serveur qui herberge votre base mysql.\n";
 			$conn .= "# Si c'est le même que celui qui heberge les scripts, mettre \"localhost\"\n";
 			$conn .= "\$dbHost=\"".$_POST['adresse_db']."\";\n";
+			$conn .= "# Port mySQL sur le serveur; c'est généralement le 3306\n";
+			if($_POST['port_db']=="") {
+				$conn .= "//\$dbPort=ini_get(\"mysqli.default_port\");\n";
+			}
+			else {
+				$conn .= "\$dbPort=\"".$_POST['port_db']."\";\n";
+			}
 			$conn .= "# ligne suivante : le nom de votre base mysql\n";
 			$conn .= "\$dbDb=\"$sel_db\";\n";
 			$conn .= "# ligne suivante : le nom de l'utilisateur mysql qui a les droits sur la base\n";
@@ -223,37 +248,37 @@ if ($etape == 4) {
 			if (!@fclose($f)) $ok='no';
 		}
 
-	// si 'encodage_nom_photo'=="yes" création du fichier témoin 
-	// pour l'encodage des noms de fichier des photos élèves
-	if ($result_ok == 'yes') {
-	// on récupère la valeur de 'encodage_nom_photo' dans la table 'setting'
-		$R_encodage=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
-		if (!$R_encodage) {$ok='no';
-		} else {
-				if ($t_encodage=@mysqli_fetch_assoc($R_encodage)) {
-				$encodage=$t_encodage["VALUE"];
-					if ($encodage=="yes") {
-						// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
-						$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
-						if (!$R_alea) {$ok='no';
-						} else {
-							if ($t_alea=@mysqli_fetch_assoc($R_alea)) {
-								$alea=$t_alea["VALUE"];
-								// on crée le fichier témoin
-								$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
-								if (!$fic_temoin) {
-									$ok = 'no';
-								} else {
-									// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
-									$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
-									if ($retour===false || !@fclose($fic_temoin)) $ok='no';
+		// si 'encodage_nom_photo'=="yes" création du fichier témoin 
+		// pour l'encodage des noms de fichier des photos élèves
+		if ($result_ok == 'yes') {
+		// on récupère la valeur de 'encodage_nom_photo' dans la table 'setting'
+			$R_encodage=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='encodage_nom_photo' LIMIT 1");
+			if (!$R_encodage) {$ok='no';
+			} else {
+					if ($t_encodage=@mysqli_fetch_assoc($R_encodage)) {
+					$encodage=$t_encodage["VALUE"];
+						if ($encodage=="yes") {
+							// on récupère la valeur de 'alea_nom_photo' dans la table 'setting'
+							$R_alea=@mysqli_query($GLOBALS["mysqli"], "SELECT `VALUE` FROM `setting` WHERE `NAME`='alea_nom_photo' LIMIT 1");
+							if (!$R_alea) {$ok='no';
+							} else {
+								if ($t_alea=@mysqli_fetch_assoc($R_alea)) {
+									$alea=$t_alea["VALUE"];
+									// on crée le fichier témoin
+									$fic_temoin=@fopen("../photos/eleves/encodage_active.txt","w");
+									if (!$fic_temoin) {
+										$ok = 'no';
+									} else {
+										// la valeur à écrire doit être conforme à la fonction 'encode_nom_photo()' de 'lib/share.inc.php'
+										$retour=@fwrite($fic_temoin,substr(md5($alea."nom_photo"),0,5)."nom_photo");
+										if ($retour===false || !@fclose($fic_temoin)) $ok='no';
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-	}
+		}
 
 		if ($ok == 'yes') {
 			echo "<B>La structure de votre base de données est installée.</B>\n<p>Vous pouvez passer à l'étape suivante.</p>\n";
@@ -282,10 +307,17 @@ else if ($etape == 3) {
 	echo "<form action='install.php' method='post'>\n";
 	echo "<p><input type='hidden' name='etape' value='4' />\n";
 	echo "<input type='hidden' name='adresse_db'  value=\"".$_POST['adresse_db']."\" size='40' />\n";
+	echo "<input type='hidden' name='port_db'  value=\"".$_POST['port_db']."\" size='40' />\n";
 	echo "<input type='hidden' name='login_db' value=\"".$_POST['login_db']."\" />\n";
 	echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
-	$link = @($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	//$link = @($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	if((isset($_POST['port_db']))&&($_POST['port_db']!="")) {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db'], "", $_POST['port_db']));
+	}
+	else {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
+	}
 	$result = @(($___mysqli_tmp = mysqli_query($GLOBALS["mysqli"], "SHOW DATABASES")) ? $___mysqli_tmp : false);
 
 	echo "<fieldset><label><strong>Choisissez votre base :</strong><br /></label>\n";
@@ -346,8 +378,15 @@ else if ($etape == 2) {
 
 	echo "<br /><h2 class='gepi'>Deuxième étape : Essai de connexion au serveur Mysql</h2>\n";
 
+	//echo "\$_POST['port_db']=".$_POST['port_db']."<br />";
 	echo "<!--";
-	$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	//$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'], $_POST['login_db'], $_POST['pass_db']));
+	if((isset($_POST['port_db']))&&($_POST['port_db']!="")) {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db'], "", $_POST['port_db']));
+	}
+	else {
+		$link = ($GLOBALS["mysqli"] = mysqli_connect($_POST['adresse_db'],  $_POST['login_db'],  $_POST['pass_db']));
+	}
 	$db_connect = ((is_object($GLOBALS["mysqli"])) ? mysqli_errno($GLOBALS["mysqli"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 	echo "-->\n";
 
@@ -359,6 +398,7 @@ else if ($etape == 2) {
 		echo "<form action='install.php' method='post'>\n";
 		echo "<p><input type='hidden' name='etape' value='3' />\n";
 		echo "<input type='hidden' name='adresse_db'  value=\"".$_POST['adresse_db']."\" size='40' />\n";
+		echo "<input type='hidden' name='port_db'  value=\"".$_POST['port_db']."\" size='40' />\n";
 		echo "<input type='hidden' name='login_db' value=\"".$_POST['login_db']."\" />\n";
 		echo "<input type='hidden' name='pass_db' value=\"".$_POST['pass_db']."\" /></p>\n";
 
@@ -384,6 +424,7 @@ else if ($etape == 1) {
 
 	unset($adresse_db);
 	$adresse_db = isset($_POST["adresse_db"]) ? $_POST["adresse_db"] : 'localhost';
+	$port_db = isset($_POST["port_db"]) ? $_POST["port_db"] : ini_get('mysqli.default_port');
 	$login_db = '';
 	$pass_db = '';
 
@@ -392,6 +433,9 @@ else if ($etape == 1) {
 	echo "<fieldset><label><B>Adresse de la base de donnée</B><br /></label>\n";
 	echo "(Souvent cette adresse correspond à celle de votre site, parfois elle correspond à la mention &laquo;localhost&raquo;, parfois elle est laissée totalement vide.)<br />\n";
 	echo "<INPUT  TYPE='text' NAME='adresse_db' CLASS='formo' VALUE=\"$adresse_db\" SIZE='40' /></fieldset><br />\n";
+        
+        echo "<fieldset><label><B>Le port du serveur MySQL</B><br /></label>\n";
+	echo "<INPUT  TYPE='text' NAME='port_db' CLASS='formo' VALUE=\"$port_db\" SIZE='40' /></fieldset><br />\n";
         
         echo "<fieldset><label><B>L'identifiant de connexion</B><br /></label>\n";
         echo "<INPUT TYPE='text' NAME='login_db' CLASS='formo' VALUE=\"$login_db\" SIZE='40' /></fieldset><br />\n";
