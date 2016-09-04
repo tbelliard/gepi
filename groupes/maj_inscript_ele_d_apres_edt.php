@@ -301,7 +301,7 @@ if((isset($_GET['div_suppr_assoc_regroupement']))&&(isset($_GET['id_groupe']))&&
 	die();
 }
 
-if(($action=="editer_ec2")&&(isset($_POST['suppr_assoc']))&&(isset($_POST['suppr']))) {
+if(($action=="editer_ec2")&&(isset($_POST['suppr_assoc']))&&($_POST['suppr_assoc']=="y")&&(isset($_POST['suppr']))) {
 	check_token();
 
 	$msg="";
@@ -313,7 +313,42 @@ if(($action=="editer_ec2")&&(isset($_POST['suppr_assoc']))&&(isset($_POST['suppr
 		//echo "$sql<br />";
 		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp)==0) {
-			echo "Association n°".$suppr[$loop]." non trouvée.<br />";
+			$msg.="Association n°".$suppr[$loop]." non trouvée.<br />";
+		}
+		else {
+			$lig_grp=mysqli_fetch_object($res_grp);
+
+			$sql="UPDATE edt_lignes SET traitement='', details_cours='' WHERE details_cours LIKE '".$lig_grp->id_groupe."|%';";
+			$mise_a_blanc=mysqli_query($GLOBALS["mysqli"], $sql);
+
+			$sql="DELETE FROM edt_corresp2 WHERE id='".$suppr[$loop]."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			if($del) {
+				$nb_suppr++;
+			}
+			else {
+				$msg.="Erreur lors de la suppression de l'association n°".$suppr[$loop].".<br />";
+			}
+		}
+	}
+
+	$msg.=$nb_suppr." association(s) supprimée(s).<br />";
+}
+
+if(($action=="editer_ec2")&&(isset($_POST['suppr_assoc']))&&($_POST['suppr_assoc']=="y2")&&(isset($_POST['suppr']))) {
+	check_token();
+
+	$msg="";
+
+	$nb_suppr=0;
+	$suppr=$_POST['suppr'];
+	for($loop=0;$loop<count($suppr);$loop++) {
+		$sql="SELECT * FROM edt_corresp2 ec2 WHERE ec2.id='".$suppr[$loop]."';";
+		//echo "$sql<br />";
+		$res_grp=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res_grp)==0) {
+			$msg.="Association n°".$suppr[$loop]." non trouvée.<br />";
 		}
 		else {
 			$lig_grp=mysqli_fetch_object($res_grp);
@@ -1868,7 +1903,13 @@ elseif($action=="comparer") {
 }
 elseif($action=="editer_ec2") {
 
-	echo "<p class='bold'>Voici les associations groupe Gepi/nom de regroupement EDT</p>";
+	echo "<p class='bold'>Voici les associations groupe Gepi/nom de regroupement EDT<br />
+Deux formulaires vont être proposés&nbsp;:<br />
+Le <a href='#editer_ec2_2eme_form' title=\"Aller au 2ème formulaire.\">deuxième</a> permet de contrôler qu'un groupe Gepi n'est pas associé à plusieurs regroupements EDT <em>(et de corriger si nécessaire)</em>.</p>";
+
+	// Ménage
+	$sql="DELETE FROM edt_corresp2 WHERE id_groupe NOT IN (SELECT id FROM groupes);";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	$sql="SELECT DISTINCT nom_groupe_edt FROM edt_corresp2 ORDER BY nom_groupe_edt;";
 	$res=mysqli_query($GLOBALS["mysqli"], $sql);
@@ -1951,6 +1992,160 @@ elseif($action=="editer_ec2") {
 	}
 </script>";
 	}
+
+	//=================================================================
+
+	echo "<a name='editer_ec2_2eme_form'></a>";
+	$sql="SELECT DISTINCT ec.id_groupe FROM classes c, 
+							j_groupes_classes jgc, 
+							edt_corresp2 ec 
+						WHERE c.id=jgc.id_classe AND 
+							jgc.id_groupe=ec.id_groupe 
+						ORDER BY c.classe, ec.mat_code_edt;";
+	//echo "$sql<br />";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	if(mysqli_num_rows($res)==0) {
+		echo "<br /><p style='color:red'>Aucune association n'est enregistrée.</p>";
+	}
+	else {
+		$tab_assoc_a_1=array();
+
+		echo "<br />
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml2' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<input type='hidden' name='action' value='editer_ec2' />
+		<input type='hidden' name='suppr_assoc' value='y2' />
+
+		<p id='lien_afficher_masquer_assoc_a_1'><a href='#' onclick=\"masquer_lignes_1_assoc('');return false;\">Afficher</a>/<a href='#' onclick=\"masquer_lignes_1_assoc('none');return false;\">Masquer</a> les lignes pour lesquelles il n'y a qu'un seul regroupement EDT associé à un groupe Gepi.</p>
+
+		<table class='boireaus boireaus_alt resizable sortable'>
+			<thead>
+				<tr>
+					<!--
+					 colspan='4' 
+					 rowspan='2' 
+					-->
+					<th colspan='6'>Groupe Gepi</th>
+
+					<th class='text' rowspan='2'>Nom de<br />regroupement EDT</th>
+					<th class='text' rowspan='2'>Matière EDT</th>
+
+					<th rowspan='2'>Suppr<br />
+						<a href=\"javascript:tout_cocher2();changement();\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href=\"javascript:tout_decocher2();changement();\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>
+					</th>
+					<th rowspan='2'>Éditer</th>
+				</tr>
+
+				<tr>
+					<th class='number'>Id</th>
+					<th class='text'>Nom</th>
+					<th class='text'>Descr.</th>
+					<th class='text'>Matière</th>
+					<th class='text'>Classes</th>
+					<th class='text'>Profs</th>
+				</tr>
+
+			</thead>
+			<tbody>";
+		$cpt=0;
+		while($lig=mysqli_fetch_object($res)) {
+			$sql="SELECT * FROM edt_corresp2 WHERE id_groupe='".$lig->id_groupe."' ORDER BY nom_groupe_edt, mat_code_edt;";
+			$res2=mysqli_query($GLOBALS["mysqli"], $sql);
+			if(mysqli_num_rows($res2)>0) {
+				$current_group=get_group($lig->id_groupe, array("matieres", "classes", "profs"));
+
+				$lig2=mysqli_fetch_object($res2);
+				$rowspan="";
+				if(mysqli_num_rows($res2)>1) {
+					$rowspan=" rowspan='".mysqli_num_rows($res2)."'";
+				}
+				else {
+					$tab_assoc_a_1[]=$cpt;
+				}
+				echo "
+				<tr class='white_hover' id='tr_form2_".$cpt."'>
+					<td style='text-align:left'".$rowspan."><span style='display:none'>".$lig->id_groupe."</span><a href='../groupes/edit_group.php?id_groupe=".$lig->id_groupe."' title=\"Voir l'enseignement Gepi dans un nouvel onglet\" target='_blank'>".get_info_grp($lig->id_groupe)."</a><a name='id_groupe_".$lig->id_groupe."'></a></td>
+					<td".$rowspan.">".$current_group['name']."</td>
+					<td".$rowspan.">".$current_group['description']."</td>
+					<td".$rowspan.">".$current_group['matiere']['matiere']."</td>
+					<td".$rowspan.">".$current_group['classlist_string']."</td>
+					<td".$rowspan.">".$current_group['profs']['proflist_string']."</td>
+
+					<td><label for='suppr2_$cpt' id='texte_suppr2_$cpt'>".htmlentities($lig2->nom_groupe_edt)."</label></td>
+					<td><label for='suppr2_$cpt'>$lig2->mat_code_edt</label></td>
+
+					<td><input type='checkbox' name='suppr[]' id='suppr2_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr2_$cpt')\" /></td>
+
+					<td".$rowspan."><a href='".$_SERVER['PHP_SELF']."?id_groupe=".$lig2->id_groupe."&amp;action=editer_ec3' title=\"Modifier l'association\"><img src='../images/edit16.png' class='icone16' alt='Editer' /></a></td>
+				</tr>";
+
+				$cpt++;
+				while($lig2=mysqli_fetch_object($res2)) {
+
+					echo "
+				<tr class='white_hover'>
+					<td><label for='suppr2_$cpt' id='texte_suppr2_$cpt'>".htmlentities($lig2->nom_groupe_edt)."</label></td>
+					<td><label for='suppr2_$cpt'>$lig2->mat_code_edt</label></td>
+
+					<td><input type='checkbox' name='suppr[]' id='suppr2_$cpt' value='".$lig2->id."' onchange=\"checkbox_change('suppr2_$cpt')\" /></td>
+				</tr>";
+
+					$cpt++;
+				}
+			}
+		}
+		echo "
+			</tbody>
+		</table>
+		<p>
+			<input type='submit' id='input_submit' value='Supprimer les associations cochées' />
+		</p>
+
+		<p style='margin-left:4em; text-indent:-4em; margin-top:1em;'><em>NOTES&nbsp;:</em> Seuls les enseignements Gepi, pour lesquels une association avec un regroupement EDT existe, sont proposés pour la mise à jour des affectations d'élèves.<br />
+		Supprimez les associations erronées.</p>
+	</fieldset>
+</form>
+
+<script type='text/javascript'>";
+
+		if(count($tab_assoc_a_1)>0) {
+			echo "
+	document.getElementById('lien_afficher_masquer_assoc_a_1').style.display='';
+
+	function masquer_lignes_1_assoc(mode) {";
+			for($loop=0;$loop<count($tab_assoc_a_1);$loop++) {
+				echo "
+			if(document.getElementById('tr_form2_".$tab_assoc_a_1[$loop]."')) {
+				document.getElementById('tr_form2_".$tab_assoc_a_1[$loop]."').style.display=mode;
+			}";
+			}
+			echo "
+	}";
+		}
+
+		echo "
+	function tout_cocher2() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('suppr2_'+i)) {
+				document.getElementById('suppr2_'+i).checked=true;
+				checkbox_change('suppr2_'+i);
+			}
+		}
+	}
+
+	function tout_decocher2() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('suppr2_'+i)) {
+				document.getElementById('suppr2_'+i).checked=false;
+				checkbox_change('suppr2_'+i);
+			}
+		}
+	}
+</script>";
+	}
+
+	//=================================================================
 
 	require("../lib/footer.inc.php");
 	die();
