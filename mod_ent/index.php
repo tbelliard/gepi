@@ -42,10 +42,13 @@ if (!checkAccess()) {
 	die();
 }
 
+/*
 // Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
+// ERREUR : Le use_ent est lié à la recherche des logins dans la table ldap_bx lors de l'initialisation
 if (getSettingValue("use_ent") != 'y') {
 	die('Fichier interdit.');
 }
+*/
 
 $afficher_liaison_ent=getSettingValue('afficher_liaison_ent');
 
@@ -66,6 +69,11 @@ else {
 		die();
 	}
 }
+
+if (getSettingValue("use_ent") != 'y') {
+	die('Fichier interdit.');
+}
+// Ici on poursuit avec ldap_bx
 
 // ======================= Initialisation des variables ==========================
 //$ = isset($_POST[""]) ? $_POST[""] : NULL;
