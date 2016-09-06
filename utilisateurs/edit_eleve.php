@@ -607,19 +607,25 @@ if($nb_auth_mode_ldap==0) {$style_auth_mode_ldap=" style='color:red'";}
 
 if(getSettingAOui('sso_cas_table')) {
 	$style_sso_corresp_manquante="";
-	$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	//$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	$sql="(SELECT u.login FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT u.login FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	//echo "$sql<br /><br />";
 	$res_sso_corresp_manquante=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_sso_corresp_manquante=mysqli_num_rows($res_sso_corresp_manquante);
 	if($nb_sso_corresp_manquante==0) {$style_sso_corresp_manquante=" style='color:red'";}
 
 	$style_sso_corresp_manquante_auth_sso="";
-	$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	//$sql="(SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT 1=1 FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	$sql="(SELECT u.login FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso='') UNION (SELECT u.login FROM utilisateurs u, eleves e WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login NOT IN (SELECT login_gepi FROM sso_table_correspondance WHERE login_sso!=''));";
+	//echo "$sql<br /><br />";
 	$res_sso_corresp_manquante_auth_sso=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_sso_corresp_manquante_auth_sso=mysqli_num_rows($res_sso_corresp_manquante_auth_sso);
 	if($nb_sso_corresp_manquante_auth_sso==0) {$style_sso_corresp_manquante_auth_sso=" style='color:red'";}
 
 	$style_sso_corresp_presente="";
-	$sql="SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso!='';";
+	//$sql="SELECT 1=1 FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso!='';";
+	$sql="SELECT u.login FROM utilisateurs u, eleves e, sso_table_correspondance stc WHERE u.login=e.login AND u.statut='eleve' AND u.auth_mode='sso' AND u.login=stc.login_gepi AND stc.login_sso!='';";
+	//echo "$sql<br /><br />";
 	$res_sso_corresp_presente=mysqli_query($GLOBALS["mysqli"], $sql);
 	$nb_sso_corresp_presente=mysqli_num_rows($res_sso_corresp_presente);
 	if($nb_sso_corresp_presente==0) {$style_sso_corresp_presente=" style='color:red'";}
