@@ -4,44 +4,47 @@
 
 //========================================
 
-
-$modifier_mb="n";
-$initialiser_mb="n";
-$sql="SELECT value FROM setting WHERE name='utiliser_mb';";
-//echo "$sql<br />";
-   
-$res = mysqli_query($mysqli, $sql);
-if($res->num_rows == 0 || version_compare(phpversion(), '5.6', '>')) {
-	// si la version de php est supérieure à 5.7, on impose les fonctions mb_
-	$initialiser_mb = "y";
+if(version_compare(phpversion(), '5.6', '>')) {
+	$utiliser_mb="y";
 }
 else {
-	$lig_tmp = $res->fetch_object();
-	$utiliser_mb = $lig_tmp->value;
-	if(($utiliser_mb != 'y') && ($utiliser_mb != 'n')) {
-		$modifier_mb = "y";
+	$modifier_mb="n";
+	$initialiser_mb="n";
+	$sql="SELECT value FROM setting WHERE name='utiliser_mb';";
+	//echo "$sql<br />";
+	$res = mysqli_query($mysqli, $sql);
+	if($res->num_rows == 0 || version_compare(phpversion(), '5.6', '>')) {
+		// si la version de php est supérieure à 5.7, on impose les fonctions mb_
+		$initialiser_mb = "y";
 	}
-} 
+	else {
+		$lig_tmp = $res->fetch_object();
+		$utiliser_mb = $lig_tmp->value;
+		if(($utiliser_mb != 'y') && ($utiliser_mb != 'n')) {
+			$modifier_mb = "y";
+		}
+	} 
 
-$phpversion=phpversion();
-$tab_tmp=explode(".",$phpversion);
-if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
-	$val_tmp='y';
-}
-else {
-	$val_tmp='n';
-}
-// On pourrait aussi utiliser if(function_exists("mb_ereg")) pour le test...
+	$phpversion=phpversion();
+	$tab_tmp=explode(".",$phpversion);
+	if(($tab_tmp[0]>=5)&&($tab_tmp[1]>=3)) {
+		$val_tmp='y';
+	}
+	else {
+		$val_tmp='n';
+	}
+	// On pourrait aussi utiliser if(function_exists("mb_ereg")) pour le test...
 
-if($initialiser_mb=="y") {
-	$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
-	$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+	if($initialiser_mb=="y") {
+		$sql="INSERT INTO setting SET name='utiliser_mb', value='$val_tmp';";
+		$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+	elseif(($modifier_mb=="y")||($utiliser_mb!=$val_tmp)) {
+		$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
+		$update=mysqli_query($GLOBALS["mysqli"], $sql);
+	}
+	$utiliser_mb=$val_tmp;
 }
-elseif(($modifier_mb=="y")||($utiliser_mb!=$val_tmp)) {
-	$sql="UPDATE setting SET value='$val_tmp' WHERE name='utiliser_mb';";
-	$update=mysqli_query($GLOBALS["mysqli"], $sql);
-}
-$utiliser_mb=$val_tmp;
 
 //========================================
 function appel_test_mb() {
