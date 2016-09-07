@@ -307,7 +307,9 @@ else {
 				echo "<tr class='lig$alt'>\n";
 				echo "<td>\n";
 				echo "<input type='hidden' name='id_grp[$cpt]' value='".$group['id']."' />\n";
-				echo htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])."</i>)";
+				echo htmlspecialchars($group['name'])." (<i>".htmlspecialchars($group['matiere']['nom_complet'])."</i>)<br />";
+				echo "<em>(".$group['profs']['proflist_string'].")</em>";
+				//echo "<br />";
 				echo " (<i style='color:green;'>$lig_grp->id</i>)";
 				echo "</td>\n";
 
