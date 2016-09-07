@@ -1876,11 +1876,17 @@ echo "</pre>";
 			//$lignes_ce_cours.="duree=".$tab['duree']."<br />";
 			$tab_duree=explode("h", casse_mot($tab['duree'], "min"));
 			if(isset($tab_duree[1])) {
+				// 20160907
+				/*
 				$edt_cours_duree=$tab_duree[0];
 				if($tab_duree[1]==30) {
 					$edt_cours_duree+=0.5;
 				}
 				$edt_cours_duree=2*$edt_cours_duree;
+				*/
+
+				$tmp_duree=$tab_duree[0]+($tab_duree[1]/60);
+				$edt_cours_duree=round($tmp_duree*2);
 			}
 			//$lignes_ce_cours.=$edt_cours_duree." demi-heures<br />";
 
@@ -2855,12 +2861,32 @@ $_POST[grp_enregistrer_rapprochement]['104']=	3359
 
 					$tab_duree=explode("h", casse_mot($tab['duree'], "min"));
 					if(isset($tab_duree[1])) {
+						// 20160907
+						/*
+						echo "<pre>";
+						print_r($tab);
+						echo "</pre>";
+						*/
+						//echo "\$tab['duree']=".$tab['duree']."<br />";
+
+						$tmp_duree=$tab_duree[0]+($tab_duree[1]/60);
+						//echo "\$tmp_duree=$tmp_duree<br />";
+						/*
 						$edt_cours_duree=$tab_duree[0];
 						if($tab_duree[1]==30) {
 							$edt_cours_duree+=0.5;
 						}
 						$edt_cours_duree=2*$edt_cours_duree;
+						*/
+
+						$edt_cours_duree=round($tmp_duree*2);
+						//echo "\$edt_cours_duree=$edt_cours_duree<br />";
 					}
+					/*
+					elseif(preg_match("^[0-9]*$", $tab['duree'])) {
+						$edt_cours_duree=2*$tab['duree'];
+					}
+					*/
 
 					if($edt_cours_jour_semaine=="") {
 						echo "<pre>";
