@@ -64,7 +64,7 @@ if (!checkAccess()) {
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
 $res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
-$nb_classes=mysqli_num_rows($res);
+$nb_classes=mysqli_num_rows($res_classes);
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
