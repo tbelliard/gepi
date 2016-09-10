@@ -124,6 +124,16 @@ $action=isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 $id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 
+if(isset($_POST['MajInscriptEleEdtEnvoiMail'])) {
+	check_token();
+	if(!saveSetting('MajInscriptEleEdtEnvoiMail', $_POST['MajInscriptEleEdtEnvoiMail'])) {
+		$msg="Erreur lors de l'enregistrement du paramètre 'MajInscriptEleEdtEnvoiMail' (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+	else {
+		$msg="Enregistrement du paramètre 'MajInscriptEleEdtEnvoiMail' effectué (".strftime("%d/%m/%Y à %H:%M:%S").").<br />";
+	}
+}
+
 if((isset($_POST['mode']))&&($_POST['mode']=="cherche_eleve")) {
 	$nom_ele=isset($_POST['nom_ele']) ? $_POST['nom_ele'] : NULL;
 	$prenom_ele=isset($_POST['prenom_ele']) ? $_POST['prenom_ele'] : NULL;
@@ -695,6 +705,10 @@ if((isset($_GET['maj_composition_groupe']))&&(isset($_GET['id_groupe']))&&(preg_
 					$texte_mail="Bonjour(soir),\n\n".$texte_mail."\nCordialement.\n-- \n".$_SESSION['prenom']." ".$_SESSION['nom'];
 
 					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+					// 20160908
+					if(getSettingANon("MajInscriptEleEdtEnvoiMail")) {
+						$envoi_mail_actif="n";
+					}
 					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
 						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
 					}
@@ -782,7 +796,31 @@ if(!$tempdir){
 }
 
 if($action=="") {
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>
+	// 20160908 : Ajouter un formulaire pour activer/désactiver l'envoi de mail
+	if(getSettingANon("MajInscriptEleEdtEnvoiMail")) {
+		$checked_envoi_y="";
+		$checked_envoi_n=" checked";
+	}
+	else {
+		$checked_envoi_y=" checked";
+		$checked_envoi_n="";
+	}
+	echo "
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_param_mail' method='post'>
+	<fieldset class='fieldset_opacite50'>
+		".add_token_field()."
+		<p>
+			Lors de la modification des membres élèves d'un groupe, un mail peut être envoyé au professeur <em>(si son mail est renseigné)</em>.<br />
+			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_y' value='y'".$checked_envoi_y." /><label for='MajInscriptEleEdtEnvoiMail_y'> Envoyer un mail lors de la modification.</label><br />
+			<input type=\"radio\" name=\"MajInscriptEleEdtEnvoiMail\" id='MajInscriptEleEdtEnvoiMail_n' value='n'".$checked_envoi_n." /><label for='MajInscriptEleEdtEnvoiMail_n'> Ne pas envoyer un mail lors de la modification.</label>
+		</p>
+		<p>
+			<input type='submit' value='Valider' />
+		</p>
+	</fieldset>
+</form>
+<br />
+<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi_xml' method='post'>
 	<fieldset class='fieldset_opacite50'>
 		".add_token_field()."
 		<p>
