@@ -124,10 +124,10 @@ function saveNewElemGroupe($id_groupe, $newElemGroupe, $annee, $periode) {
 	// enregistre la jointure de chaque élève du groupe
 	$groupe = get_group($id_groupe);
 	foreach ($groupe['eleves'][$periode]['list'] as $login) {
-		saveJointureEleveEP($login, $idNewLibelle, $annee, $periode );
+		saveJointureEleveEP($login, $idNewLibelle, $annee, $periode, $id_groupe);
 	}
 	
-	// enregistre la jointure du prof '.$_SESSION['login']	
+	// enregistre la jointure du prof '.$_SESSION['login']
 	saveJointureProfEP($_SESSION['login'], $idNewLibelle);
 
 	// enregistre la jointure avec la matière';
@@ -184,10 +184,10 @@ function saveJointureGroupeEP($id_groupe, $idNewLibelle, $annee, $periode) {
  * @param type $annee
  * @param type $periode
  */
-function saveJointureEleveEP($login, $idEP, $annee, $periode) {
+function saveJointureEleveEP($login, $idEP, $annee, $periode, $id_groupe) {
 	global $mysqli;
-	$sql = "INSERT INTO j_mep_eleve (id , idEP , idEleve , annee , periode) "
-		. "VALUES (NULL, '".$idEP."' , '".$login."' , '".$annee."' , '".$periode."') "
+	$sql = "INSERT INTO j_mep_eleve (id , idEP , idEleve , idGroupe, annee , periode) "
+		. "VALUES (NULL, '".$idEP."' , '".$login."' , '".$id_groupe."' , '".$annee."' , '".$periode."') "
 		. "ON DUPLICATE KEY UPDATE `idEleve` = '".$login."' ; ";
 	//echo $sql.'<br />';
 	$mysqli->query($sql);
@@ -310,10 +310,11 @@ function associeElemGroupe($id_groupe, $idElem, $annee, $periode) {
 	// enregistre la jointure de chaque élève du groupe
 	$groupe = get_group($id_groupe);
 	foreach ($groupe['eleves'][$periode]['list'] as $login) {
-		saveJointureEleveEP($login, $idElem, $annee, $periode );
+		saveJointureEleveEP($login, $idElem, $annee, $periode, $id_groupe);
+		//echo "saveJointureEleveEP($login, $idElem, $annee, $periode, $id_groupe);<br />";
 	}
 	
-	// enregistre la jointure du prof '.$_SESSION['login']	
+	// enregistre la jointure du prof '.$_SESSION['login']
 	saveJointureProfEP($_SESSION['login'], $idElem);
 
 	// enregistre la jointure avec la matière';
@@ -367,7 +368,7 @@ function getElementEleve($login_eleve, $annee, $periode) {
  * @param type $periode
  * @param type $groupe
  */
-function supprimeElemProgElv($login, $idElem, $annee, $periode, $groupe) {		
+function supprimeElemProgElv($login, $idElem, $annee, $periode, $groupe) {
 	// on commence par traiter le groupe ".$groupe;
 	delJointureGroupeEP($groupe, $idElem, $annee, $periode);
 	// puis on traite l'élève ".$login;
@@ -399,7 +400,7 @@ function creeElementPourEleve($loginEleve, $id_groupe, $texteElem, $annee, $peri
 	saveJointureMatiereEP($matiere, $idNewLibelle);
 	
 	// puis pour l'éleve ".$loginEleve; pour l'année ".$annee; et la période ".$periode;
-	saveJointureEleveEP($loginEleve, $idNewLibelle, $annee, $periode);
+	saveJointureEleveEP($loginEleve, $idNewLibelle, $annee, $periode, $id_groupe);
 	
 }
 

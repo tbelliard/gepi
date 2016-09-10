@@ -637,6 +637,7 @@ if ($test == -1) {
             . "id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', "
             . "idEP int(11)  COMMENT \"identifiant unique de l'élément de programme\", "
             . "idEleve varchar(50) COMMENT 'login élève', "
+            . "idGroupe int(11)  COMMENT 'identifiant du groupe', "
             . "annee varchar(4) COMMENT 'année sur 4 caractères', "
             . "periode int(11) COMMENT 'période sur 4 caractères', "
             . "PRIMARY KEY id (id) , UNIQUE KEY jointMapProf (idEP , idEleve , annee , periode)) "
@@ -650,7 +651,20 @@ if ($test == -1) {
         $result .= msj_erreur("ECHEC !");
     }
 } else {
-    $result .= msj_present("La table existe déjà");
+	$result .= msj_present("La table existe déjà");
+
+	$result .= "&nbsp;-> Ajout d'un champ 'idGroupe' à la table 'j_mep_eleve'<br />";
+	$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
+	if ($test_champ==0) {
+		$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+		if ($query) {
+				$result .= msj_ok("Ok !");
+		} else {
+				$result .= msj_erreur();
+		}
+	} else {
+		$result .= msj_present("Le champ existe déjà");
+	}
 }
 
 $result .= "→ Ajout d'une table 'j_mep_niveau' :<br />";   

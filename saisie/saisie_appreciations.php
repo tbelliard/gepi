@@ -130,7 +130,7 @@ if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 			if ($associeElem_Eleve) {
 				foreach ($associeElem_Eleve as $loginEleve=>$idElem) {
 					if ($idElem) {
-						saveJointureEleveEP($loginEleve, $idElem, $anneeScolaire, $periode);
+						saveJointureEleveEP($loginEleve, $idElem, $anneeScolaire, $periode, $id_groupe);
 					}
 				}
 			}
