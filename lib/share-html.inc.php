@@ -3947,9 +3947,9 @@ function affiche_infos_adresse_et_tel($login_user, $tab_user=array()) {
 	<tbody>
 		<tr>
 			<td>
-				".((isset($tab_user['tel_pers'])&&($tab_user['tel_pers']!="")) ? "Tel.pers&nbsp;:".$tab_user['tel_pers']."<br />" : "")."
-				".((isset($tab_user['tel_port'])&&($tab_user['tel_port']!="")) ? "Tel.port&nbsp;:".$tab_user['tel_port']."<br />" : "")."
-				".((isset($tab_user['tel_pers'])&&($tab_user['tel_prof']!="")) ? "Tel.prof&nbsp;:".$tab_user['tel_prof'] : "")."
+				".((isset($tab_user['tel_pers'])&&($tab_user['tel_pers']!="")) ? "Tel.pers&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_pers'])."<br />" : "")."
+				".((isset($tab_user['tel_port'])&&($tab_user['tel_port']!="")) ? "Tel.port&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_port'])."<br />" : "")."
+				".((isset($tab_user['tel_pers'])&&($tab_user['tel_prof']!="")) ? "Tel.prof&nbsp;:".affiche_numero_tel_sous_forme_classique($tab_user['tel_prof']) : "")."
 			</td>
 			<td>".(isset($tab_user['email']) ? "<a href='mailto:".$tab_user['email']."?".urlencode("subject=".getSettingValue('gepiPrefixeSujetMail')."[GEPI]")."' title='Envoyer un mail'>".$tab_user['email']."</a>" : "")."</td>
 			<td>".(isset($tab_user['adresse']['en_ligne']) ? $tab_user['adresse']['en_ligne'] : "")."</td>
@@ -4059,15 +4059,15 @@ function affiche_tableau_infos_resp($login_resp) {
 		</tr>
 		<tr>
 			<th>Tél.personnel</th>
-			<td>".$lig->tel_pers."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_pers)."</td>
 		</tr>
 		<tr>
 			<th>Tél.portable</th>
-			<td>".$lig->tel_port."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_port)."</td>
 		</tr>
 		<tr>
 			<th>Tél.professionnel</th>
-			<td>".$lig->tel_prof."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_prof)."</td>
 		</tr>
 		<tr>
 			<th>Email (*)</th>
@@ -4174,7 +4174,7 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 				$ligne_tel_pers_ele="
 					<tr>
 						<th>Tél.personnel</th>
-						<td>".$lig_ele->tel_pers."</td>
+						<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_pers)."</td>
 					</tr>";
 			}
 
@@ -4183,7 +4183,7 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 				$ligne_tel_pers_port="
 					<tr>
 						<th>Tél.portable</th>
-						<td>".$lig_ele->tel_port."</td>
+						<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_port)."</td>
 					</tr>";
 			}
 
@@ -4192,7 +4192,7 @@ function affiche_tableau_infos_eleves_associes_au_resp($pers_id, $login_resp="")
 				$ligne_tel_pers_prof="
 					<tr>
 						<th>Tél.professionnel</th>
-						<td>".$lig_ele->tel_prof."</td>
+						<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_prof)."</td>
 					</tr>";
 			}
 
@@ -6088,6 +6088,18 @@ function $nom_func_js_tout_cocher_decocher(mode) {
 	}
 
 	return $retour;
+}
+
+function affiche_numero_tel_sous_forme_classique($chaine) {
+	if($chaine!="") {
+		if(mb_substr($chaine,0,3)=="+33") {
+			$chaine=preg_replace("/^\+33/", "0", $chaine);
+		}
+		if(preg_match("/^[0-9]{10}$/", $chaine)) {
+			$chaine=mb_substr($chaine,0,2)." ".mb_substr($chaine,2,2)." ".mb_substr($chaine,4,2)." ".mb_substr($chaine,6,2)." ".mb_substr($chaine,8,2);
+		}
+	}
+	return $chaine;
 }
 
 ?>

@@ -610,13 +610,13 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 				}
 				$chaine_tel_ele.="</em>)</p><table class='boireaus boireaus_alt'>";
 				if($lig_tel_ele->tel_pers!="") {
-					$chaine_tel_ele.="<tr><th>Tel.pers</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_pers';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_pers."</a></td></tr>";
+					$chaine_tel_ele.="<tr><th>Tel.pers</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_pers';return false;\" title=\"Choisir ce numéro\">".affiche_numero_tel_sous_forme_classique($lig_tel_ele->tel_pers)."</a></td></tr>";
 				}
 				if($lig_tel_ele->tel_port!="") {
-					$chaine_tel_ele.="<tr><th>Tel.port</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_port';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_port."</a></td></tr>";
+					$chaine_tel_ele.="<tr><th>Tel.port</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_port';return false;\" title=\"Choisir ce numéro\">".affiche_numero_tel_sous_forme_classique($lig_tel_ele->tel_port)."</a></td></tr>";
 				}
 				if($lig_tel_ele->tel_prof!="") {
-					$chaine_tel_ele.="<tr><th>Tel.prof</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_prof';return false;\" title=\"Choisir ce numéro\">".$lig_tel_ele->tel_prof."</a></td></tr>";
+					$chaine_tel_ele.="<tr><th>Tel.prof</th><td><a href=\"#\" onclick=\"document.getElementById('tel_saisi').value='$lig_tel_ele->tel_prof';return false;\" title=\"Choisir ce numéro\">".affiche_numero_tel_sous_forme_classique($lig_tel_ele->tel_prof)."</a></td></tr>";
 				}
 				$chaine_tel_ele.="</table>";
 			}

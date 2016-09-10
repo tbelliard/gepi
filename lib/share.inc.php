@@ -7117,13 +7117,13 @@ function tableau_tel_resp_ele($ele_login) {
 			$retour.="<td title='Numéro de responsable légal'>".$tab_tel['responsable'][$i]['resp_legal']."</td>\n";
 			$retour.="<td>".$tab_tel['responsable'][$i]['civ_nom_prenom']."</td>\n";
 			$retour.="<td>";
-			if(isset($tab_tel['responsable'][$i]['tel_pers'])) {$retour.=$tab_tel['responsable'][$i]['tel_pers'];}
+			if(isset($tab_tel['responsable'][$i]['tel_pers'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['responsable'][$i]['tel_pers']);}
 			$retour.="</td>\n";
 			$retour.="<td>";
-			if(isset($tab_tel['responsable'][$i]['tel_port'])) {$retour.=$tab_tel['responsable'][$i]['tel_port'];}
+			if(isset($tab_tel['responsable'][$i]['tel_port'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['responsable'][$i]['tel_port']);}
 			$retour.="</td>\n";
 			$retour.="<td>";
-			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=$tab_tel['responsable'][$i]['tel_prof'];}
+			if(isset($tab_tel['responsable'][$i]['tel_prof'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['responsable'][$i]['tel_prof']);}
 			$retour.="</td>\n";
 			$retour.="</tr>\n";
 		}
@@ -7134,15 +7134,15 @@ function tableau_tel_resp_ele($ele_login) {
 			$retour.="<td colspan='2'>Élève</td>\n";
 
 			$retour.="<td>";
-			if(isset($tab_tel['eleve']['tel_pers'])) {$retour.=$tab_tel['eleve']['tel_pers'];}
+			if(isset($tab_tel['eleve']['tel_pers'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['eleve']['tel_pers']);}
 			$retour.="</td>\n";
 
 			$retour.="<td>";
-			if(isset($tab_tel['eleve']['tel_port'])) {$retour.=$tab_tel['eleve']['tel_port'];}
+			if(isset($tab_tel['eleve']['tel_port'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['eleve']['tel_port']);}
 			$retour.="</td>\n";
 
 			$retour.="<td>";
-			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=$tab_tel['eleve']['tel_prof'];}
+			if(isset($tab_tel['eleve']['tel_prof'])) {$retour.=affiche_numero_tel_sous_forme_classique($tab_tel['eleve']['tel_prof']);}
 			$retour.="</td>\n";
 
 			$retour.="</tr>\n";

@@ -80,6 +80,9 @@ function info_eleve($ele_login) {
 	$tab_ele['elenoet']=$lig_ele->elenoet;
 	$tab_ele['ele_id']=$lig_ele->ele_id;
 	$tab_ele['no_gep']=$lig_ele->no_gep;
+	$tab_ele['tel_pers']=$lig_ele->tel_pers;
+	$tab_ele['tel_port']=$lig_ele->tel_port;
+	$tab_ele['tel_prof']=$lig_ele->tel_prof;
 	$tab_ele['email']=$lig_ele->email;
 	$tab_ele['date_sortie']=$lig_ele->date_sortie;
 	$tab_ele['id_eleve']=$lig_ele->id_eleve;

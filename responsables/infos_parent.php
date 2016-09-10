@@ -92,15 +92,15 @@ echo "
 		</tr>
 		<tr>
 			<th>Tél.personnel</th>
-			<td>".$lig->tel_pers."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_pers)."</td>
 		</tr>
 		<tr>
 			<th>Tél.portable</th>
-			<td>".$lig->tel_port."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_port)."</td>
 		</tr>
 		<tr>
 			<th>Tél.professionnel</th>
-			<td>".$lig->tel_prof."</td>
+			<td>".affiche_numero_tel_sous_forme_classique($lig->tel_prof)."</td>
 		</tr>
 		<tr>
 			<th>Email (*)</th>
@@ -197,7 +197,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$ligne_tel_pers_ele="
 			<tr>
 				<th>Tél.personnel</th>
-				<td>".$lig_ele->tel_pers."</td>
+				<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_pers)."</td>
 			</tr>";
 	}
 
@@ -206,7 +206,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$ligne_tel_pers_port="
 			<tr>
 				<th>Tél.portable</th>
-				<td>".$lig_ele->tel_port."</td>
+				<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_port)."</td>
 			</tr>";
 	}
 
@@ -215,7 +215,7 @@ while($lig_ele=mysqli_fetch_object($res_ele)) {
 		$ligne_tel_pers_prof="
 			<tr>
 				<th>Tél.professionnel</th>
-				<td>".$lig_ele->tel_prof."</td>
+				<td>".affiche_numero_tel_sous_forme_classique($lig_ele->tel_prof)."</td>
 			</tr>";
 	}
 

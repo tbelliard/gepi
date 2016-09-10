@@ -2968,9 +2968,9 @@ else{
 
 						$affiche[12]=nettoyer_caracteres_nom($lig->MEL, "an", " @._-", "");
 
-						$affiche[13]=nettoyer_caracteres_nom($lig->TEL_PERS, "an", " @._-", "");
-						$affiche[14]=nettoyer_caracteres_nom($lig->TEL_PORT, "an", " @._-", "");
-						$affiche[15]=nettoyer_caracteres_nom($lig->TEL_PROF, "an", " @._-", "");
+						$affiche[13]=nettoyer_caracteres_nom($lig->TEL_PERS, "an", " @._+-", "");
+						$affiche[14]=nettoyer_caracteres_nom($lig->TEL_PORT, "an", " @._+-", "");
+						$affiche[15]=nettoyer_caracteres_nom($lig->TEL_PROF, "an", " @._+-", "");
 
 						// 20130607
 						if(getSettingAOui('alert_diff_mef')) {
@@ -3510,15 +3510,15 @@ else{
 											echo "<tr>\n";
 											echo "<td title=\"Numéro de téléphone personnel\">Pe</td>\n";
 											echo "<td";
-											if(stripslashes($lig_ele->tel_pers)!=stripslashes($affiche[13])){
+											if(stripslashes($lig_ele->tel_pers)===stripslashes($affiche[13])) {
+												//echo "'>";
+												echo ">";
+											}
+											else{
 												echo " class='modif'>";
 												if($lig_ele->tel_pers!=''){
 													echo stripslashes($lig_ele->tel_pers)." <font color='red'>-&gt;</font>\n";
 												}
-											}
-											else{
-												//echo "'>";
-												echo ">";
 											}
 											echo stripslashes($affiche[13]);
 											echo "</td>\n";
@@ -3528,15 +3528,15 @@ else{
 											echo "<tr>\n";
 											echo "<td title=\"Numéro de téléphone portable\">Po</td>\n";
 											echo "<td";
-											if(stripslashes($lig_ele->tel_port)!=stripslashes($affiche[14])){
+											if(stripslashes($lig_ele->tel_port)===stripslashes($affiche[14])) {
+												//echo "'>";
+												echo ">";
+											}
+											else{
 												echo " class='modif'>";
 												if($lig_ele->tel_port!=''){
 													echo stripslashes($lig_ele->tel_port)." <font color='red'>-&gt;</font>\n";
 												}
-											}
-											else{
-												//echo "'>";
-												echo ">";
 											}
 											echo stripslashes($affiche[14]);
 											echo "</td>\n";
@@ -3546,15 +3546,15 @@ else{
 											echo "<tr>\n";
 											echo "<td title=\"Numéro de téléphone professionnel\">Pr</td>\n";
 											echo "<td";
-											if(stripslashes($lig_ele->tel_prof)!=stripslashes($affiche[15])){
+											if(stripslashes($lig_ele->tel_prof)===stripslashes($affiche[15])) {
+												//echo "'>";
+												echo ">";
+											}
+											else{
 												echo " class='modif'>";
 												if($lig_ele->tel_prof!=''){
 													echo stripslashes($lig_ele->tel_prof)." <font color='red'>-&gt;</font>\n";
 												}
-											}
-											else{
-												//echo "'>";
-												echo ">";
 											}
 											echo stripslashes($affiche[15]);
 											echo "</td>\n";
@@ -5997,7 +5997,7 @@ else{
 
 						foreach($personne->children() as $key => $value) {
 							if(in_array(my_strtoupper($key),$tab_champs_personne)) {
-								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_./-", "");
+								$personnes[$i][my_strtolower($key)]=nettoyer_caracteres_nom(preg_replace('/"/',' ',preg_replace("/'$/","",preg_replace("/^'/"," ",$value))), "an", " .@'_.+/-", "");
 								if($debug_cet_objet=="y") {
 									echo "<p>\$key=$key<br />\$value=$value<br />\$personnes[$i][".my_strtolower($key)."]=".$personnes[$i][my_strtolower($key)]."</p><br />\n";
 								}
@@ -8924,7 +8924,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>Tel</td>\n";
 						$ligne_parent.="<td";
 						if($nouveau==0){
-							if($lig_pers2->tel_pers!=$tel_pers1) {
+							if($lig_pers2->tel_pers===$tel_pers1) {
+								$ligne_parent.=">";
+							}
+							else{
 								if(($lig_pers2->tel_pers!='')||($tel_pers1!='')){
 									$ligne_parent.=" class='modif'>";
 									if($tel_pers1!=''){
@@ -8936,9 +8939,6 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								else{
 									$ligne_parent.=">";
 								}
-							}
-							else{
-								$ligne_parent.=">";
 							}
 						}
 						else{
@@ -8952,7 +8952,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>TPo</td>\n";
 						$ligne_parent.="<td";
 						if($nouveau==0){
-							if($lig_pers2->tel_port!=$tel_port1) {
+							if($lig_pers2->tel_port===$tel_port1) {
+								$ligne_parent.=">";
+							}
+							else {
 								if(($lig_pers2->tel_port!='')||($tel_port1!='')){
 									$ligne_parent.=" class='modif'>";
 									if($tel_port1!=''){
@@ -8964,9 +8967,6 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								else{
 									$ligne_parent.=">";
 								}
-							}
-							else{
-								$ligne_parent.=">";
 							}
 						}
 						else{
@@ -8980,7 +8980,10 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 						$ligne_parent.="<td style='text-align:center; font-weight:bold;'>TPr</td>\n";
 						$ligne_parent.="<td";
 						if($nouveau==0){
-							if($lig_pers2->tel_prof!=$tel_prof1) {
+							if($lig_pers2->tel_prof===$tel_prof1) {
+								$ligne_parent.=">";
+							}
+							else {
 								if(($lig_pers2->tel_prof!='')||($tel_prof1!='')){
 									$ligne_parent.=" class='modif'>";
 									if($tel_prof1!=''){
@@ -8992,9 +8995,6 @@ delete FROM temp_resp_pers_import where pers_id not in (select pers_id from temp
 								else{
 									$ligne_parent.=">";
 								}
-							}
-							else{
-								$ligne_parent.=">";
 							}
 						}
 						else{
