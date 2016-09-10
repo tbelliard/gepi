@@ -168,8 +168,11 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='', $plain_o
 			}
 		}
 		else {
-			$dest_clean=preg_replace("#^.*<#","",preg_replace("#>.*$#","",$destinataire));
-			$mail->addAddress($dest_clean);
+			$tmp_tab_mail=explode(",", $destinataire);
+			for($loop=0;$loop<count($tmp_tab_mail);$loop++) {
+				$dest_clean=preg_replace("#^.*<#","",preg_replace("#>.*$#","",$tmp_tab_mail[$loop]));
+				$mail->addAddress($dest_clean);
+			}
 		}
 
 		// CC
@@ -6376,6 +6379,14 @@ function get_resp_from_ele_login($ele_login, $meme_en_resp_legal_0="n", $envoi_b
 				$tab[$cpt]['prenom']=$lig->prenom;
 				$tab[$cpt]['civilite']=$lig->civilite;
 				$tab[$cpt]['mel']=$lig->mel;
+
+				$sql="SELECT u.email FROM utilisateurs u WHERE u.login='".$lig->login."' AND u.statut='responsable' AND u.email LIKE '%@%' AND u.email!='".$lig->mel."';";
+				//echo "$sql<br />";
+				$res_u = mysqli_query($mysqli, $sql);
+				if(mysqli_num_rows($res_u)>0) {
+					$lig_u=mysqli_fetch_object($res_u);
+					$tab[$cpt]['email']=$lig_u->email;
+				}
 
 				$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
 
