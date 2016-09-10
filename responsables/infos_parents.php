@@ -66,7 +66,7 @@ $mode=isset($_GET['mode']) ? $_GET['mode'] : NULL;
 $sql="SELECT DISTINCT id, classe FROM classes ORDER BY classe;";
 //echo "$sql<br />\n";
 $res_classes=mysqli_query($GLOBALS["mysqli"], $sql);
-$nb_classes=mysqli_num_rows($res);
+$nb_classes=mysqli_num_rows($res_classes);
 if($nb_classes>0) {
 	$tab_classe=array();
 	$cpt=0;
@@ -107,9 +107,9 @@ if(isset($_GET['export_csv'])) {
 
 					$csv.=$lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2').";";
 					$csv.=$lig_resp->civilite.";".mb_strtoupper($lig_resp->nom).";".casse_mot($lig_resp->prenom,'majf2').";";
-					$csv.=$lig_resp->tel_pers.";";
-					$csv.=$lig_resp->tel_port.";";
-					$csv.=$lig_resp->tel_prof.";";
+					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers).";";
+					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_port).";";
+					$csv.=affiche_numero_tel_sous_forme_classique($lig_resp->tel_prof).";";
 					$csv.=$lig_resp->mel.";";
 	
 					$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
@@ -318,14 +318,14 @@ if(isset($_GET['export_csv'])) {
 
 					$csv.="$designation;$adresse;$lig_adr->adr1;$lig_adr->adr2;$lig_adr->adr3;$lig_adr->adr4;$lig_adr->cp;$lig_adr->commune;$lig_adr->pays;";
 					if(isset($resp[1]['nom'])) {
-						$csv.=$resp[1]['nom'].";".$resp[1]['prenom'].";".$resp[1]['tel_pers'].";".$resp[1]['tel_prof'].";".$resp[1]['tel_port'].";".$resp[1]['mel'].";";
+						$csv.=$resp[1]['nom'].";".$resp[1]['prenom'].";".affiche_numero_tel_sous_forme_classique($resp[1]['tel_pers']).";".affiche_numero_tel_sous_forme_classique($resp[1]['tel_prof']).";".affiche_numero_tel_sous_forme_classique($resp[1]['tel_port']).";".$resp[1]['mel'].";";
 					}
 					else {
 						$csv.=";;;;;;";
 					}
 
 					if(isset($resp[2]['nom'])) {
-						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".$resp[2]['tel_pers'].";".$resp[2]['tel_prof'].";".$resp[2]['tel_port'].";".$resp[2]['mel'];
+						$csv.=$resp[2]['nom'].";".$resp[2]['prenom'].";".affiche_numero_tel_sous_forme_classique($resp[2]['tel_pers']).";".affiche_numero_tel_sous_forme_classique($resp[2]['tel_prof']).";".affiche_numero_tel_sous_forme_classique($resp[2]['tel_port']).";".$resp[2]['mel'];
 					}
 					else {
 						$csv.=";;;;;";
@@ -424,9 +424,9 @@ if((!isset($mode))||($mode==1)) {
 				echo "<td>";
 				echo $lig_resp->civilite." ".mb_strtoupper($lig_resp->nom)." ".casse_mot($lig_resp->prenom,'majf2');
 				echo "</td>\n";
-				echo "<td>$lig_resp->tel_pers</td>\n";
-				echo "<td>$lig_resp->tel_port</td>\n";
-				echo "<td>$lig_resp->tel_prof</td>\n";
+				echo "<td>".affiche_numero_tel_sous_forme_classique($lig_resp->tel_pers)."</td>\n";
+				echo "<td>".affiche_numero_tel_sous_forme_classique($lig_resp->tel_port)."</td>\n";
+				echo "<td>".affiche_numero_tel_sous_forme_classique($lig_resp->tel_prof)."</td>\n";
 				echo "<td>$lig_resp->mel</td>\n";
 				echo "<td>";
 				$sql="SELECT * FROM resp_adr WHERE adr_id='".$lig_resp->adr_id."';";
@@ -661,15 +661,15 @@ else {
 				$alt2=1;
 				if($resp[1]['tel_pers']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.pers</td><td>".$resp[1]['tel_pers']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.pers</td><td>".affiche_numero_tel_sous_forme_classique($resp[1]['tel_pers'])."</td></tr>\n";
 				}
 				if($resp[1]['tel_port']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.port</td><td>".$resp[1]['tel_port']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.port</td><td>".affiche_numero_tel_sous_forme_classique($resp[1]['tel_port'])."</td></tr>\n";
 				}
 				if($resp[1]['tel_prof']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.prof</td><td>".$resp[1]['tel_prof']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.prof</td><td>".affiche_numero_tel_sous_forme_classique($resp[1]['tel_prof'])."</td></tr>\n";
 				}
 				if($resp[1]['mel']!='') {
 					$alt2=$alt2*(-1);
@@ -695,15 +695,15 @@ else {
 				$alt2=1;
 				if($resp[2]['tel_pers']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.pers</td><td>".$resp[2]['tel_pers']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.pers</td><td>".affiche_numero_tel_sous_forme_classique($resp[2]['tel_pers'])."</td></tr>\n";
 				}
 				if($resp[2]['tel_port']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.port</td><td>".$resp[2]['tel_port']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.port</td><td>".affiche_numero_tel_sous_forme_classique($resp[2]['tel_port'])."</td></tr>\n";
 				}
 				if($resp[2]['tel_prof']!='') {
 					$alt2=$alt2*(-1);
-					echo "<tr class='lig$alt2'><td>Tel.prof</td><td>".$resp[2]['tel_prof']."</td></tr>\n";
+					echo "<tr class='lig$alt2'><td>Tel.prof</td><td>".affiche_numero_tel_sous_forme_classique($resp[2]['tel_prof'])."</td></tr>\n";
 				}
 				if($resp[2]['mel']!='') {
 					$alt2=$alt2*(-1);

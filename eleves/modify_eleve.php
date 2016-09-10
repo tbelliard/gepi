@@ -2392,7 +2392,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		echo "<th style='text-align:left;'>Tel personnel&nbsp;: </th>\n";
 		echo "<td><input type='text' name='reg_tel_pers' size='20' ";
 		if (isset($reg_tel_pers)) echo "value=\"".$reg_tel_pers."\"";
-		echo " onchange='changement();' /></td>\n";
+		echo " onchange='changement();' />";
+		if((isset($reg_tel_pers))&&(mb_substr($reg_tel_pers,0,3)=="+33")) {
+			echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_pers);
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 	}
 
@@ -2404,7 +2408,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		echo "<th style='text-align:left;'>Tel portable&nbsp;: </th>\n";
 		echo "<td><input type='text' name='reg_tel_port' size='20' ";
 		if (isset($reg_tel_port)) echo "value=\"".$reg_tel_port."\"";
-		echo " onchange='changement();' /></td>\n";
+		echo " onchange='changement();' />";
+		if((isset($reg_tel_port))&&(mb_substr($reg_tel_port,0,3)=="+33")) {
+			echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_port);
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 	}
 
@@ -2413,7 +2421,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		echo "<th style='text-align:left;'>Tel professionnel&nbsp;: </th>\n";
 		echo "<td><input type='text' name='reg_tel_prof' size='20' ";
 		if (isset($reg_tel_prof)) echo "value=\"".$reg_tel_prof."\"";
-		echo " onchange='changement();' /></td>\n";
+		echo " onchange='changement();' />";
+		if((isset($reg_tel_prof))&&(mb_substr($reg_tel_prof,0,3)=="+33")) {
+			echo "<br />soit ".affiche_numero_tel_sous_forme_classique($reg_tel_prof);
+		}
+		echo "</td>\n";
 		echo "</tr>\n";
 	}
 

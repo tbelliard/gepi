@@ -1114,9 +1114,21 @@ echo "<td valign='top'>\n";
 	echo "</table>\n";
 
 	echo "</td></tr>\n";
-	echo "<tr><td>Tel.perso : </td><td><input type='text' size='15' name='tel_pers' value=\"".$tel_pers."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Tel.portable : </td><td><input type='text' size='15' name='tel_port' value=\"".$tel_port."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Tel.professionnel : </td><td><input type='text' size='15' name='tel_prof' value=\"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Tel.perso : </td><td><input type='text' size='15' name='tel_pers' value=\"".$tel_pers."\" onchange='changement();' />";
+	if((isset($tel_pers))&&(mb_substr($tel_pers,0,3)=="+33")) {
+		echo "<br />soit ".affiche_numero_tel_sous_forme_classique($tel_pers);
+	}
+	echo "</td></tr>\n";
+	echo "<tr><td>Tel.portable : </td><td><input type='text' size='15' name='tel_port' value=\"".$tel_port."\" onchange='changement();' />";
+	if((isset($tel_port))&&(mb_substr($tel_port,0,3)=="+33")) {
+		echo "<br />soit ".affiche_numero_tel_sous_forme_classique($tel_port);
+	}
+	echo "</td></tr>\n";
+	echo "<tr><td>Tel.professionnel : </td><td><input type='text' size='15' name='tel_prof' value=\"".$tel_prof."\" onchange='changement();' />";
+	if((isset($tel_prof))&&(mb_substr($tel_prof,0,3)=="+33")) {
+		echo "<br />soit ".affiche_numero_tel_sous_forme_classique($tel_prof);
+	}
+	echo "</td></tr>\n";
 
 	echo "<tr>\n";
 	echo "<td style='vertical-align:top;'>Mel : </td><td>\n";

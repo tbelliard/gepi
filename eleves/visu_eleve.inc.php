@@ -1409,7 +1409,23 @@ Patientez pendant l'extraction des données... merci.
 				echo "<tr class='lig$alt'><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
 
+			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'><th style='text-align: left;'>MEF&nbsp;:</th><td>".$tab_ele['mef']."</td></tr>\n";
+
+			if((isset($tab_ele["tel_pers"]))&&($tab_ele["tel_pers"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.pers&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_pers'])."</td></tr>\n";
+			}
+
+			if((isset($tab_ele["tel_port"]))&&($tab_ele["tel_port"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.port&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_port'])."</td></tr>\n";
+			}
+
+			if((isset($tab_ele["tel_prof"]))&&($tab_ele["tel_prof"]!="")&&(in_array($_SESSION["statut"], array("administrateur", "scolarite", "cpe")))) {
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt'><th style='text-align: left;'>Tel.prof&nbsp;:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['tel_prof'])."</td></tr>\n";
+			}
 
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'><th style='text-align: left;'>Email&nbsp;:</th><td>";
@@ -1497,15 +1513,15 @@ Patientez pendant l'extraction des données... merci.
 						echo "<tr class='lig$alt'><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
 						if($tab_ele['resp'][$i]['tel_pers']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['tel_port']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['tel_prof']!='') {
 							$alt=$alt*(-1);
-							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";
+							echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
 						}
 						if($tab_ele['resp'][$i]['mel']!='') {
 							$tmp_date=getdate();
@@ -1763,15 +1779,15 @@ Le bulletin sera affiché/généré pour l'adresse responsable de ".$tab_ele['re
 							echo "<tr class='lig$alt'><th style='text-align: left;'>Civilité:</th><td>".$tab_ele['resp'][$i]['civilite']."</td></tr>\n";
 							if($tab_ele['resp'][$i]['tel_pers']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.pers:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_pers'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['tel_port']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.port:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_port'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['tel_prof']!='') {
 								$alt=$alt*(-1);
-								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";
+								echo "<tr class='lig$alt'><th style='text-align: left;'>Tél.prof:</th><td>".affiche_numero_tel_sous_forme_classique($tab_ele['resp'][$i]['tel_prof'])."</td></tr>\n";
 							}
 							if($tab_ele['resp'][$i]['mel']!='') {
 								$tmp_date=getdate();
