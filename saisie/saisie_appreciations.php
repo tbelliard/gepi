@@ -60,6 +60,11 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
     die();
 }
 
+//================================
+// Patch pour 1.6.9:
+check_tables_modifiees();
+//================================
+
 //debug_var();
 
 include_once 'scripts/fonctions.php';

@@ -15438,4 +15438,17 @@ function get_tab_types_groupe() {
 	}
 	return $tab;
 }
+
+function check_tables_modifiees() {
+	global $mysqli;
+
+	if(getSettingValue('version')=="1.6.9") {
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+		}
+	}
+
+}
+
 ?>
