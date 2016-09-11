@@ -15226,6 +15226,7 @@ function get_elements_programmes_ele($login_ele, $id_groupe, $periode) {
 
 	$tab=array();
 
+	/*
 	$sql="SELECT * FROM matiere_element_programme mep, 
 				j_mep_groupe jmg, 
 				j_mep_eleve jme, 
@@ -15233,11 +15234,20 @@ function get_elements_programmes_ele($login_ele, $id_groupe, $periode) {
 			WHERE mep.id=jmg.idEP AND 
 				mep.id=jmp.idEP AND 
 				mep.id=jme.idEP AND 
+				jmg.idGroupe=jme.idGroupe AND 
 				jmg.idGroupe='".$id_groupe."' AND 
 				jme.periode='".$periode."' AND 
 				jmg.idGroupe=jeg.id_groupe AND 
 				jme.periode=jeg.periode AND 
 				jme.idEleve=jeg.login AND 
+				jme.idEleve='".$login_ele."' 
+			ORDER BY mep.libelle;";
+	*/
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_eleve jme
+			WHERE mep.id=jme.idEP AND 
+				jme.idGroupe='".$id_groupe."' AND 
+				jme.periode='".$periode."' AND 
 				jme.idEleve='".$login_ele."' 
 			ORDER BY mep.libelle;";
 	//echo "$sql<br />";
@@ -15255,6 +15265,7 @@ function get_elements_programmes_grp($id_groupe, $periode) {
 
 	$tab=array();
 
+	/*
 	$sql="SELECT * FROM matiere_element_programme mep, 
 				j_mep_groupe jmg, 
 				j_mep_eleve jme, 
@@ -15262,10 +15273,22 @@ function get_elements_programmes_grp($id_groupe, $periode) {
 			WHERE mep.id=jmg.idEP AND 
 				mep.id=jmp.idEP AND 
 				mep.id=jme.idEP AND 
+				jeg.id_groupe=jme.idGroupe AND 
 				jeg.login=jme.idEleve AND 
 				jeg.id_groupe=jmg.idGroupe AND 
 				jeg.periode=jme.periode AND 
 				jmg.idGroupe='".$id_groupe."' AND 
+				jme.periode='".$periode."' AND 
+			ORDER BY mep.libelle;";
+	*/
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_eleve jme, 
+				j_eleves_groupes jeg 
+			WHERE mep.id=jme.idEP AND 
+				jeg.id_groupe=jme.idGroupe AND 
+				jeg.login=jme.idEleve AND 
+				jeg.periode=jme.periode AND 
+				jme.idGroupe='".$id_groupe."' AND 
 				jme.periode='".$periode."' AND 
 			ORDER BY mep.libelle;";
 	//echo "$sql<br />";
@@ -15284,6 +15307,7 @@ function get_elements_programmes_classe($id_classe, $periode) {
 
 	$tab=array();
 
+	/*
 	$sql="SELECT * FROM matiere_element_programme mep, 
 				j_mep_groupe jmg, 
 				j_mep_eleve jme, 
@@ -15292,9 +15316,23 @@ function get_elements_programmes_classe($id_classe, $periode) {
 			WHERE mep.id=jmg.idEP AND 
 				mep.id=jmg.idEP AND 
 				mep.id=jme.idEP AND 
+				jeg.id_groupe=jme.idGroupe AND 
 				jeg.id_groupe=jmg.idGroupe AND 
 				jeg.periode=jme.periode AND 
 				jgc.id_groupe=jmg.idGroupe AND 
+				jeg.login=jme.idEleve AND 
+				jgc.id_classe='".$id_classe."' AND 
+				jme.periode='".$periode."' 
+			ORDER BY mep.libelle;";
+	*/
+	$sql="SELECT * FROM matiere_element_programme mep, 
+				j_mep_eleve jme, 
+				j_eleves_groupes jeg, 
+				j_groupes_classes jgc 
+			WHERE mep.id=jme.idEP AND 
+				jeg.id_groupe=jme.idGroupe AND 
+				jeg.periode=jme.periode AND 
+				jgc.id_groupe=jme.idGroupe AND 
 				jeg.login=jme.idEleve AND 
 				jgc.id_classe='".$id_classe."' AND 
 				jme.periode='".$periode."' 
@@ -15389,4 +15427,17 @@ function get_tab_types_groupe() {
 	}
 	return $tab;
 }
+
+function check_tables_modifiees() {
+	global $mysqli;
+
+	if(getSettingValue('version')=="1.6.9") {
+		$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM j_mep_eleve LIKE 'idGroupe';"));
+		if ($test_champ==0) {
+			$query = mysqli_query($mysqli, "ALTER TABLE j_mep_eleve ADD idGroupe INT(11) NOT NULL default '0' AFTER idEleve;");
+		}
+	}
+
+}
+
 ?>

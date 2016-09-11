@@ -1527,7 +1527,8 @@ DROP TABLE IF EXISTS j_mep_eleve;
 CREATE TABLE IF NOT EXISTS j_mep_eleve( 
     id int(11) unsigned NOT NULL auto_increment COMMENT 'identifiant unique', 
     idEP int(11) COMMENT "identifiant unique de l'élément de programme", 
-    idEleve varchar(50) COMMENT 'login élève',
+    idEleve varchar(50) COMMENT 'login élève', 
+    idGroupe int(11)  COMMENT 'identifiant du groupe', 
     annee varchar(4) COMMENT 'année sur 4 caractères', 
     periode int(11) COMMENT 'période sur 4 caractères', 
     PRIMARY KEY id (id) , 

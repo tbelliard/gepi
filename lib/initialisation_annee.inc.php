@@ -186,7 +186,9 @@ $liste_tables_del_etape_matieres = array(
 'edt_cours',
 "grp_groupes",
 "grp_groupes_admin",
-"grp_groupes_groupes"
+"grp_groupes_groupes",
+"j_mep_eleve",
+"j_mep_groupe"
 /*
 // Attente de confirmation de Pascal Fautrero pour décommenter...
 ,
