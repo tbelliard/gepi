@@ -45,6 +45,8 @@ if (!checkAccess()) {
     die();
 }
 
+//debug_var();
+
 if (empty($_GET['action']) and empty($_POST['action'])) { $action="";}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
 if (empty($_GET['id_motif']) and empty($_POST['id_motif'])) { $id_motif="";}
@@ -89,8 +91,11 @@ if ($action == 'supprimer') {
 		$motif->setCommentaire(stripslashes($com_motif));
 		$motif->save();
 
+		$id_motif=$motif->getId();
+
 		// Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
-		$sql="UPDATE a_motifs SET valable='".$valable_motif."' WHERE id='".$id_motif."'";
+		$sql="UPDATE a_motifs SET valable='".$valable_motif."' WHERE id='".$id_motif."';";
+		//echo "$sql<br />";
 		$res=mysqli_query($GLOBALS['mysqli'], $sql);
     }
 }
@@ -165,6 +170,8 @@ echo add_token_field();
            </td>
            <td colspan="2">
              <?php
+                 $checked_valable=" checked";
+                 $checked_non_valable="";
                  if ($motif != null) {
                      // Il faudrait modifier le modèle ORM... mais je ne sais pas faire.
                      $sql="SELECT * FROM a_motifs WHERE id='".$id_motif."'";
