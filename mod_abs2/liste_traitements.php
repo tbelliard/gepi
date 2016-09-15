@@ -259,11 +259,24 @@ if ($affichage == 'tableur') {
 		      }
 		  }
 		  $traitement_data['eleve_str'] = '';
+		      // Ajout: 20160914
+		$traitement_data['eleve_nom_str']="";
+		$traitement_data['eleve_prenom_str']="";
+		  $traitement_data['eleve_classe_str'] = '';
 		  foreach ($eleve_col as $eleve) {
 		      if (!$eleve_col->isFirst()) {
 		          $traitement_data['eleve_str'] .= '; ';
+		          $traitement_data['eleve_nom_str'] .= '; ';
+		          $traitement_data['eleve_prenom_str'] .= '; ';
+		          $traitement_data['eleve_classe_str'] .= '; ';
 		      }
 		      $traitement_data['eleve_str'] .= ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
+		      // Ajout: 20160914
+		      $traitement_data['eleve_nom_str'] .= $eleve->getNom();
+		      $traitement_data['eleve_prenom_str'] .= $eleve->getPrenom();
+		      if($eleve->getClasse()!=null) {
+		        $traitement_data['eleve_classe_str'] .= $eleve->getClasse()->getNom();
+		      }
 		  }
 
 		  $traitement_data['saisie_str'] = '';
@@ -271,6 +284,7 @@ if ($affichage == 'tableur') {
 		      $traitement_data['saisie_str'] .= $saisie->getDescription().'; ';
 		  }
 
+		// 20160914: La récup de la classe associée à la saisie a l'air d'échouer
 		  $classe_col = new PropelObjectCollection();
 		  foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 		      if ($saisie->getClasse() != null) {
