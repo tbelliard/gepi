@@ -43,6 +43,7 @@ images/logo_etab.*
 artichow/cache/*
 .test
 lib/simplesaml/config/authsources.php
+lib/simplesaml/config/config.php
 
 # Ignore Les plugins
 mod_plugins/
