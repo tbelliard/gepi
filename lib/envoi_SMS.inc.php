@@ -7,6 +7,15 @@
 // tableau des prestataires pris en compte
 $tab_prestataires_SMS=array('PLURIWARE','TM4B','123-SMS','AllMySMS');
 
+function json_echapp($ch) {
+	// Echappe dans la chaîne $ch les caractères de contrôle
+	// selon http://www.json.org/
+	$cars_spec=array('/"/','/\\\/','/\//',"/\n/","/\r/","/\t/");
+	$cars_echapp=array('\"','\\\\\\','\/','\\n','\\r','\\t');
+	print_r($cars_spec); echo "\n"; print_r($cars_echapp); echo "\n";
+	return preg_replace($cars_spec, $cars_echapp, $ch);
+}
+
 function filtrage_numero($numero,$international=false) {
 	// supprime les caractères indésirables et ajoute éventuellement l'indicatif 33
 	$numero=preg_replace('#[^0-9]#','',$numero);
@@ -216,8 +225,8 @@ function envoi_SMS($tab_to,$sms) {
 
 			$parametres['smsData']='{'."\n";
 			$parametres['smsData'].='"DATA": {'."\n";
-			$parametres['smsData'].='	"MESSAGE": "'.$message.'",'."\n";
-			//$parametres['smsData'].='	"TPOA": "'.$sender.'",'."\n";
+			$parametres['smsData'].='	"MESSAGE": "'.json_echapp($message).'",'."\n";
+			//$parametres['smsData'].='	"TPOA": "'.json_echapp($sender).'",'."\n";
 			$parametres['smsData'].='	"DYNAMIC": "0",'."\n";
 			$parametres['smsData'].='	"SMS": 	['."\n";
 			$mobiles="";
