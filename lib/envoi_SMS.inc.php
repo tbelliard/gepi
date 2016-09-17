@@ -12,7 +12,6 @@ function json_echapp($ch) {
 	// selon http://www.json.org/
 	$cars_spec=array('/"/','/\\\/','/\//',"/\n/","/\r/","/\t/");
 	$cars_echapp=array('\"','\\\\\\','\/','\\n','\\r','\\t');
-	print_r($cars_spec); echo "\n"; print_r($cars_echapp); echo "\n";
 	return preg_replace($cars_spec, $cars_echapp, $ch);
 }
 
