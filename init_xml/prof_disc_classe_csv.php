@@ -106,6 +106,10 @@ if (!isset($is_posted)) {
 	$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_groupes_professeurs");
 	$del = @mysqli_query($GLOBALS["mysqli"], "DELETE FROM j_professeurs_matieres");
 
+	// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
+	// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
+	$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 	echo "<p>Importation des fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> contenant les données de relations entre professeurs, matière et classes.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
