@@ -54,6 +54,28 @@ if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or (
 	$flag = 1;
 }
 
+if($_SESSION['statut'] == 'professeur') {
+	// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
+	// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
+	//$tab_mes_groupes=get_groups_for_prof($_SESSION['login'],array());
+	$tab_mes_id_groupe=array();
+	$sql="SELECT DISTINCT jgp.id_groupe FROM j_groupes_professeurs jgp WHERE (jgp.login='". $_SESSION['login']."');";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tab_mes_id_groupe[]=$lig->id_groupe;
+	}
+	$sql="SELECT name FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%';";
+	$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	while($lig=mysqli_fetch_object($res)) {
+		$tmp_id_groupe=preg_replace("/^accueil_simpl_id_groupe_order_/", "", $lig->name);
+		if(!in_array($tmp_id_groupe, $tab_mes_id_groupe)) {
+			$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='accueil_simpl_id_groupe_order_".$tmp_id_groupe."';";
+			//echo "$sql<br />";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+		}
+	}
+}
+
 if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	check_token();
 
@@ -682,10 +704,11 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 	$msg.="$nb_reg enregistrement(s) effectué(s).<br />";
 	$message_accueil_simpl_prof.="<p style='color:green'>$nb_reg enregistrement(s) effectué(s).</p>";
 
-
+	/*
 		$tab_grp_order=array();
 		$tab_grp_hidden=array();
 		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'accueil_simpl_id_groupe_order_%' ORDER BY value;";
+		echo "$sql<br />";
 		$res_grp_order=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res_grp_order)>0) {
 			while($lig_grp_order=mysqli_fetch_object($res_grp_order)) {
@@ -698,6 +721,7 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 				}
 			}
 		}
+	*/
 
 	$accueil_simpl_afficher_grp=isset($_POST['accueil_simpl_afficher_grp']) ? $_POST['accueil_simpl_afficher_grp'] : array();
 	if(count($accueil_simpl_afficher_grp)>0) {
@@ -706,6 +730,7 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 		$nb_reg=0;
 		$nb_err=0;
 
+		/*
 		for($loop=1;$loop<count($accueil_simpl_afficher_grp)+1;$loop++) {
 			if(isset($accueil_simpl_afficher_grp_rang[$loop])) {
 				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$loop], sprintf("%02d", $accueil_simpl_afficher_grp_rang[$loop]))) {
@@ -716,6 +741,19 @@ if (($_SESSION["statut"] == "professeur")&&(isset($_POST['valide_accueil_simpl_p
 				}
 			}
 		}
+		*/
+
+		foreach($accueil_simpl_afficher_grp as $key => $tmp_id_groupe) {
+			if(isset($accueil_simpl_afficher_grp_rang[$key])) {
+				if(savePref($_SESSION['login'], "accueil_simpl_id_groupe_order_".$accueil_simpl_afficher_grp[$key], sprintf("%02d", $accueil_simpl_afficher_grp_rang[$key]))) {
+					$nb_reg++;
+				}
+				else{
+					$nb_err++;
+				}
+			}
+		}
+
 		$msg.="Enregistrement de l'ordre des groupes pour $nb_reg groupe(s) avec $nb_err erreur(s)<br />";
 		$message_accueil_simpl_prof.="<p style='color:green'>Enregistrement de l'ordre des groupes pour $nb_reg groupe(s).";
 		if($nb_err>0) {

@@ -57,6 +57,11 @@ echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt=
 if ($_POST['step'] == "5") {
 	check_token(false);
 
+	// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
+	// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
+	$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
     // On se connecte au LDAP
     $ldap->connect();
 

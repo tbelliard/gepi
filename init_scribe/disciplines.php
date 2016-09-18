@@ -112,6 +112,11 @@ if (isset($_POST['is_posted'])) {
             $res2 = mysqli_query($GLOBALS["mysqli"], "DELETE from j_professeurs_matieres WHERE id_matiere = '" . $delete . "'");
         }
 
+	// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
+	// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
+	$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+	$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
         echo "<p>Opération effectuée.</p>";
         echo "<p>Vous pouvez vérifier l'importation en allant sur la page de <a href='../matieres/index.php'>gestion des matières</a>.</p>";
 

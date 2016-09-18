@@ -116,6 +116,11 @@ if (isset($_POST['is_posted'])) {
 			$j++;
 		}
 
+		// Ménage sur l'ordre des groupes dans l'affichage simplifié prof:
+		// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
+		$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
+		$del=mysqli_query($GLOBALS["mysqli"], $sql);
+
         $new_matieres = array();
         echo "<table border=\"1\" cellpadding=\"3\" cellspacing=\"3\">\n";
         echo "<tr><td>Identifiant matière</td><td>Nom complet matière</td><td>identifiants prof.</td></tr>\n";
