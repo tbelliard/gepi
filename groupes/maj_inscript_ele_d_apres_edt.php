@@ -918,6 +918,7 @@ elseif($action=="upload") {
 	fwrite($f2, '﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?><TABLE nom="Elèves">'."\n");
 
 	$cpt=0;
+	$nb_ele=0;
 	while(!feof($f)) {
 		$ligne = ensure_utf8(fgets($f, 4096));
 
@@ -949,6 +950,10 @@ elseif($action=="upload") {
 				fwrite($f2, $ligne);
 				echo ". ";
 				flush();
+
+				if(preg_match("/^<NOM>/i", $ligne)) {
+					$nb_ele++;
+				}
 			}
 		}
 		$cpt++;
@@ -957,6 +962,11 @@ elseif($action=="upload") {
 	fclose($f);
 	fclose($f2);
 	$dest_file=$dest_file2;
+
+	echo "<p style='margin-top:1em;'><strong style='color:red'>$nb_ele</strong> élève(s) trouvés dans ce fichier.</p>
+	<p style='margin-top:1em;margin-left:7em;text-indent:-7em;'><strong>ATTENTION&nbsp;:</strong> Si ce n'est pas l'effectif de l'établissement, vous avez peut-être oublié de sélectionner des classes pour réaliser l'export EXP_ELEVE.xml.<br />
+	Si une classe n'est pas sélectionnée, les enseignements/groupes multi-classe qui font intervenir cette classe pourraient être amputés de membres de cette classe.<br />
+	<em>Exemple&nbsp;:</em> Si vous avez un groupe AGL1_4B_4C faisant intervenir des élèves de 4B et 4C, mais que seule la 4B a été sélectionnée, il vous sera proposé par la suite de désincrire du groupe les élèves de 4C puisque non trouvés dans le fichier XML parmi les membres du regroupement EDT associé à AGL1_4B_4C.</p>";
 
 	$eleves_xml=simplexml_load_file($dest_file);
 	if(!$eleves_xml) {
@@ -1033,7 +1043,7 @@ elseif($action=="upload") {
 	$sql="TRUNCATE edt_eleves_lignes;";
 	$menage=mysqli_query($GLOBALS["mysqli"], $sql);
 
-	echo "<p>Parcours du XML.</p>\n";
+	echo "<p class='bold' style='margin-top:1em;'>Parcours du XML.</p>\n";
 	echo "<span style='font-size:x-small'>";
 
 	$cpt=0;
