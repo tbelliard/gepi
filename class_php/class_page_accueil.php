@@ -148,6 +148,11 @@ class class_page_accueil {
 	if ($this->cahierTexte_Visa()){
 	  $this->chargeAutreNom('bloc_Cdt_Visa');}
 
+/***** Livret scolaire ***********/	  
+	  $this->verif_exist_ordre_menu('bloc_livret');
+	if ($this->livret()){
+	  $this->chargeAutreNom('bloc_livret');}
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	if ($this->trombinoscope()){
@@ -2285,8 +2290,6 @@ if(getSettingAOui('active_bulletins')) {
 	}
   }
 
-
-
   protected function cahierTexte_Visa(){
 	$this->b=0;
 
@@ -2302,9 +2305,7 @@ if(getSettingAOui('active_bulletins')) {
 
   }
   
-  
   protected function listesPerso(){
-	global $mysqli;
 	$this->b=0;
 	  
 	if (getSettingAOui("GepiListePersonnelles")) {
@@ -2314,6 +2315,17 @@ if(getSettingAOui('active_bulletins')) {
 		$this->creeNouveauTitre('accueil',"Listes personnelles",'images/icons/document.png');
 	}
 
+  }
+  
+  protected function livret(){
+	  $this->b=0;
+	  if (getSettingAOui("active_module_LSUN")) {
+		  $this->creeNouveauItem("/mod_LSUN/index.php","LSUN", "LSUN : remplir et voir les APs, les EPIs, les parcours");
+	  }
+	  if ($this->b > 0 ){
+		  $this->creeNouveauTitre('accueil','Livret Scolaire','images/icons/document.png');
+	  }
+	  
   }
 
 

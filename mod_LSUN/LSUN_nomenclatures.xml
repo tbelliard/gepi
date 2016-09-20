@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nomenclatures>
+	<liste-parcours>
+		<parcours code="P_AVN" libelle="Parcours avenir" />
+		<parcours code="P_CIT" libelle="Parcours citoyen" />
+		<parcours code="P_ART" libelle="Parcours d'éducation artistique et culturelle" />
+		<parcours code="P_SAN" libelle="Parcours éducatif de santé" />
+	</liste-parcours>
+	<!-- Les EPIs ne sont utilisées qu'au cycle 4 (5EME, 4EME et 3EME) -->
+	<thematiques-epis>
+		<thematique-epi code="EPI_SAN" libelle="Corps, santé, bien-être et sécurité" />
+		<thematique-epi code="EPI_ART" libelle="Culture et création artistiques" />
+		<thematique-epi code="EPI_EDD" libelle="Transition écologique et développement durable" />
+		<thematique-epi code="EPI_ICC" libelle="Information, communication, citoyenneté" />
+		<thematique-epi code="EPI_LGA" libelle="Langues et cultures de l'Antiquité" />
+		<thematique-epi code="EPI_LGE" libelle="Langues et cultures étrangères ou, le cas échéant, régionales" />
+		<thematique-epi code="EPI_PRO" libelle="Monde économique et professionnel" />
+		<thematique-epi code="EPI_STS" libelle="Sciences, technologie et société" />
+	</thematiques-epis>
+	<modalites-accompagnement>
+		<modalite-accompagnement code="PAP" libelle="Projet d’accompagnement personnalisé" />
+		<modalite-accompagnement code="PAI" libelle="Projet d’accueil individualisé" />
+		<modalite-accompagnement code="PPRE" libelle="Projet personnalisé de réussite éducative" />
+		<modalite-accompagnement code="PPS" libelle="Projet personnalisé de scolarisation" />
+		<modalite-accompagnement code="ULIS" libelle="Unité localisée pour l’inclusion scolaire" />
+		<modalite-accompagnement code="UPE2A" libelle="Unité pédagogique pour élèves allophones arrivants" />
+		<modalite-accompagnement code="SEGPA" libelle="Section d’enseignement général adapté" />
+	</modalites-accompagnement>
+</nomenclatures>

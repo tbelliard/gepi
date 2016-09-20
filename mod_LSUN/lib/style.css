@@ -1,0 +1,58 @@
+/*
+*
+* Copyright 2016 Régis Bouguin
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+select {
+    margin-top: .5em;
+}
+input {
+    margin-top: .5em;
+}
+
+.lsun_cadre {
+    display: block; 
+    margin-top: .5em; 
+    padding-top: .5em; 
+    padding-bottom: .5em; 
+    border: 1px solid black; 
+    text-align: center; 
+    border-radius: 10px 0 10px 0;
+}
+
+.btnEfface {
+    border:none;
+    background-image:url('../../images/icons/delete.png');
+    background-repeat:no-repeat;
+    background-position:top left;
+    width: 16px;
+    height: 16px;
+}
+
+table {
+    border-width:1px; 
+    border-style:solid; 
+    border-color:black;
+ }
+td ,th { 
+    border-width:1px;
+    border-style:solid; 
+    border-color:black;
+    text-align: center;
+ }
