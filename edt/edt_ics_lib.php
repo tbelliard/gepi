@@ -32,6 +32,139 @@ $tab_couleur_edt[23]="#009EE0";
 $tab_couleur_edt[24]="#C19CC4";
 // Les couleurs sont dans l'EDT classique Gepi définies dans templates/DefaultEDT/css/style_edt.css avec des .cadreCouleur1, .cadreCouleur2,...
 
+$tab_liste_couleurs=array("aliceblue",
+"antiquewhite",
+"aquamarine",
+"azure",
+"beige",
+"bisque",
+"blanchedalmond",
+"blueviolet",
+"brown",
+"burlywood",
+"cadetblue",
+"chartreuse",
+"chocolate",
+"coral",
+"cornflowerblue",
+"cornsilk",
+"crimson",
+"cyan",
+"darkcyan",
+"darkgoldenrod",
+"darkgray",
+"darkgreen",
+"darkkhaki",
+"darkmagenta",
+"darkolivegreen",
+"darkorange",
+"darkorchid",
+"darkred",
+"darksalmon",
+"darkseagreen",
+"darkslateblue",
+"darkslategray",
+"darkturquoise",
+"darkviolet",
+"deeppink",
+"deepskyblue",
+"dimgray",
+"dodgerblue",
+"firebrick",
+"floralwhite",
+"forestgreen",
+"gainsboro",
+"ghostwhite",
+"gold",
+"goldenrod",
+"greenyellow",
+"honeydew",
+"hotpink",
+"indianred",
+"indigo",
+"ivory",
+"khaki",
+"lavender",
+"lavenderblush",
+"lawngreen",
+"lemonchiffon",
+"lightblue",
+"lightcoral",
+"lightcyan",
+"lightgoldenrodyellow",
+"lightgreen",
+"lightgrey",
+"lightpink",
+"lightsalmon",
+"lightseagreen",
+"lightskyblue",
+"lightslategray",
+"lightsteelblue",
+"lightyellow",
+"limegreen",
+"linen",
+"magenta",
+"mediumaquamarine",
+"mediumblue",
+"mediumorchid",
+"mediumpurple",
+"mediumseagreen",
+"mediumslateblue",
+"mediumspringgreen",
+"mediumturquoise",
+"mediumvioletred",
+"mintcream",
+"mistyrose",
+"moccasin",
+"navajowhite",
+"oldlace",
+"olivedrab",
+"orange",
+"orangered",
+"orchid",
+"palegoldenrod",
+"palegreen",
+"paleturquoise",
+"palevioletred",
+"papayawhip",
+"peachpuff",
+"peru",
+"pink",
+"plum",
+"powderblue",
+"rosybrown",
+"royalblue",
+"saddlebrown",
+"salmon",
+"sandybrown",
+"seagreen",
+"seashell",
+"sienna",
+"silver",
+"skyblue",
+"slateblue",
+"slategray",
+"snow",
+"springgreen",
+"steelblue",
+"tan",
+"thistle",
+"tomato",
+"turquoise",
+"violet",
+"wheat",
+"whitesmoke");
+$rang_courant=count($tab_couleur_edt)+1;
+for($loop=0;$loop<count($tab_liste_couleurs);$loop++) {
+	$tab_couleur_edt[$rang_courant]=$tab_liste_couleurs[$loop];
+	$rang_courant++;
+}
+/*
+echo "<pre>";
+print_r($tab_couleur_edt);
+echo "</pre>";
+*/
+
 /*
 // Couleurs pour les onglets dans visu_eleve.inc.php:
 $tab_couleur_onglet['eleve']="moccasin";
@@ -173,6 +306,33 @@ function get_couleur_edt_matiere($matiere) {
 			$retour=$tab_couleur_edt[$lig->valeur];
 		}
 	}
+	return $retour;
+}
+
+// 20160919
+$tab_couleur_edt_grp=array();
+function get_couleur_edt_prof($id_groupe) {
+	global $tab_couleur_edt;
+	global $tab_couleur_edt_grp;
+	//$retour="white";
+	$retour="azure";
+
+	if(!isset($tab_couleur_edt_grp[$id_groupe])) {
+		$couleur_tmp=getPref($_SESSION['login'], "edt2_couleur_grp_".$id_groupe, "");
+		if($couleur_tmp!="") {
+			$retour=$couleur_tmp;
+		}
+		else {
+			if(isset($tab_couleur_edt[count($tab_couleur_edt_grp)+1])) {
+				$tab_couleur_edt_grp[$id_groupe]=$tab_couleur_edt[count($tab_couleur_edt_grp)+1];
+				$retour=$tab_couleur_edt_grp[$id_groupe];
+			}
+		}
+	}
+	else {
+		$retour=$tab_couleur_edt_grp[$id_groupe];
+	}
+
 	return $retour;
 }
 
@@ -2639,6 +2799,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 				}
 				*/
 
+				$chaine_texte_ligne_1="";
 				if(($lig->id_groupe!="")&&($lig->id_groupe!="0")) {
 					if(!isset($tab_group_edt[$lig->id_groupe])) {
 						$tab_group_edt[$lig->id_groupe]=get_group($lig->id_groupe, array('matieres', 'classes', 'profs'));
@@ -2649,12 +2810,24 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					$chaine_nom_enseignement=$current_group['name']." (".$current_group['description'].") en ".$current_group['classlist_string']." avec ".$current_group['profs']['proflist_string'];
 
 					$chaine_matiere=$current_group['matiere']['matiere'];
+
+					// 20160919
+					//$chaine_texte_ligne_1=$chaine_matiere;
+					//$chaine_texte_ligne_1=$current_group['name'];
+					$chaine_texte_ligne_1=preg_replace("/[_.]/"," ",$current_group['name']);
+
 					$chaine_proflist_string=$current_group['profs']['proflist_string'];
 
 					if(!isset($tab_couleur_matiere[$current_group['matiere']['matiere']])) {
 						$tab_couleur_matiere[$current_group['matiere']['matiere']]=get_couleur_edt_matiere($current_group['matiere']['matiere']);
 					}
-					$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+					// 20160919
+					if($type_affichage=="prof") {
+						$bgcolor_courant=get_couleur_edt_prof($lig->id_groupe);
+					}
+					else {
+						$bgcolor_courant=$tab_couleur_matiere[$current_group['matiere']['matiere']];
+					}
 
 					$chaine_liste_classes=$current_group['classlist_string'];
 
@@ -2724,6 +2897,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					$chaine_nom_enseignement=$current_aid['nom_aid']." (".$current_aid['nom_general_court'].") (".$current_aid['nom_general_complet'].") avec ".$current_aid['proflist_string'];
 
 					$chaine_matiere=$current_aid['nom_aid'];
+					// 20160919
+					$chaine_texte_ligne_1=$chaine_matiere;
 
 					if(!isset($tab_prof[$lig->login_prof])) {
 						$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
@@ -2749,6 +2924,8 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					$chaine_nom_enseignement="Cours...";
 
 					$chaine_matiere="Matière";
+					// 20160919
+					$chaine_texte_ligne_1=$chaine_matiere;
 
 					if(!isset($tab_prof[$lig->login_prof])) {
 						$sql="SELECT * FROM utilisateurs WHERE login='".$lig->login_prof."';";
@@ -2779,10 +2956,16 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 					if($chaine_liste_classes!="") {
 						$liste_classes="<br />".$chaine_liste_classes;
 					}
-					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span>".$liste_classes.$chaine_salle_courante;
+// 20160919: permettre d'afficher le nom de groupe (au moins le début)
+					//$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span>".$liste_classes.$chaine_salle_courante;
+					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span>".$liste_classes.$chaine_salle_courante;
 				}
 				else {
+					/*
 					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_matiere."</span><br />
+				<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
+					*/
+					$contenu_cellule="<span style='font-size:".$font_size."pt;' title=\"".$chaine_nom_enseignement.$chaine_salle_courante_span_title.$chaine_type_semaine_du_cours_courant.$horaire_cours_courant."\">".$chaine_texte_ligne_1."</span><br />
 				<span style='font-size:".$font_size2."pt;' title=\"".$chaine_proflist_string."\">".$chaine_noms_profs."</span>".$chaine_salle_courante;
 				}
 
@@ -3064,6 +3247,9 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 
 
 
+								$html.="\n";
+								$html.="\n";
+								$html.="<!-- ======================================================= -->\n";
 								// Cadre de couleur avec une opacité réglable
 								$html.="<div style='position:absolute; 
 										top:".$y_courant."px; 
@@ -3075,6 +3261,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 										background-color:".$tab2[$loop]['bgcolor_cellule'].";
 										opacity:$opacity_couleur; 
 										z-index:19;'></div>";
+								$html.="\n";
 								// Cadre du contour de la cellule
 								$html.="<div style='position:absolute; 
 										top:".$y_courant."px; 
@@ -3090,6 +3277,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 								if($hauteur_courante>$hauteur_une_heure) {
 									$decalage_vertical=floor(($hauteur_courante-$hauteur_une_heure)/2);
 								}
+								$html.="\n";
 								$html.="<div style='position:absolute; 
 										top:".($y_courant+$decalage_vertical)."px; 
 										left:".$x_courant."px; 

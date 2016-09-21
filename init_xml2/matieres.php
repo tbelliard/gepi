@@ -213,6 +213,8 @@
 			// Sinon, on peut se retrouver avec des rangs aberrants liés à des groupes qui n'existent plus dans la table groupes.
 			$sql="DELETE FROM preferences WHERE name LIKE 'accueil_simpl_id_groupe_order_%';";
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			$sql="DELETE FROM preferences WHERE name LIKE 'edt2_couleur_grp_%';";
+			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');

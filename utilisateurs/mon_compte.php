@@ -74,6 +74,45 @@ if($_SESSION['statut'] == 'professeur') {
 			$del=mysqli_query($GLOBALS["mysqli"], $sql);
 		}
 	}
+
+	if(isset($_POST['parametrer_edt'])) {
+		check_token();
+
+		$edt2_couleur_grp=isset($_POST['edt2_couleur_grp']) ? $_POST['edt2_couleur_grp'] : array();
+		$cpt_reg=0;
+		foreach($edt2_couleur_grp as $id_groupe => $couleur) {
+			if(($couleur=="")||(!in_array($couleur, $tab_couleurs_html))) {
+				$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='edt2_couleur_grp_".$id_groupe."';";
+				//echo "$sql<br />";
+				$del=mysqli_query($GLOBALS["mysqli"], $sql);
+			}
+			else {
+				$couleur_old=getPref($_SESSION['login'], 'edt2_couleur_grp_'.$id_groupe, "");
+				if($couleur_old=="") {
+					$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='edt2_couleur_grp_".$id_groupe."', value='$couleur';";
+					//echo "$sql<br />";
+					$insert=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($insert) {
+						$cpt_reg++;
+					}
+					else {
+						$msg.="Erreur lors de l'enregistrement de la couleur $couleur pour le groupe n°$id_groupe.<br />";
+					}
+				}
+				elseif($couleur_old!=$couleur) {
+					$sql="UPDATE preferences SET value='$couleur' WHERE login='".$_SESSION['login']."' AND name='edt2_couleur_grp_".$id_groupe."';";
+					//echo "$sql<br />";
+					$update=mysqli_query($GLOBALS["mysqli"], $sql);
+					if($update) {
+						$cpt_reg++;
+					}
+					else {
+						$msg.="Erreur lors de la mise à jour de la couleur $couleur pour le groupe n°$id_groupe.<br />";
+					}
+				}
+			}
+		}
+	}
 }
 
 if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
@@ -3508,6 +3547,76 @@ if (getSettingAOui('DisciplineCpeChangeDeclarant')) {
 }
 
 
+
+//==============================================================================
+// 20160919
+if ((getSettingValue("autorise_edt_tous") == "y")&&($_SESSION['statut']=="professeur")) {
+	if(!isset($groups)) {
+		$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+	}
+
+	echo "<a name='param_edt'></a>
+<form enctype=\"multipart/form-data\" action=\"mon_compte.php#param_edt\" method=\"post\">
+	".add_token_field()."
+	<fieldset id='paramEDT' class='fieldset_opacite50'>
+		<legend style='border: 1px solid grey; background-color: white;'>Paramètres Emploi du temps</legend>
+		<input type='hidden' name='parametrer_edt' value='y' />
+
+		<p>Définir des couleurs pour mes enseignements dans l'EDT2&nbsp;:</p>
+		<table class='boireaus boireaus_alt'>
+			<tr>
+				<th colspan='2'>Enseignement</th>
+				<th>Classe(s)</th>
+				<th colspan='2'>Couleur</th>
+			</tr>";
+	$chaine_js_initialisation_couleurs="";
+	for($loop=0;$loop<count($groups);$loop++) {
+		echo "
+			<tr>
+				<td>".$groups[$loop]['name']."</td>
+				<td>".$groups[$loop]['description']."</td>
+				<td>".$groups[$loop]['classlist_string']."</td>
+				<td>
+					<select name='edt2_couleur_grp[".$groups[$loop]["id"]."]' id='edt2_couleur_grp_".$groups[$loop]["id"]."' onchange=\"document.getElementById('div_edt2_couleur_grp_".$groups[$loop]["id"]."').style.backgroundColor=this.options[this.selectedIndex].value;\">
+						<option value=''>---</option>";
+
+		$pref_couleur=getPref($_SESSION['login'], "edt2_couleur_grp_".$groups[$loop]["id"], "");
+
+		if($pref_couleur!="") {
+			$chaine_js_initialisation_couleurs.="document.getElementById('div_edt2_couleur_grp_".$groups[$loop]["id"]."').style.backgroundColor=document.getElementById('edt2_couleur_grp_".$groups[$loop]["id"]."').options[document.getElementById('edt2_couleur_grp_".$groups[$loop]["id"]."').selectedIndex].value;\n";
+		}
+
+		for($loop2=0;$loop2<count($tab_couleurs_html);$loop2++) {
+			$selected="";
+			if($tab_couleurs_html[$loop2]==$pref_couleur) {
+				$selected=" selected='true'";
+			}
+			echo "
+						<option value='".$tab_couleurs_html[$loop2]."' style='background-color:".$tab_couleurs_html[$loop2].";'$selected>".$tab_couleurs_html[$loop2]."</option>";
+		}
+
+		echo "
+					</select>
+				</td>
+				<td>
+					<div id='div_edt2_couleur_grp_".$groups[$loop]["id"]."' style='width:2em;'>&nbsp;&nbsp;</div>
+				</td>
+			</tr>";
+	}
+	echo "
+		</table>
+		<p><input type='submit' name='Valider' value='Enregistrer' tabindex='$tabindex' /></p>
+	</fieldset>
+</form>
+<br />\n";
+	$tabindex++;
+
+	if($chaine_js_initialisation_couleurs!="") {
+		echo "<script type='text/javascript'>
+".$chaine_js_initialisation_couleurs."
+</script>";
+	}
+}
 
 //==============================================================================
 
