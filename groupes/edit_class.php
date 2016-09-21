@@ -427,7 +427,7 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
-	$msg="Enregistrement effectué.";
+	$msg="Enregistrement effectué <em>(".strfrime("Le %A %d/%m/%Y à %H:%M:%S").")</em>.";
 
 }
 
