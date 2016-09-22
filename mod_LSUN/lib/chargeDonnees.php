@@ -21,8 +21,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Pour l'instant on extrait les classes 1,2,3,4 (3ème ou pas)
-$selectionClasse = array(1,2,3,4);
+$selectionClasse = $_SESSION['afficheClasse'];
+
 $myData = implode(",", $selectionClasse);
 $millesime = LSUN_annee(getSettingValue('gepiYear'));
 

@@ -81,3 +81,20 @@ td ,th {
     border-color:black;
     text-align: center;
  }
+ 
+ .lsun3colonnes {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+ }
+ 
+.lsun3colonnes > div {
+  display: table-cell;
+  width: 24%; /* 100%/3 = 3 colonnes */
+  padding: 20px;
+  border: 5px #F2F2F2 solid;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+  text-align: center;
+}
+ 
+ 

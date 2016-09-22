@@ -22,8 +22,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-// Pour l'instant on extrait les classes 1,2,3,4 (3ème ou pas)
-$selectionClasse = array(1,2,3,4);
+$selectionClasse = $_SESSION['afficheClasse'];
 
 //===== On récupère les données =====
 $scolarites = getUtilisateurSurStatut('scolarite');
@@ -36,17 +35,6 @@ $parcoursCommuns = getParcoursCommuns();
 //===== on charge les nomenclatures de LSUN =====
 if (file_exists('LSUN_nomenclatures.xml')) {
     $xml = simplexml_load_file('LSUN_nomenclatures.xml');
-/*
-	print_r($xml->{'liste-parcours'});
-	echo '<br><br>';
-	foreach ($xml->{'liste-parcours'}->parcours as $parcours) {
-		print_r($parcours['code']);
-		echo ' '.$parcours['code'];
-	echo '<br>';
-	}
-	echo '<br><br>';
- * 
- */
 } else {
     exit('Echec lors de l\'ouverture du fichier LSUN_nomenclatures.xml.');
 }
@@ -114,21 +102,55 @@ echo $sqlDisciplines;
 </form>
 
 
+<form action="index.php" method="post" id="selectionClasse">
+	<fieldset>
+		<legend>Classes</legend>
+		<div class="lsun3colonnes" >
+<?php 
+$toutesClasses = getClasses();
+$cpt = 0;
+$coupe = ceil($toutesClasses->num_rows/4);
+while ($afficheClasse = $toutesClasses->fetch_object()) {
+	if (!$cpt) {echo "			<div class='colonne'>\n";}
+?>
+				<p>
+					<input type="checkbox" 
+						   name="afficheClasse[<?php echo $afficheClasse->id; ?>]"
+						   <?php if(in_array($afficheClasse->id, $selectionClasse)){echo 'checked';} ?>
+						   />
+						<?php echo $afficheClasse->classe; ?>
+				</p>
+<?php 
+	$cpt=$cpt+1;
+	if ($cpt > $coupe) {echo "			</div>\n"; $cpt = 0;}
+}
+if ($cpt) {echo "			</div>\n";}
+?>
+		</div>
+		<p class="center">
+			<button type="submit" name="soumetSelection" value="y" >
+				Sélectionner
+			</button>
+		</p>
+
+
+  </fieldset>
+</form>
 
 <form action="index.php" method="post" id="parcours">
 	<fieldset>
 		<legend>Liste des parcours communs</legend>
 		<table>
 			<caption style="caption-side:bottom">parcours éducatifs communs à une classe pour une période</caption>
-				<tr>
-					<thead>
+				<thead>
+					<tr>
 						<th>Période</th>
 						<th>Division</th>
 						<th>code du parcours éducatifs</th>
 						<th>Description</th>
 						<th>Action</th>
-					<thead>
-				</tr>
+					</tr>
+				<thead>
 <?php while ($parcoursCommun = $parcoursCommuns->fetch_object()) { ?>
 				<tr>
 					<td>
@@ -182,6 +204,7 @@ echo $sqlDisciplines;
 <?php while ($classe = $classes->fetch_object()) { ?>
 						<option value="<?php echo $classe->id; ?>"><?php echo $classe->classe; ?> <?php echo $classe->nom_complet; ?></option>
 <?php } ?>
+						</select>
 					</td>
 					<td>
 						<select name="newParcoursCode">

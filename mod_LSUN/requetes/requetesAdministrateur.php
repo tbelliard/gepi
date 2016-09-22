@@ -24,6 +24,16 @@
 $newResponsable[] = filter_input(INPUT_POST, 'responsableAdmin');
 $newResponsable[] = filter_input(INPUT_POST, 'responsableCPE');
 $newResponsable[] = filter_input(INPUT_POST, 'responsableEnseignant');
+$classesSelectipnnee = filter_input(INPUT_POST, 'afficheClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+$_SESSION['afficheClasse'] = $classesSelevtipnnee ? $classesSelevtipnnee : (isset($_SESSION['afficheClasse']) ? $_SESSION['afficheClasse'] : NULL);
+
+if (count($classesSelectipnnee)) {
+	$_SESSION['afficheClasse']=array();
+	foreach ($classesSelectipnnee as $key=>$value) {
+		$_SESSION['afficheClasse'][]=$key;
+	}
+}
+
 
 foreach ($newResponsable as $valeur) {
 	if ($valeur) {

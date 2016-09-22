@@ -86,6 +86,13 @@ function getPeriodes($myData = NULL) {
 	return $resultchargeDB;	
 }
 
+/**
+ * Renvoie id, classe, nom_complet  d'une classe
+ * 
+ * @global type $mysqli
+ * @param type $classeId
+ * @return type
+ */
 function getClasses($classeId = NULL) {
 	global $mysqli;
 	$sqlClasses = "SELECT DISTINCT id, classe, nom_complet FROM classes ";
