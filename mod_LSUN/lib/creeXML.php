@@ -198,6 +198,34 @@ $xml->appendChild($items);
 		
 			/*----- Parcours -----*/
 			$parcoursCommuns = $xml->createElement('parcours-communs');
+			while ($parcoursCommun = $listeParcoursCommuns->fetch_object()){
+				$noeudParcoursCommun= $xml->createElement('parcours-commun');
+					if($parcoursCommun->periode < 10) {$num_periode = "0".$parcoursCommun->periode;} else {$num_periode = $parcoursCommun->periode;}
+					$parcoursClasse = getClasses($parcoursCommun->classe)->fetch_object()->classe;
+					$attributsParcoursCommun = array('periode-ref'=>'P_'.$num_periode, 'code-division'=>substr(htmlspecialchars($parcoursClasse),0,8));
+					foreach ($attributsParcoursCommun as $cle=>$valeur) {
+						$attParcoursCommun = $xml->createAttribute($cle);
+						$attParcoursCommun->value = $valeur;
+						$noeudParcoursCommun->appendChild($attParcoursCommun);
+					}
+					
+					$listeParcours = getParcoursCommuns(NULL, $parcoursCommun->classe, $parcoursCommun->periode);
+					//var_dump($listeParcours);
+					while ($parcours = $listeParcours->fetch_object()){
+						//echo $parcours->description.'<br>';
+						$noeudParcours = $xml->createElement('parcours',$parcours->description);
+						$attributsParcours = array('code'=>$parcours->codeParcours);
+						foreach ($attributsParcours as $cle=>$valeur) {
+							$attParcours = $xml->createAttribute($cle);
+							$attParcours->value = $valeur;
+							$noeudParcours->appendChild($attParcours);
+						}
+						$noeudParcoursCommun->appendChild($noeudParcours);
+					}
+					
+				$parcoursCommuns->appendChild($noeudParcoursCommun);
+				
+			}
 		$donnees->appendChild($parcoursCommuns);
 		
 			/*----- Vie scolaire -----*/

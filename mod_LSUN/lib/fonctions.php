@@ -86,12 +86,72 @@ function getPeriodes($myData = NULL) {
 	return $resultchargeDB;	
 }
 
-function getClasses() {
+function getClasses($classeId = NULL) {
 	global $mysqli;
-	$sqlClasses = "SELECT DISTINCT id, classe, nom_complet FROM classes ORDER BY classe ";
+	$sqlClasses = "SELECT DISTINCT id, classe, nom_complet FROM classes ";
+	if ($classeId) {$sqlClasses .= " WHERE id = '$classeId' ";}
+	$sqlClasses .= " ORDER BY classe ";
 	//echo $sqlClasses;
 	$resultchargeDB = $mysqli->query($sqlClasses);	
 	return $resultchargeDB;	
 }
+
+function creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $newParcoursId = '') {
+	global $mysqli;
+	$sqlNewParcours = "INSERT INTO lsun_parcours_communs (id,periode,classe,codeParcours,description)  VALUES ('$newParcoursId', '$newParcoursTrim', '$newParcoursClasse', '$newParcoursCode', '$newParcoursTexte') ON DUPLICATE KEY UPDATE periode = '$newParcoursTrim',classe = '$newParcoursClasse',codeParcours = '$newParcoursCode',description = '$newParcoursTexte' ";
+	//echo $sqlNewParcours;
+	$resultchargeDB = $mysqli->query($sqlNewParcours);	
+	return $resultchargeDB;	
+}
+
+function getParcoursCommuns($parcoursId = NULL, $classe = NULL, $periode = NULL) {
+	global $mysqli;
+	//$selectionClasse = array(1,2,3,4);
+	global $selectionClasse;
+	$myData = implode(",", $selectionClasse);
+	$sqlGetParcours = "SELECT * FROM lsun_parcours_communs WHERE classe IN ($myData) ";
+	if($parcoursId || $classe || $periode) {
+		$sqlGetParcours .= setFiltreParcoursCommuns($parcoursId, $classe, $periode);
+		//echo $sqlGetParcours;
+	}
+	$sqlGetParcours .= " ORDER BY classe, periode, codeParcours ";
+	//echo $sqlGetParcours;
+	$resultchargeDB = $mysqli->query($sqlGetParcours);	
+	return $resultchargeDB;	
+}
+function setFiltreParcoursCommuns($parcoursId, $classe, $periode) {
+	$sqlGetParcours = " AND ";
+	if ($parcoursId) {
+		$sqlGetParcours .= " id = '$parcoursId' ";
+		if ($classe || $periode) {
+			$sqlGetParcours .= " AND ";
+		}
+	}
+	if ($classe) {
+		$sqlGetParcours .= " classe = '$classe' ";
+		if ($periode) {
+			$sqlGetParcours .= " AND ";
+		}
+	}
+	if ($periode) {$sqlGetParcours .= " periode = '$periode' ";}
+	return $sqlGetParcours;
+}
+
+function supprimeParcours($deleteParcours) {
+	global $mysqli;
+	$sqlDelParcours = "DELETE FROM lsun_parcours_communs WHERE id = $deleteParcours ";
+	//echo $sqlDelParcours;
+	$mysqli->query($sqlDelParcours);
+}
+
+function modifieParcours($modifieParcoursId, $modifieParcoursCode, $modifieParcoursTexte) {
+	global $mysqli;
+	$sqlModifieParcours = "UPDATE lsun_parcours_communs "
+		. "SET codeParcours = '$modifieParcoursCode', description = '$modifieParcoursTexte' "
+		. "WHERE id = '$modifieParcoursId' ";
+	//echo $sqlModifieParcours;
+	$mysqli->query($sqlModifieParcours);
+}
+
 
 

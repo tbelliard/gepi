@@ -22,12 +22,16 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+// Pour l'instant on extrait les classes 1,2,3,4 (3ème ou pas)
+$selectionClasse = array(1,2,3,4);
 
-//===== On récupère les scolarité =====
+//===== On récupère les données =====
 $scolarites = getUtilisateurSurStatut('scolarite');
 $cpes = getUtilisateurSurStatut('cpe');
 $Enseignants = getUtilisateurSurStatut('professeur');
 $responsables = getResponsables();
+$parcoursCommuns = getParcoursCommuns();
+
 
 //===== on charge les nomenclatures de LSUN =====
 if (file_exists('LSUN_nomenclatures.xml')) {
@@ -73,7 +77,7 @@ echo $sqlDisciplines;
 				   alt="Submit button" 
 				   name="supprimeResponsable"  
 				   value="<?php echo $responsable->login ?>"
-				   title="Supprimer <?php echo $responsable->login ?>" /> - 
+				   title="Supprimer <?php echo $responsable->nom; ?> <?php echo $responsable->prenom; ?>" /> - 
 			<?php echo $responsable->civilite; ?> <?php echo $responsable->nom; ?> <?php echo $responsable->prenom; ?>
 		</p>
  
@@ -122,11 +126,50 @@ echo $sqlDisciplines;
 						<th>Division</th>
 						<th>code du parcours éducatifs</th>
 						<th>Description</th>
+						<th>Action</th>
 					<thead>
 				</tr>
+<?php while ($parcoursCommun = $parcoursCommuns->fetch_object()) { ?>
 				<tr>
 					<td>
-						<select name="newParcoursID">
+						<input type="hidden" name="modifieParcoursId[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->id; ?>" />
+						<input type="hidden" name="modifieParcoursPeriode[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->periode; ?>" />
+						<?php echo $parcoursCommun->periode; ?>
+					</td>
+					<td>
+						<input type="hidden" name="modifieParcoursClasse[<?php echo $parcoursCommun->id; ?>]" value="<?php echo $parcoursCommun->classe; ?>" />
+						<?php echo getClasses($parcoursCommun->classe)->fetch_object()->nom_complet; ?>
+					</td>
+					<td>
+						<select name="modifieParcoursCode[<?php echo $parcoursCommun->id; ?>]">
+<?php foreach ($xml->{'liste-parcours'}->parcours as $parcours) { ?>
+							<option value="<?php echo $parcours['code'] ?>" <?php if($parcours['code'] == $parcoursCommun->codeParcours){echo "selected='selected'";} ?> >
+								<?php echo $parcours['libelle'] ?>
+							</option>
+<?php } ?>				</select>
+					</td>
+					<td>
+						<input type="text" name="modifieParcoursTexte[<?php echo $parcoursCommun->id; ?>]" size="80" value="<?php echo $parcoursCommun->description; ?>"/>
+					</td>
+					<td>
+						<input type="submit" class="btnSupprime" 
+							   alt="Boutton supprimer" 
+							   name="supprimeParcours[<?php echo $parcoursCommun->id; ?>]" 
+							   value="y"
+							   title="Supprimer ce parcours" />
+						/
+						<input type="submit" class="btnValide" 
+							   alt="Submit button" 
+							   name="modifieParcours" 
+							   value="<?php echo $parcoursCommun->id; ?>"
+							   title="Modifier ce parcours" />
+					</td>
+				</tr>
+<?php } ?>
+				
+				<tr>
+					<td>
+						<select name="newParcoursPeriode">
 							<option value=""></option>
 <?php while ($periode = $periodes->fetch_object()) { ?>
 							<option value="<?php echo $periode->num_periode; ?>"><?php echo $periode->num_periode; ?></option>
@@ -149,7 +192,14 @@ echo $sqlDisciplines;
 						</select>
 					</td>
 					<td>
-						<input type="text" name="newParcoursTexte" size="60"e />
+						<input type="text" name="newParcoursTexte" size="80" />
+					</td>
+					<td>
+						<input type="submit" class="btnValide" 
+							   alt="Submit button" 
+							   name="ajouteParcours" 
+							   value="y"
+							   title="Ajouter ce parcours" />
 					</td>
 				</tr>
 		</table> 

@@ -41,7 +41,39 @@ if ($supprimeResponsable) {
 	$resultchargeDB = $mysqli->query($sqlNewResponsable);
 }
 
+// on crée un parcours
+$newParcours = filter_input(INPUT_POST, 'ajouteParcours');
+if ('y' == $newParcours) {
+	$newParcoursTrim = filter_input(INPUT_POST, 'newParcoursPeriode');
+	$newParcoursClasse = filter_input(INPUT_POST, 'newParcoursClasse');
+	$newParcoursCode = filter_input(INPUT_POST, 'newParcoursCode');
+	$newParcoursTexte = filter_input(INPUT_POST, 'newParcoursTexte');
+	//echo 'on crée '.$newParcoursTrim.' → '.$newParcoursClasse.' → '.$newParcoursCode.' → '.$newParcoursTexte;
+	creeParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte);
+}
 
+// on supprime un parcours
+$deleteParcours = filter_input(INPUT_POST, 'supprimeParcours', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 
+if (count($deleteParcours)) {
+	//var_dump($deleteParcours);
+	//echo '<br>';
+	foreach ($deleteParcours as $key=>$value) {
+		supprimeParcours($key);
+	}
+}
 
+// on modifie un parcours
+$modifieParcours = filter_input(INPUT_POST, 'modifieParcours');
+if ($modifieParcours) {
+	$modifieParcoursPeriode = filter_input(INPUT_POST, 'modifieParcoursPeriode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursClasse = filter_input(INPUT_POST, 'modifieParcoursClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursCode = filter_input(INPUT_POST, 'modifieParcoursCode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursTexte = filter_input(INPUT_POST, 'modifieParcoursTexte', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieParcoursId = filter_input(INPUT_POST, 'modifieParcoursId', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	
+	//echo $modifieParcoursTexte[$modifieParcours];
+	//modifieParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $modifieParcours);
+	modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours]);
+}
 

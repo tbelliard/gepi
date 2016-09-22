@@ -22,8 +22,8 @@
 */
 
 // Pour l'instant on extrait les classes 1,2,3,4 (3ème ou pas)
-$array = array(1,2,3,4);
-$myData = implode(",", $array);
+$selectionClasse = array(1,2,3,4);
+$myData = implode(",", $selectionClasse);
 $millesime = LSUN_annee(getSettingValue('gepiYear'));
 
 /*===== Responsable =====*/
@@ -71,6 +71,8 @@ $sqlElementsProgramme = "SELECT * FROM matiere_element_programme ORDER BY id;";
 $listeElementsProgramme = $mysqli->query($sqlElementsProgramme);
 
 /*===== parcours éducatifs communs ===== */
+$sqlParcoursCommun = "SELECT DISTINCT periode, classe FROM lsun_parcours_communs WHERE classe IN ($myData) ORDER BY id;";
+$listeParcoursCommuns = $mysqli->query($sqlParcoursCommun);
 // Voir comment on gère les parcours des classes
 
 /*===== commentaires de vie scolaire communs ===== */

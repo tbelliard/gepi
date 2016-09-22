@@ -36,6 +36,18 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_responsables ("
 	. "login varchar(50) NOT NULL,"
 	. "PRIMARY KEY (id), UNIQUE KEY login (login) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
 $mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_parcours_communs ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "periode int(11) NOT NULL COMMENT 'Periode de référence du parcours', "
+	. "classe int(11) NOT NULL COMMENT 'id de la classe concernée', "
+	. "codeParcours varchar(10) NOT NULL COMMENT 'Code officiel du parcours', "
+	. "description text NOT NULL COMMENT 'Description du parcours', "
+	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+
 $sql = "INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) "
 	. "VALUES ('/mod_LSUN/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Extraction du livret', '' ) "
 	. "ON DUPLICATE KEY UPDATE administrateur = 'V'; ";

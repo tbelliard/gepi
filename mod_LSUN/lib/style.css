@@ -41,8 +41,33 @@ input {
     background-image:url('../../images/icons/delete.png');
     background-repeat:no-repeat;
     background-position:top left;
+    font-size:0;
     width: 16px;
     height: 16px;
+    cursor: pointer;
+}
+
+.btnValide {
+    border:none;
+    background-repeat:no-repeat;
+    background-position:top left;
+    width: 20px;
+    height: 20px;
+    color: #29ad10;
+    font-size:0;
+    background-image:url('../../images/enabled.png');
+    cursor: pointer;
+}
+
+.btnSupprime {
+    border:none;
+    background-repeat:no-repeat;
+    background-position:top left;
+    width: 20px;
+    height: 20px;
+    font-size:0;
+    background-image:url('../../images/disabled.png');
+    cursor: pointer;
 }
 
 table {
