@@ -123,7 +123,23 @@ echo " | <a href='visu_releve_notes_bis.php' title=\"Par opposition à l'interfa
 // l'élève a-t-il des évaluations cumules
 
 if ($ele_login) {
-    $mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+    //$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+	if (!isset($db_nopersist) || $db_nopersist) {
+		if(isset($dbPort)) {
+			$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+		}
+		else {
+			$mysqli = new mysqli($dbHost, $dbUser, $dbPass, $dbDb);
+		}
+	}
+	else {
+		if(isset($dbPort)) {
+			$mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb, $dbPort);
+		}
+		else {
+			$mysqli = new mysqli("p:".$dbHost, $dbUser, $dbPass, $dbDb);
+		}
+	}
 /* Modification du jeu de résultats en utf8 */
     if (!$mysqli->set_charset("utf8")) {
         printf("Erreur lors du chargement du jeu de caractères utf8 : %s\n", $mysqli->error);
