@@ -214,6 +214,7 @@ $type_etablissement["college"] = "Collège";
 $type_etablissement["lycee"] = "Lycée";
 $type_etablissement["lprof"] = "Lyc. Prof.";
 $type_etablissement["EREA"] = "EREA";
+$type_etablissement["universite"] = "Université";
 $type_etablissement["tous_niveaux"] = "Tous niveaux";
 $type_etablissement["aucun"] = "";
 
@@ -223,6 +224,7 @@ $type_etablissement2["public"]["college"] = "public";
 $type_etablissement2["public"]["lycee"] = "public";
 $type_etablissement2["public"]["lprof"] = "public";
 $type_etablissement2["public"]["EREA"] = "public";
+$type_etablissement2["public"]["universite"] = "public";
 $type_etablissement2["public"]["tous_niveaux"] = "public";
 $type_etablissement2["public"]["aucun"] = "";
 $type_etablissement2["prive"]["ecole"] = "privée";
@@ -230,6 +232,7 @@ $type_etablissement2["prive"]["college"] = "privé";
 $type_etablissement2["prive"]["lycee"] = "privé";
 $type_etablissement2["prive"]["lprof"] = "privé";
 $type_etablissement2["prive"]["EREA"] = "privé";
+$type_etablissement2["public"]["universite"] = "privé";
 $type_etablissement2["prive"]["tous_niveaux"] = "privé";
 $type_etablissement2["prive"]["aucun"] = "";
 
