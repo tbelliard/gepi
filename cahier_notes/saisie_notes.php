@@ -713,31 +713,35 @@ if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 		$id_grp_prec=0;
 		$id_grp_suiv=0;
 		$temoin_tmp=0;
+		$tab_groupes_utiles=array();
 		for($loop=0;$loop<count($tab_groups);$loop++) {
 			if((!isset($tab_groups[$loop]["visibilite"]["cahier_notes"]))||($tab_groups[$loop]["visibilite"]["cahier_notes"]=='y')) {
 				// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
 				if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
-					if($tab_groups[$loop]['id']==$id_groupe){
-						$num_groupe=$loop;
-	
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-	
-						$temoin_tmp=1;
-						if(isset($tab_groups[$loop+1])){
-							$id_grp_suiv=$tab_groups[$loop+1]['id'];
-						}
-						else{
-							$id_grp_suiv=0;
-						}
-					}
-					else {
-						$chaine_options_classes.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
-					}
-	
-					if($temoin_tmp==0){
-						$id_grp_prec=$tab_groups[$loop]['id'];
-					}
+					$tab_groupes_utiles[]=$tab_groups[$loop];
 				}
+			}
+		}
+		for($loop=0;$loop<count($tab_groupes_utiles);$loop++) {
+			if($tab_groupes_utiles[$loop]['id']==$id_groupe){
+				$num_groupe=$loop;
+
+				$chaine_options_classes.="<option value='".$tab_groupes_utiles[$loop]['id']."' selected='true'>".$tab_groupes_utiles[$loop]['description']." (".$tab_groupes_utiles[$loop]['classlist_string'].")</option>\n";
+
+				$temoin_tmp=1;
+				if(isset($tab_groupes_utiles[$loop+1])){
+					$id_grp_suiv=$tab_groupes_utiles[$loop+1]['id'];
+				}
+				else{
+					$id_grp_suiv=0;
+				}
+			}
+			else {
+				$chaine_options_classes.="<option value='".$tab_groupes_utiles[$loop]['id']."'>".$tab_groupes_utiles[$loop]['description']." (".$tab_groupes_utiles[$loop]['classlist_string'].")</option>\n";
+			}
+
+			if($temoin_tmp==0){
+				$id_grp_prec=$tab_groupes_utiles[$loop]['id'];
 			}
 		}
 
