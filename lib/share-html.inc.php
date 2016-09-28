@@ -3532,7 +3532,70 @@ function js_change_style_radio($nom_js_func="change_style_radio", $avec_balise_s
 		item=document.getElementsByTagName('input');
 		for(i=0;i<item.length;i++) {
 			if(item[i].getAttribute('type')=='radio') {
-				checkbox_change(item[i].getAttribute('id'));
+				".$nom_js_func_checkbox_change."(item[i].getAttribute('id'));
+			}
+		}
+	}\n";
+	if($avec_balise_script!="n") {$retour.="</script>\n";}
+	return $retour;
+}
+
+function js_change_style_radio2($nom_js_func="change_style_radio", $avec_balise_script="n", $avec_js_checkbox_change="n", $nom_js_func_checkbox_change='checkbox_change', $prefixe_texte_checkbox_change='texte_', $perc_opacity_checkbox_change=1) {
+	$retour="";
+	if($avec_balise_script!="n") {$retour.="<script type='text/javascript'>\n";}
+
+	if($avec_js_checkbox_change!="n") {
+		$retour.=js_checkbox_change_style($nom_js_func_checkbox_change, $prefixe_texte_checkbox_change, "n", $perc_opacity_checkbox_change)."\n";
+	}
+
+	$retour.="
+	function $nom_js_func(nom_champ) {
+		if(nom_champ=='') {
+			item=document.getElementsByTagName('input');
+			for(i=0;i<item.length;i++) {
+				if(item[i].getAttribute('type')=='radio') {
+					".$nom_js_func_checkbox_change."(item[i].getAttribute('id'));
+				}
+			}
+		}
+		else {
+			var tab=document.getElementsByName(nom_champ);
+			for(i=0;i<tab.length;i++) {
+				current_id=tab[i].getAttribute('id');
+				if(document.getElementById(current_id)) {
+					if(document.getElementById('".$prefixe_texte_checkbox_change."'+current_id)) {
+						".$nom_js_func_checkbox_change."(current_id);
+					}
+				}
+			}
+		}
+	}
+
+	function id_$nom_js_func(id_champ) {
+		if(id_champ=='') {
+			item=document.getElementsByTagName('input');
+			for(i=0;i<item.length;i++) {
+				if(item[i].getAttribute('type')=='radio') {
+					".$nom_js_func_checkbox_change."(item[i].getAttribute('id'));
+				}
+			}
+		}
+		else {
+			var nom_champ=document.getElementById(id_champ).getAttribute('name');
+			var tab=document.getElementsByName(nom_champ);
+			for(i=0;i<tab.length;i++) {
+				current_id=tab[i].getAttribute('id');
+				//alert('current_id='+current_id);
+				if(document.getElementById(current_id)) {
+					if(document.getElementById('".$prefixe_texte_checkbox_change."'+current_id)) {
+						".$nom_js_func_checkbox_change."(current_id);
+					}
+					/*
+					else {
+						alert('document.getElementById(\'".$prefixe_texte_checkbox_change."\'+current_id) n existe pas.');
+					}
+					*/
+				}
 			}
 		}
 	}\n";

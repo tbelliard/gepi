@@ -181,14 +181,19 @@ if(isset($_GET['afficher_details_groupe_gepi'])) {
 		$info_grp=get_info_grp($_GET['id_groupe']);
 		$tab_ele=get_eleves_from_groupe($_GET['id_groupe']);
 
-		echo "<div style='margin:0.5em;'>";
-		echo "<p class='bold'>$info_grp</p><p>";
-		foreach($tab_ele['users'] as $current_login => $current_ele) {
-			echo $current_ele['nom']." ".$current_ele['prenom']."<br />";
+		if((isset($tab_ele['users']))&&(count($tab_ele['users'])>0)) {
+			echo "<div style='margin:0.5em;'>";
+			echo "<p class='bold'>$info_grp</p><p>";
+			foreach($tab_ele['users'] as $current_login => $current_ele) {
+				echo $current_ele['nom']." ".$current_ele['prenom']."<br />";
+			}
+			echo "<span class='bold'>Effectif&nbsp;: ".count($tab_ele['users'])."</span>";
+			echo "</p>";
+			echo "</div>";
 		}
-		echo "<span class='bold'>Effectif&nbsp;: ".count($tab_ele['users'])."</span>";
-		echo "</p>";
-		echo "</div>";
+		else {
+			echo "<p class='bold'>$info_grp</p><p>Aucun élève dans le groupe ou groupe non associé au prof&nbsp;?</p>";
+		}
 	}
 	else {
 		echo "<p style='color:red'>Identifiant de groupe invalide.</p>";
@@ -2124,7 +2129,7 @@ mysql>
 					elseif(mysqli_num_rows($res_grp)>1) {
 
 						$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes semblent pouvoir convenir&nbsp;:<br />";
-						$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun0' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun0'>---</label><br />";
+						$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun0' value='' onchange=\"change_style_radio(this.name)\" checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun0' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun0'>---</label><br />";
 
 						while($lig=mysqli_fetch_object($res_grp)) {
 
@@ -2135,7 +2140,7 @@ mysql>
 								$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 							}
 
-							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."' onchange=\"change_style_radio(this.name)\"><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 
 							$tmp_tab_id_groupe_proposes[]=$lig->id_groupe;
 						}
@@ -2158,10 +2163,10 @@ mysql>
 
 							$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes précédemment associés au regroupement EDT&nbsp;:<br />";
 
-							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' onchange=\"change_style_radio(this.name)\" checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 							for($loop=0;$loop<count($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe']);$loop++) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' value='".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' value='".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' onchange=\"change_style_radio(this.name)\"";
 
 								$tmp_tab_id_groupe_proposes[]=$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop];
 								/*
@@ -2182,13 +2187,14 @@ mysql>
 
 								$temoin_choix_precedent="";
 								/*
-								if(in_array($tab_grp_candidat[$loop], $tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'])) {
+								if(in_array($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop], $tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'])) {
 									$temoin_choix_precedent=" <img src='../images/icons/flag_green.png' class='icone16' title=\"Choix effectué lors d'un précédent import.\"/ >";
-									$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop];
+									$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop];
+									$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 								}
 								*/
 
-								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'>".get_info_grp($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop])."</label> <a href='#' onclick=\"afficher_details_groupe(".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."'>".get_info_grp($tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop])."</label> <a href='#' onclick=\"afficher_details_groupe(".$tab_grp_associes_precedent_import['"'.$current_nom_regroupement_edt.'"']['id_groupe'][$loop]."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 							}
 
 							$lignes_ce_cours.="</p>";
@@ -2220,14 +2226,14 @@ mysql>
 						if(mysqli_num_rows($res_grp)>0) {
 							while($lig=mysqli_fetch_object($res_grp)) {
 								if(!in_array($lig->id_groupe, $tmp_tab_id_groupe_proposes)) {
-									$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
+									$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' onchange=\"change_style_radio(this.name)\">".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
 									$cpt_grp_classe_matiere++;
 								}
 							}
 
 							if($chaine_groupes_associes_a_classe_et_matiere!="") {
 								$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes associés à cette classe et cette matière, <strong style='color:red'>mais avec un autre professeur</strong>&nbsp;:<br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' onchange=\"change_style_radio(this.name)\" checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
 								$lignes_ce_cours.=$chaine_groupes_associes_a_classe_et_matiere;
 							}
 						}
@@ -2320,10 +2326,10 @@ mysql>
 								}
 
 								$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' onchange=\"change_style_radio(this.name)\" checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 								for($loop=0;$loop<count($tab_grp_candidat);$loop++) {
 									//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
-									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'";
+									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."' onchange=\"change_style_radio(this.name)\"";
 									if($tab['details_cours']!="") {
 										$tmp_tab=explode("|", $tab['details_cours']);
 										$tmp_id_groupe=$tmp_tab[0];
@@ -2344,7 +2350,7 @@ mysql>
 										$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop];
 										$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 									}
-									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label> <a href='#' onclick=\"afficher_details_groupe($tab_grp_candidat[$loop]); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label> <a href='#' onclick=\"afficher_details_groupe($tab_grp_candidat[$loop]); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 								}
 								$lignes_ce_cours.="</p>";
 								$cpt_indecis++;
@@ -2363,10 +2369,10 @@ mysql>
 							// Une seule classe: il faut proposer le choix, en indiquant les effectifs,...
 
 							$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
-							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' onchange=\"change_style_radio(this.name)\" checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 							while($lig=mysqli_fetch_object($res_grp)) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($lig->id_groupe)."</span><br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."' onchange=\"change_style_radio(this.name)\"";
 								if($tab['details_cours']!="") {
 									$tmp_tab=explode("|", $tab['details_cours']);
 									$tmp_id_groupe=$tmp_tab[0];
@@ -2386,7 +2392,7 @@ mysql>
 									$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe;
 									$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 								}
-								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe($lig->id_groupe); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe($lig->id_groupe); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 							}
 							$lignes_ce_cours.="</p>";
 
@@ -2423,12 +2429,12 @@ mysql>
 							*/
 							$chaine_groupes_associes_a_classe_et_matiere="";
 							while($lig=mysqli_fetch_object($res_grp_sans_filtrage_prof)) {
-								$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
+								$chaine_groupes_associes_a_classe_et_matiere.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."' onchange=\"change_style_radio(this.name)\"><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe(".$lig->id_groupe."); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a><br />";
 							}
 
 							if($chaine_groupes_associes_a_classe_et_matiere!="") {
 								$lignes_ce_cours.="<p style='color:black;'>Vous pouvez choisir parmi les groupes associés à cette classe et cette matière, <strong style='color:red'>mais avec un autre professeur</strong>&nbsp;:<br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' value='' onchange=\"change_style_radio(this.name)\" checked /><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun2' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun2'>---</label><br />";
 								$lignes_ce_cours.=$chaine_groupes_associes_a_classe_et_matiere;
 							}
 
@@ -2521,10 +2527,10 @@ mysql>
 									$lignes_ce_cours.="\$tab_grp_candidat[$key]=$value<br />";
 								}
 								$lignes_ce_cours.="</pre>";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' onchange=\"change_style_radio(this.name)\" checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 								for($loop=0;$loop<count($tab_grp_candidat);$loop++) {
 									//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($tab_grp_candidat[$loop])."</span><br />";
-									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."'";
+									$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' value='".$tab_grp_candidat[$loop]."' onchange=\"change_style_radio(this.name)\"";
 									if($tab['details_cours']!="") {
 										$tmp_tab=explode("|", $tab['details_cours']);
 										$tmp_id_groupe=$tmp_tab[0];
@@ -2544,7 +2550,7 @@ mysql>
 										$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop];
 										$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 									}
-									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label> <a href='#' onclick=\"afficher_details_groupe($tab_grp_candidat[$loop]); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+									$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$tab_grp_candidat[$loop]."'>".get_info_grp($tab_grp_candidat[$loop])."</label> <a href='#' onclick=\"afficher_details_groupe($tab_grp_candidat[$loop]); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 								}
 								$lignes_ce_cours.="</p>";
 								$cpt_indecis++;
@@ -2559,10 +2565,10 @@ mysql>
 							// Une seule classe: il faut proposer le choix, en indiquant les effectifs,...
 
 							$lignes_ce_cours.="<p style='color:black;'>Plusieurs groupes trouvés<br />";
-							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
+							$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_aucun' value='' onchange=\"change_style_radio(this.name)\" checked><label for='grp_enregistrer_rapprochement_".$tab['id']."_aucun' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_aucun'>---</label><br />";
 							while($lig=mysqli_fetch_object($res_grp)) {
 								//$lignes_ce_cours.="<span style='color:red'>".get_info_grp($lig->id_groupe)."</span><br />";
-								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."'";
+								$lignes_ce_cours.="<input type='radio' name='grp_enregistrer_rapprochement[".$tab['id']."]' id='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' value='".$lig->id_groupe."' onchange=\"change_style_radio(this.name)\"";
 								if($tab['details_cours']!="") {
 									$tmp_tab=explode("|", $tab['details_cours']);
 									$tmp_id_groupe=$tmp_tab[0];
@@ -2582,7 +2588,7 @@ mysql>
 									$tab_identifiants_precedent_import[]="grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe;
 									$tab_edt_lignes_precedent_import[]=$cpt_indecis+1;
 								}
-								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe($lig->id_groupe); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
+								$lignes_ce_cours.="><label for='grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."' id='texte_grp_enregistrer_rapprochement_".$tab['id']."_".$lig->id_groupe."'>".get_info_grp($lig->id_groupe)."</label> <a href='#' onclick=\"afficher_details_groupe($lig->id_groupe); return false;\" title=\"Afficher la liste et l'effectif des élèves inscrits dans ce groupe.\"><img src='../images/icons/chercher.png' class='icone16' alt='Voir' /></a>$temoin_choix_precedent<br />";
 							}
 							$lignes_ce_cours.="</p>";
 							$cpt_indecis++;
@@ -2681,15 +2687,21 @@ mysql> select * from edt_cours where duree='1' limit 5;
 			$lignes_js_choix_prec.="'".$tab_identifiants_precedent_import[$loop]."'";
 		}
 		$lignes_js_choix_prec.=");
-	for(i=0;i<tab_choix_prec.length;i++) {
-		document.getElementById(tab_choix_prec[i]).checked=true;
+	for(j=0;j<tab_choix_prec.length;j++) {
+		document.getElementById(tab_choix_prec[j]).checked=true;
+		// 20160926
+		id_change_style_radio(tab_choix_prec[j]);
 	}
+
+	//change_style_radio();
 }
 
 if(document.getElementById('p_cocher_choix_prec')) {
 	document.getElementById('p_cocher_choix_prec').style.display='';
 }
 ";
+		// DEBUG
+		//echo "<p>\$lignes_js_choix_prec=$lignes_js_choix_prec</p>";
 	}
 
 	//div_choix_a_faire_
@@ -2712,6 +2724,9 @@ if(document.getElementById('p_cocher_choix_prec')) {
 	}
 
 	echo "<script type='text/javascript'>
+
+	".js_change_style_radio2($nom_js_func="change_style_radio", "n", "y", 'checkbox_change', 'texte_')."
+
 	$lignes_js_choix_prec
 	$lignes_js_choix_prec_deja_fait
 
@@ -2758,6 +2773,8 @@ if(document.getElementById('p_cocher_choix_prec')) {
 		//document.getElementById('div_detail_groupe_titre').innerHTML='Groupe n°'+id_groupe;
 		afficher_div('div_detail_groupe','y',10,10);
 	}
+
+	change_style_radio();
 
 </script>";
 
