@@ -82,6 +82,15 @@ if($gepi_denom_mention=="") {
 if (isset($_POST['is_posted'])) {
 	check_token();
 
+	$bull2016_INE=isset($_POST["bull2016_INE"]) ? $_POST["bull2016_INE"] : "n";
+	if(($bull2016_INE!="y")&&($bull2016_INE!="n")) {
+		$bull2016_INE="n";
+	}
+	if (!saveSetting("bull2016_INE", $bull2016_INE)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_INE !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_arrondi=isset($_POST["bull2016_arrondi"]) ? $_POST["bull2016_arrondi"] : 0.01;
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
 	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
@@ -276,7 +285,7 @@ if (isset($_POST['is_posted'])) {
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-$msg = "Enregistrement réussi !";
+	$msg = "Enregistrement réussi <em>(".strftime("Le %A %d/%m/%Y à %H:%M:%S").")</em> !";
 }
 
 
@@ -391,6 +400,11 @@ if($bull2016_titre_avis_orientation_proposee=="") {
 }
 
 $bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
+
+$bull2016_INE_checked="";
+if(getSettingAOui('bull2016_INE')) {
+	$bull2016_INE_checked=" checked";
+}
 ?>
 
 
@@ -399,6 +413,18 @@ $bull2016_orientation_periodes=getSettingValue("bull2016_orientation_periodes");
 echo add_token_field();
 ?>
 <input type='hidden' name='is_posted' value='y' />
+<h3>Paramètres divers</h3>
+<table class='boireaus boireaus_alt' summary='Paramètres divers'>
+	<tr>
+		<td>Faire apparaître le numéro INE de l'élève&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_INE" id="bull2016_INE" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_INE_checked;
+			?> />
+		</td>
+	</tr>
+</table>
+
 <h3>Paramètres des moyennes</h3>
 <table class='boireaus boireaus_alt' summary='Paramètres des moyennes'>
 	<tr>

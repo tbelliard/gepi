@@ -594,9 +594,15 @@ die();
 			$info_naissance.=" à ".$tab_bull['eleve'][$i]['lieu_naissance'];
 		}
 		*/
+
+		$info_ligne_2_eleve=$info_naissance;
+		if($param_bull2016["bull2016_INE"]=="y") {
+			$info_ligne_2_eleve.=" - INE : ".$tab_bull['eleve'][$i]['no_gep'];
+		}
+
 		$pdf->SetXY($param_bull2016["x_cadre_eleve"], $param_bull2016["y_naissance_eleve"]);
 		$pdf->SetFont('DejaVu','',8);
-		$pdf->Cell($param_bull2016["largeur_cadre_eleve"],7, $info_naissance,0,2,'C');
+		$pdf->Cell($param_bull2016["largeur_cadre_eleve"],7, $info_ligne_2_eleve,0,2,'C');
 
 
 		//if($tab_modele_pdf["afficher_tous_profprincipaux"][$classe_id]==1) {

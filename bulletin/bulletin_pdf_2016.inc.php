@@ -95,6 +95,10 @@
 
 	//========================================
 
+	$param_bull2016["bull2016_INE"]=getSettingValue("bull2016_INE");
+
+	//========================================
+
 	$param_bull2016["x_cadre_logo_RF"]=10;
 	$param_bull2016["y_cadre_logo_RF"]=5;
 	$param_bull2016["largeur_cadre_logo_RF"]=25;
