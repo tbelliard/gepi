@@ -217,7 +217,14 @@ else {
 		echo "</td>\n";
 
 		//echo "<td><input type='checkbox' name='suppr_mesure[]' id='suppr_mesure_$cpt' value=\"$lig->mesure\" onchange='changement();' /></td>\n";
-		echo "<td><input type='checkbox' name='suppr_mesure[]' id='suppr_mesure_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+		$sql="SELECT 1=1 FROM s_traitement_incident sti WHERE sti.id_mesure='".$lig->id."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)>0) {
+			echo "<td style='color:red'>Associée à ".mysqli_num_rows($test)." ".$mod_disc_terme_incident."(s)</td>\n";
+		}
+		else {
+			echo "<td><input type='checkbox' name='suppr_mesure[]' id='suppr_mesure_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+		}
 		echo "</tr>\n";
 
 		$cpt++;
