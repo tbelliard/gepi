@@ -67,5 +67,34 @@ if ($test == -1) {
 // Fin SECTION EXEMPLE
 */
 
+$result .= "&nbsp;-> Ajout d'un champ 'prenom' à la table 'tempo_utilisateurs'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM tempo_utilisateurs LIKE 'prenom';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE tempo_utilisateurs ADD prenom VARCHAR( 50 ) NOT NULL AFTER identifiant2;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
+
+$result .= "&nbsp;-> Ajout d'un champ 'nom' à la table 'tempo_utilisateurs'<br />";
+$test_champ=mysqli_num_rows(mysqli_query($mysqli, "SHOW COLUMNS FROM tempo_utilisateurs LIKE 'nom';"));
+if ($test_champ==0) {
+	$sql="ALTER TABLE tempo_utilisateurs ADD nom VARCHAR( 50 ) NOT NULL AFTER identifiant2;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter == '') {
+		$result .= msj_ok("SUCCES !");
+	}
+	else {
+		$result .= msj_erreur("ECHEC !");
+	}
+} else {
+	$result .= msj_present("Le champ existe déjà");
+}
 
 ?>
