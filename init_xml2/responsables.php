@@ -566,7 +566,7 @@
 												if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 												$update_rp=mysqli_query($GLOBALS["mysqli"], $sql);
 	
-												$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."';";
+												$sql="UPDATE tempo_utilisateurs SET temoin='recree' WHERE identifiant1='".$personnes[$i]["personne_id"]."' AND statut='responsable';";
 												if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 												$update_tmp_u=mysqli_query($GLOBALS["mysqli"], $sql);
 											}
