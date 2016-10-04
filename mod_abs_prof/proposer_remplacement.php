@@ -76,6 +76,7 @@ if(($_SESSION['statut']=='cpe')&&(!getSettingAOui('AbsProfProposerRemplacementCp
 include("../ckeditor/ckeditor.php") ;
 
 $id_absence=isset($_POST['id_absence']) ? $_POST['id_absence'] : (isset($_GET['id_absence']) ? $_GET['id_absence'] : NULL);
+//echo "\$id_absence=$id_absence<br />";
 
 if(!isset($id_absence)) {
 	header("Location: index.php?msg=Numéro d absence non choisi.");
@@ -88,8 +89,9 @@ if(!preg_match("/^[0-9]{1,}$/", $id_absence)) {
 }
 
 $sql="SELECT * FROM abs_prof WHERE id='$id_absence';";
+//echo "$sql<br />";
 $res_infos_id_absence_courante=mysqli_query($GLOBALS["mysqli"], $sql);
-if(mysqli_num_rows($res)==0) {
+if(mysqli_num_rows($res_infos_id_absence_courante)==0) {
 	header("Location: index.php?msg=Numéro d absence non valide.");
 	die();
 }
