@@ -338,6 +338,11 @@ if($nb_reg_edt_lignes>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=rapp
 if($nb_reg_edt_lignes>0) {echo " | <a href='".$_SERVER['PHP_SELF']."?action=remplir_edt_cours".add_token_in_url()."'>Remplir l'EDT d'après le dernier XML envoyé et d'après les rapprochements effectués</a>";}
 
 if($action!="") {echo " | <a href='".$_SERVER['PHP_SELF']."'> Autre import </a>";}
+
+$edt_edt_last_upload=getSettingValue("edt_edt_last_upload");
+if($edt_edt_last_upload!="") {
+	echo " <em title=\"Le dernier fichier EXP_COURS.xml uploadé/déposé sur le serveur date du ".strftime("%d/%m/%Y à %H:%M:%S", $edt_edt_last_upload).".\">(dernier upload ".strftime("%d/%m/%Y à %H:%M:%S", $edt_edt_last_upload).")</em>";
+}
 echo "</p>
 
 <h2>Import des EDT depuis un XML d'EDT</h2>";
@@ -572,6 +577,8 @@ elseif($action=="upload") {
 			$cpt++;
 		}
 	}
+
+	saveSetting("edt_edt_last_upload", time());
 
 	echo "<p><a href='".$_SERVER['PHP_SELF']."?action=rapprochements'>Effectuer les rapprochements</a></p>";
 
