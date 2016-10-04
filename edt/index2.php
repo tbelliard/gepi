@@ -877,13 +877,70 @@ else {
 		<input type='hidden' name='login_prof' value=\"".$_SESSION['login']."\" />");
 	}
 	else {
+		$precedent="";
+		$suivant="";
+		$prof_courant_trouve="n";
+		$chaine_options_select="";
+		$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
+		$res=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($res)==0) {
+			$chaine_options_select.="
+			<option value='' style='color:red'>Aucun professeur trouvé</option>";
+		}
+		else {
+			$cpt=1;
+			while($lig=mysqli_fetch_object($res)) {
+				$selected="";
+				if((isset($login_prof))&&($lig->login==$login_prof)) {
+					$selected=" selected";
+					$prof_courant_trouve="y";
+				}
+				else {
+					if($prof_courant_trouve=="n") {
+						$precedent=$cpt;
+					}
+
+					if(($prof_courant_trouve=="y")&&($suivant=="")) {
+						$suivant=$cpt;
+					}
+				}
+
+
+				$chaine_options_select.="
+			<option value='".$lig->login."'$selected>".$lig->civilite." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>";
+				$cpt++;
+			}
+
+			if($prof_courant_trouve=="n") {
+				$precedent="";
+				$suivant="";
+			}
+		}
+
+		$lien_prof_precedent="";
+		if($precedent!="") {
+			$lien_prof_precedent="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$precedent;
+					document.getElementById('type_affichage_prof').checked=true;
+					document.getElementById('id_classe').selectedIndex=0;
+					document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+		}
+		$lien_prof_suivant="";
+		if($suivant!="") {
+			$lien_prof_suivant="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$suivant;
+					document.getElementById('type_affichage_prof').checked=true;
+					document.getElementById('id_classe').selectedIndex=0;
+					document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+		}
+
 		echo_selon_mode("<label for='type_affichage_prof'>professeur</label>
+		$lien_prof_precedent
 		<select name='login_prof' id='login_prof' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_prof').options[document.getElementById('login_prof').selectedIndex].value!='') {
 						document.getElementById('type_affichage_prof').checked=true;
 						document.getElementById('id_classe').selectedIndex=0;
 					};document.getElementById('form_envoi').submit();\">
 			<option value=''>---</option>");
+		/*
 		$sql="SELECT login, civilite, nom, prenom FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom,prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)==0) {
@@ -900,24 +957,25 @@ else {
 			<option value='".$lig->login."'$selected>".$lig->civilite." ".casse_mot($lig->nom, "maj")." ".casse_mot($lig->prenom, "majf2")."</option>");
 			}
 		}
+		*/
+		echo_selon_mode($chaine_options_select);
 		echo_selon_mode("
 		</select>");
+		echo_selon_mode("
+		".$lien_prof_suivant);
 	}
 
-	echo_selon_mode("
-		 ou <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/><label for='type_affichage_classe'>classe</label>
-		<select name='id_classe' id='id_classe' style='width:5em;' 
-			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
-						document.getElementById('type_affichage_classe').checked=true;
-						document.getElementById('login_prof').selectedIndex=0;
-					};document.getElementById('form_envoi').submit();\">
-			<option value=''>---</option>");
-	//$sql="SELECT DISTINCT p.id_classe, c.classe FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY c.classe;";
-	//$res=mysqli_query($GLOBALS["mysqli"], $sql);
-	//if(mysqli_num_rows($res)==0) {
+
+
+
+	$precedent="";
+	$suivant="";
+	$classe_courante_trouvee="n";
+	$cpt=1;
+	$chaine_options_select="";
 	if(count($tab_classes)==0) {
-		echo_selon_mode("
-			<option value='' style='color:red'>Aucune classe trouvée</option>");
+		$chaine_options_select="
+			<option value='' style='color:red'>Aucune classe trouvée</option>";
 	}
 	else {
 		/*
@@ -934,37 +992,141 @@ else {
 			$selected="";
 			if((isset($id_classe))&&($current_id_classe==$id_classe)) {
 				$selected=" selected";
+				$classe_courante_trouvee="y";
+			}
+			else {
+				if($classe_courante_trouvee=="n") {
+					$precedent=$cpt;
+				}
+
+				if(($classe_courante_trouvee=="y")&&($suivant=="")) {
+					$suivant=$cpt;
+				}
+			}
+			$chaine_options_select.="
+			<option value='".$current_id_classe."'".$selected.">".$current_nom_classe."</option>";
+			$cpt++;
+		}
+
+		if($classe_courante_trouvee=="n") {
+			$precedent="";
+			$suivant="";
+		}
+	}
+
+	$lien_classe_precedente="";
+	if($precedent!="") {
+		$lien_classe_precedente="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$precedent;
+				document.getElementById('type_affichage_classe').checked=true;
+				document.getElementById('login_prof').selectedIndex=0;
+				document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+	}
+	$lien_classe_suivante="";
+	if($suivant!="") {
+		$lien_classe_suivante="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$suivant;
+				document.getElementById('type_affichage_classe').checked=true;
+				document.getElementById('login_prof').selectedIndex=0;
+				document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+	}
+
+	echo_selon_mode("
+		 ou <input type='radio' name='type_affichage' id='type_affichage_classe' value='classe' ".$checked_classe."/><label for='type_affichage_classe'>classe</label>
+		$lien_classe_precedente
+		<select name='id_classe' id='id_classe' style='width:5em;' 
+			onchange=\"if(document.getElementById('id_classe').options[document.getElementById('id_classe').selectedIndex].value!='') {
+						document.getElementById('type_affichage_classe').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+					};document.getElementById('form_envoi').submit();\">
+			<option value=''>---</option>");
+	echo_selon_mode($chaine_options_select);
+	//$sql="SELECT DISTINCT p.id_classe, c.classe FROM periodes p, classes c WHERE p.id_classe=c.id ORDER BY c.classe;";
+	//$res=mysqli_query($GLOBALS["mysqli"], $sql);
+	//if(mysqli_num_rows($res)==0) {
+	/*
+	if(count($tab_classes)==0) {
+		echo_selon_mode("
+			<option value='' style='color:red'>Aucune classe trouvée</option>");
+	}
+	else {
+		foreach($tab_classes as $current_id_classe => $current_nom_classe) {
+			$selected="";
+			if((isset($id_classe))&&($current_id_classe==$id_classe)) {
+				$selected=" selected";
 			}
 			echo_selon_mode("
 			<option value='".$current_id_classe."'".$selected.">".$current_nom_classe."</option>");
 		}
 	}
+	*/
 	echo_selon_mode("
-		</select>");
+		</select>
+		$lien_classe_suivante");
 
 	if(($type_affichage=='classe')||($type_affichage=='eleve')) {
+
+		$precedent="";
+		$suivant="";
+		$eleve_courant_trouve="n";
+		$cpt=1;
+		$chaine_options_select="";
+
 		// Afficher un formulaire de choix de l'élève de la classe
 		$sql="SELECT DISTINCT e.login, e.nom, e.prenom FROM eleves e, j_eleves_classes jec WHERE e.login=jec.login AND id_classe='$id_classe' ORDER BY nom, prenom;";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql);
 		if(mysqli_num_rows($res)>0) {
+			while($lig=mysqli_fetch_object($res)) {
+				$selected="";
+				if((isset($login_eleve))&&($lig->login==$login_eleve)) {
+					$selected=" selected";
+					$eleve_courant_trouve="y";
+				}
+				else {
+					if($eleve_courant_trouve=="n") {
+						$precedent=$cpt;
+					}
+
+					if(($eleve_courant_trouve=="y")&&($suivant=="")) {
+						$suivant=$cpt;
+					}
+				}
+				$chaine_options_select.="
+			<option value='".$lig->login."'".$selected.">".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</option>";
+				$cpt++;
+			}
+
+			if($eleve_courant_trouve=="n") {
+				$precedent="";
+				$suivant="";
+			}
+
+			$lien_eleve_precedent="";
+			if($precedent!="") {
+				$lien_eleve_precedent="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$precedent;
+						document.getElementById('type_affichage_eleve').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+						document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+			}
+			$lien_eleve_suivant="";
+			if($suivant!="") {
+				$lien_eleve_suivant="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$suivant;
+						document.getElementById('type_affichage_eleve').checked=true;
+						document.getElementById('login_prof').selectedIndex=0;
+						document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+			}
+
+
 			echo_selon_mode("
 		 ou <input type='radio' name='type_affichage' id='type_affichage_eleve' value='eleve' ".$checked_eleve."/><label for='type_affichage_eleve'>élève</label>
+		$lien_eleve_precedent
 		<select name='login_eleve' id='login_eleve' style='width:10em;' 
 			onchange=\"if(document.getElementById('login_eleve').options[document.getElementById('login_eleve').selectedIndex].value!='') {
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
 					};document.getElementById('form_envoi').submit();\">
-			<option value=''>---</option>");
-			while($lig=mysqli_fetch_object($res)) {
-				$selected="";
-				if((isset($login_eleve))&&($lig->login==$login_eleve)) {
-					$selected=" selected";
-				}
-				echo_selon_mode("
-			<option value='".$lig->login."'".$selected.">".casse_mot($lig->nom, 'maj')." ".casse_mot($lig->prenom, 'majf2')."</option>");
-			}
-			echo_selon_mode("
-		</select>");
+			<option value=''>---</option>
+			$chaine_options_select
+		</select>
+		$lien_eleve_suivant");
 		}
 	}
 
