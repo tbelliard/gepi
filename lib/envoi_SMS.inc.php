@@ -15,10 +15,10 @@ function json_echapp($ch) {
 	return preg_replace($cars_spec, $cars_echapp, $ch);
 }
 
-function filtrage_numero($numero,$international=false) {
-	// supprime les caractères indésirables et ajoute éventuellement l'indicatif 33
-	$numero=preg_replace('#[^0-9]#','',$numero);
-	if ($international) $numero='33'.substr($numero, 1);
+function filtrage_numero($numero,$prefixe_france=false) {
+	// supprime les caractères indésirables et ajoute éventuellement le préfixe +33
+	$numero=preg_replace('#[^0-9,+]#','',$numero);
+	if ($prefixe_france && (substr($numero,0,1)=='0')) $numero='+33'.substr($numero, 1);
 	return $numero;
 }
 
@@ -232,7 +232,7 @@ function envoi_SMS($tab_to,$sms) {
 			foreach($tab_to as $to) {
 				if ($mobiles!="") $mobiles.='				},'."\n";
 				$mobiles.='				{'."\n";
-				$mobiles.='				"MOBILEPHONE": "'.filtrage_numero($to,true).'"'."\n";
+				$mobiles.='				"MOBILEPHONE": "'.filtrage_numero($to).'"'."\n";
 			};
 			
 			$mobiles=rtrim($mobiles,',');
