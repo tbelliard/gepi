@@ -125,7 +125,7 @@ function envoi_SMS($tab_to,$sms) {
 	*/
 	
 	// on ajoute l'identité de l'émetteur
-	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' ';$sms;
+	if(getSettingValue('sms_identite')!=='') $sms=getSettingValue('sms_identite').' '.$sms;
 	
 	$sms_prestataire=getSettingValue("sms_prestataire");
 	switch ($sms_prestataire) {
