@@ -922,14 +922,14 @@ else {
 			$lien_prof_precedent="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$precedent;
 					document.getElementById('type_affichage_prof').checked=true;
 					document.getElementById('id_classe').selectedIndex=0;
-					document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+					document.getElementById('form_envoi').submit();\" title=\"Professeur précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
 		}
 		$lien_prof_suivant="";
 		if($suivant!="") {
 			$lien_prof_suivant="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$suivant;
 					document.getElementById('type_affichage_prof').checked=true;
 					document.getElementById('id_classe').selectedIndex=0;
-					document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+					document.getElementById('form_envoi').submit();\" title=\"Professeur suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
 		}
 
 		echo_selon_mode("<label for='type_affichage_prof'>professeur</label>
@@ -1019,14 +1019,14 @@ else {
 		$lien_classe_precedente="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$precedent;
 				document.getElementById('type_affichage_classe').checked=true;
 				document.getElementById('login_prof').selectedIndex=0;
-				document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+				document.getElementById('form_envoi').submit();\" title=\"Classe précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
 	}
 	$lien_classe_suivante="";
 	if($suivant!="") {
 		$lien_classe_suivante="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$suivant;
 				document.getElementById('type_affichage_classe').checked=true;
 				document.getElementById('login_prof').selectedIndex=0;
-				document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+				document.getElementById('form_envoi').submit();\" title=\"Classe suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
 	}
 
 	echo_selon_mode("
@@ -1104,14 +1104,14 @@ else {
 				$lien_eleve_precedent="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$precedent;
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
-						document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+						document.getElementById('form_envoi').submit();\" title=\"Élève précédent\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
 			}
 			$lien_eleve_suivant="";
 			if($suivant!="") {
 				$lien_eleve_suivant="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$suivant;
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
-						document.getElementById('form_envoi').submit();\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+						document.getElementById('form_envoi').submit();\" title=\"Élève suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
 			}
 
 
