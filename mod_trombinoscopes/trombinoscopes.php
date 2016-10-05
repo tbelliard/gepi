@@ -1558,6 +1558,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			if(document.getElementById('nom_prenom_photo_upload')) {
 				document.getElementById('nom_prenom_photo_upload').innerHTML=nom_prenom;
 			}
+			document.getElementById('suppr_photo').checked=false;
 			afficher_div('div_upload_photo','y',-20,20);
 		}
 	}
