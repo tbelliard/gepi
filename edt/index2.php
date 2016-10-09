@@ -602,6 +602,10 @@ function echo_selon_mode($texte) {
 	}
 }
 
+if(acces("/edt_organisation/index_edt.php", $_SESSION['statut'])) {
+	echo_selon_mode("<div style='float:right; width:16px; margin:5px;' title=\"Affichage EDT version 1\"><a href='$gepiPath/edt_organisation/index_edt.php'><img src='$gepiPath/images/icons/edt1.png' class='icone16' alt='EDT1' /></a></div>");
+}
+
 // onclick=\"return confirm_abandon (this, change, '$themessage')\"
 echo_selon_mode("<p class='bold'><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>");
 
@@ -929,7 +933,7 @@ else {
 			$lien_prof_suivant="<a href=\"#\" onclick=\"document.getElementById('login_prof').selectedIndex=$suivant;
 					document.getElementById('type_affichage_prof').checked=true;
 					document.getElementById('id_classe').selectedIndex=0;
-					document.getElementById('form_envoi').submit();\" title=\"Professeur suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+					document.getElementById('form_envoi').submit();\" title=\"Professeur suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
 		}
 
 		echo_selon_mode("<label for='type_affichage_prof'>professeur</label>
@@ -1019,14 +1023,14 @@ else {
 		$lien_classe_precedente="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$precedent;
 				document.getElementById('type_affichage_classe').checked=true;
 				document.getElementById('login_prof').selectedIndex=0;
-				document.getElementById('form_envoi').submit();\" title=\"Classe précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédent' /></a>";
+				document.getElementById('form_envoi').submit();\" title=\"Classe précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédente' /></a>";
 	}
 	$lien_classe_suivante="";
 	if($suivant!="") {
 		$lien_classe_suivante="<a href=\"#\" onclick=\"document.getElementById('id_classe').selectedIndex=$suivant;
 				document.getElementById('type_affichage_classe').checked=true;
 				document.getElementById('login_prof').selectedIndex=0;
-				document.getElementById('form_envoi').submit();\" title=\"Classe suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+				document.getElementById('form_envoi').submit();\" title=\"Classe suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivante' /></a>";
 	}
 
 	echo_selon_mode("
@@ -1111,7 +1115,7 @@ else {
 				$lien_eleve_suivant="<a href=\"#\" onclick=\"document.getElementById('login_eleve').selectedIndex=$suivant;
 						document.getElementById('type_affichage_eleve').checked=true;
 						document.getElementById('login_prof').selectedIndex=0;
-						document.getElementById('form_envoi').submit();\" title=\"Élève suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Précédent' /></a>";
+						document.getElementById('form_envoi').submit();\" title=\"Élève suivant\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivant' /></a>";
 			}
 
 
@@ -1154,10 +1158,11 @@ else {
 	*/
 }
 //=======================================
-echo_selon_mode("
-		<p>
-			Semaine choisie&nbsp;: <select name='num_semaine_annee' onchange=\"document.getElementById('form_envoi').submit();\">
-				<option value=''></option>");
+$precedent="";
+$suivant="";
+$semaine_courante_trouvee="n";
+$cpt=1;
+$chaine_options_select="";
 
 if(strftime("%m")>=8) {
 	$annee=strftime("%Y");
@@ -1171,10 +1176,21 @@ for($n=36;$n<52;$n++) {
 	$selected="";
 	if("$n|$annee"==$num_semaine_annee) {
 		$selected=" selected='selected'";
+		$semaine_courante_trouvee="y";
+	}
+	else {
+		if($semaine_courante_trouvee=="n") {
+			$precedent=$cpt;
+		}
+
+		if(($semaine_courante_trouvee=="y")&&($suivant=="")) {
+			$suivant=$cpt;
+		}
 	}
 
-	echo_selon_mode("
-				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>");
+	$chaine_options_select.="
+				<option value='$n|$annee'$selected>Semaine n° $n   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+	$cpt++;
 }
 $annee++;
 for($n=1;$n<28;$n++) {
@@ -1184,13 +1200,43 @@ for($n=1;$n<28;$n++) {
 	$selected="";
 	if("$m|$annee"==$num_semaine_annee) {
 		$selected=" selected='selected'";
+		$semaine_courante_trouvee="y";
 	}
-	echo_selon_mode("
-				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>");
+	else {
+		if($semaine_courante_trouvee=="n") {
+			$precedent=$cpt;
+		}
+
+		if(($semaine_courante_trouvee=="y")&&($suivant=="")) {
+			$suivant=$cpt;
+		}
+	}
+	$chaine_options_select.="
+				<option value='".$m."|$annee'$selected>Semaine n° $m   - (du ".$tmp_tab['num_jour'][1]['jjmmaaaa']." au ".$tmp_tab['num_jour'][7]['jjmmaaaa'].")</option>";
+	$cpt++;
 }
 
+$lien_semaine_precedente="";
+if($precedent!="") {
+	$lien_semaine_precedente="<a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$precedent;
+				document.getElementById('form_envoi').submit();\" title=\"Semaine précédente\"><img src='$gepiPath/images/arrow_left.png' class='icone16' alt='Précédente' /></a>";
+}
+$lien_semaine_suivante="";
+if($suivant!="") {
+	$lien_semaine_suivante="<a href=\"#\" onclick=\"document.getElementById('num_semaine_annee').selectedIndex=$suivant;
+				document.getElementById('form_envoi').submit();\" title=\"Semaine suivante\"><img src='$gepiPath/images/arrow_right.png' class='icone16' alt='Suivante' /></a>";
+}
+
+
 echo_selon_mode("
-			</select><br />
+		<p>
+			Semaine choisie&nbsp;: 
+			$lien_semaine_precedente
+			<select name='num_semaine_annee' id='num_semaine_annee' onchange=\"document.getElementById('form_envoi').submit();\">
+				<option value=''></option>".$chaine_options_select."
+			</select>
+			$lien_semaine_suivante
+			<br />
 
 			Afficher <select name='affichage' onchange=\"document.getElementById('form_envoi').submit();\">
 				<option value='semaine'>semaine</option>");
