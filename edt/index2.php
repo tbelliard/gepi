@@ -92,6 +92,13 @@ $login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : (isset($_GET
 $login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : NULL);
 
 
+if((isset($mode))&&($mode=="reinit")) {
+	if(isset($type_affichage)) {
+		unset($type_affichage);
+	}
+}
+
+
 if((isset($_GET['action_js']))&&(isset($_GET['id_cours']))&&(preg_match("/^[0-9]{1,}$/", $_GET['id_cours']))) {
 	$sql="SELECT * FROM edt_cours ec, edt_creneaux ecr WHERE ec.id_cours='".$_GET['id_cours']."' AND ec.id_definie_periode=ecr.id_definie_periode;";
 	//echo "$sql<br />";
@@ -347,6 +354,7 @@ if($affichage=="semaine") {
 // A ce stade, on a forcément $ts_display_date renseigné
 // A ce stade, on a forcément $num_semaine_annee renseigné
 //===================================================
+//echo "<p>DEBUG 1 : type_affichage=$type_affichage</p>";
 // Filtrage/contrôle de l'id_classe dans le cas élève/responsable
 if($_SESSION['statut']=="eleve") {
 	$login_eleve=$_SESSION['login'];
@@ -475,8 +483,10 @@ elseif($_SESSION['statut']=="responsable") {
 else {
 	if($_SESSION['statut']=="professeur") {
 		if(!isset($type_affichage)) {
-			$type_affichage="prof";
-			$login_prof=$_SESSION['login'];
+			if((!isset($mode))||($mode!="reinit")) {
+				$type_affichage="prof";
+				$login_prof=$_SESSION['login'];
+			}
 		}
 		elseif(($type_affichage=="prof")&&($login_prof!=$_SESSION['login'])&&(!getSettingAOui('AccesProf_EdtProfs'))) {
 			$msg.="Accès non autorisé aux EDT des collègues.<br />";
@@ -501,6 +511,8 @@ else {
 	}
 	*/
 }
+
+//echo "<p>DEBUG 2 : type_affichage=$type_affichage</p>";
 
 if(isset($type_affichage)) {
 	//============================

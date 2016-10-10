@@ -103,7 +103,7 @@ $message = "";
 		check_token();
 		$modif = mysqli_query($GLOBALS["mysqli"], $requete) OR DIE('La modification n\'a pas été enregistrée : '.mysqli_error($GLOBALS["mysqli"]));
 		//$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
-		$msg .= "La modification a bien été enregistrée !";
+		$msg .= "La modification a bien été enregistrée !<br />";
 		$post_reussi=TRUE;
 	}
 
@@ -112,7 +112,7 @@ $message = "";
 		check_token();
 		if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
 			$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
-			$msg .= " La modification a bien été enregistrée !";
+			$msg .= " La modification a bien été enregistrée !<br />";
 		}
 	}
 
@@ -122,7 +122,7 @@ $message = "";
 		check_token();
 		if (saveSetting("affiche_vacances_eleresp", $affiche_vacances_eleresp)){
 			$message .= "<p class=\"red\">La modification de 'affiche_vacances_eleresp' a bien été enregistrée !</p>";;
-			$msg .= " La modification de 'affiche_vacances_eleresp' a bien été enregistrée !";
+			$msg .= " La modification de 'affiche_vacances_eleresp' a bien été enregistrée !<br />";
 		}
 	}
 
@@ -131,12 +131,20 @@ $message = "";
 		check_token();
 		if (saveSetting("affiche_vacances_prof", $affiche_vacances_prof)){
 			$message .= "<p class=\"red\">La modification de 'affiche_vacances_prof' a bien été enregistrée !</p>";;
-			$msg .= " La modification de 'affiche_vacances_prof' a bien été enregistrée !";
+			$msg .= " La modification de 'affiche_vacances_prof' a bien été enregistrée !<br />";
+		}
+	}
+
+	if(isset($_POST['edt_version_defaut'])) {
+		check_token();
+		if (saveSetting("edt_version_defaut", $_POST['edt_version_defaut'])){
+			$message .= "<p class=\"red\">La modification de 'edt_version_defaut' a bien été enregistrée !</p>";;
+			$msg .= " La modification de 'edt_version_defaut' a bien été enregistrée !<br />";
 		}
 	}
 
 	// Petite fonction pour déterminer le checked="checked"
-	function eval_checked($Settings, $yn){
+	function eval_checked($Settings, $yn, $defaut=""){
 		$aff_check = '';
 		$sql="SELECT value FROM setting WHERE name = '".$Settings."';";
 		$res=mysqli_query($GLOBALS["mysqli"], $sql) OR DIE ('Erreur requête eval_setting () : '.mysqli_error($GLOBALS["mysqli"]));
@@ -145,6 +153,9 @@ $message = "";
 			if ($req_setting["value"] == $yn) {
 				$aff_check = ' checked="checked"';
 			}
+		}
+		else {
+			$aff_check=$defaut;
 		}
 		return $aff_check;
 	}

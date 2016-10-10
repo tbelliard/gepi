@@ -909,29 +909,59 @@ if(getSettingAOui('active_bulletins')) {
 
   private function emploiDuTemps(){
 	$this->b=0;
-	if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')){
-		$this->creeNouveauItem("/edt_organisation/index_edt.php",
-			"Emploi du temps",
-			"Cet outil permet la consultation/gestion de l'emploi du temps.");
+	if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')) {
+		if(getSettingValue('edt_version_defaut')=="2") {
+			$this->creeNouveauItem("/edt/index2.php",
+				"Emploi du temps",
+				"Cet outil permet la consultation/gestion de l'emploi du temps.");
 
-		if ($_SESSION["statut"] == 'responsable') {
-			if (getSettingValue("autorise_edt_eleve")=="yes"){
-				// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
-				$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur,'', 'y');
-				$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
+			if ($_SESSION["statut"] == 'responsable') {
+				if (getSettingValue("autorise_edt_eleve")=="yes"){
+					// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+					//$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur,'', 'y');
+					//$tmp_id_classe=get_id_classe_derniere_classe_ele($tab_tmp_ele[0]);
+					//"/edt/index2.php?affichage=semaine&type_affichage=eleve&id_classe=".$tmp_id_classe."&login_eleve=".$tab_tmp_ele[0],
+					$this->creeNouveauItem("/edt/index2.php",
+						  "Emploi du temps",
+						  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+				}
+			} else if($_SESSION["statut"] == 'eleve') {
+				if (getSettingValue("autorise_edt_eleve")=="yes") {
+					$this->creeNouveauItem("/edt/index2.php",
+						  "Emploi du temps",
+						  "Cet outil permet la consultation de votre emploi du temps.");
+				}
+			} else {
+				$this->creeNouveauItem("/edt/index2.php",
 					  "Emploi du temps",
-					  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+					  "Cet outil permet la consultation de votre emploi du temps.");
 			}
-		} else if($_SESSION["statut"] == 'eleve') {
-			if (getSettingValue("autorise_edt_eleve")=="yes") {
+
+		}
+		else {
+			$this->creeNouveauItem("/edt_organisation/index_edt.php",
+				"Emploi du temps",
+				"Cet outil permet la consultation/gestion de l'emploi du temps.");
+
+			if ($_SESSION["statut"] == 'responsable') {
+				if (getSettingValue("autorise_edt_eleve")=="yes"){
+					// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+					$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur,'', 'y');
+					$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
+						  "Emploi du temps",
+						  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+				}
+			} else if($_SESSION["statut"] == 'eleve') {
+				if (getSettingValue("autorise_edt_eleve")=="yes") {
+					$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+						  "Emploi du temps",
+						  "Cet outil permet la consultation de votre emploi du temps.");
+				}
+			} else {
 				$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
 					  "Emploi du temps",
 					  "Cet outil permet la consultation de votre emploi du temps.");
 			}
-		} else {
-			$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-				  "Emploi du temps",
-				  "Cet outil permet la consultation de votre emploi du temps.");
 		}
 
 		/*

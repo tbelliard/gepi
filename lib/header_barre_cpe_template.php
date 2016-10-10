@@ -183,15 +183,26 @@ if ($barre_plugin!="") {
 		//=======================================================
 		// Module emploi du temps
 		if (getSettingValue("autorise_edt_tous") == "y") {
-			$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>Emploi du tps</a>'."\n";
+			if(getSettingValue('edt_version_defaut')=="2") {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt/index2.php?mode=reinit"'.insert_confirm_abandon().'>Emploi du temps</a>'."\n";
 
-			$menus .= '   <ul class="niveau2">'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>EDT classe</a></li>'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1"'.insert_confirm_abandon().'>EDT prof</a></li>'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
-			$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=eleve1"'.insert_confirm_abandon().'>EDT élève</a></li>'."\n";
-			$menus .= '   </ul>'."\n";
-			$menus .= '</li>'."\n";
+				$menus .= '   <ul class="niveau2">'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt/index2.php"'.insert_confirm_abandon().'>EDT prof/classe/élève</a></li>'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
+			}
+			else {
+				$menus .= '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>Emploi du tps</a>'."\n";
+
+				$menus .= '   <ul class="niveau2">'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=classe1"'.insert_confirm_abandon().'>EDT classe</a></li>'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1"'.insert_confirm_abandon().'>EDT prof</a></li>'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=salle1"'.insert_confirm_abandon().'>EDT salle</a></li>'."\n";
+				$menus .= '       <li><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=eleve1"'.insert_confirm_abandon().'>EDT élève</a></li>'."\n";
+				$menus .= '   </ul>'."\n";
+				$menus .= '</li>'."\n";
+			}
 		}
 
 		if(getSettingAOui('active_edt_ical')) {
