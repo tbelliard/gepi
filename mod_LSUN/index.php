@@ -26,6 +26,12 @@
 
 $niveau_arbo = "1";
 
+//$tab_type_grp=get_tab_types_groupe();
+
+$_AP = 1;
+$_EPI = 2;
+$_Parcours = 3;
+
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
@@ -44,6 +50,52 @@ $sql = "CREATE TABLE IF NOT EXISTS lsun_parcours_communs ("
 	. "codeParcours varchar(10) NOT NULL COMMENT 'Code officiel du parcours', "
 	. "description text NOT NULL COMMENT 'Description du parcours', "
 	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_epi_communs ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "periode int(11) NOT NULL COMMENT 'Periode de référence de l\epi',  "
+	. "codeEPI varchar(10) NOT NULL COMMENT 'Code officiel de l\epi', "
+	. "intituleEpi varchar(150) NOT NULL COMMENT 'Intitulé de l\epi', "
+	. "descriptionEpi text NOT NULL COMMENT 'Description de l\epi', "
+	. "PRIMARY KEY (id) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_matieres ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique',"
+	. "id_matiere int(11) NOT NULL COMMENT 'id de la matiere' , "
+	. "modalite varchar(1) COMMENT 'modalite d\élection de la matiere' , "
+	. "id_epi int(11) NOT NULL COMMENT 'id de l\epi', "
+	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_matiere , id_epi) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_enseignements ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
+	. "id_enseignements int(11) NOT NULL COMMENT \"id de l\enseignement\", "
+	. "aid int(11) NOT NULL COMMENT '0 si enseignement, 1 si AID', "
+	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_enseignements , aid) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_classes ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
+	. "id_classe int(11) NOT NULL COMMENT \"id de la classe\", "
+	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_classe) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+//echo $sql;
+$mysqli->query($sql);
+
+$sql = "CREATE TABLE IF NOT EXISTS lsun_j_epi_classe ("
+	. "id int(11) NOT NULL auto_increment COMMENT 'identifiant unique', "
+	. "id_epi int(11) NOT NULL COMMENT \"id de l\epi\", "
+	. "id_classe int(11) NOT NULL COMMENT 'id de la classe concernée'"
+	. "PRIMARY KEY (id) , UNIQUE KEY couple (id_epi , id_classe) ) ENGINE=MyISAM CHARACTER SET utf8 COLLATE utf8_general_ci; ";
+
+$sql = "ALTER TABLE `classes` ADD `mef_code` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `rn_abs_2`;";
 //echo $sql;
 $mysqli->query($sql);
 
@@ -95,6 +147,19 @@ if (getSettingValue("active_module_LSUN")!='y') {
 include_once 'lib/fonctions.php';
 //==============================================
 
+$corrigeMEF = filter_input(INPUT_POST, 'corrigeMEF');
+if($corrigeMEF == 'y') {
+	//debug_var();
+	
+	enregistreMEF();
+	//die('coucou');
+}
+
+if (MefAppartenanceAbsent()) {
+	include_once 'getAppartenances.php';
+	die();
+		
+}
 //==============================================
 //$style_specifique[] = "lib/style";
 //$tbs_CSS_spe[] = "lib/style";
@@ -129,7 +194,7 @@ if ($utilisateur->getStatut()=="professeur") {
 	
 }
 
-debug_var();
+// debug_var();
 //**************** Pied de page *****************
 require_once("../lib/footer.inc.php");
 //**************** Fin de pied de page *****************

@@ -19,6 +19,19 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+form {
+    margin: 1em;
+}
+
+table {
+    margin-bottom: 1em;
+}
+
+th {
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
 select {
     margin-top: .5em;
 }
@@ -56,6 +69,18 @@ input {
     color: #29ad10;
     font-size:0;
     background-image:url('../../images/enabled.png');
+    cursor: pointer;
+}
+
+.btnLien {
+    border:none;
+    background-repeat:no-repeat;
+    background-position:top left;
+    width: 20px;
+    height: 20px;
+    color: #29ad10;
+    font-size:0;
+    background-image:url('../../images/lien.png');
     cursor: pointer;
 }
 

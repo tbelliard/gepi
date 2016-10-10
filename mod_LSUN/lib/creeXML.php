@@ -101,16 +101,6 @@ $xml->appendChild($items);
 				$noeudResponsableEtab->appendChild($attResponsableEtabLibelle);
 				$responsablesEtab->appendChild($noeudResponsableEtab);
 			}
-			/*
-				$noeudsResponsableEtab = array('id'=>$idResponsable,'libelle'=>$libelle);
-				
-				foreach ($noeudsResponsableEtab as $cle=>$valeur) {
-					
-					$attResponsableEtab->value = $valeur;
-					$noeudResponsableEtab->appendChild($attResponsableEtab);
-				}
-			 * 
-			 */
 			
 		$donnees->appendChild($responsablesEtab);
 		
@@ -230,14 +220,54 @@ $xml->appendChild($items);
 		
 			/*----- Vie scolaire -----*/
 			$viesScolairesCommuns = $xml->createElement('vies-scolaires-communs');
+			
 		$donnees->appendChild($viesScolairesCommuns);
 		
 			/*----- epis -----*/
 			$epis = $xml->createElement('epis');
+			$listeEPICommun = getEPICommun();
+			while ($epiCommun = $listeEPICommun->fetch_object()) { 
+				$noeudEpiCommun = $xml->createElement('epi');
+				// idClasse $epiCommun->classe 
+				$matieres = getMatieresEPICommun($epiCommun->id);
+				$refDisciplines = "";
+				foreach ($matieres as $matiere) {
+					$refDisciplines .= "DI_".getMatiereOnMatiere($matiere["id_matiere"])->code_matiere.$matiere["modalite"]." ";
+					
+				}
+				$attributsEpiCommun = array('id'=>"EPI_$epiCommun->id", 'intitule'=>"$epiCommun->intituleEpi", 'thematique'=>"$epiCommun->codeEPI", 'discipline-refs'=>"$refDisciplines");
+				foreach ($attributsEpiCommun as $cle=>$valeur) {
+					$attsEpiCommun = $xml->createAttribute($cle);
+					$attsEpiCommun->value = $valeur;
+					$noeudEpiCommun->appendChild($attsEpiCommun);
+				}
+				$noeudDexcriptionEpiCommun = $xml->createElement('description', $epiCommun->descriptionEpi);
+				$noeudEpiCommun->appendChild($noeudDexcriptionEpiCommun);
+				$epis->appendChild($noeudEpiCommun);
+			}
 		$donnees->appendChild($epis);
 		
 			/*----- epis-groupes -----*/
 			$episGroupes = $xml->createElement('epis-groupes');
+			$listeEpisGroupes = getEpisGroupes();
+			while ($episGroupe = $listeEpisGroupes->fetch_object()) { 
+				$noeudEpisGroupes = $xml->createElement('epi-groupe');
+				//id="EPI_GROUPE_02"
+				$attributsEpiGroupe = array('id'=>"EPI_GROUPE_".$episGroupe->id, 'epi-ref'=>$episGroupe->id_epi );
+				foreach ($attributsEpiGroupe as $cle=>$valeur) {
+					$attsEpiGroupe = $xml->createAttribute($cle);
+					$attsEpiGroupe->value = $valeur;
+					
+					$noeudEpisGroupes->appendChild($attsEpiGroupe);
+				}
+				$noeudEpisGroupesCommentaire = $xml->createElement('commentaire');
+				$noeudEpisGroupes->appendChild($noeudEpisGroupesCommentaire);
+				
+				$noeudEpiEnseignantsDisciplines = $xml->createElement('enseignant-discipline');
+				$noeudEpisGroupes->appendChild($noeudEpiEnseignantsDisciplines);
+				
+				$episGroupes->appendChild($noeudEpisGroupes);
+			}
 		$donnees->appendChild($episGroupes);
 		
 			/*----- acc-persos -----*/

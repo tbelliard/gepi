@@ -21,15 +21,21 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+
 $newResponsable[] = filter_input(INPUT_POST, 'responsableAdmin');
 $newResponsable[] = filter_input(INPUT_POST, 'responsableCPE');
 $newResponsable[] = filter_input(INPUT_POST, 'responsableEnseignant');
-$classesSelectipnnee = filter_input(INPUT_POST, 'afficheClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
-$_SESSION['afficheClasse'] = $classesSelevtipnnee ? $classesSelevtipnnee : (isset($_SESSION['afficheClasse']) ? $_SESSION['afficheClasse'] : NULL);
+$classesSelectionnee = filter_input(INPUT_POST, 'afficheClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+$_SESSION['afficheClasse'] = $classesSelectionnee ? $classesSelectionnee : (isset($_SESSION['afficheClasse']) ? $_SESSION['afficheClasse'] : NULL);
 
-if (count($classesSelectipnnee)) {
+$ajouteEPI = filter_input(INPUT_POST, 'ajouteEPI');
+$supprimeEPI = filter_input(INPUT_POST, 'supprimeEpi');
+$modifieEPI = filter_input(INPUT_POST, 'modifieEpi');
+
+
+if (count($classesSelectionnee)) {
 	$_SESSION['afficheClasse']=array();
-	foreach ($classesSelectipnnee as $key=>$value) {
+	foreach ($classesSelectionnee as $key=>$value) {
 		$_SESSION['afficheClasse'][]=$key;
 	}
 }
@@ -86,4 +92,54 @@ if ($modifieParcours) {
 	//modifieParcours($newParcoursTrim, $newParcoursClasse, $newParcoursCode, $newParcoursTexte, $modifieParcours);
 	modifieParcours($modifieParcoursId[$modifieParcours], $modifieParcoursCode[$modifieParcours], $modifieParcoursTexte[$modifieParcours]);
 }
+
+if ($ajouteEPI) {
+	$newEpiPeriode = filter_input(INPUT_POST, 'newEpiPeriode');
+	$newEpiClasse = filter_input(INPUT_POST, 'newEpiClasse', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+	$newEpiCode = filter_input(INPUT_POST, 'newEpiCode');
+	$newEpiIntitule = filter_input(INPUT_POST, 'newEpiIntitule');
+	$newEpiMatiere = filter_input(INPUT_POST, 'newEpiMatiere', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$newEpiDescription = filter_input(INPUT_POST, 'newEpiDescription');
+	
+	sauveEPI($newEpiPeriode, $newEpiClasse, $newEpiCode, $newEpiIntitule, $newEpiDescription, $newEpiMatiere);
+}
+
+if ($supprimeEPI) {
+	supprimeEPI($supprimeEPI);
+}
+
+if ($modifieEPI) {
+	$modifieEPIPeriode = filter_input(INPUT_POST, 'modifieEpiPeriode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieEPICode = filter_input(INPUT_POST, 'modifieEpiCode', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieEPIIntitule = filter_input(INPUT_POST, 'modifieEpiIntitule', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieEPIMatiere = filter_input(INPUT_POST, 'modifieEpiMatiere'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	// var_dump($modifieEPIMatiere);
+	echo '<br>';
+	$modifieEPIDescription = filter_input(INPUT_POST, 'modifieEpiDescription', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	$modifieEPIClasse = filter_input(INPUT_POST, 'modifieEpiClasse'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	// var_dump($modifieEPIClasse);
+	sauveEPI($modifieEPIPeriode[$modifieEPI], $modifieEPIClasse, $modifieEPICode[$modifieEPI], $modifieEPIIntitule[$modifieEPI], $modifieEPIDescription[$modifieEPI], $modifieEPIMatiere, $modifieEPI);
+	
+	$listeModifieEpiLiaison = filter_input(INPUT_POST, 'modifieEpiLiaison'.$modifieEPI, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+	
+	if ($listeModifieEpiLiaison) {
+		foreach ($listeModifieEpiLiaison as $lien) {
+			$tableauModifieEpiLiaison = explode('-', $lien);
+			if ($tableauModifieEpiLiaison[0] == "aid") {
+				$aid = 1;
+			} else {
+				$aid = 0;
+			}
+			$id_enseignement = $tableauModifieEpiLiaison[1];
+			$id_epi = $modifieEPI;
+			//$modifieEpiLiaison[][num] = $tableauModifieEpiLiaison[1];
+			lieEpiCours($id_epi , $id_enseignement , $aid);
+		}
+	}
+	//echo var_dump($modifieEpiLiaison);
+	
+	//modifieEpiLiaison31
+	//lieEpiCours($id_epi , $id_enseignement , $aid);
+}
+
 
