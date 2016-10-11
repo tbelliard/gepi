@@ -344,7 +344,7 @@ function getMatiere($id_groupe) {
  * @param type $periode
  * @return type
  */
-function getElementEleve($login_eleve, $annee, $periode) {
+function getElementEleve($login_eleve, $annee, $periode,$groupe = NULL) {
 	//echo $id_eleve.'<br';
 	global $mysqli;
 	$sql = "SELECT * FROM matiere_element_programme AS mep "
@@ -352,8 +352,12 @@ function getElementEleve($login_eleve, $annee, $periode) {
 		. "ON mep.id = jme.idEP "
 		. "WHERE jme.periode = '".$periode."' "
 		. "AND jme.annee = '".$annee."' "
-		. "AND jme.idEleve = '".$login_eleve."' "
-		. "ORDER BY mep.libelle";
+		. "AND jme.idEleve = '".$login_eleve."' ";
+	if ($groupe) {
+		$sql .= " AND jme.idGroupe = '".$groupe."' ";
+	}
+	$sql .= "ORDER BY mep.libelle";
+	
 	//echo $sql."<br />";
 	$resultchargeDB = $mysqli->query($sql);
 	return $resultchargeDB;

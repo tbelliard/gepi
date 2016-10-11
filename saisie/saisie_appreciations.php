@@ -1667,7 +1667,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 
 					$mess[$k].="<td style='text-align:left;'>-<br>";
-					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k);
+					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);
 					//$mess[$k].= var_dump($elementEleve);
 
 					$cpt=FALSE;
@@ -1834,7 +1834,7 @@ foreach ($liste_eleves as $eleve_login) {
 				if(!getSettingAOui('bullNoSaisieElementsProgrammes')) {
 					$mess[$k].="</td>\n<td style='text-align:left;'>";
 				
-					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k);	
+					$elementEleve = getElementEleve($eleve_login , $anneeScolaire, $k, $id_groupe);	
 					$cpt=FALSE;
 					while($element = $elementEleve->fetch_object()){
 						if($cpt) {
