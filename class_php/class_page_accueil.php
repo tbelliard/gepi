@@ -911,10 +911,6 @@ if(getSettingAOui('active_bulletins')) {
 	$this->b=0;
 	if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')) {
 		if(getSettingValue('edt_version_defaut')=="2") {
-			$this->creeNouveauItem("/edt/index2.php",
-				"Emploi du temps",
-				"Cet outil permet la consultation/gestion de l'emploi du temps.");
-
 			if ($_SESSION["statut"] == 'responsable') {
 				if (getSettingValue("autorise_edt_eleve")=="yes"){
 					// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
@@ -931,10 +927,14 @@ if(getSettingAOui('active_bulletins')) {
 						  "Emploi du temps",
 						  "Cet outil permet la consultation de votre emploi du temps.");
 				}
-			} else {
+			} else if($_SESSION["statut"] == 'professeur') {
 				$this->creeNouveauItem("/edt/index2.php",
 					  "Emploi du temps",
 					  "Cet outil permet la consultation de votre emploi du temps.");
+			} else {
+				$this->creeNouveauItem("/edt/index2.php",
+					  "Emploi du temps",
+					  "Cet outil permet la consultation/gestion de l'emploi du temps.");
 			}
 
 		}
