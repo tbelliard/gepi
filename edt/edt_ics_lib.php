@@ -3082,7 +3082,7 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 									*/
 
 									for($loop3=0;$loop3<count($tab3_cours);$loop3++) {
-										if($tab3_cours[$loop3]['id_cours']!=$id_cours_courant) {
+										if((isset($tab3_cours[$loop3]['id_cours']))&&($tab3_cours[$loop3]['id_cours']!=$id_cours_courant)) {
 											$y_test_debut=$y3;
 											$y_test_fin=$y3+$tab3_cours[$loop3]['hauteur'];
 											$id_cours_test=$tab3_cours[$loop3]['id_cours'];

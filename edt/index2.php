@@ -85,6 +85,9 @@ $num_semaine_annee=isset($_POST['num_semaine_annee']) ? $_POST['num_semaine_anne
 $affichage=isset($_POST['affichage']) ? $_POST['affichage'] : (isset($_GET['affichage']) ? $_GET['affichage'] : "semaine");
 
 $type_affichage=isset($_POST['type_affichage']) ? $_POST['type_affichage'] : (isset($_GET['type_affichage']) ? $_GET['type_affichage'] : NULL);
+if((isset($type_affichage))&&(!in_array($type_affichage, array("prof", "classe", "eleve")))) {
+	unset($type_affichage);
+}
 
 $display_date=isset($_POST['display_date']) ? $_POST['display_date'] : (isset($_GET['display_date']) ? $_GET['display_date'] : NULL);
 
@@ -518,50 +521,74 @@ if(isset($type_affichage)) {
 	//============================
 	$info_edt="";
 	if((isset($login_eleve))&&($type_affichage=="eleve")) {
-		$info_eleve=get_nom_prenom_eleve($login_eleve, "avec_classe");
-		if(isset($id_classe)) {
-			if(!is_eleve_classe($login_eleve, $id_classe)) {
-				unset($id_classe);
-			}
-			// Sinon, on accepte la classe proposée (pour gérer le cas des élèves changeant de classe en cours d'année)
+		$sql="SELECT 1=1 FROM eleves WHERE login='".$login_eleve."';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			unset($type_affichage);
+			$msg.="Élève \"$login_eleve\" inconnu.<br />";
 		}
+		else {
+			$info_eleve=get_nom_prenom_eleve($login_eleve, "avec_classe");
+			if(isset($id_classe)) {
+				if(!is_eleve_classe($login_eleve, $id_classe)) {
+					unset($id_classe);
+				}
+				// Sinon, on accepte la classe proposée (pour gérer le cas des élèves changeant de classe en cours d'année)
+			}
 
-		if(!isset($id_classe)) {
-			$id_classe=get_id_classe_ele_d_apres_date($login_eleve, $ts_display_date);
-			if($id_classe=="") {
-				$id_classe=get_id_classe_derniere_classe_ele($login_eleve);
+			if(!isset($id_classe)) {
+				$id_classe=get_id_classe_ele_d_apres_date($login_eleve, $ts_display_date);
+				if($id_classe=="") {
+					$id_classe=get_id_classe_derniere_classe_ele($login_eleve);
+				}
 			}
+			$info_edt=$info_eleve;
 		}
-		$info_edt=$info_eleve;
 	}
 	elseif((isset($id_classe))&&($type_affichage=="classe")) {
-		$info_edt=get_nom_classe($id_classe);
+		if(!array_key_exists($id_classe, $tab_classes)) {
+			unset($type_affichage);
+			$msg.="Classe n°$id_classe inconnue.<br />";
+		}
+		else {
+			$info_edt=get_nom_classe($id_classe);
+		}
 	}
 	elseif((isset($login_prof))&&($type_affichage=="prof")) {
-		$info_edt=affiche_utilisateur($login_prof, "", "cni");
+		$sql="SELECT 1=1 FROM utilisateurs WHERE login='".$login_prof."' AND statut='professeur';";
+		$test=mysqli_query($GLOBALS["mysqli"], $sql);
+		if(mysqli_num_rows($test)==0) {
+			unset($type_affichage);
+			$msg.="Professeur \"$login_prof\" inconnu.<br />";
+		}
+		else {
+			$info_edt=affiche_utilisateur($login_prof, "", "cni");
+		}
 	}
 	//============================
-	if($type_affichage=="eleve") {
-		$login_prof="";
-		if((!isset($login_eleve))||($login_eleve=="")) {
-			unset($type_affichage);
-			$msg.="Élève non choisi.<br />";
+	if(isset($type_affichage)) {
+		if($type_affichage=="eleve") {
+			$login_prof="";
+			if((!isset($login_eleve))||($login_eleve=="")) {
+				unset($type_affichage);
+				$msg.="Élève non choisi.<br />";
+			}
 		}
-	}
-	elseif($type_affichage=="classe") {
-		$login_eleve="";
-		$login_prof="";
-		if((!isset($id_classe))||($id_classe=="")) {
-			unset($type_affichage);
-			$msg.="Classe non choisie.<br />";
+		elseif($type_affichage=="classe") {
+			$login_eleve="";
+			$login_prof="";
+			if((!isset($id_classe))||($id_classe=="")) {
+				unset($type_affichage);
+				$msg.="Classe non choisie.<br />";
+			}
 		}
-	}
-	elseif($type_affichage=="prof") {
-		$login_eleve="";
-		$id_classe="";
-		if((!isset($login_prof))||($login_prof=="")) {
-			unset($type_affichage);
-			$msg.="Professeur non choisi.<br />";
+		elseif($type_affichage=="prof") {
+			$login_eleve="";
+			$id_classe="";
+			if((!isset($login_prof))||($login_prof=="")) {
+				unset($type_affichage);
+				$msg.="Professeur non choisi.<br />";
+			}
 		}
 	}
 	//============================
