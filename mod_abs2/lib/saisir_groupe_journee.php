@@ -134,31 +134,52 @@ foreach ($afficheEleve as &$eleveCourant) {
 			$eleveCourant['sequence'][$cptSeq]['id_creneau'] = intval ($cptSeq / 2);
 			$eleveCourant['sequence'][$cptSeq]['id_cours'] = $tab_enseignement_final['id_cours'][$indiceSemaine];
 			$eleveCourant['sequence'][$cptSeq]['id_groupe'] = $tab_enseignement_final['id_groupe'][$indiceSemaine];
-			
-			// on vérifie si une absence n'est pas déjà saisie			
+
+			// 20161013
+
+			// on vérifie si une absence n'est pas déjà saisie
 			$eleveCourant['sequence'][$cptSeq]['style'] = '';
-	//on cherche l'élève
-	$eleve = EleveQuery::create()->findPk($eleveCourant['id']);
-    if ($eleve == null) {
-		$message_enregistrement = "Probleme avec l'id élève : ".$eleveCourant['id'];
-		die($message_enregistrement);
-    }
-	
-	$edt_creneau = $col_creneaux[intval ($cptSeq / 2)];
-	$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
-	
-	if (!$absences_du_creneau->isEmpty()) {
-		foreach ($absences_du_creneau as $abs_saisie) {
-			if ($abs_saisie->getManquementObligationPresence()) {
-				$eleveCourant['sequence'][$cptSeq]['style'] = 'fondRouge';
-				break;
+
+			//on cherche l'élève
+			$eleve = EleveQuery::create()->findPk($eleveCourant['id']);
+			if ($eleve == null) {
+				$message_enregistrement = "Probleme avec l'id élève : ".$eleveCourant['id'];
+				die($message_enregistrement);
 			}
-		}
-	} else if ($deja_saisie && $nb_creneau_a_saisir > 0) {
-		$eleveCourant['sequence'][$cptSeq]['style'] = 'fondVert';
-	}
 	
+			$edt_creneau = $col_creneaux[intval ($cptSeq / 2)];
+			$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 	
+			if (!$absences_du_creneau->isEmpty()) {
+				foreach ($absences_du_creneau as $abs_saisie) {
+					foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+						if ($bou_traitement->getAbsenceEleveType() != null) {
+							$eleveCourant['sequence'][$cptSeq]['style'] = 'fondJaune';
+
+							if(!isset($eleveCourant['sequence'][$cptSeq]['info_saisie'])) {
+								$eleveCourant['sequence'][$cptSeq]['info_saisie']="";
+							}
+							$commentaire_associe="";
+							if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$eleveCourant['sequence'][$cptSeq]['info_saisie'].=$bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe."\n";
+							/*
+							echo "<hr />bou_traitement<pre>";
+							print_r($bou_traitement);
+							echo "</pre>";
+							*/
+						}
+					}
+
+					if ($abs_saisie->getManquementObligationPresence()) {
+						$eleveCourant['sequence'][$cptSeq]['style'] = 'fondRouge';
+						break;
+					}
+				}
+			} else if ($deja_saisie && $nb_creneau_a_saisir > 0) {
+				$eleveCourant['sequence'][$cptSeq]['style'] = 'fondVert';
+			}
+
+
 			// Si le cours commence en milieu de créneau
 			if (.5 == $tab_enseignement_final['heuredeb_dec'][$indiceSemaine]) {
 				$debutCours = intval (($eleveCourant['sequence'][$cptSeq]['heureFin'] - $eleveCourant['sequence'][$cptSeq]['heureDebut']) / 2);
@@ -441,6 +462,12 @@ foreach($afficheEleve as $eleve) {
 	
 <?php 
 for($i = 0; $i<count($eleve['sequence']); $i++) {
+	// 20161013
+	$title="";
+	if(isset($eleve['sequence'][$i]['info_saisie'])) {
+		$title=" title=\"".preg_replace('/"/',"'",$eleve['sequence'][$i]['info_saisie'])."\"";
+	}
+
 	if (intval($eleve['sequence'][$i]['duree'])) {
 		$colspan = intval($eleve['sequence'][$i]['duree']);
 		$couleur = " ".$eleve['sequence'][$i]['style'];
@@ -450,7 +477,7 @@ for($i = 0; $i<count($eleve['sequence']); $i++) {
 	}
 ?>	
 					<td colspan="<?php echo $colspan; ?>" 
-						class="center <?php echo $couleur; ?>"
+						class="center <?php echo $couleur; ?>"<?php echo $title;?>
 						>
 <?php if (intval($eleve['sequence'][$i]['duree'])) { ?>
 						<label for="active_absence_eleve_<?php echo $cpt; ?>" class="invisible"><?php echo $cpt; ?> actif</label>
@@ -690,6 +717,7 @@ $numElv++;
 		</p>
 		
 		
+		<input type='hidden' name='temoin_dernier_champ_formulaire_transmis' value='y' />
 	</form>
 </div>
 <?php

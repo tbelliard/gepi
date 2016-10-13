@@ -624,6 +624,8 @@ echo "</pre>";
 				$absences_du_creneau = new PropelCollection();
 			}
 		}
+
+		// 20161013: Style cellule
 		$afficheEleve[$elv]['style'][$i] = "";
 		if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 			$afficheEleve[$elv]['style'][$i] = "fondVert";
@@ -674,6 +676,11 @@ echo "</pre>";
 						if ($bou_traitement->getAbsenceEleveType() != null) {
 							$afficheEleve[$elv]['saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom();
 							//echo "\$afficheEleve[$elv]['saisie'][$i]['traitements'][] = ".$bou_traitement->getAbsenceEleveType()->getNom()."<br />";
+
+							// 20161013
+							$commentaire_associe="";
+							if($saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
 						}
 					}
 				}
@@ -710,6 +717,15 @@ echo "</pre>";
 				if ($txt != '') {
 					$afficheEleve[$elv]['saisieDescription'][$i][] = $abs_saisie->getTypesDescription();
 					//echo $abs_saisie->getTypesDescription()."<br />";
+				}
+			}
+
+			// 20161013
+			foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+				if ($bou_traitement->getAbsenceEleveType() != null) {
+					$commentaire_associe="";
+					if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$abs_saisie->getCommentaire().")";}
+					$afficheEleve[$elv]['info_saisie'][$i]['traitements'][] = $bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe;
 				}
 			}
 		}
@@ -1452,7 +1468,9 @@ if ($eleve_col->isEmpty()) {
 						</td>
 <?php 
 // Boucle sur les créneaux horaires
-for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
+for($i = 0; $i<$eleve['creneaux_possibles']; $i++) { 
+	// 20161013: Style cellule
+?>
 						<td colspan="<?php echo $eleve['nb_creneaux_a_saisir'][$i]; ?>" 
 							class="<?php echo $eleve['style'][$i];
 							if (($eleve['creneau_courant'] != $i) 
@@ -1462,12 +1480,15 @@ for($i = 0; $i<$eleve['creneaux_possibles']; $i++){ ?>
 							}
 								?>"
 							<?php
+								$chaine_info="";
+								// Récupérer le type de la saisie pour la mettre en title.
 								if(isset($eleve['info_saisie'][$i]['traitements'])) {
-									$chaine_info="";
 									foreach($eleve['info_saisie'][$i]['traitements'] as $info_saisie) {
 										if($chaine_info!="") {	$chaine_info.=", ";}
 										$chaine_info.=$info_saisie;
 									}
+								}
+								if($chaine_info!="") {
 									echo " title=\"".preg_replace('/"/',"'",$chaine_info)."\"";
 								}
 							?>>
