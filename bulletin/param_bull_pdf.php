@@ -865,6 +865,7 @@ function DecocheCheckbox() {
 	echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
 	//echo " | <a href=\"./index.php?format=pdf\"> Impression des bulletins PDF</a>\n";
 	echo " | <a href=\"./bull_index.php\"> Impression des bulletins</a>\n";
+	echo " | <a href=\"./param_bull_pdf_2016.php\"> Param.CLG.2016</a>\n";
 	echo " | <a href=\"./param_bull.php\"> Paramètres d'impression des bulletins HTML</a>\n";
 	//echo "</p>\n";
 	//echo "<br /><br />\n";
