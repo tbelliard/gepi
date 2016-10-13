@@ -170,6 +170,13 @@
 	$param_bull2016["hauteur_cadre_eleve"]=45;
 	$param_bull2016["largeur_cadre_eleve"]=189;
 
+	$param_bull2016["afficher_cadre_adresse_resp"]=getSettingValue("bull2016_afficher_cadre_adresse_resp");
+	$param_bull2016["bordure_cadre_adresse_resp"]="LRBT";
+	$param_bull2016["x_cadre_adresse_resp"]=117;
+	$param_bull2016["y_cadre_adresse_resp"]=$param_bull2016["y_cadre_eleve"]+3;
+	$param_bull2016["largeur_cadre_adresse_resp"]=78;
+	$param_bull2016["hauteur_cadre_adresse_resp"]=$param_bull2016["hauteur_cadre_eleve"]-2*3;
+
 	$param_bull2016["y_annee_scolaire"]=$param_bull2016["y_cadre_eleve"]+5;
 	$param_bull2016["y_periode"]=$param_bull2016["y_annee_scolaire"]+4;
 

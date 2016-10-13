@@ -91,6 +91,15 @@ if (isset($_POST['is_posted'])) {
 		$reg_ok = 'no';
 	}
 
+	$bull2016_afficher_cadre_adresse_resp=isset($_POST["bull2016_afficher_cadre_adresse_resp"]) ? $_POST["bull2016_afficher_cadre_adresse_resp"] : "n";
+	if(($bull2016_afficher_cadre_adresse_resp!="y")&&($bull2016_afficher_cadre_adresse_resp!="n")) {
+		$bull2016_afficher_cadre_adresse_resp="n";
+	}
+	if (!saveSetting("bull2016_afficher_cadre_adresse_resp", $bull2016_afficher_cadre_adresse_resp)) {
+		$msg .= "Erreur lors de l'enregistrement de bull2016_afficher_cadre_adresse_resp !";
+		$reg_ok = 'no';
+	}
+
 	$bull2016_arrondi=isset($_POST["bull2016_arrondi"]) ? $_POST["bull2016_arrondi"] : 0.01;
 	if(((!preg_match("/^[0-9]{1,}$/", $bull2016_arrondi))&&
 	(!preg_match("/^[0-9]{1,}\.[0-9]{1,}$/", $bull2016_arrondi)))||
@@ -405,6 +414,11 @@ $bull2016_INE_checked="";
 if(getSettingAOui('bull2016_INE')) {
 	$bull2016_INE_checked=" checked";
 }
+
+$bull2016_afficher_cadre_adresse_resp_checked="";
+if(getSettingAOui('bull2016_afficher_cadre_adresse_resp')) {
+	$bull2016_afficher_cadre_adresse_resp_checked=" checked";
+}
 ?>
 
 
@@ -420,6 +434,14 @@ echo add_token_field();
 		<td>
 			<input type="checkbox" name="bull2016_INE" id="bull2016_INE" size="5" onchange="changement()" value="y"<?php
 				echo $bull2016_INE_checked;
+			?> />
+		</td>
+	</tr>
+	<tr>
+		<td>Faire apparaître le cadre adresse responsable&nbsp;:</td>
+		<td>
+			<input type="checkbox" name="bull2016_afficher_cadre_adresse_resp" id="bull2016_afficher_cadre_adresse_resp" size="5" onchange="changement()" value="y"<?php
+				echo $bull2016_afficher_cadre_adresse_resp_checked;
 			?> />
 		</td>
 	</tr>
@@ -621,7 +643,7 @@ echo add_token_field();
 	</tr>
 </table>
 
-<p style="text-align: center;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
+<p style="text-align: center; margin-bottom:2em;"><input type="submit" name="ok" value="Enregistrer" style="font-variant: small-caps;"/></p>
 
 </form>
 
