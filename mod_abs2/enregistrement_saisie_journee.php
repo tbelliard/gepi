@@ -236,6 +236,9 @@ $saisiesAbs = isset ($_POST['active_absence_eleve']) ? $_POST['active_absence_el
 $message_erreur_eleve = array();
 $message_reussite = '';
 
+if(!isset($_POST['temoin_dernier_champ_formulaire_transmis'])) {
+	$message_enregistrement="<span style='color:red'>Il semble qu'une partie des champs de formulaire n'ait pas été transmise.<br />Y aurait-il des limitations au nombre de variables transmises sur votre serveur.</span><br />";
+}
 
 // On stocke les valeurs pour les récupérer après la boucle sur les élèves
 $last_id_aid= $id_classe;
@@ -251,7 +254,7 @@ $dernierEleve = '';
 foreach ($saisiesAbs as $key=>$indice) {
 	
 	
-set_time_limit(20);
+	set_time_limit(20);
 	
 	$id_eleve_absent = isset ($_POST['id_eleve_absent'][$key]) ? $_POST['id_eleve_absent'][$key] :  NULL;
 	
