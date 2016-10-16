@@ -613,16 +613,42 @@ foreach ($col_creneaux as $edt_creneau) {
 <?php 
 	 $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 	 $style = '';
+	 $info_saisie="";
 	 if (!$absences_du_creneau->isEmpty()) {
 			foreach ($absences_du_creneau as $abs_saisie) {
 				if ($abs_saisie->getManquementObligationPresence()) {
 					$style = " fondRouge";
+					// 20161016
+					foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+						if ($bou_traitement->getAbsenceEleveType() != null) {
+							$commentaire_associe="";
+							if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$info_saisie.=$bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe."\n";
+						}
+					}
 					break;
+				}
+				else {
+					$style = ' fondJaune';
+					foreach ($abs_saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+						if ($bou_traitement->getAbsenceEleveType() != null) {
+							$commentaire_associe="";
+							if($abs_saisie->getCommentaire()!=null) {$commentaire_associe=" (".$saisie->getCommentaire().")";}
+							$info_saisie.=$bou_traitement->getAbsenceEleveType()->getNom().$commentaire_associe."\n";
+						}
+					}
 				}
 			}
 		}
 ?>	
-					<td class="center<?php echo $style; ?>" title="<?php echo $edt_creneau->getNomDefiniePeriode();?>" >
+					<td class="center<?php
+						echo $style;
+					?>" title="<?php
+						echo $edt_creneau->getNomDefiniePeriode();
+						if($info_saisie!="") {
+							echo "\n".$info_saisie;
+						}
+					?>" >
 	<?php if ($edt_creneau->getTypeCreneaux() != 'pause') {  ?>	
 						<input type="checkbox" 
 							   name="active_absence_eleve[<?php echo $cpt; ?>]" 
@@ -659,7 +685,7 @@ foreach ($col_creneaux as $edt_creneau) {
 					</td>
 					
 <?php } ?>	
-					<td class="center" title="Créer un traitement différent pour chaque saisie">					
+					<td class="center" title="Créer un traitement différent pour chaque saisie">
 						<input type="checkbox" 
 							   name="multi_traitement[<?php echo $eleve->getId(); ?>]" 
 							   />
