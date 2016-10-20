@@ -815,18 +815,41 @@ else {
 
 	echo "
 		</tr>";
+
+	$acces_class_const=acces("/classes/classes_const.php", $_SESSION['statut']);
+	$acces_modify_user=acces("/utilisateurs/modify_user.php", $_SESSION['statut']);
+	$acces_visu_eleve=acces("/eleves/visu_eleve.php", $_SESSION['statut']);
+	$acces_modify_resp=acces("/responsables/modify_resp.php", $_SESSION['statut']);
+	$acces_trombi=(acces("/mod_trombinoscopes/trombinoscopes.php", $_SESSION['statut'])&&(getSettingAOui("active_module_trombinoscopes")));
+
 	$tab_pp=get_tab_prof_suivi();
 	foreach($tab_classe as $current_id_classe => $current_classe) {
+		$html_current_classe="";
+		if($acces_trombi) {
+			$html_current_classe="<div style='float:right; width:16px;'><a href='../mod_trombinoscopes/trombinoscopes.php?classe=$current_id_classe&etape=2' title='Voir le trombinoscope des élèves de la classe'><img src='../images/icons/trombinoscope.png' class='icone16' alt='Trombi' /></a></div>";
+		}
+
+		if($acces_class_const) {
+			$html_current_classe.="<a href='../classes/classes_const.php?id_classe=$current_id_classe' title=\"Voir la composition de la classe, ses élèves, leurs régimes, PP et CPE.\">$current_classe</a>";
+		}
+		else {
+			$html_current_classe.=$current_classe;
+		}
 		echo "
 		<tr>
-			<td>$current_classe</td>
+			<td>$html_current_classe</td>
 			<td>";
 		if(isset($tab_pp[$current_id_classe])) {
 			for($loop=0;$loop<count($tab_pp[$current_id_classe]);$loop++) {
 				if($loop>0) {echo "<br />";}
 				$designation_user=civ_nom_prenom($tab_pp[$current_id_classe][$loop]);
 				echo "<div style='float:right; width:16px'>".affiche_lien_mailto_si_mail_valide($tab_pp[$current_id_classe][$loop], $designation_user)."</div>";
-				echo $designation_user;
+				if($acces_modify_user) {
+					echo "<a href='../utilisateurs/modify_user.php?user_login=".$tab_pp[$current_id_classe][$loop]."' title=\"Voir la fiche utilisateur.\">".$designation_user."</a>";
+				}
+				else {
+					echo $designation_user;
+				}
 			}
 		}
 		echo "</td>";
@@ -848,11 +871,23 @@ else {
 					$tmp_tab_login_resp=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "responsable");
 					$tmp_tab_login_ele=get_tab_login_tel_engagement($id_type_courant, $current_id_classe, "eleve");
 				}
+
 				for($loop2=0;$loop2<count($tmp_tab_login_ele);$loop2++) {
-					echo get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."<br />";
+					if($acces_visu_eleve) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=".$tmp_tab_login_ele[$loop2]."' title=\"Voir cet élève.\">".get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."</a><br />";
+					}
+					else {
+						echo get_nom_prenom_eleve($tmp_tab_login_ele[$loop2])."<br />";
+					}
 				}
 				for($loop2=0;$loop2<count($tmp_tab_login_resp);$loop2++) {
-					echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+					if($acces_modify_resp) {
+						echo "<a href='../responsables/modify_resp.php?login_resp=".$tmp_tab_login_resp[$loop2]."' title=\"Voir la fiche responsable.\">".$designation_user."</a>";
+						echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+					}
+					else {
+						echo civ_nom_prenom($tmp_tab_login_resp[$loop2])."<br />";
+					}
 				}
 				echo "</td>";
 			}
