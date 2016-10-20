@@ -2163,6 +2163,13 @@ function affiche_edt2($login_eleve, $id_classe, $login_prof, $type_affichage, $t
 		$param_lien_edt.=$complement_liens_edt."&";
 	}
 
+	if($param_lien_edt=="") {
+		$param_lien_edt.="x0=$x0&y0=$y0&";
+	}
+	else {
+		$param_lien_edt.="&x0=$x0&y0=$y0&";
+	}
+
 	$html="";
 
 	global $mode_infobulle;

@@ -517,6 +517,9 @@ else {
 
 //echo "<p>DEBUG 2 : type_affichage=$type_affichage</p>";
 
+$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
+$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+
 if(isset($type_affichage)) {
 	//============================
 	$info_edt="";
@@ -608,10 +611,11 @@ if((isset($_GET['mode']))&&($_GET['mode']=='afficher_edt_js')) {
 	$y0=10;
 	$hauteur_une_heure=60;
 	*/
-	$x0=50;
+	//$x0=50;
+	$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
 
-	$largeur_edt=isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800;
-	$y0=isset($_GET['y0']) ? $_GET['y0'] : 10;
+	$largeur_edt=isset($_POST['largeur_edt']) ? $_POST['largeur_edt'] : (isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800);
+	$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
 	$hauteur_une_heure=isset($_GET['hauteur_une_heure']) ? $_GET['hauteur_une_heure'] : 60;
 	$hauteur_jour=isset($_GET['hauteur_jour']) ? $_GET['hauteur_jour'] : 800;
 
@@ -781,6 +785,8 @@ echo "</pre>";
 echo_selon_mode("
 <form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' id='form_envoi' method='post'>
 	<fieldset class='fieldset_opacite50'>
+		<input type='hidden' name='x0' value='$x0' />
+		<input type='hidden' name='y0' value='$y0' />
 		".add_token_field());
 //=======================================
 if($_SESSION['statut']=="responsable") {
@@ -1329,7 +1335,8 @@ echo_selon_mode("
 //============================================================
 //echo "affichage=$affichage<br />";
 if($affichage=="semaine") {
-	$largeur_edt=800;
+	//$largeur_edt=800;
+	$largeur_edt=isset($_POST['largeur_edt']) ? $_POST['largeur_edt'] : (isset($_GET['largeur_edt']) ? $_GET['largeur_edt'] : 800);
 }
 else {
 	$largeur_edt=114;
@@ -1382,8 +1389,11 @@ if(($type_affichage=='eleve')&&(isset($login_eleve))&&($affichage_complementaire
 //$affichage_complementaire_sur_edt="absences2";
 //============================================================
 
-$x0=50;
-$y0=10;
+//$x0=50;
+//$y0=10;
+//$x0=isset($_POST['x0']) ? $_POST['x0'] : (isset($_GET['x0']) ? $_GET['x0'] : 50);
+//$y0=isset($_POST['y0']) ? $_POST['y0'] : (isset($_GET['y0']) ? $_GET['y0'] : 10);
+
 $hauteur_une_heure=60;
 
 //$html=affiche_edt2_eleve($login_eleve, $id_classe, $ts_display_date, $affichage, $x0, $y0, $largeur_edt, $hauteur_une_heure);
